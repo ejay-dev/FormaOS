@@ -58,7 +58,8 @@ export async function getGroupRollup(groupId: string) {
   for (const member of members) {
     const orgId = member.organization_id;
     const orgRaw = member.organizations as any;
-    const orgName = (Array.isArray(orgRaw) ? orgRaw[0]?.name : orgRaw?.name) ?? orgId;
+    const orgName =
+      (Array.isArray(orgRaw) ? orgRaw[0]?.name : orgRaw?.name) ?? orgId;
 
     const { data: controls } = await db
       .from('org_controls')

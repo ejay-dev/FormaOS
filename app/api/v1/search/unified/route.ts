@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  authenticateV1Request,
-} from '@/lib/api-keys/middleware';
+import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { search, trackSearch } from '@/lib/search/search-engine';
 import { getStringParam } from '@/lib/api/v1-helpers';
 
@@ -12,7 +10,11 @@ export async function GET(req: NextRequest) {
   if (!auth.ok) return auth.response;
 
   const q = getStringParam(req.nextUrl.searchParams, 'q') ?? '';
-  if (!q) return NextResponse.json({ error: 'q parameter required' }, { status: 400 });
+  if (!q)
+    return NextResponse.json(
+      { error: 'q parameter required' },
+      { status: 400 },
+    );
 
   const entityTypes =
     req.nextUrl.searchParams.get('types')?.split(',').filter(Boolean) ??

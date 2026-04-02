@@ -45,16 +45,14 @@ export const evidenceFreshnessTask = schedules.task({
           ).length;
 
           if (expiringCount > 0 || expiredCount > 0) {
-            await db
-              .from('org_notifications')
-              .insert({
-                organization_id: org.id,
-                user_id: admin.user_id,
-                type: 'evidence_freshness',
-                title: 'Evidence Freshness Alert',
-                message: `${expiredCount} expired, ${expiringCount} expiring soon`,
-                metadata: { expiredCount, expiringCount },
-              });
+            await db.from('org_notifications').insert({
+              organization_id: org.id,
+              user_id: admin.user_id,
+              type: 'evidence_freshness',
+              title: 'Evidence Freshness Alert',
+              message: `${expiredCount} expired, ${expiringCount} expiring soon`,
+              metadata: { expiredCount, expiringCount },
+            });
           }
         }
       }

@@ -125,19 +125,19 @@ const faqCategories = [
     questions: [
       {
         q: 'Does FormaOS integrate with existing systems?',
-        a: 'FormaOS provides Google OAuth for authentication, REST API access, and live integrations with Slack and Microsoft Teams. Jira, Linear, and Google Drive integrations are coming soon. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. Additional integrations including GitHub, Make, and SharePoint are in beta or coming soon.',
+        a: 'FormaOS ships with 20+ integrations across productivity (Jira, Slack, Microsoft Teams), cloud (AWS, Azure, GCP), identity (Okta, Azure AD, Google Workspace), security (Qualys, Tenable), and HRIS tools (BambooHR, Workday). Browse and install connectors from the Integration Marketplace with one-click setup. Enterprise plans include SAML 2.0 SSO.',
       },
       {
         q: 'Are APIs available?',
-        a: 'FormaOS provides a REST API for authorized customers to query audit logs, compliance status, evidence, and tasks. API documentation is available on request.',
+        a: 'Yes. The REST API v1 includes 20+ endpoints covering organizations, tasks, evidence, compliance data, reports, frameworks, controls, notifications, integrations, and search. Bearer API keys with scoped permissions, cursor-based pagination, rate limiting, and an OpenAPI 3.1 specification are included. API documentation is available at /documentation/api.',
       },
       {
         q: 'Do you support webhooks?',
-        a: 'Yes - FormaOS includes webhook endpoints for real-time event notifications out of the box via our REST API v1.',
+        a: 'Yes. FormaOS includes a webhook relay with HMAC-SHA256 signed payloads, 15+ event types, configurable retry policies, delivery logging, and a built-in webhook testing console. Inbound webhooks are also supported for integration data collection.',
       },
       {
         q: 'Can FormaOS connect to our existing systems?',
-        a: 'FormaOS provides REST API and webhook capabilities to connect with external systems. We do not ship native HRIS/CRM connectors (e.g., Workday/Salesforce) as first-party integrations today, but teams can integrate via API/webhooks and middleware (Zapier/Make/custom). Slack and Microsoft Teams integrations are available by request, and enterprise customers can request dedicated integration support.',
+        a: 'FormaOS ships with native connectors for Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, Azure, GCP, Okta, Google Workspace, Qualys, Tenable, ServiceNow, BambooHR, and Workday. The Integration Marketplace lets you browse by category and install with a guided setup wizard. For systems without a native connector, use the REST API v1, webhooks, or Zapier to build custom integrations.',
       },
     ],
   },

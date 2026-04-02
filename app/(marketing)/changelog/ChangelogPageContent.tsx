@@ -144,6 +144,158 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v3.1.0',
+    codename: 'Citadel',
+    date: '2026-04-03',
+    summary:
+      'Enterprise governance expansion: framework cross-mapping, task management, usage analytics, permissions matrix, policy lifecycle, document retention, org branding, dashboard builder, integration marketplace, and enhanced audit trail.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Framework cross-mapping with confidence scoring',
+        tag: 'feature',
+        detail:
+          'Map controls across frameworks with confidence scores (exact, strong, partial, weak). 31 pre-loaded cross-mappings between ISO 27001, SOC 2, HIPAA, and NIST CSF. Interactive mapping explorer with bi-directional relationship visualization.',
+      },
+      {
+        text: 'Full task management system with Kanban board',
+        tag: 'feature',
+        detail:
+          'Complete task management with priorities, dependencies, assignees, due dates, and Kanban board view. Tasks link to controls and evidence for full compliance traceability. Subtask support and bulk operations included.',
+      },
+      {
+        text: 'Usage analytics and telemetry dashboard',
+        tag: 'feature',
+        detail:
+          'Track platform adoption with login frequency, feature usage heatmaps, compliance activity timelines, and engagement scores per user. Admin-only dashboard with exportable reports.',
+      },
+      {
+        text: 'Granular permissions matrix with team management',
+        tag: 'security',
+        detail:
+          'Fine-grained permission system with 8 resource types, 4 access levels, and team-scoped inheritance. Visual permissions matrix editor for admins. Respects org hierarchy with cascading team permissions.',
+      },
+      {
+        text: 'Policy lifecycle management',
+        tag: 'feature',
+        detail:
+          'End-to-end policy lifecycle: draft, review, approval, publish, and retirement. Version history with diff comparison, stakeholder review workflows, acknowledgment tracking, and scheduled review reminders.',
+      },
+      {
+        text: 'Document retention policies with automated archival',
+        tag: 'enterprise',
+        detail:
+          'Configure retention rules per document category with regulatory presets (ASIC 7-year, NDIS 7-year, HIPAA 6-year, GDPR-aligned). Automated archival and legal hold support with full audit trail.',
+      },
+      {
+        text: 'Organization settings hub with custom branding',
+        tag: 'feature',
+        detail:
+          'Centralized org settings: branding (logo, colors, favicon), security policies, notification defaults, locale/timezone, and white-label configuration. Branding previews before publish.',
+      },
+      {
+        text: 'Custom dashboard builder with drag-and-drop',
+        tag: 'feature',
+        detail:
+          'Build personalized compliance dashboards with 15 widget types including compliance scores, task boards, evidence timelines, framework coverage, and risk heatmaps. Drag-and-drop layout with save/share capability.',
+      },
+      {
+        text: 'Integration marketplace with 20+ connectors',
+        tag: 'integration',
+        detail:
+          'Categorized integration marketplace with connectors for productivity (Slack, Teams, Jira), cloud (AWS, Azure, GCP), identity (Okta, Azure AD), security (Qualys, Tenable), and HRIS (BambooHR, Workday). One-click install with configuration wizard.',
+      },
+      {
+        text: 'Enhanced audit trail with advanced filtering and export',
+        tag: 'security',
+        detail:
+          'Rebuilt audit trail with 20+ event types, advanced filtering (actor, action, resource, date range, IP address), real-time streaming, and bulk export in CSV/JSON formats. User agent tracking and session correlation.',
+      },
+    ],
+  },
+  {
+    version: 'v3.0.0',
+    codename: 'Nexus',
+    date: '2026-04-01',
+    summary:
+      'Platform infrastructure overhaul: third-party integrations, threaded comments, report generator, webhook relay, evidence versioning, risk analytics, AI insights, email system, compliance scanner, dashboard widgets, API v1, and scheduled tasks.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Third-party integration engine with 12 pre-built connectors',
+        tag: 'integration',
+        detail:
+          'Configurable integration framework supporting Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS CloudTrail, Azure Monitor, Okta, Google Workspace, Qualys, Tenable, and ServiceNow. OAuth2 and API key auth with automatic token refresh and health monitoring.',
+      },
+      {
+        text: 'Threaded comments on all compliance entities',
+        tag: 'feature',
+        detail:
+          'Rich-text threaded comments on controls, evidence, tasks, incidents, and policies. @mention notifications, file attachments, inline code blocks, and reaction support. All comments are part of the immutable audit record.',
+      },
+      {
+        text: 'Compliance report generator with 6 template types',
+        tag: 'feature',
+        detail:
+          'Generate executive summaries, framework-specific reports, evidence completeness reports, risk assessment reports, audit readiness packets, and custom reports. Scheduled delivery with PDF and CSV export. Branded report headers.',
+      },
+      {
+        text: 'Webhook relay with HMAC-SHA256 signed payloads',
+        tag: 'feature',
+        detail:
+          'Outbound webhook system supporting 15+ event types with HMAC-SHA256 payload signing, configurable retry policies, delivery logging, and a built-in webhook testing console. Inbound webhooks for integration data collection.',
+      },
+      {
+        text: 'Evidence file versioning with complete history',
+        tag: 'improvement',
+        detail:
+          'Full version control for evidence artifacts with SHA-256 verification at every version. Visual diff between versions, restore previous versions, and complete version metadata (uploader, timestamp, reason for change).',
+      },
+      {
+        text: 'Risk scoring engine and analytics dashboard',
+        tag: 'feature',
+        detail:
+          'Multi-dimensional risk scoring across controls, frameworks, and organizational units. Interactive risk heatmap with drill-down, trend analysis, risk category breakdowns (compliance, operational, security), and exportable risk reports.',
+      },
+      {
+        text: 'AI-powered compliance insights and recommendations',
+        tag: 'feature',
+        detail:
+          'AI engine that analyzes compliance posture and generates actionable recommendations. Priority-ranked suggestions for evidence gaps, control improvements, upcoming risks, and efficiency optimizations. Contextual insights surfaced across dashboard and control views.',
+      },
+      {
+        text: 'Transactional email system with Resend',
+        tag: 'feature',
+        detail:
+          'Purpose-built email system for compliance notifications, task assignments, evidence review requests, credential expiry alerts, and digest summaries. React Email templates with branded formatting and delivery tracking.',
+      },
+      {
+        text: 'Automated compliance scanning with scheduling',
+        tag: 'feature',
+        detail:
+          'Scheduled compliance scans that evaluate control status, evidence freshness, credential expiry, policy review dates, and framework coverage. Configurable scan frequency (hourly, daily, weekly) with alert thresholds and drift detection.',
+      },
+      {
+        text: 'Dashboard widgets with configurable positioning',
+        tag: 'feature',
+        detail:
+          'Widget-based dashboard system with 15 widget types: compliance scores, task summaries, evidence timelines, risk heatmaps, framework gauges, recent activity, and more. Drag-and-drop positioning with size configuration.',
+      },
+      {
+        text: 'REST API v1 with bearer authentication and rate limiting',
+        tag: 'feature',
+        detail:
+          'Full v1 REST API with 20+ endpoints covering organizations, tasks, evidence, compliance data, reports, frameworks, controls, notifications, integrations, and search. Bearer API keys with scoped permissions, cursor pagination, and per-key rate limiting.',
+      },
+      {
+        text: 'Scheduled task execution with Trigger.dev',
+        tag: 'feature',
+        detail:
+          'Background task infrastructure for evidence freshness monitoring, compliance score recalculation, credential expiry checks, report generation, and integration sync jobs. Configurable schedules with execution logging and retry policies.',
+      },
+    ],
+  },
+  {
     version: 'v2.2.4',
     codename: 'Meridian',
     date: '2026-03-28',
@@ -881,8 +1033,7 @@ const releases: ChangelogRelease[] = [
     version: 'v1.2.0',
     codename: 'Keystone',
     date: '2025-04-15',
-    summary:
-      'Team management, role-based access, and compliance dashboard v1.',
+    summary: 'Team management, role-based access, and compliance dashboard v1.',
     isMajor: false,
     changes: [
       {
@@ -1024,7 +1175,7 @@ const changelogStats = [
   { value: String(totalFeatures), label: 'Features Added', suffix: '' },
   { value: String(majorReleases), label: 'Major Releases', suffix: '' },
   { value: String(totalFixes), label: 'Bugs Fixed', suffix: '' },
-  { value: '14', label: 'Months Active', suffix: '' },
+  { value: '16', label: 'Months Active', suffix: '' },
 ];
 
 /* ─── Animated Stat ───────────────────────────────────────── */
@@ -1182,7 +1333,9 @@ function ReleaseCard({
   isLatest: boolean;
 }) {
   const [showAll, setShowAll] = useState(false);
-  const visibleChanges = showAll ? release.changes : release.changes.slice(0, 5);
+  const visibleChanges = showAll
+    ? release.changes
+    : release.changes.slice(0, 5);
   const hasMore = release.changes.length > 5;
 
   const tagCounts = useMemo(() => {
@@ -1454,7 +1607,10 @@ function ReleaseTimelineVisual() {
   ];
 
   const releasesByMonth = useMemo(() => {
-    const map: Record<string, { count: number; versions: string[]; hasMajor: boolean }> = {};
+    const map: Record<
+      string,
+      { count: number; versions: string[]; hasMajor: boolean }
+    > = {};
     releases.forEach((r) => {
       const d = new Date(r.date);
       const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, '0')}`;
@@ -1467,7 +1623,12 @@ function ReleaseTimelineVisual() {
   }, []);
 
   const timelineMonths = useMemo(() => {
-    const result: { key: string; month: string; year: string; data: typeof releasesByMonth[string] | null }[] = [];
+    const result: {
+      key: string;
+      month: string;
+      year: string;
+      data: (typeof releasesByMonth)[string] | null;
+    }[] = [];
     for (let y = 2025; y <= 2026; y++) {
       for (let m = y === 2025 ? 0 : 0; m < (y === 2026 ? 3 : 12); m++) {
         const key = `${y}-${String(m).padStart(2, '0')}`;
@@ -1504,7 +1665,8 @@ function ReleaseTimelineVisual() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Consistent delivery cadence with monthly releases, quarterly major versions, and continuous security patches.
+              Consistent delivery cadence with monthly releases, quarterly major
+              versions, and continuous security patches.
             </p>
           </ScrollReveal>
 
@@ -1545,7 +1707,7 @@ function ReleaseTimelineVisual() {
                   <span className="text-[9px] text-slate-500 mt-1 block">
                     {tm.month}
                   </span>
-                  {(parseInt(tm.key.split('-')[1]) === 0) && (
+                  {parseInt(tm.key.split('-')[1]) === 0 && (
                     <span className="text-[8px] text-slate-600 block">
                       {tm.year}
                     </span>
@@ -1940,7 +2102,8 @@ function StatsSection() {
                 Development velocity
               </h2>
               <p className="text-sm text-slate-400 max-w-lg mx-auto">
-                14 months of continuous shipping — features, fixes, and enterprise capabilities delivered every month.
+                14 months of continuous shipping — features, fixes, and
+                enterprise capabilities delivered every month.
               </p>
             </ScrollReveal>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -2205,8 +2368,7 @@ function ChangelogHero() {
             const config = TAG_CONFIG[tag];
             const Icon = config.icon;
             const count = releases.reduce(
-              (sum, r) =>
-                sum + r.changes.filter((c) => c.tag === tag).length,
+              (sum, r) => sum + r.changes.filter((c) => c.tag === tag).length,
               0,
             );
             return (
@@ -2270,7 +2432,9 @@ export default function ChangelogPageContent() {
 
   // Group releases by year for year dividers
   const releasesWithYears = useMemo(() => {
-    const items: { type: 'year'; year: string }[] | { type: 'release'; release: ChangelogRelease; index: number }[] = [];
+    const items:
+      | { type: 'year'; year: string }[]
+      | { type: 'release'; release: ChangelogRelease; index: number }[] = [];
     const result: Array<
       | { type: 'year'; year: string }
       | { type: 'release'; release: ChangelogRelease; index: number }
@@ -2338,7 +2502,9 @@ export default function ChangelogPageContent() {
               <div className="space-y-6">
                 {releasesWithYears.map((item, i) => {
                   if (item.type === 'year') {
-                    return <YearDivider key={`year-${item.year}`} year={item.year} />;
+                    return (
+                      <YearDivider key={`year-${item.year}`} year={item.year} />
+                    );
                   }
                   return (
                     <ReleaseCard

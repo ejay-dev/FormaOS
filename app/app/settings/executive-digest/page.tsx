@@ -111,7 +111,9 @@ export default async function ExecutiveDigestSettingsPage() {
           <div className="space-y-1.5">
             {(members ?? []).map((m) => {
               const profileRaw = m.profiles as any;
-              const profile = Array.isArray(profileRaw) ? profileRaw[0] : profileRaw;
+              const profile = Array.isArray(profileRaw)
+                ? profileRaw[0]
+                : profileRaw;
               if (!profile?.email) return null;
               const isSelected = config.recipients?.includes(profile.email);
               return (

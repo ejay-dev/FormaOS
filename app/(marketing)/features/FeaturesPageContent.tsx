@@ -44,6 +44,10 @@ import {
   Monitor,
   Bot,
   ShieldCheck,
+  LayoutDashboard,
+  FileText,
+  Store,
+  Network,
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -375,6 +379,86 @@ const features: PlatformFeature[] = [
       'One-click certification reports',
     ],
   },
+  {
+    icon: Network,
+    title: 'Framework Cross-Mapping',
+    description:
+      'Map controls across frameworks with confidence scoring. 31 pre-loaded cross-mappings between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
+    longDescription:
+      'Framework Cross-Mapping visualises and manages the relationships between controls across different compliance frameworks. Each mapping carries a confidence score (exact, strong, partial, weak) so teams can assess overlap quality. 31 pre-loaded cross-mappings accelerate multi-framework compliance programs. The interactive mapping explorer shows bi-directional relationships and helps eliminate duplicate evidence collection efforts.',
+    category: 'Compliance Core',
+    highlight: 'New in v3.1',
+    capabilities: [
+      'Confidence-scored control mappings',
+      '31 pre-loaded cross-framework maps',
+      'Interactive mapping explorer',
+      'Bi-directional relationship visualisation',
+    ],
+  },
+  {
+    icon: FileText,
+    title: 'Policy Lifecycle Management',
+    description:
+      'End-to-end policy lifecycle from draft through approval, publication, and retirement with version history and stakeholder review workflows.',
+    longDescription:
+      'Manage the complete lifecycle of compliance policies: draft, review, approval, publish, and retirement. Every policy version is tracked with full diff comparison. Stakeholder review workflows ensure proper sign-off before publication. Scheduled review reminders prevent policy staleness. Acknowledgment tracking confirms staff awareness with evidence suitable for audit.',
+    category: 'Workflow & Operations',
+    highlight: 'New in v3.1',
+    capabilities: [
+      'Draft-to-retirement lifecycle',
+      'Version history with visual diff',
+      'Stakeholder review workflows',
+      'Acknowledgment tracking with evidence',
+    ],
+  },
+  {
+    icon: LayoutDashboard,
+    title: 'Custom Dashboard Builder',
+    description:
+      'Build personalised compliance dashboards with 15 widget types, drag-and-drop layout, and shared views for teams and leadership.',
+    longDescription:
+      'The Custom Dashboard Builder lets users create personalised compliance views using 15 widget types including compliance scores, task boards, evidence timelines, framework coverage gauges, risk heatmaps, and activity feeds. Drag-and-drop layout with configurable widget sizes. Save multiple dashboard layouts and share them across teams. Default dashboards can be set per organization for consistent executive reporting.',
+    category: 'Collaboration & UX',
+    highlight: 'New in v3.1',
+    capabilities: [
+      '15 drag-and-drop widget types',
+      'Configurable layout and sizing',
+      'Shareable dashboard views',
+      'Organization-default dashboards',
+    ],
+  },
+  {
+    icon: Store,
+    title: 'Integration Marketplace',
+    description:
+      'Browse and install 20+ connectors across productivity, cloud, identity, security, and HRIS categories with one-click setup.',
+    longDescription:
+      'The Integration Marketplace provides a categorised catalog of 20+ connectors that extend FormaOS into your existing tool ecosystem. Categories include Productivity (Slack, Teams, Jira), Cloud (AWS, Azure, GCP), Identity (Okta, Azure AD), Security (Qualys, Tenable), and HRIS (BambooHR, Workday). One-click installation with guided configuration wizards. Integration health monitoring with automatic reconnection and status dashboards.',
+    category: 'Workflow & Operations',
+    highlight: 'New in v3.1',
+    capabilities: [
+      '20+ categorised connectors',
+      'One-click install with setup wizard',
+      'Integration health monitoring',
+      'Automatic reconnection and alerts',
+    ],
+  },
+  {
+    icon: Sparkles,
+    title: 'REST API v1',
+    description:
+      'Full REST API with 20+ endpoints, bearer API keys with scoped permissions, cursor pagination, rate limiting, and OpenAPI 3.1 specification.',
+    longDescription:
+      'The v1 REST API gives developers programmatic access to the full FormaOS platform. 20+ endpoints cover organizations, tasks, evidence, compliance data, reports, frameworks, controls, notifications, integrations, and search. Bearer API keys with fos_ prefix support scoped permissions per key. Cursor-based pagination, per-key rate limiting with headers, and a generated OpenAPI 3.1 specification enable SDK generation and custom integrations.',
+    category: 'AI & Certification',
+    highlight: 'New in v3.0',
+    capabilities: [
+      '20+ scoped API endpoints',
+      'Bearer API key authentication',
+      'Cursor pagination & rate limiting',
+      'OpenAPI 3.1 specification',
+    ],
+  },
 ];
 
 const categories = [
@@ -585,7 +669,7 @@ const architectureLayers = [
 /* ─── Stats ─────────────────────────────────────────────── */
 
 const platformStats = [
-  { value: '18', label: 'Platform Features', suffix: '' },
+  { value: '23', label: 'Platform Features', suffix: '' },
   { value: '7', label: 'Framework Packs', suffix: '+' },
   { value: '12', label: 'Automation Triggers', suffix: '+' },
   { value: '5', label: 'Security Layers', suffix: '' },

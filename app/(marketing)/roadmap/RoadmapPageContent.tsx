@@ -214,7 +214,7 @@ const roadmapItems: RoadmapItem[] = [
       'Machine learning model suggesting control mappings across frameworks based on semantic similarity.',
     longDescription:
       'A fine-tuned language model that analyzes control descriptions across frameworks and suggests evidence mapping relationships. Reduces manual mapping effort by 70% for organizations activating new frameworks. Suggestions include confidence scores and human-review workflows to maintain audit integrity. The model trains on anonymized, aggregated mapping patterns across the FormaOS customer base.',
-    status: 'in-progress',
+    status: 'shipped',
     category: 'Compliance',
     quarter: 'Q1 2026',
     impact: 'high',
@@ -282,9 +282,9 @@ const roadmapItems: RoadmapItem[] = [
       'Scheduled API pulls from connected tools to automatically collect and update compliance evidence.',
     longDescription:
       'Configure automatic evidence collection from integrated tools on a recurring schedule. Pull configuration snapshots from AWS, Azure, and GCP. Collect access review exports from Okta and Azure AD. Retrieve vulnerability scan reports from Qualys and Tenable. Each collection run produces versioned evidence with SHA-256 verification and links to the source system for traceability.',
-    status: 'planned',
+    status: 'shipped',
     category: 'Automation',
-    quarter: 'Q2 2026',
+    quarter: 'Q1 2026',
     impact: 'high',
     capabilities: [
       'Scheduled API-based evidence pulls',
@@ -299,9 +299,9 @@ const roadmapItems: RoadmapItem[] = [
       'Context-aware AI assistant for compliance guidance, gap analysis, and evidence review.',
     longDescription:
       'An AI assistant embedded within FormaOS that understands your compliance context. Ask natural language questions about control requirements, get gap analysis suggestions, receive evidence review recommendations, and generate first-draft responses to auditor inquiries. The assistant has read-only access to your compliance data and never stores conversation history externally.',
-    status: 'planned',
+    status: 'shipped',
     category: 'Compliance',
-    quarter: 'Q3 2026',
+    quarter: 'Q1 2026',
     impact: 'high',
     capabilities: [
       'Natural language compliance Q&A',
@@ -350,9 +350,9 @@ const roadmapItems: RoadmapItem[] = [
       'Connect BambooHR, Workday, and Rippling for automated personnel compliance tracking.',
     longDescription:
       'Bi-directional integration with major HRIS platforms. Automatically sync employee lifecycle events — onboarding, role changes, departures — with compliance control ownership and access review requirements. Map HRIS organizational structures to FormaOS team hierarchies. Track personnel compliance obligations like background check status, training completion, and NDA execution.',
-    status: 'exploring',
+    status: 'in-progress',
     category: 'Integrations',
-    quarter: 'Q3 2026',
+    quarter: 'Q2 2026',
     impact: 'medium',
     capabilities: [
       'BambooHR, Workday, Rippling support',
@@ -401,9 +401,9 @@ const roadmapItems: RoadmapItem[] = [
       'RESTful API with full CRUD operations, webhooks, and SDK support for custom integrations.',
     longDescription:
       'A comprehensive public API enabling organizations to build custom integrations, automation workflows, and reporting pipelines. Full CRUD operations across all entity types: controls, evidence, tasks, incidents, and audit logs. Webhook subscriptions for real-time event streaming. TypeScript and Python SDKs with code generation from OpenAPI specification. Rate limiting, API key management, and usage analytics included.',
-    status: 'exploring',
+    status: 'shipped',
     category: 'Platform',
-    quarter: 'Q4 2026',
+    quarter: 'Q1 2026',
     impact: 'high',
     capabilities: [
       'Full CRUD across all entities',
@@ -452,7 +452,7 @@ const roadmapItems: RoadmapItem[] = [
       'Live dashboard with WebSocket-powered updates, customizable widgets, and TV mode.',
     longDescription:
       'A real-time compliance dashboard that updates instantly as compliance state changes. Drag-and-drop widget layout with configurable data sources. TV mode for compliance operations centers with auto-rotating views. Shareable dashboard links with configurable access permissions. WebSocket-powered real-time updates with no manual refresh required.',
-    status: 'in-progress',
+    status: 'shipped',
     category: 'Reporting',
     quarter: 'Q1 2026',
     impact: 'medium',
@@ -469,9 +469,9 @@ const roadmapItems: RoadmapItem[] = [
       'Pull request compliance checks, code review evidence collection, and SDLC compliance tracking.',
     longDescription:
       'Integrate FormaOS with your software development lifecycle. GitHub and GitLab connectors that surface compliance status in pull request checks, automatically collect code review evidence for security controls, and track SDLC compliance requirements like code scanning, dependency review, and release approval workflows.',
-    status: 'planned',
+    status: 'shipped',
     category: 'Integrations',
-    quarter: 'Q2 2026',
+    quarter: 'Q1 2026',
     impact: 'medium',
     capabilities: [
       'PR compliance status checks',
@@ -569,15 +569,11 @@ const roadmapItems: RoadmapItem[] = [
 
 /* ─── Computed Stats ──────────────────────────────────────── */
 
-const shippedCount = roadmapItems.filter(
-  (i) => i.status === 'shipped',
-).length;
+const shippedCount = roadmapItems.filter((i) => i.status === 'shipped').length;
 const inProgressCount = roadmapItems.filter(
   (i) => i.status === 'in-progress',
 ).length;
-const plannedCount = roadmapItems.filter(
-  (i) => i.status === 'planned',
-).length;
+const plannedCount = roadmapItems.filter((i) => i.status === 'planned').length;
 const exploringCount = roadmapItems.filter(
   (i) => i.status === 'exploring',
 ).length;
@@ -643,7 +639,9 @@ function StatusBadge({
         ${size === 'md' ? 'px-3 py-1 text-xs' : 'px-2 py-0.5 text-[10px]'}`}
     >
       {status === 'in-progress' ? (
-        <Loader2 className={`${size === 'md' ? 'w-3 h-3' : 'w-2.5 h-2.5'} animate-spin`} />
+        <Loader2
+          className={`${size === 'md' ? 'w-3 h-3' : 'w-2.5 h-2.5'} animate-spin`}
+        />
       ) : (
         <Icon className={`${size === 'md' ? 'w-3 h-3' : 'w-2.5 h-2.5'}`} />
       )}
@@ -654,13 +652,7 @@ function StatusBadge({
 
 /* ─── Roadmap Card ────────────────────────────────────────── */
 
-function RoadmapCard({
-  item,
-  index,
-}: {
-  item: RoadmapItem;
-  index: number;
-}) {
+function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
   const [expanded, setExpanded] = useState(false);
   const statusConfig = STATUS_CONFIG[item.status];
   const catConfig = CATEGORY_CONFIG[item.category];
@@ -848,9 +840,7 @@ function StatusFilterBar({
               }`}
           >
             All Items
-            <span className="ml-1.5 text-slate-500">
-              {roadmapItems.length}
-            </span>
+            <span className="ml-1.5 text-slate-500">{roadmapItems.length}</span>
           </button>
           {ALL_STATUSES.map((status) => {
             const config = STATUS_CONFIG[status];
@@ -922,14 +912,17 @@ function QuarterTimeline() {
     return quarters.map((q) => {
       const items = roadmapItems.filter((i) => i.quarter === q);
       const shipped = items.filter((i) => i.status === 'shipped').length;
-      const inProgress = items.filter(
-        (i) => i.status === 'in-progress',
-      ).length;
+      const inProgress = items.filter((i) => i.status === 'in-progress').length;
       const planned = items.filter((i) => i.status === 'planned').length;
-      const exploring = items.filter(
-        (i) => i.status === 'exploring',
-      ).length;
-      return { quarter: q, total: items.length, shipped, inProgress, planned, exploring };
+      const exploring = items.filter((i) => i.status === 'exploring').length;
+      return {
+        quarter: q,
+        total: items.length,
+        shipped,
+        inProgress,
+        planned,
+        exploring,
+      };
     });
   }, []);
 
@@ -955,8 +948,8 @@ function QuarterTimeline() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Our development roadmap organized by quarter with status
-              breakdown for each delivery window.
+              Our development roadmap organized by quarter with status breakdown
+              for each delivery window.
             </p>
           </ScrollReveal>
 
@@ -1093,17 +1086,20 @@ function QuarterTimeline() {
 
 function CategoryBreakdown() {
   const breakdown = useMemo(() => {
-    return (Object.keys(CATEGORY_CONFIG) as RoadmapCategory[]).map((cat) => {
-      const config = CATEGORY_CONFIG[cat];
-      const items = roadmapItems.filter((i) => i.category === cat);
-      const shipped = items.filter((i) => i.status === 'shipped').length;
-      return {
-        category: cat,
-        config,
-        total: items.length,
-        shipped,
-      };
-    }).filter((b) => b.total > 0).sort((a, b) => b.total - a.total);
+    return (Object.keys(CATEGORY_CONFIG) as RoadmapCategory[])
+      .map((cat) => {
+        const config = CATEGORY_CONFIG[cat];
+        const items = roadmapItems.filter((i) => i.category === cat);
+        const shipped = items.filter((i) => i.status === 'shipped').length;
+        return {
+          category: cat,
+          config,
+          total: items.length,
+          shipped,
+        };
+      })
+      .filter((b) => b.total > 0)
+      .sort((a, b) => b.total - a.total);
   }, []);
 
   const maxTotal = Math.max(...breakdown.map((b) => b.total));
@@ -1150,9 +1146,7 @@ function CategoryBreakdown() {
                         <div
                           className={`w-8 h-8 rounded-lg border ${item.config.border} ${item.config.bg} flex items-center justify-center`}
                         >
-                          <Icon
-                            className={`w-4 h-4 ${item.config.text}`}
-                          />
+                          <Icon className={`w-4 h-4 ${item.config.text}`} />
                         </div>
                         <span className="text-sm font-semibold text-white">
                           {item.category}
@@ -1278,8 +1272,8 @@ function TransparencySection() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              How we plan, build, and ship — openly, predictably, and with
-              your compliance requirements driving every decision.
+              How we plan, build, and ship — openly, predictably, and with your
+              compliance requirements driving every decision.
             </p>
           </ScrollReveal>
 
@@ -1564,9 +1558,10 @@ function RoadmapHero() {
           transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
           className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          {roadmapItems.length} items across {Object.keys(CATEGORY_CONFIG).length} categories.
-          See what we&apos;ve shipped, what we&apos;re building, and what&apos;s
-          coming next — publicly and transparently.
+          {roadmapItems.length} items across{' '}
+          {Object.keys(CATEGORY_CONFIG).length} categories. See what we&apos;ve
+          shipped, what we&apos;re building, and what&apos;s coming next —
+          publicly and transparently.
         </motion.p>
 
         <motion.div
@@ -1603,8 +1598,9 @@ function RoadmapHero() {
 
 export default function RoadmapPageContent() {
   const [activeStatus, setActiveStatus] = useState<RoadmapStatus | null>(null);
-  const [activeCategory, setActiveCategory] =
-    useState<RoadmapCategory | null>(null);
+  const [activeCategory, setActiveCategory] = useState<RoadmapCategory | null>(
+    null,
+  );
 
   const filteredItems = useMemo(() => {
     let result = roadmapItems;
@@ -1722,11 +1718,7 @@ export default function RoadmapPageContent() {
 
                       <div className="grid gap-4 sm:grid-cols-2">
                         {group.items.map((item, i) => (
-                          <RoadmapCard
-                            key={item.title}
-                            item={item}
-                            index={i}
-                          />
+                          <RoadmapCard key={item.title} item={item} index={i} />
                         ))}
                       </div>
                     </section>
