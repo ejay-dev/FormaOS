@@ -1631,6 +1631,7 @@ function ReleaseTimelineVisual() {
   }, []);
 
   const maxChanges = Math.max(...timelineData.map((d) => d.total));
+  const chartHeight = 280; // px — fixed reference for bar heights
 
   return (
     <DeferredSection minHeight={200}>
@@ -1661,172 +1662,230 @@ function ReleaseTimelineVisual() {
           </ScrollReveal>
 
           {/* Enterprise activity chart */}
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.015] p-6 sm:p-8">
+          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.015] overflow-hidden">
             {/* Chart header */}
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 px-6 sm:px-8 pt-6 sm:pt-8 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-2 h-8 rounded-full bg-gradient-to-b from-emerald-400 to-cyan-400" />
+                <div className="w-1.5 h-8 rounded-full bg-gradient-to-b from-emerald-400 to-cyan-400" />
                 <div>
                   <h3 className="text-sm font-semibold text-white">
                     Release Activity
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Changes shipped per release
+                    Changes shipped per version
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-5 text-[11px] text-slate-500">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                  Features
+                  <div className="w-2.5 h-2.5 rounded-sm bg-emerald-400/60" />
+                  Features &amp; Integrations
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-violet-400" />
-                  Security
+                  <div className="w-2.5 h-2.5 rounded-sm bg-violet-400/60" />
+                  Security &amp; Enterprise
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-amber-400" />
-                  Fixes
+                  <div className="w-2.5 h-2.5 rounded-sm bg-amber-400/50" />
+                  Improvements &amp; Fixes
                 </div>
               </div>
             </div>
 
-            {/* Bar chart */}
+            {/* Bar chart area */}
             <SectionChoreography pattern="stagger-wave" stagger={0.03}>
-              <div className="relative">
-                {/* Horizontal guide lines */}
-                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                  {[0, 1, 2, 3].map((i) => (
-                    <div key={i} className="border-t border-white/[0.04]" />
+              <div className="relative px-6 sm:px-8 pb-2">
+                {/* Y-axis scale labels + grid lines */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-full pointer-events-none"
+                  aria-hidden
+                >
+                  {[1, 0.75, 0.5, 0.25, 0].map((pct) => (
+                    <div
+                      key={pct}
+                      className="absolute left-0 right-0 flex items-center"
+                      style={{ top: `${(1 - pct) * 100}%` }}
+                    >
+                      <span className="hidden sm:block text-[10px] text-slate-600 w-8 text-right pr-2 -mt-2">
+                        {Math.round(maxChanges * pct)}
+                      </span>
+                      <div className="flex-1 border-t border-dashed border-white/[0.04]" />
+                    </div>
                   ))}
                 </div>
 
-                {/* Bars */}
-                <div className="relative flex items-end gap-1.5 sm:gap-2 min-h-[240px] sm:min-h-[320px]">
+                {/* Bars container */}
+                <div
+                  className="relative flex items-end gap-1 sm:gap-1.5 sm:ml-9"
+                  style={{ height: `${chartHeight}px` }}
+                >
                   {timelineData.map((d, i) => {
-                    const barHeight = (d.total / maxChanges) * 100;
+                    const barPx = Math.max(
+                      4,
+                      (d.total / maxChanges) * chartHeight,
+                    );
                     const featPct =
                       d.total > 0 ? (d.features / d.total) * 100 : 0;
                     const secPct =
                       d.total > 0 ? (d.security / d.total) * 100 : 0;
+                    const fixPct = 100 - featPct - secPct;
                     return (
                       <motion.div
                         key={d.version}
-                        className="group relative flex-1 flex flex-col items-center justify-end h-full"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        className="group relative flex-1 flex flex-col items-center justify-end"
+                        style={{ height: '100%' }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{
-                          delay: i * 0.04,
-                          duration: 0.5,
-                          ease: EASE_OUT_EXPO,
+                          delay: i * 0.03,
+                          duration: 0.4,
                         }}
                       >
                         {/* Tooltip on hover */}
                         <div
-                          className="absolute -top-16 left-1/2 -translate-x-1/2 z-20 pointer-events-none
+                          className="absolute -top-20 left-1/2 -translate-x-1/2 z-30 pointer-events-none
                           opacity-0 group-hover:opacity-100 transition-opacity duration-200
-                          whitespace-nowrap px-3 py-2 rounded-lg border border-white/[0.1] bg-slate-900/95 backdrop-blur-sm shadow-xl"
+                          whitespace-nowrap px-3.5 py-2.5 rounded-xl border border-white/[0.1] bg-slate-900/95 backdrop-blur-sm shadow-2xl"
                         >
-                          <div className="text-[11px] font-bold text-white">
+                          <div className="text-xs font-bold text-white">
                             {d.version}{' '}
-                            <span className="font-normal text-slate-400">
-                              {d.codename}
+                            <span className="font-medium text-slate-400">
+                              &ldquo;{d.codename}&rdquo;
                             </span>
+                            {d.isMajor && (
+                              <span className="ml-1.5 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-emerald-400/20 bg-emerald-500/10 text-emerald-400">
+                                Major
+                              </span>
+                            )}
                           </div>
-                          <div className="text-[10px] text-slate-400 mt-0.5">
-                            {d.total} changes •{' '}
-                            {new Date(d.date).toLocaleDateString('en-US', {
-                              month: 'short',
-                              year: 'numeric',
-                            })}
+                          <div className="flex items-center gap-3 mt-1.5 text-[10px]">
+                            <span className="text-emerald-400">
+                              {d.features} feat
+                            </span>
+                            <span className="text-violet-400">
+                              {d.security} sec
+                            </span>
+                            <span className="text-amber-400">
+                              {d.fixes} fix
+                            </span>
+                            <span className="text-slate-500">
+                              •{' '}
+                              {new Date(d.date).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                              })}
+                            </span>
                           </div>
                         </div>
 
-                        {/* Bar */}
+                        {/* Change count on top of bar */}
+                        <motion.span
+                          className="text-[10px] font-bold text-slate-500 mb-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 0.5 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: i * 0.03 + 0.8 }}
+                        >
+                          {d.total}
+                        </motion.span>
+
+                        {/* The bar itself */}
                         <motion.div
                           className={`w-full rounded-t-md overflow-hidden cursor-default transition-all duration-300
-                            ${d.isMajor ? 'ring-1 ring-emerald-400/30 shadow-[0_0_20px_rgba(52,211,153,0.12)]' : ''}
-                            group-hover:ring-1 group-hover:ring-white/20 group-hover:shadow-[0_-4px_24px_rgba(255,255,255,0.04)]`}
+                            ${d.isMajor ? 'ring-1 ring-emerald-400/20' : ''}
+                            group-hover:ring-1 group-hover:ring-white/20 group-hover:brightness-125`}
+                          style={{ height: 0 }}
                           initial={{ height: 0 }}
-                          whileInView={{ height: `${barHeight}%` }}
+                          whileInView={{ height: barPx }}
                           viewport={{ once: true }}
                           transition={{
-                            delay: i * 0.04 + 0.2,
-                            duration: 0.7,
+                            delay: i * 0.03 + 0.15,
+                            duration: 0.8,
                             ease: EASE_OUT_EXPO,
                           }}
                         >
                           <div className="h-full w-full flex flex-col-reverse">
-                            {/* Features segment */}
                             <div
-                              className="w-full bg-gradient-to-t from-emerald-500/40 to-emerald-400/25"
+                              className="w-full bg-gradient-to-t from-emerald-500/50 to-emerald-400/30"
                               style={{ height: `${featPct}%` }}
                             />
-                            {/* Security segment */}
                             <div
-                              className="w-full bg-gradient-to-t from-violet-500/40 to-violet-400/25"
+                              className="w-full bg-gradient-to-t from-violet-500/50 to-violet-400/30"
                               style={{ height: `${secPct}%` }}
                             />
-                            {/* Fixes segment */}
                             <div
-                              className="w-full bg-gradient-to-t from-amber-500/30 to-amber-400/20"
-                              style={{ height: `${100 - featPct - secPct}%` }}
+                              className="w-full bg-gradient-to-t from-amber-500/40 to-amber-400/25"
+                              style={{ height: `${fixPct}%` }}
                             />
                           </div>
                         </motion.div>
-
-                        {/* Version label */}
-                        <div className="mt-3 flex flex-col items-center">
-                          <span
-                            className={`text-[9px] sm:text-[10px] font-bold leading-tight
-                              ${d.isMajor ? 'text-emerald-400' : 'text-slate-400'}`}
-                          >
-                            {d.version}
-                          </span>
-                        </div>
-
-                        {/* Major indicator dot */}
-                        {d.isMajor && (
-                          <div className="absolute -bottom-7 left-1/2 -translate-x-1/2">
-                            <div className="relative w-1.5 h-1.5">
-                              <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-40" />
-                              <span className="relative block w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                            </div>
-                          </div>
-                        )}
                       </motion.div>
                     );
                   })}
                 </div>
 
                 {/* X-axis line */}
-                <div className="h-px bg-white/[0.08] mt-1" />
+                <div className="sm:ml-9 h-px bg-white/[0.08]" />
               </div>
             </SectionChoreography>
 
+            {/* Version labels (below chart) */}
+            <div className="flex gap-1 sm:gap-1.5 px-6 sm:px-8 sm:ml-9 mt-2 mb-1 overflow-x-auto">
+              {timelineData.map((d) => (
+                <div
+                  key={d.version}
+                  className="flex-1 text-center min-w-0"
+                >
+                  <span
+                    className={`text-[8px] sm:text-[10px] font-semibold leading-tight block truncate
+                      ${d.isMajor ? 'text-emerald-400' : 'text-slate-500'}`}
+                  >
+                    {d.version}
+                  </span>
+                  <span className="text-[7px] sm:text-[9px] text-slate-600 block">
+                    {new Date(d.date).toLocaleDateString('en-US', {
+                      month: 'short',
+                      year: '2-digit',
+                    })}
+                  </span>
+                </div>
+              ))}
+            </div>
+
             {/* Bottom stats row */}
-            <div className="flex flex-wrap items-center justify-between gap-4 mt-10 pt-6 border-t border-white/[0.04]">
-              <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 mx-6 sm:mx-8 mt-4 mb-6 sm:mb-8 pt-5 border-t border-white/[0.06]">
+              <div className="flex flex-wrap gap-8">
                 {[
                   {
-                    label: 'Avg. changes/release',
+                    label: 'Avg. changes / release',
                     value: Math.round(totalChanges / releases.length),
+                    color: 'text-white',
                   },
                   {
                     label: 'Major releases',
                     value: majorReleases,
+                    color: 'text-emerald-400',
+                  },
+                  {
+                    label: 'Total features',
+                    value: totalFeatures,
+                    color: 'text-cyan-400',
                   },
                   {
                     label: 'Release frequency',
                     value: `${Math.round((releases.length / monthsActive) * 10) / 10}/mo`,
+                    color: 'text-white',
                   },
                 ].map((s) => (
                   <div key={s.label} className="text-center sm:text-left">
-                    <div className="text-lg font-bold text-white">
+                    <div className={`text-xl font-bold ${s.color}`}>
                       {s.value}
                     </div>
-                    <div className="text-[11px] text-slate-500">{s.label}</div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">
+                      {s.label}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1839,7 +1898,7 @@ function ReleaseTimelineVisual() {
                   Major release
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-slate-500/50" />
+                  <div className="w-2 h-2 rounded-sm bg-slate-500/40" />
                   Minor / Patch
                 </div>
               </div>
