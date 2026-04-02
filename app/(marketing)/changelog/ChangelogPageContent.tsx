@@ -1834,10 +1834,7 @@ function ReleaseTimelineVisual() {
             {/* Version labels (below chart) */}
             <div className="flex gap-1 sm:gap-1.5 px-6 sm:px-8 sm:ml-9 mt-2 mb-1 overflow-x-auto">
               {timelineData.map((d) => (
-                <div
-                  key={d.version}
-                  className="flex-1 text-center min-w-0"
-                >
+                <div key={d.version} className="flex-1 text-center min-w-0">
                   <span
                     className={`text-[8px] sm:text-[10px] font-semibold leading-tight block truncate
                       ${d.isMajor ? 'text-emerald-400' : 'text-slate-500'}`}
