@@ -52,8 +52,8 @@ export async function suggestControlMappings(
     }
 
     // Title keyword match
-    const titleWords = title.split(/\s+/).filter((w) => w.length > 4);
-    const matchedTitleWords = titleWords.filter((w) => searchText.includes(w));
+    const titleWords = title.split(/\s+/).filter((w: string) => w.length > 4);
+    const matchedTitleWords = titleWords.filter((w: string) => searchText.includes(w));
     if (matchedTitleWords.length >= 2) {
       suggestions.push({
         controlId: control.id,

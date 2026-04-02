@@ -100,16 +100,16 @@ export function BillingInterventionHistory({
                   {((ev.metadata.amount_cents as number) / 100).toFixed(2)}
                 </p>
               )}
-              {ev.metadata.reason && (
+              {ev.metadata.reason ? (
                 <p className="text-sm text-muted-foreground">
                   {ev.metadata.reason as string}
                 </p>
-              )}
-              {ev.metadata.days && (
+              ) : null}
+              {ev.metadata.days ? (
                 <p className="text-sm text-muted-foreground">
                   {ev.metadata.days as number} days
                 </p>
-              )}
+              ) : null}
               <p className="text-xs text-muted-foreground mt-1">
                 {ev.admin_email && <span>{ev.admin_email} · </span>}
                 {new Date(ev.created_at).toLocaleString()}

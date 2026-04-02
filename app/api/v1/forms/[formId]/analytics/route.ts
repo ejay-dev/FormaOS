@@ -1,7 +1,6 @@
 import {
   authenticateV1Request,
   jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import { getSubmissionAnalytics } from '@/lib/forms/submission-engine';
 
@@ -12,7 +11,7 @@ export async function GET(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:read'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -24,8 +23,7 @@ export async function GET(
       formId,
       auth.context.orgId,
     );
-    logV1Access(auth.context, 'forms.analytics', { formId });
-    return jsonWithContext({ data: analytics }, auth.context);
+    return jsonWithContext(auth.context, { data: analytics });
   } catch (err) {
     return Response.json(
       {

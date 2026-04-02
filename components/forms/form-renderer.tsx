@@ -89,8 +89,8 @@ function FieldInput({
         >
           <option value="">{field.placeholder || 'Select...'}</option>
           {field.options?.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
             </option>
           ))}
         </select>
@@ -101,18 +101,18 @@ function FieldInput({
         <div className="space-y-2">
           {field.options?.map((opt) => (
             <label
-              key={opt}
+              key={opt.value}
               className="flex items-center gap-2 cursor-pointer text-sm"
             >
               <input
                 type="radio"
                 name={field.id}
-                value={opt}
-                checked={value === opt}
-                onChange={() => onChange(opt)}
+                value={opt.value}
+                checked={value === opt.value}
+                onChange={() => onChange(opt.value)}
                 className="accent-primary"
               />
-              {opt}
+              {opt.label}
             </label>
           ))}
         </div>

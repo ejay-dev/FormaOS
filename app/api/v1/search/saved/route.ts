@@ -1,8 +1,6 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   authenticateV1Request,
-  jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
@@ -10,38 +8,37 @@ export async function GET(req: NextRequest) {
   const auth = await authenticateV1Request(req, {
     requiredScopes: ['search:read'],
   });
-  if ('error' in auth) return auth.error;
+  if (!auth.ok) return auth.response;
 
   const db = createSupabaseAdminClient();
   const { data } = await db
     .from('saved_searches')
     .select('*')
-    .eq('org_id', auth.orgId)
-    .eq('user_id', auth.userId)
+    .eq('org_id', auth.context.orgId)
+    .eq('user_id', auth.context.userId)
     .order('created_at', { ascending: false })
     .limit(50);
 
-  logV1Access(auth, 'search.saved.list', {});
-  return jsonWithContext({ savedSearches: data ?? [] });
+  return NextResponse.json({ savedSearches: data ?? [] });
 }
 
 export async function POST(req: NextRequest) {
   const auth = await authenticateV1Request(req, {
-    requiredScopes: ['search:write'],
+    requiredScopes: ['search:read'],
   });
-  if ('error' in auth) return auth.error;
+  if (!auth.ok) return auth.response;
 
   const body = await req.json();
   if (!body.name || !body.query) {
-    return jsonWithContext({ error: 'name and query required' }, 400);
+    return NextResponse.json({ error: 'name and query required' }, { status: 400 });
   }
 
   const db = createSupabaseAdminClient();
   const { data, error } = await db
     .from('saved_searches')
     .insert({
-      org_id: auth.orgId,
-      user_id: auth.userId,
+      org_id: auth.context.orgId,
+      user_id: auth.context.userId,
       name: body.name,
       query: body.query,
       filters: body.filters ?? {},
@@ -49,8 +46,7 @@ export async function POST(req: NextRequest) {
     .select()
     .single();
 
-  if (error) return jsonWithContext({ error: error.message }, 500);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  logV1Access(auth, 'search.saved.create', { searchId: data.id });
-  return jsonWithContext(data, 201);
+  return NextResponse.json(data, { status: 201 });
 }

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { Plus, Clock, Calendar, FileBarChart } from 'lucide-react';
 
@@ -15,7 +15,7 @@ export default async function CustomReportsPage() {
   const { data: reports } = await db
     .from('org_saved_reports')
     .select('id, name, description, type, schedule, created_at, updated_at')
-    .eq('org_id', state.orgId)
+    .eq('org_id', state.organization.id)
     .order('updated_at', { ascending: false });
 
   const items = reports ?? [];

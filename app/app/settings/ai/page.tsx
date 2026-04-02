@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { Cpu, RefreshCw, ToggleLeft, Database } from 'lucide-react';
 import { AiUsageDashboard } from '@/components/ai-assistant/AiUsageDashboard';
@@ -16,7 +16,7 @@ export default async function AiSettingsPage() {
   const { data: indexStats } = await db
     .from('ai_index_status')
     .select('source_type, status')
-    .eq('org_id', state.orgId);
+    .eq('org_id', state.organization.id);
 
   const stats = indexStats ?? [];
   const indexedCount = stats.filter((s) => s.status === 'indexed').length;

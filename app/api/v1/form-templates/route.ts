@@ -3,13 +3,13 @@ import {
   jsonWithContext,
   logV1Access,
 } from '@/lib/api-keys/middleware';
-import { FORM_TEMPLATES, getFormTemplate } from '@/lib/forms/templates';
+import { FORM_TEMPLATES } from '@/lib/forms/templates';
 
 export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:read'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -28,6 +28,6 @@ export async function GET(request: Request) {
     );
   }
 
-  logV1Access(auth.context, 'form-templates.list', { category, industry });
-  return jsonWithContext({ data: templates }, auth.context);
+  await logV1Access(auth.context, 200, 'compliance:read');
+  return jsonWithContext(auth.context, { data: templates });
 }

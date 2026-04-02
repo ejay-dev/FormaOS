@@ -44,7 +44,7 @@ export function verifyChainIntegrity(
     created_at: string;
     entry_hash: string;
     prev_hash?: string;
-  }>
+  }>,
 ): { valid: boolean; brokenAt?: number; totalChecked: number } {
   for (let i = 0; i < entries.length; i++) {
     const e = entries[i];

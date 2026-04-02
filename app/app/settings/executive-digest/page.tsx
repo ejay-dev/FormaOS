@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { fetchSystemState } from '@/lib/auth/system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { Mail, Calendar, Users, Clock } from 'lucide-react';
 
 export const metadata = { title: 'Executive Digest Settings' };
@@ -9,12 +9,12 @@ export default async function ExecutiveDigestSettingsPage() {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const db = createSupabaseServerClient();
+  const db = await createSupabaseServerClient();
 
   const { data: setting } = await db
     .from('org_settings')
     .select('value')
-    .eq('organization_id', state.organizationId)
+    .eq('organization_id', state.organization.id)
     .eq('key', 'executive_digest')
     .maybeSingle();
 
@@ -32,7 +32,7 @@ export default async function ExecutiveDigestSettingsPage() {
   const { data: members } = await db
     .from('org_memberships')
     .select('profiles(email, display_name)')
-    .eq('organization_id', state.organizationId)
+    .eq('organization_id', state.organization.id)
     .in('role', ['owner', 'admin']);
 
   return (
@@ -110,10 +110,9 @@ export default async function ExecutiveDigestSettingsPage() {
           </div>
           <div className="space-y-1.5">
             {(members ?? []).map((m) => {
-              const profile = m.profiles as {
-                email: string;
-                display_name?: string;
-              };
+              const profileRaw = m.profiles as any;
+              const profile = Array.isArray(profileRaw) ? profileRaw[0] : profileRaw;
+              if (!profile?.email) return null;
               const isSelected = config.recipients?.includes(profile.email);
               return (
                 <label

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { fetchSystemState } from '@/lib/auth/system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import {
   getIncidentStats,
   getIncidentTrend,
@@ -20,7 +20,7 @@ export default async function IncidentAnalyticsPage() {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const orgId = state.organizationId;
+  const orgId = state.organization.id;
 
   // Default: last 12 months
   const to = new Date().toISOString();

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { listAuditorAccess, getAuditorActivity } from '@/lib/auditor/portal';
 import { Shield, Clock, Eye, XCircle, Plus } from 'lucide-react';
 
@@ -9,8 +9,8 @@ export default async function AuditorAccessPage() {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const tokens = await listAuditorAccess(state.orgId);
-  const activity = await getAuditorActivity(state.orgId);
+  const tokens = await listAuditorAccess(state.organization.id);
+  const activity = await getAuditorActivity(state.organization.id);
 
   const statusBadge: Record<string, string> = {
     active: 'bg-green-500/10 text-green-400',

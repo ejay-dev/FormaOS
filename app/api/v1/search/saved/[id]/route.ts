@@ -1,8 +1,6 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   authenticateV1Request,
-  jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
@@ -11,9 +9,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await authenticateV1Request(req, {
-    requiredScopes: ['search:write'],
+    requiredScopes: ['search:read'],
   });
-  if ('error' in auth) return auth.error;
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
   const db = createSupabaseAdminClient();
@@ -21,11 +19,10 @@ export async function DELETE(
     .from('saved_searches')
     .delete()
     .eq('id', id)
-    .eq('org_id', auth.orgId)
-    .eq('user_id', auth.userId);
+    .eq('org_id', auth.context.orgId)
+    .eq('user_id', auth.context.userId);
 
-  if (error) return jsonWithContext({ error: error.message }, 500);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  logV1Access(auth, 'search.saved.delete', { searchId: id });
-  return jsonWithContext({ deleted: true });
+  return NextResponse.json({ deleted: true });
 }

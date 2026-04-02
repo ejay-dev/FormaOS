@@ -1,7 +1,6 @@
 import {
   authenticateV1Request,
   jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import { publishForm } from '@/lib/forms/form-store';
 
@@ -12,7 +11,7 @@ export async function POST(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:write'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -20,8 +19,7 @@ export async function POST(
 
   try {
     const form = await publishForm(auth.context.db, formId, auth.context.orgId);
-    logV1Access(auth.context, 'forms.publish', { formId });
-    return jsonWithContext({ data: form }, auth.context);
+    return jsonWithContext(auth.context, { data: form });
   } catch (err) {
     return Response.json(
       {

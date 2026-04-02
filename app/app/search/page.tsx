@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { search } from '@/lib/search/search-engine';
 import { trackSearch } from '@/lib/search/search-engine';
 import {
@@ -85,7 +85,7 @@ export default async function SearchPage({
   let total = 0;
 
   if (q) {
-    const searchResult = await search(state.orgId, q, {
+    const searchResult = await search(state.organization.id, q, {
       entityTypes: type ? [type] : undefined,
       from,
       to,
@@ -94,7 +94,7 @@ export default async function SearchPage({
     results = searchResult.results;
     total = searchResult.total;
 
-    await trackSearch(state.orgId, state.userId, q, total);
+    await trackSearch(state.organization.id, state.user.id, q, total);
   }
 
   // Compute facets
@@ -188,11 +188,11 @@ export default async function SearchPage({
                       <span className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
                         {r.entity_type.replace('_', ' ')}
                       </span>
-                      {r.metadata?.status && (
+                      {r.metadata?.status ? (
                         <span className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
                           {String(r.metadata.status)}
                         </span>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </Link>

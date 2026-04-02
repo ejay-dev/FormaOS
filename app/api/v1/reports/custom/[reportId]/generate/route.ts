@@ -1,9 +1,5 @@
-import { NextRequest } from 'next/server';
-import {
-  authenticateV1Request,
-  jsonWithContext,
-  logV1Access,
-} from '@/lib/api-keys/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { resolveWidgetData } from '@/lib/reports/widget-data';
 import {
@@ -18,7 +14,7 @@ export async function POST(
   const auth = await authenticateV1Request(req, {
     requiredScopes: ['reports:write'],
   });
-  if ('error' in auth) return auth.error;
+  if (!auth.ok) return auth.response;
 
   const { reportId } = await params;
   const body = await req.json();
@@ -29,11 +25,11 @@ export async function POST(
     .from('org_saved_reports')
     .select('*')
     .eq('id', reportId)
-    .eq('org_id', auth.orgId)
+    .eq('org_id', auth.context.orgId)
     .single();
 
   if (error || !report)
-    return jsonWithContext({ error: 'Report not found' }, 404);
+    return NextResponse.json({ error: 'Report not found' }, { status: 404 });
 
   const config = report.config as {
     widgets?: Array<{ type: string; config?: Record<string, unknown> }>;
@@ -44,10 +40,18 @@ export async function POST(
   const resolvedWidgets = await Promise.all(
     widgets.map(async (w, i) => {
       try {
+        const widgetConfig = {
+          type: w.type,
+          dateRange: {
+            from: new Date(Date.now() - 30 * 86400000).toISOString(),
+            to: new Date().toISOString(),
+          },
+          ...(w.config ?? {}),
+        };
         const data = await resolveWidgetData(
-          w.type,
-          auth.orgId,
-          (w.config ?? {}) as Record<string, string>,
+          db,
+          auth.context.orgId,
+          widgetConfig as any,
         );
         return { index: i, type: w.type, ...data };
       } catch {
@@ -63,19 +67,20 @@ export async function POST(
   // Record the generation
   const genRow = {
     report_id: reportId,
-    org_id: auth.orgId,
-    generated_by: auth.userId,
+    org_id: auth.context.orgId,
+    generated_by: auth.context.userId,
     format,
     file_url: null as string | null,
     expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
   };
 
   if (format === 'csv') {
-    const sections = resolvedWidgets.map((w) => flattenWidgetToSection(w));
-    const csv = generateCSV(sections);
+    const sections = resolvedWidgets.map((w) =>
+      flattenWidgetToSection({ label: w.type, type: w.type, data: w } as any),
+    );
+    const csv = generateCSV(sections.filter(Boolean) as any);
 
     await db.from('org_report_generations').insert(genRow);
-    logV1Access(auth, 'reports.generate', { reportId, format });
 
     return new Response(csv, {
       headers: {
@@ -87,9 +92,8 @@ export async function POST(
 
   // JSON format (default)
   await db.from('org_report_generations').insert(genRow);
-  logV1Access(auth, 'reports.generate', { reportId, format });
 
-  return jsonWithContext({
+  return NextResponse.json({
     reportId,
     name: report.name,
     generatedAt: new Date().toISOString(),

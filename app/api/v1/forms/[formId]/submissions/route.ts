@@ -1,7 +1,6 @@
 import {
   authenticateV1Request,
   jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import {
   listSubmissions,
@@ -18,7 +17,7 @@ export async function GET(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:read'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -27,7 +26,7 @@ export async function GET(
   const status = url.searchParams.get('status') ?? undefined;
   const dateFrom = url.searchParams.get('date_from') ?? undefined;
   const dateTo = url.searchParams.get('date_to') ?? undefined;
-  const { cursor, limit } = getPagination(url.searchParams);
+  const { offset, limit, cursor: cursorRaw } = getPagination(request);
 
   try {
     const result = await listSubmissions(
@@ -38,15 +37,13 @@ export async function GET(
         status,
         dateFrom,
         dateTo,
-        cursor,
+        cursor: offset,
         limit,
       },
     );
-
-    logV1Access(auth.context, 'forms.submissions.list', { formId });
     return jsonWithContext(
-      paginatedEnvelope(result.data, result.total, result.hasMore, cursor),
       auth.context,
+      paginatedEnvelope(result.data, { offset, limit, total: result.total }),
     );
   } catch (err) {
     return Response.json(
@@ -66,7 +63,7 @@ export async function POST(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:write'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -82,16 +79,11 @@ export async function POST(
         data: body.data ?? {},
         respondentEmail: body.respondent_email,
         respondentName: body.respondent_name,
-        submittedBy: auth.context.userId,
+        submittedBy: auth.context.userId ?? '',
         metadata: body.metadata,
       },
     );
-
-    logV1Access(auth.context, 'forms.submissions.create', {
-      formId,
-      submissionId: submission.id,
-    });
-    return jsonWithContext({ data: submission }, auth.context, { status: 201 });
+    return jsonWithContext(auth.context, { data: submission }, { status: 201 });
   } catch (err: unknown) {
     if (err instanceof Error && 'validationErrors' in err) {
       return Response.json(

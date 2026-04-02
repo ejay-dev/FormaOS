@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { fetchSystemState } from '@/lib/auth/system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import Link from 'next/link';
 import {
   AlertTriangle,
@@ -17,12 +17,12 @@ export default async function CAPAPage() {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const db = createSupabaseServerClient();
+  const db = await createSupabaseServerClient();
 
   const { data: items } = await db
     .from('org_capa_items')
     .select('*, org_incidents(title), org_investigations(id)')
-    .eq('organization_id', state.organizationId)
+    .eq('organization_id', state.organization.id)
     .order('created_at', { ascending: false });
 
   const capaItems = items ?? [];

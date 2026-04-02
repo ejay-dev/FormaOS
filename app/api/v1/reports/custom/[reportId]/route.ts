@@ -1,8 +1,6 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   authenticateV1Request,
-  jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
@@ -13,7 +11,7 @@ export async function GET(
   const auth = await authenticateV1Request(req, {
     requiredScopes: ['reports:read'],
   });
-  if ('error' in auth) return auth.error;
+  if (!auth.ok) return auth.response;
 
   const { reportId } = await params;
   const db = createSupabaseAdminClient();
@@ -21,14 +19,13 @@ export async function GET(
     .from('org_saved_reports')
     .select('*')
     .eq('id', reportId)
-    .eq('org_id', auth.orgId)
+    .eq('org_id', auth.context.orgId)
     .single();
 
   if (error || !data)
-    return jsonWithContext({ error: 'Report not found' }, 404);
+    return NextResponse.json({ error: 'Report not found' }, { status: 404 });
 
-  logV1Access(auth, 'reports.get', { reportId });
-  return jsonWithContext(data);
+  return NextResponse.json(data);
 }
 
 export async function PATCH(
@@ -38,7 +35,7 @@ export async function PATCH(
   const auth = await authenticateV1Request(req, {
     requiredScopes: ['reports:write'],
   });
-  if ('error' in auth) return auth.error;
+  if (!auth.ok) return auth.response;
 
   const { reportId } = await params;
   const body = await req.json();
@@ -54,15 +51,14 @@ export async function PATCH(
       updated_at: new Date().toISOString(),
     })
     .eq('id', reportId)
-    .eq('org_id', auth.orgId)
+    .eq('org_id', auth.context.orgId)
     .select()
     .single();
 
   if (error || !data)
-    return jsonWithContext({ error: 'Report not found or update failed' }, 404);
+    return NextResponse.json({ error: 'Report not found or update failed' }, { status: 404 });
 
-  logV1Access(auth, 'reports.update', { reportId });
-  return jsonWithContext(data);
+  return NextResponse.json(data);
 }
 
 export async function DELETE(
@@ -72,7 +68,7 @@ export async function DELETE(
   const auth = await authenticateV1Request(req, {
     requiredScopes: ['reports:write'],
   });
-  if ('error' in auth) return auth.error;
+  if (!auth.ok) return auth.response;
 
   const { reportId } = await params;
   const db = createSupabaseAdminClient();
@@ -81,10 +77,9 @@ export async function DELETE(
     .from('org_saved_reports')
     .delete()
     .eq('id', reportId)
-    .eq('org_id', auth.orgId);
+    .eq('org_id', auth.context.orgId);
 
-  if (error) return jsonWithContext({ error: 'Delete failed' }, 500);
+  if (error) return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
 
-  logV1Access(auth, 'reports.delete', { reportId });
-  return jsonWithContext({ deleted: true });
+  return NextResponse.json({ deleted: true });
 }

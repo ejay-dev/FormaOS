@@ -1,7 +1,6 @@
 import {
   authenticateV1Request,
   jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import {
   getForm,
@@ -18,7 +17,7 @@ export async function GET(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:read'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -26,8 +25,7 @@ export async function GET(
 
   try {
     const form = await getForm(auth.context.db, formId, auth.context.orgId);
-    logV1Access(auth.context, 'forms.get', { formId });
-    return jsonWithContext({ data: form }, auth.context);
+    return jsonWithContext(auth.context, { data: form });
   } catch {
     return Response.json(
       { error: { message: 'Form not found' } },
@@ -41,7 +39,7 @@ export async function PATCH(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:write'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -63,9 +61,7 @@ export async function PATCH(
           ? (settings as Record<string, unknown>)
           : undefined,
     });
-
-    logV1Access(auth.context, 'forms.update', { formId });
-    return jsonWithContext({ data: form }, auth.context);
+    return jsonWithContext(auth.context, { data: form });
   } catch (err) {
     return Response.json(
       {
@@ -83,7 +79,7 @@ export async function DELETE(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:write'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -91,8 +87,7 @@ export async function DELETE(
 
   try {
     const form = await archiveForm(auth.context.db, formId, auth.context.orgId);
-    logV1Access(auth.context, 'forms.archive', { formId });
-    return jsonWithContext({ data: form }, auth.context);
+    return jsonWithContext(auth.context, { data: form });
   } catch {
     return Response.json(
       { error: { message: 'Form not found' } },

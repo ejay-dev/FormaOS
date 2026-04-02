@@ -1,7 +1,6 @@
 import {
   authenticateV1Request,
   jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { getStringParam } from '@/lib/api/v1-helpers';
@@ -11,7 +10,7 @@ export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:read'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -27,11 +26,9 @@ export async function GET(request: Request) {
       limit,
     });
 
-    logV1Access(auth.context, 'forms.list', { status, search });
-
     return jsonWithContext(
-      paginatedEnvelope(result.data, { offset, limit, total: result.total }),
       auth.context,
+      paginatedEnvelope(result.data, { offset, limit, total: result.total }),
     );
   } catch (err) {
     return Response.json(
@@ -47,7 +44,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:write'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -68,7 +65,7 @@ export async function POST(request: Request) {
     const form = await createForm(
       auth.context.db,
       auth.context.orgId,
-      auth.context.userId,
+      auth.context.userId ?? '',
       {
         title,
         description: typeof description === 'string' ? description : undefined,
@@ -86,8 +83,6 @@ export async function POST(request: Request) {
             : undefined,
       },
     );
-
-    logV1Access(auth.context, 'forms.create', { formId: form.id });
 
     return Response.json({ data: form }, { status: 201 });
   } catch (err) {

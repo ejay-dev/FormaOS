@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { fetchSystemState } from '@/lib/auth/system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { getGroupRollup } from '@/lib/executive/multi-org-rollup';
 import { OrgComparisonTable } from '@/components/executive/org-comparison-table';
 import { BarChart3, Building2, AlertTriangle, Shield } from 'lucide-react';
@@ -11,13 +11,13 @@ export default async function GroupRollupPage() {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const db = createSupabaseServerClient();
+  const db = await createSupabaseServerClient();
 
   // Find groups where current org is parent
   const { data: groups } = await db
     .from('org_groups')
     .select('id, name')
-    .eq('parent_org_id', state.organizationId);
+    .eq('parent_org_id', state.organization.id);
 
   if (!groups?.length) {
     return (

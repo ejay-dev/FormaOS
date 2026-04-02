@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { ArrowLeft, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -22,7 +22,7 @@ export default async function ParticipantMedicationsPage({
     .from('org_patients')
     .select('id, first_name, last_name')
     .eq('id', participantId)
-    .eq('org_id', state.orgId)
+    .eq('org_id', state.organization.id)
     .single();
 
   if (!participant) redirect('/app/participants');
@@ -30,7 +30,7 @@ export default async function ParticipantMedicationsPage({
   const { data: medications } = await db
     .from('org_medications')
     .select('*')
-    .eq('org_id', state.orgId)
+    .eq('org_id', state.organization.id)
     .eq('participant_id', participantId)
     .order('created_at', { ascending: false });
 
@@ -39,7 +39,7 @@ export default async function ParticipantMedicationsPage({
     ? await db
         .from('org_medication_administrations')
         .select('*')
-        .eq('org_id', state.orgId)
+        .eq('org_id', state.organization.id)
         .in('medication_id', medIds)
         .order('administered_at', { ascending: false })
         .limit(100)
@@ -69,7 +69,7 @@ export default async function ParticipantMedicationsPage({
         medications={medications ?? []}
         administrations={administrations ?? []}
         participantId={participantId}
-        orgId={state.orgId}
+        orgId={state.organization.id}
       />
     </div>
   );

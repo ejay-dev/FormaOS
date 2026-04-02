@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { fetchSystemState } from '@/lib/auth/system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import {
   Search,
   User,
@@ -23,14 +23,14 @@ export default async function InvestigationPage({ params }: PageProps) {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const db = createSupabaseServerClient();
+  const db = await createSupabaseServerClient();
 
   // Fetch incident
   const { data: incident } = await db
     .from('org_incidents')
     .select('id, title, type, severity, status, created_at')
     .eq('id', incidentId)
-    .eq('organization_id', state.organizationId)
+    .eq('organization_id', state.organization.id)
     .single();
 
   if (!incident) redirect('/app/incidents');
@@ -46,7 +46,7 @@ export default async function InvestigationPage({ params }: PageProps) {
   const { data: members } = await db
     .from('org_memberships')
     .select('user_id, profiles(email, display_name)')
-    .eq('organization_id', state.organizationId);
+    .eq('organization_id', state.organization.id);
 
   const statusIcons: Record<string, typeof CheckCircle2> = {
     assigned: Clock,

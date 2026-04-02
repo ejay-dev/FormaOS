@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import {
   identifyGaps,
   calculateCoverage,
@@ -24,10 +24,10 @@ export default async function EvidenceGapsPage() {
   if (!state) redirect('/signin');
 
   const [gaps, coverage, expiring, expired] = await Promise.all([
-    identifyGaps(state.orgId),
-    calculateCoverage(state.orgId),
-    getExpiringEvidence(state.orgId, 30),
-    getExpiredEvidence(state.orgId),
+    identifyGaps(state.organization.id),
+    calculateCoverage(state.organization.id),
+    getExpiringEvidence(state.organization.id, 30),
+    getExpiredEvidence(state.organization.id),
   ]);
 
   const criticalGaps = gaps.filter(

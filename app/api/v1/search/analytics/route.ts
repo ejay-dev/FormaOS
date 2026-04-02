@@ -1,19 +1,16 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   authenticateV1Request,
-  jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import { getSearchAnalytics } from '@/lib/search/search-engine';
 
 export async function GET(req: NextRequest) {
   const auth = await authenticateV1Request(req, {
-    requiredScopes: ['admin:read'],
+    requiredScopes: ['audit:read'],
   });
-  if ('error' in auth) return auth.error;
+  if (!auth.ok) return auth.response;
 
-  const analytics = await getSearchAnalytics(auth.orgId);
+  const analytics = await getSearchAnalytics(auth.context.orgId);
 
-  logV1Access(auth, 'search.analytics', {});
-  return jsonWithContext(analytics);
+  return NextResponse.json(analytics);
 }

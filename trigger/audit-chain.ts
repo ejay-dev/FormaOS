@@ -15,14 +15,17 @@ export const auditChainVerification = schedules.task({
       .select('org_id')
       .order('org_id');
 
-    const uniqueOrgs = [...new Set((orgs || []).map(o => o.org_id))];
-    const results: Array<{ orgId: string; valid: boolean; checked: number }> = [];
+    const uniqueOrgs = [...new Set((orgs || []).map((o) => o.org_id))];
+    const results: Array<{ orgId: string; valid: boolean; checked: number }> =
+      [];
 
     for (const orgId of uniqueOrgs) {
       // Check last 1000 entries per org
       const { data: entries } = await db
         .from('audit_log')
-        .select('id, org_id, user_id, action, resource_type, resource_id, details, created_at, entry_hash, prev_hash')
+        .select(
+          'id, org_id, user_id, action, resource_type, resource_id, details, created_at, entry_hash, prev_hash',
+        )
         .eq('org_id', orgId)
         .order('sequence_number', { ascending: true })
         .limit(1000);
@@ -30,7 +33,11 @@ export const auditChainVerification = schedules.task({
       if (!entries || entries.length === 0) continue;
 
       const result = verifyChainIntegrity(entries);
-      results.push({ orgId, valid: result.valid, checked: result.totalChecked });
+      results.push({
+        orgId,
+        valid: result.valid,
+        checked: result.totalChecked,
+      });
 
       if (!result.valid) {
         // Log the integrity violation
@@ -38,12 +45,18 @@ export const auditChainVerification = schedules.task({
           org_id: orgId,
           action: 'chain_integrity_violation',
           resource_type: 'audit_chain',
-          details: { broken_at_index: result.brokenAt, total_checked: result.totalChecked },
+          details: {
+            broken_at_index: result.brokenAt,
+            total_checked: result.totalChecked,
+          },
         });
       }
     }
 
-    return { orgsChecked: results.length, violations: results.filter(r => !r.valid).length };
+    return {
+      orgsChecked: results.length,
+      violations: results.filter((r) => !r.valid).length,
+    };
   },
 });
 
@@ -66,7 +79,10 @@ export const auditExportProcessor = schedules.task({
     let processed = 0;
 
     for (const job of pendingJobs) {
-      await db.from('audit_export_jobs').update({ status: 'processing' }).eq('id', job.id);
+      await db
+        .from('audit_export_jobs')
+        .update({ status: 'processing' })
+        .eq('id', job.id);
 
       try {
         // Fetch entries in date range
@@ -87,21 +103,29 @@ export const auditExportProcessor = schedules.task({
           contentType: 'application/json',
         });
 
-        const { data: urlData } = db.storage.from('exports').getPublicUrl(fileName);
+        const { data: urlData } = db.storage
+          .from('exports')
+          .getPublicUrl(fileName);
 
-        await db.from('audit_export_jobs').update({
-          status: 'completed',
-          file_url: urlData.publicUrl,
-          file_size_bytes: sizeBytes,
-          completed_at: new Date().toISOString(),
-        }).eq('id', job.id);
+        await db
+          .from('audit_export_jobs')
+          .update({
+            status: 'completed',
+            file_url: urlData.publicUrl,
+            file_size_bytes: sizeBytes,
+            completed_at: new Date().toISOString(),
+          })
+          .eq('id', job.id);
 
         processed++;
       } catch {
-        await db.from('audit_export_jobs').update({
-          status: 'failed',
-          completed_at: new Date().toISOString(),
-        }).eq('id', job.id);
+        await db
+          .from('audit_export_jobs')
+          .update({
+            status: 'failed',
+            completed_at: new Date().toISOString(),
+          })
+          .eq('id', job.id);
       }
     }
 

@@ -23,10 +23,7 @@ export default async function PolicyVersionsPage() {
   ]);
 
   // Group by policy_id, take latest version per policy
-  const policyMap = new Map<
-    string,
-    typeof policies extends (infer T)[] ? T : never
-  >();
+  const policyMap = new Map<string, any>();
   for (const p of policies || []) {
     if (!policyMap.has(p.policy_id)) {
       policyMap.set(p.policy_id, p);

@@ -44,7 +44,7 @@ export async function GET(request: Request) {
         { from, to },
       );
       logV1Access(auth.context, 200, 'reports:read');
-      return jsonWithContext({ data: { trend, summary } }, auth.context);
+      return jsonWithContext(auth.context, { data: { trend, summary } });
     }
 
     const snapshots = await getSnapshots(auth.context.db, auth.context.orgId, {
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
       to,
     });
     logV1Access(auth.context, 200, 'reports:read');
-    return jsonWithContext({ data: snapshots }, auth.context);
+    return jsonWithContext(auth.context, { data: snapshots });
   } catch (err) {
     return Response.json(
       {

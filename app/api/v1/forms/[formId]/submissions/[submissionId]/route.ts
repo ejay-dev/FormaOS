@@ -1,7 +1,6 @@
 import {
   authenticateV1Request,
   jsonWithContext,
-  logV1Access,
 } from '@/lib/api-keys/middleware';
 import { getSubmission, reviewSubmission } from '@/lib/forms/submission-engine';
 
@@ -12,7 +11,7 @@ export async function GET(
   { params }: { params: Promise<{ formId: string; submissionId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:read'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -24,8 +23,7 @@ export async function GET(
       submissionId,
       auth.context.orgId,
     );
-    logV1Access(auth.context, 'forms.submissions.get', { submissionId });
-    return jsonWithContext({ data: submission }, auth.context);
+    return jsonWithContext(auth.context, { data: submission });
   } catch (err) {
     return Response.json(
       {
@@ -43,7 +41,7 @@ export async function PATCH(
   { params }: { params: Promise<{ formId: string; submissionId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['forms:write'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -62,16 +60,11 @@ export async function PATCH(
       auth.context.db,
       submissionId,
       auth.context.orgId,
-      auth.context.userId,
+      auth.context.userId ?? '',
       body.status,
       body.notes,
     );
-
-    logV1Access(auth.context, 'forms.submissions.review', {
-      submissionId,
-      status: body.status,
-    });
-    return jsonWithContext({ data: submission }, auth.context);
+    return jsonWithContext(auth.context, { data: submission });
   } catch (err) {
     return Response.json(
       {

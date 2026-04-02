@@ -25,8 +25,8 @@ export async function GET(request: Request) {
 
     logV1Access(auth.context, 200, 'reports:read');
     return jsonWithContext(
-      paginatedEnvelope(data ?? [], { offset, limit, total: count ?? 0 }),
       auth.context,
+      paginatedEnvelope(data ?? [], { offset, limit, total: count ?? 0 }),
     );
   } catch (err) {
     return Response.json(
@@ -65,14 +65,14 @@ export async function POST(request: Request) {
         name,
         description: description ?? null,
         config: config ?? {},
-        created_by: auth.context.userId,
+        created_by: auth.context.userId ?? '',
       })
       .select()
       .single();
 
     if (error) throw new Error(error.message);
     logV1Access(auth.context, 201, 'reports:write');
-    return jsonWithContext({ data }, auth.context, { status: 201 });
+    return jsonWithContext(auth.context, { data }, { status: 201 });
   } catch (err) {
     return Response.json(
       {

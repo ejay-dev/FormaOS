@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   DollarSign,
@@ -37,7 +37,7 @@ export default async function NdisClaimingPage() {
   const { data: lineItems } = await db
     .from('org_ndis_line_items')
     .select('*, org_patients(first_name, last_name)')
-    .eq('org_id', state.orgId)
+    .eq('org_id', state.organization.id)
     .order('created_at', { ascending: false })
     .limit(100);
 

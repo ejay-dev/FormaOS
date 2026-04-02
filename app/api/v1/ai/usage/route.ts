@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['ai:read'],
+    requiredScopes: ['compliance:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -24,8 +24,8 @@ export async function GET(request: Request) {
         from,
         to,
       });
-      logV1Access(auth.context, 200, 'ai:read');
-      return jsonWithContext({ data: usage }, auth.context);
+      logV1Access(auth.context, 200, 'compliance:read');
+      return jsonWithContext(auth.context, { data: usage });
     }
 
     const summary = await getUsageSummary(
@@ -33,8 +33,8 @@ export async function GET(request: Request) {
       auth.context.orgId,
       plan,
     );
-    logV1Access(auth.context, 200, 'ai:read');
-    return jsonWithContext({ data: summary }, auth.context);
+    logV1Access(auth.context, 200, 'compliance:read');
+    return jsonWithContext(auth.context, { data: summary });
   } catch (err) {
     return Response.json(
       {

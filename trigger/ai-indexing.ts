@@ -45,7 +45,7 @@ export const removeDocumentIndexTask = task({
     await removeEntityIndex(
       db,
       payload.orgId,
-      payload.sourceType,
+      payload.sourceType as any,
       payload.sourceId,
     );
     return { removed: true };

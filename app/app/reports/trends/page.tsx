@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { TrendingUp, TrendingDown, Minus, Calendar } from 'lucide-react';
 
@@ -25,7 +25,7 @@ export default async function TrendsPage({
   const { data: snapshots } = await db
     .from('org_analytics_snapshots')
     .select('snapshot_date, metrics')
-    .eq('org_id', state.orgId)
+    .eq('org_id', state.organization.id)
     .gte('snapshot_date', from)
     .lte('snapshot_date', to)
     .order('snapshot_date', { ascending: true });

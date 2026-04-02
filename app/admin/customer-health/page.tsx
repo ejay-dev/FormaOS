@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { fetchSystemState } from '@/lib/auth/system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import {
   BarChart3,
   AlertTriangle,
@@ -30,7 +30,7 @@ export default async function CustomerHealthPage() {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const db = createSupabaseServerClient();
+  const db = await createSupabaseServerClient();
 
   // Fetch org health data (joined from multiple sources)
   const { data: orgs } = await db

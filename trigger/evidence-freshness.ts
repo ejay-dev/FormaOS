@@ -54,9 +54,7 @@ export const evidenceFreshnessTask = schedules.task({
                 title: 'Evidence Freshness Alert',
                 message: `${expiredCount} expired, ${expiringCount} expiring soon`,
                 metadata: { expiredCount, expiringCount },
-              })
-              .onConflict('id')
-              .merge();
+              });
           }
         }
       }

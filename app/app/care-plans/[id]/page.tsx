@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { fetchSystemState } from '@/lib/server/fetch-system-state';
+import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   ArrowLeft,
@@ -31,7 +31,7 @@ export default async function CarePlanDetailPage({
     .from('org_care_plans')
     .select('*, org_patients(id, first_name, last_name)')
     .eq('id', id)
-    .eq('org_id', state.orgId)
+    .eq('org_id', state.organization.id)
     .single();
 
   if (!plan) redirect('/app/care-plans');
@@ -40,7 +40,7 @@ export default async function CarePlanDetailPage({
     .from('org_care_goals')
     .select('*')
     .eq('care_plan_id', id)
-    .eq('org_id', state.orgId)
+    .eq('org_id', state.organization.id)
     .order('created_at', { ascending: true });
 
   const participant = plan.org_patients;
