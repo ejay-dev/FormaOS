@@ -1602,57 +1602,35 @@ function FilterBar({
 /* ─── Release Timeline Visual ─────────────────────────────── */
 
 function ReleaseTimelineVisual() {
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-
-  const releasesByMonth = useMemo(() => {
-    const map: Record<
-      string,
-      { count: number; versions: string[]; hasMajor: boolean }
-    > = {};
-    releases.forEach((r) => {
-      const d = new Date(r.date);
-      const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2, '0')}`;
-      if (!map[key]) map[key] = { count: 0, versions: [], hasMajor: false };
-      map[key].count++;
-      map[key].versions.push(r.version);
-      if (r.isMajor) map[key].hasMajor = true;
-    });
-    return map;
+  /* Build per-release data with change counts for the bar chart */
+  const timelineData = useMemo(() => {
+    return releases
+      .slice()
+      .reverse()
+      .map((r) => {
+        const features = r.changes.filter(
+          (c) => c.tag === 'feature' || c.tag === 'integration',
+        ).length;
+        const security = r.changes.filter(
+          (c) => c.tag === 'security' || c.tag === 'enterprise',
+        ).length;
+        const fixes = r.changes.filter(
+          (c) => c.tag === 'fix' || c.tag === 'improvement',
+        ).length;
+        return {
+          version: r.version,
+          codename: r.codename,
+          date: r.date,
+          isMajor: r.isMajor,
+          total: r.changes.length,
+          features,
+          security,
+          fixes,
+        };
+      });
   }, []);
 
-  const timelineMonths = useMemo(() => {
-    const result: {
-      key: string;
-      month: string;
-      year: string;
-      data: (typeof releasesByMonth)[string] | null;
-    }[] = [];
-    for (let y = 2025; y <= 2026; y++) {
-      for (let m = 0; m < (y === 2026 ? 4 : 12); m++) {
-        const key = `${y}-${String(m).padStart(2, '0')}`;
-        result.push({
-          key,
-          month: months[m],
-          year: String(y),
-          data: releasesByMonth[key] || null,
-        });
-      }
-    }
-    return result;
-  }, [releasesByMonth]);
+  const maxChanges = Math.max(...timelineData.map((d) => d.total));
 
   return (
     <DeferredSection minHeight={200}>
@@ -1661,7 +1639,7 @@ function ReleaseTimelineVisual() {
           <ScrollReveal
             variant="depthScale"
             range={[0, 0.3]}
-            className="text-center mb-10"
+            className="text-center mb-14"
           >
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-6">
               <Calendar className="w-3.5 h-3.5 text-cyan-400" />
@@ -1682,69 +1660,189 @@ function ReleaseTimelineVisual() {
             </p>
           </ScrollReveal>
 
-          <SectionChoreography pattern="stagger-wave" stagger={0.03}>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 sm:gap-4">
-              {timelineMonths.map((tm, i) => (
-                <motion.div
-                  key={tm.key}
-                  className="text-center"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.025, duration: 0.35 }}
-                >
-                  <div
-                    className={`relative rounded-xl border flex flex-col items-center justify-center transition-all duration-300
-                      ${
-                        tm.data
-                          ? tm.data.hasMajor
-                            ? 'border-emerald-400/30 bg-emerald-500/10 hover:bg-emerald-500/15 hover:border-emerald-400/40 shadow-[0_0_20px_rgba(52,211,153,0.06)]'
-                            : 'border-cyan-400/20 bg-cyan-500/5 hover:bg-cyan-500/10 hover:border-cyan-400/30'
-                          : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04]'
-                      } ${tm.data && tm.data.versions.length > 3 ? 'py-3 min-h-[7rem] sm:min-h-[8rem]' : 'py-3 min-h-[5.5rem] sm:min-h-[6.5rem]'}`}
-                  >
-                    {tm.data ? (
-                      <div className="flex flex-col items-center gap-0.5 px-1">
-                        {tm.data.versions.map((v) => (
-                          <span
-                            key={v}
-                            className={`text-[10px] sm:text-xs font-bold leading-tight ${tm.data!.hasMajor ? 'text-emerald-400' : 'text-cyan-400/80'}`}
-                          >
-                            {v}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-[10px] text-slate-600">—</span>
-                    )}
-                  </div>
-                  <div className="mt-2">
-                    <span className="text-[11px] sm:text-xs text-slate-400 font-medium block">
-                      {tm.month}
-                    </span>
-                    {parseInt(tm.key.split('-')[1]) === 0 && (
-                      <span className="text-[10px] text-slate-600 block">
-                        {tm.year}
-                      </span>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+          {/* Enterprise activity chart */}
+          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.015] p-6 sm:p-8">
+            {/* Chart header */}
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-8 rounded-full bg-gradient-to-b from-emerald-400 to-cyan-400" />
+                <div>
+                  <h3 className="text-sm font-semibold text-white">
+                    Release Activity
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Changes shipped per release
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-5 text-[11px] text-slate-500">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                  Features
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-violet-400" />
+                  Security
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-amber-400" />
+                  Fixes
+                </div>
+              </div>
             </div>
-          </SectionChoreography>
 
-          <div className="flex flex-wrap justify-center gap-6 mt-8 text-xs sm:text-sm text-slate-500">
-            <div className="flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded-md border border-emerald-400/30 bg-emerald-500/10" />
-              Major release
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded-md border border-cyan-400/20 bg-cyan-500/5" />
-              Minor release
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded-md border border-white/[0.06] bg-white/[0.02]" />
-              No release
+            {/* Bar chart */}
+            <SectionChoreography pattern="stagger-wave" stagger={0.03}>
+              <div className="relative">
+                {/* Horizontal guide lines */}
+                <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="border-t border-white/[0.04]" />
+                  ))}
+                </div>
+
+                {/* Bars */}
+                <div className="relative flex items-end gap-1.5 sm:gap-2 min-h-[240px] sm:min-h-[320px]">
+                  {timelineData.map((d, i) => {
+                    const barHeight = (d.total / maxChanges) * 100;
+                    const featPct =
+                      d.total > 0 ? (d.features / d.total) * 100 : 0;
+                    const secPct =
+                      d.total > 0 ? (d.security / d.total) * 100 : 0;
+                    return (
+                      <motion.div
+                        key={d.version}
+                        className="group relative flex-1 flex flex-col items-center justify-end h-full"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{
+                          delay: i * 0.04,
+                          duration: 0.5,
+                          ease: EASE_OUT_EXPO,
+                        }}
+                      >
+                        {/* Tooltip on hover */}
+                        <div
+                          className="absolute -top-16 left-1/2 -translate-x-1/2 z-20 pointer-events-none
+                          opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                          whitespace-nowrap px-3 py-2 rounded-lg border border-white/[0.1] bg-slate-900/95 backdrop-blur-sm shadow-xl"
+                        >
+                          <div className="text-[11px] font-bold text-white">
+                            {d.version}{' '}
+                            <span className="font-normal text-slate-400">
+                              {d.codename}
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">
+                            {d.total} changes •{' '}
+                            {new Date(d.date).toLocaleDateString('en-US', {
+                              month: 'short',
+                              year: 'numeric',
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Bar */}
+                        <motion.div
+                          className={`w-full rounded-t-md overflow-hidden cursor-default transition-all duration-300
+                            ${d.isMajor ? 'ring-1 ring-emerald-400/30 shadow-[0_0_20px_rgba(52,211,153,0.12)]' : ''}
+                            group-hover:ring-1 group-hover:ring-white/20 group-hover:shadow-[0_-4px_24px_rgba(255,255,255,0.04)]`}
+                          initial={{ height: 0 }}
+                          whileInView={{ height: `${barHeight}%` }}
+                          viewport={{ once: true }}
+                          transition={{
+                            delay: i * 0.04 + 0.2,
+                            duration: 0.7,
+                            ease: EASE_OUT_EXPO,
+                          }}
+                        >
+                          <div className="h-full w-full flex flex-col-reverse">
+                            {/* Features segment */}
+                            <div
+                              className="w-full bg-gradient-to-t from-emerald-500/40 to-emerald-400/25"
+                              style={{ height: `${featPct}%` }}
+                            />
+                            {/* Security segment */}
+                            <div
+                              className="w-full bg-gradient-to-t from-violet-500/40 to-violet-400/25"
+                              style={{ height: `${secPct}%` }}
+                            />
+                            {/* Fixes segment */}
+                            <div
+                              className="w-full bg-gradient-to-t from-amber-500/30 to-amber-400/20"
+                              style={{ height: `${100 - featPct - secPct}%` }}
+                            />
+                          </div>
+                        </motion.div>
+
+                        {/* Version label */}
+                        <div className="mt-3 flex flex-col items-center">
+                          <span
+                            className={`text-[9px] sm:text-[10px] font-bold leading-tight
+                              ${d.isMajor ? 'text-emerald-400' : 'text-slate-400'}`}
+                          >
+                            {d.version}
+                          </span>
+                        </div>
+
+                        {/* Major indicator dot */}
+                        {d.isMajor && (
+                          <div className="absolute -bottom-7 left-1/2 -translate-x-1/2">
+                            <div className="relative w-1.5 h-1.5">
+                              <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-40" />
+                              <span className="relative block w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                            </div>
+                          </div>
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* X-axis line */}
+                <div className="h-px bg-white/[0.08] mt-1" />
+              </div>
+            </SectionChoreography>
+
+            {/* Bottom stats row */}
+            <div className="flex flex-wrap items-center justify-between gap-4 mt-10 pt-6 border-t border-white/[0.04]">
+              <div className="flex flex-wrap gap-6">
+                {[
+                  {
+                    label: 'Avg. changes/release',
+                    value: Math.round(totalChanges / releases.length),
+                  },
+                  {
+                    label: 'Major releases',
+                    value: majorReleases,
+                  },
+                  {
+                    label: 'Release frequency',
+                    value: `${Math.round((releases.length / monthsActive) * 10) / 10}/mo`,
+                  },
+                ].map((s) => (
+                  <div key={s.label} className="text-center sm:text-left">
+                    <div className="text-lg font-bold text-white">
+                      {s.value}
+                    </div>
+                    <div className="text-[11px] text-slate-500">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-4 text-[11px] text-slate-500">
+                <div className="flex items-center gap-1.5">
+                  <div className="relative w-2 h-2">
+                    <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-40" />
+                    <span className="relative block w-2 h-2 rounded-full bg-emerald-400" />
+                  </div>
+                  Major release
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-slate-500/50" />
+                  Minor / Patch
+                </div>
+              </div>
             </div>
           </div>
         </div>
