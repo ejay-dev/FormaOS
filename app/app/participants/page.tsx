@@ -3,23 +3,26 @@
  * Industry-aware naming: NDIS=Participants, Healthcare=Patients, Aged Care=Residents
  */
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Plus, Search, Filter, AlertTriangle, Users } from "lucide-react";
-import { fetchSystemState } from "@/lib/system-state/server";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { Plus, Search, Filter, AlertTriangle, Users } from 'lucide-react';
+import { fetchSystemState } from '@/lib/system-state/server';
 
 // Get industry-appropriate label
-function getEntityLabel(industry: string | null): { singular: string; plural: string } {
+function getEntityLabel(industry: string | null): {
+  singular: string;
+  plural: string;
+} {
   switch (industry) {
-    case "ndis":
-      return { singular: "Participant", plural: "Participants" };
-    case "healthcare":
-      return { singular: "Patient", plural: "Patients" };
-    case "aged_care":
-      return { singular: "Resident", plural: "Residents" };
+    case 'ndis':
+      return { singular: 'Participant', plural: 'Participants' };
+    case 'healthcare':
+      return { singular: 'Patient', plural: 'Patients' };
+    case 'aged_care':
+      return { singular: 'Resident', plural: 'Residents' };
     default:
-      return { singular: "Client", plural: "Clients" };
+      return { singular: 'Client', plural: 'Clients' };
   }
 }
 
@@ -33,14 +36,15 @@ export default async function ParticipantsPage({
   }>;
 }) {
   const params = (await searchParams) ?? {};
-  const q = (params.q ?? "").trim();
-  const statusFilter = (params.status ?? "").trim();
-  const riskFilter = (params.risk ?? "").trim();
-  const hasFilters = q.length > 0 || statusFilter.length > 0 || riskFilter.length > 0;
+  const q = (params.q ?? '').trim();
+  const statusFilter = (params.status ?? '').trim();
+  const riskFilter = (params.risk ?? '').trim();
+  const hasFilters =
+    q.length > 0 || statusFilter.length > 0 || riskFilter.length > 0;
 
   const systemState = await fetchSystemState();
   if (!systemState) {
-    redirect("/workspace-recovery?from=participants-page");
+    redirect('/workspace-recovery?from=participants-page');
   }
 
   const supabase = await createSupabaseServerClient();
@@ -53,7 +57,7 @@ export default async function ParticipantsPage({
   let participants: any[] | null = null;
   try {
     let query = supabase
-      .from("org_patients")
+      .from('org_patients')
       .select(
         `
         id,
@@ -72,8 +76,8 @@ export default async function ParticipantsPage({
         created_at
       `,
       )
-      .eq("organization_id", orgId)
-      .order("created_at", { ascending: false });
+      .eq('organization_id', orgId)
+      .order('created_at', { ascending: false });
 
     if (q) {
       query = query.or(
@@ -82,33 +86,40 @@ export default async function ParticipantsPage({
           `preferred_name.ilike.%${q}%`,
           `external_id.ilike.%${q}%`,
           `ndis_number.ilike.%${q}%`,
-        ].join(","),
+        ].join(','),
       );
     }
     if (statusFilter) {
-      query = query.eq("care_status", statusFilter);
+      query = query.eq('care_status', statusFilter);
     }
     if (riskFilter) {
-      query = query.eq("risk_level", riskFilter);
+      query = query.eq('risk_level', riskFilter);
     }
 
     const { data, error } = await query;
 
     if (error) {
-      console.error("[ParticipantsPage] Error fetching participants:", error);
+      console.error('[ParticipantsPage] Error fetching participants:', error);
     } else {
       participants = data;
     }
   } catch (err) {
-    console.error("[ParticipantsPage] Error in query:", err);
+    console.error('[ParticipantsPage] Error in query:', err);
   }
 
   type Participant = NonNullable<typeof participants>[number];
   const stats = {
     total: participants?.length ?? 0,
-    active: participants?.filter((p: Participant) => p.care_status === "active").length ?? 0,
-    highRisk: participants?.filter((p: Participant) => p.risk_level === "high" || p.risk_level === "critical").length ?? 0,
-    emergency: participants?.filter((p: Participant) => p.emergency_flag).length ?? 0,
+    active:
+      participants?.filter((p: Participant) => p.care_status === 'active')
+        .length ?? 0,
+    highRisk:
+      participants?.filter(
+        (p: Participant) =>
+          p.risk_level === 'high' || p.risk_level === 'critical',
+      ).length ?? 0,
+    emergency:
+      participants?.filter((p: Participant) => p.emergency_flag).length ?? 0,
   };
 
   return (
@@ -116,7 +127,10 @@ export default async function ParticipantsPage({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight" data-testid="participants-title">
+          <h1
+            className="text-3xl font-black tracking-tight"
+            data-testid="participants-title"
+          >
             {labels.plural}
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -140,7 +154,9 @@ export default async function ParticipantsPage({
             <Users className="h-5 w-5 text-primary" />
             <div>
               <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-sm text-muted-foreground">Total {labels.plural}</p>
+              <p className="text-sm text-muted-foreground">
+                Total {labels.plural}
+              </p>
             </div>
           </div>
         </div>
@@ -226,112 +242,144 @@ export default async function ParticipantsPage({
 
       {/* Table */}
       <div className="rounded-xl border border-border overflow-hidden">
-        <table className="w-full" data-testid="participants-table">
-          <thead className="bg-muted/50">
-            <tr>
-              <th className="text-left px-4 py-3 text-sm font-medium">Name</th>
-              <th className="text-left px-4 py-3 text-sm font-medium hidden md:table-cell">ID</th>
-              <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">Status</th>
-              <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">Risk</th>
-              <th className="text-left px-4 py-3 text-sm font-medium hidden xl:table-cell">Funding</th>
-              <th className="text-left px-4 py-3 text-sm font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {participants?.map((participant: Participant) => (
-              <tr key={participant.id} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    {participant.emergency_flag && (
-                      <span className="flex h-2 w-2 rounded-full bg-red-500" title="Emergency Flag" />
-                    )}
-                    <div>
-                      <p className="font-medium">{participant.full_name}</p>
-                      {participant.preferred_name && (
-                        <p className="text-sm text-muted-foreground">({participant.preferred_name})</p>
-                      )}
-                    </div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 hidden md:table-cell">
-                  <span className="text-sm font-mono text-muted-foreground">
-                    {participant.external_id || participant.ndis_number || "-"}
-                  </span>
-                </td>
-                <td className="px-4 py-3 hidden lg:table-cell">
-                  <span
-                    className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                      participant.care_status === "active"
-                        ? "bg-green-500/10 text-green-600"
-                        : participant.care_status === "paused"
-                        ? "bg-amber-500/10 text-amber-600"
-                        : "bg-gray-500/10 text-gray-600"
-                    }`}
-                  >
-                    {participant.care_status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 hidden lg:table-cell">
-                  <span
-                    className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                      participant.risk_level === "critical"
-                        ? "bg-red-500/10 text-red-600"
-                        : participant.risk_level === "high"
-                        ? "bg-orange-500/10 text-orange-600"
-                        : participant.risk_level === "medium"
-                        ? "bg-amber-500/10 text-amber-600"
-                        : "bg-green-500/10 text-green-600"
-                    }`}
-                  >
-                    {participant.risk_level}
-                  </span>
-                </td>
-                <td className="px-4 py-3 hidden xl:table-cell">
-                  <span className="text-sm text-muted-foreground">
-                    {participant.funding_type?.toUpperCase() || "-"}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <Link
-                    href={`/app/participants/${participant.id}`}
-                    className="text-sm text-primary hover:underline"
-                    data-testid={`view-participant-${participant.id}`}
-                  >
-                    View
-                  </Link>
-                </td>
-              </tr>
-            ))}
-            {(!participants || participants.length === 0) && (
+        <div className="overflow-x-auto overscroll-x-contain">
+          <table
+            className="min-w-[480px] w-full"
+            data-testid="participants-table"
+          >
+            <thead className="bg-muted/50">
               <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
-                  <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  {hasFilters ? (
-                    <>
-                      <p>No {labels.plural.toLowerCase()} matched your filters</p>
-                      <Link
-                        href="/app/participants"
-                        className="text-primary hover:underline mt-2 inline-block"
-                      >
-                        Clear filters
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <p>No {labels.plural.toLowerCase()} yet</p>
-                      <Link
-                        href="/app/participants/new"
-                        className="text-primary hover:underline mt-2 inline-block"
-                      >
-                        Add your first {labels.singular.toLowerCase()}
-                      </Link>
-                    </>
-                  )}
-                </td>
+                <th className="text-left px-4 py-3 text-sm font-medium">
+                  Name
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium hidden md:table-cell">
+                  ID
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
+                  Status
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
+                  Risk
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium hidden xl:table-cell">
+                  Funding
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium">
+                  Actions
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {participants?.map((participant: Participant) => (
+                <tr
+                  key={participant.id}
+                  className="hover:bg-muted/30 transition-colors"
+                >
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      {participant.emergency_flag && (
+                        <span
+                          className="flex h-2 w-2 rounded-full bg-red-500"
+                          title="Emergency Flag"
+                        />
+                      )}
+                      <div>
+                        <p className="font-medium">{participant.full_name}</p>
+                        {participant.preferred_name && (
+                          <p className="text-sm text-muted-foreground">
+                            ({participant.preferred_name})
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 hidden md:table-cell">
+                    <span className="text-sm font-mono text-muted-foreground">
+                      {participant.external_id ||
+                        participant.ndis_number ||
+                        '-'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 hidden lg:table-cell">
+                    <span
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                        participant.care_status === 'active'
+                          ? 'bg-green-500/10 text-green-600'
+                          : participant.care_status === 'paused'
+                            ? 'bg-amber-500/10 text-amber-600'
+                            : 'bg-gray-500/10 text-gray-600'
+                      }`}
+                    >
+                      {participant.care_status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 hidden lg:table-cell">
+                    <span
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                        participant.risk_level === 'critical'
+                          ? 'bg-red-500/10 text-red-600'
+                          : participant.risk_level === 'high'
+                            ? 'bg-orange-500/10 text-orange-600'
+                            : participant.risk_level === 'medium'
+                              ? 'bg-amber-500/10 text-amber-600'
+                              : 'bg-green-500/10 text-green-600'
+                      }`}
+                    >
+                      {participant.risk_level}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 hidden xl:table-cell">
+                    <span className="text-sm text-muted-foreground">
+                      {participant.funding_type?.toUpperCase() || '-'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link
+                      href={`/app/participants/${participant.id}`}
+                      className="text-sm text-primary hover:underline"
+                      data-testid={`view-participant-${participant.id}`}
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+              {(!participants || participants.length === 0) && (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="px-4 py-12 text-center text-muted-foreground"
+                  >
+                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    {hasFilters ? (
+                      <>
+                        <p>
+                          No {labels.plural.toLowerCase()} matched your filters
+                        </p>
+                        <Link
+                          href="/app/participants"
+                          className="text-primary hover:underline mt-2 inline-block"
+                        >
+                          Clear filters
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <p>No {labels.plural.toLowerCase()} yet</p>
+                        <Link
+                          href="/app/participants/new"
+                          className="text-primary hover:underline mt-2 inline-block"
+                        >
+                          Add your first {labels.singular.toLowerCase()}
+                        </Link>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

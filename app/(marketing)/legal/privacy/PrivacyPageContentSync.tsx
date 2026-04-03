@@ -76,7 +76,6 @@ function PrivacyHero() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-emerald-500/5 to-transparent rounded-full" />
       </div>
 
-
       {/* Main Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
@@ -139,7 +138,6 @@ function PrivacyHero() {
           </motion.div>
         </div>
       </div>
-
     </section>
   );
 }
@@ -183,56 +181,54 @@ function TableOfContents() {
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="blurIn">
-        <div
-          className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30"
-        >
-          {/* Top accent line */}
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+          <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30">
+            {/* Top accent line */}
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
 
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="w-full flex items-center justify-between text-left group"
-          >
-            <h2 className="text-xl font-semibold text-white flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-cyan-400" />
-              Table of Contents
-            </h2>
-            <motion.div
-              animate={{ rotate: isOpen ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-              className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors"
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="w-full flex items-center justify-between text-left group"
             >
-              <ChevronDown className="w-5 h-5 text-gray-400" />
-            </motion.div>
-          </button>
+              <h2 className="text-xl font-semibold text-white flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                Table of Contents
+              </h2>
+              <motion.div
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors"
+              >
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              </motion.div>
+            </button>
 
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              transition={{ duration: duration.normal }}
-              className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"
-            >
-              {sections.map((section, index) => (
-                <motion.a
-                  key={section.id}
-                  href={`#${section.id}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.03 }}
-                  className="group flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
-                    <section.icon className="w-4 h-4 text-cyan-400" />
-                  </div>
-                  <span className="text-sm group-hover:translate-x-1 transition-transform duration-300">
-                    {section.title}
-                  </span>
-                </motion.a>
-              ))}
-            </motion.div>
-          )}
-        </div>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                transition={{ duration: duration.normal }}
+                className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"
+              >
+                {sections.map((section, index) => (
+                  <motion.a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    className="group flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
+                      <section.icon className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <span className="text-sm group-hover:translate-x-1 transition-transform duration-300">
+                      {section.title}
+                    </span>
+                  </motion.a>
+                ))}
+              </motion.div>
+            )}
+          </div>
         </ScrollReveal>
       </div>
     </section>
@@ -262,32 +258,32 @@ function PrivacySection({
   return (
     <ScrollReveal variant="fadeUp" className="scroll-mt-24">
       <div id={id}>
-      {/* Section Card - Glassmorphism */}
-      <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group">
-        {/* Hover glow effect */}
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* Section Card - Glassmorphism */}
+        <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group">
+          {/* Hover glow effect */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-        <div className="relative">
-          {/* Section Header */}
-          <div className="flex items-start gap-4 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-              <Icon className="w-6 h-6 text-cyan-400" />
+          <div className="relative">
+            {/* Section Header */}
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <Icon className="w-6 h-6 text-cyan-400" />
+              </div>
+              <div>
+                <span className="text-sm text-cyan-400 font-medium">
+                  Section {number}
+                </span>
+                <h3 className="text-xl font-semibold text-white">{title}</h3>
+              </div>
             </div>
-            <div>
-              <span className="text-sm text-cyan-400 font-medium">
-                Section {number}
-              </span>
-              <h3 className="text-xl font-semibold text-white">{title}</h3>
-            </div>
-          </div>
 
-          {/* Section Content */}
-          <div className="text-gray-400 leading-relaxed space-y-4 pl-16">
-            {children}
+            {/* Section Content */}
+            <div className="text-gray-400 leading-relaxed space-y-4 pl-16">
+              {children}
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </ScrollReveal>
   );
@@ -420,9 +416,7 @@ function PrivacyContent() {
                 variant="fadeUp"
                 range={[0, 0.3 + i * 0.05]}
               >
-                <div
-                  className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-cyan-500/30 transition-colors"
-                >
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-cyan-500/30 transition-colors">
                   <item.icon className="w-4 h-4 text-cyan-400" />
                   <span className="text-sm text-gray-300">{item.label}</span>
                 </div>
@@ -605,40 +599,38 @@ function PrivacyCTA() {
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="scaleUp">
-        <div
-          className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-2xl shadow-black/30"
-        >
-          {/* Top accent line */}
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+          <div className="relative p-6 sm:p-8 md:p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-2xl shadow-black/30">
+            {/* Top accent line */}
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
 
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium mb-4">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                Privacy-first platform
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium mb-4">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  Privacy-first platform
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                  Questions about your data?
+                </h2>
+                <p className="text-gray-400 leading-relaxed">
+                  Contact our team for any questions regarding data handling,
+                  security practices, or to exercise your privacy rights.
+                </p>
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                Questions about your data?
-              </h2>
-              <p className="text-gray-400 leading-relaxed">
-                Contact our team for any questions regarding data handling,
-                security practices, or to exercise your privacy rights.
-              </p>
+              <motion.a
+                href="/contact"
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
+                }}
+                whileTap={{ scale: 0.98 }}
+                className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all whitespace-nowrap"
+              >
+                <span>Contact Us</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </motion.a>
             </div>
-            <motion.a
-              href="/contact"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
-              }}
-              whileTap={{ scale: 0.98 }}
-              className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all whitespace-nowrap"
-            >
-              <span>Contact Us</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.a>
           </div>
-        </div>
         </ScrollReveal>
       </div>
     </section>

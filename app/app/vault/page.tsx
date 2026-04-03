@@ -61,14 +61,16 @@ type ArtifactRow = {
 };
 
 function parseSingleValue(input: string | string[] | undefined): string {
-  return Array.isArray(input) ? input[0] ?? '' : input ?? '';
+  return Array.isArray(input) ? (input[0] ?? '') : (input ?? '');
 }
 
 export default async function VaultPage({ searchParams }: VaultPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const searchQueryRaw = parseSingleValue(resolvedSearchParams.q).trim();
   const searchQuery = searchQueryRaw.toLowerCase();
-  const statusFilterRaw = parseSingleValue(resolvedSearchParams.status).trim().toLowerCase();
+  const statusFilterRaw = parseSingleValue(resolvedSearchParams.status)
+    .trim()
+    .toLowerCase();
   const statusFilter =
     statusFilterRaw === 'pending' || statusFilterRaw === 'verified'
       ? statusFilterRaw
@@ -82,7 +84,8 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
 
   const supabase = await createSupabaseServerClient();
   const orgId = systemState.organization.id;
-  const isAuditor = systemState.role === 'owner' || systemState.role === 'admin';
+  const isAuditor =
+    systemState.role === 'owner' || systemState.role === 'admin';
 
   const { data: rawArtifacts } = await supabase
     .from('org_evidence')
@@ -96,31 +99,47 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
     new Set(
       baseArtifacts
         .map((artifact) => artifact.task_id)
-        .filter((value): value is string => typeof value === 'string' && value.length > 0),
+        .filter(
+          (value): value is string =>
+            typeof value === 'string' && value.length > 0,
+        ),
     ),
   );
   const policyIds = Array.from(
     new Set(
       baseArtifacts
         .map((artifact) => artifact.policy_id)
-        .filter((value): value is string => typeof value === 'string' && value.length > 0),
+        .filter(
+          (value): value is string =>
+            typeof value === 'string' && value.length > 0,
+        ),
     ),
   );
 
   const [{ data: taskRows }, { data: policyRows }] = await Promise.all([
     taskIds.length
       ? supabase.from('org_tasks').select('id, title').in('id', taskIds)
-      : Promise.resolve({ data: [] as Array<{ id: string; title: string | null }> }),
+      : Promise.resolve({
+          data: [] as Array<{ id: string; title: string | null }>,
+        }),
     policyIds.length
       ? supabase.from('org_policies').select('id, title').in('id', policyIds)
-      : Promise.resolve({ data: [] as Array<{ id: string; title: string | null }> }),
+      : Promise.resolve({
+          data: [] as Array<{ id: string; title: string | null }>,
+        }),
   ]);
 
   const taskTitleById = new Map(
-    (taskRows ?? []).map((row: { id: string; title: string | null }) => [row.id, row.title]),
+    (taskRows ?? []).map((row: { id: string; title: string | null }) => [
+      row.id,
+      row.title,
+    ]),
   );
   const policyTitleById = new Map(
-    (policyRows ?? []).map((row: { id: string; title: string | null }) => [row.id, row.title]),
+    (policyRows ?? []).map((row: { id: string; title: string | null }) => [
+      row.id,
+      row.title,
+    ]),
   );
 
   const allArtifacts: ArtifactRow[] = baseArtifacts.map((artifact) => ({
@@ -136,7 +155,8 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
   }));
   const filteredArtifacts = allArtifacts.filter((artifact: any) => {
     const statusMatches =
-      statusFilter === 'all' || getVerificationStatus(artifact) === statusFilter;
+      statusFilter === 'all' ||
+      getVerificationStatus(artifact) === statusFilter;
     if (!statusMatches) return false;
 
     if (!searchQuery) return true;
@@ -177,7 +197,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
         data-tour="vault-header"
       >
         <div>
-          <h1 className="text-4xl font-black text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tight">
             Evidence Vault
           </h1>
           <p className="text-muted-foreground mt-2 font-medium tracking-tight">
@@ -213,7 +233,10 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
 
       {/* Action Toolbar (current) */}
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-        <form method="get" className="flex flex-1 flex-col sm:flex-row sm:items-center gap-2">
+        <form
+          method="get"
+          className="flex flex-1 flex-col sm:flex-row sm:items-center gap-2"
+        >
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
@@ -299,7 +322,10 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
 
                 {/* Action Bar */}
                 <div className="flex items-center gap-3 mt-4">
-                  <EvidenceFileActions filePath={item.file_path ?? null} variant="pending" />
+                  <EvidenceFileActions
+                    filePath={item.file_path ?? null}
+                    variant="pending"
+                  />
 
                   {isAuditor && (
                     <form
@@ -383,23 +409,33 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                       <td className="px-8 py-4">
                         {item.quality_score != null ? (
                           <div className="flex items-center gap-2">
-                            <div className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                              item.quality_score >= 70 ? 'bg-emerald-400/10 text-emerald-300' :
-                              item.quality_score >= 50 ? 'bg-amber-400/10 text-amber-300' :
-                              'bg-rose-400/10 text-rose-300'
-                            }`}>
+                            <div
+                              className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                                item.quality_score >= 70
+                                  ? 'bg-emerald-400/10 text-emerald-300'
+                                  : item.quality_score >= 50
+                                    ? 'bg-amber-400/10 text-amber-300'
+                                    : 'bg-rose-400/10 text-rose-300'
+                              }`}
+                            >
                               {item.quality_score}
                             </div>
-                            <span className={`text-[9px] font-bold uppercase ${
-                              item.risk_flag === 'low' ? 'text-emerald-400' :
-                              item.risk_flag === 'medium' ? 'text-amber-400' :
-                              'text-rose-400'
-                            }`}>
+                            <span
+                              className={`text-[9px] font-bold uppercase ${
+                                item.risk_flag === 'low'
+                                  ? 'text-emerald-400'
+                                  : item.risk_flag === 'medium'
+                                    ? 'text-amber-400'
+                                    : 'text-rose-400'
+                              }`}
+                            >
                               {item.risk_flag || 'N/A'}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-xs text-muted-foreground/60">Not scored</span>
+                          <span className="text-xs text-muted-foreground/60">
+                            Not scored
+                          </span>
                         )}
                       </td>
 
@@ -428,7 +464,9 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                       </td>
 
                       <td className="px-8 py-4 text-right">
-                        <EvidenceFileActions filePath={item.file_path ?? null} />
+                        <EvidenceFileActions
+                          filePath={item.file_path ?? null}
+                        />
                       </td>
                     </tr>
                   ))}
@@ -446,7 +484,9 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
             <FileUp className="h-8 w-8 text-muted-foreground" />
           </div>
           <h3 className="text-lg font-bold text-foreground">
-            {allArtifacts.length === 0 ? 'Vault is Empty' : 'No matching artifacts'}
+            {allArtifacts.length === 0
+              ? 'Vault is Empty'
+              : 'No matching artifacts'}
           </h3>
           <p className="text-sm text-muted-foreground mt-1">
             {allArtifacts.length === 0

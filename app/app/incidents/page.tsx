@@ -3,33 +3,41 @@
  * List and manage incidents with filtering and export
  */
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Plus, AlertTriangle, Search, Filter, Download, CheckCircle, Clock } from "lucide-react";
-import { fetchSystemState } from "@/lib/system-state/server";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import {
+  Plus,
+  AlertTriangle,
+  Search,
+  Filter,
+  Download,
+  CheckCircle,
+  Clock,
+} from 'lucide-react';
+import { fetchSystemState } from '@/lib/system-state/server';
 
 function formatDate(date: string | null) {
-  if (!date) return "-";
-  return new Date(date).toLocaleString("en-AU", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+  if (!date) return '-';
+  return new Date(date).toLocaleString('en-AU', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 }
 
 function getSeverityColor(severity: string) {
   switch (severity) {
-    case "critical":
-      return "bg-red-500/10 text-red-600 border-red-500/20";
-    case "high":
-      return "bg-orange-500/10 text-orange-600 border-orange-500/20";
-    case "medium":
-      return "bg-amber-500/10 text-amber-600 border-amber-500/20";
+    case 'critical':
+      return 'bg-red-500/10 text-red-600 border-red-500/20';
+    case 'high':
+      return 'bg-orange-500/10 text-orange-600 border-orange-500/20';
+    case 'medium':
+      return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
     default:
-      return "bg-green-500/10 text-green-600 border-green-500/20";
+      return 'bg-green-500/10 text-green-600 border-green-500/20';
   }
 }
 
@@ -43,23 +51,24 @@ export default async function IncidentsPage({
   }>;
 }) {
   const params = (await searchParams) ?? {};
-  const q = (params.q ?? "").trim();
+  const q = (params.q ?? '').trim();
   const qLower = q.toLowerCase();
-  const statusFilter = (params.status ?? "").trim().toLowerCase();
-  const severityFilter = (params.severity ?? "").trim().toLowerCase();
+  const statusFilter = (params.status ?? '').trim().toLowerCase();
+  const severityFilter = (params.severity ?? '').trim().toLowerCase();
   const hasFilters =
     q.length > 0 || statusFilter.length > 0 || severityFilter.length > 0;
 
   const systemState = await fetchSystemState();
-  if (!systemState) redirect("/auth/signin");
+  if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
   const supabase = await createSupabaseServerClient();
 
   // Fetch incidents with client info
   const { data: incidents, error } = await supabase
-    .from("org_incidents")
-    .select(`
+    .from('org_incidents')
+    .select(
+      `
       id,
       severity,
       status,
@@ -75,27 +84,32 @@ export default async function IncidentsPage({
         id,
         full_name
       )
-    `)
-    .eq("organization_id", organization.id)
-    .order("occurred_at", { ascending: false })
+    `,
+    )
+    .eq('organization_id', organization.id)
+    .order('occurred_at', { ascending: false })
     .limit(100);
 
   if (error) {
-    console.error("[IncidentsPage] Error fetching incidents:", error);
+    console.error('[IncidentsPage] Error fetching incidents:', error);
   }
   const fetchErrorMessage = error?.message ?? null;
 
   type Incident = NonNullable<typeof incidents>[number];
   const incidentRows = (incidents ?? []) as Incident[];
   const filteredIncidents = incidentRows.filter((incident: Incident) => {
-    if (statusFilter && incident.status.toLowerCase() !== statusFilter) return false;
-    if (severityFilter && incident.severity.toLowerCase() !== severityFilter) return false;
+    if (statusFilter && incident.status.toLowerCase() !== statusFilter)
+      return false;
+    if (severityFilter && incident.severity.toLowerCase() !== severityFilter)
+      return false;
     if (!qLower) return true;
 
-    const patientName = ((incident.patient as { full_name?: string } | null)?.full_name ?? "").toLowerCase();
-    const description = (incident.description ?? "").toLowerCase();
-    const incidentType = (incident.incident_type ?? "").toLowerCase();
-    const location = (incident.location ?? "").toLowerCase();
+    const patientName = (
+      (incident.patient as { full_name?: string } | null)?.full_name ?? ''
+    ).toLowerCase();
+    const description = (incident.description ?? '').toLowerCase();
+    const incidentType = (incident.incident_type ?? '').toLowerCase();
+    const location = (incident.location ?? '').toLowerCase();
 
     return (
       patientName.includes(qLower) ||
@@ -107,10 +121,15 @@ export default async function IncidentsPage({
 
   const stats = {
     total: filteredIncidents.length,
-    open: filteredIncidents.filter((i: Incident) => i.status === "open").length,
-    resolved: filteredIncidents.filter((i: Incident) => i.status === "resolved").length,
-    critical: filteredIncidents.filter((i: Incident) => i.severity === "critical" || i.severity === "high").length,
-    pendingFollowUp: filteredIncidents.filter((i: Incident) => i.follow_up_required && !i.resolved_at).length,
+    open: filteredIncidents.filter((i: Incident) => i.status === 'open').length,
+    resolved: filteredIncidents.filter((i: Incident) => i.status === 'resolved')
+      .length,
+    critical: filteredIncidents.filter(
+      (i: Incident) => i.severity === 'critical' || i.severity === 'high',
+    ).length,
+    pendingFollowUp: filteredIncidents.filter(
+      (i: Incident) => i.follow_up_required && !i.resolved_at,
+    ).length,
   };
 
   return (
@@ -118,7 +137,10 @@ export default async function IncidentsPage({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight" data-testid="incidents-title">
+          <h1
+            className="text-3xl font-black tracking-tight"
+            data-testid="incidents-title"
+          >
             Incidents
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -251,103 +273,130 @@ export default async function IncidentsPage({
 
       {/* Table */}
       <div className="rounded-xl border border-border overflow-hidden">
-        <table className="w-full" data-testid="incidents-table">
-          <thead className="bg-muted/50">
-            <tr>
-              <th className="text-left px-4 py-3 text-sm font-medium">Severity</th>
-              <th className="text-left px-4 py-3 text-sm font-medium">Type</th>
-              <th className="text-left px-4 py-3 text-sm font-medium hidden md:table-cell">Client</th>
-              <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">Occurred</th>
-              <th className="text-left px-4 py-3 text-sm font-medium">Status</th>
-              <th className="text-left px-4 py-3 text-sm font-medium hidden xl:table-cell">Follow-up</th>
-              <th className="text-left px-4 py-3 text-sm font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {filteredIncidents.map((incident: Incident) => (
-              <tr key={incident.id} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-3">
-                  <span
-                    className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${getSeverityColor(
-                      incident.severity
-                    )}`}
-                  >
-                    {incident.severity}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <span className="text-sm capitalize">
-                    {incident.incident_type?.replace("_", " ") || "General"}
-                  </span>
-                </td>
-                <td className="px-4 py-3 hidden md:table-cell">
-                  <span className="font-medium">
-                    {(incident.patient as { full_name?: string } | null)?.full_name || "-"}
-                  </span>
-                </td>
-                <td className="px-4 py-3 hidden lg:table-cell">
-                  <span className="text-sm">{formatDate(incident.occurred_at)}</span>
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                      incident.status === "resolved"
-                        ? "bg-green-500/10 text-green-600"
-                        : "bg-amber-500/10 text-amber-600"
-                    }`}
-                  >
-                    {incident.status === "resolved" ? (
-                      <CheckCircle className="h-3 w-3" />
-                    ) : (
-                      <Clock className="h-3 w-3" />
-                    )}
-                    {incident.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 hidden xl:table-cell">
-                  {incident.follow_up_required ? (
-                    <span className="text-sm text-orange-600">
-                      Due: {incident.follow_up_due_date || "TBD"}
-                    </span>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">-</span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  <Link
-                    href={`/app/incidents/${incident.id}`}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    View
-                  </Link>
-                </td>
-              </tr>
-            ))}
-            {filteredIncidents.length === 0 && (
+        <div className="overflow-x-auto overscroll-x-contain">
+          <table className="min-w-[480px] w-full" data-testid="incidents-table">
+            <thead className="bg-muted/50">
               <tr>
-                <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
-                  <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  {hasFilters ? (
-                    <>
-                      <p>No incidents matched your filters</p>
-                      <Link
-                        href="/app/incidents"
-                        className="text-primary hover:underline mt-2 inline-block"
-                      >
-                        Clear filters
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <p>No incidents reported</p>
-                      <p className="text-sm mt-1">Incidents will appear here when reported</p>
-                    </>
-                  )}
-                </td>
+                <th className="text-left px-4 py-3 text-sm font-medium">
+                  Severity
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium">
+                  Type
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium hidden md:table-cell">
+                  Client
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
+                  Occurred
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium">
+                  Status
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium hidden xl:table-cell">
+                  Follow-up
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium">
+                  Actions
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {filteredIncidents.map((incident: Incident) => (
+                <tr
+                  key={incident.id}
+                  className="hover:bg-muted/30 transition-colors"
+                >
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${getSeverityColor(
+                        incident.severity,
+                      )}`}
+                    >
+                      {incident.severity}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="text-sm capitalize">
+                      {incident.incident_type?.replace('_', ' ') || 'General'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 hidden md:table-cell">
+                    <span className="font-medium">
+                      {(incident.patient as { full_name?: string } | null)
+                        ?.full_name || '-'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 hidden lg:table-cell">
+                    <span className="text-sm">
+                      {formatDate(incident.occurred_at)}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                        incident.status === 'resolved'
+                          ? 'bg-green-500/10 text-green-600'
+                          : 'bg-amber-500/10 text-amber-600'
+                      }`}
+                    >
+                      {incident.status === 'resolved' ? (
+                        <CheckCircle className="h-3 w-3" />
+                      ) : (
+                        <Clock className="h-3 w-3" />
+                      )}
+                      {incident.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 hidden xl:table-cell">
+                    {incident.follow_up_required ? (
+                      <span className="text-sm text-orange-600">
+                        Due: {incident.follow_up_due_date || 'TBD'}
+                      </span>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">-</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link
+                      href={`/app/incidents/${incident.id}`}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+              {filteredIncidents.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-4 py-12 text-center text-muted-foreground"
+                  >
+                    <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    {hasFilters ? (
+                      <>
+                        <p>No incidents matched your filters</p>
+                        <Link
+                          href="/app/incidents"
+                          className="text-primary hover:underline mt-2 inline-block"
+                        >
+                          Clear filters
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <p>No incidents reported</p>
+                        <p className="text-sm mt-1">
+                          Incidents will appear here when reported
+                        </p>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

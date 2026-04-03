@@ -73,8 +73,19 @@ function BlogHero() {
     <ImmersiveHero
       theme="blog"
       visualContent={<BlogListHeroVisual />}
-      badge={{ icon: <BookOpen className="w-4 h-4 text-violet-400" />, text: 'Insights & Updates', colorClass: 'violet' }}
-      headline={<>FormaOS{' '}<span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">Blog</span></>}
+      badge={{
+        icon: <BookOpen className="w-4 h-4 text-violet-400" />,
+        text: 'Insights & Updates',
+        colorClass: 'violet',
+      }}
+      headline={
+        <>
+          FormaOS{' '}
+          <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
+            Blog
+          </span>
+        </>
+      }
       subheadline="Expert perspectives on compliance management, regulatory technology, and building operational excellence in regulated industries."
       extras={<BlogHeroExtras />}
       primaryCta={{ href: '/blog#featured', label: 'Read Featured Article' }}
@@ -91,14 +102,14 @@ function FeaturedPost() {
 
   return (
     <section className="mk-section relative">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">
         <Link
           href={`/blog/${featuredPost.id}`}
           className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-3xl"
           aria-label={`Read ${featuredPost.title}`}
         >
           <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="relative">
-            <div className="relative p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
+            <div className="relative p-5 sm:p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
               {/* Top accent */}
               <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
 
@@ -188,7 +199,7 @@ function CategoryFilter({
 }) {
   return (
     <section className="mk-section relative">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12 space-y-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12 space-y-6">
         <ScrollReveal
           variant="fadeUp"
           range={[0, 0.3]}
@@ -235,11 +246,7 @@ function CategoryFilter({
 // BLOG CARD
 // ============================================================================
 
-function BlogCard({
-  post,
-}: {
-  post: (typeof blogPosts)[0];
-}) {
+function BlogCard({ post }: { post: (typeof blogPosts)[0] }) {
   const Icon = post.icon;
 
   return (
@@ -248,59 +255,59 @@ function BlogCard({
       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-2xl h-full"
       aria-label={`Read ${post.title}`}
     >
-        <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
-          {/* Top accent */}
-          <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
+      <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
+        {/* Top accent */}
+        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
 
-          <div className="relative mb-5 h-28 w-full rounded-xl overflow-hidden border border-white/5 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent group-hover:from-purple-500/20 transition-all duration-500">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 group-hover:bg-white/10 transition-all duration-500">
-                <Icon className="w-8 h-8 text-purple-400 group-hover:text-purple-300 transition-colors" />
-              </div>
+        <div className="relative mb-5 h-28 w-full rounded-xl overflow-hidden border border-white/5 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent group-hover:from-purple-500/20 transition-all duration-500">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 group-hover:bg-white/10 transition-all duration-500">
+              <Icon className="w-8 h-8 text-purple-400 group-hover:text-purple-300 transition-colors" />
             </div>
-          </div>
-
-          {/* Icon header */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-              <Icon className="w-5 h-5 text-purple-400" />
-            </div>
-            <span className="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-gray-400 text-xs">
-              {post.category}
-            </span>
-          </div>
-
-          {/* Title */}
-          <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-300 transition-colors line-clamp-2">
-            {post.title}
-          </h3>
-
-          {/* Excerpt */}
-          <p className="text-sm text-gray-400 mb-4 line-clamp-3">
-            {post.excerpt}
-          </p>
-
-          {/* Meta */}
-          <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/5">
-            <div className="flex items-center gap-2">
-              <CalendarDays className="w-3.5 h-3.5" />
-              <span>{post.date}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-3.5 h-3.5" />
-              <span>{post.readTime}</span>
-            </div>
-          </div>
-
-          {/* Hover CTA */}
-          <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="flex items-center gap-2 text-sm text-purple-400 font-medium">
-              <span>Read More</span>
-              <ChevronRight className="w-4 h-4" />
-            </span>
           </div>
         </div>
+
+        {/* Icon header */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+            <Icon className="w-5 h-5 text-purple-400" />
+          </div>
+          <span className="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-gray-400 text-xs">
+            {post.category}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-300 transition-colors line-clamp-2">
+          {post.title}
+        </h3>
+
+        {/* Excerpt */}
+        <p className="text-sm text-gray-400 mb-4 line-clamp-3">
+          {post.excerpt}
+        </p>
+
+        {/* Meta */}
+        <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/5">
+          <div className="flex items-center gap-2">
+            <CalendarDays className="w-3.5 h-3.5" />
+            <span>{post.date}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Clock className="w-3.5 h-3.5" />
+            <span>{post.readTime}</span>
+          </div>
+        </div>
+
+        {/* Hover CTA */}
+        <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <span className="flex items-center gap-2 text-sm text-purple-400 font-medium">
+            <span>Read More</span>
+            <ChevronRight className="w-4 h-4" />
+          </span>
+        </div>
+      </div>
     </Link>
   );
 }
@@ -348,7 +355,10 @@ function BlogGrid({
         </ScrollReveal>
 
         {posts.length ? (
-          <SectionChoreography pattern="stagger-wave" className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <SectionChoreography
+            pattern="stagger-wave"
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
             {posts.map((post) => (
               <BlogCard key={post.id} post={post} />
             ))}

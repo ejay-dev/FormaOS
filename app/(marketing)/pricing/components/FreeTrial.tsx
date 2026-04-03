@@ -49,7 +49,7 @@ export function FreeTrial() {
         <ScrollReveal
           variant="depthSlide"
           range={[0, 0.35]}
-          className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/20 via-white/[0.04] to-white/[0.02] rounded-3xl border border-cyan-500/30 p-12 text-center shadow-2xl"
+          className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/20 via-white/[0.04] to-white/[0.02] rounded-3xl border border-cyan-500/30 p-6 sm:p-8 md:p-12 text-center shadow-2xl"
         >
           {/* Floating glow effect */}
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-emerald-500/5 rounded-3xl blur-2xl -z-10" />
@@ -69,14 +69,21 @@ export function FreeTrial() {
           </p>
 
           {/* Trial features */}
-          <SectionChoreography pattern="center-burst" stagger={0.05} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          <SectionChoreography
+            pattern="center-burst"
+            stagger={0.05}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10"
+          >
             {trialFeatures.map((feature) => (
-                <div key={feature} className="p-4 rounded-xl bg-white/[0.06] border border-white/10">
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <CheckCircle className="w-4 h-4 text-cyan-400" />
-                  </div>
-                  <p className="text-sm text-gray-300">{feature}</p>
+              <div
+                key={feature}
+                className="p-4 rounded-xl bg-white/[0.06] border border-white/10"
+              >
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <CheckCircle className="w-4 h-4 text-cyan-400" />
                 </div>
+                <p className="text-sm text-gray-300">{feature}</p>
+              </div>
             ))}
           </SectionChoreography>
 

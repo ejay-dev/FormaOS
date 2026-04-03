@@ -7,7 +7,7 @@ export default function NotificationSettingsLoading() {
         <p className="text-xs font-black uppercase tracking-[0.26em] text-sky-200">
           Notifications
         </p>
-        <h1 className="text-4xl font-black tracking-tight text-foreground/50">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground/50">
           Delivery Preferences
         </h1>
         <Skeleton className="h-4 w-[32rem]" />

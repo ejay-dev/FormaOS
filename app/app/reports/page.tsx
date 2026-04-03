@@ -147,7 +147,7 @@ async function ComplianceScoreSection({
         </div>
       )}
 
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
+      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-sky-400/20 bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-sky-200">
@@ -167,7 +167,7 @@ async function ComplianceScoreSection({
             <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
               Compliance Score
             </p>
-            <div className="mt-2 text-4xl font-black text-foreground">
+            <div className="mt-2 text-2xl sm:text-3xl md:text-4xl font-black text-foreground">
               {complianceScore}%
             </div>
             <div className="mt-3 flex items-center justify-center gap-4 text-xs text-muted-foreground">
@@ -212,7 +212,7 @@ async function ComplianceScoreSection({
 function ExportSection({ disableExports }: { disableExports: boolean }) {
   return (
     <>
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
+      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-200">
@@ -287,7 +287,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
         )}
       </div>
 
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8">
+      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
         <div className="mb-4 flex items-center gap-2 text-sky-300">
           <FileText className="h-5 w-5" />
           <span className="text-xs font-bold uppercase tracking-widest">

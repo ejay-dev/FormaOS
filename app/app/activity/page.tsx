@@ -15,7 +15,7 @@ export default async function ActivityPage() {
         <p className="text-xs font-black uppercase tracking-[0.26em] text-sky-200">
           Activity Intelligence
         </p>
-        <h1 className="text-4xl font-black tracking-tight text-foreground">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground">
           Organization Activity Feed
         </h1>
         <p className="max-w-3xl text-sm leading-7 text-muted-foreground">

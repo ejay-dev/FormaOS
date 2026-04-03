@@ -185,7 +185,7 @@ function ContactInformation() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Email */}
           <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-blue-500/20 flex items-center justify-center">
                 <Mail className="w-8 h-8 text-blue-400" />
               </div>
@@ -201,7 +201,7 @@ function ContactInformation() {
 
           {/* Phone */}
           <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
                 <Phone className="w-8 h-8 text-cyan-400" />
               </div>
@@ -217,7 +217,7 @@ function ContactInformation() {
 
           {/* Availability */}
           <ScrollReveal variant="depthSlide" range={[0.08, 0.38]}>
-            <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
                 <Clock className="w-8 h-8 text-purple-400" />
               </div>
@@ -289,9 +289,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-300">
                     Inquiry path
                   </p>
-                  <p className="mt-2 text-sm text-white capitalize">
-                    {intent}
-                  </p>
+                  <p className="mt-2 text-sm text-white capitalize">{intent}</p>
                 </div>
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-300">
@@ -643,8 +641,7 @@ function ClosingCTA() {
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">
-            {copy.closingTitle}{' '}
-            <br className="hidden sm:block" />
+            {copy.closingTitle} <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
               with FormaOS
             </span>

@@ -40,7 +40,7 @@ export default async function AuditTrailPage() {
 
   if (membershipError || !membership) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center p-12 text-center animate-in fade-in zoom-in duration-500">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 text-center animate-in fade-in zoom-in duration-500">
         <div className="bg-red-50 h-20 w-20 rounded-3xl flex items-center justify-center mb-6 border border-red-100 shadow-sm">
           <AlertTriangle className="h-10 w-10 text-red-600" />
         </div>
@@ -76,7 +76,7 @@ export default async function AuditTrailPage() {
 
   if (orgError || !organization) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center p-12 text-center animate-in fade-in zoom-in duration-500">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 text-center animate-in fade-in zoom-in duration-500">
         <div className="bg-red-50 h-20 w-20 rounded-3xl flex items-center justify-center mb-6 border border-red-100 shadow-sm">
           <AlertTriangle className="h-10 w-10 text-red-600" />
         </div>

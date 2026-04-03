@@ -71,13 +71,7 @@ function FooterCTA() {
 
 /* ── Footer link ─────────────────────────────────────────── */
 
-function FooterLink({
-  href,
-  label,
-}: {
-  href: string;
-  label: string;
-}) {
+function FooterLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
@@ -106,7 +100,7 @@ export function Footer() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* CTA Section */}
-        <div className="py-16 lg:py-20">
+        <div className="py-10 sm:py-14 lg:py-20">
           <FooterCTA />
         </div>
 
@@ -165,7 +159,10 @@ export function Footer() {
         <div className="py-8 border-t border-white/10">
           <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-10">
             {trustBadges.map((badge) => (
-              <div key={badge.label} className="flex items-center gap-2 text-sm">
+              <div
+                key={badge.label}
+                className="flex items-center gap-2 text-sm"
+              >
                 <div className="p-1.5 rounded-lg bg-white/[0.06] text-slate-400">
                   <badge.icon className="h-3.5 w-3.5" />
                 </div>

@@ -238,89 +238,91 @@ export default async function FormsPage({
         </div>
       ) : (
         <div className="rounded-xl border border-border overflow-hidden">
-          <table className="w-full" data-testid="forms-table">
-            <thead>
-              <tr className="bg-muted/50 text-left text-sm text-muted-foreground">
-                <th className="px-4 py-3 font-medium">Form</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium hidden md:table-cell">
-                  Submissions
-                </th>
-                <th className="px-4 py-3 font-medium hidden md:table-cell">
-                  Version
-                </th>
-                <th className="px-4 py-3 font-medium hidden lg:table-cell">
-                  Updated
-                </th>
-                <th className="px-4 py-3 font-medium text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {forms.map((form) => {
-                const subCount =
-                  (form.submission_count as any)?.[0]?.count ?? 0;
-                return (
-                  <tr
-                    key={form.id}
-                    className="hover:bg-muted/30 transition-colors"
-                    data-testid={`form-row-${form.id}`}
-                  >
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/app/forms/builder/${form.id}`}
-                        className="font-medium hover:underline"
-                      >
-                        {form.title}
-                      </Link>
-                      {form.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
-                          {form.description}
-                        </p>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadge(
-                          form.status,
-                        )}`}
-                      >
-                        {form.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 hidden md:table-cell text-sm text-muted-foreground">
-                      {subCount}
-                    </td>
-                    <td className="px-4 py-3 hidden md:table-cell text-sm text-muted-foreground">
-                      v{form.version ?? 1}
-                    </td>
-                    <td className="px-4 py-3 hidden lg:table-cell text-sm text-muted-foreground">
-                      {formatDate(form.updated_at)}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {form.status === 'published' && (
-                          <Link
-                            href={`/app/forms/${form.id}/submissions`}
-                            className="p-1.5 rounded-lg hover:bg-accent transition-colors"
-                            title="View submissions"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Link>
-                        )}
+          <div className="overflow-x-auto overscroll-x-contain">
+            <table className="min-w-[480px] w-full" data-testid="forms-table">
+              <thead>
+                <tr className="bg-muted/50 text-left text-sm text-muted-foreground">
+                  <th className="px-4 py-3 font-medium">Form</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium hidden md:table-cell">
+                    Submissions
+                  </th>
+                  <th className="px-4 py-3 font-medium hidden md:table-cell">
+                    Version
+                  </th>
+                  <th className="px-4 py-3 font-medium hidden lg:table-cell">
+                    Updated
+                  </th>
+                  <th className="px-4 py-3 font-medium text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {forms.map((form) => {
+                  const subCount =
+                    (form.submission_count as any)?.[0]?.count ?? 0;
+                  return (
+                    <tr
+                      key={form.id}
+                      className="hover:bg-muted/30 transition-colors"
+                      data-testid={`form-row-${form.id}`}
+                    >
+                      <td className="px-4 py-3">
                         <Link
                           href={`/app/forms/builder/${form.id}`}
-                          className="p-1.5 rounded-lg hover:bg-accent transition-colors"
-                          title="Edit form"
+                          className="font-medium hover:underline"
                         >
-                          <FileText className="h-4 w-4" />
+                          {form.title}
                         </Link>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                        {form.description && (
+                          <p className="text-sm text-muted-foreground line-clamp-1 mt-0.5">
+                            {form.description}
+                          </p>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusBadge(
+                            form.status,
+                          )}`}
+                        >
+                          {form.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 hidden md:table-cell text-sm text-muted-foreground">
+                        {subCount}
+                      </td>
+                      <td className="px-4 py-3 hidden md:table-cell text-sm text-muted-foreground">
+                        v{form.version ?? 1}
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell text-sm text-muted-foreground">
+                        {formatDate(form.updated_at)}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          {form.status === 'published' && (
+                            <Link
+                              href={`/app/forms/${form.id}/submissions`}
+                              className="p-1.5 rounded-lg hover:bg-accent transition-colors"
+                              title="View submissions"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Link>
+                          )}
+                          <Link
+                            href={`/app/forms/builder/${form.id}`}
+                            className="p-1.5 rounded-lg hover:bg-accent transition-colors"
+                            title="Edit form"
+                          >
+                            <FileText className="h-4 w-4" />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

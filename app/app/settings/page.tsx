@@ -60,11 +60,12 @@ export default async function SettingsPage() {
   const role = systemState.role;
   const orgId = systemState.organization.id;
 
-  const { data: activeOrganization, error: activeOrganizationError } = await supabase
-    .from('organizations')
-    .select('*')
-    .eq('id', orgId)
-    .maybeSingle();
+  const { data: activeOrganization, error: activeOrganizationError } =
+    await supabase
+      .from('organizations')
+      .select('*')
+      .eq('id', orgId)
+      .maybeSingle();
 
   if (!activeOrganization) {
     const diagnosticReason =
@@ -124,7 +125,11 @@ export default async function SettingsPage() {
   const hasMissingIdentityData =
     !activeOrganization.domain || !activeOrganization.registration_number;
   const healthState =
-    atRiskCount > 0 ? 'attention' : hasMissingIdentityData ? 'review' : 'healthy';
+    atRiskCount > 0
+      ? 'attention'
+      : hasMissingIdentityData
+        ? 'review'
+        : 'healthy';
 
   return (
     <div
@@ -134,7 +139,7 @@ export default async function SettingsPage() {
       {/* HEADER SECTION */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-4xl font-black text-foreground tracking-tighter">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tighter">
             Organization Governance
           </h1>
           <p className="text-muted-foreground mt-2 font-medium tracking-tight max-w-xl">
@@ -203,7 +208,10 @@ export default async function SettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label htmlFor="field-212" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">
+                  <label
+                    htmlFor="field-212"
+                    className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                  >
                     Legal Entity Name
                   </label>
                   <input
@@ -214,7 +222,10 @@ export default async function SettingsPage() {
                   />
                 </div>
                 <div className="space-y-3">
-                  <label htmlFor="field-211" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">
+                  <label
+                    htmlFor="field-211"
+                    className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                  >
                     Registration (ABN/ACN)
                   </label>
                   <input
@@ -228,7 +239,10 @@ export default async function SettingsPage() {
               </div>
 
               <div className="space-y-3 pt-2">
-                <label htmlFor="field-210" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">
+                <label
+                  htmlFor="field-210"
+                  className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                >
                   Authorized Email Domain
                 </label>
                 <div className="relative group">
