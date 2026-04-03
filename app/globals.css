@@ -927,17 +927,17 @@
  *   task-control    → success
  */
 :root {
-  --wire-action:  #00d4fb;  /* cyan  — primary action */
-  --wire-alert:   #f43f5e;  /* rose  — risk / danger  */
-  --wire-success: #10b981;  /* emerald — cleared / done */
+  --wire-action: #00d4fb; /* cyan  — primary action */
+  --wire-alert: #f43f5e; /* rose  — risk / danger  */
+  --wire-success: #10b981; /* emerald — cleared / done */
 
   /* Legacy aliases — do not use in new code */
-  --wire-policy-control:   var(--wire-action);
+  --wire-policy-control: var(--wire-action);
   --wire-control-evidence: var(--wire-action);
-  --wire-evidence-audit:   var(--wire-action);
-  --wire-audit-risk:       var(--wire-alert);
-  --wire-risk-task:        var(--wire-alert);
-  --wire-task-control:     var(--wire-success);
+  --wire-evidence-audit: var(--wire-action);
+  --wire-audit-risk: var(--wire-alert);
+  --wire-risk-task: var(--wire-alert);
+  --wire-task-control: var(--wire-success);
 }
 
 @layer utilities {
@@ -1512,4 +1512,36 @@
 .text-\[11px\] {
   font-size: 0.8125rem;
   line-height: 1.125rem;
+}
+
+/* ─── Compliance UI Density Utilities ─── */
+
+/* Compact card padding for dense dashboard surfaces */
+.card-compact {
+  padding: 0.75rem;
+}
+
+/* Monospace for dates, IDs, counts in compliance views */
+.compliance-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Empty state container */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+}
+
+.empty-state svg {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.4;
 }

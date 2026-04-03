@@ -14,6 +14,10 @@ import {
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist';
 import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
+import { ComplianceSummaryCards } from '@/components/compliance/ComplianceSummaryCards';
+import { MyActionsWidget } from '@/components/compliance/MyActionsWidget';
+import { UpcomingDeadlinesWidget } from '@/components/compliance/UpcomingDeadlinesWidget';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 import type { DatabaseRole } from '@/lib/roles';
 
 /**
@@ -160,7 +164,9 @@ export function MyCertificates({
     >
       <div className="space-y-3">
         {certificates.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No certifications on file.</p>
+          <p className="text-sm text-muted-foreground">
+            No certifications on file.
+          </p>
         ) : (
           certificates.map((cert) => (
             <div
@@ -273,10 +279,13 @@ export function MyTasks({
                 <div className="flex-1 text-xs text-muted-foreground">
                   <p>
                     Assigned by:{' '}
-                    <span className="text-foreground/70">{task.assignedBy}</span>
+                    <span className="text-foreground/70">
+                      {task.assignedBy}
+                    </span>
                   </p>
                   <p>
-                    Due: <span className="text-foreground/70">{task.dueAt}</span>
+                    Due:{' '}
+                    <span className="text-foreground/70">{task.dueAt}</span>
                   </p>
                 </div>
 
@@ -449,15 +458,24 @@ export function Training({
 
 function getEmployeeEntityLabel(industry?: string | null): string {
   switch (industry) {
-    case 'ndis': return 'participant compliance';
-    case 'healthcare': return 'clinical';
-    case 'aged_care': return 'resident care';
-    case 'childcare': return 'child safety';
-    case 'community_services': return 'client service';
-    case 'financial_services': return 'regulatory';
-    case 'saas_technology': return 'security control';
-    case 'enterprise': return 'enterprise';
-    default: return 'compliance';
+    case 'ndis':
+      return 'participant compliance';
+    case 'healthcare':
+      return 'clinical';
+    case 'aged_care':
+      return 'resident care';
+    case 'childcare':
+      return 'child safety';
+    case 'community_services':
+      return 'client service';
+    case 'financial_services':
+      return 'regulatory';
+    case 'saas_technology':
+      return 'security control';
+    case 'enterprise':
+      return 'enterprise';
+    default:
+      return 'compliance';
   }
 }
 
@@ -542,7 +560,9 @@ function RoleWorkflowBoard({
           </p>
         </div>
         <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
-          <p className="text-lg font-bold text-foreground">{complianceScore}%</p>
+          <p className="text-lg font-bold text-foreground">
+            {complianceScore}%
+          </p>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Score
           </p>
@@ -610,7 +630,12 @@ export function EmployeeDashboard({
   ];
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-6">
+      {/* Compliance Summary — same view as employer for context */}
+      <ErrorBoundary name="EmployeeSummaryCards" level="component">
+        <ComplianceSummaryCards />
+      </ErrorBoundary>
+
       <div className="rounded-2xl border border-glass-border bg-glass-subtle px-4 sm:px-5 py-4">
         <p className="text-xs uppercase tracking-wider text-muted-foreground">
           Workspace Context
@@ -618,6 +643,12 @@ export function EmployeeDashboard({
         <p className="mt-1 text-sm text-foreground/90">
           {employeeName} operating in {organizationName}
         </p>
+      </div>
+
+      {/* Primary work area: My Actions + Deadlines */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <MyActionsWidget />
+        <UpcomingDeadlinesWidget />
       </div>
 
       <GettingStartedChecklist industry={industry} />

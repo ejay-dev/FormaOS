@@ -37,6 +37,23 @@ import { FrameworkHealthWidget } from '@/components/intelligence/FrameworkHealth
 import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
 import { ComplianceScoreHistory } from '@/components/compliance/ComplianceScoreHistory';
 import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePanel';
+import { ComplianceSummaryCards } from '@/components/compliance/ComplianceSummaryCards';
+import { MyActionsWidget } from '@/components/compliance/MyActionsWidget';
+import { UpcomingDeadlinesWidget } from '@/components/compliance/UpcomingDeadlinesWidget';
+import {
+  NDISWorkerScreeningWidget,
+  NDISParticipantSnapshot,
+  NDISSIRSTrackerWidget,
+  HealthcarePractitionerWidget,
+  HealthcareNSQHSWidget,
+  AgedCareCarePlanWidget,
+  AgedCareStarRatingWidget,
+  ChildcareEducatorCredentialsWidget,
+  ChildcareNQFWidget,
+  FinancialBreachRegisterWidget,
+  FinancialBoardReportButton,
+} from '@/components/dashboard/industry-widgets';
+import { ErrorBoundary } from '@/components/ui/error-boundary';
 import type { ChecklistCompletionCounts } from '@/lib/onboarding/industry-checklists';
 import {
   getCachedProgress,
@@ -63,96 +80,528 @@ interface QuickAction {
 
 const INDUSTRY_QUICK_ACTIONS: Record<string, QuickAction[]> = {
   ndis: [
-    { label: 'Participants', description: 'Manage participant records', href: '/app/participants', icon: Users, color: 'text-purple-400' },
-    { label: 'Service Delivery', description: 'Visits & service logs', href: '/app/visits', icon: Calendar, color: 'text-cyan-400' },
-    { label: 'Incidents', description: 'Report & investigate', href: '/app/incidents', icon: AlertTriangle, color: 'text-rose-400' },
-    { label: 'Staff Compliance', description: 'Worker screening & checks', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
-    { label: 'Progress Notes', description: 'Participant progress', href: '/app/progress-notes', icon: NotebookPen, color: 'text-blue-400' },
-    { label: 'Evidence Vault', description: 'Evidence submissions', href: '/app/vault', icon: Lock, color: 'text-amber-400' },
-    { label: 'Reports', description: 'Compliance reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+    {
+      label: 'Participants',
+      description: 'Manage participant records',
+      href: '/app/participants',
+      icon: Users,
+      color: 'text-purple-400',
+    },
+    {
+      label: 'Service Delivery',
+      description: 'Visits & service logs',
+      href: '/app/visits',
+      icon: Calendar,
+      color: 'text-cyan-400',
+    },
+    {
+      label: 'Incidents',
+      description: 'Report & investigate',
+      href: '/app/incidents',
+      icon: AlertTriangle,
+      color: 'text-rose-400',
+    },
+    {
+      label: 'Staff Compliance',
+      description: 'Worker screening & checks',
+      href: '/app/staff-compliance',
+      icon: UserCheck,
+      color: 'text-emerald-400',
+    },
+    {
+      label: 'Progress Notes',
+      description: 'Participant progress',
+      href: '/app/progress-notes',
+      icon: NotebookPen,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Evidence Vault',
+      description: 'Evidence submissions',
+      href: '/app/vault',
+      icon: Lock,
+      color: 'text-amber-400',
+    },
+    {
+      label: 'Reports',
+      description: 'Compliance reports',
+      href: '/app/reports',
+      icon: FileText,
+      color: 'text-sky-400',
+    },
+    {
+      label: 'Settings',
+      description: 'Organization settings',
+      href: '/app/settings',
+      icon: Settings,
+      color: 'text-muted-foreground',
+    },
   ],
   healthcare: [
-    { label: 'Patients', description: 'Patient records & status', href: '/app/participants', icon: HeartPulse, color: 'text-rose-400' },
-    { label: 'Appointments', description: 'Schedule & track', href: '/app/visits', icon: Calendar, color: 'text-cyan-400' },
-    { label: 'Clinical Notes', description: 'Clinical documentation', href: '/app/progress-notes', icon: NotebookPen, color: 'text-blue-400' },
-    { label: 'Staff Credentials', description: 'AHPRA & registrations', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
-    { label: 'Incidents', description: 'Clinical incidents', href: '/app/incidents', icon: AlertTriangle, color: 'text-amber-400' },
-    { label: 'Evidence Vault', description: 'Evidence & artifacts', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
-    { label: 'Reports', description: 'Accreditation reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Practice settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+    {
+      label: 'Patients',
+      description: 'Patient records & status',
+      href: '/app/participants',
+      icon: HeartPulse,
+      color: 'text-rose-400',
+    },
+    {
+      label: 'Appointments',
+      description: 'Schedule & track',
+      href: '/app/visits',
+      icon: Calendar,
+      color: 'text-cyan-400',
+    },
+    {
+      label: 'Clinical Notes',
+      description: 'Clinical documentation',
+      href: '/app/progress-notes',
+      icon: NotebookPen,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Staff Credentials',
+      description: 'AHPRA & registrations',
+      href: '/app/staff-compliance',
+      icon: UserCheck,
+      color: 'text-emerald-400',
+    },
+    {
+      label: 'Incidents',
+      description: 'Clinical incidents',
+      href: '/app/incidents',
+      icon: AlertTriangle,
+      color: 'text-amber-400',
+    },
+    {
+      label: 'Evidence Vault',
+      description: 'Evidence & artifacts',
+      href: '/app/vault',
+      icon: Lock,
+      color: 'text-purple-400',
+    },
+    {
+      label: 'Reports',
+      description: 'Accreditation reports',
+      href: '/app/reports',
+      icon: FileText,
+      color: 'text-sky-400',
+    },
+    {
+      label: 'Settings',
+      description: 'Practice settings',
+      href: '/app/settings',
+      icon: Settings,
+      color: 'text-muted-foreground',
+    },
   ],
   aged_care: [
-    { label: 'Residents', description: 'Resident records', href: '/app/participants', icon: Home, color: 'text-rose-400' },
-    { label: 'Care Plans', description: 'Care plan management', href: '/app/care-plans', icon: FileText, color: 'text-cyan-400' },
-    { label: 'Service Logs', description: 'Daily service logs', href: '/app/visits', icon: Calendar, color: 'text-blue-400' },
-    { label: 'Incidents', description: 'SIRS reporting', href: '/app/incidents', icon: AlertTriangle, color: 'text-amber-400' },
-    { label: 'Staff Compliance', description: 'Staff credentials', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
-    { label: 'Progress Notes', description: 'Resident notes', href: '/app/progress-notes', icon: NotebookPen, color: 'text-purple-400' },
-    { label: 'Evidence Vault', description: 'Audit evidence', href: '/app/vault', icon: Lock, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Facility settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+    {
+      label: 'Residents',
+      description: 'Resident records',
+      href: '/app/participants',
+      icon: Home,
+      color: 'text-rose-400',
+    },
+    {
+      label: 'Care Plans',
+      description: 'Care plan management',
+      href: '/app/care-plans',
+      icon: FileText,
+      color: 'text-cyan-400',
+    },
+    {
+      label: 'Service Logs',
+      description: 'Daily service logs',
+      href: '/app/visits',
+      icon: Calendar,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Incidents',
+      description: 'SIRS reporting',
+      href: '/app/incidents',
+      icon: AlertTriangle,
+      color: 'text-amber-400',
+    },
+    {
+      label: 'Staff Compliance',
+      description: 'Staff credentials',
+      href: '/app/staff-compliance',
+      icon: UserCheck,
+      color: 'text-emerald-400',
+    },
+    {
+      label: 'Progress Notes',
+      description: 'Resident notes',
+      href: '/app/progress-notes',
+      icon: NotebookPen,
+      color: 'text-purple-400',
+    },
+    {
+      label: 'Evidence Vault',
+      description: 'Audit evidence',
+      href: '/app/vault',
+      icon: Lock,
+      color: 'text-sky-400',
+    },
+    {
+      label: 'Settings',
+      description: 'Facility settings',
+      href: '/app/settings',
+      icon: Settings,
+      color: 'text-muted-foreground',
+    },
   ],
   childcare: [
-    { label: 'Children', description: 'Enrollment & records', href: '/app/participants', icon: Baby, color: 'text-amber-400' },
-    { label: 'Safety Checks', description: 'Daily safety inspections', href: '/app/registers', icon: Shield, color: 'text-rose-400' },
-    { label: 'Educator Compliance', description: 'WWCC & qualifications', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
-    { label: 'Incidents', description: 'Incident reports', href: '/app/incidents', icon: AlertTriangle, color: 'text-purple-400' },
-    { label: 'Progress Notes', description: 'Developmental notes', href: '/app/progress-notes', icon: NotebookPen, color: 'text-blue-400' },
-    { label: 'Evidence Vault', description: 'NQF evidence', href: '/app/vault', icon: Lock, color: 'text-cyan-400' },
-    { label: 'Reports', description: 'Quality reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Center settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+    {
+      label: 'Children',
+      description: 'Enrollment & records',
+      href: '/app/participants',
+      icon: Baby,
+      color: 'text-amber-400',
+    },
+    {
+      label: 'Safety Checks',
+      description: 'Daily safety inspections',
+      href: '/app/registers',
+      icon: Shield,
+      color: 'text-rose-400',
+    },
+    {
+      label: 'Educator Compliance',
+      description: 'WWCC & qualifications',
+      href: '/app/staff-compliance',
+      icon: UserCheck,
+      color: 'text-emerald-400',
+    },
+    {
+      label: 'Incidents',
+      description: 'Incident reports',
+      href: '/app/incidents',
+      icon: AlertTriangle,
+      color: 'text-purple-400',
+    },
+    {
+      label: 'Progress Notes',
+      description: 'Developmental notes',
+      href: '/app/progress-notes',
+      icon: NotebookPen,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Evidence Vault',
+      description: 'NQF evidence',
+      href: '/app/vault',
+      icon: Lock,
+      color: 'text-cyan-400',
+    },
+    {
+      label: 'Reports',
+      description: 'Quality reports',
+      href: '/app/reports',
+      icon: FileText,
+      color: 'text-sky-400',
+    },
+    {
+      label: 'Settings',
+      description: 'Center settings',
+      href: '/app/settings',
+      icon: Settings,
+      color: 'text-muted-foreground',
+    },
   ],
   community_services: [
-    { label: 'Clients', description: 'Client records', href: '/app/participants', icon: Users, color: 'text-purple-400' },
-    { label: 'Service Delivery', description: 'Service sessions', href: '/app/visits', icon: Calendar, color: 'text-cyan-400' },
-    { label: 'Incidents', description: 'Report incidents', href: '/app/incidents', icon: AlertTriangle, color: 'text-rose-400' },
-    { label: 'Staff Compliance', description: 'Staff checks', href: '/app/staff-compliance', icon: UserCheck, color: 'text-emerald-400' },
-    { label: 'Evidence Vault', description: 'Compliance evidence', href: '/app/vault', icon: Lock, color: 'text-amber-400' },
-    { label: 'Tasks', description: 'Compliance tasks', href: '/app/tasks', icon: CheckSquare, color: 'text-blue-400' },
-    { label: 'Reports', description: 'Funding reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+    {
+      label: 'Clients',
+      description: 'Client records',
+      href: '/app/participants',
+      icon: Users,
+      color: 'text-purple-400',
+    },
+    {
+      label: 'Service Delivery',
+      description: 'Service sessions',
+      href: '/app/visits',
+      icon: Calendar,
+      color: 'text-cyan-400',
+    },
+    {
+      label: 'Incidents',
+      description: 'Report incidents',
+      href: '/app/incidents',
+      icon: AlertTriangle,
+      color: 'text-rose-400',
+    },
+    {
+      label: 'Staff Compliance',
+      description: 'Staff checks',
+      href: '/app/staff-compliance',
+      icon: UserCheck,
+      color: 'text-emerald-400',
+    },
+    {
+      label: 'Evidence Vault',
+      description: 'Compliance evidence',
+      href: '/app/vault',
+      icon: Lock,
+      color: 'text-amber-400',
+    },
+    {
+      label: 'Tasks',
+      description: 'Compliance tasks',
+      href: '/app/tasks',
+      icon: CheckSquare,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Reports',
+      description: 'Funding reports',
+      href: '/app/reports',
+      icon: FileText,
+      color: 'text-sky-400',
+    },
+    {
+      label: 'Settings',
+      description: 'Organization settings',
+      href: '/app/settings',
+      icon: Settings,
+      color: 'text-muted-foreground',
+    },
   ],
   financial_services: [
-    { label: 'Organization', description: 'Overview & KPIs', href: '/app/executive', icon: Landmark, color: 'text-blue-400' },
-    { label: 'Policies', description: 'Regulatory policies', href: '/app/policies', icon: FileText, color: 'text-cyan-400' },
-    { label: 'Risk Registers', description: 'Risk & asset registers', href: '/app/registers', icon: ClipboardList, color: 'text-emerald-400' },
-    { label: 'Tasks', description: 'Compliance tasks', href: '/app/tasks', icon: CheckSquare, color: 'text-amber-400' },
-    { label: 'Evidence Vault', description: 'Audit evidence', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
-    { label: 'Team', description: 'Manage team', href: '/app/team', icon: Users, color: 'text-rose-400' },
-    { label: 'Reports', description: 'Compliance reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+    {
+      label: 'Organization',
+      description: 'Overview & KPIs',
+      href: '/app/executive',
+      icon: Landmark,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Policies',
+      description: 'Regulatory policies',
+      href: '/app/policies',
+      icon: FileText,
+      color: 'text-cyan-400',
+    },
+    {
+      label: 'Risk Registers',
+      description: 'Risk & asset registers',
+      href: '/app/registers',
+      icon: ClipboardList,
+      color: 'text-emerald-400',
+    },
+    {
+      label: 'Tasks',
+      description: 'Compliance tasks',
+      href: '/app/tasks',
+      icon: CheckSquare,
+      color: 'text-amber-400',
+    },
+    {
+      label: 'Evidence Vault',
+      description: 'Audit evidence',
+      href: '/app/vault',
+      icon: Lock,
+      color: 'text-purple-400',
+    },
+    {
+      label: 'Team',
+      description: 'Manage team',
+      href: '/app/team',
+      icon: Users,
+      color: 'text-rose-400',
+    },
+    {
+      label: 'Reports',
+      description: 'Compliance reports',
+      href: '/app/reports',
+      icon: FileText,
+      color: 'text-sky-400',
+    },
+    {
+      label: 'Settings',
+      description: 'Organization settings',
+      href: '/app/settings',
+      icon: Settings,
+      color: 'text-muted-foreground',
+    },
   ],
   saas_technology: [
-    { label: 'Organization', description: 'Overview & KPIs', href: '/app/executive', icon: Building2, color: 'text-blue-400' },
-    { label: 'Policies', description: 'SOC 2 / ISO policies', href: '/app/policies', icon: FileText, color: 'text-cyan-400' },
-    { label: 'Asset Inventory', description: 'Asset & risk registers', href: '/app/registers', icon: Laptop, color: 'text-emerald-400' },
-    { label: 'Control Tasks', description: 'Security controls', href: '/app/tasks', icon: CheckSquare, color: 'text-amber-400' },
-    { label: 'Evidence Vault', description: 'Audit artifacts', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
-    { label: 'Team', description: 'Manage team', href: '/app/team', icon: Users, color: 'text-rose-400' },
-    { label: 'Reports', description: 'Framework reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+    {
+      label: 'Organization',
+      description: 'Overview & KPIs',
+      href: '/app/executive',
+      icon: Building2,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Policies',
+      description: 'SOC 2 / ISO policies',
+      href: '/app/policies',
+      icon: FileText,
+      color: 'text-cyan-400',
+    },
+    {
+      label: 'Asset Inventory',
+      description: 'Asset & risk registers',
+      href: '/app/registers',
+      icon: Laptop,
+      color: 'text-emerald-400',
+    },
+    {
+      label: 'Control Tasks',
+      description: 'Security controls',
+      href: '/app/tasks',
+      icon: CheckSquare,
+      color: 'text-amber-400',
+    },
+    {
+      label: 'Evidence Vault',
+      description: 'Audit artifacts',
+      href: '/app/vault',
+      icon: Lock,
+      color: 'text-purple-400',
+    },
+    {
+      label: 'Team',
+      description: 'Manage team',
+      href: '/app/team',
+      icon: Users,
+      color: 'text-rose-400',
+    },
+    {
+      label: 'Reports',
+      description: 'Framework reports',
+      href: '/app/reports',
+      icon: FileText,
+      color: 'text-sky-400',
+    },
+    {
+      label: 'Settings',
+      description: 'Organization settings',
+      href: '/app/settings',
+      icon: Settings,
+      color: 'text-muted-foreground',
+    },
   ],
   enterprise: [
-    { label: 'Organization', description: 'Multi-site overview', href: '/app/executive', icon: Building2, color: 'text-blue-400' },
-    { label: 'Policies', description: 'Enterprise policies', href: '/app/policies', icon: FileText, color: 'text-cyan-400' },
-    { label: 'Registers', description: 'All registers', href: '/app/registers', icon: ClipboardList, color: 'text-emerald-400' },
-    { label: 'Tasks', description: 'Task management', href: '/app/tasks', icon: CheckSquare, color: 'text-amber-400' },
-    { label: 'Evidence Vault', description: 'Evidence chain', href: '/app/vault', icon: Lock, color: 'text-purple-400' },
-    { label: 'Team', description: 'Workforce management', href: '/app/team', icon: Users, color: 'text-rose-400' },
-    { label: 'Reports', description: 'Executive reports', href: '/app/reports', icon: FileText, color: 'text-sky-400' },
-    { label: 'Settings', description: 'Enterprise settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+    {
+      label: 'Organization',
+      description: 'Multi-site overview',
+      href: '/app/executive',
+      icon: Building2,
+      color: 'text-blue-400',
+    },
+    {
+      label: 'Policies',
+      description: 'Enterprise policies',
+      href: '/app/policies',
+      icon: FileText,
+      color: 'text-cyan-400',
+    },
+    {
+      label: 'Registers',
+      description: 'All registers',
+      href: '/app/registers',
+      icon: ClipboardList,
+      color: 'text-emerald-400',
+    },
+    {
+      label: 'Tasks',
+      description: 'Task management',
+      href: '/app/tasks',
+      icon: CheckSquare,
+      color: 'text-amber-400',
+    },
+    {
+      label: 'Evidence Vault',
+      description: 'Evidence chain',
+      href: '/app/vault',
+      icon: Lock,
+      color: 'text-purple-400',
+    },
+    {
+      label: 'Team',
+      description: 'Workforce management',
+      href: '/app/team',
+      icon: Users,
+      color: 'text-rose-400',
+    },
+    {
+      label: 'Reports',
+      description: 'Executive reports',
+      href: '/app/reports',
+      icon: FileText,
+      color: 'text-sky-400',
+    },
+    {
+      label: 'Settings',
+      description: 'Enterprise settings',
+      href: '/app/settings',
+      icon: Settings,
+      color: 'text-muted-foreground',
+    },
   ],
 };
 
 const DEFAULT_QUICK_ACTIONS: QuickAction[] = [
-  { label: 'Organization', description: 'Overview & KPIs', href: '/app/executive', icon: Building2, color: 'text-blue-400' },
-  { label: 'Team', description: 'Manage employees', href: '/app/team', icon: Users, color: 'text-cyan-400' },
-  { label: 'Certificates', description: 'All certifications', href: '/app/certificates', icon: FileText, color: 'text-emerald-400' },
-  { label: 'Evidence', description: 'Evidence submissions', href: '/app/vault', icon: CheckSquare, color: 'text-purple-400' },
-  { label: 'Tasks', description: 'Create & assign', href: '/app/tasks', icon: Briefcase, color: 'text-amber-400' },
-  { label: 'Audit Logs', description: 'Activity history', href: '/app/audit', icon: Shield, color: 'text-rose-400' },
-  { label: 'Billing', description: 'Plan & subscription', href: '/app/billing', icon: CreditCard, color: 'text-sky-400' },
-  { label: 'Settings', description: 'Organization settings', href: '/app/settings', icon: Settings, color: 'text-muted-foreground' },
+  {
+    label: 'Organization',
+    description: 'Overview & KPIs',
+    href: '/app/executive',
+    icon: Building2,
+    color: 'text-blue-400',
+  },
+  {
+    label: 'Team',
+    description: 'Manage employees',
+    href: '/app/team',
+    icon: Users,
+    color: 'text-cyan-400',
+  },
+  {
+    label: 'Certificates',
+    description: 'All certifications',
+    href: '/app/certificates',
+    icon: FileText,
+    color: 'text-emerald-400',
+  },
+  {
+    label: 'Evidence',
+    description: 'Evidence submissions',
+    href: '/app/vault',
+    icon: CheckSquare,
+    color: 'text-purple-400',
+  },
+  {
+    label: 'Tasks',
+    description: 'Create & assign',
+    href: '/app/tasks',
+    icon: Briefcase,
+    color: 'text-amber-400',
+  },
+  {
+    label: 'Audit Logs',
+    description: 'Activity history',
+    href: '/app/audit',
+    icon: Shield,
+    color: 'text-rose-400',
+  },
+  {
+    label: 'Billing',
+    description: 'Plan & subscription',
+    href: '/app/billing',
+    icon: CreditCard,
+    color: 'text-sky-400',
+  },
+  {
+    label: 'Settings',
+    description: 'Organization settings',
+    href: '/app/settings',
+    icon: Settings,
+    color: 'text-muted-foreground',
+  },
 ];
 
 function QuickActions({ industry }: { industry?: string | null }) {
@@ -213,7 +662,9 @@ function MobileReadinessCheckpoint({
 
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
         <div className="rounded-lg border border-glass-border bg-glass-subtle px-2 py-3">
-          <p className="text-lg font-bold text-foreground">{complianceScore}%</p>
+          <p className="text-lg font-bold text-foreground">
+            {complianceScore}%
+          </p>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Score
           </p>
@@ -225,7 +676,9 @@ function MobileReadinessCheckpoint({
           </p>
         </div>
         <div className="rounded-lg border border-glass-border bg-glass-subtle px-2 py-3">
-          <p className="text-lg font-bold text-foreground">{expiringCertsCount}</p>
+          <p className="text-lg font-bold text-foreground">
+            {expiringCertsCount}
+          </p>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Expiring
           </p>
@@ -295,11 +748,7 @@ interface ActivationMilestone {
   href: string;
 }
 
-function PriorityActionQueue({
-  items,
-}: {
-  items: ActionQueueItem[];
-}) {
+function PriorityActionQueue({ items }: { items: ActionQueueItem[] }) {
   const badgeClass: Record<ActionPriority, string> = {
     critical: 'bg-rose-500/15 text-rose-300 border-rose-400/30',
     high: 'bg-amber-500/15 text-amber-300 border-amber-400/30',
@@ -430,7 +879,9 @@ function ActivationMilestones({
                     <p className="text-sm font-semibold text-foreground">
                       {milestone.title}
                     </p>
-                    <p className="text-xs text-muted-foreground">{milestone.detail}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {milestone.detail}
+                    </p>
                   </div>
                 </div>
                 <ArrowRight className="mt-1 h-4 w-4 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
@@ -451,40 +902,64 @@ function ActivationMilestones({
  */
 function getExpiryLabel(industry?: string | null): string {
   switch (industry) {
-    case 'ndis': return 'Screening Expiry';
-    case 'healthcare': return 'Registration Expiry';
-    case 'childcare': return 'WWCC Expiry';
-    case 'aged_care': return 'Credential Expiry';
-    case 'saas_technology': return 'Cert Expiry';
-    default: return 'Expiring Soon';
+    case 'ndis':
+      return 'Screening Expiry';
+    case 'healthcare':
+      return 'Registration Expiry';
+    case 'childcare':
+      return 'WWCC Expiry';
+    case 'aged_care':
+      return 'Credential Expiry';
+    case 'saas_technology':
+      return 'Cert Expiry';
+    default:
+      return 'Expiring Soon';
   }
 }
 
 function getEntityLabel(industry?: string | null): string {
   switch (industry) {
-    case 'ndis': return 'participant compliance';
-    case 'healthcare': return 'clinical';
-    case 'aged_care': return 'resident care';
-    case 'childcare': return 'child safety';
-    case 'community_services': return 'client service';
-    case 'financial_services': return 'regulatory';
-    case 'saas_technology': return 'security control';
-    case 'enterprise': return 'enterprise compliance';
-    default: return 'control';
+    case 'ndis':
+      return 'participant compliance';
+    case 'healthcare':
+      return 'clinical';
+    case 'aged_care':
+      return 'resident care';
+    case 'childcare':
+      return 'child safety';
+    case 'community_services':
+      return 'client service';
+    case 'financial_services':
+      return 'regulatory';
+    case 'saas_technology':
+      return 'security control';
+    case 'enterprise':
+      return 'enterprise compliance';
+    default:
+      return 'control';
   }
 }
 
 function getTasksLabel(industry?: string | null): string {
   switch (industry) {
-    case 'ndis': return 'Compliance Tasks';
-    case 'healthcare': return 'Clinical Tasks';
-    case 'aged_care': return 'Care Tasks';
-    case 'childcare': return 'Safety Tasks';
-    case 'community_services': return 'Service Tasks';
-    case 'financial_services': return 'Regulatory Tasks';
-    case 'saas_technology': return 'Control Tasks';
-    case 'enterprise': return 'Governance Tasks';
-    default: return 'Open Tasks';
+    case 'ndis':
+      return 'Compliance Tasks';
+    case 'healthcare':
+      return 'Clinical Tasks';
+    case 'aged_care':
+      return 'Care Tasks';
+    case 'childcare':
+      return 'Safety Tasks';
+    case 'community_services':
+      return 'Service Tasks';
+    case 'financial_services':
+      return 'Regulatory Tasks';
+    case 'saas_technology':
+      return 'Control Tasks';
+    case 'enterprise':
+      return 'Governance Tasks';
+    default:
+      return 'Open Tasks';
   }
 }
 
@@ -530,7 +1005,9 @@ export function OrgHealthOverview({
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-muted-foreground">{expiryLabel}</p>
-            <p className="text-2xl sm:text-3xl font-bold">{expiringCertsCount}</p>
+            <p className="text-2xl sm:text-3xl font-bold">
+              {expiringCertsCount}
+            </p>
           </div>
           <AlertCircle className="h-8 w-8 text-amber-400" />
         </div>
@@ -601,7 +1078,9 @@ export function TeamComplianceTable({
                   <td className="px-4 py-2">
                     <div>
                       <p className="font-medium">{member.name}</p>
-                      <p className="text-xs text-muted-foreground">{member.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {member.email}
+                      </p>
                     </div>
                   </td>
                   <td className="px-4 py-2 capitalize">
@@ -670,7 +1149,9 @@ export function CertificatesExpiry({
     >
       <div className="space-y-3">
         {certificates.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No certificates tracked yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No certificates tracked yet.
+          </p>
         ) : (
           certificates.map((cert) => (
             <div
@@ -738,7 +1219,9 @@ export function EvidenceReview({
     >
       <div className="space-y-3">
         {submissions.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No pending submissions.</p>
+          <p className="text-sm text-muted-foreground">
+            No pending submissions.
+          </p>
         ) : (
           submissions.map((sub) => (
             <div
@@ -868,9 +1351,13 @@ export function AuditActivityLog({
                 <p className="text-sm">
                   <span className="font-medium">{activity.actor}</span>{' '}
                   {activity.action}{' '}
-                  <span className="text-muted-foreground">{activity.target}</span>
+                  <span className="text-muted-foreground">
+                    {activity.target}
+                  </span>
                 </p>
-                <p className="text-xs text-muted-foreground/60">{activity.timestamp}</p>
+                <p className="text-xs text-muted-foreground/60">
+                  {activity.timestamp}
+                </p>
               </div>
             </div>
           ))
@@ -909,7 +1396,8 @@ function AttentionRail({
     items.push({
       id: 'tasks',
       label: `${openTasksCount} open task${openTasksCount !== 1 ? 's' : ''}`,
-      sublabel: openTasksCount > 5 ? 'Needs immediate attention' : 'Review & assign',
+      sublabel:
+        openTasksCount > 5 ? 'Needs immediate attention' : 'Review & assign',
       href: '/app/tasks',
       urgency: openTasksCount > 10 ? 'critical' : 'warning',
       icon: CheckSquare,
@@ -981,12 +1469,18 @@ function AttentionRail({
               href={item.href}
               className={`group flex items-center gap-3 rounded-xl border px-4 py-3 transition-all duration-200 ${urgencyStyles[item.urgency]}`}
             >
-              <Icon className={`h-4 w-4 shrink-0 ${urgencyIconColor[item.urgency]}`} />
+              <Icon
+                className={`h-4 w-4 shrink-0 ${urgencyIconColor[item.urgency]}`}
+              />
               <div className="min-w-0 flex-1">
-                <p className={`text-sm font-semibold ${urgencyLabelColor[item.urgency]}`}>
+                <p
+                  className={`text-sm font-semibold ${urgencyLabelColor[item.urgency]}`}
+                >
                   {item.label}
                 </p>
-                <p className="truncate text-xs text-muted-foreground">{item.sublabel}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {item.sublabel}
+                </p>
               </div>
               <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5" />
             </Link>
@@ -1051,7 +1545,8 @@ export function EmployerDashboard({
       id: 'foundation',
       title: 'Foundation configured',
       detail: 'Organization profile and framework baseline are in place.',
-      done: completionCounts.orgProfileComplete && completionCounts.frameworks > 0,
+      done:
+        completionCounts.orgProfileComplete && completionCounts.frameworks > 0,
       href: '/onboarding?step=2',
     },
     {
@@ -1094,7 +1589,12 @@ export function EmployerDashboard({
           : `No backlog detected. Confirm this week's ${entityLabel} cadence.`,
       href: '/app/tasks',
       icon: CheckSquare,
-      priority: openTasksCount > 10 ? 'critical' : openTasksCount > 0 ? 'high' : 'normal',
+      priority:
+        openTasksCount > 10
+          ? 'critical'
+          : openTasksCount > 0
+            ? 'high'
+            : 'normal',
       ownerLabel: 'Compliance Ops',
       slaLabel: openTasksCount > 0 ? '24h' : 'Weekly',
     },
@@ -1110,15 +1610,19 @@ export function EmployerDashboard({
           : 'No urgent expiries. Keep monthly checks scheduled.',
       href: '/app/certificates',
       icon: FileText,
-      priority: expiringCertsCount > 5 ? 'critical' : expiringCertsCount > 0 ? 'high' : 'normal',
+      priority:
+        expiringCertsCount > 5
+          ? 'critical'
+          : expiringCertsCount > 0
+            ? 'high'
+            : 'normal',
       ownerLabel: 'Evidence Owners',
       slaLabel: expiringCertsCount > 0 ? '7d' : 'Monthly',
     },
     {
       id: 'queue-evidence-verification',
       title: 'Verify pending evidence submissions',
-      detail:
-        `Move pending ${entityLabel} artifacts through approval to keep chain-of-custody current.`,
+      detail: `Move pending ${entityLabel} artifacts through approval to keep chain-of-custody current.`,
       href: '/app/vault/review',
       icon: CheckCircle2,
       priority: 'high',
@@ -1128,8 +1632,7 @@ export function EmployerDashboard({
     {
       id: 'queue-team-readiness',
       title: 'Review team assignment coverage',
-      detail:
-        `Confirm ${entityLabel} ownership and reduce unassigned accountability gaps.`,
+      detail: `Confirm ${entityLabel} ownership and reduce unassigned accountability gaps.`,
       href: '/app/team',
       icon: Users,
       priority: complianceScore < 75 ? 'critical' : 'normal',
@@ -1221,8 +1724,13 @@ export function EmployerDashboard({
   };
 
   return (
-    <div className="space-y-8">
-      {/* Command center — actionable attention surface, always first */}
+    <div className="space-y-6">
+      {/* Compliance Summary Cards — top of dashboard */}
+      <ErrorBoundary name="ComplianceSummaryCards" level="component">
+        <ComplianceSummaryCards />
+      </ErrorBoundary>
+
+      {/* Command center — actionable attention surface */}
       <AttentionRail
         complianceScore={complianceScore}
         openTasksCount={openTasksCount}
@@ -1234,6 +1742,53 @@ export function EmployerDashboard({
         openTasksCount={openTasksCount}
         expiringCertsCount={expiringCertsCount}
       />
+
+      {/* Primary row: My Actions + Framework Health + Deadlines */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <MyActionsWidget />
+        <ErrorBoundary name="FrameworkHealthWidget" level="component">
+          <FrameworkHealthWidget />
+        </ErrorBoundary>
+        <UpcomingDeadlinesWidget />
+      </div>
+
+      {/* Industry-specific widgets */}
+      {industry === 'ndis' && (
+        <div className="space-y-4">
+          <NDISParticipantSnapshot />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <NDISWorkerScreeningWidget />
+            <NDISSIRSTrackerWidget />
+          </div>
+        </div>
+      )}
+      {industry === 'healthcare' && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <HealthcarePractitionerWidget />
+          <HealthcareNSQHSWidget />
+        </div>
+      )}
+      {industry === 'aged_care' && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <AgedCareCarePlanWidget />
+            <NDISSIRSTrackerWidget />
+          </div>
+          <AgedCareStarRatingWidget />
+        </div>
+      )}
+      {industry === 'childcare' && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <ChildcareEducatorCredentialsWidget />
+          <ChildcareNQFWidget />
+        </div>
+      )}
+      {industry === 'financial_services' && (
+        <div className="space-y-4">
+          <FinancialBoardReportButton />
+          <FinancialBreachRegisterWidget />
+        </div>
+      )}
 
       {/* Quick-action cards — industry-specific shortcuts */}
       <QuickActions industry={industry} />
@@ -1267,7 +1822,6 @@ export function EmployerDashboard({
 
       <ComplianceIntelligenceSummary />
       <AIComplianceAssistantPanel suggestions={aiSuggestions} />
-      <FrameworkHealthWidget />
 
       {/* Compliance Score History with Trend Analytics */}
       <div>

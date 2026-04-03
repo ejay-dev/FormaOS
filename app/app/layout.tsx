@@ -22,6 +22,7 @@ import { RuntimeOpsGuard } from '@/components/control-plane/runtime-ops-guard';
 import { RuntimeDebugIndicator } from '@/components/control-plane/runtime-debug-indicator';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { FeedbackWidget } from '@/components/feedback/FeedbackWidget';
+import { ComplianceStatusStrip } from '@/components/compliance/ComplianceStatusStrip';
 
 const log = routeLog('app/layout');
 
@@ -80,7 +81,10 @@ export default async function AppLayout({
       redirect('/auth/signin');
     }
 
-    log.warn({ userId: authUser.id }, 'No system state — redirecting to workspace recovery');
+    log.warn(
+      { userId: authUser.id },
+      'No system state — redirecting to workspace recovery',
+    );
     const recovery = await recoverUserWorkspace({
       userId: authUser.id,
       userEmail: authUser.email ?? null,
@@ -169,12 +173,14 @@ export default async function AppLayout({
                 </div>
               </aside>
 
-                {/* Main application area */}
-                <section className="relative flex h-full flex-1 flex-col overflow-hidden">
-                  <header className="sticky top-0 z-40 flex h-16 w-full items-center glass-panel-strong border-b border-border">
+              {/* Main application area */}
+              <section className="relative flex h-full flex-1 flex-col overflow-hidden">
+                <header className="sticky top-0 z-40 flex h-16 w-full items-center glass-panel-strong border-b border-border">
                   <div className="flex h-full w-full items-center px-3 sm:px-6 lg:px-8">
                     <TopBar
-                      orgName={systemState.organization.name || 'My Organization'}
+                      orgName={
+                        systemState.organization.name || 'My Organization'
+                      }
                       userEmail={systemState.user.email || ''}
                       userId={systemState.user.id}
                       orgId={systemState.organization.id}
@@ -186,6 +192,7 @@ export default async function AppLayout({
                 <RuntimeOpsGuard surface="app" />
                 <EnterpriseTrustStrip surface="app" />
                 <TrialCountdownBanner />
+                <ComplianceStatusStrip />
 
                 <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
                   <div className="mx-auto w-full max-w-[1600px] px-3 sm:px-6 lg:px-8 py-5 sm:py-8 lg:py-10 pb-[max(env(safe-area-inset-bottom),1.25rem)] sm:pb-8 lg:pb-10">

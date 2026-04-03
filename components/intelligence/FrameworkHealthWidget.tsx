@@ -1,62 +1,76 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { ShieldCheck, TrendingUp, TrendingDown, AlertTriangle } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import {
+  ShieldCheck,
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
+} from 'lucide-react';
 
 type FrameworkReadiness = {
-  frameworkId: string
-  frameworkCode: string
-  frameworkTitle: string
-  readinessScore: number
-  totalControls: number
-  satisfiedControls: number
-  missingControls: number
-  partialControls: number
-  evaluatedAt: string | null
-}
+  frameworkId: string;
+  frameworkCode: string;
+  frameworkTitle: string;
+  readinessScore: number;
+  totalControls: number;
+  satisfiedControls: number;
+  missingControls: number;
+  partialControls: number;
+  evaluatedAt: string | null;
+};
 
 type FrameworkHealthResponse = {
-  combinedScore: number
-  readinessTrend: number | null
-  frameworks: FrameworkReadiness[]
+  combinedScore: number;
+  readinessTrend: number | null;
+  frameworks: FrameworkReadiness[];
   gaps: {
-    missingEvidence: Array<{ controlKey: string; title?: string; required: number; approved: number }>
-    unmappedControls: Array<{ controlId: string; controlCode: string; frameworkSlug: string }>
-    weakAutomationCoverage: Array<{ controlKey: string; title?: string }>
-  }
+    missingEvidence: Array<{
+      controlKey: string;
+      title?: string;
+      required: number;
+      approved: number;
+    }>;
+    unmappedControls: Array<{
+      controlId: string;
+      controlCode: string;
+      frameworkSlug: string;
+    }>;
+    weakAutomationCoverage: Array<{ controlKey: string; title?: string }>;
+  };
   recommendations: {
-    nextActions: string[]
-    evidenceRecommendations: string[]
-    automationSuggestions: string[]
-  }
-  riskHeatmap: Record<string, Record<string, number>>
-}
+    nextActions: string[];
+    evidenceRecommendations: string[];
+    automationSuggestions: string[];
+  };
+  riskHeatmap: Record<string, Record<string, number>>;
+};
 
 export function FrameworkHealthWidget() {
-  const [data, setData] = useState<FrameworkHealthResponse | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState<FrameworkHealthResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true
+    let mounted = true;
     const load = async () => {
       try {
-        const response = await fetch('/api/intelligence/framework-health')
-        if (!response.ok) throw new Error('Failed to load framework health')
-        const json = (await response.json()) as FrameworkHealthResponse
-        if (mounted) setData(json)
+        const response = await fetch('/api/intelligence/framework-health');
+        if (!response.ok) throw new Error('Failed to load framework health');
+        const json = (await response.json()) as FrameworkHealthResponse;
+        if (mounted) setData(json);
       } catch {
-        if (mounted) setData(null)
+        if (mounted) setData(null);
       } finally {
-        if (mounted) setIsLoading(false)
+        if (mounted) setIsLoading(false);
       }
-    }
-    load()
-    const interval = setInterval(load, 180000)
+    };
+    load();
+    const interval = setInterval(load, 180000);
     return () => {
-      mounted = false
-      clearInterval(interval)
-    }
-  }, [])
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -67,13 +81,14 @@ export function FrameworkHealthWidget() {
           <div className="h-20 rounded-xl bg-glass-strong" />
         </div>
       </div>
-    )
+    );
   }
 
-  if (!data) return null
+  if (!data) return null;
 
-  const trendPositive = data.readinessTrend !== null && data.readinessTrend >= 0
-  const TrendIcon = trendPositive ? TrendingUp : TrendingDown
+  const trendPositive =
+    data.readinessTrend !== null && data.readinessTrend >= 0;
+  const TrendIcon = trendPositive ? TrendingUp : TrendingDown;
 
   return (
     <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
@@ -86,38 +101,84 @@ export function FrameworkHealthWidget() {
             <div className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
               Framework Health
             </div>
-            <div className="text-lg font-semibold text-foreground">{data.combinedScore}% readiness</div>
+            <div className="text-lg font-semibold text-foreground">
+              {data.combinedScore}% readiness
+            </div>
           </div>
         </div>
         {data.readinessTrend !== null ? (
-          <div className={`flex items-center gap-1 text-sm ${trendPositive ? 'text-emerald-300' : 'text-rose-300'}`}>
+          <div
+            className={`flex items-center gap-1 text-sm ${trendPositive ? 'text-emerald-300' : 'text-rose-300'}`}
+          >
             <TrendIcon className="h-4 w-4" />
-            <span>{Math.abs(data.readinessTrend)}% {trendPositive ? 'up' : 'down'}</span>
+            <span>
+              {Math.abs(data.readinessTrend)}% {trendPositive ? 'up' : 'down'}
+            </span>
           </div>
         ) : null}
       </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
-        {data.frameworks.slice(0, 4).map((framework) => (
-          <div key={framework.frameworkId} className="rounded-xl border border-glass-border bg-glass-subtle p-4">
-            <div className="text-xs text-muted-foreground">{framework.frameworkTitle}</div>
-            <div className="mt-1 flex items-center justify-between">
-              <div className="text-lg font-semibold text-foreground">{framework.readinessScore}%</div>
-              <div className="text-xs text-muted-foreground">{framework.totalControls} controls</div>
+        {data.frameworks.slice(0, 4).map((framework) => {
+          const pct = framework.readinessScore;
+          const barColor =
+            pct >= 80
+              ? 'bg-[var(--wire-success)]'
+              : pct >= 50
+                ? 'bg-amber-400'
+                : 'bg-[var(--wire-alert)]';
+          const textColor =
+            pct >= 80
+              ? 'text-[var(--wire-success)]'
+              : pct >= 50
+                ? 'text-amber-400'
+                : 'text-[var(--wire-alert)]';
+
+          return (
+            <div
+              key={framework.frameworkId}
+              className="rounded-xl border border-glass-border bg-glass-subtle p-4"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <div className="text-xs font-medium text-foreground truncate">
+                  {framework.frameworkTitle}
+                </div>
+                <div className={`text-sm font-mono font-bold ${textColor}`}>
+                  {pct}%
+                </div>
+              </div>
+              <div className="mt-1.5 h-2.5 w-full rounded-full bg-glass-strong">
+                <div
+                  className={`h-2.5 rounded-full ${barColor} transition-all duration-700 ease-out`}
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
+                <span>
+                  {framework.satisfiedControls}/{framework.totalControls}{' '}
+                  controls
+                </span>
+                {framework.missingControls > 0 && (
+                  <span className="text-[var(--wire-alert)]">
+                    {framework.missingControls} missing
+                  </span>
+                )}
+                {framework.partialControls > 0 && (
+                  <span className="text-amber-400">
+                    {framework.partialControls} partial
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="mt-2 h-2 w-full rounded-full bg-glass-strong">
-              <div
-                className="h-2 rounded-full bg-emerald-400"
-                style={{ width: `${framework.readinessScore}%` }}
-              />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
         <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
-          <div className="text-xs font-semibold text-muted-foreground uppercase">Top Gaps</div>
+          <div className="text-xs font-semibold text-muted-foreground uppercase">
+            Top Gaps
+          </div>
           <ul className="mt-2 space-y-2 text-sm text-foreground/70">
             {data.gaps.missingEvidence.slice(0, 2).map((gap) => (
               <li key={gap.controlKey} className="flex items-start gap-2">
@@ -126,45 +187,61 @@ export function FrameworkHealthWidget() {
               </li>
             ))}
             {data.gaps.missingEvidence.length === 0 ? (
-              <li className="text-xs text-muted-foreground/60">No critical evidence gaps detected.</li>
+              <li className="text-xs text-muted-foreground/60">
+                No critical evidence gaps detected.
+              </li>
             ) : null}
           </ul>
         </div>
         <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
-          <div className="text-xs font-semibold text-muted-foreground uppercase">Next Actions</div>
+          <div className="text-xs font-semibold text-muted-foreground uppercase">
+            Next Actions
+          </div>
           <ul className="mt-2 space-y-2 text-sm text-foreground/70">
-            {data.recommendations.nextActions.slice(0, 2).map((action, index) => (
-              <li key={`${action}-${index}`} className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                <span>{action}</span>
-              </li>
-            ))}
+            {data.recommendations.nextActions
+              .slice(0, 2)
+              .map((action, index) => (
+                <li
+                  key={`${action}-${index}`}
+                  className="flex items-start gap-2"
+                >
+                  <span className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  <span>{action}</span>
+                </li>
+              ))}
           </ul>
         </div>
       </div>
 
       <div className="mt-5 rounded-xl border border-glass-border bg-glass-subtle p-4">
-        <div className="text-xs font-semibold text-muted-foreground uppercase">Risk heatmap</div>
+        <div className="text-xs font-semibold text-muted-foreground uppercase">
+          Risk heatmap
+        </div>
         <div className="mt-3 grid gap-2">
           {['critical', 'high', 'medium', 'low'].map((level) => (
-            <div key={level} className="grid grid-cols-[80px_repeat(3,1fr)] items-center gap-2 text-xs text-foreground/70">
+            <div
+              key={level}
+              className="grid grid-cols-[80px_repeat(3,1fr)] items-center gap-2 text-xs text-foreground/70"
+            >
               <div className="capitalize text-muted-foreground">{level}</div>
               {['compliant', 'at_risk', 'non_compliant'].map((status) => {
-                const count = data.riskHeatmap?.[level]?.[status] ?? 0
+                const count = data.riskHeatmap?.[level]?.[status] ?? 0;
                 return (
                   <div
                     key={`${level}-${status}`}
                     className="rounded-md border border-glass-border bg-black/20 px-2 py-1 text-center"
                   >
                     <span className="text-foreground/90">{count}</span>
-                    <span className="ml-1 text-xs uppercase text-muted-foreground/60">{status.replace('_', ' ')}</span>
+                    <span className="ml-1 text-xs uppercase text-muted-foreground/60">
+                      {status.replace('_', ' ')}
+                    </span>
                   </div>
-                )
+                );
               })}
             </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

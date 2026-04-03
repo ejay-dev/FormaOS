@@ -34,12 +34,24 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
+export interface NavSubItem {
+  name: string;
+  href: string;
+  testId?: string;
+}
+
 export interface NavItem {
   name: string;
   href: string;
   icon: LucideIcon;
   category: string;
   testId?: string;
+  /** Key for RAG indicator dot — maps to compliance store status */
+  ragKey?: 'obligations' | 'incidents' | 'evidence' | 'staff' | 'policies';
+  /** Show count badge (e.g. "My Tasks" count) */
+  badgeKey?: 'tasks';
+  /** Expandable sub-items shown when this route is active */
+  children?: NavSubItem[];
 }
 
 export type IndustryType =
@@ -65,6 +77,45 @@ export const NDIS_NAV: NavItem[] = [
     icon: LayoutDashboard,
     category: 'Overview',
     testId: 'nav-dashboard',
+  },
+
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+      {
+        name: 'Cross-Map',
+        href: '/app/compliance/cross-map',
+        testId: 'nav-cross-map',
+      },
+    ],
+  },
+  {
+    name: 'Policies',
+    href: '/app/policies',
+    icon: FileText,
+    category: 'Compliance',
+    testId: 'nav-policies',
+    ragKey: 'policies',
+  },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
   },
 
   // Care Operations
@@ -95,6 +146,7 @@ export const NDIS_NAV: NavItem[] = [
     icon: AlertTriangle,
     category: 'Care Operations',
     testId: 'nav-incidents',
+    ragKey: 'incidents',
   },
 
   // Workforce
@@ -104,6 +156,7 @@ export const NDIS_NAV: NavItem[] = [
     icon: UserCheck,
     category: 'Workforce',
     testId: 'nav-staff-compliance',
+    ragKey: 'staff',
   },
   {
     name: 'Team',
@@ -120,13 +173,6 @@ export const NDIS_NAV: NavItem[] = [
     icon: ClipboardList,
     category: 'Registers',
     testId: 'nav-registers',
-  },
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Registers',
-    testId: 'nav-vault',
   },
   {
     name: 'Forms',
@@ -173,6 +219,40 @@ export const HEALTHCARE_NAV: NavItem[] = [
     testId: 'nav-dashboard',
   },
 
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+    ],
+  },
+  {
+    name: 'Policies',
+    href: '/app/policies',
+    icon: FileText,
+    category: 'Compliance',
+    testId: 'nav-policies',
+    ragKey: 'policies',
+  },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
+  },
+
   // Clinical
   {
     name: 'Patients',
@@ -201,6 +281,7 @@ export const HEALTHCARE_NAV: NavItem[] = [
     icon: AlertTriangle,
     category: 'Clinical',
     testId: 'nav-incidents',
+    ragKey: 'incidents',
   },
 
   // Workforce
@@ -210,6 +291,7 @@ export const HEALTHCARE_NAV: NavItem[] = [
     icon: UserCheck,
     category: 'Workforce',
     testId: 'nav-staff-credentials',
+    ragKey: 'staff',
   },
   {
     name: 'Team',
@@ -219,40 +301,33 @@ export const HEALTHCARE_NAV: NavItem[] = [
     testId: 'nav-team',
   },
 
-  // Compliance
+  // Registers & Reports
   {
     name: 'Registers',
     href: '/app/registers',
     icon: ClipboardList,
-    category: 'Compliance',
+    category: 'Registers',
     testId: 'nav-registers',
-  },
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Compliance',
-    testId: 'nav-vault',
   },
   {
     name: 'Forms',
     href: '/app/forms',
     icon: FormInput,
-    category: 'Compliance',
+    category: 'Registers',
     testId: 'nav-forms',
   },
   {
     name: 'Reports',
     href: '/app/reports',
     icon: BarChart3,
-    category: 'Compliance',
+    category: 'Reports',
     testId: 'nav-reports',
   },
   {
     name: 'Executive View',
     href: '/app/executive',
     icon: Shield,
-    category: 'Compliance',
+    category: 'Reports',
     testId: 'nav-executive',
   },
 
@@ -277,6 +352,40 @@ export const AGED_CARE_NAV: NavItem[] = [
     icon: LayoutDashboard,
     category: 'Overview',
     testId: 'nav-dashboard',
+  },
+
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+    ],
+  },
+  {
+    name: 'Policies',
+    href: '/app/policies',
+    icon: FileText,
+    category: 'Compliance',
+    testId: 'nav-policies',
+    ragKey: 'policies',
+  },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
   },
 
   // Resident Care
@@ -314,6 +423,7 @@ export const AGED_CARE_NAV: NavItem[] = [
     icon: AlertTriangle,
     category: 'Resident Care',
     testId: 'nav-incidents',
+    ragKey: 'incidents',
   },
 
   // Workforce
@@ -323,6 +433,7 @@ export const AGED_CARE_NAV: NavItem[] = [
     icon: UserCheck,
     category: 'Workforce',
     testId: 'nav-staff-compliance',
+    ragKey: 'staff',
   },
   {
     name: 'Team',
@@ -339,13 +450,6 @@ export const AGED_CARE_NAV: NavItem[] = [
     icon: ClipboardList,
     category: 'Registers',
     testId: 'nav-registers',
-  },
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Registers',
-    testId: 'nav-vault',
   },
   {
     name: 'Forms',
@@ -392,6 +496,40 @@ export const CHILDCARE_NAV: NavItem[] = [
     testId: 'nav-dashboard',
   },
 
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+    ],
+  },
+  {
+    name: 'Policies',
+    href: '/app/policies',
+    icon: FileText,
+    category: 'Compliance',
+    testId: 'nav-policies',
+    ragKey: 'policies',
+  },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
+  },
+
   // Child Safety
   {
     name: 'Children',
@@ -413,6 +551,7 @@ export const CHILDCARE_NAV: NavItem[] = [
     icon: AlertTriangle,
     category: 'Child Safety',
     testId: 'nav-incidents',
+    ragKey: 'incidents',
   },
   {
     name: 'Progress Notes',
@@ -429,6 +568,7 @@ export const CHILDCARE_NAV: NavItem[] = [
     icon: UserCheck,
     category: 'Workforce',
     testId: 'nav-educator-compliance',
+    ragKey: 'staff',
   },
   {
     name: 'Team',
@@ -438,33 +578,26 @@ export const CHILDCARE_NAV: NavItem[] = [
     testId: 'nav-team',
   },
 
-  // Compliance
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Compliance',
-    testId: 'nav-vault',
-  },
+  // Reports
   {
     name: 'Forms',
     href: '/app/forms',
     icon: FormInput,
-    category: 'Compliance',
+    category: 'Reports',
     testId: 'nav-forms',
   },
   {
     name: 'Reports',
     href: '/app/reports',
     icon: BarChart3,
-    category: 'Compliance',
+    category: 'Reports',
     testId: 'nav-reports',
   },
   {
     name: 'Executive View',
     href: '/app/executive',
     icon: Shield,
-    category: 'Compliance',
+    category: 'Reports',
     testId: 'nav-executive',
   },
 
@@ -489,6 +622,40 @@ export const COMMUNITY_SERVICES_NAV: NavItem[] = [
     icon: LayoutDashboard,
     category: 'Overview',
     testId: 'nav-dashboard',
+  },
+
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+    ],
+  },
+  {
+    name: 'Policies',
+    href: '/app/policies',
+    icon: FileText,
+    category: 'Compliance',
+    testId: 'nav-policies',
+    ragKey: 'policies',
+  },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
   },
 
   // Service Delivery
@@ -519,6 +686,7 @@ export const COMMUNITY_SERVICES_NAV: NavItem[] = [
     icon: AlertTriangle,
     category: 'Service Delivery',
     testId: 'nav-incidents',
+    ragKey: 'incidents',
   },
 
   // Workforce
@@ -528,6 +696,7 @@ export const COMMUNITY_SERVICES_NAV: NavItem[] = [
     icon: UserCheck,
     category: 'Workforce',
     testId: 'nav-staff-compliance',
+    ragKey: 'staff',
   },
   {
     name: 'Team',
@@ -537,40 +706,33 @@ export const COMMUNITY_SERVICES_NAV: NavItem[] = [
     testId: 'nav-team',
   },
 
-  // Compliance
+  // Registers & Reports
   {
     name: 'Registers',
     href: '/app/registers',
     icon: ClipboardList,
-    category: 'Compliance',
+    category: 'Registers',
     testId: 'nav-registers',
-  },
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Compliance',
-    testId: 'nav-vault',
   },
   {
     name: 'Forms',
     href: '/app/forms',
     icon: FormInput,
-    category: 'Compliance',
+    category: 'Registers',
     testId: 'nav-forms',
   },
   {
     name: 'Reports',
     href: '/app/reports',
     icon: BarChart3,
-    category: 'Compliance',
+    category: 'Reports',
     testId: 'nav-reports',
   },
   {
     name: 'Executive View',
     href: '/app/executive',
     icon: Shield,
-    category: 'Compliance',
+    category: 'Reports',
     testId: 'nav-executive',
   },
 
@@ -596,14 +758,46 @@ export const FINANCIAL_SERVICES_NAV: NavItem[] = [
     testId: 'nav-dashboard',
   },
 
-  // Governance
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+      {
+        name: 'Cross-Map',
+        href: '/app/compliance/cross-map',
+        testId: 'nav-cross-map',
+      },
+    ],
+  },
   {
     name: 'Policies',
     href: '/app/policies',
     icon: FileText,
-    category: 'Governance',
+    category: 'Compliance',
     testId: 'nav-policies',
+    ragKey: 'policies',
   },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
+  },
+
+  // Governance
   {
     name: 'Risk Registers',
     href: '/app/registers',
@@ -617,6 +811,15 @@ export const FINANCIAL_SERVICES_NAV: NavItem[] = [
     icon: CheckSquare,
     category: 'Governance',
     testId: 'nav-tasks',
+    badgeKey: 'tasks',
+  },
+  {
+    name: 'Incidents',
+    href: '/app/incidents',
+    icon: AlertTriangle,
+    category: 'Governance',
+    testId: 'nav-incidents',
+    ragKey: 'incidents',
   },
 
   // Operations
@@ -626,13 +829,6 @@ export const FINANCIAL_SERVICES_NAV: NavItem[] = [
     icon: Users,
     category: 'Operations',
     testId: 'nav-team',
-  },
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Operations',
-    testId: 'nav-vault',
   },
   {
     name: 'Forms',
@@ -687,14 +883,46 @@ export const SAAS_TECHNOLOGY_NAV: NavItem[] = [
     testId: 'nav-dashboard',
   },
 
-  // Governance
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+      {
+        name: 'Cross-Map',
+        href: '/app/compliance/cross-map',
+        testId: 'nav-cross-map',
+      },
+    ],
+  },
   {
     name: 'Policies',
     href: '/app/policies',
     icon: FileText,
-    category: 'Governance',
+    category: 'Compliance',
     testId: 'nav-policies',
+    ragKey: 'policies',
   },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
+  },
+
+  // Governance
   {
     name: 'Asset Inventory',
     href: '/app/registers',
@@ -708,6 +936,7 @@ export const SAAS_TECHNOLOGY_NAV: NavItem[] = [
     icon: CheckSquare,
     category: 'Governance',
     testId: 'nav-tasks',
+    badgeKey: 'tasks',
   },
 
   // Operations
@@ -717,13 +946,6 @@ export const SAAS_TECHNOLOGY_NAV: NavItem[] = [
     icon: Users,
     category: 'Operations',
     testId: 'nav-team',
-  },
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Operations',
-    testId: 'nav-vault',
   },
   {
     name: 'Forms',
@@ -794,14 +1016,46 @@ export const ENTERPRISE_NAV: NavItem[] = [
     testId: 'nav-dashboard',
   },
 
-  // Governance
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+      {
+        name: 'Cross-Map',
+        href: '/app/compliance/cross-map',
+        testId: 'nav-cross-map',
+      },
+    ],
+  },
   {
     name: 'Policies',
     href: '/app/policies',
     icon: FileText,
-    category: 'Governance',
+    category: 'Compliance',
     testId: 'nav-policies',
+    ragKey: 'policies',
   },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
+  },
+
+  // Governance
   {
     name: 'Registers',
     href: '/app/registers',
@@ -815,6 +1069,15 @@ export const ENTERPRISE_NAV: NavItem[] = [
     icon: CheckSquare,
     category: 'Governance',
     testId: 'nav-tasks',
+    badgeKey: 'tasks',
+  },
+  {
+    name: 'Incidents',
+    href: '/app/incidents',
+    icon: AlertTriangle,
+    category: 'Governance',
+    testId: 'nav-incidents',
+    ragKey: 'incidents',
   },
 
   // Operations
@@ -831,13 +1094,6 @@ export const ENTERPRISE_NAV: NavItem[] = [
     icon: Users,
     category: 'Operations',
     testId: 'nav-team',
-  },
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Operations',
-    testId: 'nav-vault',
   },
   {
     name: 'Forms',
@@ -907,13 +1163,47 @@ export const DEFAULT_ADMIN_NAV: NavItem[] = [
     category: 'Overview',
     testId: 'nav-dashboard',
   },
+
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+      {
+        name: 'Cross-Map',
+        href: '/app/compliance/cross-map',
+        testId: 'nav-cross-map',
+      },
+    ],
+  },
   {
     name: 'Policies',
     href: '/app/policies',
     icon: FileText,
-    category: 'Governance',
+    category: 'Compliance',
     testId: 'nav-policies',
+    ragKey: 'policies',
   },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
+  },
+
+  // Governance
   {
     name: 'Registers',
     href: '/app/registers',
@@ -927,7 +1217,18 @@ export const DEFAULT_ADMIN_NAV: NavItem[] = [
     icon: CheckSquare,
     category: 'Governance',
     testId: 'nav-tasks',
+    badgeKey: 'tasks',
   },
+  {
+    name: 'Incidents',
+    href: '/app/incidents',
+    icon: AlertTriangle,
+    category: 'Governance',
+    testId: 'nav-incidents',
+    ragKey: 'incidents',
+  },
+
+  // Operations
   {
     name: 'People',
     href: '/app/people',
@@ -948,13 +1249,6 @@ export const DEFAULT_ADMIN_NAV: NavItem[] = [
     icon: NotebookPen,
     category: 'Operations',
     testId: 'nav-progress-notes',
-  },
-  {
-    name: 'Evidence Vault',
-    href: '/app/vault',
-    icon: Lock,
-    category: 'Operations',
-    testId: 'nav-vault',
   },
   {
     name: 'Forms',
@@ -1029,11 +1323,12 @@ export const STAFF_NAV: NavItem[] = [
     testId: 'nav-dashboard',
   },
   {
-    name: 'Tasks',
+    name: 'My Tasks',
     href: '/app/tasks',
     icon: CheckSquare,
     category: 'Operations',
     testId: 'nav-tasks',
+    badgeKey: 'tasks',
   },
   {
     name: 'My Clients',

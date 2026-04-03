@@ -20,6 +20,7 @@ import {
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { SkeletonCard } from '@/components/ui/skeleton';
+import { IndustryReportTemplates } from '@/components/reports/IndustryReportTemplates';
 
 type EntitlementRow = {
   feature_key: string;
@@ -422,6 +423,9 @@ export default async function ReportsPage() {
           />
         </Suspense>
       ) : null}
+
+      {/* Industry-specific report templates */}
+      <IndustryReportTemplates />
 
       {/* Export section — renders with known permission state */}
       <ExportSection disableExports={disableExports} />

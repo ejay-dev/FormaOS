@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { signOut } from '@/app/app/actions/logout';
 import {
   LogOut,
@@ -12,6 +12,7 @@ import {
   FileText,
   BarChart3,
   Settings2,
+  ChevronRight,
 } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import Button from './ui/button';
@@ -21,7 +22,9 @@ import { markSidebarRouteTransition } from '@/lib/monitoring/route-transition';
 import {
   getIndustryNavigation,
   getIndustryLabel,
+  type NavItem,
 } from '@/lib/navigation/industry-sidebar';
+import { useComplianceStore } from '@/lib/stores/compliance';
 
 type ContextMode = {
   label: string;
@@ -98,6 +101,37 @@ function resolveContextMode(pathname: string): ContextMode {
 }
 
 type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
+
+/** RAG dot color for sidebar nav items based on compliance store status */
+function useRAGDot(ragKey: NavItem['ragKey']): string | null {
+  const summary = useComplianceStore((s) => s.summary);
+  if (!ragKey || !summary) return null;
+  switch (ragKey) {
+    case 'obligations': {
+      if (summary.overdue > 0) return 'bg-red-500';
+      if (summary.dueSoon > 0) return 'bg-amber-500';
+      return 'bg-emerald-500';
+    }
+    case 'incidents':
+      return summary.overdue > 0 ? 'bg-red-500' : 'bg-emerald-500';
+    case 'evidence':
+    case 'policies':
+    case 'staff':
+      return null; // These only show dots when API data is available
+    default:
+      return null;
+  }
+}
+
+/** Task count badge for sidebar */
+function useTaskBadge(badgeKey: NavItem['badgeKey']): number | null {
+  const summary = useComplianceStore((s) => s.summary);
+  if (!badgeKey || !summary) return null;
+  if (badgeKey === 'tasks') {
+    return summary.overdue + summary.dueSoon;
+  }
+  return null;
+}
 
 export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
   const pathname = usePathname();
@@ -208,66 +242,14 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
 
               {navigation
                 .filter((item) => item.category === cat)
-                .map((item) => {
-                  // Handle hash-based actions (e.g. #ai-assistant)
-                  if (item.href.startsWith('#')) {
-                    return (
-                      <button
-                        key={item.name}
-                        data-testid={item.testId}
-                        onClick={() => {
-                          window.dispatchEvent(
-                            new CustomEvent('app-action', {
-                              detail: item.href.slice(1),
-                            }),
-                          );
-                        }}
-                        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] text-[15px] font-medium transition-all text-foreground/70 hover:bg-muted/50 hover:text-foreground"
-                      >
-                        <item.icon className="h-4 w-4 text-foreground/50" />
-                        {item.name}
-                      </button>
-                    );
-                  }
-
-                  const isExact = pathname === item.href;
-                  const isChildRoute =
-                    item.href !== '/app' &&
-                    pathname.startsWith(`${item.href}/`);
-                  const isSettingsRoot = item.href === '/app/settings';
-                  const isInsideSettings =
-                    pathname.startsWith('/app/settings/');
-                  const isActive =
-                    isExact ||
-                    isChildRoute ||
-                    (isSettingsRoot &&
-                      (pathname === '/app/settings' || isInsideSettings));
-
-                  return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      data-testid={item.testId}
-                      onClick={() => {
-                        if (item.href !== pathname) {
-                          markSidebarRouteTransition(item.href);
-                        }
-                      }}
-                      onMouseEnter={() => prefetchRoute(item.href)}
-                      onFocus={() => prefetchRoute(item.href)}
-                      className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] text-[15px] font-medium transition-all duration-200 ${
-                        isActive
-                          ? 'bg-primary/90 text-primary-foreground shadow-premium ring-1 ring-primary/30'
-                          : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
-                      }`}
-                    >
-                      <item.icon
-                        className={`h-4 w-4 shrink-0 transition-colors duration-200 ${isActive ? 'text-primary-foreground' : 'text-foreground/50 group-hover:text-foreground/80'}`}
-                      />
-                      {item.name}
-                    </Link>
-                  );
-                })}
+                .map((item) => (
+                  <SidebarNavItem
+                    key={item.name}
+                    item={item}
+                    pathname={pathname}
+                    onPrefetch={prefetchRoute}
+                  />
+                ))}
             </div>
           ))}
         </nav>
@@ -308,6 +290,127 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
           </Button>
         </form>
       </div>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────
+// Individual nav item with RAG dots, badges, sub-items
+// ──────────────────────────────────────────────
+function SidebarNavItem({
+  item,
+  pathname,
+  onPrefetch,
+}: {
+  item: NavItem;
+  pathname: string;
+  onPrefetch: (href: string) => void;
+}) {
+  const ragDotColor = useRAGDot(item.ragKey);
+  const badgeCount = useTaskBadge(item.badgeKey);
+
+  // Handle hash-based actions (e.g. #ai-assistant)
+  if (item.href.startsWith('#')) {
+    return (
+      <button
+        data-testid={item.testId}
+        onClick={() => {
+          window.dispatchEvent(
+            new CustomEvent('app-action', {
+              detail: item.href.slice(1),
+            }),
+          );
+        }}
+        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] text-[15px] font-medium transition-all text-foreground/70 hover:bg-muted/50 hover:text-foreground"
+      >
+        <item.icon className="h-4 w-4 text-foreground/50" />
+        {item.name}
+      </button>
+    );
+  }
+
+  const isExact = pathname === item.href;
+  const isChildRoute =
+    item.href !== '/app' && pathname.startsWith(`${item.href}/`);
+  const isSettingsRoot = item.href === '/app/settings';
+  const isInsideSettings = pathname.startsWith('/app/settings/');
+  const isActive =
+    isExact ||
+    isChildRoute ||
+    (isSettingsRoot && (pathname === '/app/settings' || isInsideSettings));
+  const hasChildren = item.children && item.children.length > 0;
+  const isExpanded = isActive && hasChildren;
+
+  return (
+    <div>
+      <Link
+        href={item.href}
+        data-testid={item.testId}
+        onClick={() => {
+          if (item.href !== pathname) {
+            markSidebarRouteTransition(item.href);
+          }
+        }}
+        onMouseEnter={() => onPrefetch(item.href)}
+        onFocus={() => onPrefetch(item.href)}
+        className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] text-[15px] font-medium transition-all duration-200 ${
+          isActive
+            ? 'bg-primary/90 text-primary-foreground shadow-premium ring-1 ring-primary/30'
+            : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
+        }`}
+      >
+        <div className="relative shrink-0">
+          <item.icon
+            className={`h-4 w-4 transition-colors duration-200 ${isActive ? 'text-primary-foreground' : 'text-foreground/50 group-hover:text-foreground/80'}`}
+          />
+          {/* RAG indicator dot */}
+          {ragDotColor && (
+            <span
+              className={`absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full ${ragDotColor} ring-1 ring-background`}
+              aria-label="Status indicator"
+            />
+          )}
+        </div>
+        <span className="flex-1">{item.name}</span>
+        {/* Badge count */}
+        {badgeCount !== null && badgeCount > 0 && (
+          <span className="ml-auto rounded-full bg-primary/20 text-primary px-1.5 py-0.5 text-[10px] font-bold tabular-nums leading-none">
+            {badgeCount > 99 ? '99+' : badgeCount}
+          </span>
+        )}
+        {/* Expand indicator for sub-items */}
+        {hasChildren && (
+          <ChevronRight
+            className={`h-3 w-3 transition-transform duration-200 ${
+              isExpanded ? 'rotate-90' : ''
+            } ${isActive ? 'text-primary-foreground/70' : 'text-foreground/30'}`}
+          />
+        )}
+      </Link>
+
+      {/* Expanded sub-items */}
+      {isExpanded && item.children && (
+        <div className="ml-7 mt-1 space-y-0.5 border-l border-primary/20 pl-3">
+          {item.children.map((child) => {
+            const isChildActive = pathname === child.href;
+            return (
+              <Link
+                key={child.href}
+                href={child.href}
+                data-testid={child.testId}
+                onMouseEnter={() => onPrefetch(child.href)}
+                className={`block rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
+                  isChildActive
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
+                }`}
+              >
+                {child.name}
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
