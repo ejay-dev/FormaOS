@@ -26,6 +26,7 @@ import {
   ClipboardList,
   Landmark,
   Laptop,
+  Clock,
   type LucideIcon,
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
@@ -880,6 +881,123 @@ export function AuditActivityLog({
 }
 
 /**
+ * Attention Rail — answers "what do I need to do right now?"
+ * Shown at the very top of the dashboard before any charts or KPIs.
+ * Each item is a direct action link, not just a metric.
+ */
+function AttentionRail({
+  complianceScore,
+  openTasksCount,
+  expiringCertsCount,
+}: {
+  complianceScore: number;
+  openTasksCount: number;
+  expiringCertsCount: number;
+}) {
+  type AttentionItem = {
+    id: string;
+    label: string;
+    sublabel: string;
+    href: string;
+    urgency: 'critical' | 'warning' | 'ok';
+    icon: React.ElementType;
+  };
+
+  const items: AttentionItem[] = [];
+
+  if (openTasksCount > 0) {
+    items.push({
+      id: 'tasks',
+      label: `${openTasksCount} open task${openTasksCount !== 1 ? 's' : ''}`,
+      sublabel: openTasksCount > 5 ? 'Needs immediate attention' : 'Review & assign',
+      href: '/app/tasks',
+      urgency: openTasksCount > 10 ? 'critical' : 'warning',
+      icon: CheckSquare,
+    });
+  }
+
+  if (expiringCertsCount > 0) {
+    items.push({
+      id: 'certs',
+      label: `${expiringCertsCount} expiring soon`,
+      sublabel: 'Certifications & credentials',
+      href: '/app/certificates',
+      urgency: expiringCertsCount > 3 ? 'critical' : 'warning',
+      icon: Clock,
+    });
+  }
+
+  if (complianceScore < 70 && complianceScore > 0) {
+    items.push({
+      id: 'score',
+      label: `${complianceScore}% compliance score`,
+      sublabel: 'Below target threshold',
+      href: '/app/reports',
+      urgency: complianceScore < 50 ? 'critical' : 'warning',
+      icon: AlertTriangle,
+    });
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="flex items-center gap-3 rounded-xl border border-emerald-400/20 bg-emerald-500/5 px-4 py-3">
+        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+        <p className="text-sm font-medium text-emerald-300">
+          All clear — no immediate action required. Good standing.
+        </p>
+      </div>
+    );
+  }
+
+  const urgencyStyles = {
+    critical: 'border-rose-400/30 bg-rose-500/10 hover:bg-rose-500/15',
+    warning: 'border-amber-400/25 bg-amber-500/10 hover:bg-amber-500/15',
+    ok: 'border-glass-border bg-glass-subtle hover:bg-glass-strong',
+  };
+
+  const urgencyIconColor = {
+    critical: 'text-rose-400',
+    warning: 'text-amber-400',
+    ok: 'text-emerald-400',
+  };
+
+  const urgencyLabelColor = {
+    critical: 'text-rose-300',
+    warning: 'text-amber-300',
+    ok: 'text-foreground',
+  };
+
+  return (
+    <div className="space-y-2">
+      <p className="px-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+        Needs your attention
+      </p>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {items.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.id}
+              href={item.href}
+              className={`group flex items-center gap-3 rounded-xl border px-4 py-3 transition-all duration-200 ${urgencyStyles[item.urgency]}`}
+            >
+              <Icon className={`h-4 w-4 shrink-0 ${urgencyIconColor[item.urgency]}`} />
+              <div className="min-w-0 flex-1">
+                <p className={`text-sm font-semibold ${urgencyLabelColor[item.urgency]}`}>
+                  {item.label}
+                </p>
+                <p className="truncate text-xs text-muted-foreground">{item.sublabel}</p>
+              </div>
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/**
  * Complete employer dashboard
  */
 export function EmployerDashboard({
@@ -1104,6 +1222,13 @@ export function EmployerDashboard({
 
   return (
     <div className="space-y-8">
+      {/* Command center — actionable attention surface, always first */}
+      <AttentionRail
+        complianceScore={complianceScore}
+        openTasksCount={openTasksCount}
+        expiringCertsCount={expiringCertsCount}
+      />
+
       <MobileReadinessCheckpoint
         complianceScore={complianceScore}
         openTasksCount={openTasksCount}

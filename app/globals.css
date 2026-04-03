@@ -912,14 +912,32 @@
   --node-entity: 215 16% 47%; /* Slate */
 }
 
-/* Wire colors */
+/* Wire colors — 3 semantic roles
+ *
+ * Primary (action / flow):  --wire-action   → cyan  #00d4fb
+ * Alert   (risk / danger):  --wire-alert    → rose  #f43f5e
+ * Success (cleared / done): --wire-success  → emerald #10b981
+ *
+ * Legacy names aliased to the 3 roles so existing code keeps working:
+ *   policy-control  → action
+ *   control-evidence → action  (teal collapsed into cyan)
+ *   evidence-audit  → action   (violet collapsed into cyan primary)
+ *   audit-risk      → alert    (amber collapsed into rose)
+ *   risk-task       → alert
+ *   task-control    → success
+ */
 :root {
-  --wire-policy-control: #00d4fb;
-  --wire-control-evidence: #14b8a6;
-  --wire-evidence-audit: #a78bfa;
-  --wire-audit-risk: #f59e0b;
-  --wire-risk-task: #f43f5e;
-  --wire-task-control: #10b981;
+  --wire-action:  #00d4fb;  /* cyan  — primary action */
+  --wire-alert:   #f43f5e;  /* rose  — risk / danger  */
+  --wire-success: #10b981;  /* emerald — cleared / done */
+
+  /* Legacy aliases — do not use in new code */
+  --wire-policy-control:   var(--wire-action);
+  --wire-control-evidence: var(--wire-action);
+  --wire-evidence-audit:   var(--wire-action);
+  --wire-audit-risk:       var(--wire-alert);
+  --wire-risk-task:        var(--wire-alert);
+  --wire-task-control:     var(--wire-success);
 }
 
 @layer utilities {

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import { Check, RefreshCw, Calendar } from "lucide-react";
+import { Check, RefreshCw, Calendar, Link2 } from "lucide-react";
 // We removed the server action import for now to prevent build errors if the action is missing.
 // We will mock the toggle for now.
 
@@ -12,7 +12,13 @@ type Task = {
   priority: string;
   due_date: string | null;
   is_recurring: boolean;
-  evidenceCount?: number; // Added this to match your page data
+  evidenceCount?: number;
+  /** Which compliance framework this task relates to (e.g. "SOC 2 · CC6.1") */
+  framework?: string | null;
+  /** The specific control reference, participant name, or source context */
+  control_ref?: string | null;
+  /** Care participant this task is linked to */
+  participant?: string | null;
 };
 
 // ✅ CORRECT EXPORT
@@ -71,10 +77,19 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
                     </button>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-0.5">
                       <span className={`font-medium transition-all ${isCompleted ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
                         {task.title}
                       </span>
+                      {/* Context thread — links task back to its origin */}
+                      {(task.framework || task.control_ref || task.participant) && (
+                        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/70 font-medium mt-0.5">
+                          <Link2 className="h-2.5 w-2.5 shrink-0" />
+                          {[task.framework, task.control_ref, task.participant]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </div>
+                      )}
                       {task.is_recurring && (
                         <div className="flex items-center gap-1 text-xs text-purple-300 mt-0.5 font-medium">
                           <RefreshCw className="h-3 w-3" />

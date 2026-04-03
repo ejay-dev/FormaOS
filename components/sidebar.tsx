@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { signOut } from '@/app/app/actions/logout';
-import { LogOut, Command } from 'lucide-react';
+import { LogOut, Command, Shield, HeartPulse, FileText, BarChart3, Settings2 } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import Button from './ui/button';
 import { Badge } from './ui/badge';
@@ -15,6 +15,56 @@ import {
   getIndustryLabel,
 } from '@/lib/navigation/industry-sidebar';
 
+type ContextMode = {
+  label: string;
+  color: string;
+  icon: React.ElementType;
+};
+
+function resolveContextMode(pathname: string): ContextMode {
+  if (
+    pathname.startsWith('/app/participants') ||
+    pathname.startsWith('/app/visits') ||
+    pathname.startsWith('/app/care-plans') ||
+    pathname.startsWith('/app/progress-notes')
+  ) {
+    return { label: 'Care Operations', color: 'text-rose-300 bg-rose-500/10 border-rose-400/20', icon: HeartPulse };
+  }
+  if (
+    pathname.startsWith('/app/compliance') ||
+    pathname.startsWith('/app/controls') ||
+    pathname.startsWith('/app/frameworks') ||
+    pathname.startsWith('/app/staff-compliance')
+  ) {
+    return { label: 'Compliance', color: 'text-primary bg-primary/10 border-primary/20', icon: Shield };
+  }
+  if (
+    pathname.startsWith('/app/policies') ||
+    pathname.startsWith('/app/registers') ||
+    pathname.startsWith('/app/incidents') ||
+    pathname.startsWith('/app/vault') ||
+    pathname.startsWith('/app/tasks')
+  ) {
+    return { label: 'Governance', color: 'text-violet-300 bg-violet-500/10 border-violet-400/20', icon: FileText };
+  }
+  if (
+    pathname.startsWith('/app/audit') ||
+    pathname.startsWith('/app/reports') ||
+    pathname.startsWith('/app/executive') ||
+    pathname.startsWith('/app/intelligence')
+  ) {
+    return { label: 'Intelligence', color: 'text-emerald-300 bg-emerald-500/10 border-emerald-400/20', icon: BarChart3 };
+  }
+  if (
+    pathname.startsWith('/app/settings') ||
+    pathname.startsWith('/app/team') ||
+    pathname.startsWith('/app/billing')
+  ) {
+    return { label: 'Administration', color: 'text-muted-foreground bg-white/5 border-white/10', icon: Settings2 };
+  }
+  return { label: 'Overview', color: 'text-primary bg-primary/10 border-primary/20', icon: Shield };
+}
+
 type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
 
 export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
@@ -24,6 +74,7 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
   const industry = organization?.industry ?? null;
   const prefetchedRoutes = useRef(new Set<string>());
   const warmupScheduled = useRef(false);
+  const contextMode = useMemo(() => resolveContextMode(pathname), [pathname]);
 
   // Get industry-specific navigation (memoized to prevent prefetch re-runs)
   const { navigation, categories } = useMemo(
@@ -94,14 +145,18 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
 
   return (
     <div className="flex h-full w-full flex-col justify-between px-4 py-6">
-      {/* Industry Badge */}
-      {industry && (
-        <div className="mb-4 px-3">
+      {/* Context Mode + Industry Badge */}
+      <div className="mb-4 space-y-2 px-3">
+        <div className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 transition-all duration-300 ${contextMode.color}`}>
+          <contextMode.icon className="h-3 w-3 shrink-0" />
+          <span className="text-[11px] font-semibold tracking-wide">{contextMode.label}</span>
+        </div>
+        {industry && (
           <Badge variant="default" className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/15">
             {getIndustryLabel(industry)}
           </Badge>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Navigation */}
       <div className="space-y-8 overflow-y-auto no-scrollbar flex-1">

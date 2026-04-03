@@ -10,6 +10,7 @@ import {
   Plus,
   Calendar,
   RefreshCcw,
+  Link2,
 } from "lucide-react";
 import Link from "next/link";
 import { EvidenceButton } from "@/components/tasks/evidence-button";
@@ -28,6 +29,8 @@ type TaskRow = {
   status: string;
   priority: string | null;
   due_date: string | null;
+  framework_slug: string | null;
+  control_ref: string | null;
   evidence?: Array<{ count: number }> | null;
 };
 
@@ -268,10 +271,21 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                 </td>
                 
                 <td className="px-4 sm:px-6 py-4">
-                   <p className="text-sm font-bold text-foreground group-hover:text-sky-300 transition-colors cursor-default">
-                        {task.title}
-                    </p>
-                   <p className="text-[11px] text-muted-foreground mt-0.5 truncate max-w-xs">{task.description}</p>
+                  <p className="text-sm font-bold text-foreground group-hover:text-sky-300 transition-colors cursor-default">
+                    {task.title}
+                  </p>
+                  {(task.framework_slug || task.control_ref) && (
+                    <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-muted-foreground/70 font-medium">
+                      <Link2 className="h-2.5 w-2.5 shrink-0" />
+                      {[
+                        task.framework_slug?.toUpperCase(),
+                        task.control_ref,
+                      ]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </div>
+                  )}
+                  <p className="text-[11px] text-muted-foreground mt-0.5 truncate max-w-xs">{task.description}</p>
                 </td>
 
                 <td className="px-4 sm:px-6 py-4">

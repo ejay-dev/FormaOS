@@ -58,15 +58,21 @@ const config: Config = {
           600: 'var(--space-600)', // #18203d — subtle elevated surface
         },
 
-        // Wire/accent primaries — the brand colour palette for nodes and glows.
-        // Use text-wire-cyan / bg-wire-cyan instead of #06b6d4 / #00d4fb
+        // Wire/accent primaries — 3 semantic roles.
+        // Canonical: wire-action, wire-alert, wire-success
+        // Legacy names kept as aliases so existing code compiles without changes.
         wire: {
-          cyan: 'var(--wire-policy-control)',   // #00d4fb
-          teal: 'var(--wire-control-evidence)', // #14b8a6
-          violet: 'var(--wire-evidence-audit)', // #a78bfa
-          amber: 'var(--wire-audit-risk)',       // #f59e0b
-          rose: 'var(--wire-risk-task)',         // #f43f5e
-          emerald: 'var(--wire-task-control)',   // #10b981
+          // Canonical 3
+          action:  'var(--wire-action)',   // cyan   #00d4fb — primary action
+          alert:   'var(--wire-alert)',    // rose   #f43f5e — risk / danger
+          success: 'var(--wire-success)', // emerald #10b981 — cleared / done
+          // Legacy aliases → resolved to the 3 above via CSS variable aliasing
+          cyan:    'var(--wire-policy-control)',
+          teal:    'var(--wire-control-evidence)',
+          violet:  'var(--wire-evidence-audit)',
+          amber:   'var(--wire-audit-risk)',
+          rose:    'var(--wire-risk-task)',
+          emerald: 'var(--wire-task-control)',
         },
 
         // Glass surface shorthands.
