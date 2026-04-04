@@ -3,17 +3,25 @@ import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { getRecentItems } from '@/lib/search/recent-items';
 
 export async function GET(req: NextRequest) {
-  const auth = await authenticateV1Request(req, {
-    requiredScopes: ['search:read'],
-  });
-  if (!auth.ok) return auth.response;
+  try {
+    const auth = await authenticateV1Request(req, {
+      requiredScopes: ['search:read'],
+    });
+    if (!auth.ok) return auth.response;
 
-  const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '20', 10);
-  const items = await getRecentItems(
-    auth.context.orgId,
-    auth.context.userId ?? '',
-    limit,
-  );
+    const limit = parseInt(req.nextUrl.searchParams.get('limit') ?? '20', 10);
+    const items = await getRecentItems(
+      auth.context.orgId,
+      auth.context.userId ?? '',
+      limit,
+    );
 
-  return NextResponse.json({ recentItems: items });
+    return NextResponse.json({ recentItems: items });
+  } catch (error) {
+    console.error('[V1 API] Unhandled error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
+  }
 }

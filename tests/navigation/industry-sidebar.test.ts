@@ -13,14 +13,16 @@ describe('getIndustryNavigation', () => {
     expect(result.navigation).toEqual(HEALTHCARE_NAV);
     expect(result.categories).toEqual([
       'Overview',
+      'Compliance',
       'Clinical',
       'Workforce',
-      'Compliance',
+      'Registers',
+      'Reports',
       'System',
     ]);
-    expect(result.navigation.some((item) => item.testId === 'nav-patients')).toBe(
-      true,
-    );
+    expect(
+      result.navigation.some((item) => item.testId === 'nav-patients'),
+    ).toBe(true);
     expect(
       result.navigation.some((item) => item.testId === 'nav-staff-credentials'),
     ).toBe(true);
@@ -30,9 +32,9 @@ describe('getIndustryNavigation', () => {
     const result = getIndustryNavigation('enterprise', 'admin');
 
     expect(result.navigation).toEqual(ENTERPRISE_NAV);
-    expect(result.navigation.some((item) => item.testId === 'nav-executive')).toBe(
-      true,
-    );
+    expect(
+      result.navigation.some((item) => item.testId === 'nav-executive'),
+    ).toBe(true);
     expect(result.navigation.some((item) => item.testId === 'nav-team')).toBe(
       true,
     );
@@ -45,12 +47,16 @@ describe('getIndustryNavigation', () => {
     expect(healthcareMember.navigation).toEqual(STAFF_NAV);
     expect(healthcareMember.categories).toEqual(['Overview', 'Operations']);
     expect(
-      healthcareMember.navigation.some((item) => item.testId === 'nav-patients'),
+      healthcareMember.navigation.some(
+        (item) => item.testId === 'nav-patients',
+      ),
     ).toBe(false);
 
     expect(enterpriseViewer.navigation).toEqual(STAFF_NAV);
     expect(
-      enterpriseViewer.navigation.some((item) => item.testId === 'nav-executive'),
+      enterpriseViewer.navigation.some(
+        (item) => item.testId === 'nav-executive',
+      ),
     ).toBe(false);
   });
 
@@ -58,11 +64,11 @@ describe('getIndustryNavigation', () => {
     const result = getIndustryNavigation('unknown-industry', 'owner');
 
     expect(result.navigation).toEqual(DEFAULT_ADMIN_NAV);
-    expect(result.navigation.some((item) => item.testId === 'nav-policies')).toBe(
-      true,
-    );
-    expect(result.navigation.some((item) => item.testId === 'nav-ai-assistant')).toBe(
-      true,
-    );
+    expect(
+      result.navigation.some((item) => item.testId === 'nav-policies'),
+    ).toBe(true);
+    expect(
+      result.navigation.some((item) => item.testId === 'nav-ai-assistant'),
+    ).toBe(true);
   });
 });

@@ -1,61 +1,73 @@
-import { NextResponse } from 'next/server'
-import { createSupabaseAdminClient } from '@/lib/supabase/admin'
-import { processExportJob } from '@/lib/compliance/evidence-pack-export'
-import { timingSafeEqual } from 'crypto'
-import { getRedisConfig } from '@/lib/redis/client'
+import { NextResponse } from 'next/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { processExportJob } from '@/lib/compliance/evidence-pack-export';
+import { timingSafeEqual } from 'crypto';
+import { getRedisConfig } from '@/lib/redis/client';
 
-const DEFAULT_LIMIT = 3
+const DEFAULT_LIMIT = 3;
 
 async function handleComplianceExportsCron(request: Request) {
-  const authHeader = request.headers.get('authorization')
-  const cronSecret = process.env.CRON_SECRET
+  const authHeader = request.headers.get('authorization');
+  const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret) {
-    return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'CRON_SECRET not configured' },
+      { status: 500 },
+    );
   }
 
-  const token = authHeader?.replace('Bearer ', '') ?? ''
-  const tokenBuffer = Buffer.from(token, 'utf8')
-  const secretBuffer = Buffer.from(cronSecret, 'utf8')
+  const token = authHeader?.replace('Bearer ', '') ?? '';
+  const tokenBuffer = Buffer.from(token, 'utf8');
+  const secretBuffer = Buffer.from(cronSecret, 'utf8');
   const ok =
     tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer)
+    timingSafeEqual(tokenBuffer, secretBuffer);
 
   if (!ok) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   // If the Redis queue is configured, prefer the queue worker to avoid double-processing.
-  const redisCfg = getRedisConfig()
+  const redisCfg = getRedisConfig();
   if (redisCfg.restUrl && redisCfg.token) {
-    return NextResponse.json({ ok: true, skipped: true, reason: 'redis_queue_enabled' })
+    return NextResponse.json({
+      ok: true,
+      skipped: true,
+      reason: 'redis_queue_enabled',
+    });
   }
 
-  const url = new URL(request.url)
-  const limit = Number(url.searchParams.get('limit') ?? DEFAULT_LIMIT)
-  const workerId = `cron:${Date.now()}`
+  const url = new URL(request.url);
+  const limit = Number(url.searchParams.get('limit') ?? DEFAULT_LIMIT);
+  const workerId = `cron:${Date.now()}`;
 
-  const admin = createSupabaseAdminClient()
-  const { data: jobs, error } = await admin.rpc('claim_compliance_export_jobs', {
-    p_limit: Number.isFinite(limit) ? Math.max(0, Math.min(limit, 10)) : DEFAULT_LIMIT,
-    p_worker_id: workerId,
-  })
+  const admin = createSupabaseAdminClient();
+  const { data: jobs, error } = await admin.rpc(
+    'claim_compliance_export_jobs',
+    {
+      p_limit: Number.isFinite(limit)
+        ? Math.max(0, Math.min(limit, 10))
+        : DEFAULT_LIMIT,
+      p_worker_id: workerId,
+    },
+  );
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  let processed = 0
-  let failed = 0
+  let processed = 0;
+  let failed = 0;
 
   for (const job of jobs ?? []) {
-    processed += 1
+    processed += 1;
     const result = await processExportJob(job.id, {
       workerId,
       maxAttempts: 3,
       preclaimed: true,
-    })
-    if (!result.ok) failed += 1
+    });
+    if (!result.ok) failed += 1;
   }
 
   return NextResponse.json({
@@ -63,13 +75,29 @@ async function handleComplianceExportsCron(request: Request) {
     claimed: jobs?.length ?? 0,
     processed,
     failed,
-  })
+  });
 }
 
 export async function GET(request: Request) {
-  return handleComplianceExportsCron(request)
+  try {
+    return handleComplianceExportsCron(request);
+  } catch (error) {
+    console.error('[API] Unhandled error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(request: Request) {
-  return handleComplianceExportsCron(request)
+  try {
+    return handleComplianceExportsCron(request);
+  } catch (error) {
+    console.error('[API] Unhandled error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
+  }
 }

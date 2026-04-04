@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import type { DataClassificationLevel } from '@/lib/data-governance/classification';
 import {
   generateClassificationReport,
@@ -16,7 +17,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ ok: true, report });
   } catch (error) {
     return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : 'Forbidden' },
+      {
+        ok: false,
+        error: error instanceof Error ? error.message : 'Forbidden',
+      },
       { status: 403 },
     );
   }
@@ -24,8 +28,17 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
     const body = (await request.json()) as Record<string, unknown>;
-    const context = await requireOrgAdminContext((body.orgId as string | undefined) ?? null);
+    const context = await requireOrgAdminContext(
+      (body.orgId as string | undefined) ?? null,
+    );
     await upsertClassifications(
       context.orgId,
       Array.isArray(body.entries)
@@ -45,7 +58,13 @@ export async function PUT(request: Request) {
     return NextResponse.json({ ok: true, report });
   } catch (error) {
     return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : 'Failed to update classifications' },
+      {
+        ok: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to update classifications',
+      },
       { status: 400 },
     );
   }

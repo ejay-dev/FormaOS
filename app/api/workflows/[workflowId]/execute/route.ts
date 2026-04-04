@@ -7,11 +7,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getWorkflow } from '@/lib/automation/workflow-store';
 import { startWorkflowExecution } from '@/lib/automation/workflow-executor';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ workflowId: string }> },
 ) {
+  const rl = await rateLimitApi(request);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },

@@ -46,7 +46,7 @@ const customJestConfig = {
     '**/*.(test|spec).(js|jsx|ts|tsx)',
   ],
   transformIgnorePatterns: [
-    '/node_modules/',
+    'node_modules/(?!(@exodus|isomorphic-dompurify)/)',
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],

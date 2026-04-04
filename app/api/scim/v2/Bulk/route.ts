@@ -17,39 +17,57 @@ function getBaseUrl(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const orgId = new URL(request.url).searchParams.get('orgId');
-  if (!orgId) {
-    return NextResponse.json(scimError(400, 'orgId query param required'), {
-      status: 400,
-      headers: getScimContentHeaders(),
+  try {
+    const orgId = new URL(request.url).searchParams.get('orgId');
+    if (!orgId) {
+      return NextResponse.json(scimError(400, 'orgId query param required'), {
+        status: 400,
+        headers: getScimContentHeaders(),
+      });
+    }
+
+    const auth = await authenticateScimRequest(request, orgId);
+    if (!auth.ok) {
+      return NextResponse.json(auth.error, {
+        status: auth.status,
+        headers: getScimContentHeaders(auth.headers),
+      });
+    }
+
+    const body = (await request.json()) as Record<string, unknown>;
+    const result = await executeBulkOperations(
+      orgId,
+      getBaseUrl(request),
+      body,
+    );
+
+    await auditScimOperation({
+      orgId,
+      tokenLabel: auth.context.tokenLabel,
+      eventType: 'scim.bulk',
+      result: result.status >= 400 ? 'failure' : 'success',
+      metadata: {
+        operation_count: Array.isArray(body.Operations)
+          ? body.Operations.length
+          : 0,
+        status: result.status,
+      },
+      request,
     });
-  }
 
-  const auth = await authenticateScimRequest(request, orgId);
-  if (!auth.ok) {
-    return NextResponse.json(auth.error, {
-      status: auth.status,
-      headers: getScimContentHeaders(auth.headers),
-    });
-  }
-
-  const body = (await request.json()) as Record<string, unknown>;
-  const result = await executeBulkOperations(orgId, getBaseUrl(request), body);
-
-  await auditScimOperation({
-    orgId,
-    tokenLabel: auth.context.tokenLabel,
-    eventType: 'scim.bulk',
-    result: result.status >= 400 ? 'failure' : 'success',
-    metadata: {
-      operation_count: Array.isArray(body.Operations) ? body.Operations.length : 0,
+    return NextResponse.json(result.body, {
       status: result.status,
-    },
-    request,
-  });
-
-  return NextResponse.json(result.body, {
-    status: result.status,
-    headers: getScimContentHeaders(auth.context.headers),
-  });
+      headers: getScimContentHeaders(auth.context.headers),
+    });
+  } catch (error) {
+    console.error('[SCIM] Unhandled error:', error);
+    return NextResponse.json(
+      {
+        schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
+        detail: 'Internal server error',
+        status: '500',
+      },
+      { status: 500, headers: getScimContentHeaders() },
+    );
+  }
 }

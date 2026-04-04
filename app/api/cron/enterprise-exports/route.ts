@@ -1,80 +1,110 @@
-import { NextResponse } from 'next/server'
-import { timingSafeEqual } from 'crypto'
-import { createSupabaseAdminClient } from '@/lib/supabase/admin'
-import { getRedisConfig } from '@/lib/redis/client'
-import { processEnterpriseExportJob } from '@/lib/export/enterprise-export'
+import { NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getRedisConfig } from '@/lib/redis/client';
+import { processEnterpriseExportJob } from '@/lib/export/enterprise-export';
 
-const DEFAULT_LIMIT = 2
+const DEFAULT_LIMIT = 2;
 
-export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
-export const maxDuration = 60
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 function verifyCronSecret(request: Request): { ok: boolean; error?: string } {
-  const authHeader = request.headers.get('authorization')
-  const token = authHeader?.replace('Bearer ', '') ?? ''
-  const cronSecret = process.env.CRON_SECRET
+  const authHeader = request.headers.get('authorization');
+  const token = authHeader?.replace('Bearer ', '') ?? '';
+  const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret) {
-    return { ok: false, error: 'CRON_SECRET not configured' }
+    return { ok: false, error: 'CRON_SECRET not configured' };
   }
 
-  const tokenBuffer = Buffer.from(token, 'utf8')
-  const secretBuffer = Buffer.from(cronSecret, 'utf8')
+  const tokenBuffer = Buffer.from(token, 'utf8');
+  const secretBuffer = Buffer.from(cronSecret, 'utf8');
   const ok =
     tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer)
+    timingSafeEqual(tokenBuffer, secretBuffer);
 
-  if (!ok) return { ok: false, error: 'Unauthorized' }
-  return { ok: true }
+  if (!ok) return { ok: false, error: 'Unauthorized' };
+  return { ok: true };
 }
 
 async function handleEnterpriseExportsCron(request: Request) {
-  const auth = verifyCronSecret(request)
+  const auth = verifyCronSecret(request);
   if (!auth.ok) {
-    const status = auth.error === 'CRON_SECRET not configured' ? 500 : 401
-    return NextResponse.json({ ok: false, error: auth.error }, { status })
+    const status = auth.error === 'CRON_SECRET not configured' ? 500 : 401;
+    return NextResponse.json({ ok: false, error: auth.error }, { status });
   }
 
   // If the Redis queue is configured, prefer the queue worker to avoid double-processing.
-  const redisCfg = getRedisConfig()
+  const redisCfg = getRedisConfig();
   if (redisCfg.restUrl && redisCfg.token) {
-    return NextResponse.json({ ok: true, skipped: true, reason: 'redis_queue_enabled' })
+    return NextResponse.json({
+      ok: true,
+      skipped: true,
+      reason: 'redis_queue_enabled',
+    });
   }
 
-  const url = new URL(request.url)
-  const limit = Number(url.searchParams.get('limit') ?? DEFAULT_LIMIT)
-  const batch = Number.isFinite(limit) ? Math.max(0, Math.min(limit, 5)) : DEFAULT_LIMIT
+  const url = new URL(request.url);
+  const limit = Number(url.searchParams.get('limit') ?? DEFAULT_LIMIT);
+  const batch = Number.isFinite(limit)
+    ? Math.max(0, Math.min(limit, 5))
+    : DEFAULT_LIMIT;
 
-  const admin = createSupabaseAdminClient()
+  const admin = createSupabaseAdminClient();
 
   const { data: jobs, error } = await admin
     .from('enterprise_export_jobs')
     .select('id')
     .eq('status', 'pending')
     .order('created_at', { ascending: true })
-    .limit(batch)
+    .limit(batch);
 
   if (error) {
-    return NextResponse.json({ ok: false, error: error.message }, { status: 500 })
+    return NextResponse.json(
+      { ok: false, error: error.message },
+      { status: 500 },
+    );
   }
 
-  let processed = 0
-  let failed = 0
+  let processed = 0;
+  let failed = 0;
 
   for (const j of jobs ?? []) {
-    processed += 1
-    const res = await processEnterpriseExportJob(j.id)
-    if (!res.ok) failed += 1
+    processed += 1;
+    const res = await processEnterpriseExportJob(j.id);
+    if (!res.ok) failed += 1;
   }
 
-  return NextResponse.json({ ok: true, claimed: jobs?.length ?? 0, processed, failed })
+  return NextResponse.json({
+    ok: true,
+    claimed: jobs?.length ?? 0,
+    processed,
+    failed,
+  });
 }
 
 export async function GET(request: Request) {
-  return handleEnterpriseExportsCron(request)
+  try {
+    return handleEnterpriseExportsCron(request);
+  } catch (error) {
+    console.error('[API] Unhandled error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(request: Request) {
-  return handleEnterpriseExportsCron(request)
+  try {
+    return handleEnterpriseExportsCron(request);
+  } catch (error) {
+    console.error('[API] Unhandled error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
+  }
 }

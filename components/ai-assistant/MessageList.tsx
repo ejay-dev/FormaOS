@@ -1,5 +1,6 @@
 'use client';
 
+import { sanitizeMarkdown } from '@/lib/security/sanitize-html';
 import { useEffect, useRef } from 'react';
 import { Bot, User } from 'lucide-react';
 
@@ -26,15 +27,39 @@ function escapeHtml(text: string): string {
 function renderMarkdown(text: string): string {
   // Escape all HTML entities first to prevent XSS, then apply markdown formatting
   return escapeHtml(text)
-    .replace(/```([\s\S]*?)```/g, '<pre class="my-2 rounded-lg bg-black/30 p-3 text-xs overflow-x-auto"><code>$1</code></pre>')
-    .replace(/`([^`]+)`/g, '<code class="rounded bg-glass-strong px-1.5 py-0.5 text-xs font-mono">$1</code>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-foreground/90">$1</strong>')
+    .replace(
+      /```([\s\S]*?)```/g,
+      '<pre class="my-2 rounded-lg bg-black/30 p-3 text-xs overflow-x-auto"><code>$1</code></pre>',
+    )
+    .replace(
+      /`([^`]+)`/g,
+      '<code class="rounded bg-glass-strong px-1.5 py-0.5 text-xs font-mono">$1</code>',
+    )
+    .replace(
+      /\*\*(.+?)\*\*/g,
+      '<strong class="font-semibold text-foreground/90">$1</strong>',
+    )
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^### (.+)$/gm, '<h3 class="mt-3 mb-1 text-sm font-semibold text-foreground/90">$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2 class="mt-3 mb-1 text-base font-semibold text-foreground/90">$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1 class="mt-3 mb-1 text-lg font-bold text-foreground">$1</h1>')
-    .replace(/^- (.+)$/gm, '<li class="ml-4 list-disc text-muted-foreground">$1</li>')
-    .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal text-muted-foreground">$1</li>')
+    .replace(
+      /^### (.+)$/gm,
+      '<h3 class="mt-3 mb-1 text-sm font-semibold text-foreground/90">$1</h3>',
+    )
+    .replace(
+      /^## (.+)$/gm,
+      '<h2 class="mt-3 mb-1 text-base font-semibold text-foreground/90">$1</h2>',
+    )
+    .replace(
+      /^# (.+)$/gm,
+      '<h1 class="mt-3 mb-1 text-lg font-bold text-foreground">$1</h1>',
+    )
+    .replace(
+      /^- (.+)$/gm,
+      '<li class="ml-4 list-disc text-muted-foreground">$1</li>',
+    )
+    .replace(
+      /^\d+\. (.+)$/gm,
+      '<li class="ml-4 list-decimal text-muted-foreground">$1</li>',
+    )
     .replace(/\n/g, '<br/>');
 }
 
@@ -45,7 +70,9 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  const chatMessages = messages.filter((m) => m.role === 'user' || m.role === 'assistant');
+  const chatMessages = messages.filter(
+    (m) => m.role === 'user' || m.role === 'assistant',
+  );
 
   if (chatMessages.length === 0 && !isLoading) {
     return (
@@ -54,9 +81,12 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10">
             <Bot className="h-7 w-7 text-cyan-400" />
           </div>
-          <h3 className="mt-4 text-lg font-semibold text-foreground/90">AI Compliance Assistant</h3>
+          <h3 className="mt-4 text-lg font-semibold text-foreground/90">
+            AI Compliance Assistant
+          </h3>
           <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-            Ask about controls, draft policies, get evidence guidance, or analyze compliance gaps.
+            Ask about controls, draft policies, get evidence guidance, or
+            analyze compliance gaps.
           </p>
         </div>
       </div>
@@ -70,11 +100,13 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
           key={message.id}
           className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
         >
-          <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-            message.role === 'user'
-              ? 'bg-cyan-400/20'
-              : 'border border-glass-border bg-white/5'
-          }`}>
+          <div
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+              message.role === 'user'
+                ? 'bg-cyan-400/20'
+                : 'border border-glass-border bg-white/5'
+            }`}
+          >
             {message.role === 'user' ? (
               <User className="h-4 w-4 text-cyan-300" />
             ) : (
@@ -92,7 +124,9 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
             {message.role === 'assistant' ? (
               <div
                 className="prose-sm prose-invert"
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(message.content) }}
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeMarkdown(renderMarkdown(message.content)),
+                }}
               />
             ) : (
               <p className="whitespace-pre-wrap">{message.content}</p>

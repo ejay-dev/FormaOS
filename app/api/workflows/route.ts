@@ -6,10 +6,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import {
-  listWorkflows,
-  createWorkflow,
-} from '@/lib/automation/workflow-store';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { listWorkflows, createWorkflow } from '@/lib/automation/workflow-store';
 import type { WorkflowStatus } from '@/lib/automation/workflow-types';
 
 async function getAuthContext() {
@@ -36,13 +34,20 @@ async function getAuthContext() {
 }
 
 export async function GET(request: NextRequest) {
+  const rl = await rateLimitApi(request);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   const ctx = await getAuthContext();
   if (!ctx) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const { searchParams } = request.nextUrl;
-  const status = (searchParams.get('status') ?? undefined) as WorkflowStatus | undefined;
+  const status = (searchParams.get('status') ?? undefined) as
+    | WorkflowStatus
+    | undefined;
   const limit = Number(searchParams.get('limit') ?? '50');
   const offset = Number(searchParams.get('offset') ?? '0');
 
@@ -62,12 +67,23 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
     const workflow = await createWorkflow(ctx.orgId, ctx.user.id, body);
     return NextResponse.json(workflow, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to create workflow' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to create workflow',
+      },
       { status: 400 },
     );
   }

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { sanitizeSnippet } from '@/lib/security/sanitize-html';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { search } from '@/lib/search/search-engine';
 import { trackSearch } from '@/lib/search/search-engine';
@@ -181,7 +182,9 @@ export default async function SearchPage({
                     {r.snippet && (
                       <p
                         className="mt-1 line-clamp-2 text-xs text-muted-foreground"
-                        dangerouslySetInnerHTML={{ __html: r.snippet }}
+                        dangerouslySetInnerHTML={{
+                          __html: sanitizeSnippet(r.snippet),
+                        }}
                       />
                     )}
                     <div className="mt-2 flex gap-2">

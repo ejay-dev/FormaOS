@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getActivityFeed } from '@/lib/activity/feed';
 import { requireNotificationContext } from '@/lib/notifications/server';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 
 function toCsv(rows: Array<Record<string, unknown>>) {
   if (!rows.length) return '';
@@ -23,6 +24,13 @@ function toCsv(rows: Array<Record<string, unknown>>) {
 
 export async function GET(request: Request) {
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
     const { searchParams } = new URL(request.url);
     const context = await requireNotificationContext(searchParams.get('orgId'));
     const format = searchParams.get('format');
@@ -62,7 +70,10 @@ export async function GET(request: Request) {
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to load activity' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to load activity',
+      },
       { status: 500 },
     );
   }

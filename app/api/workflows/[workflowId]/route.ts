@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import {
   getWorkflow,
   updateWorkflow,
@@ -40,6 +41,11 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ workflowId: string }> },
 ) {
+  const rl = await rateLimitApi(_request);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   const ctx = await getAuthContext();
   if (!ctx) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -71,12 +77,23 @@ export async function PUT(
   const { workflowId } = await params;
 
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
     const workflow = await updateWorkflow(workflowId, ctx.orgId, body);
     return NextResponse.json(workflow);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to update workflow' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to update workflow',
+      },
       { status: 400 },
     );
   }
@@ -86,6 +103,11 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ workflowId: string }> },
 ) {
+  const rl = await rateLimitApi(_request);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   const ctx = await getAuthContext();
   if (!ctx) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -102,7 +124,10 @@ export async function DELETE(
     return NextResponse.json({ deleted: true });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to delete workflow' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to delete workflow',
+      },
       { status: 400 },
     );
   }

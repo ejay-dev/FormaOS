@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import {
   getPendingApprovals,
   processApprovalDecision,
@@ -37,7 +38,12 @@ async function getAuthContext() {
   };
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const rl = await rateLimitApi(request);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   const ctx = await getAuthContext();
   if (!ctx) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -58,6 +64,14 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
     const { executionId, stepId, decision, comment } = body;
 
@@ -105,7 +119,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ processed: true });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to process approval' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to process approval',
+      },
       { status: 500 },
     );
   }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { logIdentityEvent } from '@/lib/identity/audit';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 import { generateSpMetadataXml } from '@/lib/sso/saml';
@@ -8,6 +9,10 @@ export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return new NextResponse('Rate limit exceeded', { status: 429 });
+    }
     const orgId = new URL(request.url).searchParams.get('orgId');
     const context = await requireOrgAdminContext(orgId);
     const config = await getOrgSsoConfig(context.orgId);
@@ -36,8 +41,11 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    return new NextResponse(error instanceof Error ? error.message : 'Forbidden', {
-      status: 403,
-    });
+    return new NextResponse(
+      error instanceof Error ? error.message : 'Forbidden',
+      {
+        status: 403,
+      },
+    );
   }
 }

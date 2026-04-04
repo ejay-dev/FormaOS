@@ -1,5 +1,6 @@
 'use client';
 
+import { sanitizeSnippet } from '@/lib/security/sanitize-html';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -304,7 +305,9 @@ export function GlobalSearch() {
                       {r.snippet && (
                         <p
                           className="mt-0.5 line-clamp-2 text-xs text-muted-foreground"
-                          dangerouslySetInnerHTML={{ __html: r.snippet }}
+                          dangerouslySetInnerHTML={{
+                            __html: sanitizeSnippet(r.snippet),
+                          }}
                         />
                       )}
                     </div>

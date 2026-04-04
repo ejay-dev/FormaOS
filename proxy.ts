@@ -9,6 +9,41 @@ if (process.env.STRICT_ENV_VALIDATION === 'true') {
   assertEnvVars();
 }
 
+// ---------------------------------------------------------------------------
+// Global API Rate Limiter (edge-compatible, in-memory sliding window)
+// ---------------------------------------------------------------------------
+// Provides a baseline rate limit for ALL /api/* routes at the middleware level.
+// Individual routes may apply stricter limits via Redis-backed rate limiting.
+const API_RATE_WINDOW_MS = 60_000; // 1 minute
+const API_RATE_MAX_REQUESTS = 120; // 120 req/min per IP
+const apiRateBuckets = new Map<
+  string,
+  { count: number; windowStart: number }
+>();
+
+function checkGlobalApiRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const bucket = apiRateBuckets.get(ip);
+  if (!bucket || now - bucket.windowStart > API_RATE_WINDOW_MS) {
+    apiRateBuckets.set(ip, { count: 1, windowStart: now });
+    return true;
+  }
+  bucket.count++;
+  return bucket.count <= API_RATE_MAX_REQUESTS;
+}
+
+// Periodic cleanup to prevent memory leak (runs every 2 minutes)
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => {
+    const now = Date.now();
+    for (const [ip, bucket] of apiRateBuckets) {
+      if (now - bucket.windowStart > API_RATE_WINDOW_MS * 2) {
+        apiRateBuckets.delete(ip);
+      }
+    }
+  }, API_RATE_WINDOW_MS * 2);
+}
+
 // Auth routes that should pass through without auth checks
 const AUTH_PASSTHROUGH_ROUTES = [
   '/auth/signin',
@@ -165,7 +200,9 @@ async function parseLoopGuardState(
   }
 
   try {
-    const parsed = JSON.parse(decoder.decode(payloadBytes)) as Partial<LoopGuardState>;
+    const parsed = JSON.parse(
+      decoder.decode(payloadBytes),
+    ) as Partial<LoopGuardState>;
     if (
       typeof parsed.count !== 'number' ||
       !Number.isFinite(parsed.count) ||
@@ -241,9 +278,7 @@ export async function proxy(request: NextRequest) {
           new NextResponse(null, { status: 204, headers: corsH }),
         );
       }
-      Object.entries(corsH).forEach(([k, v]) =>
-        response.headers.set(k, v),
-      );
+      Object.entries(corsH).forEach(([k, v]) => response.headers.set(k, v));
       return finalizePassThrough(response);
     }
 
@@ -255,17 +290,37 @@ export async function proxy(request: NextRequest) {
     const PUBLIC_API_ROUTES = [
       '/api/health',
       '/api/version',
-      '/api/status',        // Platform status feeds
-      '/api/auth/',         // OAuth callbacks
-      '/api/cron/',         // Vercel cron (secured by CRON_SECRET)
+      '/api/status', // Platform status feeds
+      '/api/auth/', // OAuth callbacks
+      '/api/cron/', // Vercel cron (secured by CRON_SECRET)
       '/api/internal/trigger/', // Trigger.dev callbacks (secured by CRON_SECRET)
-      '/api/runtime/',      // Next.js runtime internals
-      '/api/sso/',          // SSO callbacks
+      '/api/runtime/', // Next.js runtime internals
+      '/api/sso/', // SSO callbacks
       '/api/trust-packet/', // Public vendor trust packet (rate-limited separately)
-      '/api/webhooks/',     // Stripe/Trigger.dev webhooks (HMAC-secured)
+      '/api/webhooks/', // Stripe/Trigger.dev webhooks (HMAC-secured)
     ];
 
     if (pathname.startsWith('/api/')) {
+      // Global API rate limit (edge-compatible, per-IP)
+      const clientIp =
+        request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        request.headers.get('x-real-ip') ||
+        'unknown';
+      if (!checkGlobalApiRateLimit(clientIp)) {
+        return finalizePassThrough(
+          NextResponse.json(
+            { error: 'Too many requests' },
+            {
+              status: 429,
+              headers: {
+                'Retry-After': '60',
+                'Cache-Control': 'no-store',
+              },
+            },
+          ),
+        );
+      }
+
       const isPublicApi = PUBLIC_API_ROUTES.some(
         (prefix) => pathname === prefix || pathname.startsWith(prefix),
       );
@@ -465,11 +520,7 @@ export async function proxy(request: NextRequest) {
       if (isAppPath || isAdminPath) {
         const url = request.nextUrl.clone();
         url.pathname = '/auth/signin';
-        return await redirectWithLoopGuard(
-          url,
-          false,
-          'missing-supabase-env',
-        );
+        return await redirectWithLoopGuard(url, false, 'missing-supabase-env');
       }
       logTiming('no-supabase-env');
       return finalizePassThrough(response);
@@ -479,11 +530,7 @@ export async function proxy(request: NextRequest) {
     if ((isAppPath || isAdminPath) && !hasSessionCookie) {
       const url = request.nextUrl.clone();
       url.pathname = '/auth/signin';
-      return await redirectWithLoopGuard(
-        url,
-        false,
-        'missing-session-cookie',
-      );
+      return await redirectWithLoopGuard(url, false, 'missing-session-cookie');
     }
 
     let user: { id: string; email?: string | null } | null = null;

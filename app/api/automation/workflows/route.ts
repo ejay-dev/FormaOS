@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 
-import {
-  createWorkflow,
-  listWorkflows,
-} from '@/lib/automation/workflow-store';
+import { createWorkflow, listWorkflows } from '@/lib/automation/workflow-store';
 import type { WorkflowTriggerType } from '@/lib/automation/workflow-types';
 import {
   canManageAutomation,
@@ -13,6 +11,11 @@ import {
 } from '../_auth';
 
 export async function GET(request: NextRequest) {
+  const rl = await rateLimitApi(request);
+  if (!rl.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
@@ -23,8 +26,7 @@ export async function GET(request: NextRequest) {
   const trigger = searchParams.get('trigger') ?? undefined;
 
   const workflows = await listWorkflows(context.orgId, {
-    enabled:
-      enabledParam === null ? undefined : enabledParam === 'true',
+    enabled: enabledParam === null ? undefined : enabledParam === 'true',
     trigger: trigger as WorkflowTriggerType | undefined,
   });
 
@@ -42,12 +44,23 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
     const workflow = await createWorkflow(context.orgId, context.userId, body);
     return NextResponse.json(workflow, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to create workflow' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to create workflow',
+      },
       { status: 400 },
     );
   }
