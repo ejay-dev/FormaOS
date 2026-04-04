@@ -127,7 +127,7 @@ function AuditTrailInner({
               {entry.locked && (
                 <Lock
                   className="h-2.5 w-2.5 text-amber-400"
-                  title="Immutable audit entry"
+                  aria-label="Immutable audit entry"
                 />
               )}
             </div>
@@ -151,7 +151,7 @@ export function AuditTrailPanel(props: AuditTrailPanelProps) {
           <h3 className="text-sm font-semibold">Audit Trail</h3>
           <Lock
             className="h-3 w-3 text-amber-400 ml-auto"
-            title="Immutable record"
+            aria-label="Immutable record"
           />
         </div>
         <AuditTrailInner {...props} />

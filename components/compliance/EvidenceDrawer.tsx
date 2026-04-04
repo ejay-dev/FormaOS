@@ -229,7 +229,7 @@ export function EvidenceDrawer({
                           {item.locked && (
                             <Lock
                               className="h-3 w-3 text-amber-400 shrink-0"
-                              title="Immutable — cannot be edited"
+                              aria-label="Immutable — cannot be edited"
                             />
                           )}
                         </div>
@@ -297,7 +297,7 @@ export function EvidenceDrawer({
                         {entry.locked && (
                           <Lock
                             className="h-2.5 w-2.5 text-amber-400"
-                            title="Immutable entry"
+                            aria-label="Immutable entry"
                           />
                         )}
                       </div>
