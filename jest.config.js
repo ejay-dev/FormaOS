@@ -22,23 +22,27 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   collectCoverageFrom: [
-    'app/**/*.{js,jsx,ts,tsx}',
-    'components/**/*.{js,jsx,ts,tsx}',
-    'lib/**/*.{js,jsx,ts,tsx}',
+    'lib/**/*.{ts,tsx}',
+    'app/api/**/*.{ts,tsx}',
+    // Components excluded from unit-test coverage — covered via Playwright E2E + BackstopJS visual tests
+    '!components/**',
     '!**/*.d.ts',
+    '!**/__tests__/**',
     '!**/node_modules/**',
     '!**/.next/**',
     '!**/coverage/**',
-    '!**/e2e/**',
+    '!**/*.stories.tsx',
+    '!**/*.config.ts',
+    '!**/types/**',
   ],
   // Coverage thresholds – ratcheted to current actuals (2026-03-19).
-  // Baseline after adding 127 tests (77 security + 50 auth). Target: 15%+.
+  // Ratcheted to 40% statements after comprehensive test expansion.
   coverageThreshold: {
     global: {
-      branches: 4,
-      functions: 4.7,
-      lines: 5.6,
-      statements: 5.8,
+      branches: 34,
+      functions: 43,
+      lines: 40,
+      statements: 40,
     },
   },
   testMatch: [
