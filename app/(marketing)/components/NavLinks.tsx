@@ -248,9 +248,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
 
         {sections.map((section, i) => (
           <div key={section.key}>
-            {i === 0 && (
-              <div className="mx-4 my-2 h-px bg-white/10" />
-            )}
+            {i === 0 && <div className="mx-4 my-2 h-px bg-white/10" />}
             <MobileSection
               label={section.label}
               items={section.items}
