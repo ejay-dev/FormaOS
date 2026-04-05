@@ -14,6 +14,9 @@
     "app/auth/callback/route.ts": {
       "maxDuration": 60
     },
+    "app/onboarding/page.tsx": {
+      "maxDuration": 60
+    },
     "app/**/*.ts": {
       "maxDuration": 30
     },

@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
+import { after } from 'next/server';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { Building2, ShieldCheck, Sparkles } from 'lucide-react';
 import { SubmitButton } from '@/components/ui/submit-button';
@@ -509,52 +510,56 @@ async function saveFrameworkSelection(formData: FormData) {
     if (selectedFrameworks.length) {
       await upsertSelectedFrameworks(admin, orgId, selectedFrameworks);
 
-      const provisioningResults = await Promise.allSettled(
-        selectedFrameworks.map((slug) =>
-          provisionFrameworkControls(orgId, slug, {
-            force: true,
-            client: admin,
-          }),
-        ),
-      );
+      // Defer heavy provisioning to run after the response is sent.
+      // This prevents Vercel function timeouts on cold starts with multiple frameworks.
+      after(async () => {
+        try {
+          const provisioningResults = await Promise.allSettled(
+            selectedFrameworks.map((slug) =>
+              provisionFrameworkControls(orgId, slug, {
+                force: true,
+                client: admin,
+              }),
+            ),
+          );
 
-      const provisioningFailures = provisioningResults.filter(
-        (result) => result.status === 'rejected',
-      );
+          const provisioningFailures = provisioningResults.filter(
+            (result) => result.status === 'rejected',
+          );
 
-      if (provisioningFailures.length > 0) {
-        console.warn('[onboarding] framework provisioning encountered failures', {
-          orgId,
-          failureCount: provisioningFailures.length,
-          frameworks: selectedFrameworks,
-        });
-      }
+          if (provisioningFailures.length > 0) {
+            console.warn('[onboarding] framework provisioning encountered failures', {
+              orgId,
+              failureCount: provisioningFailures.length,
+              frameworks: selectedFrameworks,
+            });
+          }
 
-      try {
-        await onFrameworksProvisioned(orgId, selectedFrameworks);
-      } catch (error) {
-        console.warn('[onboarding] frameworks automation hook failed', error);
-      }
+          await onFrameworksProvisioned(orgId, selectedFrameworks).catch((error) =>
+            console.warn('[onboarding] frameworks automation hook failed', error),
+          );
 
-      try {
-        await logProductActivity(
-          orgId,
-          user.id,
-          'created',
-          {
-            type: 'framework',
-            id: selectedFrameworks.join(','),
-            name: selectedFrameworks.join(', '),
-            path: '/app/compliance/frameworks',
-          },
-          {
-            frameworks: selectedFrameworks,
-            source: 'onboarding',
-          },
-        );
-      } catch (activityErr) {
-        console.warn('[onboarding] activity log failed (non-blocking)', activityErr);
-      }
+          await logProductActivity(
+            orgId,
+            user.id,
+            'created',
+            {
+              type: 'framework',
+              id: selectedFrameworks.join(','),
+              name: selectedFrameworks.join(', '),
+              path: '/app/compliance/frameworks',
+            },
+            {
+              frameworks: selectedFrameworks,
+              source: 'onboarding',
+            },
+          ).catch((activityErr) =>
+            console.warn('[onboarding] activity log failed (non-blocking)', activityErr),
+          );
+        } catch (err) {
+          console.error('[onboarding] deferred framework provisioning failed', err);
+        }
+      });
     }
 
     await markStepComplete(orgId, 5, 6);
