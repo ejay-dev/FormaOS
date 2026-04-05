@@ -82,6 +82,7 @@ function NavDropdown({
       >
         {label}
         <ChevronDown
+          aria-hidden="true"
           className={clsx(
             'h-3 w-3 opacity-50 transition-transform duration-200',
             open && 'rotate-180',

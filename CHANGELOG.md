@@ -1,5 +1,44 @@
 # 📋 FormaOS QA Audit Changelog
 
+## [3.2.0] - 2026-04-05
+
+### Test Coverage — Sprint 1 (28 test files, 1276 tests, 123 suites)
+
+- **Compliance engine:** unified-score, enforcement-types, control-deduplication, cross-map-engine, snapshot-service, scanner (86 tests)
+- **Auth/authz/security:** ability, permission-engine, session-security, detection-rules, monitoring-flags, password-history, correlation, session-rotator, oauth-state (100 tests)
+- **API routes:** health, organizations, compliance — all with `@jest-environment node` (3 suites)
+- **Zustand stores:** compliance (17 tests), app (7 tests)
+- **UI components:** OwnerChip (10 tests), IncidentStatusPipeline (5 tests)
+- **Utilities:** organization validators, task priority, API key scopes, deep links, hosted auth links, CSV generator, RBAC utils, submission engine (159 tests)
+- **Coverage:** 6.77% → 8.38% lines (large codebase denominator)
+
+### Loading Boundaries — Sprint 2A
+
+- **92 `loading.tsx` files** added for all non-marketing app routes
+- PageSkeleton pattern with contextual card/table row configurations per section
+- Marketing pages excluded — they are `force-static` SSG and don't require loading states
+
+### Error Boundaries — Sprint 2B
+
+- **121 `error.tsx` files** added for all non-marketing app routes
+- Client error component with "Try again" button and `error.digest` display
+- Marketing pages already covered by root `app/(marketing)/error.tsx`
+
+### Accessibility — Sprint 2C
+
+- **topbar-search.tsx:** `aria-label` on clear button and search input
+- **evidence-file-actions.tsx:** `aria-label` on open/download icon buttons
+- **investigation-form.tsx:** `aria-label` on all 4 Trash2 delete buttons
+- **credential-inspector-modal.tsx:** `aria-label` on close button
+- **NavLinks.tsx (marketing):** `aria-hidden` on decorative ChevronDown icon
+- **Footer.tsx (marketing):** `aria-hidden` on trust badge icons, Mail icon, MapPin icon
+
+### Bug Fix
+
+- **lib/stores/app.ts:** Fixed `clear()` action replacing all store actions with no-ops — now only resets data fields
+
+---
+
 ## [2.0.2] - 2026-03-05
 
 ### Security Hardening

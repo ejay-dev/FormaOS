@@ -164,7 +164,7 @@ export function Footer() {
                 className="flex items-center gap-2 text-sm"
               >
                 <div className="p-1.5 rounded-lg bg-white/[0.06] text-slate-400">
-                  <badge.icon className="h-3.5 w-3.5" />
+                  <badge.icon className="h-3.5 w-3.5" aria-hidden="true" />
                 </div>
                 <span className="text-gray-500">{badge.label}</span>
               </div>
@@ -194,12 +194,12 @@ export function Footer() {
               href="mailto:Formaos.team@gmail.com"
               className="flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors"
             >
-              <Mail className="h-4 w-4 shrink-0" />
+              <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span className="text-xs sm:text-sm">Formaos.team@gmail.com</span>
             </Link>
             <span className="hidden sm:inline text-gray-700">|</span>
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <MapPin className="h-4 w-4 shrink-0" />
+              <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span className="text-xs sm:text-sm">Sydney, Australia</span>
             </div>
             <Link
