@@ -144,6 +144,58 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v3.1.1',
+    codename: 'Bastion',
+    date: '2026-04-05',
+    summary:
+      'Enterprise audit remediation: resolved all 5 blocking issues — XSS sanitization, global API rate limiting, error handling across 36 route files, dependency vulnerabilities patched to zero, and full test suite passing at 896 tests.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'HTML sanitization library deployed across all XSS-risk surfaces',
+        tag: 'security',
+        detail:
+          'Installed sanitize-html and created lib/security/sanitize-html.ts with three context-aware sanitizers: sanitizeHtml (general), sanitizeSnippet (search results — allows only mark, b, em, strong, span), and sanitizeMarkdown (AI chat — allows structural markdown tags plus img). Patched search page, global search, and AI assistant message rendering.',
+      },
+      {
+        text: 'Global API rate limiter in edge middleware — 120 req/min per IP',
+        tag: 'security',
+        detail:
+          'Added an edge-compatible in-memory sliding window rate limiter to proxy.ts that covers all /api/* routes at the middleware level. Returns 429 with Retry-After header when exceeded. Includes periodic cleanup to prevent memory leaks. Individual routes retain stricter Redis-backed limits.',
+      },
+      {
+        text: 'try/catch error handling added to 56 API handler functions',
+        tag: 'fix',
+        detail:
+          'Wrapped 56 exported handler functions across 36 API route files (18 V1, 8 SCIM, 10 other) with structured try/catch blocks. V1 routes log [V1 API] errors, SCIM routes return RFC 7644-compliant error schemas, and all routes return proper 500 JSON responses instead of leaking stack traces.',
+      },
+      {
+        text: 'All npm dependency vulnerabilities resolved — zero remaining',
+        tag: 'security',
+        detail:
+          'Applied npm audit fix to patch both high-severity vulnerabilities: lodash prototype pollution and @xmldom/xmldom XML injection via CDATA serialization. Production dependency scan now returns zero vulnerabilities.',
+      },
+      {
+        text: 'Rate limiting added to governance, identity, activity, and SSO routes',
+        tag: 'security',
+        detail:
+          'Applied per-route rateLimitApi() checks to 11 previously unprotected routes: governance/classification, residency, retention, isolation, identity/audit, activity, sso/test, sso/metadata, and sso/directory-sync.',
+      },
+      {
+        text: 'Full test suite green: 896 tests passing, 0 failures',
+        tag: 'fix',
+        detail:
+          'Fixed the stale industry-sidebar test that expected 5 healthcare navigation categories but the source code now returns 7 (added Registers and Reports). Created 17 new sanitize-html unit tests validating all three sanitizer configurations. Final: 93 suites, 896 passed, 0 failures.',
+      },
+      {
+        text: 'Enterprise audit report generated with 10-phase analysis',
+        tag: 'enterprise',
+        detail:
+          'Comprehensive enterprise audit covering static analysis, build, database/schema integrity, security, performance, test coverage, API integrity, accessibility, dependencies, and configuration. Report saved as ENTERPRISE_AUDIT_REPORT.md with full remediation roadmap.',
+      },
+    ],
+  },
+  {
     version: 'v3.1.0',
     codename: 'Citadel',
     date: '2026-04-03',
