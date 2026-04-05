@@ -172,6 +172,7 @@ export function InvestigationForm({
                             setFishbone(next);
                           }}
                           className="text-muted-foreground hover:text-red-500"
+                          aria-label="Remove cause"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -230,6 +231,7 @@ export function InvestigationForm({
                     setTimeline(timeline.filter((_, j) => j !== i))
                   }
                   className="text-muted-foreground hover:text-red-500"
+                  aria-label="Remove timeline event"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -283,6 +285,7 @@ export function InvestigationForm({
                     setBarriers(barriers.filter((_, j) => j !== i))
                   }
                   className="text-muted-foreground hover:text-red-500"
+                  aria-label="Remove barrier"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -332,6 +335,7 @@ export function InvestigationForm({
               <button
                 onClick={() => setFactors(factors.filter((_, j) => j !== i))}
                 className="text-muted-foreground hover:text-red-500"
+                aria-label="Remove factor"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </button>

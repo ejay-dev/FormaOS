@@ -115,7 +115,7 @@ export function CredentialInspectorModal({
             <div className="space-y-10">
                 <div className="flex items-center justify-between">
                     <h3 className="text-sm font-black text-foreground tracking-tight">Audit Inspection</h3>
-                    <button onClick={onClose} className="p-2 hover:bg-glass-strong rounded-xl transition-all">
+                    <button onClick={onClose} className="p-2 hover:bg-glass-strong rounded-xl transition-all" aria-label="Close inspector">
                         <X className="h-5 w-5 text-muted-foreground" />
                     </button>
                 </div>

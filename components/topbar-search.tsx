@@ -72,12 +72,13 @@ export function TopbarSearch() {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length > 1 && setIsOpen(true)}
           placeholder="Search policies, tasks..."
+          aria-label="Search policies, tasks, and more"
           className="w-full rounded-full border border-card-foreground/8 bg-card/8 py-2 pl-10 pr-10 text-sm text-card-foreground outline-none focus:border-card-foreground/20 focus:bg-card/90 focus:ring-4 focus:ring-primary/20 transition-all placeholder:text-muted"
         />
         {loading ? (
            <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted" />
         ) : query.length > 0 ? (
-           <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+           <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2" aria-label="Clear search">
              <X className="h-4 w-4 text-muted hover:text-card-foreground" />
            </button>
         ) : null}

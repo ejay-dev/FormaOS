@@ -5,16 +5,16 @@ import { subscribeWithSelector } from 'zustand/middleware';
  * =========================================================
  * APP GLOBAL STATE STORE (Zustand)
  * =========================================================
- * 
+ *
  * This store holds shared application state that should
  * persist across sidebar navigation without re-fetching:
- * 
+ *
  * - User info (id, email, name)
  * - Organization (id, name, plan)
  * - Role & permissions
  * - Feature entitlements
  * - Trial status
- * 
+ *
  * Fetched ONCE after login, then reused everywhere.
  * Eliminates duplicate Supabase queries per page.
  */
@@ -90,31 +90,40 @@ export const useAppStore = create<AppState>()(
       ...initialState,
 
       hydrate: (state) => {
-      set({
-        user: state.user,
-        organization: state.organization,
-        role: state.role,
-        isFounder: state.isFounder,
-        entitlements: state.entitlements,
-        isHydrated: true,
-        isHydrating: false,
-        hydrationError: null,
-      });
-    },
+        set({
+          user: state.user,
+          organization: state.organization,
+          role: state.role,
+          isFounder: state.isFounder,
+          entitlements: state.entitlements,
+          isHydrated: true,
+          isHydrating: false,
+          hydrationError: null,
+        });
+      },
 
-    setHydrating: (isHydrating) => {
-      set({ isHydrating });
-    },
+      setHydrating: (isHydrating) => {
+        set({ isHydrating });
+      },
 
-    setHydrationError: (error) => {
-      set({ hydrationError: error, isHydrating: false });
-    },
+      setHydrationError: (error) => {
+        set({ hydrationError: error, isHydrating: false });
+      },
 
-    clear: () => {
-      set(createInitialState());
-    },
+      clear: () => {
+        set({
+          isHydrated: false,
+          isHydrating: false,
+          hydrationError: null,
+          user: null,
+          organization: null,
+          role: null,
+          isFounder: false,
+          entitlements: null,
+        });
+      },
     };
-  })
+  }),
 );
 
 /**
@@ -129,7 +138,9 @@ export function useHasPermission(permissionKey: string): boolean {
  * Hook to check if module is enabled
  */
 export function useIsModuleEnabled(moduleId: string): boolean {
-  const enabledModules = useAppStore((state) => state.entitlements?.enabledModules);
+  const enabledModules = useAppStore(
+    (state) => state.entitlements?.enabledModules,
+  );
   return enabledModules?.includes(moduleId) ?? false;
 }
 

@@ -65,6 +65,7 @@ export function EvidenceFileActions({
         onClick={() => openFile("view")}
         className="p-2 hover:bg-glass-strong text-muted-foreground rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Open file"
+        aria-label="Open file"
       >
         <ExternalLink className="h-4 w-4" />
       </button>
@@ -74,6 +75,7 @@ export function EvidenceFileActions({
         onClick={() => openFile("download")}
         className="p-2 hover:bg-glass-strong rounded-lg text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Download file"
+        aria-label="Download file"
       >
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
       </button>
