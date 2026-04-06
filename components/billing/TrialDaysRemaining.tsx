@@ -20,10 +20,10 @@ export function TrialDaysRemaining() {
   const isUrgent = status === 'urgent' || status === 'last_day';
 
   const colorClasses = isExpired
-    ? 'border-rose-400/30 bg-rose-500/10 text-rose-300'
+    ? 'border-rose-400/30 bg-rose-500/10 text-rose-600 dark:text-rose-300'
     : isUrgent
-      ? 'border-amber-400/30 bg-amber-500/10 text-amber-300'
-      : 'border-sky-400/20 bg-sky-500/8 text-sky-300';
+      ? 'border-amber-400/30 bg-amber-500/10 text-amber-700 dark:text-amber-300'
+      : 'border-sky-400/20 bg-sky-500/8 text-sky-700 dark:text-sky-300';
 
   return (
     <Link

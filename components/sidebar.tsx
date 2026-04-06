@@ -355,7 +355,7 @@ function SidebarNavItem({
         onFocus={() => onPrefetch(item.href)}
         className={`group flex items-center gap-2 rounded-md px-3 h-8 text-sm font-medium transition-all duration-200 ${
           isActive
-            ? 'bg-accent/50 text-foreground border-l-2 border-l-primary'
+            ? 'sidebar-link-active bg-accent/50 text-foreground border-l-2 border-l-primary'
             : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
         }`}
       >

@@ -192,9 +192,9 @@
   --background: 210 40% 98%;
   --foreground: 222 47% 11%;
 
-  --card: 210 40% 96%;
+  --card: 0 0% 100%;
   --card-foreground: 222 47% 11%;
-  --panel-2: 210 30% 93%;
+  --panel-2: 210 30% 96%;
 
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
@@ -1612,4 +1612,52 @@
   height: 2.5rem;
   margin-bottom: 0.75rem;
   opacity: 0.4;
+}
+
+/* =========================================================
+ * LIGHT THEME FIXES
+ * Scoped overrides to improve contrast and readability
+ * on white / near-white backgrounds.
+ * ======================================================== */
+
+/* Issue #1 + #7: Metric card — white bg, subtle shadow, softer left borders */
+[data-theme='light'] .metric-card {
+  background: hsl(0 0% 100%);
+  border-color: hsl(214 20% 90%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+[data-theme='light'] .metric-card-danger {
+  border-left-color: hsl(0 72% 55% / 0.7);
+}
+[data-theme='light'] .metric-card-warning {
+  border-left-color: hsl(38 92% 50% / 0.7);
+}
+[data-theme='light'] .metric-card-success {
+  border-left-color: hsl(160 84% 39% / 0.7);
+}
+[data-theme='light'] .metric-card-neutral {
+  border-left-color: hsl(221 83% 53% / 0.6);
+}
+
+/* Issue #7: General card contrast — white bg with subtle shadow */
+[data-theme='light'] .rounded-lg.border.border-border.bg-card,
+[data-theme='light'] .rounded-lg.border.border-border.overflow-hidden {
+  background: hsl(0 0% 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Issue #4: Sidebar active link — subtle primary tint instead of heavy violet */
+[data-theme='light'] .sidebar-link-active {
+  background: hsl(221 83% 53% / 0.08) !important;
+}
+
+/* Issue #2: Glass utilities on light — proper contrast */
+[data-theme='light'] .border-glass-border {
+  border-color: hsl(214 20% 88%);
+}
+[data-theme='light'] .bg-glass-subtle {
+  background: hsl(0 0% 100% / 0.7);
+}
+[data-theme='light'] .bg-glass-strong {
+  background: hsl(210 40% 96%);
 }

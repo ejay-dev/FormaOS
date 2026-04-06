@@ -74,11 +74,11 @@ export function FrameworkHealthWidget() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-6 animate-pulse">
-        <div className="h-5 w-40 rounded bg-glass-strong" />
+      <div className="rounded-2xl border border-border bg-card p-6 animate-pulse">
+        <div className="h-5 w-40 rounded bg-muted" />
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="h-20 rounded-xl bg-glass-strong" />
-          <div className="h-20 rounded-xl bg-glass-strong" />
+          <div className="h-20 rounded-xl bg-muted" />
+          <div className="h-20 rounded-xl bg-muted" />
         </div>
       </div>
     );
@@ -91,11 +91,11 @@ export function FrameworkHealthWidget() {
   const TrendIcon = trendPositive ? TrendingUp : TrendingDown;
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-glass-border bg-white/5">
-            <ShieldCheck className="h-4 w-4 text-emerald-300" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-muted/50">
+            <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
           </div>
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
@@ -108,7 +108,7 @@ export function FrameworkHealthWidget() {
         </div>
         {data.readinessTrend !== null ? (
           <div
-            className={`flex items-center gap-1 text-sm ${trendPositive ? 'text-emerald-300' : 'text-rose-300'}`}
+            className={`flex items-center gap-1 text-sm ${trendPositive ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300'}`}
           >
             <TrendIcon className="h-4 w-4" />
             <span>
@@ -125,19 +125,19 @@ export function FrameworkHealthWidget() {
             pct >= 80
               ? 'bg-[var(--wire-success)]'
               : pct >= 50
-                ? 'bg-amber-400'
+                ? 'bg-amber-500 dark:bg-amber-400'
                 : 'bg-[var(--wire-alert)]';
           const textColor =
             pct >= 80
               ? 'text-[var(--wire-success)]'
               : pct >= 50
-                ? 'text-amber-400'
+                ? 'text-amber-600 dark:text-amber-400'
                 : 'text-[var(--wire-alert)]';
 
           return (
             <div
               key={framework.frameworkId}
-              className="rounded-xl border border-glass-border bg-glass-subtle p-4"
+              className="rounded-xl border border-border bg-card p-4"
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="text-xs font-medium text-foreground truncate">
@@ -147,7 +147,7 @@ export function FrameworkHealthWidget() {
                   {pct}%
                 </div>
               </div>
-              <div className="mt-1.5 h-2.5 w-full rounded-full bg-glass-strong">
+              <div className="mt-1.5 h-2.5 w-full rounded-full bg-muted">
                 <div
                   className={`h-2.5 rounded-full ${barColor} transition-all duration-700 ease-out`}
                   style={{ width: `${pct}%` }}
@@ -164,7 +164,7 @@ export function FrameworkHealthWidget() {
                   </span>
                 )}
                 {framework.partialControls > 0 && (
-                  <span className="text-amber-400">
+                  <span className="text-amber-600 dark:text-amber-400">
                     {framework.partialControls} partial
                   </span>
                 )}
@@ -175,14 +175,14 @@ export function FrameworkHealthWidget() {
       </div>
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="rounded-xl border border-border bg-card p-4">
           <div className="text-xs font-semibold text-muted-foreground uppercase">
             Top Gaps
           </div>
           <ul className="mt-2 space-y-2 text-sm text-foreground/70">
             {data.gaps.missingEvidence.slice(0, 2).map((gap) => (
               <li key={gap.controlKey} className="flex items-start gap-2">
-                <AlertTriangle className="mt-0.5 h-4 w-4 text-amber-300" />
+                <AlertTriangle className="mt-0.5 h-4 w-4 text-amber-600 dark:text-amber-300" />
                 <span>{gap.title ?? gap.controlKey}</span>
               </li>
             ))}
@@ -193,7 +193,7 @@ export function FrameworkHealthWidget() {
             ) : null}
           </ul>
         </div>
-        <div className="rounded-xl border border-glass-border bg-glass-subtle p-4">
+        <div className="rounded-xl border border-border bg-card p-4">
           <div className="text-xs font-semibold text-muted-foreground uppercase">
             Next Actions
           </div>
@@ -213,7 +213,7 @@ export function FrameworkHealthWidget() {
         </div>
       </div>
 
-      <div className="mt-5 rounded-xl border border-glass-border bg-glass-subtle p-4">
+      <div className="mt-5 rounded-xl border border-border bg-card p-4">
         <div className="text-xs font-semibold text-muted-foreground uppercase">
           Risk heatmap
         </div>
@@ -226,10 +226,16 @@ export function FrameworkHealthWidget() {
               <div className="capitalize text-muted-foreground">{level}</div>
               {['compliant', 'at_risk', 'non_compliant'].map((status) => {
                 const count = data.riskHeatmap?.[level]?.[status] ?? 0;
+                const cellColor =
+                  status === 'compliant'
+                    ? 'bg-emerald-500/10 border-emerald-500/20 dark:bg-emerald-500/15 dark:border-emerald-400/20'
+                    : status === 'at_risk'
+                      ? 'bg-amber-500/10 border-amber-500/20 dark:bg-amber-500/15 dark:border-amber-400/20'
+                      : 'bg-red-500/10 border-red-500/20 dark:bg-red-500/15 dark:border-red-400/20';
                 return (
                   <div
                     key={`${level}-${status}`}
-                    className="rounded-md border border-glass-border bg-black/20 px-2 py-1 text-center"
+                    className={`rounded-md border px-2 py-1 text-center ${cellColor}`}
                   >
                     <span className="text-foreground/90">{count}</span>
                     <span className="ml-1 text-xs uppercase text-muted-foreground/60">
