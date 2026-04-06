@@ -65,8 +65,8 @@ const FEATURE_ROWS: {
 ];
 
 const PLAN_PRICES: Record<PlanKey, { monthly: number; label: string }> = {
-  basic: { monthly: 29, label: '/mo' },
-  pro: { monthly: 99, label: '/mo' },
+  basic: { monthly: 159, label: '/mo' },
+  pro: { monthly: 239, label: '/mo' },
   enterprise: { monthly: 399, label: '/mo' },
 };
 

@@ -24,9 +24,8 @@ export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
   basic: {
     key: 'basic',
     name: 'Starter',
-    summary:
-      'For small providers and solo operators running essential compliance workflows.',
-    priceMonthly: 29,
+    summary: 'For teams formalising their first compliance layer',
+    priceMonthly: 159,
     limits: {
       maxSites: 2,
       maxUsers: 15,
@@ -41,9 +40,9 @@ export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
   },
   pro: {
     key: 'pro',
-    name: 'Pro',
-    summary: 'For growing organizations operating across sites and teams.',
-    priceMonthly: 99,
+    name: 'Professional',
+    summary: 'For regulated teams managing active multi-framework obligations',
+    priceMonthly: 239,
     limits: {
       maxSites: 10,
       maxUsers: 75,
@@ -61,7 +60,7 @@ export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
     key: 'enterprise',
     name: 'Enterprise',
     summary:
-      'For organizations seeking full compliance coverage with unlimited scale.',
+      'For organisations where compliance is mission-critical and non-negotiable',
     priceMonthly: 399,
     limits: {
       maxSites: 'unlimited',

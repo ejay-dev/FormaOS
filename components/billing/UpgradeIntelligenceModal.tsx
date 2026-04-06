@@ -36,7 +36,7 @@ export function UpgradeIntelligenceModal({
   preselectedPlan,
 }: UpgradeIntelligenceModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<PlanKey>(
-    preselectedPlan || 'pro'
+    preselectedPlan || 'pro',
   );
   const [loadingPlan, setLoadingPlan] = useState<PlanKey | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +96,12 @@ export function UpgradeIntelligenceModal({
       <div
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            (e.currentTarget as HTMLElement).click();
+          }
+        }}
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
@@ -159,15 +164,20 @@ export function UpgradeIntelligenceModal({
                 <div
                   role="button"
                   tabIndex={0}
-                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      (e.currentTarget as HTMLElement).click();
+                    }
+                  }}
                   key={key}
                   onClick={() => meetsRequirement && setSelectedPlan(key)}
                   className={`relative rounded-xl border p-5 transition-all cursor-pointer ${
                     isSelected
                       ? 'border-sky-400/50 bg-sky-500/5 ring-2 ring-sky-400/30'
                       : meetsRequirement
-                      ? 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong'
-                      : 'border-white/5 bg-white/[0.02] opacity-50 cursor-not-allowed'
+                        ? 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong'
+                        : 'border-white/5 bg-white/[0.02] opacity-50 cursor-not-allowed'
                   }`}
                 >
                   {/* Recommended badge */}
@@ -187,23 +197,29 @@ export function UpgradeIntelligenceModal({
                         key === 'enterprise'
                           ? 'text-amber-400'
                           : key === 'pro'
-                          ? 'text-sky-400'
-                          : 'text-muted-foreground'
+                            ? 'text-sky-400'
+                            : 'text-muted-foreground'
                       }`}
                     />
-                    <span className="font-bold text-foreground">{plan.name}</span>
+                    <span className="font-bold text-foreground">
+                      {plan.name}
+                    </span>
                   </div>
 
                   {/* Price */}
                   <div className="mb-4">
                     <span className="text-3xl font-bold text-foreground">
-                      ${key === 'basic' ? '29' : key === 'pro' ? '99' : '299'}
+                      ${key === 'basic' ? '159' : key === 'pro' ? '239' : '399'}
                     </span>
-                    <span className="text-sm text-muted-foreground">/month</span>
+                    <span className="text-sm text-muted-foreground">
+                      /month
+                    </span>
                   </div>
 
                   {/* Summary */}
-                  <p className="text-xs text-muted-foreground mb-4">{plan.summary}</p>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    {plan.summary}
+                  </p>
 
                   {/* Key features */}
                   <ul className="space-y-2 mb-4">
@@ -219,13 +235,12 @@ export function UpgradeIntelligenceModal({
                   </ul>
 
                   {/* Required indicator */}
-                  {featureBenefit &&
-                    featureBenefit.requiredPlan === key && (
-                      <div className="mt-2 text-xs text-emerald-400 flex items-center gap-1">
-                        <Check className="h-3 w-3" />
-                        Includes {featureBenefit.title}
-                      </div>
-                    )}
+                  {featureBenefit && featureBenefit.requiredPlan === key && (
+                    <div className="mt-2 text-xs text-emerald-400 flex items-center gap-1">
+                      <Check className="h-3 w-3" />
+                      Includes {featureBenefit.title}
+                    </div>
+                  )}
                 </div>
               );
             })}

@@ -109,6 +109,8 @@ export function UpgradeModal() {
 
   const recommendedPlan: PlanKey = 'pro';
   const catalog = PLAN_CATALOG[recommendedPlan];
+  const starterCatalog = PLAN_CATALOG['basic'];
+  const enterpriseCatalog = PLAN_CATALOG['enterprise'];
 
   // Determine modal variant
   const variant = isExpired
@@ -184,7 +186,9 @@ export function UpgradeModal() {
               {titles[variant]}
             </h2>
           </div>
-          <p className="text-sm text-muted-foreground">{descriptions[variant]}</p>
+          <p className="text-sm text-muted-foreground">
+            {descriptions[variant]}
+          </p>
         </div>
 
         {error && (
@@ -214,7 +218,9 @@ export function UpgradeModal() {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-foreground">$99</div>
+              <div className="text-2xl font-bold text-foreground">
+                ${catalog.priceMonthly}
+              </div>
               <div className="text-xs text-muted-foreground">/month</div>
             </div>
           </div>
@@ -246,7 +252,7 @@ export function UpgradeModal() {
             )}
             {loadingPlan === 'pro'
               ? 'Starting checkout...'
-              : 'Upgrade to Pro — $99/mo'}
+              : `Upgrade to ${catalog.name} — $${catalog.priceMonthly}/mo`}
           </button>
 
           <div className="flex items-center gap-3">
@@ -258,7 +264,7 @@ export function UpgradeModal() {
               {loadingPlan === 'basic' ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : null}
-              Starter — $29/mo
+              {starterCatalog.name} — ${starterCatalog.priceMonthly}/mo
             </button>
             <button
               onClick={() => handleUpgrade('enterprise')}
@@ -268,7 +274,7 @@ export function UpgradeModal() {
               {loadingPlan === 'enterprise' ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : null}
-              Enterprise — $399/mo
+              {enterpriseCatalog.name} — ${enterpriseCatalog.priceMonthly}/mo
             </button>
           </div>
 
@@ -282,8 +288,8 @@ export function UpgradeModal() {
           </div>
 
           <p className="text-xs text-center text-muted-foreground/60">
-            14-day free trial on Starter &amp; Pro · Cancel anytime · Your data
-            is safe
+            14-day free trial on Starter &amp; Professional · Cancel anytime ·
+            Your data is safe
           </p>
         </div>
       </div>

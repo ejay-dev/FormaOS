@@ -153,7 +153,10 @@ async function getOrgContext() {
   );
 
   if (isFounder) {
-    authLogger.info('founder_blocked_from_onboarding', { email: userEmail, redirect: '/admin' });
+    authLogger.info('founder_blocked_from_onboarding', {
+      email: userEmail,
+      redirect: '/admin',
+    });
     redirect('/admin');
   }
 
@@ -280,8 +283,15 @@ async function markStepComplete(orgId: string, step: number, nextStep: number) {
   });
 
   if (error) {
-    console.error('[onboarding] markStepComplete failed', { orgId, step, nextStep, error: error.message });
-    throw new Error(`Failed to advance onboarding from step ${step} to ${nextStep}`);
+    console.error('[onboarding] markStepComplete failed', {
+      orgId,
+      step,
+      nextStep,
+      error: error.message,
+    });
+    throw new Error(
+      `Failed to advance onboarding from step ${step} to ${nextStep}`,
+    );
   }
 }
 
@@ -324,10 +334,9 @@ async function upsertSelectedFrameworks(
     enabled_at: timestamp,
   }));
 
-  const { error: legacyError } = await admin.from('org_frameworks').upsert(
-    legacyPayload,
-    { onConflict: 'org_id,framework_slug' },
-  );
+  const { error: legacyError } = await admin
+    .from('org_frameworks')
+    .upsert(legacyPayload, { onConflict: 'org_id,framework_slug' });
 
   if (legacyError) {
     throw legacyError;
@@ -438,7 +447,10 @@ async function saveRoleSelection(formData: FormData) {
   try {
     const { supabase, orgId, user, orgRecord } = await getOrgContext();
     const roleSelection = (formData.get('role') as string | null) ?? '';
-    const outcome = resolveRoleSelectionOutcome(roleSelection, orgRecord?.frameworks);
+    const outcome = resolveRoleSelectionOutcome(
+      roleSelection,
+      orgRecord?.frameworks,
+    );
     if (!outcome) {
       redirect('/onboarding?step=4&error=1');
     }
@@ -528,15 +540,22 @@ async function saveFrameworkSelection(formData: FormData) {
           );
 
           if (provisioningFailures.length > 0) {
-            console.warn('[onboarding] framework provisioning encountered failures', {
-              orgId,
-              failureCount: provisioningFailures.length,
-              frameworks: selectedFrameworks,
-            });
+            console.warn(
+              '[onboarding] framework provisioning encountered failures',
+              {
+                orgId,
+                failureCount: provisioningFailures.length,
+                frameworks: selectedFrameworks,
+              },
+            );
           }
 
-          await onFrameworksProvisioned(orgId, selectedFrameworks).catch((error) =>
-            console.warn('[onboarding] frameworks automation hook failed', error),
+          await onFrameworksProvisioned(orgId, selectedFrameworks).catch(
+            (error) =>
+              console.warn(
+                '[onboarding] frameworks automation hook failed',
+                error,
+              ),
           );
 
           await logProductActivity(
@@ -554,10 +573,16 @@ async function saveFrameworkSelection(formData: FormData) {
               source: 'onboarding',
             },
           ).catch((activityErr) =>
-            console.warn('[onboarding] activity log failed (non-blocking)', activityErr),
+            console.warn(
+              '[onboarding] activity log failed (non-blocking)',
+              activityErr,
+            ),
           );
         } catch (err) {
-          console.error('[onboarding] deferred framework provisioning failed', err);
+          console.error(
+            '[onboarding] deferred framework provisioning failed',
+            err,
+          );
         }
       });
     }
@@ -766,7 +791,8 @@ export default async function OnboardingPage({
   const status = await getOnboardingStatus(supabase, orgId);
 
   const onboardingStatusComplete =
-    Boolean(status.completed_at) || status.completed_steps.includes(TOTAL_STEPS);
+    Boolean(status.completed_at) ||
+    status.completed_steps.includes(TOTAL_STEPS);
   const hasRequiredOnboardingData =
     Boolean(orgRecord?.plan_key) &&
     Boolean(orgRecord?.industry) &&
@@ -812,10 +838,9 @@ export default async function OnboardingPage({
   const planLabel = planKey ? PLAN_CATALOG[planKey].name : 'Plan not selected';
   const completedRatio = (safeStep / TOTAL_STEPS) * 100;
   const journey = resolvedSearchParams?.journey ?? '';
-  const firstActionDefault =
-    isReadOnlyPersona
-      ? 'review_dashboard'
-      : journey === 'prove'
+  const firstActionDefault = isReadOnlyPersona
+    ? 'review_dashboard'
+    : journey === 'prove'
       ? 'upload_evidence'
       : journey === 'evaluate'
         ? 'run_evaluation'
@@ -826,404 +851,423 @@ export default async function OnboardingPage({
       <EnterpriseTrustStrip surface="onboarding" />
       <div className="flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-2xl">
-        <div className="bg-white/5 rounded-[2rem] p-6 sm:p-8 md:p-10 shadow-2xl border border-white/10 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-[hsl(var(--card))]" />
+          <div className="bg-white/5 rounded-[2rem] p-6 sm:p-8 md:p-10 shadow-2xl border border-white/10 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-[hsl(var(--card))]" />
 
-          <div className="mb-8 text-center md:text-left">
-            <div className="h-14 w-14 rounded-2xl bg-[hsl(var(--card))] text-white flex items-center justify-center mb-6 shadow-xl mx-auto md:mx-0">
-              <Building2 className="h-7 w-7" />
-            </div>
-            <h1 className="text-3xl font-black text-slate-100 tracking-tight">
-              FormaOS onboarding
-            </h1>
-            <p className="text-slate-400 mt-2 font-medium leading-relaxed text-sm">
-              Step {safeStep} of {TOTAL_STEPS} · {planLabel}
-            </p>
-            <div className="mt-5 space-y-3">
-              <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
-                  style={{ width: `${completedRatio}%` }}
-                />
+            <div className="mb-8 text-center md:text-left">
+              <div className="h-14 w-14 rounded-2xl bg-[hsl(var(--card))] text-white flex items-center justify-center mb-6 shadow-xl mx-auto md:mx-0">
+                <Building2 className="h-7 w-7" />
               </div>
-              <div className="grid grid-cols-3 gap-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                {ONBOARDING_MILESTONES.map((milestone) => {
-                  const isComplete = Math.max(...milestone.steps) < safeStep;
-                  const isActive = milestone.steps.includes(safeStep);
-                  return (
-                    <div
-                      key={milestone.id}
-                      className={`rounded-full border px-2 py-1 text-center ${
-                        isActive
-                          ? 'border-cyan-400/50 bg-cyan-500/10 text-cyan-200'
-                          : isComplete
-                            ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
-                            : 'border-white/10 bg-white/5'
-                      }`}
-                    >
-                      {milestone.label}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            {errorState ? (
-              <div className="mt-4 rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-xs text-rose-200">
-                Please complete the required fields before continuing.
-              </div>
-            ) : null}
-            {fastTrack ? (
-              <div className="mt-4 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3 text-xs text-cyan-100">
-                Fast-track enabled for this persona. Core governance defaults
-                are pre-configured so you can reach first proof faster.
-              </div>
-            ) : null}
-          </div>
-
-          {safeStep === 1 ? (
-            <form action={advanceWelcome} className="space-y-6">
-              <div className="rounded-2xl border border-white/10 bg-[hsl(var(--card))] p-6 text-sm text-slate-300">
-                <div className="flex items-start gap-3">
-                  <Sparkles className="h-5 w-5 text-sky-400" />
-                  <div>
-                    <div className="text-base font-semibold text-slate-100">
-                      Welcome to FormaOS.
-                    </div>
-                    <p className="mt-2 text-sm text-slate-400">
-                      We will capture your organization details and configure
-                      the compliance engine to match your obligations.
-                    </p>
-                  </div>
+              <h1 className="text-3xl font-black text-slate-100 tracking-tight">
+                FormaOS onboarding
+              </h1>
+              <p className="text-slate-400 mt-2 font-medium leading-relaxed text-sm">
+                Step {safeStep} of {TOTAL_STEPS} · {planLabel}
+              </p>
+              <div className="mt-5 space-y-3">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                    style={{ width: `${completedRatio}%` }}
+                  />
                 </div>
-              </div>
-              <SubmitButton loadingText="Starting...">Continue</SubmitButton>
-            </form>
-          ) : null}
-
-          {safeStep === 2 ? (
-            <form
-              action={saveOrgDetails}
-              className="space-y-8"
-              data-testid="onboarding-step-org"
-            >
-              <div className="space-y-4">
-                <label htmlFor="field-221" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  Organization name
-                </label>
-                <input
-                  required
-                  name="organizationName"
-                  defaultValue={orgRecord?.name ?? ''}
-                  placeholder="e.g. Acme Corp"
-                  data-testid="organization-name"
-                  className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] focus:bg-white/5 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
-                />
-              </div>
-
-              <div className="space-y-3">
-                <label htmlFor="field-220" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  Team size
-                </label>
-                <div className="grid gap-3 md:grid-cols-2">
-                  {TEAM_SIZE_OPTIONS.map((option) => (
-                    <label
-                      key={option.id}
-                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
-                    >
-                      <input
-                        required
-                        type="radio"
-                        name="teamSize"
-                        value={option.id}
-                        defaultChecked={orgRecord?.team_size === option.id}
-                        data-testid={`team-size-${option.id}`}
-                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                      />
-                      <span>{option.label} people</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <label htmlFor="field-219" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  Plan
-                </label>
-                <div className="grid gap-3 md:grid-cols-3">
-                  {PLAN_CHOICES.map((option) => (
-                    <label
-                      key={option.key}
-                      className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-4 text-sm text-slate-200"
-                    >
-                      <div className="flex items-center gap-3">
-                        <input
-                          required
-                          type="radio"
-                          name="plan"
-                          value={option.key}
-                          defaultChecked={planKey === option.key}
-                          data-testid={`plan-option-${option.key}`}
-                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                        />
-                        <span className="text-sm font-semibold text-slate-100">
-                          {option.name}
-                        </span>
-                      </div>
-                      <span className="text-xs text-slate-400">
-                        {option.summary}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <SubmitButton loadingText="Saving...">Continue</SubmitButton>
-            </form>
-          ) : null}
-
-          {safeStep === 3 ? (
-            <form
-              action={saveIndustrySelection}
-              className="space-y-8"
-              data-testid="onboarding-step-industry"
-            >
-              <div className="space-y-3">
-                <label htmlFor="field-218" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  Industry
-                </label>
-                <div className="grid gap-3 md:grid-cols-2">
-                  {INDUSTRY_OPTIONS.map((option) => (
-                    <label
-                      key={option.id}
-                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
-                    >
-                      <input
-                        required
-                        type="radio"
-                        name="industry"
-                        value={option.id}
-                        defaultChecked={orgRecord?.industry === option.id}
-                        data-testid={`industry-option-${option.id}`}
-                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <SubmitButton loadingText="Configuring industry...">
-                Continue
-              </SubmitButton>
-            </form>
-          ) : null}
-
-          {safeStep === 4 ? (
-            <form
-              action={saveRoleSelection}
-              className="space-y-8"
-              data-testid="onboarding-step-role"
-            >
-              <div className="space-y-3">
-                <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  Choose your onboarding persona
-                </div>
-                <div className="grid gap-3 md:grid-cols-2">
-                  {ROLE_OPTIONS.map((option) => (
-                    <label
-                      key={option.id}
-                      className="flex gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
-                    >
-                      <input
-                        required
-                        type="radio"
-                        name="role"
-                        value={option.id}
-                        defaultChecked={defaultRoleOptionId === option.id}
-                        data-testid={`role-option-${option.id}`}
-                        className="mt-1 h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                      />
-                      <div className="space-y-1">
-                        <div className="font-semibold text-slate-100">
-                          {option.label}
-                        </div>
-                        <div className="text-xs text-slate-400">
-                          {option.description}
-                        </div>
-                        <span
-                          className={`inline-flex rounded border px-2 py-0.5 text-[10px] uppercase tracking-wider ${
-                            option.journey === 'full'
-                              ? 'border-cyan-400/30 bg-cyan-500/10 text-cyan-200'
-                              : option.journey === 'read-only'
-                                ? 'border-slate-400/30 bg-slate-500/10 text-slate-200'
-                                : 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
-                          }`}
-                        >
-                          {option.journey === 'full'
-                            ? 'Full setup'
-                            : option.journey === 'read-only'
-                              ? 'Read-only fast track'
-                              : 'Execution fast track'}
-                        </span>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <SubmitButton loadingText="Setting role...">
-                Continue
-              </SubmitButton>
-            </form>
-          ) : null}
-
-          {safeStep === 5 ? (
-            <form
-              action={saveFrameworkSelection}
-              className="space-y-8"
-              data-testid="onboarding-step-frameworks"
-            >
-              <div className="space-y-3">
-                <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  Compliance frameworks (select at least one)
-                </div>
-                <div className="grid gap-3 md:grid-cols-2">
-                  {FRAMEWORK_OPTIONS.map((framework) => {
-                    const checked = Array.isArray(orgRecord?.frameworks)
-                      ? orgRecord?.frameworks.includes(framework.id)
-                      : false;
+                <div className="grid grid-cols-3 gap-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  {ONBOARDING_MILESTONES.map((milestone) => {
+                    const isComplete = Math.max(...milestone.steps) < safeStep;
+                    const isActive = milestone.steps.includes(safeStep);
                     return (
-                      <label
-                        key={framework.id}
-                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                      <div
+                        key={milestone.id}
+                        className={`rounded-full border px-2 py-1 text-center ${
+                          isActive
+                            ? 'border-cyan-400/50 bg-cyan-500/10 text-cyan-200'
+                            : isComplete
+                              ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
+                              : 'border-white/10 bg-white/5'
+                        }`}
                       >
-                        <input
-                          type="checkbox"
-                          name="frameworks"
-                          value={framework.id}
-                          defaultChecked={checked}
-                          data-testid={`framework-option-${framework.id}`}
-                          className="h-4 w-4 rounded border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                        />
-                        <span>{framework.label}</span>
-                      </label>
+                        {milestone.label}
+                      </div>
                     );
                   })}
                 </div>
               </div>
-              <SubmitButton loadingText="Configuring frameworks...">
-                Continue
-              </SubmitButton>
-            </form>
-          ) : null}
-
-          {safeStep === 6 ? (
-            <form
-              action={saveInvites}
-              className="space-y-8"
-              data-testid="onboarding-step-invites"
-            >
-              <div className="space-y-3">
-                <label htmlFor="field-217" className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  Invite teammates (optional)
-                </label>
-                <textarea
-                  name="inviteEmails"
-                  rows={4}
-                  placeholder="Add emails separated by commas or new lines"
-                  data-testid="invite-emails"
-                  className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] text-sm font-semibold text-slate-100"
-                />
-              </div>
-              <SubmitButton loadingText="Sending invites...">
-                Continue
-              </SubmitButton>
-            </form>
-          ) : null}
-
-          {safeStep === 7 ? (
-            <form
-              action={completeFirstAction}
-              className="space-y-8"
-              data-testid="onboarding-step-first-action"
-            >
-              <div className="space-y-3">
-                <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
-                  First system action
+              {errorState ? (
+                <div className="mt-4 rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-xs text-rose-200">
+                  Please complete the required fields before continuing.
                 </div>
-                {isReadOnlyPersona ? (
-                  <div className="rounded-xl border border-slate-400/30 bg-slate-500/10 px-4 py-3 text-xs text-slate-300">
-                    Read-only persona detected. Choose a review-first action to
-                    enter the workspace safely.
+              ) : null}
+              {fastTrack ? (
+                <div className="mt-4 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-3 text-xs text-cyan-100">
+                  Fast-track enabled for this persona. Core governance defaults
+                  are pre-configured so you can reach first proof faster.
+                </div>
+              ) : null}
+            </div>
+
+            {safeStep === 1 ? (
+              <form action={advanceWelcome} className="space-y-6">
+                <div className="rounded-2xl border border-white/10 bg-[hsl(var(--card))] p-6 text-sm text-slate-300">
+                  <div className="flex items-start gap-3">
+                    <Sparkles className="h-5 w-5 text-sky-400" />
+                    <div>
+                      <div className="text-base font-semibold text-slate-100">
+                        Welcome to FormaOS.
+                      </div>
+                      <p className="mt-2 text-sm text-slate-400">
+                        We will capture your organization details and configure
+                        the compliance engine to match your obligations.
+                      </p>
+                    </div>
                   </div>
-                ) : null}
-                <div className="space-y-3">
-                  {!isReadOnlyPersona ? (
-                    <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
-                      <input
-                        type="radio"
-                        name="firstAction"
-                        value="create_task"
-                        data-testid="first-action-create-task"
-                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                        defaultChecked={firstActionDefault === 'create_task'}
-                        required
-                      />
-                      <span>Create a kickoff compliance task</span>
-                    </label>
-                  ) : null}
-                  {!isReadOnlyPersona ? (
-                    <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
-                      <input
-                        type="radio"
-                        name="firstAction"
-                        value="upload_evidence"
-                        data-testid="first-action-upload-evidence"
-                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                        defaultChecked={firstActionDefault === 'upload_evidence'}
-                      />
-                      <span>Prepare an evidence upload task</span>
-                    </label>
-                  ) : null}
-                  <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
-                    <input
-                      type="radio"
-                      name="firstAction"
-                      value="run_evaluation"
-                      data-testid="first-action-run-evaluation"
-                      className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                      defaultChecked={firstActionDefault === 'run_evaluation'}
-                      required={isReadOnlyPersona}
-                    />
-                    <span>Run the first compliance evaluation</span>
-                  </label>
-                  {isReadOnlyPersona ? (
-                    <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
-                      <input
-                        type="radio"
-                        name="firstAction"
-                        value="review_dashboard"
-                        data-testid="first-action-review-dashboard"
-                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
-                        defaultChecked={firstActionDefault === 'review_dashboard'}
-                      />
-                      <span>Open readiness dashboard and review posture</span>
-                    </label>
-                  ) : null}
                 </div>
-              </div>
-              <SubmitButton loadingText="Completing setup...">
-                Complete setup
-              </SubmitButton>
-            </form>
-          ) : null}
+                <SubmitButton loadingText="Starting...">Continue</SubmitButton>
+              </form>
+            ) : null}
 
-          <div className="mt-10 pt-8 border-t border-white/10 flex items-center gap-3 text-emerald-300">
-            <ShieldCheck className="h-5 w-5" />
-            <p className="text-[10px] font-black uppercase tracking-widest">
-              Onboarding progress stored securely
-            </p>
+            {safeStep === 2 ? (
+              <form
+                action={saveOrgDetails}
+                className="space-y-8"
+                data-testid="onboarding-step-org"
+              >
+                <div className="space-y-4">
+                  <label
+                    htmlFor="field-221"
+                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                  >
+                    Organization name
+                  </label>
+                  <input
+                    required
+                    name="organizationName"
+                    defaultValue={orgRecord?.name ?? ''}
+                    placeholder="e.g. Acme Corp"
+                    data-testid="organization-name"
+                    className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] focus:bg-white/5 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label
+                    htmlFor="field-220"
+                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                  >
+                    Team size
+                  </label>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {TEAM_SIZE_OPTIONS.map((option) => (
+                      <label
+                        key={option.id}
+                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                      >
+                        <input
+                          required
+                          type="radio"
+                          name="teamSize"
+                          value={option.id}
+                          defaultChecked={orgRecord?.team_size === option.id}
+                          data-testid={`team-size-${option.id}`}
+                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        />
+                        <span>{option.label} people</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <label
+                    htmlFor="field-219"
+                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                  >
+                    Plan
+                  </label>
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {PLAN_CHOICES.map((option) => (
+                      <label
+                        key={option.key}
+                        className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-4 text-sm text-slate-200"
+                      >
+                        <div className="flex items-center gap-3">
+                          <input
+                            required
+                            type="radio"
+                            name="plan"
+                            value={option.key}
+                            defaultChecked={planKey === option.key}
+                            data-testid={`plan-option-${option.key}`}
+                            className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          />
+                          <span className="text-sm font-semibold text-slate-100">
+                            {option.name}
+                          </span>
+                        </div>
+                        <span className="text-xs text-slate-400">
+                          {option.summary}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <SubmitButton loadingText="Saving...">Continue</SubmitButton>
+              </form>
+            ) : null}
+
+            {safeStep === 3 ? (
+              <form
+                action={saveIndustrySelection}
+                className="space-y-8"
+                data-testid="onboarding-step-industry"
+              >
+                <div className="space-y-3">
+                  <label
+                    htmlFor="field-218"
+                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                  >
+                    Industry
+                  </label>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {INDUSTRY_OPTIONS.map((option) => (
+                      <label
+                        key={option.id}
+                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                      >
+                        <input
+                          required
+                          type="radio"
+                          name="industry"
+                          value={option.id}
+                          defaultChecked={orgRecord?.industry === option.id}
+                          data-testid={`industry-option-${option.id}`}
+                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <SubmitButton loadingText="Configuring industry...">
+                  Continue
+                </SubmitButton>
+              </form>
+            ) : null}
+
+            {safeStep === 4 ? (
+              <form
+                action={saveRoleSelection}
+                className="space-y-8"
+                data-testid="onboarding-step-role"
+              >
+                <div className="space-y-3">
+                  <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                    Choose your onboarding persona
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {ROLE_OPTIONS.map((option) => (
+                      <label
+                        key={option.id}
+                        className="flex gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                      >
+                        <input
+                          required
+                          type="radio"
+                          name="role"
+                          value={option.id}
+                          defaultChecked={defaultRoleOptionId === option.id}
+                          data-testid={`role-option-${option.id}`}
+                          className="mt-1 h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        />
+                        <div className="space-y-1">
+                          <div className="font-semibold text-slate-100">
+                            {option.label}
+                          </div>
+                          <div className="text-xs text-slate-400">
+                            {option.description}
+                          </div>
+                          <span
+                            className={`inline-flex rounded border px-2 py-0.5 text-[10px] uppercase tracking-wider ${
+                              option.journey === 'full'
+                                ? 'border-cyan-400/30 bg-cyan-500/10 text-cyan-200'
+                                : option.journey === 'read-only'
+                                  ? 'border-slate-400/30 bg-slate-500/10 text-slate-200'
+                                  : 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
+                            }`}
+                          >
+                            {option.journey === 'full'
+                              ? 'Full setup'
+                              : option.journey === 'read-only'
+                                ? 'Read-only fast track'
+                                : 'Execution fast track'}
+                          </span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <SubmitButton loadingText="Setting role...">
+                  Continue
+                </SubmitButton>
+              </form>
+            ) : null}
+
+            {safeStep === 5 ? (
+              <form
+                action={saveFrameworkSelection}
+                className="space-y-8"
+                data-testid="onboarding-step-frameworks"
+              >
+                <div className="space-y-3">
+                  <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                    Compliance frameworks (select at least one)
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {FRAMEWORK_OPTIONS.map((framework) => {
+                      const checked = Array.isArray(orgRecord?.frameworks)
+                        ? orgRecord?.frameworks.includes(framework.id)
+                        : false;
+                      return (
+                        <label
+                          key={framework.id}
+                          className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                        >
+                          <input
+                            type="checkbox"
+                            name="frameworks"
+                            value={framework.id}
+                            defaultChecked={checked}
+                            data-testid={`framework-option-${framework.id}`}
+                            className="h-4 w-4 rounded border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          />
+                          <span>{framework.label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+                <SubmitButton loadingText="Configuring frameworks...">
+                  Continue
+                </SubmitButton>
+              </form>
+            ) : null}
+
+            {safeStep === 6 ? (
+              <form
+                action={saveInvites}
+                className="space-y-8"
+                data-testid="onboarding-step-invites"
+              >
+                <div className="space-y-3">
+                  <label
+                    htmlFor="field-217"
+                    className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1"
+                  >
+                    Invite teammates (optional)
+                  </label>
+                  <textarea
+                    name="inviteEmails"
+                    rows={4}
+                    placeholder="Add emails separated by commas or new lines"
+                    data-testid="invite-emails"
+                    className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] text-sm font-semibold text-slate-100"
+                  />
+                </div>
+                <SubmitButton loadingText="Sending invites...">
+                  Continue
+                </SubmitButton>
+              </form>
+            ) : null}
+
+            {safeStep === 7 ? (
+              <form
+                action={completeFirstAction}
+                className="space-y-8"
+                data-testid="onboarding-step-first-action"
+              >
+                <div className="space-y-3">
+                  <div className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                    First system action
+                  </div>
+                  {isReadOnlyPersona ? (
+                    <div className="rounded-xl border border-slate-400/30 bg-slate-500/10 px-4 py-3 text-xs text-slate-300">
+                      Read-only persona detected. Choose a review-first action
+                      to enter the workspace safely.
+                    </div>
+                  ) : null}
+                  <div className="space-y-3">
+                    {!isReadOnlyPersona ? (
+                      <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                        <input
+                          type="radio"
+                          name="firstAction"
+                          value="create_task"
+                          data-testid="first-action-create-task"
+                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          defaultChecked={firstActionDefault === 'create_task'}
+                          required
+                        />
+                        <span>Create a kickoff compliance task</span>
+                      </label>
+                    ) : null}
+                    {!isReadOnlyPersona ? (
+                      <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                        <input
+                          type="radio"
+                          name="firstAction"
+                          value="upload_evidence"
+                          data-testid="first-action-upload-evidence"
+                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          defaultChecked={
+                            firstActionDefault === 'upload_evidence'
+                          }
+                        />
+                        <span>Prepare an evidence upload task</span>
+                      </label>
+                    ) : null}
+                    <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <input
+                        type="radio"
+                        name="firstAction"
+                        value="run_evaluation"
+                        data-testid="first-action-run-evaluation"
+                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        defaultChecked={firstActionDefault === 'run_evaluation'}
+                        required={isReadOnlyPersona}
+                      />
+                      <span>Run the first compliance evaluation</span>
+                    </label>
+                    {isReadOnlyPersona ? (
+                      <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                        <input
+                          type="radio"
+                          name="firstAction"
+                          value="review_dashboard"
+                          data-testid="first-action-review-dashboard"
+                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          defaultChecked={
+                            firstActionDefault === 'review_dashboard'
+                          }
+                        />
+                        <span>Open readiness dashboard and review posture</span>
+                      </label>
+                    ) : null}
+                  </div>
+                </div>
+                <SubmitButton loadingText="Completing setup...">
+                  Complete setup
+                </SubmitButton>
+              </form>
+            ) : null}
+
+            <div className="mt-10 pt-8 border-t border-white/10 flex items-center gap-3 text-emerald-300">
+              <ShieldCheck className="h-5 w-5" />
+              <p className="text-[10px] font-black uppercase tracking-widest">
+                Onboarding progress stored securely
+              </p>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   );
