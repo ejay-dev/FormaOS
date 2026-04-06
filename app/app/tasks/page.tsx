@@ -103,87 +103,59 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   const hasFilters = Boolean(query || priorityFilter !== "all" || statusFilter !== "all");
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* 1. Dynamic Roadmap Header */}
-      <div
-        className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
-        data-tour="tasks-header"
-      >
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="page-header" data-tour="tasks-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">Compliance Roadmap</h1>
-          <p className="text-muted-foreground mt-1">Execute mandatory controls and link evidence artifacts.</p>
+          <h1 className="page-title">Compliance Roadmap</h1>
+          <p className="page-description">Execute mandatory controls and link evidence artifacts</p>
         </div>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-            <div className="px-4 py-2 bg-white/5 rounded-xl border border-glass-border text-xs font-bold text-muted-foreground uppercase tracking-widest text-center sm:text-left">
-                {completed.length} / {allTasks.length} Controls Verified
-            </div>
-            <div className="px-4 py-2 bg-white/5 rounded-xl border border-glass-border text-xs font-bold text-muted-foreground uppercase tracking-widest text-center sm:text-left">
-                {filteredTasks.length} Showing{hasFilters ? " (Filtered)" : ""}
-            </div>
-            <details className="group">
-              <summary className="list-none cursor-pointer bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:brightness-110 transition-all flex items-center gap-2 shadow-[0_10px_30px_rgba(59,130,246,0.35)]">
-                <Plus className="h-4 w-4" />
-                Add Requirement
+        <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground font-mono">
+                {completed.length}/{allTasks.length} verified
+            </span>
+            <details className="group relative">
+              <summary className="list-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+                <Plus className="h-3.5 w-3.5" />
+                Add
               </summary>
-              <div className="mt-4 bg-white/5 border border-glass-border rounded-2xl p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)] w-full sm:min-w-[320px]">
-                <form action={createTask} className="space-y-4">
-                  <div className="space-y-2">
-                    <label htmlFor="field-216" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                      Requirement title
-                    </label>
+              <div className="absolute right-0 mt-2 bg-card border border-border rounded-lg p-4 shadow-lg w-80 z-20">
+                <form action={createTask} className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label htmlFor="field-216" className="text-xs font-medium text-muted-foreground">Title</label>
                     <input
                       name="title"
                       required
                       placeholder="e.g. Verify staff credential renewal"
-                      className="w-full rounded-xl border border-glass-border bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
+                      className="w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
                     />
                   </div>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label htmlFor="field-215" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                        Priority
-                      </label>
-                      <select
-                        name="priority"
-                        defaultValue="medium"
-                        className="w-full rounded-xl border border-glass-border bg-[hsl(var(--card))] px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
-                      >
+                  <div className="grid gap-3 grid-cols-2">
+                    <div className="space-y-1.5">
+                      <label htmlFor="field-215" className="text-xs font-medium text-muted-foreground">Priority</label>
+                      <select name="priority" defaultValue="medium" className="w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm">
                         <option value="critical">Critical</option>
                         <option value="high">High</option>
                         <option value="medium">Medium</option>
                       </select>
                     </div>
-                    <div className="space-y-2">
-                      <label htmlFor="field-214" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                        Due date (optional)
-                      </label>
+                    <div className="space-y-1.5">
+                      <label htmlFor="field-214" className="text-xs font-medium text-muted-foreground">Due date</label>
                       <div className="relative">
-                        <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                        <input
-                          type="date"
-                          name="dueDate"
-                          className="w-full rounded-xl border border-glass-border bg-[hsl(var(--card))] pl-9 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
-                        />
+                        <Calendar className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                        <input type="date" name="dueDate" className="w-full rounded-md border border-border bg-background pl-8 pr-2 py-1.5 text-sm" />
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <label htmlFor="field-213" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                      Recurrence (days, optional)
-                    </label>
+                  <div className="space-y-1.5">
+                    <label htmlFor="field-213" className="text-xs font-medium text-muted-foreground">Recurrence (days)</label>
                     <div className="relative">
-                      <RefreshCcw className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                      <input
-                        type="number"
-                        name="recurrenceDays"
-                        min={0}
-                        placeholder="0"
-                        className="w-full rounded-xl border border-glass-border bg-[hsl(var(--card))] pl-9 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
-                      />
+                      <RefreshCcw className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                      <input type="number" name="recurrenceDays" min={0} placeholder="0" className="w-full rounded-md border border-border bg-background pl-8 pr-2 py-1.5 text-sm" />
                     </div>
                   </div>
-                  <button className="w-full rounded-xl bg-sky-500/90 hover:bg-sky-400 text-background text-sm font-bold py-2.5 transition-all">
-                    Save Requirement
+                  <button className="w-full rounded-md bg-primary text-primary-foreground text-sm font-medium py-1.5 hover:bg-primary/90 transition-colors">
+                    Save
                   </button>
                 </form>
               </div>
@@ -191,138 +163,112 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
         </div>
       </div>
 
-      {/* 2. Control Filters */}
-      <div className="bg-white/5 p-2 rounded-2xl border border-glass-border shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-        <form method="get" className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-              name="q"
-              defaultValue={queryRaw}
-              placeholder="Search by control name or description..."
-              className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-foreground placeholder:text-muted-foreground/60"
-            />
-          </div>
-          <select
-            name="priority"
-            defaultValue={priorityFilter}
-            className="h-10 w-full sm:w-auto rounded-xl border border-glass-border bg-glass-strong px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
-          >
-            <option value="all">Priority: All</option>
-            <option value="critical">Priority: Critical</option>
-            <option value="high">Priority: High</option>
-            <option value="medium">Priority: Medium</option>
-          </select>
-          <select
-            name="status"
-            defaultValue={statusFilter}
-            className="h-10 w-full sm:w-auto rounded-xl border border-glass-border bg-glass-strong px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
-          >
-            <option value="all">Status: All</option>
-            <option value="open">Status: Open</option>
-            <option value="in_progress">Status: In Progress</option>
-            <option value="completed">Status: Completed</option>
-          </select>
-          <button
-            type="submit"
-            className="h-10 w-full sm:w-auto px-4 rounded-xl bg-glass-strong text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-white/20 transition-colors"
-          >
-            <Filter className="h-3.5 w-3.5 inline mr-2" />
-            Apply
-          </button>
-          {hasFilters ? (
-            <Link
-              href="/app/tasks"
-              className="h-10 w-full sm:w-auto px-4 rounded-xl border border-glass-border text-xs font-semibold uppercase tracking-wider text-foreground/70 hover:bg-glass-strong transition-colors inline-flex items-center justify-center"
-            >
-              Clear
-            </Link>
-          ) : null}
-        </form>
-      </div>
+      <div className="page-content space-y-4">
+      {/* Filters */}
+      <form method="get" className="flex flex-col sm:flex-row items-center gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <input
+            name="q"
+            defaultValue={queryRaw}
+            placeholder="Search controls..."
+            className="w-full pl-9 pr-3 h-9 text-sm rounded-md border border-border bg-background"
+          />
+        </div>
+        <select name="priority" defaultValue={priorityFilter} className="h-9 rounded-md border border-border bg-background px-2 text-xs">
+          <option value="all">All priority</option>
+          <option value="critical">Critical</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+        </select>
+        <select name="status" defaultValue={statusFilter} className="h-9 rounded-md border border-border bg-background px-2 text-xs">
+          <option value="all">All status</option>
+          <option value="open">Open</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+        <button type="submit" className="h-9 px-3 rounded-md border border-border text-xs font-medium hover:bg-accent/30 transition-colors">
+          <Filter className="h-3.5 w-3.5 inline mr-1" />
+          Apply
+        </button>
+        {hasFilters ? (
+          <Link href="/app/tasks" className="h-9 px-3 rounded-md text-xs text-muted-foreground hover:text-foreground transition-colors inline-flex items-center">
+            Clear
+          </Link>
+        ) : null}
+      </form>
 
-      {/* 3. The Roadmap Master Table */}
-      <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-glass-border rounded-3xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+      {/* Table */}
+      <div className="rounded-lg border border-border overflow-hidden">
         <div className="w-full overflow-x-auto overscroll-x-contain">
-        <table className="min-w-[760px] sm:min-w-[860px] w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-white/5 border-b border-glass-border text-xs font-bold uppercase text-muted-foreground tracking-widest">
-              <th className="px-4 sm:px-6 py-4">Status</th>
-              <th className="px-4 sm:px-6 py-4">Control / Requirement</th>
-              <th className="px-4 sm:px-6 py-4">Priority</th>
-              <th className="px-4 sm:px-6 py-4">Evidence Vault</th>
-              <th className="px-4 sm:px-6 py-4">Due Date</th>
-              <th className="px-4 sm:px-6 py-4 text-right">Actions</th>
+        <table className="min-w-[760px] w-full text-left">
+          <thead className="bg-muted/50">
+            <tr>
+              <th className="px-4 py-3 text-sm font-medium w-12">Status</th>
+              <th className="px-4 py-3 text-sm font-medium">Control / Requirement</th>
+              <th className="px-4 py-3 text-sm font-medium">Priority</th>
+              <th className="px-4 py-3 text-sm font-medium">Evidence</th>
+              <th className="px-4 py-3 text-sm font-medium">Due Date</th>
+              <th className="px-4 py-3 text-sm font-medium text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10">
+          <tbody className="divide-y divide-border">
             {filteredTasks.map((task) => (
-              <tr key={task.id} className="group hover:bg-white/5 transition-colors">
-                <td className="px-4 sm:px-6 py-4">
+              <tr key={task.id} className="group hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-3">
                   {task.status === 'completed' ? (
-                    <div className="h-8 w-8 rounded-full bg-emerald-400/10 border border-emerald-400/30 flex items-center justify-center">
-                        <CheckCircle2 className="h-5 w-5 text-emerald-300" />
-                    </div>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                   ) : (
-                    <div className="h-8 w-8 rounded-full border border-glass-border flex items-center justify-center group-hover:border-glass-border-strong transition-colors">
-                        <Circle className="h-5 w-5 text-muted-foreground" />
-                    </div>
+                    <Circle className="h-4 w-4 text-muted-foreground" />
                   )}
                 </td>
-                
-                <td className="px-4 sm:px-6 py-4">
-                  <p className="text-sm font-bold text-foreground group-hover:text-sky-300 transition-colors cursor-default">
+
+                <td className="px-4 py-3">
+                  <p className="text-sm font-medium text-foreground">
                     {task.title}
                   </p>
                   {(task.framework_slug || task.control_ref) && (
                     <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-muted-foreground/70 font-medium">
                       <Link2 className="h-2.5 w-2.5 shrink-0" />
-                      {[
-                        task.framework_slug?.toUpperCase(),
-                        task.control_ref,
-                      ]
-                        .filter(Boolean)
-                        .join(' · ')}
+                      {[task.framework_slug?.toUpperCase(), task.control_ref].filter(Boolean).join(' · ')}
                     </div>
                   )}
                   <p className="text-[11px] text-muted-foreground mt-0.5 truncate max-w-xs">{task.description}</p>
                 </td>
 
-                <td className="px-4 sm:px-6 py-4">
-                   <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-tighter ${
-                       normalizeTaskPriority(task.priority) === 'critical' ? 'bg-rose-500/15 text-rose-200' : 
-                       normalizeTaskPriority(task.priority) === 'high' ? 'bg-amber-400/15 text-amber-200' : 
-                       'bg-sky-500/15 text-sky-200'
+                <td className="px-4 py-3">
+                   <span className={`status-pill ${
+                       normalizeTaskPriority(task.priority) === 'critical' ? 'status-pill-red' :
+                       normalizeTaskPriority(task.priority) === 'high' ? 'status-pill-amber' :
+                       'status-pill-blue'
                    }`}>
                        {taskPriorityLabel(task.priority)}
                    </span>
                 </td>
 
-                <td className="px-4 sm:px-6 py-4">
-                    <div className="flex items-center gap-2">
-                        {(() => {
-                          const evidenceCount = task.evidence?.[0]?.count ?? 0;
-                          return evidenceCount > 0 ? (
-                            <div className="flex items-center gap-1.5 text-emerald-200 bg-emerald-400/10 px-3 py-1 rounded-lg border border-emerald-400/30">
-                              <ShieldCheck className="h-3.5 w-3.5" />
-                              <span className="text-xs font-black">{evidenceCount} FILES</span>
-                            </div>
-                          ) : (
-                            <EvidenceButton taskId={task.id} taskTitle={task.title} />
-                          );
-                        })()}
-                    </div>
+                <td className="px-4 py-3">
+                    {(() => {
+                      const evidenceCount = task.evidence?.[0]?.count ?? 0;
+                      return evidenceCount > 0 ? (
+                        <span className="status-pill status-pill-green">
+                          <ShieldCheck className="h-3 w-3" />
+                          {evidenceCount}
+                        </span>
+                      ) : (
+                        <EvidenceButton taskId={task.id} taskTitle={task.title} />
+                      );
+                    })()}
                 </td>
 
-                <td className="px-4 sm:px-6 py-4">
-                   <div className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
-                      <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-                      {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No Deadline'}
+                <td className="px-4 py-3">
+                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <Clock className="h-3.5 w-3.5" />
+                      {task.due_date ? new Date(task.due_date).toLocaleDateString() : '-'}
                    </div>
                 </td>
 
-                <td className="px-4 sm:px-6 py-4 text-right">
-                    <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+                <td className="px-4 py-3 text-right">
+                    <button className="p-1.5 text-muted-foreground hover:text-foreground transition-colors">
                         <MoreVertical className="h-4 w-4" />
                     </button>
                 </td>
@@ -331,24 +277,22 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
           </tbody>
         </table>
         </div>
-        
-        {/* ✅ FINAL CORRECTED EMPTY STATE BLOCK */}
+
         {filteredTasks.length === 0 && (
-            <div className="flex flex-col items-center justify-center p-24 text-center">
-                <p className="text-sm text-muted-foreground italic">
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+                <p className="text-sm text-muted-foreground">
                     {allTasks.length === 0
                       ? "Your compliance roadmap is currently empty."
                       : "No requirements match the current filters."}
                 </p>
                 {allTasks.length === 0 ? (
-                  <div className="mt-2">
-                    <Link href="/app" className="text-xs font-bold text-sky-300 underline">
-                        Select an Industry Pack to begin
-                    </Link>
-                  </div>
+                  <Link href="/app" className="text-xs text-primary hover:underline mt-2">
+                      Select an Industry Pack to begin
+                  </Link>
                 ) : null}
             </div>
         )}
+      </div>
       </div>
     </div>
   );

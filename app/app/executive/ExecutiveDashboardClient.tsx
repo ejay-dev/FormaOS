@@ -211,53 +211,44 @@ export function ExecutiveDashboardClient({
     .sort((a, b) => b.count - a.count);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/95 backdrop-blur">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 sm:px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/app"
-              className="p-2 rounded-lg border border-white/10 hover:bg-glass-strong transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <LayoutDashboard className="h-5 w-5 text-sky-400" />
-                <h1 className="text-xl sm:text-2xl font-bold">
-                  Executive Dashboard
-                </h1>
-              </div>
-              <p className="text-sm text-muted-foreground mt-0.5">
-                {organizationName}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {lastUpdated && (
-              <span className="text-xs text-muted-foreground/60">
-                Last updated: {lastUpdated.toLocaleTimeString()}
-              </span>
-            )}
-            <button
-              onClick={fetchData}
-              disabled={isLoading}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 hover:bg-glass-strong transition-colors disabled:opacity-50"
-            >
-              <RefreshCw
-                className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}
-              />
-              <span className="text-sm">Refresh</span>
-            </button>
+    <div className="flex flex-col h-full">
+      {/* Page header */}
+      <div className="page-header">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/app"
+            className="p-1.5 rounded-md border border-border hover:bg-accent/30 transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+          </Link>
+          <div>
+            <h1 className="page-title">Executive Dashboard</h1>
+            <p className="page-description">{organizationName}</p>
           </div>
         </div>
-      </header>
+        <div className="flex items-center gap-2">
+          {lastUpdated && (
+            <span className="text-xs text-muted-foreground font-mono">
+              {lastUpdated.toLocaleTimeString()}
+            </span>
+          )}
+          <button
+            onClick={fetchData}
+            disabled={isLoading}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border hover:bg-accent/30 transition-colors disabled:opacity-50 text-sm"
+          >
+            <RefreshCw
+              className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`}
+            />
+            Refresh
+          </button>
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+      {/* Page content */}
+      <div className="page-content max-w-7xl mx-auto w-full">
         {/* Top KPI Row */}
-        <div className="grid gap-4 md:grid-cols-4 mb-8">
+        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 mb-4">
           <KPICard
             title="Overall Score"
             value={`${posture?.overallScore ?? 0}%`}
@@ -320,91 +311,64 @@ export function ExecutiveDashboardClient({
           />
         </div>
 
-        <section className="mb-8 grid gap-6 lg:grid-cols-3">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-2">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <section className="mb-4 grid gap-3 lg:grid-cols-12">
+          <div className="rounded-lg border border-border bg-card p-4 lg:col-span-8">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <ListChecks className="h-5 w-5 text-cyan-300" />
-                <div>
-                  <h2 className="text-lg font-semibold text-foreground">
-                    Executive Command Center
-                  </h2>
-                  <p className="mt-1 text-xs text-muted-foreground/60">
-                    Prioritized operator actions and risk posture at a glance.
-                  </p>
-                </div>
+                <ListChecks className="h-4 w-4 text-muted-foreground" />
+                <h2 className="text-sm font-semibold">Command Center</h2>
               </div>
-              <div className="rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 text-xs text-muted-foreground">
-                <p className="font-semibold text-foreground/90">Data Freshness</p>
-                <p className="mt-1">
-                  Last evaluated:{' '}
-                  <span className="text-foreground/90">
-                    {posture?.lastEvaluated
-                      ? new Date(posture.lastEvaluated).toLocaleString()
-                      : 'N/A'}
-                  </span>
-                </p>
-              </div>
+              <span className="text-[10px] font-mono text-muted-foreground">
+                {posture?.lastEvaluated
+                  ? new Date(posture.lastEvaluated).toLocaleString()
+                  : 'N/A'}
+              </span>
             </div>
 
-            <div className="mt-5 grid gap-3 md:grid-cols-4">
+            <div className="grid gap-2 grid-cols-2 lg:grid-cols-4">
               {riskHeatmap.map((cell) => {
                 const severity = commandSeverityFromCount(cell.count);
                 return (
                   <Link
                     key={cell.key}
                     href={cell.href}
-                    className="rounded-xl border border-white/10 bg-slate-950/40 p-4 transition-colors hover:bg-glass-strong"
+                    className="rounded-lg border border-border bg-background p-3 transition-colors hover:bg-accent/30"
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          {cell.label}
-                        </p>
-                        <p className="mt-2 text-sm font-semibold text-foreground">
-                          {cell.metric}
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <span
-                          className={`rounded border px-2 py-1 text-xs font-semibold uppercase tracking-wider ${severityStyles(severity)}`}
-                        >
-                          {severityLabel(severity)}
-                        </span>
-                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5">
-                          <cell.icon className="h-4 w-4 text-foreground/90" />
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <cell.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground truncate">
+                        {cell.label}
+                      </p>
                     </div>
+                    <p className="text-sm font-medium text-foreground">
+                      {cell.metric}
+                    </p>
+                    <span
+                      className={`status-pill mt-1.5 ${severity === 'critical' ? 'status-pill-red' : severity === 'high' ? 'status-pill-amber' : severity === 'watch' ? 'status-pill-blue' : 'status-pill-green'}`}
+                    >
+                      {severityLabel(severity)}
+                    </span>
                   </Link>
                 );
               })}
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <h3 className="text-sm font-semibold text-foreground">
-              Action Queue
-            </h3>
-            <p className="mt-1 text-xs text-muted-foreground/60">
-              Ranked by impact and urgency.
-            </p>
-            <div className="mt-4 space-y-3">
+          <div className="rounded-lg border border-border bg-card p-4 lg:col-span-4">
+            <h3 className="text-sm font-semibold mb-2">Action Queue</h3>
+            <div className="space-y-2">
               {actionQueue.map((item) => (
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="group flex items-start justify-between gap-3 rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 transition-colors hover:bg-glass-strong"
+                  className="group flex items-center gap-2.5 rounded-md border border-border bg-background px-3 py-2 transition-colors hover:bg-accent/30"
                 >
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-foreground">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-foreground truncate">
                       {item.label}
                     </p>
-                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                      {item.detail}
-                    </p>
                   </div>
-                  <span className="mt-0.5 inline-flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-semibold text-foreground/90">
+                  <span className="text-xs font-mono font-bold text-muted-foreground">
                     {item.count}
                   </span>
                 </Link>
@@ -414,10 +378,10 @@ export function ExecutiveDashboardClient({
         </section>
 
         {/* Main Grid */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-3 lg:grid-cols-12">
           {/* Left Column - Posture Ring */}
-          <div className="lg:col-span-1">
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))]">
+          <div className="lg:col-span-4 space-y-3">
+            <div className="rounded-lg border border-border bg-card">
               <CompliancePostureRing
                 score={posture?.overallScore ?? 0}
                 previousScore={posture?.previousScore ?? 0}
@@ -428,38 +392,32 @@ export function ExecutiveDashboardClient({
             </div>
 
             {/* Automation Metrics */}
-            <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
-              <h4 className="text-xs font-bold uppercase text-muted-foreground mb-3">
+            <div className="rounded-lg border border-border bg-card p-4">
+              <h4 className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">
                 Automation Performance
               </h4>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-foreground/70">Success Rate</span>
-                  <span className="text-sm font-semibold text-emerald-400">
+                  <span className="text-sm text-muted-foreground">Success Rate</span>
+                  <span className="text-sm font-semibold text-emerald-500">
                     {data.automationMetrics?.successRate ?? 0}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-foreground/70">
-                    Auto-Completed Tasks
-                  </span>
-                  <span className="text-sm font-semibold text-foreground/90">
+                  <span className="text-sm text-muted-foreground">Auto-Completed</span>
+                  <span className="text-sm font-semibold">
                     {data.automationMetrics?.taskAutoCompletionRate ?? 0}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-foreground/70">
-                    Avg Resolution Time
-                  </span>
-                  <span className="text-sm font-semibold text-foreground/90">
-                    {data.automationMetrics?.averageResolutionTime ?? 0} days
+                  <span className="text-sm text-muted-foreground">Avg Resolution</span>
+                  <span className="text-sm font-mono font-semibold">
+                    {data.automationMetrics?.averageResolutionTime ?? 0}d
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-foreground/70">
-                    Monthly Triggers
-                  </span>
-                  <span className="text-sm font-semibold text-foreground/90">
+                  <span className="text-sm text-muted-foreground">Monthly Triggers</span>
+                  <span className="text-sm font-mono font-semibold">
                     {data.automationMetrics?.triggersThisMonth ?? 0}
                   </span>
                 </div>
@@ -468,14 +426,11 @@ export function ExecutiveDashboardClient({
           </div>
 
           {/* Right Column - Framework & Controls */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Framework Rollup */}
+          <div className="lg:col-span-8 space-y-3">
             <FrameworkRollupWidget
               frameworks={posture?.frameworkRollup ?? []}
               isLoading={isLoading}
             />
-
-            {/* Critical Controls */}
             <CriticalControlsTable
               controls={criticalFailures}
               isLoading={isLoading}
@@ -484,7 +439,7 @@ export function ExecutiveDashboardClient({
         </div>
 
         {/* Bottom Row */}
-        <div className="grid gap-6 lg:grid-cols-2 mt-6">
+        <div className="grid gap-3 lg:grid-cols-2 mt-3">
           {/* Audit Readiness */}
           {data.auditForecast && (
             <AuditReadinessGauge
@@ -496,7 +451,7 @@ export function ExecutiveDashboardClient({
           {/* Deadlines */}
           <DeadlineCalendar deadlines={deadlines} isLoading={isLoading} />
         </div>
-      </main>
+      </div>
     </div>
   );
 }

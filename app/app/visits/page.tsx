@@ -174,83 +174,68 @@ export default async function VisitsPage({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-black tracking-tight" data-testid="visits-title">
-            {label}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Track and manage {label.toLowerCase()}
-          </p>
+          <h1 className="page-title" data-testid="visits-title">{label}</h1>
+          <p className="page-description">Track and manage {label.toLowerCase()}</p>
         </div>
         <Link
           href="/app/visits/new"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
           data-testid="add-visit-btn"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           New Visit
         </Link>
       </div>
 
+      <div className="page-content space-y-4">
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <Calendar className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-sm text-muted-foreground">Total Visits</p>
-            </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="metric-card metric-card-neutral">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
           </div>
+          <p className="text-2xl font-bold">{stats.total}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <Clock className="h-5 w-5 text-amber-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.scheduled}</p>
-              <p className="text-sm text-muted-foreground">Scheduled</p>
-            </div>
+        <div className={`metric-card ${stats.scheduled > 0 ? 'metric-card-warning' : 'metric-card-neutral'}`}>
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Scheduled</p>
           </div>
+          <p className="text-2xl font-bold">{stats.scheduled}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <CheckCircle className="h-5 w-5 text-green-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.completed}</p>
-              <p className="text-sm text-muted-foreground">Completed</p>
-            </div>
+        <div className="metric-card metric-card-success">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Completed</p>
           </div>
+          <p className="text-2xl font-bold">{stats.completed}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <XCircle className="h-5 w-5 text-red-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.missed}</p>
-              <p className="text-sm text-muted-foreground">Missed/Cancelled</p>
-            </div>
+        <div className={`metric-card ${stats.missed > 0 ? 'metric-card-danger' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <XCircle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Missed</p>
           </div>
+          <p className="text-2xl font-bold">{stats.missed}</p>
         </div>
       </div>
 
-      <form method="GET" className="flex flex-col lg:flex-row gap-3">
+      <form method="GET" className="flex flex-col lg:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <input
             type="text"
             name="q"
             defaultValue={q}
-            placeholder="Search by client, visit type, or service..."
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
+            placeholder="Search visits..."
+            className="w-full pl-9 pr-3 h-9 text-sm rounded-md border border-border bg-background"
           />
         </div>
-        <select
-          name="status"
-          defaultValue={statusFilter}
-          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
-        >
+        <select name="status" defaultValue={statusFilter} className="h-9 rounded-md border border-border bg-background px-2 text-xs">
           <option value="">All status</option>
           <option value="scheduled">Scheduled</option>
           <option value="in_progress">In progress</option>
@@ -258,25 +243,19 @@ export default async function VisitsPage({
           <option value="missed">Missed</option>
           <option value="cancelled">Cancelled</option>
         </select>
-        <button
-          type="submit"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
-        >
-          <Filter className="h-4 w-4" />
+        <button type="submit" className="h-9 px-3 rounded-md border border-border text-xs font-medium hover:bg-accent/30 transition-colors">
+          <Filter className="h-3.5 w-3.5 inline mr-1" />
           Apply
         </button>
         {hasFilters ? (
-          <Link
-            href="/app/visits"
-            className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <Link href="/app/visits" className="h-9 px-3 rounded-md text-xs text-muted-foreground hover:text-foreground transition-colors inline-flex items-center">
             Clear
           </Link>
         ) : null}
       </form>
 
       {/* Table */}
-      <div className="rounded-xl border border-border overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         <table className="w-full" data-testid="visits-table">
           <thead className="bg-muted/50">
             <tr>
@@ -334,27 +313,17 @@ export default async function VisitsPage({
             ))}
             {filteredVisits.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground">
-                  <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                  <Calendar className="h-8 w-8 mx-auto mb-3 opacity-50" />
                   {hasFilters ? (
                     <>
                       <p>No visits matched your filters</p>
-                      <Link
-                        href="/app/visits"
-                        className="text-primary hover:underline mt-2 inline-block"
-                      >
-                        Clear filters
-                      </Link>
+                      <Link href="/app/visits" className="text-primary hover:underline mt-2 inline-block">Clear filters</Link>
                     </>
                   ) : (
                     <>
                       <p>No visits scheduled yet</p>
-                      <Link
-                        href="/app/visits/new"
-                        className="text-primary hover:underline mt-2 inline-block"
-                      >
-                        Schedule your first visit
-                      </Link>
+                      <Link href="/app/visits/new" className="text-primary hover:underline mt-2 inline-block">Schedule your first visit</Link>
                     </>
                   )}
                 </td>
@@ -362,6 +331,7 @@ export default async function VisitsPage({
             )}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

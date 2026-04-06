@@ -609,7 +609,7 @@ function QuickActions({ industry }: { industry?: string | null }) {
     (industry && INDUSTRY_QUICK_ACTIONS[industry]) || DEFAULT_QUICK_ACTIONS;
   return (
     <div
-      className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3"
+      className="grid grid-cols-2 sm:grid-cols-4 gap-2"
       data-testid="quick-actions"
     >
       {actions.map((a) => {
@@ -618,18 +618,17 @@ function QuickActions({ industry }: { industry?: string | null }) {
           <Link
             key={a.href}
             href={a.href}
-            className="group flex flex-col gap-2 rounded-xl border border-glass-border bg-glass-subtle p-3.5 sm:p-4 transition-all hover:bg-glass-strong hover:border-glass-border-strong"
+            className="group flex items-center gap-2.5 rounded-lg border border-border bg-card p-3 transition-all hover:bg-accent/30"
           >
             <Icon
-              className={`h-5 w-5 ${a.color} transition-transform group-hover:scale-110`}
+              className={`h-4 w-4 shrink-0 ${a.color}`}
             />
-            <div>
-              <p className="text-sm font-semibold text-foreground">{a.label}</p>
-              <p className="text-[11px] text-muted-foreground leading-tight">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-foreground truncate">{a.label}</p>
+              <p className="text-[10px] text-muted-foreground truncate">
                 {a.description}
               </p>
             </div>
-            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/60 ml-auto mt-auto opacity-0 group-hover:opacity-100 transition-opacity" />
           </Link>
         );
       })}
@@ -767,46 +766,37 @@ function PriorityActionQueue({ items }: { items: ActionQueueItem[] }) {
       description="Owner-routed actions with explicit SLAs to improve readiness now"
       icon={AlertCircle}
     >
-      <div className="space-y-3">
+      <div className="space-y-2">
         {items.map((item) => (
           <Link
             key={item.id}
             href={item.href}
-            className="group flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 transition-colors hover:bg-glass-strong sm:flex-row sm:items-center sm:justify-between"
+            className="group flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5 transition-colors hover:bg-accent/30"
           >
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border bg-white/5">
-                <item.icon className="h-4 w-4 text-foreground/70" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">
-                  {item.title}
-                </p>
-                <p className="text-xs text-muted-foreground">{item.detail}</p>
-                {(item.ownerLabel || item.slaLabel) && (
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    {item.ownerLabel && (
-                      <span className="rounded-full border border-glass-border bg-glass-subtle px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-foreground/70">
-                        Owner: {item.ownerLabel}
-                      </span>
-                    )}
-                    {item.slaLabel && (
-                      <span className="rounded-full border border-glass-border bg-glass-subtle px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-foreground/70">
-                        SLA: {item.slaLabel}
-                      </span>
-                    )}
-                  </div>
+            <item.icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-foreground truncate">
+                {item.title}
+              </p>
+              <div className="flex items-center gap-2 mt-0.5">
+                {item.ownerLabel && (
+                  <span className="text-[10px] text-muted-foreground">
+                    {item.ownerLabel}
+                  </span>
+                )}
+                {item.slaLabel && (
+                  <span className="text-[10px] font-mono text-muted-foreground">
+                    SLA {item.slaLabel}
+                  </span>
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-3 self-end sm:self-auto">
-              <span
-                className={`rounded border px-2 py-1 text-xs font-semibold uppercase tracking-wider ${badgeClass[item.priority]}`}
-              >
-                {label[item.priority]}
-              </span>
-              <ArrowRight className="h-4 w-4 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
-            </div>
+            <span
+              className={`status-pill ${item.priority === 'critical' ? 'status-pill-red' : item.priority === 'high' ? 'status-pill-amber' : 'status-pill-blue'}`}
+            >
+              {label[item.priority]}
+            </span>
+            <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform group-hover:translate-x-0.5" />
           </Link>
         ))}
       </div>
@@ -980,47 +970,37 @@ export function OrgHealthOverview({
   const tasksLabel = getTasksLabel(industry);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4 sm:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">Team Members</p>
-            <p className="text-2xl sm:text-3xl font-bold">{teamMemberCount}</p>
-          </div>
-          <Users className="h-8 w-8 text-blue-400" />
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+      <div className="metric-card metric-card-neutral">
+        <div className="flex items-center gap-2">
+          <Users className="h-4 w-4 text-muted-foreground" />
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Team Members</p>
         </div>
+        <p className="text-2xl font-bold">{teamMemberCount}</p>
       </div>
 
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4 sm:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">Compliance Score</p>
-            <p className="text-2xl sm:text-3xl font-bold">{complianceScore}%</p>
-          </div>
-          <TrendingUp className="h-8 w-8 text-green-400" />
+      <div className={`metric-card ${complianceScore < 50 ? 'metric-card-danger' : complianceScore < 75 ? 'metric-card-warning' : 'metric-card-success'}`}>
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Compliance Score</p>
         </div>
+        <p className="text-2xl font-bold">{complianceScore}%</p>
       </div>
 
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4 sm:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">{expiryLabel}</p>
-            <p className="text-2xl sm:text-3xl font-bold">
-              {expiringCertsCount}
-            </p>
-          </div>
-          <AlertCircle className="h-8 w-8 text-amber-400" />
+      <div className={`metric-card ${expiringCertsCount > 3 ? 'metric-card-danger' : expiringCertsCount > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
+        <div className="flex items-center gap-2">
+          <AlertCircle className="h-4 w-4 text-muted-foreground" />
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{expiryLabel}</p>
         </div>
+        <p className="text-2xl font-bold">{expiringCertsCount}</p>
       </div>
 
-      <div className="rounded-xl border border-glass-border bg-glass-subtle p-4 sm:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">{tasksLabel}</p>
-            <p className="text-2xl sm:text-3xl font-bold">{openTasksCount}</p>
-          </div>
-          <CheckCircle2 className="h-8 w-8 text-purple-400" />
+      <div className={`metric-card ${openTasksCount > 10 ? 'metric-card-danger' : openTasksCount > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
+        <div className="flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{tasksLabel}</p>
         </div>
+        <p className="text-2xl font-bold">{openTasksCount}</p>
       </div>
     </div>
   );
@@ -1428,10 +1408,10 @@ function AttentionRail({
 
   if (items.length === 0) {
     return (
-      <div className="flex items-center gap-3 rounded-xl border border-emerald-400/20 bg-emerald-500/5 px-4 py-3">
-        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+      <div className="flex items-center gap-2 rounded-lg border border-emerald-400/20 bg-emerald-500/5 px-3 py-2">
+        <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
         <p className="text-sm font-medium text-emerald-300">
-          All clear — no immediate action required. Good standing.
+          All clear — no immediate action required.
         </p>
       </div>
     );
@@ -1456,8 +1436,8 @@ function AttentionRail({
   };
 
   return (
-    <div className="space-y-2">
-      <p className="px-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+    <div className="space-y-1.5">
+      <p className="px-1 text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
         Needs your attention
       </p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -1467,14 +1447,14 @@ function AttentionRail({
             <Link
               key={item.id}
               href={item.href}
-              className={`group flex items-center gap-3 rounded-xl border px-4 py-3 transition-all duration-200 ${urgencyStyles[item.urgency]}`}
+              className={`group flex items-center gap-2.5 rounded-lg border px-3 py-2.5 transition-all duration-200 ${urgencyStyles[item.urgency]}`}
             >
               <Icon
-                className={`h-4 w-4 shrink-0 ${urgencyIconColor[item.urgency]}`}
+                className={`h-3.5 w-3.5 shrink-0 ${urgencyIconColor[item.urgency]}`}
               />
               <div className="min-w-0 flex-1">
                 <p
-                  className={`text-sm font-semibold ${urgencyLabelColor[item.urgency]}`}
+                  className={`text-sm font-medium ${urgencyLabelColor[item.urgency]}`}
                 >
                   {item.label}
                 </p>
@@ -1482,7 +1462,7 @@ function AttentionRail({
                   {item.sublabel}
                 </p>
               </div>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="h-3 w-3 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5" />
             </Link>
           );
         })}
@@ -1724,7 +1704,7 @@ export function EmployerDashboard({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Compliance Summary Cards — top of dashboard */}
       <ErrorBoundary name="ComplianceSummaryCards" level="component">
         <ComplianceSummaryCards />
@@ -1743,13 +1723,17 @@ export function EmployerDashboard({
         expiringCertsCount={expiringCertsCount}
       />
 
-      {/* Primary row: My Actions + Framework Health + Deadlines */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <MyActionsWidget />
-        <ErrorBoundary name="FrameworkHealthWidget" level="component">
-          <FrameworkHealthWidget />
-        </ErrorBoundary>
-        <UpcomingDeadlinesWidget />
+      {/* Primary row: Framework Health (wide) + My Actions (narrow) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+        <div className="lg:col-span-8">
+          <ErrorBoundary name="FrameworkHealthWidget" level="component">
+            <FrameworkHealthWidget />
+          </ErrorBoundary>
+        </div>
+        <div className="lg:col-span-4 space-y-3">
+          <MyActionsWidget />
+          <UpcomingDeadlinesWidget />
+        </div>
       </div>
 
       {/* Industry-specific widgets */}
@@ -1825,7 +1809,7 @@ export function EmployerDashboard({
 
       {/* Compliance Score History with Trend Analytics */}
       <div>
-        <h2 className="text-xl font-bold mb-4">Compliance Score History</h2>
+        <h2 className="text-sm font-semibold mb-3">Compliance Score History</h2>
         <ComplianceScoreHistory
           orgId={organizationId}
           frameworkSlug="all"
@@ -1834,7 +1818,7 @@ export function EmployerDashboard({
       </div>
 
       <div data-tour="dashboard-overview">
-        <h2 className="text-xl font-bold mb-4">Organization Health</h2>
+        <h2 className="text-sm font-semibold mb-3">Organization Health</h2>
         <OrgHealthOverview
           industry={industry}
           teamMemberCount={teamMemberCount}

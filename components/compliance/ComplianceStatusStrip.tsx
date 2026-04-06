@@ -52,35 +52,24 @@ export function ComplianceStatusStrip() {
   ] as const;
 
   return (
-    <div className="flex items-center gap-1 border-b border-glass-border bg-card/50 backdrop-blur-sm px-4 py-1.5">
-      <div className="flex items-center gap-3 text-xs">
-        {items.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.label}
-              onClick={() =>
-                router.push(`/app/compliance?status=${item.filter}`)
-              }
-              className={`flex items-center gap-1.5 rounded-md px-2 py-1 transition-colors ${item.bg}`}
-            >
-              <Icon className={`h-3 w-3 ${item.color}`} />
-              <span className={`font-mono font-bold ${item.color}`}>
-                {isLoading ? '—' : item.count}
-              </span>
-              <span className="text-muted-foreground">{item.label}</span>
-            </button>
-          );
-        })}
-        {summary.total > 0 && (
-          <span className="ml-2 text-muted-foreground/60 border-l border-glass-border pl-3">
-            <span className="font-mono font-semibold text-foreground/70">
-              {summary.completionPercentage}%
-            </span>{' '}
-            complete
-          </span>
-        )}
-      </div>
+    <div className="hidden lg:flex items-center gap-2 text-xs">
+      {items.map((item) => {
+        return (
+          <button
+            key={item.label}
+            onClick={() =>
+              router.push(`/app/compliance?status=${item.filter}`)
+            }
+            className={`flex items-center gap-1 rounded-md px-1.5 py-0.5 transition-colors ${item.bg}`}
+          >
+            <span className={`text-[10px] ${item.color}`}>●</span>
+            <span className={`font-mono font-bold ${item.color}`}>
+              {isLoading ? '—' : item.count}
+            </span>
+            <span className="text-muted-foreground">{item.label}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

@@ -10,7 +10,7 @@
  * ======================================================== */
 
 :root {
-  --radius: 16px;
+  --radius: 8px;
 
   /* Typography */
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
@@ -373,8 +373,8 @@
     border-radius: var(--radius);
     border: 1px solid var(--glass-border);
     background: var(--gradient-surface);
-    box-shadow: var(--shadow-md);
-    padding: 1.5rem;
+    box-shadow: none;
+    padding: 1rem;
   }
 
   .card-hover {
@@ -1160,6 +1160,74 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+
+  /* =========================================================
+   * ENTERPRISE DENSITY SYSTEM
+   * Compact metric cards, status pills, page layout utilities
+   * ======================================================== */
+
+  /* Compact metric card with RAG left border */
+  .metric-card {
+    @apply relative p-4 rounded-lg border border-border bg-card h-24 flex flex-col justify-between;
+  }
+  .metric-card-danger {
+    @apply border-l-4 border-l-destructive;
+  }
+  .metric-card-warning {
+    @apply border-l-4 border-l-amber-500;
+  }
+  .metric-card-success {
+    @apply border-l-4 border-l-emerald-500;
+  }
+  .metric-card-neutral {
+    @apply border-l-4 border-l-primary;
+  }
+
+  /* Status pill (replaces large badges) */
+  .status-pill {
+    @apply inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium;
+  }
+  .status-pill-red {
+    @apply bg-destructive/10 text-destructive;
+  }
+  .status-pill-amber {
+    @apply bg-amber-500/10 text-amber-600 dark:text-amber-400;
+  }
+  .status-pill-green {
+    @apply bg-emerald-500/10 text-emerald-600 dark:text-emerald-400;
+  }
+  .status-pill-blue {
+    @apply bg-primary/10 text-primary;
+  }
+
+  /* Page layout */
+  .page-header {
+    @apply flex items-center justify-between px-6 py-4 border-b border-border shrink-0;
+  }
+  .page-content {
+    @apply flex-1 overflow-auto p-6;
+  }
+  .page-title {
+    @apply text-xl font-semibold tracking-tight;
+  }
+  .page-description {
+    @apply text-xs text-muted-foreground mt-0.5;
+  }
+
+  /* Section label */
+  .section-label {
+    @apply text-xs font-medium uppercase tracking-widest text-muted-foreground;
+  }
+
+  /* App-shell typography override — Inter only inside app, no Sora */
+  .app-shell h1,
+  .app-shell h2,
+  .app-shell h3,
+  .app-shell h4,
+  .app-shell h5,
+  .app-shell h6 {
+    font-family: var(--font-body);
   }
 }
 

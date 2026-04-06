@@ -65,9 +65,10 @@ function SummaryCardInner({
   label,
   value,
   icon: Icon,
-  color,
+  color: _color,
   href,
   isLoading,
+  ragClass,
 }: {
   label: string;
   value: number;
@@ -75,31 +76,22 @@ function SummaryCardInner({
   color: string;
   href: string;
   isLoading: boolean;
+  ragClass?: string;
 }) {
   return (
     <Link
       href={href}
-      className="group flex items-center gap-3 rounded-xl border border-glass-border bg-glass-subtle p-3 transition-all hover:bg-glass-strong hover:border-glass-border-strong"
+      className={`metric-card transition-all hover:shadow-sm ${ragClass || ''}`}
     >
-      <div
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-glass-border"
-        style={{
-          backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)`,
-        }}
-      >
-        <Icon className="h-4 w-4" style={{ color }} />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-muted-foreground" />
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
           {label}
         </p>
-        <p
-          className="text-xl font-bold font-mono leading-tight"
-          style={{ color }}
-        >
-          {isLoading ? '—' : value}
-        </p>
       </div>
+      <p className="text-2xl font-bold leading-tight">
+        {isLoading ? '—' : value}
+      </p>
     </Link>
   );
 }
@@ -119,7 +111,7 @@ export function ComplianceSummaryCards() {
 
   return (
     <ErrorBoundary name="ComplianceSummaryCards" level="component">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         <SummaryCardInner
           label="Total Obligations"
           value={summary.total}
@@ -127,6 +119,7 @@ export function ComplianceSummaryCards() {
           color="var(--wire-action)"
           href="/app/compliance"
           isLoading={isLoading}
+          ragClass="metric-card-neutral"
         />
         <SummaryCardInner
           label="Overdue"
@@ -135,6 +128,7 @@ export function ComplianceSummaryCards() {
           color="var(--wire-alert)"
           href="/app/compliance?status=overdue"
           isLoading={isLoading}
+          ragClass="metric-card-danger"
         />
         <SummaryCardInner
           label="Due This Week"
@@ -143,6 +137,7 @@ export function ComplianceSummaryCards() {
           color="#f59e0b"
           href="/app/compliance?status=due_soon"
           isLoading={isLoading}
+          ragClass="metric-card-warning"
         />
         <SummaryCardInner
           label="Completed"
@@ -151,8 +146,9 @@ export function ComplianceSummaryCards() {
           color="var(--wire-success)"
           href="/app/compliance?status=completed"
           isLoading={isLoading}
+          ragClass="metric-card-success"
         />
-        <div className="flex items-center justify-center rounded-xl border border-glass-border bg-glass-subtle p-3">
+        <div className="metric-card items-center justify-center">
           <CompletionRing percentage={summary.completionPercentage} />
         </div>
       </div>

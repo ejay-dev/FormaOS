@@ -20,11 +20,10 @@ export default function ControlsError({
         <p className="text-xs font-black uppercase tracking-[0.24em] text-muted-foreground">
           Controls
         </p>
-        <h1 className="mt-3 text-xl font-semibold">
-          Unable to load controls
-        </h1>
+        <h1 className="mt-3 text-xl font-semibold">Unable to load controls</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {error.message || 'An unexpected error occurred while loading controls data.'}
+          {error.message ||
+            'An unexpected error occurred while loading controls data.'}
         </p>
         {error.digest && (
           <p className="mt-3 text-xs text-muted-foreground">

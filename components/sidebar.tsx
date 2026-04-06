@@ -210,21 +210,21 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
   }, [navigation, pathname, prefetchRoute]);
 
   return (
-    <div className="flex h-full w-full flex-col justify-between px-4 py-6">
+    <div className="flex h-full w-full flex-col justify-between px-3 py-4">
       {/* Context Mode + Industry Badge */}
-      <div className="mb-4 space-y-2 px-3">
+      <div className="mb-3 space-y-1.5 px-3">
         <div
-          className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 transition-all duration-300 ${contextMode.color}`}
+          className={`flex items-center gap-1.5 rounded-md border px-2 py-1 transition-all duration-300 ${contextMode.color}`}
         >
           <contextMode.icon className="h-3 w-3 shrink-0" />
-          <span className="text-[11px] font-semibold tracking-wide">
+          <span className="text-[10px] font-semibold tracking-wide">
             {contextMode.label}
           </span>
         </div>
         {industry && (
           <Badge
             variant="default"
-            className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/15"
+            className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/15 text-[10px]"
           >
             {getIndustryLabel(industry)}
           </Badge>
@@ -232,11 +232,11 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
       </div>
 
       {/* Navigation */}
-      <div className="space-y-8 overflow-y-auto no-scrollbar flex-1">
-        <nav className="space-y-6">
+      <div className="space-y-4 overflow-y-auto no-scrollbar flex-1">
+        <nav className="space-y-4">
           {categories.map((cat) => (
-            <div key={cat} className="space-y-2">
-              <h3 className="px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-3">
+            <div key={cat} className="space-y-0.5">
+              <h3 className="px-3 py-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">
                 {cat}
               </h3>
 
@@ -256,7 +256,7 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
       </div>
 
       {/* Bottom actions */}
-      <div className="space-y-2 border-t border-border pt-5">
+      <div className="space-y-0.5 border-t border-border pt-3">
         {/* Theme Switcher */}
         <ThemeSwitcher />
 
@@ -267,13 +267,13 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
           onClick={() => {
             window.dispatchEvent(new Event('open-command-menu'));
           }}
-          className="group flex w-full items-center justify-between rounded-xl px-3 py-3 text-sm font-medium hover:bg-muted/50"
+          className="group flex w-full items-center justify-between rounded-md px-3 h-8 text-sm font-medium hover:bg-muted/50"
         >
-          <div className="flex items-center gap-3">
-            <Command className="h-4 w-4 text-foreground/50" />
+          <div className="flex items-center gap-2">
+            <Command className="h-3.5 w-3.5 text-foreground/50" />
             <span>Quick Search</span>
           </div>
-          <kbd className="px-2 py-1 text-xs font-mono glass-panel rounded-md text-muted-foreground">
+          <kbd className="px-1.5 py-0.5 text-[10px] font-mono glass-panel rounded text-muted-foreground">
             ⌘K
           </kbd>
         </Button>
@@ -283,9 +283,9 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
           <Button
             type="submit"
             variant="ghost"
-            className="group flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium hover:bg-muted/50"
+            className="group flex w-full items-center gap-2 rounded-md px-3 h-8 text-sm font-medium hover:bg-muted/50"
           >
-            <LogOut className="h-4 w-4 text-foreground/50" />
+            <LogOut className="h-3.5 w-3.5 text-foreground/50" />
             <span>Sign Out</span>
           </Button>
         </form>
@@ -321,9 +321,9 @@ function SidebarNavItem({
             }),
           );
         }}
-        className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] text-[15px] font-medium transition-all text-foreground/70 hover:bg-muted/50 hover:text-foreground"
+        className="group flex w-full items-center gap-2 rounded-md px-3 h-8 text-sm font-medium transition-all text-foreground/70 hover:bg-muted/50 hover:text-foreground"
       >
-        <item.icon className="h-4 w-4 text-foreground/50" />
+        <item.icon className="h-3.5 w-3.5 text-foreground/50" />
         {item.name}
       </button>
     );
@@ -353,20 +353,20 @@ function SidebarNavItem({
         }}
         onMouseEnter={() => onPrefetch(item.href)}
         onFocus={() => onPrefetch(item.href)}
-        className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 min-h-[44px] text-[15px] font-medium transition-all duration-200 ${
+        className={`group flex items-center gap-2 rounded-md px-3 h-8 text-sm font-medium transition-all duration-200 ${
           isActive
-            ? 'bg-primary/90 text-primary-foreground shadow-premium ring-1 ring-primary/30'
+            ? 'bg-accent/50 text-foreground border-l-2 border-l-primary'
             : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
         }`}
       >
         <div className="relative shrink-0">
           <item.icon
-            className={`h-4 w-4 transition-colors duration-200 ${isActive ? 'text-primary-foreground' : 'text-foreground/50 group-hover:text-foreground/80'}`}
+            className={`h-3.5 w-3.5 transition-colors duration-200 ${isActive ? 'text-primary' : 'text-foreground/50 group-hover:text-foreground/80'}`}
           />
           {/* RAG indicator dot */}
           {ragDotColor && (
             <span
-              className={`absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full ${ragDotColor} ring-1 ring-background`}
+              className={`absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full ${ragDotColor} ring-1 ring-background`}
               aria-label="Status indicator"
             />
           )}
@@ -383,14 +383,14 @@ function SidebarNavItem({
           <ChevronRight
             className={`h-3 w-3 transition-transform duration-200 ${
               isExpanded ? 'rotate-90' : ''
-            } ${isActive ? 'text-primary-foreground/70' : 'text-foreground/30'}`}
+            } ${isActive ? 'text-primary/70' : 'text-foreground/30'}`}
           />
         )}
       </Link>
 
       {/* Expanded sub-items */}
       {isExpanded && item.children && (
-        <div className="ml-7 mt-1 space-y-0.5 border-l border-primary/20 pl-3">
+        <div className="ml-6 mt-0.5 space-y-0.5 border-l border-border pl-2.5">
           {item.children.map((child) => {
             const isChildActive = pathname === child.href;
             return (
@@ -399,7 +399,7 @@ function SidebarNavItem({
                 href={child.href}
                 data-testid={child.testId}
                 onMouseEnter={() => onPrefetch(child.href)}
-                className={`block rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
+                className={`block rounded-md px-2 py-1 text-xs font-medium transition-colors ${
                   isChildActive
                     ? 'text-primary bg-primary/10'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'

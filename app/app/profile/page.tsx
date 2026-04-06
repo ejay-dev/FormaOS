@@ -47,35 +47,34 @@ export default async function EmployeeProfilePage() {
   };
 
   return (
-    <div className="max-w-5xl space-y-10 pb-20 animate-in fade-in duration-500">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
-          <div className="h-20 w-20 rounded-[2rem] bg-glass-strong text-foreground flex items-center justify-center shadow-2xl">
-            <User className="h-10 w-10" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-black text-foreground tracking-tight">
-              Personal Profile
-            </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <Building className="h-3.5 w-3.5 text-muted-foreground" />
-              <p className="text-sm font-bold text-muted-foreground tracking-tight">
-                {profile.organizations.name}
-              </p>
-            </div>
-          </div>
+    <div className="flex flex-col h-full">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Personal Profile</h1>
+          <p className="page-description flex items-center gap-1.5">
+            <Building className="h-3 w-3" />
+            {profile.organizations.name}
+          </p>
         </div>
-        <div
-          className={`px-6 py-3 rounded-2xl border text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-2 shadow-sm ${statusColors[profile.compliance_status as keyof typeof statusColors] || statusColors.active}`}
+        <span
+          className={`status-pill ${
+            profile.compliance_status === 'active'
+              ? 'status-pill-green'
+              : profile.compliance_status === 'at_risk'
+                ? 'status-pill-amber'
+                : 'status-pill-red'
+          }`}
         >
           {profile.compliance_status === 'active' ? (
-            <ShieldCheck className="h-4 w-4" />
+            <ShieldCheck className="h-3 w-3" />
           ) : (
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircle className="h-3 w-3" />
           )}
-          System Status: {profile.compliance_status || 'Active'}
-        </div>
-      </header>
+          {profile.compliance_status || 'Active'}
+        </span>
+      </div>
+
+      <div className="page-content max-w-4xl space-y-4">
 
       <ProfileEditor
         userId={user?.id ?? ''}
@@ -91,97 +90,63 @@ export default async function EmployeeProfilePage() {
         avatarUrl={avatarUrl}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Personal Governance Card */}
-        <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-8 md:p-10 shadow-sm space-y-8 sm:space-y-10">
-          <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-            Organizational Record
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-glass-strong border border-white/10 flex items-center justify-center text-muted-foreground">
-                <Briefcase className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">
-                  Department
-                </span>
-                <span className="text-sm font-black text-foreground">
-                  {profile.department || 'Unassigned Operations'}
-                </span>
+        <div className="lg:col-span-8 rounded-lg border border-border bg-card p-4 space-y-4">
+          <h3 className="section-label">Organizational Record</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-3">
+              <Briefcase className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div>
+                <p className="text-xs text-muted-foreground">Department</p>
+                <p className="text-sm font-medium">{profile.department || 'Unassigned'}</p>
               </div>
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-glass-strong border border-white/10 flex items-center justify-center text-muted-foreground">
-                <Calendar className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">
-                  Official Start Date
-                </span>
-                <span className="text-sm font-black text-foreground">
+            <div className="flex items-center gap-3">
+              <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div>
+                <p className="text-xs text-muted-foreground">Start Date</p>
+                <p className="text-sm font-medium">
                   {profile.start_date
-                    ? new Date(profile.start_date).toLocaleDateString(
-                        undefined,
-                        { dateStyle: 'long' },
-                      )
-                    : 'Pending Verification'}
-                </span>
+                    ? new Date(profile.start_date).toLocaleDateString(undefined, { dateStyle: 'long' })
+                    : 'Pending'}
+                </p>
               </div>
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-glass-strong border border-white/10 flex items-center justify-center text-muted-foreground">
-                <Clock className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">
-                  Access Tier
-                </span>
-                <span className="text-sm font-black text-foreground capitalize tracking-tight">
-                  {profile.role} Permissions
-                </span>
+            <div className="flex items-center gap-3">
+              <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div>
+                <p className="text-xs text-muted-foreground">Access Tier</p>
+                <p className="text-sm font-medium capitalize">{profile.role}</p>
               </div>
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-xl bg-glass-strong border border-white/10 flex items-center justify-center text-muted-foreground">
-                <FileText className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">
-                  Employee ID
-                </span>
-                <span className="text-sm font-mono font-bold text-foreground">
-                  USR-{profile.user_id.slice(0, 8).toUpperCase()}
-                </span>
+            <div className="flex items-center gap-3">
+              <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+              <div>
+                <p className="text-xs text-muted-foreground">Employee ID</p>
+                <p className="text-sm font-mono font-medium">USR-{profile.user_id.slice(0, 8).toUpperCase()}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Phase 2 Teaser: Quick Summary */}
-        <div className="bg-glass-strong rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-8 md:p-10 text-foreground space-y-6 sm:space-y-8 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16" />
-          <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-            Credential Integrity
-          </h3>
-          <p className="text-xs text-muted-foreground leading-relaxed font-bold uppercase tracking-widest">
-            All professional licenses and identity documents are securely
-            managed by the organization's central vault.
+        {/* Credential Integrity */}
+        <div className="lg:col-span-4 rounded-lg border border-border bg-card p-4 space-y-3">
+          <h3 className="section-label">Credential Integrity</h3>
+          <p className="text-xs text-muted-foreground">
+            Professional licenses and identity documents are managed by the organization vault.
           </p>
-          <div className="pt-8 border-t border-white/10 space-y-4">
-            <div className="flex items-center justify-between text-xs font-black uppercase tracking-widest">
+          <div className="pt-3 border-t border-border space-y-2">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Document Status</span>
-              <span className="text-emerald-500">Audit Ready</span>
+              <span className="text-emerald-500 font-medium">Audit Ready</span>
             </div>
-            <div className="w-full h-1 bg-glass-strong rounded-full overflow-hidden">
-              <div className="h-full bg-emerald-400 w-[100%]" />
+            <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
+              <div className="h-full bg-emerald-500 w-full" />
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

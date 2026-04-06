@@ -190,201 +190,152 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
   );
 
   return (
-    <div className="space-y-10 pb-24">
-      {/* Header with Storage Meter (current) + Total count (upgrade) */}
-      <div
-        className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-white/10 pb-8"
-        data-tour="vault-header"
-      >
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="page-header" data-tour="vault-header">
         <div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tight">
-            Evidence Vault
-          </h1>
-          <p className="text-muted-foreground mt-2 font-medium tracking-tight">
-            Encrypted repository for compliance artifacts. Review, verify, and
-            archive evidence.
+          <h1 className="page-title">Evidence Vault</h1>
+          <p className="page-description">
+            Encrypted repository for compliance artifacts
           </p>
         </div>
-
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-3">
-          <div className="flex items-center gap-2 bg-glass-strong px-4 py-2 rounded-xl text-xs font-bold text-muted-foreground">
-            <Filter className="h-4 w-4" />
-            <span>
-              {filteredArtifacts.length} Showing
-              {hasFilters ? ` (${allArtifacts.length} Total)` : ''}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-            <div className="h-10 w-10 rounded-xl bg-purple-500/10 text-purple-300 flex items-center justify-center shadow-[0_0_18px_rgba(168,85,247,0.2)]">
-              <HardDrive className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                Vault Usage
-              </p>
-              <p className="text-sm font-bold text-foreground">
-                {sizeInMB} MB / 500 MB
-              </p>
-            </div>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground font-mono">
+            {filteredArtifacts.length} items · {sizeInMB} MB
+          </span>
+          <VaultUploadButton />
         </div>
       </div>
 
-      {/* Action Toolbar (current) */}
-      <div className="flex flex-col lg:flex-row lg:items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-        <form
-          method="get"
-          className="flex flex-1 flex-col sm:flex-row sm:items-center gap-2"
+      <div className="page-content space-y-4">
+      {/* Search / Filter bar */}
+      <form
+        method="get"
+        className="flex items-center gap-2 sticky top-0 z-10 bg-background/95 backdrop-blur py-1"
+      >
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <input
+            name="q"
+            defaultValue={searchQueryRaw}
+            placeholder="Search artifacts..."
+            className="w-full pl-9 pr-3 h-9 text-sm rounded-md border border-border bg-background"
+          />
+        </div>
+        <select
+          name="status"
+          defaultValue={statusFilter}
+          className="h-9 rounded-md border border-border bg-background px-2 text-xs"
         >
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              name="q"
-              defaultValue={searchQueryRaw}
-              placeholder="Search artifacts by name, type, or context..."
-              className="w-full pl-10 pr-4 py-2 text-sm outline-none bg-transparent text-foreground placeholder:text-muted-foreground/60"
-            />
-          </div>
-          <select
-            name="status"
-            defaultValue={statusFilter}
-            className="h-10 rounded-xl border border-white/10 bg-glass-strong px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="verified">Verified</option>
+        </select>
+        <button
+          type="submit"
+          className="h-9 px-3 rounded-md border border-border text-xs font-medium hover:bg-accent/30 transition-colors"
+        >
+          Apply
+        </button>
+        {hasFilters ? (
+          <Link
+            href="/app/vault"
+            className="h-9 px-3 rounded-md text-xs text-muted-foreground hover:text-foreground transition-colors inline-flex items-center"
           >
-            <option value="all">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="verified">Verified</option>
-          </select>
-          <button
-            type="submit"
-            className="h-10 px-4 rounded-xl bg-glass-strong text-xs font-semibold uppercase tracking-wider text-foreground hover:bg-white/20 transition-colors"
-          >
-            <ListFilter className="h-3.5 w-3.5 inline mr-2" />
-            Apply
-          </button>
-          {hasFilters ? (
-            <Link
-              href="/app/vault"
-              className="h-10 px-4 rounded-xl border border-white/10 text-xs font-semibold uppercase tracking-wider text-foreground/70 hover:bg-glass-strong transition-colors inline-flex items-center justify-center"
-            >
-              Clear
-            </Link>
-          ) : null}
-        </form>
-        <VaultUploadButton />
-      </div>
+            Clear
+          </Link>
+        ) : null}
+      </form>
 
-      {/* PENDING REVIEW SECTION (upgrade) */}
+      {/* PENDING REVIEW */}
       {pending.length > 0 && (
-        <section className="space-y-6">
-          <div className="flex items-center gap-3 text-amber-300">
-            <Clock className="h-5 w-5" />
-            <h2 className="text-xs font-black uppercase tracking-[0.2em]">
-              Pending Review ({pending.length})
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {pending.map((item: any) => (
-              <div
-                key={item.id}
-                className="bg-amber-400/10 border border-amber-400/30 rounded-[2rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)] hover:shadow-[0_24px_70px_rgba(0,0,0,0.45)] transition-all relative overflow-hidden group"
-              >
-                <div className="absolute top-0 left-0 w-1 h-full bg-amber-400/80" />
-
-                <div className="flex justify-between items-start mb-4">
-                  <div className="h-10 w-10 bg-amber-400/10 rounded-xl flex items-center justify-center text-amber-300">
-                    <FileText className="h-5 w-5" />
-                  </div>
-                  <span className="text-xs font-black uppercase tracking-widest text-amber-200 bg-amber-400/10 px-2 py-1 rounded-lg">
-                    Needs Action
-                  </span>
-                </div>
-
-                <h3 className="font-bold text-foreground truncate pr-4">
-                  {getFileName(item)}
-                </h3>
-                <p className="text-xs text-muted-foreground mt-1 mb-6 truncate">
-                  Linked to:{' '}
-                  {item.task?.title || item.policy?.title || 'General Upload'}
-                </p>
-
-                <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-tight">
-                    {getFileType(item)} • {getFileSizeKB(item)} KB
-                  </p>
-                  <span className="text-xs text-muted-foreground font-medium">
-                    {item.created_at
-                      ? new Date(item.created_at).toLocaleDateString()
-                      : 'N/A'}
-                  </span>
-                </div>
-
-                {/* Action Bar */}
-                <div className="flex items-center gap-3 mt-4">
-                  <EvidenceFileActions
-                    filePath={item.file_path ?? null}
-                    variant="pending"
-                  />
-
-                  {isAuditor && (
-                    <form
-                      action={async (formData) => {
-                        'use server';
-                        const reason = (formData.get('reason') as string) || '';
-                        await verifyEvidence(item.id, 'verified', reason);
-                      }}
-                      className="flex-1"
-                    >
-                      <input
-                        name="reason"
-                        placeholder="Reason required"
-                        className="mb-3 w-full rounded-lg border border-white/10 bg-glass-strong px-3 py-2 text-xs font-bold uppercase tracking-widest text-foreground/90 placeholder:text-muted-foreground/60"
-                        required
-                      />
-                      <button
-                        type="submit"
-                        className="w-full py-3 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-500 text-white hover:brightness-110 text-xs font-bold transition-all shadow-[0_10px_30px_rgba(16,185,129,0.35)] active:scale-95"
-                      >
-                        <CheckCircle2 className="h-4 w-4" />
-                        Verify
-                      </button>
-                    </form>
-                  )}
-                </div>
-              </div>
-            ))}
+        <section className="space-y-2">
+          <h2 className="section-label flex items-center gap-2">
+            <Clock className="h-3.5 w-3.5" />
+            Pending Review ({pending.length})
+          </h2>
+          <div className="rounded-lg border border-border overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-xs">
+                <tr>
+                  <th className="px-3 py-2 text-left font-medium">File</th>
+                  <th className="px-3 py-2 text-left font-medium">Context</th>
+                  <th className="px-3 py-2 text-left font-medium">Type</th>
+                  <th className="px-3 py-2 text-left font-medium">Date</th>
+                  <th className="px-3 py-2 text-right font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {pending.map((item: any) => (
+                  <tr key={item.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="px-3 py-2">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                        <span className="font-medium truncate max-w-[200px]">{getFileName(item)}</span>
+                      </div>
+                    </td>
+                    <td className="px-3 py-2 text-xs text-muted-foreground truncate max-w-[180px]">
+                      {item.task?.title || item.policy?.title || 'General'}
+                    </td>
+                    <td className="px-3 py-2 text-xs text-muted-foreground font-mono">
+                      {getFileType(item)} · {getFileSizeKB(item)}KB
+                    </td>
+                    <td className="px-3 py-2 text-xs text-muted-foreground font-mono">
+                      {item.created_at ? new Date(item.created_at).toLocaleDateString() : '-'}
+                    </td>
+                    <td className="px-3 py-2 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <EvidenceFileActions filePath={item.file_path ?? null} variant="pending" />
+                        {isAuditor && (
+                          <form
+                            action={async (formData) => {
+                              'use server';
+                              const reason = (formData.get('reason') as string) || '';
+                              await verifyEvidence(item.id, 'verified', reason);
+                            }}
+                            className="flex items-center gap-1"
+                          >
+                            <input name="reason" placeholder="Reason" className="h-7 w-24 rounded border border-border bg-background px-2 text-xs" required />
+                            <button type="submit" className="h-7 px-2 rounded bg-emerald-500/20 text-emerald-500 text-xs font-medium hover:bg-emerald-500/30">
+                              <CheckCircle2 className="h-3 w-3 inline mr-1" />Verify
+                            </button>
+                          </form>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </section>
       )}
 
-      {/* VERIFIED SECTION (upgrade) */}
-      <section className="space-y-6">
-        <div className="flex items-center gap-3 text-emerald-300">
-          <ShieldCheck className="h-5 w-5" />
-          <h2 className="text-xs font-black uppercase tracking-[0.2em]">
-            Secured Assets ({verified.length})
-          </h2>
-        </div>
+      {/* VERIFIED SECTION */}
+      <section className="space-y-2">
+        <h2 className="section-label flex items-center gap-2">
+          <ShieldCheck className="h-3.5 w-3.5" />
+          Verified ({verified.length})
+        </h2>
 
-        <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-[2.5rem] shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+        <div className="rounded-lg border border-border overflow-hidden">
           {verified.length === 0 ? (
-            <div className="p-12 text-center text-muted-foreground text-sm font-bold">
+            <div className="py-8 text-center text-sm text-muted-foreground">
               No verified evidence yet.
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="min-w-[760px] w-full text-left">
-                <thead className="bg-white/5 border-b border-white/10 text-xs font-black uppercase text-muted-foreground tracking-widest">
+              <table className="min-w-[760px] w-full text-left text-sm">
+                <thead className="bg-muted/50 text-xs">
                   <tr>
-                    <th className="px-8 py-6">Artifact</th>
-                    <th className="px-8 py-6">Context</th>
-                    <th className="px-8 py-6">AI Quality</th>
-                    <th className="px-8 py-6">Verification</th>
-                    <th className="px-8 py-6 text-right">Action</th>
+                    <th className="px-3 py-2 font-medium">Artifact</th>
+                    <th className="px-3 py-2 font-medium">Context</th>
+                    <th className="px-3 py-2 font-medium">AI Quality</th>
+                    <th className="px-3 py-2 font-medium">Verification</th>
+                    <th className="px-3 py-2 text-right font-medium">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/10">
+                <tbody className="divide-y divide-border">
                   {verified.map((item: any) => (
                     <tr
                       key={item.id}
@@ -477,24 +428,18 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
         </div>
       </section>
 
-      {/* Empty state (current) if literally nothing exists */}
+      {/* Empty state */}
       {filteredArtifacts.length === 0 && (
-        <div className="py-20 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center bg-white/5">
-          <div className="h-16 w-16 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center mb-4 shadow-sm">
-            <FileUp className="h-8 w-8 text-muted-foreground" />
-          </div>
-          <h3 className="text-lg font-bold text-foreground">
+        <div className="py-8 border border-dashed border-border rounded-lg flex flex-col items-center justify-center max-h-32">
+          <FileUp className="h-8 w-8 text-muted-foreground/40 mb-2" />
+          <p className="text-sm text-muted-foreground">
             {allArtifacts.length === 0
-              ? 'Vault is Empty'
-              : 'No matching artifacts'}
-          </h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            {allArtifacts.length === 0
-              ? 'Upload your first compliance artifact to begin.'
-              : 'Try adjusting your search and status filters.'}
+              ? 'Vault is empty — upload your first artifact.'
+              : 'No matching artifacts.'}
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }

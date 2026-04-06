@@ -123,69 +123,60 @@ export default async function ParticipantsPage({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="page-header">
         <div>
           <h1
-            className="text-3xl font-black tracking-tight"
+            className="page-title"
             data-testid="participants-title"
           >
             {labels.plural}
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="page-description">
             Manage {labels.plural.toLowerCase()} and their care records
           </p>
         </div>
         <Link
           href="/app/participants/new"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
           data-testid="add-participant-btn"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           Add {labels.singular}
         </Link>
       </div>
 
+      <div className="page-content space-y-4">
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <Users className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-sm text-muted-foreground">
-                Total {labels.plural}
-              </p>
-            </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="metric-card metric-card-neutral">
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
           </div>
+          <p className="text-2xl font-bold">{stats.total}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <div className="h-3 w-3 rounded-full bg-green-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.active}</p>
-              <p className="text-sm text-muted-foreground">Active</p>
-            </div>
+        <div className="metric-card metric-card-success">
+          <div className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Active</p>
           </div>
+          <p className="text-2xl font-bold">{stats.active}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.highRisk}</p>
-              <p className="text-sm text-muted-foreground">High Risk</p>
-            </div>
+        <div className={`metric-card ${stats.highRisk > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">High Risk</p>
           </div>
+          <p className="text-2xl font-bold">{stats.highRisk}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-red-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.emergency}</p>
-              <p className="text-sm text-muted-foreground">Emergency Flag</p>
-            </div>
+        <div className={`metric-card ${stats.emergency > 0 ? 'metric-card-danger' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Emergency</p>
           </div>
+          <p className="text-2xl font-bold">{stats.emergency}</p>
         </div>
       </div>
 
@@ -241,7 +232,7 @@ export default async function ParticipantsPage({
       </form>
 
       {/* Table */}
-      <div className="rounded-xl border border-border overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto overscroll-x-contain">
           <table
             className="min-w-[480px] w-full"
@@ -380,6 +371,7 @@ export default async function ParticipantsPage({
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

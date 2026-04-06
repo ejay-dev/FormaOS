@@ -106,75 +106,69 @@ export default async function TeamPage() {
   const reachedLimit = teamLimit !== null && memberCount + inviteCount >= teamLimit;
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Team Management</h1>
-          <p className="text-muted-foreground font-medium">Manage access, roles, and pending invitations.</p>
+          <h1 className="page-title">Team Management</h1>
+          <p className="page-description">Manage access, roles, and pending invitations</p>
         </div>
-        {/* The New Invite Button */}
         {orgId && <InviteButton orgId={orgId} disabled={!hasSubscription || reachedLimit} />}
       </div>
 
+      <div className="page-content space-y-4">
       {!hasSubscription ? (
-        <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-sm text-amber-200">
-          Subscription required to invite additional team members.{" "}
-          <Link href="/app/billing" className="underline">Upgrade plan</Link>
+        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-sm text-amber-600">
+          Subscription required to invite team members.{" "}
+          <Link href="/app/billing" className="underline">Upgrade</Link>
         </div>
       ) : null}
 
       {hasSubscription && reachedLimit ? (
-        <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-sm text-amber-200">
+        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-sm text-amber-600">
           Team limit reached ({memberCount + inviteCount}/{teamLimit}).{" "}
-          <Link href="/app/billing" className="underline">Upgrade plan</Link>
+          <Link href="/app/billing" className="underline">Upgrade</Link>
         </div>
       ) : null}
 
-      <div className="grid gap-6 sm:gap-8">
-        {/* SECTION 1: Active Members */}
-        <div className="bg-white/5 border border-white/10 rounded-3xl shadow-sm overflow-hidden">
-          <div className="p-4 sm:p-6 border-b border-white/10 flex items-center gap-2">
-             <div className="h-8 w-8 rounded-full bg-sky-500/10 text-sky-300 flex items-center justify-center">
-                <Users className="h-4 w-4" />
-             </div>
-             <h3 className="font-bold text-foreground">Active Members</h3>
-          </div>
-          
+      {/* Active Members */}
+      <section className="space-y-2">
+        <h2 className="section-label flex items-center gap-2">
+          <Users className="h-3.5 w-3.5" />
+          Active Members ({memberRows.length})
+        </h2>
+        <div className="rounded-lg border border-border overflow-hidden">
           <div className="overflow-x-auto overscroll-x-contain">
-            <table className="min-w-[560px] sm:min-w-[640px] w-full text-left text-sm">
-                <thead className="bg-glass-strong text-muted-foreground font-bold text-xs uppercase tracking-wider">
+            <table className="min-w-[480px] w-full text-left text-sm">
+                <thead className="bg-muted/50">
                     <tr>
-                        <th className="px-4 sm:px-6 py-4">User</th>
-                        <th className="px-4 sm:px-6 py-4">Role</th>
-                        <th className="px-4 sm:px-6 py-4">Status</th>
+                        <th className="px-4 py-3 text-sm font-medium">User</th>
+                        <th className="px-4 py-3 text-sm font-medium">Role</th>
+                        <th className="px-4 py-3 text-sm font-medium">Status</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-white/10">
+                <tbody className="divide-y divide-border">
                 {memberRows.map((member) => (
-                    <tr key={member.id} className="hover:bg-white/5 transition-colors group">
-                    <td className="px-4 sm:px-6 py-4">
-                        <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-full bg-glass-strong text-foreground flex items-center justify-center text-xs font-bold uppercase ring-2 ring-white shadow-sm">
+                    <tr key={member.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                        <div className="h-7 w-7 rounded-full bg-muted text-foreground flex items-center justify-center text-xs font-medium uppercase">
                             {member.user_id?.slice(0, 2) || "??"}
                         </div>
                         <div className="flex flex-col">
-                            <span className="font-bold text-foreground text-xs">
+                            <span className="text-sm font-medium text-foreground truncate max-w-[200px]">
                                 {member.user_id}
                             </span>
-                            <span className="text-xs text-muted-foreground">ID: {member.id.slice(0, 8)}...</span>
                         </div>
                         </div>
                     </td>
-                    <td className="px-4 sm:px-6 py-4">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-foreground text-xs font-bold uppercase tracking-wider shadow-sm">
-                        <ShieldCheck className="h-3 w-3 text-emerald-500" />
+                    <td className="px-4 py-3">
+                        <span className="status-pill status-pill-blue">
                         {member.role || 'MEMBER'}
                         </span>
                     </td>
-                    <td className="px-4 sm:px-6 py-4">
-                        <span className="flex items-center gap-1.5 text-emerald-300 text-xs font-bold">
-                            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <td className="px-4 py-3">
+                        <span className="status-pill status-pill-green">
                             Active
                         </span>
                     </td>
@@ -184,45 +178,39 @@ export default async function TeamPage() {
             </table>
           </div>
         </div>
+      </section>
 
-        {/* SECTION 2: Pending Invites (Conditional) */}
-        {inviteRows.length > 0 && (
-          <div className="bg-white/5 border border-white/10 rounded-3xl shadow-sm overflow-hidden">
-            <div className="p-4 sm:p-6 border-b border-white/10 flex items-center gap-2 bg-amber-400/10">
-               <div className="h-8 w-8 rounded-full bg-amber-400/10 text-amber-300 flex items-center justify-center">
-                  <Clock className="h-4 w-4" />
-               </div>
-               <div>
-                   <h3 className="font-bold text-foreground">Pending Invitations</h3>
-                   <p className="text-xs text-muted-foreground">These users have not accepted yet.</p>
-               </div>
-            </div>
-            
+      {/* Pending Invites */}
+      {inviteRows.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="section-label flex items-center gap-2">
+            <Clock className="h-3.5 w-3.5" />
+            Pending Invitations ({inviteRows.length})
+          </h2>
+          <div className="rounded-lg border border-border overflow-hidden">
             <div className="overflow-x-auto overscroll-x-contain">
-              <table className="min-w-[520px] sm:min-w-[560px] w-full text-left text-sm">
-                <tbody className="divide-y divide-white/10">
+              <table className="min-w-[480px] w-full text-left text-sm">
+                <tbody className="divide-y divide-border">
                   {inviteRows.map((invite) => (
-                    <tr key={invite.id} className="group hover:bg-amber-400/10 transition-colors">
-                      <td className="px-4 sm:px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground">
-                              <Mail className="h-4 w-4" />
-                          </div>
-                          <span className="text-foreground font-bold">{invite.email}</span>
+                    <tr key={invite.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm font-medium">{invite.email}</span>
                         </div>
                       </td>
-                      <td className="px-4 sm:px-6 py-4">
-                        <span className="px-2 py-1 rounded-md bg-glass-strong text-muted-foreground text-xs font-bold uppercase border border-white/10">
+                      <td className="px-4 py-3">
+                        <span className="status-pill status-pill-amber">
                           {invite.role}
                         </span>
                       </td>
-                      <td className="px-4 sm:px-6 py-4 text-right">
+                      <td className="px-4 py-3 text-right">
                          <form action={revokeInvitation}>
                            <input type="hidden" name="invitationId" value={invite.id} />
                            <input type="hidden" name="organizationId" value={orgId ?? ""} />
                            <button
                              type="submit"
-                             className="flex items-center gap-1 ml-auto px-3 py-1.5 rounded-lg text-xs font-bold text-rose-300 hover:bg-rose-500/10 transition-colors"
+                             className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors"
                            >
                              <Trash2 className="h-3 w-3" />
                              Revoke
@@ -235,7 +223,8 @@ export default async function TeamPage() {
               </table>
             </div>
           </div>
-        )}
+        </section>
+      )}
       </div>
     </div>
   );

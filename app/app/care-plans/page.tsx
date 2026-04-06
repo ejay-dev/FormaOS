@@ -181,87 +181,68 @@ export default async function CarePlansPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="page-header">
         <div>
-          <h1
-            className="text-3xl font-black tracking-tight"
-            data-testid="care-plans-title"
-          >
-            {label}
-          </h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="page-title" data-testid="care-plans-title">{label}</h1>
+          <p className="page-description">
             Manage individualised plans, goals, and review schedules
           </p>
         </div>
         <Link
           href="/app/care-plans/new"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
           data-testid="create-care-plan-btn"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           New Plan
         </Link>
       </div>
 
+      <div className="page-content space-y-4">
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <FileText className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-sm text-muted-foreground">Total Plans</p>
-            </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="metric-card metric-card-neutral">
+          <div className="flex items-center gap-2">
+            <FileText className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
           </div>
+          <p className="text-2xl font-bold">{stats.total}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <CheckCircle className="h-5 w-5 text-green-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.active}</p>
-              <p className="text-sm text-muted-foreground">Active</p>
-            </div>
+        <div className="metric-card metric-card-success">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Active</p>
           </div>
+          <p className="text-2xl font-bold">{stats.active}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <Clock className="h-5 w-5 text-muted-foreground/60" />
-            <div>
-              <p className="text-2xl font-bold">{stats.drafts}</p>
-              <p className="text-sm text-muted-foreground">Drafts</p>
-            </div>
+        <div className="metric-card metric-card-neutral">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Drafts</p>
           </div>
+          <p className="text-2xl font-bold">{stats.drafts}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-orange-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.reviewDue}</p>
-              <p className="text-sm text-muted-foreground">Review Due</p>
-            </div>
+        <div className={`metric-card ${stats.reviewDue > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Review Due</p>
           </div>
+          <p className="text-2xl font-bold">{stats.reviewDue}</p>
         </div>
       </div>
 
       {/* Review alert */}
       {stats.reviewDue > 0 && (
-        <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-orange-600 mt-0.5" />
-            <div>
-              <p className="font-medium text-orange-600">Reviews Due</p>
-              <p className="text-sm text-orange-600/80">
-                {stats.reviewDue} plan(s) need review within the next 14 days.
-              </p>
-            </div>
-          </div>
+        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-sm text-amber-600">
+          <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+          <span>{stats.reviewDue} plan(s) need review within the next 14 days.</span>
         </div>
       )}
 
       {/* Table */}
-      <div className="rounded-xl border border-border overflow-hidden overflow-x-auto overscroll-x-contain">
+      <div className="rounded-lg border border-border overflow-hidden overflow-x-auto overscroll-x-contain">
         <table className="min-w-[640px] w-full" data-testid="care-plans-table">
           <thead className="bg-muted/50">
             <tr>
@@ -361,9 +342,9 @@ export default async function CarePlansPage() {
               <tr>
                 <td
                   colSpan={7}
-                  className="px-4 py-12 text-center text-muted-foreground"
+                  className="px-4 py-8 text-center text-muted-foreground"
                 >
-                  <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <FileText className="h-8 w-8 mx-auto mb-3 opacity-50" />
                   <p>No care plans created yet</p>
                   <Link
                     href="/app/care-plans/new"
@@ -376,6 +357,7 @@ export default async function CarePlansPage() {
             )}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

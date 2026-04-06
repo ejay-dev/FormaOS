@@ -156,67 +156,63 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between">
+    <div className="flex flex-col h-full">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Billing & Plan</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage subscription status and entitlements.
-          </p>
+          <h1 className="page-title">Billing & Plan</h1>
+          <p className="page-description">Manage subscription status and entitlements</p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <ShieldCheck className="h-4 w-4" />
+        <span className="status-pill status-pill-green">
+          <ShieldCheck className="h-3 w-3" />
           {subscription?.status ?? 'not active'}
-        </div>
-      </header>
+        </span>
+      </div>
 
+      <div className="page-content max-w-3xl space-y-4">
       {status === 'success' ? (
-        <div className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-600">
           Subscription activated. Entitlements will update shortly.
         </div>
       ) : null}
       {status === 'cancelled' ? (
-        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           Checkout cancelled. Your subscription remains inactive.
         </div>
       ) : null}
       {status === 'blocked' ? (
-        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-          Your subscription is inactive. Activate billing to access the
-          dashboard.
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          Your subscription is inactive. Activate billing to access the dashboard.
         </div>
       ) : null}
       {status === 'missing_customer' ? (
-        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           No billing profile found. Activate a subscription to continue.
         </div>
       ) : null}
       {status === 'contact' ? (
-        <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-4 py-3 text-sm text-sky-200">
-          Enterprise billing can be completed here or coordinated via invoiced
-          procurement with Formaos.team@gmail.com.
+        <div className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-sm text-primary">
+          Enterprise billing can be coordinated via Formaos.team@gmail.com.
         </div>
       ) : null}
       {trialExpired ? (
-        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-          Your trial has expired. Activate a subscription to regain access to
-          paid features.
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          Your trial has expired. Activate a subscription to regain access.
         </div>
       ) : null}
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <div className="rounded-lg border border-border bg-card p-4">
         <div className="flex items-center gap-3 text-foreground">
-          <CreditCard className="h-5 w-5 text-sky-300" />
+          <CreditCard className="h-4 w-4 text-muted-foreground" />
           <div>
-            <div className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
+            <div className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
               Current plan
             </div>
-            <div className="text-xl font-semibold">
+            <div className="text-lg font-semibold">
               {plan?.name ?? 'Plan not set'}
             </div>
           </div>
         </div>
-        <p className="mt-4 text-sm text-muted-foreground">
+        <p className="mt-3 text-sm text-muted-foreground">
           {plan?.summary ?? 'Select a plan to activate billing.'}
         </p>
         <BillingActionButtons
@@ -225,35 +221,29 @@ export default function BillingPage() {
           canManagePortal={canManagePortal}
         />
         {planKey === 'enterprise' ? (
-          <div className="mt-4 text-xs text-muted-foreground">
-            Enterprise customers can self-serve checkout or coordinate
-            invoiced procurement, security review, and onboarding with
-            Formaos.team@gmail.com.
+          <div className="mt-3 text-xs text-muted-foreground">
+            Enterprise customers can self-serve or coordinate invoiced procurement with Formaos.team@gmail.com.
           </div>
         ) : null}
         {trialEndsAt && !trialExpired ? (
-          <div className="mt-4 text-xs text-muted-foreground">
+          <div className="mt-3 text-xs text-muted-foreground">
             Trial active until {new Date(trialEndsAt).toLocaleDateString()}.
           </div>
         ) : null}
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
-          Entitlements
-        </div>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
+      <div className="rounded-lg border border-border bg-card p-4">
+        <h3 className="section-label mb-3">Entitlements</h3>
+        <div className="grid gap-2 md:grid-cols-2">
           {entitlements.map((entitlement) => (
             <div
               key={entitlement.feature_key}
-              className="rounded-xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-foreground/90"
+              className="rounded-md border border-border px-3 py-2 text-sm"
             >
-              <div className="font-semibold">{entitlement.feature_key}</div>
+              <div className="font-medium">{entitlement.feature_key}</div>
               <div className="text-xs text-muted-foreground">
                 {entitlement.enabled ? 'Enabled' : 'Disabled'}
-                {entitlement.limit_value
-                  ? ` · Limit ${entitlement.limit_value}`
-                  : ''}
+                {entitlement.limit_value ? ` · Limit ${entitlement.limit_value}` : ''}
               </div>
             </div>
           ))}
@@ -265,11 +255,9 @@ export default function BillingPage() {
         </div>
       </div>
 
-      {/* Feature Usage Indicators */}
       <FeatureUsageIndicators />
-
-      {/* Plan Comparison Table */}
       <PlanComparisonTable />
+      </div>
     </div>
   );
 }

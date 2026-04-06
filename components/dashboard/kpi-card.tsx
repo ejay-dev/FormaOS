@@ -51,16 +51,24 @@ export function KPICard({
     DANGER: "bg-rose-500/10 text-rose-200 border-rose-400/30",
   };
 
+  const ragBorder =
+    status === "LOW" || status === "SUCCESS"
+      ? "metric-card-success"
+      : status === "MEDIUM" || status === "WARNING"
+      ? "metric-card-warning"
+      : status === "HIGH" || status === "DANGER"
+      ? "metric-card-danger"
+      : "metric-card-neutral";
+
   if (isLoading) {
     return (
       <div
         role="status"
         aria-label={`Loading ${title}`}
-        className="rounded-2xl border border-glass-border bg-glass-strong p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] animate-pulse"
+        className="metric-card animate-pulse"
       >
-        <div className="h-5 w-1/3 bg-glass-strong rounded mb-4" />
-        <div className="h-8 w-1/2 bg-glass-strong rounded mb-2" />
-        <div className="h-4 w-2/3 bg-glass-strong rounded" />
+        <div className="h-4 w-1/3 bg-muted rounded mb-2" />
+        <div className="h-6 w-1/2 bg-muted rounded" />
       </div>
     );
   }
@@ -81,60 +89,40 @@ export function KPICard({
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? `${title}: ${value}` : undefined}
       className={clsx(
-        "rounded-2xl border border-glass-border bg-glass-strong p-5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] transition-all duration-200",
-        "hover:shadow-[0_24px_70px_rgba(0,0,0,0.45)] hover:-translate-y-0.5",
+        "metric-card transition-all duration-200 hover:shadow-sm",
         onClick && "cursor-pointer",
-        status ? statusStyles[status] : "border-white/10",
+        ragBorder,
         className
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl border border-glass-border bg-glass-strong shadow-[0_0_18px_rgba(59,130,246,0.2)]">
-            <Icon className="h-5 w-5 text-sky-300" aria-hidden="true" />
-          </div>
-          <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-            {title}
-          </h3>
-        </div>
-
-        {/* Status Badge */}
-        {status && (
-          <span
-            className={clsx(
-              "text-xs font-bold px-2 py-1 rounded-full border",
-              statusStyles[status]
-            )}
-          >
-            {status}
-          </span>
-        )}
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+        <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          {title}
+        </h3>
       </div>
 
-      {/* Value */}
+      {/* Value + Trend */}
       <div className="flex items-end justify-between">
-        <div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black tracking-tight text-foreground">
-              {value}
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-2xl font-bold tracking-tight text-foreground">
+            {value}
+          </span>
+          {description && (
+            <span className="text-xs text-muted-foreground">
+              {description}
             </span>
-            {description && (
-              <span className="text-sm text-muted-foreground font-medium">
-                {description}
-              </span>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* Trend */}
         {trend && (
           <div
             className={clsx(
-              "flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full",
+              "flex items-center gap-0.5 text-[10px] font-bold",
               trend.isPositive
-                ? "bg-emerald-400/10 text-emerald-700"
-                : "bg-red-50 text-red-700"
+                ? "text-emerald-500"
+                : "text-red-500"
             )}
           >
             {trend.isPositive ? (
@@ -147,27 +135,13 @@ export function KPICard({
               {trend.value}%
             </span>
             {trend.label && (
-              <span className="text-xs font-medium opacity-70">
+              <span className="opacity-70 ml-0.5">
                 {trend.label}
               </span>
             )}
           </div>
         )}
       </div>
-
-      {/* Bottom Accent Bar */}
-      <div
-        className={clsx(
-          "absolute inset-x-0 bottom-0 h-1 rounded-b-2xl",
-          status === "LOW" || status === "SUCCESS"
-            ? "bg-emerald-400"
-            : status === "MEDIUM" || status === "WARNING"
-            ? "bg-amber-400"
-            : status === "HIGH" || status === "DANGER"
-            ? "bg-red-400"
-            : "bg-glass-strong"
-        )}
-      />
     </div>
   );
 }

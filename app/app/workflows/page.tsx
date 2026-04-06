@@ -31,26 +31,21 @@ export default async function WorkflowsPage() {
   ]);
 
   return (
-    <div className="space-y-8 pb-24">
-      <div className="rounded-2xl sm:rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.14),transparent_30%),rgba(2,6,23,0.82)] p-4 sm:p-6 md:p-8">
-        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">
-          <ShieldCheck className="h-3.5 w-3.5" />
-          Workflow Automation
+    <div className="flex flex-col h-full">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Workflow Engine</h1>
+          <p className="page-description">Build compliance workflows with approvals, branching, and execution traces</p>
         </div>
-        <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground">
-          Enterprise Workflow Engine
-        </h1>
-        <p className="mt-3 max-w-3xl text-sm text-foreground/70">
-          Build compliance workflows with approvals, branching, delays, loops,
-          and execution traces.
-        </p>
       </div>
 
+      <div className="page-content space-y-4">
       <WorkflowManagementClient
         initialWorkflows={workflows}
         executionHistory={executions}
         templates={listWorkflowTemplates()}
       />
+      </div>
     </div>
   );
 }

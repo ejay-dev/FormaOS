@@ -133,39 +133,41 @@ export default async function IncidentsPage({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="page-header">
         <div>
           <h1
-            className="text-3xl font-black tracking-tight"
+            className="page-title"
             data-testid="incidents-title"
           >
             Incidents
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="page-description">
             Report, track, and manage incidents
           </p>
         </div>
         <div className="flex gap-2">
           <Link
             href="/api/incidents/export"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border text-sm hover:bg-accent/30 transition-colors"
             data-testid="export-incidents-btn"
           >
-            <Download className="h-4 w-4" />
-            Export CSV
+            <Download className="h-3.5 w-3.5" />
+            Export
           </Link>
           <Link
             href="/app/incidents/new"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
             data-testid="report-incident-btn"
           >
-            <Plus className="h-4 w-4" />
-            Report Incident
+            <Plus className="h-3.5 w-3.5" />
+            Report
           </Link>
         </div>
       </div>
+
+      <div className="page-content space-y-4">
 
       {fetchErrorMessage ? (
         <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
@@ -174,51 +176,41 @@ export default async function IncidentsPage({
       ) : null}
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-sm text-muted-foreground">Total Incidents</p>
-            </div>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="metric-card metric-card-neutral">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
           </div>
+          <p className="text-2xl font-bold">{stats.total}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <Clock className="h-5 w-5 text-amber-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.open}</p>
-              <p className="text-sm text-muted-foreground">Open</p>
-            </div>
+        <div className={`metric-card ${stats.open > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Open</p>
           </div>
+          <p className="text-2xl font-bold">{stats.open}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <CheckCircle className="h-5 w-5 text-green-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.resolved}</p>
-              <p className="text-sm text-muted-foreground">Resolved</p>
-            </div>
+        <div className="metric-card metric-card-success">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Resolved</p>
           </div>
+          <p className="text-2xl font-bold">{stats.resolved}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="h-5 w-5 text-red-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.critical}</p>
-              <p className="text-sm text-muted-foreground">Critical/High</p>
-            </div>
+        <div className={`metric-card ${stats.critical > 0 ? 'metric-card-danger' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Critical</p>
           </div>
+          <p className="text-2xl font-bold">{stats.critical}</p>
         </div>
-        <div className="p-4 rounded-xl bg-card border border-border">
-          <div className="flex items-center gap-3">
-            <Clock className="h-5 w-5 text-orange-500" />
-            <div>
-              <p className="text-2xl font-bold">{stats.pendingFollowUp}</p>
-              <p className="text-sm text-muted-foreground">Pending Follow-up</p>
-            </div>
+        <div className={`metric-card ${stats.pendingFollowUp > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Follow-up</p>
           </div>
+          <p className="text-2xl font-bold">{stats.pendingFollowUp}</p>
         </div>
       </div>
 
@@ -272,7 +264,7 @@ export default async function IncidentsPage({
       </form>
 
       {/* Table */}
-      <div className="rounded-xl border border-border overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto overscroll-x-contain">
           <table className="min-w-[480px] w-full" data-testid="incidents-table">
             <thead className="bg-muted/50">
@@ -370,9 +362,9 @@ export default async function IncidentsPage({
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-4 py-12 text-center text-muted-foreground"
+                    className="px-4 py-8 text-center text-muted-foreground"
                   >
-                    <AlertTriangle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-muted-foreground/40" />
                     {hasFilters ? (
                       <>
                         <p>No incidents matched your filters</p>
@@ -397,6 +389,7 @@ export default async function IncidentsPage({
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </div>
   );

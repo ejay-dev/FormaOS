@@ -106,98 +106,66 @@ export default async function AuditTrailPage() {
   const orgName = organization.name;
 
   return (
-    <div className="space-y-8 pb-24 max-w-[1600px] animate-in fade-in duration-700">
-      {/* HEADER */}
-      <header className="flex flex-col gap-8 border-b border-neutral-200 pb-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-neutral-400">
-              <LayoutGrid className="h-3 w-3" />
-              <span>{orgName || 'Organization'}</span>
-              <ChevronRight className="h-3 w-3" />
-              <span className="text-neutral-900">Governance Log</span>
-            </div>
-
-            <div className="flex items-center gap-5">
-              <div className="h-14 w-14 rounded-[1.25rem] bg-neutral-900 text-white flex items-center justify-center shadow-lg shadow-neutral-200">
-                <History className="h-7 w-7" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-black text-neutral-900 tracking-tight">
-                  System Audit Trail
-                </h1>
-                <p className="text-neutral-500 mt-1 font-medium tracking-tight max-w-xl leading-relaxed text-sm">
-                  Immutable record of governance actions. This log satisfies ISO
-                  27001 non-repudiation requirements.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-start md:items-end gap-3">
-            <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100 shadow-sm">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-              <span className="text-xs font-black text-emerald-600 uppercase tracking-[0.2em]">
-                {verifiedCount} Verified Events
-              </span>
-            </div>
-          </div>
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Audit Trail</h1>
+          <p className="page-description">
+            Immutable governance log — ISO 27001 non-repudiation
+          </p>
         </div>
-      </header>
+        <span className="status-pill status-pill-green">
+          <ShieldCheck className="h-3 w-3" />
+          {verifiedCount} Events
+        </span>
+      </div>
 
-      {/* TABLE */}
-      <div className="bg-white border border-neutral-200 rounded-[2.5rem] shadow-sm overflow-hidden min-h-[400px]">
+      <div className="page-content space-y-4">
+      {/* Table */}
+      <div className="rounded-lg border border-border overflow-hidden">
         {auditEvents.length === 0 ? (
-          <div className="p-20 text-center space-y-6 flex flex-col items-center justify-center h-full">
-            <History className="h-10 w-10 text-neutral-200" />
-            <div>
-              <h3 className="text-lg font-black text-neutral-900">
-                Ledger Empty
-              </h3>
-              <p className="text-neutral-500 text-sm mt-1 max-w-xs mx-auto">
-                No governance actions have been recorded for this node yet.
-              </p>
-            </div>
+          <div className="py-8 text-center text-muted-foreground">
+            <History className="h-8 w-8 mx-auto mb-3 opacity-50" />
+            <p className="text-sm">No governance actions recorded yet.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead className="bg-neutral-50/80 border-b border-neutral-100 sticky top-0 backdrop-blur-md">
-                <tr className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em]">
-                  <th className="px-8 py-6">Actor</th>
-                  <th className="px-8 py-6">Event Type</th>
-                  <th className="px-8 py-6">Target Resource</th>
-                  <th className="px-8 py-6 text-right">Timestamp</th>
+            <table className="w-full text-left">
+              <thead className="bg-muted/50">
+                <tr>
+                  <th className="px-4 py-3 text-sm font-medium">Actor</th>
+                  <th className="px-4 py-3 text-sm font-medium">Event</th>
+                  <th className="px-4 py-3 text-sm font-medium">Target</th>
+                  <th className="px-4 py-3 text-sm font-medium text-right">Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-50">
+              <tbody className="divide-y divide-border">
                 {auditEvents.map((log: any) => (
                   <tr
                     key={log.id}
-                    className="group hover:bg-neutral-50/50 transition-colors"
+                    className="hover:bg-muted/30 transition-colors"
                   >
-                    <td className="px-8 py-5">
-                      <p className="text-xs font-black text-neutral-900 uppercase tracking-widest">
+                    <td className="px-4 py-3">
+                      <span className="text-sm font-medium">
                         {log.actor_id === user.id
                           ? 'You'
                           : `User ${log.actor_id?.slice(0, 4)}`}
-                      </p>
+                      </span>
                     </td>
-                    <td className="px-8 py-5">
-                      <span className="inline-flex items-center px-3 py-1.5 rounded-lg bg-neutral-900 text-white text-[9px] font-black uppercase tracking-[0.15em]">
+                    <td className="px-4 py-3">
+                      <span className="status-pill status-pill-blue">
                         {String(log.action || 'UNKNOWN').replaceAll('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-8 py-5">
-                      <span className="text-xs font-bold">
+                    <td className="px-4 py-3">
+                      <span className="text-sm">
                         {getResourceLabel(log)}
                       </span>
                     </td>
-                    <td className="px-8 py-5 text-right">
-                      <div className="text-xs font-bold">
-                        {new Date(log.created_at).toLocaleDateString()}
-                      </div>
-                      <div className="text-xs text-neutral-400 font-mono">
+                    <td className="px-4 py-3 text-right">
+                      <div className="text-xs font-mono text-muted-foreground">
+                        {new Date(log.created_at).toLocaleDateString()}{' '}
                         {new Date(log.created_at).toLocaleTimeString()}
                       </div>
                     </td>
@@ -207,6 +175,7 @@ export default async function AuditTrailPage() {
             </table>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

@@ -93,88 +93,71 @@ export default function PoliciesPage() {
   }
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Policy Library</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your organization's governance framework.
+          <h1 className="page-title">Policy Library</h1>
+          <p className="page-description">
+            Manage your organization&apos;s governance framework
           </p>
         </div>
         <Link
           href="/app/policies/new"
-          className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(59,130,246,0.35)]"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" />
           New Policy
         </Link>
       </div>
 
+      <div className="page-content space-y-4">
       {/* Stats Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl border border-white/10 bg-white/5 flex items-center gap-4 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-          <div className="h-10 w-10 rounded-xl bg-sky-500/10 text-sky-300 flex items-center justify-center shadow-[0_0_18px_rgba(14,165,233,0.2)]">
-            <FileText className="h-5 w-5" />
+      <div className="grid grid-cols-3 gap-3">
+        <div className="metric-card metric-card-neutral">
+          <div className="flex items-center gap-2">
+            <FileText className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
           </div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">
-              {allPolicies.length}
-            </p>
-            <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">
-              Total Policies
-            </p>
-          </div>
+          <p className="text-2xl font-bold">{allPolicies.length}</p>
         </div>
-        <div className="p-4 rounded-2xl border border-white/10 bg-white/5 flex items-center gap-4 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-          <div className="h-10 w-10 rounded-xl bg-emerald-400/10 text-emerald-300 flex items-center justify-center shadow-[0_0_18px_rgba(16,185,129,0.2)]">
-            <ShieldCheck className="h-5 w-5" />
+        <div className="metric-card metric-card-success">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Published</p>
           </div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">
-              {publishedCount}
-            </p>
-            <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">
-              Active & Enforced
-            </p>
-          </div>
+          <p className="text-2xl font-bold">{publishedCount}</p>
         </div>
-        <div className="p-4 rounded-2xl border border-white/10 bg-white/5 flex items-center gap-4 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
-          <div className="h-10 w-10 rounded-xl bg-amber-400/10 text-amber-300 flex items-center justify-center shadow-[0_0_18px_rgba(245,158,11,0.2)]">
-            <Clock className="h-5 w-5" />
+        <div className={`metric-card ${allPolicies.length - publishedCount > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Drafts</p>
           </div>
-          <div>
-            <p className="text-2xl font-bold text-foreground">
-              {allPolicies.length - publishedCount}
-            </p>
-            <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">
-              Drafts / Review
-            </p>
-          </div>
+          <p className="text-2xl font-bold">{allPolicies.length - publishedCount}</p>
         </div>
       </div>
 
       {/* Policies List */}
-      <div className="bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] border border-white/10 rounded-2xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         {/* Simple Toolbar */}
-        <div className="p-4 border-b border-white/10 flex items-center gap-3 bg-white/5">
+        <div className="px-3 py-2 border-b border-border flex items-center gap-3 bg-muted/50">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
               placeholder="Filter policies..."
-              className="w-full pl-9 pr-4 py-2 rounded-lg border border-white/10 text-sm focus:outline-none focus:border-glass-border-strong focus:bg-glass-strong transition-all bg-white/5 text-foreground placeholder:text-muted-foreground/60"
+              className="w-full pl-9 pr-3 h-8 rounded-md border border-border bg-background text-sm"
             />
           </div>
-          <button className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-muted-foreground hover:bg-glass-strong">
+          <button className="flex items-center gap-1.5 h-8 px-3 rounded-md border border-border text-xs font-medium text-muted-foreground hover:bg-accent/30">
             <Filter className="h-3 w-3" />
             Filter
           </button>
         </div>
 
         {/* The Table */}
-        <div className="divide-y divide-white/10">
+        <div className="divide-y divide-border">
           {allPolicies.length === 0 ? (
-            <div className="p-6 sm:p-8 md:p-12 text-center">
+            <div className="py-8 text-center">
               <p className="text-sm text-muted-foreground">
                 No policies found. Create one or use an Industry Pack.
               </p>
@@ -184,35 +167,32 @@ export default function PoliciesPage() {
               <Link
                 key={policy.id}
                 href={`/app/policies/${policy.id}`}
-                className="group flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
+                className="group flex items-center justify-between px-4 py-3 hover:bg-muted/30 transition-colors"
               >
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-glass-strong text-muted-foreground flex items-center justify-center group-hover:bg-white/5 group-hover:shadow-[0_0_18px_rgba(59,130,246,0.12)] transition-all">
-                    <FileText className="h-5 w-5" />
-                  </div>
+                <div className="flex items-center gap-3">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <h4 className="text-sm font-bold text-foreground group-hover:text-sky-300 transition-colors">
+                    <h4 className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
                       {policy.title}
                     </h4>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-xs text-muted-foreground">
                         {policy.version || 'v0.1'}
                       </span>
-                      <span className="h-1 w-1 rounded-full bg-white/20" />
+                      <span className="h-1 w-1 rounded-full bg-border" />
                       <span className="text-xs text-muted-foreground">
-                        Updated{' '}
                         {new Date(policy.created_at).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4">
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${
+                    className={`status-pill ${
                       policy.status === 'published'
-                        ? 'bg-emerald-400/15 text-emerald-200'
-                        : 'bg-amber-400/15 text-amber-200'
+                        ? 'status-pill-green'
+                        : 'status-pill-amber'
                     }`}
                   >
                     {policy.status}
@@ -223,6 +203,7 @@ export default function PoliciesPage() {
             ))
           )}
         </div>
+      </div>
       </div>
     </div>
   );

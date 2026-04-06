@@ -58,52 +58,55 @@ export default async function CAPAPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl font-bold">CAPA Register</h1>
-          <p className="text-muted-foreground">
-            Corrective and Preventive Actions tracking.
-          </p>
+          <h1 className="page-title">CAPA Register</h1>
+          <p className="page-description">Corrective and Preventive Actions tracking</p>
         </div>
         <Link
           href="/app/capa/new"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
-          <Plus className="h-4 w-4" /> New CAPA
+          <Plus className="h-3.5 w-3.5" /> New CAPA
         </Link>
       </div>
 
+      <div className="page-content space-y-4">
       {/* Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="text-sm text-muted-foreground mb-1 flex items-center gap-2">
-            <Clock className="h-4 w-4" /> Open
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="metric-card metric-card-neutral">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Open</p>
           </div>
           <p className="text-2xl font-bold">{openCount}</p>
         </div>
-        <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="text-sm text-blue-600 mb-1 flex items-center gap-2">
-            <Wrench className="h-4 w-4" /> In Progress
+        <div className="metric-card metric-card-neutral">
+          <div className="flex items-center gap-2">
+            <Wrench className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">In Progress</p>
           </div>
           <p className="text-2xl font-bold">{inProgressCount}</p>
         </div>
-        <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="text-sm text-red-600 mb-1 flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" /> Overdue
+        <div className={`metric-card ${overdueCount > 0 ? 'metric-card-danger' : 'metric-card-success'}`}>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Overdue</p>
           </div>
           <p className="text-2xl font-bold">{overdueCount}</p>
         </div>
-        <div className="border border-border rounded-lg p-4 bg-card">
-          <div className="text-sm text-green-600 mb-1 flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4" /> Verified/Closed
+        <div className="metric-card metric-card-success">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Verified</p>
           </div>
           <p className="text-2xl font-bold">{verifiedCount}</p>
         </div>
       </div>
 
       {/* CAPA Table */}
-      <div className="border border-border rounded-lg bg-card overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-muted/50 border-b border-border">
             <tr>
@@ -203,6 +206,7 @@ export default async function CAPAPage() {
             )}
           </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

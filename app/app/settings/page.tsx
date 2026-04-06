@@ -133,53 +133,28 @@ export default async function SettingsPage() {
 
   return (
     <div
-      className="space-y-10 pb-24 max-w-6xl animate-in fade-in duration-700"
+      className="flex flex-col h-full"
       data-tour="settings-header"
     >
-      {/* HEADER SECTION */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="page-header">
         <div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tighter">
-            Organization Governance
-          </h1>
-          <p className="text-muted-foreground mt-2 font-medium tracking-tight max-w-xl">
-            Manage workspace identity, domain binding, and security
-            infrastructure.
-          </p>
+          <h1 className="page-title">Settings</h1>
+          <p className="page-description">Organization identity, security, and configuration</p>
         </div>
-        <div className="hidden md:flex items-center gap-2 bg-white/5 px-4 py-2 rounded-full border border-glass-border shadow-sm">
-          <Activity
-            className={`h-4 w-4 ${
-              healthState === 'healthy'
-                ? 'text-emerald-500'
-                : healthState === 'review'
-                  ? 'text-amber-400'
-                  : 'text-rose-400'
-            }`}
-          />
-          <span
-            className={`text-xs font-black uppercase tracking-widest ${
-              healthState === 'healthy'
-                ? 'text-emerald-700'
-                : healthState === 'review'
-                  ? 'text-amber-700'
-                  : 'text-rose-300'
-            }`}
-          >
-            {healthState === 'healthy'
-              ? 'System Healthy'
-              : healthState === 'review'
-                ? 'Profile Review Needed'
-                : 'Risk Alerts Active'}
+        <div className="flex items-center gap-2">
+          <span className={`status-pill ${healthState === 'healthy' ? 'status-pill-green' : healthState === 'review' ? 'status-pill-amber' : 'status-pill-red'}`}>
+            <Activity className="h-3 w-3" />
+            {healthState === 'healthy' ? 'Healthy' : healthState === 'review' ? 'Review' : 'Alerts'}
           </span>
         </div>
+      </div>
+      <div className="page-content max-w-2xl space-y-6">
         <Link
           href="/app/settings/notifications"
           className="inline-flex items-center justify-center rounded-full border border-glass-border bg-white/[0.04] px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-foreground/90"
         >
           Notification Settings
         </Link>
-      </header>
 
       <form action={handleUpdateOrg}>
         {/* CRITICAL FIX: Hidden Input for ID so the server knows WHAT to update */}
@@ -368,6 +343,7 @@ export default async function SettingsPage() {
 
       {/* Appearance / Theme Settings */}
       <AppearanceSettings />
+      </div>
     </div>
   );
 }

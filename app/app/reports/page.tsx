@@ -148,43 +148,30 @@ async function ComplianceScoreSection({
         </div>
       )}
 
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex items-center justify-between rounded-lg border border-border bg-card px-4 py-3">
+        <div className="flex items-center gap-3">
+          <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           <div>
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-sky-400/20 bg-sky-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-sky-200">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              Active Framework Snapshot
-            </div>
-            <h2 className="text-2xl font-black text-foreground">
-              ISO 27001 Compliance
-            </h2>
-            <p className="mt-2 max-w-lg text-sm text-muted-foreground">
-              Continuous control-to-evidence validation for enterprise audit
-              readiness.
-            </p>
+            <h2 className="text-sm font-semibold">ISO 27001 Compliance</h2>
+            <p className="text-xs text-muted-foreground">Active framework snapshot</p>
           </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 text-center">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Compliance Score
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-2xl font-bold">{complianceScore}%</p>
+            <p className="text-[10px] text-muted-foreground font-mono">
+              {missingCount} missing / {totalControls} total
             </p>
-            <div className="mt-2 text-2xl sm:text-3xl md:text-4xl font-black text-foreground">
-              {complianceScore}%
-            </div>
-            <div className="mt-3 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-              <span>Missing: {missingCount}</span>
-              <span>Total: {totalControls}</span>
-            </div>
           </div>
         </div>
       </div>
 
       {missingCount > 0 && (
-        <div className="space-y-3">
-          <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-muted-foreground">
-            <AlertCircle className="h-4 w-4" /> Priority Gaps
+        <div className="space-y-2">
+          <h3 className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+            <AlertCircle className="h-3.5 w-3.5" /> Priority Gaps
           </h3>
-          <div className="rounded-2xl border border-white/10 bg-white/5">
+          <div className="rounded-lg border border-border bg-card">
             {missingCodes.slice(0, 5).map((code: string) => (
               <div
                 key={code}
@@ -213,121 +200,84 @@ async function ComplianceScoreSection({
 function ExportSection({ disableExports }: { disableExports: boolean }) {
   return (
     <>
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+      <div className="rounded-lg border border-border bg-card p-4">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-200">
-              <BadgeCheck className="h-3.5 w-3.5" />
-              Trust Artifacts
+            <div className="flex items-center gap-2 mb-1">
+              <BadgeCheck className="h-4 w-4 text-muted-foreground" />
+              <h2 className="text-sm font-semibold">Buyer Trust Packet</h2>
             </div>
-            <h2 className="text-2xl font-black text-foreground">
-              Buyer Trust Packet (PDF)
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              A shareable, procurement-ready snapshot that summarizes readiness,
-              control coverage, evidence verification posture, and critical
-              gaps.
+            <p className="text-xs text-muted-foreground max-w-lg">
+              Shareable, procurement-ready snapshot — readiness, control coverage, evidence posture, and gaps.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {[
-                'Executive summary',
-                'Control & evidence counts',
-                'Critical gaps list',
-                'Export timestamp',
-              ].map((badge) => (
-                <span
-                  key={badge}
-                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-foreground/90"
-                >
-                  {badge}
-                </span>
-              ))}
-            </div>
           </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+          <div className="flex items-center gap-2">
             <Link
               href="/api/reports/export?type=trust&format=pdf&mode=sync"
               prefetch={false}
-              className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold ${
+              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ${
                 disableExports
-                  ? 'pointer-events-none border border-white/10 bg-white/5 text-muted-foreground/60'
-                  : 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
+                  ? 'pointer-events-none border border-border text-muted-foreground/60'
+                  : 'bg-primary text-primary-foreground'
               }`}
             >
-              Generate Trust Packet
-              <ArrowRight className="h-4 w-4" />
+              Generate
+              <ArrowRight className="h-3 w-3" />
             </Link>
             <Link
               href="/app/governance"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground hover:bg-glass-strong"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent/30"
             >
-              Open Governance Packs
-              <ArrowRight className="h-4 w-4" />
+              Governance
             </Link>
             <Link
               href="/trust"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground hover:bg-glass-strong"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent/30"
             >
-              <Users className="h-4 w-4" />
-              Open Trust Center
+              <Users className="h-3 w-3" />
+              Trust Center
             </Link>
           </div>
         </div>
-
         {disableExports ? (
-          <div className="mt-4 text-xs text-amber-300">
-            Trust exports require an active subscription, audit export
-            entitlement, owner/admin access, and no unresolved compliance
-            blocks.
-          </div>
+          <p className="text-[10px] text-amber-500">Requires active subscription + admin access.</p>
         ) : (
-          <div className="mt-4 text-xs text-emerald-300 flex items-center gap-2">
-            <CheckCircle2 className="h-3.5 w-3.5" /> Trust packet export enabled
-          </div>
+          <p className="text-[10px] text-emerald-500 flex items-center gap-1">
+            <CheckCircle2 className="h-3 w-3" /> Export enabled
+          </p>
         )}
       </div>
 
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
-        <div className="mb-4 flex items-center gap-2 text-sky-300">
-          <FileText className="h-5 w-5" />
-          <span className="text-xs font-bold uppercase tracking-widest">
+      <div className="rounded-lg border border-border bg-card p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <FileText className="h-4 w-4 text-muted-foreground" />
+          <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
             Certification Reports
           </span>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
           {EXPORT_CARDS.map((card) => (
             <div
               key={card.title}
-              className={`rounded-2xl border bg-gradient-to-br p-5 ${card.color} ${disableExports ? 'opacity-50' : ''}`}
+              className={`rounded-lg border p-3 ${card.color} ${disableExports ? 'opacity-50' : ''}`}
             >
-              <h4 className="text-lg font-bold text-foreground">
+              <h4 className="text-sm font-semibold text-foreground">
                 {card.title}
               </h4>
-              <p className="mt-2 text-xs leading-relaxed text-foreground/70">
+              <p className="mt-1 text-[10px] text-foreground/70 line-clamp-2">
                 {card.description}
               </p>
               <Link
                 href={`/api/reports/export?type=${card.type}&format=pdf&mode=sync`}
                 prefetch={false}
-                className={`mt-4 inline-flex items-center gap-1.5 text-xs font-semibold ${disableExports ? 'pointer-events-none text-muted-foreground/60' : 'text-cyan-200 hover:text-cyan-100'}`}
+                className={`mt-2 inline-flex items-center gap-1 text-[10px] font-medium ${disableExports ? 'pointer-events-none text-muted-foreground/60' : 'text-primary hover:underline'}`}
               >
-                Generate report
-                <ArrowRight className="h-3.5 w-3.5" />
+                Generate
+                <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
           ))}
         </div>
-        {disableExports ? (
-          <div className="mt-4 text-xs text-amber-300">
-            Export actions are disabled until subscription, entitlement, and
-            compliance requirements are satisfied.
-          </div>
-        ) : (
-          <div className="mt-4 text-xs text-emerald-300 flex items-center gap-2">
-            <CheckCircle2 className="h-3.5 w-3.5" /> Exports enabled
-          </div>
-        )}
       </div>
     </>
   );
@@ -351,7 +301,25 @@ export default async function ReportsPage() {
   const disableExports = !hasSubscription || !hasAuditExport || !hasAdminAccess;
 
   return (
-    <div className="space-y-8 pb-12 animate-in fade-in duration-500">
+    <div className="flex flex-col h-full">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Reports Center</h1>
+          <p className="page-description">Generate audit-ready compliance artifacts and regulatory assessments.</p>
+        </div>
+        <div className="flex gap-1.5">
+          <span className="rounded-md bg-accent/50 px-2.5 py-1 text-xs font-medium text-foreground">
+            Standard
+          </span>
+          <Link href="/app/reports/custom" className="rounded-md px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground">
+            My Reports
+          </Link>
+          <Link href="/app/reports/trends" className="rounded-md px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground">
+            Trends
+          </Link>
+        </div>
+      </div>
+      <div className="page-content space-y-4">
       {!hasSubscription && (
         <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-amber-100">
           <div className="text-sm font-semibold">Subscription required</div>
@@ -384,35 +352,6 @@ export default async function ReportsPage() {
         </div>
       )}
 
-      {/* Header — renders instantly */}
-      <div>
-        <h1 className="text-3xl font-black text-foreground tracking-tight">
-          Reports Center
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          Generate audit-ready compliance artifacts and regulatory assessments.
-        </p>
-      </div>
-
-      {/* Sub-navigation */}
-      <div className="flex gap-2">
-        <span className="rounded-lg bg-white/10 px-3 py-1.5 text-sm font-semibold text-foreground">
-          Standard Reports
-        </span>
-        <Link
-          href="/app/reports/custom"
-          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground"
-        >
-          My Reports
-        </Link>
-        <Link
-          href="/app/reports/trends"
-          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground"
-        >
-          Trends
-        </Link>
-      </div>
-
       {/* Compliance score — streams when gap analysis completes */}
       {ctx?.orgId && hasAdminAccess ? (
         <Suspense fallback={<ComplianceScoreFallback />}>
@@ -429,6 +368,7 @@ export default async function ReportsPage() {
 
       {/* Export section — renders with known permission state */}
       <ExportSection disableExports={disableExports} />
+      </div>
     </div>
   );
 }
