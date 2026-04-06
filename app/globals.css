@@ -182,89 +182,115 @@
 }
 
 /* =========================================================
- * LIGHT ENTERPRISE — Clean SaaS light mode
- * Tailwind Slate palette, layered shadows, neutral cool.
+ * LIGHT ENTERPRISE — Premium SaaS light mode
+ * Warm pearl canvas · white elevated cards · blue-tinted depth
+ * Inspired by Linear, Stripe, Notion, Vercel light modes.
+ *
+ * Design principles:
+ * 1. Canvas ≠ Card — warm gray canvas makes white cards float
+ * 2. Shadows carry brand tint (blue-gray, not pure black)
+ * 3. Sidebar is a distinct surface with a subtle left edge
+ * 4. Borders are warm-cool, not flat gray
+ * 5. Accents punch hard — blue + violet gradient energy
  * ======================================================== */
 [data-theme='light'] {
   color-scheme: light;
 
-  /* Backgrounds — #F8FAFC / #FFFFFF / #F1F5F9 */
-  --background: 210 40% 98%;
-  --foreground: 222 47% 11%;
+  /* ── Surfaces ── */
+  /* Canvas: warm pearl gray — #EFEEF2 */
+  --background: 240 10% 94%;
+  /* Text: rich near-black, not washed-out gray */
+  --foreground: 224 71% 4%;
 
+  /* Cards: pure white, elevated */
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --panel-2: 210 30% 96%;
+  --card-foreground: 224 71% 4%;
+  /* Secondary panels: soft warm gray */
+  --panel-2: 240 8% 92%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
+  --popover-foreground: 224 71% 4%;
 
-  /* Brand — blue #2563EB, violet #7C3AED */
+  /* ── Brand colors ── */
+  /* Primary: vivid blue #2563EB — strong, punchy, WCAG AA on white */
   --primary: 221 83% 53%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 210 40% 93%;
-  --secondary-foreground: 222 30% 15%;
+  /* Secondary: cool neutral for tags, badges */
+  --secondary: 220 14% 91%;
+  --secondary-foreground: 224 50% 18%;
 
-  --muted: 210 30% 93%;
-  --muted-foreground: 215 20% 40%;
+  /* Muted: for de-emphasized text and surfaces */
+  --muted: 240 8% 91%;
+  --muted-foreground: 220 9% 46%;
 
-  --accent: 262 83% 58%;
+  /* Accent: indigo-violet — eye-catching energy */
+  --accent: 255 82% 58%;
   --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 78% 50%;
+  /* Destructive: crisp red */
+  --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
 
-  /* Borders — neutral cool */
-  --border: 214 20% 88%;
-  --input: 210 40% 96%;
+  /* ── Borders & Inputs ── */
+  /* Warm gray borders — visible but not harsh */
+  --border: 220 13% 86%;
+  --input: 240 8% 93%;
   --ring: 221 83% 53%;
 
-  /* Sidebar */
-  --sidebar: 210 30% 95%;
-  --sidebar-foreground: 222 47% 11%;
+  /* ── Sidebar — distinct tinted surface ── */
+  /* Slightly cooler / darker than canvas for visual separation */
+  --sidebar: 228 14% 91%;
+  --sidebar-foreground: 224 71% 4%;
   --sidebar-primary: 221 83% 53%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 25% 91%;
-  --sidebar-accent-foreground: 222 30% 15%;
-  --sidebar-border: 214 20% 88%;
+  --sidebar-accent: 228 16% 87%;
+  --sidebar-accent-foreground: 224 50% 18%;
+  --sidebar-border: 220 13% 86%;
   --sidebar-ring: 221 83% 53%;
 
-  /* Marketing — light overrides */
-  --marketing-bg: 210 40% 98%;
-  --marketing-bg-alt: 210 30% 95%;
-  --marketing-surface: 210 40% 96%;
-  --marketing-card: 210 40% 96%;
-  --marketing-card-border: 0 0% 0% / 0.06;
-  --marketing-glow: 221 83% 53% / 0.08;
+  /* ── Marketing ── */
+  --marketing-bg: 240 10% 94%;
+  --marketing-bg-alt: 240 8% 92%;
+  --marketing-surface: 228 14% 91%;
+  --marketing-card: 0 0% 100%;
+  --marketing-card-border: 220 13% 50% / 0.1;
+  --marketing-glow: 221 83% 53% / 0.1;
 
-  /* Status */
-  --success: 142 76% 36%;
+  /* ── Status — vibrant, WCAG-accessible on white ── */
+  --success: 160 84% 39%;
   --success-foreground: 0 0% 100%;
   --warning: 38 92% 50%;
   --warning-foreground: 0 0% 0%;
   --info: 221 83% 53%;
   --info-foreground: 0 0% 100%;
 
-  /* Glassmorphism — inverted for light bg */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-bg-strong: rgba(255, 255, 255, 0.85);
+  /* ── Glassmorphism ── */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg-strong: rgba(255, 255, 255, 0.92);
   --glass-border: rgba(0, 0, 0, 0.08);
-  --glass-border-strong: rgba(0, 0, 0, 0.12);
+  --glass-border-strong: rgba(0, 0, 0, 0.13);
 
-  /* Shadows — soft, layered */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
-  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
-  --shadow-2xl: 0 16px 48px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05);
+  /* ── Shadows — blue-tinted for premium feel ──
+   * The secret: adding a tiny blue channel to shadows
+   * makes them feel warmer and more intentional vs flat gray */
+  --shadow-sm:
+    0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md:
+    0 2px 4px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.08);
+  --shadow-lg:
+    0 4px 6px rgba(15, 23, 42, 0.03), 0 12px 28px rgba(15, 23, 42, 0.1);
+  --shadow-xl:
+    0 8px 16px rgba(15, 23, 42, 0.05), 0 24px 48px rgba(15, 23, 42, 0.12);
+  --shadow-2xl:
+    0 16px 32px rgba(15, 23, 42, 0.06), 0 40px 80px rgba(15, 23, 42, 0.14);
 
-  /* Glows — subtle on light */
-  --glow-cyan: 0 0 16px rgba(34, 211, 238, 0.1);
-  --glow-blue: 0 0 16px rgba(37, 99, 235, 0.1);
-  --glow-violet: 0 0 16px rgba(124, 58, 237, 0.1);
+  /* ── Glows — color-tinted for interactive feedback ── */
+  --glow-cyan: 0 0 24px rgba(34, 211, 238, 0.18);
+  --glow-blue: 0 0 24px rgba(37, 99, 235, 0.18);
+  --glow-violet: 0 0 24px rgba(124, 58, 237, 0.18);
 
-  /* Gradients */
+  /* ── Gradients ── */
   --gradient-primary: linear-gradient(
     135deg,
     #2563eb 0%,
@@ -273,12 +299,12 @@
   );
   --gradient-surface: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(248, 250, 252, 0.6) 100%
+    rgba(255, 255, 255, 1) 0%,
+    rgba(248, 250, 252, 0.9) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(37, 99, 235, 0.05) 0%,
+    rgba(37, 99, 235, 0.07) 0%,
     transparent 65%
   );
 }
@@ -498,11 +524,11 @@
 
 /* Light theme scrollbar overrides */
 [data-theme='light'] ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.06));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.08));
   background-clip: padding-box;
 }
 [data-theme='light'] ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.1));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.12));
   background-clip: padding-box;
 }
 
@@ -862,14 +888,18 @@
 
 /* Light theme glass overrides for utility classes */
 [data-theme='light'] .glass-intense {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.04),
+    0 4px 12px rgba(15, 23, 42, 0.06);
 }
 [data-theme='light'] .glass-frosted {
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 }
 
 /* Midnight Blue glass overrides — blue-tinted */
@@ -1615,49 +1645,230 @@
 }
 
 /* =========================================================
- * LIGHT THEME FIXES
- * Scoped overrides to improve contrast and readability
- * on white / near-white backgrounds.
+ * LIGHT THEME — PREMIUM POLISH LAYER
+ * Comprehensive overrides that make the light theme feel
+ * like a world-class SaaS product, not a dark-mode inversion.
+ *
+ * Approach: blue-tinted shadows, visible card elevation,
+ * crisp borders, vibrant status colors, and smooth surfaces.
  * ======================================================== */
 
-/* Issue #1 + #7: Metric card — white bg, subtle shadow, softer left borders */
+/* ── Cards ── */
+/* Every card gets white bg + blue-tinted shadow for float effect */
 [data-theme='light'] .metric-card {
   background: hsl(0 0% 100%);
-  border-color: hsl(214 20% 90%);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-color: hsl(220 13% 89%);
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.05),
+    0 4px 12px rgba(15, 23, 42, 0.04);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+[data-theme='light'] .metric-card:hover {
+  box-shadow:
+    0 2px 4px rgba(15, 23, 42, 0.06),
+    0 8px 24px rgba(15, 23, 42, 0.08);
+  border-color: hsl(220 13% 85%);
 }
 [data-theme='light'] .metric-card-danger {
-  border-left-color: hsl(0 72% 55% / 0.7);
+  border-left-color: hsl(0 72% 51%);
 }
 [data-theme='light'] .metric-card-warning {
-  border-left-color: hsl(38 92% 50% / 0.7);
+  border-left-color: hsl(38 92% 50%);
 }
 [data-theme='light'] .metric-card-success {
-  border-left-color: hsl(160 84% 39% / 0.7);
+  border-left-color: hsl(160 84% 39%);
 }
 [data-theme='light'] .metric-card-neutral {
-  border-left-color: hsl(221 83% 53% / 0.6);
+  border-left-color: hsl(221 83% 53%);
 }
 
-/* Issue #7: General card contrast — white bg with subtle shadow */
+/* General card / panel surfaces — elevated white */
 [data-theme='light'] .rounded-lg.border.border-border.bg-card,
 [data-theme='light'] .rounded-lg.border.border-border.overflow-hidden {
   background: hsl(0 0% 100%);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.05),
+    0 4px 12px rgba(15, 23, 42, 0.04);
 }
 
-/* Issue #4: Sidebar active link — subtle primary tint instead of heavy violet */
+/* Card-hover should lift more on light */
+[data-theme='light'] .card-hover:hover {
+  box-shadow:
+    0 4px 8px rgba(15, 23, 42, 0.06),
+    0 12px 32px rgba(15, 23, 42, 0.1);
+}
+
+/* ── Sidebar ── */
+/* Active link: vivid blue tint + left accent */
 [data-theme='light'] .sidebar-link-active {
-  background: hsl(221 83% 53% / 0.08) !important;
+  background: hsl(221 83% 53% / 0.1) !important;
+  color: hsl(221 83% 45%) !important;
+  border-left-color: hsl(221 83% 53%) !important;
 }
 
-/* Issue #2: Glass utilities on light — proper contrast */
+/* Sidebar nav items — better hover state */
+[data-theme='light'] [class*='sidebar'] button:hover,
+[data-theme='light'] [class*='sidebar'] a:hover {
+  background: hsl(220 13% 50% / 0.06);
+}
+
+/* ── Glass utilities ── */
 [data-theme='light'] .border-glass-border {
-  border-color: hsl(214 20% 88%);
+  border-color: hsl(220 13% 86%);
 }
 [data-theme='light'] .bg-glass-subtle {
-  background: hsl(0 0% 100% / 0.7);
+  background: hsl(0 0% 100% / 0.85);
 }
 [data-theme='light'] .bg-glass-strong {
-  background: hsl(210 40% 96%);
+  background: hsl(0 0% 100%);
+}
+
+/* ── Inputs — white bg, visible border, premium focus ring ── */
+[data-theme='light'] input[type='text'],
+[data-theme='light'] input[type='email'],
+[data-theme='light'] input[type='password'],
+[data-theme='light'] input[type='search'],
+[data-theme='light'] textarea,
+[data-theme='light'] select {
+  background: hsl(0 0% 100%);
+  border-color: hsl(220 13% 86%);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+[data-theme='light'] input:focus,
+[data-theme='light'] textarea:focus,
+[data-theme='light'] select:focus {
+  border-color: hsl(221 83% 53% / 0.5);
+  box-shadow:
+    0 0 0 3px hsl(221 83% 53% / 0.1),
+    0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+/* ── Buttons & interactive — lift on hover ── */
+[data-theme='light'] .rounded-xl.border.border-glass-border:hover,
+[data-theme='light'] .rounded-lg.border.border-glass-border:hover {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+/* ── Trial banner — semantic urgency tiers ── */
+/* Works in both dark and light modes */
+.trial-banner-info {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(56, 189, 248, 0.2);
+  color: rgb(125, 211, 252);
+}
+.trial-banner-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(251, 191, 36, 0.25);
+  color: rgb(253, 230, 138);
+}
+.trial-banner-danger {
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(251, 113, 133, 0.3);
+  color: rgb(254, 205, 211);
+}
+
+/* Light mode: bright tinted backgrounds with dark text */
+[data-theme='light'] .trial-banner-info {
+  background: hsl(204 94% 94%);
+  border-color: hsl(199 89% 48% / 0.2);
+  color: hsl(204 80% 28%);
+}
+[data-theme='light'] .trial-banner-warning {
+  background: hsl(48 96% 93%);
+  border-color: hsl(38 92% 50% / 0.2);
+  color: hsl(32 95% 25%);
+}
+[data-theme='light'] .trial-banner-danger {
+  background: hsl(356 100% 96%);
+  border-color: hsl(350 89% 60% / 0.2);
+  color: hsl(350 89% 35%);
+}
+
+/* ── Status pills — vivid on white ── */
+[data-theme='light'] .status-pill-red {
+  background: hsl(0 85% 95%);
+  color: hsl(0 72% 45%);
+}
+[data-theme='light'] .status-pill-amber {
+  background: hsl(45 93% 92%);
+  color: hsl(32 95% 30%);
+}
+[data-theme='light'] .status-pill-green {
+  background: hsl(160 80% 93%);
+  color: hsl(160 84% 30%);
+}
+[data-theme='light'] .status-pill-blue {
+  background: hsl(221 83% 95%);
+  color: hsl(221 83% 45%);
+}
+
+/* ── Impact indicators — proper contrast on light ── */
+[data-theme='light'] .impact-positive {
+  background: hsl(160 80% 93%);
+  border-color: hsl(160 84% 39% / 0.3);
+  color: hsl(160 84% 28%);
+}
+[data-theme='light'] .impact-negative {
+  background: hsl(356 100% 95%);
+  border-color: hsl(350 89% 60% / 0.3);
+  color: hsl(350 89% 35%);
+}
+[data-theme='light'] .impact-neutral {
+  background: hsl(240 8% 94%);
+  border-color: hsl(220 13% 86%);
+  color: hsl(220 9% 46%);
+}
+
+/* ── Ambient glow — visible on light canvas ── */
+[data-theme='light'] .bg-gradient-glow {
+  opacity: 0.5 !important;
+}
+
+/* ── Empty state — better contrast ── */
+[data-theme='light'] .empty-state svg {
+  opacity: 0.3;
+}
+
+/* ── Holo border — subtle on light ── */
+[data-theme='light'] .holo-border {
+  background:
+    linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) padding-box,
+    linear-gradient(
+        135deg,
+        rgba(37, 99, 235, 0.25),
+        rgba(79, 70, 229, 0.25),
+        rgba(124, 58, 237, 0.25)
+      )
+      border-box;
+}
+
+/* ── Security grid — tinted blue for light ── */
+[data-theme='light'] .security-grid {
+  background-image:
+    linear-gradient(to right, rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+}
+
+/* ── Shimmer — darker lines on light bg ── */
+[data-theme='light'] .shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(15, 23, 42, 0.04),
+    transparent
+  );
+  background-size: 200% 100%;
+}
+
+/* ── Node/Wire system colors for light ── */
+[data-theme='light'] .node-verified {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(16, 185, 129, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
 }

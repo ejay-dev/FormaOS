@@ -32,47 +32,32 @@ export function TrialCountdownBanner() {
   const isUrgent = status === 'urgent';
   const isExpiringSoon = status === 'expiring_soon';
 
-  // Color scheme based on urgency
+  // Color scheme based on urgency — uses semantic classes for both light & dark
   const scheme = isExpired
     ? {
-        bg: 'bg-rose-500/10',
-        border: 'border-rose-400/30',
-        text: 'text-rose-200',
-        bar: 'bg-rose-400',
-        accent: 'bg-rose-400 text-rose-950 hover:bg-rose-300',
+        bg: 'trial-banner-danger',
+        accent: 'bg-rose-500 text-white hover:bg-rose-600',
       }
     : isLastDay
       ? {
-          bg: 'bg-rose-500/10',
-          border: 'border-rose-400/30',
-          text: 'text-rose-200',
-          bar: 'bg-rose-400',
-          accent: 'bg-rose-400 text-rose-950 hover:bg-rose-300',
+          bg: 'trial-banner-danger',
+          accent: 'bg-rose-500 text-white hover:bg-rose-600',
         }
       : isUrgent
         ? {
-            bg: 'bg-amber-500/10',
-            border: 'border-amber-400/30',
-            text: 'text-amber-200',
-            bar: 'bg-amber-400',
-            accent: 'bg-amber-400 text-amber-950 hover:bg-amber-300',
+            bg: 'trial-banner-warning',
+            accent: 'bg-amber-500 text-white hover:bg-amber-600',
           }
         : isExpiringSoon
           ? {
-              bg: 'bg-amber-500/8',
-              border: 'border-amber-400/20',
-              text: 'text-amber-200',
-              bar: 'bg-amber-400',
+              bg: 'trial-banner-warning',
               accent:
-                'bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400',
+                'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500',
             }
           : {
-              bg: 'bg-sky-500/8',
-              border: 'border-sky-400/20',
-              text: 'text-sky-200',
-              bar: 'bg-sky-400',
+              bg: 'trial-banner-info',
               accent:
-                'bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400',
+                'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500',
             };
 
   const Icon =
@@ -107,7 +92,7 @@ export function TrialCountdownBanner() {
 
   return (
     <div
-      className={`border-b px-4 py-2.5 ${scheme.bg} ${scheme.border} ${scheme.text}`}
+      className={`border-b px-4 py-2.5 ${scheme.bg}`}
       role="status"
       aria-live="polite"
     >
