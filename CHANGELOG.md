@@ -1,5 +1,18 @@
 # 📋 FormaOS Changelog
 
+## [3.4.0] - 2026-04-09
+
+### Quality & Performance Sprint — TypeScript, Accessibility, Mobile, Coverage, Performance
+
+- **TypeScript `any` cleanup (65+ files):** Replaced all remaining untyped `any` annotations with proper types, generics, `unknown` with narrowing, and 4 justified `@ts-expect-error` suppressions. Zero `tsc` errors.
+- **Admin command center decomposition:** Split monolithic `admin-command-center.tsx` from 1,908 → 303 LOC into 7 focused files: types, constants, formatting utilities, category panels, result components, and orchestrator.
+- **WCAG 2.1 AA accessibility (47 fixes):** Added `aria-label` attributes to icon-only buttons, form errors linked via `aria-describedby`, skip navigation links, proper heading hierarchy, focus management, color contrast compliance, and screen reader announcements across ~22 files.
+- **Mobile responsiveness (6 pages):** Fixed overflow, touch targets, and layout issues on tasks, visits, incidents, forms, vault review, and people pages. Added responsive breakpoints and mobile-first layouts.
+- **Statement coverage 52.99% → 55.08%:** Added 28 new test files with 200+ tests covering lib modules (automation templates, API helpers, PII scanner, retention engine, policy engine, release service, public uptime, trigger client, and more). 4,363 tests passing.
+- **Performance validation:** Confirmed all admin routes have `loading.tsx` Suspense boundaries; fixed pre-existing `IndustryHero.tsx` type error blocking production builds. Clean `npm run build` with 238 static pages.
+
+---
+
 ## [3.3.0] - 2026-04-08
 
 ### Master Sprint — Onboarding, Seed Data, Financial Services, Coverage, Cleanup, Decomposition

@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { useEffect, useMemo, useState } from "react"
-import { createSupabaseClient } from "@/lib/supabase/client"
+import { useEffect, useMemo, useState } from 'react';
+import { createSupabaseClient } from '@/lib/supabase/client';
 import {
   ShieldCheck,
   Eye,
@@ -11,108 +11,114 @@ import {
   Clock,
   Search,
   ArrowRight,
-} from "lucide-react"
-import { CredentialInspectorModal } from "@/components/vault/credential-inspector-modal"
-import { useAppStore } from "@/lib/stores/app"
+} from 'lucide-react';
+import { CredentialInspectorModal } from '@/components/vault/credential-inspector-modal';
+import { useAppStore } from '@/lib/stores/app';
 
 type PendingCredential = {
-  id: string
-  user_id: string
-  document_type: string | null
-  issue_date: string | null
-  expiry_date: string | null
-  notes: string | null
-  created_at: string
-  verification_status: string
-  file_path: string | null
-}
+  id: string;
+  user_id: string;
+  document_type: string | null;
+  issue_date: string | null;
+  expiry_date: string | null;
+  notes: string | null;
+  created_at: string;
+  verification_status: string;
+  file_path: string | null;
+};
 
-const ALL_FILTER = "all"
+const ALL_FILTER = 'all';
 
 export default function CredentialReviewPage() {
-  const [selectedDoc, setSelectedDoc] = useState<PendingCredential | null>(null)
-  const [docs, setDocs] = useState<PendingCredential[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [docFilter, setDocFilter] = useState(ALL_FILTER)
-  const [refreshTick, setRefreshTick] = useState(0)
+  const [selectedDoc, setSelectedDoc] = useState<PendingCredential | null>(
+    null,
+  );
+  const [docs, setDocs] = useState<PendingCredential[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [docFilter, setDocFilter] = useState(ALL_FILTER);
+  const [refreshTick, setRefreshTick] = useState(0);
 
-  const supabase = useMemo(() => createSupabaseClient(), [])
-  const orgId = useAppStore((state) => state.organization?.id ?? null)
-  const isHydrated = useAppStore((state) => state.isHydrated)
+  const supabase = useMemo(() => createSupabaseClient(), []);
+  const orgId = useAppStore((state) => state.organization?.id ?? null);
+  const isHydrated = useAppStore((state) => state.isHydrated);
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     async function fetchQueue() {
-      if (!isHydrated) return
+      if (!isHydrated) return;
       if (!orgId) {
-        setDocs([])
-        setLoading(false)
-        return
+        setDocs([]);
+        setLoading(false);
+        return;
       }
 
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
       try {
         const { data, error: fetchError } = await supabase
-          .from("org_credentials")
-          .select("id, user_id, document_type, issue_date, expiry_date, notes, created_at, verification_status, file_path")
-          .eq("organization_id", orgId)
-          .eq("verification_status", "pending")
-          .order("created_at", { ascending: false })
+          .from('org_credentials')
+          .select(
+            'id, user_id, document_type, issue_date, expiry_date, notes, created_at, verification_status, file_path',
+          )
+          .eq('organization_id', orgId)
+          .eq('verification_status', 'pending')
+          .order('created_at', { ascending: false });
 
-        if (fetchError) throw fetchError
-        if (cancelled) return
+        if (fetchError) throw fetchError;
+        if (cancelled) return;
 
-        setDocs((data ?? []) as PendingCredential[])
+        setDocs((data ?? []) as PendingCredential[]);
       } catch (err) {
-        if (cancelled) return
-        console.error("[CredentialReviewPage] Failed to load queue:", err)
-        setDocs([])
-        setError("Unable to load verification queue right now.")
+        if (cancelled) return;
+        console.error('[CredentialReviewPage] Failed to load queue:', err);
+        setDocs([]);
+        setError('Unable to load verification queue right now.');
       } finally {
-        if (!cancelled) setLoading(false)
+        if (!cancelled) setLoading(false);
       }
     }
 
-    fetchQueue()
+    fetchQueue();
 
     return () => {
-      cancelled = true
-    }
-  }, [supabase, isHydrated, orgId, refreshTick])
+      cancelled = true;
+    };
+  }, [supabase, isHydrated, orgId, refreshTick]);
 
   const documentTypes = useMemo(() => {
-    const types = new Set<string>()
+    const types = new Set<string>();
     for (const doc of docs) {
       if (doc.document_type) {
-        types.add(doc.document_type.toLowerCase())
+        types.add(doc.document_type.toLowerCase());
       }
     }
-    return Array.from(types).sort()
-  }, [docs])
+    return Array.from(types).sort();
+  }, [docs]);
 
   const filteredDocs = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase()
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
     return docs.filter((doc) => {
-      const normalizedType = (doc.document_type ?? "unknown").toLowerCase()
-      const matchesFilter = docFilter === ALL_FILTER || normalizedType === docFilter
-      if (!matchesFilter) return false
+      const normalizedType = (doc.document_type ?? 'unknown').toLowerCase();
+      const matchesFilter =
+        docFilter === ALL_FILTER || normalizedType === docFilter;
+      if (!matchesFilter) return false;
 
-      if (!normalizedQuery) return true
+      if (!normalizedQuery) return true;
 
-      const searchableText = `${doc.user_id} ${doc.document_type ?? ""}`.toLowerCase()
-      return searchableText.includes(normalizedQuery)
-    })
-  }, [docs, searchQuery, docFilter])
+      const searchableText =
+        `${doc.user_id} ${doc.document_type ?? ''}`.toLowerCase();
+      return searchableText.includes(normalizedQuery);
+    });
+  }, [docs, searchQuery, docFilter]);
 
   function handleCloseModal() {
-    setSelectedDoc(null)
-    setRefreshTick((value) => value + 1)
+    setSelectedDoc(null);
+    setRefreshTick((value) => value + 1);
   }
 
   return (
@@ -125,9 +131,12 @@ export default function CredentialReviewPage() {
 
       <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">Verification Queue</h1>
+          <h1 className="text-3xl font-black text-foreground tracking-tight">
+            Verification Queue
+          </h1>
           <p className="text-muted-foreground font-medium mt-1 tracking-tight">
-            Audit and approve employee professional credentials for organizational compliance.
+            Audit and approve employee professional credentials for
+            organizational compliance.
           </p>
         </div>
         <div className="flex items-center gap-2 bg-sky-500/10 px-4 py-2 rounded-full border border-sky-400/30 shadow-sm">
@@ -145,12 +154,14 @@ export default function CredentialReviewPage() {
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search by personnel ID or document type..."
+            aria-label="Search documents"
             className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
           />
         </div>
         <select
           value={docFilter}
           onChange={(event) => setDocFilter(event.target.value)}
+          aria-label="Filter by document type"
           className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Types</option>
@@ -170,15 +181,21 @@ export default function CredentialReviewPage() {
 
       {loading ? (
         <div className="py-24 text-center animate-pulse">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Synchronizing Vault Integrity...</p>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+            Synchronizing Vault Integrity...
+          </p>
         </div>
       ) : filteredDocs.length === 0 ? (
         <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-24 text-center shadow-sm">
           <div className="h-20 w-20 bg-emerald-400/10 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-emerald-400/30 shadow-inner">
             <CheckCircle2 className="h-10 w-10 text-emerald-400" />
           </div>
-          <h3 className="text-xl font-black text-foreground tracking-tight">Vault Fully Verified</h3>
-          <p className="text-sm text-muted-foreground mt-2 font-medium">All staff credentials have been audited and secured.</p>
+          <h3 className="text-xl font-black text-foreground tracking-tight">
+            Vault Fully Verified
+          </h3>
+          <p className="text-sm text-muted-foreground mt-2 font-medium">
+            All staff credentials have been audited and secured.
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
@@ -193,7 +210,9 @@ export default function CredentialReviewPage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-black text-foreground tracking-tight">{doc.document_type ?? "Document"}</p>
+                    <p className="text-sm font-black text-foreground tracking-tight">
+                      {doc.document_type ?? 'Document'}
+                    </p>
                     <span className="px-2 py-0.5 bg-sky-500/10 text-sky-300 rounded-md text-xs font-semibold uppercase tracking-wide border border-sky-400/30">
                       Intake Node: USR-{doc.user_id.slice(0, 8)}
                     </span>
@@ -201,7 +220,7 @@ export default function CredentialReviewPage() {
                   <div className="flex items-center gap-4 mt-2">
                     <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       <Calendar className="h-3.5 w-3.5" />
-                      Expires: {doc.expiry_date || "Continuous"}
+                      Expires: {doc.expiry_date || 'Continuous'}
                     </div>
                     <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                       <Activity className="h-3.5 w-3.5" />
@@ -233,15 +252,19 @@ export default function CredentialReviewPage() {
             <ShieldCheck className="h-6 w-6" />
           </div>
           <div className="max-w-xl">
-            <h4 className="text-sm font-black uppercase tracking-wider text-blue-400">Non-Repudiation Policy</h4>
+            <h4 className="text-sm font-black uppercase tracking-wider text-blue-400">
+              Non-Repudiation Policy
+            </h4>
             <p className="text-xs text-muted-foreground mt-3 leading-relaxed font-medium uppercase tracking-wider">
-              By verifying a document, you confirm visual inspection against staff data. This action is permanently tethered to your session audit trail.
+              By verifying a document, you confirm visual inspection against
+              staff data. This action is permanently tethered to your session
+              audit trail.
             </p>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function Activity({ className }: { className?: string }) {
@@ -258,5 +281,5 @@ function Activity({ className }: { className?: string }) {
     >
       <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
     </svg>
-  )
+  );
 }

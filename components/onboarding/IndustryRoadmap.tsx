@@ -42,7 +42,7 @@ import {
 } from '@/lib/monitoring/performance-monitor';
 
 // Icon mapping
-const ICON_MAP: Record<string, React.ComponentType<any>> = {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Activity,
   Heart,
   Baby,

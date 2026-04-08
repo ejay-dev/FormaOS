@@ -179,6 +179,7 @@ export function RegulatoryNotificationTracker({
                         value={refNumber}
                         onChange={(e) => setRefNumber(e.target.value)}
                         placeholder="Reference number"
+                        aria-label="Reference number"
                         className="flex-1 rounded-md border border-input bg-background px-2 py-1 text-sm"
                       />
                       <button

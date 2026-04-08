@@ -1,17 +1,20 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { addTrainingRecord } from "@/app/app/actions/registers"
-import { GraduationCap, Loader2, X, User, CheckCircle2 } from "lucide-react"
-import { useComplianceAction } from "@/components/compliance-system"
-import { z } from "zod"
+import { useState } from 'react';
+import { addTrainingRecord } from '@/app/app/actions/registers';
+import { GraduationCap, Loader2, X, User, CheckCircle2 } from 'lucide-react';
+import { useComplianceAction } from '@/components/compliance-system';
+import { z } from 'zod';
 
 const certificationSchema = z.object({
-  userId: z.string().min(1, "Please select a staff member"),
-  title: z.string().min(1, "Certification title is required").max(300, "Title must be under 300 characters"),
-  completionDate: z.string().min(1, "Completion date is required"),
+  userId: z.string().min(1, 'Please select a staff member'),
+  title: z
+    .string()
+    .min(1, 'Certification title is required')
+    .max(300, 'Title must be under 300 characters'),
+  completionDate: z.string().min(1, 'Completion date is required'),
   expiryDate: z.string().optional(),
-})
+});
 
 /**
  * =========================================================
@@ -21,91 +24,102 @@ const certificationSchema = z.object({
  * =========================================================
  */
 
-export function AddCertificationModal({ 
-  isOpen, 
-  onClose, 
-  members 
-}: { 
-  isOpen: boolean; 
+export function AddCertificationModal({
+  isOpen,
+  onClose,
+  members,
+}: {
+  isOpen: boolean;
   onClose: () => void;
-  members: any[];
+  members: { user_id: string }[];
 }) {
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [validationError, setValidationError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
-  const [userId, setUserId] = useState("")
-  const [title, setTitle] = useState("")
-  const [completionDate, setCompletionDate] = useState("")
-  const [expiryDate, setExpiryDate] = useState("")
-  const { evidenceAdded, reportError } = useComplianceAction()
+  const [userId, setUserId] = useState('');
+  const [title, setTitle] = useState('');
+  const [completionDate, setCompletionDate] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const { evidenceAdded, reportError } = useComplianceAction();
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setValidationError(null)
+    e.preventDefault();
+    setValidationError(null);
 
     const parsed = certificationSchema.safeParse({
       userId,
       title,
       completionDate,
       expiryDate: expiryDate || undefined,
-    })
+    });
 
     if (!parsed.success) {
-      setValidationError(parsed.error.issues[0]?.message ?? "Invalid input")
-      return
+      setValidationError(parsed.error.issues[0]?.message ?? 'Invalid input');
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
       await addTrainingRecord({
         userId,
         trainingTitle: title,
         completionDate,
-        expiryDate: expiryDate || undefined
-      })
-      
+        expiryDate: expiryDate || undefined,
+      });
+
       // Report to compliance system
-      evidenceAdded(title)
-      
-      setSuccess(true)
+      evidenceAdded(title);
+
+      setSuccess(true);
       setTimeout(() => {
-        setSuccess(false)
-        onClose()
-      }, 2000)
-    } catch (error: any) {
-      reportError({ title: "Certification failed", message: error.message || "Unknown error" })
+        setSuccess(false);
+        onClose();
+      }, 2000);
+    } catch (error: unknown) {
+      reportError({
+        title: 'Certification failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/70 sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div className="w-full max-w-md bg-glass-strong rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto">
-        
         {/* Header */}
         <div className="p-6 border-b border-glass-border flex items-center justify-between bg-glass-strong">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white flex items-center justify-center">
               <GraduationCap className="h-4 w-4" />
             </div>
-            <h3 className="font-black text-foreground tracking-tight">Record Certification</h3>
+            <h3 className="font-black text-foreground tracking-tight">
+              Record Certification
+            </h3>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-glass-strong rounded-xl transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-glass-strong rounded-xl transition-colors"
+          >
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
         </div>
 
         {success ? (
           <div className="p-12 text-center flex flex-col items-center animate-in zoom-in-95">
-             <div className="h-16 w-16 rounded-full bg-emerald-400/10 text-emerald-500 flex items-center justify-center mb-4 border border-emerald-400/30">
-                <CheckCircle2 className="h-8 w-8" />
-             </div>
-             <h4 className="text-lg font-black text-foreground tracking-tight">Record Logged</h4>
-             <p className="text-sm text-muted-foreground mt-1">Staff register has been updated.</p>
+            <div className="h-16 w-16 rounded-full bg-emerald-400/10 text-emerald-500 flex items-center justify-center mb-4 border border-emerald-400/30">
+              <CheckCircle2 className="h-8 w-8" />
+            </div>
+            <h4 className="text-lg font-black text-foreground tracking-tight">
+              Record Logged
+            </h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Staff register has been updated.
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-8 space-y-6">
@@ -116,18 +130,26 @@ export function AddCertificationModal({
             )}
             {/* Select Member */}
             <div className="space-y-2">
-              <label htmlFor="field-85" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">Personnel</label>
+              <label
+                htmlFor="field-85"
+                className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+              >
+                Personnel
+              </label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <select id="field-85" 
+                <select
+                  id="field-85"
                   required
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
                   className="w-full pl-11 pr-4 py-4 rounded-2xl border border-glass-border bg-glass-strong focus:bg-glass-strong focus:outline-black text-xs font-bold transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Select Staff Member</option>
-                  {members.map(m => (
-                    <option key={m.user_id} value={m.user_id}>Member ID: {m.user_id.slice(0, 8)}...</option>
+                  {members.map((m) => (
+                    <option key={m.user_id} value={m.user_id}>
+                      Member ID: {m.user_id.slice(0, 8)}...
+                    </option>
                   ))}
                 </select>
               </div>
@@ -135,8 +157,14 @@ export function AddCertificationModal({
 
             {/* Title */}
             <div className="space-y-2">
-              <label htmlFor="field-84" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">Certification Title</label>
-              <input id="field-84" 
+              <label
+                htmlFor="field-84"
+                className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+              >
+                Certification Title
+              </label>
+              <input
+                id="field-84"
                 required
                 placeholder="e.g. NDIS Worker Screening Check"
                 value={title}
@@ -148,8 +176,14 @@ export function AddCertificationModal({
             {/* Dates Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="field-83" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">Completion</label>
-                <input id="field-83" 
+                <label
+                  htmlFor="field-83"
+                  className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                >
+                  Completion
+                </label>
+                <input
+                  id="field-83"
                   required
                   type="date"
                   value={completionDate}
@@ -158,8 +192,14 @@ export function AddCertificationModal({
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="field-82" className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1">Expiry (Optional)</label>
-                <input id="field-82" 
+                <label
+                  htmlFor="field-82"
+                  className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                >
+                  Expiry (Optional)
+                </label>
+                <input
+                  id="field-82"
                   type="date"
                   value={expiryDate}
                   onChange={(e) => setExpiryDate(e.target.value)}
@@ -168,16 +208,20 @@ export function AddCertificationModal({
               </div>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white p-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 transition-all shadow-lg disabled:opacity-50"
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Verify & Log Record"}
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                'Verify & Log Record'
+              )}
             </button>
           </form>
         )}
       </div>
     </div>
-  )
+  );
 }

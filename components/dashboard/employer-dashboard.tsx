@@ -379,15 +379,20 @@ export function EmployerDashboard({
 
   // Analytics tracking for industry actions
   const handleIndustryActionClick = (stepId: string, stepLabel: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any).gtag('event', 'industry_action_click', {
-        step_id: stepId,
-        step_label: stepLabel,
-        industry,
-        organization_id: organizationId,
-      });
+    if (
+      typeof window !== 'undefined' &&
+      (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag
+    ) {
+      (window as unknown as { gtag: (...args: unknown[]) => void }).gtag(
+        'event',
+        'industry_action_click',
+        {
+          step_id: stepId,
+          step_label: stepLabel,
+          industry,
+          organization_id: organizationId,
+        },
+      );
     }
   };
 

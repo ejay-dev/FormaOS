@@ -32,8 +32,8 @@ export function NotificationToast({
           table: 'notifications',
           filter: `user_id=eq.${userId}`,
         },
-        (payload: any) => {
-          const notification = payload.new as NotificationRecord;
+        (payload: { new: Record<string, unknown> }) => {
+          const notification = payload.new as unknown as NotificationRecord;
           if (notification.org_id !== orgId) return;
           if (!['critical', 'high'].includes(notification.priority)) return;
 
@@ -75,7 +75,9 @@ export function NotificationToast({
           onClick={() => {
             const href =
               typeof toast.data?.href === 'string' ? toast.data.href : '/app';
-            setToasts((current) => current.filter((item) => item.id !== toast.id));
+            setToasts((current) =>
+              current.filter((item) => item.id !== toast.id),
+            );
             router.push(href);
           }}
           onKeyDown={(event) => {
@@ -100,7 +102,9 @@ export function NotificationToast({
               <h3 className="mt-1 text-sm font-semibold text-foreground">
                 {toast.title}
               </h3>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">{toast.body}</p>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                {toast.body}
+              </p>
             </div>
 
             <button

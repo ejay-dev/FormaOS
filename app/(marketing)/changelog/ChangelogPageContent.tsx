@@ -144,6 +144,52 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v3.4.0',
+    codename: 'Sentinel',
+    date: '2026-04-09',
+    summary:
+      'Quality and performance sprint: TypeScript any cleanup across 65+ files, admin command center decomposition from 1,908 to 303 lines, 47 WCAG 2.1 AA accessibility fixes, mobile responsiveness for 6 pages, statement coverage from 53% to 55% with 200+ new tests, and performance validation with clean production build.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'TypeScript any cleanup across 65+ files with zero tsc errors',
+        tag: 'improvement',
+        detail:
+          'Systematic removal of all remaining untyped any annotations. Replaced with proper types, generics, unknown with type narrowing, and Supabase-aware casts. 4 justified @ts-expect-error suppressions documented. Full codebase now compiles with zero TypeScript errors.',
+      },
+      {
+        text: 'Admin command center decomposed from 1,908 to 303 lines',
+        tag: 'improvement',
+        detail:
+          'Split monolithic admin-command-center.tsx into 7 focused modules: shared types, constants, formatting utilities, category panel components, result renderers, and a clean orchestrator. 84% reduction in main file size with improved maintainability.',
+      },
+      {
+        text: '47 WCAG 2.1 AA accessibility fixes across 22 files',
+        tag: 'improvement',
+        detail:
+          'Comprehensive accessibility pass: aria-label on all icon-only buttons, form validation errors linked via aria-describedby, skip navigation links, correct heading hierarchy (no skipped levels), focus management for modals and dialogs, color contrast compliance, and screen reader live-region announcements.',
+      },
+      {
+        text: 'Mobile responsiveness fixed for 6 core app pages',
+        tag: 'fix',
+        detail:
+          'Resolved overflow, touch target, and layout issues on tasks, visits, incidents, forms, vault review, and people pages. Added responsive breakpoints, mobile-first grid layouts, and proper viewport handling for all interactive elements.',
+      },
+      {
+        text: 'Statement coverage increased from 53% to 55% — 4,363 tests passing',
+        tag: 'improvement',
+        detail:
+          'Added 28 new test files with 200+ tests covering automation templates, API helpers, CORS, PII scanner, retention engine, policy engine, settings engine, release service, public uptime, trigger client, bootstrap, and more. Coverage: 55.08% statements, 51.54% branches, 58.34% functions.',
+      },
+      {
+        text: 'Production build validated with IndustryHero type fix',
+        tag: 'fix',
+        detail:
+          'Fixed pre-existing framer-motion ease type error in IndustryHero.tsx that blocked production builds. Confirmed all 27 admin routes have loading.tsx Suspense boundaries. Clean npm run build generating 238 static pages.',
+      },
+    ],
+  },
+  {
     version: 'v3.3.0',
     codename: 'Catalyst',
     date: '2026-04-08',

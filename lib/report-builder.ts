@@ -418,7 +418,7 @@ export async function fetchWidgetData(
   organizationId: string,
   dataSource: DataSource,
   filters?: WidgetConfig['filters'],
-): Promise<any> {
+): Promise<unknown> {
   const supabase = await createClient();
 
   switch (dataSource) {

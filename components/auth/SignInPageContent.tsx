@@ -14,7 +14,10 @@ import { Logo } from '@/components/brand/Logo';
 import { z } from 'zod';
 
 const signInSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Please enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
 });
 // OAuth consent branding can be further customized via Supabase Auth custom domains.
@@ -137,10 +140,7 @@ function SignInContent() {
         return {
           ok: false,
           status: response.status,
-          error:
-            typeof payload?.error === 'string'
-              ? payload.error
-              : undefined,
+          error: typeof payload?.error === 'string' ? payload.error : undefined,
         };
       }
       const payload = await response.json().catch(() => ({}));
@@ -297,7 +297,11 @@ function SignInContent() {
           setSsoRequired(false);
           return;
         }
-        const json = (await res.json().catch(() => null)) as any;
+        const json = (await res.json().catch(() => null)) as {
+          ok?: boolean;
+          orgId?: string;
+          enforceSso?: boolean;
+        } | null;
         if (!json?.ok || !json?.orgId) {
           setSsoOrgId(null);
           setSsoRequired(false);
@@ -317,7 +321,9 @@ function SignInContent() {
   const startSsoLogin = useCallback(
     (next: string = '/app') => {
       if (!ssoOrgId) {
-        setErrorMessage('No SSO configuration was found for this email domain.');
+        setErrorMessage(
+          'No SSO configuration was found for this email domain.',
+        );
         return;
       }
       const base = resolveAppBase();
@@ -539,7 +545,9 @@ function SignInContent() {
             {/* Divider */}
             <div className="flex items-center gap-4 mb-6">
               <div className="flex-1 border-t border-glass-border-strong" />
-              <span className="text-xs text-muted-foreground">or use email</span>
+              <span className="text-xs text-muted-foreground">
+                or use email
+              </span>
               <div className="flex-1 border-t border-glass-border-strong" />
             </div>
 
@@ -589,7 +597,9 @@ function SignInContent() {
                 </div>
               ) : null}
 
-              <div className={ssoRequired ? 'opacity-50 pointer-events-none' : ''}>
+              <div
+                className={ssoRequired ? 'opacity-50 pointer-events-none' : ''}
+              >
                 <div className="flex items-center justify-between mb-2">
                   <label
                     htmlFor="password"

@@ -7,7 +7,7 @@ type TaskInsertRow = Record<string, unknown>;
 
 type TaskInsertClient = {
   from(table: 'org_tasks'): {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase query builder returns deeply chained generic type
     insert(values: TaskInsertRow): any;
   };
 };
@@ -37,7 +37,7 @@ export async function insertOrgTaskCompat<T extends TaskInsertRow>(
   );
 
   for (;;) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase query builder chain requires dynamic method access
     let query: any = client.from('org_tasks').insert(payload);
 
     if (options.returning === 'single') {

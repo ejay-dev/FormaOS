@@ -125,8 +125,10 @@ export function BoardReportGenerator() {
         margin: { left: 25 },
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      y = (doc as any).lastAutoTable?.finalY + 15 || y + 50;
+      y =
+        (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable
+          ?.finalY ?? y + 50;
+      y += 15;
 
       // Section 3: Open Breaches
       doc.setFontSize(14);
@@ -159,8 +161,10 @@ export function BoardReportGenerator() {
           headStyles: { fillColor: [41, 128, 185] },
           margin: { left: 25 },
         });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        y = (doc as any).lastAutoTable?.finalY + 15 || y + 30;
+        y =
+          (doc as unknown as { lastAutoTable?: { finalY: number } })
+            .lastAutoTable?.finalY ?? y + 30;
+        y += 15;
       } else {
         doc.setFontSize(11);
         doc.text('No upcoming deadlines in the next 30 days.', 25, y);

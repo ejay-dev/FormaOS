@@ -92,9 +92,12 @@ export function NotificationCenter({
       }
 
       try {
-        const response = await fetch(`/api/notifications?${params.toString()}`, {
-          cache: 'no-store',
-        });
+        const response = await fetch(
+          `/api/notifications?${params.toString()}`,
+          {
+            cache: 'no-store',
+          },
+        );
         if (!response.ok) return;
 
         const payload = (await response.json()) as NotificationResponse;
@@ -130,9 +133,15 @@ export function NotificationCenter({
           table: 'notifications',
           filter: `user_id=eq.${userId}`,
         },
-        (payload: any) => {
-          const next = payload.new as NotificationRecord | undefined;
-          const previous = payload.old as NotificationRecord | undefined;
+        (payload: {
+          eventType: string;
+          new: Record<string, unknown>;
+          old: Record<string, unknown>;
+        }) => {
+          const next = payload.new as unknown as NotificationRecord | undefined;
+          const previous = payload.old as unknown as
+            | NotificationRecord
+            | undefined;
 
           if (next?.org_id && next.org_id !== orgId) {
             return;
@@ -185,18 +194,23 @@ export function NotificationCenter({
       filter === 'all' ? true : EVENT_CATEGORY_MAP[item.type] === filter,
     );
 
-    return visible.reduce<Record<string, NotificationRecord[]>>((groups, item) => {
-      const key = groupLabel(item.created_at);
-      groups[key] = [...(groups[key] ?? []), item];
-      return groups;
-    }, {});
+    return visible.reduce<Record<string, NotificationRecord[]>>(
+      (groups, item) => {
+        const key = groupLabel(item.created_at);
+        groups[key] = [...(groups[key] ?? []), item];
+        return groups;
+      },
+      {},
+    );
   }, [filter, items]);
 
   const handleMarkRead = useCallback(
     async (id: string) => {
       setItems((current) =>
         current.map((item) =>
-          item.id === id ? { ...item, read_at: new Date().toISOString() } : item,
+          item.id === id
+            ? { ...item, read_at: new Date().toISOString() }
+            : item,
         ),
       );
       setUnreadCount((count) => Math.max(0, count - 1));
@@ -259,7 +273,10 @@ export function NotificationCenter({
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="right" className="w-[96vw] max-w-[440px] bg-slate-950/95">
+      <SheetContent
+        side="right"
+        className="w-[96vw] max-w-[440px] bg-slate-950/95"
+      >
         <SheetHeader className="border-b border-glass-border pb-4 pr-10">
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -270,7 +287,10 @@ export function NotificationCenter({
                 Real-time alerts, approvals, and delivery history.
               </SheetDescription>
             </div>
-            <Badge variant="outline" className="border-glass-border bg-glass-strong text-foreground/90">
+            <Badge
+              variant="outline"
+              className="border-glass-border bg-glass-strong text-foreground/90"
+            >
               {unreadCount} unread
             </Badge>
           </div>
@@ -328,7 +348,8 @@ export function NotificationCenter({
                 No notifications yet
               </p>
               <p className="mt-2 text-sm text-muted-foreground/60">
-                New activity, review requests, and system alerts will appear here.
+                New activity, review requests, and system alerts will appear
+                here.
               </p>
             </div>
           ) : (
@@ -368,13 +389,20 @@ export function NotificationCenter({
                 </section>
               ))}
 
-              <div ref={sentinelRef} className="flex items-center justify-center py-4">
+              <div
+                ref={sentinelRef}
+                className="flex items-center justify-center py-4"
+              >
                 {loadingMore ? (
                   <Loader2 className="h-4 w-4 animate-spin text-muted-foreground/60" />
                 ) : nextCursor ? (
-                  <span className="text-xs text-muted-foreground/60">Loading more…</span>
+                  <span className="text-xs text-muted-foreground/60">
+                    Loading more…
+                  </span>
                 ) : (
-                  <span className="text-xs text-muted-foreground/40">End of feed</span>
+                  <span className="text-xs text-muted-foreground/40">
+                    End of feed
+                  </span>
                 )}
               </div>
             </div>

@@ -174,15 +174,25 @@ export async function similaritySearch(
 
   if (error) throw error;
 
-  return (data ?? []).map((row: any) => ({
-    id: row.id,
-    sourceType: row.source_type,
-    sourceId: row.source_id,
-    chunkIndex: row.chunk_index,
-    chunkText: row.chunk_text,
-    metadata: row.metadata ?? {},
-    similarity: row.similarity,
-  }));
+  return (data ?? []).map(
+    (row: {
+      id: string;
+      source_type: string;
+      source_id: string;
+      chunk_index: number;
+      chunk_text: string;
+      metadata?: Record<string, unknown>;
+      similarity: number;
+    }) => ({
+      id: row.id,
+      sourceType: row.source_type,
+      sourceId: row.source_id,
+      chunkIndex: row.chunk_index,
+      chunkText: row.chunk_text,
+      metadata: row.metadata ?? {},
+      similarity: row.similarity,
+    }),
+  );
 }
 
 /**

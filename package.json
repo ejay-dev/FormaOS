@@ -1,6 +1,6 @@
 {
   "name": "formaos",
-  "version": "2.2.4",
+  "version": "3.4.0",
   "private": true,
   "engines": {
     "node": "20.x"

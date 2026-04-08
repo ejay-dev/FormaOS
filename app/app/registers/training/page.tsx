@@ -1,7 +1,7 @@
-"use client"
+'use client';
 
-import { useEffect, useMemo, useState } from "react"
-import { createSupabaseClient } from "@/lib/supabase/client"
+import { useEffect, useMemo, useState } from 'react';
+import { createSupabaseClient } from '@/lib/supabase/client';
 import {
   GraduationCap,
   Plus,
@@ -10,107 +10,112 @@ import {
   CheckCircle2,
   User,
   Search,
-} from "lucide-react"
-import { AddCertificationModal } from "@/components/registers/add-certification-modal"
-import { useAppStore } from "@/lib/stores/app"
+} from 'lucide-react';
+import { AddCertificationModal } from '@/components/registers/add-certification-modal';
+import { useAppStore } from '@/lib/stores/app';
 
 type TrainingRecord = {
-  id: string
-  user_id: string
-  title: string
-  completion_date: string
-  expiry_date: string | null
-}
+  id: string;
+  user_id: string;
+  title: string;
+  completion_date: string;
+  expiry_date: string | null;
+};
 
 type OrgMember = {
-  user_id: string
-}
+  user_id: string;
+};
 
-const ALL_FILTER = "all"
+const ALL_FILTER = 'all';
 
 export default function TrainingRegisterPage() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [records, setRecords] = useState<TrainingRecord[]>([])
-  const [members, setMembers] = useState<OrgMember[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState(ALL_FILTER)
+  const [isOpen, setIsOpen] = useState(false);
+  const [records, setRecords] = useState<TrainingRecord[]>([]);
+  const [members, setMembers] = useState<OrgMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState(ALL_FILTER);
 
-  const supabase = useMemo(() => createSupabaseClient(), [])
-  const orgId = useAppStore((state) => state.organization?.id ?? null)
-  const isHydrated = useAppStore((state) => state.isHydrated)
+  const supabase = useMemo(() => createSupabaseClient(), []);
+  const orgId = useAppStore((state) => state.organization?.id ?? null);
+  const isHydrated = useAppStore((state) => state.isHydrated);
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     async function fetchData() {
-      if (!isHydrated) return
+      if (!isHydrated) return;
       if (!orgId) {
-        setRecords([])
-        setMembers([])
-        setLoading(false)
-        return
+        setRecords([]);
+        setMembers([]);
+        setLoading(false);
+        return;
       }
 
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
 
       try {
-        const [{ data: recs, error: recError }, { data: mems, error: memberError }] = await Promise.all([
+        const [
+          { data: recs, error: recError },
+          { data: mems, error: memberError },
+        ] = await Promise.all([
           supabase
-            .from("org_training_records")
-            .select("id, user_id, title, completion_date, expiry_date")
-            .eq("organization_id", orgId)
-            .order("expiry_date", { ascending: true }),
+            .from('org_training_records')
+            .select('id, user_id, title, completion_date, expiry_date')
+            .eq('organization_id', orgId)
+            .order('expiry_date', { ascending: true }),
           supabase
-            .from("org_members")
-            .select("user_id")
-            .eq("organization_id", orgId),
-        ])
+            .from('org_members')
+            .select('user_id')
+            .eq('organization_id', orgId),
+        ]);
 
-        if (recError) throw recError
-        if (memberError) throw memberError
+        if (recError) throw recError;
+        if (memberError) throw memberError;
 
-        if (cancelled) return
-        setRecords((recs ?? []) as TrainingRecord[])
-        setMembers((mems ?? []) as OrgMember[])
+        if (cancelled) return;
+        setRecords((recs ?? []) as TrainingRecord[]);
+        setMembers((mems ?? []) as OrgMember[]);
       } catch (err) {
-        if (cancelled) return
-        console.error("[TrainingRegisterPage] fetch failed:", err)
-        setError("Unable to load training register right now.")
-        setRecords([])
-        setMembers([])
+        if (cancelled) return;
+        console.error('[TrainingRegisterPage] fetch failed:', err);
+        setError('Unable to load training register right now.');
+        setRecords([]);
+        setMembers([]);
       } finally {
-        if (!cancelled) setLoading(false)
+        if (!cancelled) setLoading(false);
       }
     }
 
-    fetchData()
+    fetchData();
 
     return () => {
-      cancelled = true
-    }
-  }, [supabase, isHydrated, orgId, isOpen])
+      cancelled = true;
+    };
+  }, [supabase, isHydrated, orgId, isOpen]);
 
   const filteredRecords = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase()
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
     return records.filter((record) => {
-      const isExpired = Boolean(record.expiry_date && new Date(record.expiry_date) < new Date())
+      const isExpired = Boolean(
+        record.expiry_date && new Date(record.expiry_date) < new Date(),
+      );
       const statusMatch =
         statusFilter === ALL_FILTER ||
-        (statusFilter === "expired" && isExpired) ||
-        (statusFilter === "active" && !isExpired)
+        (statusFilter === 'expired' && isExpired) ||
+        (statusFilter === 'active' && !isExpired);
 
-      if (!statusMatch) return false
+      if (!statusMatch) return false;
 
-      if (!normalizedQuery) return true
+      if (!normalizedQuery) return true;
 
-      const searchableText = `${record.title} ${record.user_id}`.toLowerCase()
-      return searchableText.includes(normalizedQuery)
-    })
-  }, [records, searchQuery, statusFilter])
+      const searchableText = `${record.title} ${record.user_id}`.toLowerCase();
+      return searchableText.includes(normalizedQuery);
+    });
+  }, [records, searchQuery, statusFilter]);
 
   return (
     <div className="space-y-8 pb-12">
@@ -122,8 +127,12 @@ export default function TrainingRegisterPage() {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">Staff Training Register</h1>
-          <p className="text-muted-foreground mt-1 font-medium">Monitor mandatory certifications and worker screening.</p>
+          <h1 className="text-3xl font-black text-foreground tracking-tight">
+            Staff Training Register
+          </h1>
+          <p className="text-muted-foreground mt-1 font-medium">
+            Monitor mandatory certifications and worker screening.
+          </p>
         </div>
         <button
           onClick={() => setIsOpen(true)}
@@ -141,12 +150,14 @@ export default function TrainingRegisterPage() {
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Search by personnel ID or certification..."
+            aria-label="Search training records"
             className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
+          aria-label="Filter by status"
           className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Statuses</option>
@@ -176,8 +187,13 @@ export default function TrainingRegisterPage() {
             <tbody className="divide-y divide-white/10">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-20 text-center animate-pulse">
-                    <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">Synchronizing Registry...</p>
+                  <td
+                    colSpan={5}
+                    className="px-8 py-20 text-center animate-pulse"
+                  >
+                    <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest">
+                      Synchronizing Registry...
+                    </p>
                   </td>
                 </tr>
               ) : filteredRecords.length === 0 ? (
@@ -186,41 +202,59 @@ export default function TrainingRegisterPage() {
                     <div className="h-16 w-16 bg-glass-strong rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
                       <GraduationCap className="h-8 w-8 text-muted-foreground" />
                     </div>
-                    <p className="text-sm font-black text-foreground tracking-tight">No matching records found</p>
-                    <p className="text-xs text-muted-foreground mt-1">Adjust your search or add a new certification.</p>
+                    <p className="text-sm font-black text-foreground tracking-tight">
+                      No matching records found
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Adjust your search or add a new certification.
+                    </p>
                   </td>
                 </tr>
               ) : (
                 filteredRecords.map((record) => {
-                  const isExpired = Boolean(record.expiry_date && new Date(record.expiry_date) < new Date())
+                  const isExpired = Boolean(
+                    record.expiry_date &&
+                    new Date(record.expiry_date) < new Date(),
+                  );
                   return (
-                    <tr key={record.id} className="group hover:bg-white/5 transition-colors">
+                    <tr
+                      key={record.id}
+                      className="group hover:bg-white/5 transition-colors"
+                    >
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
                           <div className="h-10 w-10 rounded-xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-white/10 group-hover:bg-white/20 transition-colors">
                             <User className="h-5 w-5" />
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-foreground">Workspace Member</span>
-                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">ID: {record.user_id.slice(0, 8)}</span>
+                            <span className="text-sm font-semibold text-foreground">
+                              Workspace Member
+                            </span>
+                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                              ID: {record.user_id.slice(0, 8)}
+                            </span>
                           </div>
                         </div>
                       </td>
                       <td className="px-8 py-6">
-                        <p className="text-sm font-semibold text-foreground tracking-tight">{record.title}</p>
+                        <p className="text-sm font-semibold text-foreground tracking-tight">
+                          {record.title}
+                        </p>
                       </td>
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-2 text-muted-foreground font-medium text-sm">
                           <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                          {new Date(record.completion_date).toLocaleDateString()}
+                          {new Date(
+                            record.completion_date,
+                          ).toLocaleDateString()}
                         </div>
                       </td>
                       <td className="px-8 py-6">
                         <div
                           className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold uppercase tracking-wide w-fit shadow-sm ${
                             isExpired
-                              ? "bg-rose-500/10 text-rose-300 border-rose-400/30"
-                              : "bg-emerald-400/10 text-emerald-300 border-emerald-400/30"
+                              ? 'bg-rose-500/10 text-rose-300 border-rose-400/30'
+                              : 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30'
                           }`}
                         >
                           {isExpired ? (
@@ -228,8 +262,9 @@ export default function TrainingRegisterPage() {
                           ) : (
                             <CheckCircle2 className="h-3 w-3" />
                           )}
-                          {isExpired ? "Expired" : "Verified Active"}
-                          {record.expiry_date && ` • ${new Date(record.expiry_date).toLocaleDateString()}`}
+                          {isExpired ? 'Expired' : 'Verified Active'}
+                          {record.expiry_date &&
+                            ` • ${new Date(record.expiry_date).toLocaleDateString()}`}
                         </div>
                       </td>
                       <td className="px-8 py-6 text-right">
@@ -238,7 +273,7 @@ export default function TrainingRegisterPage() {
                         </span>
                       </td>
                     </tr>
-                  )
+                  );
                 })
               )}
             </tbody>
@@ -246,5 +281,5 @@ export default function TrainingRegisterPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

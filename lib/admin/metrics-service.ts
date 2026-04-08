@@ -112,10 +112,17 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase row shape varies
-  const organizations = (normalizedOrgsResult.data ?? []).map((org: any) => ({
-    ...org,
-    lifecycle_status: org.lifecycle_status ?? null,
-  })) as Array<{
+  const organizations = (normalizedOrgsResult.data ?? []).map(
+    (org: {
+      id: string;
+      name?: string | null;
+      lifecycle_status?: string | null;
+      created_at?: string;
+    }) => ({
+      ...org,
+      lifecycle_status: org.lifecycle_status ?? null,
+    }),
+  ) as Array<{
     id: string;
     name?: string | null;
     lifecycle_status?: string | null;

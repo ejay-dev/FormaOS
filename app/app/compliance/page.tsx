@@ -14,7 +14,7 @@ export default function ComplianceIndexPage() {
             Track, manage, and prove compliance across all frameworks
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Link
             href="/app/compliance/frameworks"
             className="rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent/30 transition-colors"
@@ -32,7 +32,7 @@ export default function ComplianceIndexPage() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto -mx-4 px-4 sm:mx-0 sm:px-0">
         <Suspense fallback={<SkeletonCard className="h-96" />}>
           <ObligationsTable />
         </Suspense>

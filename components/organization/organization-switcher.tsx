@@ -106,7 +106,7 @@ export default function OrganizationSwitcher({
         {currentOrg.logo_url ? (
           <img
             src={currentOrg.logo_url}
-            alt={currentOrg.name}
+            alt={`${currentOrg.name} logo`}
             className="h-8 w-8 rounded object-cover"
           />
         ) : (
@@ -136,7 +136,12 @@ export default function OrganizationSwitcher({
           <div
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                (e.currentTarget as HTMLElement).click();
+              }
+            }}
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
@@ -156,7 +161,7 @@ export default function OrganizationSwitcher({
                   {org.logo_url ? (
                     <img
                       src={org.logo_url}
-                      alt={org.name}
+                      alt={`${org.name} logo`}
                       className="h-8 w-8 rounded object-cover"
                     />
                   ) : (

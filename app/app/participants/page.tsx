@@ -127,10 +127,7 @@ export default async function ParticipantsPage({
       {/* Header */}
       <div className="page-header">
         <div>
-          <h1
-            className="page-title"
-            data-testid="participants-title"
-          >
+          <h1 className="page-title" data-testid="participants-title">
             {labels.plural}
           </h1>
           <p className="page-description">
@@ -148,230 +145,247 @@ export default async function ParticipantsPage({
       </div>
 
       <div className="page-content space-y-4">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="metric-card metric-card-neutral">
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="metric-card metric-card-neutral">
+            <div className="flex items-center gap-2">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Total
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.total}</p>
           </div>
-          <p className="text-2xl font-bold">{stats.total}</p>
-        </div>
-        <div className="metric-card metric-card-success">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Active</p>
+          <div className="metric-card metric-card-success">
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Active
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.active}</p>
           </div>
-          <p className="text-2xl font-bold">{stats.active}</p>
-        </div>
-        <div className={`metric-card ${stats.highRisk > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">High Risk</p>
-          </div>
-          <p className="text-2xl font-bold">{stats.highRisk}</p>
-        </div>
-        <div className={`metric-card ${stats.emergency > 0 ? 'metric-card-danger' : 'metric-card-success'}`}>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Emergency</p>
-          </div>
-          <p className="text-2xl font-bold">{stats.emergency}</p>
-        </div>
-      </div>
-
-      {/* Search and Filter */}
-      <form className="flex flex-col lg:flex-row gap-3" method="GET">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            name="q"
-            placeholder={`Search ${labels.plural.toLowerCase()}...`}
-            defaultValue={q}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
-            data-testid="search-participants"
-          />
-        </div>
-        <select
-          name="status"
-          defaultValue={statusFilter}
-          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
-        >
-          <option value="">All status</option>
-          <option value="active">Active</option>
-          <option value="paused">Paused</option>
-          <option value="discharged">Discharged</option>
-        </select>
-        <select
-          name="risk"
-          defaultValue={riskFilter}
-          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
-        >
-          <option value="">All risk</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="critical">Critical</option>
-        </select>
-        <button
-          type="submit"
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
-        >
-          <Filter className="h-4 w-4" />
-          Apply
-        </button>
-        {hasFilters ? (
-          <Link
-            href="/app/participants"
-            className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
+          <div
+            className={`metric-card ${stats.highRisk > 0 ? 'metric-card-warning' : 'metric-card-success'}`}
           >
-            Clear
-          </Link>
-        ) : null}
-      </form>
-
-      {/* Table */}
-      <div className="rounded-lg border border-border overflow-hidden">
-        <div className="overflow-x-auto overscroll-x-contain">
-          <table
-            className="min-w-[480px] w-full"
-            data-testid="participants-table"
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                High Risk
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.highRisk}</p>
+          </div>
+          <div
+            className={`metric-card ${stats.emergency > 0 ? 'metric-card-danger' : 'metric-card-success'}`}
           >
-            <thead className="bg-muted/50">
-              <tr>
-                <th className="text-left px-4 py-3 text-sm font-medium">
-                  Name
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium hidden md:table-cell">
-                  ID
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
-                  Status
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
-                  Risk
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium hidden xl:table-cell">
-                  Funding
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {participants?.map((participant: Participant) => (
-                <tr
-                  key={participant.id}
-                  className="hover:bg-muted/30 transition-colors"
-                >
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      {participant.emergency_flag && (
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Emergency
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.emergency}</p>
+          </div>
+        </div>
+
+        {/* Search and Filter */}
+        <form className="flex flex-col lg:flex-row gap-3" method="GET">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              name="q"
+              placeholder={`Search ${labels.plural.toLowerCase()}...`}
+              defaultValue={q}
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
+              data-testid="search-participants"
+            />
+          </div>
+          <select
+            name="status"
+            defaultValue={statusFilter}
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+          >
+            <option value="">All status</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="discharged">Discharged</option>
+          </select>
+          <select
+            name="risk"
+            defaultValue={riskFilter}
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+          >
+            <option value="">All risk</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+          <button
+            type="submit"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
+          >
+            <Filter className="h-4 w-4" />
+            Apply
+          </button>
+          {hasFilters ? (
+            <Link
+              href="/app/participants"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Clear
+            </Link>
+          ) : null}
+        </form>
+
+        {/* Table */}
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="overflow-x-auto overscroll-x-contain">
+              <table
+                className="min-w-[480px] w-full"
+                data-testid="participants-table"
+              >
+                <thead className="bg-muted/50">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-sm font-medium">
+                      Name
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium hidden md:table-cell">
+                      ID
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
+                      Status
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
+                      Risk
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium hidden xl:table-cell">
+                      Funding
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {participants?.map((participant: Participant) => (
+                    <tr
+                      key={participant.id}
+                      className="hover:bg-muted/30 transition-colors"
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          {participant.emergency_flag && (
+                            <span
+                              className="flex h-2 w-2 rounded-full bg-red-500"
+                              title="Emergency Flag"
+                            />
+                          )}
+                          <div>
+                            <p className="font-medium">
+                              {participant.full_name}
+                            </p>
+                            {participant.preferred_name && (
+                              <p className="text-sm text-muted-foreground">
+                                ({participant.preferred_name})
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 hidden md:table-cell">
+                        <span className="text-sm font-mono text-muted-foreground">
+                          {participant.external_id ||
+                            participant.ndis_number ||
+                            '-'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell">
                         <span
-                          className="flex h-2 w-2 rounded-full bg-red-500"
-                          title="Emergency Flag"
-                        />
-                      )}
-                      <div>
-                        <p className="font-medium">{participant.full_name}</p>
-                        {participant.preferred_name && (
-                          <p className="text-sm text-muted-foreground">
-                            ({participant.preferred_name})
-                          </p>
+                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                            participant.care_status === 'active'
+                              ? 'bg-green-500/10 text-green-600'
+                              : participant.care_status === 'paused'
+                                ? 'bg-amber-500/10 text-amber-600'
+                                : 'bg-gray-500/10 text-gray-600'
+                          }`}
+                        >
+                          {participant.care_status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        <span
+                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                            participant.risk_level === 'critical'
+                              ? 'bg-red-500/10 text-red-600'
+                              : participant.risk_level === 'high'
+                                ? 'bg-orange-500/10 text-orange-600'
+                                : participant.risk_level === 'medium'
+                                  ? 'bg-amber-500/10 text-amber-600'
+                                  : 'bg-green-500/10 text-green-600'
+                          }`}
+                        >
+                          {participant.risk_level}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 hidden xl:table-cell">
+                        <span className="text-sm text-muted-foreground">
+                          {participant.funding_type?.toUpperCase() || '-'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/app/participants/${participant.id}`}
+                          className="text-sm text-primary hover:underline"
+                          data-testid={`view-participant-${participant.id}`}
+                        >
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                  {(!participants || participants.length === 0) && (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-4 py-12 text-center text-muted-foreground"
+                      >
+                        <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        {hasFilters ? (
+                          <>
+                            <p>
+                              No {labels.plural.toLowerCase()} matched your
+                              filters
+                            </p>
+                            <Link
+                              href="/app/participants"
+                              className="text-primary hover:underline mt-2 inline-block"
+                            >
+                              Clear filters
+                            </Link>
+                          </>
+                        ) : (
+                          <>
+                            <p>No {labels.plural.toLowerCase()} yet</p>
+                            <Link
+                              href="/app/participants/new"
+                              className="text-primary hover:underline mt-2 inline-block"
+                            >
+                              Add your first {labels.singular.toLowerCase()}
+                            </Link>
+                          </>
                         )}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
-                    <span className="text-sm font-mono text-muted-foreground">
-                      {participant.external_id ||
-                        participant.ndis_number ||
-                        '-'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 hidden lg:table-cell">
-                    <span
-                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        participant.care_status === 'active'
-                          ? 'bg-green-500/10 text-green-600'
-                          : participant.care_status === 'paused'
-                            ? 'bg-amber-500/10 text-amber-600'
-                            : 'bg-gray-500/10 text-gray-600'
-                      }`}
-                    >
-                      {participant.care_status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 hidden lg:table-cell">
-                    <span
-                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        participant.risk_level === 'critical'
-                          ? 'bg-red-500/10 text-red-600'
-                          : participant.risk_level === 'high'
-                            ? 'bg-orange-500/10 text-orange-600'
-                            : participant.risk_level === 'medium'
-                              ? 'bg-amber-500/10 text-amber-600'
-                              : 'bg-green-500/10 text-green-600'
-                      }`}
-                    >
-                      {participant.risk_level}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 hidden xl:table-cell">
-                    <span className="text-sm text-muted-foreground">
-                      {participant.funding_type?.toUpperCase() || '-'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/app/participants/${participant.id}`}
-                      className="text-sm text-primary hover:underline"
-                      data-testid={`view-participant-${participant.id}`}
-                    >
-                      View
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-              {(!participants || participants.length === 0) && (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="px-4 py-12 text-center text-muted-foreground"
-                  >
-                    <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    {hasFilters ? (
-                      <>
-                        <p>
-                          No {labels.plural.toLowerCase()} matched your filters
-                        </p>
-                        <Link
-                          href="/app/participants"
-                          className="text-primary hover:underline mt-2 inline-block"
-                        >
-                          Clear filters
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <p>No {labels.plural.toLowerCase()} yet</p>
-                        <Link
-                          href="/app/participants/new"
-                          className="text-primary hover:underline mt-2 inline-block"
-                        >
-                          Add your first {labels.singular.toLowerCase()}
-                        </Link>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

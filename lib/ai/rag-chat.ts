@@ -3,7 +3,7 @@
  */
 
 import { SupabaseClient } from '@supabase/supabase-js';
-import { similaritySearch, SearchResult } from './vector-store';
+import { similaritySearch, SearchResult, SourceType } from './vector-store';
 import { trackUsage } from './usage-meter';
 
 // ---- Types ----
@@ -140,7 +140,7 @@ export async function buildRAGContext(
 
   // 1. Retrieve relevant documents via similarity search
   const searchResults = await similaritySearch(db, orgId, userMessage, {
-    sourceTypes: options.sourceTypes as any,
+    sourceTypes: options.sourceTypes as SourceType[] | undefined,
     limit: maxSources,
     similarityThreshold: 0.65,
   });

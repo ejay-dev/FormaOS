@@ -120,7 +120,9 @@ export async function detectImpossibleTravel(
   }
 
   // Check if user has logged in from a different country recently
-  const countries = new Set(data.map((e: any) => e.geo_country));
+  const countries = new Set(
+    data.map((e: { geo_country: string }) => e.geo_country),
+  );
   if (countries.size > 1) {
     return {
       triggered: true,

@@ -1,15 +1,32 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { createPolicy } from "@/app/app/policies/actions"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger, SheetFooter } from "@/components/ui/sheet"
-import { Plus, Loader2, FileText, ShieldCheck, CheckCircle2 } from "lucide-react"
-import { useComplianceAction } from "@/components/compliance-system"
-import { z } from "zod"
+import { useState } from 'react';
+import { createPolicy } from '@/app/app/policies/actions';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+  SheetFooter,
+} from '@/components/ui/sheet';
+import {
+  Plus,
+  Loader2,
+  FileText,
+  ShieldCheck,
+  CheckCircle2,
+} from 'lucide-react';
+import { useComplianceAction } from '@/components/compliance-system';
+import { z } from 'zod';
 
 const createPolicySchema = z.object({
-  title: z.string().min(1, "Policy title is required").max(300, "Title must be under 300 characters"),
-})
+  title: z
+    .string()
+    .min(1, 'Policy title is required')
+    .max(300, 'Title must be under 300 characters'),
+});
 
 /**
  * =========================================================
@@ -20,70 +37,77 @@ const createPolicySchema = z.object({
  */
 
 export function CreatePolicySheet() {
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [validationError, setValidationError] = useState<string | null>(null)
-  const { nodeCreated, reportError } = useComplianceAction()
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const { nodeCreated, reportError } = useComplianceAction();
 
   async function handleSubmit(formData: FormData) {
-    setLoading(true)
-    setValidationError(null)
+    setLoading(true);
+    setValidationError(null);
 
     const parsed = createPolicySchema.safeParse({
-      title: formData.get("title"),
-    })
+      title: formData.get('title'),
+    });
 
     if (!parsed.success) {
-      setValidationError(parsed.error.issues[0]?.message ?? "Invalid input")
-      setLoading(false)
-      return
+      setValidationError(parsed.error.issues[0]?.message ?? 'Invalid input');
+      setLoading(false);
+      return;
     }
 
     try {
-        const title = parsed.data.title
+      const title = parsed.data.title;
 
-        // The Server Action handles all DB logic, Auth, and ID generation
-        await createPolicy(formData)
-        
-        // Show success state
-        setSuccess(true)
-        
-        // Report to compliance system
-        nodeCreated("policy", title)
-        
-        // Close after animation
-        setTimeout(() => {
-          setOpen(false)
-          setSuccess(false)
-        }, 1000)
-        
-    } catch (error: any) {
-        reportError({ title: "Policy creation failed", message: error.message || "Unknown error" })
+      // The Server Action handles all DB logic, Auth, and ID generation
+      await createPolicy(formData);
+
+      // Show success state
+      setSuccess(true);
+
+      // Report to compliance system
+      nodeCreated('policy', title);
+
+      // Close after animation
+      setTimeout(() => {
+        setOpen(false);
+        setSuccess(false);
+      }, 1000);
+    } catch (error: unknown) {
+      reportError({
+        title: 'Policy creation failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
     } finally {
-        setLoading(false)
+      setLoading(false);
     }
   }
 
   return (
-    <Sheet open={open} onOpenChange={(isOpen) => {
-      setOpen(isOpen)
-      if (!isOpen) setSuccess(false)
-    }}>
+    <Sheet
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) setSuccess(false);
+      }}
+    >
       <SheetTrigger asChild>
         <button className="group flex items-center gap-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(6,182,212,0.35)] active:scale-[0.98]">
-            <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
-            New Policy
+          <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
+          New Policy
         </button>
       </SheetTrigger>
-      
+
       <SheetContent side="right" className="sm:max-w-md">
         {success ? (
           <div className="flex flex-col items-center justify-center h-full animate-in fade-in zoom-in-95 duration-300">
             <div className="h-20 w-20 rounded-full bg-cyan-400/20 flex items-center justify-center mb-4 border-2 border-cyan-400/40">
               <CheckCircle2 className="h-10 w-10 text-cyan-400" />
             </div>
-            <h3 className="text-xl font-bold text-foreground">Policy Created</h3>
+            <h3 className="text-xl font-bold text-foreground">
+              Policy Created
+            </h3>
             <p className="text-sm text-muted-foreground mt-2 text-center">
               New policy node added to your compliance graph
             </p>
@@ -110,62 +134,77 @@ export function CreatePolicySheet() {
               )}
               {/* Title Field */}
               <div className="space-y-2">
-                  <label htmlFor="field-77" className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Policy Title</label>
-                  <div className="relative">
-                      <FileText className="absolute left-3 top-3 h-4 w-4 text-cyan-400/70" />
-                      <input id="field-77" 
-                          name="title" 
-                          required 
-                          placeholder="e.g. Data Retention Policy" 
-                          className="w-full pl-10 p-3 rounded-xl border border-glass-border text-sm outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition-all" 
-                      />
-                  </div>
-                  <p className="text-xs text-muted-foreground">This will be the official name of the document.</p>
+                <label
+                  htmlFor="field-77"
+                  className="text-xs font-bold uppercase text-muted-foreground tracking-wider"
+                >
+                  Policy Title
+                </label>
+                <div className="relative">
+                  <FileText className="absolute left-3 top-3 h-4 w-4 text-cyan-400/70" />
+                  <input
+                    id="field-77"
+                    name="title"
+                    required
+                    placeholder="e.g. Data Retention Policy"
+                    className="w-full pl-10 p-3 rounded-xl border border-glass-border text-sm outline-none focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20 transition-all"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  This will be the official name of the document.
+                </p>
               </div>
 
               {/* Info Box */}
               <div className="p-4 bg-cyan-400/5 rounded-xl border border-cyan-400/20 flex gap-3">
-                  <ShieldCheck className="h-5 w-5 text-cyan-400 shrink-0" />
-                  <div>
-                      <h4 className="text-xs font-bold text-foreground">Automatic Versioning</h4>
-                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                          FormaOS will automatically assign a version number (v0.1) and set the status to "Draft" until you are ready to publish.
-                      </p>
-                  </div>
+                <ShieldCheck className="h-5 w-5 text-cyan-400 shrink-0" />
+                <div>
+                  <h4 className="text-xs font-bold text-foreground">
+                    Automatic Versioning
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    FormaOS will automatically assign a version number (v0.1)
+                    and set the status to "Draft" until you are ready to
+                    publish.
+                  </p>
+                </div>
               </div>
 
               {/* Graph Info */}
               <div className="p-4 bg-glass-subtle rounded-xl border border-glass-border flex gap-3">
-                  <div className="h-5 w-5 rounded-full bg-cyan-400/20 flex items-center justify-center shrink-0">
-                    <div className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-                  </div>
-                  <div>
-                      <h4 className="text-xs font-bold text-foreground">Compliance Graph</h4>
-                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                          Once created, you can link Controls and Evidence to this Policy to build your compliance graph.
-                      </p>
-                  </div>
+                <div className="h-5 w-5 rounded-full bg-cyan-400/20 flex items-center justify-center shrink-0">
+                  <div className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-foreground">
+                    Compliance Graph
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    Once created, you can link Controls and Evidence to this
+                    Policy to build your compliance graph.
+                  </p>
+                </div>
               </div>
             </div>
 
             <SheetFooter className="border-t border-glass-border pt-4 mt-auto">
-              <button 
-                  disabled={loading} 
-                  className="w-full py-3 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-110 disabled:opacity-70 transition-all shadow-[0_10px_30px_rgba(6,182,212,0.35)] active:scale-[0.98]"
+              <button
+                disabled={loading}
+                className="w-full py-3 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-110 disabled:opacity-70 transition-all shadow-[0_10px_30px_rgba(6,182,212,0.35)] active:scale-[0.98]"
               >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Creating Node...</span>
-                    </>
-                  ) : (
-                    "Create Draft"
-                  )}
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Creating Node...</span>
+                  </>
+                ) : (
+                  'Create Draft'
+                )}
               </button>
             </SheetFooter>
           </form>
         )}
       </SheetContent>
     </Sheet>
-  )
+  );
 }

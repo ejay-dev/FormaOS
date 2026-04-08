@@ -214,7 +214,7 @@ export async function touchRuntimeVersion(
 async function readLatestTimestamp(
   table: string,
   column: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic Supabase query builder
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase query builder
   filter?: (query: any) => any,
 ) {
   const admin = createSupabaseAdminClient();

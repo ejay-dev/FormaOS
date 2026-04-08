@@ -100,7 +100,11 @@ export function TaskDetailPanel({
         <h3 className="text-sm font-semibold text-foreground truncate">
           {task.title}
         </h3>
-        <button onClick={onClose} className="p-1 hover:bg-muted rounded">
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-muted rounded"
+          aria-label="Close"
+        >
           <X className="h-4 w-4 text-muted-foreground" />
         </button>
       </div>
@@ -122,8 +126,14 @@ export function TaskDetailPanel({
         {activeTab === 'details' && (
           <>
             <div>
-              <label className="text-xs text-muted-foreground">Title</label>
+              <label
+                htmlFor="task-detail-title"
+                className="text-xs text-muted-foreground"
+              >
+                Title
+              </label>
               <input
+                id="task-detail-title"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 onBlur={handleSave}
@@ -131,10 +141,14 @@ export function TaskDetailPanel({
               />
             </div>
             <div>
-              <label className="text-xs text-muted-foreground">
+              <label
+                htmlFor="task-detail-description"
+                className="text-xs text-muted-foreground"
+              >
                 Description
               </label>
               <textarea
+                id="task-detail-description"
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
                 onBlur={handleSave}
@@ -144,8 +158,14 @@ export function TaskDetailPanel({
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-muted-foreground">Status</label>
+                <label
+                  htmlFor="task-detail-status"
+                  className="text-xs text-muted-foreground"
+                >
+                  Status
+                </label>
                 <select
+                  id="task-detail-status"
                   value={task.status}
                   onChange={(e) =>
                     onUpdate(task.id, { status: e.target.value })
@@ -160,10 +180,14 @@ export function TaskDetailPanel({
                 </select>
               </div>
               <div>
-                <label className="text-xs text-muted-foreground">
+                <label
+                  htmlFor="task-detail-priority"
+                  className="text-xs text-muted-foreground"
+                >
                   Priority
                 </label>
                 <select
+                  id="task-detail-priority"
                   value={task.priority}
                   onChange={(e) =>
                     onUpdate(task.id, { priority: e.target.value })
@@ -179,8 +203,14 @@ export function TaskDetailPanel({
               </div>
             </div>
             <div>
-              <label className="text-xs text-muted-foreground">Due Date</label>
+              <label
+                htmlFor="task-detail-due-date"
+                className="text-xs text-muted-foreground"
+              >
+                Due Date
+              </label>
               <input
+                id="task-detail-due-date"
                 type="date"
                 value={task.due_date ? task.due_date.slice(0, 10) : ''}
                 onChange={(e) =>
@@ -242,6 +272,7 @@ export function TaskDetailPanel({
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Add a comment..."
+                aria-label="Add a comment"
                 className="flex-1 px-3 py-1.5 text-sm bg-background border border-border rounded text-foreground"
                 onKeyDown={(e) => e.key === 'Enter' && handleAddComment()}
               />
@@ -266,6 +297,9 @@ export function TaskDetailPanel({
               </div>
               <button
                 onClick={() => setIsTracking(!isTracking)}
+                aria-label={
+                  isTracking ? 'Stop time tracking' : 'Start time tracking'
+                }
                 className={`p-2 rounded ${isTracking ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400' : 'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400'}`}
               >
                 {isTracking ? (

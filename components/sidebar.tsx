@@ -162,7 +162,11 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
     if (warmupScheduled.current) return;
     if (typeof window === 'undefined') return;
 
-    const connection = (navigator as any).connection;
+    const connection = (
+      navigator as unknown as {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }
+    ).connection;
     const saveData = connection?.saveData === true;
     const effectiveType = connection?.effectiveType as string | undefined;
     const isSlowNetwork =
@@ -181,9 +185,14 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
     if (candidates.length === 0) return;
 
     warmupScheduled.current = true;
-    const idleCallback = (window as any).requestIdleCallback as
-      | ((callback: () => void, opts?: { timeout?: number }) => number)
-      | undefined;
+    const idleCallback = (
+      window as unknown as {
+        requestIdleCallback?: (
+          callback: () => void,
+          opts?: { timeout?: number },
+        ) => number;
+      }
+    ).requestIdleCallback;
 
     if (idleCallback) {
       const id = idleCallback(
@@ -193,9 +202,9 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
         { timeout: 1200 },
       );
       return () => {
-        const cancelIdle = (window as any).cancelIdleCallback as
-          | ((idleId: number) => void)
-          | undefined;
+        const cancelIdle = (
+          window as unknown as { cancelIdleCallback?: (idleId: number) => void }
+        ).cancelIdleCallback;
         if (cancelIdle) cancelIdle(id);
       };
     }

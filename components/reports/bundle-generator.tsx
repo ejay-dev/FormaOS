@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ArrowRight, Loader2, FileCheck } from "lucide-react";
-import { generateAuditBundlePdf } from "@/app/app/actions/reports";
+import { useState } from 'react';
+import { ArrowRight, Loader2, FileCheck } from 'lucide-react';
+import { generateAuditBundlePdf } from '@/app/app/actions/reports';
 
 export function BundleGenerator({ disabled }: { disabled?: boolean }) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -13,16 +13,18 @@ export function BundleGenerator({ disabled }: { disabled?: boolean }) {
       setIsGenerating(true);
       setError(null);
 
-      const result = await generateAuditBundlePdf("ISO27001");
+      const result = await generateAuditBundlePdf('ISO27001');
 
       if (!result?.success || !result?.signedUrl) {
-        throw new Error("Failed to generate audit bundle");
+        throw new Error('Failed to generate audit bundle');
       }
 
-      window.open(result.signedUrl, "_blank");
-    } catch (err: any) {
-      console.error("Audit bundle failed:", err);
-      setError(err.message || "Audit bundle generation failed");
+      window.open(result.signedUrl, '_blank');
+    } catch (err: unknown) {
+      console.error('Audit bundle failed:', err);
+      setError(
+        err instanceof Error ? err.message : 'Audit bundle generation failed',
+      );
     } finally {
       setIsGenerating(false);
     }
@@ -49,11 +51,7 @@ export function BundleGenerator({ disabled }: { disabled?: boolean }) {
         )}
       </button>
 
-      {error && (
-        <p className="text-xs text-red-600 font-medium">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-xs text-red-600 font-medium">{error}</p>}
     </div>
   );
 }

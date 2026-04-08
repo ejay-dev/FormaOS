@@ -88,8 +88,8 @@ function createFallbackSupabaseClient() {
 
   const buildQuery = (
     result: { data: unknown; error: { message: string } } = emptyListResult,
-  ) => {
-    const builder: any = {
+  ): Record<string, unknown> => {
+    const builder: Record<string, unknown> = {
       select: () => buildQuery(emptyListResult),
       insert: () => buildQuery(emptyResult),
       update: () => buildQuery(emptyResult),

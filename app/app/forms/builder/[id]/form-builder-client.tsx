@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { createSupabaseClient } from "@/lib/supabase/client";
-import { FormField, Form } from "@/lib/forms/types";
-import { FIELD_TEMPLATES } from "@/lib/forms/field-templates";
-import { Plus, Trash2, GripVertical, Settings, Eye, Save } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useComplianceAction } from "@/components/compliance-system";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { createSupabaseClient } from '@/lib/supabase/client';
+import { FormField, Form } from '@/lib/forms/types';
+import { FIELD_TEMPLATES } from '@/lib/forms/field-templates';
+import { Plus, Trash2, GripVertical, Settings, Eye, Save } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useComplianceAction } from '@/components/compliance-system';
+import { Skeleton } from '@/components/ui/skeleton';
 
 /**
  * =========================================================
@@ -43,27 +43,27 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
       const supabase = createSupabaseClient();
       const { data: auth } = await supabase.auth.getUser();
       if (!auth?.user?.id) {
-        router.push("/auth/signin");
+        router.push('/auth/signin');
         return;
       }
 
       const { data: membership, error: membershipError } = await supabase
-        .from("org_members")
-        .select("organization_id")
-        .eq("user_id", auth.user.id)
+        .from('org_members')
+        .select('organization_id')
+        .eq('user_id', auth.user.id)
         .maybeSingle();
 
       if (membershipError || !membership?.organization_id) {
-        throw new Error("Organization context missing");
+        throw new Error('Organization context missing');
       }
 
       setOrgId(membership.organization_id);
 
       const { data, error } = await supabase
-        .from("forms")
-        .select("*")
-        .eq("id", formId)
-        .eq("organization_id", membership.organization_id)
+        .from('forms')
+        .select('*')
+        .eq('id', formId)
+        .eq('organization_id', membership.organization_id)
         .maybeSingle();
 
       if (error) throw error;
@@ -71,14 +71,14 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
         setForm(data);
         setFields(data.fields || []);
       } else {
-        setLoadError("Form not found or you do not have access to it.");
+        setLoadError('Form not found or you do not have access to it.');
       }
     } catch (error) {
-      console.error("Error loading form:", error);
+      console.error('Error loading form:', error);
       const message =
-        error instanceof Error ? error.message : "Failed to load form data.";
+        error instanceof Error ? error.message : 'Failed to load form data.';
       setLoadError(message);
-      reportError({ title: "Form load failed", message });
+      reportError({ title: 'Form load failed', message });
     } finally {
       setLoading(false);
     }
@@ -91,22 +91,25 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
     try {
       const supabase = createSupabaseClient();
       const { error } = await supabase
-        .from("forms")
+        .from('forms')
         .update({ fields, updated_at: new Date().toISOString() })
-        .eq("id", form.id)
-        .eq("organization_id", orgId);
+        .eq('id', form.id)
+        .eq('organization_id', orgId);
 
       if (error) throw error;
-      
+
       // Show success state
       setShowSaveSuccess(true);
-      nodeUpdated("control", form.title || "Form");
-      
+      nodeUpdated('control', form.title || 'Form');
+
       // Reset success state
       setTimeout(() => setShowSaveSuccess(false), 2000);
     } catch (error: any) {
-      console.error("Error saving form:", error);
-      reportError({ title: "Save failed", message: error.message || "Unknown error" });
+      console.error('Error saving form:', error);
+      reportError({
+        title: 'Save failed',
+        message: error.message || 'Unknown error',
+      });
     } finally {
       setSaving(false);
     }
@@ -127,7 +130,11 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
   }
 
   function updateField(fieldId: string, updates: Partial<FormField>) {
-    setFields(fields.map((field) => (field.id === fieldId ? { ...field, ...updates } : field)));
+    setFields(
+      fields.map((field) =>
+        field.id === fieldId ? { ...field, ...updates } : field,
+      ),
+    );
     if (selectedField?.id === fieldId) {
       setSelectedField({ ...selectedField, ...updates });
     }
@@ -151,7 +158,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
       reordered.map((field, index) => ({
         ...field,
         order: index,
-      }))
+      })),
     );
   }
 
@@ -209,7 +216,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
               Retry
             </button>
             <button
-              onClick={() => router.push("/app")}
+              onClick={() => router.push('/app')}
               className="rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
             >
               Back to dashboard
@@ -238,7 +245,7 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
-            {saving ? "Saving..." : "Save"}
+            {saving ? 'Saving...' : 'Save'}
           </button>
           <button className="flex items-center gap-2 px-4 py-2 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors">
             <Eye className="h-4 w-4" />
@@ -250,22 +257,39 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Form Fields</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">
+              Form Fields
+            </h2>
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="fields">
                 {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="space-y-3"
+                  >
                     {fields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={field.id} index={index}>
+                      <Draggable
+                        key={field.id}
+                        draggableId={field.id}
+                        index={index}
+                      >
                         {(dragProvided) => (
                           <div
                             role="button"
                             tabIndex={0}
-                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                (e.currentTarget as HTMLElement).click();
+                              }
+                            }}
                             ref={dragProvided.innerRef}
                             {...dragProvided.draggableProps}
                             className={`bg-gray-800/50 border border-gray-700 rounded-lg p-4 cursor-pointer ${
-                              selectedField?.id === field.id ? "ring-2 ring-blue-500" : ""
+                              selectedField?.id === field.id
+                                ? 'ring-2 ring-blue-500'
+                                : ''
                             }`}
                             onClick={() => setSelectedField(field)}
                           >
@@ -275,8 +299,12 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                                   <GripVertical className="h-4 w-4 text-gray-400" />
                                 </div>
                                 <div>
-                                  <p className="text-white font-medium">{field.label}</p>
-                                  <p className="text-gray-400 text-sm">{field.type}</p>
+                                  <p className="text-white font-medium">
+                                    {field.label}
+                                  </p>
+                                  <p className="text-gray-400 text-sm">
+                                    {field.type}
+                                  </p>
                                 </div>
                               </div>
                               <button
@@ -328,32 +356,53 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
             <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Settings className="h-4 w-4 text-gray-400" />
-                <h3 className="text-lg font-semibold text-white">Field Settings</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  Field Settings
+                </h3>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="field-6" className="block text-sm font-medium text-gray-400 mb-1">Label</label>
-                  <input id="field-6"
+                  <label
+                    htmlFor="field-6"
+                    className="block text-sm font-medium text-gray-400 mb-1"
+                  >
+                    Label
+                  </label>
+                  <input
+                    id="field-6"
                     type="text"
                     value={selectedField.label}
-                    onChange={(e) => updateField(selectedField.id, { label: e.target.value })}
+                    onChange={(e) =>
+                      updateField(selectedField.id, { label: e.target.value })
+                    }
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="field-5" className="block text-sm font-medium text-gray-400 mb-1">Placeholder</label>
-                  <input id="field-5"
+                  <label
+                    htmlFor="field-5"
+                    className="block text-sm font-medium text-gray-400 mb-1"
+                  >
+                    Placeholder
+                  </label>
+                  <input
+                    id="field-5"
                     type="text"
-                    value={selectedField.placeholder || ""}
-                    onChange={(e) => updateField(selectedField.id, { placeholder: e.target.value })}
+                    value={selectedField.placeholder || ''}
+                    onChange={(e) =>
+                      updateField(selectedField.id, {
+                        placeholder: e.target.value,
+                      })
+                    }
                     className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 <div className="flex items-center gap-2">
                   <input
+                    id="field-4"
                     type="checkbox"
                     checked={selectedField.validation?.required || false}
                     onChange={(e) =>
@@ -366,7 +415,9 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                     }
                     className="rounded border-gray-700 bg-gray-800 text-blue-500 focus:ring-blue-500"
                   />
-                  <label htmlFor="field-4" className="text-sm text-gray-400">Required field</label>
+                  <label htmlFor="field-4" className="text-sm text-gray-400">
+                    Required field
+                  </label>
                 </div>
               </div>
             </div>

@@ -20,6 +20,31 @@ import {
 } from '@/lib/scim/scim-schemas';
 import { scimError, type ScimErrorBody } from '@/lib/scim/scim-auth';
 
+interface ScimPatchOperation {
+  op: string;
+  path?: string;
+  value?: unknown;
+}
+
+interface ScimGroupMemberJoinRow {
+  user_id: string;
+  scim_groups:
+    | { id: string; organization_id: string; display_name: string | null }
+    | Array<{
+        id: string;
+        organization_id: string;
+        display_name: string | null;
+      }>;
+}
+
+interface ScimGroupRow {
+  id: string;
+  external_id: string | null;
+  display_name: string;
+  created_at: string;
+  updated_at: string;
+}
+
 type OrgMemberRole = 'owner' | 'admin' | 'member' | 'viewer' | 'auditor';
 
 export interface ScimMeta {
@@ -106,7 +131,11 @@ function hashPayload(value: unknown) {
   return `W/"${createHash('sha1').update(payload).digest('hex')}"`;
 }
 
-function resolveScimPath(baseUrl: string, resourceType: 'Users' | 'Groups', id: string) {
+function resolveScimPath(
+  baseUrl: string,
+  resourceType: 'Users' | 'Groups',
+  id: string,
+) {
   return `${baseUrl}/api/scim/v2/${resourceType}/${id}`;
 }
 
@@ -140,7 +169,10 @@ async function buildUserLookup(orgId: string) {
   return (data ?? []) as RawOrgMember[];
 }
 
-async function loadUserResources(orgId: string, baseUrl: string): Promise<ScimUser[]> {
+async function loadUserResources(
+  orgId: string,
+  baseUrl: string,
+): Promise<ScimUser[]> {
   const admin = createSupabaseAdminClient();
   const members = await buildUserLookup(orgId);
   const groupsByUser = await getUserGroups(orgId);
@@ -166,7 +198,8 @@ async function loadUserResources(orgId: string, baseUrl: string): Promise<ScimUs
     const resource: Omit<ScimUser, 'meta'> = {
       schemas: [SCIM_SCHEMA_USER, SCIM_ENTERPRISE_USER_EXTENSION],
       id: authUser.id,
-      externalId: (authUser.app_metadata?.provider_id as string | undefined) ?? undefined,
+      externalId:
+        (authUser.app_metadata?.provider_id as string | undefined) ?? undefined,
       userName: authUser.email ?? '',
       name,
       displayName: fullName || (authUser.email ?? ''),
@@ -204,15 +237,20 @@ async function getUserGroups(orgId: string) {
     .eq('scim_groups.organization_id', orgId);
 
   if (error) {
-    return new Map<string, Array<{ value: string; display?: string; type?: string }>>();
+    return new Map<
+      string,
+      Array<{ value: string; display?: string; type?: string }>
+    >();
   }
 
   const grouped = new Map<
     string,
     Array<{ value: string; display?: string; type?: string }>
   >();
-  for (const row of (data ?? []) as Array<any>) {
-    const group = Array.isArray(row.scim_groups) ? row.scim_groups[0] : row.scim_groups;
+  for (const row of (data ?? []) as Array<ScimGroupMemberJoinRow>) {
+    const group = Array.isArray(row.scim_groups)
+      ? row.scim_groups[0]
+      : row.scim_groups;
     if (!group?.id || !row.user_id) continue;
     const list = grouped.get(row.user_id) ?? [];
     list.push({
@@ -225,7 +263,10 @@ async function getUserGroups(orgId: string) {
   return grouped;
 }
 
-async function loadGroupResources(orgId: string, baseUrl: string): Promise<ScimGroup[]> {
+async function loadGroupResources(
+  orgId: string,
+  baseUrl: string,
+): Promise<ScimGroup[]> {
   const admin = createSupabaseAdminClient();
   const { data, error } = await admin
     .from('scim_groups')
@@ -239,7 +280,7 @@ async function loadGroupResources(orgId: string, baseUrl: string): Promise<ScimG
 
   const resources: ScimGroup[] = [];
 
-  for (const row of (data ?? []) as Array<any>) {
+  for (const row of (data ?? []) as Array<ScimGroupRow>) {
     const members = await getGroupMembers(row.id);
     const resource: Omit<ScimGroup, 'meta'> = {
       schemas: [SCIM_SCHEMA_GROUP],
@@ -268,7 +309,10 @@ async function loadGroupResources(orgId: string, baseUrl: string): Promise<ScimG
   return resources;
 }
 
-function resolveAttributeValue(record: Record<string, unknown>, attribute: string): unknown {
+function resolveAttributeValue(
+  record: Record<string, unknown>,
+  attribute: string,
+): unknown {
   const normalized = attribute.toLowerCase();
   const direct = record[attribute];
   if (typeof direct !== 'undefined') {
@@ -284,7 +328,9 @@ function resolveAttributeValue(record: Record<string, unknown>, attribute: strin
       return record.active;
     case 'emails.value':
       return Array.isArray(record.emails)
-        ? (record.emails as Array<{ value?: string }>).map((entry) => entry.value).join(' ')
+        ? (record.emails as Array<{ value?: string }>)
+            .map((entry) => entry.value)
+            .join(' ')
         : undefined;
     case 'name.givenname':
       return (record.name as Record<string, unknown> | undefined)?.givenName;
@@ -297,14 +343,24 @@ function resolveAttributeValue(record: Record<string, unknown>, attribute: strin
   }
 }
 
-function compareValues(left: unknown, right: string | undefined, operator: ScimFilterNode['operator']) {
+function compareValues(
+  left: unknown,
+  right: string | undefined,
+  operator: ScimFilterNode['operator'],
+) {
   const normalizedLeft =
-    typeof left === 'string' ? left.toLowerCase() : left instanceof Date ? left.toISOString() : left;
+    typeof left === 'string'
+      ? left.toLowerCase()
+      : left instanceof Date
+        ? left.toISOString()
+        : left;
   const normalizedRight = right?.toLowerCase();
 
   if (operator === 'pr') {
     if (Array.isArray(left)) return left.length > 0;
-    return left !== null && typeof left !== 'undefined' && String(left).length > 0;
+    return (
+      left !== null && typeof left !== 'undefined' && String(left).length > 0
+    );
   }
 
   if (typeof normalizedLeft === 'boolean') {
@@ -362,7 +418,9 @@ function compareValues(left: unknown, right: string | undefined, operator: ScimF
   }
 }
 
-export function parseScimFilterExpression(filter?: string | null): ScimFilterNode[] {
+export function parseScimFilterExpression(
+  filter?: string | null,
+): ScimFilterNode[] {
   if (!filter?.trim()) return [];
 
   return filter
@@ -403,7 +461,10 @@ export function applyScimFilter<T extends object>(
 
   return records.filter((record) =>
     nodes.every((node) => {
-      const value = resolveAttributeValue(record as Record<string, unknown>, node.attribute);
+      const value = resolveAttributeValue(
+        record as Record<string, unknown>,
+        node.attribute,
+      );
       return compareValues(value, node.value, node.operator);
     }),
   );
@@ -418,13 +479,26 @@ export function applyScimSort<T extends object>(
   const direction = sortOrder?.toLowerCase() === 'descending' ? -1 : 1;
 
   return [...records].sort((left, right) => {
-    const leftValue = resolveAttributeValue(left as Record<string, unknown>, sortBy);
-    const rightValue = resolveAttributeValue(right as Record<string, unknown>, sortBy);
-    return String(leftValue ?? '').localeCompare(String(rightValue ?? '')) * direction;
+    const leftValue = resolveAttributeValue(
+      left as Record<string, unknown>,
+      sortBy,
+    );
+    const rightValue = resolveAttributeValue(
+      right as Record<string, unknown>,
+      sortBy,
+    );
+    return (
+      String(leftValue ?? '').localeCompare(String(rightValue ?? '')) *
+      direction
+    );
   });
 }
 
-function paginate<T>(records: T[], startIndex = 1, count = 100): ScimListResponse<T> {
+function paginate<T>(
+  records: T[],
+  startIndex = 1,
+  count = 100,
+): ScimListResponse<T> {
   const safeStart = Math.max(1, startIndex);
   const safeCount = Math.min(100, Math.max(1, count));
   const start = safeStart - 1;
@@ -506,8 +580,10 @@ function getFullName(input: Record<string, unknown>) {
     return name.formatted.trim();
   }
 
-  const given = typeof name?.givenName === 'string' ? name.givenName.trim() : '';
-  const family = typeof name?.familyName === 'string' ? name.familyName.trim() : '';
+  const given =
+    typeof name?.givenName === 'string' ? name.givenName.trim() : '';
+  const family =
+    typeof name?.familyName === 'string' ? name.familyName.trim() : '';
   const combined = `${given} ${family}`.trim();
   if (combined) return combined;
 
@@ -517,7 +593,12 @@ function getFullName(input: Record<string, unknown>) {
 async function lookupUserByEmail(email: string) {
   const admin = createSupabaseAdminClient();
   const { data } = await admin.auth.admin.listUsers();
-  return data?.users?.find((user: any) => user.email?.toLowerCase() === email.toLowerCase()) ?? null;
+  return (
+    data?.users?.find(
+      (user: { email?: string }) =>
+        user.email?.toLowerCase() === email.toLowerCase(),
+    ) ?? null
+  );
 }
 
 export async function createUser(
@@ -531,7 +612,11 @@ export async function createUser(
   if (!email) {
     return {
       status: 400,
-      error: scimError(400, 'userName or emails[0].value is required', 'invalidValue'),
+      error: scimError(
+        400,
+        'userName or emails[0].value is required',
+        'invalidValue',
+      ),
     };
   }
 
@@ -540,7 +625,9 @@ export async function createUser(
     const created = await admin.auth.admin.createUser({
       email,
       email_confirm: true,
-      password: createHash('sha256').update(`${orgId}:${email}:${Date.now()}`).digest('hex'),
+      password: createHash('sha256')
+        .update(`${orgId}:${email}:${Date.now()}`)
+        .digest('hex'),
       user_metadata: {
         full_name: getFullName(body),
         scim_provisioned: true,
@@ -560,21 +647,21 @@ export async function createUser(
     authUser = created.data.user;
   }
 
-  const membership = await admin
-    .from('org_members')
-    .upsert(
-      {
-        organization_id: orgId,
-        user_id: authUser.id,
-        role: mapScimRole(body),
-        department:
-          (
-            body[SCIM_ENTERPRISE_USER_EXTENSION] as Record<string, unknown> | undefined
-          )?.department ?? null,
-        compliance_status: body.active === false ? 'inactive' : 'active',
-      },
-      { onConflict: 'organization_id,user_id' },
-    );
+  const membership = await admin.from('org_members').upsert(
+    {
+      organization_id: orgId,
+      user_id: authUser.id,
+      role: mapScimRole(body),
+      department:
+        (
+          body[SCIM_ENTERPRISE_USER_EXTENSION] as
+            | Record<string, unknown>
+            | undefined
+        )?.department ?? null,
+      compliance_status: body.active === false ? 'inactive' : 'active',
+    },
+    { onConflict: 'organization_id,user_id' },
+  );
 
   if (membership.error) {
     return {
@@ -622,7 +709,7 @@ function applyUserPatchDocument(
       current[SCIM_ENTERPRISE_USER_EXTENSION] ?? {},
   };
 
-  for (const operation of body.Operations as Array<any>) {
+  for (const operation of body.Operations as ScimPatchOperation[]) {
     const op = String(operation.op ?? '').toLowerCase();
     const path = String(operation.path ?? '');
     if (op === 'replace' || op === 'add') {
@@ -677,7 +764,9 @@ export async function updateUser(
   const fullName = getFullName(payload) || current.displayName || '';
   const department =
     (
-      payload[SCIM_ENTERPRISE_USER_EXTENSION] as Record<string, unknown> | undefined
+      payload[SCIM_ENTERPRISE_USER_EXTENSION] as
+        | Record<string, unknown>
+        | undefined
     )?.department ??
     current[SCIM_ENTERPRISE_USER_EXTENSION]?.department ??
     null;
@@ -726,7 +815,10 @@ export async function updateUser(
 
   const updated = await getUser(orgId, userId, baseUrl);
   if (!updated) {
-    return { status: 404, error: scimError(404, 'User not found after update') };
+    return {
+      status: 404,
+      error: scimError(404, 'User not found after update'),
+    };
   }
 
   return { status: 200, data: updated };
@@ -793,11 +885,13 @@ export async function getGroup(
 }
 
 function extractGroupMembers(body: Record<string, unknown>) {
-  return ((body.members as GroupMemberInput[] | undefined) ?? []).map((member) => ({
-    value: member.value,
-    display: member.display,
-    type: member.type ?? 'User',
-  }));
+  return ((body.members as GroupMemberInput[] | undefined) ?? []).map(
+    (member) => ({
+      value: member.value,
+      display: member.display,
+      type: member.type ?? 'User',
+    }),
+  );
 }
 
 export async function createGroup(
@@ -863,10 +957,13 @@ function applyGroupPatchDocument(
     members,
   };
 
-  for (const operation of body.Operations as Array<any>) {
+  for (const operation of body.Operations as ScimPatchOperation[]) {
     const op = String(operation.op ?? '').toLowerCase();
     const path = String(operation.path ?? '');
-    if ((op === 'replace' || op === 'add') && (!path || path === 'displayName')) {
+    if (
+      (op === 'replace' || op === 'add') &&
+      (!path || path === 'displayName')
+    ) {
       next.displayName = operation.value;
       continue;
     }
@@ -913,7 +1010,9 @@ export async function updateGroup(
 
   try {
     const admin = createSupabaseAdminClient();
-    const displayName = String(payload.displayName ?? current.displayName).trim();
+    const displayName = String(
+      payload.displayName ?? current.displayName,
+    ).trim();
     const roleMapping =
       typeof payload.roleMapping === 'string'
         ? payload.roleMapping
@@ -942,7 +1041,10 @@ export async function updateGroup(
 
     const updated = await getGroup(orgId, groupId, baseUrl);
     if (!updated) {
-      return { status: 404, error: scimError(404, 'Group not found after update') };
+      return {
+        status: 404,
+        error: scimError(404, 'Group not found after update'),
+      };
     }
 
     return { status: 200, data: updated };
@@ -1015,7 +1117,7 @@ export async function executeBulkOperations(
   const responses: Array<Record<string, unknown>> = [];
 
   for (const operation of requestBody.Operations as BulkRequestOperation[]) {
-    let result: ScimOperationResult<any>;
+    let result: ScimOperationResult<ScimUser | ScimGroup | null>;
     const normalizedPath = operation.path.replace(/^\/+/, '');
 
     if (operation.method === 'POST' && normalizedPath === 'Users') {
@@ -1028,7 +1130,12 @@ export async function executeBulkOperations(
       const [resourceType, resourceId] = normalizedPath.split('/');
       if (resourceType === 'Users' && resourceId) {
         if (operation.method === 'DELETE') {
-          result = await deleteUser(orgId, resourceId, baseUrl, operation.version);
+          result = await deleteUser(
+            orgId,
+            resourceId,
+            baseUrl,
+            operation.version,
+          );
         } else {
           result = await updateUser(
             orgId,
@@ -1040,7 +1147,12 @@ export async function executeBulkOperations(
         }
       } else if (resourceType === 'Groups' && resourceId) {
         if (operation.method === 'DELETE') {
-          result = await deleteGroup(orgId, resourceId, baseUrl, operation.version);
+          result = await deleteGroup(
+            orgId,
+            resourceId,
+            baseUrl,
+            operation.version,
+          );
         } else {
           result = await updateGroup(
             orgId,
@@ -1053,7 +1165,11 @@ export async function executeBulkOperations(
       } else {
         result = {
           status: 400,
-          error: scimError(400, `Unsupported bulk path: ${operation.path}`, 'invalidPath'),
+          error: scimError(
+            400,
+            `Unsupported bulk path: ${operation.path}`,
+            'invalidPath',
+          ),
         };
       }
     } else if (operation.method === 'POST' && normalizedPath === 'Groups') {
@@ -1061,7 +1177,10 @@ export async function executeBulkOperations(
     } else {
       result = {
         status: 400,
-        error: scimError(400, `Unsupported bulk method/path: ${operation.method} ${operation.path}`),
+        error: scimError(
+          400,
+          `Unsupported bulk method/path: ${operation.method} ${operation.path}`,
+        ),
       };
     }
 
@@ -1081,7 +1200,11 @@ export async function executeBulkOperations(
         location:
           result.data?.meta?.location ??
           (normalizedPath.startsWith('Users')
-            ? resolveScimPath(baseUrl, 'Users', normalizedPath.split('/')[1] ?? '')
+            ? resolveScimPath(
+                baseUrl,
+                'Users',
+                normalizedPath.split('/')[1] ?? '',
+              )
             : undefined),
         response: result.data ?? null,
       });
@@ -1101,14 +1224,18 @@ export async function executeBulkOperations(
   };
 }
 
-export function getSingleResourceHeaders(resource: { meta: { version: string } }) {
+export function getSingleResourceHeaders(resource: {
+  meta: { version: string };
+}) {
   return {
     ETag: resource.meta.version,
   };
 }
 
 export function isScimPatch(body: Record<string, unknown>) {
-  return Array.isArray(body.schemas) && body.schemas.includes(SCIM_SCHEMA_PATCH);
+  return (
+    Array.isArray(body.schemas) && body.schemas.includes(SCIM_SCHEMA_PATCH)
+  );
 }
 
 export function getScimContentHeaders(extra?: Record<string, string>) {

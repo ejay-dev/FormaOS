@@ -12,6 +12,7 @@ import type {
   FieldValidation,
   ConditionalLogic,
 } from '@/lib/forms/types';
+import { FormValidationError } from '@/lib/forms/submission-engine';
 
 // ---- Conditional logic evaluation (client-side mirror) ----
 
@@ -287,11 +288,8 @@ export function FormRenderer({
       await onSubmit(formData);
       setSubmitted(true);
     } catch (err) {
-      if (err instanceof Error && 'validationErrors' in err) {
-        const serverErrors = (err as any).validationErrors as Array<{
-          fieldId: string;
-          message: string;
-        }>;
+      if (err instanceof FormValidationError) {
+        const serverErrors = err.validationErrors;
         const map: Record<string, string> = {};
         for (const e of serverErrors) map[e.fieldId] = e.message;
         setErrors(map);

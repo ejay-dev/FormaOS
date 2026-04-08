@@ -22,8 +22,7 @@ export function getLangfuseConfig(): LangfuseConfig | null {
     publicKey,
     secretKey,
     baseUrl: process.env.LANGFUSE_BASE_URL?.trim() || undefined,
-    environment:
-      process.env.LANGFUSE_TRACING_ENVIRONMENT?.trim() || undefined,
+    environment: process.env.LANGFUSE_TRACING_ENVIRONMENT?.trim() || undefined,
   };
 }
 
@@ -44,7 +43,8 @@ export function createLangfuseSpanProcessor(): LangfuseSpanProcessor | null {
   });
 }
 
-export function observeServerFn<T extends (...args: any[]) => any>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic wrapper requires broad function signature for langfuse observe()
+export function observeServerFn<T extends (...args: unknown[]) => unknown>(
   fn: T,
   options?: ObserveOptions,
 ): T {

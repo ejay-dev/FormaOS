@@ -55,7 +55,7 @@ async function resolveRecipientIds(
   }
 
   const ids = new Set<string>(
-    (data ?? []).map((row: any) => row.user_id).filter(Boolean),
+    (data ?? []).map((row: { user_id: string }) => row.user_id).filter(Boolean),
   );
 
   for (const userId of recipients.userIds ?? []) {
@@ -203,7 +203,8 @@ async function isDuplicateNotification(
     return false;
   }
 
-  const windowMinutes = event.dedupeWindowMinutes ?? DEFAULT_DEDUPE_WINDOW_MINUTES;
+  const windowMinutes =
+    event.dedupeWindowMinutes ?? DEFAULT_DEDUPE_WINDOW_MINUTES;
   const since = new Date(Date.now() - windowMinutes * 60_000).toISOString();
 
   const { data, error } = await admin
@@ -264,18 +265,36 @@ export async function notify(
       continue;
     }
 
-    const { preferences, channels } = await loadPreferences(orgId, userId, event.type);
+    const { preferences, channels } = await loadPreferences(
+      orgId,
+      userId,
+      event.type,
+    );
     const deliveredChannels: string[] = [];
     let deliveryFailed = false;
 
-    const inAppPreference = getPreferenceForChannel(preferences, event, 'in_app');
+    const inAppPreference = getPreferenceForChannel(
+      preferences,
+      event,
+      'in_app',
+    );
     if (inAppPreference.enabled) {
       try {
         const notification = await createInAppNotification(recipient, event);
         deliveredChannels.push('in_app');
 
-        const emailPreference = getPreferenceForChannel(preferences, event, 'email');
-        if (emailPreference.enabled && !isWithinQuietHours(emailPreference.quiet_hours, recipient.timezone || 'UTC')) {
+        const emailPreference = getPreferenceForChannel(
+          preferences,
+          event,
+          'email',
+        );
+        if (
+          emailPreference.enabled &&
+          !isWithinQuietHours(
+            emailPreference.quiet_hours,
+            recipient.timezone || 'UTC',
+          )
+        ) {
           try {
             await deliverEmailNotification({
               recipient,
@@ -306,10 +325,15 @@ export async function notify(
           }
         }
 
-        const slackPreference = getPreferenceForChannel(preferences, event, 'slack');
+        const slackPreference = getPreferenceForChannel(
+          preferences,
+          event,
+          'slack',
+        );
         if (slackPreference.enabled) {
           const slackChannel =
-            channels.find((channel) => channel.channel_type === 'slack') ?? null;
+            channels.find((channel) => channel.channel_type === 'slack') ??
+            null;
           try {
             await deliverSlackNotification({
               recipient,
@@ -324,10 +348,15 @@ export async function notify(
           }
         }
 
-        const teamsPreference = getPreferenceForChannel(preferences, event, 'teams');
+        const teamsPreference = getPreferenceForChannel(
+          preferences,
+          event,
+          'teams',
+        );
         if (teamsPreference.enabled) {
           const teamsChannel =
-            channels.find((channel) => channel.channel_type === 'teams') ?? null;
+            channels.find((channel) => channel.channel_type === 'teams') ??
+            null;
           try {
             await deliverTeamsNotification({
               recipient,

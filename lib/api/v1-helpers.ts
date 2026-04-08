@@ -46,8 +46,8 @@ export function buildIlikePattern(value: string): string {
   return `%${sanitizeLikeQuery(value)}%`;
 }
 
- 
-type FilterBuilder = { eq: (...args: any[]) => any; is: (...args: any[]) => any };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase query builder chain
+type FilterBuilder = any;
 
 export async function countRows(
   table: string,
@@ -55,7 +55,7 @@ export async function countRows(
 ): Promise<number> {
   const admin = createSupabaseAdminClient();
   const base = admin.from(table).select('id', { count: 'exact', head: true });
-  const { count } = await build(base);
+  const { count } = await build(base as FilterBuilder);
   return count ?? 0;
 }
 

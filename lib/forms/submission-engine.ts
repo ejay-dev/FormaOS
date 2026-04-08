@@ -1,6 +1,21 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import type { FormField, ConditionalLogic, FieldValidation } from './types';
 
+interface ValidationError {
+  fieldId: string;
+  fieldLabel: string;
+  message: string;
+}
+
+export class FormValidationError extends Error {
+  validationErrors: ValidationError[];
+  constructor(errors: ValidationError[]) {
+    super('Validation failed');
+    this.name = 'FormValidationError';
+    this.validationErrors = errors;
+  }
+}
+
 // =========================================================
 // FORM SUBMISSION ENGINE
 // Validation, conditional logic, submission handling
@@ -12,12 +27,6 @@ interface SubmissionInput {
   respondentName?: string;
   submittedBy?: string;
   metadata?: Record<string, unknown>;
-}
-
-interface ValidationError {
-  fieldId: string;
-  fieldLabel: string;
-  message: string;
 }
 
 interface SubmissionListOptions {
@@ -180,9 +189,7 @@ export async function submitForm(
   const fields = form.fields as FormField[];
   const errors = validateSubmission(fields, input.data);
   if (errors.length > 0) {
-    const err = new Error('Validation failed');
-    (err as any).validationErrors = errors;
-    throw err;
+    throw new FormValidationError(errors);
   }
 
   // Insert submission

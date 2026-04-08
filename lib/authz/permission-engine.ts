@@ -30,19 +30,19 @@ const BASE_PERMISSIONS: Record<string, Partial<PermissionMatrix>> = {
       m,
       { read: true, write: true, delete: true, export: true, admin: true },
     ]),
-  ) as any,
+  ) as Record<PermissionModule, Record<PermissionAction, boolean>>,
   member: Object.fromEntries(
     PERMISSION_MODULES.map((m) => [
       m,
       { read: true, write: true, delete: false, export: true, admin: false },
     ]),
-  ) as any,
+  ) as Record<PermissionModule, Record<PermissionAction, boolean>>,
   viewer: Object.fromEntries(
     PERMISSION_MODULES.map((m) => [
       m,
       { read: true, write: false, delete: false, export: false, admin: false },
     ]),
-  ) as any,
+  ) as Record<PermissionModule, Record<PermissionAction, boolean>>,
 };
 
 export async function getEffectivePermissions(
@@ -93,7 +93,8 @@ export async function getEffectivePermissions(
           'admin',
         ] as PermissionAction[]) {
           if (perms[mod]![action]) {
-            if (!merged[mod]) merged[mod] = {} as any;
+            if (!merged[mod])
+              merged[mod] = {} as Record<PermissionAction, boolean>;
             merged[mod][action] = true;
           }
         }

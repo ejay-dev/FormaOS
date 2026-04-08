@@ -47,7 +47,7 @@ export async function updateTask(
 }
 
 export async function assignTask(taskId: string, userId: string) {
-  return updateTask(taskId, { assignee_id: userId } as any);
+  return updateTask(taskId, { assignee_id: userId });
 }
 
 export async function addDependency(
@@ -81,13 +81,11 @@ export async function addDependency(
   }
 
   const db = createSupabaseAdminClient();
-  const { error } = await db
-    .from('task_dependencies')
-    .insert({
-      task_id: taskId,
-      depends_on_task_id: dependsOnId,
-      dependency_type: type,
-    });
+  const { error } = await db.from('task_dependencies').insert({
+    task_id: taskId,
+    depends_on_task_id: dependsOnId,
+    dependency_type: type,
+  });
 
   if (error) throw error;
 }

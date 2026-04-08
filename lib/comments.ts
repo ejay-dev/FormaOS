@@ -145,7 +145,9 @@ export async function getComments(
     data.map(
       async (comment: {
         id: string;
-        profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[];
+        profiles?:
+          | { full_name?: string; email?: string; avatar_url?: string }
+          | { full_name?: string; email?: string; avatar_url?: string }[];
         comment_reactions?: CommentReaction[];
         [key: string]: unknown;
       }) => {
@@ -160,22 +162,41 @@ export async function getComments(
           .eq('parent_id', comment.id)
           .order('created_at', { ascending: true });
 
-        const { profiles: _p, comment_reactions: _cr, ...commentRest } = comment;
-        const commentProfile = Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles;
+        const {
+          profiles: _p,
+          comment_reactions: _cr,
+          ...commentRest
+        } = comment;
+        const commentProfile = Array.isArray(comment.profiles)
+          ? comment.profiles[0]
+          : comment.profiles;
         return {
           ...commentRest,
           user: commentProfile,
           reactions: comment.comment_reactions || [],
           replies:
-            replies?.map((reply: { profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[]; [key: string]: unknown }) => {
-              const { profiles: _rp, ...replyRest } = reply;
-              const replyProfile = Array.isArray(reply.profiles) ? reply.profiles[0] : reply.profiles;
-              return {
-                ...replyRest,
-                user: replyProfile,
-                reactions: [] as CommentReaction[],
-              };
-            }) || [],
+            replies?.map(
+              (reply: {
+                profiles?:
+                  | { full_name?: string; email?: string; avatar_url?: string }
+                  | {
+                      full_name?: string;
+                      email?: string;
+                      avatar_url?: string;
+                    }[];
+                [key: string]: unknown;
+              }) => {
+                const { profiles: _rp, ...replyRest } = reply;
+                const replyProfile = Array.isArray(reply.profiles)
+                  ? reply.profiles[0]
+                  : reply.profiles;
+                return {
+                  ...replyRest,
+                  user: replyProfile,
+                  reactions: [] as CommentReaction[],
+                };
+              },
+            ) || [],
         } as Comment;
       },
     ),
@@ -369,8 +390,8 @@ async function resolveMentions(
   // Match mentions to users
   const userIds: string[] = [];
   mentions.forEach((mention) => {
-    const member = members.find((m: any) => {
-      const profile = m.profiles;
+    const member = members.find((m) => {
+      const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
       return (
         profile?.email?.toLowerCase().includes(mention.toLowerCase()) ||
         profile?.full_name?.toLowerCase().includes(mention.toLowerCase())
@@ -428,15 +449,24 @@ export async function getUserRecentComments(
 
   if (error || !data) return [];
 
-  return data.map((comment: { profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[]; [key: string]: unknown }) => {
-    const { profiles: _p, ...commentRest } = comment;
-    const profile = Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles;
-    return {
-      ...commentRest,
-      user: profile,
-      reactions: [] as CommentReaction[],
-    } as Comment;
-  });
+  return data.map(
+    (comment: {
+      profiles?:
+        | { full_name?: string; email?: string; avatar_url?: string }
+        | { full_name?: string; email?: string; avatar_url?: string }[];
+      [key: string]: unknown;
+    }) => {
+      const { profiles: _p, ...commentRest } = comment;
+      const profile = Array.isArray(comment.profiles)
+        ? comment.profiles[0]
+        : comment.profiles;
+      return {
+        ...commentRest,
+        user: profile,
+        reactions: [] as CommentReaction[],
+      } as Comment;
+    },
+  );
 }
 
 /**
@@ -462,15 +492,24 @@ export async function getMentionedComments(
 
   if (error || !data) return [];
 
-  return data.map((comment: { profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[]; [key: string]: unknown }) => {
-    const { profiles: _p, ...commentRest } = comment;
-    const profile = Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles;
-    return {
-      ...commentRest,
-      user: profile,
-      reactions: [] as CommentReaction[],
-    } as Comment;
-  });
+  return data.map(
+    (comment: {
+      profiles?:
+        | { full_name?: string; email?: string; avatar_url?: string }
+        | { full_name?: string; email?: string; avatar_url?: string }[];
+      [key: string]: unknown;
+    }) => {
+      const { profiles: _p, ...commentRest } = comment;
+      const profile = Array.isArray(comment.profiles)
+        ? comment.profiles[0]
+        : comment.profiles;
+      return {
+        ...commentRest,
+        user: profile,
+        reactions: [] as CommentReaction[],
+      } as Comment;
+    },
+  );
 }
 
 /**
@@ -516,13 +555,22 @@ export async function searchComments(
 
   if (error || !data) return [];
 
-  return data.map((comment: { profiles?: { full_name?: string; email?: string; avatar_url?: string } | { full_name?: string; email?: string; avatar_url?: string }[]; [key: string]: unknown }) => {
-    const { profiles: _p, ...commentRest } = comment;
-    const profile = Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles;
-    return {
-      ...commentRest,
-      user: profile,
-      reactions: [] as CommentReaction[],
-    } as Comment;
-  });
+  return data.map(
+    (comment: {
+      profiles?:
+        | { full_name?: string; email?: string; avatar_url?: string }
+        | { full_name?: string; email?: string; avatar_url?: string }[];
+      [key: string]: unknown;
+    }) => {
+      const { profiles: _p, ...commentRest } = comment;
+      const profile = Array.isArray(comment.profiles)
+        ? comment.profiles[0]
+        : comment.profiles;
+      return {
+        ...commentRest,
+        user: profile,
+        reactions: [] as CommentReaction[],
+      } as Comment;
+    },
+  );
 }

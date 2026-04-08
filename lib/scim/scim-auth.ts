@@ -71,7 +71,12 @@ export async function authenticateScimRequest(
   orgId: string,
 ): Promise<
   | { ok: true; context: ScimAuthContext }
-  | { ok: false; status: number; error: ScimErrorBody; headers?: Record<string, string> }
+  | {
+      ok: false;
+      status: number;
+      error: ScimErrorBody;
+      headers?: Record<string, string>;
+    }
 > {
   const token = getBearerToken(request);
 
@@ -101,7 +106,9 @@ export async function authenticateScimRequest(
     };
   }
 
-  const tokenRow = data.find((row: any) => compareHash(token, row.token_hash));
+  const tokenRow = data.find((row: { token_hash: string }) =>
+    compareHash(token, row.token_hash),
+  );
   if (!tokenRow) {
     return {
       ok: false,

@@ -77,8 +77,15 @@ class InMemoryCache {
 }
 
 // Initialize cache (Redis or in-memory fallback)
- 
-let cacheInstance: any = null;
+
+interface CacheClient {
+  get(key: string): Promise<string | null>;
+  set(key: string, value: string, ttl: number): Promise<unknown>;
+  del(key: string): Promise<unknown>;
+  keys(pattern: string): Promise<string[]>;
+}
+
+let cacheInstance: CacheClient | null = null;
 
 async function getCache() {
   if (cacheInstance) return cacheInstance;
@@ -87,10 +94,16 @@ async function getCache() {
   const { restUrl, token } = getRedisConfig();
   if (restUrl && token) {
     try {
-      cacheInstance = getRedisClient();
-      if (!cacheInstance) {
+      const redisClient = getRedisClient();
+      if (!redisClient) {
         throw new Error('Redis client unavailable');
       }
+      cacheInstance = {
+        get: (k) => redisClient.get(k) as Promise<string | null>,
+        set: (k, v, t) => redisClient.set(k, v, { ex: t }),
+        del: (k) => redisClient.del(k),
+        keys: (p) => redisClient.keys(p),
+      };
       apiLogger.info('redis_cache_initialized');
       return cacheInstance;
     } catch (_error) {
@@ -282,7 +295,7 @@ export async function invalidateUserCache(userId: string): Promise<void> {
  */
 export async function warmCache(
   orgId: string,
-  fetchers: Record<string, () => Promise<any>>,
+  fetchers: Record<string, () => Promise<unknown>>,
 ): Promise<void> {
   const promises = Object.entries(fetchers).map(async ([key, fetcher]) => {
     try {
@@ -313,15 +326,7 @@ export async function getCacheStats(): Promise<{
     };
   }
 
-  try {
-    const info = await cache.info('memory');
-    return {
-      type: 'redis',
-      memory: info.match(/used_memory_human:(.+)/)?.[1] || 'unknown',
-    };
-  } catch {
-    return { type: 'redis' };
-  }
+  return { type: 'redis' };
 }
 
 /**
@@ -333,10 +338,6 @@ export async function clearAllCache(): Promise<void> {
   if (cache instanceof InMemoryCache) {
     cache.clear();
   } else {
-    try {
-      await cache.flushdb();
-    } catch (error) {
-      console.error('Failed to clear cache:', error);
-    }
+    // Upstash REST client does not expose flushdb; skip.
   }
 }

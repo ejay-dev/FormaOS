@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { ActivityItem } from "@/lib/data/analytics";
+import { ActivityItem } from '@/lib/data/analytics';
 import {
   FileText,
   CheckCircle2,
@@ -8,9 +8,9 @@ import {
   User,
   AlertTriangle,
   ExternalLink,
-} from "lucide-react";
-import { motion } from "framer-motion";
-import Link from "next/link";
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 /* ----------------------------- Utilities ----------------------------- */
 
@@ -23,57 +23,77 @@ function timeAgo(date: string) {
 }
 
 function normalizeAction(action: string) {
-  return action.replaceAll("_", " ").toLowerCase();
+  return action.replaceAll('_', ' ').toLowerCase();
 }
 
 function getSeverityMeta(severity?: string) {
   switch (severity) {
-    case "critical":
-      return { label: "Critical", color: "text-red-700", bg: "bg-red-100", border: "border-red-200" };
-    case "high":
-      return { label: "High", color: "text-red-600", bg: "bg-red-50", border: "border-red-100" };
-    case "medium":
-      return { label: "Medium", color: "text-amber-300", bg: "bg-amber-400/10", border: "border-amber-400/30" };
-    case "low":
-      return { label: "Low", color: "text-muted-foreground", bg: "bg-glass-strong", border: "border-white/10" };
+    case 'critical':
+      return {
+        label: 'Critical',
+        color: 'text-red-700',
+        bg: 'bg-red-100',
+        border: 'border-red-200',
+      };
+    case 'high':
+      return {
+        label: 'High',
+        color: 'text-red-600',
+        bg: 'bg-red-50',
+        border: 'border-red-100',
+      };
+    case 'medium':
+      return {
+        label: 'Medium',
+        color: 'text-amber-300',
+        bg: 'bg-amber-400/10',
+        border: 'border-amber-400/30',
+      };
+    case 'low':
+      return {
+        label: 'Low',
+        color: 'text-muted-foreground',
+        bg: 'bg-glass-strong',
+        border: 'border-white/10',
+      };
     default:
       return null;
   }
 }
 
-function getTypeMeta(type: ActivityItem["type"]) {
+function getTypeMeta(type: ActivityItem['type']) {
   switch (type) {
-    case "policy":
+    case 'policy':
       return {
         icon: FileText,
-        color: "text-blue-600",
-        bg: "bg-sky-500/10",
-        border: "border-sky-400/30",
-        label: "Policy",
+        color: 'text-blue-600',
+        bg: 'bg-sky-500/10',
+        border: 'border-sky-400/30',
+        label: 'Policy',
       };
-    case "task":
+    case 'task':
       return {
         icon: CheckCircle2,
-        color: "text-emerald-300",
-        bg: "bg-emerald-400/10",
-        border: "border-emerald-400/30",
-        label: "Task",
+        color: 'text-emerald-300',
+        bg: 'bg-emerald-400/10',
+        border: 'border-emerald-400/30',
+        label: 'Task',
       };
-    case "security":
+    case 'security':
       return {
         icon: ShieldAlert,
-        color: "text-red-600",
-        bg: "bg-red-50",
-        border: "border-red-100",
-        label: "Security",
+        color: 'text-red-600',
+        bg: 'bg-red-50',
+        border: 'border-red-100',
+        label: 'Security',
       };
     default:
       return {
         icon: User,
-        color: "text-muted-foreground",
-        bg: "bg-glass-strong",
-        border: "border-white/10",
-        label: "System",
+        color: 'text-muted-foreground',
+        bg: 'bg-glass-strong',
+        border: 'border-white/10',
+        label: 'System',
       };
   }
 }
@@ -98,10 +118,13 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
 
       {items.map((item, index) => {
         const meta = getTypeMeta(item.type);
-        const severity = getSeverityMeta((item as any)?.severity);
+        const severity = getSeverityMeta(
+          (item as ActivityItem & { severity?: string })?.severity,
+        );
         const Icon = meta.icon;
-        const actionUrl = (item as any)?.actionUrl;
-        const domain = (item as any)?.domain;
+        const actionUrl = (item as ActivityItem & { actionUrl?: string })
+          ?.actionUrl;
+        const domain = (item as ActivityItem & { domain?: string })?.domain;
 
         return (
           <motion.div
@@ -147,7 +170,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
                   )}
 
                   {/* Security Alert Chip */}
-                  {item.type === "security" && (
+                  {item.type === 'security' && (
                     <span className="flex items-center gap-1 text-xs font-black text-red-600 bg-red-50 border border-red-100 px-2 py-0.5 rounded-full">
                       <AlertTriangle className="w-3 h-3" />
                       Alert
@@ -162,7 +185,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
 
               {/* Main Message */}
               <p className="text-sm font-semibold text-foreground mt-1 leading-snug">
-                <span className="font-black">{item.user}</span>{" "}
+                <span className="font-black">{item.user}</span>{' '}
                 {normalizeAction(item.action)}
               </p>
 

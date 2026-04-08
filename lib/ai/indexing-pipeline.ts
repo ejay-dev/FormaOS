@@ -147,7 +147,10 @@ async function extractFormSubmissionText(
 
   if (!data) return null;
 
-  const form = data.form as any;
+  const form = data.form as {
+    title?: string;
+    fields?: Array<{ id: string; label: string }>;
+  } | null;
   const formData = data.data as Record<string, unknown>;
   const fields = (form?.fields ?? []) as Array<{ id: string; label: string }>;
 

@@ -2,7 +2,12 @@ import { randomUUID } from 'crypto';
 import type { Profile } from '@node-saml/node-saml';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logIdentityEvent } from '@/lib/identity/audit';
-import { getSamlDisplayName, getSamlEmail, getSamlGroups, isAllowedDomain } from '@/lib/sso/saml';
+import {
+  getSamlDisplayName,
+  getSamlEmail,
+  getSamlGroups,
+  isAllowedDomain,
+} from '@/lib/sso/saml';
 
 type JitRole = 'owner' | 'admin' | 'member' | 'viewer' | 'auditor';
 
@@ -12,7 +17,11 @@ function mapGroupToRole(groups: string[], fallbackRole: JitRole): JitRole {
   if (normalized.some((group) => group.includes('owner'))) return 'owner';
   if (normalized.some((group) => group.includes('admin'))) return 'admin';
   if (normalized.some((group) => group.includes('auditor'))) return 'auditor';
-  if (normalized.some((group) => group.includes('viewer') || group.includes('read'))) {
+  if (
+    normalized.some(
+      (group) => group.includes('viewer') || group.includes('read'),
+    )
+  ) {
     return 'viewer';
   }
 
@@ -22,7 +31,12 @@ function mapGroupToRole(groups: string[], fallbackRole: JitRole): JitRole {
 async function findUserByEmail(email: string) {
   const admin = createSupabaseAdminClient();
   const { data } = await admin.auth.admin.listUsers();
-  return data?.users?.find((user: any) => user.email?.toLowerCase() === email.toLowerCase()) ?? null;
+  return (
+    data?.users?.find(
+      (user: { email?: string }) =>
+        user.email?.toLowerCase() === email.toLowerCase(),
+    ) ?? null
+  );
 }
 
 export async function provisionJitUser(args: {
@@ -60,7 +74,9 @@ export async function provisionJitUser(args: {
     });
 
     if (createdUser.error || !createdUser.data.user) {
-      throw new Error(createdUser.error?.message ?? 'Failed to create JIT user');
+      throw new Error(
+        createdUser.error?.message ?? 'Failed to create JIT user',
+      );
     }
 
     user = createdUser.data.user;

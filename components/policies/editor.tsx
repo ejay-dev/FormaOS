@@ -1,12 +1,12 @@
-"use client"
+'use client';
 
-import { useEditor, EditorContent } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
-import Placeholder from "@tiptap/extension-placeholder"
-import Link from "@tiptap/extension-link"
-import { useState } from "react"
-import { Save, Loader2, Bold, Italic, Heading1, Heading2 } from "lucide-react"
-import { useComplianceAction } from "@/components/compliance-system"
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
+import Link from '@tiptap/extension-link';
+import { useState } from 'react';
+import { Save, Loader2, Bold, Italic, Heading1, Heading2 } from 'lucide-react';
+import { useComplianceAction } from '@/components/compliance-system';
 
 /**
  * =========================================================
@@ -21,74 +21,78 @@ export function PolicyEditor({
   policyId,
   title,
 }: {
-  initialContent: string
-  policyId: string
-  title: string
+  initialContent: string;
+  policyId: string;
+  title: string;
 }) {
-  const [isSaving, setIsSaving] = useState(false)
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  const [_showSuccess, setShowSuccess] = useState(false)
-  const { nodeUpdated, reportError } = useComplianceAction()
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [_showSuccess, setShowSuccess] = useState(false);
+  const { nodeUpdated, reportError } = useComplianceAction();
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       Link.configure({
         openOnClick: false,
-        HTMLAttributes: { class: "text-blue-600 underline" },
+        HTMLAttributes: { class: 'text-blue-600 underline' },
       }),
       Placeholder.configure({
-        placeholder: "Start drafting your compliance control...",
+        placeholder: 'Start drafting your compliance control...',
       }),
     ],
-    content: initialContent || "",
+    content: initialContent || '',
     editorProps: {
       attributes: {
-        class: "prose prose-neutral focus:outline-none min-h-[360px] sm:min-h-[600px] max-w-none p-4",
+        class:
+          'prose prose-neutral focus:outline-none min-h-[360px] sm:min-h-[600px] max-w-none p-4',
       },
     },
-  })
+  });
 
   const handleSave = async () => {
-    if (!editor) return
-    setIsSaving(true)
+    if (!editor) return;
+    setIsSaving(true);
 
     try {
-      const html = editor.getHTML()
+      const html = editor.getHTML();
 
-      const res = await fetch("/api/policies/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/policies/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           policyId,
           html,
           title,
         }),
-      })
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.error || "Failed to save policy")
+        throw new Error(data?.error || 'Failed to save policy');
       }
 
-      setLastSaved(new Date())
-      setShowSuccess(true)
-      
-      // Report to compliance system
-      nodeUpdated("policy", title)
-      
-      // Reset success state
-      setTimeout(() => setShowSuccess(false), 2000)
-    } catch (error: any) {
-      console.error("Save Error:", error)
-      reportError({ title: "Sync failed", message: error.message || "Unknown error" })
-    } finally {
-      setIsSaving(false)
-    }
-  }
+      setLastSaved(new Date());
+      setShowSuccess(true);
 
-  if (!editor) return null
+      // Report to compliance system
+      nodeUpdated('policy', title);
+
+      // Reset success state
+      setTimeout(() => setShowSuccess(false), 2000);
+    } catch (error: unknown) {
+      console.error('Save Error:', error);
+      reportError({
+        title: 'Sync failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (!editor) return null;
 
   return (
     <div className="flex flex-col h-full bg-glass-strong rounded-3xl border border-glass-border shadow-sm overflow-hidden">
@@ -97,26 +101,30 @@ export function PolicyEditor({
         <div className="flex flex-wrap items-center gap-1">
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
-            active={editor.isActive("bold")}
+            active={editor.isActive('bold')}
             icon={<Bold className="h-4 w-4" />}
             label="Bold"
           />
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            active={editor.isActive("italic")}
+            active={editor.isActive('italic')}
             icon={<Italic className="h-4 w-4" />}
             label="Italic"
           />
           <div className="w-[1px] h-4 bg-glass-strong mx-1" />
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            active={editor.isActive("heading", { level: 1 })}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 1 }).run()
+            }
+            active={editor.isActive('heading', { level: 1 })}
             icon={<Heading1 className="h-4 w-4" />}
             label="H1"
           />
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            active={editor.isActive("heading", { level: 2 })}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
+            }
+            active={editor.isActive('heading', { level: 2 })}
             icon={<Heading2 className="h-4 w-4" />}
             label="H2"
           />
@@ -153,7 +161,7 @@ export function PolicyEditor({
         <EditorContent editor={editor} />
       </div>
     </div>
-  )
+  );
 }
 
 function ToolbarButton({
@@ -162,10 +170,10 @@ function ToolbarButton({
   icon,
   label,
 }: {
-  onClick: () => void
-  active: boolean
-  icon: React.ReactNode
-  label: string
+  onClick: () => void;
+  active: boolean;
+  icon: React.ReactNode;
+  label: string;
 }) {
   return (
     <button
@@ -173,11 +181,11 @@ function ToolbarButton({
       title={label}
       className={`p-2 rounded-lg transition-all flex items-center justify-center ${
         active
-          ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white shadow-inner scale-95"
-          : "text-muted-foreground hover:bg-glass-strong hover:text-foreground"
+          ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white shadow-inner scale-95'
+          : 'text-muted-foreground hover:bg-glass-strong hover:text-foreground'
       }`}
     >
       {icon}
     </button>
-  )
+  );
 }

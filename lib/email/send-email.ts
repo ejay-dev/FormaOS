@@ -136,7 +136,8 @@ function renderWelcomeEmail(data: WelcomeEmailData, appBase: string) {
       <div style="margin:20px 0;">
         ${features
           .map(
-            (feature) => `<p style="margin:8px 0;color:#cbd5e1;font-size:14px;line-height:1.6;"><span style="color:#22d3ee;font-weight:700;">✓</span>&nbsp;&nbsp;${escapeHtml(feature)}</p>`,
+            (feature) =>
+              `<p style="margin:8px 0;color:#cbd5e1;font-size:14px;line-height:1.6;"><span style="color:#22d3ee;font-weight:700;">✓</span>&nbsp;&nbsp;${escapeHtml(feature)}</p>`,
           )
           .join('')}
       </div>
@@ -154,10 +155,28 @@ function renderAlertEmail(data: AlertEmailData, appBase: string) {
   const actionText = data.actionText || 'View Details';
   const palette =
     data.alertType === 'critical'
-      ? { bg: 'rgba(248,113,113,0.12)', border: '#f87171', btnBg: '#f87171', btnColor: '#ffffff', icon: '🚨' }
+      ? {
+          bg: 'rgba(248,113,113,0.12)',
+          border: '#f87171',
+          btnBg: '#f87171',
+          btnColor: '#ffffff',
+          icon: '🚨',
+        }
       : data.alertType === 'warning'
-        ? { bg: 'rgba(251,146,60,0.12)', border: '#fb923c', btnBg: '#fb923c', btnColor: '#0f172a', icon: '⚠️' }
-        : { bg: 'rgba(34,211,238,0.12)', border: '#22d3ee', btnBg: '#22d3ee', btnColor: '#0f172a', icon: 'ℹ️' };
+        ? {
+            bg: 'rgba(251,146,60,0.12)',
+            border: '#fb923c',
+            btnBg: '#fb923c',
+            btnColor: '#0f172a',
+            icon: '⚠️',
+          }
+        : {
+            bg: 'rgba(34,211,238,0.12)',
+            border: '#22d3ee',
+            btnBg: '#22d3ee',
+            btnColor: '#0f172a',
+            icon: 'ℹ️',
+          };
 
   return renderEmailShell(
     `${brand.appName} Alert: ${data.alertTitle}`,
@@ -327,8 +346,9 @@ export async function sendEmail(data: EmailData) {
     );
 
     return { success: true, data: result.data };
-  } catch (error: any) {
-    console.error('[sendEmail] CRITICAL FAILURE:', error.message);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[sendEmail] CRITICAL FAILURE:', message);
 
     // Log failure for audit purposes
     await logEmail(
@@ -342,6 +362,6 @@ export async function sendEmail(data: EmailData) {
       data.userId,
     );
 
-    return { success: false, error: error.message };
+    return { success: false, error: message };
   }
 }

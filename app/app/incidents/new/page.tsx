@@ -2,26 +2,26 @@
  * New Incident Report Form Page
  */
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { fetchSystemState } from "@/lib/system-state/server";
-import { createIncident } from "@/app/app/actions/care-operations";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { fetchSystemState } from '@/lib/system-state/server';
+import { createIncident } from '@/app/app/actions/care-operations';
 
 export default async function NewIncidentPage() {
   const systemState = await fetchSystemState();
-  if (!systemState) redirect("/auth/signin");
+  if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
   const supabase = await createSupabaseServerClient();
 
   // Fetch clients for dropdown
   const { data: clients } = await supabase
-    .from("org_patients")
-    .select("id, full_name")
-    .eq("organization_id", organization.id)
-    .order("full_name");
+    .from('org_patients')
+    .select('id, full_name')
+    .eq('organization_id', organization.id)
+    .order('full_name');
 
   type Client = NonNullable<typeof clients>[number];
 
@@ -37,7 +37,9 @@ export default async function NewIncidentPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Report Incident</h1>
-          <p className="text-muted-foreground">Log a new incident for tracking and follow-up</p>
+          <p className="text-muted-foreground">
+            Log a new incident for tracking and follow-up
+          </p>
         </div>
       </div>
 
@@ -49,10 +51,14 @@ export default async function NewIncidentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-16" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="field-16"
+                className="block text-sm font-medium mb-1"
+              >
                 Incident Type <span className="text-red-500">*</span>
               </label>
               <select
+                id="field-16"
                 name="incident_type"
                 required
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -69,10 +75,14 @@ export default async function NewIncidentPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="field-15" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="field-15"
+                className="block text-sm font-medium mb-1"
+              >
                 Severity <span className="text-red-500">*</span>
               </label>
               <select
+                id="field-15"
                 name="severity"
                 required
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -87,8 +97,14 @@ export default async function NewIncidentPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-14" className="block text-sm font-medium mb-1">Related Client</label>
-              <select id="field-14"
+              <label
+                htmlFor="field-14"
+                className="block text-sm font-medium mb-1"
+              >
+                Related Client
+              </label>
+              <select
+                id="field-14"
                 name="patient_id"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -101,10 +117,14 @@ export default async function NewIncidentPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="field-13" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="field-13"
+                className="block text-sm font-medium mb-1"
+              >
                 Date & Time Occurred <span className="text-red-500">*</span>
               </label>
               <input
+                id="field-13"
                 type="datetime-local"
                 name="occurred_at"
                 required
@@ -115,8 +135,14 @@ export default async function NewIncidentPage() {
           </div>
 
           <div>
-            <label htmlFor="field-12" className="block text-sm font-medium mb-1">Location</label>
-            <input id="field-12"
+            <label
+              htmlFor="field-12"
+              className="block text-sm font-medium mb-1"
+            >
+              Location
+            </label>
+            <input
+              id="field-12"
               type="text"
               name="location"
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -125,10 +151,14 @@ export default async function NewIncidentPage() {
           </div>
 
           <div>
-            <label htmlFor="field-11" className="block text-sm font-medium mb-1">
+            <label
+              htmlFor="field-11"
+              className="block text-sm font-medium mb-1"
+            >
               Description <span className="text-red-500">*</span>
             </label>
             <textarea
+              id="field-11"
               name="description"
               required
               rows={4}
@@ -138,8 +168,14 @@ export default async function NewIncidentPage() {
           </div>
 
           <div>
-            <label htmlFor="field-10" className="block text-sm font-medium mb-1">Immediate Actions Taken</label>
-            <textarea id="field-10"
+            <label
+              htmlFor="field-10"
+              className="block text-sm font-medium mb-1"
+            >
+              Immediate Actions Taken
+            </label>
+            <textarea
+              id="field-10"
               name="immediate_actions"
               rows={2}
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -154,14 +190,22 @@ export default async function NewIncidentPage() {
 
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" name="follow_up_required" value="true" className="rounded" />
+              <input
+                type="checkbox"
+                name="follow_up_required"
+                value="true"
+                className="rounded"
+              />
               <span className="text-sm">Follow-up Required</span>
             </label>
           </div>
 
           <div>
-            <label htmlFor="field-9" className="block text-sm font-medium mb-1">Follow-up Due Date</label>
-            <input id="field-9"
+            <label htmlFor="field-9" className="block text-sm font-medium mb-1">
+              Follow-up Due Date
+            </label>
+            <input
+              id="field-9"
               type="date"
               name="follow_up_due_date"
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"

@@ -137,10 +137,7 @@ export default async function IncidentsPage({
       {/* Header */}
       <div className="page-header">
         <div>
-          <h1
-            className="page-title"
-            data-testid="incidents-title"
-          >
+          <h1 className="page-title" data-testid="incidents-title">
             Incidents
           </h1>
           <p className="page-description">
@@ -168,228 +165,254 @@ export default async function IncidentsPage({
       </div>
 
       <div className="page-content space-y-4">
-
-      {fetchErrorMessage ? (
-        <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-          Incident data could not be loaded. {fetchErrorMessage}
-        </div>
-      ) : null}
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <div className="metric-card metric-card-neutral">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
+        {fetchErrorMessage ? (
+          <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+            Incident data could not be loaded. {fetchErrorMessage}
           </div>
-          <p className="text-2xl font-bold">{stats.total}</p>
-        </div>
-        <div className={`metric-card ${stats.open > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Open</p>
-          </div>
-          <p className="text-2xl font-bold">{stats.open}</p>
-        </div>
-        <div className="metric-card metric-card-success">
-          <div className="flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Resolved</p>
-          </div>
-          <p className="text-2xl font-bold">{stats.resolved}</p>
-        </div>
-        <div className={`metric-card ${stats.critical > 0 ? 'metric-card-danger' : 'metric-card-success'}`}>
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Critical</p>
-          </div>
-          <p className="text-2xl font-bold">{stats.critical}</p>
-        </div>
-        <div className={`metric-card ${stats.pendingFollowUp > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Follow-up</p>
-          </div>
-          <p className="text-2xl font-bold">{stats.pendingFollowUp}</p>
-        </div>
-      </div>
-
-      {/* Search and Filter */}
-      <form method="GET" className="flex flex-col lg:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            name="q"
-            defaultValue={q}
-            placeholder="Search incidents..."
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
-          />
-        </div>
-        <select
-          name="status"
-          defaultValue={statusFilter}
-          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
-        >
-          <option value="">All status</option>
-          <option value="open">Open</option>
-          <option value="resolved">Resolved</option>
-        </select>
-        <select
-          name="severity"
-          defaultValue={severityFilter}
-          className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
-        >
-          <option value="">All severity</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="critical">Critical</option>
-        </select>
-        <button
-          type="submit"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
-        >
-          <Filter className="h-4 w-4" />
-          Apply
-        </button>
-        {hasFilters ? (
-          <Link
-            href="/app/incidents"
-            className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Clear
-          </Link>
         ) : null}
-      </form>
 
-      {/* Table */}
-      <div className="rounded-lg border border-border overflow-hidden">
-        <div className="overflow-x-auto overscroll-x-contain">
-          <table className="min-w-[480px] w-full" data-testid="incidents-table">
-            <thead className="bg-muted/50">
-              <tr>
-                <th className="text-left px-4 py-3 text-sm font-medium">
-                  Severity
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium">
-                  Type
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium hidden md:table-cell">
-                  Client
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
-                  Occurred
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium">
-                  Status
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium hidden xl:table-cell">
-                  Follow-up
-                </th>
-                <th className="text-left px-4 py-3 text-sm font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filteredIncidents.map((incident: Incident) => (
-                <tr
-                  key={incident.id}
-                  className="hover:bg-muted/30 transition-colors"
-                >
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${getSeverityColor(
-                        incident.severity,
-                      )}`}
-                    >
-                      {incident.severity}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="text-sm capitalize">
-                      {incident.incident_type?.replace('_', ' ') || 'General'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
-                    <span className="font-medium">
-                      {(incident.patient as { full_name?: string } | null)
-                        ?.full_name || '-'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 hidden lg:table-cell">
-                    <span className="text-sm">
-                      {formatDate(incident.occurred_at)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                        incident.status === 'resolved'
-                          ? 'bg-green-500/10 text-green-600'
-                          : 'bg-amber-500/10 text-amber-600'
-                      }`}
-                    >
-                      {incident.status === 'resolved' ? (
-                        <CheckCircle className="h-3 w-3" />
-                      ) : (
-                        <Clock className="h-3 w-3" />
-                      )}
-                      {incident.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 hidden xl:table-cell">
-                    {incident.follow_up_required ? (
-                      <span className="text-sm text-orange-600">
-                        Due: {incident.follow_up_due_date || 'TBD'}
-                      </span>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">-</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      href={`/app/incidents/${incident.id}`}
-                      className="text-sm text-primary hover:underline"
-                    >
-                      View
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-              {filteredIncidents.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-4 py-8 text-center text-muted-foreground"
-                  >
-                    <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-muted-foreground/40" />
-                    {hasFilters ? (
-                      <>
-                        <p>No incidents matched your filters</p>
-                        <Link
-                          href="/app/incidents"
-                          className="text-primary hover:underline mt-2 inline-block"
-                        >
-                          Clear filters
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <p>No incidents reported</p>
-                        <p className="text-sm mt-1">
-                          Incidents will appear here when reported
-                        </p>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="metric-card metric-card-neutral">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Total
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.total}</p>
+          </div>
+          <div
+            className={`metric-card ${stats.open > 0 ? 'metric-card-warning' : 'metric-card-success'}`}
+          >
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Open
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.open}</p>
+          </div>
+          <div className="metric-card metric-card-success">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Resolved
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.resolved}</p>
+          </div>
+          <div
+            className={`metric-card ${stats.critical > 0 ? 'metric-card-danger' : 'metric-card-success'}`}
+          >
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Critical
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.critical}</p>
+          </div>
+          <div
+            className={`metric-card ${stats.pendingFollowUp > 0 ? 'metric-card-warning' : 'metric-card-success'}`}
+          >
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Follow-up
+              </p>
+            </div>
+            <p className="text-2xl font-bold">{stats.pendingFollowUp}</p>
+          </div>
         </div>
-      </div>
+
+        {/* Search and Filter */}
+        <form method="GET" className="flex flex-col lg:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              name="q"
+              defaultValue={q}
+              placeholder="Search incidents..."
+              aria-label="Search incidents"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
+            />
+          </div>
+          <select
+            name="status"
+            defaultValue={statusFilter}
+            aria-label="Filter by status"
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+          >
+            <option value="">All status</option>
+            <option value="open">Open</option>
+            <option value="resolved">Resolved</option>
+          </select>
+          <select
+            name="severity"
+            defaultValue={severityFilter}
+            aria-label="Filter by severity"
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+          >
+            <option value="">All severity</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+          <button
+            type="submit"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
+          >
+            <Filter className="h-4 w-4" />
+            Apply
+          </button>
+          {hasFilters ? (
+            <Link
+              href="/app/incidents"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Clear
+            </Link>
+          ) : null}
+        </form>
+
+        {/* Table */}
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="rounded-lg border border-border overflow-hidden">
+            <div className="overflow-x-auto overscroll-x-contain">
+              <table
+                className="min-w-[480px] w-full"
+                data-testid="incidents-table"
+              >
+                <thead className="bg-muted/50">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-sm font-medium">
+                      Severity
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium">
+                      Type
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium hidden md:table-cell">
+                      Client
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium hidden lg:table-cell">
+                      Occurred
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium">
+                      Status
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium hidden xl:table-cell">
+                      Follow-up
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredIncidents.map((incident: Incident) => (
+                    <tr
+                      key={incident.id}
+                      className="hover:bg-muted/30 transition-colors"
+                    >
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${getSeverityColor(
+                            incident.severity,
+                          )}`}
+                        >
+                          {incident.severity}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="text-sm capitalize">
+                          {incident.incident_type?.replace('_', ' ') ||
+                            'General'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 hidden md:table-cell">
+                        <span className="font-medium">
+                          {(incident.patient as { full_name?: string } | null)
+                            ?.full_name || '-'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        <span className="text-sm">
+                          {formatDate(incident.occurred_at)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                            incident.status === 'resolved'
+                              ? 'bg-green-500/10 text-green-600'
+                              : 'bg-amber-500/10 text-amber-600'
+                          }`}
+                        >
+                          {incident.status === 'resolved' ? (
+                            <CheckCircle className="h-3 w-3" />
+                          ) : (
+                            <Clock className="h-3 w-3" />
+                          )}
+                          {incident.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 hidden xl:table-cell">
+                        {incident.follow_up_required ? (
+                          <span className="text-sm text-orange-600">
+                            Due: {incident.follow_up_due_date || 'TBD'}
+                          </span>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">
+                            -
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/app/incidents/${incident.id}`}
+                          className="text-sm text-primary hover:underline"
+                        >
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredIncidents.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="px-4 py-8 text-center text-muted-foreground"
+                      >
+                        <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-muted-foreground/40" />
+                        {hasFilters ? (
+                          <>
+                            <p>No incidents matched your filters</p>
+                            <Link
+                              href="/app/incidents"
+                              className="text-primary hover:underline mt-2 inline-block"
+                            >
+                              Clear filters
+                            </Link>
+                          </>
+                        ) : (
+                          <>
+                            <p>No incidents reported</p>
+                            <p className="text-sm mt-1">
+                              Incidents will appear here when reported
+                            </p>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -104,10 +104,19 @@ export async function provisionFrameworkControls(
       .select('id, code, title, description, risk_weight, framework_control_id')
       .eq('framework_id', complianceFramework.id);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic Supabase select
-    complianceControls = (data ?? []).map((control: any) => ({
-      ...control,
-      risk_level: riskLevelFromWeight(control.risk_weight),
-    })) as ComplianceControlRow[];
+    complianceControls = (data ?? []).map(
+      (control: {
+        risk_weight?: number;
+        id: string;
+        code?: string;
+        title?: string;
+        description?: string;
+        framework_control_id?: string;
+      }) => ({
+        ...control,
+        risk_level: riskLevelFromWeight(control.risk_weight),
+      }),
+    ) as ComplianceControlRow[];
   } else {
     const { data } = await admin
       .from('compliance_controls')
@@ -147,10 +156,12 @@ export async function provisionFrameworkControls(
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase join shape
   const frameworkControlById = new Map(
-    (frameworkControls ?? []).map((control: any) => [
-      control.id as string,
-      control,
-    ]),
+    (frameworkControls ?? []).map(
+      (control: { id: string; [key: string]: unknown }) => [
+        control.id as string,
+        control,
+      ],
+    ),
   );
 
   const evaluations: Array<Record<string, unknown>> = [];

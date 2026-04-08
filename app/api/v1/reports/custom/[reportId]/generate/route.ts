@@ -51,7 +51,7 @@ export async function POST(
         const data = await resolveWidgetData(
           db,
           auth.context.orgId,
-          widgetConfig as any,
+          widgetConfig as Parameters<typeof resolveWidgetData>[2],
         );
         return { index: i, type: w.type, ...data };
       } catch {
@@ -76,9 +76,11 @@ export async function POST(
 
   if (format === 'csv') {
     const sections = resolvedWidgets.map((w) =>
-      flattenWidgetToSection({ label: w.type, type: w.type, data: w } as any),
+      flattenWidgetToSection({ label: w.type, type: w.type, data: w }),
     );
-    const csv = generateCSV(sections.filter(Boolean) as any);
+    const csv = generateCSV(
+      sections.filter((s): s is NonNullable<typeof s> => s !== null),
+    );
 
     await db.from('org_report_generations').insert(genRow);
 

@@ -2,33 +2,33 @@
  * New Visit/Service Delivery Form Page
  */
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { fetchSystemState } from "@/lib/system-state/server";
-import { createVisit } from "@/app/app/actions/care-operations";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { fetchSystemState } from '@/lib/system-state/server';
+import { createVisit } from '@/app/app/actions/care-operations';
 
 export default async function NewVisitPage() {
   const systemState = await fetchSystemState();
-  if (!systemState) redirect("/auth/signin");
+  if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
   const supabase = await createSupabaseServerClient();
 
   // Fetch clients for dropdown
   const { data: clients } = await supabase
-    .from("org_patients")
-    .select("id, full_name")
-    .eq("organization_id", organization.id)
-    .eq("care_status", "active")
-    .order("full_name");
+    .from('org_patients')
+    .select('id, full_name')
+    .eq('organization_id', organization.id)
+    .eq('care_status', 'active')
+    .order('full_name');
 
   // Fetch staff members for dropdown
   const { data: staffMembers } = await supabase
-    .from("org_members")
-    .select("user_id, users:user_id(email)")
-    .eq("organization_id", organization.id);
+    .from('org_members')
+    .select('user_id, users:user_id(email)')
+    .eq('organization_id', organization.id);
 
   type Client = NonNullable<typeof clients>[number];
   type StaffMember = NonNullable<typeof staffMembers>[number];
@@ -45,7 +45,9 @@ export default async function NewVisitPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Schedule Visit</h1>
-          <p className="text-muted-foreground">Create a new service delivery entry</p>
+          <p className="text-muted-foreground">
+            Create a new service delivery entry
+          </p>
         </div>
       </div>
 
@@ -57,10 +59,14 @@ export default async function NewVisitPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-66" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="field-66"
+                className="block text-sm font-medium mb-1"
+              >
                 Client <span className="text-red-500">*</span>
               </label>
               <select
+                id="field-66"
                 name="client_id"
                 required
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -74,15 +80,29 @@ export default async function NewVisitPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="field-65" className="block text-sm font-medium mb-1">Staff Member</label>
-              <select id="field-65"
+              <label
+                htmlFor="field-65"
+                className="block text-sm font-medium mb-1"
+              >
+                Staff Member
+              </label>
+              <select
+                id="field-65"
                 name="staff_id"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
                 <option value="">Assign later...</option>
                 {staffMembers?.map((member: StaffMember) => (
                   <option key={member.user_id} value={member.user_id}>
-                    {(() => { const u = member.users; const profile = Array.isArray(u) ? u[0] : u; return (profile as { email?: string } | null)?.email?.split("@")[0] || member.user_id; })()}
+                    {(() => {
+                      const u = member.users;
+                      const profile = Array.isArray(u) ? u[0] : u;
+                      return (
+                        (profile as { email?: string } | null)?.email?.split(
+                          '@',
+                        )[0] || member.user_id
+                      );
+                    })()}
                   </option>
                 ))}
               </select>
@@ -96,10 +116,14 @@ export default async function NewVisitPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-64" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="field-64"
+                className="block text-sm font-medium mb-1"
+              >
                 Start Date/Time <span className="text-red-500">*</span>
               </label>
               <input
+                id="field-64"
                 type="datetime-local"
                 name="scheduled_start"
                 required
@@ -107,8 +131,14 @@ export default async function NewVisitPage() {
               />
             </div>
             <div>
-              <label htmlFor="field-63" className="block text-sm font-medium mb-1">End Date/Time</label>
-              <input id="field-63"
+              <label
+                htmlFor="field-63"
+                className="block text-sm font-medium mb-1"
+              >
+                End Date/Time
+              </label>
+              <input
+                id="field-63"
                 type="datetime-local"
                 name="scheduled_end"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -123,8 +153,14 @@ export default async function NewVisitPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-62" className="block text-sm font-medium mb-1">Visit Type</label>
-              <select id="field-62"
+              <label
+                htmlFor="field-62"
+                className="block text-sm font-medium mb-1"
+              >
+                Visit Type
+              </label>
+              <select
+                id="field-62"
                 name="visit_type"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -138,8 +174,14 @@ export default async function NewVisitPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="field-61" className="block text-sm font-medium mb-1">Service Category</label>
-              <select id="field-61"
+              <label
+                htmlFor="field-61"
+                className="block text-sm font-medium mb-1"
+              >
+                Service Category
+              </label>
+              <select
+                id="field-61"
                 name="service_category"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -159,8 +201,14 @@ export default async function NewVisitPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-60" className="block text-sm font-medium mb-1">Location Type</label>
-              <select id="field-60"
+              <label
+                htmlFor="field-60"
+                className="block text-sm font-medium mb-1"
+              >
+                Location Type
+              </label>
+              <select
+                id="field-60"
                 name="location_type"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -171,8 +219,14 @@ export default async function NewVisitPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="field-59" className="block text-sm font-medium mb-1">Address</label>
-              <input id="field-59"
+              <label
+                htmlFor="field-59"
+                className="block text-sm font-medium mb-1"
+              >
+                Address
+              </label>
+              <input
+                id="field-59"
                 type="text"
                 name="address"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -188,8 +242,14 @@ export default async function NewVisitPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-58" className="block text-sm font-medium mb-1">Funding Source</label>
-              <select id="field-58"
+              <label
+                htmlFor="field-58"
+                className="block text-sm font-medium mb-1"
+              >
+                Funding Source
+              </label>
+              <select
+                id="field-58"
                 name="funding_source"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -202,7 +262,13 @@ export default async function NewVisitPage() {
             </div>
             <div className="flex items-center pt-6">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="billable" value="true" defaultChecked className="rounded" />
+                <input
+                  type="checkbox"
+                  name="billable"
+                  value="true"
+                  defaultChecked
+                  className="rounded"
+                />
                 <span className="text-sm">Billable Service</span>
               </label>
             </div>
@@ -214,8 +280,14 @@ export default async function NewVisitPage() {
           <h2 className="text-lg font-semibold">Notes</h2>
 
           <div>
-            <label htmlFor="field-57" className="block text-sm font-medium mb-1">Visit Notes</label>
-            <textarea id="field-57"
+            <label
+              htmlFor="field-57"
+              className="block text-sm font-medium mb-1"
+            >
+              Visit Notes
+            </label>
+            <textarea
+              id="field-57"
               name="notes"
               rows={3}
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"

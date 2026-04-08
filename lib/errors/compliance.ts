@@ -1,16 +1,16 @@
 export type GateKey =
-  | "AUDIT_EXPORT"
-  | "CERT_REPORT"
-  | "FRAMEWORK_ISO27001"
-  | "FRAMEWORK_SOC2"
-  | "FRAMEWORK_HIPAA"
-  | "FRAMEWORK_NDIS";
+  | 'AUDIT_EXPORT'
+  | 'CERT_REPORT'
+  | 'FRAMEWORK_ISO27001'
+  | 'FRAMEWORK_SOC2'
+  | 'FRAMEWORK_HIPAA'
+  | 'FRAMEWORK_NDIS';
 
 export interface ComplianceBlock {
   id: string;
   gate_key: string;
   reason: string;
-  metadata: any;
+  metadata: Record<string, unknown>;
 }
 
 export class ComplianceBlockedError extends Error {
@@ -19,7 +19,7 @@ export class ComplianceBlockedError extends Error {
 
   constructor(gate: GateKey, blocks: ComplianceBlock[]) {
     super(`Compliance gate blocked: ${gate}`);
-    this.name = "ComplianceBlockedError";
+    this.name = 'ComplianceBlockedError';
     this.gate = gate;
     this.blocks = blocks;
   }

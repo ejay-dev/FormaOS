@@ -276,7 +276,7 @@ export function EvidenceDrawer({
                       {entry.actor.avatarUrl ? (
                         <img
                           src={entry.actor.avatarUrl}
-                          alt=""
+                          alt={entry.actor.name}
                           className="h-6 w-6 rounded-full"
                         />
                       ) : (

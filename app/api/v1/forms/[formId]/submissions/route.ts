@@ -7,6 +7,7 @@ import {
   submitForm,
   getSubmissionAnalytics,
   reviewSubmission,
+  FormValidationError,
 } from '@/lib/forms/submission-engine';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 
@@ -85,12 +86,12 @@ export async function POST(
     );
     return jsonWithContext(auth.context, { data: submission }, { status: 201 });
   } catch (err: unknown) {
-    if (err instanceof Error && 'validationErrors' in err) {
+    if (err instanceof FormValidationError) {
       return Response.json(
         {
           error: {
             message: 'Validation failed',
-            details: (err as any).validationErrors,
+            details: err.validationErrors,
           },
         },
         { status: 422 },

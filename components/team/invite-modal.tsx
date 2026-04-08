@@ -15,7 +15,10 @@ import {
 import { z } from 'zod';
 
 const inviteSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Please enter a valid email address'),
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Please enter a valid email address'),
   role: z.enum(['admin', 'member', 'viewer']),
 });
 
@@ -58,7 +61,9 @@ export function InviteModal({
 
       if (result?.success) {
         setDelivery(result.delivery);
-        setManualShareUrl(result.delivery === 'manual_share_required' ? result.inviteUrl : null);
+        setManualShareUrl(
+          result.delivery === 'manual_share_required' ? result.inviteUrl : null,
+        );
         setSuccess(true);
         if (result.delivery === 'sent') {
           setTimeout(() => {
@@ -75,7 +80,7 @@ export function InviteModal({
         // Show server-side errors (e.g., "User already invited")
         setError(result?.error || 'Invitation failed. Please try again.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Modal Invite Error:', err);
       setError('System connection error.');
     } finally {
@@ -178,7 +183,10 @@ export function InviteModal({
 
             {/* Email Input */}
             <div className="space-y-2">
-              <label htmlFor="field-228" className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
+              <label
+                htmlFor="field-228"
+                className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1"
+              >
                 Identity / Email
               </label>
               <div className="relative group">
@@ -196,7 +204,10 @@ export function InviteModal({
 
             {/* Role Selection */}
             <div className="space-y-3">
-              <label htmlFor="field-227" className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1">
+              <label
+                htmlFor="field-227"
+                className="text-xs font-black uppercase text-neutral-400 tracking-[0.2em] ml-1"
+              >
                 Access Level
               </label>
               <div className="grid grid-cols-3 gap-3">

@@ -1,6 +1,12 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Command } from 'cmdk';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
@@ -438,7 +444,7 @@ export function CommandPalette() {
         setRemoteResults(results);
         setRemoteLoading(false);
       } catch (err) {
-        if ((err as any)?.name === 'AbortError') return;
+        if (err instanceof Error && err.name === 'AbortError') return;
         setRemoteResults([]);
         setRemoteLoading(false);
       }
@@ -495,7 +501,9 @@ export function CommandPalette() {
             {/* Dialog container */}
             <motion.div
               key="command-palette-dialog"
-              variants={prefersReducedMotion ? dialogVariantsReduced : dialogVariants}
+              variants={
+                prefersReducedMotion ? dialogVariantsReduced : dialogVariants
+              }
               initial="hidden"
               animate="visible"
               exit="exit"

@@ -51,6 +51,7 @@ export function DemoDataBanner({ onClear }: DemoDataBannerProps) {
           type="button"
           onClick={() => setDismissed(true)}
           className="text-muted-foreground hover:text-foreground"
+          aria-label="Dismiss"
         >
           <X className="h-4 w-4" />
         </button>

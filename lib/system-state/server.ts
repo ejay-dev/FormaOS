@@ -225,11 +225,17 @@ async function getEntitlementsFresh(orgId: string): Promise<EntitlementData[]> {
     return [];
   }
 
-  return data.map((row: any) => ({
-    featureKey: row.feature_key,
-    enabled: row.enabled ?? false,
-    limitValue: row.limit_value ?? null,
-  }));
+  return data.map(
+    (row: {
+      feature_key: string;
+      enabled?: boolean;
+      limit_value?: number | null;
+    }) => ({
+      featureKey: row.feature_key,
+      enabled: row.enabled ?? false,
+      limitValue: row.limit_value ?? null,
+    }),
+  );
 }
 
 // =========================================================
@@ -255,7 +261,10 @@ type MembershipOrganizationRow = {
 type MembershipQueryRow = {
   organization_id: string | null;
   role?: string | null;
-  organizations?: MembershipOrganizationRow | MembershipOrganizationRow[] | null;
+  organizations?:
+    | MembershipOrganizationRow
+    | MembershipOrganizationRow[]
+    | null;
 };
 
 function pickPrimaryMembership<
@@ -455,7 +464,9 @@ async function fetchSystemStateFresh(preloadedUser?: {
   let trialActive = subscription?.trialActive ?? false;
   let trialDaysRemaining = subscription?.trialDaysRemaining ?? 0;
 
-  const resolvedPlanForEntitlements = resolvePlanKey(subscription?.planKey ?? null);
+  const resolvedPlanForEntitlements = resolvePlanKey(
+    subscription?.planKey ?? null,
+  );
   const needsEntitlements = Boolean(resolvedPlanForEntitlements);
   const needsRepair =
     !subscription || (needsEntitlements && dbEntitlements.length === 0);

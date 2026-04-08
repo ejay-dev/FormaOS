@@ -139,11 +139,11 @@ export function UploadArtifactModal({
       setTimeout(() => {
         onClose();
       }, 1500);
-    } catch (error: any) {
+    } catch (error: unknown) {
       clearInterval(progressInterval);
       reportError({
         title: 'Upload failed',
-        message: error.message || 'Unknown error',
+        message: error instanceof Error ? error.message : 'Unknown error',
       });
     } finally {
       setUploading(false);
@@ -158,7 +158,9 @@ export function UploadArtifactModal({
           <div className="h-20 w-20 rounded-full bg-violet-400/20 flex items-center justify-center mb-4 border-2 border-violet-400/40">
             <CheckCircle2 className="h-10 w-10 text-violet-400" />
           </div>
-          <h3 className="text-xl font-bold text-foreground">Evidence Secured</h3>
+          <h3 className="text-xl font-bold text-foreground">
+            Evidence Secured
+          </h3>
           <p className="text-sm text-muted-foreground mt-2 text-center">
             New evidence node added to your compliance graph
           </p>

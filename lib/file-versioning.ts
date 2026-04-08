@@ -465,9 +465,12 @@ export async function getVersionStats(organizationId: string): Promise<{
 
   // Get most versioned files
   const mostVersionedFiles = (files || [])
-    .sort((a: any, b: any) => b.total_versions - a.total_versions)
+    .sort(
+      (a: { total_versions: number }, b: { total_versions: number }) =>
+        b.total_versions - a.total_versions,
+    )
     .slice(0, 5)
-    .map((file: any) => ({
+    .map((file: { id: string; file_name: string; total_versions: number }) => ({
       fileId: file.id!,
       fileName: file.file_name,
       versions: file.total_versions,

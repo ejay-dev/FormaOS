@@ -57,7 +57,10 @@ export async function getGroupRollup(groupId: string) {
 
   for (const member of members) {
     const orgId = member.organization_id;
-    const orgRaw = member.organizations as any;
+    const orgRaw = member.organizations as
+      | { name?: string }
+      | Array<{ name?: string }>
+      | null;
     const orgName =
       (Array.isArray(orgRaw) ? orgRaw[0]?.name : orgRaw?.name) ?? orgId;
 

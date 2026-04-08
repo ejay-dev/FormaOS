@@ -2,31 +2,31 @@
  * New Participant Form Page
  */
 
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { fetchSystemState } from "@/lib/system-state/server";
-import { createParticipant } from "@/app/app/actions/care-operations";
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { fetchSystemState } from '@/lib/system-state/server';
+import { createParticipant } from '@/app/app/actions/care-operations';
 
 function getEntityLabel(industry: string | null): string {
   switch (industry) {
-    case "ndis":
-      return "Participant";
-    case "healthcare":
-      return "Patient";
-    case "aged_care":
-      return "Resident";
+    case 'ndis':
+      return 'Participant';
+    case 'healthcare':
+      return 'Patient';
+    case 'aged_care':
+      return 'Resident';
     default:
-      return "Client";
+      return 'Client';
   }
 }
 
 export default async function NewParticipantPage() {
   const systemState = await fetchSystemState();
-  if (!systemState) redirect("/auth/signin");
+  if (!systemState) redirect('/auth/signin');
 
   const label = getEntityLabel(systemState.organization.industry);
-  const isNDIS = systemState.organization.industry === "ndis";
+  const isNDIS = systemState.organization.industry === 'ndis';
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -40,7 +40,9 @@ export default async function NewParticipantPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold">Add New {label}</h1>
-          <p className="text-muted-foreground">Enter {label.toLowerCase()} details</p>
+          <p className="text-muted-foreground">
+            Enter {label.toLowerCase()} details
+          </p>
         </div>
       </div>
 
@@ -52,10 +54,14 @@ export default async function NewParticipantPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-34" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="field-34"
+                className="block text-sm font-medium mb-1"
+              >
                 Full Name <span className="text-red-500">*</span>
               </label>
               <input
+                id="field-34"
                 type="text"
                 name="full_name"
                 required
@@ -64,8 +70,14 @@ export default async function NewParticipantPage() {
               />
             </div>
             <div>
-              <label htmlFor="field-33" className="block text-sm font-medium mb-1">Preferred Name</label>
-              <input id="field-33"
+              <label
+                htmlFor="field-33"
+                className="block text-sm font-medium mb-1"
+              >
+                Preferred Name
+              </label>
+              <input
+                id="field-33"
                 type="text"
                 name="preferred_name"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -76,16 +88,28 @@ export default async function NewParticipantPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-32" className="block text-sm font-medium mb-1">Date of Birth</label>
-              <input id="field-32"
+              <label
+                htmlFor="field-32"
+                className="block text-sm font-medium mb-1"
+              >
+                Date of Birth
+              </label>
+              <input
+                id="field-32"
                 type="date"
                 name="date_of_birth"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               />
             </div>
             <div>
-              <label htmlFor="field-31" className="block text-sm font-medium mb-1">Gender</label>
-              <select id="field-31"
+              <label
+                htmlFor="field-31"
+                className="block text-sm font-medium mb-1"
+              >
+                Gender
+              </label>
+              <select
+                id="field-31"
                 name="gender"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -100,8 +124,14 @@ export default async function NewParticipantPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-30" className="block text-sm font-medium mb-1">Phone</label>
-              <input id="field-30"
+              <label
+                htmlFor="field-30"
+                className="block text-sm font-medium mb-1"
+              >
+                Phone
+              </label>
+              <input
+                id="field-30"
                 type="tel"
                 name="phone"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -109,8 +139,14 @@ export default async function NewParticipantPage() {
               />
             </div>
             <div>
-              <label htmlFor="field-29" className="block text-sm font-medium mb-1">Email</label>
-              <input id="field-29"
+              <label
+                htmlFor="field-29"
+                className="block text-sm font-medium mb-1"
+              >
+                Email
+              </label>
+              <input
+                id="field-29"
                 type="email"
                 name="email"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -120,8 +156,14 @@ export default async function NewParticipantPage() {
           </div>
 
           <div>
-            <label htmlFor="field-28" className="block text-sm font-medium mb-1">Address</label>
-            <textarea id="field-28"
+            <label
+              htmlFor="field-28"
+              className="block text-sm font-medium mb-1"
+            >
+              Address
+            </label>
+            <textarea
+              id="field-28"
               name="address"
               rows={2}
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -136,24 +178,42 @@ export default async function NewParticipantPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="field-27" className="block text-sm font-medium mb-1">Contact Name</label>
-              <input id="field-27"
+              <label
+                htmlFor="field-27"
+                className="block text-sm font-medium mb-1"
+              >
+                Contact Name
+              </label>
+              <input
+                id="field-27"
                 type="text"
                 name="emergency_contact_name"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               />
             </div>
             <div>
-              <label htmlFor="field-26" className="block text-sm font-medium mb-1">Contact Phone</label>
-              <input id="field-26"
+              <label
+                htmlFor="field-26"
+                className="block text-sm font-medium mb-1"
+              >
+                Contact Phone
+              </label>
+              <input
+                id="field-26"
                 type="tel"
                 name="emergency_contact_phone"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               />
             </div>
             <div>
-              <label htmlFor="field-25" className="block text-sm font-medium mb-1">Relationship</label>
-              <input id="field-25"
+              <label
+                htmlFor="field-25"
+                className="block text-sm font-medium mb-1"
+              >
+                Relationship
+              </label>
+              <input
+                id="field-25"
                 type="text"
                 name="emergency_contact_relationship"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -169,8 +229,14 @@ export default async function NewParticipantPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-24" className="block text-sm font-medium mb-1">Funding Type</label>
-              <select id="field-24"
+              <label
+                htmlFor="field-24"
+                className="block text-sm font-medium mb-1"
+              >
+                Funding Type
+              </label>
+              <select
+                id="field-24"
                 name="funding_type"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -184,8 +250,14 @@ export default async function NewParticipantPage() {
             </div>
             {isNDIS && (
               <div>
-                <label htmlFor="field-23" className="block text-sm font-medium mb-1">NDIS Number</label>
-                <input id="field-23"
+                <label
+                  htmlFor="field-23"
+                  className="block text-sm font-medium mb-1"
+                >
+                  NDIS Number
+                </label>
+                <input
+                  id="field-23"
                   type="text"
                   name="ndis_number"
                   className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -197,8 +269,14 @@ export default async function NewParticipantPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="field-22" className="block text-sm font-medium mb-1">External ID</label>
-              <input id="field-22"
+              <label
+                htmlFor="field-22"
+                className="block text-sm font-medium mb-1"
+              >
+                External ID
+              </label>
+              <input
+                id="field-22"
                 type="text"
                 name="external_id"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -206,8 +284,14 @@ export default async function NewParticipantPage() {
               />
             </div>
             <div>
-              <label htmlFor="field-21" className="block text-sm font-medium mb-1">Primary Diagnosis</label>
-              <input id="field-21"
+              <label
+                htmlFor="field-21"
+                className="block text-sm font-medium mb-1"
+              >
+                Primary Diagnosis
+              </label>
+              <input
+                id="field-21"
                 type="text"
                 name="primary_diagnosis"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -217,8 +301,14 @@ export default async function NewParticipantPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="field-20" className="block text-sm font-medium mb-1">Care Status</label>
-              <select id="field-20"
+              <label
+                htmlFor="field-20"
+                className="block text-sm font-medium mb-1"
+              >
+                Care Status
+              </label>
+              <select
+                id="field-20"
                 name="care_status"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -228,8 +318,14 @@ export default async function NewParticipantPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="field-19" className="block text-sm font-medium mb-1">Risk Level</label>
-              <select id="field-19"
+              <label
+                htmlFor="field-19"
+                className="block text-sm font-medium mb-1"
+              >
+                Risk Level
+              </label>
+              <select
+                id="field-19"
                 name="risk_level"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
@@ -241,7 +337,12 @@ export default async function NewParticipantPage() {
             </div>
             <div className="flex items-center pt-6">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" name="emergency_flag" value="true" className="rounded" />
+                <input
+                  type="checkbox"
+                  name="emergency_flag"
+                  value="true"
+                  className="rounded"
+                />
                 <span className="text-sm">Emergency Flag</span>
               </label>
             </div>
@@ -253,8 +354,14 @@ export default async function NewParticipantPage() {
           <h2 className="text-lg font-semibold">Additional Information</h2>
 
           <div>
-            <label htmlFor="field-18" className="block text-sm font-medium mb-1">Communication Needs</label>
-            <textarea id="field-18"
+            <label
+              htmlFor="field-18"
+              className="block text-sm font-medium mb-1"
+            >
+              Communication Needs
+            </label>
+            <textarea
+              id="field-18"
               name="communication_needs"
               rows={2}
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"
@@ -263,8 +370,14 @@ export default async function NewParticipantPage() {
           </div>
 
           <div>
-            <label htmlFor="field-17" className="block text-sm font-medium mb-1">Cultural Considerations</label>
-            <textarea id="field-17"
+            <label
+              htmlFor="field-17"
+              className="block text-sm font-medium mb-1"
+            >
+              Cultural Considerations
+            </label>
+            <textarea
+              id="field-17"
               name="cultural_considerations"
               rows={2}
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"

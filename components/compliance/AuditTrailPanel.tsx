@@ -96,7 +96,7 @@ function AuditTrailInner({
             {entry.actor.avatarUrl ? (
               <img
                 src={entry.actor.avatarUrl}
-                alt=""
+                alt={entry.actor.name}
                 className="h-7 w-7 rounded-full"
               />
             ) : (

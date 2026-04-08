@@ -2,7 +2,6 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/sidebar';
 import { TopBar } from '@/components/topbar';
-import { CommandPalette } from '@/components/command-palette/CommandPalette';
 import { AppHydrator } from '@/components/app-hydrator';
 import { AppProviders } from '@/components/app-providers';
 import { fetchSystemState } from '@/lib/system-state/server';
@@ -11,6 +10,7 @@ import { UpgradeModal } from '@/components/billing/UpgradeModal';
 import { UpgradeSuggestionEngine } from '@/components/billing/UpgradeSuggestionEngine';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
+import { CommandPalette } from '@/components/command-palette/CommandPalette';
 import { HelpAssistant } from '@/components/help/HelpAssistant';
 import { AiAssistant } from '@/components/ai-assistant/AiAssistant';
 import { NotificationToast } from '@/components/notifications/notification-toast';
@@ -114,6 +114,12 @@ export default async function AppLayout({
    * ----------------------------------------------------- */
   return (
     <ControlPlaneRuntimeProvider>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-background focus:border focus:border-border focus:rounded-md focus:text-sm focus:font-medium"
+      >
+        Skip to main content
+      </a>
       <AppHydrator
         initialState={{
           user: systemState.user,
@@ -179,7 +185,10 @@ export default async function AppLayout({
                 <EnterpriseTrustStrip surface="app" />
                 <TrialCountdownBanner />
 
-                <main className="relative flex flex-1 flex-col overflow-y-auto bg-background">
+                <main
+                  id="main-content"
+                  className="relative flex flex-1 flex-col overflow-y-auto bg-background"
+                >
                   <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 py-4 pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-6">
                     {children}
                   </div>

@@ -146,6 +146,7 @@ export default async function SearchPage({
                 name="q"
                 defaultValue={q}
                 placeholder="Search across your workspace…"
+                aria-label="Search workspace"
                 className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               />
             </div>

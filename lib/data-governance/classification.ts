@@ -13,12 +13,36 @@ export interface DataClassificationRule {
 }
 
 export const AUTO_CLASSIFICATION_RULES: DataClassificationRule[] = [
-  { fieldPattern: /(email|phone|mobile|contact)/i, level: 'confidential', reason: 'Direct contact details' },
-  { fieldPattern: /(ssn|tfn|tax|passport|license|drivers?_license)/i, level: 'restricted', reason: 'Government identifiers' },
-  { fieldPattern: /(dob|date_of_birth|birth)/i, level: 'confidential', reason: 'Date of birth' },
-  { fieldPattern: /(address|street|city|postcode|zip)/i, level: 'confidential', reason: 'Location information' },
-  { fieldPattern: /(bank|account|iban|swift|card|payment)/i, level: 'restricted', reason: 'Financial data' },
-  { fieldPattern: /(password|secret|token|private_key|access_key)/i, level: 'restricted', reason: 'Secrets or credentials' },
+  {
+    fieldPattern: /(email|phone|mobile|contact)/i,
+    level: 'confidential',
+    reason: 'Direct contact details',
+  },
+  {
+    fieldPattern: /(ssn|tfn|tax|passport|license|drivers?_license)/i,
+    level: 'restricted',
+    reason: 'Government identifiers',
+  },
+  {
+    fieldPattern: /(dob|date_of_birth|birth)/i,
+    level: 'confidential',
+    reason: 'Date of birth',
+  },
+  {
+    fieldPattern: /(address|street|city|postcode|zip)/i,
+    level: 'confidential',
+    reason: 'Location information',
+  },
+  {
+    fieldPattern: /(bank|account|iban|swift|card|payment)/i,
+    level: 'restricted',
+    reason: 'Financial data',
+  },
+  {
+    fieldPattern: /(password|secret|token|private_key|access_key)/i,
+    level: 'restricted',
+    reason: 'Secrets or credentials',
+  },
 ];
 
 export function inferClassificationForField(fieldName: string): {
@@ -85,10 +109,13 @@ export async function upsertClassifications(
 
 export async function generateClassificationReport(orgId: string) {
   const rows = await listClassifications(orgId);
-  const breakdown = rows.reduce((acc: Record<string, number>, row: any) => {
-    acc[row.level] = (acc[row.level] ?? 0) + 1;
-    return acc;
-  }, {});
+  const breakdown = rows.reduce(
+    (acc: Record<string, number>, row: { level: string }) => {
+      acc[row.level] = (acc[row.level] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
 
   return {
     generatedAt: new Date().toISOString(),

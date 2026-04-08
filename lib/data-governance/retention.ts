@@ -123,7 +123,11 @@ async function selectExpiredRows(
     .limit(500);
 
   if (exceptions.length) {
-    query = query.not('id', 'in', `(${exceptions.map((id) => `"${id}"`).join(',')})`);
+    query = query.not(
+      'id',
+      'in',
+      `(${exceptions.map((id) => `"${id}"`).join(',')})`,
+    );
   }
 
   const { data, error } = await query;
@@ -177,11 +181,26 @@ export async function listRetentionPolicies(orgId: string) {
   return data ?? [];
 }
 
+interface RetentionPolicyRow {
+  resource_type: string;
+  retention_days: number;
+  action: string;
+  exceptions?: string[];
+}
+
+interface EvaluationItem {
+  resource_type: string;
+  retention_days: number;
+  action: string;
+  expired_count: number;
+  record_ids: string[];
+}
+
 export async function evaluateRetention(orgId: string) {
   const policies = await listRetentionPolicies(orgId);
   const summary: Array<Record<string, unknown>> = [];
 
-  for (const policy of policies as Array<any>) {
+  for (const policy of policies as Array<RetentionPolicyRow>) {
     const rows = await selectExpiredRows(
       orgId,
       policy.resource_type,
@@ -200,7 +219,11 @@ export async function evaluateRetention(orgId: string) {
   return summary;
 }
 
-async function archiveRows(config: ResourceConfig, orgId: string, ids: string[]) {
+async function archiveRows(
+  config: ResourceConfig,
+  orgId: string,
+  ids: string[],
+) {
   const admin = createSupabaseAdminClient();
   if (!config.archiveUpdate) return;
   const { error } = await admin
@@ -211,10 +234,16 @@ async function archiveRows(config: ResourceConfig, orgId: string, ids: string[])
   if (error) throw new Error(error.message);
 }
 
-async function anonymizeRows(config: ResourceConfig, orgId: string, ids: string[]) {
+async function anonymizeRows(
+  config: ResourceConfig,
+  orgId: string,
+  ids: string[],
+) {
   const admin = createSupabaseAdminClient();
   if (!config.anonymizeFields?.length) return;
-  const updatePayload = Object.fromEntries(config.anonymizeFields.map((field) => [field, null]));
+  const updatePayload = Object.fromEntries(
+    config.anonymizeFields.map((field) => [field, null]),
+  );
   const { error } = await admin
     .from(config.table)
     .update(updatePayload)
@@ -223,7 +252,11 @@ async function anonymizeRows(config: ResourceConfig, orgId: string, ids: string[
   if (error) throw new Error(error.message);
 }
 
-async function deleteRows(config: ResourceConfig, orgId: string, ids: string[]) {
+async function deleteRows(
+  config: ResourceConfig,
+  orgId: string,
+  ids: string[],
+) {
   const admin = createSupabaseAdminClient();
   const { error } = await admin
     .from(config.table)
@@ -238,7 +271,7 @@ export async function executeRetention(orgId: string, dryRun = true) {
   const evaluation = await evaluateRetention(orgId);
   const results: Array<Record<string, unknown>> = [];
 
-  for (const item of evaluation as Array<any>) {
+  for (const item of evaluation as unknown as Array<EvaluationItem>) {
     const ids = (item.record_ids ?? []) as string[];
     const config = getResourceConfig(item.resource_type);
 
@@ -265,7 +298,9 @@ export async function executeRetention(orgId: string, dryRun = true) {
       },
     };
 
-    const { error } = await admin.from('retention_executions').insert(execution);
+    const { error } = await admin
+      .from('retention_executions')
+      .insert(execution);
     if (error) {
       throw new Error(error.message);
     }
@@ -281,7 +316,11 @@ export async function executeRetention(orgId: string, dryRun = true) {
     metadata: {
       dry_run: dryRun,
       execution_count: results.length,
-      totals: results.reduce((sum, item: any) => sum + item.affected_count, 0),
+      totals: results.reduce(
+        (sum, item) =>
+          sum + ((item as Record<string, number>).affected_count ?? 0),
+        0,
+      ),
     },
   });
 

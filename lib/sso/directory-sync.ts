@@ -21,6 +21,43 @@ type DirectoryGroup = {
 
 type DirectorySyncConfig = Record<string, unknown>;
 
+interface AzureDirectoryUser {
+  id?: string;
+  displayName?: string;
+  mail?: string;
+  userPrincipalName?: string;
+  accountEnabled?: boolean;
+}
+
+interface AzureDirectoryGroup {
+  id?: string;
+  displayName?: string;
+}
+
+interface OktaDirectoryUser {
+  id?: string;
+  profile?: { email?: string; displayName?: string };
+  status?: string;
+}
+
+interface OktaDirectoryGroup {
+  id?: string;
+  profile?: { name?: string };
+}
+
+interface GoogleDirectoryUser {
+  id?: string;
+  name?: { fullName?: string };
+  primaryEmail?: string;
+  suspended?: boolean;
+}
+
+interface GoogleDirectoryGroup {
+  id?: string;
+  name?: string;
+  email?: string;
+}
+
 async function fetchJson(url: string, token: string) {
   const response = await fetch(url, {
     headers: {
@@ -41,30 +78,33 @@ async function fetchAzureDirectory(config: DirectorySyncConfig) {
   const accessToken = String(config.accessToken ?? '');
   const tenant = String(config.tenantId ?? '');
   const baseUrl =
-    String(config.baseUrl ?? '').trim() ||
-    `https://graph.microsoft.com/v1.0`;
+    String(config.baseUrl ?? '').trim() || `https://graph.microsoft.com/v1.0`;
   if (!accessToken || !tenant) {
     throw new Error('Azure AD sync requires tenantId and accessToken');
   }
 
   const [usersPayload, groupsPayload] = await Promise.all([
-    fetchJson(`${baseUrl}/users?$select=id,displayName,mail,userPrincipalName,accountEnabled`, accessToken),
+    fetchJson(
+      `${baseUrl}/users?$select=id,displayName,mail,userPrincipalName,accountEnabled`,
+      accessToken,
+    ),
     fetchJson(`${baseUrl}/groups?$select=id,displayName`, accessToken),
   ]);
 
   return {
-    users: ((usersPayload.value ?? []) as Array<any>).map(
+    users: ((usersPayload.value ?? []) as Array<AzureDirectoryUser>).map(
       (user): DirectoryUser => ({
-        externalId: user.id,
+        externalId: user.id ?? '',
         email: (user.mail || user.userPrincipalName || '').toLowerCase(),
-        displayName: user.displayName || user.mail || user.userPrincipalName,
+        displayName:
+          user.displayName || user.mail || user.userPrincipalName || '',
         active: user.accountEnabled !== false,
       }),
     ),
-    groups: ((groupsPayload.value ?? []) as Array<any>).map(
+    groups: ((groupsPayload.value ?? []) as Array<AzureDirectoryGroup>).map(
       (group): DirectoryGroup => ({
-        externalId: group.id,
-        displayName: group.displayName,
+        externalId: group.id ?? '',
+        displayName: group.displayName ?? '',
         members: [],
       }),
     ),
@@ -84,18 +124,19 @@ async function fetchOktaDirectory(config: DirectorySyncConfig) {
   ]);
 
   return {
-    users: (usersPayload as Array<any>).map(
+    users: (usersPayload as Array<OktaDirectoryUser>).map(
       (user): DirectoryUser => ({
-        externalId: user.id,
+        externalId: user.id ?? '',
         email: String(user.profile?.email ?? '').toLowerCase(),
-        displayName: user.profile?.displayName ?? user.profile?.email ?? user.id,
+        displayName:
+          user.profile?.displayName ?? user.profile?.email ?? user.id ?? '',
         active: user.status !== 'DEPROVISIONED',
       }),
     ),
-    groups: (groupsPayload as Array<any>).map(
+    groups: (groupsPayload as Array<OktaDirectoryGroup>).map(
       (group): DirectoryGroup => ({
-        externalId: group.id,
-        displayName: group.profile?.name ?? group.id,
+        externalId: group.id ?? '',
+        displayName: group.profile?.name ?? group.id ?? '',
         members: [],
       }),
     ),
@@ -121,25 +162,28 @@ async function fetchGoogleWorkspaceDirectory(config: DirectorySyncConfig) {
   ]);
 
   return {
-    users: ((usersPayload.users ?? []) as Array<any>).map(
+    users: ((usersPayload.users ?? []) as Array<GoogleDirectoryUser>).map(
       (user): DirectoryUser => ({
-        externalId: user.id,
+        externalId: user.id ?? '',
         email: String(user.primaryEmail ?? '').toLowerCase(),
-        displayName: user.name?.fullName ?? user.primaryEmail ?? user.id,
+        displayName: user.name?.fullName ?? user.primaryEmail ?? user.id ?? '',
         active: user.suspended !== true,
       }),
     ),
-    groups: ((groupsPayload.groups ?? []) as Array<any>).map(
+    groups: ((groupsPayload.groups ?? []) as Array<GoogleDirectoryGroup>).map(
       (group): DirectoryGroup => ({
-        externalId: group.id,
-        displayName: group.name ?? group.email ?? group.id,
+        externalId: group.id ?? '',
+        displayName: group.name ?? group.email ?? group.id ?? '',
         members: [],
       }),
     ),
   };
 }
 
-async function loadDirectorySnapshot(provider: DirectorySyncProvider, config: DirectorySyncConfig) {
+async function loadDirectorySnapshot(
+  provider: DirectorySyncProvider,
+  config: DirectorySyncConfig,
+) {
   switch (provider) {
     case 'azure-ad':
       return fetchAzureDirectory(config);
@@ -155,7 +199,12 @@ async function loadDirectorySnapshot(provider: DirectorySyncProvider, config: Di
 async function findUserByEmail(email: string) {
   const admin = createSupabaseAdminClient();
   const { data } = await admin.auth.admin.listUsers();
-  return data?.users?.find((user: any) => user.email?.toLowerCase() === email.toLowerCase()) ?? null;
+  return (
+    data?.users?.find(
+      (user: { email?: string }) =>
+        user.email?.toLowerCase() === email.toLowerCase(),
+    ) ?? null
+  );
 }
 
 export async function upsertDirectorySyncConfig(args: {
@@ -253,7 +302,9 @@ export async function syncDirectory(
           },
         });
         if (created.error || !created.data.user) {
-          throw new Error(created.error?.message ?? 'Failed to create synced user');
+          throw new Error(
+            created.error?.message ?? 'Failed to create synced user',
+          );
         }
         user = created.data.user;
         createdUsers += 1;
@@ -351,7 +402,8 @@ export async function syncDirectory(
 
     return { runId, summary };
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Directory sync failed';
+    const message =
+      error instanceof Error ? error.message : 'Directory sync failed';
     await admin
       .from('directory_sync_runs')
       .update({

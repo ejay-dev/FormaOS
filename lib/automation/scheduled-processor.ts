@@ -28,16 +28,23 @@ export async function runScheduledAutomation(): Promise<{
 
   try {
     // Run all checks in parallel
-    const [evidenceCheck, policyCheck, taskCheck, certCheck, scoreCheck, billingCheck, entitlementCheck] =
-      await Promise.allSettled([
-        checkExpiringEvidence(),
-        checkPolicyReviews(),
-        checkOverdueTasks(),
-        checkExpiringCertifications(),
-        updateAllComplianceScores(),
-        runBillingReconciliationJob(),
-        runEntitlementDriftCheck(),
-      ]);
+    const [
+      evidenceCheck,
+      policyCheck,
+      taskCheck,
+      certCheck,
+      scoreCheck,
+      billingCheck,
+      entitlementCheck,
+    ] = await Promise.allSettled([
+      checkExpiringEvidence(),
+      checkPolicyReviews(),
+      checkOverdueTasks(),
+      checkExpiringCertifications(),
+      updateAllComplianceScores(),
+      runBillingReconciliationJob(),
+      runEntitlementDriftCheck(),
+    ]);
 
     // Aggregate results
     const checkResults = [
@@ -67,7 +74,10 @@ export async function runScheduledAutomation(): Promise<{
       triggersExecuted: results.triggersExecuted,
     });
   } catch (error) {
-    automationLogger.error('scheduled_checks_fatal', error instanceof Error ? error : new Error(String(error)));
+    automationLogger.error(
+      'scheduled_checks_fatal',
+      error instanceof Error ? error : new Error(String(error)),
+    );
     results.errors.push(
       error instanceof Error ? error.message : 'Unknown error',
     );
@@ -107,7 +117,9 @@ async function checkExpiringEvidence(): Promise<{
     return results;
   }
 
-  automationLogger.info('expiring_evidence_found', { count: expiringEvidence.length });
+  automationLogger.info('expiring_evidence_found', {
+    count: expiringEvidence.length,
+  });
 
   // Trigger renewal for each
   for (const evidence of expiringEvidence) {
@@ -175,7 +187,9 @@ async function checkPolicyReviews(): Promise<{
     return results;
   }
 
-  automationLogger.info('policies_due_review_found', { count: policiesDueReview.length });
+  automationLogger.info('policies_due_review_found', {
+    count: policiesDueReview.length,
+  });
 
   for (const policy of policiesDueReview) {
     try {
@@ -325,7 +339,9 @@ async function checkExpiringCertifications(): Promise<{
     },
   );
 
-  automationLogger.info('expiring_certifications_found', { count: expiringWithinThreshold.length });
+  automationLogger.info('expiring_certifications_found', {
+    count: expiringWithinThreshold.length,
+  });
 
   for (const cert of expiringWithinThreshold) {
     try {
@@ -393,7 +409,9 @@ async function updateAllComplianceScores(): Promise<{
     return results;
   }
 
-  automationLogger.info('compliance_scores_updating', { orgCount: orgs.length });
+  automationLogger.info('compliance_scores_updating', {
+    orgCount: orgs.length,
+  });
 
   // Update scores in batches
   const batchSize = 10;
@@ -477,7 +495,10 @@ async function runBillingReconciliationJob(): Promise<{
   } catch (err) {
     const error = err instanceof Error ? err.message : 'Unknown error';
     results.errors.push(`Billing reconciliation failed: ${error}`);
-    automationLogger.error('billing_reconciliation_failed', err instanceof Error ? err : new Error(error));
+    automationLogger.error(
+      'billing_reconciliation_failed',
+      err instanceof Error ? err : new Error(error),
+    );
   }
 
   return results;
@@ -494,7 +515,10 @@ async function runEntitlementDriftCheck(): Promise<{
 
   try {
     automationLogger.info('entitlement_drift_check_started');
-    const driftScan = await scanAllForEntitlementDrift({ autoFix: true, limit: 500 });
+    const driftScan = await scanAllForEntitlementDrift({
+      autoFix: true,
+      limit: 500,
+    });
 
     results.triggersExecuted = driftScan.autoFixed;
     results.errors.push(...driftScan.errors);
@@ -507,7 +531,10 @@ async function runEntitlementDriftCheck(): Promise<{
   } catch (err) {
     const error = err instanceof Error ? err.message : 'Unknown error';
     results.errors.push(`Entitlement drift check failed: ${error}`);
-    automationLogger.error('entitlement_drift_check_failed', err instanceof Error ? err : new Error(error));
+    automationLogger.error(
+      'entitlement_drift_check_failed',
+      err instanceof Error ? err : new Error(error),
+    );
   }
 
   return results;
@@ -518,7 +545,7 @@ async function runEntitlementDriftCheck(): Promise<{
  */
 export async function runScheduledCheck(
   checkType: 'evidence' | 'policies' | 'tasks' | 'certifications' | 'scores',
-): Promise<any> {
+): Promise<{ triggersExecuted: number; errors: string[] }> {
   switch (checkType) {
     case 'evidence':
       return await checkExpiringEvidence();

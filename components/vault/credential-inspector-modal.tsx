@@ -22,7 +22,15 @@ export function CredentialInspectorModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  credential: any;
+  credential: {
+    id: string;
+    document_type: string | null;
+    issue_date?: string | null;
+    expiry_date?: string | null;
+    user_id: string;
+    file_path?: string | null;
+    verification_status?: string;
+  } | null;
 }) {
   const [loading, setLoading] = useState(false);
   const [blocked, setBlocked] = useState(false);
@@ -60,7 +68,7 @@ export function CredentialInspectorModal({
     let mounted = true;
     async function loadSignedUrl() {
       try {
-        const result = await getEvidenceSignedUrl(credential.file_path);
+        const result = await getEvidenceSignedUrl(credential!.file_path!);
         if (mounted) setSignedUrl(result.signedUrl);
       } catch {
         if (mounted) setSignedUrl(null);
@@ -86,7 +94,7 @@ export function CredentialInspectorModal({
     setLoading(true);
     try {
       const result = await verifyCredential(
-        credential.id,
+        credential!.id,
         status,
         reason.trim(),
       );
@@ -95,8 +103,8 @@ export function CredentialInspectorModal({
         return;
       }
       onClose();
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setLoading(false);
     }

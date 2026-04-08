@@ -273,6 +273,7 @@ export function InvestigationForm({
                     next[i] = { ...next[i], status: e.target.value };
                     setBarriers(next);
                   }}
+                  aria-label="Barrier status"
                   className="w-32 rounded-md border border-input bg-background px-2 py-1.5 text-sm"
                 >
                   <option value="failed">Failed</option>
@@ -305,8 +306,14 @@ export function InvestigationForm({
 
       {/* Root Cause & Contributing Factors (all methodologies) */}
       <div>
-        <label className="block text-sm font-medium mb-1">Root Cause</label>
+        <label
+          htmlFor="investigation-root-cause"
+          className="block text-sm font-medium mb-1"
+        >
+          Root Cause
+        </label>
         <textarea
+          id="investigation-root-cause"
           value={rootCause}
           onChange={(e) => setRootCause(e.target.value)}
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -316,10 +323,17 @@ export function InvestigationForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
+        <span
+          id="contributing-factors-label"
+          className="block text-sm font-medium mb-1"
+        >
           Contributing Factors
-        </label>
-        <div className="space-y-1.5">
+        </span>
+        <div
+          role="group"
+          aria-labelledby="contributing-factors-label"
+          className="space-y-1.5"
+        >
           {factors.map((f, i) => (
             <div key={i} className="flex gap-1.5">
               <input

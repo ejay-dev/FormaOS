@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { createSupabaseClient } from "@/lib/supabase/client"
-import { UserPlus, Loader2, Mail, CheckCircle2 } from "lucide-react"
+import { useState } from 'react';
+import { createSupabaseClient } from '@/lib/supabase/client';
+import { UserPlus, Loader2, Mail, CheckCircle2 } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -11,14 +11,17 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetFooter,
-} from "@/components/ui/sheet"
-import { useComplianceAction } from "@/components/compliance-system"
-import { z } from "zod"
+} from '@/components/ui/sheet';
+import { useComplianceAction } from '@/components/compliance-system';
+import { z } from 'zod';
 
 const inviteMemberSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
-  role: z.enum(["member", "admin"]),
-})
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Please enter a valid email address'),
+  role: z.enum(['member', 'admin']),
+});
 
 /**
  * =========================================================
@@ -29,79 +32,87 @@ const inviteMemberSchema = z.object({
  */
 
 export function InviteMemberSheet() {
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [invitedEmail, setInvitedEmail] = useState("")
-  const [validationError, setValidationError] = useState<string | null>(null)
-  const { nodeCreated, reportError, reportInfo } = useComplianceAction()
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [invitedEmail, setInvitedEmail] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const { nodeCreated, reportError, reportInfo } = useComplianceAction();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setValidationError(null)
+    e.preventDefault();
+    setValidationError(null);
 
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-    const role = formData.get("role") as string
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const role = formData.get('role') as string;
 
-    const parsed = inviteMemberSchema.safeParse({ email, role })
+    const parsed = inviteMemberSchema.safeParse({ email, role });
     if (!parsed.success) {
-      setValidationError(parsed.error.issues[0]?.message ?? "Invalid input")
-      return
+      setValidationError(parsed.error.issues[0]?.message ?? 'Invalid input');
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const supabase = createSupabaseClient()
+      const supabase = createSupabaseClient();
       // 1. Get current user's organization
       const { data: membership } = await supabase
-        .from("org_members")
-        .select("organization_id")
+        .from('org_members')
+        .select('organization_id')
         .limit(1)
-        .single()
+        .single();
 
-      if (!membership) throw new Error("No organization found")
+      if (!membership) throw new Error('No organization found');
 
       // 2. Insert into team_invitations
-      const { error } = await supabase.from("team_invitations").insert({
+      const { error } = await supabase.from('team_invitations').insert({
         email,
         role,
         organization_id: membership.organization_id,
         token: require('crypto').randomBytes(32).toString('hex'),
         invited_by: (await supabase.auth.getUser()).data.user?.id || '',
-        status: "pending",
-        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-      })
+        status: 'pending',
+        expires_at: new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000,
+        ).toISOString(),
+      });
 
-      if (error) throw error
+      if (error) throw error;
 
       // Show success state
-      setInvitedEmail(email)
-      setSuccess(true)
-      
+      setInvitedEmail(email);
+      setSuccess(true);
+
       // Report to compliance system
-      nodeCreated("entity", email)
-      reportInfo({ title: "Invitation sent", message: `Sent to ${email}` })
-      
+      nodeCreated('entity', email);
+      reportInfo({ title: 'Invitation sent', message: `Sent to ${email}` });
+
       // Close after animation
       setTimeout(() => {
-        setOpen(false)
-        setSuccess(false)
-      }, 1500)
-      
-    } catch (err: any) {
-      reportError({ title: "Invitation failed", message: err.message || "Could not send invitation" })
+        setOpen(false);
+        setSuccess(false);
+      }, 1500);
+    } catch (err: unknown) {
+      reportError({
+        title: 'Invitation failed',
+        message:
+          err instanceof Error ? err.message : 'Could not send invitation',
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   return (
-    <Sheet open={open} onOpenChange={(isOpen) => {
-      setOpen(isOpen)
-      if (!isOpen) setSuccess(false)
-    }}>
+    <Sheet
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) setSuccess(false);
+      }}
+    >
       <SheetTrigger asChild>
         <button className="group flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-4 py-2 text-sm font-medium text-white hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(59,130,246,0.35)] active:scale-[0.98]">
           <UserPlus className="h-4 w-4 group-hover:scale-110 transition-transform" />
@@ -114,7 +125,9 @@ export function InviteMemberSheet() {
             <div className="h-20 w-20 rounded-full bg-emerald-400/20 flex items-center justify-center mb-4 border-2 border-emerald-400/40">
               <CheckCircle2 className="h-10 w-10 text-emerald-400" />
             </div>
-            <h3 className="text-xl font-bold text-foreground">Invitation Sent</h3>
+            <h3 className="text-xl font-bold text-foreground">
+              Invitation Sent
+            </h3>
             <p className="text-sm text-muted-foreground mt-2 text-center">
               {invitedEmail} will receive an email shortly
             </p>
@@ -140,10 +153,13 @@ export function InviteMemberSheet() {
                 </div>
               )}
               <div className="space-y-2">
-                <label htmlFor="field-76" className="text-sm font-semibold">Email Address</label>
+                <label htmlFor="field-76" className="text-sm font-semibold">
+                  Email Address
+                </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <input id="field-76"
+                  <input
+                    id="field-76"
                     required
                     name="email"
                     type="email"
@@ -154,9 +170,12 @@ export function InviteMemberSheet() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="field-75" className="text-sm font-semibold">Role</label>
-                <select id="field-75" 
-                  name="role" 
+                <label htmlFor="field-75" className="text-sm font-semibold">
+                  Role
+                </label>
+                <select
+                  id="field-75"
+                  name="role"
                   className="w-full rounded-xl border border-glass-border p-2.5 text-sm bg-glass-subtle outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all"
                 >
                   <option value="member">Member</option>
@@ -177,7 +196,7 @@ export function InviteMemberSheet() {
                     Sending...
                   </>
                 ) : (
-                  "Send Invitation"
+                  'Send Invitation'
                 )}
               </button>
             </SheetFooter>
@@ -185,5 +204,5 @@ export function InviteMemberSheet() {
         )}
       </SheetContent>
     </Sheet>
-  )
+  );
 }

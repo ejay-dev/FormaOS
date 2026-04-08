@@ -7,10 +7,7 @@
 
 import Stripe from 'stripe';
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import {
-  SUBSCRIPTION_PLANS,
-  type SubscriptionTier,
-} from '@/lib/billing/plans';
+import { SUBSCRIPTION_PLANS, type SubscriptionTier } from '@/lib/billing/plans';
 import { sendEmail } from '@/lib/email/send-email';
 import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
 
@@ -20,10 +17,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   typescript: true,
 });
 
-export {
-  SUBSCRIPTION_PLANS,
-  type SubscriptionTier,
-} from '@/lib/billing/plans';
+export { SUBSCRIPTION_PLANS, type SubscriptionTier } from '@/lib/billing/plans';
 
 function getBillingAppBase(): string {
   const raw =
@@ -56,7 +50,11 @@ async function sendPaymentFailedNotification(
   ]);
 
   const userIds = Array.from(
-    new Set((memberships ?? []).map((membership: any) => membership.user_id).filter(Boolean)),
+    new Set(
+      (memberships ?? [])
+        .map((membership: { user_id: string }) => membership.user_id)
+        .filter(Boolean),
+    ),
   );
 
   if (!userIds.length) {
@@ -74,9 +72,7 @@ async function sendPaymentFailedNotification(
         type: 'alert',
         to: profile.email!,
         userName:
-          profile.fullName ||
-          profile.email!.split('@')[0] ||
-          'team member',
+          profile.fullName || profile.email!.split('@')[0] || 'team member',
         alertType: 'warning',
         alertTitle: 'Payment failed',
         alertMessage:

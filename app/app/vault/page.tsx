@@ -219,12 +219,14 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
               name="q"
               defaultValue={searchQueryRaw}
               placeholder="Search artifacts..."
+              aria-label="Search artifacts"
               className="w-full pl-9 pr-3 h-9 text-sm rounded-md border border-border bg-background"
             />
           </div>
           <select
             name="status"
             defaultValue={statusFilter}
+            aria-label="Filter by status"
             className="h-9 rounded-md border border-border bg-background px-2 text-xs"
           >
             <option value="all">All</option>

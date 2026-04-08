@@ -153,7 +153,9 @@ async function ComplianceScoreSection({
           <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           <div>
             <h2 className="text-sm font-semibold">ISO 27001 Compliance</h2>
-            <p className="text-xs text-muted-foreground">Active framework snapshot</p>
+            <p className="text-xs text-muted-foreground">
+              Active framework snapshot
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -201,17 +203,18 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
   return (
     <>
       <div className="rounded-lg border border-border bg-card p-4">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <BadgeCheck className="h-4 w-4 text-muted-foreground" />
               <h2 className="text-sm font-semibold">Buyer Trust Packet</h2>
             </div>
             <p className="text-xs text-muted-foreground max-w-lg">
-              Shareable, procurement-ready snapshot — readiness, control coverage, evidence posture, and gaps.
+              Shareable, procurement-ready snapshot — readiness, control
+              coverage, evidence posture, and gaps.
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Link
               href="/api/reports/export?type=trust&format=pdf&mode=sync"
               prefetch={false}
@@ -240,7 +243,9 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
           </div>
         </div>
         {disableExports ? (
-          <p className="text-[10px] text-amber-500">Requires active subscription + admin access.</p>
+          <p className="text-[10px] text-amber-500">
+            Requires active subscription + admin access.
+          </p>
         ) : (
           <p className="text-[10px] text-emerald-500 flex items-center gap-1">
             <CheckCircle2 className="h-3 w-3" /> Export enabled
@@ -255,7 +260,7 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
             Certification Reports
           </span>
         </div>
-        <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {EXPORT_CARDS.map((card) => (
             <div
               key={card.title}
@@ -305,69 +310,78 @@ export default async function ReportsPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Reports Center</h1>
-          <p className="page-description">Generate audit-ready compliance artifacts and regulatory assessments.</p>
+          <p className="page-description">
+            Generate audit-ready compliance artifacts and regulatory
+            assessments.
+          </p>
         </div>
         <div className="flex gap-1.5">
           <span className="rounded-md bg-accent/50 px-2.5 py-1 text-xs font-medium text-foreground">
             Standard
           </span>
-          <Link href="/app/reports/custom" className="rounded-md px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground">
+          <Link
+            href="/app/reports/custom"
+            className="rounded-md px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground"
+          >
             My Reports
           </Link>
-          <Link href="/app/reports/trends" className="rounded-md px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground">
+          <Link
+            href="/app/reports/trends"
+            className="rounded-md px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground"
+          >
             Trends
           </Link>
         </div>
       </div>
       <div className="page-content space-y-4">
-      {!hasSubscription && (
-        <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-amber-100">
-          <div className="text-sm font-semibold">Subscription required</div>
-          <div className="mt-1 text-xs text-amber-200">
-            Activate your plan to unlock report exports and framework
-            evaluations.
+        {!hasSubscription && (
+          <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-amber-100">
+            <div className="text-sm font-semibold">Subscription required</div>
+            <div className="mt-1 text-xs text-amber-200">
+              Activate your plan to unlock report exports and framework
+              evaluations.
+            </div>
+            <Link
+              href="/app/billing"
+              className="mt-3 inline-flex text-xs font-semibold underline"
+            >
+              Go to billing
+            </Link>
           </div>
-          <Link
-            href="/app/billing"
-            className="mt-3 inline-flex text-xs font-semibold underline"
-          >
-            Go to billing
-          </Link>
-        </div>
-      )}
+        )}
 
-      {!hasAdminAccess && (
-        <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-6 py-4 text-sky-100">
-          <div className="text-sm font-semibold">Admin access required</div>
-          <div className="mt-1 text-xs text-sky-200">
-            Reports and trust exports are restricted to organization owners and
-            admins.
+        {!hasAdminAccess && (
+          <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-6 py-4 text-sky-100">
+            <div className="text-sm font-semibold">Admin access required</div>
+            <div className="mt-1 text-xs text-sky-200">
+              Reports and trust exports are restricted to organization owners
+              and admins.
+            </div>
+            <Link
+              href="/app/team"
+              className="mt-3 inline-flex text-xs font-semibold underline"
+            >
+              Review team roles
+            </Link>
           </div>
-          <Link
-            href="/app/team"
-            className="mt-3 inline-flex text-xs font-semibold underline"
-          >
-            Review team roles
-          </Link>
-        </div>
-      )}
+        )}
 
-      {/* Compliance score — streams when gap analysis completes */}
-      {ctx?.orgId && hasAdminAccess ? (
-        <Suspense fallback={<ComplianceScoreFallback />}>
-          <ComplianceScoreSection
-            orgId={ctx.orgId}
-            hasSubscription={hasSubscription}
-            hasFrameworkEval={hasFrameworkEval}
-          />
-        </Suspense>
-      ) : null}
+        {/* Compliance score — streams when gap analysis completes */}
+        {ctx?.orgId && hasAdminAccess ? (
+          <Suspense fallback={<ComplianceScoreFallback />}>
+            <ComplianceScoreSection
+              orgId={ctx.orgId}
+              hasSubscription={hasSubscription}
+              hasFrameworkEval={hasFrameworkEval}
+            />
+          </Suspense>
+        ) : null}
 
-      {/* Industry-specific report templates */}
-      <IndustryReportTemplates />
+        {/* Industry-specific report templates */}
+        <IndustryReportTemplates />
 
-      {/* Export section — renders with known permission state */}
-      <ExportSection disableExports={disableExports} />
+        {/* Export section — renders with known permission state */}
+        <ExportSection disableExports={disableExports} />
       </div>
     </div>
   );

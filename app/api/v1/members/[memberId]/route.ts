@@ -1,7 +1,13 @@
-import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
+import {
+  authenticateV1Request,
+  createEnvelope,
+  jsonWithContext,
+  logV1Access,
+} from '@/lib/api-keys/middleware';
 import { getActorId } from '@/lib/api/v1-helpers';
 import { logActivity } from '@/lib/audit-trail';
 import { queueWebhookDelivery } from '@/lib/webhooks/delivery-queue';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { dispatchIntegrationEvent } from '@/lib/integrations/manager';
 
 type RouteContext = { params: Promise<{ memberId: string }> };
@@ -10,7 +16,11 @@ const VALID_ROLES = new Set(['owner', 'admin', 'member', 'viewer']);
 
 export const runtime = 'nodejs';
 
-async function findMemberRecord(orgId: string, memberId: string, db: any) {
+async function findMemberRecord(
+  orgId: string,
+  memberId: string,
+  db: SupabaseClient,
+) {
   const member = await db
     .from('org_members')
     .select('*')
@@ -46,9 +56,17 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   const { memberId } = await context.params;
-  const target = await findMemberRecord(auth.context.orgId, memberId, auth.context.db);
+  const target = await findMemberRecord(
+    auth.context.orgId,
+    memberId,
+    auth.context.db,
+  );
   if (!target) {
-    const response = jsonWithContext(auth.context, { error: 'Member not found' }, { status: 404 });
+    const response = jsonWithContext(
+      auth.context,
+      { error: 'Member not found' },
+      { status: 404 },
+    );
     await logV1Access(auth.context, 404, 'members:read');
     return response;
   }
@@ -68,18 +86,33 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const { memberId } = await context.params;
-  const body = (await request.json().catch(() => null)) as { role?: unknown } | null;
-  const role = typeof body?.role === 'string' ? body.role.trim().toLowerCase() : '';
+  const body = (await request.json().catch(() => null)) as {
+    role?: unknown;
+  } | null;
+  const role =
+    typeof body?.role === 'string' ? body.role.trim().toLowerCase() : '';
 
   if (!VALID_ROLES.has(role)) {
-    const response = jsonWithContext(auth.context, { error: 'Invalid role' }, { status: 400 });
+    const response = jsonWithContext(
+      auth.context,
+      { error: 'Invalid role' },
+      { status: 400 },
+    );
     await logV1Access(auth.context, 400, 'members:write');
     return response;
   }
 
-  const target = await findMemberRecord(auth.context.orgId, memberId, auth.context.db);
+  const target = await findMemberRecord(
+    auth.context.orgId,
+    memberId,
+    auth.context.db,
+  );
   if (!target) {
-    const response = jsonWithContext(auth.context, { error: 'Member not found' }, { status: 404 });
+    const response = jsonWithContext(
+      auth.context,
+      { error: 'Member not found' },
+      { status: 404 },
+    );
     await logV1Access(auth.context, 404, 'members:write');
     return response;
   }
@@ -95,7 +128,11 @@ export async function PATCH(request: Request, context: RouteContext) {
     .single();
 
   if (error || !data) {
-    const response = jsonWithContext(auth.context, { error: 'Failed to update member' }, { status: 500 });
+    const response = jsonWithContext(
+      auth.context,
+      { error: 'Failed to update member' },
+      { status: 500 },
+    );
     await logV1Access(auth.context, 500, 'members:write');
     return response;
   }
@@ -117,7 +154,10 @@ export async function PATCH(request: Request, context: RouteContext) {
   ).catch(() => null);
 
   await logV1Access(auth.context, 200, 'members:write');
-  return jsonWithContext(auth.context, createEnvelope({ kind: target.kind, record: data }));
+  return jsonWithContext(
+    auth.context,
+    createEnvelope({ kind: target.kind, record: data }),
+  );
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
@@ -131,9 +171,17 @@ export async function DELETE(request: Request, context: RouteContext) {
   }
 
   const { memberId } = await context.params;
-  const target = await findMemberRecord(auth.context.orgId, memberId, auth.context.db);
+  const target = await findMemberRecord(
+    auth.context.orgId,
+    memberId,
+    auth.context.db,
+  );
   if (!target) {
-    const response = jsonWithContext(auth.context, { error: 'Member not found' }, { status: 404 });
+    const response = jsonWithContext(
+      auth.context,
+      { error: 'Member not found' },
+      { status: 404 },
+    );
     await logV1Access(auth.context, 404, 'members:write');
     return response;
   }

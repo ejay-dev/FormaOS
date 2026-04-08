@@ -55,7 +55,11 @@ export function TaskCalendarView({ tasks }: { tasks: Task[] }) {
     <div className="rounded-lg border border-border bg-card">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border">
-        <button onClick={prev} className="p-1 hover:bg-muted rounded">
+        <button
+          onClick={prev}
+          className="p-1 hover:bg-muted rounded"
+          aria-label="Previous month"
+        >
           <ChevronLeft className="h-4 w-4 text-muted-foreground" />
         </button>
         <h3 className="text-sm font-semibold text-foreground">
@@ -64,7 +68,11 @@ export function TaskCalendarView({ tasks }: { tasks: Task[] }) {
             year: 'numeric',
           })}
         </h3>
-        <button onClick={next} className="p-1 hover:bg-muted rounded">
+        <button
+          onClick={next}
+          className="p-1 hover:bg-muted rounded"
+          aria-label="Next month"
+        >
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
         </button>
       </div>

@@ -3,6 +3,13 @@
  * Creates unified master controls and tracks framework mappings
  */
 
+interface FrameworkControlMapping {
+  framework_control: Array<{
+    framework: Array<{ slug: string; name: string }>;
+    control_code: string;
+  }>;
+}
+
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 export type MasterControl = {
@@ -163,12 +170,15 @@ export async function getMasterControlWithMappings(
     )
     .eq('master_control_id', masterControlId);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const frameworks = (mappings || []).map((m: any) => ({
-    slug: m.framework_control.framework.slug,
-    name: m.framework_control.framework.name,
-    controlCode: m.framework_control.control_code,
-  }));
+  const frameworks = (mappings || []).map((m: FrameworkControlMapping) => {
+    const fc = m.framework_control[0];
+    const fw = fc?.framework[0];
+    return {
+      slug: fw?.slug ?? '',
+      name: fw?.name ?? '',
+      controlCode: fc?.control_code ?? '',
+    };
+  });
 
   return {
     id: master.id,
@@ -215,9 +225,12 @@ export async function getFrameworksSatisfiedByControl(
 
   // Return intersection
   const satisfiedFrameworks = (mappings || [])
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .map((m: any) => m.framework_control.framework.slug)
-    .filter((slug: string) => enabledSlugs.has(slug));
+    .map(
+      (m) =>
+        (m as unknown as FrameworkControlMapping).framework_control[0]
+          ?.framework[0]?.slug,
+    )
+    .filter((slug): slug is string => !!slug && enabledSlugs.has(slug));
 
   return Array.from(new Set(satisfiedFrameworks));
 }
@@ -253,9 +266,10 @@ export async function isControlDeduplicated(
     )
     .eq('master_control_id', mapping.master_control_id);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const frameworks = (allMappings || []).map(
-    (m: any) => m.framework_control.framework.name,
+    (m) =>
+      (m as unknown as FrameworkControlMapping).framework_control[0]
+        ?.framework[0]?.name ?? '',
   );
 
   return {

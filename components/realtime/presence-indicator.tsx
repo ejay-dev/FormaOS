@@ -19,7 +19,8 @@ export function PresenceIndicator({
   const { onlineUsers } = usePresence(room, currentUser);
 
   const otherUsers = onlineUsers.filter(
-    (u: any) => u.user_id !== currentUser.id,
+    (u: { user_id: string; user_email: string }) =>
+      u.user_id !== currentUser.id,
   );
 
   if (otherUsers.length === 0) {
@@ -34,18 +35,20 @@ export function PresenceIndicator({
     >
       <Users className="h-4 w-4 text-green-600" />
       <div className="flex -space-x-2">
-        {otherUsers.slice(0, 3).map((user: any, _index) => (
-          <div
-            key={user.user_id}
-            className="relative inline-block"
-            title={user.user_email}
-          >
-            <div className="h-8 w-8 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-white text-xs font-medium">
-              {user.user_email.charAt(0).toUpperCase()}
+        {otherUsers
+          .slice(0, 3)
+          .map((user: { user_id: string; user_email: string }, _index) => (
+            <div
+              key={user.user_id}
+              className="relative inline-block"
+              title={user.user_email}
+            >
+              <div className="h-8 w-8 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-white text-xs font-medium">
+                {user.user_email.charAt(0).toUpperCase()}
+              </div>
+              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-white" />
             </div>
-            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-white" />
-          </div>
-        ))}
+          ))}
       </div>
       <span className="text-sm text-green-700 font-medium">
         {otherUsers.length} {otherUsers.length === 1 ? 'person' : 'people'}{' '}

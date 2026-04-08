@@ -26,7 +26,10 @@ function shouldGroup(a: ActivityFeedRecord, b: ActivityFeedRecord) {
 }
 
 function groupActivities(items: ActivityFeedRecord[]) {
-  const groups: Array<{ lead: ActivityFeedRecord; items: ActivityFeedRecord[] }> = [];
+  const groups: Array<{
+    lead: ActivityFeedRecord;
+    items: ActivityFeedRecord[];
+  }> = [];
 
   for (const item of items) {
     const last = groups[groups.length - 1];
@@ -53,14 +56,17 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
     dateFrom: '',
     dateTo: '',
   });
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
+    {},
+  );
 
   const load = useCallback(
     async (cursor?: string | null, append?: boolean) => {
       const params = new URLSearchParams({ orgId, limit: '25' });
       if (filters.action) params.set('action', filters.action);
       if (filters.actorId) params.set('actorId', filters.actorId);
-      if (filters.resourceType) params.set('resourceType', filters.resourceType);
+      if (filters.resourceType)
+        params.set('resourceType', filters.resourceType);
       if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
       if (filters.dateTo) params.set('dateTo', filters.dateTo);
       if (cursor) params.set('cursor', cursor);
@@ -101,8 +107,8 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
           table: 'activity_feed',
           filter: `org_id=eq.${orgId}`,
         },
-        (payload: any) => {
-          const next = payload.new as ActivityFeedRecord;
+        (payload: { new: Record<string, unknown> }) => {
+          const next = payload.new as unknown as ActivityFeedRecord;
           setItems((current) => [next, ...current]);
         },
       )
@@ -122,7 +128,10 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
           <input
             value={filters.action}
             onChange={(event) =>
-              setFilters((current) => ({ ...current, action: event.target.value }))
+              setFilters((current) => ({
+                ...current,
+                action: event.target.value,
+              }))
             }
             placeholder="Action"
             className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
@@ -130,7 +139,10 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
           <input
             value={filters.actorId}
             onChange={(event) =>
-              setFilters((current) => ({ ...current, actorId: event.target.value }))
+              setFilters((current) => ({
+                ...current,
+                actorId: event.target.value,
+              }))
             }
             placeholder="Actor ID"
             className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
@@ -150,7 +162,10 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
             type="date"
             value={filters.dateFrom}
             onChange={(event) =>
-              setFilters((current) => ({ ...current, dateFrom: event.target.value }))
+              setFilters((current) => ({
+                ...current,
+                dateFrom: event.target.value,
+              }))
             }
             className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
           />
@@ -158,7 +173,10 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
             type="date"
             value={filters.dateTo}
             onChange={(event) =>
-              setFilters((current) => ({ ...current, dateTo: event.target.value }))
+              setFilters((current) => ({
+                ...current,
+                dateTo: event.target.value,
+              }))
             }
             className="rounded-2xl border border-glass-border bg-slate-950/70 px-4 py-3 text-sm text-foreground/90"
           />
@@ -222,7 +240,9 @@ export function ActivityFeed({ orgId }: { orgId: string }) {
                     }
                     className="text-xs font-black uppercase tracking-[0.22em] text-sky-200"
                   >
-                    {expanded ? 'Collapse group' : `Show ${group.items.length - 1} more`}
+                    {expanded
+                      ? 'Collapse group'
+                      : `Show ${group.items.length - 1} more`}
                   </button>
                 )}
               </div>
