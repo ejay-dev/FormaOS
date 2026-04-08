@@ -1,4 +1,17 @@
-# 📋 FormaOS QA Audit Changelog
+# 📋 FormaOS Changelog
+
+## [3.3.0] - 2026-04-08
+
+### Master Sprint — Onboarding, Seed Data, Financial Services, Coverage, Cleanup, Decomposition
+
+- **Onboarding wizard:** Multi-step guided onboarding with industry-specific compliance framework roadmaps, progress tracking, and contextual next-step recommendations
+- **Demo seed data:** Pre-built seed data for all 6 supported industries (NDIS, Healthcare, Aged Care, Childcare, Community Services, Financial Services) with demo banner and one-click clear function
+- **Financial Services dashboard:** Breach register, board report generator, transaction monitoring, risk scoring, and regulatory obligation tracking for APRA/ASIC/AML-CTF compliance
+- **Branch coverage 34% → 50%:** 9,075 of 18,115 branches covered (50.10%), 301 test suites, 4,102 tests passing with 0 failures
+- **TypeScript `any` cleanup:** Removed untyped `any` annotations from 50 files — replaced with proper types, generics, `unknown` with narrowing, and Supabase-aware casts
+- **Component decomposition:** `employer-dashboard.tsx` split from 1,840 → 528 LOC (72% reduction) into 5 focused files: quick-actions, industry-labels, attention-rail, employer-tables, and main orchestrator
+
+---
 
 ## [3.2.0] - 2026-04-05
 

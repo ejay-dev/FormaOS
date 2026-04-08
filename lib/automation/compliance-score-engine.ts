@@ -45,18 +45,19 @@ export interface ComplianceScoreResult {
  * Calculate comprehensive compliance score for an organization
  */
 export async function calculateComplianceScore(
-  organizationId: string
+  organizationId: string,
 ): Promise<ComplianceScoreResult> {
   const supabase = createSupabaseAdminClient();
 
   // Fetch all compliance data in parallel
-  const [controls, evidence, tasks, policies, frameworkSnapshots] = await Promise.all([
-    fetchControlsData(supabase, organizationId),
-    fetchEvidenceData(supabase, organizationId),
-    fetchTasksData(supabase, organizationId),
-    fetchPoliciesData(supabase, organizationId),
-    fetchFrameworkScores(supabase, organizationId),
-  ]);
+  const [controls, evidence, tasks, policies, frameworkSnapshots] =
+    await Promise.all([
+      fetchControlsData(supabase, organizationId),
+      fetchEvidenceData(supabase, organizationId),
+      fetchTasksData(supabase, organizationId),
+      fetchPoliciesData(supabase, organizationId),
+      fetchFrameworkScores(supabase, organizationId),
+    ]);
 
   // Calculate individual scores
   const controlsScore = calculateControlsScore(controls);
@@ -82,11 +83,13 @@ export async function calculateComplianceScore(
   const combinedFrameworkScore = frameworkSnapshots.length
     ? Math.round(
         frameworkSnapshots.reduce(
-          (sum: number, fw: any) => sum + fw.score * Math.max(1, fw.totalControls),
+          (sum: number, fw: { score: number; totalControls: number }) =>
+            sum + fw.score * Math.max(1, fw.totalControls),
           0,
         ) /
           frameworkSnapshots.reduce(
-            (sum: number, fw: any) => sum + Math.max(1, fw.totalControls),
+            (sum: number, fw: { score: number; totalControls: number }) =>
+              sum + Math.max(1, fw.totalControls),
             0,
           ),
       )
@@ -122,7 +125,10 @@ export async function calculateComplianceScore(
   };
 }
 
-async function fetchFrameworkScores(supabase: any, orgId: string) {
+async function fetchFrameworkScores(
+  supabase: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+) {
   const { data: frameworks } = await supabase
     .from('compliance_frameworks')
     .select('id, code, title');
@@ -136,32 +142,49 @@ async function fetchFrameworkScores(supabase: any, orgId: string) {
     .eq('control_type', 'framework_snapshot')
     .order('last_evaluated_at', { ascending: false });
 
-  const latestByFramework = new Map<string, any>();
-  (snapshots ?? []).forEach((row: any) => {
-    if (!row.framework_id) return;
-    if (!latestByFramework.has(row.framework_id)) {
-      latestByFramework.set(row.framework_id, row);
+  const latestByFramework = new Map<
+    string,
+    {
+      framework_id: string;
+      compliance_score: number;
+      total_controls: number;
+      last_evaluated_at: string | null;
     }
-  });
+  >();
+  (snapshots ?? []).forEach(
+    (row: {
+      framework_id: string;
+      compliance_score: number;
+      total_controls: number;
+      last_evaluated_at: string | null;
+    }) => {
+      if (!row.framework_id) return;
+      if (!latestByFramework.has(row.framework_id)) {
+        latestByFramework.set(row.framework_id, row);
+      }
+    },
+  );
 
-  return frameworks.map((framework: any) => {
-    const snapshot = latestByFramework.get(framework.id);
-    return {
-      frameworkId: framework.id as string,
-      frameworkCode: framework.code ?? 'UNKNOWN',
-      frameworkTitle: framework.title ?? framework.code,
-      score: Number(snapshot?.compliance_score ?? 0),
-      totalControls: Number(snapshot?.total_controls ?? 0),
-      evaluatedAt: snapshot?.last_evaluated_at ?? null,
-    };
-  });
+  return frameworks.map(
+    (framework: { id: string; code: string; title: string }) => {
+      const snapshot = latestByFramework.get(framework.id);
+      return {
+        frameworkId: framework.id as string,
+        frameworkCode: framework.code ?? 'UNKNOWN',
+        frameworkTitle: framework.title ?? framework.code,
+        score: Number(snapshot?.compliance_score ?? 0),
+        totalControls: Number(snapshot?.total_controls ?? 0),
+        evaluatedAt: snapshot?.last_evaluated_at ?? null,
+      };
+    },
+  );
 }
 
 /**
  * Save compliance score to database
  */
 export async function saveComplianceScore(
-  score: ComplianceScoreResult
+  score: ComplianceScoreResult,
 ): Promise<void> {
   const supabase = createSupabaseAdminClient();
 
@@ -190,7 +213,10 @@ export async function saveComplianceScore(
 }
 
 // Helper functions for data fetching
-async function fetchControlsData(supabase: any, orgId: string) {
+async function fetchControlsData(
+  supabase: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+) {
   const { data: controlEvals } = await supabase
     .from('org_control_evaluations')
     .select('status')
@@ -198,11 +224,15 @@ async function fetchControlsData(supabase: any, orgId: string) {
 
   const totalControls = controlEvals?.length || 0;
   const compliantControls =
-    controlEvals?.filter((c: any) => c.status === 'compliant').length || 0;
+    controlEvals?.filter((c: { status: string }) => c.status === 'compliant')
+      .length || 0;
   const atRiskControls =
-    controlEvals?.filter((c: any) => c.status === 'at_risk').length || 0;
+    controlEvals?.filter((c: { status: string }) => c.status === 'at_risk')
+      .length || 0;
   const nonCompliantControls =
-    controlEvals?.filter((c: any) => c.status === 'non_compliant').length || 0;
+    controlEvals?.filter(
+      (c: { status: string }) => c.status === 'non_compliant',
+    ).length || 0;
 
   return {
     totalControls,
@@ -212,7 +242,10 @@ async function fetchControlsData(supabase: any, orgId: string) {
   };
 }
 
-async function fetchEvidenceData(supabase: any, orgId: string) {
+async function fetchEvidenceData(
+  supabase: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+) {
   const { data: evidence } = await supabase
     .from('org_evidence')
     .select('verification_status')
@@ -220,13 +253,19 @@ async function fetchEvidenceData(supabase: any, orgId: string) {
 
   const totalEvidence = evidence?.length || 0;
   const verifiedEvidence =
-    evidence?.filter((e: any) => e.verification_status === 'verified').length ||
-    0;
+    evidence?.filter(
+      (e: { verification_status: string | null }) =>
+        e.verification_status === 'verified',
+    ).length || 0;
   const pendingEvidence =
-    evidence?.filter((e: any) => !e.verification_status).length || 0;
+    evidence?.filter(
+      (e: { verification_status: string | null }) => !e.verification_status,
+    ).length || 0;
   const rejectedEvidence =
-    evidence?.filter((e: any) => e.verification_status === 'rejected').length ||
-    0;
+    evidence?.filter(
+      (e: { verification_status: string | null }) =>
+        e.verification_status === 'rejected',
+    ).length || 0;
 
   return {
     totalEvidence,
@@ -236,7 +275,10 @@ async function fetchEvidenceData(supabase: any, orgId: string) {
   };
 }
 
-async function fetchTasksData(supabase: any, orgId: string) {
+async function fetchTasksData(
+  supabase: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+) {
   const { data: tasks } = await supabase
     .from('org_tasks')
     .select('status, due_date')
@@ -244,21 +286,25 @@ async function fetchTasksData(supabase: any, orgId: string) {
 
   const totalTasks = tasks?.length || 0;
   const completedTasks =
-    tasks?.filter((t: any) => t.status === 'completed').length || 0;
+    tasks?.filter(
+      (t: { status: string; due_date: string | null }) =>
+        t.status === 'completed',
+    ).length || 0;
 
   const now = new Date();
   const overdueTasks =
     tasks?.filter(
-      (t: any) =>
-        t.status !== 'completed' &&
-        t.due_date &&
-        new Date(t.due_date) < now
+      (t: { status: string; due_date: string | null }) =>
+        t.status !== 'completed' && t.due_date && new Date(t.due_date) < now,
     ).length || 0;
 
   return { totalTasks, completedTasks, overdueTasks };
 }
 
-async function fetchPoliciesData(supabase: any, orgId: string) {
+async function fetchPoliciesData(
+  supabase: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+) {
   const { data: policies } = await supabase
     .from('org_policies')
     .select('status')
@@ -267,16 +313,23 @@ async function fetchPoliciesData(supabase: any, orgId: string) {
   const totalPolicies = policies?.length || 0;
   const approvedPolicies =
     policies?.filter(
-      (p: any) => p.status === 'approved' || p.status === 'published'
+      (p: { status: string }) =>
+        p.status === 'approved' || p.status === 'published',
     ).length || 0;
   const draftPolicies =
-    policies?.filter((p: any) => p.status === 'draft').length || 0;
+    policies?.filter((p: { status: string }) => p.status === 'draft').length ||
+    0;
 
   return { totalPolicies, approvedPolicies, draftPolicies };
 }
 
 // Scoring calculations
-function calculateControlsScore(data: any): number {
+function calculateControlsScore(data: {
+  totalControls: number;
+  compliantControls: number;
+  atRiskControls: number;
+  nonCompliantControls: number;
+}): number {
   if (data.totalControls === 0) return 100;
 
   const compliantWeight = 1.0;
@@ -292,7 +345,12 @@ function calculateControlsScore(data: any): number {
   return Math.round(weightedScore * 100);
 }
 
-function calculateEvidenceScore(data: any): number {
+function calculateEvidenceScore(data: {
+  totalEvidence: number;
+  verifiedEvidence: number;
+  pendingEvidence: number;
+  rejectedEvidence: number;
+}): number {
   if (data.totalEvidence === 0) return 50; // Neutral score if no evidence
 
   const verifiedWeight = 1.0;
@@ -308,7 +366,11 @@ function calculateEvidenceScore(data: any): number {
   return Math.round(weightedScore * 100);
 }
 
-function calculateTasksScore(data: any): number {
+function calculateTasksScore(data: {
+  totalTasks: number;
+  completedTasks: number;
+  overdueTasks: number;
+}): number {
   if (data.totalTasks === 0) return 100;
 
   const completionRate = data.completedTasks / data.totalTasks;
@@ -320,7 +382,10 @@ function calculateTasksScore(data: any): number {
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 
-function calculatePoliciesScore(data: any): number {
+function calculatePoliciesScore(data: {
+  totalPolicies: number;
+  approvedPolicies: number;
+}): number {
   if (data.totalPolicies === 0) return 50;
 
   const approvalRate = data.approvedPolicies / data.totalPolicies;
@@ -353,7 +418,11 @@ function calculateOverallScore(scores: {
 
 function determineRiskLevel(
   score: number,
-  data: { overdueTasks: number; nonCompliantControls: number; rejectedEvidence: number }
+  data: {
+    overdueTasks: number;
+    nonCompliantControls: number;
+    rejectedEvidence: number;
+  },
 ): 'low' | 'medium' | 'high' | 'critical' {
   // Critical if multiple red flags
   if (
@@ -382,7 +451,7 @@ function determineRiskLevel(
  * Calculate and save compliance score for an organization
  */
 export async function updateComplianceScore(
-  organizationId: string
+  organizationId: string,
 ): Promise<ComplianceScoreResult> {
   const score = await calculateComplianceScore(organizationId);
   await saveComplianceScore(score);

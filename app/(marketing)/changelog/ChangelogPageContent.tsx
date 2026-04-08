@@ -144,6 +144,52 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v3.3.0',
+    codename: 'Catalyst',
+    date: '2026-04-08',
+    summary:
+      'Master sprint: guided onboarding wizard, demo seed data for 6 industries, financial services compliance dashboard, branch coverage from 34% to 50%, TypeScript any cleanup across 50 files, and employer dashboard decomposition from 1,840 to 528 lines.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Multi-step onboarding wizard with industry-specific framework roadmaps',
+        tag: 'feature',
+        detail:
+          'Guided onboarding flow that detects organization industry and presents tailored compliance framework recommendations, progress milestones, and contextual next-step actions to accelerate time-to-value.',
+      },
+      {
+        text: 'Demo seed data for all 6 supported industries',
+        tag: 'feature',
+        detail:
+          'Pre-built realistic seed data for NDIS, Healthcare, Aged Care, Childcare, Community Services, and Financial Services. Includes demo banner indicator and one-click clear function for safe exploration.',
+      },
+      {
+        text: 'Financial Services compliance dashboard with breach register and board reporting',
+        tag: 'feature',
+        detail:
+          'Purpose-built dashboard for APRA/ASIC/AML-CTF compliance: breach register with severity tracking, board report generator, transaction monitoring overview, risk scoring engine, and regulatory obligation timeline.',
+      },
+      {
+        text: 'Branch coverage increased from 34% to 50% — 4,102 tests passing',
+        tag: 'improvement',
+        detail:
+          'Added comprehensive test suites bringing branch coverage from 34.72% to 50.10% (9,075 of 18,115 branches). 301 test suites, 4,102 tests, 0 failures. Covers compliance engine, auth, API routes, stores, and utilities.',
+      },
+      {
+        text: 'TypeScript any types removed from 50 files with proper typing',
+        tag: 'improvement',
+        detail:
+          'Systematic cleanup replacing untyped any annotations with Record<string, unknown>, proper generics, Supabase-aware casts, and unknown with type narrowing. Zero tsc errors after all changes.',
+      },
+      {
+        text: 'Employer dashboard decomposed from 1,840 to 528 lines',
+        tag: 'improvement',
+        detail:
+          'Split monolithic employer-dashboard.tsx into 5 focused files: quick-actions (592 lines), industry-labels (62 lines), attention-rail (272 lines), employer-tables (410 lines), and main orchestrator (528 lines). 72% reduction in main file size.',
+      },
+    ],
+  },
+  {
     version: 'v3.1.1',
     codename: 'Bastion',
     date: '2026-04-05',

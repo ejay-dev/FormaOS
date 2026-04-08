@@ -424,7 +424,7 @@ export async function getFileHistory(
   if (error) return [];
 
   return (
-    data?.map((version: any) => ({
+    data?.map((version) => ({
       ...version,
       uploader: version.profiles,
     })) || []
@@ -455,7 +455,11 @@ export async function getVersionStats(organizationId: string): Promise<{
 
   const totalFiles = files?.length || 0;
   const totalVersions =
-    files?.reduce((sum: any, file: any) => sum + file.total_versions, 0) || 0;
+    files?.reduce(
+      (sum: number, file: { total_versions: number }) =>
+        sum + file.total_versions,
+      0,
+    ) || 0;
   const averageVersionsPerFile =
     totalFiles > 0 ? Math.round(totalVersions / totalFiles) : 0;
 
@@ -470,7 +474,7 @@ export async function getVersionStats(organizationId: string): Promise<{
     }));
 
   // Get recent versions across all files
-  const fileIds = files?.map((f: any) => f.id) || [];
+  const fileIds = files?.map((f: { id: string }) => f.id) || [];
   const { data: recentVersions } = await supabase
     .from('file_versions')
     .select('*')

@@ -23,6 +23,8 @@ import { EvidenceDrawer } from '@/components/compliance/EvidenceDrawer';
 import type { ObligationStatus } from '@/lib/stores/compliance';
 import { ragFromStatus, ragBadgeClass } from '@/lib/stores/compliance';
 
+type RiskLevel = 'critical' | 'high' | 'medium' | 'low';
+
 interface ObligationRow {
   id: string;
   title: string;
@@ -32,6 +34,7 @@ interface ObligationRow {
   dueDate: string;
   status: ObligationStatus;
   evidenceCount: number;
+  riskScore?: RiskLevel;
 }
 
 const STATUS_LABELS: Record<ObligationStatus, string> = {
@@ -50,6 +53,60 @@ const STATUS_SORT_ORDER: Record<ObligationStatus, number> = {
   completed: 4,
 };
 
+const RISK_SORT_ORDER: Record<RiskLevel, number> = {
+  critical: 0,
+  high: 1,
+  medium: 2,
+  low: 3,
+};
+
+const RISK_LABELS: Record<RiskLevel, string> = {
+  critical: 'Critical',
+  high: 'High',
+  medium: 'Medium',
+  low: 'Low',
+};
+
+const RISK_BADGE_CLASSES: Record<RiskLevel, string> = {
+  critical: 'border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-400',
+  high: 'border-orange-500/30 bg-orange-500/10 text-orange-700 dark:text-orange-400',
+  medium:
+    'border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
+  low: 'border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400',
+};
+
+function computeRiskScore(row: ObligationRow): RiskLevel {
+  if (row.status === 'completed') return 'low';
+
+  let score = 0;
+
+  // Status weight
+  if (row.status === 'overdue') score += 40;
+  else if (row.status === 'due_soon') score += 20;
+  else if (row.status === 'not_started') score += 15;
+
+  // Days overdue / until due
+  const now = Date.now();
+  const due = new Date(row.dueDate).getTime();
+  const daysUntilDue = (due - now) / (1000 * 60 * 60 * 24);
+  if (daysUntilDue < -30) score += 30;
+  else if (daysUntilDue < -7) score += 20;
+  else if (daysUntilDue < 0) score += 10;
+  else if (daysUntilDue < 7) score += 5;
+
+  // Evidence gap
+  if (row.evidenceCount === 0) score += 20;
+  else if (row.evidenceCount < 2) score += 10;
+
+  // No owner assigned
+  if (!row.owner) score += 10;
+
+  if (score >= 60) return 'critical';
+  if (score >= 35) return 'high';
+  if (score >= 15) return 'medium';
+  return 'low';
+}
+
 function StatusBadge({ status }: { status: ObligationStatus }) {
   const rag = ragFromStatus(status);
   return (
@@ -57,6 +114,16 @@ function StatusBadge({ status }: { status: ObligationStatus }) {
       className={`inline-flex items-center rounded border px-2 py-0.5 text-[11px] font-semibold ${ragBadgeClass(rag)}`}
     >
       {STATUS_LABELS[status]}
+    </span>
+  );
+}
+
+function RiskBadge({ level }: { level: RiskLevel }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded border px-2 py-0.5 text-[11px] font-semibold ${RISK_BADGE_CLASSES[level]}`}
+    >
+      {RISK_LABELS[level]}
     </span>
   );
 }
@@ -76,16 +143,20 @@ interface FilterBarProps {
   frameworks: string[];
   selectedFramework: string;
   selectedStatus: string;
+  selectedRisk: string;
   onFrameworkChange: (v: string) => void;
   onStatusChange: (v: string) => void;
+  onRiskChange: (v: string) => void;
 }
 
 function FilterBar({
   frameworks,
   selectedFramework,
   selectedStatus,
+  selectedRisk,
   onFrameworkChange,
   onStatusChange,
+  onRiskChange,
 }: FilterBarProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -114,6 +185,18 @@ function FilterBar({
           </option>
         ))}
       </select>
+      <select
+        value={selectedRisk}
+        onChange={(e) => onRiskChange(e.target.value)}
+        className="rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-xs text-foreground"
+      >
+        <option value="">All Risk Levels</option>
+        {Object.entries(RISK_LABELS).map(([k, v]) => (
+          <option key={k} value={k}>
+            {v}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
@@ -134,6 +217,7 @@ function ObligationsTableInner() {
   }>({ open: false, id: '', title: '' });
   const [frameworkFilter, setFrameworkFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [riskFilter, setRiskFilter] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -160,13 +244,23 @@ function ObligationsTableInner() {
     [data],
   );
 
+  const scoredData = useMemo(
+    () =>
+      data.map((d) => ({
+        ...d,
+        riskScore: d.riskScore ?? computeRiskScore(d),
+      })),
+    [data],
+  );
+
   const filteredData = useMemo(() => {
-    let result = data;
+    let result = scoredData;
     if (frameworkFilter)
       result = result.filter((d) => d.framework === frameworkFilter);
     if (statusFilter) result = result.filter((d) => d.status === statusFilter);
+    if (riskFilter) result = result.filter((d) => d.riskScore === riskFilter);
     return result;
-  }, [data, frameworkFilter, statusFilter]);
+  }, [scoredData, frameworkFilter, statusFilter, riskFilter]);
 
   const columns: ColumnDef<ObligationRow>[] = useMemo(
     () => [
@@ -267,6 +361,28 @@ function ObligationsTableInner() {
         },
       },
       {
+        accessorKey: 'riskScore',
+        header: ({ column }) => (
+          <button
+            onClick={() => column.toggleSorting()}
+            className="flex items-center gap-1"
+          >
+            Risk <ArrowUpDown className="h-3 w-3" />
+          </button>
+        ),
+        cell: ({ row }) => {
+          const level = row.getValue('riskScore') as RiskLevel;
+          return <RiskBadge level={level} />;
+        },
+        size: 90,
+        sortingFn: (a, b) => {
+          return (
+            RISK_SORT_ORDER[a.original.riskScore ?? 'low'] -
+            RISK_SORT_ORDER[b.original.riskScore ?? 'low']
+          );
+        },
+      },
+      {
         accessorKey: 'evidenceCount',
         header: 'Evidence',
         cell: ({ row }) => {
@@ -331,8 +447,10 @@ function ObligationsTableInner() {
             frameworks={frameworks}
             selectedFramework={frameworkFilter}
             selectedStatus={statusFilter}
+            selectedRisk={riskFilter}
             onFrameworkChange={setFrameworkFilter}
             onStatusChange={setStatusFilter}
+            onRiskChange={setRiskFilter}
           />
           {selectedCount > 0 && (
             <div className="flex items-center gap-2">

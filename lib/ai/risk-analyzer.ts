@@ -29,7 +29,7 @@ export interface RiskFactor {
   affectedEntities: string[];
   recommendation: string;
   detectedAt: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface RiskAnalysisResult {
@@ -55,7 +55,7 @@ export interface AIInsight {
   impact: RiskLevel;
   actionable: boolean;
   suggestedActions: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -374,7 +374,7 @@ async function generateAIInsights(
 
   // Insight 1: Certificate renewal pattern
   const certRisks = risks.filter(
-    (r: any) => r.category === 'certificate_expiration',
+    (r: RiskFactor) => r.category === 'certificate_expiration',
   );
   if (certRisks.length >= 2) {
     insights.push({
@@ -394,7 +394,9 @@ async function generateAIInsights(
   }
 
   // Insight 2: Task completion patterns
-  const taskRisks = risks.filter((r: any) => r.category === 'overdue_tasks');
+  const taskRisks = risks.filter(
+    (r: RiskFactor) => r.category === 'overdue_tasks',
+  );
   if (taskRisks.length >= 3) {
     insights.push({
       type: 'anomaly',
@@ -413,7 +415,9 @@ async function generateAIInsights(
   }
 
   // Insight 3: Evidence management optimization
-  const evidenceRisks = risks.filter((r: any) => r.category === 'missing_evidence');
+  const evidenceRisks = risks.filter(
+    (r: RiskFactor) => r.category === 'missing_evidence',
+  );
   if (evidenceRisks.length > 0) {
     insights.push({
       type: 'optimization',
@@ -432,7 +436,9 @@ async function generateAIInsights(
   }
 
   // Insight 4: Proactive recommendations
-  const criticalRisks = risks.filter((r: any) => r.severity === 'critical');
+  const criticalRisks = risks.filter(
+    (r: RiskFactor) => r.severity === 'critical',
+  );
   if (criticalRisks.length === 0 && risks.length < 5) {
     insights.push({
       type: 'recommendation',
@@ -524,10 +530,11 @@ export async function performRiskAnalysis(
   };
 
   const risksBySeverity: Record<RiskLevel, number> = {
-    low: allRisks.filter((r: any) => r.severity === 'low').length,
-    medium: allRisks.filter((r: any) => r.severity === 'medium').length,
-    high: allRisks.filter((r: any) => r.severity === 'high').length,
-    critical: allRisks.filter((r: any) => r.severity === 'critical').length,
+    low: allRisks.filter((r: RiskFactor) => r.severity === 'low').length,
+    medium: allRisks.filter((r: RiskFactor) => r.severity === 'medium').length,
+    high: allRisks.filter((r: RiskFactor) => r.severity === 'high').length,
+    critical: allRisks.filter((r: RiskFactor) => r.severity === 'critical')
+      .length,
   };
 
   // Get previous analysis for trends
@@ -559,13 +566,15 @@ export async function performRiskAnalysis(
   // Compile recommendations
   const recommendations = [
     ...allRisks
-      .filter((r: any) => r.severity === 'critical' || r.severity === 'high')
+      .filter(
+        (r: RiskFactor) => r.severity === 'critical' || r.severity === 'high',
+      )
       .slice(0, 5)
-      .map((r: any) => r.recommendation),
+      .map((r: RiskFactor) => r.recommendation),
     ...aiInsights
-      .filter((i: any) => i.actionable)
+      .filter((i: AIInsight) => i.actionable)
       .slice(0, 3)
-      .flatMap((i: any) => i.suggestedActions),
+      .flatMap((i: AIInsight) => i.suggestedActions),
   ];
 
   // Save analysis to database

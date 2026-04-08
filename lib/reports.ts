@@ -40,7 +40,7 @@ export interface ReportSection {
     | 'team'
     | 'recommendations';
   title: string;
-  content?: any;
+  content?: unknown;
 }
 
 /**
@@ -382,32 +382,39 @@ export async function generateCertificateReport(
           </thead>
           <tbody>
             ${(certificates || [])
-              .map((cert: any) => {
-                const expiryDate = new Date(cert.expiry_date);
-                const daysUntilExpiry = Math.ceil(
-                  (expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
-                );
-                let statusClass = 'status-active';
-                let statusText = 'Active';
+              .map(
+                (cert: {
+                  expiry_date: string;
+                  name?: string;
+                  issued_date?: string;
+                  issuer?: string;
+                }) => {
+                  const expiryDate = new Date(cert.expiry_date);
+                  const daysUntilExpiry = Math.ceil(
+                    (expiryDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
+                  );
+                  let statusClass = 'status-active';
+                  let statusText = 'Active';
 
-                if (daysUntilExpiry < 0) {
-                  statusClass = 'status-expired';
-                  statusText = 'Expired';
-                } else if (daysUntilExpiry < 30) {
-                  statusClass = 'status-expiring';
-                  statusText = 'Expiring Soon';
-                }
+                  if (daysUntilExpiry < 0) {
+                    statusClass = 'status-expired';
+                    statusText = 'Expired';
+                  } else if (daysUntilExpiry < 30) {
+                    statusClass = 'status-expiring';
+                    statusText = 'Expiring Soon';
+                  }
 
-                return `
+                  return `
                 <tr>
                   <td>${cert.name}</td>
-                  <td>${new Date(cert.issued_date).toLocaleDateString()}</td>
+                  <td>${new Date(cert.issued_date!).toLocaleDateString()}</td>
                   <td>${expiryDate.toLocaleDateString()}</td>
                   <td class="${statusClass}">${statusText}</td>
                   <td>${cert.issuer || 'N/A'}</td>
                 </tr>
               `;
-              })
+                },
+              )
               .join('')}
           </tbody>
         </table>
@@ -448,7 +455,7 @@ export async function generateAuditReport(
 
   // Group activities by action type
   const activityCounts: Record<string, number> = {};
-  (activities || []).forEach((activity: any) => {
+  (activities || []).forEach((activity: { action: string }) => {
     activityCounts[activity.action] =
       (activityCounts[activity.action] || 0) + 1;
   });
@@ -514,7 +521,13 @@ export async function generateAuditReport(
             ${(activities || [])
               .slice(0, 100)
               .map(
-                (activity: any) => `
+                (activity: {
+                  created_at: string;
+                  profiles?: { full_name?: string; email?: string };
+                  action: string;
+                  entity_type?: string;
+                  entity_name?: string;
+                }) => `
               <tr>
                 <td>${new Date(activity.created_at).toLocaleString()}</td>
                 <td>${activity.profiles?.full_name || activity.profiles?.email || 'Unknown'}</td>

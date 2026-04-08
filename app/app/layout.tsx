@@ -14,6 +14,7 @@ import { Logo } from '@/components/brand/Logo';
 import { HelpAssistant } from '@/components/help/HelpAssistant';
 import { AiAssistant } from '@/components/ai-assistant/AiAssistant';
 import { NotificationToast } from '@/components/notifications/notification-toast';
+import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import { SecurityTrackingBootstrap } from '@/components/security/SecurityTrackingBootstrap';
@@ -102,19 +103,8 @@ export default async function AppLayout({
   // Only redirect to /admin if they have NO organization at all.
   // The middleware already allows founders to access /admin, so this is safe.
 
-  // Validate onboarding completion
-  if (!systemState.organization.onboardingCompleted) {
-    const recovery = await recoverUserWorkspace({
-      userId: systemState.user.id,
-      userEmail: systemState.user.email ?? null,
-      source: 'app-layout-onboarding-guard',
-    });
-    redirect(
-      recovery.nextPath === '/app'
-        ? '/workspace-recovery?from=app-layout-onboarding-loop'
-        : recovery.nextPath,
-    );
-  }
+  // Track whether the onboarding wizard should be shown
+  const showOnboardingWizard = !systemState.organization.onboardingCompleted;
 
   /* -------------------------------------------------------
    * 3) APPLICATION FRAME
@@ -141,6 +131,7 @@ export default async function AppLayout({
             isFounder: systemState.isFounder,
           }}
         >
+          {showOnboardingWizard && <OnboardingWizard />}
           <div className="app-shell relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
             {/* Ambient background */}
             <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
@@ -153,9 +144,7 @@ export default async function AppLayout({
                   <div className="flex items-center gap-2">
                     <Logo variant="mark" size={28} />
                     <div>
-                      <div className="text-sm font-bold">
-                        {brand.appName}
-                      </div>
+                      <div className="text-sm font-bold">{brand.appName}</div>
                     </div>
                   </div>
                 </div>

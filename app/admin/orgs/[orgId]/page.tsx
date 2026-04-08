@@ -147,7 +147,9 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
                 orgId={orgId}
                 currentPlan={organization.plan_key}
                 currentSubscriptionStatus={subscription?.status ?? 'pending'}
-                currentLifecycleStatus={organization.lifecycle_status ?? 'active'}
+                currentLifecycleStatus={
+                  organization.lifecycle_status ?? 'active'
+                }
               />
             </div>
 
@@ -194,14 +196,16 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
                   Next Best Actions
                 </p>
                 <div className="mt-3 space-y-2 text-sm text-muted-foreground">
-                  {(customerHealth?.nextBestActions ?? []).slice(0, 6).map((action: string) => (
-                    <div
-                      key={action}
-                      className="rounded-lg border border-border px-3 py-2"
-                    >
-                      {action}
-                    </div>
-                  ))}
+                  {(customerHealth?.nextBestActions ?? [])
+                    .slice(0, 6)
+                    .map((action: string) => (
+                      <div
+                        key={action}
+                        className="rounded-lg border border-border px-3 py-2"
+                      >
+                        {action}
+                      </div>
+                    ))}
                   {(customerHealth?.nextBestActions ?? []).length === 0 ? (
                     <p>No immediate operator actions recommended.</p>
                   ) : null}
@@ -212,20 +216,20 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
                   Activation Milestones
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {Object.entries(customerHealth?.activation?.milestones ?? {}).map(
-                    ([key, done]) => (
-                      <span
-                        key={key}
-                        className={`rounded-full border px-2 py-1 text-[11px] ${
-                          done
-                            ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-                            : 'border-amber-500/30 bg-amber-500/10 text-amber-200'
-                        }`}
-                      >
-                        {key}
-                      </span>
-                    ),
-                  )}
+                  {Object.entries(
+                    customerHealth?.activation?.milestones ?? {},
+                  ).map(([key, done]) => (
+                    <span
+                      key={key}
+                      className={`rounded-full border px-2 py-1 text-[11px] ${
+                        done
+                          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+                          : 'border-amber-500/30 bg-amber-500/10 text-amber-200'
+                      }`}
+                    >
+                      {key}
+                    </span>
+                  ))}
                 </div>
                 {organization.lifecycle_reason ? (
                   <p className="mt-4 text-xs text-muted-foreground">
@@ -254,20 +258,29 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {members.map((member: any) => (
-                    <tr key={member.user_id}>
-                      <td className="py-3">{member.email}</td>
-                      <td className="py-3 capitalize">{member.role}</td>
-                      <td className="py-3">{formatDate(member.created_at)}</td>
-                      <td className="py-3 text-right">
-                        <MemberManagementActions
-                          orgId={orgId}
-                          userId={member.user_id}
-                          currentRole={member.role}
-                        />
-                      </td>
-                    </tr>
-                  ))}
+                  {members.map(
+                    (member: {
+                      user_id: string;
+                      email?: string;
+                      role: string;
+                      created_at?: string;
+                    }) => (
+                      <tr key={member.user_id}>
+                        <td className="py-3">{member.email}</td>
+                        <td className="py-3 capitalize">{member.role}</td>
+                        <td className="py-3">
+                          {formatDate(member.created_at)}
+                        </td>
+                        <td className="py-3 text-right">
+                          <MemberManagementActions
+                            orgId={orgId}
+                            userId={member.user_id}
+                            currentRole={member.role}
+                          />
+                        </td>
+                      </tr>
+                    ),
+                  )}
                   {members.length === 0 ? (
                     <tr>
                       <td
@@ -289,15 +302,23 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
             </h2>
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {entitlements.length > 0 ? (
-                entitlements.map((entitlement: any) => (
-                  <EntitlementOverrideRow
-                    key={entitlement.feature_key}
-                    orgId={orgId}
-                    featureKey={entitlement.feature_key}
-                    enabled={Boolean(entitlement.enabled)}
-                    limitValue={entitlement.limit_value ?? null}
-                  />
-                ))
+                entitlements.map(
+                  (entitlement: {
+                    id: string;
+                    feature_key: string;
+                    enabled?: boolean;
+                    override_value?: unknown;
+                    limit_value?: unknown;
+                  }) => (
+                    <EntitlementOverrideRow
+                      key={entitlement.feature_key}
+                      orgId={orgId}
+                      featureKey={entitlement.feature_key}
+                      enabled={Boolean(entitlement.enabled)}
+                      limitValue={(entitlement.limit_value as number) ?? null}
+                    />
+                  ),
+                )
               ) : (
                 <div className="text-sm text-muted-foreground">
                   No entitlement rows found for this organization.
@@ -312,19 +333,25 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
             </h2>
             <AddNoteForm orgId={orgId} />
             <div className="mt-6 space-y-3 text-sm text-muted-foreground">
-              {notes.map((note: any) => (
-                <div
-                  key={note.id}
-                  className="rounded-xl border border-border bg-[hsl(var(--card))] p-4"
-                >
-                  <div className="text-xs text-muted-foreground">
-                    {formatDate(note.created_at)}
+              {notes.map(
+                (note: { id: string; note?: string; created_at?: string }) => (
+                  <div
+                    key={note.id}
+                    className="rounded-xl border border-border bg-[hsl(var(--card))] p-4"
+                  >
+                    <div className="text-xs text-muted-foreground">
+                      {formatDate(note.created_at)}
+                    </div>
+                    <div className="mt-2 text-sm text-foreground">
+                      {note.note}
+                    </div>
                   </div>
-                  <div className="mt-2 text-sm text-foreground">{note.note}</div>
-                </div>
-              ))}
+                ),
+              )}
               {notes.length === 0 ? (
-                <div className="text-sm text-muted-foreground">No notes yet.</div>
+                <div className="text-sm text-muted-foreground">
+                  No notes yet.
+                </div>
               ) : null}
             </div>
           </section>
@@ -337,27 +364,37 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
             </h2>
             <div className="mt-4 space-y-3">
               {supportRequests.length > 0 ? (
-                supportRequests.map((request: any) => (
-                  <div
-                    key={request.id}
-                    className="rounded-xl border border-border bg-background p-4"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-sm font-medium text-foreground">
-                        {request.subject}
+                supportRequests.map(
+                  (request: {
+                    id: string;
+                    subject?: string;
+                    status?: string;
+                    created_at?: string;
+                    name?: string;
+                    email?: string;
+                    message?: string;
+                  }) => (
+                    <div
+                      key={request.id}
+                      className="rounded-xl border border-border bg-background p-4"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-medium text-foreground">
+                          {request.subject}
+                        </p>
+                        <span className="text-xs text-muted-foreground">
+                          {request.status}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {request.name ?? request.email}
                       </p>
-                      <span className="text-xs text-muted-foreground">
-                        {request.status}
-                      </span>
+                      <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
+                        {request.message}
+                      </p>
                     </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {request.name ?? request.email}
-                    </p>
-                    <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
-                      {request.message}
-                    </p>
-                  </div>
-                ))
+                  ),
+                )
               ) : (
                 <p className="text-sm text-muted-foreground">
                   No support requests linked to this organization.
@@ -372,22 +409,34 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
             </h2>
             <div className="mt-4 space-y-3">
               {activity.length > 0 ? (
-                activity.map((entry: any) => (
-                  <div
-                    key={entry.id}
-                    className="rounded-xl border border-border bg-background p-4"
-                  >
-                    <p className="text-sm font-medium text-foreground">
-                      {entry.action}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {entry.user_email ?? 'Unknown user'} · {formatDate(entry.created_at)}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {entry.route ?? entry.entity_type ?? 'activity'}
-                    </p>
-                  </div>
-                ))
+                activity.map(
+                  (entry: {
+                    id: string;
+                    activity_type?: string;
+                    description?: string;
+                    created_at?: string;
+                    action?: string;
+                    user_email?: string;
+                    route?: string;
+                    entity_type?: string;
+                  }) => (
+                    <div
+                      key={entry.id}
+                      className="rounded-xl border border-border bg-background p-4"
+                    >
+                      <p className="text-sm font-medium text-foreground">
+                        {entry.action}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {entry.user_email ?? 'Unknown user'} ·{' '}
+                        {formatDate(entry.created_at)}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {entry.route ?? entry.entity_type ?? 'activity'}
+                      </p>
+                    </div>
+                  ),
+                )
               ) : (
                 <p className="text-sm text-muted-foreground">
                   No recent org activity.
@@ -401,38 +450,64 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
               Sessions & Security
             </h2>
             <div className="mt-4 space-y-3">
-              {sessions.slice(0, 5).map((session: any) => (
-                <div
-                  key={session.id}
-                  className="rounded-xl border border-border bg-background p-4"
-                >
-                  <p className="text-sm font-medium text-foreground">
-                    {session.user_email ?? session.user_id}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Last seen {formatDate(session.last_seen_at)}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {[session.geo_city, session.geo_country].filter(Boolean).join(', ') || 'Unknown location'}
-                  </p>
-                </div>
-              ))}
-              {security.slice(0, 5).map((event: any) => (
-                <div
-                  key={event.id}
-                  className="rounded-xl border border-border bg-background p-4"
-                >
-                  <p className="text-sm font-medium text-foreground">
-                    {event.type}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {event.user_email ?? 'Unknown user'} · {event.severity}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {formatDate(event.created_at)}
-                  </p>
-                </div>
-              ))}
+              {sessions
+                .slice(0, 5)
+                .map(
+                  (session: {
+                    id: string;
+                    user_agent?: string;
+                    created_at?: string;
+                    user_email?: string;
+                    user_id?: string;
+                    last_seen_at?: string;
+                    geo_city?: string;
+                    geo_country?: string;
+                  }) => (
+                    <div
+                      key={session.id}
+                      className="rounded-xl border border-border bg-background p-4"
+                    >
+                      <p className="text-sm font-medium text-foreground">
+                        {session.user_email ?? session.user_id}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Last seen {formatDate(session.last_seen_at)}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {[session.geo_city, session.geo_country]
+                          .filter(Boolean)
+                          .join(', ') || 'Unknown location'}
+                      </p>
+                    </div>
+                  ),
+                )}
+              {security
+                .slice(0, 5)
+                .map(
+                  (event: {
+                    id: string;
+                    event_type?: string;
+                    severity?: string;
+                    created_at?: string;
+                    type?: string;
+                    user_email?: string;
+                  }) => (
+                    <div
+                      key={event.id}
+                      className="rounded-xl border border-border bg-background p-4"
+                    >
+                      <p className="text-sm font-medium text-foreground">
+                        {event.type}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {event.user_email ?? 'Unknown user'} · {event.severity}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {formatDate(event.created_at)}
+                      </p>
+                    </div>
+                  ),
+                )}
               {customerHealth?.billingRisk?.reasons?.map((reason: string) => (
                 <div
                   key={reason}
@@ -455,31 +530,44 @@ export default async function AdminOrgDetailPage({ params }: OrgDetailProps) {
           <section className="rounded-2xl border border-border bg-card p-6">
             <h2 className="text-xl font-semibold text-foreground">Exports</h2>
             <div className="mt-4 space-y-3">
-              {[...(exportsData.compliance ?? []), ...(exportsData.reports ?? [])]
+              {[
+                ...(exportsData.compliance ?? []),
+                ...(exportsData.reports ?? []),
+              ]
                 .slice(0, 8)
-                .map((job: any) => (
-                  <div
-                    key={job.id}
-                    className="rounded-xl border border-border bg-background p-4"
-                  >
-                    <p className="text-sm font-medium text-foreground">
-                      {job.framework_slug ?? job.report_type ?? 'Export'}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {job.status} · {formatDate(job.created_at)}
-                    </p>
-                    {job.file_url ? (
-                      <a
-                        href={job.file_url}
-                        className="mt-2 inline-block text-xs text-sky-300 hover:text-sky-200"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Open file
-                      </a>
-                    ) : null}
-                  </div>
-                ))}
+                .map(
+                  (job: {
+                    id: string;
+                    job_type?: string;
+                    status?: string;
+                    created_at?: string;
+                    framework_slug?: string;
+                    report_type?: string;
+                    file_url?: string;
+                  }) => (
+                    <div
+                      key={job.id}
+                      className="rounded-xl border border-border bg-background p-4"
+                    >
+                      <p className="text-sm font-medium text-foreground">
+                        {job.framework_slug ?? job.report_type ?? 'Export'}
+                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {job.status} · {formatDate(job.created_at)}
+                      </p>
+                      {job.file_url ? (
+                        <a
+                          href={job.file_url}
+                          className="mt-2 inline-block text-xs text-sky-300 hover:text-sky-200"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Open file
+                        </a>
+                      ) : null}
+                    </div>
+                  ),
+                )}
               {totalExports === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   No export jobs for this organization.

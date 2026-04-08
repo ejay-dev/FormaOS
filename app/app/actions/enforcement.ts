@@ -24,7 +24,7 @@ export type ComplianceBlock = {
   organization_id?: string | null;
   gate_key: string;
   reason?: string | null;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   created_at?: string | null;
   resolved_at?: string | null;
   resolved_by?: string | null;
@@ -59,13 +59,18 @@ async function safeLogActivity(
   orgId: string,
   action: string,
   description: string,
-  metadata?: any,
+  metadata?: Record<string, unknown>,
 ) {
   try {
     if (typeof logger === 'function') {
       // logger signature in repo: logActivity(orgId, action, description)
       try {
-        await (logger as (...args: unknown[]) => Promise<void>)(orgId, action, description, metadata);
+        await (logger as (...args: unknown[]) => Promise<void>)(
+          orgId,
+          action,
+          description,
+          metadata,
+        );
         return;
       } catch {
         // continue to fallback
@@ -249,7 +254,10 @@ export async function resolveComplianceBlocks(orgId: string, gateKey: GateKey) {
       .is('resolved_at', null);
 
     if (
-      (blocks ?? []).some((b: any) => b.created_by && b.created_by === user.id)
+      (blocks ?? []).some(
+        (b: { created_by?: string }) =>
+          b.created_by && b.created_by === user.id,
+      )
     ) {
       throw new Error(
         'Segregation violation: cannot resolve your own compliance blocks.',
@@ -277,7 +285,7 @@ export async function resolveComplianceBlocks(orgId: string, gateKey: GateKey) {
       actionType: 'COMPLIANCE_BLOCK_RESOLVED',
       beforeState: {
         gate_key: gateKey,
-        unresolved_blocks: (blocks ?? []).map((b: any) => b.id),
+        unresolved_blocks: (blocks ?? []).map((b: { id: string }) => b.id),
       },
       afterState: { gate_key: gateKey, resolved_at: new Date().toISOString() },
       reason: 'manual_resolution',

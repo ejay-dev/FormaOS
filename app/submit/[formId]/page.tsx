@@ -29,10 +29,10 @@ export default async function PublicFormPage({
   async function submitResponse(formData: FormData) {
     'use server';
     const sb = await createSupabaseServerClient();
-    const rawData: Record<string, any> = {};
+    const rawData: Record<string, unknown> = {};
 
     // Extract data based on fields
-    form.fields.forEach((field: any) => {
+    form.fields.forEach((field: { id: string }) => {
       rawData[field.id] = formData.get(field.id);
     });
 
@@ -91,68 +91,80 @@ export default async function PublicFormPage({
 
         {/* Dynamic Form Renderer */}
         <form action={submitResponse} className="p-8 space-y-8">
-          {form.fields.map((field: any) => (
-            <div key={field.id} className="space-y-2">
-              <label className="block text-sm font-bold text-slate-100">
-                {field.label}
-                {field.validation?.required && (
-                  <span className="text-red-500 ml-1">*</span>
+          {form.fields.map(
+            (field: {
+              id: string;
+              label: string;
+              type: string;
+              placeholder?: string;
+              helpText?: string;
+              validation?: { required?: boolean };
+              options?: Array<{ value: string; label: string }>;
+            }) => (
+              <div key={field.id} className="space-y-2">
+                <label className="block text-sm font-bold text-slate-100">
+                  {field.label}
+                  {field.validation?.required && (
+                    <span className="text-red-500 ml-1">*</span>
+                  )}
+                </label>
+
+                {field.helpText && (
+                  <p className="text-xs text-slate-400">{field.helpText}</p>
                 )}
-              </label>
 
-              {field.helpText && (
-                <p className="text-xs text-slate-400">{field.helpText}</p>
-              )}
-
-              {/* Field Inputs */}
-              {field.type === 'text' && (
-                <input
-                  name={field.id}
-                  type="text"
-                  required={field.validation?.required}
-                  placeholder={field.placeholder}
-                  className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition"
-                />
-              )}
-
-              {field.type === 'email' && (
-                <input
-                  name={field.id}
-                  type="email"
-                  required={field.validation?.required}
-                  placeholder={field.placeholder}
-                  className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition"
-                />
-              )}
-
-              {field.type === 'textarea' && (
-                <textarea
-                  name={field.id}
-                  rows={4}
-                  required={field.validation?.required}
-                  placeholder={field.placeholder}
-                  className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition resize-none"
-                />
-              )}
-
-              {field.type === 'select' && (
-                <div className="relative">
-                  <select
+                {/* Field Inputs */}
+                {field.type === 'text' && (
+                  <input
                     name={field.id}
+                    type="text"
                     required={field.validation?.required}
-                    className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition appearance-none bg-white/5"
-                  >
-                    <option value="">Select an option...</option>
-                    {field.options?.map((opt: any) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-            </div>
-          ))}
+                    placeholder={field.placeholder}
+                    className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition"
+                  />
+                )}
+
+                {field.type === 'email' && (
+                  <input
+                    name={field.id}
+                    type="email"
+                    required={field.validation?.required}
+                    placeholder={field.placeholder}
+                    className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition"
+                  />
+                )}
+
+                {field.type === 'textarea' && (
+                  <textarea
+                    name={field.id}
+                    rows={4}
+                    required={field.validation?.required}
+                    placeholder={field.placeholder}
+                    className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition resize-none"
+                  />
+                )}
+
+                {field.type === 'select' && (
+                  <div className="relative">
+                    <select
+                      name={field.id}
+                      required={field.validation?.required}
+                      className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition appearance-none bg-white/5"
+                    >
+                      <option value="">Select an option...</option>
+                      {field.options?.map(
+                        (opt: { value: string; label: string }) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+                )}
+              </div>
+            ),
+          )}
 
           <div className="pt-6 border-t border-white/10">
             <button

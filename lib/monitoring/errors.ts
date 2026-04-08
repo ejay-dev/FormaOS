@@ -143,7 +143,7 @@ class ErrorTracker {
     url: string,
     method: string,
     status?: number,
-    response?: any,
+    response?: unknown,
   ) {
     this.addBreadcrumb({
       timestamp: Date.now(),
@@ -267,7 +267,10 @@ class ErrorTracker {
   /**
    * Send error to Sentry
    */
-  private sendToSentry(errorReport: ErrorReport, options: any) {
+  private sendToSentry(
+    errorReport: ErrorReport,
+    options: Record<string, unknown>,
+  ) {
     if (typeof window === 'undefined') return;
 
     // Check if Sentry is available

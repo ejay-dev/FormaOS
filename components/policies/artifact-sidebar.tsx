@@ -25,11 +25,19 @@ import { useComplianceAction } from '@/components/compliance-system';
  * When artifacts are linked, it creates a visual wire connection.
  */
 
+interface VaultItem {
+  id: string;
+  file_name?: string;
+  title?: string;
+  file_type?: string;
+  file_size?: number;
+}
+
 interface ArtifactSidebarProps {
   policyId: string;
   policyTitle?: string;
-  linkedArtifacts: any[];
-  allVaultItems: any[];
+  linkedArtifacts: VaultItem[];
+  allVaultItems: VaultItem[];
   readOnly?: boolean;
 }
 
@@ -62,11 +70,12 @@ export function ArtifactSidebar({
         'policy',
         policyTitle || `Policy ${policyId.slice(0, 8)}`,
       );
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
       console.error('Linking failed', err);
       reportError({
         title: 'Link failed',
-        message: err.message || 'Unknown error',
+        message,
       });
     } finally {
       setIsLinking(null);
@@ -74,7 +83,8 @@ export function ArtifactSidebar({
   }
 
   const availableItems = (allVaultItems || []).filter(
-    (item: any) => !(linkedArtifacts || []).find((l: any) => l.id === item.id),
+    (item: VaultItem) =>
+      !(linkedArtifacts || []).find((l: VaultItem) => l.id === item.id),
   );
 
   return (
@@ -103,7 +113,7 @@ export function ArtifactSidebar({
               </p>
             </div>
           ) : (
-            (linkedArtifacts || []).map((file: any) => {
+            (linkedArtifacts || []).map((file: VaultItem) => {
               const fileName =
                 file.file_name || file.title || 'Untitled Artifact';
               const fileType = String(file.file_type || '');
@@ -157,7 +167,7 @@ export function ArtifactSidebar({
                 No unlinked items found in Vault.
               </p>
             ) : (
-              availableItems.map((item: any) => {
+              availableItems.map((item: VaultItem) => {
                 const itemName = item.file_name || item.title || 'Untitled';
                 const isCurrentlyLinking = isLinking === item.id;
                 const wasJustLinked = justLinked === item.id;

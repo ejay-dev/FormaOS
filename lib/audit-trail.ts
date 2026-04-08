@@ -42,7 +42,7 @@ export interface ActivityLog {
   entity_type: ActivityEntity;
   entity_id?: string;
   entity_name?: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   ip_address?: string;
   user_agent?: string;
   created_at: string;
@@ -80,7 +80,7 @@ export async function logActivity(
   options: {
     entityId?: string;
     entityName?: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
     ipAddress?: string;
     userAgent?: string;
   } = {},
@@ -159,10 +159,20 @@ export async function getActivityLogs(
   }
 
   return {
-    logs: (data || []).map((log: any) => ({
-      ...log,
-      user: log.profiles,
-    })),
+    logs: (data || []).map(
+      (
+        log: Record<string, unknown> & {
+          profiles?: {
+            full_name?: string;
+            email?: string;
+            avatar_url?: string;
+          };
+        },
+      ) => ({
+        ...log,
+        user: log.profiles,
+      }),
+    ) as unknown as ActivityLog[],
     total: count || 0,
   };
 }
@@ -189,10 +199,16 @@ export async function getEntityActivity(
 
   if (error || !data) return [];
 
-  return data.map((log: any) => ({
-    ...log,
-    user: log.profiles,
-  }));
+  return data.map(
+    (
+      log: Record<string, unknown> & {
+        profiles?: { full_name?: string; email?: string; avatar_url?: string };
+      },
+    ) => ({
+      ...log,
+      user: log.profiles,
+    }),
+  ) as unknown as ActivityLog[];
 }
 
 /**
@@ -362,14 +378,20 @@ export async function getMostActiveUsers(
   // Count actions per user
   const userCounts: Record<string, { name: string; count: number }> = {};
 
-  data.forEach((log: any) => {
-    if (!userCounts[log.user_id]) {
-      userCounts[log.user_id] = {
-        name: log.profiles?.full_name || log.profiles?.email || 'Unknown',
+  data.forEach((log: Record<string, unknown>) => {
+    const userId = log.user_id as string;
+    const profiles = log.profiles as
+      | { full_name?: string; email?: string }[]
+      | { full_name?: string; email?: string }
+      | undefined;
+    const profile = Array.isArray(profiles) ? profiles[0] : profiles;
+    if (!userCounts[userId]) {
+      userCounts[userId] = {
+        name: profile?.full_name || profile?.email || 'Unknown',
         count: 0,
       };
     }
-    userCounts[log.user_id].count++;
+    userCounts[userId].count++;
   });
 
   // Sort and return top users
@@ -410,16 +432,23 @@ export async function detectSuspiciousActivity(
 
   if (error || !data) return [];
 
-  const alerts: any[] = [];
+  const alerts: Array<{
+    type: string;
+    severity: 'low' | 'medium' | 'high';
+    description: string;
+    userId?: string;
+    count: number;
+  }> = [];
 
   // Check for excessive failed logins
   const failedLogins = data.filter(
-    (log: any) => log.action === 'login' && log.details?.status === 'failed',
+    (log: { action?: string; details?: { status?: string } }) =>
+      log.action === 'login' && log.details?.status === 'failed',
   );
 
   const userFailedLogins: Record<string, number> = {};
-  failedLogins.forEach((log: any) => {
-    userFailedLogins[log.user_id] = (userFailedLogins[log.user_id] || 0) + 1;
+  failedLogins.forEach((log: { user_id?: string }) => {
+    userFailedLogins[log.user_id!] = (userFailedLogins[log.user_id!] || 0) + 1;
   });
 
   Object.entries(userFailedLogins).forEach(([userId, count]) => {
@@ -435,11 +464,13 @@ export async function detectSuspiciousActivity(
   });
 
   // Check for mass deletions
-  const deletions = data.filter((log: any) => log.action === 'delete');
+  const deletions = data.filter(
+    (log: { action?: string }) => log.action === 'delete',
+  );
   const userDeletions: Record<string, number> = {};
 
-  deletions.forEach((log: any) => {
-    userDeletions[log.user_id] = (userDeletions[log.user_id] || 0) + 1;
+  deletions.forEach((log: { user_id?: string }) => {
+    userDeletions[log.user_id!] = (userDeletions[log.user_id!] || 0) + 1;
   });
 
   Object.entries(userDeletions).forEach(([userId, count]) => {
@@ -455,7 +486,8 @@ export async function detectSuspiciousActivity(
   });
 
   // Check for unusual access times (2 AM - 5 AM)
-  const unusualTimeAccess = data.filter((log: any) => {
+  const unusualTimeAccess = data.filter((log: { created_at?: string }) => {
+    if (!log.created_at) return false;
     const hour = new Date(log.created_at).getHours();
     return hour >= 2 && hour <= 5;
   });

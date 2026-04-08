@@ -26,23 +26,21 @@ export interface WidgetConfig {
   size: 'small' | 'medium' | 'large';
   position: { x: number; y: number };
   refreshInterval: number; // seconds
-  settings: Record<string, any>;
+  settings: Record<string, unknown>;
   enabled: boolean;
 }
 
 export interface WidgetData {
   widgetId: string;
   type: WidgetType;
-  data: any;
+  data: unknown;
   lastUpdated: string;
 }
 
 /**
  * Risk Score Widget Data
  */
-export async function getRiskScoreWidgetData(
-  organizationId: string,
-): Promise<any> {
+export async function getRiskScoreWidgetData(organizationId: string) {
   const supabase = await createClient();
 
   const { data: latestAnalysis } = await supabase
@@ -80,9 +78,7 @@ export async function getRiskScoreWidgetData(
 /**
  * Certificate Status Widget Data
  */
-export async function getCertificateStatusWidgetData(
-  organizationId: string,
-): Promise<any> {
+export async function getCertificateStatusWidgetData(organizationId: string) {
   const supabase = await createClient();
 
   const now = new Date();
@@ -103,20 +99,25 @@ export async function getCertificateStatusWidgetData(
     };
   }
 
-  const active = allCerts.filter((cert: any) => new Date(cert.expiry_date) > now);
-  const expiringSoon = allCerts.filter((cert: any) => {
+  type CertRow = { id: string; name: string; expiry_date: string };
+  const active = allCerts.filter(
+    (cert: CertRow) => new Date(cert.expiry_date) > now,
+  );
+  const expiringSoon = allCerts.filter((cert: CertRow) => {
     const expiry = new Date(cert.expiry_date);
     return expiry > now && expiry <= thirtyDaysOut;
   });
-  const expired = allCerts.filter((cert: any) => new Date(cert.expiry_date) <= now);
+  const expired = allCerts.filter(
+    (cert: CertRow) => new Date(cert.expiry_date) <= now,
+  );
 
   const upcomingExpiry = [...expiringSoon, ...expired]
     .sort(
-      (a: any, b: any) =>
+      (a: CertRow, b: CertRow) =>
         new Date(a.expiry_date).getTime() - new Date(b.expiry_date).getTime(),
     )
     .slice(0, 5)
-    .map((cert: any) => ({
+    .map((cert: CertRow) => ({
       id: cert.id,
       name: cert.name,
       expiryDate: cert.expiry_date,
@@ -139,9 +140,7 @@ export async function getCertificateStatusWidgetData(
 /**
  * Task Progress Widget Data
  */
-export async function getTaskProgressWidgetData(
-  organizationId: string,
-): Promise<any> {
+export async function getTaskProgressWidgetData(organizationId: string) {
   const supabase = await createClient();
 
   const { data: allTasks } = await supabase
@@ -162,11 +161,24 @@ export async function getTaskProgressWidgetData(
   }
 
   const now = new Date();
-  const completed = allTasks.filter((t: any) => t.status === 'completed');
-  const inProgress = allTasks.filter((t: any) => t.status === 'in_progress');
-  const notStarted = allTasks.filter((t: any) => t.status === 'not_started');
+  type TaskRow = {
+    id: string;
+    title: string;
+    status: string;
+    due_date: string | null;
+    completed_at: string | null;
+    priority: string;
+  };
+  const completed = allTasks.filter((t: TaskRow) => t.status === 'completed');
+  const inProgress = allTasks.filter(
+    (t: TaskRow) => t.status === 'in_progress',
+  );
+  const notStarted = allTasks.filter(
+    (t: TaskRow) => t.status === 'not_started',
+  );
   const overdue = allTasks.filter(
-    (t: any) => t.status !== 'completed' && t.due_date && new Date(t.due_date) < now,
+    (t: TaskRow) =>
+      t.status !== 'completed' && t.due_date && new Date(t.due_date) < now,
   );
 
   const completionRate =
@@ -177,12 +189,12 @@ export async function getTaskProgressWidgetData(
   // Get recent completed tasks
   const recentTasks = completed
     .sort(
-      (a: any, b: any) =>
+      (a: TaskRow, b: TaskRow) =>
         new Date(b.completed_at || 0).getTime() -
         new Date(a.completed_at || 0).getTime(),
     )
     .slice(0, 5)
-    .map((task: any) => ({
+    .map((task: TaskRow) => ({
       id: task.id,
       title: task.title,
       completedAt: task.completed_at,
@@ -206,7 +218,7 @@ export async function getTaskProgressWidgetData(
 export async function getComplianceScoreWidgetData(
   organizationId: string,
   framework?: string,
-): Promise<any> {
+) {
   const supabase = await createClient();
 
   let query = supabase
@@ -265,9 +277,7 @@ export async function getComplianceScoreWidgetData(
 /**
  * Team Activity Widget Data
  */
-export async function getTeamActivityWidgetData(
-  organizationId: string,
-): Promise<any> {
+export async function getTeamActivityWidgetData(organizationId: string) {
   const supabase = await createClient();
 
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -289,14 +299,14 @@ export async function getTeamActivityWidgetData(
 
   // Count activities by user
   const userActivityMap = new Map<string, number>();
-  activities.forEach((activity: any) => {
+  activities.forEach((activity: { user_id: string; created_at: string }) => {
     const count = userActivityMap.get(activity.user_id) || 0;
     userActivityMap.set(activity.user_id, count + 1);
   });
 
   // Get top contributors with user details
   const topUserIds = Array.from(userActivityMap.entries())
-    .sort((a: any, b: any) => b[1] - a[1])
+    .sort((a: [string, number], b: [string, number]) => b[1] - a[1])
     .slice(0, 5)
     .map(([userId]) => userId);
 
@@ -317,8 +327,9 @@ export async function getTeamActivityWidgetData(
   for (let i = 29; i >= 0; i--) {
     const date = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
     const dateStr = date.toISOString().split('T')[0];
-    const dayActivities = activities.filter((a: any) =>
-      a.created_at.startsWith(dateStr),
+    const dayActivities = activities.filter(
+      (a: { user_id: string; created_at: string }) =>
+        a.created_at.startsWith(dateStr),
     );
     activityByDay.push({
       date: dateStr,
@@ -341,7 +352,7 @@ export async function getTrendChartWidgetData(
   organizationId: string,
   metric: 'risk' | 'compliance' | 'tasks',
   days = 30,
-): Promise<any> {
+) {
   const supabase = await createClient();
   const startDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
@@ -356,7 +367,7 @@ export async function getTrendChartWidgetData(
     return {
       metric: 'risk',
       dataPoints:
-        data?.map((d: any) => ({
+        data?.map((d: { created_at: string; overall_risk_score: number }) => ({
           date: d.created_at.split('T')[0],
           value: d.overall_risk_score,
         })) || [],
@@ -374,7 +385,7 @@ export async function getTrendChartWidgetData(
     return {
       metric: 'compliance',
       dataPoints:
-        data?.map((d: any) => ({
+        data?.map((d: { completed_at: string; compliance_score: number }) => ({
           date: d.completed_at.split('T')[0],
           value: d.compliance_score,
         })) || [],
@@ -394,7 +405,8 @@ export async function getTrendChartWidgetData(
 
     const completedByDate =
       tasks?.filter(
-        (t: any) => t.completed_at && t.completed_at <= dateStr + 'T23:59:59',
+        (t: { completed_at: string | null; status: string }) =>
+          t.completed_at && t.completed_at <= dateStr + 'T23:59:59',
       ).length || 0;
 
     const totalByDate = tasks?.length || 0;
@@ -416,9 +428,7 @@ export async function getTrendChartWidgetData(
 /**
  * Recent Alerts Widget Data
  */
-export async function getRecentAlertsWidgetData(
-  organizationId: string,
-): Promise<any> {
+export async function getRecentAlertsWidgetData(organizationId: string) {
   const supabase = await createClient();
 
   const { data: notifications } = await supabase
@@ -430,17 +440,27 @@ export async function getRecentAlertsWidgetData(
     .limit(10);
 
   const alerts =
-    notifications?.map((notif: any) => ({
-      id: notif.id,
-      type: notif.type,
-      title: notif.title,
-      message: notif.message,
-      severity: notif.metadata?.severity || 'medium',
-      createdAt: notif.created_at,
-      read: notif.read,
-    })) || [];
+    notifications?.map(
+      (notif: {
+        id: string;
+        type: string;
+        title: string;
+        message: string;
+        metadata: Record<string, unknown> | null;
+        created_at: string;
+        read: boolean;
+      }) => ({
+        id: notif.id,
+        type: notif.type,
+        title: notif.title,
+        message: notif.message,
+        severity: notif.metadata?.severity || 'medium',
+        createdAt: notif.created_at,
+        read: notif.read,
+      }),
+    ) || [];
 
-  const unreadCount = alerts.filter((a: any) => !a.read).length;
+  const unreadCount = alerts.filter((a: { read: boolean }) => !a.read).length;
 
   return {
     alerts,
@@ -452,9 +472,7 @@ export async function getRecentAlertsWidgetData(
 /**
  * Quick Stats Widget Data
  */
-export async function getQuickStatsWidgetData(
-  organizationId: string,
-): Promise<any> {
+export async function getQuickStatsWidgetData(organizationId: string) {
   const _supabase = await createClient();
 
   const [riskData, certData, taskData, complianceData] = await Promise.all([
@@ -483,9 +501,9 @@ export async function getWidgetData(
   widgetId: string,
   type: WidgetType,
   organizationId: string,
-  settings?: Record<string, any>,
+  settings?: Record<string, unknown>,
 ): Promise<WidgetData> {
-  let data: any;
+  let data: unknown;
 
   switch (type) {
     case 'risk_score':
@@ -500,7 +518,7 @@ export async function getWidgetData(
     case 'compliance_score':
       data = await getComplianceScoreWidgetData(
         organizationId,
-        settings?.framework,
+        settings?.framework as string | undefined,
       );
       break;
     case 'team_activity':
@@ -509,8 +527,8 @@ export async function getWidgetData(
     case 'trend_chart':
       data = await getTrendChartWidgetData(
         organizationId,
-        settings?.metric || 'risk',
-        settings?.days || 30,
+        (settings?.metric as 'risk' | 'compliance' | 'tasks') || 'risk',
+        (settings?.days as number) || 30,
       );
       break;
     case 'recent_alerts':
@@ -566,17 +584,29 @@ export async function getDashboardLayout(
 
   if (error || !data) return [];
 
-  return data.map((row: any) => ({
-    id: row.widget_id,
-    organizationId: row.organization_id,
-    type: row.widget_type,
-    title: row.title,
-    size: row.size,
-    position: row.position,
-    refreshInterval: row.refresh_interval,
-    settings: row.settings,
-    enabled: row.enabled,
-  }));
+  return data.map(
+    (row: {
+      widget_id: string;
+      organization_id: string;
+      widget_type: WidgetType;
+      title: string;
+      size: 'small' | 'medium' | 'large';
+      position: { x: number; y: number };
+      refresh_interval: number;
+      settings: Record<string, unknown>;
+      enabled: boolean;
+    }) => ({
+      id: row.widget_id,
+      organizationId: row.organization_id,
+      type: row.widget_type,
+      title: row.title,
+      size: row.size,
+      position: row.position,
+      refreshInterval: row.refresh_interval,
+      settings: row.settings,
+      enabled: row.enabled,
+    }),
+  );
 }
 
 /**

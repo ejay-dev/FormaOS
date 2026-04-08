@@ -62,7 +62,7 @@ export async function applyIndustryPack(industryId: string) {
     : { data: [] };
 
   const existingPolicyTitles = new Set(
-    (existingPolicies ?? []).map((row: any) => row.title),
+    (existingPolicies ?? []).map((row: { title: string }) => row.title),
   );
 
   const policiesToInsert = pack.policies
@@ -96,7 +96,7 @@ export async function applyIndustryPack(industryId: string) {
     : { data: [] };
 
   const existingTaskTitles = new Set(
-    (existingTasks ?? []).map((row: any) => row.title),
+    (existingTasks ?? []).map((row: { title: string }) => row.title),
   );
 
   const tasksToInsert = pack.tasks
@@ -129,7 +129,7 @@ export async function applyIndustryPack(industryId: string) {
     : { data: [] };
 
   const existingAssetNames = new Set(
-    (existingAssets ?? []).map((row: any) => row.name),
+    (existingAssets ?? []).map((row: { name: string }) => row.name),
   );
 
   const assetsToInsert = pack.assets
@@ -158,7 +158,10 @@ export async function applyIndustryPack(industryId: string) {
     .eq('id', orgId);
 
   if (industryUpdateError) {
-    console.error('Warning: Failed to set organization industry:', industryUpdateError.message);
+    console.error(
+      'Warning: Failed to set organization industry:',
+      industryUpdateError.message,
+    );
   }
 
   // 6. Success Log

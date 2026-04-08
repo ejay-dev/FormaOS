@@ -54,10 +54,16 @@ export default async function AuditExportPage({
         .eq('organization_id', permissionCtx.orgId)
         .eq('actor_email', profile.email)
         .order('created_at', { ascending: false })
-    : { data: [] as any[] };
+    : { data: [] as Record<string, unknown>[] };
   // Sort logs by date desc
-  const logs = ((auditRows || []) as any[]).sort(
-    (a: any, b: any) =>
+  const logs = (
+    (auditRows || []) as Array<{
+      id: string;
+      action: string;
+      created_at: string;
+    }>
+  ).sort(
+    (a, b) =>
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
   );
 
@@ -104,30 +110,37 @@ export default async function AuditExportPage({
               No verified documents on file.
             </div>
           ) : (
-            credentials.map((doc: any) => (
-              <div
-                key={doc.id}
-                className="border border-white/10 p-8 rounded-[2rem] flex items-center justify-between shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div>
-                  <h3 className="font-black uppercase tracking-widest text-sm text-foreground">
-                    {doc.document_type}
-                  </h3>
-                  <div className="flex items-center gap-4 mt-3">
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      Issued: {doc.issue_date || 'N/A'}
-                    </p>
-                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight">
-                      Expires: {doc.expiry_date || 'Continuous'}
-                    </p>
+            credentials.map(
+              (doc: {
+                id: string;
+                document_type?: string;
+                issue_date?: string;
+                expiry_date?: string;
+              }) => (
+                <div
+                  key={doc.id}
+                  className="border border-white/10 p-8 rounded-[2rem] flex items-center justify-between shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <h3 className="font-black uppercase tracking-widest text-sm text-foreground">
+                      {doc.document_type}
+                    </h3>
+                    <div className="flex items-center gap-4 mt-3">
+                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        Issued: {doc.issue_date || 'N/A'}
+                      </p>
+                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight">
+                        Expires: {doc.expiry_date || 'Continuous'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-10 w-10 bg-emerald-400/10 rounded-xl flex items-center justify-center text-emerald-300 border border-emerald-400/30">
+                    <ShieldCheck className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="h-10 w-10 bg-emerald-400/10 rounded-xl flex items-center justify-center text-emerald-300 border border-emerald-400/30">
-                  <ShieldCheck className="h-5 w-5" />
-                </div>
-              </div>
-            ))
+              ),
+            )
           )}
         </div>
       </section>
@@ -143,7 +156,7 @@ export default async function AuditExportPage({
               No activity recorded for this user.
             </p>
           ) : (
-            logs.slice(0, 15).map((log: any) => (
+            logs.slice(0, 15).map((log) => (
               <div
                 key={log.id}
                 className="flex flex-col md:flex-row md:items-center justify-between py-4 border-b border-white/10 hover:bg-white/5 px-4 -mx-4 rounded-xl transition-colors"

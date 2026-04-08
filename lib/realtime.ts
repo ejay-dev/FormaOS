@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { healthLogger } from '@/lib/observability/structured-logger';
 
-export interface RealtimeEvent<T = any> {
+export interface RealtimeEvent<T = unknown> {
   type: 'INSERT' | 'UPDATE' | 'DELETE';
   table: string;
   new?: T;
@@ -25,7 +25,7 @@ export interface ActivityEvent {
   action: string;
   resource_type: string;
   resource_id: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   created_at: string;
 }
 
@@ -41,7 +41,7 @@ export interface PresenceState {
  */
 export function useRealtimeTable<T>(
   table: string,
-  filter?: { column: string; value: any },
+  filter?: { column: string; value: string },
   onEvent?: (event: RealtimeEvent<T>) => void,
 ) {
   const [data, setData] = useState<T[]>([]);
@@ -84,7 +84,12 @@ export function useRealtimeTable<T>(
           table: table,
           filter: filter ? `${filter.column}=eq.${filter.value}` : undefined,
         },
-        (payload: { eventType: string; table: string; new: Record<string, unknown>; old: Record<string, unknown> }) => {
+        (payload: {
+          eventType: string;
+          table: string;
+          new: Record<string, unknown>;
+          old: Record<string, unknown>;
+        }) => {
           const event: RealtimeEvent<T> = {
             type: payload.eventType as RealtimeEvent<T>['type'],
             table: payload.table,
@@ -100,14 +105,19 @@ export function useRealtimeTable<T>(
             setData((prev) =>
               prev.map((item) => {
                 const itemRecord = item as Record<string, unknown>;
-                return itemRecord.id === (payload.new as Record<string, unknown>).id ? (payload.new as T) : item;
+                return itemRecord.id ===
+                  (payload.new as Record<string, unknown>).id
+                  ? (payload.new as T)
+                  : item;
               }),
             );
           } else if (payload.eventType === 'DELETE' && payload.old) {
             setData((prev) =>
               prev.filter((item) => {
                 const itemRecord = item as Record<string, unknown>;
-                return itemRecord.id !== (payload.old as Record<string, unknown>).id;
+                return (
+                  itemRecord.id !== (payload.old as Record<string, unknown>).id
+                );
               }),
             );
           }
@@ -158,17 +168,28 @@ export function usePresence(
         const state = presenceChannel.presenceState();
         setPresenceState(state as Record<string, PresenceState>);
       })
-      .on('presence', { event: 'join' }, ({ key, newPresences }: any) => {
-        if (process.env.NODE_ENV === 'development') {
-          healthLogger.info('realtime_presence_joined', { key, newPresences });
-        }
-      })
-      .on('presence', { event: 'leave' }, ({ key, leftPresences }: any) => {
-        if (process.env.NODE_ENV === 'development') {
-          healthLogger.info('realtime_presence_left', { key, leftPresences });
-        }
-      })
-      .subscribe(async (status: any) => {
+      .on(
+        'presence',
+        { event: 'join' },
+        ({ key, newPresences }: { key: string; newPresences: unknown[] }) => {
+          if (process.env.NODE_ENV === 'development') {
+            healthLogger.info('realtime_presence_joined', {
+              key,
+              newPresences,
+            });
+          }
+        },
+      )
+      .on(
+        'presence',
+        { event: 'leave' },
+        ({ key, leftPresences }: { key: string; leftPresences: unknown[] }) => {
+          if (process.env.NODE_ENV === 'development') {
+            healthLogger.info('realtime_presence_left', { key, leftPresences });
+          }
+        },
+      )
+      .subscribe(async (status: string) => {
         if (status === 'SUBSCRIBED') {
           await presenceChannel.track({
             user_id: userInfo.id,
@@ -207,11 +228,22 @@ export function useActivityFeed(orgId: string) {
 /**
  * Hook for real-time notifications
  */
+interface NotificationRecord {
+  id: string;
+  title?: string;
+  message?: string;
+  read?: boolean;
+  created_at: string;
+  type: string;
+  action_url?: string;
+  [key: string]: unknown;
+}
+
 export function useNotifications(userId: string) {
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const { data, loading } = useRealtimeTable(
+  const { data, loading } = useRealtimeTable<NotificationRecord>(
     'notifications',
     { column: 'user_id', value: userId },
     (event) => {
@@ -229,7 +261,7 @@ export function useNotifications(userId: string) {
 
   useEffect(() => {
     setNotifications(data);
-    setUnreadCount(data.filter((n: any) => !n.read).length);
+    setUnreadCount(data.filter((n) => !n.read).length);
   }, [data]);
 
   const markAsRead = async (notificationId: string) => {
@@ -264,7 +296,7 @@ export function useNotifications(userId: string) {
 export async function broadcastToRoom(
   room: string,
   event: string,
-  payload: any,
+  payload: Record<string, unknown>,
 ) {
   const supabase = createSupabaseClient();
   const channel = supabase.channel(room);

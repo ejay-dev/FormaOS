@@ -1,20 +1,27 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Archive, Calendar, CreditCard, Loader2, Lock, Unlock } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useComplianceAction } from "@/components/compliance-system"
+import { useState } from 'react';
+import {
+  Archive,
+  Calendar,
+  CreditCard,
+  Loader2,
+  Lock,
+  Unlock,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useComplianceAction } from '@/components/compliance-system';
 
 interface OrgActionButtonsProps {
-  orgId: string
-  currentPlan: string | null
-  currentSubscriptionStatus: string
-  currentLifecycleStatus: string
+  orgId: string;
+  currentPlan: string | null;
+  currentSubscriptionStatus: string;
+  currentLifecycleStatus: string;
 }
 
 /**
  * OrgActionButtons - Client-side admin organization actions
- * 
+ *
  * Replaces native form POST with fetch + proper loading states.
  * Uses compliance feedback system for success/error notifications.
  */
@@ -24,190 +31,217 @@ export function OrgActionButtons({
   currentSubscriptionStatus,
   currentLifecycleStatus,
 }: OrgActionButtonsProps) {
-  const [loading, setLoading] = useState<string | null>(null)
-  const [selectedPlan, setSelectedPlan] = useState(currentPlan || "basic")
-  const [days, setDays] = useState(14)
-  const { reportSuccess, reportError } = useComplianceAction()
+  const [loading, setLoading] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState(currentPlan || 'basic');
+  const [days, setDays] = useState(14);
+  const { reportSuccess, reportError } = useComplianceAction();
 
   function promptReason(message: string) {
-    const reason = window.prompt(message)
-    return reason?.trim() || null
+    const reason = window.prompt(message);
+    return reason?.trim() || null;
   }
 
   async function handlePlanUpdate() {
-    const reason = promptReason("Reason for plan change")
-    if (!reason) return
+    const reason = promptReason('Reason for plan change');
+    if (!reason) return;
 
-    setLoading("plan")
+    setLoading('plan');
 
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/plan`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "x-admin-reason": reason,
+          'Content-Type': 'application/json',
+          'x-admin-reason': reason,
         },
         body: JSON.stringify({ plan: selectedPlan, reason }),
-      })
+      });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || "Failed to update plan")
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to update plan');
       }
 
-      reportSuccess({ title: "Plan updated", message: `Changed to ${selectedPlan}` })
-      window.location.reload()
-    } catch (error: any) {
-      reportError({ title: "Update failed", message: error.message || "Failed to update plan" })
+      reportSuccess({
+        title: 'Plan updated',
+        message: `Changed to ${selectedPlan}`,
+      });
+      window.location.reload();
+    } catch (error: unknown) {
+      reportError({
+        title: 'Update failed',
+        message:
+          error instanceof Error ? error.message : 'Failed to update plan',
+      });
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
   }
 
   async function handleExtendTrial() {
-    const reason = promptReason("Reason for trial extension")
-    if (!reason) return
+    const reason = promptReason('Reason for trial extension');
+    if (!reason) return;
 
-    setLoading("trial")
+    setLoading('trial');
 
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/trial/extend`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "x-admin-reason": reason,
+          'Content-Type': 'application/json',
+          'x-admin-reason': reason,
         },
         body: JSON.stringify({ days, reason }),
-      })
+      });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || "Failed to extend trial")
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to extend trial');
       }
 
-      reportSuccess({ title: "Trial extended", message: `Added ${days} days` })
-      window.location.reload()
-    } catch (error: any) {
-      reportError({ title: "Extension failed", message: error.message || "Failed to extend trial" })
+      reportSuccess({ title: 'Trial extended', message: `Added ${days} days` });
+      window.location.reload();
+    } catch (error: unknown) {
+      reportError({
+        title: 'Extension failed',
+        message:
+          error instanceof Error ? error.message : 'Failed to extend trial',
+      });
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
   }
 
   async function handleToggleLock() {
-    const isBlockedNow = currentSubscriptionStatus === "blocked"
-    const action = isBlockedNow ? "unblock" : "block"
-    const reason = promptReason(`Reason to ${action} organization access`)
-    if (!reason) return
+    const isBlockedNow = currentSubscriptionStatus === 'blocked';
+    const action = isBlockedNow ? 'unblock' : 'block';
+    const reason = promptReason(`Reason to ${action} organization access`);
+    if (!reason) return;
 
-    setLoading("lock")
+    setLoading('lock');
 
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/lock`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "x-admin-reason": reason,
+          'Content-Type': 'application/json',
+          'x-admin-reason': reason,
         },
         body: JSON.stringify({ locked: !isBlockedNow, reason }),
-      })
+      });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || `Failed to ${action} organization`)
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Failed to ${action} organization`);
       }
 
-      reportSuccess({ title: `Organization ${action}ed` })
-      window.location.reload()
-    } catch (error: any) {
-      reportError({ title: "Action failed", message: error.message || `Failed to ${action} organization` })
+      reportSuccess({ title: `Organization ${action}ed` });
+      window.location.reload();
+    } catch (error: unknown) {
+      reportError({
+        title: 'Action failed',
+        message:
+          error instanceof Error
+            ? error.message
+            : `Failed to ${action} organization`,
+      });
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
   }
 
   async function handleToggleLifecycle() {
     const canRestoreNow =
-      currentLifecycleStatus === "suspended" || currentLifecycleStatus === "retired"
-    const targetStatus = canRestoreNow ? "active" : "suspended"
-    const actionLabel = canRestoreNow ? "restore" : "suspend"
-    const reason = promptReason(`Reason to ${actionLabel} organization lifecycle`)
-    if (!reason) return
+      currentLifecycleStatus === 'suspended' ||
+      currentLifecycleStatus === 'retired';
+    const targetStatus = canRestoreNow ? 'active' : 'suspended';
+    const actionLabel = canRestoreNow ? 'restore' : 'suspend';
+    const reason = promptReason(
+      `Reason to ${actionLabel} organization lifecycle`,
+    );
+    if (!reason) return;
 
-    setLoading("lifecycle")
+    setLoading('lifecycle');
 
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/lifecycle`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "x-admin-reason": reason,
+          'Content-Type': 'application/json',
+          'x-admin-reason': reason,
         },
         body: JSON.stringify({ status: targetStatus, reason }),
-      })
+      });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || `Failed to ${actionLabel} organization`)
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Failed to ${actionLabel} organization`);
       }
 
-      reportSuccess({ title: `Organization ${actionLabel}d` })
-      window.location.reload()
-    } catch (error: any) {
+      reportSuccess({ title: `Organization ${actionLabel}d` });
+      window.location.reload();
+    } catch (error: unknown) {
       reportError({
-        title: "Lifecycle update failed",
-        message: error.message || `Failed to ${actionLabel} organization`,
-      })
+        title: 'Lifecycle update failed',
+        message:
+          error instanceof Error
+            ? error.message
+            : `Failed to ${actionLabel} organization`,
+      });
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
   }
 
   async function handleRetireLifecycle() {
-    const reason = promptReason("Reason to retire organization lifecycle")
-    if (!reason) return
+    const reason = promptReason('Reason to retire organization lifecycle');
+    if (!reason) return;
 
     const confirmed = window.confirm(
-      "Retire this organization? Access will remain blocked until it is explicitly restored."
-    )
-    if (!confirmed) return
+      'Retire this organization? Access will remain blocked until it is explicitly restored.',
+    );
+    if (!confirmed) return;
 
-    setLoading("retire")
+    setLoading('retire');
 
     try {
       const res = await fetch(`/api/admin/orgs/${orgId}/lifecycle`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "x-admin-reason": reason,
+          'Content-Type': 'application/json',
+          'x-admin-reason': reason,
         },
-        body: JSON.stringify({ status: "retired", reason }),
-      })
+        body: JSON.stringify({ status: 'retired', reason }),
+      });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || "Failed to retire organization")
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to retire organization');
       }
 
       reportSuccess({
-        title: "Organization retired",
-        message: "Lifecycle moved to retired and access remains blocked.",
-      })
-      window.location.reload()
-    } catch (error: any) {
+        title: 'Organization retired',
+        message: 'Lifecycle moved to retired and access remains blocked.',
+      });
+      window.location.reload();
+    } catch (error: unknown) {
       reportError({
-        title: "Retirement failed",
-        message: error.message || "Failed to retire organization",
-      })
+        title: 'Retirement failed',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Failed to retire organization',
+      });
     } finally {
-      setLoading(null)
+      setLoading(null);
     }
   }
 
-  const isBlocked = currentSubscriptionStatus === "blocked"
+  const isBlocked = currentSubscriptionStatus === 'blocked';
   const canRestoreLifecycle =
-    currentLifecycleStatus === "suspended" || currentLifecycleStatus === "retired"
-  const isRetired = currentLifecycleStatus === "retired"
+    currentLifecycleStatus === 'suspended' ||
+    currentLifecycleStatus === 'retired';
+  const isRetired = currentLifecycleStatus === 'retired';
 
   return (
     <div className="flex flex-col gap-2">
@@ -218,8 +252,8 @@ export function OrgActionButtons({
           onChange={(e) => setSelectedPlan(e.target.value)}
           disabled={loading !== null}
           className={cn(
-            "rounded-lg border border-white/10 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200",
-            "disabled:opacity-50 disabled:cursor-not-allowed"
+            'rounded-lg border border-white/10 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
           )}
         >
           <option value="basic">Starter</option>
@@ -230,14 +264,14 @@ export function OrgActionButtons({
           onClick={handlePlanUpdate}
           disabled={loading !== null}
           className={cn(
-            "rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold",
-            "text-slate-200 hover:bg-white/5 transition-all",
-            "flex items-center gap-2",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "active:scale-95 disabled:active:scale-100"
+            'rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold',
+            'text-slate-200 hover:bg-white/5 transition-all',
+            'flex items-center gap-2',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
+            'active:scale-95 disabled:active:scale-100',
           )}
         >
-          {loading === "plan" ? (
+          {loading === 'plan' ? (
             <Loader2 className="h-3 w-3 animate-spin" />
           ) : (
             <CreditCard className="h-3 w-3" />
@@ -256,22 +290,22 @@ export function OrgActionButtons({
           max={90}
           disabled={loading !== null}
           className={cn(
-            "w-16 rounded-lg border border-white/10 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200",
-            "disabled:opacity-50 disabled:cursor-not-allowed"
+            'w-16 rounded-lg border border-white/10 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
           )}
         />
         <button
           onClick={handleExtendTrial}
           disabled={loading !== null}
           className={cn(
-            "rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold",
-            "text-slate-200 hover:bg-white/5 transition-all",
-            "flex items-center gap-2",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "active:scale-95 disabled:active:scale-100"
+            'rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold',
+            'text-slate-200 hover:bg-white/5 transition-all',
+            'flex items-center gap-2',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
+            'active:scale-95 disabled:active:scale-100',
           )}
         >
-          {loading === "trial" ? (
+          {loading === 'trial' ? (
             <Loader2 className="h-3 w-3 animate-spin" />
           ) : (
             <Calendar className="h-3 w-3" />
@@ -285,46 +319,46 @@ export function OrgActionButtons({
         onClick={handleToggleLock}
         disabled={loading !== null}
         className={cn(
-          "rounded-lg border px-3 py-1.5 text-xs font-bold",
-          "transition-all flex items-center gap-2",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-          "active:scale-95 disabled:active:scale-100",
-          isBlocked 
-            ? "border-emerald-400/30 text-emerald-300 hover:bg-emerald-500/20" 
-            : "border-rose-400/30 text-rose-300 hover:bg-rose-500/20"
+          'rounded-lg border px-3 py-1.5 text-xs font-bold',
+          'transition-all flex items-center gap-2',
+          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'active:scale-95 disabled:active:scale-100',
+          isBlocked
+            ? 'border-emerald-400/30 text-emerald-300 hover:bg-emerald-500/20'
+            : 'border-rose-400/30 text-rose-300 hover:bg-rose-500/20',
         )}
       >
-        {loading === "lock" ? (
+        {loading === 'lock' ? (
           <Loader2 className="h-3 w-3 animate-spin" />
         ) : isBlocked ? (
           <Unlock className="h-3 w-3" />
         ) : (
           <Lock className="h-3 w-3" />
         )}
-        {isBlocked ? "Unblock" : "Block"}
+        {isBlocked ? 'Unblock' : 'Block'}
       </button>
 
       <button
         onClick={handleToggleLifecycle}
         disabled={loading !== null}
         className={cn(
-          "rounded-lg border px-3 py-1.5 text-xs font-bold",
-          "transition-all flex items-center gap-2",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-          "active:scale-95 disabled:active:scale-100",
+          'rounded-lg border px-3 py-1.5 text-xs font-bold',
+          'transition-all flex items-center gap-2',
+          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'active:scale-95 disabled:active:scale-100',
           canRestoreLifecycle
-            ? "border-cyan-400/30 text-cyan-200 hover:bg-cyan-500/20"
-            : "border-amber-400/30 text-amber-200 hover:bg-amber-500/20"
+            ? 'border-cyan-400/30 text-cyan-200 hover:bg-cyan-500/20'
+            : 'border-amber-400/30 text-amber-200 hover:bg-amber-500/20',
         )}
       >
-        {loading === "lifecycle" ? (
+        {loading === 'lifecycle' ? (
           <Loader2 className="h-3 w-3 animate-spin" />
         ) : canRestoreLifecycle ? (
           <Unlock className="h-3 w-3" />
         ) : (
           <Lock className="h-3 w-3" />
         )}
-        {canRestoreLifecycle ? "Restore" : "Suspend"}
+        {canRestoreLifecycle ? 'Restore' : 'Suspend'}
       </button>
 
       {!isRetired ? (
@@ -332,14 +366,14 @@ export function OrgActionButtons({
           onClick={handleRetireLifecycle}
           disabled={loading !== null}
           className={cn(
-            "rounded-lg border border-rose-400/30 px-3 py-1.5 text-xs font-bold",
-            "text-rose-200 hover:bg-rose-500/20 transition-all",
-            "flex items-center gap-2",
-            "disabled:opacity-50 disabled:cursor-not-allowed",
-            "active:scale-95 disabled:active:scale-100"
+            'rounded-lg border border-rose-400/30 px-3 py-1.5 text-xs font-bold',
+            'text-rose-200 hover:bg-rose-500/20 transition-all',
+            'flex items-center gap-2',
+            'disabled:opacity-50 disabled:cursor-not-allowed',
+            'active:scale-95 disabled:active:scale-100',
           )}
         >
-          {loading === "retire" ? (
+          {loading === 'retire' ? (
             <Loader2 className="h-3 w-3 animate-spin" />
           ) : (
             <Archive className="h-3 w-3" />
@@ -348,5 +382,5 @@ export function OrgActionButtons({
         </button>
       ) : null}
     </div>
-  )
+  );
 }

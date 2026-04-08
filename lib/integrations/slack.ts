@@ -29,8 +29,8 @@ export type SlackEventType =
 
 export interface SlackMessage {
   text: string;
-  blocks?: any[];
-  attachments?: any[];
+  blocks?: Record<string, unknown>[];
+  attachments?: Record<string, unknown>[];
   channel?: string;
   username?: string;
   icon_emoji?: string;
@@ -492,7 +492,7 @@ export async function getSlackStats(
   }
 
   const messagesByType: Record<string, number> = {};
-  data.forEach((event: any) => {
+  data.forEach((event: { event_type: string }) => {
     messagesByType[event.event_type] =
       (messagesByType[event.event_type] || 0) + 1;
   });

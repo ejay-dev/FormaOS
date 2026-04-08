@@ -51,7 +51,10 @@ function asJsonObject(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
-function normalizeJob(row: any): AdminJobRecord {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- raw Supabase row
+type DbRow = Record<string, any>;
+
+function normalizeJob(row: DbRow): AdminJobRecord {
   const logs = Array.isArray(row.logs) ? row.logs : [];
   return {
     id: row.id,
@@ -60,12 +63,11 @@ function normalizeJob(row: any): AdminJobRecord {
     payload: asJsonObject(row.payload),
     progress: row.progress ?? 0,
     logs: logs
-      .map((entry: any) => ({
+      .map((entry: Record<string, unknown>) => ({
         at: stableStringValue(entry?.at, nowIso()),
-        level:
-          entry?.level === 'warn' || entry?.level === 'error'
-            ? entry.level
-            : ('info' as const),
+        level: (entry?.level === 'warn' || entry?.level === 'error'
+          ? entry.level
+          : 'info') as 'info' | 'warn' | 'error',
         message: stableStringValue(entry?.message, ''),
       }))
       .filter((entry: { message: string }) => entry.message.length > 0),
@@ -79,7 +81,7 @@ function normalizeJob(row: any): AdminJobRecord {
   };
 }
 
-function normalizeFeatureFlag(row: any): FeatureFlagRecord {
+function normalizeFeatureFlag(row: DbRow): FeatureFlagRecord {
   return {
     id: row.id,
     flag_key: row.flag_key,
@@ -102,7 +104,7 @@ function normalizeFeatureFlag(row: any): FeatureFlagRecord {
   };
 }
 
-function normalizeMarketingConfig(row: any): MarketingConfigRecord {
+function normalizeMarketingConfig(row: DbRow): MarketingConfigRecord {
   return {
     id: row.id,
     environment: row.environment,
@@ -117,7 +119,7 @@ function normalizeMarketingConfig(row: any): MarketingConfigRecord {
   };
 }
 
-function normalizeSystemSetting(row: any): SystemSettingRecord {
+function normalizeSystemSetting(row: DbRow): SystemSettingRecord {
   return {
     id: row.id,
     environment: row.environment,
@@ -132,7 +134,7 @@ function normalizeSystemSetting(row: any): SystemSettingRecord {
   };
 }
 
-function normalizeAudit(row: any): AuditLogRecord {
+function normalizeAudit(row: DbRow): AuditLogRecord {
   return {
     id: row.id,
     actor_user_id: row.actor_user_id ?? null,
@@ -146,7 +148,11 @@ function normalizeAudit(row: any): AuditLogRecord {
 }
 
 export function resolveControlPlaneEnvironment(value?: string | null) {
-  if (value === 'production' || value === 'preview' || value === 'development') {
+  if (
+    value === 'production' ||
+    value === 'preview' ||
+    value === 'development'
+  ) {
     return value;
   }
   return DEFAULT_CONTROL_ENVIRONMENT;
@@ -175,7 +181,10 @@ export async function readRuntimeVersion(environment: string): Promise<string> {
   return stableStringValue(value, DEFAULT_RUNTIME_VERSION);
 }
 
-export async function touchRuntimeVersion(environment: string, actorUserId?: string) {
+export async function touchRuntimeVersion(
+  environment: string,
+  actorUserId?: string,
+) {
   const admin = createSupabaseAdminClient();
   const nextVersion = Date.now().toString();
 
@@ -205,10 +214,15 @@ export async function touchRuntimeVersion(environment: string, actorUserId?: str
 async function readLatestTimestamp(
   table: string,
   column: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic Supabase query builder
   filter?: (query: any) => any,
 ) {
   const admin = createSupabaseAdminClient();
-  let query = admin.from(table).select(column).order(column, { ascending: false }).limit(1);
+  let query = admin
+    .from(table)
+    .select(column)
+    .order(column, { ascending: false })
+    .limit(1);
   if (filter) {
     query = filter(query);
   }
@@ -218,9 +232,11 @@ async function readLatestTimestamp(
 }
 
 function maxIsoValue(values: string[]): string {
-  return values
-    .filter((value) => value !== '0')
-    .sort((a, b) => (a > b ? -1 : a < b ? 1 : 0))[0] ?? nowIso();
+  return (
+    values
+      .filter((value) => value !== '0')
+      .sort((a, b) => (a > b ? -1 : a < b ? 1 : 0))[0] ?? nowIso()
+  );
 }
 
 export async function readRuntimeStreamVersion(environment: string): Promise<{
@@ -228,19 +244,23 @@ export async function readRuntimeStreamVersion(environment: string): Promise<{
   streamVersion: string;
   lastChangedAt: string;
 }> {
-  const [runtimeVersion, featureUpdatedAt, marketingUpdatedAt, settingsUpdatedAt] =
-    await Promise.all([
-      readRuntimeVersion(environment),
-      readLatestTimestamp('feature_flags', 'updated_at', (query) =>
-        query.eq('environment', environment),
-      ),
-      readLatestTimestamp('marketing_config', 'updated_at', (query) =>
-        query.eq('environment', environment),
-      ),
-      readLatestTimestamp('system_settings', 'updated_at', (query) =>
-        query.eq('environment', environment),
-      ),
-    ]);
+  const [
+    runtimeVersion,
+    featureUpdatedAt,
+    marketingUpdatedAt,
+    settingsUpdatedAt,
+  ] = await Promise.all([
+    readRuntimeVersion(environment),
+    readLatestTimestamp('feature_flags', 'updated_at', (query) =>
+      query.eq('environment', environment),
+    ),
+    readLatestTimestamp('marketing_config', 'updated_at', (query) =>
+      query.eq('environment', environment),
+    ),
+    readLatestTimestamp('system_settings', 'updated_at', (query) =>
+      query.eq('environment', environment),
+    ),
+  ]);
 
   const streamVersion = [
     runtimeVersion,
@@ -260,19 +280,27 @@ export async function readRuntimeStreamVersion(environment: string): Promise<{
   };
 }
 
-export async function readAdminStreamVersion(environment: string): Promise<string> {
-  const [runtimeMarker, latestJobUpdate, latestAuditCreate] = await Promise.all([
-    readRuntimeStreamVersion(environment),
-    readLatestTimestamp('admin_jobs', 'updated_at'),
-    readLatestTimestamp('audit_log', 'created_at', (query) =>
-      query.eq('environment', environment),
-    ),
-  ]);
+export async function readAdminStreamVersion(
+  environment: string,
+): Promise<string> {
+  const [runtimeMarker, latestJobUpdate, latestAuditCreate] = await Promise.all(
+    [
+      readRuntimeStreamVersion(environment),
+      readLatestTimestamp('admin_jobs', 'updated_at'),
+      readLatestTimestamp('audit_log', 'created_at', (query) =>
+        query.eq('environment', environment),
+      ),
+    ],
+  );
 
-  return [runtimeMarker.streamVersion, latestJobUpdate, latestAuditCreate].join('|');
+  return [runtimeMarker.streamVersion, latestJobUpdate, latestAuditCreate].join(
+    '|',
+  );
 }
 
-function deriveEvaluationMode(context: FeatureFlagContext): RuntimeSnapshot['evaluationMode'] {
+function deriveEvaluationMode(
+  context: FeatureFlagContext,
+): RuntimeSnapshot['evaluationMode'] {
   if (context.userId) return 'user';
   if (context.orgId) return 'organization';
   return 'global';
@@ -329,10 +357,16 @@ function materializeMarketingConfig(
         );
       }
       if (row.config_key === 'headline_accent') {
-        next.hero.headlineAccent = stableStringValue(row.value, next.hero.headlineAccent);
+        next.hero.headlineAccent = stableStringValue(
+          row.value,
+          next.hero.headlineAccent,
+        );
       }
       if (row.config_key === 'subheadline') {
-        next.hero.subheadline = stableStringValue(row.value, next.hero.subheadline);
+        next.hero.subheadline = stableStringValue(
+          row.value,
+          next.hero.subheadline,
+        );
       }
       if (row.config_key === 'primary_cta_label') {
         next.hero.primaryCtaLabel = stableStringValue(
@@ -341,7 +375,10 @@ function materializeMarketingConfig(
         );
       }
       if (row.config_key === 'primary_cta_href') {
-        next.hero.primaryCtaHref = stableStringValue(row.value, next.hero.primaryCtaHref);
+        next.hero.primaryCtaHref = stableStringValue(
+          row.value,
+          next.hero.primaryCtaHref,
+        );
       }
       if (row.config_key === 'secondary_cta_label') {
         next.hero.secondaryCtaLabel = stableStringValue(
@@ -375,7 +412,10 @@ function materializeMarketingConfig(
         next.runtime.showcaseModules = Object.fromEntries(
           Object.entries(value).map(([key, enabled]) => [
             key,
-            stableBooleanValue(enabled, Boolean(next.runtime.showcaseModules[key])),
+            stableBooleanValue(
+              enabled,
+              Boolean(next.runtime.showcaseModules[key]),
+            ),
           ]),
         );
       }
@@ -384,12 +424,18 @@ function materializeMarketingConfig(
         next.runtime.sectionVisibility = Object.fromEntries(
           Object.entries(value).map(([key, enabled]) => [
             key,
-            stableBooleanValue(enabled, Boolean(next.runtime.sectionVisibility[key])),
+            stableBooleanValue(
+              enabled,
+              Boolean(next.runtime.sectionVisibility[key]),
+            ),
           ]),
         );
       }
       if (row.config_key === 'theme_variant') {
-        next.runtime.themeVariant = stableStringValue(row.value, next.runtime.themeVariant);
+        next.runtime.themeVariant = stableStringValue(
+          row.value,
+          next.runtime.themeVariant,
+        );
       }
       if (row.config_key === 'background_variant') {
         next.runtime.backgroundVariant = stableStringValue(
@@ -405,15 +451,24 @@ function materializeMarketingConfig(
 
 function materializeOpsConfig(rows: SystemSettingRecord[]) {
   const next = { ...DEFAULT_RUNTIME_OPS };
-  const settingMap = new Map(rows.map((entry) => [`${entry.category}:${entry.setting_key}`, entry]));
+  const settingMap = new Map(
+    rows.map((entry) => [`${entry.category}:${entry.setting_key}`, entry]),
+  );
 
-  const maintenance = asJsonObject(settingMap.get('ops:maintenance_mode')?.value);
-  next.maintenanceMode = stableBooleanValue(maintenance.enabled, next.maintenanceMode);
+  const maintenance = asJsonObject(
+    settingMap.get('ops:maintenance_mode')?.value,
+  );
+  next.maintenanceMode = stableBooleanValue(
+    maintenance.enabled,
+    next.maintenanceMode,
+  );
 
   const readOnly = asJsonObject(settingMap.get('ops:read_only_mode')?.value);
   next.readOnlyMode = stableBooleanValue(readOnly.enabled, next.readOnlyMode);
 
-  const emergency = asJsonObject(settingMap.get('ops:emergency_lockdown')?.value);
+  const emergency = asJsonObject(
+    settingMap.get('ops:emergency_lockdown')?.value,
+  );
   next.emergencyLockdown = stableBooleanValue(
     emergency.enabled,
     next.emergencyLockdown,
@@ -455,14 +510,18 @@ function materializeIntegrations(rows: SystemSettingRecord[]) {
         key: entry.setting_key,
         value: {
           enabled: stableBooleanValue(value.enabled, true),
-          connection_status: ['connected', 'disconnected', 'error', 'syncing'].includes(
-            String(value.connection_status ?? ''),
-          )
+          connection_status: [
+            'connected',
+            'disconnected',
+            'error',
+            'syncing',
+          ].includes(String(value.connection_status ?? ''))
             ? (value.connection_status as IntegrationControl['connection_status'])
             : 'disconnected',
           last_sync_at:
             typeof value.last_sync_at === 'string' ? value.last_sync_at : null,
-          last_error: typeof value.last_error === 'string' ? value.last_error : null,
+          last_error:
+            typeof value.last_error === 'string' ? value.last_error : null,
           error_logs: errorLogs,
           scopes,
           enabled_scopes: enabledScopes,
@@ -569,49 +628,54 @@ export async function getAdminControlPlaneSnapshot(options?: {
   const admin = createSupabaseAdminClient();
 
   const t0 = performance.now();
-  await admin.from('organizations').select('id', { count: 'exact', head: true });
+  await admin
+    .from('organizations')
+    .select('id', { count: 'exact', head: true });
   const databaseLatencyMs = Math.max(1, Math.round(performance.now() - t0));
 
-  const [{ featureFlags, marketingConfig, systemSettings }, auditResult, jobsResult, queueCounts] =
-    await Promise.all([
-      loadCoreControlPlaneData(environment),
-      admin
-        .from('audit_log')
-        .select('*')
-        .eq('environment', environment)
-        .order('created_at', { ascending: false })
-        .limit(auditLimit),
+  const [
+    { featureFlags, marketingConfig, systemSettings },
+    auditResult,
+    jobsResult,
+    queueCounts,
+  ] = await Promise.all([
+    loadCoreControlPlaneData(environment),
+    admin
+      .from('audit_log')
+      .select('*')
+      .eq('environment', environment)
+      .order('created_at', { ascending: false })
+      .limit(auditLimit),
+    admin
+      .from('admin_jobs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(jobsLimit),
+    Promise.all([
       admin
         .from('admin_jobs')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(jobsLimit),
-      Promise.all([
-        admin
-          .from('admin_jobs')
-          .select('id', { count: 'exact', head: true })
-          .eq('status', 'queued'),
-        admin
-          .from('admin_jobs')
-          .select('id', { count: 'exact', head: true })
-          .eq('status', 'running'),
-        admin
-          .from('admin_jobs')
-          .select('id', { count: 'exact', head: true })
-          .eq('status', 'failed'),
-        admin
-          .from('admin_jobs')
-          .select('id', { count: 'exact', head: true })
-          .eq('status', 'succeeded')
-          .gte('updated_at', new Date(Date.now() - 86_400_000).toISOString()),
-      ]),
-    ]);
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'queued'),
+      admin
+        .from('admin_jobs')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'running'),
+      admin
+        .from('admin_jobs')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'failed'),
+      admin
+        .from('admin_jobs')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'succeeded')
+        .gte('updated_at', new Date(Date.now() - 86_400_000).toISOString()),
+    ]),
+  ]);
 
   const runtimeVersion = await readRuntimeVersion(environment);
 
-  const [queuedCount, runningCount, failedCount, succeededCount] = queueCounts.map(
-    (entry) => entry.count ?? 0,
-  );
+  const [queuedCount, runningCount, failedCount, succeededCount] =
+    queueCounts.map((entry) => entry.count ?? 0);
 
   return {
     environment,
@@ -657,10 +721,13 @@ export async function upsertFeatureFlag(args: {
     environment: args.environment,
     flag_key: args.flagKey,
     scope_type: args.scopeType,
-    scope_id: args.scopeType === 'global' ? null : args.scopeId ?? null,
+    scope_id: args.scopeType === 'global' ? null : (args.scopeId ?? null),
     enabled: args.enabled,
     kill_switch: args.killSwitch,
-    rollout_percentage: Math.min(100, Math.max(0, Math.round(args.rolloutPercentage))),
+    rollout_percentage: Math.min(
+      100,
+      Math.max(0, Math.round(args.rolloutPercentage)),
+    ),
     variants: args.variants ?? {},
     default_variant: args.defaultVariant ?? null,
     description: args.description ?? null,
@@ -825,7 +892,11 @@ async function appendJobLog(
   message: string,
 ) {
   const admin = createSupabaseAdminClient();
-  const { data } = await admin.from('admin_jobs').select('logs').eq('id', jobId).maybeSingle();
+  const { data } = await admin
+    .from('admin_jobs')
+    .select('logs')
+    .eq('id', jobId)
+    .maybeSingle();
   const previous = Array.isArray(data?.logs) ? data.logs : [];
   const next = [...previous, { at: nowIso(), level, message }].slice(-120);
   await admin.from('admin_jobs').update({ logs: next }).eq('id', jobId);
@@ -862,7 +933,11 @@ async function executeAdminJobType(jobId: string, jobType: string) {
   const admin = createSupabaseAdminClient();
 
   if (jobType === 'run_cleanup') {
-    await appendJobLog(jobId, 'info', 'Scanning stale failed jobs older than 14 days');
+    await appendJobLog(
+      jobId,
+      'info',
+      'Scanning stale failed jobs older than 14 days',
+    );
     const threshold = new Date(Date.now() - 14 * 86_400_000).toISOString();
     const { data: staleJobs } = await admin
       .from('admin_jobs')
@@ -879,7 +954,7 @@ async function executeAdminJobType(jobId: string, jobType: string) {
         .delete()
         .in(
           'id',
-          staleJobs!.map((entry: any) => entry.id),
+          staleJobs!.map((entry: { id: string }) => entry.id),
         );
     }
 
@@ -893,10 +968,16 @@ async function executeAdminJobType(jobId: string, jobType: string) {
   }
 
   if (jobType === 'rebuild_search_index') {
-    await appendJobLog(jobId, 'info', 'Re-indexing organizations + users tables');
+    await appendJobLog(
+      jobId,
+      'info',
+      'Re-indexing organizations + users tables',
+    );
     const [{ count: orgCount }, { count: userCount }] = await Promise.all([
       admin.from('organizations').select('id', { count: 'exact', head: true }),
-      admin.from('user_profiles').select('user_id', { count: 'exact', head: true }),
+      admin
+        .from('user_profiles')
+        .select('user_id', { count: 'exact', head: true }),
     ]);
     await setJobState(jobId, { progress: 60 });
     await sleep(220);
@@ -908,18 +989,30 @@ async function executeAdminJobType(jobId: string, jobType: string) {
   }
 
   if (jobType === 'recompute_scores') {
-    await appendJobLog(jobId, 'info', 'Recomputing customer-health score snapshots');
+    await appendJobLog(
+      jobId,
+      'info',
+      'Recomputing customer-health score snapshots',
+    );
     const { count: orgCount } = await admin
       .from('organizations')
       .select('id', { count: 'exact', head: true });
     await setJobState(jobId, { progress: 55 });
     await sleep(180);
-    await appendJobLog(jobId, 'info', 'Score cache invalidated for recomputation');
+    await appendJobLog(
+      jobId,
+      'info',
+      'Score cache invalidated for recomputation',
+    );
     return { organizationsQueued: orgCount ?? 0 };
   }
 
   if (jobType === 'regenerate_trust_packet') {
-    await appendJobLog(jobId, 'info', 'Regenerating trust-packet readiness marker');
+    await appendJobLog(
+      jobId,
+      'info',
+      'Regenerating trust-packet readiness marker',
+    );
     await setJobState(jobId, { progress: 40 });
     await sleep(150);
     const timestamp = nowIso();
@@ -930,9 +1023,16 @@ async function executeAdminJobType(jobId: string, jobType: string) {
         setting_key: 'trust_packet_last_regenerated_at',
         value: { at: timestamp },
       },
-      { onConflict: 'environment,category,setting_key', ignoreDuplicates: false },
+      {
+        onConflict: 'environment,category,setting_key',
+        ignoreDuplicates: false,
+      },
     );
-    await appendJobLog(jobId, 'info', `Trust packet marker updated at ${timestamp}`);
+    await appendJobLog(
+      jobId,
+      'info',
+      `Trust packet marker updated at ${timestamp}`,
+    );
     return { regeneratedAt: timestamp };
   }
 
@@ -952,7 +1052,8 @@ async function executeAdminJobType(jobId: string, jobType: string) {
       process.env.NEXT_PUBLIC_APP_URL,
     ].filter((url): url is string => Boolean(url));
 
-    const results: Array<{ url: string; ok: boolean; status: number | null }> = [];
+    const results: Array<{ url: string; ok: boolean; status: number | null }> =
+      [];
     for (const url of urls) {
       try {
         const res = await fetch(url, {

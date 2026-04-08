@@ -45,7 +45,7 @@ export interface AutomationContext {
   orgId: string;
   userId?: string;
   userEmail?: string;
-  resource?: any;
+  resource?: { id?: string; [key: string]: unknown };
   metadata?: Record<string, any>;
 }
 
@@ -68,7 +68,7 @@ export class WorkflowEngine {
       .eq('enabled', true);
 
     if (rules) {
-      rules.forEach((rule: any) => {
+      rules.forEach((rule: WorkflowRule) => {
         this.rules.set(rule.id, rule);
       });
     }
@@ -177,10 +177,7 @@ export class WorkflowEngine {
     });
   }
 
-  private getContextValue(
-    context: AutomationContext,
-    path: string,
-  ): unknown {
+  private getContextValue(context: AutomationContext, path: string): unknown {
     return path.split('.').reduce<unknown>((value, segment) => {
       if (value == null || typeof value !== 'object') {
         return undefined;
@@ -201,19 +198,24 @@ export class WorkflowEngine {
     switch (action.type) {
       case 'send_notification':
         if (context.userId) {
-          await notify(context.orgId, [action.config.userId || context.userId], {
-            type: 'workflow.approval_requested',
-            title: action.config.title,
-            body: action.config.message,
-            priority:
-              action.config.type === 'warning' || action.config.type === 'error'
-                ? 'high'
-                : 'normal',
-            data: {
-              href: action.config.actionUrl || '/app/workflows',
-              dedupeKey: `workflow.rule:${context.orgId}:${action.config.userId || context.userId}:${action.config.title || 'notification'}`,
+          await notify(
+            context.orgId,
+            [action.config.userId || context.userId],
+            {
+              type: 'workflow.approval_requested',
+              title: action.config.title,
+              body: action.config.message,
+              priority:
+                action.config.type === 'warning' ||
+                action.config.type === 'error'
+                  ? 'high'
+                  : 'normal',
+              data: {
+                href: action.config.actionUrl || '/app/workflows',
+                dedupeKey: `workflow.rule:${context.orgId}:${action.config.userId || context.userId}:${action.config.title || 'notification'}`,
+              },
             },
-          });
+          );
         }
         break;
 

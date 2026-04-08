@@ -420,16 +420,30 @@ export async function sendEmail(
     let html = '';
     switch (notification.template) {
       case 'task_assignment':
-        html = generateTaskAssignmentEmail(notification.data as Parameters<typeof generateTaskAssignmentEmail>[0]);
+        html = generateTaskAssignmentEmail(
+          notification.data as Parameters<
+            typeof generateTaskAssignmentEmail
+          >[0],
+        );
         break;
       case 'certificate_expiring':
-        html = generateCertificateExpiringEmail(notification.data as Parameters<typeof generateCertificateExpiringEmail>[0]);
+        html = generateCertificateExpiringEmail(
+          notification.data as Parameters<
+            typeof generateCertificateExpiringEmail
+          >[0],
+        );
         break;
       case 'compliance_alert':
-        html = generateComplianceAlertEmail(notification.data as Parameters<typeof generateComplianceAlertEmail>[0]);
+        html = generateComplianceAlertEmail(
+          notification.data as Parameters<
+            typeof generateComplianceAlertEmail
+          >[0],
+        );
         break;
       case 'weekly_digest':
-        html = generateWeeklyDigestEmail(notification.data as Parameters<typeof generateWeeklyDigestEmail>[0]);
+        html = generateWeeklyDigestEmail(
+          notification.data as Parameters<typeof generateWeeklyDigestEmail>[0],
+        );
         break;
       default:
         console.error(`Unknown email template: ${notification.template}`);
@@ -592,12 +606,14 @@ export async function scheduleWeeklyDigest(
 
   const stats = {
     tasksCompleted:
-      tasks.data?.filter((t: any) => t.status === 'completed').length || 0,
+      tasks.data?.filter((t: { status?: string }) => t.status === 'completed')
+        .length || 0,
     tasksPending:
-      tasks.data?.filter((t: any) => t.status === 'pending').length || 0,
+      tasks.data?.filter((t: { status?: string }) => t.status === 'pending')
+        .length || 0,
     certificatesRenewed: 0,
     certificatesExpiring:
-      certificates.data?.filter((c: any) => {
+      certificates.data?.filter((c: { expiry_date: string }) => {
         const daysUntil = Math.ceil(
           (new Date(c.expiry_date).getTime() - Date.now()) /
             (1000 * 60 * 60 * 24),
@@ -610,9 +626,12 @@ export async function scheduleWeeklyDigest(
 
   const topTasks =
     tasks.data
-      ?.filter((t: any) => t.status === 'pending' && t.due_date)
+      ?.filter(
+        (t: { status?: string; due_date?: string }) =>
+          t.status === 'pending' && t.due_date,
+      )
       .sort(
-        (a: any, b: any) =>
+        (a: { due_date: string }, b: { due_date: string }) =>
           new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
       )
       .slice(0, 5) || [];
@@ -620,7 +639,9 @@ export async function scheduleWeeklyDigest(
   // Send digest to each user
   for (const pref of preferences) {
     const profileRaw = (pref as Record<string, unknown>).profiles;
-    const profile = (Array.isArray(profileRaw) ? profileRaw[0] : profileRaw) as { email?: string; full_name?: string } | null;
+    const profile = (
+      Array.isArray(profileRaw) ? profileRaw[0] : profileRaw
+    ) as { email?: string; full_name?: string } | null;
     await sendEmail({
       to: profile?.email ? [profile.email] : [],
       subject: `Weekly Compliance Summary - ${org?.name}`,
@@ -667,12 +688,14 @@ export async function getEmailStats(organizationId: string): Promise<{
   }
 
   const totalSent = logs.length;
-  const delivered = logs.filter((l: any) => l.status === 'sent').length;
+  const delivered = logs.filter(
+    (l: { status?: string }) => l.status === 'sent',
+  ).length;
   const deliveryRate =
     totalSent > 0 ? Math.round((delivered / totalSent) * 100) : 0;
 
   const byTemplate: Record<string, number> = {};
-  logs.forEach((log: any) => {
+  logs.forEach((log: { template: string }) => {
     byTemplate[log.template] = (byTemplate[log.template] || 0) + 1;
   });
 

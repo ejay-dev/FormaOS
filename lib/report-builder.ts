@@ -68,7 +68,7 @@ export interface WidgetConfig {
       backgroundColor?: string | string[];
       borderColor?: string;
     }>;
-    options?: any;
+    options?: Record<string, unknown>;
   };
 
   // Table widget
@@ -167,10 +167,11 @@ function normaliseTabularData(value: unknown): Record<string, unknown>[] {
   }
 
   if (value && typeof value === 'object') {
-    return Object.entries(value as Record<string, unknown>).map(([key, nested]) =>
-      nested && typeof nested === 'object' && !Array.isArray(nested)
-        ? { key, ...((nested as Record<string, unknown>) ?? {}) }
-        : { key, value: nested },
+    return Object.entries(value as Record<string, unknown>).map(
+      ([key, nested]) =>
+        nested && typeof nested === 'object' && !Array.isArray(nested)
+          ? { key, ...((nested as Record<string, unknown>) ?? {}) }
+          : { key, value: nested },
     );
   }
 
@@ -245,7 +246,9 @@ function buildReportPdf(report: {
       margin: { left: 14, right: 14 },
     });
 
-    y = ((doc as jsPDF & { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? y + 12) + 10;
+    y =
+      ((doc as jsPDF & { lastAutoTable?: { finalY: number } }).lastAutoTable
+        ?.finalY ?? y + 12) + 10;
   }
 
   const arrayBuffer = doc.output('arraybuffer');
@@ -258,18 +261,24 @@ function buildExcelWorkbook(report: {
 }): Buffer {
   const worksheets = report.template.widgets.map((widget) => {
     const rows = normaliseTabularData(report.data[widget.id]);
-    const columns = Array.from(new Set(rows.flatMap((row) => Object.keys(row))));
+    const columns = Array.from(
+      new Set(rows.flatMap((row) => Object.keys(row))),
+    );
     const headerColumns = columns.length ? columns : ['value'];
 
     const headerRow = headerColumns
-      .map((column) => `<Cell><Data ss:Type="String">${escapeXml(column)}</Data></Cell>`)
+      .map(
+        (column) =>
+          `<Cell><Data ss:Type="String">${escapeXml(column)}</Data></Cell>`,
+      )
       .join('');
     const bodyRows = rows
       .map((row) => {
         const cells = headerColumns
           .map((column) => {
             const value = row[column];
-            const isNumber = typeof value === 'number' && Number.isFinite(value);
+            const isNumber =
+              typeof value === 'number' && Number.isFinite(value);
             const type = isNumber ? 'Number' : 'String';
             return `<Cell><Data ss:Type="${type}">${escapeXml(value ?? '')}</Data></Cell>`;
           })
@@ -278,7 +287,8 @@ function buildExcelWorkbook(report: {
       })
       .join('');
 
-    const sheetName = widget.title.replace(/[\\/*?:[\]]/g, '').slice(0, 31) || 'Sheet';
+    const sheetName =
+      widget.title.replace(/[\\/*?:[\]]/g, '').slice(0, 31) || 'Sheet';
     return `
       <Worksheet ss:Name="${escapeXml(sheetName)}">
         <Table>
@@ -691,7 +701,9 @@ export async function getReportStats(organizationId: string): Promise<{
 
   const totalTemplates = templates?.length || 0;
   const scheduledReports =
-    templates?.filter((t: any) => t.schedule?.enabled).length || 0;
+    templates?.filter(
+      (t: { schedule?: { enabled?: boolean } }) => t.schedule?.enabled,
+    ).length || 0;
 
   // Get generation history (if tracked)
   const { data: generations } = await supabase
@@ -707,7 +719,7 @@ export async function getReportStats(organizationId: string): Promise<{
 
   // Count generations per template
   const generationCounts: Record<string, number> = {};
-  generations?.forEach((gen: any) => {
+  generations?.forEach((gen: { template_id: string }) => {
     generationCounts[gen.template_id] =
       (generationCounts[gen.template_id] || 0) + 1;
   });
@@ -716,7 +728,9 @@ export async function getReportStats(organizationId: string): Promise<{
     .sort(([, a], [, b]) => b - a)
     .slice(0, 5)
     .map(([templateId, count]) => {
-      const template = templates?.find((t: any) => t.id === templateId);
+      const template = templates?.find(
+        (t: { id: string; name?: string }) => t.id === templateId,
+      );
       return {
         id: templateId,
         name: template?.name || 'Unknown',

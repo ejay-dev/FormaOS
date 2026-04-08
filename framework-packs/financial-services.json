@@ -1,0 +1,425 @@
+{
+  "framework": {
+    "name": "Australian Financial Services Compliance",
+    "slug": "financial-services-au",
+    "version": "2026",
+    "description": "Integrated compliance framework for Australian financial services providers covering ASIC, APRA, and AUSTRAC obligations.",
+    "is_active": true
+  },
+  "domains": [
+    {
+      "name": "ASIC AFS General Obligations",
+      "key": "asic-afs",
+      "sort_order": 1
+    },
+    { "name": "APRA Prudential Standards", "key": "apra-cps", "sort_order": 2 },
+    { "name": "AUSTRAC AML/CTF", "key": "austrac-aml", "sort_order": 3 },
+    { "name": "AFCA Membership", "key": "afca", "sort_order": 4 }
+  ],
+  "controls": [
+    {
+      "control_code": "AFS-001",
+      "title": "AFS Licence Maintenance",
+      "summary_description": "Maintain current AFS licence conditions and notify ASIC of changes within required timeframes.",
+      "implementation_guidance": "Review licence conditions quarterly. Notify ASIC within 10 business days of material changes.",
+      "regulation_reference": "s912A Corporations Act 2001",
+      "default_risk_level": "critical",
+      "review_frequency_days": 90,
+      "domain": "ASIC AFS General Obligations",
+      "evidence_required": [
+        "Current AFS licence copy",
+        "Change notification records",
+        "Quarterly review minutes"
+      ],
+      "suggested_evidence_types": ["document", "certificate", "audit_record"],
+      "suggested_task_templates": [
+        { "title": "AFS Licence Quarterly Review", "frequency": "quarterly" }
+      ]
+    },
+    {
+      "control_code": "AFS-002",
+      "title": "Responsible Manager Competency",
+      "summary_description": "Ensure all responsible managers meet ASIC competency and experience requirements (RG 105).",
+      "implementation_guidance": "Maintain register of responsible managers with qualifications and experience records.",
+      "regulation_reference": "RG 105 ASIC",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "ASIC AFS General Obligations",
+      "evidence_required": [
+        "Responsible manager register",
+        "Qualification certificates",
+        "Experience records"
+      ],
+      "suggested_evidence_types": ["register", "certificate"],
+      "suggested_task_templates": [
+        { "title": "Responsible Manager Review", "frequency": "biannual" }
+      ]
+    },
+    {
+      "control_code": "AFS-003",
+      "title": "Financial Product Disclosure",
+      "summary_description": "Maintain compliant Product Disclosure Statements (PDS) and Financial Services Guides (FSG).",
+      "implementation_guidance": "Review PDS and FSG documents annually and after material changes.",
+      "regulation_reference": "Part 7.9 Corporations Act 2001",
+      "default_risk_level": "high",
+      "review_frequency_days": 365,
+      "domain": "ASIC AFS General Obligations",
+      "evidence_required": [
+        "Current PDS",
+        "Current FSG",
+        "Version control log"
+      ],
+      "suggested_evidence_types": ["document"],
+      "suggested_task_templates": [
+        { "title": "PDS/FSG Annual Review", "frequency": "annual" }
+      ]
+    },
+    {
+      "control_code": "AFS-004",
+      "title": "Conflicts of Interest Management",
+      "summary_description": "Identify, manage, and disclose conflicts of interest in accordance with s912A(1)(aa).",
+      "implementation_guidance": "Maintain conflicts register and review quarterly.",
+      "regulation_reference": "s912A(1)(aa) Corporations Act 2001",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "ASIC AFS General Obligations",
+      "evidence_required": [
+        "Conflicts register",
+        "Disclosure records",
+        "Review minutes"
+      ],
+      "suggested_evidence_types": ["register", "document"],
+      "suggested_task_templates": [
+        { "title": "Conflicts Register Review", "frequency": "quarterly" }
+      ]
+    },
+    {
+      "control_code": "AFS-005",
+      "title": "Best Interest Duty Compliance",
+      "summary_description": "Ensure financial advisers comply with best interest duty under Division 2 of Part 7.7A.",
+      "implementation_guidance": "Implement file review program and advice quality monitoring.",
+      "regulation_reference": "s961B Corporations Act 2001",
+      "default_risk_level": "critical",
+      "review_frequency_days": 90,
+      "domain": "ASIC AFS General Obligations",
+      "evidence_required": [
+        "Advice file reviews",
+        "Quality assurance reports",
+        "Training records"
+      ],
+      "suggested_evidence_types": ["audit_record", "report"],
+      "suggested_task_templates": [
+        { "title": "Advice File Review Program", "frequency": "quarterly" }
+      ]
+    },
+    {
+      "control_code": "AFS-006",
+      "title": "Breach Reporting to ASIC",
+      "summary_description": "Report significant breaches to ASIC within required timeframes under s912D.",
+      "implementation_guidance": "Maintain breach register, assess significance within 30 days, report to ASIC if significant.",
+      "regulation_reference": "s912D Corporations Act 2001",
+      "default_risk_level": "critical",
+      "review_frequency_days": 30,
+      "domain": "ASIC AFS General Obligations",
+      "evidence_required": [
+        "Breach register",
+        "Significance assessments",
+        "ASIC lodgement confirmations"
+      ],
+      "suggested_evidence_types": ["register", "document", "notification"],
+      "suggested_task_templates": [
+        { "title": "Breach Register Monthly Review", "frequency": "monthly" }
+      ]
+    },
+    {
+      "control_code": "CPS-001",
+      "title": "Operational Risk Management",
+      "summary_description": "Maintain operational risk management framework in accordance with CPS 230.",
+      "implementation_guidance": "Identify, assess, and manage operational risks including material service providers.",
+      "regulation_reference": "APRA CPS 230",
+      "default_risk_level": "critical",
+      "review_frequency_days": 180,
+      "domain": "APRA Prudential Standards",
+      "evidence_required": [
+        "Risk management framework document",
+        "Risk register",
+        "Board risk report"
+      ],
+      "suggested_evidence_types": ["document", "register", "report"],
+      "suggested_task_templates": [
+        {
+          "title": "Operational Risk Framework Review",
+          "frequency": "biannual"
+        }
+      ]
+    },
+    {
+      "control_code": "CPS-002",
+      "title": "Business Continuity Planning",
+      "summary_description": "Maintain and test business continuity and disaster recovery plans per CPS 230.",
+      "implementation_guidance": "Test BCP annually. Update after material changes or incidents.",
+      "regulation_reference": "APRA CPS 230",
+      "default_risk_level": "high",
+      "review_frequency_days": 365,
+      "domain": "APRA Prudential Standards",
+      "evidence_required": ["BCP document", "Test results", "Lessons learned"],
+      "suggested_evidence_types": ["document", "report"],
+      "suggested_task_templates": [
+        { "title": "BCP Annual Test", "frequency": "annual" }
+      ]
+    },
+    {
+      "control_code": "CPS-003",
+      "title": "Material Service Provider Management",
+      "summary_description": "Manage risks from material service providers including fourth-party dependencies.",
+      "implementation_reference": "APRA CPS 230",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "APRA Prudential Standards",
+      "evidence_required": [
+        "Service provider register",
+        "Due diligence records",
+        "Performance reviews"
+      ],
+      "suggested_evidence_types": ["register", "document"],
+      "suggested_task_templates": [
+        { "title": "Service Provider Review", "frequency": "biannual" }
+      ]
+    },
+    {
+      "control_code": "CPS-004",
+      "title": "Information Security Management",
+      "summary_description": "Maintain information security controls per CPS 234.",
+      "implementation_guidance": "Implement security controls, incident response, and testing program.",
+      "regulation_reference": "APRA CPS 234",
+      "default_risk_level": "critical",
+      "review_frequency_days": 90,
+      "domain": "APRA Prudential Standards",
+      "evidence_required": [
+        "Security policy",
+        "Pen test results",
+        "Incident response plan"
+      ],
+      "suggested_evidence_types": ["document", "report"],
+      "suggested_task_templates": [
+        { "title": "CPS 234 Quarterly Assessment", "frequency": "quarterly" }
+      ]
+    },
+    {
+      "control_code": "CPS-005",
+      "title": "Governance and Accountability",
+      "summary_description": "Board and senior management governance obligations under CPS 510.",
+      "implementation_guidance": "Maintain fit and proper assessments for responsible persons.",
+      "regulation_reference": "APRA CPS 510",
+      "default_risk_level": "high",
+      "review_frequency_days": 365,
+      "domain": "APRA Prudential Standards",
+      "evidence_required": [
+        "Fit and proper records",
+        "Board skills matrix",
+        "Governance framework"
+      ],
+      "suggested_evidence_types": ["document", "register"],
+      "suggested_task_templates": [
+        { "title": "Governance Framework Annual Review", "frequency": "annual" }
+      ]
+    },
+    {
+      "control_code": "AML-001",
+      "title": "AML/CTF Program Maintenance",
+      "summary_description": "Maintain and update AML/CTF program including Part A (customer identification) and Part B (transaction monitoring).",
+      "implementation_guidance": "Review program annually and after material changes to business or typology updates.",
+      "regulation_reference": "AML/CTF Act 2006 s81",
+      "default_risk_level": "critical",
+      "review_frequency_days": 365,
+      "domain": "AUSTRAC AML/CTF",
+      "evidence_required": [
+        "AML/CTF program document",
+        "ML/TF risk assessment",
+        "Board approval records"
+      ],
+      "suggested_evidence_types": ["document", "report"],
+      "suggested_task_templates": [
+        { "title": "AML/CTF Program Annual Review", "frequency": "annual" }
+      ]
+    },
+    {
+      "control_code": "AML-002",
+      "title": "Customer Due Diligence",
+      "summary_description": "Verify customer identity before providing designated services (KYC/CDD).",
+      "implementation_guidance": "Implement risk-based CDD procedures for new and existing customers.",
+      "regulation_reference": "AML/CTF Act 2006 Part 2",
+      "default_risk_level": "critical",
+      "review_frequency_days": 90,
+      "domain": "AUSTRAC AML/CTF",
+      "evidence_required": [
+        "CDD procedures",
+        "Verification records sample",
+        "Enhanced CDD log"
+      ],
+      "suggested_evidence_types": ["document", "audit_record"],
+      "suggested_task_templates": [
+        { "title": "CDD Procedure Quarterly Review", "frequency": "quarterly" }
+      ]
+    },
+    {
+      "control_code": "AML-003",
+      "title": "Transaction Monitoring",
+      "summary_description": "Monitor transactions for suspicious activity and report SMRs/TTRs to AUSTRAC.",
+      "implementation_guidance": "Configure monitoring thresholds, review alerts, and lodge reports within required timeframes.",
+      "regulation_reference": "AML/CTF Act 2006 s41, s43",
+      "default_risk_level": "critical",
+      "review_frequency_days": 30,
+      "domain": "AUSTRAC AML/CTF",
+      "evidence_required": [
+        "Monitoring rules configuration",
+        "Alert review log",
+        "SMR/TTR lodgement records"
+      ],
+      "suggested_evidence_types": ["document", "report", "log"],
+      "suggested_task_templates": [
+        {
+          "title": "Transaction Monitoring Monthly Review",
+          "frequency": "monthly"
+        }
+      ]
+    },
+    {
+      "control_code": "AML-004",
+      "title": "AUSTRAC Compliance Reporting",
+      "summary_description": "Lodge compliance reports with AUSTRAC including TTRs, IFTIs, and SMRs.",
+      "implementation_guidance": "Ensure all reportable transactions are lodged within prescribed timeframes.",
+      "regulation_reference": "AML/CTF Act 2006 s41-45",
+      "default_risk_level": "high",
+      "review_frequency_days": 30,
+      "domain": "AUSTRAC AML/CTF",
+      "evidence_required": [
+        "Lodgement records",
+        "Completeness checks",
+        "Error reconciliation"
+      ],
+      "suggested_evidence_types": ["report", "log"],
+      "suggested_task_templates": [
+        { "title": "AUSTRAC Reporting Review", "frequency": "monthly" }
+      ]
+    },
+    {
+      "control_code": "AML-005",
+      "title": "AML/CTF Staff Training",
+      "summary_description": "Provide AML/CTF awareness training to all relevant employees.",
+      "implementation_guidance": "Deliver initial and ongoing training. Maintain training records.",
+      "regulation_reference": "AML/CTF Act 2006 s81(3)",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "AUSTRAC AML/CTF",
+      "evidence_required": [
+        "Training program",
+        "Completion records",
+        "Assessment results"
+      ],
+      "suggested_evidence_types": ["document", "register"],
+      "suggested_task_templates": [
+        { "title": "AML/CTF Annual Training", "frequency": "annual" }
+      ]
+    },
+    {
+      "control_code": "AFCA-001",
+      "title": "AFCA Membership Compliance",
+      "summary_description": "Maintain AFCA membership and comply with reporting and complaints handling requirements.",
+      "implementation_guidance": "Respond to AFCA complaints within required timeframes. Lodge annual compliance certificate.",
+      "regulation_reference": "AFCA Rules",
+      "default_risk_level": "high",
+      "review_frequency_days": 365,
+      "domain": "AFCA Membership",
+      "evidence_required": [
+        "AFCA membership certificate",
+        "Complaint register",
+        "Response time tracking"
+      ],
+      "suggested_evidence_types": ["certificate", "register"],
+      "suggested_task_templates": [
+        { "title": "AFCA Annual Compliance Certificate", "frequency": "annual" }
+      ]
+    },
+    {
+      "control_code": "AFCA-002",
+      "title": "Internal Dispute Resolution",
+      "summary_description": "Maintain IDR procedures compliant with RG 271.",
+      "implementation_guidance": "Respond to complaints within 30 calendar days (or 21 for hardship, 5 for small business credit).",
+      "regulation_reference": "ASIC RG 271",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "AFCA Membership",
+      "evidence_required": [
+        "IDR procedures",
+        "Complaint response records",
+        "Compliance statistics"
+      ],
+      "suggested_evidence_types": ["document", "report"],
+      "suggested_task_templates": [
+        { "title": "IDR Procedure Review", "frequency": "biannual" }
+      ]
+    },
+    {
+      "control_code": "AFS-007",
+      "title": "Annual Compliance Certificate",
+      "summary_description": "Lodge annual compliance certificate with ASIC confirming compliance with licence conditions.",
+      "implementation_guidance": "Complete self-assessment and lodge by due date.",
+      "regulation_reference": "s912A(1)(ca) Corporations Act 2001",
+      "default_risk_level": "critical",
+      "review_frequency_days": 365,
+      "domain": "ASIC AFS General Obligations",
+      "evidence_required": [
+        "Self-assessment",
+        "Certificate of compliance",
+        "Lodge confirmation"
+      ],
+      "suggested_evidence_types": ["document", "certificate"],
+      "suggested_task_templates": [
+        { "title": "Annual Compliance Certificate", "frequency": "annual" }
+      ]
+    },
+    {
+      "control_code": "AFS-008",
+      "title": "Client Money Handling",
+      "summary_description": "Comply with client money handling obligations under Chapter 7.",
+      "implementation_guidance": "Maintain trust accounts, reconcile monthly, and ensure segregation of client funds.",
+      "regulation_reference": "s981A-981M Corporations Act 2001",
+      "default_risk_level": "critical",
+      "review_frequency_days": 30,
+      "domain": "ASIC AFS General Obligations",
+      "evidence_required": [
+        "Trust account reconciliations",
+        "Audit report",
+        "Segregation controls"
+      ],
+      "suggested_evidence_types": ["report", "audit_record"],
+      "suggested_task_templates": [
+        {
+          "title": "Trust Account Monthly Reconciliation",
+          "frequency": "monthly"
+        }
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "internal_control_code": "CPS-004",
+      "framework_slug": "iso27001",
+      "external_control_reference": "A.5-A.8",
+      "mapping_strength": "primary"
+    },
+    {
+      "internal_control_code": "CPS-002",
+      "framework_slug": "iso27001",
+      "external_control_reference": "A.5.30",
+      "mapping_strength": "partial"
+    },
+    {
+      "internal_control_code": "AML-001",
+      "framework_slug": "nist-csf",
+      "external_control_reference": "GV-3",
+      "mapping_strength": "partial"
+    }
+  ]
+}

@@ -32,8 +32,8 @@ export interface TeamsConfig {
 export interface TeamsCard {
   type: 'AdaptiveCard';
   version: '1.4';
-  body: any[];
-  actions?: any[];
+  body: Record<string, unknown>[];
+  actions?: Record<string, unknown>[];
 }
 
 /**
@@ -515,9 +515,11 @@ export async function getTeamsConfig(
     channelName: (config.channel_name as string) ?? (data.channel as string),
     enabledEvents:
       ((config.enabled_events as TeamsEventType[]) ??
-        (data.events as TeamsEventType[])) || [],
+        (data.events as TeamsEventType[])) ||
+      [],
     mentionUsers:
-      ((config.mention_users as string[]) ?? (data.mention_users as string[])) ||
+      ((config.mention_users as string[]) ??
+        (data.mention_users as string[])) ||
       [],
   };
 }
@@ -693,12 +695,14 @@ export async function getTeamsStats(organizationId: string): Promise<{
   }
 
   const totalSent = events.length;
-  const successCount = events.filter((e: any) => e.status === 'sent').length;
+  const successCount = events.filter(
+    (e: { status?: string }) => e.status === 'sent',
+  ).length;
   const successRate =
     totalSent > 0 ? Math.round((successCount / totalSent) * 100) : 0;
 
   const eventCounts: Record<string, number> = {};
-  events.forEach((event: any) => {
+  events.forEach((event: { event_type: string }) => {
     eventCounts[event.event_type] = (eventCounts[event.event_type] || 0) + 1;
   });
 

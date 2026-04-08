@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 /* ===========================
    TYPES
@@ -6,8 +6,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export interface DashboardMetrics {
   complianceScore: number;
-  riskLevel: "LOW" | "MEDIUM" | "HIGH";
-  complianceTrend: "UP" | "DOWN" | "FLAT";
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
+  complianceTrend: 'UP' | 'DOWN' | 'FLAT';
 
   totalPolicies: number;
   activePolicies: number;
@@ -35,14 +35,16 @@ export interface ActivityItem {
   action: string;
   target: string;
   timestamp: string;
-  type: "policy" | "task" | "evidence" | "security" | "system";
+  type: 'policy' | 'task' | 'evidence' | 'security' | 'system';
 }
 
 /* ===========================
    CORE FUNCTION
 =========================== */
 
-export async function getDashboardMetrics(orgId: string): Promise<DashboardMetrics> {
+export async function getDashboardMetrics(
+  orgId: string,
+): Promise<DashboardMetrics> {
   const supabase = await createSupabaseServerClient();
   const now = new Date().toISOString();
 
@@ -61,43 +63,69 @@ export async function getDashboardMetrics(orgId: string): Promise<DashboardMetri
     { data: rawActivity },
     { data: policyHistory },
     { data: taskHistory },
-    { data: evidenceHistory }
+    { data: evidenceHistory },
   ] = await Promise.all([
-    supabase.from("org_policies").select("*", { count: "exact", head: true }).eq("organization_id", orgId),
-    supabase.from("org_policies").select("*", { count: "exact", head: true }).eq("organization_id", orgId).eq("status", "published"),
+    supabase
+      .from('org_policies')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId),
+    supabase
+      .from('org_policies')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId)
+      .eq('status', 'published'),
 
-    supabase.from("org_tasks").select("*", { count: "exact", head: true }).eq("organization_id", orgId),
-    supabase.from("org_tasks").select("*", { count: "exact", head: true }).eq("organization_id", orgId).eq("status", "completed"),
-    supabase.from("org_tasks")
-      .select("*", { count: "exact", head: true })
-      .eq("organization_id", orgId)
-      .lt("due_date", now)
-      .neq("status", "completed"),
+    supabase
+      .from('org_tasks')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId),
+    supabase
+      .from('org_tasks')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId)
+      .eq('status', 'completed'),
+    supabase
+      .from('org_tasks')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId)
+      .lt('due_date', now)
+      .neq('status', 'completed'),
 
-    supabase.from("org_evidence").select("*", { count: "exact", head: true }).eq("organization_id", orgId),
-    supabase.from("org_evidence").select("*", { count: "exact", head: true }).eq("organization_id", orgId).eq("status", "approved"),
+    supabase
+      .from('org_evidence')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId),
+    supabase
+      .from('org_evidence')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', orgId)
+      .eq('status', 'approved'),
 
-    supabase.from("org_audit_logs")
-      .select("id, actor_email, action, details, created_at")
-      .eq("organization_id", orgId)
-      .order("created_at", { ascending: false })
+    supabase
+      .from('org_audit_logs')
+      .select('id, actor_email, action, details, created_at')
+      .eq('organization_id', orgId)
+      .order('created_at', { ascending: false })
       .limit(12),
 
     /* Monthly history: last 6 months */
-    supabase.from("org_policies")
-      .select("created_at")
-      .eq("organization_id", orgId)
-      .gte("created_at", getMonthsAgo(6)),
+    supabase
+      .from('org_policies')
+      .select('created_at')
+      .eq('organization_id', orgId)
+      .gte('created_at', getMonthsAgo(6)),
 
-    supabase.from("org_tasks")
-      .select("created_at, status")
-      .eq("organization_id", orgId)
-      .gte("created_at", getMonthsAgo(6)),
+    supabase
+      .from('org_tasks')
+      .select('created_at, status')
+      .eq('organization_id', orgId)
+      .gte('created_at', getMonthsAgo(6)),
 
-    supabase.from("org_evidence")
-      .select("created_at, status")
-      .eq("organization_id", orgId)
-      .gte("created_at", getMonthsAgo(6))
+    supabase
+      .from('org_evidence')
+      .select('created_at, status')
+      .eq('organization_id', orgId)
+      .gte('created_at', getMonthsAgo(6)),
   ]);
 
   /* ===========================
@@ -131,7 +159,9 @@ export async function getDashboardMetrics(orgId: string): Promise<DashboardMetri
 
   const overduePenalty = OT > 0 ? Math.min(OT * 2, 15) : 0;
 
-  let complianceScore = round(policyScore + evidenceScore + taskScore - overduePenalty);
+  let complianceScore = round(
+    policyScore + evidenceScore + taskScore - overduePenalty,
+  );
   complianceScore = Math.max(0, Math.min(100, complianceScore));
 
   /* ===========================
@@ -139,28 +169,39 @@ export async function getDashboardMetrics(orgId: string): Promise<DashboardMetri
   =========================== */
 
   const riskLevel =
-    complianceScore >= 80 ? "LOW" :
-    complianceScore >= 55 ? "MEDIUM" :
-    "HIGH";
+    complianceScore >= 80 ? 'LOW' : complianceScore >= 55 ? 'MEDIUM' : 'HIGH';
 
   /* ===========================
      5️⃣ ACTIVITY PIPELINE
   =========================== */
 
-  const recentActivity: ActivityItem[] = rawActivity?.map((log: any) => ({
-    id: log.id,
-    user: log.actor_email?.split("@")[0] || "System",
-    action: log.action,
-    target: log.details?.resourceName || "Unknown",
-    timestamp: log.created_at,
-    type: classifyActivity(log.action)
-  })) || [];
+  const recentActivity: ActivityItem[] =
+    rawActivity?.map(
+      (log: {
+        id: string;
+        actor_email?: string;
+        action: string;
+        details?: { resourceName?: string };
+        created_at: string;
+      }) => ({
+        id: log.id,
+        user: log.actor_email?.split('@')[0] || 'System',
+        action: log.action,
+        target: log.details?.resourceName || 'Unknown',
+        timestamp: log.created_at,
+        type: classifyActivity(log.action),
+      }),
+    ) || [];
 
   /* ===========================
      6️⃣ REAL COMPLIANCE HISTORY
   =========================== */
 
-  const complianceHistory = buildMonthlyHistory(policyHistory || [], taskHistory || [], evidenceHistory || []);
+  const complianceHistory = buildMonthlyHistory(
+    policyHistory || [],
+    taskHistory || [],
+    evidenceHistory || [],
+  );
 
   const complianceTrend = calculateTrend(complianceHistory);
 
@@ -170,10 +211,11 @@ export async function getDashboardMetrics(orgId: string): Promise<DashboardMetri
 
   const anomalies: string[] = [];
 
-  if (OT > 5) anomalies.push("High number of overdue tasks");
-  if (policyCoverageRate < 50) anomalies.push("Low policy publication coverage");
-  if (evidenceCompletionRate < 40) anomalies.push("Evidence backlog detected");
-  if (complianceScore < 50) anomalies.push("Critical compliance score");
+  if (OT > 5) anomalies.push('High number of overdue tasks');
+  if (policyCoverageRate < 50)
+    anomalies.push('Low policy publication coverage');
+  if (evidenceCompletionRate < 40) anomalies.push('Evidence backlog detected');
+  if (complianceScore < 50) anomalies.push('Critical compliance score');
 
   /* ===========================
      8️⃣ FINAL OUTPUT
@@ -200,7 +242,7 @@ export async function getDashboardMetrics(orgId: string): Promise<DashboardMetri
 
     recentActivity,
     complianceHistory,
-    anomalies
+    anomalies,
   };
 }
 
@@ -218,31 +260,47 @@ function getMonthsAgo(months: number) {
   return d.toISOString();
 }
 
-function classifyActivity(action: string): ActivityItem["type"] {
-  if (action.includes("POLICY")) return "policy";
-  if (action.includes("TASK")) return "task";
-  if (action.includes("EVIDENCE")) return "evidence";
-  if (action.includes("SECURITY")) return "security";
-  return "system";
+function classifyActivity(action: string): ActivityItem['type'] {
+  if (action.includes('POLICY')) return 'policy';
+  if (action.includes('TASK')) return 'task';
+  if (action.includes('EVIDENCE')) return 'evidence';
+  if (action.includes('SECURITY')) return 'security';
+  return 'system';
 }
 
-function buildMonthlyHistory(policies: any[], tasks: any[], evidence: any[]) {
+function buildMonthlyHistory(
+  policies: Array<{ created_at?: string }>,
+  tasks: Array<{ created_at?: string; status?: string }>,
+  evidence: Array<{ created_at?: string; status?: string }>,
+) {
   const months = getLastMonths(6);
 
-  return months.map(month => {
-    const policyCount = policies.filter(p => p.created_at.startsWith(month)).length;
-    const completedTasks = tasks.filter(t => t.created_at.startsWith(month) && t.status === "completed").length;
-    const totalTasks = tasks.filter(t => t.created_at.startsWith(month)).length;
-    const approvedEvidence = evidence.filter(e => e.created_at.startsWith(month) && e.status === "approved").length;
-    const totalEvidence = evidence.filter(e => e.created_at.startsWith(month)).length;
+  return months.map((month) => {
+    const policyCount = policies.filter((p) =>
+      p.created_at?.startsWith(month),
+    ).length;
+    const completedTasks = tasks.filter(
+      (t) => t.created_at?.startsWith(month) && t.status === 'completed',
+    ).length;
+    const totalTasks = tasks.filter((t) =>
+      t.created_at?.startsWith(month),
+    ).length;
+    const approvedEvidence = evidence.filter(
+      (e) => e.created_at?.startsWith(month) && e.status === 'approved',
+    ).length;
+    const totalEvidence = evidence.filter((e) =>
+      e.created_at?.startsWith(month),
+    ).length;
 
     const policyScore = policyCount ? 35 : 0;
     const taskScore = totalTasks ? (completedTasks / totalTasks) * 25 : 0;
-    const evidenceScore = totalEvidence ? (approvedEvidence / totalEvidence) * 40 : 0;
+    const evidenceScore = totalEvidence
+      ? (approvedEvidence / totalEvidence) * 40
+      : 0;
 
     return {
       month,
-      score: round(policyScore + taskScore + evidenceScore)
+      score: round(policyScore + taskScore + evidenceScore),
     };
   });
 }
@@ -260,12 +318,12 @@ function getLastMonths(count: number) {
 }
 
 function calculateTrend(history: { month: string; score: number }[]) {
-  if (history.length < 2) return "FLAT";
+  if (history.length < 2) return 'FLAT';
 
   const last = history[history.length - 1].score;
   const prev = history[history.length - 2].score;
 
-  if (last > prev) return "UP";
-  if (last < prev) return "DOWN";
-  return "FLAT";
+  if (last > prev) return 'UP';
+  if (last < prev) return 'DOWN';
+  return 'FLAT';
 }

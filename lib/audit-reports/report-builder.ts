@@ -16,6 +16,16 @@ import type {
   NdisPracticeStandard,
 } from './types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase join shape varies
+type EvalRow = Record<string, any> & {
+  compliance_score?: number;
+  evidence_count?: number;
+  last_evaluated_at?: string;
+  gap_description?: string;
+  created_at?: string;
+  control_id?: string;
+};
+
 /**
  * Build a report for any supported framework
  */
@@ -43,7 +53,9 @@ export async function buildReport(
   }
 }
 
-async function buildTrustPacketReport(orgId: string): Promise<BaseReportPayload> {
+async function buildTrustPacketReport(
+  orgId: string,
+): Promise<BaseReportPayload> {
   const admin = createSupabaseAdminClient();
 
   const { data: org } = await admin
@@ -251,7 +263,7 @@ async function buildIso27001Report(
 
   // Build SoA entries
   const statementOfApplicability: SoaEntry[] = (evaluations || []).map(
-    (eval_: any) => {
+    (eval_: EvalRow) => {
       const score = eval_.compliance_score || 0;
       let status: SoaEntry['implementationStatus'] = 'not_implemented';
       if (score >= 80) status = 'implemented';
@@ -330,7 +342,7 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
     .eq('control_type', 'control_snapshot');
 
   const practiceStandards: NdisPracticeStandard[] = (evaluations || []).map(
-    (eval_: any) => {
+    (eval_: EvalRow) => {
       const score = eval_.compliance_score || 0;
       let status: NdisPracticeStandard['complianceStatus'] = 'non_compliant';
       if (score >= 80) status = 'compliant';
@@ -342,7 +354,7 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
         category: eval_.compliance_controls?.category || 'Core',
         complianceStatus: status,
         evidenceCount: eval_.evidence_count || 0,
-        lastReviewDate: eval_.last_evaluated_at,
+        lastReviewDate: eval_.last_evaluated_at ?? null,
       };
     },
   );
@@ -365,11 +377,14 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
 
   let avgResolutionTime: number | null = null;
   if (resolvedIncidents.length > 0) {
-    const totalDays = resolvedIncidents.reduce((sum: number, i: any) => {
-      const created = new Date(i.created_at).getTime();
-      const resolved = new Date(i.resolved_at).getTime();
-      return sum + (resolved - created) / (1000 * 60 * 60 * 24);
-    }, 0);
+    const totalDays = resolvedIncidents.reduce(
+      (sum: number, i: { created_at?: string; resolved_at?: string }) => {
+        const created = new Date(i.created_at!).getTime();
+        const resolved = new Date(i.resolved_at!).getTime();
+        return sum + (resolved - created) / (1000 * 60 * 60 * 24);
+      },
+      0,
+    );
     avgResolutionTime =
       Math.round((totalDays / resolvedIncidents.length) * 10) / 10;
   }
@@ -468,25 +483,25 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
 
   // Calculate rule compliance
   const calculateRuleCompliance = (category: string) => {
-    const ruleEvals = (evaluations || []).filter((e: any) =>
+    const ruleEvals = (evaluations || []).filter((e: EvalRow) =>
       e.compliance_controls?.category
         ?.toLowerCase()
         .includes(category.toLowerCase()),
     );
     const totalReqs = ruleEvals.length || 1;
     const satisfiedReqs = ruleEvals.filter(
-      (e: any) => (e.compliance_score || 0) >= 80,
+      (e: EvalRow) => (e.compliance_score || 0) >= 80,
     ).length;
     const avgScore = ruleEvals.length
       ? Math.round(
           ruleEvals.reduce(
-            (sum: number, e: any) => sum + (e.compliance_score || 0),
+            (sum: number, e: EvalRow) => sum + (e.compliance_score || 0),
             0,
           ) / ruleEvals.length,
         )
       : 0;
     const criticalGaps = ruleEvals.filter(
-      (e: any) => (e.compliance_score || 0) < 40,
+      (e: EvalRow) => (e.compliance_score || 0) < 40,
     ).length;
 
     return {
@@ -598,7 +613,7 @@ async function getCriticalGaps(
     .order('compliance_score', { ascending: true })
     .limit(10);
 
-  return (evaluations || []).map((eval_: any) => {
+  return (evaluations || []).map((eval_: EvalRow) => {
     const score = eval_.compliance_score || 0;
     return {
       controlCode: eval_.compliance_controls?.code || 'UNKNOWN',

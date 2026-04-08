@@ -24,7 +24,7 @@ export interface DatabaseEvent {
   organizationId: string;
   entityId: string;
   entityType: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   timestamp: Date;
 }
 
@@ -32,8 +32,8 @@ export interface DatabaseEvent {
  * Process database event and trigger automation if needed
  */
 export async function processEvent(
-  event: DatabaseEvent
-): Promise<{ triggered: boolean; result?: any }> {
+  event: DatabaseEvent,
+): Promise<{ triggered: boolean; result?: unknown }> {
   automationLogger.info('automation_event_processing_started', {
     eventType: event.type,
     organizationId: event.organizationId,
@@ -75,8 +75,8 @@ export async function processEvent(
  * Handle evidence upload event
  */
 async function handleEvidenceUploaded(
-  event: DatabaseEvent
-): Promise<{ triggered: boolean; result?: any }> {
+  event: DatabaseEvent,
+): Promise<{ triggered: boolean; result?: unknown }> {
   // Update compliance score when evidence is uploaded
   await updateComplianceScore(event.organizationId);
 
@@ -117,8 +117,8 @@ async function handleEvidenceUploaded(
  * Handle evidence verification/rejection
  */
 async function handleEvidenceStatusChange(
-  event: DatabaseEvent
-): Promise<{ triggered: boolean; result?: any }> {
+  event: DatabaseEvent,
+): Promise<{ triggered: boolean; result?: unknown }> {
   const wasVerified = event.type === 'evidence_verified';
 
   // Update compliance score
@@ -168,8 +168,8 @@ async function handleEvidenceStatusChange(
  * Handle control status update
  */
 async function handleControlStatusUpdate(
-  event: DatabaseEvent
-): Promise<{ triggered: boolean; result?: any }> {
+  event: DatabaseEvent,
+): Promise<{ triggered: boolean; result?: unknown }> {
   const { newStatus, previousStatus } = event.metadata || {};
 
   // Update compliance score
@@ -219,8 +219,8 @@ async function handleControlStatusUpdate(
  * Handle task completion
  */
 async function handleTaskCompleted(
-  event: DatabaseEvent
-): Promise<{ triggered: boolean; result?: any }> {
+  event: DatabaseEvent,
+): Promise<{ triggered: boolean; result?: unknown }> {
   const supabase = createSupabaseAdminClient();
 
   // Update compliance score
@@ -240,7 +240,7 @@ async function handleTaskCompleted(
   // If task is recurring and not already handled, generate next instance
   if (task.is_recurring && task.recurrence_days) {
     const nextDueDate = new Date(
-      Date.now() + task.recurrence_days * 24 * 60 * 60 * 1000
+      Date.now() + task.recurrence_days * 24 * 60 * 60 * 1000,
     );
 
     const { data: nextTask } = await insertOrgTaskCompat(supabase, {
@@ -292,8 +292,8 @@ async function handleTaskCompleted(
  * Handle task creation
  */
 async function handleTaskCreated(
-  event: DatabaseEvent
-): Promise<{ triggered: boolean; result?: any }> {
+  event: DatabaseEvent,
+): Promise<{ triggered: boolean; result?: unknown }> {
   // Update compliance score to reflect new task
   await updateComplianceScore(event.organizationId);
 
@@ -304,8 +304,8 @@ async function handleTaskCreated(
  * Handle subscription activation or onboarding completion
  */
 async function handleSubscriptionOrOnboarding(
-  event: DatabaseEvent
-): Promise<{ triggered: boolean; result?: any }> {
+  event: DatabaseEvent,
+): Promise<{ triggered: boolean; result?: unknown }> {
   if (event.type === 'onboarding_completed') {
     const triggerEvent: TriggerEvent = {
       type: 'org_onboarding',
@@ -325,7 +325,7 @@ async function handleSubscriptionOrOnboarding(
  */
 export async function monitorComplianceScoreChanges(
   organizationId: string,
-  previousScore?: { score: number; riskLevel: string }
+  previousScore?: { score: number; riskLevel: string },
 ): Promise<void> {
   const supabase = createSupabaseAdminClient();
 

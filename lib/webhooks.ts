@@ -47,8 +47,8 @@ export interface WebhookPayload {
   event: WebhookEvent;
   timestamp: string;
   organization_id: string;
-  data: any;
-  metadata?: Record<string, any>;
+  data: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface WebhookDelivery {
@@ -304,8 +304,8 @@ async function deliverWebhook(
 export async function triggerWebhook(
   organizationId: string,
   event: WebhookEvent,
-  data: any,
-  metadata?: Record<string, any>,
+  data: Record<string, unknown>,
+  metadata?: Record<string, unknown>,
 ): Promise<void> {
   const supabase = await createClient();
 
@@ -332,7 +332,7 @@ export async function triggerWebhook(
 
   // Deliver to all subscribed webhooks
   await Promise.allSettled(
-    webhooks.map((webhook: any) => deliverWebhook(webhook, payload)),
+    webhooks.map((webhook: WebhookConfig) => deliverWebhook(webhook, payload)),
   );
 }
 
@@ -342,7 +342,7 @@ export async function triggerWebhook(
 export async function testWebhook(webhookId: string): Promise<{
   success: boolean;
   message: string;
-  response?: any;
+  response?: { status: string; responseCode?: number; responseBody?: string };
 }> {
   const supabase = await createClient();
 
@@ -427,7 +427,8 @@ export async function getWebhookStats(organizationId: string): Promise<{
     .eq('organization_id', organizationId);
 
   const totalWebhooks = webhooks?.length || 0;
-  const activeWebhooks = webhooks?.filter((w: any) => w.enabled).length || 0;
+  const activeWebhooks =
+    webhooks?.filter((w: { enabled?: boolean }) => w.enabled).length || 0;
 
   // Get delivery stats
   const { data: deliveries } = await supabase
@@ -437,9 +438,11 @@ export async function getWebhookStats(organizationId: string): Promise<{
 
   const totalDeliveries = deliveries?.length || 0;
   const successfulDeliveries =
-    deliveries?.filter((d: any) => d.status === 'success').length || 0;
+    deliveries?.filter((d: { status?: string }) => d.status === 'success')
+      .length || 0;
   const failedDeliveries =
-    deliveries?.filter((d: any) => d.status === 'failed').length || 0;
+    deliveries?.filter((d: { status?: string }) => d.status === 'failed')
+      .length || 0;
   const successRate =
     totalDeliveries > 0
       ? Math.round((successfulDeliveries / totalDeliveries) * 100)
@@ -447,9 +450,9 @@ export async function getWebhookStats(organizationId: string): Promise<{
 
   // Group by event type
   const deliveriesByEvent: Record<string, number> = {};
-  deliveries?.forEach((delivery: any) => {
-    deliveriesByEvent[delivery.event] =
-      (deliveriesByEvent[delivery.event] || 0) + 1;
+  deliveries?.forEach((delivery: { event?: string }) => {
+    const evt = delivery.event ?? 'unknown';
+    deliveriesByEvent[evt] = (deliveriesByEvent[evt] || 0) + 1;
   });
 
   return {

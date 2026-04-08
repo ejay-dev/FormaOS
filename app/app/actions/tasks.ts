@@ -1,49 +1,57 @@
-"use server";
+'use server';
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { logActivity } from "@/app/app/actions/audit";
-import { logActivity as logProductActivity } from "@/lib/activity/feed";
-import { revalidatePath } from "next/cache";
-import { notifySelf, createNotification } from "@/app/app/actions/notifications";
-import { requirePermission } from "@/app/app/actions/rbac";
-import { logAuditEvent } from "@/app/app/actions/audit-events";
-import { normalizeTaskPriority } from "@/lib/tasks/priority";
-import { insertOrgTaskCompat } from "@/lib/tasks/persistence";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { logActivity } from '@/app/app/actions/audit';
+import { logActivity as logProductActivity } from '@/lib/activity/feed';
+import { revalidatePath } from 'next/cache';
+import {
+  notifySelf,
+  createNotification,
+} from '@/app/app/actions/notifications';
+import { requirePermission } from '@/app/app/actions/rbac';
+import { logAuditEvent } from '@/app/app/actions/audit-events';
+import { normalizeTaskPriority } from '@/lib/tasks/priority';
+import { insertOrgTaskCompat } from '@/lib/tasks/persistence';
 
 export async function createTask(formData: FormData) {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
-  const permissionCtx = await requirePermission("EDIT_CONTROLS");
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error('Unauthorized');
+  const permissionCtx = await requirePermission('EDIT_CONTROLS');
 
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', user.id)
     .maybeSingle();
 
-  if (!membership) throw new Error("Organization membership not found");
+  if (!membership) throw new Error('Organization membership not found');
   if (membership.organization_id !== permissionCtx.orgId) {
-    throw new Error("Organization mismatch.");
+    throw new Error('Organization mismatch.');
   }
 
-  const title = (formData.get("title") as string) || "";
-  const priority = normalizeTaskPriority(formData.get("priority") as string | null);
-  const dueDateRaw = (formData.get("dueDate") as string) || "";
-  const dueDate = dueDateRaw.trim() === "" ? null : dueDateRaw;
-  const recurrenceDays = parseInt(formData.get("recurrenceDays") as string) || 0;
-  const patientId = (formData.get("patientId") as string) || null;
+  const title = (formData.get('title') as string) || '';
+  const priority = normalizeTaskPriority(
+    formData.get('priority') as string | null,
+  );
+  const dueDateRaw = (formData.get('dueDate') as string) || '';
+  const dueDate = dueDateRaw.trim() === '' ? null : dueDateRaw;
+  const recurrenceDays =
+    parseInt(formData.get('recurrenceDays') as string) || 0;
+  const patientId = (formData.get('patientId') as string) || null;
 
   if (patientId) {
     const { data: patient, error: patientError } = await supabase
-      .from("org_patients")
-      .select("id")
-      .eq("id", patientId)
-      .eq("organization_id", membership.organization_id)
+      .from('org_patients')
+      .select('id')
+      .eq('id', patientId)
+      .eq('organization_id', membership.organization_id)
       .maybeSingle();
 
     if (patientError || !patient) {
-      throw new Error("Patient not found");
+      throw new Error('Patient not found');
     }
   }
 
@@ -54,39 +62,42 @@ export async function createTask(formData: FormData) {
       title,
       priority,
       due_date: dueDate,
-      status: "pending",
+      status: 'pending',
       assigned_to: user.id,
       is_recurring: recurrenceDays > 0,
       recurrence_days: recurrenceDays,
       patient_id: patientId,
     },
-    { returning: "single" },
+    { returning: 'single' },
   );
 
-  if (!newTask) throw new Error("Task Creation Failed: task row was not returned");
+  if (!newTask)
+    throw new Error('Task Creation Failed: task row was not returned');
+
+  const taskId = newTask.id as string;
 
   const storedRecurrenceDays =
-    typeof insertedTask.recurrence_days === "number"
+    typeof insertedTask.recurrence_days === 'number'
       ? insertedTask.recurrence_days
       : 0;
   const recurrenceEnabled = insertedTask.is_recurring === true;
 
-  await logActivity(membership.organization_id, "CREATE_TASK", {
+  await logActivity(membership.organization_id, 'CREATE_TASK', {
     resourceName: title,
-    event: "Task created manually",
+    event: 'Task created manually',
     priority,
-    taskId: newTask.id,
+    taskId,
   });
 
   await logProductActivity(
     membership.organization_id,
     user.id,
-    "created",
+    'created',
     {
-      type: "task",
-      id: newTask.id,
+      type: 'task',
+      id: taskId,
       name: title,
-      path: "/app/tasks",
+      path: '/app/tasks',
     },
     {
       priority,
@@ -99,26 +110,26 @@ export async function createTask(formData: FormData) {
     organizationId: membership.organization_id,
     actorUserId: user.id,
     actorRole: permissionCtx.role,
-    entityType: "task",
-    entityId: newTask.id,
-    actionType: "TASK_CREATED",
+    entityType: 'task',
+    entityId: taskId,
+    actionType: 'TASK_CREATED',
     afterState: {
       title,
       priority,
       due_date: dueDate,
       assigned_to: user.id,
     },
-    reason: "task_create",
+    reason: 'task_create',
   });
 
   await notifySelf({
     organizationId: membership.organization_id,
-    type: "TASK_CREATED",
-    title: "Task Created",
+    type: 'TASK_CREATED',
+    title: 'Task Created',
     body: title,
-    actionUrl: "/app/tasks",
+    actionUrl: '/app/tasks',
     metadata: {
-      taskId: newTask.id,
+      taskId,
       priority,
       dueDate,
       isRecurring: recurrenceEnabled,
@@ -126,51 +137,51 @@ export async function createTask(formData: FormData) {
     },
   });
 
-  revalidatePath("/app/tasks");
+  revalidatePath('/app/tasks');
   return;
 }
 
 async function _completeTaskCore(supabase: any, taskId: string, user: any) {
-  const permissionCtx = await requirePermission("EDIT_CONTROLS");
+  const permissionCtx = await requirePermission('EDIT_CONTROLS');
   const { data: task } = await supabase
-    .from("org_tasks")
-    .select("*")
-    .eq("id", taskId)
-    .eq("organization_id", permissionCtx.orgId)
+    .from('org_tasks')
+    .select('*')
+    .eq('id', taskId)
+    .eq('organization_id', permissionCtx.orgId)
     .maybeSingle();
 
-  if (!task) throw new Error("Task not found");
+  if (!task) throw new Error('Task not found');
   if (task.organization_id !== permissionCtx.orgId) {
-    throw new Error("Organization mismatch.");
+    throw new Error('Organization mismatch.');
   }
 
   const { error: updateError } = await supabase
-    .from("org_tasks")
-    .update({ status: "completed" })
-    .eq("id", taskId)
-    .eq("organization_id", task.organization_id);
+    .from('org_tasks')
+    .update({ status: 'completed' })
+    .eq('id', taskId)
+    .eq('organization_id', task.organization_id);
 
   if (updateError) throw updateError;
 
-  await logActivity(task.organization_id, "COMPLETE_TASK", {
+  await logActivity(task.organization_id, 'COMPLETE_TASK', {
     resourceName: task.title,
-    event: "Task marked as complete",
+    event: 'Task marked as complete',
     taskId,
   });
 
   await logProductActivity(
     task.organization_id,
     user.id,
-    "completed",
+    'completed',
     {
-      type: "task",
+      type: 'task',
       id: taskId,
       name: task.title,
-      path: "/app/tasks",
+      path: '/app/tasks',
     },
     {
       previousStatus: task.status ?? null,
-      nextStatus: "completed",
+      nextStatus: 'completed',
     },
   );
 
@@ -178,20 +189,20 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
     organizationId: task.organization_id,
     actorUserId: user.id,
     actorRole: permissionCtx.role,
-    entityType: "task",
+    entityType: 'task',
     entityId: taskId,
-    actionType: "TASK_COMPLETED",
+    actionType: 'TASK_COMPLETED',
     beforeState: { status: task.status ?? null },
-    afterState: { status: "completed" },
-    reason: "task_complete",
+    afterState: { status: 'completed' },
+    reason: 'task_complete',
   });
 
   await notifySelf({
     organizationId: task.organization_id,
-    type: "TASK_COMPLETED",
-    title: "Task Completed",
+    type: 'TASK_COMPLETED',
+    title: 'Task Completed',
     body: task.title,
-    actionUrl: "/app/tasks",
+    actionUrl: '/app/tasks',
     metadata: { taskId },
   });
 
@@ -206,32 +217,33 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
         title: task.title,
         priority: task.priority,
         due_date: nextDueDate.toISOString(),
-        status: "pending",
+        status: 'pending',
         assigned_to: task.assigned_to,
         is_recurring: true,
         recurrence_days: task.recurrence_days,
         linked_policy_id: task.linked_policy_id,
         linked_asset_id: task.linked_asset_id,
       },
-      { returning: "single" },
+      { returning: 'single' },
     );
 
     if (nextTask) {
-      await logActivity(task.organization_id, "CREATE_TASK", {
+      const nextTaskId = nextTask.id as string;
+      await logActivity(task.organization_id, 'CREATE_TASK', {
         resourceName: task.title,
-        event: "Recurring task auto-generated",
-        taskId: nextTask.id,
+        event: 'Recurring task auto-generated',
+        taskId: nextTaskId,
       });
 
       await logProductActivity(
         task.organization_id,
         user.id,
-        "created",
+        'created',
         {
-          type: "task",
-          id: nextTask.id,
+          type: 'task',
+          id: nextTaskId,
           name: task.title,
-          path: "/app/tasks",
+          path: '/app/tasks',
         },
         {
           sourceTaskId: taskId,
@@ -244,10 +256,10 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
       await createNotification({
         organizationId: task.organization_id,
         userId: task.assigned_to,
-        type: "TASK_RECURRING",
-        title: "Recurring Task Generated",
+        type: 'TASK_RECURRING',
+        title: 'Recurring Task Generated',
         body: task.title,
-        actionUrl: "/app/tasks",
+        actionUrl: '/app/tasks',
         metadata: {
           taskId: nextTask.id,
           sourceTaskId: taskId,
@@ -257,5 +269,5 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
     }
   }
 
-  revalidatePath("/app/tasks");
+  revalidatePath('/app/tasks');
 }

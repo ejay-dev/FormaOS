@@ -94,12 +94,15 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
       ]),
   ]);
 
-  const normalizedOrgsResult =
-    isMissingSupabaseColumnError(orgsResult.error, 'organizations', 'lifecycle_status')
-      ? await admin
-          .from('organizations')
-          .select('id, name, created_at, onboarding_completed')
-      : orgsResult;
+  const normalizedOrgsResult = isMissingSupabaseColumnError(
+    orgsResult.error,
+    'organizations',
+    'lifecycle_status',
+  )
+    ? await admin
+        .from('organizations')
+        .select('id, name, created_at, onboarding_completed')
+    : orgsResult;
 
   if (normalizedOrgsResult.error || subsResult.error) {
     console.error('[admin/metrics] DB query error', {
@@ -108,30 +111,39 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase row shape varies
   const organizations = (normalizedOrgsResult.data ?? []).map((org: any) => ({
     ...org,
     lifecycle_status: org.lifecycle_status ?? null,
-  }));
+  })) as Array<{
+    id: string;
+    name?: string | null;
+    lifecycle_status?: string | null;
+    created_at?: string;
+  }>;
   const filteredOrgs = organizations.filter(
-    (org: any) => !isSyntheticOrgName(org.name),
+    (org) => !isSyntheticOrgName(org.name),
   );
-  const filteredOrgIds = new Set(filteredOrgs.map((org: any) => org.id));
+  const filteredOrgIds = new Set(filteredOrgs.map((org) => org.id));
   const excludedSyntheticOrgs = organizations.length - filteredOrgs.length;
   const healthByOrg = new Map<string, string>();
-  (healthScoresResult.data ?? []).forEach((row: any) => {
-    if (filteredOrgIds.has(row.organization_id)) {
-      healthByOrg.set(row.organization_id, row.status ?? '');
-    }
-  });
+  (healthScoresResult.data ?? []).forEach(
+    (row: { organization_id?: string; health_status?: string }) => {
+      if (row.organization_id && filteredOrgIds.has(row.organization_id)) {
+        healthByOrg.set(row.organization_id, row.health_status ?? '');
+      }
+    },
+  );
 
-  const subscriptions = (subsResult.data ?? []).filter((row: any) =>
-    filteredOrgIds.has(row.organization_id),
+  const subscriptions = (subsResult.data ?? []).filter(
+    (row: { organization_id?: string }) =>
+      row.organization_id ? filteredOrgIds.has(row.organization_id) : false,
   );
 
   const plans = plansResult.data ?? [];
   const planPriceMap = new Map<string, number>();
-  plans.forEach((plan: any) => {
-    planPriceMap.set(plan.key, plan.price_cents ?? 0);
+  plans.forEach((plan: { key?: string; price_cents?: number }) => {
+    if (plan.key) planPriceMap.set(plan.key, plan.price_cents ?? 0);
   });
 
   const nowMs = Date.now();
@@ -143,12 +155,12 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
   let failedPayments = 0;
   let mrrCents = 0;
   const suspendedOrgs = filteredOrgs.filter(
-    (org: any) => org.lifecycle_status === 'suspended',
+    (org) => org.lifecycle_status === 'suspended',
   ).length;
-  const activationAtRisk = filteredOrgs.filter((org: any) => {
+  const activationAtRisk = filteredOrgs.filter((org) => {
     const healthStatus = healthByOrg.get(org.id) ?? '';
     return (
-      !org.onboarding_completed ||
+      !(org as Record<string, unknown>).onboarding_completed ||
       healthStatus === 'at_risk' ||
       healthStatus === 'critical'
     );
@@ -175,7 +187,13 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
       mrrCents += planPriceMap.get(planKey) ?? 0;
     }
 
-    const hasFailedState = ['past_due', 'unpaid', 'incomplete', 'incomplete_expired', 'payment_failed'].includes(status);
+    const hasFailedState = [
+      'past_due',
+      'unpaid',
+      'incomplete',
+      'incomplete_expired',
+      'payment_failed',
+    ].includes(status);
     const hasFailureCount = Number(subscription.payment_failures ?? 0) > 0;
     if (hasFailedState || hasFailureCount) {
       failedPayments += 1;

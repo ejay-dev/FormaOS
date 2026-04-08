@@ -108,16 +108,27 @@ export async function getUserOrganizations(
         return [];
       }
 
-      return (data || []).map((membership: any) => ({
-        id: membership.id,
-        organization_id: membership.organization_id,
-        user_id: membership.user_id,
-        role: membership.role,
-        status: membership.status,
-        joined_at: membership.joined_at,
-        invited_by: membership.invited_by,
-        organization: membership.organizations,
-      }));
+      return (data || []).map(
+        (membership: {
+          id: string;
+          organization_id: string;
+          user_id: string;
+          role: string;
+          status: string;
+          joined_at: string;
+          invited_by?: string;
+          organizations?: unknown;
+        }) => ({
+          id: membership.id,
+          organization_id: membership.organization_id,
+          user_id: membership.user_id,
+          role: membership.role as OrganizationMembership['role'],
+          status: membership.status as OrganizationMembership['status'],
+          joined_at: membership.joined_at,
+          invited_by: membership.invited_by,
+          organization: membership.organizations as unknown as Organization,
+        }),
+      );
     },
     300, // 5 minutes cache
   );
@@ -300,7 +311,7 @@ export async function updateOrganization(
 
   if (members) {
     await Promise.all(
-      members.map((m: any) =>
+      members.map((m: { user_id: string }) =>
         invalidateCache(`user:${m.user_id}:organizations`),
       ),
     );

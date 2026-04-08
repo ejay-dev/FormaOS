@@ -1,57 +1,57 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import {
   ensureFrameworkPacksInstalled,
   getFrameworkCodeForSlug,
   syncComplianceFramework,
-} from './framework-installer'
-import { getEvidenceSuggestions } from './evidence-suggestions'
-import type { FrameworkControlRow } from './types'
-import { getServerSideFeatureFlags } from '@/lib/feature-flags'
+} from './framework-installer';
+import { getEvidenceSuggestions } from './evidence-suggestions';
+import type { FrameworkControlRow } from './types';
+import { getServerSideFeatureFlags } from '@/lib/feature-flags';
 import {
   detectComplianceControlsSchema,
   riskLevelFromWeight,
-} from './compliance-controls-schema'
+} from './compliance-controls-schema';
 
 const DEFAULT_TASK_PRIORITY_BY_RISK: Record<string, string> = {
   low: 'low',
   medium: 'medium',
   high: 'high',
   critical: 'high',
-}
+};
 
 function riskKey(value?: string | null) {
-  const normalized = (value ?? 'medium').toLowerCase()
-  if (normalized === 'critical') return 'critical'
-  if (normalized === 'high') return 'high'
-  if (normalized === 'low') return 'low'
-  return 'medium'
+  const normalized = (value ?? 'medium').toLowerCase();
+  if (normalized === 'critical') return 'critical';
+  if (normalized === 'high') return 'high';
+  if (normalized === 'low') return 'low';
+  return 'medium';
 }
 
 function defaultDueDate(riskLevel?: string | null) {
-  const level = riskKey(riskLevel)
-  const now = new Date()
-  if (level === 'critical') now.setDate(now.getDate() + 14)
-  else if (level === 'high') now.setDate(now.getDate() + 30)
-  else if (level === 'low') now.setDate(now.getDate() + 90)
-  else now.setDate(now.getDate() + 60)
-  return now.toISOString()
+  const level = riskKey(riskLevel);
+  const now = new Date();
+  if (level === 'critical') now.setDate(now.getDate() + 14);
+  else if (level === 'high') now.setDate(now.getDate() + 30);
+  else if (level === 'low') now.setDate(now.getDate() + 90);
+  else now.setDate(now.getDate() + 60);
+  return now.toISOString();
 }
 
 type FrameworkProvisionOptions = {
-  force?: boolean
-  client?: any
-}
+  force?: boolean;
+  client?: ReturnType<typeof createSupabaseAdminClient>;
+};
 
 export async function enableFrameworkForOrg(
   orgId: string,
   frameworkSlug: string,
   options: FrameworkProvisionOptions = {},
 ) {
-  const flags = getServerSideFeatureFlags()
-  if (!flags.enableFrameworkEngine && !options.force) return
+  const flags = getServerSideFeatureFlags();
+  if (!flags.enableFrameworkEngine && !options.force) return;
 
-  await ensureFrameworkPacksInstalled()
-  const admin = options.client ?? createSupabaseAdminClient()
+  await ensureFrameworkPacksInstalled();
+  const admin = options.client ?? createSupabaseAdminClient();
 
   await admin.from('org_frameworks').upsert(
     {
@@ -60,9 +60,9 @@ export async function enableFrameworkForOrg(
       enabled_at: new Date().toISOString(),
     },
     { onConflict: 'organization_id,framework_slug' },
-  )
+  );
 
-  await provisionFrameworkControls(orgId, frameworkSlug, options)
+  await provisionFrameworkControls(orgId, frameworkSlug, options);
 }
 
 export async function provisionFrameworkControls(
@@ -70,12 +70,12 @@ export async function provisionFrameworkControls(
   frameworkSlug: string,
   options: FrameworkProvisionOptions = {},
 ) {
-  const flags = getServerSideFeatureFlags()
-  if (!flags.enableFrameworkEngine && !options.force) return
+  const flags = getServerSideFeatureFlags();
+  if (!flags.enableFrameworkEngine && !options.force) return;
 
-  await ensureFrameworkPacksInstalled()
-  const admin = options.client ?? createSupabaseAdminClient()
-  await syncComplianceFramework(frameworkSlug, admin)
+  await ensureFrameworkPacksInstalled();
+  const admin = options.client ?? createSupabaseAdminClient();
+  await syncComplianceFramework(frameworkSlug, admin);
 
   await admin.from('org_frameworks').upsert(
     {
@@ -84,52 +84,57 @@ export async function provisionFrameworkControls(
       enabled_at: new Date().toISOString(),
     },
     { onConflict: 'organization_id,framework_slug' },
-  )
-  const frameworkCode = getFrameworkCodeForSlug(frameworkSlug)
+  );
+  const frameworkCode = getFrameworkCodeForSlug(frameworkSlug);
 
   const { data: complianceFramework } = await admin
     .from('compliance_frameworks')
     .select('id, code')
     .eq('code', frameworkCode)
-    .maybeSingle()
+    .maybeSingle();
 
-  if (!complianceFramework?.id) return
+  if (!complianceFramework?.id) return;
 
-  const schema = await detectComplianceControlsSchema(admin)
-  let complianceControls: any[] | null = null
+  const schema = await detectComplianceControlsSchema(admin);
+  let complianceControls: ComplianceControlRow[] | null = null;
 
   if (schema === 'legacy') {
     const { data } = await admin
       .from('compliance_controls')
       .select('id, code, title, description, risk_weight, framework_control_id')
-      .eq('framework_id', complianceFramework.id)
+      .eq('framework_id', complianceFramework.id);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic Supabase select
     complianceControls = (data ?? []).map((control: any) => ({
       ...control,
       risk_level: riskLevelFromWeight(control.risk_weight),
-    }))
+    })) as ComplianceControlRow[];
   } else {
     const { data } = await admin
       .from('compliance_controls')
       .select('id, code, title, description, risk_level, framework_control_id')
-      .eq('framework_id', complianceFramework.id)
-    complianceControls = data ?? []
+      .eq('framework_id', complianceFramework.id);
+    complianceControls = data ?? [];
   }
 
-  if (!complianceControls?.length) return
+  if (!complianceControls?.length) return;
 
-  const controlIds = complianceControls.map((control: any) => control.id)
+  const controlIds = complianceControls.map(
+    (control: ComplianceControlRow) => control.id,
+  );
 
   const { data: existingLinks } = await admin
     .from('control_tasks')
     .select('control_id')
     .eq('organization_id', orgId)
-    .in('control_id', controlIds)
+    .in('control_id', controlIds);
 
-  const existingControlIds = new Set((existingLinks ?? []).map((row: any) => row.control_id))
+  const existingControlIds = new Set(
+    (existingLinks ?? []).map((row: { control_id?: string }) => row.control_id),
+  );
 
   const frameworkControlIds = complianceControls
-    .map((control: any) => control.framework_control_id)
-    .filter(Boolean)
+    .map((control: ComplianceControlRow) => control.framework_control_id)
+    .filter(Boolean);
 
   const { data: frameworkControls } = frameworkControlIds.length
     ? await admin
@@ -138,23 +143,36 @@ export async function provisionFrameworkControls(
           'id, control_code, title, summary_description, default_risk_level, review_frequency_days, suggested_evidence_types, suggested_automation_triggers, suggested_task_templates',
         )
         .in('id', frameworkControlIds)
-    : { data: [] }
+    : { data: [] };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase join shape
   const frameworkControlById = new Map(
-    (frameworkControls ?? []).map((control: any) => [control.id as string, control]),
-  )
+    (frameworkControls ?? []).map((control: any) => [
+      control.id as string,
+      control,
+    ]),
+  );
 
-  const evaluations: any[] = []
+  const evaluations: Array<Record<string, unknown>> = [];
 
-  type ComplianceControlRow = { id: string; code?: string; title?: string; description?: string; risk_level?: string; framework_control_id?: string };
+  type ComplianceControlRow = {
+    id: string;
+    code?: string;
+    title?: string;
+    description?: string;
+    risk_level?: string;
+    framework_control_id?: string;
+  };
   for (const control of complianceControls as ComplianceControlRow[]) {
     if (existingControlIds.has(control.id)) {
-      continue
+      continue;
     }
 
     const frameworkControl = control.framework_control_id
-      ? (frameworkControlById.get(control.framework_control_id) as FrameworkControlRow | undefined)
-      : undefined
+      ? (frameworkControlById.get(control.framework_control_id) as
+          | FrameworkControlRow
+          | undefined)
+      : undefined;
 
     const suggestions = frameworkControl
       ? getEvidenceSuggestions(frameworkControl)
@@ -165,14 +183,18 @@ export async function provisionFrameworkControls(
           taskTemplates: [
             {
               title: `Implement ${control.title}`,
-              description: control.description ?? 'Define and implement required control activities.',
+              description:
+                control.description ??
+                'Define and implement required control activities.',
               priority: 'medium',
             },
           ],
-        }
+        };
 
-    const template = suggestions.taskTemplates[0]
-    const priority = template.priority ?? DEFAULT_TASK_PRIORITY_BY_RISK[riskKey(control.risk_level)]
+    const template = suggestions.taskTemplates[0];
+    const priority =
+      template.priority ??
+      DEFAULT_TASK_PRIORITY_BY_RISK[riskKey(control.risk_level)];
 
     const { data: taskRow, error: taskError } = await admin
       .from('org_tasks')
@@ -182,20 +204,22 @@ export async function provisionFrameworkControls(
         description: template.description ?? control.description ?? null,
         status: 'pending',
         priority,
-        due_date: defaultDueDate(control.risk_level ?? frameworkControl?.default_risk_level),
+        due_date: defaultDueDate(
+          control.risk_level ?? frameworkControl?.default_risk_level,
+        ),
       })
       .select('id')
-      .maybeSingle()
+      .maybeSingle();
 
     if (taskError || !taskRow?.id) {
-      continue
+      continue;
     }
 
     await admin.from('control_tasks').insert({
       organization_id: orgId,
       control_id: control.id,
       task_id: taskRow.id,
-    })
+    });
 
     evaluations.push({
       organization_id: orgId,
@@ -214,12 +238,12 @@ export async function provisionFrameworkControls(
         evidence_types: suggestions.evidenceTypes,
         automation_triggers: suggestions.automationTriggers,
       },
-    })
+    });
   }
 
   if (evaluations.length) {
     await admin.from('org_control_evaluations').upsert(evaluations, {
       onConflict: 'organization_id,control_type,control_key',
-    })
+    });
   }
 }

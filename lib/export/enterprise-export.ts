@@ -27,7 +27,11 @@ export interface EnterpriseExportOptions {
    * Packaged outcome exports used for enterprise onboarding/procurement.
    * Stored in `enterprise_export_jobs.options.bundleType`.
    */
-  bundleType?: 'enterprise_full' | 'audit_ready_bundle' | 'proof_packet_14d' | 'monthly_exec_pack';
+  bundleType?:
+    | 'enterprise_full'
+    | 'audit_ready_bundle'
+    | 'proof_packet_14d'
+    | 'monthly_exec_pack';
   /** Limit time-scoped datasets (audit logs, incidents, etc.) to last N days. */
   dateRangeDays?: number;
   /** Include report PDFs inside the zip. */
@@ -67,7 +71,7 @@ function computeSinceIso(days?: number | null): string | null {
 export async function createEnterpriseExportJob(
   orgId: string,
   userId: string,
-  options: EnterpriseExportOptions
+  options: EnterpriseExportOptions,
 ): Promise<{ ok: boolean; jobId?: string; error?: string }> {
   const admin = createSupabaseAdminClient();
 
@@ -103,7 +107,9 @@ export async function createEnterpriseExportJob(
             requested_by: userId,
             status: 'pending',
             progress: 0,
-            expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            expires_at: new Date(
+              Date.now() + 24 * 60 * 60 * 1000,
+            ).toISOString(),
           })
           .select('id')
           .single();
@@ -154,7 +160,7 @@ export async function createEnterpriseExportJob(
  * Process an enterprise export job
  */
 export async function processEnterpriseExportJob(
-  jobId: string
+  jobId: string,
 ): Promise<{ ok: boolean; downloadUrl?: string; error?: string }> {
   const admin = createSupabaseAdminClient();
 
@@ -172,7 +178,9 @@ export async function processEnterpriseExportJob(
   const { data: enterpriseJob, error: enterpriseError } = await admin
     .from('enterprise_export_jobs')
     // NOTE: Do not select storage_* columns. Production schema may not include them yet.
-    .select('organization_id, requested_by, options, status, file_url, expires_at')
+    .select(
+      'organization_id, requested_by, options, status, file_url, expires_at',
+    )
     .eq('id', jobId)
     .maybeSingle();
 
@@ -205,20 +213,28 @@ export async function processEnterpriseExportJob(
   ) {
     const baseUrl =
       (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
-    return { ok: true, downloadUrl: generateSignedDownloadUrl(baseUrl, jobId, orgId) };
+    return {
+      ok: true,
+      downloadUrl: generateSignedDownloadUrl(baseUrl, jobId, orgId),
+    };
   }
-  const options: EnterpriseExportOptions = (job.options as EnterpriseExportOptions) || {
-    includeCompliance: true,
-    includeEvidence: true,
-    includeAuditLogs: true,
-    includeCareOps: true,
-    includeTeam: true,
-  };
+  const options: EnterpriseExportOptions =
+    (job.options as EnterpriseExportOptions) || {
+      includeCompliance: true,
+      includeEvidence: true,
+      includeAuditLogs: true,
+      includeCareOps: true,
+      includeTeam: true,
+    };
 
   const bundleType = options.bundleType ?? 'enterprise_full';
   const dateRangeDays =
     options.dateRangeDays ??
-    (bundleType === 'proof_packet_14d' ? 14 : bundleType === 'monthly_exec_pack' ? 30 : 90);
+    (bundleType === 'proof_packet_14d'
+      ? 14
+      : bundleType === 'monthly_exec_pack'
+        ? 30
+        : 90);
   const sinceIso = computeSinceIso(dateRangeDays);
   const includeReportPdfs =
     options.includeReportPdfs ?? bundleType !== 'enterprise_full';
@@ -293,7 +309,10 @@ export async function processEnterpriseExportJob(
 
     const upload = await admin.storage
       .from(DEFAULT_EXPORT_BUCKET)
-      .upload(storagePath, zipBuffer, { contentType: 'application/zip', upsert: false });
+      .upload(storagePath, zipBuffer, {
+        contentType: 'application/zip',
+        upsert: false,
+      });
 
     if (upload.error) {
       throw new Error(`Storage upload failed: ${upload.error.message}`);
@@ -321,7 +340,11 @@ export async function processEnterpriseExportJob(
       completed_at: new Date().toISOString(),
     });
 
-    exportLogger.info('enterprise_export_completed', { jobId, orgId, fileSize });
+    exportLogger.info('enterprise_export_completed', {
+      jobId,
+      orgId,
+      fileSize,
+    });
     return { ok: true, downloadUrl };
   } catch (error) {
     const err = error instanceof Error ? error : new Error(String(error));
@@ -340,14 +363,18 @@ export async function processEnterpriseExportJob(
 /**
  * Get export job status
  */
-export async function getExportJobStatus(jobId: string): Promise<ExportJobResult | null> {
+export async function getExportJobStatus(
+  jobId: string,
+): Promise<ExportJobResult | null> {
   const admin = createSupabaseAdminClient();
 
   // Try enterprise table first
   const { data: job, error } = await admin
     .from('enterprise_export_jobs')
     // NOTE: Do not select storage_* columns. Production schema may not include them yet.
-    .select('id, organization_id, status, progress, file_url, file_size, expires_at, error_message')
+    .select(
+      'id, organization_id, status, progress, file_url, file_size, expires_at, error_message',
+    )
     .eq('id', jobId)
     .maybeSingle();
 
@@ -355,7 +382,9 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
     // Fallback to compliance table
     const { data: fallbackJob } = await admin
       .from('compliance_export_jobs')
-      .select('id, status, progress, file_url, file_size, expires_at, error_message')
+      .select(
+        'id, status, progress, file_url, file_size, expires_at, error_message',
+      )
       .eq('id', jobId)
       .maybeSingle();
 
@@ -378,7 +407,11 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
     (process.env.NEXT_PUBLIC_APP_URL ?? '').trim() || 'http://localhost:3000';
   const computedDownloadUrl =
     job.status === 'completed'
-      ? generateSignedDownloadUrl(baseUrl, job.id, (job as Record<string, unknown>).organization_id as string ?? '')
+      ? generateSignedDownloadUrl(
+          baseUrl,
+          job.id,
+          ((job as Record<string, unknown>).organization_id as string) ?? '',
+        )
       : undefined;
 
   return {
@@ -387,7 +420,8 @@ export async function getExportJobStatus(jobId: string): Promise<ExportJobResult
     progress: job.progress || 0,
     // Prefer the auth-gated tokenized download endpoint. The endpoint will
     // redirect to the stored signed file_url once authorization is verified.
-    downloadUrl: computedDownloadUrl ?? (job.file_url as string | null) ?? undefined,
+    downloadUrl:
+      computedDownloadUrl ?? (job.file_url as string | null) ?? undefined,
     fileSize: job.file_size,
     expiresAt: job.expires_at,
     errorMessage: job.error_message,
@@ -398,7 +432,7 @@ async function updateJobStatus(
   jobId: string,
   status: string,
   progress: number,
-  extra?: Record<string, unknown>
+  extra?: Record<string, unknown>,
 ): Promise<void> {
   const admin = createSupabaseAdminClient();
 
@@ -417,7 +451,9 @@ async function updateJobStatus(
   }
 }
 
-async function getComplianceData(orgId: string): Promise<Record<string, unknown>> {
+async function getComplianceData(
+  orgId: string,
+): Promise<Record<string, unknown>> {
   const admin = createSupabaseAdminClient();
 
   const safe = async <T>(fn: () => PromiseLike<T>): Promise<T | null> => {
@@ -453,21 +489,27 @@ async function getComplianceData(orgId: string): Promise<Record<string, unknown>
   };
 }
 
-async function getEvidenceMetadata(orgId: string): Promise<Record<string, unknown>> {
+async function getEvidenceMetadata(
+  orgId: string,
+): Promise<Record<string, unknown>> {
   const admin = createSupabaseAdminClient();
 
   // Return metadata only, not actual files
   const { data } = await admin
     .from('org_evidence')
-    .select('id, title, evidence_type, verification_status, uploaded_at, file_name, metadata')
+    .select(
+      'id, title, evidence_type, verification_status, uploaded_at, file_name, metadata',
+    )
     .eq('organization_id', orgId);
 
   return {
-    evidence: (data || []).map((e: { file_url?: string; [key: string]: unknown }) => ({
-      ...e,
-      // Exclude actual file URLs for security
-      file_url: undefined,
-    })),
+    evidence: (data || []).map(
+      (e: { file_url?: string; [key: string]: unknown }) => ({
+        ...e,
+        // Exclude actual file URLs for security
+        file_url: undefined,
+      }),
+    ),
   };
 }
 
@@ -493,9 +535,10 @@ async function getAuditLogs(
   );
 
   if (unified && unified.length > 0) {
+    const rows = unified as unknown as Array<{ created_at?: string }>;
     const filtered = sinceIso
-      ? unified.filter((e: any) => e.created_at && e.created_at >= sinceIso)
-      : unified;
+      ? rows.filter((e) => e.created_at && e.created_at >= sinceIso)
+      : rows;
     return { auditEvents: filtered };
   }
 
@@ -505,14 +548,18 @@ async function getAuditLogs(
     'id, action, actor_email, target, entity_id, created_at',
   );
 
+  const logRows = (logs ?? []) as unknown as Array<{ created_at?: string }>;
   const filtered = sinceIso
-    ? (logs ?? []).filter((e: any) => e.created_at && e.created_at >= sinceIso)
-    : (logs ?? []);
+    ? logRows.filter((e) => e.created_at && e.created_at >= sinceIso)
+    : logRows;
 
   return { auditLogs: filtered };
 }
 
-async function getCareOpsData(orgId: string, sinceIso: string | null): Promise<Record<string, unknown>> {
+async function getCareOpsData(
+  orgId: string,
+  sinceIso: string | null,
+): Promise<Record<string, unknown>> {
   const admin = createSupabaseAdminClient();
 
   // This may return empty if care ops tables don't exist for this org
@@ -537,7 +584,7 @@ async function getCareOpsData(orgId: string, sinceIso: string | null): Promise<R
       .select('id, patient_id, status, scheduled_at, completed_at, created_at')
       .eq('organization_id', orgId);
     const filtered = sinceIso
-      ? (visits ?? []).filter((v: any) => v.created_at && v.created_at >= sinceIso)
+      ? (visits ?? []).filter((v) => v.created_at && v.created_at >= sinceIso)
       : (visits ?? []);
     results.visits = filtered;
   } catch {
@@ -547,7 +594,9 @@ async function getCareOpsData(orgId: string, sinceIso: string | null): Promise<R
   try {
     let q = admin
       .from('org_incidents')
-      .select('id, incident_type, status, severity, created_at, resolved_at, is_reportable')
+      .select(
+        'id, incident_type, status, severity, created_at, resolved_at, is_reportable',
+      )
       .eq('organization_id', orgId);
     if (sinceIso) q = q.gte('created_at', sinceIso);
     const { data: incidents } = await q;
@@ -640,7 +689,9 @@ async function createExportZip(
     archive.on('error', reject);
 
     // Add metadata
-    archive.append(JSON.stringify(data.metadata, null, 2), { name: 'manifest.json' });
+    archive.append(JSON.stringify(data.metadata, null, 2), {
+      name: 'manifest.json',
+    });
     archive.append(
       [
         'FormaOS Enterprise Export Bundle',
@@ -663,19 +714,29 @@ async function createExportZip(
 
     // Add each data section
     if (data.compliance) {
-      archive.append(JSON.stringify(data.compliance, null, 2), { name: 'compliance/data.json' });
+      archive.append(JSON.stringify(data.compliance, null, 2), {
+        name: 'compliance/data.json',
+      });
     }
     if (data.evidence) {
-      archive.append(JSON.stringify(data.evidence, null, 2), { name: 'evidence/metadata.json' });
+      archive.append(JSON.stringify(data.evidence, null, 2), {
+        name: 'evidence/metadata.json',
+      });
     }
     if (data.auditLogs) {
-      archive.append(JSON.stringify(data.auditLogs, null, 2), { name: 'audit-logs/logs.json' });
+      archive.append(JSON.stringify(data.auditLogs, null, 2), {
+        name: 'audit-logs/logs.json',
+      });
     }
     if (data.careOps) {
-      archive.append(JSON.stringify(data.careOps, null, 2), { name: 'care-ops/data.json' });
+      archive.append(JSON.stringify(data.careOps, null, 2), {
+        name: 'care-ops/data.json',
+      });
     }
     if (data.team) {
-      archive.append(JSON.stringify(data.team, null, 2), { name: 'team/members.json' });
+      archive.append(JSON.stringify(data.team, null, 2), {
+        name: 'team/members.json',
+      });
     }
 
     for (const f of extraFiles) {

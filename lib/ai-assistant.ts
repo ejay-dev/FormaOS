@@ -10,11 +10,11 @@ import { generateAIText, isAISDKConfigured } from '@/lib/ai/sdk-client';
 export interface AIComplianceRequest {
   type: 'analyze' | 'recommend' | 'query' | 'categorize' | 'report';
   context: string;
-  data?: any;
+  data?: unknown;
 }
 
 export interface AIComplianceResponse {
-  result: any;
+  result: unknown;
   confidence: number;
   suggestions?: string[];
   reasoning?: string;
@@ -98,7 +98,10 @@ Provide recommendations in JSON format with array of objects containing: title, 
   /**
    * Natural language query
    */
-  async query(question: string, context?: any): Promise<AIComplianceResponse> {
+  async query(
+    question: string,
+    context?: unknown,
+  ): Promise<AIComplianceResponse> {
     const contextStr = context ? `\n\nContext: ${JSON.stringify(context)}` : '';
     const prompt = `You are a compliance assistant for FormaOS. Answer the following question concisely and accurately:
 
@@ -156,8 +159,12 @@ Respond with JSON: { category: string, subcategory: string, tags: array, confide
    */
   async generateReport(data: {
     orgName: string;
-    metrics: any;
-    risks: any[];
+    metrics: Record<string, unknown>;
+    risks: Array<{
+      description: string;
+      severity?: string;
+      likelihood?: string;
+    }>;
     period: string;
   }): Promise<AIComplianceResponse> {
     const prompt = `Generate a professional compliance report summary based on this data:
@@ -263,11 +270,18 @@ export async function analyzeComplianceDocument(content: string, type: string) {
   return aiAssistant.analyzeDocument(content, type);
 }
 
-export async function getTaskRecommendations(orgContext: any) {
+export async function getTaskRecommendations(orgContext: {
+  industry: string;
+  memberCount: number;
+  existingTasks: string[];
+}) {
   return aiAssistant.recommendTasks(orgContext);
 }
 
-export async function askComplianceQuestion(question: string, context?: any) {
+export async function askComplianceQuestion(
+  question: string,
+  context?: unknown,
+) {
   return aiAssistant.query(question, context);
 }
 
@@ -275,10 +289,19 @@ export async function categorizeDocument(fileName: string, content?: string) {
   return aiAssistant.categorizeEvidence(fileName, content);
 }
 
-export async function generateComplianceReport(data: any) {
+export async function generateComplianceReport(data: {
+  orgName: string;
+  metrics: Record<string, unknown>;
+  risks: Array<{ description: string; severity?: string; likelihood?: string }>;
+  period: string;
+}) {
   return aiAssistant.generateReport(data);
 }
 
-export async function predictComplianceRisk(historicalData: any) {
+export async function predictComplianceRisk(historicalData: {
+  overdueTasks: number[];
+  expiredCerts: number[];
+  completionRates: number[];
+}) {
   return aiAssistant.predictRisk(historicalData);
 }

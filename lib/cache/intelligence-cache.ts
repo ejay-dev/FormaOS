@@ -4,7 +4,7 @@
  */
 
 interface CacheEntry {
-  data: any;
+  data: unknown;
   timestamp: number;
   orgId: string;
 }
@@ -28,7 +28,7 @@ const RATE_LIMIT_WINDOW = 60 * 1000;
 /**
  * Get cached intelligence data
  */
-export function getCachedIntelligence(orgId: string): any | null {
+export function getCachedIntelligence(orgId: string): unknown | null {
   const key = `intelligence:${orgId}`;
   const entry = cache.get(key);
 
@@ -43,7 +43,7 @@ export function getCachedIntelligence(orgId: string): any | null {
   return entry.data;
 }
 
-export function getCachedFrameworkIntelligence(orgId: string): any | null {
+export function getCachedFrameworkIntelligence(orgId: string): unknown | null {
   const key = `framework-intel:${orgId}`;
   const entry = cache.get(key);
 
@@ -60,7 +60,7 @@ export function getCachedFrameworkIntelligence(orgId: string): any | null {
 /**
  * Set cached intelligence data
  */
-export function setCachedIntelligence(orgId: string, data: any): void {
+export function setCachedIntelligence(orgId: string, data: unknown): void {
   const key = `intelligence:${orgId}`;
   cache.set(key, {
     data,
@@ -77,7 +77,10 @@ export function setCachedIntelligence(orgId: string, data: any): void {
   }
 }
 
-export function setCachedFrameworkIntelligence(orgId: string, data: any): void {
+export function setCachedFrameworkIntelligence(
+  orgId: string,
+  data: unknown,
+): void {
   const key = `framework-intel:${orgId}`;
   cache.set(key, {
     data,

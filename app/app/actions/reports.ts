@@ -2,6 +2,9 @@
 
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+
+type ReportsDbClient = Awaited<ReturnType<typeof createSupabaseServerClient>>;
+
 import { revalidatePath } from 'next/cache';
 import {
   getOrgIdForUser,
@@ -53,7 +56,7 @@ function safeFilePart(input: string) {
   return input.replace(/[^\w\-]+/g, '_').slice(0, 60);
 }
 
-async function safeSelectPolicies(supabase: any, orgId: string) {
+async function safeSelectPolicies(supabase: ReportsDbClient, orgId: string) {
   const attempts = [
     'title,status,updated_at',
     'title,status,last_updated_at',
@@ -76,7 +79,12 @@ async function safeSelectPolicies(supabase: any, orgId: string) {
               : 'created_at',
           { ascending: false },
         );
-      if (!error) return data ?? [];
+      if (!error)
+        return (data ?? []) as unknown as Array<{
+          title: string;
+          status: string;
+          updated_at: string | null;
+        }>;
       lastError = error.message;
     } catch {
       // try next
@@ -85,7 +93,7 @@ async function safeSelectPolicies(supabase: any, orgId: string) {
   throw new Error(lastError || 'Failed to load policies');
 }
 
-async function safeSelectEvidence(supabase: any, orgId: string) {
+async function safeSelectEvidence(supabase: ReportsDbClient, orgId: string) {
   const attempts = [
     'title,status,created_at',
     'title,verification_status,created_at',
@@ -101,11 +109,15 @@ async function safeSelectEvidence(supabase: any, orgId: string) {
         .eq('organization_id', orgId)
         .order('created_at', { ascending: false });
       if (!error) {
-        return (data ?? []).map((row: any) => ({
-          title: row.title,
-          status: row.status ?? row.verification_status ?? null,
-          created_at: row.created_at ?? null,
-        }));
+        return ((data ?? []) as unknown as Array<Record<string, unknown>>).map(
+          (row) => ({
+            title: row.title as string,
+            status: (row.status ??
+              row.verification_status ??
+              'unknown') as string,
+            created_at: (row.created_at ?? null) as string | null,
+          }),
+        );
       }
       lastError = error.message;
     } catch {
@@ -115,7 +127,7 @@ async function safeSelectEvidence(supabase: any, orgId: string) {
   throw new Error(lastError || 'Failed to load evidence');
 }
 
-async function safeSelectTasks(supabase: any, orgId: string) {
+async function safeSelectTasks(supabase: ReportsDbClient, orgId: string) {
   const attempts = [
     'title,status,completed_at',
     'title,status,updated_at',
@@ -135,11 +147,13 @@ async function safeSelectTasks(supabase: any, orgId: string) {
           { ascending: false },
         );
       if (!error) {
-        return (data ?? []).map((row: any) => ({
-          title: row.title,
-          status: row.status ?? null,
-          completed_at: row.completed_at ?? null,
-        }));
+        return ((data ?? []) as unknown as Array<Record<string, unknown>>).map(
+          (row) => ({
+            title: row.title as string,
+            status: (row.status ?? 'unknown') as string,
+            completed_at: (row.completed_at ?? null) as string | null,
+          }),
+        );
       }
       lastError = error.message;
     } catch {
@@ -149,7 +163,7 @@ async function safeSelectTasks(supabase: any, orgId: string) {
   throw new Error(lastError || 'Failed to load tasks');
 }
 
-async function safeSelectAuditLogs(supabase: any, orgId: string) {
+async function safeSelectAuditLogs(supabase: ReportsDbClient, orgId: string) {
   const attempts = [
     'action,target,actor_email,created_at',
     'action,target,created_at',
@@ -170,14 +184,21 @@ async function safeSelectAuditLogs(supabase: any, orgId: string) {
         .limit(80);
       if (!error) {
         if (table === 'org_audit_log') {
-          return (data ?? []).map((row: any) => ({
-            action: row.activity_type,
-            target: row.description,
+          return (
+            (data ?? []) as unknown as Array<Record<string, unknown>>
+          ).map((row) => ({
+            action: row.activity_type as string,
+            target: row.description as string,
             actor_email: null,
-            created_at: row.created_at,
+            created_at: row.created_at as string,
           }));
         }
-        return data ?? [];
+        return (data ?? []) as unknown as Array<{
+          action: string;
+          target: string;
+          actor_email?: string | null;
+          created_at: string;
+        }>;
       }
       lastError = error.message;
     } catch {
@@ -297,7 +318,8 @@ export async function generateAuditBundlePdf(
     frameworkId = null;
   }
 
-  let evalRow: any = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic Supabase row shape
+  let evalRow: Record<string, any> | null = null;
   try {
     let evalQuery = supabase
       .from('org_control_evaluations')
@@ -682,7 +704,10 @@ export async function generateSoc2ReportExport() {
     entityType: 'org_export',
     entityId: null,
     actionType: 'SOC2_REPORT_EXPORTED',
-    afterState: { frameworkCode: 'SOC2', readinessScore: payload.readinessScore },
+    afterState: {
+      frameworkCode: 'SOC2',
+      readinessScore: payload.readinessScore,
+    },
     reason: 'export',
   });
 
