@@ -1,5 +1,6 @@
 'use client';
 
+import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import {
   Shield,
   HardHat,
@@ -962,6 +963,7 @@ export default function ConstructionComplianceContent() {
           },
         ]}
       />
+      <RelatedIndustries currentSlug="construction-compliance" />
     </MarketingPageShell>
   );
 }

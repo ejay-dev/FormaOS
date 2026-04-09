@@ -14,16 +14,25 @@ export function organizationSchema() {
     url: siteUrl,
     logo: `${siteUrl}/og-image.png`,
     description:
-      'Compliance Operating System for regulated organizations. Unify governance, evidence, and audits in one platform.',
+      'Compliance Operating System for Australian regulated industries. Unify governance, evidence, and audits in one platform.',
     foundingDate: '2025',
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'AU',
+      addressRegion: 'SA',
+      addressLocality: 'Adelaide',
+    },
     contactPoint: [
       {
         '@type': 'ContactPoint',
-        contactType: 'sales',
-        email: `sales@${brand.domain}`,
+        contactType: 'customer support',
+        email: `support@${brand.domain}`,
       },
     ],
-    sameAs: [],
+    sameAs: [
+      'https://twitter.com/EjazDev',
+      'https://www.linkedin.com/company/formaos',
+    ],
   };
 }
 
@@ -38,10 +47,89 @@ export function softwareApplicationSchema() {
     description:
       'Compliance Operating System that transforms regulatory obligations into structured controls, owned actions, and immutable audit evidence.',
     offers: {
-      '@type': 'Offer',
-      price: '0',
+      '@type': 'AggregateOffer',
       priceCurrency: 'AUD',
+      lowPrice: '159',
+      highPrice: '399',
+      offerCount: '3',
     },
+  };
+}
+
+export function serviceSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  serviceType?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: opts.name,
+    provider: {
+      '@type': 'Organization',
+      name: 'FormaOS',
+      url: siteUrl,
+    },
+    serviceType: opts.serviceType ?? 'Compliance Software',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Australia',
+    },
+    description: opts.description,
+    url: opts.url,
+  };
+}
+
+export function pricingSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'FormaOS Compliance Platform',
+    description:
+      'Compliance Operating System for Australian regulated industries',
+    brand: { '@type': 'Brand', name: 'FormaOS' },
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'Starter',
+        price: '159',
+        priceCurrency: 'AUD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '159',
+          priceCurrency: 'AUD',
+          unitCode: 'MON',
+        },
+        url: `${siteUrl}/pricing`,
+      },
+      {
+        '@type': 'Offer',
+        name: 'Professional',
+        price: '239',
+        priceCurrency: 'AUD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '239',
+          priceCurrency: 'AUD',
+          unitCode: 'MON',
+        },
+        url: `${siteUrl}/pricing`,
+      },
+      {
+        '@type': 'Offer',
+        name: 'Enterprise',
+        price: '399',
+        priceCurrency: 'AUD',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '399',
+          priceCurrency: 'AUD',
+          unitCode: 'MON',
+        },
+        url: `${siteUrl}/pricing`,
+      },
+    ],
   };
 }
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import {
   AlertTriangle,
   Clock,
@@ -970,6 +971,7 @@ export default function NDISProvidersContent() {
           },
         ]}
       />
+      <RelatedIndustries currentSlug="ndis-providers" />
     </MarketingPageShell>
   );
 }

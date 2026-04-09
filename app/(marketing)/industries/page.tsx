@@ -1,28 +1,63 @@
 import type { Metadata } from 'next';
 import IndustriesPageContent from './IndustriesPageContentNew';
-import { breadcrumbSchema,
-  siteUrl} from '@/lib/seo';
+import { breadcrumbSchema, siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Industry Compliance Solutions - Healthcare, NDIS, Aged Care | FormaOS',
+  title:
+    'Compliance Infrastructure Across Australian Regulated Industries | FormaOS',
   description:
-    'Pre-built compliance frameworks for NDIS, healthcare, aged care, disability services, financial services, and government. Purpose-built for regulated industries.',
+    'Pre-built compliance frameworks for NDIS, Healthcare, Financial Services, Education and Childcare, and Construction. Australian regulatory standards built in.',
+  keywords: [
+    'compliance software industries Australia',
+    'NDIS compliance software',
+    'healthcare compliance platform',
+    'ASIC compliance tool',
+  ],
+  authors: [{ name: 'FormaOS' }],
+  creator: 'FormaOS',
+  publisher: 'FormaOS',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large' as const,
+      'max-snippet': -1,
+    },
+  },
   alternates: {
     canonical: `${siteUrl}/industries`,
   },
   openGraph: {
-    title: 'Industry Solutions | FormaOS',
-    description:
-      'Pre-built compliance frameworks for NDIS, healthcare, aged care, and regulated industries.',
     type: 'website',
+    locale: 'en_AU',
     url: `${siteUrl}/industries`,
+    siteName: 'FormaOS',
+    title:
+      'Compliance Infrastructure Across Australian Regulated Industries | FormaOS',
+    description:
+      'Pre-built compliance frameworks for NDIS, Healthcare, Financial Services, Education and Childcare, and Construction.',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'FormaOS Industry Solutions',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Industry Compliance Solutions - Healthcare, NDIS, Aged Care | FormaOS',
+    title:
+      'Compliance Infrastructure Across Australian Regulated Industries | FormaOS',
     description:
-      'Purpose-built compliance for NDIS, healthcare, aged care, financial services, and government regulated industries.',
+      'Pre-built compliance frameworks for NDIS, Healthcare, Financial Services, Education and Childcare, and Construction.',
+    images: [`${siteUrl}/og-image.png`],
+    creator: '@EjazDev',
+    site: '@FormaOS',
   },
 };
 
@@ -36,7 +71,7 @@ export default function IndustriesPage() {
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Industries', path: '/industries' },
-            ])
+            ]),
           ),
         }}
       />

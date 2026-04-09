@@ -47,6 +47,9 @@ export const metadata: Metadata = {
   },
   description:
     'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',
+  verification: {
+    google: 'REPLACE_WITH_GSC_VERIFICATION_CODE',
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
@@ -58,7 +61,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'FormaOS',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'FormaOS — Compliance Operating System' }],
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'FormaOS — Compliance Operating System',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',

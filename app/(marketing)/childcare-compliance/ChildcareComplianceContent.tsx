@@ -1,5 +1,6 @@
 'use client';
 
+import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import {
   Bell,
   Shield,
@@ -1019,6 +1020,7 @@ export default function ChildcareComplianceContent() {
           },
         ]}
       />
+      <RelatedIndustries currentSlug="childcare-compliance" />
     </MarketingPageShell>
   );
 }

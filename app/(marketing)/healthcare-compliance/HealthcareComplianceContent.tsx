@@ -1,5 +1,6 @@
 'use client';
 
+import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import {
   AlertTriangle,
   Clock,
@@ -1008,6 +1009,7 @@ export default function HealthcareComplianceContent() {
           },
         ]}
       />
+      <RelatedIndustries currentSlug="healthcare-compliance" />
     </MarketingPageShell>
   );
 }

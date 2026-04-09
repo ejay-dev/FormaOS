@@ -1,5 +1,6 @@
 'use client';
 
+import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import {
   AlertTriangle,
   FileWarning,
@@ -984,6 +985,7 @@ export default function FinancialServicesContent() {
           },
         ]}
       />
+      <RelatedIndustries currentSlug="financial-services-compliance" />
     </MarketingPageShell>
   );
 }
