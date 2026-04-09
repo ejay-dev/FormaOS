@@ -13,17 +13,25 @@ import {
   Stethoscope,
   ClipboardList,
   Activity,
+  Monitor,
+  FileText,
 } from 'lucide-react';
 import {
   IndustryHero,
-  PainPointsGrid,
-  FrameworkCoverage,
-  HowItWorks,
   IndustryFeatures,
   SocialProof,
   IndustryCTA,
   IndustryFAQ,
   InteractiveDashboard,
+  BeforeAfterSection,
+  FrameworkExplorer,
+  VerticalTimeline,
+  HeroStatsBar,
+  CompareTable,
+  SeeItInAction,
+  DemoDashboardContent,
+  DemoAuditExport,
+  DemoNotificationTimeline,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { VisualDivider } from '@/components/motion';
@@ -113,7 +121,7 @@ function HealthcareDashboardVisual() {
           id: 'p4',
           status: 'red',
           cells: {
-            practitioner: "Michael O'Brien",
+            practitioner: 'Michael O’Brien',
             profession: 'Physiotherapist',
             status: 'Expired',
             cpd: '5 / 20 hrs',
@@ -158,7 +166,7 @@ function HealthcareDashboardVisual() {
           type: 'alert',
         },
         {
-          message: "Michael O'Brien — registration expired, practice suspended",
+          message: 'Michael O’Brien — registration expired, practice suspended',
           time: '2 days ago',
           type: 'alert',
         },
@@ -222,6 +230,7 @@ export default function HealthcareComplianceContent() {
     <MarketingPageShell>
       <IndustryHero
         eyebrow="AHPRA + NSQHS Compliance"
+        accent="cyan-violet"
         headline={
           <>
             AHPRA Audits Don&apos;t Wait.
@@ -241,69 +250,133 @@ export default function HealthcareComplianceContent() {
           'AHPRA credential tracking',
         ]}
         dashboardVisual={<HealthcareDashboardVisual />}
+        statsBar={
+          <HeroStatsBar
+            stats={[
+              '1,204 practitioners tracked',
+              '8/8 NSQHS Standards covered',
+              'Zero evidence gaps at accreditation',
+              'AU-hosted',
+            ]}
+          />
+        }
       />
 
       <VisualDivider />
 
-      <PainPointsGrid
-        headline="The Healthcare Compliance Reality"
-        subheadline="These are the risks that keep healthcare compliance officers awake at night."
-        painPoints={[
+      <BeforeAfterSection
+        headline="The Healthcare Compliance Gap"
+        subheadline="The difference between scrambling and being accreditation-ready."
+        without={[
+          'AHPRA registration lapse discovered at point of care — practitioner practising unlawfully for 39 days',
+          'NSQHS accreditation evidence assembled in a 3-week sprint — critical gaps found 48 hours before visit',
+          'CPD hours untracked across 4 departments — 12 practitioners non-compliant at annual audit',
+          'Adverse event documentation incomplete — clinical governance review cannot proceed',
+        ]}
+        withFormaOS={[
+          'Automatic AHPRA expiry alerts 90/60/30 days before lapse — no practitioner slips through',
+          'Continuous evidence chain across all 8 NSQHS Standards — accreditation-ready every day',
+          'CPD hours tracked per profession with progress dashboards and gap alerts',
+          'Structured adverse event workflows with root cause analysis and open disclosure tracking',
+        ]}
+      />
+
+      <CompareTable
+        headline="FormaOS vs. The Status Quo"
+        description="See how purpose-built healthcare compliance software compares."
+        rows={[
           {
-            icon: <UserX className="h-5 w-5" />,
-            title:
-              'AHPRA registration lapses discovered only at point of service delivery',
-            description:
-              'A practitioner with a lapsed AHPRA registration is practising unlawfully. When lapses are discovered at the point of care, patient safety is compromised and your organisation faces serious regulatory consequences.',
+            feature: 'NSQHS Standards pre-built',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
           },
           {
-            icon: <Clock className="h-5 w-5" />,
-            title:
-              'CPD hours not tracked — practitioners non-compliant at annual audit',
-            description:
-              'Each AHPRA-regulated profession has different CPD requirements. Without centralised tracking, practitioners fall behind on hours and your organisation cannot demonstrate workforce competency at audit.',
+            feature: 'AHPRA credential tracking',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
           },
           {
-            icon: <FileWarning className="h-5 w-5" />,
-            title:
-              'NSQHS accreditation cycles causing last-minute evidence scrambles',
-            description:
-              'NSQHS accreditation visits assess all 8 standards simultaneously. Organisations that rely on manual evidence collection spend weeks assembling documentation that should be continuously maintained.',
+            feature: 'CPD hours monitoring',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
           },
           {
-            icon: <AlertTriangle className="h-5 w-5" />,
-            title:
-              'Adverse events not documented to clinical governance standards',
-            description:
-              'Clinical incidents require structured documentation, root cause analysis, and escalation workflows. Informal reporting leads to incomplete records and governance failures.',
+            feature: 'Accreditation-ready export',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
           },
           {
-            icon: <ShieldAlert className="h-5 w-5" />,
-            title: 'Privacy Act NDB notifications missed or late',
-            description:
-              'The Notifiable Data Breaches scheme requires notification to the OAIC and affected individuals within strict timeframes. Missing these windows exposes your organisation to enforcement action and reputational harm.',
+            feature: 'Named ownership per obligation',
+            spreadsheets: 'no',
+            genericGrc: 'yes',
+            formaos: 'yes',
           },
           {
-            icon: <Bell className="h-5 w-5" />,
-            title:
-              'Clinical governance framework evidence scattered across departments',
-            description:
-              'Clinical governance evidence lives in ward folders, shared drives, email threads, and departmental systems. When accreditation assessors arrive, pulling a coherent evidence trail is a manual nightmare.',
+            feature: 'Immutable evidence chain',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'AU data residency',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Clinical governance workflows',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Onboarding time',
+            spreadsheets: 'Weeks',
+            genericGrc: 'Days',
+            formaos: 'Hours',
+          },
+          {
+            feature: 'Price',
+            spreadsheets: 'Hidden',
+            genericGrc: '$$$+',
+            formaos: 'From $159/mo',
           },
         ]}
       />
 
       <VisualDivider />
 
-      <FrameworkCoverage
+      <FrameworkExplorer
         headline="Every Healthcare Framework. Pre-Built."
         description="FormaOS ships with every major Australian healthcare regulatory framework pre-loaded. Your obligations are mapped from day one — no manual setup required."
         frameworks={[
           {
+            id: 'nsqhs',
             name: 'NSQHS Standards',
             body: 'Australian Commission on Safety and Quality in Health Care (ACSQHC)',
-            obligationCount: '350+',
-            areas: [
+            updated: '2025-11-01',
+            obligationCount: '350',
+            categories: [
+              { name: 'Clinical Governance', pct: 98 },
+              { name: 'Partnering with Consumers', pct: 96 },
+              {
+                name: 'Preventing and Controlling Healthcare-Associated Infections',
+                pct: 100,
+              },
+              { name: 'Medication Safety', pct: 97 },
+              { name: 'Comprehensive Care', pct: 95 },
+              { name: 'Communicating for Safety', pct: 98 },
+              { name: 'Blood Management', pct: 100 },
+              {
+                name: 'Recognising and Responding to Acute Deterioration',
+                pct: 96,
+              },
+            ],
+            requirements: [
               'Clinical Governance',
               'Partnering with Consumers',
               'Preventing and Controlling Healthcare-Associated Infections',
@@ -315,10 +388,20 @@ export default function HealthcareComplianceContent() {
             ],
           },
           {
+            id: 'ahpra',
             name: 'AHPRA Registration Obligations',
             body: 'Australian Health Practitioner Regulation Agency',
-            obligationCount: '200+',
-            areas: [
+            updated: '2026-01-15',
+            obligationCount: '200',
+            categories: [
+              { name: 'Registration renewal and currency', pct: 100 },
+              { name: 'CPD requirements per profession', pct: 95 },
+              { name: 'Professional indemnity insurance', pct: 100 },
+              { name: 'Recency of practice requirements', pct: 92 },
+              { name: 'Criminal history declarations', pct: 98 },
+              { name: 'Mandatory notifications', pct: 96 },
+            ],
+            requirements: [
               'Registration renewal and currency',
               'CPD requirements per profession',
               'Professional indemnity insurance',
@@ -328,10 +411,18 @@ export default function HealthcareComplianceContent() {
             ],
           },
           {
+            id: 'privacy-act',
             name: 'Privacy Act 1988 — NDB Scheme',
             body: 'Office of the Australian Information Commissioner (OAIC)',
-            obligationCount: '80+',
-            areas: [
+            updated: '2025-09-20',
+            obligationCount: '80',
+            categories: [
+              { name: 'Notifiable Data Breaches scheme', pct: 100 },
+              { name: 'Australian Privacy Principles', pct: 96 },
+              { name: 'Health records handling', pct: 94 },
+              { name: 'Patient consent management', pct: 92 },
+            ],
+            requirements: [
               'Notifiable Data Breaches scheme',
               'Australian Privacy Principles',
               'Health records handling',
@@ -339,10 +430,20 @@ export default function HealthcareComplianceContent() {
             ],
           },
           {
+            id: 'clinical-governance',
             name: 'Clinical Governance Framework',
             body: 'ACSQHC / State Health Departments',
-            obligationCount: '150+',
-            areas: [
+            updated: '2025-12-10',
+            obligationCount: '150',
+            categories: [
+              { name: 'Clinical incident management', pct: 97 },
+              { name: 'Credentialing and scope of practice', pct: 95 },
+              { name: 'Mortality and morbidity review', pct: 93 },
+              { name: 'Open disclosure', pct: 98 },
+              { name: 'Consumer feedback and complaints', pct: 96 },
+              { name: 'Clinical audit and effectiveness', pct: 94 },
+            ],
+            requirements: [
               'Clinical incident management',
               'Credentialing and scope of practice',
               'Mortality and morbidity review',
@@ -352,10 +453,20 @@ export default function HealthcareComplianceContent() {
             ],
           },
           {
+            id: 'racgp',
             name: 'RACGP Standards (4th Edition)',
             body: 'Royal Australian College of General Practitioners',
-            obligationCount: '120+',
-            areas: [
+            updated: '2025-08-05',
+            obligationCount: '120',
+            categories: [
+              { name: 'Communication and patient participation', pct: 96 },
+              { name: 'Rights and needs of patients', pct: 98 },
+              { name: 'Comprehensiveness of care', pct: 94 },
+              { name: 'Coordination of care', pct: 95 },
+              { name: 'Education and training', pct: 97 },
+              { name: 'Practice management', pct: 93 },
+            ],
+            requirements: [
               'Communication and patient participation',
               'Rights and needs of patients',
               'Comprehensiveness of care',
@@ -369,7 +480,103 @@ export default function HealthcareComplianceContent() {
 
       <VisualDivider />
 
-      <HowItWorks />
+      <VerticalTimeline
+        steps={[
+          {
+            number: '01',
+            title: 'Connect Your Healthcare Obligations',
+            description:
+              'FormaOS ships with NSQHS Standards, AHPRA registration requirements, and clinical governance frameworks pre-built. Select your service type and your obligation register is live in minutes.',
+            gradient:
+              'from-cyan-500/20 to-violet-500/20 border-cyan-500/30 text-cyan-300',
+            visual: (
+              <FeatureVisual
+                label="Framework Activation"
+                rows={[
+                  {
+                    k: 'NSQHS Standards (8 Standards)',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                  {
+                    k: 'AHPRA Registration Obligations',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Clinical Governance Framework',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Privacy Act 1988 — NDB Scheme',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            number: '02',
+            title: 'Map Evidence to Every Standard',
+            description:
+              'Upload clinical governance documents, credentials, training records. FormaOS links each to specific NSQHS standards and AHPRA requirements — building continuous evidence chains.',
+            gradient:
+              'from-violet-500/20 to-cyan-500/20 border-violet-500/30 text-violet-300',
+            visual: (
+              <FeatureVisual
+                label="Evidence Mapping"
+                rows={[
+                  {
+                    k: 'Standard 1: Clinical Governance',
+                    v: '42 evidence items',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Standard 3: Infection Prevention',
+                    v: '35 evidence items',
+                    status: 'green',
+                  },
+                  {
+                    k: 'AHPRA Practitioner Register',
+                    v: '5 practitioners linked',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Standard 5: Comprehensive Care',
+                    v: '22 evidence items',
+                    status: 'amber',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            number: '03',
+            title: 'Stay Accreditation-Ready Every Day',
+            description:
+              'Automated alerts for every credential expiry, CPD deadline, and evidence gap. When accreditation assessors arrive, your evidence pack is one click away.',
+            gradient:
+              'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
+            visual: (
+              <FeatureVisual
+                label="Readiness Score"
+                rows={[
+                  { k: 'Overall NSQHS Readiness', v: '96%', status: 'green' },
+                  { k: 'AHPRA Credentials Current', v: '4/5', status: 'amber' },
+                  { k: 'CPD Compliance Rate', v: '88%', status: 'green' },
+                  {
+                    k: 'Evidence Pack Status',
+                    v: 'Ready to export',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+        ]}
+      />
 
       <VisualDivider />
 
@@ -407,7 +614,7 @@ export default function HealthcareComplianceContent() {
                     status: 'amber',
                   },
                   {
-                    k: "M. O'Brien — Physio",
+                    k: 'M. O’Brien — Physio',
                     v: 'AHPRA Expired',
                     status: 'red',
                   },
@@ -520,7 +727,7 @@ export default function HealthcareComplianceContent() {
                     status: 'amber',
                   },
                   {
-                    k: "M. O'Brien — Indemnity",
+                    k: 'M. O’Brien — Indemnity',
                     v: 'Expired 9 days ago',
                     status: 'red',
                   },
@@ -581,12 +788,141 @@ export default function HealthcareComplianceContent() {
 
       <VisualDivider />
 
+      <SeeItInAction
+        tabs={[
+          {
+            id: 'dashboard',
+            label: 'Healthcare Dashboard',
+            icon: <Monitor className="h-4 w-4" />,
+            content: (
+              <DemoDashboardContent
+                title="Healthcare Compliance Overview"
+                rows={[
+                  {
+                    label: 'NSQHS Standard 1 — Clinical Governance',
+                    value: '96%',
+                    status: 'green',
+                  },
+                  {
+                    label: 'NSQHS Standard 2 — Partnering with Consumers',
+                    value: '94%',
+                    status: 'green',
+                  },
+                  {
+                    label: 'AHPRA Practitioner Register',
+                    value: '4/5 current',
+                    status: 'amber',
+                  },
+                  {
+                    label: 'CPD Compliance Rate',
+                    value: '88%',
+                    status: 'amber',
+                  },
+                  {
+                    label: 'Clinical Incidents — Open',
+                    value: '3 active',
+                    status: 'amber',
+                  },
+                  {
+                    label: 'Privacy Act — NDB Register',
+                    value: 'Nil breaches',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            id: 'audit',
+            label: 'Audit Export',
+            icon: <FileText className="h-4 w-4" />,
+            content: (
+              <DemoAuditExport
+                sections={[
+                  {
+                    name: 'Standard 1 — Clinical Governance',
+                    score: '96%',
+                    items: 42,
+                  },
+                  {
+                    name: 'Standard 2 — Partnering with Consumers',
+                    score: '94%',
+                    items: 28,
+                  },
+                  {
+                    name: 'Standard 3 — Infection Prevention',
+                    score: '100%',
+                    items: 35,
+                  },
+                  {
+                    name: 'Standard 5 — Comprehensive Care',
+                    score: '91%',
+                    items: 22,
+                  },
+                  {
+                    name: 'Practitioner Credential Register',
+                    score: '95%',
+                    items: 56,
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            id: 'notifications',
+            label: 'Adverse Event Flow',
+            icon: <Bell className="h-4 w-4" />,
+            content: (
+              <DemoNotificationTimeline
+                steps={[
+                  {
+                    time: 'T+0:00',
+                    label: 'Clinical incident logged by ward nurse',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+0:30',
+                    label:
+                      'Clinical governance team notified — SAC rating assigned',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+2:00',
+                    label:
+                      'Investigation commenced — root cause analysis initiated',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+24:00',
+                    label: 'Open disclosure meeting with patient/family',
+                    status: 'active',
+                  },
+                  {
+                    time: 'T+72:00',
+                    label: 'Corrective action plan drafted and assigned',
+                    status: 'pending',
+                  },
+                  {
+                    time: 'T+30d',
+                    label:
+                      'Follow-up review — action plan effectiveness assessed',
+                    status: 'pending',
+                  },
+                ]}
+              />
+            ),
+          },
+        ]}
+      />
+
+      <VisualDivider />
+
       <SocialProof
         metricsBanner={[
-          '95+ routes',
-          '206+ tables with RLS',
-          'AU-hosted by default',
-          'SOC 2 in progress',
+          '206+ tables with row-level security',
+          'AU-hosted by default — data never leaves Australia',
+          'Zero evidence gaps at audit — immutable chain',
+          'SOC 2 compliance in progress',
         ]}
         trustCards={[
           {
@@ -617,7 +953,10 @@ export default function HealthcareComplianceContent() {
 
       <VisualDivider />
 
-      <IndustryCTA industry="Healthcare" />
+      <IndustryCTA
+        industry="Healthcare"
+        urgencyCallout="NSQHS accreditation cycles don't pause. Your evidence chain shouldn't either."
+      />
 
       <VisualDivider />
 
@@ -653,15 +992,19 @@ export default function HealthcareComplianceContent() {
               'FormaOS provides structured workflows for clinical incident management, credentialing and scope of practice, mortality and morbidity review, open disclosure, consumer feedback, and clinical audit. All evidence is linked to NSQHS Standard 1 (Clinical Governance) for accreditation readiness.',
           },
           {
-            question:
-              'Does FormaOS help with Privacy Act compliance for health records?',
+            question: 'How long does setup take for a healthcare organisation?',
             answer:
-              'Yes. FormaOS maps Privacy Act 1988 obligations including the Australian Privacy Principles, health records handling requirements, patient consent management, and the Notifiable Data Breaches scheme. Evidence of compliance is captured continuously and linked to the relevant privacy framework controls.',
+              'Most healthcare organisations are fully operational within hours, not weeks. FormaOS ships with NSQHS Standards, AHPRA registration obligations, Privacy Act requirements, and clinical governance frameworks pre-built. You select your service type, invite your compliance team, and your obligation register is live. Practitioner records can be bulk-imported from existing spreadsheets or HR systems.',
           },
           {
-            question: "Is my organisation's data stored in Australia?",
+            question: 'Can FormaOS integrate with existing clinical systems?',
             answer:
-              'Yes. FormaOS is AU-hosted by default. All patient data, practitioner records, evidence, and compliance documentation remain on Australian infrastructure. Your data never leaves Australia.',
+              'FormaOS provides a REST API and webhook infrastructure for integration with clinical systems, HR platforms, and credentialing databases. Practitioner data can be synchronised from existing systems, and compliance events can be pushed to your clinical governance dashboards. The platform also supports bulk CSV import for initial data migration.',
+          },
+          {
+            question: 'What happens when NSQHS Standards are updated?',
+            answer:
+              'When the Australian Commission on Safety and Quality in Health Care updates NSQHS Standards, FormaOS pushes framework updates automatically. New criteria are added to your obligation register, existing evidence mappings are preserved, and gap analysis highlights any new requirements that need attention — so you are never caught off guard by standard revisions.',
           },
         ]}
       />

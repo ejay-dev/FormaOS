@@ -6,6 +6,8 @@ import { ArrowRight, Zap } from 'lucide-react';
 
 export interface IndustryCTAProps {
   industry: string;
+  /** Optional urgency callout displayed above pricing */
+  urgencyCallout?: string;
 }
 
 const plans = [
@@ -18,18 +20,20 @@ const plans = [
   {
     name: 'Professional',
     price: '$239',
-    description: 'For growing organisations with active compliance obligations.',
+    description:
+      'For growing organisations with active compliance obligations.',
     highlighted: true,
   },
   {
     name: 'Enterprise',
     price: '$399',
-    description: 'For regulated enterprises with complex multi-framework needs.',
+    description:
+      'For regulated enterprises with complex multi-framework needs.',
     highlighted: false,
   },
 ];
 
-export function IndustryCTA({ industry }: IndustryCTAProps) {
+export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -44,6 +48,13 @@ export function IndustryCTA({ industry }: IndustryCTAProps) {
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.6 }}
         >
+          {urgencyCallout && (
+            <div className="mb-8 mx-auto max-w-2xl rounded-xl border border-amber-500/20 bg-amber-500/[0.06] px-6 py-4">
+              <p className="text-sm font-medium text-amber-300/90 leading-relaxed text-center">
+                {urgencyCallout}
+              </p>
+            </div>
+          )}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-[var(--font-display)] leading-[1.1] mb-4">
             Start Governing {industry}{' '}
             <span className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
@@ -51,7 +62,8 @@ export function IndustryCTA({ industry }: IndustryCTAProps) {
             </span>
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-12">
-            Join Australian organisations that trust FormaOS to maintain continuous compliance.
+            Join Australian organisations that trust FormaOS to maintain
+            continuous compliance.
           </p>
         </motion.div>
 
@@ -61,7 +73,9 @@ export function IndustryCTA({ industry }: IndustryCTAProps) {
             <motion.div
               key={plan.name}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
-              whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+              whileInView={
+                shouldReduceMotion ? undefined : { opacity: 1, y: 0 }
+              }
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
               className={`relative rounded-xl border p-6 text-left transition-all ${
@@ -77,12 +91,18 @@ export function IndustryCTA({ industry }: IndustryCTAProps) {
                   </span>
                 </div>
               )}
-              <div className="text-sm font-semibold text-white mb-1">{plan.name}</div>
+              <div className="text-sm font-semibold text-white mb-1">
+                {plan.name}
+              </div>
               <div className="flex items-baseline gap-1 mb-3">
-                <span className="text-3xl font-bold text-white">{plan.price}</span>
+                <span className="text-3xl font-bold text-white">
+                  {plan.price}
+                </span>
                 <span className="text-sm text-slate-500">/mo</span>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">{plan.description}</p>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                {plan.description}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -111,7 +131,8 @@ export function IndustryCTA({ industry }: IndustryCTAProps) {
         </motion.div>
 
         <p className="text-xs text-slate-600">
-          AU-hosted · No credit card required · Cancel anytime · Your data never leaves Australia
+          AU-hosted · No credit card required · Cancel anytime · Your data never
+          leaves Australia
         </p>
       </div>
     </section>

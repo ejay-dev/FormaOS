@@ -10,19 +10,28 @@ import {
   Shield,
   Scale,
   Landmark,
+  Monitor,
+  FileText,
+  Bell,
 } from 'lucide-react';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { VisualDivider } from '@/components/motion';
 import {
   IndustryHero,
-  PainPointsGrid,
-  FrameworkCoverage,
-  HowItWorks,
   IndustryFeatures,
   SocialProof,
   IndustryCTA,
   IndustryFAQ,
   InteractiveDashboard,
+  BeforeAfterSection,
+  FrameworkExplorer,
+  VerticalTimeline,
+  HeroStatsBar,
+  CompareTable,
+  SeeItInAction,
+  DemoDashboardContent,
+  DemoAuditExport,
+  DemoNotificationTimeline,
 } from '@/components/marketing/industry';
 
 /* ------------------------------------------------------------------ */
@@ -236,10 +245,11 @@ export default function FinancialServicesContent() {
       {/* ---- Hero ---- */}
       <IndustryHero
         eyebrow="ASIC + APRA + AUSTRAC Ready"
+        accent="violet-cyan"
         headline={
           <>
             Your AFS Licence Obligations.{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
               Governed.
             </span>
           </>
@@ -254,55 +264,101 @@ export default function FinancialServicesContent() {
           'ASIC-ready audit trail',
         ]}
         dashboardVisual={<ObligationsRegisterVisual />}
+        statsBar={
+          <HeroStatsBar
+            stats={[
+              '300+ ASIC obligations mapped',
+              's912D breach tracking',
+              'Board reporting automated',
+              'AU-hosted',
+            ]}
+          />
+        }
       />
 
       <VisualDivider />
 
       {/* ---- Pain Points ---- */}
-      <PainPointsGrid
-        headline="Why financial services compliance keeps you up at night"
-        subheadline="AFS licensees juggle overlapping regulators, shifting obligations, and board scrutiny — with tooling that was never built for the job."
-        painPoints={[
+      <BeforeAfterSection
+        headline="The Financial Services Compliance Gap"
+        subheadline="The difference between scrambling and being regulator-ready."
+        without={[
+          'AFS licence conditions not mapped to operational obligations — gaps invisible until ASIC review',
+          'Breach register not maintained — s912D self-reporting deadlines missed or detected late',
+          'Board unable to demonstrate active oversight — no structured compliance reporting to directors',
+          'CPS 230 operational risk framework exists on paper but not operationalised in daily workflows',
+        ]}
+        withFormaOS={[
+          'Every licence condition mapped to named owners with evidence requirements and review schedules',
+          'Centralised breach register with s912D workflow, days-since-detection counter, and deadline alerts',
+          'One-click board reporting pack with RAG status, open breaches, and attestation workflow',
+          'CPS 230 obligations tracked with critical operations, tolerance settings, and continuity testing evidence',
+        ]}
+      />
+
+      <CompareTable
+        headline="FormaOS vs. The Status Quo"
+        description="See how purpose-built financial services compliance software compares."
+        rows={[
           {
-            icon: <AlertTriangle className="h-5 w-5" />,
-            title:
-              'AFS licence conditions not mapped to operational obligations',
-            description:
-              'Licence conditions sit in legal documents while day-to-day operations run independently. Gaps between what your licence requires and what your team actually does remain invisible until an ASIC review surfaces them.',
+            feature: 'ASIC obligation register pre-built',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
           },
           {
-            icon: <FileWarning className="h-5 w-5" />,
-            title:
-              'Breach register not maintained — s912D self-reporting missed',
-            description:
-              'Without a centralised breach register, reportable situations under s912D are identified late or not at all. Self-reporting obligations carry strict timeframes, and missed deadlines compound regulatory risk.',
+            feature: 's912D breach register',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
           },
           {
-            icon: <Clock className="h-5 w-5" />,
-            title: 'AUSTRAC AML/CTF annual compliance report deadlines missed',
-            description:
-              'The annual compliance report to AUSTRAC requires evidence of programme effectiveness across the year. Assembling that evidence manually from scattered systems creates last-minute scrambles and incomplete submissions.',
+            feature: 'Board reporting pack',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
           },
           {
-            icon: <LayoutDashboard className="h-5 w-5" />,
-            title:
-              'Board unable to demonstrate oversight of compliance programme',
-            description:
-              'Directors need to evidence active oversight of the compliance programme. Without structured board reporting, there is no documented trail showing the board received, questioned, and acted on compliance information.',
+            feature: 'APRA CPS 230 tracking',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
           },
           {
-            icon: <Settings className="h-5 w-5" />,
-            title:
-              'APRA CPS 230 operational risk framework not operationalised',
-            description:
-              'CPS 230 requires identification of critical operations, tolerance settings, and business continuity testing. Many organisations have the policy but lack the operational systems to track and evidence compliance.',
+            feature: 'Named ownership per obligation',
+            spreadsheets: 'no',
+            genericGrc: 'yes',
+            formaos: 'yes',
           },
           {
-            icon: <RefreshCw className="h-5 w-5" />,
-            title:
-              'Regulatory change management done manually with no tracking',
-            description:
-              'When ASIC, APRA, or AUSTRAC issue new guidance or legislative instruments, changes are tracked via email threads and ad-hoc spreadsheets. There is no systematic way to assess impact, assign owners, or verify implementation.',
+            feature: 'Immutable evidence chain',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'AU data residency',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'AUSTRAC AML/CTF tracking',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Onboarding time',
+            spreadsheets: 'Weeks',
+            genericGrc: 'Days',
+            formaos: 'Hours',
+          },
+          {
+            feature: 'Price',
+            spreadsheets: 'Hidden',
+            genericGrc: '$$$+',
+            formaos: 'From $159/mo',
           },
         ]}
       />
@@ -310,15 +366,27 @@ export default function FinancialServicesContent() {
       <VisualDivider />
 
       {/* ---- Framework Coverage ---- */}
-      <FrameworkCoverage
+      <FrameworkExplorer
         headline="Obligation coverage across every financial services regulator"
         description="Pre-built frameworks map your ASIC, APRA, AUSTRAC, and AFCA obligations out of the box. Each obligation links to an owner, evidence requirement, and review cycle."
         frameworks={[
           {
+            id: 'asic-afs',
             name: 'ASIC AFS Licence — s912A Obligations',
             body: 'Australian Securities and Investments Commission',
+            updated: '2025-11-15',
             obligationCount: '300+',
-            areas: [
+            categories: [
+              { name: 'General conduct obligations', pct: 98 },
+              { name: 'Financial resource requirements', pct: 100 },
+              { name: 'Organisational competence', pct: 96 },
+              { name: 'Risk management systems', pct: 94 },
+              { name: 'Dispute resolution (IDR/EDR)', pct: 97 },
+              { name: 'Breach reporting and self-reporting', pct: 92 },
+              { name: 'Client money and property handling', pct: 100 },
+              { name: 'Disclosure and conduct obligations', pct: 95 },
+            ],
+            requirements: [
               'General conduct obligations',
               'Financial resource requirements',
               'Organisational competence',
@@ -330,10 +398,20 @@ export default function FinancialServicesContent() {
             ],
           },
           {
+            id: 'apra-cps230',
             name: 'APRA CPS 230 — Operational Risk Management',
             body: 'Australian Prudential Regulation Authority',
+            updated: '2025-12-01',
             obligationCount: '150+',
-            areas: [
+            categories: [
+              { name: 'Critical operations identification', pct: 94 },
+              { name: 'Tolerance levels and settings', pct: 90 },
+              { name: 'Business continuity planning', pct: 96 },
+              { name: 'Third-party risk management', pct: 88 },
+              { name: 'Scenario analysis and testing', pct: 92 },
+              { name: 'Board and senior management oversight', pct: 97 },
+            ],
+            requirements: [
               'Critical operations identification',
               'Tolerance levels and settings',
               'Business continuity planning',
@@ -343,10 +421,20 @@ export default function FinancialServicesContent() {
             ],
           },
           {
+            id: 'austrac',
             name: 'AUSTRAC AML/CTF Programme Requirements',
             body: 'Australian Transaction Reports and Analysis Centre',
+            updated: '2026-01-10',
             obligationCount: '120+',
-            areas: [
+            categories: [
+              { name: 'Part A — Customer identification', pct: 100 },
+              { name: 'Part B — Customer due diligence', pct: 96 },
+              { name: 'Ongoing customer due diligence', pct: 94 },
+              { name: 'Suspicious matter reporting', pct: 98 },
+              { name: 'Threshold transaction reporting', pct: 100 },
+              { name: 'Annual compliance report', pct: 95 },
+            ],
+            requirements: [
               'Part A — Customer identification',
               'Part B — Customer due diligence',
               'Ongoing customer due diligence',
@@ -356,10 +444,18 @@ export default function FinancialServicesContent() {
             ],
           },
           {
+            id: 'afca',
             name: 'AFCA Membership Obligations',
             body: 'Australian Financial Complaints Authority',
+            updated: '2025-09-20',
             obligationCount: '60+',
-            areas: [
+            categories: [
+              { name: 'Internal dispute resolution procedures', pct: 98 },
+              { name: 'AFCA notification requirements', pct: 100 },
+              { name: 'Complaint handling timeframes', pct: 96 },
+              { name: 'Systemic issue identification', pct: 93 },
+            ],
+            requirements: [
               'Internal dispute resolution procedures',
               'AFCA notification requirements',
               'Complaint handling timeframes',
@@ -367,10 +463,19 @@ export default function FinancialServicesContent() {
             ],
           },
           {
+            id: 'asic-rg',
             name: 'ASIC Regulatory Guides 104, 132, 259',
             body: 'Australian Securities and Investments Commission',
+            updated: '2025-10-05',
             obligationCount: '200+',
-            areas: [
+            categories: [
+              { name: 'RG 104 — AFS licence conditions', pct: 97 },
+              { name: 'RG 132 — MIS compliance plans', pct: 95 },
+              { name: 'RG 259 — Risk management systems', pct: 93 },
+              { name: 'Cross-guide compliance mapping', pct: 91 },
+              { name: 'Guidance implementation tracking', pct: 94 },
+            ],
+            requirements: [
               'RG 104 — AFS licence conditions',
               'RG 132 — Managed investment scheme compliance plans',
               'RG 259 — Risk management systems for responsible entities',
@@ -384,7 +489,91 @@ export default function FinancialServicesContent() {
       <VisualDivider />
 
       {/* ---- How It Works ---- */}
-      <HowItWorks />
+      <VerticalTimeline
+        steps={[
+          {
+            number: '01',
+            title: 'Import your obligation register',
+            description:
+              'Upload your existing ASIC, APRA, or AUSTRAC obligation spreadsheets — or start with our pre-built framework packs. FormaOS maps every obligation to its regulation reference, assigns owners, and sets review cycles automatically.',
+            gradient:
+              'from-violet-500/20 to-cyan-500/20 border-violet-500/30 text-violet-300',
+            visual: (
+              <FeatureVisual
+                label="Framework Activation"
+                rows={[
+                  {
+                    k: 'ASIC AFS s912A Obligations',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                  { k: 'APRA CPS 230', v: 'Activated', status: 'green' },
+                  { k: 'AUSTRAC AML/CTF', v: 'Activated', status: 'green' },
+                  { k: 'AFCA Membership', v: 'Activated', status: 'green' },
+                ]}
+              />
+            ),
+          },
+          {
+            number: '02',
+            title: 'Assign owners and attach evidence',
+            description:
+              'Every obligation gets a named owner, escalation path, and linked evidence requirement. Your team uploads policies, procedures, and attestations against each obligation — building a live evidence repository from day one.',
+            gradient:
+              'from-cyan-500/20 to-violet-500/20 border-cyan-500/30 text-cyan-300',
+            visual: (
+              <FeatureVisual
+                label="Obligation Ownership"
+                rows={[
+                  {
+                    k: 's912A(1)(a) — General conduct',
+                    v: 'Jane Park — Compliance',
+                    status: 'green',
+                  },
+                  {
+                    k: 'CPS 230 — BCP testing',
+                    v: 'Tom Liu — Ops Risk',
+                    status: 'green',
+                  },
+                  {
+                    k: 'AML/CTF — SMR log',
+                    v: 'Sarah Chen — AML',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'AFCA — IDR procedures',
+                    v: 'Mike Ross — Complaints',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            number: '03',
+            title: 'Monitor, report, and prove compliance',
+            description:
+              'Real-time dashboards show RAG status across every framework. Generate board packs, breach registers, and regulator-ready audit exports on demand. When ASIC, APRA, or AUSTRAC asks for evidence, you export it in minutes — not weeks.',
+            gradient:
+              'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
+            visual: (
+              <FeatureVisual
+                label="Compliance Status"
+                rows={[
+                  {
+                    k: 'ASIC AFS obligations',
+                    v: '97% mapped',
+                    status: 'green',
+                  },
+                  { k: 'APRA CPS 230', v: '94% mapped', status: 'green' },
+                  { k: 'AUSTRAC AML/CTF', v: '100% mapped', status: 'green' },
+                  { k: 'Board pack', v: 'Ready to export', status: 'green' },
+                ]}
+              />
+            ),
+          },
+        ]}
+      />
 
       <VisualDivider />
 
@@ -577,13 +766,138 @@ export default function FinancialServicesContent() {
 
       <VisualDivider />
 
+      {/* ---- See It In Action ---- */}
+      <SeeItInAction
+        tabs={[
+          {
+            id: 'dashboard',
+            label: 'Obligations Dashboard',
+            icon: <Monitor className="h-4 w-4" />,
+            content: (
+              <DemoDashboardContent
+                title="Financial Services Compliance Overview"
+                rows={[
+                  {
+                    label: 'ASIC AFS — s912A Obligations',
+                    value: '97%',
+                    status: 'green',
+                  },
+                  {
+                    label: 'APRA CPS 230 — Operational Risk',
+                    value: '94%',
+                    status: 'green',
+                  },
+                  {
+                    label: 'AUSTRAC AML/CTF Programme',
+                    value: '100%',
+                    status: 'green',
+                  },
+                  {
+                    label: 'AFCA — Dispute Register',
+                    value: '96%',
+                    status: 'green',
+                  },
+                  {
+                    label: 'Breach Register — s912D',
+                    value: '2 active',
+                    status: 'amber',
+                  },
+                  {
+                    label: 'Board Pack — Next Due',
+                    value: '15 days',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            id: 'audit',
+            label: 'Audit Export',
+            icon: <FileText className="h-4 w-4" />,
+            content: (
+              <DemoAuditExport
+                sections={[
+                  {
+                    name: 'ASIC AFS Licence Obligations',
+                    score: '97%',
+                    items: 300,
+                  },
+                  {
+                    name: 'APRA CPS 230 — Operational Risk',
+                    score: '94%',
+                    items: 150,
+                  },
+                  {
+                    name: 'AUSTRAC AML/CTF Programme',
+                    score: '100%',
+                    items: 120,
+                  },
+                  {
+                    name: 'AFCA Membership Obligations',
+                    score: '96%',
+                    items: 60,
+                  },
+                  { name: 'ASIC Regulatory Guides', score: '95%', items: 200 },
+                ]}
+              />
+            ),
+          },
+          {
+            id: 'breaches',
+            label: 'Breach Timeline',
+            icon: <Bell className="h-4 w-4" />,
+            content: (
+              <DemoNotificationTimeline
+                steps={[
+                  {
+                    time: 'T+0:00',
+                    label:
+                      'Reportable situation detected — s912D workflow initiated',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+1:00',
+                    label:
+                      'Breach classification completed — severity assessed',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+24:00',
+                    label: 'Investigation commenced — root cause analysis',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+48:00',
+                    label: 'Compliance Officer review and sign-off',
+                    status: 'active',
+                  },
+                  {
+                    time: 'T+20d',
+                    label: 'ASIC self-report lodged within 30-day window',
+                    status: 'pending',
+                  },
+                  {
+                    time: 'T+60d',
+                    label: 'Remediation verified — breach register closed',
+                    status: 'pending',
+                  },
+                ]}
+              />
+            ),
+          },
+        ]}
+      />
+
+      <VisualDivider />
+
       {/* ---- Social Proof ---- */}
       <SocialProof
         metricsBanner={[
-          '95+ routes',
-          '206+ tables with RLS',
-          'AU-hosted by default',
-          'SOC 2 in progress',
+          '206+ tables with row-level security',
+          'AU-hosted by default — data never leaves Australia',
+          'Zero evidence gaps at audit — immutable chain',
+          'SOC 2 compliance in progress',
         ]}
         trustCards={[
           {
@@ -615,7 +929,10 @@ export default function FinancialServicesContent() {
       <VisualDivider />
 
       {/* ---- CTA ---- */}
-      <IndustryCTA industry="Financial Services" />
+      <IndustryCTA
+        industry="Financial Services"
+        urgencyCallout="ASIC surveillance reviews don't announce themselves. Can you demonstrate your obligation coverage right now?"
+      />
 
       <VisualDivider />
 
@@ -659,6 +976,11 @@ export default function FinancialServicesContent() {
             question: 'Is data hosted in Australia?',
             answer:
               'Yes. FormaOS is hosted on Australian infrastructure by default. All data — including obligation registers, breach records, evidence files, and audit logs — remains within Australian data centres. This meets data sovereignty requirements for regulated financial services organisations.',
+          },
+          {
+            question: 'How long does it take to get set up?',
+            answer:
+              'Most AFS licensees are live within a day. You can import existing obligation spreadsheets or start with our pre-built ASIC, APRA, AUSTRAC, and AFCA framework packs. Assign owners, upload existing evidence, and your compliance programme is operational — no multi-month implementation project required.',
           },
         ]}
       />

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Shield, CheckCircle } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { AnimatedHeroBg } from './AnimatedHeroBg';
 
 export interface IndustryHeroProps {
   eyebrow: string;
@@ -13,6 +14,10 @@ export interface IndustryHeroProps {
   secondaryCta: { label: string; href: string };
   trustSignals: string[];
   dashboardVisual: ReactNode;
+  /** Gradient accent for animated background. Enables AnimatedHeroBg when set. */
+  accent?: string;
+  /** Optional stats bar ReactNode rendered below trust signals. */
+  statsBar?: ReactNode;
 }
 
 export function IndustryHero({
@@ -23,6 +28,8 @@ export function IndustryHero({
   secondaryCta,
   trustSignals,
   dashboardVisual,
+  accent,
+  statsBar,
 }: IndustryHeroProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -42,20 +49,23 @@ export function IndustryHero({
   return (
     <section className="relative min-h-[100vh] flex items-center overflow-hidden">
       {/* Background atmosphere */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a] via-[#0d1117] to-[#0a0e1a]" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(0,212,251,0.08)_0%,transparent_70%)]" />
-        <div className="absolute bottom-0 left-1/4 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(160,131,255,0.06)_0%,transparent_70%)]" />
-        {/* Grid overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-            backgroundSize: '64px 64px',
-          }}
-        />
-      </div>
+      {accent ? (
+        <AnimatedHeroBg accent={accent} />
+      ) : (
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a] via-[#0d1117] to-[#0a0e1a]" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(0,212,251,0.08)_0%,transparent_70%)]" />
+          <div className="absolute bottom-0 left-1/4 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(160,131,255,0.06)_0%,transparent_70%)]" />
+          <div
+            className="absolute inset-0 opacity-[0.03]"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+              backgroundSize: '64px 64px',
+            }}
+          />
+        </div>
+      )}
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 lg:py-32 w-full">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -120,6 +130,9 @@ export function IndustryHero({
                 </span>
               ))}
             </motion.div>
+
+            {/* Stats bar */}
+            {statsBar}
           </div>
 
           {/* Dashboard visual column */}

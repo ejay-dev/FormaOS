@@ -12,17 +12,25 @@ import {
   Timer,
   GitBranch,
   FileCheck,
+  Monitor,
+  FileText,
 } from 'lucide-react';
 import {
   IndustryHero,
-  PainPointsGrid,
-  FrameworkCoverage,
-  HowItWorks,
   IndustryFeatures,
   SocialProof,
   IndustryCTA,
   IndustryFAQ,
   InteractiveDashboard,
+  BeforeAfterSection,
+  FrameworkExplorer,
+  VerticalTimeline,
+  HeroStatsBar,
+  CompareTable,
+  SeeItInAction,
+  DemoDashboardContent,
+  DemoAuditExport,
+  DemoNotificationTimeline,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { VisualDivider } from '@/components/motion';
@@ -54,7 +62,12 @@ function NDISDashboardVisual() {
         {
           id: 'w1',
           status: 'green',
-          cells: { worker: 'Sarah Chen', role: 'Support Worker', status: 'Valid', expiry: '14 Mar 2027' },
+          cells: {
+            worker: 'Sarah Chen',
+            role: 'Support Worker',
+            status: 'Valid',
+            expiry: '14 Mar 2027',
+          },
           expandedContent: {
             label: 'Worker Details',
             items: [
@@ -68,7 +81,12 @@ function NDISDashboardVisual() {
         {
           id: 'w2',
           status: 'amber',
-          cells: { worker: 'James Patel', role: 'Team Leader', status: 'Expiring', expiry: '22 Apr 2026' },
+          cells: {
+            worker: 'James Patel',
+            role: 'Team Leader',
+            status: 'Expiring',
+            expiry: '22 Apr 2026',
+          },
           expandedContent: {
             label: 'Worker Details',
             items: [
@@ -82,7 +100,12 @@ function NDISDashboardVisual() {
         {
           id: 'w3',
           status: 'green',
-          cells: { worker: 'Maria Lopez', role: 'Support Coordinator', status: 'Valid', expiry: '08 Sep 2027' },
+          cells: {
+            worker: 'Maria Lopez',
+            role: 'Support Coordinator',
+            status: 'Valid',
+            expiry: '08 Sep 2027',
+          },
           expandedContent: {
             label: 'Worker Details',
             items: [
@@ -96,7 +119,12 @@ function NDISDashboardVisual() {
         {
           id: 'w4',
           status: 'red',
-          cells: { worker: 'David Kim', role: 'Behaviour Practitioner', status: 'Expired', expiry: '01 Feb 2026' },
+          cells: {
+            worker: 'David Kim',
+            role: 'Behaviour Practitioner',
+            status: 'Expired',
+            expiry: '01 Feb 2026',
+          },
           expandedContent: {
             label: 'Worker Details — ACTION REQUIRED',
             items: [
@@ -110,7 +138,12 @@ function NDISDashboardVisual() {
         {
           id: 'w5',
           status: 'green',
-          cells: { worker: 'Anika Sharma', role: 'Support Worker', status: 'Valid', expiry: '30 Nov 2027' },
+          cells: {
+            worker: 'Anika Sharma',
+            role: 'Support Worker',
+            status: 'Valid',
+            expiry: '30 Nov 2027',
+          },
           expandedContent: {
             label: 'Worker Details',
             items: [
@@ -123,9 +156,21 @@ function NDISDashboardVisual() {
         },
       ]}
       notifications={[
-        { message: 'James Patel screening expires in 13 days', time: '2 hours ago', type: 'alert' },
-        { message: 'David Kim screening expired — renewal pending', time: '1 day ago', type: 'alert' },
-        { message: 'Sarah Chen screening verified successfully', time: '3 days ago', type: 'success' },
+        {
+          message: 'James Patel screening expires in 13 days',
+          time: '2 hours ago',
+          type: 'alert',
+        },
+        {
+          message: 'David Kim screening expired — renewal pending',
+          time: '1 day ago',
+          type: 'alert',
+        },
+        {
+          message: 'Sarah Chen screening verified successfully',
+          time: '3 days ago',
+          type: 'success',
+        },
       ]}
       exportLabel="Export Register"
     />
@@ -134,20 +179,37 @@ function NDISDashboardVisual() {
 
 /* ── Feature visuals ─────────────────────────────────── */
 
-function FeatureVisual({ label, rows }: { label: string; rows: { k: string; v: string; status?: string }[] }) {
+function FeatureVisual({
+  label,
+  rows,
+}: {
+  label: string;
+  rows: { k: string; v: string; status?: string }[];
+}) {
   return (
     <div className="p-5 space-y-3">
-      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</div>
+      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        {label}
+      </div>
       <div className="space-y-2">
         {rows.map((r) => (
-          <div key={r.k} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+          <div
+            key={r.k}
+            className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.02] border border-white/[0.04]"
+          >
             <span className="text-xs text-white">{r.k}</span>
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500">{r.v}</span>
               {r.status && (
-                <span className={`h-2 w-2 rounded-full ${
-                  r.status === 'green' ? 'bg-emerald-500' : r.status === 'amber' ? 'bg-amber-500' : 'bg-red-500'
-                }`} />
+                <span
+                  className={`h-2 w-2 rounded-full ${
+                    r.status === 'green'
+                      ? 'bg-emerald-500'
+                      : r.status === 'amber'
+                        ? 'bg-amber-500'
+                        : 'bg-red-500'
+                  }`}
+                />
               )}
             </div>
           </div>
@@ -164,11 +226,12 @@ export default function NDISProvidersContent() {
     <MarketingPageShell>
       <IndustryHero
         eyebrow="NDIS Commission Aligned Framework"
+        accent="cyan-blue"
         headline={
           <>
             Stop Dreading
             <br />
-            <span className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
               Unannounced NDIS Audits
             </span>
           </>
@@ -183,77 +246,152 @@ export default function NDISProvidersContent() {
           'NDIS Commission aligned',
         ]}
         dashboardVisual={<NDISDashboardVisual />}
+        statsBar={
+          <HeroStatsBar
+            stats={[
+              '400+ NDIS obligations mapped',
+              'SIRS notification in 24hr',
+              'Worker screening automated',
+              'AU-hosted',
+            ]}
+          />
+        }
       />
 
       <VisualDivider />
 
-      <PainPointsGrid
-        headline="The NDIS Compliance Reality"
-        subheadline="These are the risks that keep NDIS compliance managers awake at night."
-        painPoints={[
+      <BeforeAfterSection
+        headline="The NDIS Compliance Gap"
+        subheadline="The difference between scrambling and being audit-ready."
+        without={[
+          'NDIS Commission arrives unannounced — evidence scattered across shared drives, email, and spreadsheets',
+          'Worker screening check expired 67 days ago — discovered only when Commission requests the register',
+          'Priority reportable incident not notified within 24 hours — enforcement action exposure',
+          'Restrictive practice without current behaviour support plan — no documented authorisation on file',
+        ]}
+        withFormaOS={[
+          'Continuous evidence chain across all 8 Practice Standards — audit-ready export in one click',
+          'Automatic screening expiry alerts at 90, 60, and 30 days — zero workers operating without clearance',
+          'SIRS notification workflow with 24-hour countdown timer and Commission submission tracking',
+          'Restrictive practices register linked to behaviour support plans with authorisation documentation',
+        ]}
+      />
+
+      <CompareTable
+        headline="FormaOS vs. The Status Quo"
+        description="See how purpose-built NDIS compliance software compares."
+        rows={[
           {
-            icon: <AlertTriangle className="h-5 w-5" />,
-            title: 'Unannounced NDIS Commission audits with zero notice',
-            description:
-              'The Commission can arrive any day. Providers caught without current evidence face conditions on registration — or worse, revocation.',
+            feature: 'NDIS Practice Standards pre-built',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
           },
           {
-            icon: <UserX className="h-5 w-5" />,
-            title: 'Worker Screening Checks expiring unnoticed',
-            description:
-              'NDIS Worker Screening Checks vary by state. One expired check means a worker operating without valid clearance — a reportable breach.',
+            feature: 'Worker screening tracking',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
           },
           {
-            icon: <Clock className="h-5 w-5" />,
-            title: 'Reportable incidents not notified within 24 hours',
-            description:
-              'Priority reportable incidents must be notified to the NDIS Commission within 24 hours. Miss this window and you face enforcement action.',
+            feature: 'SIRS notification workflow',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
           },
           {
-            icon: <FileWarning className="h-5 w-5" />,
-            title: 'Restrictive practices without proper authorisation',
-            description:
-              'Every regulated restrictive practice requires documented authorisation, behaviour support plans, and ongoing reporting to the Commission.',
+            feature: 'Regulator-ready export',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
           },
           {
-            icon: <ShieldAlert className="h-5 w-5" />,
-            title: 'SIRS notifications missed or late',
-            description:
-              'The Serious Incident Response Scheme demands structured notification workflows. Paper-based tracking leads to missed deadlines and compliance gaps.',
+            feature: 'Named ownership per obligation',
+            spreadsheets: 'no',
+            genericGrc: 'yes',
+            formaos: 'yes',
           },
           {
-            icon: <Bell className="h-5 w-5" />,
-            title: 'Practice Standards evidence scattered across systems',
-            description:
-              'All 8 NDIS Practice Standards modules require documented evidence. When evidence lives in email, drives, and spreadsheets, audits become scrambles.',
+            feature: 'Immutable evidence chain',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'AU data residency',
+            spreadsheets: 'no',
+            genericGrc: 'partial',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Restrictive practices register',
+            spreadsheets: 'no',
+            genericGrc: 'no',
+            formaos: 'yes',
+          },
+          {
+            feature: 'Onboarding time',
+            spreadsheets: 'Weeks',
+            genericGrc: 'Days',
+            formaos: 'Hours',
+          },
+          {
+            feature: 'Price',
+            spreadsheets: 'Hidden',
+            genericGrc: '$$$+',
+            formaos: 'From $159/mo',
           },
         ]}
       />
 
       <VisualDivider />
 
-      <FrameworkCoverage
+      <FrameworkExplorer
         headline="Every NDIS Framework. Pre-Built."
         description="FormaOS ships with every major NDIS regulatory framework pre-loaded. Your obligations are mapped from day one — no manual setup required."
         frameworks={[
           {
+            id: 'practice-standards',
             name: 'NDIS Practice Standards',
             body: 'NDIS Quality and Safeguards Commission',
+            updated: '2025-10-15',
             obligationCount: '400+',
-            areas: [
+            categories: [
+              { name: 'Rights and Responsibilities', pct: 98 },
+              { name: 'Governance and Operational Management', pct: 96 },
+              { name: 'Provision of Supports', pct: 95 },
+              { name: 'Support Provision Environment', pct: 100 },
+              { name: 'Verification Module', pct: 94 },
+              { name: 'Specialist Disability Accommodation', pct: 92 },
+              { name: 'Early Childhood Supports', pct: 97 },
+              { name: 'Behaviour Support', pct: 93 },
+            ],
+            requirements: [
               'Rights and Responsibilities',
               'Governance and Operational Management',
               'Provision of Supports',
               'Support Provision Environment',
               'Verification Module for lower-risk providers',
-              'Supplementary modules (specialist disability accommodation, early childhood)',
+              'Supplementary modules (SDA, early childhood)',
             ],
           },
           {
+            id: 'aged-care',
             name: 'Aged Care Quality Standards',
             body: 'Aged Care Quality and Safety Commission',
+            updated: '2025-12-01',
             obligationCount: '200+',
-            areas: [
+            categories: [
+              { name: 'Consumer dignity and choice', pct: 97 },
+              { name: 'Ongoing assessment and planning', pct: 95 },
+              { name: 'Personal and clinical care', pct: 94 },
+              { name: 'Services and supports for daily living', pct: 96 },
+              { name: 'Organisation service environment', pct: 100 },
+              { name: 'Feedback and complaints', pct: 98 },
+              { name: 'Human resources', pct: 93 },
+              { name: 'Organisational governance', pct: 99 },
+            ],
+            requirements: [
               'Consumer dignity and choice',
               'Ongoing assessment and planning',
               'Personal and clinical care',
@@ -265,10 +403,19 @@ export default function NDISProvidersContent() {
             ],
           },
           {
+            id: 'code-of-conduct',
             name: 'NDIS Code of Conduct',
             body: 'NDIS Quality and Safeguards Commission',
+            updated: '2025-09-01',
             obligationCount: '50+',
-            areas: [
+            categories: [
+              { name: 'Respect for individual rights', pct: 100 },
+              { name: 'Privacy and confidentiality', pct: 98 },
+              { name: 'Safe and competent supports', pct: 96 },
+              { name: 'Integrity and honesty', pct: 100 },
+              { name: 'Violence and abuse prevention', pct: 97 },
+            ],
+            requirements: [
               'Acting with respect for individual rights',
               'Respecting privacy and confidentiality',
               'Providing safe and competent supports',
@@ -277,10 +424,18 @@ export default function NDISProvidersContent() {
             ],
           },
           {
+            id: 'sirs',
             name: 'SIRS — Serious Incident Response Scheme',
             body: 'NDIS Quality and Safeguards Commission',
+            updated: '2026-01-10',
             obligationCount: '80+',
-            areas: [
+            categories: [
+              { name: 'Priority reportable incidents (24hrs)', pct: 100 },
+              { name: 'Standard reportable incidents (5 days)', pct: 96 },
+              { name: 'Investigation and root cause analysis', pct: 94 },
+              { name: 'Corrective action and closure', pct: 98 },
+            ],
+            requirements: [
               'Priority reportable incident notification (24hrs)',
               'Standard reportable incident notification (5 business days)',
               'Incident investigation and root cause analysis',
@@ -288,10 +443,18 @@ export default function NDISProvidersContent() {
             ],
           },
           {
+            id: 'worker-screening',
             name: 'Worker Screening Requirements',
             body: 'State and Territory Screening Units',
+            updated: '2025-11-20',
             obligationCount: '40+',
-            areas: [
+            categories: [
+              { name: 'NDIS Worker Screening Check by state', pct: 100 },
+              { name: 'Working With Children Check', pct: 98 },
+              { name: 'National Police Check validation', pct: 96 },
+              { name: 'Continuous monitoring', pct: 95 },
+            ],
+            requirements: [
               'NDIS Worker Screening Check by state',
               'Working With Children Check requirements',
               'National Police Check validation',
@@ -303,7 +466,107 @@ export default function NDISProvidersContent() {
 
       <VisualDivider />
 
-      <HowItWorks />
+      <VerticalTimeline
+        steps={[
+          {
+            number: '01',
+            title: 'Connect Your NDIS Obligations',
+            description:
+              'FormaOS ships with NDIS Practice Standards, SIRS requirements, and worker screening rules pre-built. Select your registration groups and your obligation register is live in minutes.',
+            gradient:
+              'from-cyan-500/20 to-blue-500/20 border-cyan-500/30 text-cyan-300',
+            visual: (
+              <FeatureVisual
+                label="Framework Activation"
+                rows={[
+                  {
+                    k: 'NDIS Practice Standards (8 Modules)',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                  {
+                    k: 'SIRS — Incident Response Scheme',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Worker Screening Requirements',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                  {
+                    k: 'NDIS Code of Conduct',
+                    v: 'Activated',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            number: '02',
+            title: 'Map Evidence to Every Standard',
+            description:
+              'Upload policies, worker credentials, incident records. FormaOS links each document to specific Practice Standards and SIRS requirements — building continuous evidence chains.',
+            gradient:
+              'from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-300',
+            visual: (
+              <FeatureVisual
+                label="Evidence Mapping"
+                rows={[
+                  {
+                    k: 'Module 1: Rights & Responsibilities',
+                    v: '38 evidence items',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Module 2: Governance',
+                    v: '25 evidence items',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Worker Screening Register',
+                    v: '5 workers linked',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'Module 3: Provision of Supports',
+                    v: '22 evidence items',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            number: '03',
+            title: 'Stay Audit-Ready Every Day',
+            description:
+              'Automated alerts for every screening expiry, incident deadline, and evidence gap. When the Commission arrives unannounced, your evidence pack is one click away.',
+            gradient:
+              'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
+            visual: (
+              <FeatureVisual
+                label="Readiness Score"
+                rows={[
+                  {
+                    k: 'Overall Practice Standards',
+                    v: '96%',
+                    status: 'green',
+                  },
+                  { k: 'Worker Screening Current', v: '4/5', status: 'amber' },
+                  { k: 'SIRS Compliance', v: '100%', status: 'green' },
+                  {
+                    k: 'Evidence Pack Status',
+                    v: 'Ready to export',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+        ]}
+      />
 
       <VisualDivider />
 
@@ -314,7 +577,7 @@ export default function NDISProvidersContent() {
           {
             title: 'Worker Screening Dashboard',
             description:
-              'See every worker\'s NDIS screening status at a glance. State-specific requirements automatically tracked with expiry countdown alerts at 90, 60, and 30 days.',
+              "See every worker's NDIS screening status at a glance. State-specific requirements automatically tracked with expiry countdown alerts at 90, 60, and 30 days.",
             details: [
               'NDIS Worker Screening Check status per worker',
               'State-specific screening requirements (NSW, VIC, QLD, SA, WA, TAS, NT, ACT)',
@@ -325,9 +588,21 @@ export default function NDISProvidersContent() {
               <FeatureVisual
                 label="Worker Screening Status"
                 rows={[
-                  { k: 'Sarah Chen — NSW', v: 'Valid to Mar 2027', status: 'green' },
-                  { k: 'James Patel — VIC', v: 'Expiring Apr 2026', status: 'amber' },
-                  { k: 'Maria Lopez — QLD', v: 'Valid to Sep 2027', status: 'green' },
+                  {
+                    k: 'Sarah Chen — NSW',
+                    v: 'Valid to Mar 2027',
+                    status: 'green',
+                  },
+                  {
+                    k: 'James Patel — VIC',
+                    v: 'Expiring Apr 2026',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'Maria Lopez — QLD',
+                    v: 'Valid to Sep 2027',
+                    status: 'green',
+                  },
                   { k: 'David Kim — SA', v: 'Expired Feb 2026', status: 'red' },
                 ]}
               />
@@ -347,10 +622,18 @@ export default function NDISProvidersContent() {
               <FeatureVisual
                 label="SIRS Notification Pipeline"
                 rows={[
-                  { k: 'INC-0042 (Priority)', v: '18hrs remaining', status: 'amber' },
+                  {
+                    k: 'INC-0042 (Priority)',
+                    v: '18hrs remaining',
+                    status: 'amber',
+                  },
                   { k: 'INC-0041 (Standard)', v: 'Notified', status: 'green' },
                   { k: 'INC-0040 (Priority)', v: 'Closed', status: 'green' },
-                  { k: 'INC-0039 (Standard)', v: '2 days remaining', status: 'amber' },
+                  {
+                    k: 'INC-0039 (Standard)',
+                    v: '2 days remaining',
+                    status: 'amber',
+                  },
                 ]}
               />
             ),
@@ -370,7 +653,11 @@ export default function NDISProvidersContent() {
                 label="Participant: Alex Thompson"
                 rows={[
                   { k: 'Support Plan', v: 'v3 — Current', status: 'green' },
-                  { k: 'Restrictive Practices', v: '1 Active', status: 'amber' },
+                  {
+                    k: 'Restrictive Practices',
+                    v: '1 Active',
+                    status: 'amber',
+                  },
                   { k: 'Incidents (12mo)', v: '2 Closed', status: 'green' },
                   { k: 'Consent Forms', v: 'All current', status: 'green' },
                 ]}
@@ -389,16 +676,35 @@ export default function NDISProvidersContent() {
             ],
             visual: (
               <div className="p-5 space-y-3">
-                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">Incident Pipeline</div>
-                {['Reported', 'Under Investigation', 'Notified to Commission', 'Closed'].map((stage, i) => (
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  Incident Pipeline
+                </div>
+                {[
+                  'Reported',
+                  'Under Investigation',
+                  'Notified to Commission',
+                  'Closed',
+                ].map((stage, i) => (
                   <div key={stage} className="flex items-center gap-3">
-                    <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
-                      i < 3 ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
-                    }`}>
+                    <div
+                      className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
+                        i < 3
+                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                          : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
+                      }`}
+                    >
                       {i + 1}
                     </div>
-                    <span className={`text-xs ${i < 3 ? 'text-white' : 'text-slate-500'}`}>{stage}</span>
-                    {i < 3 && <span className="text-[10px] text-emerald-500 ml-auto">Complete</span>}
+                    <span
+                      className={`text-xs ${i < 3 ? 'text-white' : 'text-slate-500'}`}
+                    >
+                      {stage}
+                    </span>
+                    {i < 3 && (
+                      <span className="text-[10px] text-emerald-500 ml-auto">
+                        Complete
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -418,10 +724,150 @@ export default function NDISProvidersContent() {
               <FeatureVisual
                 label="Audit Evidence Pack"
                 rows={[
-                  { k: 'Module 1: Rights & Responsibilities', v: '98% complete', status: 'green' },
-                  { k: 'Module 2: Governance', v: '94% complete', status: 'green' },
-                  { k: 'Module 3: Provision of Supports', v: '87% complete', status: 'amber' },
-                  { k: 'Module 4: Support Environment', v: '100% complete', status: 'green' },
+                  {
+                    k: 'Module 1: Rights & Responsibilities',
+                    v: '98% complete',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Module 2: Governance',
+                    v: '94% complete',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Module 3: Provision of Supports',
+                    v: '87% complete',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'Module 4: Support Environment',
+                    v: '100% complete',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+        ]}
+      />
+
+      <VisualDivider />
+
+      <SeeItInAction
+        tabs={[
+          {
+            id: 'dashboard',
+            label: 'NDIS Dashboard',
+            icon: <Monitor className="h-4 w-4" />,
+            content: (
+              <DemoDashboardContent
+                title="NDIS Compliance Overview"
+                rows={[
+                  {
+                    label: 'Practice Standards — Module 1',
+                    value: '98%',
+                    status: 'green',
+                  },
+                  {
+                    label: 'Practice Standards — Module 2',
+                    value: '94%',
+                    status: 'green',
+                  },
+                  {
+                    label: 'Worker Screening Register',
+                    value: '4/5 current',
+                    status: 'amber',
+                  },
+                  {
+                    label: 'SIRS — Open Incidents',
+                    value: '1 priority',
+                    status: 'amber',
+                  },
+                  {
+                    label: 'Restrictive Practices Register',
+                    value: 'All authorised',
+                    status: 'green',
+                  },
+                  {
+                    label: 'Code of Conduct Training',
+                    value: '100% complete',
+                    status: 'green',
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            id: 'audit',
+            label: 'Audit Export',
+            icon: <FileText className="h-4 w-4" />,
+            content: (
+              <DemoAuditExport
+                sections={[
+                  {
+                    name: 'Module 1 — Rights & Responsibilities',
+                    score: '98%',
+                    items: 38,
+                  },
+                  { name: 'Module 2 — Governance', score: '94%', items: 25 },
+                  {
+                    name: 'Module 3 — Provision of Supports',
+                    score: '87%',
+                    items: 22,
+                  },
+                  {
+                    name: 'Module 4 — Support Environment',
+                    score: '100%',
+                    items: 18,
+                  },
+                  {
+                    name: 'Worker Screening Register',
+                    score: '95%',
+                    items: 42,
+                  },
+                ]}
+              />
+            ),
+          },
+          {
+            id: 'notifications',
+            label: 'SIRS Timeline',
+            icon: <Bell className="h-4 w-4" />,
+            content: (
+              <DemoNotificationTimeline
+                steps={[
+                  {
+                    time: 'T+0:00',
+                    label: 'Incident reported by support worker on site',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+1:00',
+                    label:
+                      'Incident classified as priority reportable — 24hr clock starts',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+4:00',
+                    label:
+                      'Investigation commenced — witness statements collected',
+                    status: 'complete',
+                  },
+                  {
+                    time: 'T+18:00',
+                    label: 'Commission notification drafted — 6hrs remaining',
+                    status: 'active',
+                  },
+                  {
+                    time: 'T+24:00',
+                    label: 'Commission notification submitted before deadline',
+                    status: 'pending',
+                  },
+                  {
+                    time: 'T+5d',
+                    label: 'Investigation closed — corrective actions assigned',
+                    status: 'pending',
+                  },
                 ]}
               />
             ),
@@ -433,38 +879,47 @@ export default function NDISProvidersContent() {
 
       <SocialProof
         metricsBanner={[
-          '95+ routes',
-          '206+ tables with RLS',
-          'AU-hosted by default',
-          'SOC 2 in progress',
+          '206+ tables with row-level security',
+          'AU-hosted by default — data never leaves Australia',
+          'Zero evidence gaps at audit — immutable chain',
+          'SOC 2 compliance in progress',
         ]}
         trustCards={[
           {
             persona: 'NDIS Registered Provider, 50+ participants',
             need: 'Worker screening compliance across 3 sites with zero manual tracking',
-            delivers: 'Automated expiry alerts, SIRS notification workflows, audit-ready export for every unannounced visit',
+            delivers:
+              'Automated expiry alerts, SIRS notification workflows, audit-ready export for every unannounced visit',
           },
           {
             persona: 'NDIS Plan Manager, 200+ participants',
             need: 'Evidence chain integrity for Practice Standards across all 8 modules',
-            delivers: 'Pre-built Practice Standards framework, immutable evidence chain, one-click audit evidence pack',
+            delivers:
+              'Pre-built Practice Standards framework, immutable evidence chain, one-click audit evidence pack',
           },
           {
             persona: 'Disability Services Group, multi-state operations',
             need: 'State-specific worker screening requirements tracked centrally',
-            delivers: 'Per-state screening rules, centralised dashboard, credential expiry countdown with escalation paths',
+            delivers:
+              'Per-state screening rules, centralised dashboard, credential expiry countdown with escalation paths',
           },
         ]}
         regulatoryBodies={[
           { name: 'NDIS Commission', icon: <Shield className="h-4 w-4" /> },
           { name: 'Aged Care Commission', icon: <Users className="h-4 w-4" /> },
-          { name: 'State Screening Units', icon: <FileCheck className="h-4 w-4" /> },
+          {
+            name: 'State Screening Units',
+            icon: <FileCheck className="h-4 w-4" />,
+          },
         ]}
       />
 
       <VisualDivider />
 
-      <IndustryCTA industry="NDIS" />
+      <IndustryCTA
+        industry="NDIS"
+        urgencyCallout="The NDIS Commission can visit without notice. Is your evidence chain current right now?"
+      />
 
       <VisualDivider />
 
@@ -472,7 +927,8 @@ export default function NDISProvidersContent() {
         industry="NDIS"
         faqs={[
           {
-            question: 'Does FormaOS cover all 8 NDIS Practice Standards modules?',
+            question:
+              'Does FormaOS cover all 8 NDIS Practice Standards modules?',
             answer:
               'Yes. All 8 modules are pre-built including the Verification module for lower-risk providers and supplementary modules for specialist disability accommodation and early childhood supports.',
           },
@@ -487,7 +943,8 @@ export default function NDISProvidersContent() {
               'Yes. FormaOS tracks Priority and Standard reportable incidents with 24-hour and 5-business-day notification timers and submission status tracking. Every incident follows a structured pipeline from report to investigation to Commission notification to closure.',
           },
           {
-            question: 'How does FormaOS handle state-specific worker screening?',
+            question:
+              'How does FormaOS handle state-specific worker screening?',
             answer:
               'FormaOS tracks NDIS Worker Screening Check requirements by state and territory. Each jurisdiction has different screening units and processes — FormaOS maps these automatically and alerts you to expiring clearances at 90, 60, and 30 days.',
           },
@@ -500,6 +957,11 @@ export default function NDISProvidersContent() {
             question: 'Does FormaOS integrate with the NDIS Commission portal?',
             answer:
               'FormaOS generates Commission-structured reports and evidence packs ready for submission. While direct API integration with the Commission portal is on our roadmap, the current export format aligns with Commission requirements.',
+          },
+          {
+            question: 'How long does setup take for an NDIS provider?',
+            answer:
+              'Most NDIS providers are fully operational within hours, not weeks. FormaOS ships with Practice Standards, SIRS requirements, and worker screening rules pre-built. You select your registration groups, invite your compliance team, and your obligation register is live. Worker records can be bulk-imported from existing spreadsheets.',
           },
           {
             question: 'Is my data stored in Australia?',

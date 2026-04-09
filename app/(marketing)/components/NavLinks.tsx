@@ -228,10 +228,23 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
 
     return (
       <div className="text-sm space-y-1">
-        {/* Pricing — always visible as a direct link */}
+        {/* Home + Pricing — always visible as direct links */}
         <div className="px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500">
           Pages
         </div>
+        <Link
+          href="/"
+          onClick={onLinkClick}
+          className={clsx(
+            'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed',
+            pathname === '/'
+              ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+              : 'hover:bg-white/5 text-slate-300 hover:text-white',
+          )}
+          aria-current={pathname === '/' ? 'page' : undefined}
+        >
+          Home
+        </Link>
         <Link
           href="/pricing"
           onClick={onLinkClick}
@@ -269,6 +282,18 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
   /* ── Desktop ─────────────────────────────────────────── */
   return (
     <nav className="hidden md:flex flex-1 items-center justify-center gap-0.5 lg:gap-1 text-[13.5px] lg:text-[14px] font-medium tracking-[0.01em]">
+      {/* Home — direct link */}
+      <Link
+        href="/"
+        className={clsx(
+          'mk-nav-item focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+          pathname === '/' && 'mk-nav-item--active',
+        )}
+        aria-current={pathname === '/' ? 'page' : undefined}
+      >
+        Home
+      </Link>
+
       <NavDropdown label="Platform" items={platformLinks} pathname={pathname} />
       <NavDropdown
         label="Solutions"
