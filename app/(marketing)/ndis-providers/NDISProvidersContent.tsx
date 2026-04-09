@@ -22,85 +22,113 @@ import {
   SocialProof,
   IndustryCTA,
   IndustryFAQ,
+  InteractiveDashboard,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { VisualDivider } from '@/components/motion';
 
-/* ── Dashboard visual ────────────────────────────────── */
+/* ── Interactive Dashboard visual ────────────────────── */
 
 function NDISDashboardVisual() {
-  const workers = [
-    { name: 'Sarah Chen', role: 'Support Worker', status: 'Valid', expiry: '14 Mar 2027', color: 'emerald' },
-    { name: 'James Patel', role: 'Team Leader', status: 'Expiring', expiry: '22 Apr 2026', color: 'amber' },
-    { name: 'Maria Lopez', role: 'Support Coordinator', status: 'Valid', expiry: '08 Sep 2027', color: 'emerald' },
-    { name: 'David Kim', role: 'Behaviour Practitioner', status: 'Expired', expiry: '01 Feb 2026', color: 'red' },
-    { name: 'Anika Sharma', role: 'Support Worker', status: 'Valid', expiry: '30 Nov 2027', color: 'emerald' },
-  ];
-
   return (
-    <div className="p-4 sm:p-6 space-y-4">
-      {/* Header bar */}
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-xs text-slate-500 mb-0.5">Worker Screening Register</div>
-          <div className="text-sm font-semibold text-white">NDIS Worker Check Status</div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
-            3 Valid
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-400">
-            1 Expiring
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 border border-red-500/20 px-2 py-0.5 text-[10px] font-medium text-red-400">
-            1 Expired
-          </span>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-hidden rounded-lg border border-white/[0.06]">
-        <table className="w-full text-left text-xs">
-          <thead>
-            <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-              <th className="px-3 py-2 font-medium text-slate-500">Worker</th>
-              <th className="px-3 py-2 font-medium text-slate-500 hidden sm:table-cell">Role</th>
-              <th className="px-3 py-2 font-medium text-slate-500">Status</th>
-              <th className="px-3 py-2 font-medium text-slate-500 hidden sm:table-cell">Expiry</th>
-            </tr>
-          </thead>
-          <tbody>
-            {workers.map((w) => (
-              <tr key={w.name} className="border-b border-white/[0.04] last:border-0">
-                <td className="px-3 py-2.5 text-white font-medium">{w.name}</td>
-                <td className="px-3 py-2.5 text-slate-500 hidden sm:table-cell">{w.role}</td>
-                <td className="px-3 py-2.5">
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                      w.color === 'emerald'
-                        ? 'bg-emerald-500/10 text-emerald-400'
-                        : w.color === 'amber'
-                          ? 'bg-amber-500/10 text-amber-400'
-                          : 'bg-red-500/10 text-red-400'
-                    }`}
-                  >
-                    <span className={`h-1.5 w-1.5 rounded-full ${
-                      w.color === 'emerald'
-                        ? 'bg-emerald-500'
-                        : w.color === 'amber'
-                          ? 'bg-amber-500'
-                          : 'bg-red-500'
-                    }`} />
-                    {w.status}
-                  </span>
-                </td>
-                <td className="px-3 py-2.5 text-slate-500 hidden sm:table-cell">{w.expiry}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <InteractiveDashboard
+      title="NDIS Worker Check Status"
+      subtitle="Worker Screening Register"
+      tabs={[
+        { id: 'all', label: 'All Workers', count: 5 },
+        { id: 'expiring', label: 'Expiring Soon', count: 1 },
+        { id: 'incidents', label: 'SIRS Tracker', count: 3 },
+      ]}
+      statusCounts={[
+        { label: 'Valid', count: 3, color: 'green' },
+        { label: 'Expiring', count: 1, color: 'amber' },
+        { label: 'Expired', count: 1, color: 'red' },
+      ]}
+      columns={[
+        { key: 'worker', label: 'Worker' },
+        { key: 'role', label: 'Role', hideOnMobile: true },
+        { key: 'status', label: 'Status' },
+        { key: 'expiry', label: 'Expiry', hideOnMobile: true },
+      ]}
+      rows={[
+        {
+          id: 'w1',
+          status: 'green',
+          cells: { worker: 'Sarah Chen', role: 'Support Worker', status: 'Valid', expiry: '14 Mar 2027' },
+          expandedContent: {
+            label: 'Worker Details',
+            items: [
+              { key: 'State', value: 'NSW' },
+              { key: 'Check Type', value: 'NDIS Worker Screening' },
+              { key: 'Last Verified', value: '12 Jan 2026' },
+              { key: 'Sites', value: 'Parramatta, Bankstown' },
+            ],
+          },
+        },
+        {
+          id: 'w2',
+          status: 'amber',
+          cells: { worker: 'James Patel', role: 'Team Leader', status: 'Expiring', expiry: '22 Apr 2026' },
+          expandedContent: {
+            label: 'Worker Details',
+            items: [
+              { key: 'State', value: 'VIC' },
+              { key: 'Check Type', value: 'NDIS Worker Screening' },
+              { key: 'Days Until Expiry', value: '13 days' },
+              { key: 'Alert Sent', value: '90, 60, 30 day alerts sent' },
+            ],
+          },
+        },
+        {
+          id: 'w3',
+          status: 'green',
+          cells: { worker: 'Maria Lopez', role: 'Support Coordinator', status: 'Valid', expiry: '08 Sep 2027' },
+          expandedContent: {
+            label: 'Worker Details',
+            items: [
+              { key: 'State', value: 'QLD' },
+              { key: 'Check Type', value: 'NDIS Worker Screening' },
+              { key: 'Last Verified', value: '05 Mar 2026' },
+              { key: 'Sites', value: 'Brisbane CBD' },
+            ],
+          },
+        },
+        {
+          id: 'w4',
+          status: 'red',
+          cells: { worker: 'David Kim', role: 'Behaviour Practitioner', status: 'Expired', expiry: '01 Feb 2026' },
+          expandedContent: {
+            label: 'Worker Details — ACTION REQUIRED',
+            items: [
+              { key: 'State', value: 'SA' },
+              { key: 'Check Type', value: 'NDIS Worker Screening' },
+              { key: 'Expired', value: '67 days ago' },
+              { key: 'Action', value: 'Renewal application submitted' },
+            ],
+          },
+        },
+        {
+          id: 'w5',
+          status: 'green',
+          cells: { worker: 'Anika Sharma', role: 'Support Worker', status: 'Valid', expiry: '30 Nov 2027' },
+          expandedContent: {
+            label: 'Worker Details',
+            items: [
+              { key: 'State', value: 'NSW' },
+              { key: 'Check Type', value: 'NDIS Worker Screening' },
+              { key: 'Last Verified', value: '18 Feb 2026' },
+              { key: 'Sites', value: 'Liverpool, Campbelltown' },
+            ],
+          },
+        },
+      ]}
+      notifications={[
+        { message: 'James Patel screening expires in 13 days', time: '2 hours ago', type: 'alert' },
+        { message: 'David Kim screening expired — renewal pending', time: '1 day ago', type: 'alert' },
+        { message: 'Sarah Chen screening verified successfully', time: '3 days ago', type: 'success' },
+      ]}
+      exportLabel="Export Register"
+    />
   );
 }
 
@@ -145,7 +173,7 @@ export default function NDISProvidersContent() {
             </span>
           </>
         }
-        subheadline="The NDIS Quality and Safeguards Commission can visit without notice. FormaOS maintains your evidence chain continuously — so your compliance posture is defensible every single day, not just before scheduled assessments."
+        subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously — defensible every day, not just before audits."
         primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
         secondaryCta={{ label: 'See NDIS Demo', href: '/contact' }}
         trustSignals={[

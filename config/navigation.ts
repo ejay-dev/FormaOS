@@ -21,9 +21,12 @@ export const platformLinks = [
 
 export const solutionLinks = [
   { href: '/industries', label: 'Industries' },
+  { href: '/ndis-providers', label: 'NDIS Providers' },
+  { href: '/healthcare-compliance', label: 'Healthcare' },
+  { href: '/financial-services-compliance', label: 'Financial Services' },
+  { href: '/childcare-compliance', label: 'Childcare' },
+  { href: '/construction-compliance', label: 'Construction' },
   { href: '/enterprise', label: 'Enterprise' },
-  { href: '/use-cases/healthcare', label: 'Healthcare' },
-  { href: '/use-cases/ndis-aged-care', label: 'NDIS & Aged Care' },
   { href: '/customer-stories', label: 'Customer Stories' },
   { href: '/compare', label: 'Compare' },
 ] as const;
@@ -83,9 +86,12 @@ export const footerLinks = {
   ],
   solutions: [
     { href: '/industries', label: 'Industries' },
+    { href: '/ndis-providers', label: 'NDIS Providers' },
+    { href: '/healthcare-compliance', label: 'Healthcare' },
+    { href: '/financial-services-compliance', label: 'Financial Services' },
+    { href: '/childcare-compliance', label: 'Childcare' },
+    { href: '/construction-compliance', label: 'Construction' },
     { href: '/enterprise', label: 'Enterprise' },
-    { href: '/use-cases/healthcare', label: 'Healthcare' },
-    { href: '/use-cases/ndis-aged-care', label: 'NDIS & Aged Care' },
     { href: '/customer-stories', label: 'Customer Stories' },
     { href: '/compare', label: 'Compare' },
   ],

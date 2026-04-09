@@ -170,10 +170,12 @@ describe('getMasterControlWithMappings', () => {
     };
     const mappingsData = [
       {
-        framework_control: {
-          control_code: 'CC6.1',
-          framework: { slug: 'soc2', name: 'SOC 2' },
-        },
+        framework_control: [
+          {
+            control_code: 'CC6.1',
+            framework: [{ slug: 'soc2', name: 'SOC 2' }],
+          },
+        ],
       },
     ];
 
@@ -229,11 +231,15 @@ describe('isControlDeduplicated', () => {
       callCount++;
       if (callCount === 1) return chain({ master_control_id: 'mc-1' });
       return chain([
-        { framework_control: { framework: { slug: 'soc2', name: 'SOC 2' } } },
         {
-          framework_control: {
-            framework: { slug: 'iso27001', name: 'ISO 27001' },
-          },
+          framework_control: [{ framework: [{ slug: 'soc2', name: 'SOC 2' }] }],
+        },
+        {
+          framework_control: [
+            {
+              framework: [{ slug: 'iso27001', name: 'ISO 27001' }],
+            },
+          ],
         },
       ]);
     });
@@ -250,7 +256,9 @@ describe('isControlDeduplicated', () => {
       callCount++;
       if (callCount === 1) return chain({ master_control_id: 'mc-1' });
       return chain([
-        { framework_control: { framework: { slug: 'soc2', name: 'SOC 2' } } },
+        {
+          framework_control: [{ framework: [{ slug: 'soc2', name: 'SOC 2' }] }],
+        },
       ]);
     });
 
@@ -269,9 +277,9 @@ describe('getFrameworksSatisfiedByControl', () => {
       callCount++;
       if (callCount === 1) {
         return chain([
-          { framework_control: { framework: { slug: 'soc2' } } },
-          { framework_control: { framework: { slug: 'iso27001' } } },
-          { framework_control: { framework: { slug: 'hipaa' } } },
+          { framework_control: [{ framework: [{ slug: 'soc2' }] }] },
+          { framework_control: [{ framework: [{ slug: 'iso27001' }] }] },
+          { framework_control: [{ framework: [{ slug: 'hipaa' }] }] },
         ]);
       }
       return chain([{ framework_slug: 'soc2' }, { framework_slug: 'hipaa' }]);
@@ -300,7 +308,9 @@ describe('getFrameworksSatisfiedByControl', () => {
     mockFromFn.mockImplementation(() => {
       callCount++;
       if (callCount === 1)
-        return chain([{ framework_control: { framework: { slug: 'soc2' } } }]);
+        return chain([
+          { framework_control: [{ framework: [{ slug: 'soc2' }] }] },
+        ]);
       return chain([]);
     });
 
@@ -314,8 +324,8 @@ describe('getFrameworksSatisfiedByControl', () => {
       callCount++;
       if (callCount === 1) {
         return chain([
-          { framework_control: { framework: { slug: 'soc2' } } },
-          { framework_control: { framework: { slug: 'soc2' } } },
+          { framework_control: [{ framework: [{ slug: 'soc2' }] }] },
+          { framework_control: [{ framework: [{ slug: 'soc2' }] }] },
         ]);
       }
       return chain([{ framework_slug: 'soc2' }]);

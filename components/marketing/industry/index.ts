@@ -6,3 +6,4 @@ export { IndustryFeatures } from './IndustryFeatures';
 export { SocialProof } from './SocialProof';
 export { IndustryCTA } from './IndustryCTA';
 export { IndustryFAQ } from './IndustryFAQ';
+export { InteractiveDashboard } from './InteractiveDashboard';

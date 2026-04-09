@@ -22,85 +22,153 @@ import {
   SocialProof,
   IndustryCTA,
   IndustryFAQ,
+  InteractiveDashboard,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { VisualDivider } from '@/components/motion';
 
-/* ── Dashboard visual ────────────────────────────────── */
+/* ── Interactive Dashboard visual ────────────────────── */
 
 function ConstructionDashboardVisual() {
-  const sites = [
-    { name: 'CBD Tower — Lvl 14', swms: 12, incidents: 0, status: 'green', contractors: 34 },
-    { name: 'Westfield Extension', swms: 8, incidents: 1, status: 'amber', contractors: 22 },
-    { name: 'Harbour Bridge Maint.', swms: 6, incidents: 0, status: 'green', contractors: 15 },
-    { name: 'Olympic Park Stage 3', swms: 15, incidents: 2, status: 'red', contractors: 48 },
-    { name: 'Airport Terminal 2', swms: 10, incidents: 0, status: 'green', contractors: 29 },
-  ];
-
   return (
-    <div className="p-4 sm:p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="text-xs text-slate-500 mb-0.5">Multi-Site Compliance</div>
-          <div className="text-sm font-semibold text-white">Active Project Dashboard</div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
-            3 Compliant
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-400">
-            1 Review
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 border border-red-500/20 px-2 py-0.5 text-[10px] font-medium text-red-400">
-            1 Action
-          </span>
-        </div>
-      </div>
-
-      <div className="overflow-hidden rounded-lg border border-white/[0.06]">
-        <table className="w-full text-left text-xs">
-          <thead>
-            <tr className="border-b border-white/[0.06] bg-white/[0.02]">
-              <th className="px-3 py-2 font-medium text-slate-500">Site</th>
-              <th className="px-3 py-2 font-medium text-slate-500 hidden sm:table-cell">SWMS</th>
-              <th className="px-3 py-2 font-medium text-slate-500 hidden sm:table-cell">Contractors</th>
-              <th className="px-3 py-2 font-medium text-slate-500">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sites.map((s) => (
-              <tr key={s.name} className="border-b border-white/[0.04] last:border-0">
-                <td className="px-3 py-2.5 text-white font-medium">{s.name}</td>
-                <td className="px-3 py-2.5 text-slate-500 hidden sm:table-cell">{s.swms} active</td>
-                <td className="px-3 py-2.5 text-slate-500 hidden sm:table-cell">{s.contractors}</td>
-                <td className="px-3 py-2.5">
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                      s.status === 'green'
-                        ? 'bg-emerald-500/10 text-emerald-400'
-                        : s.status === 'amber'
-                          ? 'bg-amber-500/10 text-amber-400'
-                          : 'bg-red-500/10 text-red-400'
-                    }`}
-                  >
-                    <span
-                      className={`h-1.5 w-1.5 rounded-full ${
-                        s.status === 'green'
-                          ? 'bg-emerald-500'
-                          : s.status === 'amber'
-                            ? 'bg-amber-500'
-                            : 'bg-red-500'
-                      }`}
-                    />
-                    {s.status === 'green' ? 'Compliant' : s.status === 'amber' ? 'Review' : 'Action'}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <InteractiveDashboard
+      title="Active Project Dashboard"
+      subtitle="Multi-Site WHS Compliance"
+      tabs={[
+        { id: 'sites', label: 'All Sites', count: 5 },
+        { id: 'swms', label: 'SWMS Register', count: 51 },
+        { id: 'incidents', label: 'Incidents', count: 3 },
+      ]}
+      statusCounts={[
+        { label: 'Compliant', count: 3, color: 'green' },
+        { label: 'Review', count: 1, color: 'amber' },
+        { label: 'Action', count: 1, color: 'red' },
+      ]}
+      columns={[
+        { key: 'site', label: 'Site' },
+        { key: 'swms', label: 'SWMS', hideOnMobile: true },
+        { key: 'status', label: 'Status' },
+        { key: 'contractors', label: 'Contractors', hideOnMobile: true },
+      ]}
+      rows={[
+        {
+          id: 's1',
+          status: 'green',
+          cells: {
+            site: 'CBD Tower — Lvl 14',
+            swms: '12 active',
+            status: 'Compliant',
+            contractors: '34',
+          },
+          expandedContent: {
+            label: 'Site Details',
+            items: [
+              { key: 'Project Manager', value: 'Tom Richards' },
+              { key: 'WHS Score', value: '98%' },
+              { key: 'Open Incidents', value: '0' },
+              { key: 'Last Inspection', value: '02 Apr 2026' },
+            ],
+          },
+        },
+        {
+          id: 's2',
+          status: 'amber',
+          cells: {
+            site: 'Westfield Extension',
+            swms: '8 active',
+            status: 'Review',
+            contractors: '22',
+          },
+          expandedContent: {
+            label: 'Site Details — REVIEW NEEDED',
+            items: [
+              { key: 'Project Manager', value: 'Sarah Kim' },
+              { key: 'WHS Score', value: '84%' },
+              { key: 'Open Incidents', value: '1 under investigation' },
+              { key: 'Issue', value: 'SWMS-019 expired — renewal pending' },
+            ],
+          },
+        },
+        {
+          id: 's3',
+          status: 'green',
+          cells: {
+            site: 'Harbour Bridge Maint.',
+            swms: '6 active',
+            status: 'Compliant',
+            contractors: '15',
+          },
+          expandedContent: {
+            label: 'Site Details',
+            items: [
+              { key: 'Project Manager', value: 'David Chen' },
+              { key: 'WHS Score', value: '96%' },
+              { key: 'Open Incidents', value: '0' },
+              { key: 'Last Inspection', value: '28 Mar 2026' },
+            ],
+          },
+        },
+        {
+          id: 's4',
+          status: 'red',
+          cells: {
+            site: 'Olympic Park Stage 3',
+            swms: '15 active',
+            status: 'Action',
+            contractors: '48',
+          },
+          expandedContent: {
+            label: 'Site Details — ACTION REQUIRED',
+            items: [
+              { key: 'Project Manager', value: "Mike O'Sullivan" },
+              { key: 'WHS Score', value: '72%' },
+              { key: 'Open Incidents', value: '2 — 1 notifiable' },
+              {
+                key: 'Critical Issue',
+                value: 'SafeWork notification due in 18hrs',
+              },
+            ],
+          },
+        },
+        {
+          id: 's5',
+          status: 'green',
+          cells: {
+            site: 'Airport Terminal 2',
+            swms: '10 active',
+            status: 'Compliant',
+            contractors: '29',
+          },
+          expandedContent: {
+            label: 'Site Details',
+            items: [
+              { key: 'Project Manager', value: 'Alex Nguyen' },
+              { key: 'WHS Score', value: '94%' },
+              { key: 'Open Incidents', value: '0' },
+              { key: 'Last Inspection', value: '05 Apr 2026' },
+            ],
+          },
+        },
+      ]}
+      notifications={[
+        {
+          message: 'Olympic Park — SafeWork notification due in 18hrs',
+          time: '1 hour ago',
+          type: 'alert',
+        },
+        {
+          message: 'Westfield — SWMS-019 expired, renewal pending',
+          time: '6 hours ago',
+          type: 'alert',
+        },
+        {
+          message: 'CBD Tower — site inspection passed',
+          time: '2 days ago',
+          type: 'success',
+        },
+      ]}
+      exportLabel="Export Report"
+    />
   );
 }
 
@@ -115,7 +183,9 @@ function FeatureVisual({
 }) {
   return (
     <div className="p-5 space-y-3">
-      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</div>
+      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        {label}
+      </div>
       <div className="space-y-2">
         {rows.map((r) => (
           <div
@@ -160,7 +230,7 @@ export default function ConstructionComplianceContent() {
             </span>
           </>
         }
-        subheadline="SafeWork inspectors arrive unannounced. FormaOS keeps your SWMS current, contractor inductions verified, and incident notifications on track — across every active site. No scrambling. No spreadsheets."
+        subheadline="SafeWork inspectors arrive unannounced. FormaOS keeps SWMS current, inductions verified, and incidents tracked across every site."
         primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
         secondaryCta={{ label: 'See Construction Demo', href: '/contact' }}
         trustSignals={[
@@ -186,7 +256,8 @@ export default function ConstructionComplianceContent() {
           },
           {
             icon: <Users className="h-5 w-5" />,
-            title: 'Contractor inductions not verified — unqualified workers on site',
+            title:
+              'Contractor inductions not verified — unqualified workers on site',
             description:
               'Subcontractors arrive without valid inductions. Without a centralised register, principal contractors carry liability for unverified workers.',
           },
@@ -312,10 +383,26 @@ export default function ConstructionComplianceContent() {
               <FeatureVisual
                 label="SWMS Register — CBD Tower Lvl 14"
                 rows={[
-                  { k: 'SWMS-042: Working at Heights', v: 'v3 — Current', status: 'green' },
-                  { k: 'SWMS-041: Concrete Pouring', v: 'v2 — Current', status: 'green' },
-                  { k: 'SWMS-039: Demolition Phase B', v: 'v1 — Review Due', status: 'amber' },
-                  { k: 'SWMS-038: Electrical Rough-in', v: 'v2 — Expired', status: 'red' },
+                  {
+                    k: 'SWMS-042: Working at Heights',
+                    v: 'v3 — Current',
+                    status: 'green',
+                  },
+                  {
+                    k: 'SWMS-041: Concrete Pouring',
+                    v: 'v2 — Current',
+                    status: 'green',
+                  },
+                  {
+                    k: 'SWMS-039: Demolition Phase B',
+                    v: 'v1 — Review Due',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'SWMS-038: Electrical Rough-in',
+                    v: 'v2 — Expired',
+                    status: 'red',
+                  },
                 ]}
               />
             ),
@@ -334,10 +421,22 @@ export default function ConstructionComplianceContent() {
               <FeatureVisual
                 label="Contractor Verification — Westfield Extension"
                 rows={[
-                  { k: 'Murray Electrical Pty Ltd', v: 'Fully Verified', status: 'green' },
-                  { k: 'Pacific Plumbing', v: 'Insurance Expiring', status: 'amber' },
+                  {
+                    k: 'Murray Electrical Pty Ltd',
+                    v: 'Fully Verified',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Pacific Plumbing',
+                    v: 'Insurance Expiring',
+                    status: 'amber',
+                  },
                   { k: 'Skyline Scaffolding', v: 'Verified', status: 'green' },
-                  { k: 'Delta Demolition', v: 'Licence Expired', status: 'red' },
+                  {
+                    k: 'Delta Demolition',
+                    v: 'Licence Expired',
+                    status: 'red',
+                  },
                 ]}
               />
             ),
@@ -357,9 +456,21 @@ export default function ConstructionComplianceContent() {
                 label="Portfolio Compliance Overview"
                 rows={[
                   { k: 'CBD Tower', v: '98% compliant', status: 'green' },
-                  { k: 'Westfield Extension', v: '84% compliant', status: 'amber' },
-                  { k: 'Harbour Bridge Maint.', v: '96% compliant', status: 'green' },
-                  { k: 'Olympic Park Stage 3', v: '72% compliant', status: 'red' },
+                  {
+                    k: 'Westfield Extension',
+                    v: '84% compliant',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'Harbour Bridge Maint.',
+                    v: '96% compliant',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Olympic Park Stage 3',
+                    v: '72% compliant',
+                    status: 'red',
+                  },
                 ]}
               />
             ),
@@ -379,27 +490,35 @@ export default function ConstructionComplianceContent() {
                 <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Incident Pipeline
                 </div>
-                {['Reported', 'SafeWork Notified', 'Under Investigation', 'Corrective Action', 'Closed'].map(
-                  (stage, i) => (
-                    <div key={stage} className="flex items-center gap-3">
-                      <div
-                        className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
-                          i < 3
-                            ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                            : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
-                        }`}
-                      >
-                        {i + 1}
-                      </div>
-                      <span className={`text-xs ${i < 3 ? 'text-white' : 'text-slate-500'}`}>
-                        {stage}
-                      </span>
-                      {i < 3 && (
-                        <span className="text-[10px] text-emerald-500 ml-auto">Complete</span>
-                      )}
+                {[
+                  'Reported',
+                  'SafeWork Notified',
+                  'Under Investigation',
+                  'Corrective Action',
+                  'Closed',
+                ].map((stage, i) => (
+                  <div key={stage} className="flex items-center gap-3">
+                    <div
+                      className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
+                        i < 3
+                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                          : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
+                      }`}
+                    >
+                      {i + 1}
                     </div>
-                  )
-                )}
+                    <span
+                      className={`text-xs ${i < 3 ? 'text-white' : 'text-slate-500'}`}
+                    >
+                      {stage}
+                    </span>
+                    {i < 3 && (
+                      <span className="text-[10px] text-emerald-500 ml-auto">
+                        Complete
+                      </span>
+                    )}
+                  </div>
+                ))}
               </div>
             ),
           },
@@ -417,10 +536,26 @@ export default function ConstructionComplianceContent() {
               <FeatureVisual
                 label="High-Risk Work Licences"
                 rows={[
-                  { k: 'Tom Harris — Crane (C6)', v: 'Valid to Dec 2027', status: 'green' },
-                  { k: 'Sam Lee — Scaffolding (SB)', v: 'Expiring Jun 2026', status: 'amber' },
-                  { k: 'Alex Dunn — Rigging (RB)', v: 'Valid to Mar 2028', status: 'green' },
-                  { k: 'Chris Ward — Forklift (LF)', v: 'Expired Jan 2026', status: 'red' },
+                  {
+                    k: 'Tom Harris — Crane (C6)',
+                    v: 'Valid to Dec 2027',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Sam Lee — Scaffolding (SB)',
+                    v: 'Expiring Jun 2026',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'Alex Dunn — Rigging (RB)',
+                    v: 'Valid to Mar 2028',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Chris Ward — Forklift (LF)',
+                    v: 'Expired Jan 2026',
+                    status: 'red',
+                  },
                 ]}
               />
             ),
@@ -484,7 +619,8 @@ export default function ConstructionComplianceContent() {
               'FormaOS provides a multi-site compliance dashboard showing compliance status, incident counts, SWMS currency, and contractor verification rates across all your active construction sites. Principal contractors can see portfolio-wide compliance at a glance.',
           },
           {
-            question: 'How does FormaOS handle SafeWork incident notifications?',
+            question:
+              'How does FormaOS handle SafeWork incident notifications?',
             answer:
               'FormaOS tracks notifiable incidents with a 48-hour notification countdown timer. The incident pipeline moves from Reported → SafeWork Notified → Under Investigation → Corrective Action → Closed, with evidence attachment and audit trail at every stage.',
           },
@@ -501,7 +637,7 @@ export default function ConstructionComplianceContent() {
           {
             question: 'Does FormaOS cover state-specific WHS regulations?',
             answer:
-              'Yes. FormaOS includes state-specific WHS regulations for SafeWork NSW, WorkSafe VIC, Workplace Health and Safety QLD, SafeWork SA, and other state regulators. Each state\'s specific notification, licensing, and registration requirements are mapped.',
+              "Yes. FormaOS includes state-specific WHS regulations for SafeWork NSW, WorkSafe VIC, Workplace Health and Safety QLD, SafeWork SA, and other state regulators. Each state's specific notification, licensing, and registration requirements are mapped.",
           },
           {
             question: 'Is my data stored in Australia?',

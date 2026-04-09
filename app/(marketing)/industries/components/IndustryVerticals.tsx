@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
+import Link from 'next/link';
 import {
   Heart,
   Shield,
   TrendingUp,
   Building2,
   Users,
+  ArrowRight,
 } from 'lucide-react';
 import {
   motion,
@@ -32,6 +34,7 @@ const pulseColors: Record<string, string> = {
 const industries = [
   {
     icon: Heart,
+    href: '/ndis-providers',
     title: 'Disability and Aged Care',
     description:
       'Operationalize NDIS Practice Standards, Aged Care Quality Standards, safeguarding, reportable incident obligations, and NDIS Commission audit readiness - for providers where unannounced visits are real.',
@@ -54,6 +57,7 @@ const industries = [
   },
   {
     icon: Shield,
+    href: '/healthcare-compliance',
     title: 'Healthcare and Allied Health',
     description:
       'Manage AHPRA practitioner registration, NSQHS Standards accreditation, clinical governance, credential expiry, Privacy Act compliance, and adverse event tracking - continuously, not just before audits.',
@@ -76,6 +80,7 @@ const industries = [
   },
   {
     icon: TrendingUp,
+    href: '/financial-services-compliance',
     title: 'Financial Services',
     description:
       'Track ASIC, APRA, AUSTRAC, and AML/CTF regulatory obligations, risk controls, internal audit programs, and board-level compliance reporting - with named ownership at every level.',
@@ -98,6 +103,7 @@ const industries = [
   },
   {
     icon: Building2,
+    href: '/construction-compliance',
     title: 'Construction and Infrastructure',
     description:
       'Manage WHS Act safety systems, contractor compliance programs, incident reporting, SafeWork obligations, and multi-site regulatory audit readiness - with defensible evidence at every stage.',
@@ -120,6 +126,7 @@ const industries = [
   },
   {
     icon: Users,
+    href: '/childcare-compliance',
     title: 'Education and Childcare',
     description:
       'Operationalize ACECQA National Quality Framework compliance, staff credential governance, child safety policy adherence, and inspection readiness - with continuous evidence, not pre-visit scrambles.',
@@ -276,8 +283,17 @@ function IndustryCard({
             </div>
           </div>
 
+          {/* Learn more link */}
+          <Link
+            href={industry.href}
+            onClick={(e) => e.stopPropagation()}
+            className={`mt-4 inline-flex items-center gap-1.5 text-xs font-medium ${industry.textColor} hover:underline`}
+          >
+            Learn more <ArrowRight className="h-3 w-3" />
+          </Link>
+
           {/* Tap to flip back indicator */}
-          <div className="mt-4 flex items-center gap-1.5 text-[11px] text-gray-500/70 select-none">
+          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-gray-500/70 select-none">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 rotate-180">
               <path d="M9 18l6-6-6-6" />
             </svg>

@@ -13,30 +13,48 @@ import {
 } from 'lucide-react';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { VisualDivider } from '@/components/motion';
-import { IndustryHero } from '@/components/marketing/industry/IndustryHero';
-import { PainPointsGrid } from '@/components/marketing/industry/PainPointsGrid';
-import { FrameworkCoverage } from '@/components/marketing/industry/FrameworkCoverage';
-import { HowItWorks } from '@/components/marketing/industry/HowItWorks';
-import { IndustryFeatures } from '@/components/marketing/industry/IndustryFeatures';
-import { SocialProof } from '@/components/marketing/industry/SocialProof';
-import { IndustryCTA } from '@/components/marketing/industry/IndustryCTA';
-import { IndustryFAQ } from '@/components/marketing/industry/IndustryFAQ';
+import {
+  IndustryHero,
+  PainPointsGrid,
+  FrameworkCoverage,
+  HowItWorks,
+  IndustryFeatures,
+  SocialProof,
+  IndustryCTA,
+  IndustryFAQ,
+  InteractiveDashboard,
+} from '@/components/marketing/industry';
 
 /* ------------------------------------------------------------------ */
 /*  Feature visual helper                                              */
 /* ------------------------------------------------------------------ */
 
-function FeatureVisual({ label, rows }: { label: string; rows: { k: string; v: string; status?: string }[] }) {
+function FeatureVisual({
+  label,
+  rows,
+}: {
+  label: string;
+  rows: { k: string; v: string; status?: string }[];
+}) {
   return (
     <div className="p-5 space-y-3">
-      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</div>
+      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        {label}
+      </div>
       <div className="space-y-2">
         {rows.map((r) => (
-          <div key={r.k} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+          <div
+            key={r.k}
+            className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.02] border border-white/[0.04]"
+          >
             <span className="text-xs text-white">{r.k}</span>
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500">{r.v}</span>
-              {r.status && <span className={`h-2 w-2 rounded-full ${r.status === 'green' ? 'bg-emerald-500' : r.status === 'amber' ? 'bg-amber-500' : 'bg-red-500'}`} />}
+              {r.status && (
+                <span
+                  className={`h-2 w-2 rounded-full ${r.status === 'green' ? 'bg-emerald-500' : r.status === 'amber' ? 'bg-amber-500' : 'bg-red-500'}`}
+                />
+              )}
             </div>
           </div>
         ))}
@@ -46,57 +64,165 @@ function FeatureVisual({ label, rows }: { label: string; rows: { k: string; v: s
 }
 
 /* ------------------------------------------------------------------ */
-/*  Dashboard visual for hero                                          */
+/*  Interactive Dashboard visual for hero                               */
 /* ------------------------------------------------------------------ */
 
 function ObligationsRegisterVisual() {
-  const rows = [
-    { obligation: 'General conduct obligations', ref: 's912A(1)(a)', owner: 'Head of Compliance', status: 'mapped', due: '30 Jun 2026' },
-    { obligation: 'Financial resource requirements', ref: 's912A(1)(d)', owner: 'CFO', status: 'mapped', due: '31 Mar 2026' },
-    { obligation: 'Breach reporting — s912D', ref: 's912D', owner: 'Compliance Manager', status: 'amber', due: '15 Apr 2026' },
-    { obligation: 'AML/CTF Program — Part A', ref: 'AML/CTF Act s81', owner: 'MLRO', status: 'mapped', due: '30 Sep 2026' },
-    { obligation: 'CPS 230 — Critical operations', ref: 'CPS 230.28', owner: 'COO', status: 'unmapped', due: '01 Jul 2026' },
-    { obligation: 'IDR procedures', ref: 'RG 271.73', owner: 'Complaints Officer', status: 'mapped', due: '30 Jun 2026' },
-  ];
-
-  const statusStyles: Record<string, { dot: string; label: string }> = {
-    mapped: { dot: 'bg-emerald-500', label: 'Mapped' },
-    amber: { dot: 'bg-amber-500', label: 'At Risk' },
-    unmapped: { dot: 'bg-red-500', label: 'Unmapped' },
-  };
-
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]">
-        <span className="text-xs font-medium text-white/70 uppercase tracking-wider">Obligations Register</span>
-        <span className="text-[10px] text-slate-500">6 of 312 obligations shown</span>
-      </div>
-      {/* Column headings */}
-      <div className="grid grid-cols-[1fr_90px_120px_80px_90px] gap-2 px-5 py-2 border-b border-white/[0.04] text-[10px] text-slate-500 uppercase tracking-wider">
-        <span>Obligation</span>
-        <span>Ref</span>
-        <span>Owner</span>
-        <span>Status</span>
-        <span>Due</span>
-      </div>
-      {/* Rows */}
-      {rows.map((r) => (
-        <div
-          key={r.ref}
-          className="grid grid-cols-[1fr_90px_120px_80px_90px] gap-2 px-5 py-2.5 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.02] transition-colors"
-        >
-          <span className="text-xs text-white truncate">{r.obligation}</span>
-          <span className="text-[10px] text-slate-500 font-mono">{r.ref}</span>
-          <span className="text-[10px] text-slate-400 truncate">{r.owner}</span>
-          <div className="flex items-center gap-1.5">
-            <span className={`h-2 w-2 rounded-full ${statusStyles[r.status].dot}`} />
-            <span className="text-[10px] text-slate-400">{statusStyles[r.status].label}</span>
-          </div>
-          <span className="text-[10px] text-slate-500">{r.due}</span>
-        </div>
-      ))}
-    </div>
+    <InteractiveDashboard
+      title="AFS Licence Obligations"
+      subtitle="Obligations Register"
+      tabs={[
+        { id: 'all', label: 'All Obligations', count: 312 },
+        { id: 'breaches', label: 'Breach Register', count: 2 },
+        { id: 'board', label: 'Board Pack', count: 1 },
+      ]}
+      statusCounts={[
+        { label: 'Mapped', count: 4, color: 'green' },
+        { label: 'At Risk', count: 1, color: 'amber' },
+        { label: 'Unmapped', count: 1, color: 'red' },
+      ]}
+      columns={[
+        { key: 'obligation', label: 'Obligation' },
+        { key: 'ref', label: 'Ref', hideOnMobile: true },
+        { key: 'status', label: 'Status' },
+        { key: 'due', label: 'Due', hideOnMobile: true },
+      ]}
+      rows={[
+        {
+          id: 'o1',
+          status: 'green',
+          cells: {
+            obligation: 'General conduct obligations',
+            ref: 's912A(1)(a)',
+            status: 'Mapped',
+            due: '30 Jun 2026',
+          },
+          expandedContent: {
+            label: 'Obligation Details',
+            items: [
+              { key: 'Owner', value: 'Head of Compliance' },
+              { key: 'Regulator', value: 'ASIC' },
+              { key: 'Evidence Count', value: '12 documents attached' },
+              { key: 'Last Reviewed', value: '15 Mar 2026' },
+            ],
+          },
+        },
+        {
+          id: 'o2',
+          status: 'green',
+          cells: {
+            obligation: 'Financial resource requirements',
+            ref: 's912A(1)(d)',
+            status: 'Mapped',
+            due: '31 Mar 2026',
+          },
+          expandedContent: {
+            label: 'Obligation Details',
+            items: [
+              { key: 'Owner', value: 'CFO' },
+              { key: 'Regulator', value: 'ASIC' },
+              { key: 'Evidence Count', value: '8 documents attached' },
+              { key: 'Last Reviewed', value: '01 Mar 2026' },
+            ],
+          },
+        },
+        {
+          id: 'o3',
+          status: 'amber',
+          cells: {
+            obligation: 'Breach reporting — s912D',
+            ref: 's912D',
+            status: 'At Risk',
+            due: '15 Apr 2026',
+          },
+          expandedContent: {
+            label: 'Obligation Details — REVIEW',
+            items: [
+              { key: 'Owner', value: 'Compliance Manager' },
+              { key: 'Issue', value: 'Self-report deadline approaching' },
+              { key: 'Days Since Detection', value: '18 days' },
+              { key: 'Action', value: 'Report being prepared for lodgement' },
+            ],
+          },
+        },
+        {
+          id: 'o4',
+          status: 'green',
+          cells: {
+            obligation: 'AML/CTF Program — Part A',
+            ref: 'AML/CTF Act s81',
+            status: 'Mapped',
+            due: '30 Sep 2026',
+          },
+          expandedContent: {
+            label: 'Obligation Details',
+            items: [
+              { key: 'Owner', value: 'MLRO' },
+              { key: 'Regulator', value: 'AUSTRAC' },
+              { key: 'Annual Report Due', value: '30 Sep 2026' },
+              { key: 'Program Review', value: 'Completed Feb 2026' },
+            ],
+          },
+        },
+        {
+          id: 'o5',
+          status: 'red',
+          cells: {
+            obligation: 'CPS 230 — Critical operations',
+            ref: 'CPS 230.28',
+            status: 'Unmapped',
+            due: '01 Jul 2026',
+          },
+          expandedContent: {
+            label: 'Obligation Details — ACTION REQUIRED',
+            items: [
+              { key: 'Owner', value: 'COO (unassigned)' },
+              { key: 'Regulator', value: 'APRA' },
+              { key: 'Gap', value: 'No operational risk framework documented' },
+              { key: 'Deadline', value: 'CPS 230 enforcement from 1 Jul 2025' },
+            ],
+          },
+        },
+        {
+          id: 'o6',
+          status: 'green',
+          cells: {
+            obligation: 'IDR procedures',
+            ref: 'RG 271.73',
+            status: 'Mapped',
+            due: '30 Jun 2026',
+          },
+          expandedContent: {
+            label: 'Obligation Details',
+            items: [
+              { key: 'Owner', value: 'Complaints Officer' },
+              { key: 'Regulator', value: 'ASIC' },
+              { key: 'AFCA Membership', value: 'Active — Member #12345' },
+              { key: 'Last Reviewed', value: '20 Feb 2026' },
+            ],
+          },
+        },
+      ]}
+      notifications={[
+        {
+          message: 's912D breach report deadline in 6 days',
+          time: '3 hours ago',
+          type: 'alert',
+        },
+        {
+          message: 'CPS 230 critical operations — unmapped obligation',
+          time: '1 day ago',
+          type: 'alert',
+        },
+        {
+          message: 'AUSTRAC annual report on track',
+          time: '1 week ago',
+          type: 'success',
+        },
+      ]}
+      exportLabel="Board Pack"
+    />
   );
 }
 
@@ -118,8 +244,8 @@ export default function FinancialServicesContent() {
             </span>
           </>
         }
-        subheadline="ASIC s912A obligations, APRA CPS 230 operational risk requirements, and AUSTRAC AML/CTF programme duties — mapped to named owners with immutable evidence chains. FormaOS turns every licence condition into a governed workflow so nothing falls through the cracks."
-        primaryCta={{ label: 'Start Free Trial', href: '/signup' }}
+        subheadline="ASIC, APRA, and AUSTRAC obligations mapped to named owners with immutable evidence. Every licence condition becomes a governed workflow."
+        primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
         secondaryCta={{ label: 'Book a Demo', href: '/contact' }}
         trustSignals={[
           'AU-hosted infrastructure',
@@ -139,13 +265,15 @@ export default function FinancialServicesContent() {
         painPoints={[
           {
             icon: <AlertTriangle className="h-5 w-5" />,
-            title: 'AFS licence conditions not mapped to operational obligations',
+            title:
+              'AFS licence conditions not mapped to operational obligations',
             description:
               'Licence conditions sit in legal documents while day-to-day operations run independently. Gaps between what your licence requires and what your team actually does remain invisible until an ASIC review surfaces them.',
           },
           {
             icon: <FileWarning className="h-5 w-5" />,
-            title: 'Breach register not maintained — s912D self-reporting missed',
+            title:
+              'Breach register not maintained — s912D self-reporting missed',
             description:
               'Without a centralised breach register, reportable situations under s912D are identified late or not at all. Self-reporting obligations carry strict timeframes, and missed deadlines compound regulatory risk.',
           },
@@ -157,19 +285,22 @@ export default function FinancialServicesContent() {
           },
           {
             icon: <LayoutDashboard className="h-5 w-5" />,
-            title: 'Board unable to demonstrate oversight of compliance programme',
+            title:
+              'Board unable to demonstrate oversight of compliance programme',
             description:
               'Directors need to evidence active oversight of the compliance programme. Without structured board reporting, there is no documented trail showing the board received, questioned, and acted on compliance information.',
           },
           {
             icon: <Settings className="h-5 w-5" />,
-            title: 'APRA CPS 230 operational risk framework not operationalised',
+            title:
+              'APRA CPS 230 operational risk framework not operationalised',
             description:
               'CPS 230 requires identification of critical operations, tolerance settings, and business continuity testing. Many organisations have the policy but lack the operational systems to track and evidence compliance.',
           },
           {
             icon: <RefreshCw className="h-5 w-5" />,
-            title: 'Regulatory change management done manually with no tracking',
+            title:
+              'Regulatory change management done manually with no tracking',
             description:
               'When ASIC, APRA, or AUSTRAC issue new guidance or legislative instruments, changes are tracked via email threads and ad-hoc spreadsheets. There is no systematic way to assess impact, assign owners, or verify implementation.',
           },
@@ -277,10 +408,26 @@ export default function FinancialServicesContent() {
               <FeatureVisual
                 label="Obligations Register"
                 rows={[
-                  { k: 'General conduct — s912A(1)(a)', v: 'Head of Compliance', status: 'green' },
-                  { k: 'Financial resources — s912A(1)(d)', v: 'CFO', status: 'green' },
-                  { k: 'Breach reporting — s912D', v: 'Compliance Mgr', status: 'amber' },
-                  { k: 'CPS 230 — Critical operations', v: 'COO', status: 'red' },
+                  {
+                    k: 'General conduct — s912A(1)(a)',
+                    v: 'Head of Compliance',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Financial resources — s912A(1)(d)',
+                    v: 'CFO',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Breach reporting — s912D',
+                    v: 'Compliance Mgr',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'CPS 230 — Critical operations',
+                    v: 'COO',
+                    status: 'red',
+                  },
                 ]}
               />
             ),
@@ -300,10 +447,26 @@ export default function FinancialServicesContent() {
               <FeatureVisual
                 label="Breach Register"
                 rows={[
-                  { k: 'BR-2026-041 — Client money shortfall', v: '12 days', status: 'red' },
-                  { k: 'BR-2026-038 — Disclosure failure', v: '28 days', status: 'amber' },
-                  { k: 'BR-2026-035 — Training lapse', v: 'Resolved', status: 'green' },
-                  { k: 'BR-2026-029 — SOA deficiency', v: 'Resolved', status: 'green' },
+                  {
+                    k: 'BR-2026-041 — Client money shortfall',
+                    v: '12 days',
+                    status: 'red',
+                  },
+                  {
+                    k: 'BR-2026-038 — Disclosure failure',
+                    v: '28 days',
+                    status: 'amber',
+                  },
+                  {
+                    k: 'BR-2026-035 — Training lapse',
+                    v: 'Resolved',
+                    status: 'green',
+                  },
+                  {
+                    k: 'BR-2026-029 — SOA deficiency',
+                    v: 'Resolved',
+                    status: 'green',
+                  },
                 ]}
               />
             ),
@@ -323,10 +486,18 @@ export default function FinancialServicesContent() {
               <FeatureVisual
                 label="Board Reporting Pack"
                 rows={[
-                  { k: 'Overall compliance posture', v: '94%', status: 'green' },
+                  {
+                    k: 'Overall compliance posture',
+                    v: '94%',
+                    status: 'green',
+                  },
                   { k: 'Open breaches', v: '2 active', status: 'amber' },
                   { k: 'Overdue obligations', v: '0', status: 'green' },
-                  { k: 'Next regulatory deadline', v: '15 Apr 2026', status: 'amber' },
+                  {
+                    k: 'Next regulatory deadline',
+                    v: '15 Apr 2026',
+                    status: 'amber',
+                  },
                 ]}
               />
             ),
@@ -346,8 +517,16 @@ export default function FinancialServicesContent() {
               <FeatureVisual
                 label="AML/CTF Programme"
                 rows={[
-                  { k: 'Part A — Customer ID', v: '100% covered', status: 'green' },
-                  { k: 'Part B — CDD procedures', v: '96% covered', status: 'green' },
+                  {
+                    k: 'Part A — Customer ID',
+                    v: '100% covered',
+                    status: 'green',
+                  },
+                  {
+                    k: 'Part B — CDD procedures',
+                    v: '96% covered',
+                    status: 'green',
+                  },
                   { k: 'Annual report', v: 'Due 30 Sep', status: 'amber' },
                   { k: 'SMR log', v: '3 pending', status: 'amber' },
                 ]}
@@ -369,10 +548,26 @@ export default function FinancialServicesContent() {
               <FeatureVisual
                 label="AFCA Dispute Register"
                 rows={[
-                  { k: 'DR-2026-118 — Fee dispute', v: 'IDR — Day 14', status: 'green' },
-                  { k: 'DR-2026-112 — Advice complaint', v: 'AFCA escalated', status: 'red' },
-                  { k: 'DR-2026-105 — Service delay', v: 'Resolved', status: 'green' },
-                  { k: 'DR-2026-099 — Disclosure query', v: 'Resolved', status: 'green' },
+                  {
+                    k: 'DR-2026-118 — Fee dispute',
+                    v: 'IDR — Day 14',
+                    status: 'green',
+                  },
+                  {
+                    k: 'DR-2026-112 — Advice complaint',
+                    v: 'AFCA escalated',
+                    status: 'red',
+                  },
+                  {
+                    k: 'DR-2026-105 — Service delay',
+                    v: 'Resolved',
+                    status: 'green',
+                  },
+                  {
+                    k: 'DR-2026-099 — Disclosure query',
+                    v: 'Resolved',
+                    status: 'green',
+                  },
                 ]}
               />
             ),
@@ -434,7 +629,8 @@ export default function FinancialServicesContent() {
               'FormaOS includes pre-built obligation sets for key Regulatory Guides including RG 104 (AFS licence conditions), RG 132 (managed investment scheme compliance plans), and RG 259 (risk management systems for responsible entities). Obligations from each guide are mapped to named owners with evidence requirements and review schedules.',
           },
           {
-            question: 'How does FormaOS handle AUSTRAC AML/CTF programme requirements?',
+            question:
+              'How does FormaOS handle AUSTRAC AML/CTF programme requirements?',
             answer:
               'FormaOS maps the full AUSTRAC AML/CTF programme structure — Part A (customer identification) and Part B (customer due diligence) — to operational workflows. The platform tracks ongoing CDD obligations, suspicious matter reporting, threshold transaction reporting, and assembles evidence for the annual compliance report to AUSTRAC.',
           },
@@ -444,7 +640,8 @@ export default function FinancialServicesContent() {
               'Yes. The breach register includes a dedicated s912D workflow covering reportable situation classification, days-since-detection counters, self-reporting deadline alerts, root cause analysis, and remediation tracking. Every step is recorded with an immutable audit trail for regulatory review.',
           },
           {
-            question: 'Does FormaOS support APRA CPS 230 operational risk requirements?',
+            question:
+              'Does FormaOS support APRA CPS 230 operational risk requirements?',
             answer:
               'FormaOS includes a CPS 230 obligation framework covering critical operations identification, tolerance settings, business continuity planning, third-party risk management, and scenario testing. Each obligation is assigned to an owner with evidence requirements and scheduled review cycles.',
           },
