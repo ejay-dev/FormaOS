@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   description:
     'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',
   verification: {
-    google: 'REPLACE_WITH_GSC_VERIFICATION_CODE',
+    // GSC ownership verified via DNS (domain property covers all subdomains)
     other: {
       'msvalidate.01': 'CCE491B55A86CC8370EAF532D11BA68C',
     },
