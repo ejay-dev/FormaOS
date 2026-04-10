@@ -13,6 +13,7 @@ import { DeferredSection } from '../../components/shared';
 import { motion } from 'framer-motion';
 import { CompareHeroVisual } from './CompareHeroVisual';
 import { DotGrid } from '@/components/marketing/SectionBackgrounds';
+import { AppMockup } from '@/components/marketing/mockups';
 
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
@@ -243,6 +244,21 @@ export function ComparePageTemplate({
                 <span className="flex items-center gap-1.5"><Minus className="h-3 w-3 text-slate-600" /> Not available</span>
               </div>
             </div>
+          </ScrollReveal>
+        </section>
+      </DeferredSection>
+
+      <VisualDivider gradient={false} />
+
+      {/* FormaOS Obligations Register preview */}
+      <DeferredSection minHeight={500}>
+        <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+            <div className="text-center mb-8">
+              <h2 className="text-lg font-semibold text-white mb-2">See the difference in action</h2>
+              <p className="text-sm text-slate-400">The FormaOS Obligations Register — cross-framework, owner-assigned, evidence-linked.</p>
+            </div>
+            <AppMockup variant="compare" height="h-[420px]" />
           </ScrollReveal>
         </section>
       </DeferredSection>

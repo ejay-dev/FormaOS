@@ -678,32 +678,21 @@ export function ProductLiveDemo() {
   };
 
   return (
-    <div className="relative w-full h-full overflow-hidden rounded-2xl" style={{ background: 'linear-gradient(145deg, rgba(15,22,40,0.98) 0%, rgba(10,15,28,0.99) 100%)', border: '1px solid rgba(255,255,255,0.12)' }}>
-      {/* Glass highlight */}
-      <div className="absolute inset-0 pointer-events-none rounded-2xl" style={{ background: 'linear-gradient(170deg, rgba(255,255,255,0.04) 0%, transparent 18%)' }} />
+    <div className="relative w-full h-full overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-black/50 bg-[#0a0f1e]">
 
       <div className="absolute inset-0 flex flex-col overflow-hidden">
         {/* Browser chrome bar */}
-        <div className="flex items-center justify-between px-3 py-2.5 sm:px-5 sm:py-3 border-b border-white/[0.07] bg-white/[0.02] shrink-0">
-          <div className="flex items-center gap-4">
-            <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-              <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-              <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-            </div>
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06] min-w-[220px]">
-              <svg className="w-3 h-3 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" /></svg>
-              <span className="text-[11px] text-white/30 font-mono">app.formaos.com.au / {activeView}</span>
-            </div>
+        <div className="flex items-center gap-2 px-4 h-9 bg-[#060d1a] border-b border-white/[0.08] shrink-0">
+          <div className="flex gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+            <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+            <div className="w-3 h-3 rounded-full bg-[#28c840]" />
           </div>
-          <div className="flex items-center gap-3">
-            <div className="hidden min-[420px]:flex w-28 sm:w-32 h-7 rounded-lg bg-white/[0.03] border border-white/[0.06] items-center px-2.5 gap-1.5">
-              <Search className="w-3 h-3 text-white/20" />
-              <span className="text-[10px] text-white/20">Search…</span>
-            </div>
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-400/30 to-emerald-500/20 flex items-center justify-center ring-1 ring-white/[0.08]">
-              <span className="text-[10px] font-bold text-white/60">FO</span>
-            </div>
+          <div className="flex-1 mx-4 h-5 rounded bg-white/5 flex items-center px-3">
+            <span className="text-[10px] text-white/40 font-mono">app.formaos.com.au / {activeView}</span>
+          </div>
+          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+            <span className="text-[8px] font-bold text-white">FO</span>
           </div>
         </div>
 
@@ -711,17 +700,28 @@ export function ProductLiveDemo() {
         <div className="flex flex-1 min-h-0 overflow-hidden">
           {/* Sidebar — desktop only */}
           {!isMobile && (
-            <div className="w-[180px] shrink-0 border-r border-white/[0.06] bg-white/[0.015] py-4 px-3 flex flex-col overflow-hidden">
-              <div className="flex items-center gap-2.5 px-2 mb-5">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400/30 to-emerald-500/20 flex items-center justify-center ring-1 ring-teal-400/10">
-                  <span className="text-[10px] font-bold text-teal-400/90">FO</span>
-                </div>
-                <div>
-                  <div className="text-[11px] font-semibold text-white/65">FormaOS</div>
-                  <div className="text-[9px] text-white/25">Enterprise</div>
+            <div className="w-[180px] shrink-0 border-r border-white/[0.08] bg-[#060d1a] flex flex-col overflow-hidden">
+              {/* Logo */}
+              <div className="px-3 pt-3 pb-1">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
+                    <span className="text-[8px] font-bold text-white">FO</span>
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[11px] font-semibold text-white block leading-none">FormaOS</span>
+                    <span className="text-[7px] text-white/30 uppercase tracking-[0.08em] leading-none">
+                      Compliance Operating System
+                    </span>
+                  </div>
                 </div>
               </div>
-              <nav className="space-y-0.5" role="tablist" aria-label="App navigation">
+              {/* Industry badge */}
+              <div className="px-3 pb-2">
+                <span className="inline-flex items-center rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 text-[9px] font-medium text-cyan-400">
+                  NDIS Provider
+                </span>
+              </div>
+              <nav className="space-y-0.5 px-2" role="tablist" aria-label="App navigation">
                 {VIEWS.map((v, idx) => {
                   const VIcon = v.icon;
                   const isActive = activeView === v.id;
@@ -734,22 +734,24 @@ export function ProductLiveDemo() {
                       tabIndex={isActive ? 0 : -1}
                       onClick={() => switchView(v.id)}
                       onKeyDown={(e) => handleSidebarKeyDown(e, idx)}
-                      className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-left transition-all duration-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-teal-400/40 ${
+                      className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px] text-left transition-all duration-100 h-7 focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400/40 ${
                         isActive
-                          ? 'bg-teal-400/[0.10] text-teal-300 border border-teal-400/15 shadow-[0_0_12px_-3px_rgba(45,212,191,0.12)]'
-                          : 'text-white/35 hover:text-white/60 hover:bg-white/[0.04] border border-transparent'
+                          ? 'border-l-2 border-l-cyan-400 bg-cyan-500/10 text-cyan-300'
+                          : 'text-white/40 hover:text-white/60 hover:bg-white/[0.04]'
                       }`}
                     >
-                      <VIcon className={`w-4 h-4 ${isActive ? 'opacity-90' : 'opacity-60'}`} />
+                      <VIcon className={`w-3.5 h-3.5 ${isActive ? 'opacity-90' : 'opacity-60'}`} />
                       <span className="truncate">{v.label}</span>
                     </button>
                   );
                 })}
               </nav>
-              <div className="mt-auto pt-3 border-t border-white/[0.06]">
-                <div className="flex items-center gap-2 px-2 mt-1">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400/30 to-teal-400/20 shrink-0 ring-1 ring-white/[0.06]" />
-                  <span className="text-[11px] text-white/35 truncate">Nancy M.</span>
+              <div className="mt-auto pt-2 pb-3 px-3 border-t border-white/[0.06]">
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 shrink-0 flex items-center justify-center">
+                    <span className="text-[7px] font-bold text-white">NM</span>
+                  </div>
+                  <span className="text-[10px] text-white/40 truncate">Nancy M.</span>
                 </div>
               </div>
             </div>
@@ -781,22 +783,46 @@ export function ProductLiveDemo() {
             )}
 
             {/* Topbar */}
-            <div className="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-3.5 border-b border-white/[0.06] shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-                  <Icon className="w-4 h-4 text-white/50" />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white/90">{viewMeta.label}</div>
-                  <div className="text-[10px] text-white/25">Last synced 2 min ago</div>
-                </div>
+            <div className="flex items-center justify-between h-10 px-4 border-b border-white/[0.08] bg-[#0a0f1e] shrink-0">
+              <div className="flex items-center gap-1.5 text-[10px] text-white/40 font-mono">
+                <span className="uppercase tracking-wider">Organization</span>
+                <span className="text-white/20">&rsaquo;</span>
+                <span className="text-white/60">ejax.rehman</span>
+                <span className="text-white/20">&rsaquo;</span>
+                <span className="text-cyan-400/60 uppercase tracking-wider">Owner</span>
               </div>
-              {activeView === 'dashboard' && (
-                <div className="flex items-center gap-2">
-                  <button onClick={handleExport} className="px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[11px] text-white/35 hover:bg-white/[0.06] transition-colors">Export</button>
-                  <button onClick={handleNew} className="px-3 py-1.5 rounded-lg bg-teal-400/12 border border-teal-400/20 text-[11px] text-teal-300 hover:bg-teal-400/18 transition-colors">+ New</button>
+              <div className="flex items-center gap-2">
+                {activeView === 'dashboard' && (
+                  <>
+                    <button onClick={handleExport} className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.07] text-[10px] text-white/35 hover:bg-white/[0.06] transition-colors">Export</button>
+                    <button onClick={handleNew} className="px-2.5 py-1 rounded-lg bg-cyan-500/12 border border-cyan-500/20 text-[10px] text-cyan-300 hover:bg-cyan-500/18 transition-colors">+ New</button>
+                  </>
+                )}
+                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+                  <span className="text-[7px] font-bold text-white">E</span>
                 </div>
-              )}
+                <span className="rounded bg-amber-500/15 border border-amber-500/25 px-1.5 py-0.5 text-[9px] font-medium text-amber-400">14d left</span>
+              </div>
+            </div>
+            {/* Compliance strip */}
+            <div className="flex items-center gap-4 h-6 px-4 bg-[#080c18] border-b border-white/[0.06] shrink-0">
+              <span className="flex items-center gap-1.5 text-[10px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                <span className="text-white/40">0 Overdue</span>
+              </span>
+              <span className="flex items-center gap-1.5 text-[10px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                <span className="text-white/40">0 Due Soon</span>
+              </span>
+              <span className="flex items-center gap-1.5 text-[10px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span className="text-white/40">0 Completed</span>
+              </span>
+              <div className="flex-1" />
+              <span className="flex items-center gap-1.5 text-[9px] text-white/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Live
+              </span>
             </div>
 
             {/* Content */}

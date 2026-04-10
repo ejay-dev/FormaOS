@@ -36,6 +36,7 @@ function ConstructionDashboardVisual() {
     <InteractiveDashboard
       title="Active Project Dashboard"
       subtitle="Multi-Site WHS Compliance"
+      industry="Construction"
       tabs={[
         { id: 'sites', label: 'All Sites', count: 5 },
         { id: 'swms', label: 'SWMS Register', count: 51 },

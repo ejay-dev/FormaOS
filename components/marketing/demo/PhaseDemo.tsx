@@ -496,7 +496,7 @@ export default function PhaseDemo() {
 
           <div className={`relative rounded-2xl border border-white/[0.08] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.4)] transition-all duration-500 ${activeColors.glow}`}>
             {/* Browser chrome */}
-            <div className="flex items-center justify-between bg-[#0d1225] border-b border-white/[0.06] px-4 py-2">
+            <div className="flex items-center justify-between bg-[#060d1a] border-b border-white/[0.06] px-4 py-2">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1.5">
                   <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
@@ -532,7 +532,7 @@ export default function PhaseDemo() {
             {/* Mobile tab bar (simulation mode) */}
             {isSimulation && (
               <div
-                className="flex md:hidden overflow-x-auto no-scrollbar border-b border-white/[0.06] bg-[#0d1225]/80"
+                className="flex md:hidden overflow-x-auto no-scrollbar border-b border-white/[0.06] bg-[#060d1a]/80"
                 role="tablist"
                 aria-label="Phase demo navigation"
               >
@@ -562,7 +562,7 @@ export default function PhaseDemo() {
             <div className="flex h-[400px] sm:h-[460px] md:h-[500px] lg:h-[540px]">
               {/* Phase sidebar (desktop, simulation mode) */}
               {isSimulation && (
-                <div className="hidden md:flex md:w-[180px] lg:w-[200px] flex-shrink-0 flex-col bg-[#080c18] border-r border-white/[0.05] p-3">
+                <div className="hidden md:flex md:w-[180px] lg:w-[200px] flex-shrink-0 flex-col bg-[#060d1a] border-r border-white/[0.05] p-3">
                   <div className="text-[9px] text-muted-foreground/40 uppercase tracking-wider font-semibold mb-3 px-2">
                     Operating Model
                   </div>
@@ -631,7 +631,7 @@ export default function PhaseDemo() {
               )}
 
               {/* Screen content */}
-              <div className="relative flex-1 overflow-hidden bg-[#0b1022]">
+              <div className="relative flex-1 overflow-hidden bg-[#0a0f1e]">
                 {isSimulation ? (
                   <AnimatePresence mode="wait">
                     <motion.div
@@ -698,7 +698,7 @@ export default function PhaseDemo() {
 
             {/* Sandbox mode bottom bar */}
             {!isSimulation && (
-              <div className="flex items-center justify-between bg-[#0d1225] border-t border-white/[0.06] px-4 py-1.5">
+              <div className="flex items-center justify-between bg-[#060d1a] border-t border-white/[0.06] px-4 py-1.5">
                 <div className="flex items-center gap-1.5">
                   <MousePointer className="h-3 w-3 text-teal-400" />
                   <span className="text-[9px] text-muted-foreground/60">Click any item to explore — open tasks, evidence, and audit trails</span>

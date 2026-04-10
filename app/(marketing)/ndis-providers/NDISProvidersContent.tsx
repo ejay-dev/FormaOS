@@ -36,6 +36,7 @@ function NDISDashboardVisual() {
     <InteractiveDashboard
       title="NDIS Worker Check Status"
       subtitle="Worker Screening Register"
+      industry="NDIS Provider"
       tabs={[
         { id: 'all', label: 'All Workers', count: 5 },
         { id: 'expiring', label: 'Expiring Soon', count: 1 },

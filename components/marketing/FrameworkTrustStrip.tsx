@@ -18,13 +18,26 @@ interface FrameworkItem {
 }
 
 const FRAMEWORK_ITEMS: FrameworkItem[] = [
+  // Australian frameworks first
+  { icon: <Heart size={16} />, label: 'NDIS Practice Standards' },
+  { icon: <Heart size={16} />, label: 'Aged Care Quality Standards' },
+  { icon: <ShieldCheck size={16} />, label: 'NSQHS Standards' },
+  { icon: <Shield size={16} />, label: 'AHPRA' },
+  { icon: <CreditCard size={16} />, label: 'ASIC s912A' },
+  { icon: <Shield size={16} />, label: 'APRA CPS 230' },
+  { icon: <FileCheck size={16} />, label: 'AUSTRAC AML/CTF' },
+  { icon: <Layers size={16} />, label: 'ACECQA NQF' },
+  { icon: <ShieldCheck size={16} />, label: 'WHS Act' },
+  { icon: <Shield size={16} />, label: 'SafeWork Australia' },
+  // International frameworks
   { icon: <Shield size={16} />, label: 'ISO 27001' },
   { icon: <ShieldCheck size={16} />, label: 'SOC 2' },
-  { icon: <Layers size={16} />, label: 'NIST CSF' },
-  { icon: <Heart size={16} />, label: 'HIPAA' },
   { icon: <Globe size={16} />, label: 'GDPR' },
+  { icon: <Layers size={16} />, label: 'NIST CSF' },
   { icon: <CreditCard size={16} />, label: 'PCI DSS' },
+  { icon: <Heart size={16} />, label: 'HIPAA' },
   { icon: <FileCheck size={16} />, label: 'CIS Controls' },
+  { icon: <Shield size={16} />, label: 'ISO 9001' },
 ];
 
 const FrameworkBadge = memo(function FrameworkBadge({ icon, label }: FrameworkItem) {

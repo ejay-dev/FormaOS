@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TrendingUp, Minus, Activity, Shield } from 'lucide-react';
+import { TrendingUp, Minus, Activity, Shield, AlertTriangle, Clock, CheckCircle2 } from 'lucide-react';
 import { demoOrg, demoKpis, demoFrameworks, demoAuditLog } from '../demo-data';
 import { easing, duration } from '@/config/motion';
 
@@ -35,8 +35,8 @@ function ComplianceRing({ score }: { score: number }) {
         />
         <defs>
           <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#06b6d4" />
-            <stop offset="100%" stopColor="#3b82f6" />
+            <stop offset="0%" stopColor="#00d4fb" />
+            <stop offset="100%" stopColor="#a083ff" />
           </linearGradient>
         </defs>
       </svg>
@@ -49,30 +49,37 @@ function ComplianceRing({ score }: { score: number }) {
         >
           {score}%
         </motion.span>
-        <span className="text-[8px] text-muted-foreground/60 uppercase tracking-wider">Score</span>
+        <span className="text-[8px] text-white/30 uppercase tracking-wider">Score</span>
       </div>
     </div>
   );
 }
 
+const metricCardConfig = [
+  { label: 'Total Obligations', borderColor: 'border-l-cyan-500', icon: Shield, iconColor: 'text-cyan-400' },
+  { label: 'Overdue', borderColor: 'border-l-red-500', icon: AlertTriangle, iconColor: 'text-red-400' },
+  { label: 'Due This Week', borderColor: 'border-l-amber-500', icon: Clock, iconColor: 'text-amber-400' },
+  { label: 'Completed', borderColor: 'border-l-emerald-500', icon: CheckCircle2, iconColor: 'text-emerald-400' },
+];
+
 export default function DashboardScreen() {
   const trendIcons = {
     up: <TrendingUp className="h-2.5 w-2.5 text-emerald-400" />,
-    neutral: <Minus className="h-2.5 w-2.5 text-muted-foreground/60" />,
+    neutral: <Minus className="h-2.5 w-2.5 text-white/30" />,
   };
 
   return (
     <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
-      {/* Top row: Compliance Score + KPIs */}
+      {/* Top row: Compliance Score + Metric Cards */}
       <div className="flex gap-3">
         {/* Compliance Score Card */}
         <motion.div
           variants={fadeUp}
-          className="flex items-center gap-3 rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 flex-shrink-0"
+          className="flex items-center gap-3 rounded-xl border border-white/[0.08] bg-[#0d1428] p-3 flex-shrink-0"
         >
           <ComplianceRing score={demoOrg.complianceScore} />
           <div className="min-w-0">
-            <p className="text-[10px] text-muted-foreground/60 uppercase tracking-wider mb-0.5">Compliance</p>
+            <p className="text-[9px] text-white/30 uppercase tracking-wider mb-0.5">Compliance</p>
             <p className="text-xs font-semibold text-white">
               {demoOrg.compliantControls}/{demoOrg.totalControls} controls
             </p>
@@ -80,42 +87,47 @@ export default function DashboardScreen() {
           </div>
         </motion.div>
 
-        {/* KPI Cards */}
+        {/* KPI Cards with border-l-4 */}
         <div className="flex-1 grid grid-cols-2 gap-2 min-w-0">
-          {demoKpis.map((kpi) => (
-            <motion.div
-              key={kpi.label}
-              variants={fadeUp}
-              className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2.5"
-            >
-              <p className="text-[9px] text-muted-foreground/60 uppercase tracking-wider truncate">{kpi.label}</p>
-              <div className="flex items-baseline gap-1.5 mt-1">
-                <span className="text-lg font-bold text-white">{kpi.value}</span>
-                <span className="flex items-center gap-0.5 text-[9px]">
-                  {trendIcons[kpi.trend]}
-                  <span className={kpi.trend === 'up' ? 'text-emerald-400' : 'text-muted-foreground/60'}>
-                    {kpi.change}
+          {demoKpis.map((kpi, i) => {
+            const config = metricCardConfig[i];
+            const Icon = config?.icon ?? Shield;
+            return (
+              <motion.div
+                key={kpi.label}
+                variants={fadeUp}
+                className={`rounded-xl border border-white/[0.08] bg-[#0d1428] p-2.5 border-l-4 ${config?.borderColor ?? 'border-l-cyan-500'}`}
+              >
+                <Icon className={`h-3 w-3 ${config?.iconColor ?? 'text-cyan-400'} mb-0.5`} />
+                <p className="text-[8px] text-white/30 uppercase tracking-wider truncate">{kpi.label}</p>
+                <div className="flex items-baseline gap-1.5 mt-0.5">
+                  <span className="text-lg font-bold text-white font-mono">{kpi.value}</span>
+                  <span className="flex items-center gap-0.5 text-[9px]">
+                    {trendIcons[kpi.trend]}
+                    <span className={kpi.trend === 'up' ? 'text-emerald-400' : 'text-white/30'}>
+                      {kpi.change}
+                    </span>
                   </span>
-                </span>
-              </div>
-            </motion.div>
-          ))}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
       {/* Framework Health */}
       <motion.div
         variants={fadeUp}
-        className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3"
+        className="rounded-xl border border-white/[0.08] bg-[#0d1428] p-3"
       >
         <div className="flex items-center gap-1.5 mb-2.5">
           <Shield className="h-3 w-3 text-cyan-400" />
-          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Framework Health</span>
+          <span className="text-[9px] font-bold text-white/30 uppercase tracking-wider">Framework Health</span>
         </div>
         <div className="space-y-2">
           {demoFrameworks.map((fw, i) => (
             <div key={fw.name} className="flex items-center gap-2.5">
-              <span className="text-[10px] text-muted-foreground w-16 truncate">{fw.name}</span>
+              <span className="text-[10px] text-white/50 w-16 truncate">{fw.name}</span>
               <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
@@ -125,7 +137,7 @@ export default function DashboardScreen() {
                   transition={{ duration: 0.8, ease: easing.signature, delay: 0.4 + i * 0.1 }}
                 />
               </div>
-              <span className="text-[10px] font-medium text-foreground/70 w-8 text-right">{fw.score}%</span>
+              <span className="text-[10px] font-medium font-mono text-white/60 w-8 text-right">{fw.score}%</span>
             </div>
           ))}
         </div>
@@ -134,11 +146,11 @@ export default function DashboardScreen() {
       {/* Activity Feed */}
       <motion.div
         variants={fadeUp}
-        className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3"
+        className="rounded-xl border border-white/[0.08] bg-[#0d1428] p-3"
       >
         <div className="flex items-center gap-1.5 mb-2.5">
           <Activity className="h-3 w-3 text-cyan-400" />
-          <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Recent Activity</span>
+          <span className="text-[9px] font-bold text-white/30 uppercase tracking-wider">Recent Activity</span>
         </div>
         <div className="space-y-1.5">
           {demoAuditLog.slice(0, 5).map((entry) => {
@@ -147,19 +159,19 @@ export default function DashboardScreen() {
               evidence: 'text-blue-400',
               task: 'text-emerald-400',
               user: 'text-purple-400',
-              system: 'text-muted-foreground',
+              system: 'text-white/30',
               compliance: 'text-amber-400',
             }[entry.type];
 
             return (
               <div key={entry.id} className="flex items-center gap-2 text-[10px]">
-                <span className={`flex-shrink-0 ${typeColor}`}>●</span>
-                <span className="text-foreground/70 truncate flex-1">
+                <span className={`flex-shrink-0 ${typeColor}`}>&bull;</span>
+                <span className="text-white/60 truncate flex-1">
                   <span className="font-medium text-white">{entry.user}</span>{' '}
                   {entry.action.toLowerCase()}{' '}
-                  <span className="text-muted-foreground">{entry.target}</span>
+                  <span className="text-white/30">{entry.target}</span>
                 </span>
-                <span className="text-muted-foreground/40 flex-shrink-0 text-[9px]">{entry.timestamp}</span>
+                <span className="text-white/20 flex-shrink-0 text-[9px] font-mono">{entry.timestamp}</span>
               </div>
             );
           })}

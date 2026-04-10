@@ -76,6 +76,7 @@ function ObligationsRegisterVisual() {
     <InteractiveDashboard
       title="AFS Licence Obligations"
       subtitle="Obligations Register"
+      industry="Financial Services"
       tabs={[
         { id: 'all', label: 'All Obligations', count: 312 },
         { id: 'breaches', label: 'Breach Register', count: 2 },

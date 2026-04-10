@@ -36,6 +36,7 @@ function HealthcareDashboardVisual() {
     <InteractiveDashboard
       title="AHPRA Registration Status"
       subtitle="Practitioner Register"
+      industry="Healthcare"
       tabs={[
         { id: 'all', label: 'All Practitioners', count: 5 },
         { id: 'expiring', label: 'Credential Alerts', count: 2 },

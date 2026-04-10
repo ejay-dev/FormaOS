@@ -36,6 +36,7 @@ function NQFDashboardVisual() {
     <InteractiveDashboard
       title="NQF Quality Area Readiness"
       subtitle="ACECQA Compliance Dashboard"
+      industry="Childcare"
       tabs={[
         { id: 'areas', label: 'Quality Areas', count: 7 },
         { id: 'educators', label: 'Educator Credentials', count: 12 },
