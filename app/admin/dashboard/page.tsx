@@ -11,7 +11,14 @@ import {
   ArrowRight,
   ShieldAlert,
   Layers,
+  Heart,
+  BarChart3,
+  UserPlus,
 } from 'lucide-react';
+import {
+  getEngagementMetrics,
+  type EngagementMetrics,
+} from '@/lib/admin/engagement-metrics';
 
 type OverviewData = {
   totalOrgs: number;
@@ -69,7 +76,9 @@ function KPICard({
       className={`rounded-lg border bg-gradient-to-br ${colorMap[color]} p-6 space-y-2`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-muted-foreground">{label}</span>
+        <span className="text-sm font-medium text-muted-foreground">
+          {label}
+        </span>
         <Icon className="h-5 w-5 opacity-50" />
       </div>
       <div className="text-3xl font-bold text-foreground">{value}</div>
@@ -135,7 +144,9 @@ function RiskHeatmap({
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Layers className="h-5 w-5 text-cyan-200" />
-          <h2 className="text-lg font-semibold text-foreground">Risk Heatmap</h2>
+          <h2 className="text-lg font-semibold text-foreground">
+            Risk Heatmap
+          </h2>
         </div>
         <p className="text-xs text-muted-foreground">
           Cross-tenant pressure indicators (normalized)
@@ -153,7 +164,9 @@ function RiskHeatmap({
                 <p className="text-sm font-semibold text-foreground">
                   {cell.label}
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">{cell.metric}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {cell.metric}
+                </p>
               </div>
               <span
                 className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${riskGradeStyles(cell.grade)}`}
@@ -165,7 +178,9 @@ function RiskHeatmap({
               <div className="h-2 w-full rounded-full bg-muted">
                 <div
                   className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600"
-                  style={{ width: `${Math.min(Math.round(cell.ratio * 100), 100)}%` }}
+                  style={{
+                    width: `${Math.min(Math.round(cell.ratio * 100), 100)}%`,
+                  }}
                 />
               </div>
               <p className="mt-2 text-xs text-muted-foreground">
@@ -180,7 +195,11 @@ function RiskHeatmap({
 }
 
 export default async function AdminDashboard() {
-  const data: OverviewData | null = await fetchOverview();
+  const [data, engagement]: [OverviewData | null, EngagementMetrics | null] =
+    await Promise.all([
+      fetchOverview(),
+      getEngagementMetrics().catch(() => null),
+    ]);
 
   if (!data) {
     return (
@@ -271,7 +290,12 @@ export default async function AdminDashboard() {
     {
       key: 'trials',
       area: 'Trial Conversion Pressure',
-      status: trialRiskRatio > 0.45 ? 'critical' : trialRiskRatio > 0.2 ? 'watch' : 'healthy',
+      status:
+        trialRiskRatio > 0.45
+          ? 'critical'
+          : trialRiskRatio > 0.2
+            ? 'watch'
+            : 'healthy',
       note:
         data.trialsExpiring > 0
           ? `${data.trialsExpiring} of ${data.trialsActive} trials nearing expiry`
@@ -307,9 +331,13 @@ export default async function AdminDashboard() {
   const healthRatio =
     data.totalOrgs > 0 ? Math.min(data.failedPayments / data.totalOrgs, 1) : 0;
   const alertRatio =
-    data.totalOrgs > 0 ? Math.min(data.openSecurityAlerts / data.totalOrgs, 1) : 0;
+    data.totalOrgs > 0
+      ? Math.min(data.openSecurityAlerts / data.totalOrgs, 1)
+      : 0;
   const approvalRatio =
-    data.totalOrgs > 0 ? Math.min(data.pendingApprovals / data.totalOrgs, 1) : 0;
+    data.totalOrgs > 0
+      ? Math.min(data.pendingApprovals / data.totalOrgs, 1)
+      : 0;
   const riskHeatmapCells = [
     {
       key: 'revenue_pressure',
@@ -358,10 +386,16 @@ export default async function AdminDashboard() {
     {
       id: 'billing_intervention',
       label: 'Resolve billing incidents',
-      detail: 'Failed payments and subscription interventions requiring owner attention.',
+      detail:
+        'Failed payments and subscription interventions requiring owner attention.',
       count: data.failedPayments,
       href: '/admin/billing',
-      grade: data.failedPayments > 3 ? 'critical' : data.failedPayments > 0 ? 'high' : 'low',
+      grade:
+        data.failedPayments > 3
+          ? 'critical'
+          : data.failedPayments > 0
+            ? 'high'
+            : 'low',
       ownerLabel: 'Billing Operations',
       slaLabel: data.failedPayments > 0 ? '4h' : 'Weekly',
     },
@@ -371,7 +405,12 @@ export default async function AdminDashboard() {
       detail: 'Expiring trials needing guided conversion and procurement help.',
       count: data.trialsExpiring,
       href: '/admin/trials',
-      grade: data.trialsExpiring > 5 ? 'high' : data.trialsExpiring > 0 ? 'watch' : 'low',
+      grade:
+        data.trialsExpiring > 5
+          ? 'high'
+          : data.trialsExpiring > 0
+            ? 'watch'
+            : 'low',
       ownerLabel: 'Growth Operations',
       slaLabel: data.trialsExpiring > 0 ? '24h' : 'Weekly',
     },
@@ -383,7 +422,9 @@ export default async function AdminDashboard() {
       href: '/admin/security-live',
       grade:
         data.openSecurityAlerts > 0
-          ? riskGradeFromRatio(data.openSecurityAlerts / Math.max(data.totalOrgs, 1))
+          ? riskGradeFromRatio(
+              data.openSecurityAlerts / Math.max(data.totalOrgs, 1),
+            )
           : 'low',
       ownerLabel: 'Security Operations',
       slaLabel: 'Same day',
@@ -407,7 +448,9 @@ export default async function AdminDashboard() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Platform Overview</h1>
+        <h1 className="text-3xl font-bold text-foreground">
+          Platform Overview
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Real-time operational metrics for FormaOS
         </p>
@@ -500,6 +543,149 @@ export default async function AdminDashboard() {
         />
       </div>
 
+      {/* User Analytics, Engagement & Health sections */}
+      {engagement && (
+        <>
+          {/* Section A: User Analytics */}
+          <div className="rounded-lg border border-border bg-card p-6">
+            <div className="mb-4 flex items-center gap-2">
+              <Users className="h-5 w-5 text-blue-300" />
+              <h2 className="text-lg font-semibold text-foreground">
+                User Analytics
+              </h2>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              <KPICard
+                icon={Users}
+                label="Total Users"
+                value={engagement.totalUsers.toLocaleString()}
+                detail={`${engagement.activeUsersLast7d} active in last 7 days`}
+                color="blue"
+              />
+              <KPICard
+                icon={UserPlus}
+                label="New Users (7d)"
+                value={engagement.newUsersLast7d}
+                detail="Joined in the last week"
+                color="green"
+              />
+              <KPICard
+                icon={UserPlus}
+                label="New Users (30d)"
+                value={engagement.newUsersLast30d}
+                detail="Joined in the last month"
+                color="purple"
+              />
+            </div>
+          </div>
+
+          {/* Section B: Engagement Summary */}
+          <div className="rounded-lg border border-border bg-card p-6">
+            <div className="mb-4 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-purple-300" />
+              <h2 className="text-lg font-semibold text-foreground">
+                Engagement Summary
+              </h2>
+            </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-lg border bg-gradient-to-br from-purple-500/10 to-purple-600/5 border-purple-400/20 p-6 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Avg Engagement Score
+                  </span>
+                  <Activity className="h-5 w-5 opacity-50 text-purple-300" />
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-3xl font-bold text-foreground">
+                    {engagement.avgEngagementScore}
+                  </span>
+                  <div className="flex-1">
+                    <div className="h-2 w-full rounded-full bg-muted">
+                      <div
+                        className="h-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500"
+                        style={{
+                          width: `${Math.min(engagement.avgEngagementScore, 100)}%`,
+                        }}
+                      />
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      out of 100
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <KPICard
+                icon={TrendingUp}
+                label="High Engagement Orgs"
+                value={engagement.highEngagementOrgs}
+                detail="Score ≥ 70"
+                color="green"
+              />
+              <KPICard
+                icon={AlertTriangle}
+                label="Low Engagement Orgs"
+                value={engagement.lowEngagementOrgs}
+                detail="Score < 30 — may need intervention"
+                color="amber"
+              />
+            </div>
+          </div>
+
+          {/* Section C: Health Summary */}
+          <div className="rounded-lg border border-border bg-card p-6">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Heart className="h-5 w-5 text-emerald-300" />
+                <h2 className="text-lg font-semibold text-foreground">
+                  Health Summary
+                </h2>
+              </div>
+              <Link
+                href="/admin/customer-health"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 py-2 text-xs font-semibold text-foreground hover:bg-muted/60"
+              >
+                View Details
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+            <div className="grid gap-4 md:grid-cols-4">
+              <div className="rounded-lg border border-emerald-400/20 bg-emerald-500/10 p-5 space-y-1">
+                <span className="text-sm font-medium text-emerald-300">
+                  Healthy
+                </span>
+                <div className="text-3xl font-bold text-foreground">
+                  {engagement.healthDistribution.healthy}
+                </div>
+              </div>
+              <div className="rounded-lg border border-yellow-400/20 bg-yellow-500/10 p-5 space-y-1">
+                <span className="text-sm font-medium text-yellow-300">
+                  Warning
+                </span>
+                <div className="text-3xl font-bold text-foreground">
+                  {engagement.healthDistribution.warning}
+                </div>
+              </div>
+              <div className="rounded-lg border border-amber-400/20 bg-amber-500/10 p-5 space-y-1">
+                <span className="text-sm font-medium text-amber-300">
+                  At Risk
+                </span>
+                <div className="text-3xl font-bold text-foreground">
+                  {engagement.healthDistribution.atRisk}
+                </div>
+              </div>
+              <div className="rounded-lg border border-rose-400/20 bg-rose-500/10 p-5 space-y-1">
+                <span className="text-sm font-medium text-rose-300">
+                  Critical
+                </span>
+                <div className="text-3xl font-bold text-foreground">
+                  {engagement.healthDistribution.critical}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Charts Section */}
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-lg border border-border bg-card p-6">
@@ -572,7 +758,9 @@ export default async function AdminDashboard() {
 
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Enterprise</span>
+                <span className="text-sm text-muted-foreground">
+                  Enterprise
+                </span>
                 <span className="text-sm font-semibold text-foreground">
                   {enterpriseCount}
                 </span>
@@ -613,7 +801,9 @@ export default async function AdminDashboard() {
                   <p className="text-sm font-medium text-foreground">
                     {risk.label}
                   </p>
-                  <p className="text-xs text-muted-foreground">{risk.guidance}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {risk.guidance}
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span
@@ -751,7 +941,9 @@ export default async function AdminDashboard() {
               className="rounded-lg border border-border bg-card/60 p-4 transition-colors hover:bg-muted/70"
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-foreground">{item.area}</p>
+                <p className="text-sm font-semibold text-foreground">
+                  {item.area}
+                </p>
                 <span
                   className={`rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusStyles[item.status]}`}
                 >

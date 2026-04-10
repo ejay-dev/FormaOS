@@ -3,13 +3,9 @@
 import { useState } from 'react';
 import {
   X,
-  Clock,
   Link2,
-  MessageSquare,
   Play,
   Square,
-  Plus,
-  Trash2,
 } from 'lucide-react';
 
 interface Task {

@@ -21,10 +21,11 @@ const mockHandleAdminError = jest.fn(
 );
 const mockRequireAdminChangeControl = jest.fn(() => 'approved');
 jest.mock('@/app/api/admin/_helpers', () => ({
-  extractAdminReason: (...args: any[]) => mockExtractAdminReason(...args),
-  handleAdminError: (...args: any[]) => mockHandleAdminError(...args),
+  extractAdminReason: (...args: any[]) =>
+    (mockExtractAdminReason as any)(...args),
+  handleAdminError: (...args: any[]) => (mockHandleAdminError as any)(...args),
   requireAdminChangeControl: (...args: any[]) =>
-    mockRequireAdminChangeControl(...args),
+    (mockRequireAdminChangeControl as any)(...args),
 }));
 
 jest.mock('@/lib/monitoring/server-logger', () => ({
@@ -55,13 +56,17 @@ const mockResolveEnv = jest.fn(() => 'production');
 
 jest.mock('@/lib/control-plane/server', () => ({
   getAdminControlPlaneSnapshot: (...args: any[]) => mockGetSnapshot(...args),
-  upsertFeatureFlag: (...args: any[]) => mockUpsertFeatureFlag(...args),
-  upsertMarketingConfig: (...args: any[]) => mockUpsertMarketingConfig(...args),
-  upsertSystemSetting: (...args: any[]) => mockUpsertSystemSetting(...args),
-  enqueueAdminJob: (...args: any[]) => mockEnqueueAdminJob(...args),
-  runAdminJob: (...args: any[]) => mockRunAdminJob(...args),
-  writeControlPlaneAudit: (...args: any[]) => mockWriteAudit(...args),
-  resolveControlPlaneEnvironment: (...args: any[]) => mockResolveEnv(...args),
+  upsertFeatureFlag: (...args: any[]) =>
+    (mockUpsertFeatureFlag as any)(...args),
+  upsertMarketingConfig: (...args: any[]) =>
+    (mockUpsertMarketingConfig as any)(...args),
+  upsertSystemSetting: (...args: any[]) =>
+    (mockUpsertSystemSetting as any)(...args),
+  enqueueAdminJob: (...args: any[]) => (mockEnqueueAdminJob as any)(...args),
+  runAdminJob: (...args: any[]) => (mockRunAdminJob as any)(...args),
+  writeControlPlaneAudit: (...args: any[]) => (mockWriteAudit as any)(...args),
+  resolveControlPlaneEnvironment: (...args: any[]) =>
+    (mockResolveEnv as any)(...args),
 }));
 
 import { GET, POST } from '@/app/api/admin/control-plane/route';
@@ -111,7 +116,7 @@ describe('admin/control-plane route', () => {
 
     it('returns error on access failure', async () => {
       mockRequireAdminAccess.mockRejectedValue(new Error('forbidden'));
-      const res = await GET(makeRequest('GET'));
+      const _res = await GET(makeRequest('GET'));
       expect(mockHandleAdminError).toHaveBeenCalled();
     });
   });

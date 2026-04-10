@@ -22,7 +22,7 @@ interface Goal {
   current_value: string | null;
 }
 
-interface ProgressEntry {
+interface _ProgressEntry {
   id: string;
   value: string;
   notes: string | null;

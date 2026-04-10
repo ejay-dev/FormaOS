@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  Zap,
   ArrowRight,
   RefreshCw,
 } from 'lucide-react';

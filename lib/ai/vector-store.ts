@@ -7,7 +7,6 @@ import {
   generateEmbedding,
   generateEmbeddings,
   chunkDocument,
-  TextChunk,
 } from './embeddings';
 
 // ---- Types ----

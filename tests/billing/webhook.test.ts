@@ -6,8 +6,10 @@ import type Stripe from 'stripe';
 // Mocks — declared before imports that reference them
 // ---------------------------------------------------------------------------
 
-const mockConstructEvent = jest.fn<(body: string, sig: string, secret: string) => Stripe.Event>();
-const mockSubscriptionsRetrieve = jest.fn<() => Promise<Partial<Stripe.Subscription>>>();
+const mockConstructEvent =
+  jest.fn<(body: string, sig: string, secret: string) => Stripe.Event>();
+const mockSubscriptionsRetrieve =
+  jest.fn<() => Promise<Partial<Stripe.Subscription>>>();
 
 jest.mock('@/lib/billing/stripe', () => ({
   getStripeClient: () => ({
@@ -84,6 +86,10 @@ function mockSupabaseAdmin() {
       select: () => ({
         eq: () => ({
           maybeSingle: () => ({ data: null }),
+          limit: () => ({ data: null }),
+        }),
+        match: () => ({
+          maybeSingle: () => ({ data: null }),
         }),
       }),
     }),
@@ -96,7 +102,8 @@ jest.mock('@/lib/supabase/admin', () => ({
 
 const mockSyncEntitlements = jest.fn();
 jest.mock('@/lib/billing/entitlements', () => ({
-  syncEntitlementsForPlan: (...args: unknown[]) => mockSyncEntitlements(...args),
+  syncEntitlementsForPlan: (...args: unknown[]) =>
+    mockSyncEntitlements(...args),
 }));
 
 jest.mock('@/lib/monitoring/server-logger', () => ({
@@ -196,7 +203,9 @@ describe('POST /api/billing/webhook', () => {
 
       const res = await POST(req);
       expect(res.status).toBe(400);
-      expect(await res.json()).toEqual({ error: 'Missing webhook configuration' });
+      expect(await res.json()).toEqual({
+        error: 'Missing webhook configuration',
+      });
     });
 
     it('returns 400 when STRIPE_WEBHOOK_SECRET is not set', async () => {
@@ -204,7 +213,9 @@ describe('POST /api/billing/webhook', () => {
 
       const res = await POST(makeRequest());
       expect(res.status).toBe(400);
-      expect(await res.json()).toEqual({ error: 'Missing webhook configuration' });
+      expect(await res.json()).toEqual({
+        error: 'Missing webhook configuration',
+      });
     });
 
     it('returns 400 when signature verification fails', async () => {
@@ -234,7 +245,11 @@ describe('POST /api/billing/webhook', () => {
         error: { message: 'duplicate key' },
       } as { error: { message: string; code?: string } };
       // Patch the code field onto the error so the handler sees 23505
-      (dbOverrides['billing_events.insert'] as { error: Record<string, string> }).error.code = '23505';
+      (
+        dbOverrides['billing_events.insert'] as {
+          error: Record<string, string>;
+        }
+      ).error.code = '23505';
 
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
@@ -250,7 +265,11 @@ describe('POST /api/billing/webhook', () => {
       dbOverrides['billing_events.insert'] = {
         error: { message: 'permission denied' },
       } as { error: { message: string; code?: string } };
-      (dbOverrides['billing_events.insert'] as { error: Record<string, string> }).error.code = '42501';
+      (
+        dbOverrides['billing_events.insert'] as {
+          error: Record<string, string>;
+        }
+      ).error.code = '42501';
 
       const res = await POST(makeRequest());
       expect(res.status).toBe(500);
@@ -267,7 +286,9 @@ describe('POST /api/billing/webhook', () => {
 
       await POST(makeRequest());
 
-      const billingInsert = dbCalls.inserts.find((c) => c.table === 'billing_events');
+      const billingInsert = dbCalls.inserts.find(
+        (c) => c.table === 'billing_events',
+      );
       expect(billingInsert).toBeDefined();
       expect(billingInsert!.data).toEqual({
         id: 'evt_unique_123',
@@ -308,7 +329,9 @@ describe('POST /api/billing/webhook', () => {
       expect(mockSubscriptionsRetrieve).toHaveBeenCalledWith(SUB_ID);
 
       // Verify org_subscriptions upsert
-      const subUpsert = dbCalls.upserts.find((c) => c.table === 'org_subscriptions');
+      const subUpsert = dbCalls.upserts.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpsert).toBeDefined();
       expect(subUpsert!.data).toEqual(
         expect.objectContaining({
@@ -321,7 +344,9 @@ describe('POST /api/billing/webhook', () => {
       );
 
       // Verify organizations table updated
-      const orgUpdate = dbCalls.updates.find((c) => c.table === 'organizations');
+      const orgUpdate = dbCalls.updates.find(
+        (c) => c.table === 'organizations',
+      );
       expect(orgUpdate).toBeDefined();
       expect(orgUpdate!.data).toEqual({ plan_key: 'pro' });
 
@@ -332,7 +357,11 @@ describe('POST /api/billing/webhook', () => {
     it('sets trial fields when subscription status is trialing', async () => {
       const futureTs = Math.floor(Date.now() / 1000) + 86400 * 14;
       const session = {
-        metadata: { organization_id: ORG_ID, plan_key: 'basic', price_id: 'price_basic' },
+        metadata: {
+          organization_id: ORG_ID,
+          plan_key: 'basic',
+          price_id: 'price_basic',
+        },
         subscription: SUB_ID,
         customer: CUST_ID,
       };
@@ -349,7 +378,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpsert = dbCalls.upserts.find((c) => c.table === 'org_subscriptions');
+      const subUpsert = dbCalls.upserts.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpsert!.data).toEqual(
         expect.objectContaining({
           status: 'trialing',
@@ -372,7 +403,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      expect(dbCalls.upserts.filter((c) => c.table === 'org_subscriptions')).toHaveLength(0);
+      expect(
+        dbCalls.upserts.filter((c) => c.table === 'org_subscriptions'),
+      ).toHaveLength(0);
       expect(mockSyncEntitlements).not.toHaveBeenCalled();
     });
   });
@@ -390,7 +423,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpsert = dbCalls.upserts.find((c) => c.table === 'org_subscriptions');
+      const subUpsert = dbCalls.upserts.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpsert).toBeDefined();
       expect(subUpsert!.data).toEqual(
         expect.objectContaining({
@@ -418,7 +453,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpsert = dbCalls.upserts.find((c) => c.table === 'org_subscriptions');
+      const subUpsert = dbCalls.upserts.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpsert!.data).toEqual(
         expect.objectContaining({ plan_key: 'enterprise' }),
       );
@@ -437,7 +474,9 @@ describe('POST /api/billing/webhook', () => {
 
       await POST(makeRequest());
 
-      const subUpsert = dbCalls.upserts.find((c) => c.table === 'org_subscriptions');
+      const subUpsert = dbCalls.upserts.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpsert!.data).toEqual(
         expect.objectContaining({
           status: 'trialing',
@@ -454,7 +493,9 @@ describe('POST /api/billing/webhook', () => {
 
       await POST(makeRequest());
 
-      const subUpsert = dbCalls.upserts.find((c) => c.table === 'org_subscriptions');
+      const subUpsert = dbCalls.upserts.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpsert!.data).toEqual(
         expect.objectContaining({
           status: 'active',
@@ -478,7 +519,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpdate = dbCalls.updates.find((c) => c.table === 'org_subscriptions');
+      const subUpdate = dbCalls.updates.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpdate).toBeDefined();
       expect(subUpdate!.data).toEqual(
         expect.objectContaining({ status: 'canceled' }),
@@ -512,7 +555,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpdate = dbCalls.updates.find((c) => c.table === 'org_subscriptions');
+      const subUpdate = dbCalls.updates.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpdate).toBeDefined();
       expect(subUpdate!.data).toEqual(
         expect.objectContaining({
@@ -531,7 +576,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpdate = dbCalls.updates.find((c) => c.table === 'org_subscriptions');
+      const subUpdate = dbCalls.updates.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpdate).toBeDefined();
       expect(subUpdate!.filter).toEqual({ stripe_customer_id: CUST_ID });
     });
@@ -544,7 +591,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpdate = dbCalls.updates.find((c) => c.table === 'org_subscriptions');
+      const subUpdate = dbCalls.updates.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpdate!.filter).toEqual({ stripe_subscription_id: SUB_ID });
     });
 
@@ -556,7 +605,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      expect(dbCalls.updates.filter((c) => c.table === 'org_subscriptions')).toHaveLength(0);
+      expect(
+        dbCalls.updates.filter((c) => c.table === 'org_subscriptions'),
+      ).toHaveLength(0);
     });
   });
 
@@ -573,7 +624,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpdate = dbCalls.updates.find((c) => c.table === 'org_subscriptions');
+      const subUpdate = dbCalls.updates.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpdate).toBeDefined();
       expect(subUpdate!.data).toEqual(
         expect.objectContaining({ status: 'past_due' }),
@@ -588,7 +641,9 @@ describe('POST /api/billing/webhook', () => {
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
 
-      const subUpdate = dbCalls.updates.find((c) => c.table === 'org_subscriptions');
+      const subUpdate = dbCalls.updates.find(
+        (c) => c.table === 'org_subscriptions',
+      );
       expect(subUpdate!.filter).toEqual({ stripe_customer_id: CUST_ID });
     });
 
@@ -620,8 +675,12 @@ describe('POST /api/billing/webhook', () => {
       expect(await res.json()).toEqual({ received: true });
 
       // No subscription mutations
-      expect(dbCalls.upserts.filter((c) => c.table === 'org_subscriptions')).toHaveLength(0);
-      expect(dbCalls.updates.filter((c) => c.table === 'org_subscriptions')).toHaveLength(0);
+      expect(
+        dbCalls.upserts.filter((c) => c.table === 'org_subscriptions'),
+      ).toHaveLength(0);
+      expect(
+        dbCalls.updates.filter((c) => c.table === 'org_subscriptions'),
+      ).toHaveLength(0);
       expect(mockSyncEntitlements).not.toHaveBeenCalled();
     });
   });

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Calendar, AlertTriangle, Clock, Bell, FileText } from 'lucide-react';
+import { Calendar, Clock, Bell, FileText } from 'lucide-react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { RAGStatus } from '@/lib/stores/compliance';
@@ -46,23 +46,25 @@ const URGENCY_STYLES: Record<
 };
 
 /** Regulatory notification deadlines by industry */
-const REGULATORY_DEADLINES: Record<string, { label: string; hours: number }[]> =
-  {
-    ndis: [
-      { label: 'NDIS Reportable Incident', hours: 24 },
-      { label: 'SIRS Priority', hours: 24 },
-      { label: 'SIRS Standard', hours: 120 },
-    ],
-    aged_care: [
-      { label: 'SIRS Priority', hours: 24 },
-      { label: 'SIRS Standard', hours: 120 },
-    ],
-    healthcare: [
-      { label: 'SafeWork Serious Incident', hours: 48 },
-      { label: 'AHPRA Adverse Event', hours: 72 },
-    ],
-    childcare: [{ label: 'Mandatory Reporting', hours: 24 }],
-  };
+const _REGULATORY_DEADLINES: Record<
+  string,
+  { label: string; hours: number }[]
+> = {
+  ndis: [
+    { label: 'NDIS Reportable Incident', hours: 24 },
+    { label: 'SIRS Priority', hours: 24 },
+    { label: 'SIRS Standard', hours: 120 },
+  ],
+  aged_care: [
+    { label: 'SIRS Priority', hours: 24 },
+    { label: 'SIRS Standard', hours: 120 },
+  ],
+  healthcare: [
+    { label: 'SafeWork Serious Incident', hours: 48 },
+    { label: 'AHPRA Adverse Event', hours: 72 },
+  ],
+  childcare: [{ label: 'Mandatory Reporting', hours: 24 }],
+};
 
 function daysUntil(dateStr: string): number {
   const now = new Date();

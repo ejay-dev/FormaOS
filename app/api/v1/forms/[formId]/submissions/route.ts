@@ -5,8 +5,6 @@ import {
 import {
   listSubmissions,
   submitForm,
-  getSubmissionAnalytics,
-  reviewSubmission,
   FormValidationError,
 } from '@/lib/forms/submission-engine';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
@@ -27,7 +25,7 @@ export async function GET(
   const status = url.searchParams.get('status') ?? undefined;
   const dateFrom = url.searchParams.get('date_from') ?? undefined;
   const dateTo = url.searchParams.get('date_to') ?? undefined;
-  const { offset, limit, cursor: cursorRaw } = getPagination(request);
+  const { offset, limit, cursor: _cursorRaw } = getPagination(request);
 
   try {
     const result = await listSubmissions(

@@ -318,7 +318,7 @@ export async function generateAuditBundlePdf(
     frameworkId = null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic Supabase row shape
+   
   let evalRow: Record<string, any> | null = null;
   try {
     let evalQuery = supabase

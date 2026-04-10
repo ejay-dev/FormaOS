@@ -131,7 +131,11 @@ function GenericCountWidget({
   );
 }
 
-export function WidgetRenderer({ widgetKey, data, config }: WidgetProps) {
+export function WidgetRenderer({
+  widgetKey,
+  data,
+  config: _config,
+}: WidgetProps) {
   const icon = WIDGET_ICONS[widgetKey];
   const label = WIDGET_LABELS[widgetKey] || widgetKey;
 

@@ -195,9 +195,9 @@ describe('calculateAuditForecast', () => {
   });
 
   it('filters by target framework code', async () => {
-    let callIdx = 0;
+    let _callIdx = 0;
     getClient().from.mockImplementation(() => {
-      callIdx++;
+      _callIdx++;
       return createBuilder({ data: [], error: null });
     });
 

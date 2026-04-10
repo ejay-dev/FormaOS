@@ -311,7 +311,7 @@ describe('recoverUserWorkspace', () => {
   });
 
   function setupChain(tables: Record<string, any>) {
-    let callIdx = 0;
+    const _callIdx = 0;
     const tableBuilders: Record<string, ReturnType<typeof createBuilder>> = {};
     for (const [table, result] of Object.entries(tables)) {
       tableBuilders[table] = createBuilder(result);
@@ -345,7 +345,7 @@ describe('recoverUserWorkspace', () => {
   });
 
   it('returns /auth/signin when organization is missing', async () => {
-    let callNum = 0;
+    const _callNum = 0;
     getClient().from.mockImplementation((table: string) => {
       if (table === 'org_members')
         return createBuilder({

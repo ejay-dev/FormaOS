@@ -2,18 +2,10 @@
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import {
-  AlertTriangle,
-  Clock,
-  FileWarning,
-  ShieldAlert,
-  UserX,
   Bell,
   Shield,
-  Users,
   FileCheck,
   Stethoscope,
-  ClipboardList,
-  Activity,
   Monitor,
   FileText,
 } from 'lucide-react';

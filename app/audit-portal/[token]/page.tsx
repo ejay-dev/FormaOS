@@ -18,7 +18,7 @@ export default async function AuditPortalDashboard({
   await logAuditorActivity(tokenData.id, orgId, 'viewed_dashboard');
 
   // Fetch summary data
-  const [controlsResult, evidenceResult, tasksResult] = await Promise.all([
+  const [controlsResult, evidenceResult, _tasksResult] = await Promise.all([
     db
       .from('org_controls')
       .select('id, status', { count: 'exact' })

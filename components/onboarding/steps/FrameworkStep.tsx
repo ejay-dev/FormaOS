@@ -117,6 +117,7 @@ export function FrameworkStep({
       </div>
 
       <div className="space-y-2">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label className="text-sm font-medium">Available frameworks</label>
         <div className="space-y-2">
           {frameworks.map((fw) => (

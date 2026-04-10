@@ -94,10 +94,16 @@ export function ObligationStep({
 
       <div className="space-y-4">
         <div>
-          <label className="text-sm font-medium block mb-1">Title</label>
+          <label
+            htmlFor="obligation-title"
+            className="text-sm font-medium block mb-1"
+          >
+            Title
+          </label>
           <div className="relative">
             <ClipboardList className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
             <input
+              id="obligation-title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -109,8 +115,14 @@ export function ObligationStep({
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium block mb-1">Framework</label>
+            <label
+              htmlFor="obligation-framework"
+              className="text-sm font-medium block mb-1"
+            >
+              Framework
+            </label>
             <input
+              id="obligation-framework"
               type="text"
               value={framework}
               onChange={(e) => setFramework(e.target.value)}
@@ -119,8 +131,14 @@ export function ObligationStep({
             />
           </div>
           <div>
-            <label className="text-sm font-medium block mb-1">Due date</label>
+            <label
+              htmlFor="obligation-due-date"
+              className="text-sm font-medium block mb-1"
+            >
+              Due date
+            </label>
             <input
+              id="obligation-due-date"
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
@@ -131,10 +149,14 @@ export function ObligationStep({
         </div>
 
         <div>
-          <label className="text-sm font-medium block mb-1">
+          <label
+            htmlFor="obligation-owner"
+            className="text-sm font-medium block mb-1"
+          >
             Owner (optional)
           </label>
           <input
+            id="obligation-owner"
             type="text"
             value={owner}
             onChange={(e) => setOwner(e.target.value)}

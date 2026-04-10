@@ -226,7 +226,7 @@ describe('reindexEntityType', () => {
   });
 
   it('no-ops for unsupported entity type', async () => {
-    const client = mockClient();
+    const _client = mockClient();
     await reindexEntityType('org-1', 'report' as any);
     // report may or may not have an extractor — no error expected
   });

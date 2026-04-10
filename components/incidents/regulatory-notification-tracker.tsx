@@ -73,7 +73,7 @@ interface Props {
 
 export function RegulatoryNotificationTracker({
   notifications,
-  incidentId,
+  incidentId: _incidentId,
   onMarkSubmitted,
 }: Props) {
   const [submitDialog, setSubmitDialog] = useState<string | null>(null);

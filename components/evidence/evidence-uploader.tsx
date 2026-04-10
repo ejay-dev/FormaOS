@@ -29,7 +29,7 @@ type UploadFile = {
   error?: string;
 };
 
-export function EvidenceUploader({ orgId }: { orgId: string }) {
+export function EvidenceUploader({ orgId: _orgId }: { orgId: string }) {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -144,6 +144,14 @@ export function EvidenceUploader({ orgId }: { orgId: string }) {
     <div className="space-y-4" data-testid="evidence-uploader">
       {/* Drop zone */}
       <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragOver(true);

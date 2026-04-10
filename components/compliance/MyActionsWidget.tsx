@@ -5,11 +5,8 @@ import Link from 'next/link';
 import {
   CheckSquare,
   Clock,
-  AlertTriangle,
   ChevronDown,
-  User,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { Skeleton } from '@/components/ui/skeleton';
 

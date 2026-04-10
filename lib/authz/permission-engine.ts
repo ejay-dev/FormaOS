@@ -80,7 +80,7 @@ export async function getEffectivePermissions(
     .select('permissions')
     .in('id', customRoleIds);
 
-  let merged = structuredClone(basePerms) as PermissionMatrix;
+  const merged = structuredClone(basePerms) as PermissionMatrix;
   for (const role of customRoles || []) {
     const perms = role.permissions as Partial<PermissionMatrix>;
     for (const mod of PERMISSION_MODULES) {

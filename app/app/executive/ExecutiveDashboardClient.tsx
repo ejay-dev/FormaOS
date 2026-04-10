@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-  LayoutDashboard,
   TrendingUp,
   Shield,
   Zap,
@@ -54,7 +53,7 @@ function severityLabel(severity: CommandSeverity) {
   }
 }
 
-function severityStyles(severity: CommandSeverity) {
+function _severityStyles(severity: CommandSeverity) {
   switch (severity) {
     case 'critical':
       return 'border-rose-400/30 bg-rose-500/10 text-rose-200';
@@ -398,25 +397,33 @@ export function ExecutiveDashboardClient({
               </h4>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Success Rate</span>
+                  <span className="text-sm text-muted-foreground">
+                    Success Rate
+                  </span>
                   <span className="text-sm font-semibold text-emerald-500">
                     {data.automationMetrics?.successRate ?? 0}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Auto-Completed</span>
+                  <span className="text-sm text-muted-foreground">
+                    Auto-Completed
+                  </span>
                   <span className="text-sm font-semibold">
                     {data.automationMetrics?.taskAutoCompletionRate ?? 0}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Avg Resolution</span>
+                  <span className="text-sm text-muted-foreground">
+                    Avg Resolution
+                  </span>
                   <span className="text-sm font-mono font-semibold">
                     {data.automationMetrics?.averageResolutionTime ?? 0}d
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Monthly Triggers</span>
+                  <span className="text-sm text-muted-foreground">
+                    Monthly Triggers
+                  </span>
                   <span className="text-sm font-mono font-semibold">
                     {data.automationMetrics?.triggersThisMonth ?? 0}
                   </span>

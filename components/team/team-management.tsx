@@ -51,6 +51,14 @@ function TeamNode({
   return (
     <div>
       <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelect(team.id);
+          }
+        }}
         className={`flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-muted/50 rounded ${
           selectedId === team.id
             ? 'bg-primary/10 border-l-2 border-primary'

@@ -20,12 +20,12 @@ export default async function NdisClaimingPage() {
 
   // Get summary stats
   const now = new Date();
-  const periodStart = new Date(
+  const _periodStart = new Date(
     now.getFullYear(),
     now.getMonth(),
     1,
   ).toISOString();
-  const periodEnd = new Date(
+  const _periodEnd = new Date(
     now.getFullYear(),
     now.getMonth() + 1,
     0,

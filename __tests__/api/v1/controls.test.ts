@@ -51,7 +51,7 @@ function createBuilder(
 // ── API key middleware mock ───────────────────────────────────────────────────
 
 const mockDb = { from: jest.fn(() => createBuilder()) };
-const mockContext = {
+const _mockContext = {
   orgId: 'org-1',
   db: mockDb,
   apiKey: { id: 'key-1', organization_id: 'org-1' },
@@ -207,7 +207,7 @@ describe('GET /api/v1/controls', () => {
   it('handles empty controls list', async () => {
     const {
       authenticateV1Request,
-      jsonWithContext,
+      jsonWithContext: _jsonWithContext,
     } = require('@/lib/api-keys/middleware');
 
     const freshDb = {

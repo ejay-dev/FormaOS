@@ -46,7 +46,7 @@ export function buildIlikePattern(value: string): string {
   return `%${sanitizeLikeQuery(value)}%`;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase query builder chain
+ 
 type FilterBuilder = any;
 
 export async function countRows(

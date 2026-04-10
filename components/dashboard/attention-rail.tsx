@@ -3,16 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  Users,
   AlertCircle,
   CheckCircle2,
   CheckSquare,
   ArrowRight,
   AlertTriangle,
   Shield,
-  FileText,
   Clock,
-  type LucideIcon,
 } from 'lucide-react';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 

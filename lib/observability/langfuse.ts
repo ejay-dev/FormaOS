@@ -43,7 +43,7 @@ export function createLangfuseSpanProcessor(): LangfuseSpanProcessor | null {
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic wrapper requires broad function signature for langfuse observe()
+ 
 export function observeServerFn<T extends (...args: unknown[]) => unknown>(
   fn: T,
   options?: ObserveOptions,

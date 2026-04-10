@@ -1,13 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  GripVertical,
-  User,
-  Calendar,
-  AlertTriangle,
-  Link2,
-} from 'lucide-react';
+import { GripVertical, User, Calendar, AlertTriangle } from 'lucide-react';
 
 interface Task {
   id: string;
@@ -79,6 +73,13 @@ export function KanbanBoard({ columns, onMoveTask, onSelectTask }: Props) {
       {COLUMN_CONFIG.map((col) => (
         <div
           key={col.key}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+            }
+          }}
           className={`flex-shrink-0 w-72 rounded-lg border border-border bg-card border-t-4 ${col.color} ${
             dragOverColumn === col.key
               ? 'ring-2 ring-primary/50 bg-primary/5'
@@ -100,6 +101,14 @@ export function KanbanBoard({ columns, onMoveTask, onSelectTask }: Props) {
             {(columns[col.key] || []).map((task) => (
               <div
                 key={task.id}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSelectTask(task);
+                  }
+                }}
                 draggable
                 onDragStart={(e) => handleDragStart(e, task.id)}
                 onClick={() => onSelectTask(task)}

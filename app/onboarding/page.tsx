@@ -41,8 +41,10 @@ import {
 } from '@/lib/automation/integration';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
+import { OnboardingStepTracker } from '@/components/onboarding/onboarding-step-tracker';
 import { logActivity as logProductActivity } from '@/lib/activity/feed';
 import { authLogger } from '@/lib/observability/structured-logger';
+import { trackActivation } from '@/lib/analytics/activation-telemetry';
 
 // Force dynamic rendering - this page uses cookies() for auth
 export const dynamic = 'force-dynamic';
@@ -738,6 +740,11 @@ async function completeFirstAction(formData: FormData) {
       console.warn('[onboarding] compliance score update failed', error);
     }
 
+    trackActivation('onboarding_completed', {
+      industry: orgRecord?.industry ?? undefined,
+      role: undefined,
+    });
+
     const { data: subscription } = await supabase
       .from('org_subscriptions')
       .select('status, current_period_end, trial_expires_at')
@@ -849,6 +856,7 @@ export default async function OnboardingPage({
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] font-sans">
       <EnterpriseTrustStrip surface="onboarding" />
+      <OnboardingStepTracker step={safeStep} totalSteps={TOTAL_STEPS} />
       <div className="flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-2xl">
           <div className="bg-white/5 rounded-[2rem] p-6 sm:p-8 md:p-10 shadow-2xl border border-white/10 relative overflow-hidden">

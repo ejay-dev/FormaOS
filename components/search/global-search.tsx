@@ -18,7 +18,6 @@ import {
   Award,
   Clock,
   ArrowRight,
-  Bookmark,
 } from 'lucide-react';
 
 type SearchResult = {
@@ -198,6 +197,14 @@ export function GlobalSearch() {
     >
       {/* Backdrop */}
       <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setOpen(false);
+          }
+        }}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={() => setOpen(false)}
       />

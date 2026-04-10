@@ -160,10 +160,14 @@ export function BulkOperations({ orgs }: { orgs: Org[] }) {
           </h3>
           {selectedOp === 'extend_trials' && (
             <div className="mb-3">
-              <label className="text-sm text-muted-foreground">
+              <label
+                htmlFor="bulk-extra-days"
+                className="text-sm text-muted-foreground"
+              >
                 Extra days:
               </label>
               <input
+                id="bulk-extra-days"
                 type="number"
                 min={1}
                 max={90}

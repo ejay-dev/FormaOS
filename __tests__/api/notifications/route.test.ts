@@ -6,14 +6,14 @@
 
 jest.mock('server-only', () => ({}));
 
-const mockSelect = jest.fn();
-const mockEq = jest.fn();
-const mockIs = jest.fn();
-const mockIn = jest.fn();
-const mockLt = jest.fn();
-const mockOrder = jest.fn();
-const mockLimit = jest.fn();
-const mockUpdate = jest.fn();
+const _mockSelect = jest.fn();
+const _mockEq = jest.fn();
+const _mockIs = jest.fn();
+const _mockIn = jest.fn();
+const _mockLt = jest.fn();
+const _mockOrder = jest.fn();
+const _mockLimit = jest.fn();
+const _mockUpdate = jest.fn();
 
 function createBuilder(result: any = { data: null, error: null }) {
   const b: Record<string, any> = {};
@@ -87,7 +87,7 @@ jest.mock('@/lib/notifications/server', () => ({
     if (!val) return null;
     return { createdAt: '2024-01-01T00:00:00Z' };
   }),
-  encodeCursor: jest.fn((item: any) => 'cursor-encoded'),
+  encodeCursor: jest.fn((_item: any) => 'cursor-encoded'),
   requireNotificationContext: jest.fn(async (orgId: string | null) => ({
     supabase: { from: jest.fn(() => queryBuilder) },
     orgId: orgId ?? 'org-1',

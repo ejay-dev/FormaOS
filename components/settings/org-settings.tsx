@@ -25,7 +25,10 @@ export function BrandingEditor({
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
+          <label
+            htmlFor="org-primary-color"
+            className="block text-xs font-medium text-muted-foreground mb-1"
+          >
             <Palette className="h-3 w-3 inline mr-1" /> Primary Color
           </label>
           <div className="flex gap-2">
@@ -38,6 +41,7 @@ export function BrandingEditor({
               className="h-9 w-12 border border-border rounded cursor-pointer"
             />
             <input
+              id="org-primary-color"
               type="text"
               value={form.primary_color || '#6366f1'}
               onChange={(e) =>
@@ -48,7 +52,10 @@ export function BrandingEditor({
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
+          <label
+            htmlFor="org-secondary-color"
+            className="block text-xs font-medium text-muted-foreground mb-1"
+          >
             Secondary Color
           </label>
           <div className="flex gap-2">
@@ -61,6 +68,7 @@ export function BrandingEditor({
               className="h-9 w-12 border border-border rounded cursor-pointer"
             />
             <input
+              id="org-secondary-color"
               type="text"
               value={form.secondary_color || '#8b5cf6'}
               onChange={(e) =>
@@ -73,10 +81,14 @@ export function BrandingEditor({
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-muted-foreground mb-1">
+        <label
+          htmlFor="org-logo-url"
+          className="block text-xs font-medium text-muted-foreground mb-1"
+        >
           <Image className="h-3 w-3 inline mr-1" /> Logo URL
         </label>
         <input
+          id="org-logo-url"
           type="url"
           value={form.logo_url || ''}
           onChange={(e) => setForm((p) => ({ ...p, logo_url: e.target.value }))}
@@ -86,10 +98,14 @@ export function BrandingEditor({
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-muted-foreground mb-1">
+        <label
+          htmlFor="org-custom-domain"
+          className="block text-xs font-medium text-muted-foreground mb-1"
+        >
           <Globe className="h-3 w-3 inline mr-1" /> Custom Domain
         </label>
         <input
+          id="org-custom-domain"
           type="text"
           value={form.custom_domain || ''}
           onChange={(e) =>
@@ -101,10 +117,14 @@ export function BrandingEditor({
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-muted-foreground mb-1">
+        <label
+          htmlFor="org-login-message"
+          className="block text-xs font-medium text-muted-foreground mb-1"
+        >
           Login Page Message
         </label>
         <textarea
+          id="org-login-message"
           value={form.login_message || ''}
           onChange={(e) =>
             setForm((p) => ({ ...p, login_message: e.target.value }))
@@ -116,10 +136,14 @@ export function BrandingEditor({
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-muted-foreground mb-1">
+        <label
+          htmlFor="org-email-footer"
+          className="block text-xs font-medium text-muted-foreground mb-1"
+        >
           <Mail className="h-3 w-3 inline mr-1" /> Email Footer
         </label>
         <input
+          id="org-email-footer"
           type="text"
           value={form.email_footer || ''}
           onChange={(e) =>

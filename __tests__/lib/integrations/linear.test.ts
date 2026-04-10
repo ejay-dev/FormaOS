@@ -87,7 +87,7 @@ describe('linear integration branches', () => {
       ];
       callIdx = 0;
       // Reset for second createClient call
-      const syncLogBuilder = createBuilder(null);
+      const _syncLogBuilder = createBuilder(null);
 
       mockLinearFetch.mockResolvedValue({
         ok: true,

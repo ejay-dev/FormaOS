@@ -34,7 +34,7 @@ type AuditSupabaseClient = Awaited<
   ReturnType<typeof createSupabaseServerClient>
 >;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table/select wrapper
+ 
 async function safeSelect(
   supabase: AuditSupabaseClient,
   table: string,

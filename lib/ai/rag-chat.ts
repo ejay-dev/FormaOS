@@ -3,8 +3,7 @@
  */
 
 import { SupabaseClient } from '@supabase/supabase-js';
-import { similaritySearch, SearchResult, SourceType } from './vector-store';
-import { trackUsage } from './usage-meter';
+import { similaritySearch, SourceType } from './vector-store';
 
 // ---- Types ----
 
@@ -21,7 +20,7 @@ export interface RAGSource {
   similarity: number;
 }
 
-interface ChatMessage {
+interface _ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }

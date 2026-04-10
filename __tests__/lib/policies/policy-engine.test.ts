@@ -30,7 +30,6 @@ import {
   recordApprovalDecision,
   publishVersion,
   acknowledgePolicy,
-  getAcknowledgmentStatus,
   getPoliciesDueForReview,
   scheduleReview,
 } from '@/lib/policies/policy-engine';

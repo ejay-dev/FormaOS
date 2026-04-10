@@ -103,7 +103,7 @@ export async function provisionFrameworkControls(
       .from('compliance_controls')
       .select('id, code, title, description, risk_weight, framework_control_id')
       .eq('framework_id', complianceFramework.id);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic Supabase select
+     
     complianceControls = (data ?? []).map(
       (control: {
         risk_weight?: number;
@@ -154,7 +154,7 @@ export async function provisionFrameworkControls(
         .in('id', frameworkControlIds)
     : { data: [] };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase join shape
+   
   const frameworkControlById = new Map(
     (frameworkControls ?? []).map(
       (control: { id: string; [key: string]: unknown }) => [

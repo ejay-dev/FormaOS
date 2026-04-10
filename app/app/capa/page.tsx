@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Clock,
   Wrench,
-  Filter,
   Plus,
 } from 'lucide-react';
 

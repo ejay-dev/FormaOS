@@ -4,13 +4,13 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getStripeClient,
   resolvePlanKeyFromPriceId,
-
 } from '@/lib/billing/stripe';
 
 const log = routeLog('/api/billing/webhook');
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { resolvePlanKey } from '@/lib/plans';
+import { PLAN_CATALOG, resolvePlanKey } from '@/lib/plans';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
+import { sendBillingEmail } from '@/lib/email/billing-emails';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (error) {
-    log.error({ err: error }, "Stripe webhook signature error:");
+    log.error({ err: error }, 'Stripe webhook signature error:');
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
@@ -47,16 +47,21 @@ export async function POST(request: Request) {
 
   // Idempotency: persist the Stripe event id before side effects.
   // If it already exists, we treat this delivery as a duplicate and no-op.
-  const { error: insertEventError } = await admin.from('billing_events').insert({
-    id: event.id,
-    event_type: event.type,
-  });
+  const { error: insertEventError } = await admin
+    .from('billing_events')
+    .insert({
+      id: event.id,
+      event_type: event.type,
+    });
 
   if (insertEventError) {
     if (insertEventError.code === '23505') {
       return NextResponse.json({ received: true });
     }
-    log.error({ err: insertEventError.message, }, "[billing/webhook] billing_events insert failed:");
+    log.error(
+      { err: insertEventError.message },
+      '[billing/webhook] billing_events insert failed:',
+    );
     return NextResponse.json(
       { error: 'Webhook persistence failed' },
       { status: 500 },
@@ -124,7 +129,10 @@ export async function POST(request: Request) {
           updated_at: new Date().toISOString(),
         });
       if (subUpsertErr) {
-        log.error({ err: subUpsertErr.message, }, "[billing/webhook] org_subscriptions upsert failed:");
+        log.error(
+          { err: subUpsertErr.message },
+          '[billing/webhook] org_subscriptions upsert failed:',
+        );
         throw subUpsertErr;
       }
 
@@ -133,7 +141,10 @@ export async function POST(request: Request) {
         .update({ plan_key: planKey })
         .eq('id', targetOrgId);
       if (orgUpdateErr) {
-        log.error({ err: orgUpdateErr.message, }, "[billing/webhook] organizations plan_key update failed:");
+        log.error(
+          { err: orgUpdateErr.message },
+          '[billing/webhook] organizations plan_key update failed:',
+        );
         throw orgUpdateErr;
       }
 
@@ -179,7 +190,10 @@ export async function POST(request: Request) {
             updated_at: new Date().toISOString(),
           });
         if (checkoutSubErr) {
-          log.error({ err: checkoutSubErr.message, }, "[billing/webhook] checkout org_subscriptions upsert failed:");
+          log.error(
+            { err: checkoutSubErr.message },
+            '[billing/webhook] checkout org_subscriptions upsert failed:',
+          );
           throw checkoutSubErr;
         }
 
@@ -188,7 +202,10 @@ export async function POST(request: Request) {
           .update({ plan_key: planKey })
           .eq('id', orgId);
         if (checkoutOrgErr) {
-          log.error({ err: checkoutOrgErr.message, }, "[billing/webhook] checkout organizations plan_key update failed:");
+          log.error(
+            { err: checkoutOrgErr.message },
+            '[billing/webhook] checkout organizations plan_key update failed:',
+          );
           throw checkoutOrgErr;
         }
 
@@ -197,16 +214,46 @@ export async function POST(request: Request) {
     }
 
     if (event.type === 'customer.subscription.created') {
-      await upsertFromSubscription(event.data.object as Stripe.Subscription);
+      const orgId = await upsertFromSubscription(
+        event.data.object as Stripe.Subscription,
+      );
+      if (orgId) {
+        await sendBillingEmail(admin, orgId, 'subscription_created');
+      }
     }
 
     if (event.type === 'customer.subscription.updated') {
-      await upsertFromSubscription(event.data.object as Stripe.Subscription);
+      const subscription = event.data.object as Stripe.Subscription;
+      const previousAttributes = (
+        event.data as { previous_attributes?: Record<string, unknown> }
+      ).previous_attributes;
+      await upsertFromSubscription(subscription);
+
+      // Determine if upgrade or downgrade
+      const orgId = subscription.metadata?.organization_id ?? null;
+      if (orgId && previousAttributes?.items) {
+        const newPlanKey = resolvePlanKeyFromPriceId(
+          subscription.items.data[0]?.price?.id ?? null,
+        );
+        if (newPlanKey) {
+          const planConfig = PLAN_CATALOG[newPlanKey];
+          await sendBillingEmail(admin, orgId, 'plan_changed', {
+            planName: planConfig.name,
+            planKey: newPlanKey,
+          });
+        }
+      }
     }
 
     if (event.type === 'customer.subscription.deleted') {
       const subscription = event.data.object as Stripe.Subscription;
       const subscriptionId = subscription.id;
+
+      const { data: subRow } = await admin
+        .from('org_subscriptions')
+        .select('organization_id')
+        .eq('stripe_subscription_id', subscriptionId)
+        .maybeSingle();
 
       const { error: cancelErr } = await admin
         .from('org_subscriptions')
@@ -217,8 +264,82 @@ export async function POST(request: Request) {
         })
         .eq('stripe_subscription_id', subscriptionId);
       if (cancelErr) {
-        log.error({ err: cancelErr.message, }, "[billing/webhook] subscription cancellation update failed:");
+        log.error(
+          { err: cancelErr.message },
+          '[billing/webhook] subscription cancellation update failed:',
+        );
         throw cancelErr;
+      }
+
+      // Send cancellation email
+      if (subRow?.organization_id) {
+        await sendBillingEmail(
+          admin,
+          subRow.organization_id,
+          'subscription_cancelled',
+        );
+      }
+    }
+
+    if (event.type === 'customer.subscription.trial_will_end') {
+      const subscription = event.data.object as Stripe.Subscription;
+      const orgId = subscription.metadata?.organization_id ?? null;
+      const subscriptionId = subscription.id;
+
+      const resolvedOrgId =
+        orgId ??
+        (
+          await admin
+            .from('org_subscriptions')
+            .select('organization_id')
+            .eq('stripe_subscription_id', subscriptionId)
+            .maybeSingle()
+        ).data?.organization_id;
+
+      if (resolvedOrgId) {
+        await sendBillingEmail(admin, resolvedOrgId, 'trial_expiring');
+      }
+    }
+
+    if (event.type === 'customer.created') {
+      const customer = event.data.object as Stripe.Customer;
+      const orgId = customer.metadata?.organization_id ?? null;
+
+      if (orgId) {
+        const { error: customerErr } = await admin
+          .from('org_subscriptions')
+          .update({
+            stripe_customer_id: customer.id,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('organization_id', orgId);
+        if (customerErr) {
+          log.error(
+            { err: customerErr.message },
+            '[billing/webhook] customer.created update failed:',
+          );
+        }
+      }
+    }
+
+    if (event.type === 'invoice.payment_action_required') {
+      const invoice = event.data.object as Stripe.Invoice;
+      const customerId = invoice.customer as string | null;
+
+      if (customerId) {
+        const { data: subRow } = await admin
+          .from('org_subscriptions')
+          .select('organization_id')
+          .eq('stripe_customer_id', customerId)
+          .maybeSingle();
+
+        if (subRow?.organization_id) {
+          await sendBillingEmail(
+            admin,
+            subRow.organization_id,
+            'payment_action_required',
+          );
+        }
       }
     }
 
@@ -228,22 +349,45 @@ export async function POST(request: Request) {
       const customerId = invoice.customer as string | null;
 
       if (subscriptionId || customerId) {
+        // Check if this was a recovery from past_due
+        const matchCol = subscriptionId
+          ? { stripe_subscription_id: subscriptionId }
+          : { stripe_customer_id: customerId };
+
+        const { data: existingRow } = await admin
+          .from('org_subscriptions')
+          .select('organization_id, status, payment_failed_at')
+          .match(matchCol)
+          .maybeSingle();
+
+        const wasPastDue =
+          existingRow?.status === 'past_due' || existingRow?.payment_failed_at;
+
         const { error: paidErr } = await admin
           .from('org_subscriptions')
           .update({
             status: 'active',
             trial_started_at: null,
             trial_expires_at: null,
+            payment_failed_at: null,
             updated_at: new Date().toISOString(),
           })
-          .match(
-            subscriptionId
-              ? { stripe_subscription_id: subscriptionId }
-              : { stripe_customer_id: customerId },
-          );
+          .match(matchCol);
         if (paidErr) {
-          log.error({ err: paidErr.message, }, "[billing/webhook] invoice.paid update failed:");
+          log.error(
+            { err: paidErr.message },
+            '[billing/webhook] invoice.paid update failed:',
+          );
           throw paidErr;
+        }
+
+        // Send payment recovered email if previously failing
+        if (wasPastDue && existingRow?.organization_id) {
+          await sendBillingEmail(
+            admin,
+            existingRow.organization_id,
+            'payment_recovered',
+          );
         }
       }
     }
@@ -254,25 +398,44 @@ export async function POST(request: Request) {
       const customerId = invoice.customer as string | null;
 
       if (subscriptionId || customerId) {
+        const matchCol = subscriptionId
+          ? { stripe_subscription_id: subscriptionId }
+          : { stripe_customer_id: customerId };
+
         const { error: failedErr } = await admin
           .from('org_subscriptions')
           .update({
             status: 'past_due',
+            payment_failed_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           })
-          .match(
-            subscriptionId
-              ? { stripe_subscription_id: subscriptionId }
-              : { stripe_customer_id: customerId },
-          );
+          .match(matchCol);
         if (failedErr) {
-          log.error({ err: failedErr.message, }, "[billing/webhook] invoice.payment_failed update failed:");
+          log.error(
+            { err: failedErr.message },
+            '[billing/webhook] invoice.payment_failed update failed:',
+          );
           throw failedErr;
+        }
+
+        // Find org to send notification email
+        const { data: subRow } = await admin
+          .from('org_subscriptions')
+          .select('organization_id')
+          .match(matchCol)
+          .maybeSingle();
+
+        if (subRow?.organization_id) {
+          await sendBillingEmail(
+            admin,
+            subRow.organization_id,
+            'payment_failed',
+          );
         }
       }
     }
   } catch (error) {
-    log.error({ err: error }, "Stripe webhook processing error:");
+    log.error({ err: error }, 'Stripe webhook processing error:');
     return NextResponse.json(
       { error: 'Webhook processing failed' },
       { status: 500 },

@@ -2,12 +2,6 @@
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import {
-  AlertTriangle,
-  FileWarning,
-  Clock,
-  LayoutDashboard,
-  Settings,
-  RefreshCw,
   Shield,
   Scale,
   Landmark,

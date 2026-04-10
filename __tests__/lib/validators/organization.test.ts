@@ -16,7 +16,6 @@ import {
   validateOnboardingForm,
   INDUSTRY_OPTIONS,
   TEAM_SIZE_OPTIONS,
-  FRAMEWORK_OPTIONS,
   PLAN_OPTIONS,
 } from '@/lib/validators/organization';
 

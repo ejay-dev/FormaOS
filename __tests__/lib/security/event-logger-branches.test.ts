@@ -61,14 +61,8 @@ import {
   dispatchUserActivity,
   logSecurityEventEnhanced,
 } from '@/lib/security/event-logger';
-import {
-  detectBruteForce,
-  detectImpossibleTravel,
-  detectNewDevice,
-  detectSessionAnomaly,
-  detectPrivilegeEscalation,
-  detectRateLimitViolation,
-} from '@/lib/security/detection-rules';
+
+
 
 describe('event-logger branches', () => {
   beforeEach(() => {

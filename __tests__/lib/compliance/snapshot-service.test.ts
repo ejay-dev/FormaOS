@@ -231,6 +231,7 @@ describe('captureComplianceSnapshot', () => {
   it('captures snapshot for enabled frameworks', async () => {
     mockCalculate.mockResolvedValue([
       {
+        frameworkId: 'fw-soc2',
         frameworkCode: 'SOC2',
         frameworkTitle: 'SOC 2',
         readinessScore: 80,
@@ -250,7 +251,7 @@ describe('captureComplianceSnapshot', () => {
       { status: 'completed' },
     ]);
 
-    let callCount = 0;
+    const _callCount = 0;
     mockAdminFrom.mockImplementation((table: string) => {
       switch (table) {
         case 'org_evidence':
@@ -272,6 +273,7 @@ describe('captureComplianceSnapshot', () => {
   it('handles DB upsert error', async () => {
     mockCalculate.mockResolvedValue([
       {
+        frameworkId: 'fw-soc2',
         frameworkCode: 'SOC2',
         frameworkTitle: 'SOC 2',
         readinessScore: 80,
@@ -298,6 +300,7 @@ describe('captureComplianceSnapshot', () => {
   it('filters by specific framework slug', async () => {
     mockCalculate.mockResolvedValue([
       {
+        frameworkId: 'fw-soc2',
         frameworkCode: 'SOC2',
         frameworkTitle: 'SOC 2',
         readinessScore: 80,
@@ -308,6 +311,7 @@ describe('captureComplianceSnapshot', () => {
         evaluatedAt: '2026-04-05',
       },
       {
+        frameworkId: 'fw-iso27001',
         frameworkCode: 'ISO27001',
         frameworkTitle: 'ISO 27001',
         readinessScore: 60,

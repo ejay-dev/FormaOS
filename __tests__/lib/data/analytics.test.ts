@@ -49,7 +49,7 @@ beforeEach(() => {
 });
 
 function mockSupabaseWith(overrides: Record<string, any> = {}) {
-  const now = new Date();
+  const _now = new Date();
   const defaults = {
     totalPolicies: { count: 10 },
     activePolicies: { count: 8 },

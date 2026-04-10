@@ -105,7 +105,6 @@ import {
 import type {
   UserEntitlements,
   ModuleId,
-  NodeState,
 } from '@/lib/system-state/types';
 
 beforeEach(() => {

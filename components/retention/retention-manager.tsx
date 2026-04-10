@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { Shield, Plus, Archive, Trash2, Eye, Lock, Unlock } from 'lucide-react';
+import { Shield, Archive, Trash2, Eye, Lock, Unlock } from 'lucide-react';
 
 interface RetentionPolicy {
   id: string;

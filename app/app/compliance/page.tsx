@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Layers, Table2 } from 'lucide-react';
+import { ShieldCheck, Layers } from 'lucide-react';
 import { ObligationsTable } from '@/components/compliance/ObligationsTable';
 import { SkeletonCard } from '@/components/ui/skeleton';
 

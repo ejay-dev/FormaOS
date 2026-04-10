@@ -34,7 +34,7 @@ describe('INDUSTRY_ROADMAPS', () => {
   });
 
   it('each roadmap has required fields', () => {
-    for (const [id, roadmap] of Object.entries(INDUSTRY_ROADMAPS)) {
+    for (const [_id, roadmap] of Object.entries(INDUSTRY_ROADMAPS)) {
       expect(roadmap.industryId).toBeTruthy();
       expect(roadmap.industryName).toBeTruthy();
       expect(roadmap.icon).toBeTruthy();

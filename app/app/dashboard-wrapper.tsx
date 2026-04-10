@@ -3,6 +3,7 @@
 import { UnifiedDashboardLayout } from '@/components/dashboard/unified-dashboard-layout';
 import { EmployerDashboard } from '@/components/dashboard/employer-dashboard';
 import { EmployeeDashboard } from '@/components/dashboard/employee-dashboard';
+import { DashboardUpgradeNudge } from '@/components/billing/UsageLimitWarnings';
 import { DatabaseRole, isEmployerRole } from '@/lib/roles';
 
 interface DashboardWrapperProps {
@@ -29,6 +30,7 @@ export function DashboardWrapper({
   if (isEmployer) {
     return (
       <UnifiedDashboardLayout userRole={userRole} organizationName={orgName}>
+        <DashboardUpgradeNudge />
         <EmployerDashboard
           organizationId={orgId}
           organizationName={orgName}
@@ -40,6 +42,7 @@ export function DashboardWrapper({
 
   return (
     <UnifiedDashboardLayout userRole={userRole} organizationName={orgName}>
+      <DashboardUpgradeNudge />
       <EmployeeDashboard
         employeeName={userEmail || 'Employee'}
         organizationName={orgName}

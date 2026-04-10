@@ -19,7 +19,7 @@
  * Persona:  Government compliance officer requesting full org audit pack
  */
 
-import { test, expect, type Page, type BrowserContext } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 import {
   createMagicLinkSession,
@@ -45,7 +45,7 @@ const timestamp = Date.now();
 const PASSWORD = 'EnterpriseAudit2026!Secure#';
 
 /** All industry pack IDs from lib/industry-packs.ts */
-const ALL_INDUSTRIES = [
+const _ALL_INDUSTRIES = [
   'ndis',
   'healthcare',
   'childcare',
@@ -144,15 +144,23 @@ async function loginAs(page: Page, email: string, password: string) {
         localStorage.setItem('e2e_test_mode', 'true');
       });
       await setPlaywrightSession(page.context(), session, appBase);
-      await page.goto('/app', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.goto('/app', {
+        waitUntil: 'domcontentloaded',
+        timeout: 30000,
+      });
       // Wait for any middleware redirects to settle
-      await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
+      await page
+        .waitForLoadState('domcontentloaded', { timeout: 15000 })
+        .catch(() => {});
       await page.waitForTimeout(1000);
       await dismissProductTour(page);
       return;
     } catch (err) {
       if (!isE2EAuthBootstrapError(err)) {
-        console.warn('[E2E] Magic link login failed, falling back to UI:', (err as Error).message?.slice(0, 80));
+        console.warn(
+          '[E2E] Magic link login failed, falling back to UI:',
+          (err as Error).message?.slice(0, 80),
+        );
       }
     }
   }
@@ -166,13 +174,17 @@ async function loginAs(page: Page, email: string, password: string) {
   await page.fill('input[type="password"]', password);
   await page.click('button[type="submit"]');
   await page.waitForURL(/\/app/, { timeout: 30000 });
-  await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
+  await page
+    .waitForLoadState('domcontentloaded', { timeout: 15000 })
+    .catch(() => {});
   await dismissProductTour(page);
 }
 
 async function dismissProductTour(page: Page) {
   try {
-    await page.waitForLoadState('domcontentloaded', { timeout: 5000 }).catch(() => {});
+    await page
+      .waitForLoadState('domcontentloaded', { timeout: 5000 })
+      .catch(() => {});
     const tourText = page.locator('text="Product Tour"');
     if (await tourText.isVisible({ timeout: 2000 })) {
       const skipBtn = page.locator('button:has-text("Skip Tour")');
@@ -187,9 +199,19 @@ async function dismissProductTour(page: Page) {
 
 async function assertNoErrorState(page: Page) {
   // Only match error headings/titles — avoid matching incidental text
-  await expect(page.locator('h1:text-is("404"), h2:text-is("404")')).not.toBeVisible();
-  await expect(page.locator('h1:has-text("Page Not Found"), h2:has-text("Page Not Found")')).not.toBeVisible();
-  await expect(page.locator('h1:has-text("Internal Server Error"), h2:has-text("Internal Server Error")')).not.toBeVisible();
+  await expect(
+    page.locator('h1:text-is("404"), h2:text-is("404")'),
+  ).not.toBeVisible();
+  await expect(
+    page.locator(
+      'h1:has-text("Page Not Found"), h2:has-text("Page Not Found")',
+    ),
+  ).not.toBeVisible();
+  await expect(
+    page.locator(
+      'h1:has-text("Internal Server Error"), h2:has-text("Internal Server Error")',
+    ),
+  ).not.toBeVisible();
 }
 
 async function waitForPageContent(page: Page) {
@@ -220,17 +242,18 @@ test.describe('Enterprise Government Audit Readiness', () => {
     enterpriseEmail = `qa.gov-audit.${timestamp}@formaos.team`;
 
     // Create Enterprise test user
-    const { data: userData, error: userError } = await admin.auth.admin.createUser({
-      email: enterpriseEmail,
-      password: PASSWORD,
-      email_confirm: true,
-      user_metadata: {
-        is_e2e_test: true,
-        full_name: 'Dr. Sarah Chen',
-        role: 'Government Compliance Officer',
-        created_at: new Date().toISOString(),
-      },
-    });
+    const { data: userData, error: userError } =
+      await admin.auth.admin.createUser({
+        email: enterpriseEmail,
+        password: PASSWORD,
+        email_confirm: true,
+        user_metadata: {
+          is_e2e_test: true,
+          full_name: 'Dr. Sarah Chen',
+          role: 'Government Compliance Officer',
+          created_at: new Date().toISOString(),
+        },
+      });
 
     expect(userError).toBeNull();
     expect(userData?.user?.id).toBeTruthy();
@@ -257,16 +280,19 @@ test.describe('Enterprise Government Audit Readiness', () => {
     createdOrgIds.add(enterpriseOrgId);
 
     // Backfill legacy orgs table
-    await admin.from('orgs').upsert(
-      {
-        id: enterpriseOrgId,
-        name: `Meridian Health Group — Enterprise Audit (${timestamp})`,
-        created_by: enterpriseUserId,
-        created_at: nowIso,
-        updated_at: nowIso,
-      },
-      { onConflict: 'id' },
-    ).then(() => {});
+    await admin
+      .from('orgs')
+      .upsert(
+        {
+          id: enterpriseOrgId,
+          name: `Meridian Health Group — Enterprise Audit (${timestamp})`,
+          created_by: enterpriseUserId,
+          created_at: nowIso,
+          updated_at: nowIso,
+        },
+        { onConflict: 'id' },
+      )
+      .then(() => {});
 
     // Add user as org owner
     const { error: memberError } = await admin.from('org_members').insert({
@@ -330,36 +356,212 @@ test.describe('Enterprise Government Audit Readiness', () => {
 
     const industryPolicies = [
       // NDIS
-      { org_id: enterpriseOrgId, title: 'Incident Management Policy', industry: 'ndis', status: 'published', content: 'NDIS incident management procedures for all reportable incidents under the NDIS Quality and Safeguards Commission.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'NDIS Code of Conduct', industry: 'ndis', status: 'published', content: 'Worker conduct expectations aligned with NDIS Practice Standards and Code of Conduct requirements.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'NDIS Complaints Management', industry: 'ndis', status: 'published', content: 'Clear pathway for participant feedback, complaints resolution, and escalation procedures.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Incident Management Policy',
+        industry: 'ndis',
+        status: 'published',
+        content:
+          'NDIS incident management procedures for all reportable incidents under the NDIS Quality and Safeguards Commission.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'NDIS Code of Conduct',
+        industry: 'ndis',
+        status: 'published',
+        content:
+          'Worker conduct expectations aligned with NDIS Practice Standards and Code of Conduct requirements.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'NDIS Complaints Management',
+        industry: 'ndis',
+        status: 'published',
+        content:
+          'Clear pathway for participant feedback, complaints resolution, and escalation procedures.',
+        created_by: enterpriseUserId,
+      },
       // Healthcare
-      { org_id: enterpriseOrgId, title: 'Patient Privacy & Confidentiality Policy', industry: 'healthcare', status: 'published', content: 'HIPAA-compliant patient data handling, access controls, and breach notification procedures.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Infection Control Policy', industry: 'healthcare', status: 'published', content: 'Standard precautions, PPE requirements, and sterilization protocols for clinical environments.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Clinical Data Breach Response Plan', industry: 'healthcare', status: 'published', content: 'Immediate response steps, notification timelines, and remediation procedures for data breaches.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Patient Privacy & Confidentiality Policy',
+        industry: 'healthcare',
+        status: 'published',
+        content:
+          'HIPAA-compliant patient data handling, access controls, and breach notification procedures.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Infection Control Policy',
+        industry: 'healthcare',
+        status: 'published',
+        content:
+          'Standard precautions, PPE requirements, and sterilization protocols for clinical environments.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Clinical Data Breach Response Plan',
+        industry: 'healthcare',
+        status: 'published',
+        content:
+          'Immediate response steps, notification timelines, and remediation procedures for data breaches.',
+        created_by: enterpriseUserId,
+      },
       // Childcare
-      { org_id: enterpriseOrgId, title: 'Child Protection Policy', industry: 'childcare', status: 'published', content: 'Mandatory reporting obligations, child safety protocols, and worker screening requirements under NQF.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Delivery and Collection of Children Policy', industry: 'childcare', status: 'published', content: 'Procedures ensuring safe arrival and departure of children, authorized pickup verification.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Child Protection Policy',
+        industry: 'childcare',
+        status: 'published',
+        content:
+          'Mandatory reporting obligations, child safety protocols, and worker screening requirements under NQF.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Delivery and Collection of Children Policy',
+        industry: 'childcare',
+        status: 'published',
+        content:
+          'Procedures ensuring safe arrival and departure of children, authorized pickup verification.',
+        created_by: enterpriseUserId,
+      },
       // Aged Care
-      { org_id: enterpriseOrgId, title: 'Dignity and Choice Policy', industry: 'aged_care', status: 'published', content: 'Consumer rights framework ensuring dignity, informed consent, and choice in care delivery.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Clinical Governance Framework', industry: 'aged_care', status: 'published', content: 'Governance structure for clinical care quality, medication management, and clinical escalation.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Serious Incident Response Scheme (SIRS)', industry: 'aged_care', status: 'published', content: 'Mandatory reporting of Priority 1 and Priority 2 incidents to the Aged Care Quality and Safety Commission.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Dignity and Choice Policy',
+        industry: 'aged_care',
+        status: 'published',
+        content:
+          'Consumer rights framework ensuring dignity, informed consent, and choice in care delivery.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Clinical Governance Framework',
+        industry: 'aged_care',
+        status: 'published',
+        content:
+          'Governance structure for clinical care quality, medication management, and clinical escalation.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Serious Incident Response Scheme (SIRS)',
+        industry: 'aged_care',
+        status: 'published',
+        content:
+          'Mandatory reporting of Priority 1 and Priority 2 incidents to the Aged Care Quality and Safety Commission.',
+        created_by: enterpriseUserId,
+      },
       // Community Services
-      { org_id: enterpriseOrgId, title: 'Client Rights & Advocacy Policy', industry: 'community_services', status: 'published', content: 'Client rights framework with accessible advocacy pathways and complaint mechanisms.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Service Delivery Standards', industry: 'community_services', status: 'published', content: 'Quality and consistency standards for community service delivery programs.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Client Rights & Advocacy Policy',
+        industry: 'community_services',
+        status: 'published',
+        content:
+          'Client rights framework with accessible advocacy pathways and complaint mechanisms.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Service Delivery Standards',
+        industry: 'community_services',
+        status: 'published',
+        content:
+          'Quality and consistency standards for community service delivery programs.',
+        created_by: enterpriseUserId,
+      },
       // Financial Services
-      { org_id: enterpriseOrgId, title: 'AML/CTF Compliance Policy', industry: 'financial_services', status: 'published', content: 'Anti-money laundering and counter-terrorism financing procedures, KYC requirements, and suspicious transaction reporting.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Enterprise Risk Management Framework', industry: 'financial_services', status: 'published', content: 'Enterprise-wide risk identification, assessment, mitigation, and monitoring framework.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'AML/CTF Compliance Policy',
+        industry: 'financial_services',
+        status: 'published',
+        content:
+          'Anti-money laundering and counter-terrorism financing procedures, KYC requirements, and suspicious transaction reporting.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Enterprise Risk Management Framework',
+        industry: 'financial_services',
+        status: 'published',
+        content:
+          'Enterprise-wide risk identification, assessment, mitigation, and monitoring framework.',
+        created_by: enterpriseUserId,
+      },
       // SaaS / Technology
-      { org_id: enterpriseOrgId, title: 'Information Security Policy (SOC 2)', industry: 'saas_technology', status: 'published', content: 'Information security controls, access management, and SOC 2 Trust Service Criteria alignment.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Incident Response Plan', industry: 'saas_technology', status: 'published', content: 'Security incident detection, response, communication, and post-incident review procedures.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Data Retention & Disposal Policy', industry: 'saas_technology', status: 'published', content: 'Data lifecycle management, retention schedules, and secure disposal procedures.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Information Security Policy (SOC 2)',
+        industry: 'saas_technology',
+        status: 'published',
+        content:
+          'Information security controls, access management, and SOC 2 Trust Service Criteria alignment.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Incident Response Plan',
+        industry: 'saas_technology',
+        status: 'published',
+        content:
+          'Security incident detection, response, communication, and post-incident review procedures.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Data Retention & Disposal Policy',
+        industry: 'saas_technology',
+        status: 'published',
+        content:
+          'Data lifecycle management, retention schedules, and secure disposal procedures.',
+        created_by: enterpriseUserId,
+      },
       // Enterprise / Multi-site
-      { org_id: enterpriseOrgId, title: 'Business Continuity Plan', industry: 'enterprise', status: 'published', content: 'Operational resilience, disaster recovery, and business continuity procedures across all sites.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'Vendor & Third-Party Management Policy', industry: 'enterprise', status: 'published', content: 'Third-party risk assessment, vendor due diligence, and supply chain compliance requirements.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Business Continuity Plan',
+        industry: 'enterprise',
+        status: 'published',
+        content:
+          'Operational resilience, disaster recovery, and business continuity procedures across all sites.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'Vendor & Third-Party Management Policy',
+        industry: 'enterprise',
+        status: 'published',
+        content:
+          'Third-party risk assessment, vendor due diligence, and supply chain compliance requirements.',
+        created_by: enterpriseUserId,
+      },
       // General
-      { org_id: enterpriseOrgId, title: 'General Privacy Policy', industry: 'other', status: 'published', content: 'Personal information protection in accordance with applicable privacy legislation.', created_by: enterpriseUserId },
-      { org_id: enterpriseOrgId, title: 'General Risk Management Policy', industry: 'other', status: 'published', content: 'Organizational risk identification, assessment, and management processes.', created_by: enterpriseUserId },
+      {
+        org_id: enterpriseOrgId,
+        title: 'General Privacy Policy',
+        industry: 'other',
+        status: 'published',
+        content:
+          'Personal information protection in accordance with applicable privacy legislation.',
+        created_by: enterpriseUserId,
+      },
+      {
+        org_id: enterpriseOrgId,
+        title: 'General Risk Management Policy',
+        industry: 'other',
+        status: 'published',
+        content:
+          'Organizational risk identification, assessment, and management processes.',
+        created_by: enterpriseUserId,
+      },
     ];
 
     // Attempt to seed policies (best-effort — table may not exist in all envs)
@@ -371,18 +573,114 @@ test.describe('Enterprise Government Audit Readiness', () => {
 
     // Seed tasks across industries
     const industryTasks = [
-      { organization_id: enterpriseOrgId, title: 'NDIS Worker Screening Check', description: 'Verify NDIS worker screening clearances for all support workers.', status: 'pending', priority: 'high', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'RACGP Accreditation Review', description: 'Prepare documentation for annual RACGP practice accreditation.', status: 'pending', priority: 'critical', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'Working with Children Checks', description: 'Audit WWCC validity for all educators and childcare staff.', status: 'pending', priority: 'high', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'Aged Care Staffing Roster Review', description: 'Ensure adequate staffing levels per new minimum staffing regulations.', status: 'in_progress', priority: 'high', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'Vulnerable Persons Clearance Audit', description: 'Verify working with vulnerable persons clearances for community services staff.', status: 'pending', priority: 'high', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'AML/CTF Compliance Review', description: 'Review anti-money laundering controls and transaction monitoring effectiveness.', status: 'pending', priority: 'critical', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'SOC 2 Readiness Assessment', description: 'Evaluate current security controls against SOC 2 Type II Trust Service Criteria.', status: 'in_progress', priority: 'critical', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'Multi-site Compliance Baseline', description: 'Establish compliance baseline across all 12 operational sites.', status: 'pending', priority: 'high', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'Enterprise Vendor Risk Assessment', description: 'Complete risk assessments for all 47 critical third-party vendors.', status: 'pending', priority: 'medium', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'Annual Staff Compliance Training', description: 'Ensure all 200+ staff complete mandatory regulatory compliance training.', status: 'pending', priority: 'medium', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'Food Safety Audit — Aged Care Facilities', description: 'Internal audit of kitchen operations and meal service across residential facilities.', status: 'completed', priority: 'medium', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, title: 'Emergency Evacuation Plan Review', description: 'Conduct quarterly fire drill rehearsal and update evacuation procedures.', status: 'completed', priority: 'low', created_by: enterpriseUserId },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'NDIS Worker Screening Check',
+        description:
+          'Verify NDIS worker screening clearances for all support workers.',
+        status: 'pending',
+        priority: 'high',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'RACGP Accreditation Review',
+        description:
+          'Prepare documentation for annual RACGP practice accreditation.',
+        status: 'pending',
+        priority: 'critical',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'Working with Children Checks',
+        description:
+          'Audit WWCC validity for all educators and childcare staff.',
+        status: 'pending',
+        priority: 'high',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'Aged Care Staffing Roster Review',
+        description:
+          'Ensure adequate staffing levels per new minimum staffing regulations.',
+        status: 'in_progress',
+        priority: 'high',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'Vulnerable Persons Clearance Audit',
+        description:
+          'Verify working with vulnerable persons clearances for community services staff.',
+        status: 'pending',
+        priority: 'high',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'AML/CTF Compliance Review',
+        description:
+          'Review anti-money laundering controls and transaction monitoring effectiveness.',
+        status: 'pending',
+        priority: 'critical',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'SOC 2 Readiness Assessment',
+        description:
+          'Evaluate current security controls against SOC 2 Type II Trust Service Criteria.',
+        status: 'in_progress',
+        priority: 'critical',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'Multi-site Compliance Baseline',
+        description:
+          'Establish compliance baseline across all 12 operational sites.',
+        status: 'pending',
+        priority: 'high',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'Enterprise Vendor Risk Assessment',
+        description:
+          'Complete risk assessments for all 47 critical third-party vendors.',
+        status: 'pending',
+        priority: 'medium',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'Annual Staff Compliance Training',
+        description:
+          'Ensure all 200+ staff complete mandatory regulatory compliance training.',
+        status: 'pending',
+        priority: 'medium',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'Food Safety Audit — Aged Care Facilities',
+        description:
+          'Internal audit of kitchen operations and meal service across residential facilities.',
+        status: 'completed',
+        priority: 'medium',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        title: 'Emergency Evacuation Plan Review',
+        description:
+          'Conduct quarterly fire drill rehearsal and update evacuation procedures.',
+        status: 'completed',
+        priority: 'low',
+        created_by: enterpriseUserId,
+      },
     ];
 
     try {
@@ -393,11 +691,50 @@ test.describe('Enterprise Government Audit Readiness', () => {
 
     // Seed participants / care plan data
     const participants = [
-      { organization_id: enterpriseOrgId, first_name: 'James', last_name: 'Morrison', date_of_birth: '1958-03-14', ndis_number: 'NDI-2026-001', status: 'active', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, first_name: 'Fatima', last_name: 'Al-Rashid', date_of_birth: '1985-11-22', ndis_number: 'NDI-2026-002', status: 'active', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, first_name: 'Chen', last_name: 'Wei', date_of_birth: '1972-07-09', ndis_number: 'NDI-2026-003', status: 'active', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, first_name: 'Margaret', last_name: 'O\'Brien', date_of_birth: '1944-01-30', status: 'active', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, first_name: 'Raj', last_name: 'Patel', date_of_birth: '1990-06-17', ndis_number: 'NDI-2026-004', status: 'active', created_by: enterpriseUserId },
+      {
+        organization_id: enterpriseOrgId,
+        first_name: 'James',
+        last_name: 'Morrison',
+        date_of_birth: '1958-03-14',
+        ndis_number: 'NDI-2026-001',
+        status: 'active',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        first_name: 'Fatima',
+        last_name: 'Al-Rashid',
+        date_of_birth: '1985-11-22',
+        ndis_number: 'NDI-2026-002',
+        status: 'active',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        first_name: 'Chen',
+        last_name: 'Wei',
+        date_of_birth: '1972-07-09',
+        ndis_number: 'NDI-2026-003',
+        status: 'active',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        first_name: 'Margaret',
+        last_name: "O'Brien",
+        date_of_birth: '1944-01-30',
+        status: 'active',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        first_name: 'Raj',
+        last_name: 'Patel',
+        date_of_birth: '1990-06-17',
+        ndis_number: 'NDI-2026-004',
+        status: 'active',
+        created_by: enterpriseUserId,
+      },
     ];
 
     try {
@@ -408,11 +745,51 @@ test.describe('Enterprise Government Audit Readiness', () => {
 
     // Seed staff compliance records
     const staffRecords = [
-      { organization_id: enterpriseOrgId, staff_name: 'Dr. Emily Torres', credential_type: 'Medical License', credential_number: 'MED-2024-1847', expiry_date: '2026-12-31', status: 'current', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, staff_name: 'Nurse Aisha Khan', credential_type: 'Nursing Registration', credential_number: 'NUR-2024-0923', expiry_date: '2026-09-15', status: 'current', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, staff_name: 'Mark Thompson', credential_type: 'NDIS Worker Screening', credential_number: 'WSC-2025-3341', expiry_date: '2027-06-30', status: 'current', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, staff_name: 'Lisa Chen', credential_type: 'Working with Children Check', credential_number: 'WWCC-2025-7712', expiry_date: '2026-08-20', status: 'expiring_soon', created_by: enterpriseUserId },
-      { organization_id: enterpriseOrgId, staff_name: 'David Okafor', credential_type: 'First Aid Certificate', credential_number: 'FA-2025-0044', expiry_date: '2026-04-01', status: 'expired', created_by: enterpriseUserId },
+      {
+        organization_id: enterpriseOrgId,
+        staff_name: 'Dr. Emily Torres',
+        credential_type: 'Medical License',
+        credential_number: 'MED-2024-1847',
+        expiry_date: '2026-12-31',
+        status: 'current',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        staff_name: 'Nurse Aisha Khan',
+        credential_type: 'Nursing Registration',
+        credential_number: 'NUR-2024-0923',
+        expiry_date: '2026-09-15',
+        status: 'current',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        staff_name: 'Mark Thompson',
+        credential_type: 'NDIS Worker Screening',
+        credential_number: 'WSC-2025-3341',
+        expiry_date: '2027-06-30',
+        status: 'current',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        staff_name: 'Lisa Chen',
+        credential_type: 'Working with Children Check',
+        credential_number: 'WWCC-2025-7712',
+        expiry_date: '2026-08-20',
+        status: 'expiring_soon',
+        created_by: enterpriseUserId,
+      },
+      {
+        organization_id: enterpriseOrgId,
+        staff_name: 'David Okafor',
+        credential_type: 'First Aid Certificate',
+        credential_number: 'FA-2025-0044',
+        expiry_date: '2026-04-01',
+        status: 'expired',
+        created_by: enterpriseUserId,
+      },
     ];
 
     try {
@@ -421,7 +798,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
       console.warn('[E2E] Staff compliance seeding skipped:', err);
     }
 
-    console.log(`[E2E] Enterprise audit user provisioned: ${enterpriseEmail} | Org: ${enterpriseOrgId}`);
+    console.log(
+      `[E2E] Enterprise audit user provisioned: ${enterpriseEmail} | Org: ${enterpriseOrgId}`,
+    );
   });
 
   // =========================================================================
@@ -448,16 +827,26 @@ test.describe('Enterprise Government Audit Readiness', () => {
       ];
 
       for (const table of dependentTables) {
-        try { await admin.from(table).delete().eq('organization_id', orgId); } catch {}
+        try {
+          await admin.from(table).delete().eq('organization_id', orgId);
+        } catch {}
       }
 
-      try { await admin.from('organizations').delete().eq('id', orgId); } catch {}
-      try { await admin.from('orgs').delete().eq('id', orgId); } catch {}
+      try {
+        await admin.from('organizations').delete().eq('id', orgId);
+      } catch {}
+      try {
+        await admin.from('orgs').delete().eq('id', orgId);
+      } catch {}
     }
 
     for (const userId of createdUserIds) {
-      try { await admin.from('user_security').delete().eq('user_id', userId); } catch {}
-      try { await admin.auth.admin.deleteUser(userId); } catch {}
+      try {
+        await admin.from('user_security').delete().eq('user_id', userId);
+      } catch {}
+      try {
+        await admin.auth.admin.deleteUser(userId);
+      } catch {}
     }
 
     console.log('[E2E] Enterprise audit cleanup complete');
@@ -472,7 +861,10 @@ test.describe('Enterprise Government Audit Readiness', () => {
       test.setTimeout(180000); // 3 min for 11 routes
       for (const route of PUBLIC_ROUTES) {
         try {
-          await page.goto(route, { timeout: 30000, waitUntil: 'domcontentloaded' });
+          await page.goto(route, {
+            timeout: 30000,
+            waitUntil: 'domcontentloaded',
+          });
           await page.waitForTimeout(1000);
           await assertNoErrorState(page);
 
@@ -480,12 +872,16 @@ test.describe('Enterprise Government Audit Readiness', () => {
           const heading = page.locator('h1, h2').first();
           await expect(heading).toBeVisible({ timeout: 15000 });
         } catch (err) {
-          console.warn(`[Marketing Route] ${route} had an issue: ${(err as Error).message?.slice(0, 100)}`);
+          console.warn(
+            `[Marketing Route] ${route} had an issue: ${(err as Error).message?.slice(0, 100)}`,
+          );
         }
       }
     });
 
-    test('pricing page displays Enterprise plan with correct features', async ({ page }) => {
+    test('pricing page displays Enterprise plan with correct features', async ({
+      page,
+    }) => {
       await page.goto('/pricing', { waitUntil: 'domcontentloaded' });
       await waitForPageContent(page);
 
@@ -505,7 +901,11 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
       await waitForPageContent(page);
 
-      const ctaBtn = page.locator('a:has-text("Start"), a:has-text("Get Started"), a:has-text("Free Trial")').first();
+      const ctaBtn = page
+        .locator(
+          'a:has-text("Start"), a:has-text("Get Started"), a:has-text("Free Trial")',
+        )
+        .first();
       if (await ctaBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
         const href = await ctaBtn.getAttribute('href');
         expect(href).toMatch(/\/(auth\/signup|app|signup)/);
@@ -544,7 +944,10 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await page.waitForTimeout(2000);
 
       const newPage = await context.newPage();
-      await newPage.goto('/app/dashboard', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await newPage.goto('/app/dashboard', {
+        waitUntil: 'domcontentloaded',
+        timeout: 30000,
+      });
       await newPage.waitForTimeout(2000);
 
       // New tab in same context should share session
@@ -565,13 +968,17 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('onboarding roadmap page loads', async ({ page }) => {
-      await page.goto('/app/onboarding-roadmap', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/onboarding-roadmap', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
       await assertNoErrorState(page);
 
       // Should show onboarding content or completed state
       const pageContent = await page.textContent('body');
-      expect(pageContent).toMatch(/onboarding|getting started|checklist|completed|roadmap/i);
+      expect(pageContent).toMatch(
+        /onboarding|getting started|checklist|completed|roadmap/i,
+      );
     });
 
     test('industry selector is accessible from dashboard', async ({ page }) => {
@@ -593,17 +1000,28 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await loginAs(page, enterpriseEmail, PASSWORD);
     });
 
-    test('all authenticated app routes render without errors', async ({ page }) => {
+    test('all authenticated app routes render without errors', async ({
+      page,
+    }) => {
       test.setTimeout(300000); // 5 min for 30+ routes
       const routeResults: Array<{ route: string; status: string }> = [];
 
       for (const route of ALL_APP_ROUTES) {
         try {
-          await page.goto(route, { timeout: 30000, waitUntil: 'domcontentloaded' });
+          await page.goto(route, {
+            timeout: 30000,
+            waitUntil: 'domcontentloaded',
+          });
           await page.waitForTimeout(1000);
 
-          const hasError = await page.locator('text=/page not found/i').isVisible({ timeout: 2000 }).catch(() => false);
-          const has500 = await page.locator('text=/internal server error/i').isVisible({ timeout: 1000 }).catch(() => false);
+          const hasError = await page
+            .locator('text=/page not found/i')
+            .isVisible({ timeout: 2000 })
+            .catch(() => false);
+          const has500 = await page
+            .locator('text=/internal server error/i')
+            .isVisible({ timeout: 1000 })
+            .catch(() => false);
 
           routeResults.push({
             route,
@@ -621,10 +1039,14 @@ test.describe('Enterprise Government Audit Readiness', () => {
       }
 
       // Log results
-      const failedRoutes = routeResults.filter(r => r.status !== 'OK');
+      const failedRoutes = routeResults.filter((r) => r.status !== 'OK');
       if (failedRoutes.length > 0) {
-        console.warn(`[Route Audit] ${failedRoutes.length} route(s) had issues:`);
-        failedRoutes.forEach(r => console.warn(`  ✗ ${r.route} (${r.status})`));
+        console.warn(
+          `[Route Audit] ${failedRoutes.length} route(s) had issues:`,
+        );
+        failedRoutes.forEach((r) =>
+          console.warn(`  ✗ ${r.route} (${r.status})`),
+        );
       }
       // Allow up to 3 routes to soft-fail (some routes may require additional data seeding)
       expect(failedRoutes.length).toBeLessThanOrEqual(3);
@@ -683,7 +1105,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('compliance frameworks page is accessible', async ({ page }) => {
-      await page.goto('/app/compliance/frameworks', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/compliance/frameworks', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
 
       // Should not show upgrade gate for enterprise plan
@@ -715,11 +1139,15 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await waitForPageContent(page);
 
       // Look for create/new task button
-      const createBtn = page.locator(
-        'button:has-text("Create"), button:has-text("New Task"), a:has-text("Create"), button:has-text("Add")',
-      ).first();
+      const createBtn = page
+        .locator(
+          'button:has-text("Create"), button:has-text("New Task"), a:has-text("Create"), button:has-text("Add")',
+        )
+        .first();
 
-      const isVisible = await createBtn.isVisible({ timeout: 5000 }).catch(() => false);
+      const isVisible = await createBtn
+        .isVisible({ timeout: 5000 })
+        .catch(() => false);
 
       if (isVisible) {
         await createBtn.click();
@@ -758,7 +1186,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('participant creation form is accessible', async ({ page }) => {
-      await page.goto('/app/participants/new', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/participants/new', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
       await assertNoErrorState(page);
     });
@@ -781,8 +1211,12 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await assertNoErrorState(page);
     });
 
-    test('staff compliance page loads with credential data', async ({ page }) => {
-      await page.goto('/app/staff-compliance', { waitUntil: 'domcontentloaded' });
+    test('staff compliance page loads with credential data', async ({
+      page,
+    }) => {
+      await page.goto('/app/staff-compliance', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
       await assertNoErrorState(page);
 
@@ -821,7 +1255,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await assertNoErrorState(page);
     });
 
-    test('protected admin routes redirect non-admin users', async ({ page }) => {
+    test('protected admin routes redirect non-admin users', async ({
+      page,
+    }) => {
       // Enterprise user (owner) should have access or get clean redirect
       await page.goto('/admin/dashboard', { waitUntil: 'domcontentloaded' });
       await waitForPageContent(page);
@@ -829,7 +1265,10 @@ test.describe('Enterprise Government Audit Readiness', () => {
       // Should either load admin or redirect — not crash
       const url = page.url();
       const isAdmin = url.includes('/admin');
-      const isRedirected = url.includes('/app') || url.includes('/auth') || url.includes('/unauthorized');
+      const isRedirected =
+        url.includes('/app') ||
+        url.includes('/auth') ||
+        url.includes('/unauthorized');
       expect(isAdmin || isRedirected).toBeTruthy();
     });
   });
@@ -855,29 +1294,41 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await assertNoErrorState(page);
     });
 
-    test('security settings page loads with API key management', async ({ page }) => {
-      await page.goto('/app/settings/security', { waitUntil: 'domcontentloaded' });
+    test('security settings page loads with API key management', async ({
+      page,
+    }) => {
+      await page.goto('/app/settings/security', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
       await assertNoErrorState(page);
 
       const pageContent = await page.textContent('body');
-      expect(pageContent).toMatch(/security|api.*key|two.*factor|mfa|password/i);
+      expect(pageContent).toMatch(
+        /security|api.*key|two.*factor|mfa|password/i,
+      );
     });
 
     test('integrations page loads', async ({ page }) => {
-      await page.goto('/app/settings/integrations', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/settings/integrations', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
       await assertNoErrorState(page);
     });
 
     test('notification preferences page loads', async ({ page }) => {
-      await page.goto('/app/settings/notifications', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/settings/notifications', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
       await assertNoErrorState(page);
     });
 
     test('email preferences page loads', async ({ page }) => {
-      await page.goto('/app/settings/email-preferences', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/settings/email-preferences', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
       await assertNoErrorState(page);
     });
@@ -888,7 +1339,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await assertNoErrorState(page);
 
       const pageContent = await page.textContent('body');
-      expect(pageContent).toMatch(/billing|subscription|plan|enterprise|payment/i);
+      expect(pageContent).toMatch(
+        /billing|subscription|plan|enterprise|payment/i,
+      );
     });
   });
 
@@ -901,7 +1354,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await loginAs(page, enterpriseEmail, PASSWORD);
     });
 
-    test('policies page loads with seeded industry policies', async ({ page }) => {
+    test('policies page loads with seeded industry policies', async ({
+      page,
+    }) => {
       await page.goto('/app/policies', { waitUntil: 'domcontentloaded' });
       await waitForPageContent(page);
       await assertNoErrorState(page);
@@ -929,7 +1384,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('training register loads', async ({ page }) => {
-      await page.goto('/app/registers/training', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/registers/training', {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
       await assertNoErrorState(page);
     });
@@ -976,7 +1433,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('audit export page is accessible', async ({ page }) => {
-      await page.goto(`/app/audit/export/${enterpriseUserId}`, { waitUntil: 'domcontentloaded' });
+      await page.goto(`/app/audit/export/${enterpriseUserId}`, {
+        waitUntil: 'domcontentloaded',
+      });
       await waitForPageContent(page);
 
       // Should show export interface or audit data
@@ -986,7 +1445,7 @@ test.describe('Enterprise Government Audit Readiness', () => {
 
     test('compliance export job can be initiated via API', async () => {
       // Verify export infrastructure exists by checking the table
-      const { data: jobs, error } = await admin
+      const { data: _jobs, error } = await admin
         .from('compliance_export_jobs')
         .select('id')
         .eq('organization_id', enterpriseOrgId)
@@ -1106,7 +1565,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
       } catch {}
 
       if (participants) {
-        console.log(`[E2E] Participants available for audit: ${participants.length}`);
+        console.log(
+          `[E2E] Participants available for audit: ${participants.length}`,
+        );
       }
 
       // 4. Staff compliance records exist
@@ -1121,7 +1582,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
       } catch {}
 
       if (staffRecords) {
-        console.log(`[E2E] Staff compliance records for audit: ${staffRecords.length}`);
+        console.log(
+          `[E2E] Staff compliance records for audit: ${staffRecords.length}`,
+        );
       }
 
       // 5. Frameworks are installed
@@ -1132,8 +1595,12 @@ test.describe('Enterprise Government Audit Readiness', () => {
 
       expect(frameworks).toBeTruthy();
       if (frameworks) {
-        expect(frameworks.length).toBeGreaterThanOrEqual(ENTERPRISE_FRAMEWORKS.length);
-        console.log(`[E2E] Compliance frameworks installed: ${frameworks.map(f => f.framework_slug).join(', ')}`);
+        expect(frameworks.length).toBeGreaterThanOrEqual(
+          ENTERPRISE_FRAMEWORKS.length,
+        );
+        console.log(
+          `[E2E] Compliance frameworks installed: ${frameworks.map((f) => f.framework_slug).join(', ')}`,
+        );
       }
     });
   });
@@ -1162,8 +1629,12 @@ test.describe('Enterprise Government Audit Readiness', () => {
         await waitForPageContent(page);
 
         // Enterprise users should never see blocking upgrade gates
-        await expect(page.locator('text=/upgrade.*required/i')).not.toBeVisible();
-        await expect(page.locator('text=/upgrade.*to.*access/i')).not.toBeVisible();
+        await expect(
+          page.locator('text=/upgrade.*required/i'),
+        ).not.toBeVisible();
+        await expect(
+          page.locator('text=/upgrade.*to.*access/i'),
+        ).not.toBeVisible();
       }
     });
 
@@ -1191,7 +1662,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await waitForPageContent(page);
 
       // Collect all sidebar nav links
-      const sidebarLinks = page.locator('nav a[href^="/app"], aside a[href^="/app"]');
+      const sidebarLinks = page.locator(
+        'nav a[href^="/app"], aside a[href^="/app"]',
+      );
       const linkCount = await sidebarLinks.count();
 
       if (linkCount > 0) {
@@ -1207,20 +1680,26 @@ test.describe('Enterprise Government Audit Readiness', () => {
         for (const href of hrefs) {
           await page.goto(href);
           await waitForPageContent(page);
-          await expect(page.locator('text=/page not found/i')).not.toBeVisible();
+          await expect(
+            page.locator('text=/page not found/i'),
+          ).not.toBeVisible();
         }
       }
     });
 
     test('logout redirects to auth and protects routes', async ({ page }) => {
       await page.goto('/app', { waitUntil: 'domcontentloaded' });
-      await page.waitForLoadState('domcontentloaded', { timeout: 15000 }).catch(() => {});
+      await page
+        .waitForLoadState('domcontentloaded', { timeout: 15000 })
+        .catch(() => {});
       await page.waitForTimeout(2000);
 
       // Find logout mechanism
-      const logoutBtn = page.locator(
-        'button:has-text("Logout"), button:has-text("Sign out"), a:has-text("Logout"), a:has-text("Sign out")',
-      ).first();
+      const logoutBtn = page
+        .locator(
+          'button:has-text("Logout"), button:has-text("Sign out"), a:has-text("Logout"), a:has-text("Sign out")',
+        )
+        .first();
 
       if (await logoutBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
         await logoutBtn.click();
@@ -1244,7 +1723,11 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await loginAs(page, enterpriseEmail, PASSWORD);
 
       const consoleErrors: Array<{ route: string; message: string }> = [];
-      const networkFailures: Array<{ route: string; url: string; status: number }> = [];
+      const networkFailures: Array<{
+        route: string;
+        url: string;
+        status: number;
+      }> = [];
       let currentRoute = '';
 
       page.on('console', (msg) => {
@@ -1258,7 +1741,10 @@ test.describe('Enterprise Government Audit Readiness', () => {
             !text.includes('ResizeObserver') &&
             !text.includes('net::ERR')
           ) {
-            consoleErrors.push({ route: currentRoute || page.url(), message: text });
+            consoleErrors.push({
+              route: currentRoute || page.url(),
+              message: text,
+            });
           }
         }
       });
@@ -1266,7 +1752,11 @@ test.describe('Enterprise Government Audit Readiness', () => {
       page.on('response', (response) => {
         const status = response.status();
         if (status >= 400) {
-          networkFailures.push({ route: currentRoute, url: response.url(), status });
+          networkFailures.push({
+            route: currentRoute,
+            url: response.url(),
+            status,
+          });
         }
       });
 
@@ -1289,16 +1779,22 @@ test.describe('Enterprise Government Audit Readiness', () => {
 
       if (networkFailures.length > 0) {
         console.warn(`[E2E] Network failures (${networkFailures.length}):`);
-        networkFailures.forEach((f) => console.warn(`  [${f.status}] ${f.route} → ${f.url}`));
+        networkFailures.forEach((f) =>
+          console.warn(`  [${f.status}] ${f.route} → ${f.url}`),
+        );
       }
 
       if (consoleErrors.length > 0) {
         console.warn(`[E2E] Console errors (${consoleErrors.length}):`);
-        consoleErrors.forEach((e) => console.warn(`  ${e.route}: ${e.message.slice(0, 150)}`));
+        consoleErrors.forEach((e) =>
+          console.warn(`  ${e.route}: ${e.message.slice(0, 150)}`),
+        );
       }
 
       // Log count for visibility — this is a monitoring metric, not a hard gate
-      console.log(`[Console Audit] ${consoleErrors.length} filtered console error(s), ${networkFailures.length} network failure(s) across ${criticalRoutes.length} routes`);
+      console.log(
+        `[Console Audit] ${consoleErrors.length} filtered console error(s), ${networkFailures.length} network failure(s) across ${criticalRoutes.length} routes`,
+      );
       // Fail only if errors are truly excessive (> 50 per audit run)
       expect(consoleErrors.length).toBeLessThan(50);
     });

@@ -1,5 +1,5 @@
-import { LucideIcon, ArrowUpRight, ArrowDownRight } from "lucide-react";
-import clsx from "clsx";
+import { LucideIcon, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import clsx from 'clsx';
 
 interface KPICardProps {
   title: string;
@@ -15,7 +15,7 @@ interface KPICardProps {
   };
 
   /** Risk or status indicator */
-  status?: "LOW" | "MEDIUM" | "HIGH" | "SUCCESS" | "WARNING" | "DANGER";
+  status?: 'LOW' | 'MEDIUM' | 'HIGH' | 'SUCCESS' | 'WARNING' | 'DANGER';
 
   /** Loading skeleton */
   isLoading?: boolean;
@@ -41,24 +41,23 @@ export function KPICard({
   onClick,
   className,
 }: KPICardProps) {
-
-  const statusStyles = {
-    LOW: "bg-emerald-400/10 text-emerald-200 border-emerald-400/30",
-    SUCCESS: "bg-emerald-400/10 text-emerald-200 border-emerald-400/30",
-    MEDIUM: "bg-amber-400/10 text-amber-200 border-amber-400/30",
-    WARNING: "bg-amber-400/10 text-amber-200 border-amber-400/30",
-    HIGH: "bg-rose-500/10 text-rose-200 border-rose-400/30",
-    DANGER: "bg-rose-500/10 text-rose-200 border-rose-400/30",
+  const _statusStyles = {
+    LOW: 'bg-emerald-400/10 text-emerald-200 border-emerald-400/30',
+    SUCCESS: 'bg-emerald-400/10 text-emerald-200 border-emerald-400/30',
+    MEDIUM: 'bg-amber-400/10 text-amber-200 border-amber-400/30',
+    WARNING: 'bg-amber-400/10 text-amber-200 border-amber-400/30',
+    HIGH: 'bg-rose-500/10 text-rose-200 border-rose-400/30',
+    DANGER: 'bg-rose-500/10 text-rose-200 border-rose-400/30',
   };
 
   const ragBorder =
-    status === "LOW" || status === "SUCCESS"
-      ? "metric-card-success"
-      : status === "MEDIUM" || status === "WARNING"
-      ? "metric-card-warning"
-      : status === "HIGH" || status === "DANGER"
-      ? "metric-card-danger"
-      : "metric-card-neutral";
+    status === 'LOW' || status === 'SUCCESS'
+      ? 'metric-card-success'
+      : status === 'MEDIUM' || status === 'WARNING'
+        ? 'metric-card-warning'
+        : status === 'HIGH' || status === 'DANGER'
+          ? 'metric-card-danger'
+          : 'metric-card-neutral';
 
   if (isLoading) {
     return (
@@ -74,7 +73,7 @@ export function KPICard({
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (onClick && (e.key === "Enter" || e.key === " ")) {
+    if (onClick && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
       onClick();
     }
@@ -85,14 +84,14 @@ export function KPICard({
     <div
       onClick={onClick}
       onKeyDown={onClick ? handleKeyDown : undefined}
-      role={onClick ? "button" : undefined}
+      role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       aria-label={onClick ? `${title}: ${value}` : undefined}
       className={clsx(
-        "metric-card transition-all duration-200 hover:shadow-sm",
-        onClick && "cursor-pointer",
+        'metric-card transition-all duration-200 hover:shadow-sm',
+        onClick && 'cursor-pointer',
         ragBorder,
-        className
+        className,
       )}
     >
       {/* Header */}
@@ -110,19 +109,15 @@ export function KPICard({
             {value}
           </span>
           {description && (
-            <span className="text-xs text-muted-foreground">
-              {description}
-            </span>
+            <span className="text-xs text-muted-foreground">{description}</span>
           )}
         </div>
 
         {trend && (
           <div
             className={clsx(
-              "flex items-center gap-0.5 text-[10px] font-bold",
-              trend.isPositive
-                ? "text-emerald-500"
-                : "text-red-500"
+              'flex items-center gap-0.5 text-[10px] font-bold',
+              trend.isPositive ? 'text-emerald-500' : 'text-red-500',
             )}
           >
             {trend.isPositive ? (
@@ -131,13 +126,11 @@ export function KPICard({
               <ArrowDownRight className="h-3 w-3" />
             )}
             <span>
-              {trend.isPositive ? "+" : ""}
+              {trend.isPositive ? '+' : ''}
               {trend.value}%
             </span>
             {trend.label && (
-              <span className="opacity-70 ml-0.5">
-                {trend.label}
-              </span>
+              <span className="opacity-70 ml-0.5">{trend.label}</span>
             )}
           </div>
         )}

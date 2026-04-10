@@ -197,7 +197,7 @@ describe('GET /api/admin/orgs/[orgId]', () => {
 
     const { req, params } = makeRequest('org-1');
     const res = await GET(req, { params });
-    const json = await res.json();
+    const _json = await res.json();
     expect(res.status).toBe(200);
   });
 
@@ -263,7 +263,7 @@ describe('GET /api/admin/orgs/[orgId]', () => {
 
     const { req, params } = makeRequest('org-1');
     const res = await GET(req, { params });
-    const json = await res.json();
+    const _json = await res.json();
 
     // Array metadata is treated as empty object by asObject
     expect(res.status).toBe(200);

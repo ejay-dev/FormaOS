@@ -75,7 +75,7 @@ function StatusIndicator({ status }: { status: string }) {
 }
 
 export function IncidentChainView({
-  incidentId,
+  incidentId: _incidentId,
   nodes,
 }: IncidentChainViewProps) {
   if (!nodes.length) {

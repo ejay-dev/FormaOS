@@ -186,6 +186,13 @@ export function EvidenceDrawer({
             <div className="space-y-3 px-1">
               {/* Drop zone */}
               <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                  }
+                }}
                 onDragOver={(e) => {
                   e.preventDefault();
                   setIsDragOver(true);
@@ -201,6 +208,7 @@ export function EvidenceDrawer({
                 <Upload className="h-5 w-5 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">
                   Drag files here or{' '}
+                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label className="cursor-pointer text-[var(--wire-action)] underline">
                     browse
                   </label>

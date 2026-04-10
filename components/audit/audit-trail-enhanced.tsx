@@ -37,9 +37,7 @@ interface AuditEntry {
 /** Maps raw action verbs to human-readable past-tense sentences */
 function buildNarrative(entry: AuditEntry): string {
   const resource = entry.resource_type.replace(/_/g, ' ');
-  const actor = entry.actor_email
-    ? entry.actor_email.split('@')[0]
-    : 'A user';
+  const actor = entry.actor_email ? entry.actor_email.split('@')[0] : 'A user';
 
   const actionMap: Record<string, string> = {
     CREATE: `created a ${resource}`,
@@ -53,12 +51,17 @@ function buildNarrative(entry: AuditEntry): string {
     LOGOUT: `signed out`,
   };
 
-  const verb = actionMap[entry.action.toUpperCase()] ?? `performed "${entry.action}" on ${resource}`;
+  const verb =
+    actionMap[entry.action.toUpperCase()] ??
+    `performed "${entry.action}" on ${resource}`;
   return `${actor} ${verb}`;
 }
 
 /** Picks a Lucide icon and color class for each action type */
-function actionMeta(action: string): { icon: React.ElementType; color: string } {
+function actionMeta(action: string): {
+  icon: React.ElementType;
+  color: string;
+} {
   const a = action.toUpperCase();
   if (a === 'CREATE') return { icon: PlusCircle, color: 'text-emerald-400' };
   if (a === 'UPDATE') return { icon: Pencil, color: 'text-primary' };
@@ -67,7 +70,8 @@ function actionMeta(action: string): { icon: React.ElementType; color: string } 
   if (a === 'REJECT') return { icon: ThumbsDown, color: 'text-rose-400' };
   if (a === 'VIEW') return { icon: Eye, color: 'text-muted-foreground' };
   if (a === 'EXPORT') return { icon: FileOutput, color: 'text-amber-400' };
-  if (a === 'LOGIN' || a === 'LOGOUT') return { icon: LogIn, color: 'text-primary' };
+  if (a === 'LOGIN' || a === 'LOGOUT')
+    return { icon: LogIn, color: 'text-primary' };
   return { icon: Shield, color: 'text-muted-foreground' };
 }
 
@@ -105,7 +109,9 @@ function ActorAvatar({ email }: { email?: string }) {
 }
 
 /** Groups entries by calendar day for timeline date headers */
-function groupByDate(entries: AuditEntry[]): Array<{ label: string; entries: AuditEntry[] }> {
+function groupByDate(
+  entries: AuditEntry[],
+): Array<{ label: string; entries: AuditEntry[] }> {
   const map = new Map<string, AuditEntry[]>();
   for (const entry of entries) {
     const d = new Date(entry.created_at);
@@ -119,16 +125,31 @@ function groupByDate(entries: AuditEntry[]): Array<{ label: string; entries: Aud
     } else if (d.toDateString() === yesterday.toDateString()) {
       label = 'Yesterday';
     } else {
-      label = d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+      label = d.toLocaleDateString(undefined, {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric',
+      });
     }
 
     if (!map.has(label)) map.set(label, []);
     map.get(label)!.push(entry);
   }
-  return Array.from(map.entries()).map(([label, entries]) => ({ label, entries }));
+  return Array.from(map.entries()).map(([label, entries]) => ({
+    label,
+    entries,
+  }));
 }
 
-const ACTION_OPTIONS = ['CREATE', 'UPDATE', 'DELETE', 'APPROVE', 'REJECT', 'VIEW', 'EXPORT'];
+const ACTION_OPTIONS = [
+  'CREATE',
+  'UPDATE',
+  'DELETE',
+  'APPROVE',
+  'REJECT',
+  'VIEW',
+  'EXPORT',
+];
 
 export function AuditTrailViewer({
   entries,
@@ -189,7 +210,10 @@ export function AuditTrailViewer({
         <div className="rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 space-y-3">
           <div className="flex flex-wrap gap-3">
             <div className="flex flex-col gap-1">
-              <label htmlFor="audit-filter-action" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <label
+                htmlFor="audit-filter-action"
+                className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+              >
                 Action
               </label>
               <select
@@ -200,12 +224,17 @@ export function AuditTrailViewer({
               >
                 <option value="">All actions</option>
                 {ACTION_OPTIONS.map((a) => (
-                  <option key={a} value={a}>{a}</option>
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
                 ))}
               </select>
             </div>
             <div className="flex flex-col gap-1">
-              <label htmlFor="audit-filter-resource" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <label
+                htmlFor="audit-filter-resource"
+                className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+              >
                 Resource type
               </label>
               <input
@@ -240,7 +269,9 @@ export function AuditTrailViewer({
       {entries.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-glass-border bg-glass-subtle py-12 text-center">
           <Shield className="h-8 w-8 text-muted-foreground/40" />
-          <p className="text-sm text-muted-foreground">No audit entries found</p>
+          <p className="text-sm text-muted-foreground">
+            No audit entries found
+          </p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -253,14 +284,18 @@ export function AuditTrailViewer({
                 </span>
                 <div className="h-px flex-1 bg-glass-border" />
                 <span className="text-[10px] text-muted-foreground/50">
-                  {group.entries.length} event{group.entries.length !== 1 ? 's' : ''}
+                  {group.entries.length} event
+                  {group.entries.length !== 1 ? 's' : ''}
                 </span>
               </div>
 
               {/* Narrative timeline for this group */}
               <div className="relative space-y-0">
                 {/* Vertical rail */}
-                <div className="absolute left-[13px] top-3 bottom-3 w-px bg-glass-border" aria-hidden />
+                <div
+                  className="absolute left-[13px] top-3 bottom-3 w-px bg-glass-border"
+                  aria-hidden
+                />
 
                 {group.entries.map((entry, idx) => {
                   const { icon: Icon, color } = actionMeta(entry.action);
@@ -269,7 +304,10 @@ export function AuditTrailViewer({
                   const isLast = idx === group.entries.length - 1;
 
                   return (
-                    <div key={entry.id} className={`relative flex gap-4 ${isLast ? '' : 'pb-3'}`}>
+                    <div
+                      key={entry.id}
+                      className={`relative flex gap-4 ${isLast ? '' : 'pb-3'}`}
+                    >
                       {/* Timeline node */}
                       <div className="relative z-10 mt-2 flex h-[27px] w-[27px] shrink-0 items-center justify-center rounded-full border border-glass-border bg-background">
                         <Icon className={`h-3 w-3 ${color}`} />
@@ -278,7 +316,9 @@ export function AuditTrailViewer({
                       {/* Event card */}
                       <div className="flex-1 min-w-0">
                         <button
-                          onClick={() => setExpanded(isExpanded ? null : entry.id)}
+                          onClick={() =>
+                            setExpanded(isExpanded ? null : entry.id)
+                          }
                           className="group w-full text-left"
                         >
                           <div className="flex items-start justify-between gap-3 rounded-xl border border-glass-border bg-glass-subtle px-3 py-2.5 transition-colors hover:bg-glass-strong">
@@ -290,7 +330,9 @@ export function AuditTrailViewer({
                                 </p>
                                 <div className="mt-0.5 flex items-center gap-2">
                                   <span className="text-[10px] font-mono text-muted-foreground/60">
-                                    {entry.entry_hash ? entry.entry_hash.slice(0, 8) : '—'}
+                                    {entry.entry_hash
+                                      ? entry.entry_hash.slice(0, 8)
+                                      : '—'}
                                   </span>
                                   {entry.ip_address && (
                                     <span className="text-[10px] text-muted-foreground/50">
@@ -304,9 +346,11 @@ export function AuditTrailViewer({
                               <span className="text-[11px] text-muted-foreground whitespace-nowrap">
                                 {formatRelativeTime(entry.created_at)}
                               </span>
-                              {isExpanded
-                                ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground/50" />
-                                : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/50" />}
+                              {isExpanded ? (
+                                <ChevronUp className="h-3.5 w-3.5 text-muted-foreground/50" />
+                              ) : (
+                                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/50" />
+                              )}
                             </div>
                           </div>
                         </button>
@@ -318,13 +362,19 @@ export function AuditTrailViewer({
                               Event detail
                             </p>
                             <p className="mb-1 text-xs text-muted-foreground">
-                              <span className="font-medium text-foreground/70">Time:</span>{' '}
+                              <span className="font-medium text-foreground/70">
+                                Time:
+                              </span>{' '}
                               {new Date(entry.created_at).toLocaleString()}
                             </p>
                             {entry.resource_id && (
                               <p className="mb-1 text-xs text-muted-foreground">
-                                <span className="font-medium text-foreground/70">Resource ID:</span>{' '}
-                                <span className="font-mono">{entry.resource_id}</span>
+                                <span className="font-medium text-foreground/70">
+                                  Resource ID:
+                                </span>{' '}
+                                <span className="font-mono">
+                                  {entry.resource_id}
+                                </span>
                               </p>
                             )}
                             {Object.keys(entry.details).length > 0 && (
@@ -418,10 +468,14 @@ export function AuditExportPanel({
       {onRequest && (
         <div className="flex gap-2 items-end">
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">
+            <label
+              htmlFor="audit-date-from"
+              className="block text-xs text-muted-foreground mb-1"
+            >
               From
             </label>
             <input
+              id="audit-date-from"
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
@@ -429,10 +483,14 @@ export function AuditExportPanel({
             />
           </div>
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">
+            <label
+              htmlFor="audit-date-to"
+              className="block text-xs text-muted-foreground mb-1"
+            >
               To
             </label>
             <input
+              id="audit-date-to"
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}

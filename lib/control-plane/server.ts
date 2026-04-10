@@ -51,7 +51,7 @@ function asJsonObject(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- raw Supabase row
+ 
 type DbRow = Record<string, any>;
 
 function normalizeJob(row: DbRow): AdminJobRecord {
@@ -214,7 +214,7 @@ export async function touchRuntimeVersion(
 async function readLatestTimestamp(
   table: string,
   column: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase query builder
+   
   filter?: (query: any) => any,
 ) {
   const admin = createSupabaseAdminClient();

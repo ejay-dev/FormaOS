@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle2, Circle, AlertTriangle, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Circle, AlertTriangle } from 'lucide-react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 type PipelineStep =
@@ -40,7 +40,7 @@ function PipelineInner({
         const isComplete = idx < currentIdx;
         const isCurrent = idx === currentIdx;
         const isBlocked = step.id === blockedStep;
-        const isFuture = idx > currentIdx;
+        const _isFuture = idx > currentIdx;
 
         let dotColor = 'border-glass-border text-muted-foreground/40';
         let lineColor = 'bg-glass-border';

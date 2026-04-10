@@ -4,11 +4,8 @@ import {
   FileText,
   Search,
   FileUp,
-  HardDrive,
-  Filter,
   CheckCircle2,
   Clock,
-  ListFilter,
 } from 'lucide-react';
 import { verifyEvidence } from '@/app/app/actions/evidence';
 import { fetchSystemState } from '@/lib/system-state/server';

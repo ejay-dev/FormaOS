@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { listAuditorAccess, getAuditorActivity } from '@/lib/auditor/portal';
-import { Shield, Clock, Eye, XCircle, Plus } from 'lucide-react';
+import { Shield, Clock, Eye, Plus } from 'lucide-react';
 
 export const metadata = { title: 'Auditor Access | Settings | FormaOS' };
 

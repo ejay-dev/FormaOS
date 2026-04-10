@@ -33,7 +33,12 @@ const STATUS_COLORS: Record<string, string> = {
     'bg-[var(--wire-success)]/15 text-[var(--wire-success)] border-[var(--wire-success)]/30',
 };
 
-const STATUS_PIPELINE = ['detected', 'assessed', 'reported', 'closed'] as const;
+const _STATUS_PIPELINE = [
+  'detected',
+  'assessed',
+  'reported',
+  'closed',
+] as const;
 
 function BreachReportForm({
   breach,

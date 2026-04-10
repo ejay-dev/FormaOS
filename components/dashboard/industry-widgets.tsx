@@ -4,16 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   UserCheck,
-  Users,
   AlertTriangle,
   Shield,
-  HeartPulse,
   Stethoscope,
   Home,
   Baby,
-  Landmark,
-  Clock,
-  FileText,
   Star,
   BookOpen,
   Scale,

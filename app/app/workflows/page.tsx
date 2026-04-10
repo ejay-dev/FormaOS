@@ -1,4 +1,3 @@
-import { ShieldCheck } from 'lucide-react';
 
 import { WorkflowManagementClient } from './WorkflowManagementClient';
 import { createSupabaseServerClient } from '@/lib/supabase/server';

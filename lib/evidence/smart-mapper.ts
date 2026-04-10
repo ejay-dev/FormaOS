@@ -37,7 +37,7 @@ export async function suggestControlMappings(
   for (const control of controls) {
     const code = (control.code ?? '').toLowerCase();
     const title = (control.title ?? '').toLowerCase();
-    const desc = (control.description ?? '').toLowerCase();
+    const _desc = (control.description ?? '').toLowerCase();
 
     // Exact code match in filename
     if (code && searchText.includes(code)) {
@@ -53,7 +53,9 @@ export async function suggestControlMappings(
 
     // Title keyword match
     const titleWords = title.split(/\s+/).filter((w: string) => w.length > 4);
-    const matchedTitleWords = titleWords.filter((w: string) => searchText.includes(w));
+    const matchedTitleWords = titleWords.filter((w: string) =>
+      searchText.includes(w),
+    );
     if (matchedTitleWords.length >= 2) {
       suggestions.push({
         controlId: control.id,

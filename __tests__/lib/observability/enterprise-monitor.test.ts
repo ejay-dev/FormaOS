@@ -4,8 +4,6 @@
 
 import {
   enterpriseMonitor,
-  type APIMetrics,
-  type Alert,
 } from '@/lib/observability/enterprise-monitor';
 
 jest.mock('@/lib/observability/structured-logger', () => ({

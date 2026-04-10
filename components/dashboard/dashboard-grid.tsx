@@ -29,7 +29,7 @@ export function DashboardGrid({ widgets, widgetData, columns = 8 }: Props) {
   }
 
   // Compute max row from placements
-  const maxRow = Math.max(...widgets.map((w) => w.y + w.h), 4);
+  const _maxRow = Math.max(...widgets.map((w) => w.y + w.h), 4);
 
   return (
     <div

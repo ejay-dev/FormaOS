@@ -2,16 +2,9 @@
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import {
-  AlertTriangle,
-  Clock,
-  FileWarning,
-  ShieldAlert,
-  UserX,
   Bell,
   Shield,
   Users,
-  Timer,
-  GitBranch,
   FileCheck,
   Monitor,
   FileText,

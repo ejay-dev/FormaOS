@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { fetchSystemState } from '@/lib/system-state/server';
 import {
   getIncidentStats,

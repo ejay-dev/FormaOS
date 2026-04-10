@@ -34,10 +34,16 @@ export function CompliancePostureRing({
 
   const colors = getColor(score);
   const circumference = 2 * Math.PI * 70;
-  const offset = circumference - (score / 100) * circumference;
+  const _offset = circumference - (score / 100) * circumference;
 
-  const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
-  const trendColor = trend === 'up' ? 'text-emerald-400' : trend === 'down' ? 'text-red-400' : 'text-muted-foreground';
+  const TrendIcon =
+    trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
+  const trendColor =
+    trend === 'up'
+      ? 'text-emerald-400'
+      : trend === 'down'
+        ? 'text-red-400'
+        : 'text-muted-foreground';
 
   if (isLoading) {
     return (
@@ -53,20 +59,43 @@ export function CompliancePostureRing({
       {/* Main Ring */}
       <div className="relative">
         <svg className="transform -rotate-90 w-32 h-32">
-          <circle cx="64" cy="64" r="52" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-border" />
-          <circle cx="64" cy="64" r="52" stroke="currentColor" strokeWidth="8" fill="transparent"
-            strokeDasharray={2 * Math.PI * 52} strokeDashoffset={2 * Math.PI * 52 - (score / 100) * 2 * Math.PI * 52}
-            strokeLinecap="round" className={`${colors.ring} transition-all duration-1000 ease-out`} />
+          <circle
+            cx="64"
+            cy="64"
+            r="52"
+            stroke="currentColor"
+            strokeWidth="8"
+            fill="transparent"
+            className="text-border"
+          />
+          <circle
+            cx="64"
+            cy="64"
+            r="52"
+            stroke="currentColor"
+            strokeWidth="8"
+            fill="transparent"
+            strokeDasharray={2 * Math.PI * 52}
+            strokeDashoffset={
+              2 * Math.PI * 52 - (score / 100) * 2 * Math.PI * 52
+            }
+            strokeLinecap="round"
+            className={`${colors.ring} transition-all duration-1000 ease-out`}
+          />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={`text-2xl font-bold ${colors.ring}`}>{Math.round(score)}%</span>
+          <span className={`text-2xl font-bold ${colors.ring}`}>
+            {Math.round(score)}%
+          </span>
           <span className="text-[10px] text-muted-foreground">Compliance</span>
         </div>
       </div>
 
       {/* Status + Trend inline */}
       <div className="mt-3 flex items-center gap-2">
-        <span className={`status-pill ${score >= 80 ? 'status-pill-green' : score >= 50 ? 'status-pill-amber' : 'status-pill-red'}`}>
+        <span
+          className={`status-pill ${score >= 80 ? 'status-pill-green' : score >= 50 ? 'status-pill-amber' : 'status-pill-red'}`}
+        >
           {getStatusLabel(score)}
         </span>
         <div className="flex items-center gap-1">

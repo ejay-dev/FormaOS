@@ -132,8 +132,14 @@ export function OrgLifecycleControls({
               will lose access.
             </p>
           )}
-          <label className="block text-sm font-medium mb-1">Reason</label>
+          <label
+            htmlFor="lifecycle-reason"
+            className="block text-sm font-medium mb-1"
+          >
+            Reason
+          </label>
           <textarea
+            id="lifecycle-reason"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm mb-3"

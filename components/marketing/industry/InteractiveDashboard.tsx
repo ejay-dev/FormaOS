@@ -8,13 +8,10 @@ import {
   Download,
   ChevronRight,
   Bell,
-  MoreHorizontal,
   X,
   CheckCircle2,
   AlertCircle,
   Clock,
-  ArrowUpRight,
-  Eye,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 

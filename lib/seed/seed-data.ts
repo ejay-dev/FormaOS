@@ -111,7 +111,7 @@ function daysAgo(days: number): string {
 // =========================================================
 // BASE SEED (shared by all industries)
 // =========================================================
-function baseSeed(industry: string): IndustrySeedData {
+function baseSeed(_industry: string): IndustrySeedData {
   return {
     obligations: [
       {

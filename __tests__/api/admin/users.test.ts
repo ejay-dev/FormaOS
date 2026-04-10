@@ -11,7 +11,7 @@ jest.mock('@/app/app/admin/access', () => ({
 }));
 
 jest.mock('@/app/api/admin/_helpers', () => ({
-  handleAdminError: jest.fn((err: any, route: string) => {
+  handleAdminError: jest.fn((err: any, _route: string) => {
     const message = err instanceof Error ? err.message : String(err);
     return Response.json({ error: message }, { status: 500 });
   }),

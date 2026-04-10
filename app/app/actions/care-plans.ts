@@ -49,7 +49,7 @@ export async function transitionPlanStatus(
   planId: string,
   orgId: string,
   newStatus: 'draft' | 'active' | 'review' | 'completed' | 'archived',
-  reason?: string,
+  _reason?: string,
 ) {
   const db = await createSupabaseServerClient();
   const { data: current } = await db
@@ -106,7 +106,13 @@ export async function duplicateCarePlan(
 
   if (!source) throw new Error('Care plan not found');
 
-  const { id, created_at, updated_at, status, ...fields } = source;
+  const {
+    id: _id,
+    created_at: _created_at,
+    updated_at: _updated_at,
+    status: _status,
+    ...fields
+  } = source;
   const { data, error } = await db
     .from('org_care_plans')
     .insert({ ...fields, status: 'draft', created_by: createdBy })

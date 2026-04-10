@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ShieldCheck, Database, LockKeyhole, MapPinned, FileClock } from 'lucide-react';
+import { Database, LockKeyhole, MapPinned, FileClock } from 'lucide-react';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { generateClassificationReport } from '@/lib/data-governance/classification';

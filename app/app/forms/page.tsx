@@ -11,11 +11,7 @@ import {
   Search,
   FileText,
   Eye,
-  Copy,
-  Archive,
   BarChart3,
-  ExternalLink,
-  MoreVertical,
   ClipboardList,
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';

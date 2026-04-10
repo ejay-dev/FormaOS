@@ -111,7 +111,7 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase row shape varies
+   
   const organizations = (normalizedOrgsResult.data ?? []).map(
     (org: {
       id: string;

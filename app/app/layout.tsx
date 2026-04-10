@@ -8,6 +8,8 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { TrialCountdownBanner } from '@/components/billing/TrialCountdownBanner';
 import { UpgradeModal } from '@/components/billing/UpgradeModal';
 import { UpgradeSuggestionEngine } from '@/components/billing/UpgradeSuggestionEngine';
+import { UpgradeTriggerPoints } from '@/components/billing/UpgradeTriggerPoints';
+import { UsageLimitWarnings } from '@/components/billing/UsageLimitWarnings';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { CommandPalette } from '@/components/command-palette/CommandPalette';
@@ -184,6 +186,8 @@ export default async function AppLayout({
                 <RuntimeOpsGuard surface="app" />
                 <EnterpriseTrustStrip surface="app" />
                 <TrialCountdownBanner />
+                <UsageLimitWarnings />
+                <UpgradeTriggerPoints />
 
                 <main
                   id="main-content"

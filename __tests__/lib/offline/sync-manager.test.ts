@@ -89,10 +89,8 @@ Object.defineProperty(global, 'navigator', {
   configurable: true,
 });
 
-import {
-  queueOfflineAction,
-  getOfflineStatus,
-} from '@/lib/offline/sync-manager';
+
+
 import type { OfflineAction } from '@/lib/offline/sync-manager';
 
 describe('sync-manager types', () => {

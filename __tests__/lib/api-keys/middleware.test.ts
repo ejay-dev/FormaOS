@@ -7,7 +7,32 @@ jest.mock('server-only', () => ({}));
 // ── Supabase mocks ──
 function createBuilder(result = { data: null, error: null } as any) {
   const b: Record<string, any> = {};
-  ['select','insert','update','delete','upsert','eq','neq','in','lt','lte','gt','gte','not','is','order','limit','range','single','maybeSingle','filter','match','or','contains','textSearch'].forEach(m => {
+  [
+    'select',
+    'insert',
+    'update',
+    'delete',
+    'upsert',
+    'eq',
+    'neq',
+    'in',
+    'lt',
+    'lte',
+    'gt',
+    'gte',
+    'not',
+    'is',
+    'order',
+    'limit',
+    'range',
+    'single',
+    'maybeSingle',
+    'filter',
+    'match',
+    'or',
+    'contains',
+    'textSearch',
+  ].forEach((m) => {
     b[m] = jest.fn(() => b);
   });
   b.then = (resolve: (v: any) => void) => resolve(result);
@@ -19,7 +44,10 @@ jest.mock('@/lib/supabase/server', () => {
     from: jest.fn(() => createBuilder()),
     auth: { getUser: jest.fn().mockResolvedValue({ data: { user: null } }) },
   };
-  return { createSupabaseServerClient: jest.fn().mockResolvedValue(c), __client: c };
+  return {
+    createSupabaseServerClient: jest.fn().mockResolvedValue(c),
+    __client: c,
+  };
 });
 
 jest.mock('@/lib/supabase/admin', () => {
@@ -27,8 +55,12 @@ jest.mock('@/lib/supabase/admin', () => {
   return { createSupabaseAdminClient: jest.fn(() => c), __client: c };
 });
 
-function getServerClient() { return require('@/lib/supabase/server').__client; }
-function getAdminClient() { return require('@/lib/supabase/admin').__client; }
+function getServerClient() {
+  return require('@/lib/supabase/server').__client;
+}
+function _getAdminClient() {
+  return require('@/lib/supabase/admin').__client;
+}
 
 jest.mock('@/lib/ratelimit', () => ({
   getClientIp: jest.fn(() => '1.2.3.4'),
@@ -40,9 +72,18 @@ jest.mock('@/lib/api-keys/scopes', () => ({
 
 jest.mock('@/lib/api-keys/manager', () => ({
   applyRateLimitHeaders: jest.fn(),
-  getSessionRateLimit: jest.fn().mockResolvedValue({ success: true, limit: 100, remaining: 99, reset: Date.now() + 60000 }),
+  getSessionRateLimit: jest
+    .fn()
+    .mockResolvedValue({
+      success: true,
+      limit: 100,
+      remaining: 99,
+      reset: Date.now() + 60000,
+    }),
   logApiKeyUsage: jest.fn(),
-  validateApiKey: jest.fn().mockResolvedValue({ ok: false, error: 'invalid', status: 401 }),
+  validateApiKey: jest
+    .fn()
+    .mockResolvedValue({ ok: false, error: 'invalid', status: 401 }),
 }));
 
 import {
@@ -129,7 +170,9 @@ describe('api-keys/middleware', () => {
 
     it('decodes cursor param', () => {
       const cursor = encodeCursor(100)!;
-      const request = new Request(`http://localhost/api/v1/items?cursor=${cursor}`);
+      const request = new Request(
+        `http://localhost/api/v1/items?cursor=${cursor}`,
+      );
       const result = parsePagination(request);
       expect(result.offset).toBe(100);
     });
@@ -187,7 +230,11 @@ describe('api-keys/middleware', () => {
     });
 
     it('returns 401 for invalid fos_ key', async () => {
-      validateApiKey.mockResolvedValueOnce({ ok: false, error: 'Invalid API key', status: 401 });
+      validateApiKey.mockResolvedValueOnce({
+        ok: false,
+        error: 'Invalid API key',
+        status: 401,
+      });
       const request = new Request('http://localhost/api/v1/test', {
         headers: { Authorization: 'Bearer fos_invalid' },
       });
@@ -223,7 +270,9 @@ describe('api-keys/middleware', () => {
       const request = new Request('http://localhost/api/v1/test', {
         headers: { Authorization: 'Bearer some-session-token' },
       });
-      const result = await authenticateV1Request(request, { allowSessionFallback: false });
+      const result = await authenticateV1Request(request, {
+        allowSessionFallback: false,
+      });
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.response.status).toBe(401);
     });
@@ -233,7 +282,10 @@ describe('api-keys/middleware', () => {
         data: { user: { id: 'user-1' } },
       });
       getServerClient().from.mockImplementation(() =>
-        createBuilder({ data: { organization_id: 'org-1', role: 'owner' }, error: null }),
+        createBuilder({
+          data: { organization_id: 'org-1', role: 'owner' },
+          error: null,
+        }),
       );
       const request = new Request('http://localhost/api/v1/test', {
         headers: { Authorization: 'Bearer session-token' },
@@ -266,12 +318,17 @@ describe('api-keys/middleware', () => {
         data: { user: { id: 'user-1' } },
       });
       getServerClient().from.mockImplementation(() =>
-        createBuilder({ data: { organization_id: 'org-1', role: 'member' }, error: null }),
+        createBuilder({
+          data: { organization_id: 'org-1', role: 'member' },
+          error: null,
+        }),
       );
       const request = new Request('http://localhost/api/v1/test', {
         headers: { Authorization: 'Bearer session-token' },
       });
-      const result = await authenticateV1Request(request, { requireAdmin: true });
+      const result = await authenticateV1Request(request, {
+        requireAdmin: true,
+      });
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.response.status).toBe(403);
     });
@@ -281,7 +338,10 @@ describe('api-keys/middleware', () => {
         data: { user: { id: 'user-1' } },
       });
       getServerClient().from.mockImplementation(() =>
-        createBuilder({ data: { organization_id: 'org-1', role: 'owner' }, error: null }),
+        createBuilder({
+          data: { organization_id: 'org-1', role: 'owner' },
+          error: null,
+        }),
       );
       getSessionRateLimit.mockResolvedValueOnce({
         success: false,

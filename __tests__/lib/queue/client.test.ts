@@ -66,7 +66,7 @@ jest.mock('@/lib/queue/types', () => ({
   },
 }));
 
-import { QueueClient, getQueueClient } from '@/lib/queue/client';
+import { QueueClient } from '@/lib/queue/client';
 
 beforeEach(() => {
   jest.clearAllMocks();

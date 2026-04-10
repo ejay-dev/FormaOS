@@ -68,6 +68,7 @@ export function WelcomeStep({
       </div>
 
       <div className="space-y-2">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label className="text-sm font-medium">Your industry</label>
         <div className="grid grid-cols-2 gap-2">
           {INDUSTRY_OPTIONS.map((opt) => (

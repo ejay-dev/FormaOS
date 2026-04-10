@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Clock, AlertTriangle } from 'lucide-react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 

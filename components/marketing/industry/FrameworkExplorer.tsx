@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Check, BookOpen, ArrowRight } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { Check, BookOpen } from 'lucide-react';
 
 export interface FrameworkTab {
   id: string;

@@ -72,7 +72,9 @@ export default async function ExecutiveDigestSettingsPage() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Calendar className="h-4 w-4 text-muted-foreground" />
-            <label className="text-sm font-medium">Frequency</label>
+            <label htmlFor="digest-frequency" className="text-sm font-medium">
+              Frequency
+            </label>
           </div>
           <div className="flex gap-3">
             <div
@@ -106,7 +108,9 @@ export default async function ExecutiveDigestSettingsPage() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Users className="h-4 w-4 text-muted-foreground" />
-            <label className="text-sm font-medium">Recipients</label>
+            <label htmlFor="digest-recipients" className="text-sm font-medium">
+              Recipients
+            </label>
           </div>
           <div className="space-y-1.5">
             {(members ?? []).map((m) => {

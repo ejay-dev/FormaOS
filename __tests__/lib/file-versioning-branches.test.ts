@@ -61,7 +61,6 @@ import {
   createFile,
   uploadNewVersion,
   getFileVersions,
-  getFileVersion,
   restoreVersion,
   compareVersions,
 } from '@/lib/file-versioning';

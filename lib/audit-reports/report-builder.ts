@@ -16,7 +16,7 @@ import type {
   NdisPracticeStandard,
 } from './types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Supabase join shape varies
+ 
 type EvalRow = Record<string, any> & {
   compliance_score?: number;
   evidence_count?: number;

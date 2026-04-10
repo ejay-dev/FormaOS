@@ -202,7 +202,7 @@ describe('fetchWidgetData', () => {
   });
 
   it('fetches compliance_metrics', async () => {
-    const client = mockClient({ data: [], error: null });
+    const _client = mockClient({ data: [], error: null });
     const result = await fetchWidgetData('org-1', 'compliance_metrics');
     expect(result).toBeDefined();
   });

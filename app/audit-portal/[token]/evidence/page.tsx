@@ -1,7 +1,7 @@
 import { validateAuditorToken, logAuditorActivity } from '@/lib/auditor/portal';
 import { redirect } from 'next/navigation';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { FileText, Download } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 export default async function AuditPortalEvidence({
   params,

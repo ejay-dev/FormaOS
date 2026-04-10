@@ -296,7 +296,7 @@ describe('getMostActiveUsers', () => {
 
 describe('detectSuspiciousActivity', () => {
   it('detects excessive failed logins', async () => {
-    const failedLogins = Array.from({ length: 10 }, (_, i) => ({
+    const failedLogins = Array.from({ length: 10 }, (_, _i) => ({
       user_id: 'u1',
       action: 'login',
       details: { status: 'failed' },

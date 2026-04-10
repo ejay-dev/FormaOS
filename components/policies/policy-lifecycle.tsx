@@ -77,6 +77,14 @@ export function VersionTimeline({
                 v{v.version_number}
               </div>
               <div
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSelect(v.id);
+                  }
+                }}
                 className="flex-1 rounded-lg border border-border p-3 cursor-pointer hover:bg-muted/30"
                 onClick={() => onSelect(v.id)}
               >

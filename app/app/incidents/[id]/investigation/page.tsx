@@ -43,7 +43,7 @@ export default async function InvestigationPage({ params }: PageProps) {
     .maybeSingle();
 
   // Fetch org members for assignment
-  const { data: members } = await db
+  const { data: _members } = await db
     .from('org_memberships')
     .select('user_id, profiles(email, display_name)')
     .eq('organization_id', state.organization.id);

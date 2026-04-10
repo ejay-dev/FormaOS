@@ -38,7 +38,7 @@ export default async function UsageAnalyticsPage() {
       )
     : 0;
 
-  const trialOrgs = (orgs || []).filter(
+  const _trialOrgs = (orgs || []).filter(
     (o) => o.plan === 'trial' || o.plan === 'starter',
   );
   const subscribedOrgs = (orgs || []).filter(

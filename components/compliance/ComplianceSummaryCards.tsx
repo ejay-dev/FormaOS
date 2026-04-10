@@ -7,7 +7,6 @@ import {
   Clock,
   CheckCircle2,
   Target,
-  TrendingUp,
 } from 'lucide-react';
 import {
   useComplianceStore,

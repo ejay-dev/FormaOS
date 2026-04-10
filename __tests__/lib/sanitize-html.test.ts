@@ -6,7 +6,7 @@
  */
 
 // Must use `var` so jest.mock hoisting can reference it
-var mockSanitize: jest.Mock; // eslint-disable-line no-var
+var mockSanitize: jest.Mock;  
 
 jest.mock('sanitize-html', () => {
   mockSanitize = jest.fn((dirty: string) => `clean:${dirty}`);
@@ -23,7 +23,7 @@ beforeEach(() => {
   mockSanitize.mockClear();
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 function getConfig(): any {
   return mockSanitize.mock.calls[0][1];
 }

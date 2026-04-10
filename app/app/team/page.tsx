@@ -1,6 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { InviteButton } from "@/components/team/invite-button"; // ✅ Using our new robust button
-import { Users, Mail, Clock, ShieldCheck, Trash2 } from "lucide-react";
+import { Users, Mail, Clock, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { hasPermission, normalizeRole } from "@/app/app/actions/rbac";

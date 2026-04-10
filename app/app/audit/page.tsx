@@ -1,11 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import {
-  History,
-  ShieldCheck,
-  ChevronRight,
-  AlertTriangle,
-  LayoutGrid,
-} from 'lucide-react';
+import { History, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 /**
@@ -103,7 +97,7 @@ export default async function AuditTrailPage() {
 
   const auditEvents = logs || [];
   const verifiedCount = auditEvents.length;
-  const orgName = organization.name;
+  const _orgName = organization.name;
 
   return (
     <div className="flex flex-col h-full">
@@ -122,60 +116,60 @@ export default async function AuditTrailPage() {
       </div>
 
       <div className="page-content space-y-4">
-      {/* Table */}
-      <div className="rounded-lg border border-border overflow-hidden">
-        {auditEvents.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">
-            <History className="h-8 w-8 mx-auto mb-3 opacity-50" />
-            <p className="text-sm">No governance actions recorded yet.</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-muted/50">
-                <tr>
-                  <th className="px-4 py-3 text-sm font-medium">Actor</th>
-                  <th className="px-4 py-3 text-sm font-medium">Event</th>
-                  <th className="px-4 py-3 text-sm font-medium">Target</th>
-                  <th className="px-4 py-3 text-sm font-medium text-right">Timestamp</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {auditEvents.map((log: any) => (
-                  <tr
-                    key={log.id}
-                    className="hover:bg-muted/30 transition-colors"
-                  >
-                    <td className="px-4 py-3">
-                      <span className="text-sm font-medium">
-                        {log.actor_id === user.id
-                          ? 'You'
-                          : `User ${log.actor_id?.slice(0, 4)}`}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="status-pill status-pill-blue">
-                        {String(log.action || 'UNKNOWN').replaceAll('_', ' ')}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="text-sm">
-                        {getResourceLabel(log)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="text-xs font-mono text-muted-foreground">
-                        {new Date(log.created_at).toLocaleDateString()}{' '}
-                        {new Date(log.created_at).toLocaleTimeString()}
-                      </div>
-                    </td>
+        {/* Table */}
+        <div className="rounded-lg border border-border overflow-hidden">
+          {auditEvents.length === 0 ? (
+            <div className="py-8 text-center text-muted-foreground">
+              <History className="h-8 w-8 mx-auto mb-3 opacity-50" />
+              <p className="text-sm">No governance actions recorded yet.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-muted/50">
+                  <tr>
+                    <th className="px-4 py-3 text-sm font-medium">Actor</th>
+                    <th className="px-4 py-3 text-sm font-medium">Event</th>
+                    <th className="px-4 py-3 text-sm font-medium">Target</th>
+                    <th className="px-4 py-3 text-sm font-medium text-right">
+                      Timestamp
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {auditEvents.map((log: any) => (
+                    <tr
+                      key={log.id}
+                      className="hover:bg-muted/30 transition-colors"
+                    >
+                      <td className="px-4 py-3">
+                        <span className="text-sm font-medium">
+                          {log.actor_id === user.id
+                            ? 'You'
+                            : `User ${log.actor_id?.slice(0, 4)}`}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="status-pill status-pill-blue">
+                          {String(log.action || 'UNKNOWN').replaceAll('_', ' ')}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="text-sm">{getResourceLabel(log)}</span>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="text-xs font-mono text-muted-foreground">
+                          {new Date(log.created_at).toLocaleDateString()}{' '}
+                          {new Date(log.created_at).toLocaleTimeString()}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 const c = require('./coverage/coverage-final.json');
 let totalBranches = 0,
   coveredBranches = 0;
-for (const [file, data] of Object.entries(c)) {
+for (const [_file, data] of Object.entries(c)) {
   const bh = data.b;
-  for (const [id, locs] of Object.entries(bh)) {
+  for (const [_id, locs] of Object.entries(bh)) {
     for (const count of locs) {
       totalBranches++;
       if (count > 0) coveredBranches++;
@@ -46,7 +46,7 @@ for (const f of files) {
     const bh = c[key].b;
     let total = 0,
       covered = 0;
-    for (const [id, locs] of Object.entries(bh)) {
+    for (const [_id, locs] of Object.entries(bh)) {
       for (const count of locs) {
         total++;
         if (count > 0) covered++;
