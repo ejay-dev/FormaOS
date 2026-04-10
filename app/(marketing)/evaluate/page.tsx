@@ -8,6 +8,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteUrl}/evaluate`,
   },
+  openGraph: {
+    title: 'Evaluate Compliance | FormaOS',
+    description:
+      'Evaluate obligations, controls, and evidence readiness before risk becomes exposure.',
+    type: 'website',
+    url: `${siteUrl}/evaluate`,
+    locale: 'en_AU',
+    siteName: 'FormaOS',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Evaluate Compliance | FormaOS',
+    description:
+      'Evaluate obligations, controls, and evidence readiness before risk becomes exposure.',
+  },
 };
 
 export default function EvaluatePage() {

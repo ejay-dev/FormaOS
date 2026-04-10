@@ -1,6 +1,10 @@
 import { Metadata } from 'next';
 import WorkforceContent from './WorkforceContent';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Workforce Credential Management | FormaOS',
   description:
@@ -22,5 +26,25 @@ export const metadata: Metadata = {
 };
 
 export default function WorkforceUseCasePage() {
-  return <WorkforceContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Use Cases', path: '/use-cases/workforce-credentials' },
+              {
+                name: 'Workforce Credentials',
+                path: '/use-cases/workforce-credentials',
+              },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <WorkforceContent />
+    </>
+  );
 }

@@ -191,69 +191,6 @@ export function articleSchema(opts: {
 }
 
 /**
- * @deprecated Do not use until real review data is available.
- * Google prohibits fabricated AggregateRating structured data.
- * Remove the aggregateRating property and populate from a real review source.
- */
-export function aggregateRatingSchema(opts?: {
-  ratingValue?: number;
-  reviewCount?: number;
-  bestRating?: number;
-}) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    name: 'FormaOS',
-    applicationCategory: 'BusinessApplication',
-    operatingSystem: 'Web',
-    url: siteUrl,
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: String(opts?.ratingValue ?? 4.8),
-      reviewCount: String(opts?.reviewCount ?? 47),
-      bestRating: String(opts?.bestRating ?? 5),
-      worstRating: '1',
-    },
-  };
-}
-
-/**
- * @deprecated Only emit this schema when a real video exists with a contentUrl or embedUrl.
- * Google requires at least one of contentUrl/embedUrl to generate a video rich result.
- */
-export function videoObjectSchema(opts: {
-  name: string;
-  description: string;
-  thumbnailUrl: string;
-  uploadDate: string;
-  duration?: string;
-  embedUrl?: string;
-  contentUrl?: string;
-}) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'VideoObject',
-    name: opts.name,
-    description: opts.description,
-    thumbnailUrl: opts.thumbnailUrl.startsWith('http')
-      ? opts.thumbnailUrl
-      : `${siteUrl}${opts.thumbnailUrl}`,
-    uploadDate: opts.uploadDate,
-    ...(opts.duration && { duration: opts.duration }),
-    ...(opts.embedUrl && { embedUrl: opts.embedUrl }),
-    ...(opts.contentUrl && { contentUrl: opts.contentUrl }),
-    publisher: {
-      '@type': 'Organization',
-      name: 'FormaOS',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${siteUrl}/og-image.png`,
-      },
-    },
-  };
-}
-
-/**
  * Renders a JSON-LD script tag for use in page components.
  * Usage: <JsonLd data={schema} /> or <JsonLd data={[schema1, schema2]} />
  */

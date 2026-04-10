@@ -382,6 +382,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    // ── Documentation ──
+    {
+      url: `${siteUrl}/documentation/api`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.65,
+    },
     // ── Legal pages ──
     {
       url: `${siteUrl}/legal`,
@@ -405,7 +412,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const blogEntries: MetadataRoute.Sitemap = blogPosts.map((post) => ({
     url: `${siteUrl}/blog/${post.id}`,
-    lastModified: now,
+    lastModified: new Date(post.date),
     changeFrequency: 'monthly',
     priority: 0.7,
   }));

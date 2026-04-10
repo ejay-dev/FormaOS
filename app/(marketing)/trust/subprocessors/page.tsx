@@ -18,11 +18,15 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/trust/subprocessors`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Sub-processors',
+    description:
+      'List of third-party sub-processors used by FormaOS for data processing.',
+  },
 };
 
-const subprocessors = [
-  ...TRUST_SUBPROCESSORS,
-];
+const subprocessors = [...TRUST_SUBPROCESSORS];
 
 export default function SubprocessorsPage() {
   return (
@@ -32,7 +36,12 @@ export default function SubprocessorsPage() {
         description="Third-party providers used to deliver FormaOS. Change notifications follow the applicable customer agreement."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<Users className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<Users className="w-8 h-8 text-emerald-400" />}
+            color="52,211,153"
+          />
+        }
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <p className="text-sm text-muted-foreground mt-2 mb-12">

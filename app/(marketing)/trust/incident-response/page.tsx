@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/trust/incident-response`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Incident Response',
+    description:
+      'Incident response summary and communication expectations for enterprise procurement.',
+  },
 };
 
 export default function IncidentResponsePage() {
@@ -27,13 +33,21 @@ export default function IncidentResponsePage() {
         description="Summary for security and procurement reviewers. Contractual notification terms are defined in your MSA/SOW."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<AlertTriangle className="w-8 h-8 text-amber-400" />} color="251,191,36" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<AlertTriangle className="w-8 h-8 text-amber-400" />}
+            color="251,191,36"
+          />
+        }
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="space-y-8">
           <section className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center gap-2 mb-3">
-              <ShieldAlert className="h-5 w-5 text-primary" aria-hidden="true" />
+              <ShieldAlert
+                className="h-5 w-5 text-primary"
+                aria-hidden="true"
+              />
               <h2 className="text-lg font-semibold text-foreground">
                 Response Lifecycle
               </h2>
@@ -42,7 +56,9 @@ export default function IncidentResponsePage() {
               <li>Detection and triage</li>
               <li>Containment and mitigation</li>
               <li>Impact assessment (scope, affected data, blast radius)</li>
-              <li>Customer communication per contract and legal requirements</li>
+              <li>
+                Customer communication per contract and legal requirements
+              </li>
               <li>Remediation, follow-up validation, and learnings</li>
             </ol>
           </section>

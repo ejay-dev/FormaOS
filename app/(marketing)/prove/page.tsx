@@ -8,6 +8,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteUrl}/prove`,
   },
+  openGraph: {
+    title: 'Prove Compliance | FormaOS',
+    description:
+      'Generate defensible audit proof with traceable evidence, linked controls, and full-chain context.',
+    type: 'website',
+    url: `${siteUrl}/prove`,
+    locale: 'en_AU',
+    siteName: 'FormaOS',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Prove Compliance | FormaOS',
+    description:
+      'Generate defensible audit proof with traceable evidence, linked controls, and full-chain context.',
+  },
 };
 
 export default function ProvePage() {

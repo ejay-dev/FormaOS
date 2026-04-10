@@ -1,6 +1,10 @@
 import { Metadata } from 'next';
 import IncidentContent from './IncidentContent';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Incident Management & Investigation | FormaOS',
   description:
@@ -22,5 +26,25 @@ export const metadata: Metadata = {
 };
 
 export default function IncidentManagementPage() {
-  return <IncidentContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Use Cases', path: '/use-cases/incident-management' },
+              {
+                name: 'Incident Management',
+                path: '/use-cases/incident-management',
+              },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <IncidentContent />
+    </>
+  );
 }

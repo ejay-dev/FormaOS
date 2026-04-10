@@ -26,6 +26,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/enterprise-proof`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Enterprise Operations Proof',
+    description:
+      'Buyer-facing proof of governance, auditability, customer rescue, and enterprise support operations in FormaOS.',
+  },
 };
 
 const proofAreas = [
@@ -154,7 +160,8 @@ export default function EnterpriseProofPage() {
               href="/contact"
               className="rounded-xl border border-border bg-background px-5 py-4 text-sm text-foreground hover:bg-muted/30"
             >
-              Request Enterprise Review <ArrowRight className="ml-2 inline h-4 w-4" />
+              Request Enterprise Review{' '}
+              <ArrowRight className="ml-2 inline h-4 w-4" />
             </Link>
           </div>
         </div>

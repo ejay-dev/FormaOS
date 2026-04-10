@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/trust/data-handling`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Data Handling',
+    description:
+      'Data handling, retention, and deletion summary for enterprise procurement.',
+  },
 };
 
 export default function DataHandlingPage() {
@@ -27,7 +33,12 @@ export default function DataHandlingPage() {
         description="Procurement-oriented overview of how FormaOS stores and protects data. This page is informational and does not replace your executed agreement."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<Database className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<Database className="w-8 h-8 text-emerald-400" />}
+            color="52,211,153"
+          />
+        }
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <div className="space-y-8">
@@ -39,9 +50,18 @@ export default function DataHandlingPage() {
               </h2>
             </div>
             <ul className="list-disc pl-6 space-y-2 text-sm text-muted-foreground">
-              <li>Data is encrypted in transit and at rest using platform primitives.</li>
-              <li>Access is governed by organization membership and role-based controls.</li>
-              <li>Audit logs provide traceability for sensitive actions and exports.</li>
+              <li>
+                Data is encrypted in transit and at rest using platform
+                primitives.
+              </li>
+              <li>
+                Access is governed by organization membership and role-based
+                controls.
+              </li>
+              <li>
+                Audit logs provide traceability for sensitive actions and
+                exports.
+              </li>
             </ul>
           </section>
 
@@ -65,7 +85,10 @@ export default function DataHandlingPage() {
           <Link href="/trust" className="text-primary hover:underline">
             ← Back to Trust Center
           </Link>
-          <Link href="/trust/subprocessors" className="text-primary hover:underline">
+          <Link
+            href="/trust/subprocessors"
+            className="text-primary hover:underline"
+          >
             Subprocessors →
           </Link>
         </div>

@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: Secureframe',
   description:
@@ -165,16 +169,31 @@ const procurementChecks = [
 
 export default function CompareSecureframePage() {
   return (
-    <ComparePageTemplate
-      competitor="Secureframe"
-      heroDescription="Secureframe helps teams organize and automate compliance programs. FormaOS is built to operationalize compliance as a governed execution system - with workflow enforcement, continuous posture, named accountability, and audit-ready evidence for every regulated sector."
-      points={points}
-      idealIf={idealIf}
-      procurementChecks={procurementChecks}
-      featureComparison={featureComparison}
-      competitorStrengths={competitorStrengths}
-      source="compare_secureframe"
-      datePublished="2026-03-14"
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Compare', path: '/compare' },
+              { name: 'FormaOS vs Secureframe', path: '/compare/secureframe' },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <ComparePageTemplate
+        competitor="Secureframe"
+        heroDescription="Secureframe helps teams organize and automate compliance programs. FormaOS is built to operationalize compliance as a governed execution system - with workflow enforcement, continuous posture, named accountability, and audit-ready evidence for every regulated sector."
+        points={points}
+        idealIf={idealIf}
+        procurementChecks={procurementChecks}
+        featureComparison={featureComparison}
+        competitorStrengths={competitorStrengths}
+        source="compare_secureframe"
+        datePublished="2026-03-14"
+      />
+    </>
   );
 }

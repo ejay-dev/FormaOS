@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: PRIVACY_CANONICAL_URL,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Privacy Policy',
+    description:
+      'Privacy policy for the FormaOS enterprise compliance platform. We are committed to protecting your personal and organizational information in regulated industries.',
+  },
 };
 
 export default function PrivacyPage() {

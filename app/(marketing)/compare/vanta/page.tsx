@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: Vanta',
   description:
@@ -165,16 +169,31 @@ const procurementChecks = [
 
 export default function CompareVantaPage() {
   return (
-    <ComparePageTemplate
-      competitor="Vanta"
-      heroDescription="Vanta is widely used for security compliance automation. FormaOS is built to operationalize compliance as a full execution system - with named accountability, evidence defensibility, data sovereignty, and regulated-sector coverage beyond security teams."
-      points={points}
-      idealIf={idealIf}
-      procurementChecks={procurementChecks}
-      featureComparison={featureComparison}
-      competitorStrengths={competitorStrengths}
-      source="compare_vanta"
-      datePublished="2026-03-14"
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Compare', path: '/compare' },
+              { name: 'FormaOS vs Vanta', path: '/compare/vanta' },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <ComparePageTemplate
+        competitor="Vanta"
+        heroDescription="Vanta is widely used for security compliance automation. FormaOS is built to operationalize compliance as a full execution system - with named accountability, evidence defensibility, data sovereignty, and regulated-sector coverage beyond security teams."
+        points={points}
+        idealIf={idealIf}
+        procurementChecks={procurementChecks}
+        featureComparison={featureComparison}
+        competitorStrengths={competitorStrengths}
+        source="compare_vanta"
+        datePublished="2026-03-14"
+      />
+    </>
   );
 }

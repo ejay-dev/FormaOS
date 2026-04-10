@@ -28,6 +28,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/trust/packet`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Vendor Trust Packet',
+    description:
+      'Vendor trust packet covering architecture, encryption, identity governance, data handling, and assurance review materials.',
+  },
 };
 
 const sections = [
@@ -184,10 +190,10 @@ export default function TrustPacketPage() {
           <p className="text-sm text-muted-foreground leading-relaxed">
             The Trust Packet is designed to answer the first wave of questions
             from your security team, legal counsel, and procurement reviewers
-            during early evaluation. It uses intentional "aligned vs
-            certified" language so your team knows exactly what we are
-            claiming and what we are not. For additional restricted artifacts,
-            use the request form below.
+            during early evaluation. It uses intentional "aligned vs certified"
+            language so your team knows exactly what we are claiming and what we
+            are not. For additional restricted artifacts, use the request form
+            below.
           </p>
         </div>
 

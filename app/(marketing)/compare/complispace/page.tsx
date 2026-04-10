@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 
 export const metadata: Metadata = {
   title:
@@ -167,16 +171,31 @@ const procurementChecks = [
 
 export default function CompareCompliSpacePage() {
   return (
-    <ComparePageTemplate
-      competitor="CompliSpace"
-      heroDescription="CompliSpace is an Australian compliance platform with deep expertise in education and childcare sector training and policy management. FormaOS takes a different approach — built to execute compliance as operational workflows across five regulated industries, with named ownership, evidence verification chains, and audit-ready posture dashboards."
-      points={points}
-      idealIf={idealIf}
-      procurementChecks={procurementChecks}
-      featureComparison={featureComparison}
-      competitorStrengths={competitorStrengths}
-      source="compare_complispace"
-      datePublished="2026-04-09"
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Compare', path: '/compare' },
+              { name: 'FormaOS vs CompliSpace', path: '/compare/complispace' },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <ComparePageTemplate
+        competitor="CompliSpace"
+        heroDescription="CompliSpace is an Australian compliance platform with deep expertise in education and childcare sector training and policy management. FormaOS takes a different approach — built to execute compliance as operational workflows across five regulated industries, with named ownership, evidence verification chains, and audit-ready posture dashboards."
+        points={points}
+        idealIf={idealIf}
+        procurementChecks={procurementChecks}
+        featureComparison={featureComparison}
+        competitorStrengths={competitorStrengths}
+        source="compare_complispace"
+        datePublished="2026-04-09"
+      />
+    </>
   );
 }

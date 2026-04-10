@@ -567,7 +567,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'security-soc2-journey',
-    title: 'Our SOC 2 Alignment Journey: Lessons Learned Building FormaOS',
+    title: 'Our SOC 2 Journey: Lessons Learned Building FormaOS',
     excerpt:
       'An inside look at how we aligned to SOC 2 controls, what we prioritized, where we struggled, and how we built repeatable evidence along the way.',
     author: 'Engineering Team',
@@ -988,8 +988,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'ndis-unannounced-audits-2026',
-    title:
-      'What NDIS Registered Providers Need to Know About Unannounced Audits in 2026',
+    title: 'NDIS Unannounced Audits 2026: What Providers Must Know',
     excerpt:
       'The NDIS Quality and Safeguards Commission is stepping up unannounced audits. Learn what triggers them, how to prepare, and the evidence you need on hand.',
     author: 'FormaOS Team',
@@ -1177,8 +1176,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'ahpra-registration-compliance',
-    title:
-      'AHPRA Registration Compliance: What Allied Health Providers Must Track',
+    title: 'AHPRA Compliance: What Allied Health Providers Must Track',
     excerpt:
       'AHPRA regulates 16 health professions across Australia. Learn what registration, CPD, and renewal obligations allied health providers must track to stay compliant.',
     author: 'FormaOS Team',
@@ -1257,8 +1255,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'nsqhs-standards-continuous-compliance',
-    title:
-      'NSQHS Standards: How Australian Healthcare Providers Can Achieve Continuous Compliance',
+    title: 'NSQHS Standards: Achieving Continuous Compliance in AU Healthcare',
     excerpt:
       'The NSQHS Standards define safety and quality for Australian healthcare. Learn how to move from periodic preparation to continuous compliance across all 8 standards.',
     author: 'FormaOS Team',
@@ -1342,7 +1339,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'afs-licence-obligations-checklist',
-    title: 'AFS Licence Obligations Under ASIC s912A: A Compliance Checklist',
+    title: 'AFS Licence Obligations: ASIC s912A Compliance Checklist',
     excerpt:
       'Section 912A of the Corporations Act sets out the general obligations of AFS licensees. This checklist breaks down each obligation and how to demonstrate compliance.',
     author: 'FormaOS Team',
@@ -1422,7 +1419,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'acecqa-nqf-self-assessment',
-    title: 'ACECQA NQF Self-Assessment: How to Stay Assessment-Ready Every Day',
+    title: 'ACECQA NQF Self-Assessment: Stay Assessment-Ready Daily',
     excerpt:
       'Learn how early childhood education services can embed the National Quality Framework into daily practice and stay ready for Assessment and Rating at all times.',
     author: 'FormaOS Team',
@@ -1504,8 +1501,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'whs-compliance-construction',
-    title:
-      'WHS Act Compliance for Construction: SafeWork Obligations Explained',
+    title: 'WHS Compliance for Construction: SafeWork Obligations',
     excerpt:
       'Construction carries some of the highest WHS risks in Australia. Understand your duties under the model WHS Act, SWMS requirements, and SafeWork reporting obligations.',
     author: 'FormaOS Team',
@@ -1586,8 +1582,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'compliance-os-vs-grc',
-    title:
-      'What is a Compliance Operating System? How It Differs from GRC Software',
+    title: 'Compliance OS vs GRC: What Makes Them Different',
     excerpt:
       'Compliance operating systems and GRC platforms both manage risk and compliance, but they take fundamentally different approaches. Learn which is right for your organisation.',
     author: 'FormaOS Team',
@@ -1692,8 +1687,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'sirs-notification-requirements',
-    title:
-      'SIRS Notifications: What NDIS and Aged Care Providers Must Report and When',
+    title: 'SIRS Notifications: What NDIS and Aged Care Providers Must Report',
     excerpt:
       'The Serious Incident Response Scheme imposes strict reporting obligations on NDIS and aged care providers. Learn what qualifies, the time limits, and how to comply.',
     author: 'FormaOS Team',
@@ -1777,8 +1771,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     id: 'austrac-aml-ctf-compliance-guide',
-    title:
-      'AML/CTF Compliance for Australian Financial Services: AUSTRAC Obligations Guide',
+    title: 'AUSTRAC AML/CTF Compliance for Australian Financial Services',
     excerpt:
       'AUSTRAC regulates anti-money laundering and counter-terrorism financing in Australia. Understand your AML/CTF program obligations, CDD requirements, and reporting duties.',
     author: 'FormaOS Team',

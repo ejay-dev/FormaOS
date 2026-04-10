@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: Drata',
   description:
@@ -165,16 +169,31 @@ const procurementChecks = [
 
 export default function CompareDrataPage() {
   return (
-    <ComparePageTemplate
-      competitor="Drata"
-      heroDescription="Drata helps security teams monitor compliance posture. FormaOS is built to run compliance as a governed operating system - linking controls to execution workflows, named ownership, and defensible evidence across every regulated sector."
-      points={points}
-      idealIf={idealIf}
-      procurementChecks={procurementChecks}
-      featureComparison={featureComparison}
-      competitorStrengths={competitorStrengths}
-      source="compare_drata"
-      datePublished="2026-03-14"
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Compare', path: '/compare' },
+              { name: 'FormaOS vs Drata', path: '/compare/drata' },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <ComparePageTemplate
+        competitor="Drata"
+        heroDescription="Drata helps security teams monitor compliance posture. FormaOS is built to run compliance as a governed operating system - linking controls to execution workflows, named ownership, and defensible evidence across every regulated sector."
+        points={points}
+        idealIf={idealIf}
+        procurementChecks={procurementChecks}
+        featureComparison={featureComparison}
+        competitorStrengths={competitorStrengths}
+        source="compare_drata"
+        datePublished="2026-03-14"
+      />
+    </>
   );
 }

@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/trust/vendor-assurance`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Vendor Assurance',
+    description:
+      'Vendor assurance process, independent assessment approach, and enterprise review materials for buyers evaluating FormaOS.',
+  },
 };
 
 export default function VendorAssurancePage() {
@@ -75,7 +81,9 @@ export default function VendorAssurancePage() {
                     <li>Independent security review process</li>
                     <li>Re-assessment after major platform changes</li>
                     <li>Remediation tracking and verified fix documentation</li>
-                    <li>Current summaries shared during review when appropriate</li>
+                    <li>
+                      Current summaries shared during review when appropriate
+                    </li>
                   </ul>
                 </div>
                 <div className="rounded-xl border border-border bg-background/40 p-4">

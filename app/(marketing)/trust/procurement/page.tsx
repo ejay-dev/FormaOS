@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/trust/procurement`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Procurement FAQ',
+    description:
+      'Answers to common procurement and security review questions for enterprise buyers.',
+  },
 };
 
 const faqs = [
@@ -137,7 +143,8 @@ export default function ProcurementFAQPage() {
               },
               {
                 day: 'Buyer review',
-                action: 'Review export-ready evidence packages for stakeholders',
+                action:
+                  'Review export-ready evidence packages for stakeholders',
               },
             ].map(({ day, action }) => (
               <div

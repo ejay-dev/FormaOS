@@ -25,6 +25,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/trust/dpa`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Data Processing Agreement',
+    description:
+      'FormaOS Data Processing Agreement for enterprise customers. GDPR-compliant data handling terms.',
+  },
 };
 
 export default function DPAPage() {
@@ -35,7 +41,12 @@ export default function DPAPage() {
         description="Customer data processed under the Australian Privacy Act 1988, GDPR, and applicable data protection laws. AU-hosted by default. Signed DPA available for enterprise."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<FileText className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<FileText className="w-8 h-8 text-emerald-400" />}
+            color="52,211,153"
+          />
+        }
       />
       <div className="mx-auto max-w-4xl px-6 pb-24">
         <p className="text-sm text-muted-foreground mt-2 mb-12">
@@ -75,7 +86,10 @@ export default function DPAPage() {
                 { icon: Globe, label: 'TLS 1.3 encryption in transit' },
                 { icon: Users, label: 'Role-based access controls' },
                 { icon: FileText, label: 'Immutable audit logging' },
-                { icon: Server, label: 'SOC 2 reports available from hosting providers' },
+                {
+                  icon: Server,
+                  label: 'SOC 2 reports available from hosting providers',
+                },
                 { icon: Clock, label: 'Automated backup & recovery' },
               ].map(({ icon: Icon, label }) => (
                 <div
@@ -124,13 +138,14 @@ export default function DPAPage() {
 
           <Section title="6. Data Retention, Portability & Deletion">
             <p>
-              Data retention periods are configurable and may be tailored to your
-              specific regulatory obligations (e.g., 7-year ASIC record retention,
-              NDIS evidence retention requirements). Upon termination or plan
-              cancellation, customers can export compliance data, evidence
-              artifacts, and audit trail records in portable formats (CSV, JSON,
-              ZIP). Export windows, deletion timing, and written confirmation are
-              handled in accordance with the applicable agreement.
+              Data retention periods are configurable and may be tailored to
+              your specific regulatory obligations (e.g., 7-year ASIC record
+              retention, NDIS evidence retention requirements). Upon termination
+              or plan cancellation, customers can export compliance data,
+              evidence artifacts, and audit trail records in portable formats
+              (CSV, JSON, ZIP). Export windows, deletion timing, and written
+              confirmation are handled in accordance with the applicable
+              agreement.
             </p>
           </Section>
 

@@ -16,6 +16,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/documentation`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Documentation & Knowledge Base | FormaOS',
+    description:
+      'Comprehensive documentation for FormaOS, guides, tutorials, and API references for the compliance operating system.',
+  },
 };
 
 export default function DocumentationPage() {

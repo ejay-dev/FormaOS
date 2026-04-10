@@ -10,6 +10,21 @@ export const metadata: Metadata = {
   description:
     'Enterprise security review FAQ for procurement, security, and compliance stakeholders evaluating FormaOS.',
   alternates: { canonical: `${siteUrl}/security-review/faq` },
+  openGraph: {
+    title: 'Security Review FAQ | FormaOS',
+    description:
+      'Enterprise security review FAQ for procurement, security, and compliance stakeholders evaluating FormaOS.',
+    type: 'website',
+    url: `${siteUrl}/security-review/faq`,
+    locale: 'en_AU',
+    siteName: 'FormaOS',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Security Review FAQ | FormaOS',
+    description:
+      'Enterprise security review FAQ for procurement, security, and compliance stakeholders evaluating FormaOS.',
+  },
 };
 
 const faqs = [
@@ -127,7 +142,12 @@ export default function SecurityReviewFaqPage() {
         description="Written for security, compliance, and procurement reviewers. This page avoids inflated claims and uses contract-accurate language."
         topColor="emerald"
         bottomColor="cyan"
-        visualContent={<CompactHeroIcon icon={<HelpCircle className="w-8 h-8 text-emerald-400" />} color="52,211,153" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<HelpCircle className="w-8 h-8 text-emerald-400" />}
+            color="52,211,153"
+          />
+        }
       />
 
       <div className="mx-auto max-w-4xl px-6 pb-24">
@@ -151,13 +171,19 @@ export default function SecurityReviewFaqPage() {
         </div>
 
         <div className="mt-12 flex flex-col sm:flex-row gap-4 text-sm">
-          <Link href="/security-review" className="text-primary hover:underline">
+          <Link
+            href="/security-review"
+            className="text-primary hover:underline"
+          >
             ← Back to Security Review Packet
           </Link>
           <Link href="/trust" className="text-primary hover:underline">
             Visit Trust Center →
           </Link>
-          <Link href="/trust/vendor-assurance" className="text-primary hover:underline">
+          <Link
+            href="/trust/vendor-assurance"
+            className="text-primary hover:underline"
+          >
             Vendor Assurance →
           </Link>
         </div>

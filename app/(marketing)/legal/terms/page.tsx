@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/legal/terms`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Terms & Conditions',
+    description:
+      'Terms and conditions for the FormaOS enterprise compliance platform. The framework for responsible platform usage, data integrity, and shared accountability.',
+  },
 };
 
 export default function TermsPage() {

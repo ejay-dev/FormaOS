@@ -11,6 +11,19 @@ export const metadata: Metadata = {
   title: 'FormaOS | Status',
   description: 'Public uptime checks and status for FormaOS.',
   alternates: { canonical: `${siteUrl}/status` },
+  openGraph: {
+    title: 'FormaOS | Status',
+    description: 'Public uptime checks and status for FormaOS.',
+    type: 'website',
+    url: `${siteUrl}/status`,
+    locale: 'en_AU',
+    siteName: 'FormaOS',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Status',
+    description: 'Public uptime checks and status for FormaOS.',
+  },
 };
 
 function pct(ok: number, total: number) {

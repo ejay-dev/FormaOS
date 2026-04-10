@@ -8,6 +8,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteUrl}/operate`,
   },
+  openGraph: {
+    title: 'Operate Compliance | FormaOS',
+    description:
+      'Operate compliance continuously with accountable workflows, task orchestration, and real-time signals.',
+    type: 'website',
+    url: `${siteUrl}/operate`,
+    locale: 'en_AU',
+    siteName: 'FormaOS',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Operate Compliance | FormaOS',
+    description:
+      'Operate compliance continuously with accountable workflows, task orchestration, and real-time signals.',
+  },
 };
 
 export default function OperatePage() {

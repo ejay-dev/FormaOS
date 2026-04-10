@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/security-review`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Security Review Packet',
+    description:
+      'Procurement-ready security review walkthrough: architecture, data handling, access controls, audit logging, and operational assurance.',
+  },
 };
 
 export default function SecurityReviewPage() {

@@ -1,6 +1,30 @@
+import type { Metadata } from 'next';
 import { API_KEY_SCOPES } from '@/lib/api-keys/scopes';
 import { V1_OPENAPI_ROUTES, generateOpenApiSpec } from '@/lib/api-keys/openapi';
 import { RELAY_EVENT_LABELS } from '@/lib/integrations/webhook-relay';
+import { siteUrl } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'API Documentation — FormaOS REST API Reference',
+  description:
+    'Complete reference for the FormaOS v1 REST API. Bearer authentication, scoped API keys, rate limits, cursor pagination, webhooks, and OpenAPI 3.1 spec.',
+  alternates: { canonical: `${siteUrl}/documentation/api` },
+  openGraph: {
+    title: 'API Documentation — FormaOS REST API Reference',
+    description:
+      'Complete reference for the FormaOS v1 REST API. Bearer authentication, scoped API keys, rate limits, cursor pagination, webhooks, and OpenAPI 3.1 spec.',
+    type: 'website',
+    url: `${siteUrl}/documentation/api`,
+    locale: 'en_AU',
+    siteName: 'FormaOS',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'API Documentation — FormaOS REST API Reference',
+    description:
+      'FormaOS v1 REST API: bearer auth, scoped keys, rate limits, webhooks, and OpenAPI 3.1 spec.',
+  },
+};
 
 const baseUrl =
   process.env.NEXT_PUBLIC_APP_URL?.trim() ||
@@ -39,11 +63,13 @@ export default function ApiDocumentationPage() {
           FormaOS API
         </p>
         <h1 className="mt-3 text-5xl font-black tracking-tight">
-          Compliance data, automation events, and delivery primitives in one surface.
+          Compliance data, automation events, and delivery primitives in one
+          surface.
         </h1>
         <p className="mt-5 text-base leading-7 text-slate-300">
-          The v1 API supports bearer API keys and authenticated sessions, scoped per organization,
-          with rate limits, cursor pagination, and signed webhooks.
+          The v1 API supports bearer API keys and authenticated sessions, scoped
+          per organization, with rate limits, cursor pagination, and signed
+          webhooks.
         </p>
       </header>
 
@@ -51,21 +77,27 @@ export default function ApiDocumentationPage() {
         <div>
           <h2 className="text-lg font-black">Authentication</h2>
           <p className="mt-3 text-sm text-slate-300">
-            Use <code className="rounded bg-black/30 px-1 py-0.5">Authorization: Bearer fos_...</code>.
-            If no API key is provided, session authentication is used as a fallback.
+            Use{' '}
+            <code className="rounded bg-black/30 px-1 py-0.5">
+              Authorization: Bearer fos_...
+            </code>
+            . If no API key is provided, session authentication is used as a
+            fallback.
           </p>
         </div>
         <div>
           <h2 className="text-lg font-black">Rate Limits</h2>
           <p className="mt-3 text-sm text-slate-300">
-            Every response includes <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>,
-            and <code>X-RateLimit-Reset</code>.
+            Every response includes <code>X-RateLimit-Limit</code>,{' '}
+            <code>X-RateLimit-Remaining</code>, and{' '}
+            <code>X-RateLimit-Reset</code>.
           </p>
         </div>
         <div>
           <h2 className="text-lg font-black">Envelope</h2>
           <p className="mt-3 text-sm text-slate-300">
-            All list endpoints return <code>{`{ data, meta: { cursor, hasMore, total } }`}</code>.
+            All list endpoints return{' '}
+            <code>{`{ data, meta: { cursor, hasMore, total } }`}</code>.
           </p>
         </div>
       </section>
@@ -101,9 +133,14 @@ export default function ApiDocumentationPage() {
             <h2 className="text-2xl font-black">Webhook Events</h2>
             <div className="mt-6 grid gap-3 md:grid-cols-2">
               {Object.entries(RELAY_EVENT_LABELS).map(([event, label]) => (
-                <div key={event} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div
+                  key={event}
+                  className="rounded-2xl border border-white/10 bg-white/5 p-4"
+                >
                   <p className="font-semibold text-slate-100">{label}</p>
-                  <code className="mt-2 block text-xs text-cyan-200">{event}</code>
+                  <code className="mt-2 block text-xs text-cyan-200">
+                    {event}
+                  </code>
                 </div>
               ))}
             </div>
@@ -158,7 +195,8 @@ export default function ApiDocumentationPage() {
           <div className="rounded-[2rem] border border-white/10 bg-slate-950/70 p-6">
             <h2 className="text-2xl font-black">OpenAPI 3.1</h2>
             <p className="mt-3 text-sm text-slate-300">
-              The spec below is generated from route metadata and can be used to bootstrap SDKs.
+              The spec below is generated from route metadata and can be used to
+              bootstrap SDKs.
             </p>
             <pre className="mt-4 max-h-[28rem] overflow-auto rounded-2xl bg-black/30 p-4 text-[11px] text-slate-200">
               {JSON.stringify(spec, null, 2)}
@@ -168,11 +206,23 @@ export default function ApiDocumentationPage() {
           <div className="rounded-[2rem] border border-rose-400/20 bg-rose-500/10 p-6">
             <h2 className="text-2xl font-black">Error Codes</h2>
             <ul className="mt-4 space-y-2 text-sm text-slate-200">
-              <li><code>400</code> Invalid request body, query params, or scope mismatch.</li>
-              <li><code>401</code> Missing or invalid API key / session.</li>
-              <li><code>403</code> Organization isolation or admin guard failure.</li>
-              <li><code>429</code> Rate limit exceeded for API key or session.</li>
-              <li><code>500</code> Internal processing failure or downstream dependency error.</li>
+              <li>
+                <code>400</code> Invalid request body, query params, or scope
+                mismatch.
+              </li>
+              <li>
+                <code>401</code> Missing or invalid API key / session.
+              </li>
+              <li>
+                <code>403</code> Organization isolation or admin guard failure.
+              </li>
+              <li>
+                <code>429</code> Rate limit exceeded for API key or session.
+              </li>
+              <li>
+                <code>500</code> Internal processing failure or downstream
+                dependency error.
+              </li>
             </ul>
           </div>
         </div>

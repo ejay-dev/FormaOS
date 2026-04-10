@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 
 export const metadata: Metadata = {
   title:
@@ -166,16 +170,31 @@ const procurementChecks = [
 
 export default function CompareRiskwarePage() {
   return (
-    <ComparePageTemplate
-      competitor="Riskware"
-      heroDescription="Riskware is a mature Australian GRC platform with strong risk management and internal audit capabilities. FormaOS takes a different approach — built to run compliance as operational workflows with industry-specific frameworks, named ownership, and evidence verification chains across every regulated sector."
-      points={points}
-      idealIf={idealIf}
-      procurementChecks={procurementChecks}
-      featureComparison={featureComparison}
-      competitorStrengths={competitorStrengths}
-      source="compare_riskware"
-      datePublished="2026-04-09"
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Compare', path: '/compare' },
+              { name: 'FormaOS vs Riskware', path: '/compare/riskware' },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <ComparePageTemplate
+        competitor="Riskware"
+        heroDescription="Riskware is a mature Australian GRC platform with strong risk management and internal audit capabilities. FormaOS takes a different approach — built to run compliance as operational workflows with industry-specific frameworks, named ownership, and evidence verification chains across every regulated sector."
+        points={points}
+        idealIf={idealIf}
+        procurementChecks={procurementChecks}
+        featureComparison={featureComparison}
+        competitorStrengths={competitorStrengths}
+        source="compare_riskware"
+        datePublished="2026-04-09"
+      />
+    </>
   );
 }

@@ -8,6 +8,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${siteUrl}/govern`,
   },
+  openGraph: {
+    title: 'Govern Compliance | FormaOS',
+    description:
+      'Govern enterprise compliance with executive visibility, risk prioritization, and cross-workflow orchestration.',
+    type: 'website',
+    url: `${siteUrl}/govern`,
+    locale: 'en_AU',
+    siteName: 'FormaOS',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Govern Compliance | FormaOS',
+    description:
+      'Govern enterprise compliance with executive visibility, risk prioritization, and cross-workflow orchestration.',
+  },
 };
 
 export default function GovernPage() {

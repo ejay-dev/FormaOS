@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     type: 'website',
     url: `${siteUrl}/trust/sla`,
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | SLA',
+    description:
+      'Service levels, support expectations, and availability review guidance for FormaOS plans.',
+  },
 };
 
 const tiers = [

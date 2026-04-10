@@ -1,6 +1,10 @@
 import { Metadata } from 'next';
 import HealthcareContent from './HealthcareContent';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Healthcare Compliance Management | FormaOS',
   description:
@@ -22,5 +26,22 @@ export const metadata: Metadata = {
 };
 
 export default function HealthcareUseCasePage() {
-  return <HealthcareContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Use Cases', path: '/use-cases/healthcare' },
+              { name: 'Healthcare Compliance', path: '/use-cases/healthcare' },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <HealthcareContent />
+    </>
+  );
 }

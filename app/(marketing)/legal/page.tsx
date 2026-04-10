@@ -10,6 +10,21 @@ export const metadata: Metadata = {
   description:
     'Legal and compliance resources for FormaOS: Terms, Privacy, DPA summary, subprocessors, and status.',
   alternates: { canonical: `${siteUrl}/legal` },
+  openGraph: {
+    title: 'FormaOS | Legal',
+    description:
+      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA summary, subprocessors, and status.',
+    type: 'website',
+    url: `${siteUrl}/legal`,
+    locale: 'en_AU',
+    siteName: 'FormaOS',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FormaOS | Legal',
+    description:
+      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA, subprocessors, and status.',
+  },
 };
 
 const links = [
@@ -53,7 +68,12 @@ export default function LegalIndexPage() {
         description="Procurement-ready legal and privacy resources. Content reflects implemented platform behavior and contract-first commitments."
         topColor="violet"
         bottomColor="blue"
-        visualContent={<CompactHeroIcon icon={<Scale className="w-8 h-8 text-violet-400" />} color="139,92,246" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<Scale className="w-8 h-8 text-violet-400" />}
+            color="139,92,246"
+          />
+        }
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-24">
@@ -93,4 +113,3 @@ export default function LegalIndexPage() {
     </MarketingPageShell>
   );
 }
-

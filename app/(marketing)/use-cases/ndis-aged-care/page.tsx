@@ -1,6 +1,10 @@
 import { Metadata } from 'next';
 import NDISContent from './NDISContent';
-import { siteUrl } from '@/lib/seo';
+import {
+  siteUrl,
+  breadcrumbSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'NDIS & Aged Care Compliance | FormaOS',
   description:
@@ -22,5 +26,25 @@ export const metadata: Metadata = {
 };
 
 export default function NDISUseCasePage() {
-  return <NDISContent />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Use Cases', path: '/use-cases/ndis-aged-care' },
+              {
+                name: 'NDIS & Aged Care Compliance',
+                path: '/use-cases/ndis-aged-care',
+              },
+            ]),
+            softwareApplicationSchema(),
+          ]),
+        }}
+      />
+      <NDISContent />
+    </>
+  );
 }
