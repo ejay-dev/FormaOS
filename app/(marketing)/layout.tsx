@@ -33,7 +33,16 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
   const _siteUrl = brand.seo.siteUrl;
 
   return (
-    <div className="mk-shell mk-shell--layered-bg font-[var(--font-body)]">
+    <>
+      {/* Preload hero background image so browser discovers it in initial HTML */}
+      <link
+        rel="preload"
+        href="/marketing-media/home.jpg"
+        as="image"
+        type="image/jpeg"
+        fetchPriority="high"
+      />
+      <div className="mk-shell mk-shell--layered-bg font-[var(--font-body)]">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] mk-btn mk-btn-secondary px-4 py-2"
@@ -106,5 +115,6 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
         <Footer />
       </div>
     </div>
+    </>
   );
 }

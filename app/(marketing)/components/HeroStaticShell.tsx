@@ -32,6 +32,16 @@ export function HeroStaticShell() {
       className="home-hero home-hero--dense relative isolate overflow-hidden"
       aria-label="Hero"
     >
+      {/* Server-rendered hero background image — discovered in initial HTML for fast LCP */}
+      <img
+        src="/marketing-media/home.jpg"
+        alt=""
+        aria-hidden="true"
+        fetchPriority="high"
+        decoding="async"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.24]"
+        style={{ objectPosition: '50% 30%' }}
+      />
       {/* Static background - no animation, preserved for SEO and no-JS users */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/5 via-slate-950/25 to-slate-950/75" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-5%,transparent_55%,rgba(3,7,18,0.65)_100%)]" />
@@ -93,7 +103,8 @@ export function HeroStaticShell() {
         </div>
 
         <p className="mt-6 text-sm text-slate-400">
-          No credit card required &middot; 14-day free trial &middot; AU-hosted by default
+          No credit card required &middot; 14-day free trial &middot; AU-hosted
+          by default
         </p>
       </div>
     </section>

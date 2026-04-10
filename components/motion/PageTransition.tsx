@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { type ReactNode, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { easing } from '@/config/motion';
@@ -38,6 +38,11 @@ const variants = {
 export function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
+  const isFirstMount = useRef(true);
+
+  useEffect(() => {
+    isFirstMount.current = false;
+  }, []);
 
   if (shouldReduceMotion) {
     return <div key={pathname}>{children}</div>;
@@ -48,7 +53,7 @@ export function PageTransition({ children }: PageTransitionProps) {
       <motion.div
         key={pathname}
         variants={variants}
-        initial="initial"
+        initial={isFirstMount.current ? false : 'initial'}
         animate="enter"
         exit="exit"
         className="will-change-[opacity,transform]"
