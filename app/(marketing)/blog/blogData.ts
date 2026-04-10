@@ -120,6 +120,18 @@ export const blogPosts: BlogPost[] = [
             label: 'Pricing and rollout options',
             href: '/pricing',
           },
+          {
+            label: 'Industries we serve',
+            href: '/industries',
+            description:
+              'See how FormaOS supports NDIS, healthcare, financial services, childcare, and construction.',
+          },
+          {
+            label: 'FormaOS vs traditional GRC',
+            href: '/compare/riskware',
+            description:
+              'Compare operational compliance vs legacy GRC approaches.',
+          },
         ],
       },
     ],
@@ -197,6 +209,11 @@ export const blogPosts: BlogPost[] = [
           {
             label: 'Pricing for providers',
             href: '/pricing',
+          },
+          {
+            label: 'NDIS compliance software',
+            href: '/ndis-providers',
+            description: 'Purpose-built compliance for NDIS providers.',
           },
         ],
         paragraphs: [
@@ -276,6 +293,17 @@ export const blogPosts: BlogPost[] = [
             label: 'Security architecture',
             href: '/security',
           },
+          {
+            label: 'Healthcare compliance',
+            href: '/healthcare-compliance',
+            description:
+              'Immutable audit trails for AHPRA and NSQHS compliance.',
+          },
+          {
+            label: 'Financial services compliance',
+            href: '/financial-services-compliance',
+            description: 'Defensible evidence for ASIC and APRA obligations.',
+          },
         ],
       },
     ],
@@ -350,6 +378,18 @@ export const blogPosts: BlogPost[] = [
           {
             label: 'Explore product workflows',
             href: '/product',
+          },
+          {
+            label: 'NDIS compliance',
+            href: '/ndis-providers',
+            description:
+              'Automated evidence collection for NDIS Practice Standards.',
+          },
+          {
+            label: 'Healthcare compliance',
+            href: '/healthcare-compliance',
+            description:
+              'Evidence automation for NSQHS and clinical governance.',
           },
         ],
       },
@@ -426,6 +466,17 @@ export const blogPosts: BlogPost[] = [
             label: 'Pricing and rollout plans',
             href: '/pricing',
           },
+          {
+            label: 'Industries overview',
+            href: '/industries',
+            description:
+              'Framework coverage across five regulated Australian industries.',
+          },
+          {
+            label: 'FormaOS vs 6clicks',
+            href: '/compare/6clicks',
+            description: 'Compare purpose-built compliance vs AI-powered GRC.',
+          },
         ],
       },
     ],
@@ -494,6 +545,17 @@ export const blogPosts: BlogPost[] = [
           {
             label: 'Security posture details',
             href: '/security',
+          },
+          {
+            label: 'Construction WHS compliance',
+            href: '/construction-compliance',
+            description:
+              'Real-time monitoring for WHS and site safety obligations.',
+          },
+          {
+            label: 'Financial services compliance',
+            href: '/financial-services-compliance',
+            description: 'Continuous compliance for ASIC, APRA, and AUSTRAC.',
           },
         ],
         paragraphs: [
@@ -572,6 +634,17 @@ export const blogPosts: BlogPost[] = [
             label: 'Security architecture',
             href: '/security',
           },
+          {
+            label: 'FormaOS vs Vanta',
+            href: '/compare/vanta',
+            description:
+              'How FormaOS differs from security-first compliance tools.',
+          },
+          {
+            label: 'FormaOS vs Drata',
+            href: '/compare/drata',
+            description: 'Operational compliance vs automated monitoring.',
+          },
         ],
       },
     ],
@@ -645,6 +718,17 @@ export const blogPosts: BlogPost[] = [
             label: 'Explore the platform',
             href: '/product',
           },
+          {
+            label: 'Childcare compliance',
+            href: '/childcare-compliance',
+            description:
+              'Risk-based controls for NQF, ACECQA, and child safety.',
+          },
+          {
+            label: 'Industries we serve',
+            href: '/industries',
+            description: 'See control mapping across all regulated sectors.',
+          },
         ],
       },
     ],
@@ -714,6 +798,18 @@ export const blogPosts: BlogPost[] = [
           {
             label: 'Pricing and rollout plans',
             href: '/pricing',
+          },
+          {
+            label: 'NDIS providers',
+            href: '/ndis-providers',
+            description:
+              'Policy automation for NDIS Practice Standards compliance.',
+          },
+          {
+            label: 'FormaOS vs CompliSpace',
+            href: '/compare/complispace',
+            description:
+              'Compare policy management vs full compliance execution.',
           },
         ],
         paragraphs: [
@@ -790,6 +886,12 @@ export const blogPosts: BlogPost[] = [
             label: 'Product workflows',
             href: '/product',
           },
+          {
+            label: 'Financial services compliance',
+            href: '/financial-services-compliance',
+            description:
+              'Vendor risk management for ASIC and APRA obligated entities.',
+          },
         ],
       },
     ],
@@ -863,6 +965,18 @@ export const blogPosts: BlogPost[] = [
           {
             label: 'Security posture',
             href: '/security',
+          },
+          {
+            label: 'Healthcare compliance',
+            href: '/healthcare-compliance',
+            description:
+              'Data retention for health records and clinical governance.',
+          },
+          {
+            label: 'Childcare compliance',
+            href: '/childcare-compliance',
+            description:
+              'Privacy controls for child safety and NQF compliance.',
           },
         ],
         paragraphs: [
@@ -1554,6 +1668,23 @@ export const blogPosts: BlogPost[] = [
             href: '/what-is-a-compliance-operating-system',
             description:
               'Understand how FormaOS implements the compliance operating system approach.',
+          },
+          {
+            label: 'Industries we serve',
+            href: '/industries',
+            description:
+              'See how a compliance OS works across NDIS, healthcare, financial services, childcare, and construction.',
+          },
+          {
+            label: 'FormaOS vs Riskware',
+            href: '/compare/riskware',
+            description:
+              'Compare operational compliance execution vs traditional GRC.',
+          },
+          {
+            label: 'FormaOS vs 6clicks',
+            href: '/compare/6clicks',
+            description: 'Purpose-built compliance vs AI-powered GRC.',
           },
         ],
       },

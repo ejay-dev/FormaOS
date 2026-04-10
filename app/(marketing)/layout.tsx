@@ -43,78 +43,78 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
         fetchPriority="high"
       />
       <div className="mk-shell mk-shell--layered-bg font-[var(--font-body)]">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] mk-btn mk-btn-secondary px-4 py-2"
-      >
-        Skip to main content
-      </a>
-      {/* Add OAuthRedirectWrapper to handle OAuth redirects */}
-      <OAuthRedirectWrapper />
-      <div className="relative min-h-screen overflow-hidden">
-        {/* Premium header with glass effect and micro-animations */}
-        <header className="mk-header-premium sticky top-0 z-50">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-[68px] sm:h-[72px] lg:h-[76px] items-center justify-between gap-3 sm:gap-4 lg:gap-6">
-              {/* Logo */}
-              <div className="flex shrink-0 items-center">
-                <Link
-                  href="/"
-                  aria-label="FormaOS Home"
-                  className="flex items-center text-white transition-opacity hover:opacity-90"
-                >
-                  <Logo variant="mark" size={42} />
-                </Link>
-              </div>
-
-              {/* Desktop Navigation */}
-              <NavLinks />
-
-              {/* Separator + CTA */}
-              <div className="hidden md:flex items-center gap-2.5 lg:gap-3">
-                <div className="mk-nav-divider" aria-hidden="true" />
-                <HeaderCTA />
-              </div>
-
-              {/* Mobile Navigation */}
-              <MobileNav />
-            </div>
-          </div>
-        </header>
-
-        {/* Scrolled state for header glass enhancement */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})();`,
-          }}
-        />
-
-        <main
-          id="main-content"
-          className="relative z-10 mk-page-bg mk-marketing-flow"
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] mk-btn mk-btn-secondary px-4 py-2"
         >
-          <MarketingBackgroundLayer />
-          <div className="relative z-10">
-            <MarketingRouteBackdrop />
-            <div className="relative z-10">
-              <PageTransition>{children}</PageTransition>
-            </div>
-          </div>
-        </main>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              organizationSchema(),
-              softwareApplicationSchema(),
-            ]),
-          }}
-        />
+          Skip to main content
+        </a>
+        {/* Add OAuthRedirectWrapper to handle OAuth redirects */}
+        <OAuthRedirectWrapper />
+        <div className="relative min-h-screen overflow-hidden">
+          {/* Premium header with glass effect and micro-animations */}
+          <header className="mk-header-premium sticky top-0 z-50">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="flex h-[68px] sm:h-[72px] lg:h-[76px] items-center justify-between gap-3 sm:gap-4 lg:gap-6">
+                {/* Logo */}
+                <div className="flex shrink-0 items-center">
+                  <Link
+                    href="/"
+                    aria-label="FormaOS Home"
+                    className="flex items-center text-white transition-opacity hover:opacity-90"
+                  >
+                    <Logo variant="mark" size={42} />
+                  </Link>
+                </div>
 
-        {/* Premium animated footer */}
-        <Footer />
+                {/* Desktop Navigation */}
+                <NavLinks />
+
+                {/* Separator + CTA */}
+                <div className="hidden md:flex items-center gap-2.5 lg:gap-3">
+                  <div className="mk-nav-divider" aria-hidden="true" />
+                  <HeaderCTA />
+                </div>
+
+                {/* Mobile Navigation */}
+                <MobileNav />
+              </div>
+            </div>
+          </header>
+
+          {/* Scrolled state for header glass enhancement */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){var h=document.querySelector('.mk-header-premium');if(!h)return;var c='scrolled';function u(){h.classList.toggle(c,window.scrollY>10)}window.addEventListener('scroll',u,{passive:true});u()})();`,
+            }}
+          />
+
+          <main
+            id="main-content"
+            className="relative z-10 mk-page-bg mk-marketing-flow"
+          >
+            <MarketingBackgroundLayer />
+            <div className="relative z-10">
+              <MarketingRouteBackdrop />
+              <div className="relative z-10">
+                <PageTransition>{children}</PageTransition>
+              </div>
+            </div>
+          </main>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify([
+                organizationSchema(),
+                softwareApplicationSchema(),
+              ]),
+            }}
+          />
+
+          {/* Premium animated footer */}
+          <Footer />
+        </div>
       </div>
-    </div>
     </>
   );
 }

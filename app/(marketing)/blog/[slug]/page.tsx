@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { CalendarDays, Clock, User } from 'lucide-react';
 import { blogPosts, getCategoryId } from '../blogData';
 import { BlogHeroVisual } from '@/components/blog/BlogHeroVisual';
+import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { articleSchema, breadcrumbSchema, siteUrl } from '@/lib/seo';
@@ -195,6 +196,20 @@ export default async function BlogPostPage({ params }: PageProps) {
               </div>
             ))}
           </div>
+
+          <RelatedPosts
+            posts={(() => {
+              const sameCat = blogPosts.filter(
+                (p) => p.category === post.category && p.id !== post.id,
+              );
+              const other = blogPosts.filter(
+                (p) => p.category !== post.category && p.id !== post.id,
+              );
+              return [...sameCat, ...other].slice(0, 3).map(({ id, title, excerpt, date, readTime, category }) => ({
+                id, title, excerpt, date, readTime, category,
+              }));
+            })()}
+          />
 
           <div className="mt-16 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-3xl border border-white/5 bg-gray-900/50 p-8">
             <div>
