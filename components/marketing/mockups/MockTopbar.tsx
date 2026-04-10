@@ -16,7 +16,7 @@ const actionVariants = {
   }),
 };
 
-export function MockTopbar({ orgName = 'ejax.rehman' }: MockTopbarProps) {
+export function MockTopbar({ orgName = 'greenfield-care' }: MockTopbarProps) {
   const shouldReduceMotion = useReducedMotion();
 
   return (

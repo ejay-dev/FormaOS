@@ -60,7 +60,11 @@ export interface InteractiveDashboardProps {
   statusCounts: StatusCount[];
   columns: TableColumn[];
   rows: TableRow[];
-  notifications?: { message: string; time: string; type: 'alert' | 'info' | 'success' }[];
+  notifications?: {
+    message: string;
+    time: string;
+    type: 'alert' | 'info' | 'success';
+  }[];
   exportLabel?: string;
   industry?: string;
 }
@@ -96,10 +100,20 @@ interface SidebarNavItem {
 }
 
 const SIDEBAR_ITEMS: SidebarNavItem[] = [
-  { label: 'Dashboard', icon: LayoutDashboard, section: 'OVERVIEW', active: true },
+  {
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+    section: 'OVERVIEW',
+    active: true,
+  },
   { label: 'Obligations', icon: Shield, section: 'COMPLIANCE', rag: 'green' },
   { label: 'Controls', icon: Shield, section: 'COMPLIANCE', rag: 'amber' },
-  { label: 'Evidence', icon: ClipboardList, section: 'COMPLIANCE', rag: 'green' },
+  {
+    label: 'Evidence',
+    icon: ClipboardList,
+    section: 'COMPLIANCE',
+    rag: 'green',
+  },
   { label: 'Care Plans', icon: Heart, section: 'CARE OPERATIONS' },
   { label: 'Staff Register', icon: Users, section: 'WORKFORCE' },
   { label: 'Credentials', icon: Shield, section: 'WORKFORCE', rag: 'red' },
@@ -142,7 +156,7 @@ export function InteractiveDashboard({
       Object.values(row.cells).some(
         (cell) =>
           typeof cell === 'string' &&
-          cell.toLowerCase().includes(searchQuery.toLowerCase())
+          cell.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     const matchesFilter = !selectedFilter || row.status === selectedFilter;
     return matchesSearch && matchesFilter;
@@ -158,7 +172,11 @@ export function InteractiveDashboard({
       : {
           initial: { opacity: 0, y: 8 },
           animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.35, delay, ease: [0.22, 1, 0.36, 1] as const },
+          transition: {
+            duration: 0.35,
+            delay,
+            ease: [0.22, 1, 0.36, 1] as const,
+          },
         };
 
   const sections = [...new Set(SIDEBAR_ITEMS.map((i) => i.section))];
@@ -181,7 +199,9 @@ export function InteractiveDashboard({
           <div className="w-3 h-3 rounded-full bg-[#28c840]" />
         </div>
         <div className="flex-1 mx-4 h-5 rounded bg-white/5 flex items-center px-3">
-          <span className="text-[10px] text-white/40 font-mono">app.formaos.com.au / dashboard</span>
+          <span className="text-[10px] text-white/40 font-mono">
+            app.formaos.com.au / dashboard
+          </span>
         </div>
         <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
           <span className="text-[8px] font-bold text-white">FO</span>
@@ -202,7 +222,9 @@ export function InteractiveDashboard({
                 <span className="text-[7px] font-bold text-white">FO</span>
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] font-semibold text-white block leading-none">FormaOS</span>
+                <span className="text-[10px] font-semibold text-white block leading-none">
+                  FormaOS
+                </span>
                 <span className="text-[6px] text-white/30 uppercase tracking-[0.08em] leading-none">
                   Compliance Operating System
                 </span>
@@ -236,7 +258,9 @@ export function InteractiveDashboard({
                         <Icon className="w-2.5 h-2.5 flex-shrink-0" />
                         <span className="truncate flex-1">{item.label}</span>
                         {item.rag && (
-                          <span className={`w-1.5 h-1.5 rounded-full ${ragDotColor[item.rag]} flex-shrink-0`} />
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${ragDotColor[item.rag]} flex-shrink-0`}
+                          />
                         )}
                       </div>
                     );
@@ -255,9 +279,11 @@ export function InteractiveDashboard({
               <div className="flex items-center gap-1 text-[7px] text-white/40 font-mono">
                 <span className="uppercase tracking-wider">Organization</span>
                 <span className="text-white/20">&rsaquo;</span>
-                <span className="text-white/60">ejax.rehman</span>
+                <span className="text-white/60">greenfield-care</span>
                 <span className="text-white/20">&rsaquo;</span>
-                <span className="text-cyan-400/60 uppercase tracking-wider">Owner</span>
+                <span className="text-cyan-400/60 uppercase tracking-wider">
+                  Owner
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 rounded bg-white/5 px-1.5 py-0.5">
@@ -298,8 +324,12 @@ export function InteractiveDashboard({
             <motion.div {...anim(0.2)} className="px-3 sm:px-4 pt-3 pb-2">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-[8px] uppercase tracking-wider text-white/30 mb-0.5">{subtitle}</div>
-                  <div className="text-xs font-semibold text-white">{title}</div>
+                  <div className="text-[8px] uppercase tracking-wider text-white/30 mb-0.5">
+                    {subtitle}
+                  </div>
+                  <div className="text-xs font-semibold text-white">
+                    {title}
+                  </div>
                 </div>
                 <div className="flex items-center gap-1.5">
                   {statusCounts.map((sc) => (
@@ -334,7 +364,9 @@ export function InteractiveDashboard({
                   >
                     {tab.label}
                     {tab.count !== undefined && (
-                      <span className="ml-1.5 text-[9px] opacity-60">{tab.count}</span>
+                      <span className="ml-1.5 text-[9px] opacity-60">
+                        {tab.count}
+                      </span>
                     )}
                   </button>
                 ))}
@@ -344,9 +376,14 @@ export function InteractiveDashboard({
               <div className="flex items-center gap-1">
                 <button
                   type="button"
-                  onClick={() => { setSearchOpen(!searchOpen); setSearchQuery(''); }}
+                  onClick={() => {
+                    setSearchOpen(!searchOpen);
+                    setSearchQuery('');
+                  }}
                   className={`p-1.5 rounded-lg transition-all ${
-                    searchOpen ? 'bg-cyan-500/10 text-cyan-400' : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
+                    searchOpen
+                      ? 'bg-cyan-500/10 text-cyan-400'
+                      : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                   }`}
                 >
                   <Search className="h-3.5 w-3.5" />
@@ -375,9 +412,14 @@ export function InteractiveDashboard({
                       >
                         <button
                           type="button"
-                          onClick={() => { setSelectedFilter(null); setFilterOpen(false); }}
+                          onClick={() => {
+                            setSelectedFilter(null);
+                            setFilterOpen(false);
+                          }}
                           className={`block w-full text-left px-2.5 py-1.5 rounded text-[11px] transition-colors ${
-                            !selectedFilter ? 'text-cyan-400 bg-cyan-500/10' : 'text-white/50 hover:bg-white/[0.04]'
+                            !selectedFilter
+                              ? 'text-cyan-400 bg-cyan-500/10'
+                              : 'text-white/50 hover:bg-white/[0.04]'
                           }`}
                         >
                           All
@@ -386,13 +428,24 @@ export function InteractiveDashboard({
                           <button
                             key={f}
                             type="button"
-                            onClick={() => { setSelectedFilter(f); setFilterOpen(false); }}
+                            onClick={() => {
+                              setSelectedFilter(f);
+                              setFilterOpen(false);
+                            }}
                             className={`flex items-center gap-2 w-full text-left px-2.5 py-1.5 rounded text-[11px] transition-colors ${
-                              selectedFilter === f ? 'text-cyan-400 bg-cyan-500/10' : 'text-white/50 hover:bg-white/[0.04]'
+                              selectedFilter === f
+                                ? 'text-cyan-400 bg-cyan-500/10'
+                                : 'text-white/50 hover:bg-white/[0.04]'
                             }`}
                           >
-                            <span className={`h-1.5 w-1.5 rounded-full ${statusDot[f]}`} />
-                            {f === 'green' ? 'Valid' : f === 'amber' ? 'Expiring' : 'Expired'}
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${statusDot[f]}`}
+                            />
+                            {f === 'green'
+                              ? 'Valid'
+                              : f === 'amber'
+                                ? 'Expiring'
+                                : 'Expired'}
                           </button>
                         ))}
                       </motion.div>
@@ -406,7 +459,9 @@ export function InteractiveDashboard({
                       type="button"
                       onClick={() => setNotifOpen(!notifOpen)}
                       className={`relative p-1.5 rounded-lg transition-all ${
-                        notifOpen ? 'bg-cyan-500/10 text-cyan-400' : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
+                        notifOpen
+                          ? 'bg-cyan-500/10 text-cyan-400'
+                          : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                       }`}
                     >
                       <Bell className="h-3.5 w-3.5" />
@@ -437,8 +492,12 @@ export function InteractiveDashboard({
                                 <Clock className="h-3 w-3 shrink-0 mt-0.5 text-amber-400" />
                               )}
                               <div>
-                                <div className="text-white/60 leading-tight">{n.message}</div>
-                                <div className="text-[9px] text-white/30 mt-0.5">{n.time}</div>
+                                <div className="text-white/60 leading-tight">
+                                  {n.message}
+                                </div>
+                                <div className="text-[9px] text-white/30 mt-0.5">
+                                  {n.time}
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -522,7 +581,10 @@ export function InteractiveDashboard({
                           : {
                               initial: { opacity: 0 },
                               animate: { opacity: 1 },
-                              transition: { duration: 0.2, delay: 0.35 + idx * 0.05 },
+                              transition: {
+                                duration: 0.2,
+                                delay: 0.35 + idx * 0.05,
+                              },
                             })}
                         onMouseEnter={() => setHoveredRow(row.id)}
                         onMouseLeave={() => setHoveredRow(null)}
@@ -546,18 +608,29 @@ export function InteractiveDashboard({
                           >
                             {col.key === 'status' ? (
                               <span className="flex items-center gap-1.5">
-                                <span className={`h-1.5 w-1.5 rounded-full ${statusDot[row.status]}`} />
-                                <span className={`text-[10px] ${
-                                  row.status === 'green' ? 'text-emerald-400' :
-                                  row.status === 'amber' ? 'text-amber-400' : 'text-red-400'
-                                }`}>
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${statusDot[row.status]}`}
+                                />
+                                <span
+                                  className={`text-[10px] ${
+                                    row.status === 'green'
+                                      ? 'text-emerald-400'
+                                      : row.status === 'amber'
+                                        ? 'text-amber-400'
+                                        : 'text-red-400'
+                                  }`}
+                                >
                                   {row.cells[col.key]}
                                 </span>
                               </span>
                             ) : col.key === columns[0]?.key ? (
-                              <span className="text-white font-medium text-[10px]">{row.cells[col.key]}</span>
+                              <span className="text-white font-medium text-[10px]">
+                                {row.cells[col.key]}
+                              </span>
                             ) : (
-                              <span className="text-white/40 text-[10px] font-mono">{row.cells[col.key]}</span>
+                              <span className="text-white/40 text-[10px] font-mono">
+                                {row.cells[col.key]}
+                              </span>
                             )}
                           </td>
                         ))}
@@ -574,7 +647,10 @@ export function InteractiveDashboard({
                     ))}
                     {filteredRows.length === 0 && (
                       <tr>
-                        <td colSpan={columns.length + 1} className="px-4 py-8 text-center text-xs text-white/30">
+                        <td
+                          colSpan={columns.length + 1}
+                          className="px-4 py-8 text-center text-xs text-white/30"
+                        >
                           No matching records found
                         </td>
                       </tr>
@@ -605,7 +681,10 @@ export function InteractiveDashboard({
                           </span>
                           <button
                             type="button"
-                            onClick={(e) => { e.stopPropagation(); setExpandedRow(null); }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setExpandedRow(null);
+                            }}
                             className="text-white/30 hover:text-white/50"
                           >
                             <X className="h-3 w-3" />
@@ -620,7 +699,9 @@ export function InteractiveDashboard({
                               <div className="text-[7px] uppercase tracking-wider text-white/30 mb-0.5">
                                 {item.key}
                               </div>
-                              <div className="text-[11px] text-white">{item.value}</div>
+                              <div className="text-[11px] text-white">
+                                {item.value}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -650,7 +731,9 @@ export function InteractiveDashboard({
               )}
             </span>
             <div className="flex items-center gap-3 text-[10px] text-white/30">
-              <span className="hidden sm:inline font-mono">Last synced 2 min ago</span>
+              <span className="hidden sm:inline font-mono">
+                Last synced 2 min ago
+              </span>
               <span className="flex items-center gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Live

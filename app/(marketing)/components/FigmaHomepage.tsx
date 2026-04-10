@@ -195,7 +195,7 @@ export default function FormaOSHomepage({
 
   return (
     <MotionProvider>
-      <div className="figma-homepage mk-page-bg relative min-h-screen overflow-x-hidden">
+      <div className="figma-homepage relative min-h-screen overflow-x-hidden">
         {/* Page Sections */}
         <div className="mk-marketing-flow relative z-10">
           {!skipHero && renderSection('hero', <HeroSection />)}
