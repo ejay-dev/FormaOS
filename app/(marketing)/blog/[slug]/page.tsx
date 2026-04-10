@@ -205,9 +205,16 @@ export default async function BlogPostPage({ params }: PageProps) {
               const other = blogPosts.filter(
                 (p) => p.category !== post.category && p.id !== post.id,
               );
-              return [...sameCat, ...other].slice(0, 3).map(({ id, title, excerpt, date, readTime, category }) => ({
-                id, title, excerpt, date, readTime, category,
-              }));
+              return [...sameCat, ...other]
+                .slice(0, 3)
+                .map(({ id, title, excerpt, date, readTime, category }) => ({
+                  id,
+                  title,
+                  excerpt,
+                  date,
+                  readTime,
+                  category,
+                }));
             })()}
           />
 

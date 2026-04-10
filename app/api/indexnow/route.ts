@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { brand } from '@/config/brand';
 
-const INDEXNOW_KEY = 'fbceead0281aa8268b452b80e6b462dba054f412225fed18e7201eb066f0ec44';
+const INDEXNOW_KEY =
+  'fbceead0281aa8268b452b80e6b462dba054f412225fed18e7201eb066f0ec44';
 const SITE_URL = brand.seo.siteUrl.replace(/\/$/, '');
 
 /**
