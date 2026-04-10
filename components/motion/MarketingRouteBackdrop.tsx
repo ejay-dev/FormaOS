@@ -8,6 +8,10 @@ import { selectMarketingRouteMedia } from '@/lib/marketing/background-media';
 function MarketingRouteBackdropInner() {
   const pathname = usePathname();
   const activeMedia = selectMarketingRouteMedia(pathname);
+
+  // Homepage hero already renders its own background image via HeroStaticShell
+  // (server-side for LCP). Skip here to avoid a doubled/ghosted photo.
+  const isHomepage = pathname === '/';
   const [heroTarget, setHeroTarget] = useState<HTMLElement | null>(null);
 
   useLayoutEffect(() => {
@@ -59,7 +63,7 @@ function MarketingRouteBackdropInner() {
     };
   }, [pathname]);
 
-  if (!activeMedia) return null;
+  if (!activeMedia || isHomepage) return null;
 
   const overlay = (
     <div
