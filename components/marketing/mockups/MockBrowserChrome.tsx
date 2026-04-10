@@ -29,9 +29,12 @@ export function MockBrowserChrome({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ scale: 1.01, boxShadow: '0 0 60px rgba(0,212,251,0.08)' }}
-      className={`rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-[#0a0f1e] ${className}`}
-      style={{ cursor: 'default' }}
+      whileHover={{
+        scale: 1.01,
+        boxShadow:
+          '0 0 80px rgba(0,212,251,0.1), 0 0 160px rgba(160,131,255,0.04)',
+      }}
+      className={`rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-[#0a0f1e] cursor-default select-none ${className}`}
     >
       {/* Browser chrome bar */}
       <motion.div
@@ -58,9 +61,7 @@ export function MockBrowserChrome({
       </motion.div>
 
       {/* App content */}
-      <div className={`flex ${height}`}>
-        {children}
-      </div>
+      <div className={`flex ${height}`}>{children}</div>
     </motion.div>
   );
 }

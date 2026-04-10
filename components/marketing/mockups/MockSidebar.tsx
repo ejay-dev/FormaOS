@@ -10,6 +10,9 @@ import {
   BarChart3,
   Settings,
   ChevronDown,
+  GitBranch,
+  Layers,
+  Network,
 } from 'lucide-react';
 
 export type MockIndustry =
@@ -31,13 +34,38 @@ interface NavItem {
   active?: boolean;
   hasRag?: 'green' | 'amber' | 'red';
   expandable?: boolean;
+  subItems?: {
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }[];
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', icon: LayoutDashboard, section: 'OVERVIEW', active: true },
-  { label: 'Obligations', icon: Shield, section: 'COMPLIANCE', hasRag: 'green', expandable: true },
+  {
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+    section: 'OVERVIEW',
+    active: true,
+  },
+  {
+    label: 'Obligations',
+    icon: Shield,
+    section: 'COMPLIANCE',
+    hasRag: 'green',
+    expandable: true,
+    subItems: [
+      { label: 'Frameworks', icon: GitBranch },
+      { label: 'Controls', icon: Layers },
+      { label: 'Cross-Map', icon: Network },
+    ],
+  },
   { label: 'Controls', icon: Shield, section: 'COMPLIANCE', hasRag: 'amber' },
-  { label: 'Evidence', icon: ClipboardList, section: 'COMPLIANCE', hasRag: 'green' },
+  {
+    label: 'Evidence',
+    icon: ClipboardList,
+    section: 'COMPLIANCE',
+    hasRag: 'green',
+  },
   { label: 'Care Plans', icon: Heart, section: 'CARE OPERATIONS' },
   { label: 'Progress Notes', icon: ClipboardList, section: 'CARE OPERATIONS' },
   { label: 'Staff Register', icon: Users, section: 'WORKFORCE' },
@@ -53,9 +81,27 @@ const ragDotColor: Record<string, string> = {
   red: 'bg-red-500',
 };
 
-export function MockSidebar({ industry = 'NDIS Provider', activeItem = 'Dashboard' }: MockSidebarProps) {
+const itemVariants = {
+  hidden: { opacity: 0, x: -6 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.25,
+      delay: 0.15 + i * 0.03,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  }),
+};
+
+export function MockSidebar({
+  industry = 'NDIS Provider',
+  activeItem = 'Dashboard',
+}: MockSidebarProps) {
   const shouldReduceMotion = useReducedMotion();
   const sections = [...new Set(NAV_ITEMS.map((i) => i.section))];
+
+  let globalIndex = 0;
 
   return (
     <motion.div
@@ -63,7 +109,7 @@ export function MockSidebar({ industry = 'NDIS Provider', activeItem = 'Dashboar
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className="w-40 flex-shrink-0 bg-[#060d1a] border-r border-white/[0.08] flex flex-col overflow-hidden"
+      className="w-40 flex-shrink-0 bg-[#0a0f1e] border-r border-white/[0.08] flex flex-col overflow-hidden"
     >
       {/* Logo */}
       <div className="px-3 pt-3 pb-1">
@@ -72,7 +118,9 @@ export function MockSidebar({ industry = 'NDIS Provider', activeItem = 'Dashboar
             <span className="text-[7px] font-bold text-white">FO</span>
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-semibold text-white block leading-none">FormaOS</span>
+            <span className="text-[10px] font-semibold text-white block leading-none">
+              FormaOS
+            </span>
             <span className="text-[6px] text-white/30 uppercase tracking-[0.08em] leading-none">
               Compliance Operating System
             </span>
@@ -99,22 +147,63 @@ export function MockSidebar({ industry = 'NDIS Provider', activeItem = 'Dashboar
               {items.map((item) => {
                 const Icon = item.icon;
                 const isActive = item.label === activeItem;
+                const itemIdx = globalIndex++;
                 return (
-                  <div
-                    key={item.label}
-                    className={`flex items-center gap-1.5 h-6 px-1.5 rounded text-[8px] font-medium transition-colors ${
-                      isActive
-                        ? 'border-l-2 border-l-cyan-400 bg-cyan-500/10 text-cyan-400'
-                        : 'text-white/50 hover:text-white/70'
-                    }`}
-                  >
-                    <Icon className="w-2.5 h-2.5 flex-shrink-0" />
-                    <span className="truncate flex-1">{item.label}</span>
-                    {item.hasRag && (
-                      <span className={`w-1.5 h-1.5 rounded-full ${ragDotColor[item.hasRag]} flex-shrink-0`} />
-                    )}
-                    {item.expandable && (
-                      <ChevronDown className="w-2 h-2 text-white/20 flex-shrink-0" />
+                  <div key={item.label}>
+                    <motion.div
+                      custom={itemIdx}
+                      variants={shouldReduceMotion ? undefined : itemVariants}
+                      initial={shouldReduceMotion ? undefined : 'hidden'}
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      className={`flex items-center gap-1.5 h-6 px-1.5 rounded text-[8px] font-medium transition-colors ${
+                        isActive
+                          ? 'border-l-2 border-l-cyan-400 bg-cyan-500/10 text-cyan-400'
+                          : 'text-white/50 hover:text-white/70'
+                      }`}
+                    >
+                      <Icon className="w-2.5 h-2.5 flex-shrink-0" />
+                      <span className="truncate flex-1">{item.label}</span>
+                      {item.hasRag && (
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${ragDotColor[item.hasRag]} flex-shrink-0`}
+                          style={{
+                            animation: shouldReduceMotion
+                              ? 'none'
+                              : 'mockup-pulse-dot 2s ease-in-out infinite',
+                          }}
+                        />
+                      )}
+                      {item.expandable && (
+                        <ChevronDown className="w-2 h-2 text-white/20 flex-shrink-0" />
+                      )}
+                    </motion.div>
+                    {/* Sub-items for expandable items */}
+                    {item.subItems && (
+                      <div className="ml-4 border-l border-white/[0.06]">
+                        {item.subItems.map((sub) => {
+                          const SubIcon = sub.icon;
+                          const subIdx = globalIndex++;
+                          return (
+                            <motion.div
+                              key={sub.label}
+                              custom={subIdx}
+                              variants={
+                                shouldReduceMotion ? undefined : itemVariants
+                              }
+                              initial={
+                                shouldReduceMotion ? undefined : 'hidden'
+                              }
+                              whileInView="visible"
+                              viewport={{ once: true }}
+                              className="flex items-center gap-1.5 h-5 px-1.5 text-[7px] text-white/30 hover:text-white/50 transition-colors"
+                            >
+                              <SubIcon className="w-2 h-2 flex-shrink-0" />
+                              <span className="truncate">{sub.label}</span>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
                 );

@@ -1862,6 +1862,27 @@
   background-size: 200% 100%;
 }
 
+/* ── Marketing mockup animations ── */
+@keyframes mockup-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes mockup-cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 /* ── Node/Wire system colors for light ── */
 [data-theme='light'] .node-verified {
   background: linear-gradient(
