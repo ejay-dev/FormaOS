@@ -41,68 +41,72 @@ const SHARED_STATUS_TOKENS = {
 // ---------------------------------------------------------------------------
 
 const darkTokens: ThemeTokens = {
-  // Core surfaces — #050816, #0B1020, #111827
+  // Core surfaces — #050816, #0E1720, #111827
   background: '232 65% 5%',
-  foreground: '220 14% 91%',
-  card: '221 39% 11%',
-  cardForeground: '220 14% 91%',
-  popover: '224 50% 8%',
-  popoverForeground: '220 14% 91%',
+  foreground: '220 18% 92%',
+  card: '225 38% 12%',
+  cardForeground: '220 18% 92%',
+  popover: '228 48% 8%',
+  popoverForeground: '220 18% 92%',
 
   // Brand — cyan #22D3EE, violet #8B5CF6
   primary: '189 94% 53%',
   primaryForeground: '232 65% 5%',
   secondary: '258 90% 66%',
-  secondaryForeground: '220 14% 91%',
+  secondaryForeground: '220 18% 92%',
 
   // Utility
   muted: '225 30% 18%',
   mutedForeground: '215 16% 65%',
   accent: '258 90% 66%',
-  accentForeground: '220 14% 91%',
+  accentForeground: '220 18% 92%',
   destructive: '0 85% 58%',
-  destructiveForeground: '220 14% 91%',
+  destructiveForeground: '220 18% 92%',
 
   // Chrome
-  border: '220 20% 16%',
-  input: '224 50% 8%',
+  border: '224 22% 17%',
+  input: '228 48% 8%',
   ring: '189 94% 53%',
 
   // Sidebar
-  sidebar: '228 40% 6%',
-  sidebarForeground: '220 14% 91%',
+  sidebar: '228 42% 6%',
+  sidebarForeground: '220 18% 92%',
   sidebarPrimary: '189 94% 53%',
   sidebarPrimaryForeground: '232 65% 5%',
   sidebarAccent: '228 40% 12%',
-  sidebarAccentForeground: '220 14% 91%',
-  sidebarBorder: '220 20% 14%',
+  sidebarAccentForeground: '220 18% 92%',
+  sidebarBorder: '224 22% 14%',
   sidebarRing: '189 94% 53%',
 
-  // Glass — white overlay on dark
-  glassBg: 'rgba(255, 255, 255, 0.04)',
-  glassBgStrong: 'rgba(255, 255, 255, 0.08)',
+  // Glass — cyan-shifted white overlay
+  glassBg: 'rgba(255, 255, 255, 0.045)',
+  glassBgStrong: 'rgba(255, 255, 255, 0.09)',
   glassBorder: 'rgba(255, 255, 255, 0.12)',
-  glassBorderStrong: 'rgba(255, 255, 255, 0.18)',
+  glassBorderStrong: 'rgba(255, 255, 255, 0.20)',
 
-  // Shadows
-  shadowSm: '0 2px 8px rgba(0, 0, 0, 0.5)',
-  shadowMd: '0 4px 16px rgba(0, 0, 0, 0.6)',
-  shadowLg: '0 8px 32px rgba(0, 0, 0, 0.7)',
-  shadowXl: '0 16px 48px rgba(0, 0, 0, 0.8)',
-  shadow2xl: '0 24px 64px rgba(0, 0, 0, 0.85)',
+  // Shadows — deep space depth with brand-tinted layers
+  shadowSm: '0 2px 6px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(34, 211, 238, 0.04)',
+  shadowMd:
+    '0 4px 14px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(34, 211, 238, 0.05)',
+  shadowLg:
+    '0 8px 28px rgba(0, 0, 0, 0.65), 0 4px 10px rgba(34, 211, 238, 0.06)',
+  shadowXl:
+    '0 16px 48px rgba(0, 0, 0, 0.75), 0 6px 14px rgba(34, 211, 238, 0.05)',
+  shadow2xl:
+    '0 24px 64px rgba(0, 0, 0, 0.85), 0 10px 20px rgba(34, 211, 238, 0.06)',
 
-  // Glows
-  glowCyan: '0 0 24px rgba(34, 211, 238, 0.3)',
-  glowBlue: '0 0 24px rgba(59, 130, 246, 0.3)',
-  glowViolet: '0 0 24px rgba(139, 92, 246, 0.3)',
+  // Glows — vivid neon energy
+  glowCyan: '0 0 28px rgba(34, 211, 238, 0.35)',
+  glowBlue: '0 0 28px rgba(59, 130, 246, 0.3)',
+  glowViolet: '0 0 28px rgba(139, 92, 246, 0.35)',
 
   // Gradients
   gradientPrimary:
-    'linear-gradient(135deg, #22D3EE 0%, #3B82F6 50%, #8B5CF6 100%)',
+    'linear-gradient(135deg, #22D3EE 0%, #3B82F6 45%, #8B5CF6 100%)',
   gradientSurface:
-    'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+    'linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.015) 100%)',
   gradientGlow:
-    'radial-gradient(ellipse at top, rgba(34, 211, 238, 0.12) 0%, transparent 65%)',
+    'radial-gradient(ellipse at top, rgba(34, 211, 238, 0.14) 0%, rgba(59, 130, 246, 0.05) 50%, transparent 75%)',
 
   ...SHARED_STATUS_TOKENS,
 };
@@ -112,68 +116,72 @@ const darkTokens: ThemeTokens = {
 // ---------------------------------------------------------------------------
 
 const midnightBlueTokens: ThemeTokens = {
-  // Core surfaces — #0A1128, #0F1C3F, #1B2A52
-  background: '226 60% 10%',
-  foreground: '214 32% 91%',
-  card: '224 50% 21%',
-  cardForeground: '214 32% 91%',
-  popover: '224 62% 15%',
-  popoverForeground: '214 32% 91%',
+  // Core surfaces — #08102A, #0E1A42, #162550
+  background: '228 65% 10%',
+  foreground: '214 40% 93%',
+  card: '224 52% 17%',
+  cardForeground: '214 40% 93%',
+  popover: '226 58% 13%',
+  popoverForeground: '214 40% 93%',
 
-  // Brand — blue #3B82F6, sky #38BDF8
+  // Brand — blue #3B82F6, teal #2DD4BF
   primary: '217 91% 60%',
-  primaryForeground: '226 60% 10%',
-  secondary: '198 93% 60%',
-  secondaryForeground: '214 32% 91%',
+  primaryForeground: '228 65% 10%',
+  secondary: '174 72% 51%',
+  secondaryForeground: '214 40% 93%',
 
   // Utility
-  muted: '224 35% 18%',
-  mutedForeground: '218 15% 62%',
-  accent: '198 93% 60%',
-  accentForeground: '226 60% 10%',
+  muted: '224 38% 16%',
+  mutedForeground: '218 18% 60%',
+  accent: '174 72% 51%',
+  accentForeground: '228 65% 10%',
   destructive: '0 80% 55%',
-  destructiveForeground: '214 32% 91%',
+  destructiveForeground: '214 40% 93%',
 
   // Chrome
-  border: '224 25% 16%',
-  input: '224 50% 13%',
+  border: '224 28% 18%',
+  input: '226 50% 12%',
   ring: '217 91% 60%',
 
   // Sidebar
-  sidebar: '226 55% 8%',
-  sidebarForeground: '214 32% 91%',
+  sidebar: '228 62% 7%',
+  sidebarForeground: '214 40% 93%',
   sidebarPrimary: '217 91% 60%',
-  sidebarPrimaryForeground: '226 60% 10%',
-  sidebarAccent: '224 40% 16%',
-  sidebarAccentForeground: '214 32% 91%',
-  sidebarBorder: '224 25% 14%',
+  sidebarPrimaryForeground: '228 65% 10%',
+  sidebarAccent: '224 42% 14%',
+  sidebarAccentForeground: '214 40% 93%',
+  sidebarBorder: '224 28% 15%',
   sidebarRing: '217 91% 60%',
 
-  // Glass — blue-tinted
-  glassBg: 'rgba(140, 180, 255, 0.03)',
-  glassBgStrong: 'rgba(140, 180, 255, 0.06)',
-  glassBorder: 'rgba(255, 255, 255, 0.10)',
-  glassBorderStrong: 'rgba(255, 255, 255, 0.16)',
+  // Glass — moonlit blue-tinted
+  glassBg: 'rgba(100, 160, 255, 0.04)',
+  glassBgStrong: 'rgba(100, 160, 255, 0.08)',
+  glassBorder: 'rgba(140, 180, 255, 0.12)',
+  glassBorderStrong: 'rgba(140, 180, 255, 0.20)',
 
-  // Shadows
-  shadowSm: '0 2px 8px rgba(0, 0, 0, 0.6)',
-  shadowMd: '0 4px 16px rgba(0, 0, 0, 0.7)',
-  shadowLg: '0 8px 32px rgba(0, 0, 0, 0.8)',
-  shadowXl: '0 16px 48px rgba(0, 0, 0, 0.85)',
-  shadow2xl: '0 24px 64px rgba(0, 0, 0, 0.9)',
+  // Shadows — deep azure
+  shadowSm: '0 2px 6px rgba(4, 8, 30, 0.5), 0 1px 3px rgba(59, 130, 246, 0.06)',
+  shadowMd:
+    '0 4px 12px rgba(4, 8, 30, 0.55), 0 2px 6px rgba(59, 130, 246, 0.08)',
+  shadowLg:
+    '0 8px 28px rgba(4, 8, 30, 0.6), 0 4px 10px rgba(59, 130, 246, 0.1)',
+  shadowXl:
+    '0 16px 48px rgba(4, 8, 30, 0.7), 0 8px 16px rgba(59, 130, 246, 0.08)',
+  shadow2xl:
+    '0 24px 64px rgba(4, 8, 30, 0.8), 0 12px 24px rgba(59, 130, 246, 0.1)',
 
-  // Glows
-  glowCyan: '0 0 24px rgba(56, 189, 248, 0.25)',
-  glowBlue: '0 0 24px rgba(59, 130, 246, 0.3)',
-  glowViolet: '0 0 24px rgba(139, 92, 246, 0.25)',
+  // Glows — blue-family spectrum
+  glowCyan: '0 0 28px rgba(56, 189, 248, 0.3)',
+  glowBlue: '0 0 28px rgba(59, 130, 246, 0.35)',
+  glowViolet: '0 0 24px rgba(99, 102, 241, 0.3)',
 
   // Gradients
   gradientPrimary:
-    'linear-gradient(135deg, #38BDF8 0%, #3B82F6 50%, #6366F1 100%)',
+    'linear-gradient(135deg, #38BDF8 0%, #3B82F6 40%, #6366F1 100%)',
   gradientSurface:
-    'linear-gradient(180deg, rgba(140, 180, 255, 0.04) 0%, rgba(140, 180, 255, 0.01) 100%)',
+    'linear-gradient(180deg, rgba(100, 160, 255, 0.05) 0%, rgba(100, 160, 255, 0.015) 100%)',
   gradientGlow:
-    'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.1) 0%, transparent 65%)',
+    'radial-gradient(ellipse at top, rgba(59, 130, 246, 0.14) 0%, rgba(45, 212, 191, 0.04) 50%, transparent 75%)',
 
   ...SHARED_STATUS_TOKENS,
 };
@@ -183,68 +191,68 @@ const midnightBlueTokens: ThemeTokens = {
 // ---------------------------------------------------------------------------
 
 const graphiteTokens: ThemeTokens = {
-  // Core surfaces — #0B0B0B, #151515, #1E1E1E
-  background: '0 0% 4%',
-  foreground: '0 0% 93%',
-  card: '0 0% 12%',
-  cardForeground: '0 0% 93%',
-  popover: '0 0% 10%',
-  popoverForeground: '0 0% 93%',
+  // Core surfaces — warm charcoal #0D0D0F, #171719, #212124
+  background: '240 4% 5%',
+  foreground: '240 5% 93%',
+  card: '240 3% 13%',
+  cardForeground: '240 5% 93%',
+  popover: '240 3% 10%',
+  popoverForeground: '240 5% 93%',
 
-  // Brand — violet #A78BFA, cyan #22D3EE
+  // Brand — violet #A78BFA, teal #2DD4BF
   primary: '255 92% 76%',
-  primaryForeground: '0 0% 4%',
-  secondary: '189 94% 53%',
-  secondaryForeground: '0 0% 4%',
+  primaryForeground: '240 4% 5%',
+  secondary: '174 72% 51%',
+  secondaryForeground: '240 4% 5%',
 
   // Utility
-  muted: '0 0% 16%',
-  mutedForeground: '0 0% 55%',
-  accent: '189 94% 53%',
-  accentForeground: '0 0% 4%',
+  muted: '240 3% 17%',
+  mutedForeground: '240 3% 52%',
+  accent: '174 72% 51%',
+  accentForeground: '240 4% 5%',
   destructive: '0 65% 52%',
-  destructiveForeground: '0 0% 93%',
+  destructiveForeground: '240 5% 93%',
 
-  // Chrome
-  border: '0 0% 14%',
-  input: '0 0% 10%',
+  // Chrome — warm-tinted
+  border: '240 3% 16%',
+  input: '240 3% 10%',
   ring: '255 92% 76%',
 
-  // Sidebar
-  sidebar: '0 0% 5%',
-  sidebarForeground: '0 0% 93%',
+  // Sidebar — matte charcoal dock
+  sidebar: '240 4% 6%',
+  sidebarForeground: '240 5% 93%',
   sidebarPrimary: '255 92% 76%',
-  sidebarPrimaryForeground: '0 0% 4%',
-  sidebarAccent: '0 0% 13%',
-  sidebarAccentForeground: '0 0% 93%',
-  sidebarBorder: '0 0% 12%',
+  sidebarPrimaryForeground: '240 4% 5%',
+  sidebarAccent: '240 3% 14%',
+  sidebarAccentForeground: '240 5% 93%',
+  sidebarBorder: '240 3% 13%',
   sidebarRing: '255 92% 76%',
 
-  // Glass — neutral
-  glassBg: 'rgba(255, 255, 255, 0.03)',
-  glassBgStrong: 'rgba(255, 255, 255, 0.06)',
-  glassBorder: 'rgba(255, 255, 255, 0.08)',
-  glassBorderStrong: 'rgba(255, 255, 255, 0.14)',
+  // Glass — warm-neutral frosted
+  glassBg: 'rgba(255, 255, 255, 0.035)',
+  glassBgStrong: 'rgba(255, 255, 255, 0.07)',
+  glassBorder: 'rgba(255, 255, 255, 0.09)',
+  glassBorderStrong: 'rgba(255, 255, 255, 0.16)',
 
-  // Shadows — softer than other darks
-  shadowSm: '0 2px 8px rgba(0, 0, 0, 0.45)',
-  shadowMd: '0 4px 16px rgba(0, 0, 0, 0.55)',
-  shadowLg: '0 8px 32px rgba(0, 0, 0, 0.65)',
-  shadowXl: '0 16px 48px rgba(0, 0, 0, 0.75)',
-  shadow2xl: '0 24px 64px rgba(0, 0, 0, 0.8)',
+  // Shadows — ultra-soft matte finish
+  shadowSm: '0 1px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2)',
+  shadowMd: '0 2px 8px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.25)',
+  shadowLg: '0 4px 12px rgba(0, 0, 0, 0.3), 0 16px 36px rgba(0, 0, 0, 0.35)',
+  shadowXl: '0 8px 20px rgba(0, 0, 0, 0.3), 0 24px 48px rgba(0, 0, 0, 0.4)',
+  shadow2xl: '0 12px 28px rgba(0, 0, 0, 0.3), 0 40px 72px rgba(0, 0, 0, 0.45)',
 
-  // Glows — restrained
-  glowCyan: '0 0 20px rgba(34, 211, 238, 0.15)',
-  glowBlue: '0 0 20px rgba(59, 130, 246, 0.15)',
-  glowViolet: '0 0 20px rgba(167, 139, 250, 0.2)',
+  // Glows — restrained executive
+  glowCyan: '0 0 20px rgba(45, 212, 191, 0.12)',
+  glowBlue: '0 0 20px rgba(59, 130, 246, 0.12)',
+  glowViolet: '0 0 22px rgba(167, 139, 250, 0.18)',
 
-  // Gradients
+  // Gradients — violet → emerald sophistication
   gradientPrimary:
-    'linear-gradient(135deg, #A78BFA 0%, #818CF8 50%, #22D3EE 100%)',
+    'linear-gradient(135deg, #A78BFA 0%, #818CF8 40%, #2DD4BF 100%)',
   gradientSurface:
-    'linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0.01) 100%)',
+    'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%)',
   gradientGlow:
-    'radial-gradient(ellipse at top, rgba(167, 139, 250, 0.08) 0%, transparent 65%)',
+    'radial-gradient(ellipse at top, rgba(167, 139, 250, 0.07) 0%, rgba(45, 212, 191, 0.03) 50%, transparent 75%)',
 
   ...SHARED_STATUS_TOKENS,
 };
@@ -254,75 +262,80 @@ const graphiteTokens: ThemeTokens = {
 // ---------------------------------------------------------------------------
 
 const lightTokens: ThemeTokens = {
-  // Core surfaces — #F8FAFC, #FFFFFF, #F1F5F9
-  background: '210 40% 98%',
-  foreground: '222 47% 11%',
-  card: '210 40% 96%',
-  cardForeground: '222 47% 11%',
+  // Core surfaces — warm pearl #F0F1F5, white, #E8E9EE
+  background: '230 16% 95%',
+  foreground: '224 71% 4%',
+  card: '0 0% 100%',
+  cardForeground: '224 71% 4%',
   popover: '0 0% 100%',
-  popoverForeground: '222 47% 11%',
+  popoverForeground: '224 71% 4%',
 
-  // Brand — blue #2563EB, violet #7C3AED
-  primary: '221 83% 53%',
+  // Brand — indigo #4338CA, violet #7C3AED
+  primary: '243 75% 51%',
   primaryForeground: '0 0% 100%',
-  secondary: '210 40% 93%',
-  secondaryForeground: '222 30% 15%',
+  secondary: '228 20% 92%',
+  secondaryForeground: '224 50% 18%',
 
   // Utility
-  muted: '210 30% 93%',
-  mutedForeground: '215 20% 40%',
-  accent: '262 83% 58%',
+  muted: '228 14% 91%',
+  mutedForeground: '220 9% 46%',
+  accent: '263 70% 50%',
   accentForeground: '0 0% 100%',
-  destructive: '0 78% 50%',
+  destructive: '0 72% 51%',
   destructiveForeground: '0 0% 100%',
 
   // Chrome
-  border: '214 20% 88%',
-  input: '210 40% 96%',
-  ring: '221 83% 53%',
+  border: '224 16% 85%',
+  input: '228 14% 95%',
+  ring: '243 75% 51%',
 
   // Sidebar
-  sidebar: '210 30% 95%',
-  sidebarForeground: '222 47% 11%',
-  sidebarPrimary: '221 83% 53%',
+  sidebar: '225 20% 93%',
+  sidebarForeground: '224 71% 4%',
+  sidebarPrimary: '243 75% 51%',
   sidebarPrimaryForeground: '0 0% 100%',
-  sidebarAccent: '210 25% 91%',
-  sidebarAccentForeground: '222 30% 15%',
-  sidebarBorder: '214 20% 88%',
-  sidebarRing: '221 83% 53%',
+  sidebarAccent: '228 22% 89%',
+  sidebarAccentForeground: '224 50% 18%',
+  sidebarBorder: '224 16% 85%',
+  sidebarRing: '243 75% 51%',
 
-  // Glass — inverted for light
-  glassBg: 'rgba(255, 255, 255, 0.7)',
-  glassBgStrong: 'rgba(255, 255, 255, 0.85)',
-  glassBorder: 'rgba(0, 0, 0, 0.08)',
-  glassBorderStrong: 'rgba(0, 0, 0, 0.12)',
+  // Glass — warm white with backdrop blur
+  glassBg: 'rgba(255, 255, 255, 0.82)',
+  glassBgStrong: 'rgba(255, 255, 255, 0.94)',
+  glassBorder: 'rgba(15, 23, 42, 0.08)',
+  glassBorderStrong: 'rgba(15, 23, 42, 0.14)',
 
-  // Shadows — soft, layered
-  shadowSm: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02)',
-  shadowMd: '0 2px 8px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03)',
-  shadowLg: '0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03)',
-  shadowXl: '0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04)',
-  shadow2xl: '0 16px 48px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.05)',
+  // Shadows — layered blue-tinted with brand accent
+  shadowSm:
+    '0 1px 2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.08)',
+  shadowMd:
+    '0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.07), 0 2px 4px rgba(67, 56, 202, 0.03)',
+  shadowLg:
+    '0 2px 4px rgba(15, 23, 42, 0.04), 0 12px 28px rgba(15, 23, 42, 0.1), 0 4px 8px rgba(67, 56, 202, 0.04)',
+  shadowXl:
+    '0 4px 8px rgba(15, 23, 42, 0.04), 0 24px 48px rgba(15, 23, 42, 0.1), 0 8px 16px rgba(67, 56, 202, 0.05)',
+  shadow2xl:
+    '0 8px 16px rgba(15, 23, 42, 0.05), 0 40px 80px rgba(15, 23, 42, 0.12), 0 16px 32px rgba(67, 56, 202, 0.06)',
 
-  // Glows — subtle on light
-  glowCyan: '0 0 16px rgba(34, 211, 238, 0.1)',
-  glowBlue: '0 0 16px rgba(37, 99, 235, 0.1)',
-  glowViolet: '0 0 16px rgba(124, 58, 237, 0.1)',
+  // Glows — brand-tinted for interactive feedback
+  glowCyan: '0 0 20px rgba(34, 211, 238, 0.2)',
+  glowBlue: '0 0 20px rgba(67, 56, 202, 0.2)',
+  glowViolet: '0 0 20px rgba(124, 58, 237, 0.2)',
 
-  // Gradients
+  // Gradients — richer indigo-violet energy
   gradientPrimary:
-    'linear-gradient(135deg, #2563EB 0%, #4F46E5 50%, #7C3AED 100%)',
+    'linear-gradient(135deg, #4338CA 0%, #6D28D9 50%, #7C3AED 100%)',
   gradientSurface:
-    'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.6) 100%)',
+    'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(240, 241, 245, 0.7) 100%)',
   gradientGlow:
-    'radial-gradient(ellipse at top, rgba(37, 99, 235, 0.05) 0%, transparent 65%)',
+    'radial-gradient(ellipse at top, rgba(67, 56, 202, 0.06) 0%, rgba(124, 58, 237, 0.03) 40%, transparent 70%)',
 
-  // Status — darker text for light bg
-  success: '142 76% 36%',
+  // Status — themed for light mode
+  success: '160 84% 39%',
   successForeground: '0 0% 100%',
   warning: '38 92% 50%',
   warningForeground: '0 0% 0%',
-  info: '221 83% 53%',
+  info: '243 75% 51%',
   infoForeground: '0 0% 100%',
 };
 
@@ -331,68 +344,72 @@ const lightTokens: ThemeTokens = {
 // ---------------------------------------------------------------------------
 
 const auroraTokens: ThemeTokens = {
-  // Core surfaces — #020617, #0F172A, #111827
-  background: '229 84% 5%',
-  foreground: '220 14% 91%',
-  card: '221 39% 11%',
-  cardForeground: '220 14% 91%',
-  popover: '222 47% 11%',
-  popoverForeground: '220 14% 91%',
+  // Core surfaces — deep void #010515, #0C1631, #111D3A
+  background: '230 85% 4%',
+  foreground: '220 20% 92%',
+  card: '224 42% 13%',
+  cardForeground: '220 20% 92%',
+  popover: '226 48% 10%',
+  popoverForeground: '220 20% 92%',
 
-  // Brand — cyan #22D3EE, violet-purple #C084FC
+  // Brand — cyan #22D3EE, magenta #D946EF
   primary: '189 94% 53%',
-  primaryForeground: '229 84% 5%',
-  secondary: '270 95% 75%',
-  secondaryForeground: '220 14% 91%',
+  primaryForeground: '230 85% 4%',
+  secondary: '292 84% 61%',
+  secondaryForeground: '220 20% 92%',
 
   // Utility
-  muted: '230 20% 15%',
-  mutedForeground: '230 12% 55%',
-  accent: '270 95% 75%',
-  accentForeground: '229 84% 5%',
+  muted: '228 22% 14%',
+  mutedForeground: '228 14% 52%',
+  accent: '292 84% 61%',
+  accentForeground: '230 85% 4%',
   destructive: '350 80% 55%',
-  destructiveForeground: '220 14% 91%',
+  destructiveForeground: '220 20% 92%',
 
   // Chrome
-  border: '230 18% 14%',
-  input: '225 30% 10%',
+  border: '228 20% 16%',
+  input: '228 35% 10%',
   ring: '189 94% 53%',
 
-  // Sidebar
-  sidebar: '229 70% 6%',
-  sidebarForeground: '220 14% 91%',
+  // Sidebar — void-level dark
+  sidebar: '230 80% 5%',
+  sidebarForeground: '220 20% 92%',
   sidebarPrimary: '189 94% 53%',
-  sidebarPrimaryForeground: '229 84% 5%',
-  sidebarAccent: '228 30% 12%',
-  sidebarAccentForeground: '220 14% 91%',
-  sidebarBorder: '230 18% 12%',
+  sidebarPrimaryForeground: '230 85% 4%',
+  sidebarAccent: '228 32% 12%',
+  sidebarAccentForeground: '220 20% 92%',
+  sidebarBorder: '228 20% 13%',
   sidebarRing: '189 94% 53%',
 
-  // Glass — teal/violet tinted
-  glassBg: 'rgba(34, 211, 238, 0.03)',
-  glassBgStrong: 'rgba(34, 211, 238, 0.06)',
-  glassBorder: 'rgba(255, 255, 255, 0.14)',
-  glassBorderStrong: 'rgba(255, 255, 255, 0.20)',
+  // Glass — aurora-tinted with cyan shimmer
+  glassBg: 'rgba(34, 211, 238, 0.04)',
+  glassBgStrong: 'rgba(34, 211, 238, 0.08)',
+  glassBorder: 'rgba(34, 211, 238, 0.12)',
+  glassBorderStrong: 'rgba(34, 211, 238, 0.22)',
 
-  // Shadows
-  shadowSm: '0 2px 8px rgba(0, 0, 0, 0.55)',
-  shadowMd: '0 4px 16px rgba(0, 0, 0, 0.65)',
-  shadowLg: '0 8px 32px rgba(0, 0, 0, 0.75)',
-  shadowXl: '0 16px 48px rgba(0, 0, 0, 0.85)',
-  shadow2xl: '0 24px 64px rgba(0, 0, 0, 0.9)',
+  // Shadows — void-depth with aurora edge glow
+  shadowSm: '0 2px 6px rgba(1, 5, 21, 0.5), 0 1px 3px rgba(34, 211, 238, 0.04)',
+  shadowMd:
+    '0 4px 14px rgba(1, 5, 21, 0.6), 0 2px 6px rgba(34, 211, 238, 0.06)',
+  shadowLg:
+    '0 8px 28px rgba(1, 5, 21, 0.7), 0 4px 10px rgba(34, 211, 238, 0.08)',
+  shadowXl:
+    '0 16px 48px rgba(1, 5, 21, 0.8), 0 8px 16px rgba(34, 211, 238, 0.06)',
+  shadow2xl:
+    '0 24px 64px rgba(1, 5, 21, 0.85), 0 12px 24px rgba(34, 211, 238, 0.08)',
 
-  // Glows — vivid
-  glowCyan: '0 0 24px rgba(34, 211, 238, 0.3)',
-  glowBlue: '0 0 24px rgba(96, 165, 250, 0.25)',
-  glowViolet: '0 0 24px rgba(192, 132, 252, 0.35)',
+  // Glows — vivid dual-hue aurora
+  glowCyan: '0 0 28px rgba(34, 211, 238, 0.35)',
+  glowBlue: '0 0 28px rgba(96, 165, 250, 0.3)',
+  glowViolet: '0 0 28px rgba(217, 70, 239, 0.35)',
 
-  // Gradients — signature aurora glow
+  // Gradients — signature dual-hue aurora sweep
   gradientPrimary:
-    'linear-gradient(135deg, #22D3EE 0%, #8B5CF6 50%, #C084FC 100%)',
+    'linear-gradient(135deg, #22D3EE 0%, #8B5CF6 45%, #D946EF 100%)',
   gradientSurface:
-    'linear-gradient(180deg, rgba(34, 211, 238, 0.04) 0%, rgba(192, 132, 252, 0.02) 100%)',
+    'linear-gradient(180deg, rgba(34, 211, 238, 0.05) 0%, rgba(217, 70, 239, 0.025) 100%)',
   gradientGlow:
-    'radial-gradient(ellipse at top, rgba(34, 211, 238, 0.12) 0%, rgba(139, 92, 246, 0.06) 40%, transparent 70%)',
+    'radial-gradient(ellipse at top, rgba(34, 211, 238, 0.15) 0%, rgba(139, 92, 246, 0.08) 35%, rgba(217, 70, 239, 0.04) 60%, transparent 80%)',
 
   ...SHARED_STATUS_TOKENS,
 };
@@ -411,7 +428,7 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     meta: {
       id: 'dark',
       label: 'FormaOS Dark',
-      description: 'Dark enterprise cyber — the default experience',
+      description: 'Deep space cyber — cyan & violet energy on dark canvas',
       swatch: '#050816',
       isDark: true,
       colorScheme: 'dark',
@@ -422,8 +439,8 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     meta: {
       id: 'midnight-blue',
       label: 'Midnight Blue',
-      description: 'Corporate enterprise SaaS',
-      swatch: '#0A1128',
+      description: 'Corporate navy — layered depth with moonlit glass',
+      swatch: '#08102A',
       isDark: true,
       colorScheme: 'dark',
     },
@@ -433,8 +450,8 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     meta: {
       id: 'graphite',
       label: 'Graphite',
-      description: 'Minimal executive — quiet, restrained, low fatigue',
-      swatch: '#0B0B0B',
+      description: 'Warm charcoal studio — quiet authority, zero fatigue',
+      swatch: '#0D0D0F',
       isDark: true,
       colorScheme: 'dark',
     },
@@ -444,8 +461,8 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     meta: {
       id: 'light',
       label: 'Light Enterprise',
-      description: 'Clean SaaS light mode',
-      swatch: '#F8FAFC',
+      description: 'Pearl canvas with elevated white cards and indigo energy',
+      swatch: '#F0F1F5',
       isDark: false,
       colorScheme: 'light',
     },
@@ -455,8 +472,8 @@ export const THEMES: Record<ThemeId, ThemeDefinition> = {
     meta: {
       id: 'aurora',
       label: 'Aurora',
-      description: 'Premium futuristic tech — cyan & violet glow',
-      swatch: '#020617',
+      description: 'Abyssal void with vivid cyan, violet & magenta aurora glow',
+      swatch: '#010515',
       isDark: true,
       colorScheme: 'dark',
     },

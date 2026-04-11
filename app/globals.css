@@ -89,79 +89,93 @@
   --violet-600: #7050cc;
   --violet-700: #583c99;
 
-  /* Gradients - refined */
+  /* Gradients — refined tri-color energy sweep */
   --gradient-primary: linear-gradient(
     135deg,
-    #00d4fb 0%,
-    #3399ff 50%,
-    #a083ff 100%
+    #22D3EE 0%,
+    #3B82F6 45%,
+    #8B5CF6 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.01) 100%
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(255, 255, 255, 0.015) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(0, 212, 251, 0.12) 0%,
-    transparent 65%
+    rgba(34, 211, 238, 0.14) 0%,
+    rgba(59, 130, 246, 0.05) 50%,
+    transparent 75%
   );
 
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-bg-strong: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-strong: rgba(255, 255, 255, 0.16);
+  /* Glassmorphism — cyan-shifted white */
+  --glass-bg: rgba(255, 255, 255, 0.045);
+  --glass-bg-strong: rgba(255, 255, 255, 0.09);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-strong: rgba(255, 255, 255, 0.20);
 
-  /* Shadows - enterprise depth */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.7);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.8);
-  --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.85);
+  /* Shadows — deep space depth with brand-tinted layers */
+  --shadow-sm:
+    0 2px 6px rgba(0, 0, 0, 0.45),
+    0 1px 3px rgba(34, 211, 238, 0.04);
+  --shadow-md:
+    0 4px 14px rgba(0, 0, 0, 0.55),
+    0 2px 6px rgba(34, 211, 238, 0.05);
+  --shadow-lg:
+    0 8px 28px rgba(0, 0, 0, 0.65),
+    0 4px 10px rgba(34, 211, 238, 0.06);
+  --shadow-xl:
+    0 16px 48px rgba(0, 0, 0, 0.75),
+    0 6px 14px rgba(34, 211, 238, 0.05);
+  --shadow-2xl:
+    0 24px 64px rgba(0, 0, 0, 0.85),
+    0 10px 20px rgba(34, 211, 238, 0.06);
 
-  /* Glows */
-  --glow-cyan: 0 0 24px rgba(0, 212, 251, 0.3);
-  --glow-blue: 0 0 24px rgba(51, 153, 255, 0.3);
-  --glow-violet: 0 0 24px rgba(160, 131, 255, 0.3);
+  /* Glows — vivid neon energy */
+  --glow-cyan: 0 0 28px rgba(34, 211, 238, 0.35);
+  --glow-blue: 0 0 28px rgba(59, 130, 246, 0.3);
+  --glow-violet: 0 0 28px rgba(139, 92, 246, 0.35);
 
-  /* Semantic color tokens — FormaOS Dark (default) */
+  /* Semantic color tokens — FormaOS Dark (default)
+   * The flagship theme — deep space cyber with cyan/violet energy.
+   * Three-tier surface stack for clear visual hierarchy.
+   * Enhanced shadows with brand-tinted depth layers. */
   --background: 232 65% 5%;
-  --foreground: 220 14% 91%;
+  --foreground: 220 18% 92%;
 
-  --card: 221 39% 11%;
-  --card-foreground: 220 14% 91%;
-  --panel-2: 226 35% 12%;
+  --card: 225 38% 12%;
+  --card-foreground: 220 18% 92%;
+  --panel-2: 226 35% 13%;
 
-  --popover: 224 50% 8%;
-  --popover-foreground: 220 14% 91%;
+  --popover: 228 48% 8%;
+  --popover-foreground: 220 18% 92%;
 
   --primary: 189 94% 53%;
   --primary-foreground: 232 65% 5%;
 
   --secondary: 258 90% 66%;
-  --secondary-foreground: 220 14% 91%;
+  --secondary-foreground: 220 18% 92%;
 
   --muted: 225 30% 18%;
   --muted-foreground: 215 16% 65%;
 
   --accent: 258 90% 66%;
-  --accent-foreground: 220 14% 91%;
+  --accent-foreground: 220 18% 92%;
 
   --destructive: 0 85% 58%;
-  --destructive-foreground: 220 14% 91%;
+  --destructive-foreground: 220 18% 92%;
 
-  --border: 220 20% 16%;
-  --input: 224 50% 8%;
+  --border: 224 22% 17%;
+  --input: 228 48% 8%;
   --ring: 189 94% 53%;
 
-  --sidebar: 228 40% 6%;
-  --sidebar-foreground: 220 14% 91%;
+  --sidebar: 228 42% 6%;
+  --sidebar-foreground: 220 18% 92%;
   --sidebar-primary: 189 94% 53%;
   --sidebar-primary-foreground: 232 65% 5%;
   --sidebar-accent: 228 40% 12%;
-  --sidebar-accent-foreground: 220 14% 91%;
-  --sidebar-border: 220 20% 14%;
+  --sidebar-accent-foreground: 220 18% 92%;
+  --sidebar-border: 224 22% 14%;
   --sidebar-ring: 189 94% 53%;
 
   /* Marketing surface tokens — use instead of hardcoded hex */
@@ -182,130 +196,142 @@
 }
 
 /* =========================================================
- * LIGHT ENTERPRISE — Premium SaaS light mode
- * Warm pearl canvas · white elevated cards · blue-tinted depth
- * Inspired by Linear, Stripe, Notion, Vercel light modes.
+ * LIGHT ENTERPRISE — World-class SaaS light mode
+ * Warm pearl canvas · elevated white cards · blue-tinted depth
+ * Inspired by Linear, Stripe, Notion, Vercel, Figma light modes.
  *
  * Design principles:
- * 1. Canvas ≠ Card — warm gray canvas makes white cards float
- * 2. Shadows carry brand tint (blue-gray, not pure black)
- * 3. Sidebar is a distinct surface with a subtle left edge
- * 4. Borders are warm-cool, not flat gray
- * 5. Accents punch hard — blue + violet gradient energy
+ * 1. Canvas ≠ Card — warm pearl canvas (#F0F1F5) lifts white cards
+ * 2. Shadows carry brand tint (slate-blue, never flat gray)
+ * 3. Sidebar is a distinct warm surface with a tinted edge
+ * 4. Borders are warm-cool with subtle blue undertone
+ * 5. Accents punch hard — indigo + violet gradient energy
+ * 6. Every surface has purpose — no boring flat white zones
+ * 7. Ambient brand wash adds life without distraction
  * ======================================================== */
 [data-theme='light'] {
   color-scheme: light;
 
   /* ── Surfaces ── */
-  /* Canvas: warm pearl gray — #EFEEF2 */
-  --background: 240 10% 94%;
-  /* Text: rich near-black, not washed-out gray */
+  /* Canvas: warm pearl gray with subtle blue undertone — #F0F1F5 */
+  --background: 230 16% 95%;
+  /* Text: rich near-black with blue tint — high readability */
   --foreground: 224 71% 4%;
 
-  /* Cards: pure white, elevated */
+  /* Cards: pure white, visually elevated above canvas */
   --card: 0 0% 100%;
   --card-foreground: 224 71% 4%;
-  /* Secondary panels: soft warm gray */
-  --panel-2: 240 8% 92%;
+  /* Secondary panels: subtle warm gray — distinct from both card and canvas */
+  --panel-2: 228 12% 92%;
 
   --popover: 0 0% 100%;
   --popover-foreground: 224 71% 4%;
 
   /* ── Brand colors ── */
-  /* Primary: vivid blue #2563EB — strong, punchy, WCAG AA on white */
-  --primary: 221 83% 53%;
+  /* Primary: deep indigo #4338CA — richer than plain blue, WCAG AA on white */
+  --primary: 243 75% 51%;
   --primary-foreground: 0 0% 100%;
 
-  /* Secondary: cool neutral for tags, badges */
-  --secondary: 220 14% 91%;
+  /* Secondary: tinted warm neutral for tags, badges, code blocks */
+  --secondary: 228 20% 92%;
   --secondary-foreground: 224 50% 18%;
 
-  /* Muted: for de-emphasized text and surfaces */
-  --muted: 240 8% 91%;
+  /* Muted: de-emphasized surfaces and text */
+  --muted: 228 14% 91%;
   --muted-foreground: 220 9% 46%;
 
-  /* Accent: indigo-violet — eye-catching energy */
-  --accent: 255 82% 58%;
+  /* Accent: vibrant violet — draws attention for CTAs and highlights */
+  --accent: 263 70% 50%;
   --accent-foreground: 0 0% 100%;
 
-  /* Destructive: crisp red */
+  /* Destructive: warm red — approachable but urgent */
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
 
   /* ── Borders & Inputs ── */
-  /* Warm gray borders — visible but not harsh */
-  --border: 220 13% 86%;
-  --input: 240 8% 93%;
-  --ring: 221 83% 53%;
+  /* Blue-tinted warm borders — visible but refined */
+  --border: 224 16% 85%;
+  --input: 228 14% 95%;
+  --ring: 243 75% 51%;
 
-  /* ── Sidebar — distinct tinted surface ── */
-  /* Slightly cooler / darker than canvas for visual separation */
-  --sidebar: 228 14% 91%;
+  /* ── Sidebar — distinct tinted surface with depth ── */
+  /* Slightly cooler / more saturated than canvas for clear separation */
+  --sidebar: 225 20% 93%;
   --sidebar-foreground: 224 71% 4%;
-  --sidebar-primary: 221 83% 53%;
+  --sidebar-primary: 243 75% 51%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 228 16% 87%;
+  --sidebar-accent: 228 22% 89%;
   --sidebar-accent-foreground: 224 50% 18%;
-  --sidebar-border: 220 13% 86%;
-  --sidebar-ring: 221 83% 53%;
+  --sidebar-border: 224 16% 85%;
+  --sidebar-ring: 243 75% 51%;
 
   /* ── Marketing ── */
-  --marketing-bg: 240 10% 94%;
-  --marketing-bg-alt: 240 8% 92%;
-  --marketing-surface: 228 14% 91%;
+  --marketing-bg: 230 16% 95%;
+  --marketing-bg-alt: 228 14% 92%;
+  --marketing-surface: 225 20% 93%;
   --marketing-card: 0 0% 100%;
-  --marketing-card-border: 220 13% 50% / 0.1;
-  --marketing-glow: 221 83% 53% / 0.1;
+  --marketing-card-border: 224 30% 50% / 0.1;
+  --marketing-glow: 243 75% 51% / 0.1;
 
   /* ── Status — vibrant, WCAG-accessible on white ── */
   --success: 160 84% 39%;
   --success-foreground: 0 0% 100%;
   --warning: 38 92% 50%;
   --warning-foreground: 0 0% 0%;
-  --info: 221 83% 53%;
+  --info: 243 75% 51%;
   --info-foreground: 0 0% 100%;
 
-  /* ── Glassmorphism ── */
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-bg-strong: rgba(255, 255, 255, 0.92);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --glass-border-strong: rgba(0, 0, 0, 0.13);
+  /* ── Glassmorphism — warm white with backdrop blur ── */
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-bg-strong: rgba(255, 255, 255, 0.94);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-border-strong: rgba(15, 23, 42, 0.14);
 
-  /* ── Shadows — blue-tinted for premium feel ──
-   * The secret: adding a tiny blue channel to shadows
-   * makes them feel warmer and more intentional vs flat gray */
+  /* ── Shadows — layered blue-tinted for premium depth ──
+   * Three-layer shadow stack: tight contact, mid spread, ambient wash
+   * Slate-blue tint (#0F172A) makes shadows feel designed, not accidental */
   --shadow-sm:
-    0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+    0 1px 2px rgba(15, 23, 42, 0.05),
+    0 1px 3px rgba(15, 23, 42, 0.08);
   --shadow-md:
-    0 2px 4px rgba(15, 23, 42, 0.04), 0 4px 16px rgba(15, 23, 42, 0.08);
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 4px 12px rgba(15, 23, 42, 0.07),
+    0 2px 4px rgba(67, 56, 202, 0.03);
   --shadow-lg:
-    0 4px 6px rgba(15, 23, 42, 0.03), 0 12px 28px rgba(15, 23, 42, 0.1);
+    0 2px 4px rgba(15, 23, 42, 0.04),
+    0 12px 28px rgba(15, 23, 42, 0.1),
+    0 4px 8px rgba(67, 56, 202, 0.04);
   --shadow-xl:
-    0 8px 16px rgba(15, 23, 42, 0.05), 0 24px 48px rgba(15, 23, 42, 0.12);
+    0 4px 8px rgba(15, 23, 42, 0.04),
+    0 24px 48px rgba(15, 23, 42, 0.1),
+    0 8px 16px rgba(67, 56, 202, 0.05);
   --shadow-2xl:
-    0 16px 32px rgba(15, 23, 42, 0.06), 0 40px 80px rgba(15, 23, 42, 0.14);
+    0 8px 16px rgba(15, 23, 42, 0.05),
+    0 40px 80px rgba(15, 23, 42, 0.12),
+    0 16px 32px rgba(67, 56, 202, 0.06);
 
-  /* ── Glows — color-tinted for interactive feedback ── */
-  --glow-cyan: 0 0 24px rgba(34, 211, 238, 0.18);
-  --glow-blue: 0 0 24px rgba(37, 99, 235, 0.18);
-  --glow-violet: 0 0 24px rgba(124, 58, 237, 0.18);
+  /* ── Glows — brand-tinted for interactive feedback ── */
+  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.2);
+  --glow-blue: 0 0 20px rgba(67, 56, 202, 0.2);
+  --glow-violet: 0 0 20px rgba(124, 58, 237, 0.2);
 
-  /* ── Gradients ── */
+  /* ── Gradients — richer brand energy ── */
   --gradient-primary: linear-gradient(
     135deg,
-    #2563eb 0%,
-    #4f46e5 50%,
-    #7c3aed 100%
+    #4338CA 0%,
+    #6D28D9 50%,
+    #7C3AED 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
     rgba(255, 255, 255, 1) 0%,
-    rgba(248, 250, 252, 0.9) 100%
+    rgba(240, 241, 245, 0.7) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(37, 99, 235, 0.07) 0%,
-    transparent 65%
+    rgba(67, 56, 202, 0.06) 0%,
+    rgba(124, 58, 237, 0.03) 40%,
+    transparent 70%
   );
 }
 
@@ -532,20 +558,20 @@
   background-clip: padding-box;
 }
 
-/* Midnight Blue scrollbar — blue-tinted */
+/* Midnight Blue scrollbar — moonlit blue-tinted */
 [data-theme='midnight-blue'] ::-webkit-scrollbar-thumb {
   background: linear-gradient(
     180deg,
-    rgba(140, 180, 255, 0.14),
-    rgba(140, 180, 255, 0.06)
+    rgba(100, 160, 255, 0.16),
+    rgba(100, 160, 255, 0.07)
   );
   background-clip: padding-box;
 }
 [data-theme='midnight-blue'] ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(
     180deg,
-    rgba(140, 180, 255, 0.22),
-    rgba(140, 180, 255, 0.1)
+    rgba(100, 160, 255, 0.24),
+    rgba(100, 160, 255, 0.12)
   );
   background-clip: padding-box;
 }
@@ -608,322 +634,421 @@
 
 /* =========================================================
  * MIDNIGHT BLUE — Corporate enterprise SaaS
- * Deep midnight palette with blue tints, professional atmosphere
+ * Deep ocean midnight · layered navy surfaces · starfield depth
+ * The "boardroom at night" aesthetic — authority without severity.
+ *
+ * Key upgrades:
+ * 1. Three-tier navy surface stack for clear visual hierarchy
+ * 2. Moonlit blue glass overlays (not generic white)
+ * 3. Richer gradient with teal accent for energy
+ * 4. Deep azure shadows instead of pure black
  * ======================================================== */
 [data-theme='midnight-blue'] {
   color-scheme: dark;
 
-  --background: 226 60% 10%;
-  --foreground: 214 32% 91%;
+  /* Surfaces: 3-tier navy stack — #08102A → #0E1A42 → #162550 */
+  --background: 228 65% 10%;
+  --foreground: 214 40% 93%;
 
-  --card: 224 50% 21%;
-  --card-foreground: 214 32% 91%;
+  --card: 224 52% 17%;
+  --card-foreground: 214 40% 93%;
 
-  --popover: 224 62% 15%;
-  --popover-foreground: 214 32% 91%;
+  --popover: 226 58% 13%;
+  --popover-foreground: 214 40% 93%;
 
+  /* Brand: vivid blue #3B82F6 + teal accent #2DD4BF */
   --primary: 217 91% 60%;
-  --primary-foreground: 226 60% 10%;
+  --primary-foreground: 228 65% 10%;
 
-  --secondary: 198 93% 60%;
-  --secondary-foreground: 214 32% 91%;
+  --secondary: 174 72% 51%;
+  --secondary-foreground: 214 40% 93%;
 
-  --muted: 224 35% 18%;
-  --muted-foreground: 218 15% 62%;
+  /* Utility */
+  --muted: 224 38% 16%;
+  --muted-foreground: 218 18% 60%;
 
-  --accent: 198 93% 60%;
-  --accent-foreground: 226 60% 10%;
+  --accent: 174 72% 51%;
+  --accent-foreground: 228 65% 10%;
 
   --destructive: 0 80% 55%;
-  --destructive-foreground: 214 32% 91%;
+  --destructive-foreground: 214 40% 93%;
 
-  --border: 224 25% 16%;
-  --input: 224 50% 13%;
+  /* Chrome */
+  --border: 224 28% 18%;
+  --input: 226 50% 12%;
   --ring: 217 91% 60%;
 
-  --sidebar: 226 55% 8%;
-  --sidebar-foreground: 214 32% 91%;
+  /* Sidebar: slightly deeper than canvas for dock feel */
+  --sidebar: 228 62% 7%;
+  --sidebar-foreground: 214 40% 93%;
   --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 226 60% 10%;
-  --sidebar-accent: 224 40% 16%;
-  --sidebar-accent-foreground: 214 32% 91%;
-  --sidebar-border: 224 25% 14%;
+  --sidebar-primary-foreground: 228 65% 10%;
+  --sidebar-accent: 224 42% 14%;
+  --sidebar-accent-foreground: 214 40% 93%;
+  --sidebar-border: 224 28% 15%;
   --sidebar-ring: 217 91% 60%;
 
   /* Marketing */
-  --marketing-bg: 226 55% 8%;
-  --marketing-bg-alt: 225 50% 10%;
-  --marketing-surface: 224 50% 12%;
-  --marketing-card: 224 50% 21%;
-  --marketing-card-border: 0 0% 100% / 0.06;
-  --marketing-glow: 217 91% 60% / 0.12;
+  --marketing-bg: 228 62% 7%;
+  --marketing-bg-alt: 226 55% 9%;
+  --marketing-surface: 224 52% 11%;
+  --marketing-card: 224 52% 17%;
+  --marketing-card-border: 217 80% 70% / 0.08;
+  --marketing-glow: 217 91% 60% / 0.14;
 
   /* Status */
-  --success: 142 76% 36%;
+  --success: 160 84% 39%;
   --success-foreground: 0 0% 100%;
   --warning: 38 92% 50%;
   --warning-foreground: 0 0% 0%;
   --info: 217 91% 60%;
   --info-foreground: 0 0% 100%;
 
-  --glass-bg: rgba(140, 180, 255, 0.03);
-  --glass-bg-strong: rgba(140, 180, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-strong: rgba(255, 255, 255, 0.16);
+  /* Glass: moonlit blue-tinted overlays */
+  --glass-bg: rgba(100, 160, 255, 0.04);
+  --glass-bg-strong: rgba(100, 160, 255, 0.08);
+  --glass-border: rgba(140, 180, 255, 0.12);
+  --glass-border-strong: rgba(140, 180, 255, 0.20);
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.8);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.85);
-  --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.9);
+  /* Shadows: deep azure, not pure black */
+  --shadow-sm:
+    0 2px 6px rgba(4, 8, 30, 0.5),
+    0 1px 3px rgba(59, 130, 246, 0.06);
+  --shadow-md:
+    0 4px 12px rgba(4, 8, 30, 0.55),
+    0 2px 6px rgba(59, 130, 246, 0.08);
+  --shadow-lg:
+    0 8px 28px rgba(4, 8, 30, 0.6),
+    0 4px 10px rgba(59, 130, 246, 0.1);
+  --shadow-xl:
+    0 16px 48px rgba(4, 8, 30, 0.7),
+    0 8px 16px rgba(59, 130, 246, 0.08);
+  --shadow-2xl:
+    0 24px 64px rgba(4, 8, 30, 0.8),
+    0 12px 24px rgba(59, 130, 246, 0.1);
 
-  --glow-cyan: 0 0 24px rgba(56, 189, 248, 0.25);
-  --glow-blue: 0 0 24px rgba(59, 130, 246, 0.3);
-  --glow-violet: 0 0 24px rgba(139, 92, 246, 0.25);
+  /* Glows: blue-family spectrum */
+  --glow-cyan: 0 0 28px rgba(56, 189, 248, 0.3);
+  --glow-blue: 0 0 28px rgba(59, 130, 246, 0.35);
+  --glow-violet: 0 0 24px rgba(99, 102, 241, 0.3);
 
+  /* Gradient: blue → teal energy sweep */
   --gradient-primary: linear-gradient(
     135deg,
-    #38bdf8 0%,
-    #3b82f6 50%,
-    #6366f1 100%
+    #38BDF8 0%,
+    #3B82F6 40%,
+    #6366F1 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
-    rgba(140, 180, 255, 0.04) 0%,
-    rgba(140, 180, 255, 0.01) 100%
+    rgba(100, 160, 255, 0.05) 0%,
+    rgba(100, 160, 255, 0.015) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(59, 130, 246, 0.1) 0%,
-    transparent 65%
+    rgba(59, 130, 246, 0.14) 0%,
+    rgba(45, 212, 191, 0.04) 50%,
+    transparent 75%
   );
 }
 
 /* =========================================================
  * GRAPHITE — Minimal Executive
- * Pure neutral greys, restrained violet accent, low fatigue
+ * Charcoal studio · warm neutrals · restrained violet accent
+ * The "architect's desk" aesthetic — quiet authority, zero fatigue.
+ *
+ * Key upgrades:
+ * 1. Warm charcoal base (#0D0D0F) vs cold pure black
+ * 2. Subtle warm undertones in surfaces for depth
+ * 3. Crisp violet accent with emerald secondary for balance
+ * 4. Ultra-soft shadows for premium matte finish
+ * 5. Frosted glass with warm-neutral tint
  * ======================================================== */
 [data-theme='graphite'] {
   color-scheme: dark;
 
-  --background: 0 0% 4%;
-  --foreground: 0 0% 93%;
+  /* Surfaces: warm charcoal stack — #0D0D0F → #171719 → #212124 */
+  --background: 240 4% 5%;
+  --foreground: 240 5% 93%;
 
-  --card: 0 0% 12%;
-  --card-foreground: 0 0% 93%;
+  --card: 240 3% 13%;
+  --card-foreground: 240 5% 93%;
 
-  --popover: 0 0% 10%;
-  --popover-foreground: 0 0% 93%;
+  --popover: 240 3% 10%;
+  --popover-foreground: 240 5% 93%;
 
+  /* Brand: crisp violet #A78BFA + emerald teal #2DD4BF */
   --primary: 255 92% 76%;
-  --primary-foreground: 0 0% 4%;
+  --primary-foreground: 240 4% 5%;
 
-  --secondary: 189 94% 53%;
-  --secondary-foreground: 0 0% 4%;
+  --secondary: 174 72% 51%;
+  --secondary-foreground: 240 4% 5%;
 
-  --muted: 0 0% 16%;
-  --muted-foreground: 0 0% 55%;
+  /* Utility */
+  --muted: 240 3% 17%;
+  --muted-foreground: 240 3% 52%;
 
-  --accent: 189 94% 53%;
-  --accent-foreground: 0 0% 4%;
+  --accent: 174 72% 51%;
+  --accent-foreground: 240 4% 5%;
 
   --destructive: 0 65% 52%;
-  --destructive-foreground: 0 0% 93%;
+  --destructive-foreground: 240 5% 93%;
 
-  --border: 0 0% 14%;
-  --input: 0 0% 10%;
+  /* Chrome: warm-tinted boundaries */
+  --border: 240 3% 16%;
+  --input: 240 3% 10%;
   --ring: 255 92% 76%;
 
-  --sidebar: 0 0% 5%;
-  --sidebar-foreground: 0 0% 93%;
+  /* Sidebar: matte charcoal dock */
+  --sidebar: 240 4% 6%;
+  --sidebar-foreground: 240 5% 93%;
   --sidebar-primary: 255 92% 76%;
-  --sidebar-primary-foreground: 0 0% 4%;
-  --sidebar-accent: 0 0% 13%;
-  --sidebar-accent-foreground: 0 0% 93%;
-  --sidebar-border: 0 0% 12%;
+  --sidebar-primary-foreground: 240 4% 5%;
+  --sidebar-accent: 240 3% 14%;
+  --sidebar-accent-foreground: 240 5% 93%;
+  --sidebar-border: 240 3% 13%;
   --sidebar-ring: 255 92% 76%;
 
   /* Marketing */
-  --marketing-bg: 0 0% 5%;
-  --marketing-bg-alt: 0 0% 6%;
-  --marketing-surface: 0 0% 7%;
-  --marketing-card: 0 0% 12%;
-  --marketing-card-border: 0 0% 100% / 0.06;
+  --marketing-bg: 240 4% 5%;
+  --marketing-bg-alt: 240 3% 7%;
+  --marketing-surface: 240 3% 8%;
+  --marketing-card: 240 3% 13%;
+  --marketing-card-border: 255 50% 80% / 0.06;
   --marketing-glow: 255 92% 76% / 0.1;
 
   /* Status */
-  --success: 142 76% 36%;
+  --success: 160 84% 39%;
   --success-foreground: 0 0% 100%;
   --warning: 38 92% 50%;
   --warning-foreground: 0 0% 0%;
   --info: 255 92% 76%;
   --info-foreground: 0 0% 100%;
 
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-bg-strong: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-strong: rgba(255, 255, 255, 0.14);
+  /* Glass: warm-neutral frosted */
+  --glass-bg: rgba(255, 255, 255, 0.035);
+  --glass-bg-strong: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-border-strong: rgba(255, 255, 255, 0.16);
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.45);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.65);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.75);
-  --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.8);
+  /* Shadows: ultra-soft matte finish */
+  --shadow-sm:
+    0 1px 4px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md:
+    0 2px 8px rgba(0, 0, 0, 0.35),
+    0 4px 14px rgba(0, 0, 0, 0.25);
+  --shadow-lg:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 16px 36px rgba(0, 0, 0, 0.35);
+  --shadow-xl:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 24px 48px rgba(0, 0, 0, 0.4);
+  --shadow-2xl:
+    0 12px 28px rgba(0, 0, 0, 0.3),
+    0 40px 72px rgba(0, 0, 0, 0.45);
 
-  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.15);
-  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.15);
-  --glow-violet: 0 0 20px rgba(167, 139, 250, 0.2);
+  /* Glows: restrained, barely-there — executive restraint */
+  --glow-cyan: 0 0 20px rgba(45, 212, 191, 0.12);
+  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.12);
+  --glow-violet: 0 0 22px rgba(167, 139, 250, 0.18);
 
+  /* Gradient: violet → emerald sophistication */
   --gradient-primary: linear-gradient(
     135deg,
-    #a78bfa 0%,
-    #818cf8 50%,
-    #22d3ee 100%
+    #A78BFA 0%,
+    #818CF8 40%,
+    #2DD4BF 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.035) 0%,
+    rgba(255, 255, 255, 0.04) 0%,
     rgba(255, 255, 255, 0.01) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(167, 139, 250, 0.08) 0%,
-    transparent 65%
+    rgba(167, 139, 250, 0.07) 0%,
+    rgba(45, 212, 191, 0.03) 50%,
+    transparent 75%
   );
 }
 
 /* =========================================================
  * AURORA — Premium Futuristic Tech
- * Deep dark base with vivid cyan/violet aurora glow
+ * Abyssal void · vivid cyan/magenta aurora glow · immersive depth
+ * The "mission control" aesthetic — sci-fi precision meets elegance.
+ *
+ * Key upgrades:
+ * 1. Deeper void base (#010515) for maximum glow contrast
+ * 2. Dual-hue aurora glow (cyan + magenta) instead of single color
+ * 3. Teal-tinted glass with iridescent edge shimmer
+ * 4. Dramatic multi-layer gradients
+ * 5. Vivid glows that feel alive without overwhelming
  * ======================================================== */
 [data-theme='aurora'] {
   color-scheme: dark;
 
-  --background: 229 84% 5%;
-  --foreground: 220 14% 91%;
+  /* Surfaces: deep void stack — #010515 → #0C1631 → #111D3A */
+  --background: 230 85% 4%;
+  --foreground: 220 20% 92%;
 
-  --card: 221 39% 11%;
-  --card-foreground: 220 14% 91%;
+  --card: 224 42% 13%;
+  --card-foreground: 220 20% 92%;
 
-  --popover: 222 47% 11%;
-  --popover-foreground: 220 14% 91%;
+  --popover: 226 48% 10%;
+  --popover-foreground: 220 20% 92%;
 
+  /* Brand: vivid cyan #22D3EE + magenta-purple #D946EF */
   --primary: 189 94% 53%;
-  --primary-foreground: 229 84% 5%;
+  --primary-foreground: 230 85% 4%;
 
-  --secondary: 270 95% 75%;
-  --secondary-foreground: 220 14% 91%;
+  --secondary: 292 84% 61%;
+  --secondary-foreground: 220 20% 92%;
 
-  --muted: 230 20% 15%;
-  --muted-foreground: 230 12% 55%;
+  /* Utility */
+  --muted: 228 22% 14%;
+  --muted-foreground: 228 14% 52%;
 
-  --accent: 270 95% 75%;
-  --accent-foreground: 229 84% 5%;
+  --accent: 292 84% 61%;
+  --accent-foreground: 230 85% 4%;
 
   --destructive: 350 80% 55%;
-  --destructive-foreground: 220 14% 91%;
+  --destructive-foreground: 220 20% 92%;
 
-  --border: 230 18% 14%;
-  --input: 225 30% 10%;
+  /* Chrome */
+  --border: 228 20% 16%;
+  --input: 228 35% 10%;
   --ring: 189 94% 53%;
 
-  --sidebar: 229 70% 6%;
-  --sidebar-foreground: 220 14% 91%;
+  /* Sidebar: void-level dark for immersion */
+  --sidebar: 230 80% 5%;
+  --sidebar-foreground: 220 20% 92%;
   --sidebar-primary: 189 94% 53%;
-  --sidebar-primary-foreground: 229 84% 5%;
-  --sidebar-accent: 228 30% 12%;
-  --sidebar-accent-foreground: 220 14% 91%;
-  --sidebar-border: 230 18% 12%;
+  --sidebar-primary-foreground: 230 85% 4%;
+  --sidebar-accent: 228 32% 12%;
+  --sidebar-accent-foreground: 220 20% 92%;
+  --sidebar-border: 228 20% 13%;
   --sidebar-ring: 189 94% 53%;
 
   /* Marketing */
-  --marketing-bg: 229 80% 5%;
-  --marketing-bg-alt: 228 60% 7%;
+  --marketing-bg: 230 85% 4%;
+  --marketing-bg-alt: 228 65% 6%;
   --marketing-surface: 226 50% 8%;
-  --marketing-card: 221 39% 11%;
-  --marketing-card-border: 0 0% 100% / 0.08;
-  --marketing-glow: 189 94% 53% / 0.15;
+  --marketing-card: 224 42% 13%;
+  --marketing-card-border: 189 80% 60% / 0.1;
+  --marketing-glow: 189 94% 53% / 0.18;
 
   /* Status */
-  --success: 142 76% 36%;
+  --success: 160 84% 39%;
   --success-foreground: 0 0% 100%;
   --warning: 38 92% 50%;
   --warning-foreground: 0 0% 0%;
   --info: 189 94% 53%;
   --info-foreground: 0 0% 100%;
 
-  --glass-bg: rgba(34, 211, 238, 0.03);
-  --glass-bg-strong: rgba(34, 211, 238, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-border-strong: rgba(255, 255, 255, 0.2);
+  /* Glass: aurora-tinted with cyan shimmer */
+  --glass-bg: rgba(34, 211, 238, 0.04);
+  --glass-bg-strong: rgba(34, 211, 238, 0.08);
+  --glass-border: rgba(34, 211, 238, 0.12);
+  --glass-border-strong: rgba(34, 211, 238, 0.22);
 
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.55);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.65);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.75);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.85);
-  --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.9);
+  /* Shadows: void-depth with aurora edge glow */
+  --shadow-sm:
+    0 2px 6px rgba(1, 5, 21, 0.5),
+    0 1px 3px rgba(34, 211, 238, 0.04);
+  --shadow-md:
+    0 4px 14px rgba(1, 5, 21, 0.6),
+    0 2px 6px rgba(34, 211, 238, 0.06);
+  --shadow-lg:
+    0 8px 28px rgba(1, 5, 21, 0.7),
+    0 4px 10px rgba(34, 211, 238, 0.08);
+  --shadow-xl:
+    0 16px 48px rgba(1, 5, 21, 0.8),
+    0 8px 16px rgba(34, 211, 238, 0.06);
+  --shadow-2xl:
+    0 24px 64px rgba(1, 5, 21, 0.85),
+    0 12px 24px rgba(34, 211, 238, 0.08);
 
-  --glow-cyan: 0 0 24px rgba(34, 211, 238, 0.3);
-  --glow-blue: 0 0 24px rgba(96, 165, 250, 0.25);
-  --glow-violet: 0 0 24px rgba(192, 132, 252, 0.35);
+  /* Glows: vivid aurora — dual hue for depth */
+  --glow-cyan: 0 0 28px rgba(34, 211, 238, 0.35);
+  --glow-blue: 0 0 28px rgba(96, 165, 250, 0.3);
+  --glow-violet: 0 0 28px rgba(217, 70, 239, 0.35);
 
+  /* Gradients: signature dual-hue aurora sweep */
   --gradient-primary: linear-gradient(
     135deg,
-    #22d3ee 0%,
-    #8b5cf6 50%,
-    #c084fc 100%
+    #22D3EE 0%,
+    #8B5CF6 45%,
+    #D946EF 100%
   );
   --gradient-surface: linear-gradient(
     180deg,
-    rgba(34, 211, 238, 0.04) 0%,
-    rgba(192, 132, 252, 0.02) 100%
+    rgba(34, 211, 238, 0.05) 0%,
+    rgba(217, 70, 239, 0.025) 100%
   );
   --gradient-glow: radial-gradient(
     ellipse at top,
-    rgba(34, 211, 238, 0.12) 0%,
-    rgba(139, 92, 246, 0.06) 40%,
-    transparent 70%
+    rgba(34, 211, 238, 0.15) 0%,
+    rgba(139, 92, 246, 0.08) 35%,
+    rgba(217, 70, 239, 0.04) 60%,
+    transparent 80%
   );
 }
 
 /* Light theme glass overrides for utility classes */
 [data-theme='light'] .glass-intense {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid rgba(15, 23, 42, 0.09);
   box-shadow:
     0 1px 3px rgba(15, 23, 42, 0.04),
-    0 4px 12px rgba(15, 23, 42, 0.06);
+    0 4px 12px rgba(15, 23, 42, 0.06),
+    0 1px 2px rgba(67, 56, 202, 0.03);
 }
 [data-theme='light'] .glass-frosted {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(24px) saturate(160%);
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(28px) saturate(170%);
   border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
-/* Midnight Blue glass overrides — blue-tinted */
+/* Midnight Blue glass overrides — moonlit blue-tinted */
 [data-theme='midnight-blue'] .glass-intense {
-  background: rgba(140, 180, 255, 0.05);
-  backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(140, 180, 255, 0.1);
+  background: rgba(100, 160, 255, 0.06);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(140, 180, 255, 0.14);
+  box-shadow: 0 2px 8px rgba(4, 8, 30, 0.4);
 }
 [data-theme='midnight-blue'] .glass-frosted {
-  background: rgba(140, 180, 255, 0.025);
-  backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(140, 180, 255, 0.06);
+  background: rgba(100, 160, 255, 0.03);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(140, 180, 255, 0.08);
 }
 
-/* Aurora glass overrides — cyan/violet tinted */
+/* Graphite glass overrides — warm-neutral matte */
+[data-theme='graphite'] .glass-intense {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+[data-theme='graphite'] .glass-frosted {
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Aurora glass overrides — cyan/magenta aurora-tinted */
 [data-theme='aurora'] .glass-intense {
-  background: rgba(34, 211, 238, 0.05);
-  backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(34, 211, 238, 0.1);
+  background: rgba(34, 211, 238, 0.06);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(34, 211, 238, 0.14);
+  box-shadow: 0 2px 8px rgba(1, 5, 21, 0.4);
 }
 [data-theme='aurora'] .glass-frosted {
-  background: rgba(34, 211, 238, 0.025);
-  backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid rgba(34, 211, 238, 0.06);
+  background: rgba(34, 211, 238, 0.03);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(34, 211, 238, 0.08);
 }
 
 /* =========================================================
@@ -1645,19 +1770,112 @@
 }
 
 /* =========================================================
- * LIGHT THEME — PREMIUM POLISH LAYER
- * Comprehensive overrides that make the light theme feel
- * like a world-class SaaS product, not a dark-mode inversion.
+ * LIGHT THEME — ENTERPRISE POLISH LAYER
+ * Comprehensive overrides that transform the light theme from
+ * a basic inversion into a world-class SaaS experience.
  *
- * Approach: blue-tinted shadows, visible card elevation,
- * crisp borders, vibrant status colors, and smooth surfaces.
+ * Problem: Many pages use dark-mode-only patterns (bg-white/5,
+ * border-white/10, bg-slate-950/50) that become invisible on
+ * light backgrounds. This layer fixes all of them.
+ *
+ * Approach: brand-tinted shadows, elevated white cards,
+ * warm border system, ambient gradient washes, and surface
+ * differentiation so no page feels like flat white paper.
  * ======================================================== */
 
-/* ── Cards ── */
-/* Every card gets white bg + blue-tinted shadow for float effect */
+/* ── Fix hardcoded dark-mode Tailwind utilities ──
+ * These are used across ~12 pages and are invisible in light mode.
+ * We remap them to appropriate light-mode equivalents. */
+
+/* bg-white/5 → subtle warm gray surface */
+[data-theme='light'] .bg-white\/5 {
+  background: hsl(228 14% 94%) !important;
+}
+
+/* bg-white/10 → slightly stronger warm gray */
+[data-theme='light'] .bg-white\/10 {
+  background: hsl(228 14% 91%) !important;
+}
+
+/* bg-white/15, bg-white/20 → visible hover/active surfaces */
+[data-theme='light'] .bg-white\/15 {
+  background: hsl(228 14% 88%) !important;
+}
+[data-theme='light'] .bg-white\/20 {
+  background: hsl(228 14% 85%) !important;
+}
+
+/* hover:bg-white/* variants for interactive states */
+[data-theme='light'] .hover\:bg-white\/5:hover {
+  background: hsl(228 16% 91%) !important;
+}
+[data-theme='light'] .hover\:bg-white\/10:hover {
+  background: hsl(228 16% 88%) !important;
+}
+[data-theme='light'] .hover\:bg-white\/15:hover {
+  background: hsl(228 16% 85%) !important;
+}
+[data-theme='light'] .hover\:bg-white\/20:hover {
+  background: hsl(228 16% 82%) !important;
+}
+
+/* border-white/* → warm gray borders */
+[data-theme='light'] .border-white\/5 {
+  border-color: hsl(224 16% 90%) !important;
+}
+[data-theme='light'] .border-white\/10 {
+  border-color: hsl(224 16% 85%) !important;
+}
+[data-theme='light'] .border-white\/15 {
+  border-color: hsl(224 16% 80%) !important;
+}
+[data-theme='light'] .border-white\/20 {
+  border-color: hsl(224 16% 78%) !important;
+}
+
+/* ring-white/* → indigo-tinted ring */
+[data-theme='light'] .ring-white\/10 {
+  --tw-ring-color: hsl(224 16% 85%) !important;
+}
+[data-theme='light'] .ring-white\/20 {
+  --tw-ring-color: hsl(224 16% 78%) !important;
+}
+
+/* text-slate-50 (hardcoded near-white text) → dark text */
+[data-theme='light'] .text-slate-50 {
+  color: hsl(224 71% 4%) !important;
+}
+[data-theme='light'] .text-slate-100 {
+  color: hsl(224 50% 12%) !important;
+}
+[data-theme='light'] .text-slate-200 {
+  color: hsl(224 40% 20%) !important;
+}
+
+/* bg-slate-950/50 (dark overlay) → light frosted overlay */
+[data-theme='light'] .bg-slate-950\/50 {
+  background: hsl(228 14% 94% / 0.85) !important;
+}
+[data-theme='light'] .bg-slate-950\/80 {
+  background: hsl(228 14% 94% / 0.95) !important;
+}
+
+/* bg-glass-strong and bg-glass-subtle — already themed via CSS vars,
+ * but ensure proper light rendering for direct class usage */
+[data-theme='light'] .bg-glass-strong {
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.05),
+    0 4px 12px rgba(15, 23, 42, 0.04);
+}
+[data-theme='light'] .bg-glass-subtle {
+  background: rgba(255, 255, 255, 0.82) !important;
+}
+
+/* ── Cards — elevated white float effect ── */
 [data-theme='light'] .metric-card {
   background: hsl(0 0% 100%);
-  border-color: hsl(220 13% 89%);
+  border-color: hsl(224 16% 87%);
   box-shadow:
     0 1px 3px rgba(15, 23, 42, 0.05),
     0 4px 12px rgba(15, 23, 42, 0.04);
@@ -1669,7 +1887,7 @@
   box-shadow:
     0 2px 4px rgba(15, 23, 42, 0.06),
     0 8px 24px rgba(15, 23, 42, 0.08);
-  border-color: hsl(220 13% 85%);
+  border-color: hsl(224 16% 82%);
 }
 [data-theme='light'] .metric-card-danger {
   border-left-color: hsl(0 72% 51%);
@@ -1681,12 +1899,12 @@
   border-left-color: hsl(160 84% 39%);
 }
 [data-theme='light'] .metric-card-neutral {
-  border-left-color: hsl(221 83% 53%);
+  border-left-color: hsl(243 75% 51%);
 }
 
 /* General card / panel surfaces — elevated white */
-[data-theme='light'] .rounded-lg.border.border-border.bg-card,
-[data-theme='light'] .rounded-lg.border.border-border.overflow-hidden {
+[data-theme='light'] .rounded-lg[class*='border-border'].bg-card,
+[data-theme='light'] .rounded-lg[class*='border-border'].overflow-hidden {
   background: hsl(0 0% 100%);
   box-shadow:
     0 1px 3px rgba(15, 23, 42, 0.05),
@@ -1701,28 +1919,22 @@
 }
 
 /* ── Sidebar ── */
-/* Active link: vivid blue tint + left accent */
+/* Active link: indigo tint + left accent */
 [data-theme='light'] .sidebar-link-active {
-  background: hsl(221 83% 53% / 0.1) !important;
-  color: hsl(221 83% 45%) !important;
-  border-left-color: hsl(221 83% 53%) !important;
+  background: hsl(243 75% 51% / 0.1) !important;
+  color: hsl(243 75% 42%) !important;
+  border-left-color: hsl(243 75% 51%) !important;
 }
 
-/* Sidebar nav items — better hover state */
+/* Sidebar nav items — subtle hover */
 [data-theme='light'] [class*='sidebar'] button:hover,
 [data-theme='light'] [class*='sidebar'] a:hover {
-  background: hsl(220 13% 50% / 0.06);
+  background: hsl(224 16% 50% / 0.07);
 }
 
 /* ── Glass utilities ── */
 [data-theme='light'] .border-glass-border {
-  border-color: hsl(220 13% 86%);
-}
-[data-theme='light'] .bg-glass-subtle {
-  background: hsl(0 0% 100% / 0.85);
-}
-[data-theme='light'] .bg-glass-strong {
-  background: hsl(0 0% 100%);
+  border-color: hsl(224 16% 85%);
 }
 
 /* ── Inputs — white bg, visible border, premium focus ring ── */
@@ -1733,21 +1945,21 @@
 [data-theme='light'] textarea,
 [data-theme='light'] select {
   background: hsl(0 0% 100%);
-  border-color: hsl(220 13% 86%);
+  border-color: hsl(224 16% 85%);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 [data-theme='light'] input:focus,
 [data-theme='light'] textarea:focus,
 [data-theme='light'] select:focus {
-  border-color: hsl(221 83% 53% / 0.5);
+  border-color: hsl(243 75% 51% / 0.5);
   box-shadow:
-    0 0 0 3px hsl(221 83% 53% / 0.1),
+    0 0 0 3px hsl(243 75% 51% / 0.1),
     0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 /* ── Buttons & interactive — lift on hover ── */
-[data-theme='light'] .rounded-xl.border.border-glass-border:hover,
-[data-theme='light'] .rounded-lg.border.border-glass-border:hover {
+[data-theme='light'] .rounded-xl[class*='border-glass-border']:hover,
+[data-theme='light'] .rounded-lg[class*='border-glass-border']:hover {
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
 }
 
@@ -1769,7 +1981,7 @@
   color: rgb(254, 205, 211);
 }
 
-/* Light mode: bright tinted backgrounds with dark text */
+/* Light mode: tinted backgrounds with dark text */
 [data-theme='light'] .trial-banner-info {
   background: hsl(204 94% 94%);
   border-color: hsl(199 89% 48% / 0.2);
@@ -1800,8 +2012,8 @@
   color: hsl(160 84% 30%);
 }
 [data-theme='light'] .status-pill-blue {
-  background: hsl(221 83% 95%);
-  color: hsl(221 83% 45%);
+  background: hsl(243 75% 95%);
+  color: hsl(243 75% 42%);
 }
 
 /* ── Impact indicators — proper contrast on light ── */
@@ -1816,8 +2028,8 @@
   color: hsl(350 89% 35%);
 }
 [data-theme='light'] .impact-neutral {
-  background: hsl(240 8% 94%);
-  border-color: hsl(220 13% 86%);
+  background: hsl(228 14% 94%);
+  border-color: hsl(224 16% 85%);
   color: hsl(220 9% 46%);
 }
 
@@ -1831,24 +2043,24 @@
   opacity: 0.3;
 }
 
-/* ── Holo border — subtle on light ── */
+/* ── Holo border — brand-tinted on light ── */
 [data-theme='light'] .holo-border {
   background:
     linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) padding-box,
     linear-gradient(
         135deg,
-        rgba(37, 99, 235, 0.25),
-        rgba(79, 70, 229, 0.25),
+        rgba(67, 56, 202, 0.25),
+        rgba(109, 40, 217, 0.25),
         rgba(124, 58, 237, 0.25)
       )
       border-box;
 }
 
-/* ── Security grid — tinted blue for light ── */
+/* ── Security grid — brand-tinted for light ── */
 [data-theme='light'] .security-grid {
   background-image:
-    linear-gradient(to right, rgba(37, 99, 235, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(67, 56, 202, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(67, 56, 202, 0.04) 1px, transparent 1px);
 }
 
 /* ── Shimmer — darker lines on light bg ── */
