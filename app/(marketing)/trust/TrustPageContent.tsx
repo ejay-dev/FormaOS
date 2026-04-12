@@ -3,7 +3,6 @@
 import { useRef, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { TrustHero } from './components';
@@ -151,15 +150,15 @@ export default function TrustPageContent({
       <TrustHero />
       {leadContent}
       <FrameworkTrustStrip className="mt-2 mb-2" />
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={520}>
         <TrustModules />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={400}>
         <TrustWorkflow />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={560}>
         <QuestionnaireAccelerator />
       </DeferredSection>

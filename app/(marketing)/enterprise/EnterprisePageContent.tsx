@@ -39,8 +39,10 @@ import {
 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { VisualDivider } from '@/components/motion';
-import { ShieldRings, HexGrid } from '@/components/marketing/SectionBackgrounds';
+import {
+  ShieldRings,
+  HexGrid,
+} from '@/components/marketing/SectionBackgrounds';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -196,7 +198,13 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Metadata-based SAML 2.0 configuration with major identity providers.',
     longDescription:
       'SAML 2.0 integration supports major identity providers including Okta, Microsoft Entra ID, and Google Workspace. MFA enforcement and session policies can be applied for higher-assurance deployments, with identity-lifecycle requirements reviewed during procurement.',
-    highlights: ['Okta', 'Entra ID', 'Google Workspace', 'MFA', 'Session policies'],
+    highlights: [
+      'Okta',
+      'Entra ID',
+      'Google Workspace',
+      'MFA',
+      'Session policies',
+    ],
     colorRgb: '139,92,246',
   },
   {
@@ -206,7 +214,12 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'AU-hosted by default with additional residency requirements reviewed during procurement.',
     longDescription:
       'FormaOS is hosted in Australia by default. For teams with additional data residency requirements, current deployment posture, subprocessor details, and any roadmap or contractual options are reviewed explicitly during procurement rather than implied in public copy.',
-    highlights: ['AU default hosting', 'Documented subprocessors', 'DPA review', 'Procurement review path'],
+    highlights: [
+      'AU default hosting',
+      'Documented subprocessors',
+      'DPA review',
+      'Procurement review path',
+    ],
     colorRgb: '34,211,238',
   },
   {
@@ -216,7 +229,12 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Granular permissions with role-based access controls and audit logging.',
     longDescription:
       'FormaOS uses role-based access controls with scoped permissions, immutable audit logging for access changes, and session controls for sensitive actions. Enterprise deployments can review role design and governance posture during implementation.',
-    highlights: ['Owner/Admin/Auditor roles', 'Scoped permissions', 'Permission audit trail', 'Session controls'],
+    highlights: [
+      'Owner/Admin/Auditor roles',
+      'Scoped permissions',
+      'Permission audit trail',
+      'Session controls',
+    ],
     colorRgb: '59,130,246',
   },
   {
@@ -226,7 +244,12 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Export complete evidence packages formatted for SOC 2, ISO 27001, and NDIS audits.',
     longDescription:
       'Generate audit-ready evidence bundles with one click. Packages include control matrices, evidence artifacts with SHA-256 verification hashes, review timelines, and stakeholder sign-offs. Templates aligned to SOC 2 Type II, ISO 27001 Annex A, NDIS Practice Standards, and custom frameworks.',
-    highlights: ['SOC 2 bundles', 'ISO 27001 packages', 'SHA-256 verification', 'Chain of custody'],
+    highlights: [
+      'SOC 2 bundles',
+      'ISO 27001 packages',
+      'SHA-256 verification',
+      'Chain of custody',
+    ],
     colorRgb: '245,158,11',
   },
   {
@@ -236,7 +259,12 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Immutable evidence storage with versioning, SHA-256 integrity verification, and retention policies.',
     longDescription:
       'Every evidence artifact is versioned with full revision history. SHA-256 integrity hashes computed at upload and verified on access. Configurable retention policies per framework with automated archival. Evidence vault supports bulk export for offline storage and disaster recovery scenarios.',
-    highlights: ['Immutable versioning', 'SHA-256 integrity', 'Configurable retention', 'Bulk export'],
+    highlights: [
+      'Immutable versioning',
+      'SHA-256 integrity',
+      'Configurable retention',
+      'Bulk export',
+    ],
     colorRgb: '52,211,153',
   },
   {
@@ -246,7 +274,12 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Automated readiness scoring with weighted domain analysis and one-click certification reports.',
     longDescription:
       'Evaluate SOC 2 readiness across all five Trust Service Criteria domains with weighted scoring. Automated evidence checks across 11 controls, a gap analyzer with prioritized remediation actions, milestone tracking from enablement to certification, and one-click report generation that packages everything auditors need.',
-    highlights: ['Weighted domain scoring', '11 automated checks', 'Gap remediation', 'Certification reports'],
+    highlights: [
+      'Weighted domain scoring',
+      '11 automated checks',
+      'Gap remediation',
+      'Certification reports',
+    ],
     colorRgb: '52,211,153',
   },
 ];
@@ -649,7 +682,7 @@ function SecurityArchitecture() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Every layer independently secured, monitored, and audited  - 
+              Every layer independently secured, monitored, and audited -
               because enterprise compliance demands defense in depth.
             </p>
           </ScrollReveal>
@@ -773,8 +806,8 @@ function TrustBadgesSection() {
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Trust signals that procurement, legal, and security teams
-              expect to verify before signing.
+              Trust signals that procurement, legal, and security teams expect
+              to verify before signing.
             </p>
           </ScrollReveal>
 
@@ -1016,8 +1049,8 @@ function ProcurementFAQ() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Answers to the questions your procurement, legal, and
-              information security teams need answered before signing.
+              Answers to the questions your procurement, legal, and information
+              security teams need answered before signing.
             </p>
           </ScrollReveal>
 
@@ -1046,9 +1079,7 @@ function ProcurementFAQ() {
                   >
                     <button
                       className="w-full flex items-center gap-3 p-4 text-left"
-                      onClick={() =>
-                        setExpandedIndex(isExpanded ? null : i)
-                      }
+                      onClick={() => setExpandedIndex(isExpanded ? null : i)}
                     >
                       <div className="w-8 h-8 rounded-lg border border-amber-400/15 bg-amber-500/8 flex items-center justify-center shrink-0">
                         <Icon className="w-4 h-4 text-amber-400/80" />
@@ -1151,9 +1182,9 @@ function EnterpriseCTA() {
                   </span>
                 </h2>
                 <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
-                  Request the security review packet, run a proof-of-concept,
-                  or bring your procurement team into a structured review.
-                  We support the process your organization already follows.
+                  Request the security review packet, run a proof-of-concept, or
+                  bring your procurement team into a structured review. We
+                  support the process your organization already follows.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1435,15 +1466,19 @@ export default function EnterprisePageContent() {
     <MarketingPageShell>
       <EnterpriseHero />
 
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Trust Badges */}
       <TrustBadgesSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Enterprise Features */}
-      <DeferredSection minHeight={800}>
+      <DeferredSection minHeight={560}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
@@ -1471,38 +1506,44 @@ export default function EnterprisePageContent() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               {enterpriseFeatures.map((feature, i) => (
-                <FeatureCard
-                  key={feature.title}
-                  feature={feature}
-                  index={i}
-                />
+                <FeatureCard key={feature.title} feature={feature} index={i} />
               ))}
             </div>
           </div>
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Security Architecture */}
       <SecurityArchitecture />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* SLA */}
       <SLASection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Deployment Options */}
       <DeploymentSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Procurement FAQ */}
       <ProcurementFAQ />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* CTA */}
       <EnterpriseCTA />

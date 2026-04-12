@@ -6,7 +6,7 @@ import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
-import { SectionHeader, VisualDivider } from '@/components/motion';
+import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
@@ -230,7 +230,7 @@ export function UseCasePageTemplate({
         }
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <DeferredSection minHeight={460}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
@@ -263,7 +263,7 @@ export function UseCasePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <DeferredSection minHeight={520}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
@@ -276,9 +276,9 @@ export function UseCasePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
-      <DeferredSection minHeight={600}>
+      <DeferredSection minHeight={420}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
           <SectionHeader
             badge="Operational Workflows"
@@ -316,7 +316,7 @@ export function UseCasePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <DeferredSection minHeight={560}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
@@ -356,7 +356,7 @@ export function UseCasePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <DeferredSection minHeight={380}>
         <section className="relative mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
@@ -394,7 +394,7 @@ export function UseCasePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <DeferredSection minHeight={260}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
@@ -440,7 +440,7 @@ export function UseCasePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <section className="relative mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
         <GlassCard intensity="intense" glow className="p-8 text-center sm:p-10">

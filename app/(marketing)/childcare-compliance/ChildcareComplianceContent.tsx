@@ -27,7 +27,6 @@ import {
   InteractiveDashboard,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { VisualDivider } from '@/components/motion';
 
 /* ── Interactive NQF Dashboard visual ────────────────── */
 
@@ -302,7 +301,7 @@ export default function ChildcareComplianceContent() {
         socialProof="Trusted by childcare providers running multi-service operations"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <BeforeAfterSection
         headline="The Childcare Compliance Gap"
@@ -321,7 +320,7 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <CompareTable
         headline="FormaOS vs. the old way"
@@ -390,7 +389,7 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <FrameworkExplorer
         headline="Every Childcare Framework. Pre-Built."
@@ -500,7 +499,7 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- How It Works ---- */}
       <VerticalTimeline
@@ -597,7 +596,7 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryFeatures
         headline="Purpose-Built for Childcare Services"
@@ -805,7 +804,7 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- See It In Action ---- */}
       <SeeItInAction
@@ -928,7 +927,7 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- Social Proof ---- */}
       <SocialProof
@@ -970,14 +969,14 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryCTA
         industry="Childcare"
         urgencyCallout="NQF assessment visits can arrive with 48 hours notice. Are your quality area evidence packs current?"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryFAQ
         industry="Childcare"

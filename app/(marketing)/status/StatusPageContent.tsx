@@ -30,7 +30,6 @@ import {
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -1138,7 +1137,7 @@ export default function StatusPageContent({
     <MarketingPageShell>
       <StatusHero data={data} />
 
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Overall status banner */}
       <section className="mk-section">
@@ -1147,7 +1146,7 @@ export default function StatusPageContent({
         </div>
       </section>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Stats */}
       <DeferredSection minHeight={200}>
@@ -1201,32 +1200,32 @@ export default function StatusPageContent({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Uptime bar chart */}
       <UptimeBarChart rows={data.rows} />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Latency distribution */}
       <LatencyDistribution rows={data.rows} />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Recent checks */}
       <RecentChecksTable rows={data.rows} />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Infrastructure */}
       <InfrastructureSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Incident response */}
       <IncidentResponseSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* CTA */}
       <SubscribeCTA />

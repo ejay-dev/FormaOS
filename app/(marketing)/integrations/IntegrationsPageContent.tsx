@@ -33,7 +33,6 @@ import {
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -635,9 +634,7 @@ function AnimatedStat({
     >
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-1">
         {value}
-        {suffix && (
-          <span className="text-emerald-400">{suffix}</span>
-        )}
+        {suffix && <span className="text-emerald-400">{suffix}</span>}
       </div>
       <div className="text-xs sm:text-sm text-slate-400 font-medium">
         {label}
@@ -775,9 +772,7 @@ function IntegrationCard({
                             color: `${integration.color}99`,
                           }}
                         />
-                        <span className="text-[11px] text-slate-300">
-                          {f}
-                        </span>
+                        <span className="text-[11px] text-slate-300">{f}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -841,9 +836,7 @@ function FilterBar({
               }`}
           >
             All
-            <span className="ml-1 text-slate-500">
-              {integrations.length}
-            </span>
+            <span className="ml-1 text-slate-500">{integrations.length}</span>
           </button>
           {statuses.map((status) => {
             const config = STATUS_CONFIG[status];
@@ -887,9 +880,7 @@ function FilterBar({
           {categories.map((cat) => {
             const config = CATEGORY_CONFIG[cat];
             const Icon = config.icon;
-            const count = integrations.filter(
-              (i) => i.category === cat,
-            ).length;
+            const count = integrations.filter((i) => i.category === cat).length;
             if (count === 0) return null;
             return (
               <button
@@ -938,8 +929,8 @@ function ArchitectureSection() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Five processing layers ensure every integration delivers
-              verified, auditable compliance evidence.
+              Five processing layers ensure every integration delivers verified,
+              auditable compliance evidence.
             </p>
           </ScrollReveal>
 
@@ -1008,10 +999,7 @@ function ArchitectureSection() {
 
                       <div className="grid grid-cols-2 gap-2 sm:ml-14">
                         {layer.details.map((detail) => (
-                          <div
-                            key={detail}
-                            className="flex items-center gap-2"
-                          >
+                          <div key={detail} className="flex items-center gap-2">
                             <CheckCircle2
                               className="w-3 h-3 shrink-0"
                               style={{
@@ -1075,8 +1063,8 @@ function CategoryBreakdown() {
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Integrations across categories - embedding compliance into
-              every part of your technology stack.
+              Integrations across categories - embedding compliance into every
+              part of your technology stack.
             </p>
           </ScrollReveal>
 
@@ -1209,8 +1197,9 @@ function IntegrationsCTA() {
                   </span>
                 </h2>
                 <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
-                  We&apos;re adding new integrations every month based on customer demand.
-                  Request an integration or build your own with our API.
+                  We&apos;re adding new integrations every month based on
+                  customer demand. Request an integration or build your own with
+                  our API.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1466,7 +1455,9 @@ export default function IntegrationsPageContent() {
         seen.add(i.category);
         groups.push({
           category: i.category,
-          items: filteredIntegrations.filter((fi) => fi.category === i.category),
+          items: filteredIntegrations.filter(
+            (fi) => fi.category === i.category,
+          ),
         });
       }
     });
@@ -1480,10 +1471,12 @@ export default function IntegrationsPageContent() {
     <MarketingPageShell>
       <IntegrationsHero />
 
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Stats */}
-      <DeferredSection minHeight={200}>
+      <DeferredSection minHeight={160}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <div className="rounded-3xl border border-white/[0.06] bg-white/[0.02] p-8 sm:p-10">
@@ -1512,11 +1505,7 @@ export default function IntegrationsPageContent() {
                   label="Categories"
                   delay={0.24}
                 />
-                <AnimatedStat
-                  value="2-way"
-                  label="Data Sync"
-                  delay={0.32}
-                />
+                <AnimatedStat value="2-way" label="Data Sync" delay={0.32} />
                 <AnimatedStat
                   value="5"
                   label="Architecture Layers"
@@ -1528,10 +1517,12 @@ export default function IntegrationsPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Integration Catalog */}
-      <DeferredSection minHeight={800}>
+      <DeferredSection minHeight={600}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
@@ -1622,17 +1613,23 @@ export default function IntegrationsPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Architecture */}
       <ArchitectureSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Category Breakdown */}
       <CategoryBreakdown />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* CTA */}
       <IntegrationsCTA />

@@ -12,7 +12,7 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { brand } from '@/config/brand';
-import { Reveal, VisualDivider } from '@/components/motion';
+import { Reveal } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -247,10 +247,12 @@ export function ComparePageTemplate({
         }
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Feature Comparison Table */}
-      <DeferredSection minHeight={400}>
+      <DeferredSection minHeight={300}>
         <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <DotGrid spacing={28} color="rgba(148, 163, 184, 0.03)" />
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
@@ -351,10 +353,12 @@ export function ComparePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* FormaOS Obligations Register preview */}
-      <DeferredSection minHeight={500}>
+      <DeferredSection minHeight={360}>
         <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
             <div className="text-center mb-8">
@@ -371,10 +375,12 @@ export function ComparePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Mid-page conversion CTA */}
-      <DeferredSection minHeight={120}>
+      <DeferredSection minHeight={80}>
         <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
             <div className="rounded-2xl border border-teal-500/10 bg-gradient-to-r from-teal-500/[0.06] via-white/[0.03] to-cyan-500/[0.06] backdrop-blur-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -431,10 +437,12 @@ export function ComparePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Differentiator Points */}
-      <DeferredSection minHeight={320}>
+      <DeferredSection minHeight={240}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionChoreography
             pattern="alternating"
@@ -462,10 +470,12 @@ export function ComparePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* When competitor is the right choice */}
-      <DeferredSection minHeight={180}>
+      <DeferredSection minHeight={140}>
         <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
@@ -489,9 +499,11 @@ export function ComparePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
-      <DeferredSection minHeight={240}>
+      <DeferredSection minHeight={180}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
@@ -535,10 +547,12 @@ export function ComparePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Procurement Evaluation */}
-      <DeferredSection minHeight={280}>
+      <DeferredSection minHeight={200}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
@@ -573,10 +587,12 @@ export function ComparePageTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Ideal If + CTAs */}
-      <DeferredSection minHeight={320}>
+      <DeferredSection minHeight={240}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">

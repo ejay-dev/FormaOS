@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { SectionHeader, VisualDivider } from '@/components/motion';
+import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection, MarketingPageShell } from '../components/shared';
@@ -31,7 +31,7 @@ export default function WhatIsCosContent() {
         secondaryCta={{ href: `${appBase}/auth/signup`, label: 'Start Free Trial' }}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Core definition */}
       <section className="relative mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
@@ -50,7 +50,7 @@ export default function WhatIsCosContent() {
         </ScrollReveal>
       </section>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Key characteristics */}
       <DeferredSection minHeight={500}>
@@ -100,7 +100,7 @@ export default function WhatIsCosContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Comparison: Compliance OS vs Traditional */}
       <DeferredSection minHeight={500}>
@@ -144,7 +144,7 @@ export default function WhatIsCosContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Who needs it */}
       <DeferredSection minHeight={400}>
@@ -187,7 +187,7 @@ export default function WhatIsCosContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Evolution section */}
       <DeferredSection minHeight={300}>
@@ -209,7 +209,7 @@ export default function WhatIsCosContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* FAQ section */}
       <DeferredSection minHeight={400}>
@@ -233,7 +233,7 @@ export default function WhatIsCosContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Related links */}
       <DeferredSection minHeight={200}>
@@ -264,7 +264,7 @@ export default function WhatIsCosContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* CTA */}
       <section className="relative mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">

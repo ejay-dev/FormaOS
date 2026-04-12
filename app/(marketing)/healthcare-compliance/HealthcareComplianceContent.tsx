@@ -27,7 +27,6 @@ import {
   DemoNotificationTimeline,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { VisualDivider } from '@/components/motion';
 
 /* ── Interactive Dashboard visual ────────────────────── */
 
@@ -262,7 +261,7 @@ export default function HealthcareComplianceContent() {
         socialProof="Trusted by healthcare providers across primary and acute care"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <BeforeAfterSection
         headline="The Healthcare Compliance Gap"
@@ -348,7 +347,7 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <FrameworkExplorer
         headline="Every Healthcare Framework. Pre-Built."
@@ -478,7 +477,7 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <VerticalTimeline
         steps={[
@@ -578,7 +577,7 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryFeatures
         headline="Purpose-Built for Healthcare Organisations"
@@ -786,7 +785,7 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <SeeItInAction
         tabs={[
@@ -915,7 +914,7 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <SocialProof
         metricsBanner={[
@@ -951,14 +950,14 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryCTA
         industry="Healthcare"
         urgencyCallout="NSQHS accreditation cycles don't pause. Your evidence chain shouldn't either."
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryFAQ
         industry="Healthcare"

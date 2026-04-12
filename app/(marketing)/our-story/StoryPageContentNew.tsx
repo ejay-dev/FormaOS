@@ -17,7 +17,6 @@ import {
 import { motion } from 'framer-motion';
 import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
-import { VisualDivider } from '@/components/motion';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { DeferredSection } from '../components/shared';
@@ -956,27 +955,27 @@ export function StoryContent() {
   return (
     <div className="min-h-screen text-white overflow-hidden">
       <FounderQuote />
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={400}>
         <TheProblem />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={500}>
         <TheApproach />
       </DeferredSection>
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={400}>
         <WhyWeBuiltIt />
       </DeferredSection>
-      <VisualDivider />
-      <DeferredSection minHeight={600}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <DeferredSection minHeight={420}>
         <WhatMakesUsDifferent />
       </DeferredSection>
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={400}>
         <OurMission />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={300}>
         <FinalCTA />
       </DeferredSection>

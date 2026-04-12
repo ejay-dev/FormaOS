@@ -22,7 +22,6 @@ import dynamic from 'next/dynamic';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
 import { EnterpriseShaderHero } from '@/components/marketing/EnterpriseShaderHero';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 
@@ -140,9 +139,11 @@ export default function AboutPageContent() {
     <MarketingPageShell>
       <AboutHero />
 
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
-      <DeferredSection minHeight={640}>
+      <DeferredSection minHeight={480}>
         <EnterpriseShaderHero
           badgeText="Compliance Execution Network"
           headline={{
@@ -156,10 +157,12 @@ export default function AboutPageContent() {
         />
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Founder Origin Story */}
-      <DeferredSection minHeight={280}>
+      <DeferredSection minHeight={220}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-4xl px-6 lg:px-8">
             <ScrollReveal
@@ -222,10 +225,12 @@ export default function AboutPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Company Timeline */}
-      <DeferredSection minHeight={350}>
+      <DeferredSection minHeight={280}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
@@ -283,10 +288,12 @@ export default function AboutPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Mission & Purpose */}
-      <DeferredSection minHeight={300}>
+      <DeferredSection minHeight={240}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal
@@ -367,10 +374,12 @@ export default function AboutPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Values */}
-      <DeferredSection minHeight={300}>
+      <DeferredSection minHeight={240}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-6xl px-6 lg:px-8">
             <ScrollReveal
@@ -420,10 +429,12 @@ export default function AboutPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Proof Points */}
-      <DeferredSection minHeight={200}>
+      <DeferredSection minHeight={160}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-6xl px-6 lg:px-8">
             <ScrollReveal
@@ -490,10 +501,12 @@ export default function AboutPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Who We Serve */}
-      <DeferredSection minHeight={350}>
+      <DeferredSection minHeight={280}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-6xl px-6 lg:px-8">
             <ScrollReveal
@@ -585,10 +598,12 @@ export default function AboutPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Live Activity Feed */}
-      <DeferredSection minHeight={300}>
+      <DeferredSection minHeight={240}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-xl px-6 lg:px-8">
             <ScrollReveal
@@ -657,10 +672,12 @@ export default function AboutPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* CTA Section */}
-      <DeferredSection minHeight={250}>
+      <DeferredSection minHeight={200}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal variant="depthSlide" range={[0, 0.3]}>

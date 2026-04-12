@@ -8,7 +8,6 @@ import {
   useTransform,
   useReducedMotion,
 } from 'framer-motion';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { PricingHero } from './components';
@@ -86,27 +85,27 @@ export default function PricingPageContent() {
     <MarketingPageShell className="text-white">
       <PricingGradientMesh />
       <PricingHero />
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={480}>
         <PricingTiers />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={560}>
         <AllPlansInclude />
       </DeferredSection>
-      <VisualDivider gradient />
-      <DeferredSection minHeight={620}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <DeferredSection minHeight={440}>
         <ProcurementReadiness />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={560}>
         <FreeTrial />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={380}>
         <FAQSection />
       </DeferredSection>
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={460}>
         <FinalCTA />
       </DeferredSection>

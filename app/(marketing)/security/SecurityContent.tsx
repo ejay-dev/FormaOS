@@ -12,7 +12,10 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { SectionHeader, ArchitectureCard } from '@/components/motion';
-import { ShieldRings, ChainLinks } from '@/components/marketing/SectionBackgrounds';
+import {
+  ShieldRings,
+  ChainLinks,
+} from '@/components/marketing/SectionBackgrounds';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import Link from 'next/link';
@@ -179,7 +182,7 @@ function LightCard({
 
 export function SecuritySafeguards() {
   return (
-    <LightSection className="py-12 sm:py-16 lg:py-20">
+    <LightSection className="py-10 sm:py-14 lg:py-16">
       <ShieldRings color="rgba(45, 212, 191, 0.03)" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
@@ -201,15 +204,15 @@ export function SecuritySafeguards() {
         <SectionChoreography
           pattern="stagger-wave"
           stagger={0.04}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
         >
           {safeguards.map((safeguard) => (
-            <LightCard key={safeguard.title} glow className="p-6 sm:p-8 h-full">
+            <LightCard key={safeguard.title} glow className="p-5 sm:p-6 h-full">
               <div className="flex flex-col items-center text-center">
-                <div className="w-14 h-14 rounded-xl bg-[rgba(139,92,246,0.1)] border border-[rgba(139,92,246,0.2)] flex items-center justify-center mb-4">
-                  <safeguard.icon className="h-7 w-7 text-[rgb(139,92,246)]" />
+                <div className="w-12 h-12 rounded-xl bg-[rgba(139,92,246,0.1)] border border-[rgba(139,92,246,0.2)] flex items-center justify-center mb-3">
+                  <safeguard.icon className="h-6 w-6 text-[rgb(139,92,246)]" />
                 </div>
-                <h3 className="font-bold text-white text-lg mb-2">
+                <h3 className="font-bold text-white text-base mb-1.5">
                   {safeguard.title}
                 </h3>
                 <p className="text-foreground/70 text-sm leading-relaxed">
@@ -226,7 +229,7 @@ export function SecuritySafeguards() {
 
 export function SecurityArchitectureLayers() {
   return (
-    <LightSection className="py-12 sm:py-16 lg:py-20">
+    <LightSection className="py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
           badge="Security Architecture"
@@ -273,7 +276,7 @@ export function SecurityArchitectureLayers() {
 
 export function SecurityEvidenceChain() {
   return (
-    <LightSection className="py-12 sm:py-16 lg:py-20">
+    <LightSection className="py-10 sm:py-14 lg:py-16">
       <ChainLinks />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
@@ -324,7 +327,7 @@ export function SecurityEvidenceChain() {
 
 export function SecurityCTA() {
   return (
-    <LightSection className="py-12 sm:py-16 lg:py-20">
+    <LightSection className="py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
         <ScrollReveal variant="splitLeft" range={[0, 0.35]}>
           <LightCard className="p-8 sm:p-12 lg:p-16 text-center relative overflow-hidden">
@@ -350,8 +353,8 @@ export function SecurityCTA() {
 
               <p className="text-lg sm:text-xl text-foreground/70 mb-8 sm:mb-10 max-w-2xl mx-auto">
                 Enterprise security review packet available now - architecture,
-                encryption, identity governance, data residency, and DPA.
-                No delays for your procurement team.
+                encryption, identity governance, data residency, and DPA. No
+                delays for your procurement team.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">

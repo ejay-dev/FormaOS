@@ -19,7 +19,6 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { BlogListHeroVisual } from './components/BlogListHeroVisual';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import {
@@ -503,8 +502,10 @@ export default function BlogPageContent() {
   return (
     <MarketingPageShell className="mk-page-bg">
       <BlogHero />
-      <VisualDivider gradient />
-      <DeferredSection minHeight={400}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={300}>
         <FeaturedPost />
       </DeferredSection>
       <CategoryFilter
@@ -513,15 +514,17 @@ export default function BlogPageContent() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
-      <DeferredSection minHeight={600}>
+      <DeferredSection minHeight={400}>
         <BlogGrid
           posts={visiblePosts}
           hasMore={hasMore}
           onLoadMore={() => setVisibleCount((count) => count + 6)}
         />
       </DeferredSection>
-      <VisualDivider gradient />
-      <DeferredSection minHeight={250}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={200}>
         <NewsletterCTA />
       </DeferredSection>
     </MarketingPageShell>

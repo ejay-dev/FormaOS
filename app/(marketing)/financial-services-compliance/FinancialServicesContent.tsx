@@ -3,7 +3,6 @@
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
 import { Shield, Scale, Landmark, Monitor, FileText, Bell } from 'lucide-react';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { VisualDivider } from '@/components/motion';
 import {
   IndustryHero,
   IndustryFeatures,
@@ -271,7 +270,7 @@ export default function FinancialServicesContent() {
         socialProof="Trusted by financial services firms managing multi-regime obligations"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- Pain Points ---- */}
       <BeforeAfterSection
@@ -358,7 +357,7 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- Framework Coverage ---- */}
       <FrameworkExplorer
@@ -481,7 +480,7 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- How It Works ---- */}
       <VerticalTimeline
@@ -570,7 +569,7 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- Features ---- */}
       <IndustryFeatures
@@ -759,7 +758,7 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- See It In Action ---- */}
       <SeeItInAction
@@ -884,7 +883,7 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- Social Proof ---- */}
       <SocialProof
@@ -921,7 +920,7 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- CTA ---- */}
       <IndustryCTA
@@ -929,7 +928,7 @@ export default function FinancialServicesContent() {
         urgencyCallout="ASIC surveillance reviews don't announce themselves. Can you demonstrate your obligation coverage right now?"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* ---- FAQ ---- */}
       <IndustryFAQ

@@ -16,7 +16,6 @@ import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { ContactHeroVisual } from './components/ContactHeroVisual';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -687,23 +686,23 @@ export default function ContactPageContent({
   return (
     <MarketingPageShell>
       <ContactHero />
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={500}>
         <ContactForm submitAction={submitAction} />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={300}>
         <ContactInformation />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={250}>
         <EnterpriseInquiries />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={200}>
         <SecurityTrust />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={250}>
         <ClosingCTA />
       </DeferredSection>

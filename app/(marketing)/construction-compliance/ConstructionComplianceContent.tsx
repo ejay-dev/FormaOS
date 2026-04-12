@@ -27,7 +27,6 @@ import {
   InteractiveDashboard,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { VisualDivider } from '@/components/motion';
 
 /* ── Interactive Dashboard visual ────────────────────── */
 
@@ -262,7 +261,9 @@ export default function ConstructionComplianceContent() {
         socialProof="Trusted by construction firms operating across multiple sites"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <BeforeAfterSection
         headline="The Construction WHS Compliance Gap"
@@ -281,7 +282,9 @@ export default function ConstructionComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <CompareTable
         headline="FormaOS vs. the old way"
@@ -350,7 +353,9 @@ export default function ConstructionComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <FrameworkExplorer
         headline="Every Construction WHS Framework. Pre-Built."
@@ -468,7 +473,9 @@ export default function ConstructionComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- How It Works ---- */}
       <VerticalTimeline
@@ -565,7 +572,9 @@ export default function ConstructionComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryFeatures
         headline="Purpose-Built for Construction"
@@ -765,7 +774,9 @@ export default function ConstructionComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- See It In Action ---- */}
       <SeeItInAction
@@ -879,7 +890,9 @@ export default function ConstructionComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <SocialProof
         metricsBanner={[
@@ -915,14 +928,18 @@ export default function ConstructionComplianceContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryCTA
         industry="Construction"
         urgencyCallout="SafeWork inspections don't announce themselves. Is your SWMS register current right now?"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryFAQ
         industry="Construction"

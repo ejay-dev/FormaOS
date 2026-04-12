@@ -11,7 +11,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { brand } from '@/config/brand';
-import { Reveal, VisualDivider } from '@/components/motion';
+import { Reveal } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SecurityReviewHeroVisual } from './components/SecurityReviewHeroVisual';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -119,10 +119,12 @@ export default function SecurityReviewContent() {
         }}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Section Cards */}
-      <DeferredSection minHeight={400}>
+      <DeferredSection minHeight={300}>
         <section className="relative mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {sections.map((s, i) => (
@@ -156,10 +158,12 @@ export default function SecurityReviewContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Security Review Checklist */}
-      <DeferredSection minHeight={320}>
+      <DeferredSection minHeight={240}>
         <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">

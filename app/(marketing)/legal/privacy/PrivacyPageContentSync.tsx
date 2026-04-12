@@ -23,7 +23,6 @@ import {
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../../components/shared';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 
@@ -645,15 +644,15 @@ export default function PrivacyPageContentSync() {
   return (
     <MarketingPageShell className="bg-[#0a0f1c]">
       <PrivacyHero />
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={260}>
         <TableOfContents />
       </DeferredSection>
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={1600}>
         <PrivacyContent />
       </DeferredSection>
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={300}>
         <PrivacyCTA />
       </DeferredSection>

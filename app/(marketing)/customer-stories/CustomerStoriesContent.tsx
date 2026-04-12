@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Quote, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { brand } from '@/config/brand';
-import { VisualDivider } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -113,7 +112,7 @@ export default function CustomerStoriesContent() {
         }}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Story Cards */}
       <DeferredSection minHeight={500}>
@@ -183,7 +182,7 @@ export default function CustomerStoriesContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Buyer-ready proof walkthrough CTA */}
       <DeferredSection minHeight={160}>

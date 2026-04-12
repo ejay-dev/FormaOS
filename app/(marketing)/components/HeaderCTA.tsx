@@ -11,7 +11,7 @@ export function HeaderCTA() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <div className="flex items-center gap-2.5 whitespace-nowrap text-[13.5px] lg:text-[14px]">
+    <div className="flex items-center gap-2 whitespace-nowrap text-[13px] lg:text-[13.5px]">
       <Link
         href={signInUrl}
         onClick={() =>
@@ -24,7 +24,7 @@ export function HeaderCTA() {
             variant: 'secondary',
           })
         }
-        className="mk-btn mk-btn-ghost px-3.5 py-1.5 rounded-lg font-medium whitespace-nowrap"
+        className="px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-colors whitespace-nowrap"
       >
         Login
       </Link>
@@ -40,9 +40,9 @@ export function HeaderCTA() {
             variant: 'primary',
           })
         }
-        className="mk-btn mk-btn-primary px-5 py-1.5 whitespace-nowrap"
+        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-400 px-4 py-1.5 text-[13px] font-semibold text-slate-950 shadow-sm shadow-cyan-500/20 transition-all hover:shadow-md hover:brightness-110 whitespace-nowrap"
       >
-        <span>Get Started</span>
+        Get Started
       </Link>
     </div>
   );

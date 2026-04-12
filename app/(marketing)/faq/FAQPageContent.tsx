@@ -19,7 +19,6 @@ import { duration } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { FAQHeroVisual } from './components/FAQHeroVisual';
@@ -516,12 +515,16 @@ export default function FAQPageContent() {
   return (
     <MarketingPageShell className="bg-[#0a0f1c]">
       <FAQHero />
-      <VisualDivider gradient />
-      <DeferredSection minHeight={800}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={600}>
         <FAQContent />
       </DeferredSection>
-      <VisualDivider gradient />
-      <DeferredSection minHeight={250}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={200}>
         <FAQCTA />
       </DeferredSection>
     </MarketingPageShell>

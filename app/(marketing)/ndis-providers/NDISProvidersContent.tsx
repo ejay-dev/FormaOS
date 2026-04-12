@@ -27,7 +27,6 @@ import {
   DemoNotificationTimeline,
 } from '@/components/marketing/industry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { VisualDivider } from '@/components/motion';
 
 /* ── Interactive Dashboard visual ────────────────────── */
 
@@ -259,7 +258,7 @@ export default function NDISProvidersContent() {
         socialProof="Trusted by NDIS providers managing 200+ participants"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <BeforeAfterSection
         headline="The NDIS Compliance Gap"
@@ -345,7 +344,7 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <FrameworkExplorer
         headline="Every NDIS Framework. Pre-Built."
@@ -465,7 +464,7 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <VerticalTimeline
         steps={[
@@ -569,7 +568,7 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryFeatures
         headline="Purpose-Built for NDIS Providers"
@@ -752,7 +751,7 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <SeeItInAction
         tabs={[
@@ -876,7 +875,7 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <SocialProof
         metricsBanner={[
@@ -915,14 +914,14 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryCTA
         industry="NDIS"
         urgencyCallout="The NDIS Commission can visit without notice. Is your evidence chain current right now?"
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <IndustryFAQ
         industry="NDIS"

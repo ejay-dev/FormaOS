@@ -189,7 +189,7 @@ export default function FormaOSHomepage({
     if (!decision.deferred) return section;
 
     return (
-      <DeferredSection minHeight={minHeight ?? 400}>{section}</DeferredSection>
+      <DeferredSection minHeight={minHeight ?? 300}>{section}</DeferredSection>
     );
   };
 
@@ -211,62 +211,62 @@ export default function FormaOSHomepage({
             ? renderSection(
                 'compliance_network',
                 <ComplianceNetworkSection />,
-                620,
+                440,
               )
             : null}
           {activeShowcase === 'interactive_demo' &&
           sectionVisibility.interactive_demo !== false
-            ? renderSection('interactive_demo', <InteractiveDemo />, 720)
+            ? renderSection('interactive_demo', <InteractiveDemo />, 520)
             : null}
           {sectionVisibility.scroll_story !== false
-            ? renderSection('scroll_story', <ScrollStory />, 720)
+            ? renderSection('scroll_story', <ScrollStory />, 520)
             : null}
           {sectionVisibility.compliance_engine_demo !== false
             ? renderSection(
                 'compliance_engine_demo',
                 <ComplianceEngineDemo />,
-                720,
+                520,
               )
             : null}
           {sectionVisibility.capabilities_grid !== false
-            ? renderSection('capabilities_grid', <CapabilitiesGrid />, 640)
+            ? renderSection('capabilities_grid', <CapabilitiesGrid />, 460)
             : null}
           {activeShowcase === 'evidence_showcase' &&
           sectionVisibility.evidence_showcase !== false
-            ? renderSection('evidence_showcase', <EvidenceShowcase />, 640)
+            ? renderSection('evidence_showcase', <EvidenceShowcase />, 460)
             : null}
           {sectionVisibility.industries !== false
-            ? renderSection('industries', <Industries />, 620)
+            ? renderSection('industries', <Industries />, 440)
             : null}
           {activeShowcase === 'task_showcase' &&
           sectionVisibility.task_showcase !== false
-            ? renderSection('task_showcase', <TaskShowcase />, 640)
+            ? renderSection('task_showcase', <TaskShowcase />, 460)
             : null}
           {sectionVisibility.security !== false
-            ? renderSection('security', <SecuritySection />, 660)
+            ? renderSection('security', <SecuritySection />, 480)
             : null}
           {sectionVisibility.outcome_proof !== false
-            ? renderSection('outcome_proof', <OutcomeProofSection />, 620)
+            ? renderSection('outcome_proof', <OutcomeProofSection />, 440)
             : null}
           {/* Social proof - always shown; not gated by control plane */}
-          <DeferredSection minHeight={520}>
+          <DeferredSection minHeight={380}>
             <TestimonialsSection />
           </DeferredSection>
           {sectionVisibility.objection_handling !== false
             ? renderSection(
                 'objection_handling',
                 <ObjectionHandlingSection />,
-                620,
+                440,
               )
             : null}
           {sectionVisibility.procurement_flow !== false
-            ? renderSection('procurement_flow', <ProcurementFlowSection />, 620)
+            ? renderSection('procurement_flow', <ProcurementFlowSection />, 440)
             : null}
           {sectionVisibility.cta !== false
-            ? renderSection('cta', <CTASection />, 540)
+            ? renderSection('cta', <CTASection />, 380)
             : null}
           {sectionVisibility.trust !== false
-            ? renderSection('trust', <TrustSection />, 560)
+            ? renderSection('trust', <TrustSection />, 400)
             : null}
         </div>
       </div>

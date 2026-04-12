@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Scale, ShieldCheck } from 'lucide-react';
 import { brand } from '@/config/brand';
-import { Reveal, VisualDivider } from '@/components/motion';
+import { Reveal } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -92,7 +92,7 @@ export default function CompareIndexContent() {
         secondaryCta={{ href: `${appBase}/auth/signup?source=compare`, label: 'Start Free Trial' }}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Competitor Cards */}
       <DeferredSection minHeight={240}>
@@ -123,7 +123,7 @@ export default function CompareIndexContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Differentiators */}
       <DeferredSection minHeight={280}>

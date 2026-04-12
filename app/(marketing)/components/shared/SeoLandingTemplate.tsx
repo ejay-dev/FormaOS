@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { type ReactNode } from 'react';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { SectionHeader, VisualDivider } from '@/components/motion';
+import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection, MarketingPageShell } from '.';
@@ -81,7 +81,7 @@ export function SeoLandingTemplate({
         secondaryCta={{ href: '/product', label: 'Explore Platform' }}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Long-form intro */}
       <section className="relative mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
@@ -94,7 +94,7 @@ export function SeoLandingTemplate({
         </div>
       </section>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Problem sections */}
       <DeferredSection minHeight={400}>
@@ -124,7 +124,7 @@ export function SeoLandingTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Solution sections */}
       <DeferredSection minHeight={400}>
@@ -167,7 +167,7 @@ export function SeoLandingTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Comparison table */}
       <DeferredSection minHeight={400}>
@@ -205,7 +205,7 @@ export function SeoLandingTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* FAQ / Structured Answers */}
       <DeferredSection minHeight={400}>
@@ -224,7 +224,7 @@ export function SeoLandingTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider gradient={false} />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Related internal links */}
       <DeferredSection minHeight={200}>
@@ -248,7 +248,7 @@ export function SeoLandingTemplate({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Final CTA */}
       <section className="relative mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">

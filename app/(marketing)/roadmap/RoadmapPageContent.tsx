@@ -33,7 +33,6 @@ import {
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -1560,7 +1559,7 @@ function RoadmapHero() {
         >
           {roadmapItems.length} items across{' '}
           {Object.keys(CATEGORY_CONFIG).length} categories. See what we&apos;ve
-          shipped, what we&apos;re building, and what&apos;s coming next  - 
+          shipped, what we&apos;re building, and what&apos;s coming next -
           publicly and transparently.
         </motion.p>
 
@@ -1629,18 +1628,24 @@ export default function RoadmapPageContent() {
     <MarketingPageShell>
       <RoadmapHero />
 
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <StatsSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <QuarterTimeline />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Roadmap Items */}
-      <DeferredSection minHeight={800}>
+      <DeferredSection minHeight={600}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
@@ -1738,15 +1743,21 @@ export default function RoadmapPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <CategoryBreakdown />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <TransparencySection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <FeatureRequestCTA />
     </MarketingPageShell>

@@ -8,7 +8,7 @@ import {
   Target,
 } from 'lucide-react';
 import { brand } from '@/config/brand';
-import { Reveal, VisualDivider } from '@/components/motion';
+import { Reveal } from '@/components/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
@@ -119,7 +119,7 @@ export function OutcomeJourneyPage({
         }}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <DeferredSection minHeight={320}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -165,7 +165,7 @@ export function OutcomeJourneyPage({
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Outcomes Grid */}
       <DeferredSection minHeight={280}>

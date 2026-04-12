@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DepthSection } from '@/components/motion/DepthSection';
@@ -64,33 +63,41 @@ export default function ProductPageContent() {
       {/* Hero - headline, gradient text, CTAs */}
       <ProductHeroSection />
       {/* Interactive showcase - tabs left, app panel right */}
-      <DeferredSection minHeight={620} rootMargin="120px 0px">
+      <DeferredSection minHeight={440} rootMargin="120px 0px">
         <ProductShowcaseSection />
       </DeferredSection>
 
       <FrameworkTrustStrip className="mt-4 mb-2" />
 
-      <DeferredSection minHeight={640}>
+      <DeferredSection minHeight={460}>
         <DepthSection fade>
           <WhatIsFormaOS />
         </DepthSection>
       </DeferredSection>
-      <VisualDivider />
-      <DeferredSection minHeight={620}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={440}>
         <DepthSection fade>
           <ObligationToExecution />
         </DepthSection>
       </DeferredSection>
-      <VisualDivider />
-      <DeferredSection minHeight={700}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={500}>
         <OperatingModel />
       </DeferredSection>
-      <VisualDivider />
-      <DeferredSection minHeight={800}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={560}>
         <FullControlMapSection />
       </DeferredSection>
-      <VisualDivider />
-      <DeferredSection minHeight={520}>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={380}>
         <FinalCTA />
       </DeferredSection>
     </MarketingPageShell>

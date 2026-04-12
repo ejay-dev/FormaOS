@@ -53,7 +53,6 @@ import {
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { VisualDivider } from '@/components/motion';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { brand } from '@/config/brand';
@@ -1057,7 +1056,7 @@ function ArchitectureSection() {
 
 function ComparisonSection() {
   return (
-    <DeferredSection minHeight={600}>
+    <DeferredSection minHeight={420}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <ScrollReveal
@@ -1470,7 +1469,7 @@ function CapabilityDeepDive() {
   const TabIcon = tab.icon;
 
   return (
-    <DeferredSection minHeight={600}>
+    <DeferredSection minHeight={420}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <ScrollReveal
@@ -2042,14 +2041,18 @@ export default function FeaturesPageContent() {
     <MarketingPageShell>
       <FeaturesHero />
 
-      <VisualDivider gradient />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <StatsSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Feature Grid */}
-      <DeferredSection minHeight={800}>
+      <DeferredSection minHeight={560}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-6xl px-6 lg:px-8">
             <ScrollReveal
@@ -2098,27 +2101,39 @@ export default function FeaturesPageContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <FrameworkCoverageSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <CapabilityDeepDive />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <ArchitectureSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <PlatformWorkflowSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <ComparisonSection />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <EnterpriseCTA />
     </MarketingPageShell>

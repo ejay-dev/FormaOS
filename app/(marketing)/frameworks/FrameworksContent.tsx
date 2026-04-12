@@ -10,7 +10,6 @@ import {
   Target,
 } from 'lucide-react';
 import { brand } from '@/config/brand';
-import { VisualDivider } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -86,7 +85,7 @@ export default function FrameworksContent() {
         secondaryCta={{ href: '/security-review', label: 'Security Review Packet' }}
       />
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Principles */}
       <DeferredSection minHeight={280}>
@@ -113,7 +112,7 @@ export default function FrameworksContent() {
         </section>
       </DeferredSection>
 
-      <VisualDivider />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Framework Packs */}
       <DeferredSection minHeight={400}>
