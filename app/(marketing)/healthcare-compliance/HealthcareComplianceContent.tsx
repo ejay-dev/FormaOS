@@ -102,7 +102,7 @@ function HealthcareDashboardVisual() {
             cpd: '12 / 60 hrs',
           },
           expandedContent: {
-            label: 'Practitioner Details — REVIEW',
+            label: 'Practitioner Details - REVIEW',
             items: [
               { key: 'AHPRA Number', value: 'DEN0001456789' },
               { key: 'Registration Expiry', value: '22 May 2026' },
@@ -121,7 +121,7 @@ function HealthcareDashboardVisual() {
             cpd: '5 / 20 hrs',
           },
           expandedContent: {
-            label: 'Practitioner Details — ACTION REQUIRED',
+            label: 'Practitioner Details - ACTION REQUIRED',
             items: [
               { key: 'AHPRA Number', value: 'PHY0001876543' },
               { key: 'Expired', value: '39 days ago' },
@@ -155,17 +155,17 @@ function HealthcareDashboardVisual() {
       ]}
       notifications={[
         {
-          message: 'Dr Priya Sharma — AHPRA registration expiring in 43 days',
+          message: 'Dr Priya Sharma - AHPRA registration expiring in 43 days',
           time: '1 hour ago',
           type: 'alert',
         },
         {
-          message: 'Michael O’Brien — registration expired, practice suspended',
+          message: 'Michael O’Brien - registration expired, practice suspended',
           time: '2 days ago',
           type: 'alert',
         },
         {
-          message: 'Lisa Chen — CPD hours on track (38/40)',
+          message: 'Lisa Chen - CPD hours on track (38/40)',
           time: '5 days ago',
           type: 'success',
         },
@@ -254,6 +254,12 @@ export default function HealthcareComplianceContent() {
             ]}
           />
         }
+        jurisdictionBadges={[
+          { label: 'AHPRA Registration' },
+          { label: 'NSQHS Standards' },
+          { label: 'ACSQHC Accreditation' },
+        ]}
+        socialProof="Trusted by healthcare providers across primary and acute care"
       />
 
       <VisualDivider />
@@ -262,14 +268,14 @@ export default function HealthcareComplianceContent() {
         headline="The Healthcare Compliance Gap"
         subheadline="The difference between scrambling and being accreditation-ready."
         without={[
-          'AHPRA registration lapse discovered at point of care — practitioner practising unlawfully for 39 days',
-          'NSQHS accreditation evidence assembled in a 3-week sprint — critical gaps found 48 hours before visit',
-          'CPD hours untracked across 4 departments — 12 practitioners non-compliant at annual audit',
-          'Adverse event documentation incomplete — clinical governance review cannot proceed',
+          'AHPRA registration lapse discovered at point of care - practitioner practising unlawfully for 39 days',
+          'NSQHS accreditation evidence assembled in a 3-week sprint - critical gaps found 48 hours before visit',
+          'CPD hours untracked across 4 departments - 12 practitioners non-compliant at annual audit',
+          'Adverse event documentation incomplete - clinical governance review cannot proceed',
         ]}
         withFormaOS={[
-          'Automatic AHPRA expiry alerts 90/60/30 days before lapse — no practitioner slips through',
-          'Continuous evidence chain across all 8 NSQHS Standards — accreditation-ready every day',
+          'Automatic AHPRA expiry alerts 90/60/30 days before lapse - no practitioner slips through',
+          'Continuous evidence chain across all 8 NSQHS Standards - accreditation-ready every day',
           'CPD hours tracked per profession with progress dashboards and gap alerts',
           'Structured adverse event workflows with root cause analysis and open disclosure tracking',
         ]}
@@ -346,7 +352,7 @@ export default function HealthcareComplianceContent() {
 
       <FrameworkExplorer
         headline="Every Healthcare Framework. Pre-Built."
-        description="FormaOS ships with every major Australian healthcare regulatory framework pre-loaded. Your obligations are mapped from day one — no manual setup required."
+        description="FormaOS ships with every major Australian healthcare regulatory framework pre-loaded. Your obligations are mapped from day one - no manual setup required."
         frameworks={[
           {
             id: 'nsqhs',
@@ -406,7 +412,7 @@ export default function HealthcareComplianceContent() {
           },
           {
             id: 'privacy-act',
-            name: 'Privacy Act 1988 — NDB Scheme',
+            name: 'Privacy Act 1988 - NDB Scheme',
             body: 'Office of the Australian Information Commissioner (OAIC)',
             updated: '2025-09-20',
             obligationCount: '80',
@@ -503,7 +509,7 @@ export default function HealthcareComplianceContent() {
                     status: 'green',
                   },
                   {
-                    k: 'Privacy Act 1988 — NDB Scheme',
+                    k: 'Privacy Act 1988 - NDB Scheme',
                     v: 'Activated',
                     status: 'green',
                   },
@@ -515,7 +521,7 @@ export default function HealthcareComplianceContent() {
             number: '02',
             title: 'Map Evidence to Every Standard',
             description:
-              'Upload clinical governance documents, credentials, training records. FormaOS links each to specific NSQHS standards and AHPRA requirements — building continuous evidence chains.',
+              'Upload clinical governance documents, credentials, training records. FormaOS links each to specific NSQHS standards and AHPRA requirements - building continuous evidence chains.',
             gradient:
               'from-violet-500/20 to-cyan-500/20 border-violet-500/30 text-violet-300',
             visual: (
@@ -576,7 +582,7 @@ export default function HealthcareComplianceContent() {
 
       <IndustryFeatures
         headline="Purpose-Built for Healthcare Organisations"
-        subheadline="Every feature designed around real healthcare compliance workflows — not generic task management."
+        subheadline="Every feature designed around real healthcare compliance workflows - not generic task management."
         features={[
           {
             title: 'Practitioner Register',
@@ -593,22 +599,22 @@ export default function HealthcareComplianceContent() {
                 label="Practitioner Status"
                 rows={[
                   {
-                    k: 'Dr S. Mitchell — Medical',
+                    k: 'Dr S. Mitchell - Medical',
                     v: '42 / 50 CPD hrs',
                     status: 'green',
                   },
                   {
-                    k: 'J. Nguyen — Nursing',
+                    k: 'J. Nguyen - Nursing',
                     v: '18 / 20 CPD hrs',
                     status: 'green',
                   },
                   {
-                    k: 'Dr P. Sharma — Dental',
+                    k: 'Dr P. Sharma - Dental',
                     v: '12 / 60 CPD hrs',
                     status: 'amber',
                   },
                   {
-                    k: 'M. O’Brien — Physio',
+                    k: 'M. O’Brien - Physio',
                     v: 'AHPRA Expired',
                     status: 'red',
                   },
@@ -657,7 +663,7 @@ export default function HealthcareComplianceContent() {
           {
             title: 'Adverse Event Pipeline',
             description:
-              'Clinical governance escalation workflow for adverse events. Structured intake, investigation, root cause analysis, and NDB notification timer for privacy breaches — every step timestamped and evidence-linked.',
+              'Clinical governance escalation workflow for adverse events. Structured intake, investigation, root cause analysis, and NDB notification timer for privacy breaches - every step timestamped and evidence-linked.',
             details: [
               'Structured adverse event intake with severity classification',
               'Clinical governance escalation workflow',
@@ -716,22 +722,22 @@ export default function HealthcareComplianceContent() {
                 label="Upcoming Expiries"
                 rows={[
                   {
-                    k: 'Dr P. Sharma — AHPRA Rego',
+                    k: 'Dr P. Sharma - AHPRA Rego',
                     v: '43 days remaining',
                     status: 'amber',
                   },
                   {
-                    k: 'M. O’Brien — Indemnity',
+                    k: 'M. O’Brien - Indemnity',
                     v: 'Expired 9 days ago',
                     status: 'red',
                   },
                   {
-                    k: 'L. Chen — CPD Deadline',
+                    k: 'L. Chen - CPD Deadline',
                     v: '87 days remaining',
                     status: 'green',
                   },
                   {
-                    k: 'J. Nguyen — AHPRA Rego',
+                    k: 'J. Nguyen - AHPRA Rego',
                     v: '214 days remaining',
                     status: 'green',
                   },
@@ -742,7 +748,7 @@ export default function HealthcareComplianceContent() {
           {
             title: 'Accreditation Evidence Pack',
             description:
-              'One-click evidence pack generation structured to NSQHS standards. When accreditation assessors arrive, your evidence is already organised — not being assembled from shared drives and inboxes.',
+              'One-click evidence pack generation structured to NSQHS standards. When accreditation assessors arrive, your evidence is already organised - not being assembled from shared drives and inboxes.',
             details: [
               'One-click export organised by NSQHS standard and criterion',
               'Evidence completeness scoring before export',
@@ -793,12 +799,12 @@ export default function HealthcareComplianceContent() {
                 title="Healthcare Compliance Overview"
                 rows={[
                   {
-                    label: 'NSQHS Standard 1 — Clinical Governance',
+                    label: 'NSQHS Standard 1 - Clinical Governance',
                     value: '96%',
                     status: 'green',
                   },
                   {
-                    label: 'NSQHS Standard 2 — Partnering with Consumers',
+                    label: 'NSQHS Standard 2 - Partnering with Consumers',
                     value: '94%',
                     status: 'green',
                   },
@@ -813,12 +819,12 @@ export default function HealthcareComplianceContent() {
                     status: 'amber',
                   },
                   {
-                    label: 'Clinical Incidents — Open',
+                    label: 'Clinical Incidents - Open',
                     value: '3 active',
                     status: 'amber',
                   },
                   {
-                    label: 'Privacy Act — NDB Register',
+                    label: 'Privacy Act - NDB Register',
                     value: 'Nil breaches',
                     status: 'green',
                   },
@@ -834,22 +840,22 @@ export default function HealthcareComplianceContent() {
               <DemoAuditExport
                 sections={[
                   {
-                    name: 'Standard 1 — Clinical Governance',
+                    name: 'Standard 1 - Clinical Governance',
                     score: '96%',
                     items: 42,
                   },
                   {
-                    name: 'Standard 2 — Partnering with Consumers',
+                    name: 'Standard 2 - Partnering with Consumers',
                     score: '94%',
                     items: 28,
                   },
                   {
-                    name: 'Standard 3 — Infection Prevention',
+                    name: 'Standard 3 - Infection Prevention',
                     score: '100%',
                     items: 35,
                   },
                   {
-                    name: 'Standard 5 — Comprehensive Care',
+                    name: 'Standard 5 - Comprehensive Care',
                     score: '91%',
                     items: 22,
                   },
@@ -877,13 +883,13 @@ export default function HealthcareComplianceContent() {
                   {
                     time: 'T+0:30',
                     label:
-                      'Clinical governance team notified — SAC rating assigned',
+                      'Clinical governance team notified - SAC rating assigned',
                     status: 'complete',
                   },
                   {
                     time: 'T+2:00',
                     label:
-                      'Investigation commenced — root cause analysis initiated',
+                      'Investigation commenced - root cause analysis initiated',
                     status: 'complete',
                   },
                   {
@@ -899,7 +905,7 @@ export default function HealthcareComplianceContent() {
                   {
                     time: 'T+30d',
                     label:
-                      'Follow-up review — action plan effectiveness assessed',
+                      'Follow-up review - action plan effectiveness assessed',
                     status: 'pending',
                   },
                 ]}
@@ -914,8 +920,8 @@ export default function HealthcareComplianceContent() {
       <SocialProof
         metricsBanner={[
           '206+ tables with row-level security',
-          'AU-hosted by default — data never leaves Australia',
-          'Zero evidence gaps at audit — immutable chain',
+          'AU-hosted by default - data never leaves Australia',
+          'Zero evidence gaps at audit - immutable chain',
           'SOC 2 compliance in progress',
         ]}
         trustCards={[
@@ -961,17 +967,17 @@ export default function HealthcareComplianceContent() {
             question:
               'Does FormaOS track AHPRA registration for all 16 regulated professions?',
             answer:
-              'Yes. FormaOS supports all 16 AHPRA-regulated health professions — including medical practitioners, nurses and midwives, dentists, pharmacists, physiotherapists, psychologists, optometrists, osteopaths, chiropractors, podiatrists, Chinese medicine practitioners, occupational therapists, medical radiation practitioners, Aboriginal and Torres Strait Islander health practitioners, paramedicine practitioners, and speech pathologists. Each profession has its own CPD requirements and renewal cycles, all tracked automatically.',
+              'Yes. FormaOS supports all 16 AHPRA-regulated health professions - including medical practitioners, nurses and midwives, dentists, pharmacists, physiotherapists, psychologists, optometrists, osteopaths, chiropractors, podiatrists, Chinese medicine practitioners, occupational therapists, medical radiation practitioners, Aboriginal and Torres Strait Islander health practitioners, paramedicine practitioners, and speech pathologists. Each profession has its own CPD requirements and renewal cycles, all tracked automatically.',
           },
           {
             question: 'How does FormaOS help with NSQHS accreditation?',
             answer:
-              'FormaOS maps all 8 NSQHS standards with full criterion-level detail. Evidence is attached to specific actions as your team completes them, so accreditation readiness is continuous — not a pre-visit scramble. When assessors arrive, you generate a structured evidence pack in one click, organised by standard and criterion.',
+              'FormaOS maps all 8 NSQHS standards with full criterion-level detail. Evidence is attached to specific actions as your team completes them, so accreditation readiness is continuous - not a pre-visit scramble. When assessors arrive, you generate a structured evidence pack in one click, organised by standard and criterion.',
           },
           {
             question: 'Can FormaOS track CPD hours for different professions?',
             answer:
-              'Yes. Each AHPRA-regulated profession has unique CPD requirements — different hour thresholds, activity types, and audit cycles. FormaOS tracks CPD hours per practitioner against their profession-specific requirements, with alerts when practitioners fall behind pace for their annual cycle.',
+              'Yes. Each AHPRA-regulated profession has unique CPD requirements - different hour thresholds, activity types, and audit cycles. FormaOS tracks CPD hours per practitioner against their profession-specific requirements, with alerts when practitioners fall behind pace for their annual cycle.',
           },
           {
             question:
@@ -998,7 +1004,7 @@ export default function HealthcareComplianceContent() {
           {
             question: 'What happens when NSQHS Standards are updated?',
             answer:
-              'When the Australian Commission on Safety and Quality in Health Care updates NSQHS Standards, FormaOS pushes framework updates automatically. New criteria are added to your obligation register, existing evidence mappings are preserved, and gap analysis highlights any new requirements that need attention — so you are never caught off guard by standard revisions.',
+              'When the Australian Commission on Safety and Quality in Health Care updates NSQHS Standards, FormaOS pushes framework updates automatically. New criteria are added to your obligation register, existing evidence mappings are preserved, and gap analysis highlights any new requirements that need attention - so you are never caught off guard by standard revisions.',
           },
         ]}
       />

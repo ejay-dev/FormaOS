@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Soc2Content from './Soc2Content';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
     'SOC 2 Compliance Automation - Trust Service Criteria Platform | FormaOS',

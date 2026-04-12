@@ -9,6 +9,7 @@ import {
   softwareApplicationSchema,
 } from '@/lib/seo';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: Hyperproof',
   description:
@@ -48,7 +49,8 @@ const points = [
       'Hyperproof fits modern compliance teams well. FormaOS pushes harder into regulated operating environments where care delivery, workforce controls, and incidents all affect readiness.',
   },
   {
-    title: 'Trust center and procurement workflows are closer to the core journey',
+    title:
+      'Trust center and procurement workflows are closer to the core journey',
     detail:
       'Security review assets, trust documentation, and enterprise buying flows are part of the acquisition path instead of living as a separate afterthought.',
   },
@@ -62,14 +64,42 @@ const idealIf = [
 ] as const;
 
 const featureComparison = [
-  { feature: 'Operational workflow enforcement', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Evidence verification and review chain', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Buyer trust and procurement flow', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Control management and mapping', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Regulated service-delivery use cases', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Incident-to-remediation workflow', formaos: 'yes', competitor: 'partial' },
+  {
+    feature: 'Operational workflow enforcement',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Evidence verification and review chain',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Buyer trust and procurement flow',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Control management and mapping',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Regulated service-delivery use cases',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Incident-to-remediation workflow',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
   { feature: 'Continuous posture scoring', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Export-ready evidence bundles', formaos: 'yes', competitor: 'yes' },
+  {
+    feature: 'Export-ready evidence bundles',
+    formaos: 'yes',
+    competitor: 'yes',
+  },
 ];
 
 const competitorStrengths = [

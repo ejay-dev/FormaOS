@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import SecurityReviewContent from './SecurityReviewContent';
 import { siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Security Review Packet',
   description:

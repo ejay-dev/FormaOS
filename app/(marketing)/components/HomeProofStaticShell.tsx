@@ -7,7 +7,7 @@ const PROOF_BLOCKS = [
     eyebrow: 'For Operators',
     title: 'Controls run as workflows, not as documents',
     body:
-      'Named tasks, approval gates, and evidence chains execute inside daily operations — not in a separate compliance layer.',
+      'Named tasks, approval gates, and evidence chains execute inside daily operations - not in a separate compliance layer.',
     href: '/product',
     cta: 'See how it works',
   },
@@ -40,7 +40,7 @@ export function HomeProofStaticShell() {
             Why Buyers Stay
           </p>
           <h2 className="mk-heading-section mt-3 text-white">
-            Three paths to conviction — visible before the first call
+            Three paths to conviction - visible before the first call
           </h2>
           <p className="mk-body-sm mt-4 max-w-2xl text-slate-300">
             Operators see accountable workflows. Security reviewers see

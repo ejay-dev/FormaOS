@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import TermsPageContentSync from './TermsPageContentSync';
 import { siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Terms & Conditions',
   description:

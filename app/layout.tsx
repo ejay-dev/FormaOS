@@ -63,6 +63,7 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   openGraph: {
     type: 'website',
+    locale: 'en_AU',
     siteName: 'FormaOS',
     images: [
       {
@@ -75,6 +76,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@FormaOS',
+    creator: '@FormaOS',
     title: 'FormaOS | Compliance Operating System',
     description:
       'FormaOS is the compliance operating system for regulated industries. Manage frameworks, policies, controls, and evidence in a single platform.',

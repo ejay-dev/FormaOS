@@ -149,7 +149,7 @@ const capabilities = [
     icon: Bot,
     title: 'AI Compliance Assistant',
     description:
-      'Context-aware AI chat that understands your compliance posture. Draft policies, get evidence guidance, run gap analysis, and receive actionable implementation steps — powered by your live org data.',
+      'Context-aware AI chat that understands your compliance posture. Draft policies, get evidence guidance, run gap analysis, and receive actionable implementation steps - powered by your live org data.',
     color: 'from-cyan-400 to-blue-500',
   },
   {

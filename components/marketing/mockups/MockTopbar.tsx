@@ -40,7 +40,7 @@ export function MockTopbar({ orgName = 'greenfield-care' }: MockTopbarProps) {
           </span>
         </div>
 
-        {/* Right actions — staggered entry */}
+        {/* Right actions - staggered entry */}
         <div className="flex items-center gap-2">
           {/* Search */}
           <motion.div

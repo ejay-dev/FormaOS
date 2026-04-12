@@ -89,7 +89,7 @@ export default function Image() {
           }}
         >
           Security posture, compliance certifications, and data protection
-          practices — transparent by default.
+          practices - transparent by default.
         </div>
       </div>
 

@@ -9,7 +9,7 @@ import {
 import { easing, duration } from '@/config/motion';
 
 /**
- * DemoComplianceChain — Shows the FormaOS compliance lifecycle:
+ * DemoComplianceChain - Shows the FormaOS compliance lifecycle:
  * Obligation → Control → Task → Evidence → Audit
  * Props-driven content so each usage can be themed differently.
  */
@@ -32,7 +32,7 @@ const defaultSteps: ChainStep[] = [
     label: 'Obligation',
     icon: FileText,
     title: 'Regulatory Obligation Mapped',
-    detail: 'ISO 27001 A.9.2 — Access Control Policy',
+    detail: 'ISO 27001 A.9.2 - Access Control Policy',
     meta: 'Framework imported • Controls auto-generated',
     color: 'text-teal-400',
     bg: 'bg-teal-500/15',
@@ -54,7 +54,7 @@ const defaultSteps: ChainStep[] = [
     label: 'Task',
     icon: CheckSquare,
     title: 'Task Auto-Assigned',
-    detail: 'Quarterly Access Review — Q1 2026',
+    detail: 'Quarterly Access Review - Q1 2026',
     meta: 'Due: 15 Mar 2026 • Escalation: 7 days',
     color: 'text-teal-400',
     bg: 'bg-teal-500/15',
@@ -77,7 +77,7 @@ const defaultSteps: ChainStep[] = [
     icon: BarChart3,
     title: 'Audit-Ready',
     detail: 'Full compliance trail exportable',
-    meta: 'ISO 27001 A.9.2 — 100% evidenced',
+    meta: 'ISO 27001 A.9.2 - 100% evidenced',
     color: 'text-amber-400',
     bg: 'bg-amber-500/15',
     border: 'border-amber-500/20',

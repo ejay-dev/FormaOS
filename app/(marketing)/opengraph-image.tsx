@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 export const alt =
-  'FormaOS — The Compliance Operating System for Australian Regulated Industries';
+  'FormaOS - The Compliance Operating System for Australian Regulated Industries';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -108,7 +108,7 @@ export default function Image() {
             maxWidth: 900,
           }}
         >
-          Governance, Evidence & Audits — One Platform
+          Governance, Evidence & Audits - One Platform
         </div>
         <div
           style={{

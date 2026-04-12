@@ -30,7 +30,7 @@ function BgLayer({
 }
 
 /* ─── 1. Topographic Contour Map ─────────────────────────── */
-/* Used on: Industries section — signals "coverage across regulated territory" */
+/* Used on: Industries section - signals "coverage across regulated territory" */
 
 export function TopographicPattern({
   color = 'rgba(45, 212, 191, 0.03)',
@@ -75,7 +75,7 @@ export function TopographicPattern({
 }
 
 /* ─── 2. Radar Pulse Ring ────────────────────────────────── */
-/* Used on: Outcome Proof section — "measurable outcomes" */
+/* Used on: Outcome Proof section - "measurable outcomes" */
 
 export function RadarPulse({
   color = 'rgba(45, 212, 191, 0.12)',
@@ -134,7 +134,7 @@ export function RadarPulse({
 }
 
 /* ─── 3. Decision Tree / Conversation Thread ─────────────── */
-/* Used on: Objection Handling / FAQ sections — visual structure for Q&A */
+/* Used on: Objection Handling / FAQ sections - visual structure for Q&A */
 
 export function DecisionTreePattern({
   color = 'rgba(148, 163, 184, 0.06)',
@@ -202,7 +202,7 @@ export function DecisionTreePattern({
 }
 
 /* ─── 4. Circuit Board / Node Diagram ────────────────────── */
-/* Used on: Product "What Is FormaOS" — abstract connected system */
+/* Used on: Product "What Is FormaOS" - abstract connected system */
 
 export function CircuitPattern({
   color = 'rgba(20, 184, 166, 0.04)',
@@ -271,7 +271,7 @@ export function CircuitPattern({
 }
 
 /* ─── 5. Animated Flow Path ──────────────────────────────── */
-/* Used on: Product "Obligation to Execution" — directional process flow */
+/* Used on: Product "Obligation to Execution" - directional process flow */
 
 export function FlowPath({
   color = 'rgba(45, 212, 191, 0.08)',
@@ -338,7 +338,7 @@ export function FlowPath({
 }
 
 /* ─── 6. Concentric Shield Rings ─────────────────────────── */
-/* Used on: Enterprise Security Layers, Security page — layered defense */
+/* Used on: Enterprise Security Layers, Security page - layered defense */
 
 export function ShieldRings({
   color = 'rgba(45, 212, 191, 0.04)',
@@ -377,7 +377,7 @@ export function ShieldRings({
 }
 
 /* ─── 7. Hexagonal Grid ──────────────────────────────────── */
-/* Used on: Enterprise Trust Badges — trust infrastructure pattern */
+/* Used on: Enterprise Trust Badges - trust infrastructure pattern */
 
 export function HexGrid({
   color = 'rgba(45, 212, 191, 0.025)',
@@ -432,7 +432,7 @@ export function HexGrid({
 }
 
 /* ─── 8. Evidence Chain Links ────────────────────────────── */
-/* Used on: Security Evidence Chain — visualizes chain of custody */
+/* Used on: Security Evidence Chain - visualizes chain of custody */
 
 export function ChainLinks({
   color = 'rgba(45, 212, 191, 0.06)',
@@ -473,7 +473,7 @@ export function ChainLinks({
 }
 
 /* ─── 9. Dot Grid Pattern ────────────────────────────────── */
-/* Used on: FAQ, Compare pages — subtle texture and depth */
+/* Used on: FAQ, Compare pages - subtle texture and depth */
 
 export function DotGrid({
   color = 'rgba(148, 163, 184, 0.04)',
@@ -518,7 +518,7 @@ export function DotGrid({
 }
 
 /* ─── 10. Versus Divider Glow ────────────────────────────── */
-/* Used on: Compare pages — visual tension between columns */
+/* Used on: Compare pages - visual tension between columns */
 
 export function VersusDivider({
   color = 'rgba(45, 212, 191, 0.15)',
@@ -545,7 +545,7 @@ export function VersusDivider({
 }
 
 /* ─── 11. Scan Line Sweep ────────────────────────────────── */
-/* Used on: Trust Assurance Modules — continuous verification signal */
+/* Used on: Trust Assurance Modules - continuous verification signal */
 
 export function ScanLine({
   color = 'rgba(45, 212, 191, 0.04)',
@@ -573,7 +573,7 @@ export function ScanLine({
 }
 
 /* ─── 12. Procurement Stamp Pattern ──────────────────────── */
-/* Used on: Pricing Procurement section — abstract procurement artifacts */
+/* Used on: Pricing Procurement section - abstract procurement artifacts */
 
 export function StampPattern({
   color = 'rgba(52, 211, 153, 0.03)',
@@ -627,7 +627,7 @@ export function StampPattern({
 }
 
 /* ─── 13. Active Monitoring Nodes ────────────────────────── */
-/* Used on: Trust Modules — signals live monitoring across trust surface */
+/* Used on: Trust Modules - signals live monitoring across trust surface */
 
 export function MonitoringNodes({
   color = 'rgba(45, 212, 191, 0.08)',

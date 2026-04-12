@@ -101,7 +101,7 @@ export default function VaultScreen() {
                 className="mt-1.5 flex items-center gap-1 text-[9px] text-emerald-400"
               >
                 <FileCheck className="h-2.5 w-2.5" />
-                <span>Upload verified — chain of custody recorded</span>
+                <span>Upload verified - chain of custody recorded</span>
               </motion.div>
             )}
           </motion.div>

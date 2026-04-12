@@ -7,7 +7,7 @@ import {
 import { easing, duration } from '@/config/motion';
 
 /**
- * DemoAuditTrailCard — Compact audit log timeline.
+ * DemoAuditTrailCard - Compact audit log timeline.
  * Shows recent entries with colored type indicators.
  */
 
@@ -32,7 +32,7 @@ const defaultEntries: AuditEntry[] = [
   { action: 'Policy approved', user: 'Sarah Chen', target: 'InfoSec Policy', time: '09:14', type: 'policy' },
   { action: 'Evidence uploaded', user: 'Marcus Rivera', target: 'Pen Test Q1', time: '08:42', type: 'evidence' },
   { action: 'Task completed', user: 'Marcus Rivera', target: 'Upload results', time: '08:38', type: 'task' },
-  { action: 'Compliance updated', user: 'System', target: 'ISO 27001 — 91%', time: '07:00', type: 'compliance' },
+  { action: 'Compliance updated', user: 'System', target: 'ISO 27001 - 91%', time: '07:00', type: 'compliance' },
   { action: 'Policy submitted', user: 'Marcus Rivera', target: 'Access Control', time: '06:12', type: 'policy' },
   { action: 'Task overdue', user: 'System', target: 'IR playbook update', time: '06:00', type: 'task' },
 ];

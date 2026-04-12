@@ -5,6 +5,7 @@ import { MarketingPageShell } from '@/app/(marketing)/components/shared/Marketin
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 import { siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Case Study Template',
   description:
@@ -84,7 +85,12 @@ export default function CaseStudyTemplatePage() {
         description="Use this template to build credible outcome proof without inflated claims. Designed to match how procurement and auditors evaluate impact."
         topColor="cyan"
         bottomColor="blue"
-        visualContent={<CompactHeroIcon icon={<FileText className="w-8 h-8 text-cyan-400" />} color="34,211,238" />}
+        visualContent={
+          <CompactHeroIcon
+            icon={<FileText className="w-8 h-8 text-cyan-400" />}
+            color="34,211,238"
+          />
+        }
       />
 
       <div className="mx-auto max-w-4xl px-6 pb-24">
@@ -107,10 +113,16 @@ export default function CaseStudyTemplatePage() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row text-sm">
-          <Link href="/customer-stories" className="text-primary hover:underline">
+          <Link
+            href="/customer-stories"
+            className="text-primary hover:underline"
+          >
             ← Back to Customer Stories
           </Link>
-          <Link href="/security-review" className="text-primary hover:underline">
+          <Link
+            href="/security-review"
+            className="text-primary hover:underline"
+          >
             Security Review Packet →
           </Link>
           <Link href="/trust" className="text-primary hover:underline">

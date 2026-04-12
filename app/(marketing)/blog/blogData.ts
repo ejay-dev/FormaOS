@@ -1188,7 +1188,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'AHPRA and the National Registration and Accreditation Scheme',
         paragraphs: [
-          'The Australian Health Practitioner Regulation Agency (AHPRA) works alongside 15 National Boards to regulate 16 health professions under the National Registration and Accreditation Scheme (NRAS). This scheme ensures that only qualified and competent practitioners deliver health services to the Australian public. For organisations that employ or contract allied health professionals, understanding and tracking AHPRA registration obligations is not optional — it is a legal requirement.',
+          'The Australian Health Practitioner Regulation Agency (AHPRA) works alongside 15 National Boards to regulate 16 health professions under the National Registration and Accreditation Scheme (NRAS). This scheme ensures that only qualified and competent practitioners deliver health services to the Australian public. For organisations that employ or contract allied health professionals, understanding and tracking AHPRA registration obligations is not optional - it is a legal requirement.',
           'The 16 regulated professions include Aboriginal and Torres Strait Islander health practitioners, Chinese medicine practitioners, chiropractors, dental practitioners, medical practitioners, medical radiation practitioners, midwives, nurses, occupational therapists, optometrists, osteopaths, paramedics, pharmacists, physiotherapists, podiatrists, and psychologists. Each profession has its own National Board that sets registration standards, codes of conduct, and continuing professional development (CPD) requirements.',
           'Employers and practice managers carry vicarious liability for ensuring that every practitioner working under their organisation holds current and appropriate registration. Employing an unregistered or lapsed practitioner exposes the organisation to regulatory sanctions, insurance voidance, and potential criminal liability depending on jurisdiction.',
         ],
@@ -1204,7 +1204,7 @@ export const blogPosts: BlogPost[] = [
           'Specialist registration: for practitioners with approved specialist qualifications',
           'Provisional registration: for new graduates completing supervised practice requirements',
           'Non-practising registration: maintains registration without clinical practice rights',
-          'Renewal dates vary by profession — check each National Board for specific dates',
+          'Renewal dates vary by profession - check each National Board for specific dates',
           'Lapsed registration means the practitioner cannot legally deliver health services',
         ],
       },
@@ -1218,7 +1218,7 @@ export const blogPosts: BlogPost[] = [
           'CPD hours vary by profession: commonly 20-30 hours per registration period',
           'Some boards require specific CPD categories (e.g., peer consultation for psychologists)',
           'Practitioners must maintain a CPD portfolio with evidence of completed activities',
-          'Random CPD audits can occur at renewal — practitioners must be able to produce evidence',
+          'Random CPD audits can occur at renewal - practitioners must be able to produce evidence',
           'Outcomes-based CPD models require alignment between learning plans and practice scope',
           'Organisations should maintain centralised CPD tracking for all employed practitioners',
         ],
@@ -1557,7 +1557,7 @@ export const blogPosts: BlogPost[] = [
         ],
         bullets: [
           'Notifiable incidents: death, serious injury or illness, and dangerous incidents',
-          'Notification must occur immediately — typically by phone to the relevant regulator',
+          'Notification must occur immediately - typically by phone to the relevant regulator',
           'The incident site must be preserved until an inspector directs otherwise',
           'Records of all incidents and investigations must be kept for at least 5 years',
           'Near-miss recording and investigation is best practice for proactive risk management',
@@ -1625,7 +1625,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Key differences between the two approaches',
         paragraphs: [
-          "The most significant difference is where each approach places its centre of gravity. GRC platforms centre on risk management and governance, with compliance as one of several pillars. Compliance operating systems centre on compliance execution, with governance and risk management supporting that execution. Neither approach is inherently superior — the right choice depends on the organisation's size, maturity, and compliance landscape.",
+          "The most significant difference is where each approach places its centre of gravity. GRC platforms centre on risk management and governance, with compliance as one of several pillars. Compliance operating systems centre on compliance execution, with governance and risk management supporting that execution. Neither approach is inherently superior - the right choice depends on the organisation's size, maturity, and compliance landscape.",
           'For organisations whose primary need is to ensure that day-to-day compliance obligations are met, evidence is captured, and audits are stress-free, a compliance operating system will deliver value faster and with less overhead. For organisations managing enterprise-wide risk, multi-jurisdictional regulatory programs, and complex governance structures, a GRC platform provides the breadth required. Some organisations use both, with the GRC platform providing strategic oversight and the compliance operating system providing operational execution.',
         ],
         bullets: [
@@ -1729,9 +1729,9 @@ export const blogPosts: BlogPost[] = [
           'In the aged care SIRS, the timeframe for notification is 24 hours for Priority 1 and 30 calendar days for Priority 2. These timeframes begin from when the provider became aware (or should reasonably have become aware) of the incident. Both schemes also require ongoing management, investigation, and final reporting, not just the initial notification.',
         ],
         bullets: [
-          'NDIS Priority 1: notify within 24 hours — death, serious injury, abuse/neglect with immediate risk',
-          'NDIS Priority 2: notify within 5 business days — reportable incidents without immediate risk',
-          'Aged care Priority 1: notify within 24 hours — same serious categories',
+          'NDIS Priority 1: notify within 24 hours - death, serious injury, abuse/neglect with immediate risk',
+          'NDIS Priority 2: notify within 5 business days - reportable incidents without immediate risk',
+          'Aged care Priority 1: notify within 24 hours - same serious categories',
           'Aged care Priority 2: notify within 30 calendar days',
           'Timeframes start from when the provider became aware or should have become aware',
           'Initial notification must be followed by a detailed follow-up report',
@@ -1783,7 +1783,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'AUSTRAC and the AML/CTF framework',
         paragraphs: [
-          "The Australian Transaction Reports and Analysis Centre (AUSTRAC) is Australia's financial intelligence agency and AML/CTF regulator. Under the Anti-Money Laundering and Counter-Terrorism Financing Act 2006 (AML/CTF Act), reporting entities — including financial services licensees, banks, remittance providers, digital currency exchange providers, and gambling service providers — must comply with comprehensive obligations designed to detect, deter, and disrupt money laundering, terrorism financing, and other serious financial crimes.",
+          "The Australian Transaction Reports and Analysis Centre (AUSTRAC) is Australia's financial intelligence agency and AML/CTF regulator. Under the Anti-Money Laundering and Counter-Terrorism Financing Act 2006 (AML/CTF Act), reporting entities - including financial services licensees, banks, remittance providers, digital currency exchange providers, and gambling service providers - must comply with comprehensive obligations designed to detect, deter, and disrupt money laundering, terrorism financing, and other serious financial crimes.",
           'The AML/CTF framework has been subject to significant reform. The AML/CTF Amendment Act 2024 expanded the regime to cover additional sectors (often referred to as "Tranche 2") including real estate agents, lawyers, accountants, and trust and company service providers. For entities already within the regime, the reforms have also strengthened existing obligations around customer due diligence, beneficial ownership transparency, and transaction monitoring. All reporting entities must ensure their AML/CTF programs reflect the current legislative requirements.',
           'Non-compliance with AML/CTF obligations carries severe consequences. AUSTRAC has enforcement powers including civil penalties (up to $22.2 million per contravention for bodies corporate), enforceable undertakings, remedial directions, and registration cancellation. The Westpac ($1.3 billion) and Crown ($450 million) enforcement outcomes demonstrate that AUSTRAC will pursue substantial penalties for systemic compliance failures.',
         ],
@@ -1808,7 +1808,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: 'Customer due diligence and beneficial ownership',
         paragraphs: [
-          'Customer Due Diligence (CDD) is the cornerstone of AML/CTF compliance. Reporting entities must verify the identity of customers before providing a designated service, using reliable and independent documentation or electronic data. For individual customers, this typically means verifying identity through government-issued documents. For corporate and trust customers, it includes identifying and verifying beneficial owners — the natural persons who ultimately own or control the entity.',
+          'Customer Due Diligence (CDD) is the cornerstone of AML/CTF compliance. Reporting entities must verify the identity of customers before providing a designated service, using reliable and independent documentation or electronic data. For individual customers, this typically means verifying identity through government-issued documents. For corporate and trust customers, it includes identifying and verifying beneficial owners - the natural persons who ultimately own or control the entity.',
           'The 2024 amendments have strengthened beneficial ownership transparency requirements, aligning Australia more closely with Financial Action Task Force (FATF) recommendations. Reporting entities must now take reasonable steps to identify and verify the identity of each beneficial owner who holds 25 per cent or more ownership interest, or who exercises significant control. Enhanced customer due diligence is required for higher-risk customers, including politically exposed persons (PEPs), customers from high-risk jurisdictions, and complex ownership structures.',
         ],
         bullets: [

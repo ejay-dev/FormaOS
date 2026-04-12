@@ -42,7 +42,7 @@ export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title:
-    'Healthcare Compliance Software — AHPRA, NSQHS & Clinical Governance | FormaOS',
+    'Healthcare Compliance Software - AHPRA, NSQHS & Clinical Governance | FormaOS',
   description:
     'Track AHPRA registrations, NSQHS Standards accreditation, CPD hours, and adverse events. Continuous compliance for healthcare and allied health providers in Australia.',
   keywords: [
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteUrl}/healthcare-compliance` },
   openGraph: {
     title:
-      'Healthcare Compliance Software — AHPRA, NSQHS & Clinical Governance | FormaOS',
+      'Healthcare Compliance Software - AHPRA, NSQHS & Clinical Governance | FormaOS',
     description:
       'Track AHPRA registrations, NSQHS Standards accreditation, CPD hours, and adverse events for Australian healthcare providers.',
     url: `${siteUrl}/healthcare-compliance`,
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'Healthcare Compliance Software — AHPRA, NSQHS & Clinical Governance | FormaOS',
+      'Healthcare Compliance Software - AHPRA, NSQHS & Clinical Governance | FormaOS',
     description:
       'Track AHPRA registrations, NSQHS Standards accreditation, CPD hours, and adverse events for Australian healthcare.',
     images: [`${siteUrl}/og-image.png`],

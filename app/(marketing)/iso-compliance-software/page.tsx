@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import IsoContent from './IsoContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'ISO Compliance Software - ISO 27001 Automation Platform | FormaOS',
   description:

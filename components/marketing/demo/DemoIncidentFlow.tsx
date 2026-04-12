@@ -9,7 +9,7 @@ import {
 import { easing, duration } from '@/config/motion';
 
 /**
- * DemoIncidentFlow — Animated incident investigation lifecycle:
+ * DemoIncidentFlow - Animated incident investigation lifecycle:
  * Report → Triage → Investigate → Corrective Action → Closed
  */
 
@@ -32,7 +32,7 @@ const defaultSteps: IncidentStep[] = [
     label: 'Report',
     icon: AlertTriangle,
     title: 'Incident Reported',
-    detail: 'Workplace slip — wet floor near entrance',
+    detail: 'Workplace slip - wet floor near entrance',
     meta: 'Reporter: James Wilson • Location: Building A',
     severity: 'SAC 3',
     color: 'text-red-400',
@@ -44,7 +44,7 @@ const defaultSteps: IncidentStep[] = [
     label: 'Triage',
     icon: Search,
     title: 'Severity Classified',
-    detail: 'Moderate — minor injury, no lost time',
+    detail: 'Moderate - minor injury, no lost time',
     meta: 'Classified by: Sarah Chen • Notifiable: No',
     severity: 'Moderate',
     color: 'text-amber-400',

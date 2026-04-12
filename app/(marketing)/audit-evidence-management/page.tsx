@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import AuditEvidenceContent from './AuditEvidenceContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
     'Audit Evidence Management - Immutable Evidence & Audit Trails | FormaOS',

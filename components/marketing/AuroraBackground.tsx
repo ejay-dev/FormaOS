@@ -36,7 +36,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       <div className="absolute inset-0 bg-[#030712]" />
 
       {/* ── Layer 1: Aurora gradient blobs ──────────────── */}
-      {/* Teal — top-left quadrant */}
+      {/* Teal - top-left quadrant */}
       <div
         className={cn(
           'aurora-blob absolute -left-[15%] -top-[25%] h-[80vmin] w-[80vmin] sm:h-[80vh] sm:w-[80vh] rounded-full opacity-[0.28]',
@@ -48,7 +48,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
           filter: 'blur(100px)',
         }}
       />
-      {/* Cyan — center-right */}
+      {/* Cyan - center-right */}
       <div
         className={cn(
           'aurora-blob absolute -right-[8%] top-[5%] h-[70vmin] w-[70vmin] sm:h-[70vh] sm:w-[70vh] rounded-full opacity-[0.22]',
@@ -60,7 +60,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
           filter: 'blur(110px)',
         }}
       />
-      {/* Violet/indigo — bottom */}
+      {/* Violet/indigo - bottom */}
       <div
         className={cn(
           'aurora-blob absolute -bottom-[15%] left-[15%] h-[70vmin] w-[90vmin] sm:h-[70vh] sm:w-[90vh] rounded-full opacity-[0.20]',
@@ -72,7 +72,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
           filter: 'blur(120px)',
         }}
       />
-      {/* Emerald accent — subtle center */}
+      {/* Emerald accent - subtle center */}
       <div
         className={cn(
           'aurora-blob absolute left-[35%] top-[25%] h-[55vmin] w-[55vmin] sm:h-[55vh] sm:w-[55vh] rounded-full opacity-[0.12]',
@@ -86,7 +86,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       />
 
       {/* ── Layer 2: Deep-field star particles ─────────── */}
-      {/* Background layer — tiny dim stars for depth */}
+      {/* Background layer - tiny dim stars for depth */}
       <SparklesCore
         id="hero-stars-deep"
         className="absolute inset-0 h-full w-full"
@@ -97,7 +97,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
         speed={0.8}
         particleDensity={80}
       />
-      {/* Midground layer — brand-colored teal sparkles */}
+      {/* Midground layer - brand-colored teal sparkles */}
       <SparklesCore
         id="hero-stars-mid"
         className="absolute inset-0 h-full w-full"
@@ -108,7 +108,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
         speed={2}
         particleDensity={60}
       />
-      {/* Foreground layer — rare bright white highlights */}
+      {/* Foreground layer - rare bright white highlights */}
       <SparklesCore
         id="hero-stars-bright"
         className="absolute inset-0 h-full w-full"
@@ -123,16 +123,16 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       {/* ── Layer 3: Luminous horizon beam ─────────────── */}
       <div className="absolute left-1/2 top-[52%] -translate-x-1/2">
         <div className="relative h-48 w-[50rem] max-w-[90vw]">
-          {/* Primary teal beam — wide glow */}
+          {/* Primary teal beam - wide glow */}
           <div className="absolute inset-x-0 top-0 h-[3px] w-full bg-gradient-to-r from-transparent via-teal-400/80 to-transparent blur-sm" />
           <div className="absolute inset-x-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-teal-400/60 to-transparent" />
-          {/* Secondary cyan beam — concentrated center */}
+          {/* Secondary cyan beam - concentrated center */}
           <div className="absolute inset-x-[15%] top-0 h-[5px] w-[70%] bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent blur-sm" />
           <div className="absolute inset-x-[15%] top-0 h-px w-[70%] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-          {/* Tertiary violet accent — inner highlight */}
+          {/* Tertiary violet accent - inner highlight */}
           <div className="absolute inset-x-[30%] top-0 h-[4px] w-[40%] bg-gradient-to-r from-transparent via-violet-400/50 to-transparent blur-[3px]" />
           <div className="absolute inset-x-[30%] top-0 h-px w-[40%] bg-gradient-to-r from-transparent via-violet-400/35 to-transparent" />
-          {/* Downward radial mask — particles fade below beam */}
+          {/* Downward radial mask - particles fade below beam */}
           <div
             className="absolute inset-0 h-full w-full bg-[#030712]"
             style={{

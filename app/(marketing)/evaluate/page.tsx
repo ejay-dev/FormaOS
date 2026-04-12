@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { OutcomeJourneyPage } from '../components/outcome-journey-page';
 import { siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Evaluate Compliance',
   description:

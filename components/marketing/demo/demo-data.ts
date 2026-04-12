@@ -1,5 +1,5 @@
 // =============================================================================
-// INTERACTIVE DEMO DATA — Single config for all marketing demo components
+// INTERACTIVE DEMO DATA - Single config for all marketing demo components
 // =============================================================================
 
 export interface DemoUser {
@@ -111,7 +111,7 @@ export const demoPolicies: DemoPolicy[] = [
   { id: 'p3', name: 'Data Retention Policy', owner: 'Sarah Chen', status: 'active', lastReview: '01 Dec 2025', nextReview: '01 Jun 2026', framework: 'SOC 2' },
   { id: 'p4', name: 'Incident Response Policy', owner: 'David Okonkwo', status: 'active', lastReview: '20 Jan 2026', nextReview: '20 Jul 2026', framework: 'ISO 27001' },
   { id: 'p5', name: 'Patient Privacy Policy', owner: 'Priya Sharma', status: 'active', lastReview: '05 Jan 2026', nextReview: '05 Jul 2026', framework: 'HIPAA' },
-  { id: 'p6', name: 'Acceptable Use Policy', owner: 'James Liu', status: 'draft', lastReview: '—', nextReview: '01 Mar 2026', framework: 'ISO 27001' },
+  { id: 'p6', name: 'Acceptable Use Policy', owner: 'James Liu', status: 'draft', lastReview: ' - ', nextReview: '01 Mar 2026', framework: 'ISO 27001' },
   { id: 'p7', name: 'Vendor Management Policy', owner: 'Marcus Rivera', status: 'active', lastReview: '12 Dec 2025', nextReview: '12 Jun 2026', framework: 'SOC 2' },
   { id: 'p8', name: 'Change Management Policy', owner: 'James Liu', status: 'active', lastReview: '08 Jan 2026', nextReview: '08 Jul 2026', framework: 'ISO 27001' },
   { id: 'p9', name: 'PHI Handling Procedures', owner: 'Priya Sharma', status: 'review', lastReview: '01 Oct 2025', nextReview: '01 Feb 2026', framework: 'HIPAA' },
@@ -129,7 +129,7 @@ export const demoEvidence: DemoEvidence[] = [
   { id: 'e4', name: 'HIPAA Risk Assessment 2026', category: 'Risk Management', uploadedBy: 'David Okonkwo', date: '01 Feb 2026', status: 'pending', size: '3.1 MB' },
   { id: 'e5', name: 'Access Review Audit Log', category: 'Access Control', uploadedBy: 'Sarah Chen', date: '28 Jan 2026', status: 'approved', size: '456 KB' },
   { id: 'e6', name: 'Incident Response Drill Report', category: 'Security Assessments', uploadedBy: 'David Okonkwo', date: '22 Jan 2026', status: 'approved', size: '1.2 MB' },
-  { id: 'e7', name: 'Vendor Security Questionnaire — AWS', category: 'Vendor Management', uploadedBy: 'Marcus Rivera', date: '15 Jan 2026', status: 'pending', size: '780 KB' },
+  { id: 'e7', name: 'Vendor Security Questionnaire - AWS', category: 'Vendor Management', uploadedBy: 'Marcus Rivera', date: '15 Jan 2026', status: 'pending', size: '780 KB' },
   { id: 'e8', name: 'Clinical Data Backup Verification', category: 'Operations', uploadedBy: 'Priya Sharma', date: '12 Jan 2026', status: 'approved', size: '340 KB' },
 ];
 
@@ -144,7 +144,7 @@ export const demoAuditLog: DemoAuditEntry[] = [
   { id: 'a4', action: 'User invited', user: 'Sarah Chen', target: 'emma.w@formaos-health.com.au', timestamp: '10 Feb 11:20', type: 'user' },
   { id: 'a5', action: 'Evidence approved', user: 'Sarah Chen', target: 'SOC 2 Type II Report', timestamp: '09 Feb 14:55', type: 'evidence' },
   { id: 'a6', action: 'Task assigned', user: 'Sarah Chen', target: 'Review Access Control Policy', timestamp: '09 Feb 10:30', type: 'task' },
-  { id: 'a7', action: 'Compliance score updated', user: 'System', target: 'ISO 27001 — 91%', timestamp: '08 Feb 23:00', type: 'compliance' },
+  { id: 'a7', action: 'Compliance score updated', user: 'System', target: 'ISO 27001 - 91%', timestamp: '08 Feb 23:00', type: 'compliance' },
   { id: 'a8', action: 'Policy submitted for review', user: 'Marcus Rivera', target: 'Access Control Policy', timestamp: '08 Feb 15:12', type: 'policy' },
   { id: 'a9', action: 'Task overdue', user: 'System', target: 'Update incident response playbook', timestamp: '08 Feb 09:00', type: 'task' },
   { id: 'a10', action: 'Evidence uploaded', user: 'James Liu', target: 'Staff Training Completion Records', timestamp: '05 Feb 13:28', type: 'evidence' },

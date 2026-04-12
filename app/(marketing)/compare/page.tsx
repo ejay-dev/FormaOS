@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import CompareIndexContent from './CompareIndexContent';
-import { breadcrumbSchema,
-  siteUrl} from '@/lib/seo';
+import { breadcrumbSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Compare FormaOS vs Compliance Automation Tools',
   description:
@@ -34,7 +34,7 @@ export default function CompareIndexPage() {
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Compare', path: '/compare' },
-            ])
+            ]),
           ),
         }}
       />

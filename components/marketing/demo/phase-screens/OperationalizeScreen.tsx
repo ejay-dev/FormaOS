@@ -165,7 +165,7 @@ export default function OperationalizeScreen() {
               transition={{ delay: 7.2, duration: 0.3 }}
             >
               <FileCheck className="h-2.5 w-2.5" />
-              <span>Upload verified — chain of custody recorded</span>
+              <span>Upload verified - chain of custody recorded</span>
             </motion.div>
           </div>
           <motion.div

@@ -176,7 +176,7 @@ const releases: ChangelogRelease[] = [
           'Resolved overflow, touch target, and layout issues on tasks, visits, incidents, forms, vault review, and people pages. Added responsive breakpoints, mobile-first grid layouts, and proper viewport handling for all interactive elements.',
       },
       {
-        text: 'Statement coverage increased from 53% to 55% — 4,363 tests passing',
+        text: 'Statement coverage increased from 53% to 55% - 4,363 tests passing',
         tag: 'improvement',
         detail:
           'Added 28 new test files with 200+ tests covering automation templates, API helpers, CORS, PII scanner, retention engine, policy engine, settings engine, release service, public uptime, trigger client, bootstrap, and more. Coverage: 55.08% statements, 51.54% branches, 58.34% functions.',
@@ -216,7 +216,7 @@ const releases: ChangelogRelease[] = [
           'Purpose-built dashboard for APRA/ASIC/AML-CTF compliance: breach register with severity tracking, board report generator, transaction monitoring overview, risk scoring engine, and regulatory obligation timeline.',
       },
       {
-        text: 'Branch coverage increased from 34% to 50% — 4,102 tests passing',
+        text: 'Branch coverage increased from 34% to 50% - 4,102 tests passing',
         tag: 'improvement',
         detail:
           'Added comprehensive test suites bringing branch coverage from 34.72% to 50.10% (9,075 of 18,115 branches). 301 test suites, 4,102 tests, 0 failures. Covers compliance engine, auth, API routes, stores, and utilities.',
@@ -240,17 +240,17 @@ const releases: ChangelogRelease[] = [
     codename: 'Bastion',
     date: '2026-04-05',
     summary:
-      'Enterprise audit remediation: resolved all 5 blocking issues — XSS sanitization, global API rate limiting, error handling across 36 route files, dependency vulnerabilities patched to zero, and full test suite passing at 896 tests.',
+      'Enterprise audit remediation: resolved all 5 blocking issues - XSS sanitization, global API rate limiting, error handling across 36 route files, dependency vulnerabilities patched to zero, and full test suite passing at 896 tests.',
     isMajor: false,
     changes: [
       {
         text: 'HTML sanitization library deployed across all XSS-risk surfaces',
         tag: 'security',
         detail:
-          'Installed sanitize-html and created lib/security/sanitize-html.ts with three context-aware sanitizers: sanitizeHtml (general), sanitizeSnippet (search results — allows only mark, b, em, strong, span), and sanitizeMarkdown (AI chat — allows structural markdown tags plus img). Patched search page, global search, and AI assistant message rendering.',
+          'Installed sanitize-html and created lib/security/sanitize-html.ts with three context-aware sanitizers: sanitizeHtml (general), sanitizeSnippet (search results - allows only mark, b, em, strong, span), and sanitizeMarkdown (AI chat - allows structural markdown tags plus img). Patched search page, global search, and AI assistant message rendering.',
       },
       {
-        text: 'Global API rate limiter in edge middleware — 120 req/min per IP',
+        text: 'Global API rate limiter in edge middleware - 120 req/min per IP',
         tag: 'security',
         detail:
           'Added an edge-compatible in-memory sliding window rate limiter to proxy.ts that covers all /api/* routes at the middleware level. Returns 429 with Retry-After header when exceeded. Includes periodic cleanup to prevent memory leaks. Individual routes retain stricter Redis-backed limits.',
@@ -262,7 +262,7 @@ const releases: ChangelogRelease[] = [
           'Wrapped 56 exported handler functions across 36 API route files (18 V1, 8 SCIM, 10 other) with structured try/catch blocks. V1 routes log [V1 API] errors, SCIM routes return RFC 7644-compliant error schemas, and all routes return proper 500 JSON responses instead of leaking stack traces.',
       },
       {
-        text: 'All npm dependency vulnerabilities resolved — zero remaining',
+        text: 'All npm dependency vulnerabilities resolved - zero remaining',
         tag: 'security',
         detail:
           'Applied npm audit fix to patch both high-severity vulnerabilities: lodash prototype pollution and @xmldom/xmldom XML injection via CDATA serialization. Production dependency scan now returns zero vulnerabilities.',
@@ -451,7 +451,7 @@ const releases: ChangelogRelease[] = [
         text: 'Homepage expanded from 6 to 11 visible sections for stronger buyer conversion',
         tag: 'feature',
         detail:
-          'Enabled five high-conversion homepage sections — industries, security, outcome proof, procurement flow, and trust — that were previously disabled. The homepage now presents a complete buyer narrative from problem through proof to CTA.',
+          'Enabled five high-conversion homepage sections - industries, security, outcome proof, procurement flow, and trust - that were previously disabled. The homepage now presents a complete buyer narrative from problem through proof to CTA.',
       },
       {
         text: 'Hero copy sharpened to lead with outcomes instead of product category',
@@ -472,7 +472,7 @@ const releases: ChangelogRelease[] = [
           'Added multi-framework deduplication and healthcare/NDIS coverage as comparison points, tightened positioning copy to emphasize execution-first operating system vs. audit management tooling.',
       },
       {
-        text: 'All npm dependency vulnerabilities resolved — zero remaining',
+        text: 'All npm dependency vulnerabilities resolved - zero remaining',
         tag: 'security',
         detail:
           'Ran npm audit fix to patch four vulnerabilities including a critical handlebars JS injection, a high-severity picomatch method injection, and two moderate issues in yaml and brace-expansion. Production dependency scan now returns zero vulnerabilities.',
@@ -653,7 +653,7 @@ const releases: ChangelogRelease[] = [
         text: 'AI Compliance Assistant with streaming chat',
         tag: 'feature',
         detail:
-          'In-app AI assistant powered by GPT-4o that understands your compliance posture. Ask questions about controls, draft auditor-ready policies, get evidence guidance, run gap analysis, and receive step-by-step implementation instructions — all contextualised to your organization.',
+          'In-app AI assistant powered by GPT-4o that understands your compliance posture. Ask questions about controls, draft auditor-ready policies, get evidence guidance, run gap analysis, and receive step-by-step implementation instructions - all contextualised to your organization.',
       },
       {
         text: 'SOC 2 Self-Certification readiness engine',
@@ -1775,7 +1775,7 @@ function ReleaseTimelineVisual() {
   }, []);
 
   const maxChanges = Math.max(...timelineData.map((d) => d.total));
-  const chartHeight = 280; // px — fixed reference for bar heights
+  const chartHeight = 280; // px - fixed reference for bar heights
 
   return (
     <DeferredSection minHeight={200}>
@@ -1800,7 +1800,7 @@ function ReleaseTimelineVisual() {
             </h2>
             <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
               Consistent delivery cadence with monthly releases, quarterly major
-              versions, and continuous security patches — {releases.length}{' '}
+              versions, and continuous security patches - {releases.length}{' '}
               releases across {monthsActive} months.
             </p>
           </ScrollReveal>
@@ -2089,7 +2089,7 @@ function TagBreakdownSection() {
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Distribution of changes across categories — reflecting our focus
+              Distribution of changes across categories - reflecting our focus
               on features, security, and enterprise capabilities.
             </p>
           </ScrollReveal>
@@ -2321,7 +2321,7 @@ function MilestonesSection() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              {monthsActive} months of continuous development — from
+              {monthsActive} months of continuous development - from
               single-framework launch to enterprise compliance operating system.
             </p>
           </ScrollReveal>
@@ -2416,7 +2416,7 @@ function StatsSection() {
                 Development velocity
               </h2>
               <p className="text-sm text-slate-400 max-w-lg mx-auto">
-                {monthsActive} months of continuous shipping — features, fixes,
+                {monthsActive} months of continuous shipping - features, fixes,
                 and enterprise capabilities delivered every month.
               </p>
             </ScrollReveal>
@@ -2493,7 +2493,7 @@ function SubscribeCTA() {
                 </h2>
                 <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
                   Get notified when we ship new features, framework packs, and
-                  platform improvements. No spam — just releases.
+                  platform improvements. No spam - just releases.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

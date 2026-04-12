@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import FAQPageContent from './FAQPageContent';
 import { faqSchema, breadcrumbSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions - FormaOS Compliance Platform',
   description:

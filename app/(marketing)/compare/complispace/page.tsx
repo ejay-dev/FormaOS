@@ -7,9 +7,10 @@ import {
   softwareApplicationSchema,
 } from '@/lib/seo';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS vs CompliSpace — Australian Compliance Platform Comparison | FormaOS',
+    'FormaOS vs CompliSpace - Australian Compliance Platform Comparison | FormaOS',
   description:
     'FormaOS vs CompliSpace: operational compliance execution across 5 regulated industries vs compliance training and policy management for education and childcare.',
   alternates: {
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      'FormaOS vs CompliSpace — Australian Compliance Platform Comparison | FormaOS',
+      'FormaOS vs CompliSpace - Australian Compliance Platform Comparison | FormaOS',
     description:
       'FormaOS vs CompliSpace: operational compliance execution across 5 regulated industries vs compliance training and policy management for education and childcare.',
     type: 'website',
@@ -44,7 +45,7 @@ const points = [
   {
     title: 'Operational compliance execution, not just training and policies',
     detail:
-      'CompliSpace helps organisations distribute policies and deliver compliance training. FormaOS goes further — executing compliance as governed workflows where every control is tied to tasks, named owners, and verified evidence. Training awareness becomes proven operational compliance.',
+      'CompliSpace helps organisations distribute policies and deliver compliance training. FormaOS goes further - executing compliance as governed workflows where every control is tied to tasks, named owners, and verified evidence. Training awareness becomes proven operational compliance.',
   },
   {
     title: 'Five regulated industries, not just education',
@@ -54,7 +55,7 @@ const points = [
   {
     title: 'Evidence chains that prove compliance execution',
     detail:
-      'FormaOS treats evidence as verified artefacts with named reviewers, approval timestamps, and chain-of-custody trails. This creates audit-defensible proof that compliance was executed — not just that policies were distributed or training was completed.',
+      'FormaOS treats evidence as verified artefacts with named reviewers, approval timestamps, and chain-of-custody trails. This creates audit-defensible proof that compliance was executed - not just that policies were distributed or training was completed.',
   },
   {
     title: 'Named ownership and accountability tracking',
@@ -64,19 +65,19 @@ const points = [
   {
     title: 'Audit readiness beyond training records',
     detail:
-      'FormaOS provides continuous compliance scoring, audit-ready evidence packs, and real-time posture dashboards. Auditors see verified execution across every framework — not just training completion rates and policy acknowledgement logs.',
+      'FormaOS provides continuous compliance scoring, audit-ready evidence packs, and real-time posture dashboards. Auditors see verified execution across every framework - not just training completion rates and policy acknowledgement logs.',
   },
   {
     title: 'Multi-framework governance in one platform',
     detail:
-      'FormaOS manages compliance across multiple regulatory frameworks simultaneously — NDIS Practice Standards, NQF/NQS, WHS, Privacy Act, and more — with cross-framework control mapping. CompliSpace focuses on sector-specific policy and training needs.',
+      'FormaOS manages compliance across multiple regulatory frameworks simultaneously - NDIS Practice Standards, NQF/NQS, WHS, Privacy Act, and more - with cross-framework control mapping. CompliSpace focuses on sector-specific policy and training needs.',
   },
 ] as const;
 
 const idealIf = [
-  'You need operational compliance execution — not just compliance training and policy distribution',
+  'You need operational compliance execution - not just compliance training and policy distribution',
   'Your organisation operates across multiple regulated sectors (NDIS, healthcare, aged care, childcare, construction) and needs unified governance',
-  'Auditors require verified evidence with named approvers and chain-of-custody — not just training completion records',
+  'Auditors require verified evidence with named approvers and chain-of-custody - not just training completion records',
   'You want continuous compliance scoring and real-time posture dashboards across all active frameworks',
   'Your compliance program has outgrown training-centric tools and needs workflow-driven execution with named ownership',
   'You need cross-framework control mapping to manage overlapping regulatory obligations efficiently',
@@ -146,7 +147,7 @@ const featureComparison = [
 ] as const;
 
 const competitorStrengths = [
-  'Your primary compliance need is staff training, policy distribution, and compliance awareness — and your organisation operates in education or early childhood education and care (ECEC)',
+  'Your primary compliance need is staff training, policy distribution, and compliance awareness - and your organisation operates in education or early childhood education and care (ECEC)',
   'You need a platform with deep expertise in education sector regulatory requirements, including Child Safe Standards, teacher registration, and school governance obligations',
   'You want a compliance training LMS with built-in course content, completion tracking, and policy acknowledgement workflows tailored to Australian education and childcare providers',
 ] as const;
@@ -187,7 +188,7 @@ export default function CompareCompliSpacePage() {
       />
       <ComparePageTemplate
         competitor="CompliSpace"
-        heroDescription="CompliSpace is an Australian compliance platform with deep expertise in education and childcare sector training and policy management. FormaOS takes a different approach — built to execute compliance as operational workflows across five regulated industries, with named ownership, evidence verification chains, and audit-ready posture dashboards."
+        heroDescription="CompliSpace is an Australian compliance platform with deep expertise in education and childcare sector training and policy management. FormaOS takes a different approach - built to execute compliance as operational workflows across five regulated industries, with named ownership, evidence verification chains, and audit-ready posture dashboards."
         points={points}
         idealIf={idealIf}
         procurementChecks={procurementChecks}

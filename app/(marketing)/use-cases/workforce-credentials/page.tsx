@@ -5,6 +5,7 @@ import {
   breadcrumbSchema,
   softwareApplicationSchema,
 } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Workforce Credential Management | FormaOS',
   description:

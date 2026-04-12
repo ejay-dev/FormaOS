@@ -8,7 +8,7 @@ import { AlertCircle, CheckCircle, Clock,
 import { easing, duration } from '@/config/motion';
 
 /**
- * DemoCredentialTracker — Animated credential monitoring card.
+ * DemoCredentialTracker - Animated credential monitoring card.
  * Cycles through workforce credentials showing expiry status.
  */
 

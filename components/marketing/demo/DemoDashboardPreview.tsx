@@ -5,7 +5,7 @@ import { TrendingUp, Shield, Activity } from 'lucide-react';
 import { easing } from '@/config/motion';
 
 /**
- * DemoDashboardPreview — Mini compliance dashboard KPI card.
+ * DemoDashboardPreview - Mini compliance dashboard KPI card.
  * Shows score ring, framework bars, and key metrics.
  * Lighter-weight than the full InteractiveDemo.
  */

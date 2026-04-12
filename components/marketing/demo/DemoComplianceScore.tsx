@@ -9,7 +9,7 @@ import {
 import { easing, duration } from '@/config/motion';
 
 /**
- * DemoComplianceScore — Animated compliance score dashboard.
+ * DemoComplianceScore - Animated compliance score dashboard.
  * Shows overall score with category breakdowns + animated progress bars.
  * Props-driven for different use-case theming.
  */
@@ -117,7 +117,7 @@ export default function DemoComplianceScore({
               {categories.reduce((sum, c) => sum + c.items, 0)} items across {categories.length} categories
             </p>
             <p className={`text-[10px] font-medium mt-1 ${scoreColor(computedOverall)}`}>
-              {computedOverall >= 90 ? 'Excellent' : computedOverall >= 75 ? 'Good — needs attention' : 'At Risk — action required'}
+              {computedOverall >= 90 ? 'Excellent' : computedOverall >= 75 ? 'Good - needs attention' : 'At Risk - action required'}
             </p>
           </div>
         </div>

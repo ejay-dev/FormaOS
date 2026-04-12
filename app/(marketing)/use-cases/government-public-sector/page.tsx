@@ -9,6 +9,7 @@ import {
   softwareApplicationSchema,
 } from '@/lib/seo';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Government & Public Sector Governance | FormaOS',
   description:

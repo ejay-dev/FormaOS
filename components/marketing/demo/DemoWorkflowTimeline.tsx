@@ -6,7 +6,7 @@ import { CheckCircle } from 'lucide-react';
 import { easing, duration } from '@/config/motion';
 
 /**
- * DemoWorkflowTimeline — Generic animated workflow step card.
+ * DemoWorkflowTimeline - Generic animated workflow step card.
  * Fully props-driven: pass steps with icons, labels, colors.
  * Used across marketing pages for lifecycle visualizations.
  */

@@ -1,14 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
-import {
-  Shield,
-  Scale,
-  Landmark,
-  Monitor,
-  FileText,
-  Bell,
-} from 'lucide-react';
+import { Shield, Scale, Landmark, Monitor, FileText, Bell } from 'lucide-react';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { VisualDivider } from '@/components/motion';
 import {
@@ -136,13 +129,13 @@ function ObligationsRegisterVisual() {
           id: 'o3',
           status: 'amber',
           cells: {
-            obligation: 'Breach reporting — s912D',
+            obligation: 'Breach reporting - s912D',
             ref: 's912D',
             status: 'At Risk',
             due: '15 Apr 2026',
           },
           expandedContent: {
-            label: 'Obligation Details — REVIEW',
+            label: 'Obligation Details - REVIEW',
             items: [
               { key: 'Owner', value: 'Compliance Manager' },
               { key: 'Issue', value: 'Self-report deadline approaching' },
@@ -155,7 +148,7 @@ function ObligationsRegisterVisual() {
           id: 'o4',
           status: 'green',
           cells: {
-            obligation: 'AML/CTF Program — Part A',
+            obligation: 'AML/CTF Program - Part A',
             ref: 'AML/CTF Act s81',
             status: 'Mapped',
             due: '30 Sep 2026',
@@ -174,13 +167,13 @@ function ObligationsRegisterVisual() {
           id: 'o5',
           status: 'red',
           cells: {
-            obligation: 'CPS 230 — Critical operations',
+            obligation: 'CPS 230 - Critical operations',
             ref: 'CPS 230.28',
             status: 'Unmapped',
             due: '01 Jul 2026',
           },
           expandedContent: {
-            label: 'Obligation Details — ACTION REQUIRED',
+            label: 'Obligation Details - ACTION REQUIRED',
             items: [
               { key: 'Owner', value: 'COO (unassigned)' },
               { key: 'Regulator', value: 'APRA' },
@@ -203,7 +196,7 @@ function ObligationsRegisterVisual() {
             items: [
               { key: 'Owner', value: 'Complaints Officer' },
               { key: 'Regulator', value: 'ASIC' },
-              { key: 'AFCA Membership', value: 'Active — Member #12345' },
+              { key: 'AFCA Membership', value: 'Active - Member #12345' },
               { key: 'Last Reviewed', value: '20 Feb 2026' },
             ],
           },
@@ -216,7 +209,7 @@ function ObligationsRegisterVisual() {
           type: 'alert',
         },
         {
-          message: 'CPS 230 critical operations — unmapped obligation',
+          message: 'CPS 230 critical operations - unmapped obligation',
           time: '1 day ago',
           type: 'alert',
         },
@@ -270,6 +263,12 @@ export default function FinancialServicesContent() {
             ]}
           />
         }
+        jurisdictionBadges={[
+          { label: 'ASIC Regulatory Guide' },
+          { label: 'APRA Prudential Standards' },
+          { label: 'AUSTRAC AML/CTF' },
+        ]}
+        socialProof="Trusted by financial services firms managing multi-regime obligations"
       />
 
       <VisualDivider />
@@ -279,9 +278,9 @@ export default function FinancialServicesContent() {
         headline="The Financial Services Compliance Gap"
         subheadline="The difference between scrambling and being regulator-ready."
         without={[
-          'AFS licence conditions not mapped to operational obligations — gaps invisible until ASIC review',
-          'Breach register not maintained — s912D self-reporting deadlines missed or detected late',
-          'Board unable to demonstrate active oversight — no structured compliance reporting to directors',
+          'AFS licence conditions not mapped to operational obligations - gaps invisible until ASIC review',
+          'Breach register not maintained - s912D self-reporting deadlines missed or detected late',
+          'Board unable to demonstrate active oversight - no structured compliance reporting to directors',
           'CPS 230 operational risk framework exists on paper but not operationalised in daily workflows',
         ]}
         withFormaOS={[
@@ -368,7 +367,7 @@ export default function FinancialServicesContent() {
         frameworks={[
           {
             id: 'asic-afs',
-            name: 'ASIC AFS Licence — s912A Obligations',
+            name: 'ASIC AFS Licence - s912A Obligations',
             body: 'Australian Securities and Investments Commission',
             updated: '2025-11-15',
             obligationCount: '300+',
@@ -395,7 +394,7 @@ export default function FinancialServicesContent() {
           },
           {
             id: 'apra-cps230',
-            name: 'APRA CPS 230 — Operational Risk Management',
+            name: 'APRA CPS 230 - Operational Risk Management',
             body: 'Australian Prudential Regulation Authority',
             updated: '2025-12-01',
             obligationCount: '150+',
@@ -423,16 +422,16 @@ export default function FinancialServicesContent() {
             updated: '2026-01-10',
             obligationCount: '120+',
             categories: [
-              { name: 'Part A — Customer identification', pct: 100 },
-              { name: 'Part B — Customer due diligence', pct: 96 },
+              { name: 'Part A - Customer identification', pct: 100 },
+              { name: 'Part B - Customer due diligence', pct: 96 },
               { name: 'Ongoing customer due diligence', pct: 94 },
               { name: 'Suspicious matter reporting', pct: 98 },
               { name: 'Threshold transaction reporting', pct: 100 },
               { name: 'Annual compliance report', pct: 95 },
             ],
             requirements: [
-              'Part A — Customer identification',
-              'Part B — Customer due diligence',
+              'Part A - Customer identification',
+              'Part B - Customer due diligence',
               'Ongoing customer due diligence',
               'Suspicious matter reporting',
               'Threshold transaction reporting',
@@ -465,16 +464,16 @@ export default function FinancialServicesContent() {
             updated: '2025-10-05',
             obligationCount: '200+',
             categories: [
-              { name: 'RG 104 — AFS licence conditions', pct: 97 },
-              { name: 'RG 132 — MIS compliance plans', pct: 95 },
-              { name: 'RG 259 — Risk management systems', pct: 93 },
+              { name: 'RG 104 - AFS licence conditions', pct: 97 },
+              { name: 'RG 132 - MIS compliance plans', pct: 95 },
+              { name: 'RG 259 - Risk management systems', pct: 93 },
               { name: 'Cross-guide compliance mapping', pct: 91 },
               { name: 'Guidance implementation tracking', pct: 94 },
             ],
             requirements: [
-              'RG 104 — AFS licence conditions',
-              'RG 132 — Managed investment scheme compliance plans',
-              'RG 259 — Risk management systems for responsible entities',
+              'RG 104 - AFS licence conditions',
+              'RG 132 - Managed investment scheme compliance plans',
+              'RG 259 - Risk management systems for responsible entities',
               'Cross-guide compliance mapping',
               'Guidance implementation tracking',
             ],
@@ -491,7 +490,7 @@ export default function FinancialServicesContent() {
             number: '01',
             title: 'Import your obligation register',
             description:
-              'Upload your existing ASIC, APRA, or AUSTRAC obligation spreadsheets — or start with our pre-built framework packs. FormaOS maps every obligation to its regulation reference, assigns owners, and sets review cycles automatically.',
+              'Upload your existing ASIC, APRA, or AUSTRAC obligation spreadsheets - or start with our pre-built framework packs. FormaOS maps every obligation to its regulation reference, assigns owners, and sets review cycles automatically.',
             gradient:
               'from-violet-500/20 to-cyan-500/20 border-violet-500/30 text-violet-300',
             visual: (
@@ -514,7 +513,7 @@ export default function FinancialServicesContent() {
             number: '02',
             title: 'Assign owners and attach evidence',
             description:
-              'Every obligation gets a named owner, escalation path, and linked evidence requirement. Your team uploads policies, procedures, and attestations against each obligation — building a live evidence repository from day one.',
+              'Every obligation gets a named owner, escalation path, and linked evidence requirement. Your team uploads policies, procedures, and attestations against each obligation - building a live evidence repository from day one.',
             gradient:
               'from-cyan-500/20 to-violet-500/20 border-cyan-500/30 text-cyan-300',
             visual: (
@@ -522,23 +521,23 @@ export default function FinancialServicesContent() {
                 label="Obligation Ownership"
                 rows={[
                   {
-                    k: 's912A(1)(a) — General conduct',
-                    v: 'Jane Park — Compliance',
+                    k: 's912A(1)(a) - General conduct',
+                    v: 'Jane Park - Compliance',
                     status: 'green',
                   },
                   {
-                    k: 'CPS 230 — BCP testing',
-                    v: 'Tom Liu — Ops Risk',
+                    k: 'CPS 230 - BCP testing',
+                    v: 'Tom Liu - Ops Risk',
                     status: 'green',
                   },
                   {
-                    k: 'AML/CTF — SMR log',
-                    v: 'Sarah Chen — AML',
+                    k: 'AML/CTF - SMR log',
+                    v: 'Sarah Chen - AML',
                     status: 'amber',
                   },
                   {
-                    k: 'AFCA — IDR procedures',
-                    v: 'Mike Ross — Complaints',
+                    k: 'AFCA - IDR procedures',
+                    v: 'Mike Ross - Complaints',
                     status: 'green',
                   },
                 ]}
@@ -549,7 +548,7 @@ export default function FinancialServicesContent() {
             number: '03',
             title: 'Monitor, report, and prove compliance',
             description:
-              'Real-time dashboards show RAG status across every framework. Generate board packs, breach registers, and regulator-ready audit exports on demand. When ASIC, APRA, or AUSTRAC asks for evidence, you export it in minutes — not weeks.',
+              'Real-time dashboards show RAG status across every framework. Generate board packs, breach registers, and regulator-ready audit exports on demand. When ASIC, APRA, or AUSTRAC asks for evidence, you export it in minutes - not weeks.',
             gradient:
               'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
             visual: (
@@ -586,7 +585,7 @@ export default function FinancialServicesContent() {
               'Pre-loaded obligation sets for AFS licence conditions',
               'Regulation reference linked to each obligation (e.g. s912A(1)(a))',
               'Named owner assignment with escalation paths',
-              'RAG status tracking — mapped, at risk, unmapped, breached',
+              'RAG status tracking - mapped, at risk, unmapped, breached',
               'Scheduled review cycles with automated reminders',
             ],
             visual: (
@@ -594,22 +593,22 @@ export default function FinancialServicesContent() {
                 label="Obligations Register"
                 rows={[
                   {
-                    k: 'General conduct — s912A(1)(a)',
+                    k: 'General conduct - s912A(1)(a)',
                     v: 'Head of Compliance',
                     status: 'green',
                   },
                   {
-                    k: 'Financial resources — s912A(1)(d)',
+                    k: 'Financial resources - s912A(1)(d)',
                     v: 'CFO',
                     status: 'green',
                   },
                   {
-                    k: 'Breach reporting — s912D',
+                    k: 'Breach reporting - s912D',
                     v: 'Compliance Mgr',
                     status: 'amber',
                   },
                   {
-                    k: 'CPS 230 — Critical operations',
+                    k: 'CPS 230 - Critical operations',
                     v: 'COO',
                     status: 'red',
                   },
@@ -624,7 +623,7 @@ export default function FinancialServicesContent() {
             details: [
               's912D reportable situation classification',
               'Days-since-detection counter with regulatory deadline alerts',
-              'Self-reporting workflow — draft, review, lodge, confirm',
+              'Self-reporting workflow - draft, review, lodge, confirm',
               'Root cause analysis and remediation tracking',
               'Immutable evidence chain from detection to resolution',
             ],
@@ -633,22 +632,22 @@ export default function FinancialServicesContent() {
                 label="Breach Register"
                 rows={[
                   {
-                    k: 'BR-2026-041 — Client money shortfall',
+                    k: 'BR-2026-041 - Client money shortfall',
                     v: '12 days',
                     status: 'red',
                   },
                   {
-                    k: 'BR-2026-038 — Disclosure failure',
+                    k: 'BR-2026-038 - Disclosure failure',
                     v: '28 days',
                     status: 'amber',
                   },
                   {
-                    k: 'BR-2026-035 — Training lapse',
+                    k: 'BR-2026-035 - Training lapse',
                     v: 'Resolved',
                     status: 'green',
                   },
                   {
-                    k: 'BR-2026-029 — SOA deficiency',
+                    k: 'BR-2026-029 - SOA deficiency',
                     v: 'Resolved',
                     status: 'green',
                   },
@@ -663,7 +662,7 @@ export default function FinancialServicesContent() {
             details: [
               'RAG status dashboard across all obligation categories',
               'Open breaches with days outstanding and severity',
-              'Upcoming regulatory deadlines — next 30/60/90 days',
+              'Upcoming regulatory deadlines - next 30/60/90 days',
               'Compliance programme effectiveness metrics',
               'Director attestation and sign-off workflow',
             ],
@@ -703,12 +702,12 @@ export default function FinancialServicesContent() {
                 label="AML/CTF Programme"
                 rows={[
                   {
-                    k: 'Part A — Customer ID',
+                    k: 'Part A - Customer ID',
                     v: '100% covered',
                     status: 'green',
                   },
                   {
-                    k: 'Part B — CDD procedures',
+                    k: 'Part B - CDD procedures',
                     v: '96% covered',
                     status: 'green',
                   },
@@ -734,22 +733,22 @@ export default function FinancialServicesContent() {
                 label="AFCA Dispute Register"
                 rows={[
                   {
-                    k: 'DR-2026-118 — Fee dispute',
-                    v: 'IDR — Day 14',
+                    k: 'DR-2026-118 - Fee dispute',
+                    v: 'IDR - Day 14',
                     status: 'green',
                   },
                   {
-                    k: 'DR-2026-112 — Advice complaint',
+                    k: 'DR-2026-112 - Advice complaint',
                     v: 'AFCA escalated',
                     status: 'red',
                   },
                   {
-                    k: 'DR-2026-105 — Service delay',
+                    k: 'DR-2026-105 - Service delay',
                     v: 'Resolved',
                     status: 'green',
                   },
                   {
-                    k: 'DR-2026-099 — Disclosure query',
+                    k: 'DR-2026-099 - Disclosure query',
                     v: 'Resolved',
                     status: 'green',
                   },
@@ -774,12 +773,12 @@ export default function FinancialServicesContent() {
                 title="Financial Services Compliance Overview"
                 rows={[
                   {
-                    label: 'ASIC AFS — s912A Obligations',
+                    label: 'ASIC AFS - s912A Obligations',
                     value: '97%',
                     status: 'green',
                   },
                   {
-                    label: 'APRA CPS 230 — Operational Risk',
+                    label: 'APRA CPS 230 - Operational Risk',
                     value: '94%',
                     status: 'green',
                   },
@@ -789,17 +788,17 @@ export default function FinancialServicesContent() {
                     status: 'green',
                   },
                   {
-                    label: 'AFCA — Dispute Register',
+                    label: 'AFCA - Dispute Register',
                     value: '96%',
                     status: 'green',
                   },
                   {
-                    label: 'Breach Register — s912D',
+                    label: 'Breach Register - s912D',
                     value: '2 active',
                     status: 'amber',
                   },
                   {
-                    label: 'Board Pack — Next Due',
+                    label: 'Board Pack - Next Due',
                     value: '15 days',
                     status: 'green',
                   },
@@ -820,7 +819,7 @@ export default function FinancialServicesContent() {
                     items: 300,
                   },
                   {
-                    name: 'APRA CPS 230 — Operational Risk',
+                    name: 'APRA CPS 230 - Operational Risk',
                     score: '94%',
                     items: 150,
                   },
@@ -849,18 +848,18 @@ export default function FinancialServicesContent() {
                   {
                     time: 'T+0:00',
                     label:
-                      'Reportable situation detected — s912D workflow initiated',
+                      'Reportable situation detected - s912D workflow initiated',
                     status: 'complete',
                   },
                   {
                     time: 'T+1:00',
                     label:
-                      'Breach classification completed — severity assessed',
+                      'Breach classification completed - severity assessed',
                     status: 'complete',
                   },
                   {
                     time: 'T+24:00',
-                    label: 'Investigation commenced — root cause analysis',
+                    label: 'Investigation commenced - root cause analysis',
                     status: 'complete',
                   },
                   {
@@ -875,7 +874,7 @@ export default function FinancialServicesContent() {
                   },
                   {
                     time: 'T+60d',
-                    label: 'Remediation verified — breach register closed',
+                    label: 'Remediation verified - breach register closed',
                     status: 'pending',
                   },
                 ]}
@@ -891,8 +890,8 @@ export default function FinancialServicesContent() {
       <SocialProof
         metricsBanner={[
           '206+ tables with row-level security',
-          'AU-hosted by default — data never leaves Australia',
-          'Zero evidence gaps at audit — immutable chain',
+          'AU-hosted by default - data never leaves Australia',
+          'Zero evidence gaps at audit - immutable chain',
           'SOC 2 compliance in progress',
         ]}
         trustCards={[
@@ -900,7 +899,7 @@ export default function FinancialServicesContent() {
             persona: 'Boutique AFS Licensee',
             need: 'Map all s912A obligations to named owners and maintain a breach register without hiring a dedicated compliance team.',
             delivers:
-              'Pre-loaded obligation register with RAG tracking, automated breach workflow, and board-ready reporting — run by a team of three.',
+              'Pre-loaded obligation register with RAG tracking, automated breach workflow, and board-ready reporting - run by a team of three.',
           },
           {
             persona: 'Non-bank Credit Provider',
@@ -945,7 +944,7 @@ export default function FinancialServicesContent() {
             question:
               'How does FormaOS handle AUSTRAC AML/CTF programme requirements?',
             answer:
-              'FormaOS maps the full AUSTRAC AML/CTF programme structure — Part A (customer identification) and Part B (customer due diligence) — to operational workflows. The platform tracks ongoing CDD obligations, suspicious matter reporting, threshold transaction reporting, and assembles evidence for the annual compliance report to AUSTRAC.',
+              'FormaOS maps the full AUSTRAC AML/CTF programme structure - Part A (customer identification) and Part B (customer due diligence) - to operational workflows. The platform tracks ongoing CDD obligations, suspicious matter reporting, threshold transaction reporting, and assembles evidence for the annual compliance report to AUSTRAC.',
           },
           {
             question: 'Can FormaOS manage s912D breach reporting?',
@@ -971,12 +970,12 @@ export default function FinancialServicesContent() {
           {
             question: 'Is data hosted in Australia?',
             answer:
-              'Yes. FormaOS is hosted on Australian infrastructure by default. All data — including obligation registers, breach records, evidence files, and audit logs — remains within Australian data centres. This meets data sovereignty requirements for regulated financial services organisations.',
+              'Yes. FormaOS is hosted on Australian infrastructure by default. All data - including obligation registers, breach records, evidence files, and audit logs - remains within Australian data centres. This meets data sovereignty requirements for regulated financial services organisations.',
           },
           {
             question: 'How long does it take to get set up?',
             answer:
-              'Most AFS licensees are live within a day. You can import existing obligation spreadsheets or start with our pre-built ASIC, APRA, AUSTRAC, and AFCA framework packs. Assign owners, upload existing evidence, and your compliance programme is operational — no multi-month implementation project required.',
+              'Most AFS licensees are live within a day. You can import existing obligation spreadsheets or start with our pre-built ASIC, APRA, AUSTRAC, and AFCA framework packs. Assign owners, upload existing evidence, and your compliance programme is operational - no multi-month implementation project required.',
           },
         ]}
       />

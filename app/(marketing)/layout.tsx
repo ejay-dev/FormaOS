@@ -91,7 +91,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
           <main
             id="main-content"
-            className="relative z-10 mk-page-bg mk-marketing-flow"
+            className="relative z-10 mk-page-bg mk-marketing-flow mk-enterprise-flow"
           >
             <MarketingBackgroundLayer />
             <div className="relative z-10">

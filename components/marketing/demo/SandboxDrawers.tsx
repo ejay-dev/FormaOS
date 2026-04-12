@@ -171,7 +171,7 @@ export function TaskDetailDrawer({
         <InfoRow label="Assignee" value={assigneeName} icon={<User className="h-3 w-3" />} />
         <InfoRow label="Priority" value={task.priority} icon={<Tag className="h-3 w-3" />} />
         <InfoRow label="Due Date" value={task.due} icon={<Calendar className="h-3 w-3" />} />
-        <InfoRow label="Framework" value={framework?.name ?? '—'} icon={<Shield className="h-3 w-3" />} />
+        <InfoRow label="Framework" value={framework?.name ?? ' - '} icon={<Shield className="h-3 w-3" />} />
         {control && <InfoRow label="Control" value={`${control.code} ${control.title}`} icon={<Lock className="h-3 w-3" />} />}
       </div>
 

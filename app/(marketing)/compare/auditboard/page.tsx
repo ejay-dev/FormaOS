@@ -9,6 +9,7 @@ import {
   softwareApplicationSchema,
 } from '@/lib/seo';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Compare: AuditBoard',
   description:
@@ -35,17 +36,17 @@ const points = [
   {
     title: 'Controls execute inside daily operations',
     detail:
-      'FormaOS turns controls into owned tasks with evidence checkpoints built into workflows — compliance runs as part of operations, not as a separate audit layer.',
+      'FormaOS turns controls into owned tasks with evidence checkpoints built into workflows - compliance runs as part of operations, not as a separate audit layer.',
   },
   {
     title: 'Built for frontline operators, not just audit teams',
     detail:
-      'AuditBoard excels at internal audit and risk management. FormaOS is built for the teams doing the work — operators, compliance leads, and reviewers who need execution, sign-off, and evidence integrity in one system.',
+      'AuditBoard excels at internal audit and risk management. FormaOS is built for the teams doing the work - operators, compliance leads, and reviewers who need execution, sign-off, and evidence integrity in one system.',
   },
   {
     title: 'Evidence defensibility is structural',
     detail:
-      'Every artifact carries actor attribution, approval lineage, and chain-of-custody context — so audit exports prove real work, not retroactive documentation.',
+      'Every artifact carries actor attribution, approval lineage, and chain-of-custody context - so audit exports prove real work, not retroactive documentation.',
   },
   {
     title: 'Continuous readiness, not periodic reconstruction',
@@ -62,16 +63,52 @@ const idealIf = [
 ] as const;
 
 const featureComparison = [
-  { feature: 'Control execution with named owners', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Evidence verification with approval chain', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Operational task workflows', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Buyer-facing trust and procurement path', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Internal audit planning depth', formaos: 'partial', competitor: 'yes' },
-  { feature: 'Regulated operator workflow coverage', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Incident and corrective-action chain', formaos: 'yes', competitor: 'partial' },
+  {
+    feature: 'Control execution with named owners',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Evidence verification with approval chain',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Operational task workflows',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Buyer-facing trust and procurement path',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Internal audit planning depth',
+    formaos: 'partial',
+    competitor: 'yes',
+  },
+  {
+    feature: 'Regulated operator workflow coverage',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Incident and corrective-action chain',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
   { feature: 'Audit-ready export bundles', formaos: 'yes', competitor: 'yes' },
-  { feature: 'Multi-framework deduplication', formaos: 'yes', competitor: 'partial' },
-  { feature: 'Healthcare and NDIS workflow coverage', formaos: 'yes', competitor: 'no' },
+  {
+    feature: 'Multi-framework deduplication',
+    formaos: 'yes',
+    competitor: 'partial',
+  },
+  {
+    feature: 'Healthcare and NDIS workflow coverage',
+    formaos: 'yes',
+    competitor: 'no',
+  },
 ];
 
 const competitorStrengths = [

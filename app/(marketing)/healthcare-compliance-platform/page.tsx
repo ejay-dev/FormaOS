@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import HealthcareComplianceContent from './HealthcareComplianceContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
     'Healthcare Compliance Platform - Clinical Governance & Accreditation | FormaOS',

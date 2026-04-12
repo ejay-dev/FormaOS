@@ -265,7 +265,7 @@ export function ComplianceMaturityAssessment() {
             What&apos;s your compliance maturity?
           </h2>
           <p className="text-muted-foreground mt-3">
-            Answer 5 questions to see where you stand — and where FormaOS can
+            Answer 5 questions to see where you stand - and where FormaOS can
             help.
           </p>
         </div>

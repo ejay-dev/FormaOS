@@ -1075,7 +1075,7 @@ function CategoryBreakdown() {
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Integrations across categories — embedding compliance into
+              Integrations across categories - embedding compliance into
               every part of your technology stack.
             </p>
           </ScrollReveal>
@@ -1373,7 +1373,7 @@ function IntegrationsHero() {
         >
           {integrations.length} integrations across{' '}
           {Object.keys(CATEGORY_CONFIG).length} categories. Embed compliance
-          into the tools your team already uses — from Jira to AWS.
+          into the tools your team already uses - from Jira to AWS.
         </motion.p>
 
         <motion.div

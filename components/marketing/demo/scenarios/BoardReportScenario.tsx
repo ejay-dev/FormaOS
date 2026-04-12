@@ -214,7 +214,7 @@ function MockBoardExport() {
       <div className="rounded-xl border border-cyan-400/20 bg-cyan-500/10 p-3 text-xs">
         <div className="flex items-center gap-2 text-cyan-300 font-medium">
           <BarChart3 className="h-3.5 w-3.5" />
-          Board Report — Q1 FY26
+          Board Report - Q1 FY26
         </div>
         <p className="mt-1 text-[10px] text-muted-foreground">
           Executive summary generated with live data as of 12 Feb 2026
@@ -276,7 +276,7 @@ const STEPS: ScenarioStep[] = [
     phase: 'Step 2',
     title: 'Review compliance posture',
     description:
-      'Live posture data is pulled from your controls, evidence, and tasks — not manually assembled.',
+      'Live posture data is pulled from your controls, evidence, and tasks - not manually assembled.',
     icon: LineChart,
     color: 'text-emerald-400',
     bg: 'bg-emerald-500/15',

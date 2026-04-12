@@ -1,5 +1,5 @@
 // =============================================================================
-// DEMO ANALYTICS — Lightweight event tracking for the phase demo
+// DEMO ANALYTICS - Lightweight event tracking for the phase demo
 // Fires custom events that can be picked up by GA4, Segment, PostHog, etc.
 // No external dependencies. Falls back silently if no analytics provider.
 // =============================================================================
@@ -43,7 +43,7 @@ export function trackDemoEvent(event: DemoEvent): void {
       }
     }
   } catch {
-    // Silent fail — analytics should never break the demo
+    // Silent fail - analytics should never break the demo
   }
 }
 

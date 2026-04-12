@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 export const alt =
-  'Healthcare Compliance Software — AHPRA, NSQHS & Clinical Governance | FormaOS';
+  'Healthcare Compliance Software - AHPRA, NSQHS & Clinical Governance | FormaOS';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -89,7 +89,7 @@ export default function Image() {
             maxWidth: 700,
           }}
         >
-          Continuous compliance for healthcare providers — NSQHS standards,
+          Continuous compliance for healthcare providers - NSQHS standards,
           AHPRA registration, and clinical governance.
         </div>
       </div>

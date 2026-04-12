@@ -137,7 +137,7 @@
   color: rgba(148, 163, 184, 1); /* slate-400 */
 }
 
-/* Glass — canonical values from globals.css: blur(20px) saturate(150%) */
+/* Glass - canonical values from globals.css: blur(20px) saturate(150%) */
 .mk-glass-card,
 .glass-intense {
   background: var(--mk-gradient-surface);
@@ -432,7 +432,7 @@
   white-space: nowrap;
 }
 
-/* One visual treatment for glass/card/shadow primitives — blur(20px) saturate(150%) matches globals.css */
+/* One visual treatment for glass/card/shadow primitives - blur(20px) saturate(150%) matches globals.css */
 .mk-shell .glass-panel,
 .mk-shell .glass-panel-strong,
 .mk-shell .glass-intense,

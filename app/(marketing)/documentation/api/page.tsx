@@ -4,13 +4,14 @@ import { V1_OPENAPI_ROUTES, generateOpenApiSpec } from '@/lib/api-keys/openapi';
 import { RELAY_EVENT_LABELS } from '@/lib/integrations/webhook-relay';
 import { siteUrl } from '@/lib/seo';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'API Documentation — FormaOS REST API Reference',
+  title: 'API Documentation - FormaOS REST API Reference',
   description:
     'Complete reference for the FormaOS v1 REST API. Bearer authentication, scoped API keys, rate limits, cursor pagination, webhooks, and OpenAPI 3.1 spec.',
   alternates: { canonical: `${siteUrl}/documentation/api` },
   openGraph: {
-    title: 'API Documentation — FormaOS REST API Reference',
+    title: 'API Documentation - FormaOS REST API Reference',
     description:
       'Complete reference for the FormaOS v1 REST API. Bearer authentication, scoped API keys, rate limits, cursor pagination, webhooks, and OpenAPI 3.1 spec.',
     type: 'website',
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'API Documentation — FormaOS REST API Reference',
+    title: 'API Documentation - FormaOS REST API Reference',
     description:
       'FormaOS v1 REST API: bearer auth, scoped keys, rate limits, webhooks, and OpenAPI 3.1 spec.',
   },

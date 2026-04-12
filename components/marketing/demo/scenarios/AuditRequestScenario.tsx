@@ -46,7 +46,7 @@ function MockNotification() {
         New audit request from BDO Australia
       </div>
       <p className="mt-1 text-muted-foreground">
-        ISO 27001 Surveillance Audit — 14 controls requested
+        ISO 27001 Surveillance Audit - 14 controls requested
       </p>
       <div className="mt-2 flex gap-2">
         <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-[10px] text-cyan-200">
@@ -115,7 +115,7 @@ function MockBundlePreview() {
       <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3">
         <div className="flex items-center gap-2 text-emerald-300 text-xs font-medium">
           <FileText className="h-3.5 w-3.5" />
-          Evidence Bundle — ISO 27001 Surveillance
+          Evidence Bundle - ISO 27001 Surveillance
         </div>
         <div className="mt-2 grid grid-cols-2 gap-2 text-[10px]">
           <div className="rounded-lg bg-white/[0.04] px-2 py-1.5">
@@ -138,7 +138,7 @@ function MockBundlePreview() {
       </div>
       <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
         <Link2 className="h-3 w-3 text-cyan-400" />
-        Secure share link generated — expires in 14 days
+        Secure share link generated - expires in 14 days
       </div>
     </div>
   );

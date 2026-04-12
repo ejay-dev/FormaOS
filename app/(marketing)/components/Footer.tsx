@@ -104,7 +104,7 @@ export function Footer() {
           <FooterCTA />
         </div>
 
-        {/* Main Footer Content — 4 columns */}
+        {/* Main Footer Content - 4 columns */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12 py-12 border-t border-white/10">
           {/* Platform */}
           <div className="space-y-4">

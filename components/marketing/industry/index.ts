@@ -1,4 +1,4 @@
-export { IndustryHero } from './IndustryHero';
+export { IndustryHero, type JurisdictionBadge } from './IndustryHero';
 export { PainPointsGrid } from './PainPointsGrid';
 export { FrameworkCoverage } from './FrameworkCoverage';
 export { HowItWorks } from './HowItWorks';

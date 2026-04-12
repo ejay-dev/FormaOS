@@ -9,7 +9,7 @@ const steps = [
     icon: <Map className="h-6 w-6" />,
     title: 'Map Your Obligations',
     description:
-      'Pre-built frameworks load your obligations automatically. Every requirement — mapped, named, and owned.',
+      'Pre-built frameworks load your obligations automatically. Every requirement - mapped, named, and owned.',
     color: 'cyan',
   },
   {
@@ -25,7 +25,7 @@ const steps = [
     icon: <FileBarChart className="h-6 w-6" />,
     title: 'Prove Compliance Instantly',
     description:
-      'One-click audit-ready reports. Regulator visits, accreditation assessments, board reviews — export your evidence pack in minutes.',
+      'One-click audit-ready reports. Regulator visits, accreditation assessments, board reviews - export your evidence pack in minutes.',
     color: 'emerald',
   },
 ];

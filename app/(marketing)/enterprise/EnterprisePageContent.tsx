@@ -649,7 +649,7 @@ function SecurityArchitecture() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Every layer independently secured, monitored, and audited —
+              Every layer independently secured, monitored, and audited  - 
               because enterprise compliance demands defense in depth.
             </p>
           </ScrollReveal>
@@ -849,7 +849,7 @@ function SLASection() {
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
               Operational visibility, structured support paths, and enterprise
-              controls — with specific terms defined during procurement.
+              controls - with specific terms defined during procurement.
             </p>
           </ScrollReveal>
 
@@ -1337,7 +1337,7 @@ function EnterpriseHero() {
         >
           SAML SSO, audit-ready evidence exports, and structured procurement
           materials for organizations where compliance is an operational
-          requirement — not a checkbox exercise.
+          requirement - not a checkbox exercise.
         </motion.p>
 
         <motion.div

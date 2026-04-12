@@ -21,7 +21,7 @@ const screenTransition = {
 export default function DemoShell({ activeScreen, onNavigate, children }: DemoShellProps) {
   return (
     <div className="flex h-full w-full overflow-hidden rounded-b-2xl bg-[#0a0f1e]">
-      {/* Sidebar — hidden on mobile */}
+      {/* Sidebar - hidden on mobile */}
       <div className="hidden md:flex md:w-[180px] lg:w-[200px] flex-shrink-0">
         <DemoSidebar activeScreen={activeScreen} onNavigate={onNavigate} />
       </div>

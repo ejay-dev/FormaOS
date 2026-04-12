@@ -1,5 +1,5 @@
 // =============================================================================
-// PHASE DEMO DATA — Simulation data for the Four Phases interactive demo
+// PHASE DEMO DATA - Simulation data for the Four Phases interactive demo
 // =============================================================================
 
 import type { DemoAuditEntry } from './demo-data';
@@ -63,7 +63,7 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
 };
 
 // -----------------------------------------------------------------------------
-// Phase 1 — Structure
+// Phase 1 - Structure
 // -----------------------------------------------------------------------------
 
 export const structureFrameworks = [
@@ -86,7 +86,7 @@ export const structureRoadmapItems = [
 ];
 
 // -----------------------------------------------------------------------------
-// Phase 2 — Operationalize
+// Phase 2 - Operationalize
 // -----------------------------------------------------------------------------
 
 export const operationalizeWorkflowTriggers = [
@@ -109,7 +109,7 @@ export const operationalizeEvidenceUpload = {
 };
 
 // -----------------------------------------------------------------------------
-// Phase 3 — Validate
+// Phase 3 - Validate
 // -----------------------------------------------------------------------------
 
 export const validateControlChecks = [
@@ -130,11 +130,11 @@ export const validateAuditEntries: DemoAuditEntry[] = [
   { id: 'va2', action: 'Evidence validated', user: 'Sarah Chen', target: 'Penetration Test Results Q1', timestamp: '10 Feb 16:42', type: 'evidence' },
   { id: 'va3', action: 'Deviation detected', user: 'System', target: 'A.12.4 Logging & Monitoring', timestamp: '10 Feb 14:20', type: 'compliance' },
   { id: 'va4', action: 'Risk assessment updated', user: 'David Okonkwo', target: 'HIPAA Risk Register', timestamp: '10 Feb 11:30', type: 'compliance' },
-  { id: 'va5', action: 'Score updated', user: 'System', target: 'ISO 27001 — 89%', timestamp: '10 Feb 09:00', type: 'compliance' },
+  { id: 'va5', action: 'Score updated', user: 'System', target: 'ISO 27001 - 89%', timestamp: '10 Feb 09:00', type: 'compliance' },
 ];
 
 // -----------------------------------------------------------------------------
-// Phase 4 — Defend
+// Phase 4 - Defend
 // -----------------------------------------------------------------------------
 
 export const defendReportSections = [

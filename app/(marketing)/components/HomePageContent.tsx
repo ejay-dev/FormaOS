@@ -606,9 +606,12 @@ export function HomePageContent() {
 
           <div className="mt-8 p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
             <p className="text-sm text-primary">
-              <strong>Competitor Pricing:</strong> Drata $2,000/mo ❌ | Vanta
-              $3,600/mo ❌ | ServiceNow $10,000/mo ❌ |{' '}
-              <strong>FormaOS: from $159/mo ✅</strong>
+              <strong>Enterprise compliance from $159/mo</strong>  - 
+              purpose-built for Australian regulated industries, without the
+              enterprise price tag.{' '}
+              <Link href="/compare" className="underline hover:text-foreground">
+                See how we compare
+              </Link>
             </p>
           </div>
         </div>

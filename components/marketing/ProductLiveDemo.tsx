@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * ProductLiveDemo — Interactive in-page FormaOS app demo for /product
+ * ProductLiveDemo - Interactive in-page FormaOS app demo for /product
  *
  * Renders a mocked app shell (sidebar + topbar + content) with fake seeded data.
  * Fully interactive: tab switching, search, sort, row detail drawer, toast feedback.
@@ -106,7 +106,7 @@ const VIEW_MAP = Object.fromEntries(VIEWS.map((v) => [v.id, v])) as Record<
 >;
 
 /* ═══════════════════════════════════════════════════════════════════════
-   MOCK DATA — realistic GRC/compliance data
+   MOCK DATA - realistic GRC/compliance data
    ═══════════════════════════════════════════════════════════════════════ */
 
 // Status badge styling helper
@@ -158,7 +158,7 @@ const TASKS: TaskItem[] = [
   },
   {
     id: 'T04',
-    title: 'Vendor risk assessment — Stripe',
+    title: 'Vendor risk assessment - Stripe',
     status: 'In Review',
     cls: B.rev,
     assignee: 'LW',
@@ -182,7 +182,7 @@ const TASKS: TaskItem[] = [
   },
   {
     id: 'T07',
-    title: 'Conduct access review — Q1',
+    title: 'Conduct access review - Q1',
     status: 'Overdue',
     cls: B.over,
     assignee: 'NM',
@@ -230,7 +230,7 @@ const TASKS: TaskItem[] = [
   },
   {
     id: 'T13',
-    title: 'Draft board compliance report — Q1',
+    title: 'Draft board compliance report - Q1',
     status: 'Draft',
     cls: B.draft,
     assignee: 'SM',
@@ -927,7 +927,7 @@ interface ReportItem {
 const REPORTS: ReportItem[] = [
   {
     id: 'R01',
-    name: 'Board Readiness Report — Q1 2026',
+    name: 'Board Readiness Report - Q1 2026',
     status: 'Final',
     cls: B.done,
     date: 'Feb 15',
@@ -943,7 +943,7 @@ const REPORTS: ReportItem[] = [
   },
   {
     id: 'R03',
-    name: 'Vendor Risk Summary — Q1',
+    name: 'Vendor Risk Summary - Q1',
     status: 'Final',
     cls: B.done,
     date: 'Feb 8',
@@ -983,7 +983,7 @@ const REPORTS: ReportItem[] = [
   },
   {
     id: 'R08',
-    name: 'Third-Party Risk Dashboard — Q4',
+    name: 'Third-Party Risk Dashboard - Q4',
     status: 'Final',
     cls: B.done,
     date: 'Jan 15',
@@ -1031,7 +1031,7 @@ const REPORTS: ReportItem[] = [
   },
   {
     id: 'R14',
-    name: 'Access Review Findings — Q4',
+    name: 'Access Review Findings - Q4',
     status: 'In Review',
     cls: B.rev,
     date: 'Dec 12',
@@ -1039,7 +1039,7 @@ const REPORTS: ReportItem[] = [
   },
   {
     id: 'R15',
-    name: 'Compliance Trend Analysis — 2025',
+    name: 'Compliance Trend Analysis - 2025',
     status: 'Final',
     cls: B.done,
     date: 'Dec 5',
@@ -1068,7 +1068,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK02',
-    name: 'Expired vendor NDA — Acme Corp',
+    name: 'Expired vendor NDA - Acme Corp',
     sev: 'Medium',
     cls: B.med,
     dotCls: 'bg-amber-400/70',
@@ -1086,7 +1086,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK04',
-    name: 'Overdue access review — Q4',
+    name: 'Overdue access review - Q4',
     sev: 'Low',
     cls: B.low,
     dotCls: 'bg-emerald-400/70',
@@ -1095,7 +1095,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK05',
-    name: 'Stale firewall rules — production',
+    name: 'Stale firewall rules - production',
     sev: 'Medium',
     cls: B.med,
     dotCls: 'bg-amber-400/70',
@@ -1104,7 +1104,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK06',
-    name: 'Unencrypted S3 bucket — staging',
+    name: 'Unencrypted S3 bucket - staging',
     sev: 'High',
     cls: B.high,
     dotCls: 'bg-orange-400/70',
@@ -1122,7 +1122,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK08',
-    name: 'Shadow IT — unapproved SaaS usage',
+    name: 'Shadow IT - unapproved SaaS usage',
     sev: 'Medium',
     cls: B.med,
     dotCls: 'bg-amber-400/70',
@@ -1131,7 +1131,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK09',
-    name: 'Expired SSL certificate — internal',
+    name: 'Expired SSL certificate - internal',
     sev: 'High',
     cls: B.high,
     dotCls: 'bg-orange-400/70',
@@ -1149,7 +1149,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK11',
-    name: 'Vendor SOC 2 report gap — CloudCo',
+    name: 'Vendor SOC 2 report gap - CloudCo',
     sev: 'Medium',
     cls: B.med,
     dotCls: 'bg-amber-400/70',
@@ -1167,7 +1167,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK13',
-    name: 'Missing endpoint agent — 3 devices',
+    name: 'Missing endpoint agent - 3 devices',
     sev: 'High',
     cls: B.high,
     dotCls: 'bg-orange-400/70',
@@ -1203,7 +1203,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK17',
-    name: 'Overdue penetration test — mobile app',
+    name: 'Overdue penetration test - mobile app',
     sev: 'Medium',
     cls: B.med,
     dotCls: 'bg-amber-400/70',
@@ -1212,7 +1212,7 @@ const RISKS: RiskItem[] = [
   },
   {
     id: 'RK18',
-    name: 'Legacy system — no security patches',
+    name: 'Legacy system - no security patches',
     sev: 'Critical',
     cls: B.crit,
     dotCls: 'bg-red-400/70',
@@ -1558,7 +1558,7 @@ const DetailDrawer = memo(function DetailDrawer({
 });
 
 /* ═══════════════════════════════════════════════════════════════════════
-   LIST HEADER — search + sort + action buttons
+   LIST HEADER - search + sort + action buttons
    ═══════════════════════════════════════════════════════════════════════ */
 
 const ListHeader = memo(function ListHeader({
@@ -1688,7 +1688,7 @@ function makeDrawerData(viewId: ViewId, item: AnyItem): DrawerData {
       };
     case 'controls':
       return {
-        title: `${item.code} — ${title}`,
+        title: `${item.code} - ${title}`,
         subtitle: item.framework as string,
         status: status as string,
         statusCls: statusCls as string,
@@ -2126,7 +2126,7 @@ export function ProductLiveDemo() {
 
         {/* App body */}
         <div className="flex flex-1 min-h-0 overflow-hidden">
-          {/* Sidebar — desktop only */}
+          {/* Sidebar - desktop only */}
           {!isMobile && (
             <div className="w-[180px] shrink-0 border-r border-white/[0.08] bg-[#060d1a] flex flex-col overflow-hidden">
               {/* Logo */}

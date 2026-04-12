@@ -228,7 +228,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
 
     return (
       <div className="text-sm space-y-1">
-        {/* Home + Pricing — always visible as direct links */}
+        {/* Home + Pricing - always visible as direct links */}
         <div className="px-4 py-2 text-[11px] uppercase tracking-wider text-slate-500">
           Pages
         </div>
@@ -282,7 +282,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
   /* ── Desktop ─────────────────────────────────────────── */
   return (
     <nav className="hidden md:flex flex-1 items-center justify-center gap-0.5 lg:gap-1 text-[13.5px] lg:text-[14px] font-medium tracking-[0.01em]">
-      {/* Home — direct link */}
+      {/* Home - direct link */}
       <Link
         href="/"
         className={clsx(
@@ -306,7 +306,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
         pathname={pathname}
       />
 
-      {/* Pricing — direct link, no dropdown */}
+      {/* Pricing - direct link, no dropdown */}
       <Link
         href="/pricing"
         className={clsx(

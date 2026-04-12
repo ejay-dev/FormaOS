@@ -8,6 +8,7 @@ import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 import { siteUrl } from '@/lib/seo';
 const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Vendor Assurance',
   description:

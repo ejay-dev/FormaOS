@@ -349,7 +349,7 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Connect BambooHR, Workday, and Rippling for automated personnel compliance tracking.',
     longDescription:
-      'Bi-directional integration with major HRIS platforms. Automatically sync employee lifecycle events — onboarding, role changes, departures — with compliance control ownership and access review requirements. Map HRIS organizational structures to FormaOS team hierarchies. Track personnel compliance obligations like background check status, training completion, and NDA execution.',
+      'Bi-directional integration with major HRIS platforms. Automatically sync employee lifecycle events - onboarding, role changes, departures - with compliance control ownership and access review requirements. Map HRIS organizational structures to FormaOS team hierarchies. Track personnel compliance obligations like background check status, training completion, and NDA execution.',
     status: 'in-progress',
     category: 'Integrations',
     quarter: 'Q2 2026',
@@ -366,7 +366,7 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Read-only portal for external auditors with time-limited access and scoped visibility.',
     longDescription:
-      'Provide external auditors with temporary, read-only access to compliance data through a dedicated portal. Configure visibility scope per auditor: specific frameworks, date ranges, and entity types. Auditors can review evidence, download audit packets, and leave comments — all tracked in the audit trail. Access automatically expires after the configured audit window.',
+      'Provide external auditors with temporary, read-only access to compliance data through a dedicated portal. Configure visibility scope per auditor: specific frameworks, date ranges, and entity types. Auditors can review evidence, download audit packets, and leave comments - all tracked in the audit trail. Access automatically expires after the configured audit window.',
     status: 'exploring',
     category: 'Platform',
     quarter: 'Q3 2026',
@@ -553,7 +553,7 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Conditional notification routing with escalation chains, digest batching, and quiet hours.',
     longDescription:
-      'Advanced notification rules engine that routes compliance alerts based on configurable conditions. Define escalation chains with time-based triggers — if an alert is not acknowledged within N hours, escalate to the next level. Digest batching groups non-urgent notifications into configurable summary windows. Quiet hours prevent non-critical notifications during off-hours.',
+      'Advanced notification rules engine that routes compliance alerts based on configurable conditions. Define escalation chains with time-based triggers - if an alert is not acknowledged within N hours, escalate to the next level. Digest batching groups non-urgent notifications into configurable summary windows. Quiet hours prevent non-critical notifications during off-hours.',
     status: 'shipped',
     category: 'Automation',
     quarter: 'Q1 2026',
@@ -1126,7 +1126,7 @@ function CategoryBreakdown() {
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Development effort distributed across categories — reflecting
+              Development effort distributed across categories - reflecting
               customer demand, compliance landscape, and platform maturity.
             </p>
           </ScrollReveal>
@@ -1272,7 +1272,7 @@ function TransparencySection() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              How we plan, build, and ship — openly, predictably, and with your
+              How we plan, build, and ship - openly, predictably, and with your
               compliance requirements driving every decision.
             </p>
           </ScrollReveal>
@@ -1560,7 +1560,7 @@ function RoadmapHero() {
         >
           {roadmapItems.length} items across{' '}
           {Object.keys(CATEGORY_CONFIG).length} categories. See what we&apos;ve
-          shipped, what we&apos;re building, and what&apos;s coming next —
+          shipped, what we&apos;re building, and what&apos;s coming next  - 
           publicly and transparently.
         </motion.p>
 

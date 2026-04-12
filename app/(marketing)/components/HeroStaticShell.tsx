@@ -32,7 +32,7 @@ export function HeroStaticShell() {
       className="home-hero home-hero--dense relative isolate overflow-hidden"
       aria-label="Hero"
     >
-      {/* Server-rendered hero background image — discovered in initial HTML for fast LCP */}
+      {/* Server-rendered hero background image - discovered in initial HTML for fast LCP */}
       <img
         src="/marketing-media/home.jpg"
         alt=""

@@ -1,7 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Check, Minus, AlertCircle } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle2,
+  ShieldCheck,
+  Sparkles,
+  Check,
+  Minus,
+  AlertCircle,
+  BarChart3,
+} from 'lucide-react';
 import { brand } from '@/config/brand';
 import { Reveal, VisualDivider } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
@@ -48,93 +57,111 @@ const relatedLinksBySource: Record<
     {
       href: '/trust',
       label: 'Trust Center',
-      description: 'Show buyers live assurance artifacts and current review posture.',
+      description:
+        'Show buyers live assurance artifacts and current review posture.',
     },
     {
       href: '/security',
       label: 'Security Overview',
-      description: 'Review encryption, access controls, and deployment posture in one place.',
+      description:
+        'Review encryption, access controls, and deployment posture in one place.',
     },
     {
       href: '/pricing',
       label: 'Pricing',
-      description: 'See plan structure before moving into trial or procurement.',
+      description:
+        'See plan structure before moving into trial or procurement.',
     },
   ],
   compare_drata: [
     {
       href: '/trust',
       label: 'Trust Center',
-      description: 'Connect evaluation to buyer-facing assurance and security review flow.',
+      description:
+        'Connect evaluation to buyer-facing assurance and security review flow.',
     },
     {
       href: '/use-cases/healthcare',
       label: 'Healthcare Use Case',
-      description: 'See how operational controls and evidence work in regulated service delivery.',
+      description:
+        'See how operational controls and evidence work in regulated service delivery.',
     },
     {
       href: '/pricing',
       label: 'Pricing',
-      description: 'Validate buyer fit against plan depth and procurement readiness.',
+      description:
+        'Validate buyer fit against plan depth and procurement readiness.',
     },
   ],
   compare_secureframe: [
     {
       href: '/trust',
       label: 'Trust Center',
-      description: 'Move from checklist evaluation to trust acceleration and buyer proof.',
+      description:
+        'Move from checklist evaluation to trust acceleration and buyer proof.',
     },
     {
       href: '/use-cases/ndis-aged-care',
       label: 'NDIS & Aged Care',
-      description: 'Inspect a frontline regulated workflow where accountability cannot drift.',
+      description:
+        'Inspect a frontline regulated workflow where accountability cannot drift.',
     },
     {
       href: '/pricing',
       label: 'Pricing',
-      description: 'Compare rollout path, procurement support, and plan coverage.',
+      description:
+        'Compare rollout path, procurement support, and plan coverage.',
     },
   ],
   compare_auditboard: [
     {
       href: '/use-cases/financial-services',
       label: 'Financial Services',
-      description: 'See control ownership, incidents, and assurance workflows in a regulated setting.',
+      description:
+        'See control ownership, incidents, and assurance workflows in a regulated setting.',
     },
     {
       href: '/use-cases/government-public-sector',
       label: 'Government & Public Sector',
-      description: 'Review decision trails, approvals, and export-ready governance evidence.',
+      description:
+        'Review decision trails, approvals, and export-ready governance evidence.',
     },
     {
       href: '/trust',
       label: 'Trust Center',
-      description: 'Inspect the buyer-facing trust and procurement path alongside the comparison.',
+      description:
+        'Inspect the buyer-facing trust and procurement path alongside the comparison.',
     },
   ],
   compare_hyperproof: [
     {
       href: '/use-cases/financial-services',
       label: 'Financial Services',
-      description: 'Evaluate accountable control execution and export-ready evidence depth.',
+      description:
+        'Evaluate accountable control execution and export-ready evidence depth.',
     },
     {
       href: '/use-cases/workforce-credentials',
       label: 'Workforce Credentials',
-      description: 'See how regulated operational obligations remain auditable over time.',
+      description:
+        'See how regulated operational obligations remain auditable over time.',
     },
     {
       href: '/pricing',
       label: 'Pricing',
-      description: 'Review plan fit and procurement path after product comparison.',
+      description:
+        'Review plan fit and procurement path after product comparison.',
     },
   ],
 };
 
 function FeatureCell({ value }: { value: string }) {
-  if (value === 'yes') return <Check className="h-4 w-4 text-emerald-400 mx-auto" />;
-  if (value === 'no') return <Minus className="h-4 w-4 text-slate-600 mx-auto" />;
-  if (value === 'partial') return <AlertCircle className="h-4 w-4 text-amber-400 mx-auto" />;
+  if (value === 'yes')
+    return <Check className="h-4 w-4 text-emerald-400 mx-auto" />;
+  if (value === 'no')
+    return <Minus className="h-4 w-4 text-slate-600 mx-auto" />;
+  if (value === 'partial')
+    return <AlertCircle className="h-4 w-4 text-amber-400 mx-auto" />;
   return <span className="text-xs text-slate-300 leading-snug">{value}</span>;
 }
 
@@ -150,8 +177,24 @@ export function ComparePageTemplate({
   datePublished,
 }: ComparePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
-  const relatedLinks = relatedLinksBySource[source] ?? relatedLinksBySource.compare_vanta;
+  const relatedLinks =
+    relatedLinksBySource[source] ?? relatedLinksBySource.compare_vanta;
   const buyerReviewHref = `/contact?type=procurement&source=${source}`;
+
+  // Feature score computation
+  const formaosScore = featureComparison.filter(
+    (r) => r.formaos === 'yes',
+  ).length;
+  const formaosPartial = featureComparison.filter(
+    (r) => r.formaos === 'partial',
+  ).length;
+  const competitorScore = featureComparison.filter(
+    (r) => r.competitor === 'yes',
+  ).length;
+  const competitorPartial = featureComparison.filter(
+    (r) => r.competitor === 'partial',
+  ).length;
+  const totalFeatures = featureComparison.length;
 
   return (
     <MarketingPageShell>
@@ -213,35 +256,95 @@ export function ComparePageTemplate({
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm overflow-hidden">
               <div className="p-6 pb-4 border-b border-white/[0.06]">
-                <h2 className="text-lg font-semibold text-white">Feature Comparison</h2>
-                <p className="mt-1 text-sm text-slate-400">Side-by-side evaluation across key compliance capabilities</p>
+                <h2 className="text-lg font-semibold text-white">
+                  Feature Comparison
+                </h2>
+                <p className="mt-1 text-sm text-slate-400">
+                  Side-by-side evaluation across key compliance capabilities
+                </p>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/[0.06]">
-                      <th className="text-left py-3 px-6 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[45%]">Capability</th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-teal-400 w-[27.5%]">FormaOS</th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[27.5%]">{competitor}</th>
+                      <th className="text-left py-3 px-6 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[45%]">
+                        Capability
+                      </th>
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-teal-400 w-[27.5%] bg-teal-500/[0.04]">
+                        FormaOS
+                      </th>
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[27.5%]">
+                        {competitor}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {featureComparison.map((row, i) => (
-                      <tr key={row.feature} className={`border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.01]' : ''}`}>
-                        <td className="py-3 px-6 text-sm text-slate-300">{row.feature}</td>
-                        <td className="py-3 px-4 text-center"><FeatureCell value={row.formaos} /></td>
-                        <td className="py-3 px-4 text-center"><FeatureCell value={row.competitor} /></td>
+                      <tr
+                        key={row.feature}
+                        className={`border-b border-white/[0.04] transition-colors hover:bg-white/[0.03] ${i % 2 === 0 ? 'bg-white/[0.01]' : ''}`}
+                      >
+                        <td className="py-3 px-6 text-sm text-slate-300">
+                          {row.feature}
+                        </td>
+                        <td className="py-3 px-4 text-center bg-teal-500/[0.04]">
+                          <FeatureCell value={row.formaos} />
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <FeatureCell value={row.competitor} />
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              <div className="p-4 border-t border-white/[0.06] flex items-center gap-6 text-[10px] text-slate-500">
-                <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-400" /> Included</span>
-                <span className="flex items-center gap-1.5"><AlertCircle className="h-3 w-3 text-amber-400" /> Partial / Limited</span>
-                <span className="flex items-center gap-1.5"><Minus className="h-3 w-3 text-slate-600" /> Not available</span>
+              <div className="p-4 border-t border-white/[0.06]">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  {/* Score summary */}
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="h-3.5 w-3.5 text-teal-400" />
+                      <span className="text-xs font-semibold text-teal-400">
+                        FormaOS
+                      </span>
+                      <span className="text-xs text-slate-300">
+                        {formaosScore}/{totalFeatures} full
+                      </span>
+                      {formaosPartial > 0 && (
+                        <span className="text-xs text-amber-400/70">
+                          +{formaosPartial} partial
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-400">
+                        {competitor}
+                      </span>
+                      <span className="text-xs text-slate-300">
+                        {competitorScore}/{totalFeatures} full
+                      </span>
+                      {competitorPartial > 0 && (
+                        <span className="text-xs text-amber-400/70">
+                          +{competitorPartial} partial
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {/* Legend */}
+                  <div className="flex items-center gap-6 text-[10px] text-slate-500">
+                    <span className="flex items-center gap-1.5">
+                      <Check className="h-3 w-3 text-emerald-400" /> Included
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <AlertCircle className="h-3 w-3 text-amber-400" /> Partial
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Minus className="h-3 w-3 text-slate-600" /> Not available
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </ScrollReveal>
@@ -255,10 +358,75 @@ export function ComparePageTemplate({
         <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
             <div className="text-center mb-8">
-              <h2 className="text-lg font-semibold text-white mb-2">See the difference in action</h2>
-              <p className="text-sm text-slate-400">The FormaOS Obligations Register — cross-framework, owner-assigned, evidence-linked.</p>
+              <h2 className="text-lg font-semibold text-white mb-2">
+                See the difference in action
+              </h2>
+              <p className="text-sm text-slate-400">
+                The FormaOS Obligations Register - cross-framework,
+                owner-assigned, evidence-linked.
+              </p>
             </div>
             <AppMockup variant="compare" height="h-[420px]" />
+          </ScrollReveal>
+        </section>
+      </DeferredSection>
+
+      <VisualDivider gradient={false} />
+
+      {/* Mid-page conversion CTA */}
+      <DeferredSection minHeight={120}>
+        <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+            <div className="rounded-2xl border border-teal-500/10 bg-gradient-to-r from-teal-500/[0.06] via-white/[0.03] to-cyan-500/[0.06] backdrop-blur-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h3 className="text-base font-semibold text-white">
+                  Ready to see the difference firsthand?
+                </h3>
+                <p className="mt-1 text-sm text-slate-400">
+                  Start a free trial or request a buyer review packet for your
+                  procurement team.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <Link
+                  href={`${appBase}/auth/signup?source=${source}`}
+                  onClick={() =>
+                    trackCtaClick({
+                      surface: 'compare',
+                      section: 'mid_page_cta',
+                      location: 'mid_page_primary',
+                      ctaLabel: 'Start Free Trial',
+                      ctaHref: `${appBase}/auth/signup?source=${source}`,
+                      variant: 'primary',
+                      competitor,
+                      compareSource: source,
+                    })
+                  }
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:brightness-110"
+                >
+                  Start Free Trial
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+                <Link
+                  href={buyerReviewHref}
+                  onClick={() =>
+                    trackCtaClick({
+                      surface: 'compare',
+                      section: 'mid_page_cta',
+                      location: 'mid_page_secondary',
+                      ctaLabel: 'Buyer Review',
+                      ctaHref: buyerReviewHref,
+                      variant: 'secondary',
+                      competitor,
+                      compareSource: source,
+                    })
+                  }
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-white/10"
+                >
+                  Buyer Review
+                </Link>
+              </div>
+            </div>
           </ScrollReveal>
         </section>
       </DeferredSection>
@@ -268,23 +436,27 @@ export function ComparePageTemplate({
       {/* Differentiator Points */}
       <DeferredSection minHeight={320}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionChoreography pattern="alternating" className="grid gap-4 lg:grid-cols-3">
-            {points.map((p) => (
-                <motion.article
-                  key={p.title}
-                  whileHover={{ y: -6 }}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
-                >
-                  <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                    <ShieldCheck className="h-5 w-5 text-cyan-200" />
-                  </div>
-                  <h2 className="text-lg font-semibold text-white">
-                    {p.title}
-                  </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                    {p.detail}
-                  </p>
-                </motion.article>
+          <SectionChoreography
+            pattern="alternating"
+            className="grid gap-4 lg:grid-cols-3"
+          >
+            {points.map((p, idx) => (
+              <motion.article
+                key={p.title}
+                whileHover={{ y: -6 }}
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+              >
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-400/20 bg-cyan-500/10 text-xs font-bold text-cyan-300">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <ShieldCheck className="h-5 w-5 text-cyan-200" />
+                </div>
+                <h2 className="text-lg font-semibold text-white">{p.title}</h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  {p.detail}
+                </p>
+              </motion.article>
             ))}
           </SectionChoreography>
         </section>
@@ -300,7 +472,10 @@ export function ComparePageTemplate({
               <h2 className="text-lg font-semibold text-white mb-1">
                 When {competitor} may be the right choice
               </h2>
-              <p className="text-xs text-slate-500 mb-4">We believe honest comparison builds trust. {competitor} is a strong platform for specific use cases.</p>
+              <p className="text-xs text-slate-500 mb-4">
+                We believe honest comparison builds trust. {competitor} is a
+                strong platform for specific use cases.
+              </p>
               <ul className="space-y-2 text-sm text-slate-300">
                 {competitorStrengths.map((item) => (
                   <li key={item} className="flex items-start gap-2">
@@ -324,7 +499,8 @@ export function ComparePageTemplate({
                 Continue your evaluation
               </h2>
               <p className="mt-2 text-sm text-slate-400">
-                Use adjacent trust, pricing, and use-case pages to see how FormaOS behaves outside a single competitor comparison.
+                Use adjacent trust, pricing, and use-case pages to see how
+                FormaOS behaves outside a single competitor comparison.
               </p>
               <div className="mt-5 grid gap-3 md:grid-cols-3">
                 {relatedLinks.map((link) => (
@@ -369,20 +545,28 @@ export function ComparePageTemplate({
               <h2 className="text-lg font-semibold text-white">
                 Evaluation and procurement checks
               </h2>
-              <SectionChoreography pattern="alternating" className="mt-4 grid gap-3 md:grid-cols-3">
+              <SectionChoreography
+                pattern="alternating"
+                className="mt-4 grid gap-3 md:grid-cols-3"
+              >
                 {procurementChecks.map((check) => (
-                    <article key={check.title} className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4">
-                      <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
-                        {check.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                        {check.detail}
-                      </p>
-                    </article>
+                  <article
+                    key={check.title}
+                    className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4"
+                  >
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                      {check.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                      {check.detail}
+                    </p>
+                  </article>
                 ))}
               </SectionChoreography>
               <p className="mt-5 text-xs text-slate-500">
-                These checks reflect public materials and items typically confirmed during procurement review. They are not a promise of competitor feature parity or uncontracted commitments.
+                These checks reflect public materials and items typically
+                confirmed during procurement review. They are not a promise of
+                competitor feature parity or uncontracted commitments.
               </p>
             </div>
           </Reveal>
@@ -450,7 +634,17 @@ export function ComparePageTemplate({
               <p className="mt-6 text-xs text-slate-500">
                 This page is an evaluation aid, not a claim of feature parity.
                 {datePublished && (
-                  <> Last updated <time dateTime={datePublished}>{new Date(datePublished + 'T00:00:00').toLocaleDateString('en-AU', { month: 'long', year: 'numeric' })}</time>.</>
+                  <>
+                    {' '}
+                    Last updated{' '}
+                    <time dateTime={datePublished}>
+                      {new Date(datePublished + 'T00:00:00').toLocaleDateString(
+                        'en-AU',
+                        { month: 'long', year: 'numeric' },
+                      )}
+                    </time>
+                    .
+                  </>
                 )}
               </p>
             </div>

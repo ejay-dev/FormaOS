@@ -1,5 +1,5 @@
 // =============================================================================
-// DEMO TENANT SEED — Reusable fake organisation data mirroring real DB schema
+// DEMO TENANT SEED - Reusable fake organisation data mirroring real DB schema
 // Used by both simulation mode and interactive sandbox mode
 // =============================================================================
 
@@ -156,7 +156,7 @@ export interface DemoTenantSeed {
 }
 
 // =============================================================================
-// SEED DATA — FormaOS Health Services demo tenant
+// SEED DATA - FormaOS Health Services demo tenant
 // =============================================================================
 
 const org: TenantOrg = {
@@ -186,7 +186,7 @@ const controls: TenantControl[] = [
   { id: 'c1', code: 'A.5.1', title: 'Information Security Policy', frameworkId: 'fw1', ownerId: 'u1', status: 'compliant', evidenceCount: 4, lastVerified: '11 Feb 2026', riskLevel: 'low' },
   { id: 'c2', code: 'CC6.1', title: 'Logical Access Controls', frameworkId: 'fw2', ownerId: 'u2', status: 'partial', evidenceCount: 2, lastVerified: '08 Feb 2026', riskLevel: 'medium' },
   { id: 'c3', code: '164.312(a)', title: 'Access Control', frameworkId: 'fw3', ownerId: 'u3', status: 'compliant', evidenceCount: 3, lastVerified: '10 Feb 2026', riskLevel: 'low' },
-  { id: 'c4', code: 'A.12.4', title: 'Logging & Monitoring', frameworkId: 'fw1', ownerId: 'u6', status: 'non-compliant', evidenceCount: 0, lastVerified: '—', riskLevel: 'critical' },
+  { id: 'c4', code: 'A.12.4', title: 'Logging & Monitoring', frameworkId: 'fw1', ownerId: 'u6', status: 'non-compliant', evidenceCount: 0, lastVerified: ' - ', riskLevel: 'critical' },
   { id: 'c5', code: 'CC7.2', title: 'System Monitoring', frameworkId: 'fw2', ownerId: 'u2', status: 'compliant', evidenceCount: 3, lastVerified: '09 Feb 2026', riskLevel: 'low' },
   { id: 'c6', code: '164.308(a)', title: 'Security Management Process', frameworkId: 'fw3', ownerId: 'u1', status: 'compliant', evidenceCount: 5, lastVerified: '07 Feb 2026', riskLevel: 'low' },
   { id: 'c7', code: 'A.8.1', title: 'Asset Management', frameworkId: 'fw1', ownerId: 'u4', status: 'partial', evidenceCount: 1, lastVerified: '05 Feb 2026', riskLevel: 'medium' },
@@ -215,7 +215,7 @@ const evidence: TenantEvidence[] = [
   { id: 'e4', name: 'HIPAA Risk Assessment 2026', description: 'Annual HIPAA risk assessment covering PHI handling, access controls, and breach preparedness.', category: 'Risk Management', uploadedById: 'u6', date: '01 Feb 2026', status: 'pending-review', size: '3.1 MB', controlIds: ['c3', 'c6'], mimeType: 'application/pdf', hash: 'sha256:p6q7r8s9t0' },
   { id: 'e5', name: 'Access Review Audit Log', description: 'Quarterly user access review for all critical systems. 3 access revocations actioned.', category: 'Access Control', uploadedById: 'u1', date: '28 Jan 2026', status: 'approved', size: '456 KB', controlIds: ['c1', 'c2', 'c3'], mimeType: 'text/csv', hash: 'sha256:u1v2w3x4y5' },
   { id: 'e6', name: 'Incident Response Drill Report', description: 'Results from the January tabletop exercise simulating a ransomware incident.', category: 'Security Assessments', uploadedById: 'u6', date: '22 Jan 2026', status: 'approved', size: '1.2 MB', controlIds: ['c4'], mimeType: 'application/pdf', hash: 'sha256:z6a7b8c9d0' },
-  { id: 'e7', name: 'Vendor Security Questionnaire — AWS', description: 'Completed vendor security questionnaire for AWS infrastructure services.', category: 'Vendor Management', uploadedById: 'u2', date: '15 Jan 2026', status: 'pending-review', size: '780 KB', controlIds: ['c5'], mimeType: 'application/pdf', hash: 'sha256:e1f2g3h4i5' },
+  { id: 'e7', name: 'Vendor Security Questionnaire - AWS', description: 'Completed vendor security questionnaire for AWS infrastructure services.', category: 'Vendor Management', uploadedById: 'u2', date: '15 Jan 2026', status: 'pending-review', size: '780 KB', controlIds: ['c5'], mimeType: 'application/pdf', hash: 'sha256:e1f2g3h4i5' },
   { id: 'e8', name: 'Clinical Data Backup Verification', description: 'Monthly backup verification report for clinical data stores. All RPO/RTO targets met.', category: 'Operations', uploadedById: 'u3', date: '12 Jan 2026', status: 'approved', size: '340 KB', controlIds: ['c5', 'c7'], mimeType: 'application/pdf', hash: 'sha256:j6k7l8m9n0' },
 ];
 
@@ -225,7 +225,7 @@ const policies: TenantPolicy[] = [
   { id: 'p3', name: 'Data Retention Policy', ownerId: 'u1', status: 'active', version: '1.5', lastReview: '01 Dec 2025', nextReview: '01 Jun 2026', frameworkId: 'fw2', approvedById: 'u1' },
   { id: 'p4', name: 'Incident Response Policy', ownerId: 'u6', status: 'active', version: '4.0', lastReview: '20 Jan 2026', nextReview: '20 Jul 2026', frameworkId: 'fw1', approvedById: 'u1' },
   { id: 'p5', name: 'Patient Privacy Policy', ownerId: 'u3', status: 'active', version: '2.3', lastReview: '05 Jan 2026', nextReview: '05 Jul 2026', frameworkId: 'fw3', approvedById: 'u1' },
-  { id: 'p6', name: 'Acceptable Use Policy', ownerId: 'u4', status: 'draft', version: '1.0-draft', lastReview: '—', nextReview: '01 Mar 2026', frameworkId: 'fw1', approvedById: null },
+  { id: 'p6', name: 'Acceptable Use Policy', ownerId: 'u4', status: 'draft', version: '1.0-draft', lastReview: ' - ', nextReview: '01 Mar 2026', frameworkId: 'fw1', approvedById: null },
   { id: 'p7', name: 'Vendor Management Policy', ownerId: 'u2', status: 'active', version: '2.1', lastReview: '12 Dec 2025', nextReview: '12 Jun 2026', frameworkId: 'fw2', approvedById: 'u1' },
   { id: 'p8', name: 'Change Management Policy', ownerId: 'u4', status: 'active', version: '3.0', lastReview: '08 Jan 2026', nextReview: '08 Jul 2026', frameworkId: 'fw1', approvedById: 'u1' },
   { id: 'p9', name: 'PHI Handling Procedures', ownerId: 'u3', status: 'in-review', version: '1.9', lastReview: '01 Oct 2025', nextReview: '01 Feb 2026', frameworkId: 'fw3', approvedById: null },
@@ -239,7 +239,7 @@ const auditLog: TenantAuditEntry[] = [
   { id: 'a4', action: 'User invited', userId: 'u1', targetType: 'user', targetId: 'u5', targetName: 'emma.w@formaos-health.com.au', timestamp: '10 Feb 11:20', metadata: { role: 'Quality Assurance' } },
   { id: 'a5', action: 'Evidence approved', userId: 'u1', targetType: 'evidence', targetId: 'e1', targetName: 'SOC 2 Type II Report', timestamp: '09 Feb 14:55', metadata: {} },
   { id: 'a6', action: 'Task assigned', userId: 'u1', targetType: 'task', targetId: 't1', targetName: 'Review Access Control Policy', timestamp: '09 Feb 10:30', metadata: { assignee: 'Sarah Chen' } },
-  { id: 'a7', action: 'Compliance score updated', userId: 'system', targetType: 'framework', targetId: 'fw1', targetName: 'ISO 27001 — 91%', timestamp: '08 Feb 23:00', metadata: { previous: '89%', current: '91%' } },
+  { id: 'a7', action: 'Compliance score updated', userId: 'system', targetType: 'framework', targetId: 'fw1', targetName: 'ISO 27001 - 91%', timestamp: '08 Feb 23:00', metadata: { previous: '89%', current: '91%' } },
   { id: 'a8', action: 'Policy submitted for review', userId: 'u2', targetType: 'policy', targetId: 'p2', targetName: 'Access Control Policy', timestamp: '08 Feb 15:12', metadata: { version: '2.8' } },
   { id: 'a9', action: 'Task overdue', userId: 'system', targetType: 'task', targetId: 't3', targetName: 'Update incident response playbook', timestamp: '08 Feb 09:00', metadata: { daysOverdue: '1' } },
   { id: 'a10', action: 'Evidence uploaded', userId: 'u4', targetType: 'evidence', targetId: 'e3', targetName: 'Staff Training Completion Records', timestamp: '05 Feb 13:28', metadata: { size: '890 KB' } },

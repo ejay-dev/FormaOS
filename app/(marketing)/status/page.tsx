@@ -4,7 +4,7 @@ import StatusPageContent from './StatusPageContent';
 import type { StatusRow } from './StatusPageContent';
 import { siteUrl } from '@/lib/seo';
 
-// Status page fetches live uptime data — use ISR with 60-second revalidation
+// Status page fetches live uptime data - use ISR with 60-second revalidation
 export const revalidate = 60;
 
 export const metadata: Metadata = {
@@ -43,7 +43,7 @@ export default async function StatusPage() {
       limit: 4000,
     })) as StatusRow[];
   } catch {
-    // Graceful degradation — render the page with empty data
+    // Graceful degradation - render the page with empty data
   }
   const last24 = rows.filter((r) => r.checked_at >= since24h);
 

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Product Roadmap | FormaOS',
     description:
-      'Upcoming features and what\'s in progress at FormaOS — transparent product planning for compliance teams.',
+      'Upcoming features and what\'s in progress at FormaOS - transparent product planning for compliance teams.',
     type: 'website',
     url: `${siteUrl}/roadmap`,
   },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Product Roadmap | FormaOS',
     description:
-      'Upcoming features and what\'s in progress at FormaOS — transparent product planning for compliance teams.',
+      'Upcoming features and what\'s in progress at FormaOS - transparent product planning for compliance teams.',
   },
 };
 

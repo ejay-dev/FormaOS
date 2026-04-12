@@ -6,7 +6,7 @@ import { breadcrumbSchema, siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Pricing — FormaOS Compliance Platform | From $159/mo',
+  title: 'Pricing - FormaOS Compliance Platform | From $159/mo',
   description:
     'Transparent compliance platform pricing. Starter $159/mo, Professional $239/mo, Enterprise $399/mo. 14-day free trial, AU-hosted, no credit card required.',
   keywords: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     locale: 'en_AU',
     url: `${siteUrl}/pricing`,
     siteName: 'FormaOS',
-    title: 'Pricing — FormaOS Compliance Platform | From $159/mo',
+    title: 'Pricing - FormaOS Compliance Platform | From $159/mo',
     description:
       'Transparent compliance platform pricing. Starter $159/mo, Professional $239/mo, Enterprise $399/mo. 14-day free trial, AU-hosted.',
     images: [
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pricing — FormaOS Compliance Platform | From $159/mo',
+    title: 'Pricing - FormaOS Compliance Platform | From $159/mo',
     description:
       'Transparent compliance platform pricing. Starter $159/mo, Professional $239/mo, Enterprise $399/mo. 14-day free trial.',
     images: [`${siteUrl}/og-image.png`],

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import WhatIsCosContent from './WhatIsCosContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'What is a Compliance Operating System? | FormaOS',
   description:

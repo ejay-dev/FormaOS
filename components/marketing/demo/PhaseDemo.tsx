@@ -15,7 +15,7 @@ import {
   startDemoSession, getDemoSessionDuration,
 } from './demo-analytics';
 
-// Lazy-load sandbox mode — only loaded after user clicks the toggle
+// Lazy-load sandbox mode - only loaded after user clicks the toggle
 const SandboxScreen = lazy(() => import('./SandboxScreen'));
 
 // ---------------------------------------------------------------------------
@@ -701,7 +701,7 @@ export default function PhaseDemo() {
               <div className="flex items-center justify-between bg-[#060d1a] border-t border-white/[0.06] px-4 py-1.5">
                 <div className="flex items-center gap-1.5">
                   <MousePointer className="h-3 w-3 text-teal-400" />
-                  <span className="text-[9px] text-muted-foreground/60">Click any item to explore — open tasks, evidence, and audit trails</span>
+                  <span className="text-[9px] text-muted-foreground/60">Click any item to explore - open tasks, evidence, and audit trails</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -738,8 +738,8 @@ export default function PhaseDemo() {
         {/* Simulated demo note */}
         <p className="text-center text-[11px] text-muted-foreground/40 mt-3">
           {isSimulation
-            ? 'Simulated demo with sample data — no real systems connected'
-            : 'Interactive sandbox with pre-seeded demo data — fully client-side, no API calls'}
+            ? 'Simulated demo with sample data - no real systems connected'
+            : 'Interactive sandbox with pre-seeded demo data - fully client-side, no API calls'}
         </p>
 
         {/* CTA after first complete loop */}

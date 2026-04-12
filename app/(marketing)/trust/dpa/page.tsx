@@ -13,6 +13,7 @@ import { MarketingPageShell } from '@/app/(marketing)/components/shared/Marketin
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 import { siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Data Processing Agreement',
   description:

@@ -9,7 +9,7 @@ import {
 import { easing, duration } from '@/config/motion';
 
 /**
- * DemoPolicyLifecycle — Animated policy document lifecycle:
+ * DemoPolicyLifecycle - Animated policy document lifecycle:
  * Draft → Review → Approved → Published → Acknowledged
  * Props-driven content for theming per use-case.
  */

@@ -7,9 +7,10 @@ import {
   softwareApplicationSchema,
 } from '@/lib/seo';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS vs 6clicks — Australian Compliance Platform Comparison | FormaOS',
+    'FormaOS vs 6clicks - Australian Compliance Platform Comparison | FormaOS',
   description:
     'FormaOS vs 6clicks: operational compliance execution with industry-specific frameworks vs AI-powered GRC with Hub & Spoke multi-entity governance.',
   alternates: {
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      'FormaOS vs 6clicks — Australian Compliance Platform Comparison | FormaOS',
+      'FormaOS vs 6clicks - Australian Compliance Platform Comparison | FormaOS',
     description:
       'FormaOS vs 6clicks: operational compliance execution with industry-specific frameworks vs AI-powered GRC with Hub & Spoke multi-entity governance.',
     type: 'website',
@@ -44,7 +45,7 @@ const points = [
   {
     title: 'Operational compliance execution, not just risk mapping',
     detail:
-      '6clicks provides AI-powered risk assessments and framework mapping. FormaOS focuses on executing compliance as governed workflows — tying every control to tasks, named owners, and verified evidence so compliance is proven through work, not assessments.',
+      '6clicks provides AI-powered risk assessments and framework mapping. FormaOS focuses on executing compliance as governed workflows - tying every control to tasks, named owners, and verified evidence so compliance is proven through work, not assessments.',
   },
   {
     title: 'Industry-regulated frameworks beyond security',
@@ -54,7 +55,7 @@ const points = [
   {
     title: 'Evidence verification workflows',
     detail:
-      'FormaOS treats evidence as a verified artefact — every item has a named reviewer, approval timestamp, and chain-of-custody trail. This goes beyond evidence collection to create audit-defensible proof of compliance execution.',
+      'FormaOS treats evidence as a verified artefact - every item has a named reviewer, approval timestamp, and chain-of-custody trail. This goes beyond evidence collection to create audit-defensible proof of compliance execution.',
   },
   {
     title: 'Named accountability across every level',
@@ -64,7 +65,7 @@ const points = [
   {
     title: 'Frontline-ready compliance workflows',
     detail:
-      'FormaOS is built for operational managers and frontline staff who execute compliance daily — not just GRC professionals. Guided task workflows replace complex risk interfaces with clear, actionable steps.',
+      'FormaOS is built for operational managers and frontline staff who execute compliance daily - not just GRC professionals. Guided task workflows replace complex risk interfaces with clear, actionable steps.',
   },
   {
     title: 'Single-tenant focus with AU data residency',
@@ -74,9 +75,9 @@ const points = [
 ] as const;
 
 const idealIf = [
-  'You need compliance execution workflows that frontline staff can follow — not just AI-generated risk assessments for the compliance team',
+  'You need compliance execution workflows that frontline staff can follow - not just AI-generated risk assessments for the compliance team',
   'Your organisation operates in NDIS, aged care, healthcare, childcare, or construction and needs sector-specific regulatory frameworks',
-  'Auditors require verified evidence with named approvers and chain-of-custody — not just mapped controls',
+  'Auditors require verified evidence with named approvers and chain-of-custody - not just mapped controls',
   'You want named ownership and escalation tracking at every control and task level',
   'Your compliance program spans regulated industries beyond security frameworks like ISO and SOC 2',
   'You need a platform where operational managers can run compliance without GRC expertise',
@@ -187,7 +188,7 @@ export default function Compare6clicksPage() {
       />
       <ComparePageTemplate
         competitor="6clicks"
-        heroDescription="6clicks is an Australian GRC platform with AI-powered risk assessments and a Hub & Spoke model for multi-entity governance. FormaOS takes a different approach — built to execute compliance as operational workflows with pre-built frameworks for AU-regulated industries, named ownership, and evidence verification chains."
+        heroDescription="6clicks is an Australian GRC platform with AI-powered risk assessments and a Hub & Spoke model for multi-entity governance. FormaOS takes a different approach - built to execute compliance as operational workflows with pre-built frameworks for AU-regulated industries, named ownership, and evidence verification chains."
         points={points}
         idealIf={idealIf}
         procurementChecks={procurementChecks}

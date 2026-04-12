@@ -186,7 +186,7 @@ export default function SecurityWorkflowCard() {
                         <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
                           <CheckCircle className="h-2.5 w-2.5 text-white" />
                         </div>
-                        <span className="text-[10px] text-emerald-400">Integrity verified — chain of custody sealed</span>
+                        <span className="text-[10px] text-emerald-400">Integrity verified - chain of custody sealed</span>
                       </motion.div>
                     )}
                   </div>

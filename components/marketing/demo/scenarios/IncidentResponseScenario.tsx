@@ -90,7 +90,7 @@ function MockTriage() {
           </p>
           <p>
             <strong className="text-amber-300">Impact:</strong> Potential data
-            breach — no evidence of exfiltration yet
+            breach - no evidence of exfiltration yet
           </p>
           <p>
             <strong className="text-amber-300">Notifiable:</strong> Under review
@@ -128,7 +128,7 @@ function MockInvestigation() {
     },
     {
       label: 'Data accessed',
-      value: 'None — all attempts failed',
+      value: 'None - all attempts failed',
       status: 'clear',
     },
   ];
@@ -226,7 +226,7 @@ function MockClosure() {
       <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-xs">
         <div className="flex items-center gap-2 text-emerald-300 font-medium">
           <Shield className="h-3.5 w-3.5" />
-          Incident Closed — No Data Breach
+          Incident Closed - No Data Breach
         </div>
         <p className="mt-1 text-[10px] text-muted-foreground">
           All corrective actions verified. Audit trail sealed.

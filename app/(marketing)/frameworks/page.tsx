@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import FrameworksContent from './FrameworksContent';
-import { breadcrumbSchema,
-  siteUrl} from '@/lib/seo';
+import { breadcrumbSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'ISO, SOC 2, NDIS Framework Coverage - FormaOS',
   description:
@@ -34,7 +34,7 @@ export default function FrameworksPage() {
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Frameworks', path: '/frameworks' },
-            ])
+            ]),
           ),
         }}
       />

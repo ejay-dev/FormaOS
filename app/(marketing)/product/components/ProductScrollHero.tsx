@@ -184,7 +184,7 @@ export function ProductScrollHero() {
           </span>
         </>
       }
-      subheadline="Connect frameworks, controls, tasks, and evidence into one governed workflow — with named owners, immutable audit trails, and buyer-ready assurance."
+      subheadline="Connect frameworks, controls, tasks, and evidence into one governed workflow - with named owners, immutable audit trails, and buyer-ready assurance."
       extras={<ProductHeroExtras />}
       primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
       secondaryCta={{ href: '/contact', label: 'Book Enterprise Demo' }}

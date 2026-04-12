@@ -33,7 +33,7 @@ const TABS = [
 type TabId = (typeof TABS)[number]['id'];
 
 /**
- * ScenarioShowcase — Tabbed container for the three interactive scenario demos.
+ * ScenarioShowcase - Tabbed container for the three interactive scenario demos.
  * Drop into any marketing page to show operational workflows.
  */
 export default function ScenarioShowcase() {
@@ -51,7 +51,7 @@ export default function ScenarioShowcase() {
             Walk through real compliance workflows
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            Step through the exact workflows your team will use — from audit
+            Step through the exact workflows your team will use - from audit
             request to board report, with real data and measurable outcomes.
           </p>
         </div>

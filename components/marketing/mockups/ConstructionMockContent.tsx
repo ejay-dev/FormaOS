@@ -20,7 +20,7 @@ const SITE_COLUMNS = [
 ];
 
 const SITE_ROWS = [
-  { id: 's1', status: 'green' as const, cells: { site: 'CBD Tower — Level 14', contractor: '24/24 Verified', whs: 'Current', incidents: '0', status: 'Green' } },
+  { id: 's1', status: 'green' as const, cells: { site: 'CBD Tower - Level 14', contractor: '24/24 Verified', whs: 'Current', incidents: '0', status: 'Green' } },
   { id: 's2', status: 'amber' as const, cells: { site: 'Westfield Extension', contractor: '18/21 Verified', whs: 'Expiring', incidents: '1', status: 'Amber' } },
   { id: 's3', status: 'red' as const, cells: { site: 'Harbour Bridge Maint.', contractor: '9/15 Verified', whs: 'Overdue', incidents: '2', status: 'Red' } },
 ];

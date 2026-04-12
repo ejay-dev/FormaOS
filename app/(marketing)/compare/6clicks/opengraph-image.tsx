@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'FormaOS vs 6clicks — Compare Compliance Platforms';
+export const alt = 'FormaOS vs 6clicks - Compare Compliance Platforms';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -88,7 +88,7 @@ export default function Image() {
             maxWidth: 700,
           }}
         >
-          Purpose-built compliance execution vs AI-powered GRC — compare
+          Purpose-built compliance execution vs AI-powered GRC - compare
           approaches for Australian regulated industries.
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'FormaOS vs CompliSpace — Compare Compliance Platforms';
+export const alt = 'FormaOS vs CompliSpace - Compare Compliance Platforms';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -88,7 +88,7 @@ export default function Image() {
             maxWidth: 700,
           }}
         >
-          Operational compliance infrastructure vs policy management — see the
+          Operational compliance infrastructure vs policy management - see the
           difference for Australian providers.
         </div>
       </div>

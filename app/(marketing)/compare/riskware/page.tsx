@@ -7,9 +7,10 @@ import {
   softwareApplicationSchema,
 } from '@/lib/seo';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS vs Riskware — Australian Compliance Platform Comparison | FormaOS',
+    'FormaOS vs Riskware - Australian Compliance Platform Comparison | FormaOS',
   description:
     'FormaOS vs Riskware: operational compliance workflows with industry-specific frameworks, named ownership, and evidence chains vs traditional GRC risk management.',
   alternates: {
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      'FormaOS vs Riskware — Australian Compliance Platform Comparison | FormaOS',
+      'FormaOS vs Riskware - Australian Compliance Platform Comparison | FormaOS',
     description:
       'FormaOS vs Riskware: operational compliance workflows with industry-specific frameworks, named ownership, and evidence chains vs traditional GRC risk management.',
     type: 'website',
@@ -43,7 +44,7 @@ const points = [
   {
     title: 'Operational compliance execution, not just risk registers',
     detail:
-      'Riskware excels at risk management and internal audit workflows. FormaOS goes further by tying compliance controls to daily operational tasks, named owners, and evidence verification — turning compliance into executed work rather than documented risk.',
+      'Riskware excels at risk management and internal audit workflows. FormaOS goes further by tying compliance controls to daily operational tasks, named owners, and evidence verification - turning compliance into executed work rather than documented risk.',
   },
   {
     title: 'Industry-specific frameworks built in',
@@ -53,7 +54,7 @@ const points = [
   {
     title: 'Evidence chains with verification workflows',
     detail:
-      'Every piece of evidence in FormaOS has an approval chain, timestamp, and named reviewer. Evidence is verified — not just uploaded. This creates defensible audit trails that regulators can follow from control to proof.',
+      'Every piece of evidence in FormaOS has an approval chain, timestamp, and named reviewer. Evidence is verified - not just uploaded. This creates defensible audit trails that regulators can follow from control to proof.',
   },
   {
     title: 'Named ownership at every control level',
@@ -63,7 +64,7 @@ const points = [
   {
     title: 'Frontline operator workflows',
     detail:
-      'FormaOS is designed for frontline workers and operational managers — not just risk and compliance teams. Guided workflows help staff complete compliance tasks without needing GRC expertise.',
+      'FormaOS is designed for frontline workers and operational managers - not just risk and compliance teams. Guided workflows help staff complete compliance tasks without needing GRC expertise.',
   },
   {
     title: 'AU data residency by default',
@@ -73,10 +74,10 @@ const points = [
 ] as const;
 
 const idealIf = [
-  'You need compliance execution workflows for frontline operators — not just risk registers for the compliance team',
+  'You need compliance execution workflows for frontline operators - not just risk registers for the compliance team',
   'Your organisation operates in NDIS, aged care, healthcare, childcare, or construction and needs pre-built regulatory frameworks',
   'Auditors require defensible evidence with verification chains, named approvers, and complete audit history',
-  'You want named ownership and escalation tracking at every control level — not just assigned risk owners',
+  'You want named ownership and escalation tracking at every control level - not just assigned risk owners',
   'AU data residency is a requirement, not an optional add-on',
   'You need a compliance platform that staff can use without GRC training',
 ] as const;
@@ -145,7 +146,7 @@ const featureComparison = [
 ] as const;
 
 const competitorStrengths = [
-  'Your primary need is enterprise risk management with mature risk registers, heat maps, and quantitative risk analysis — and compliance is secondary to your risk program',
+  'Your primary need is enterprise risk management with mature risk registers, heat maps, and quantitative risk analysis - and compliance is secondary to your risk program',
   'You need deep internal audit management with audit planning, fieldwork tracking, and findings management as the core workflow',
   'You are an established Australian enterprise that values a mature, long-standing GRC vendor with a traditional risk-first approach to governance',
 ] as const;
@@ -186,7 +187,7 @@ export default function CompareRiskwarePage() {
       />
       <ComparePageTemplate
         competitor="Riskware"
-        heroDescription="Riskware is a mature Australian GRC platform with strong risk management and internal audit capabilities. FormaOS takes a different approach — built to run compliance as operational workflows with industry-specific frameworks, named ownership, and evidence verification chains across every regulated sector."
+        heroDescription="Riskware is a mature Australian GRC platform with strong risk management and internal audit capabilities. FormaOS takes a different approach - built to run compliance as operational workflows with industry-specific frameworks, named ownership, and evidence verification chains across every regulated sector."
         points={points}
         idealIf={idealIf}
         procurementChecks={procurementChecks}

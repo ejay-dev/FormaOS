@@ -3,6 +3,7 @@ import PrivacyPageContentSync from './PrivacyPageContentSync';
 
 const PRIVACY_CANONICAL_URL = 'https://www.formaos.com.au/legal/privacy';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Privacy Policy',
   description:

@@ -4,7 +4,7 @@
    ========================================================= */
 
 /* ── Design tokens ─────────────────────────────────────── */
-/* RGB values for rgba() usage — derived from globals.css palette */
+/* RGB values for rgba() usage - derived from globals.css palette */
 :root {
   --mk-rgb-bg: 10, 15, 28; /* --space-800 */
   --mk-rgb-cyan: 13, 148, 136; /* --cyan-600 range */
@@ -13,7 +13,7 @@
   --mk-rgb-blue-alt: 52, 211, 153;
   --mk-rgb-amber: 245, 158, 11;
   --mk-rgb-amber-alt: 251, 191, 36;
-  /* Legacy aliases — some older rules still reference "violet" */
+  /* Legacy aliases - some older rules still reference "violet" */
   --mk-rgb-violet: var(--mk-rgb-amber);
   --mk-rgb-violet-alt: var(--mk-rgb-amber-alt);
   --mk-rgb-emerald: 52, 211, 153;
@@ -40,7 +40,12 @@
       rgba(var(--mk-rgb-violet), 0.1),
       transparent 60%
     ),
-    linear-gradient(180deg, var(--mk-bg-1, #0a0f1c) 0%, var(--mk-bg-2, #0d1421) 55%, var(--mk-bg-1, #0f1320) 100%);
+    linear-gradient(
+      180deg,
+      var(--mk-bg-1, #0a0f1c) 0%,
+      var(--mk-bg-2, #0d1421) 55%,
+      var(--mk-bg-1, #0f1320) 100%
+    );
   background-repeat: no-repeat;
   background-size: 140% 140%;
   color: var(--mk-ink);
@@ -220,7 +225,7 @@
 }
 
 /* ── Glass panels ──────────────────────────────────────── */
-/* Defined in design-system.css — .mk-glass-card / .glass-intense / .mk-shell .glass-panel */
+/* Defined in design-system.css - .mk-glass-card / .glass-intense / .mk-shell .glass-panel */
 /* Legacy aliases kept for backwards compat; design-system.css takes precedence via specificity. */
 
 /* ── Fade-up entrance ──────────────────────────────────── */
@@ -1265,6 +1270,113 @@
   }
 }
 
+/* ── Compare page visual polish ───────────────────────── */
+/* Feature table FormaOS column subtle glow on hover */
+.mk-enterprise-flow table tbody tr:hover td:nth-child(2) {
+  background: rgba(var(--mk-rgb-cyan), 0.06);
+}
+
+/* Differentiator card numbered badge pulse on hover */
+.mk-enterprise-flow article:hover > div > span:first-child {
+  border-color: rgba(var(--mk-rgb-cyan), 0.4);
+  box-shadow: 0 0 12px rgba(var(--mk-rgb-cyan), 0.15);
+}
+
+/* Mid-page CTA strip glow on hover */
+.mk-enterprise-flow .rounded-2xl[class*='from-teal'] {
+  transition: box-shadow 0.3s ease;
+}
+.mk-enterprise-flow .rounded-2xl[class*='from-teal']:hover {
+  box-shadow: 0 0 20px rgba(var(--mk-rgb-cyan), 0.08);
+}
+
+/* ── Enterprise marketing flow upgrades ───────────────── */
+.mk-enterprise-flow {
+  position: relative;
+}
+
+.mk-enterprise-flow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(var(--mk-rgb-cyan), 0.08) 35%,
+      rgba(var(--mk-rgb-blue), 0.08) 65%,
+      transparent 100%
+    ),
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    72px 72px;
+  mask-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.66) 0%,
+    rgba(0, 0, 0, 0.52) 35%,
+    transparent 100%
+  );
+}
+
+.mk-enterprise-flow > .relative {
+  position: relative;
+  z-index: 1;
+}
+
+.mk-enterprise-flow section {
+  opacity: 0;
+  transform: translateY(18px) scale(0.995);
+  animation: mk-section-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--mk-section-index, 0) * 70ms);
+  will-change: transform, opacity;
+}
+
+.mk-enterprise-flow section:nth-of-type(1) {
+  --mk-section-index: 1;
+}
+
+.mk-enterprise-flow section:nth-of-type(2) {
+  --mk-section-index: 2;
+}
+
+.mk-enterprise-flow section:nth-of-type(3) {
+  --mk-section-index: 3;
+}
+
+.mk-enterprise-flow section:nth-of-type(4) {
+  --mk-section-index: 4;
+}
+
+.mk-enterprise-flow section:nth-of-type(5) {
+  --mk-section-index: 5;
+}
+
+.mk-enterprise-flow section:nth-of-type(6) {
+  --mk-section-index: 6;
+}
+
+.mk-enterprise-flow section:nth-of-type(7) {
+  --mk-section-index: 7;
+}
+
+.mk-enterprise-flow section:nth-of-type(8) {
+  --mk-section-index: 8;
+}
+
+@keyframes mk-section-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* ── Reduced motion ────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .mk-shell::before,
@@ -1298,10 +1410,16 @@
     transform: none;
     transition: none;
   }
+
+  .mk-enterprise-flow section {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ── Theme-aware marketing overrides ──────────────────── */
-/* Midnight Blue — cool blue-tinted marketing surfaces */
+/* Midnight Blue - cool blue-tinted marketing surfaces */
 [data-theme='midnight-blue'] {
   --mk-rgb-bg: 15, 23, 48;
   --mk-rgb-cyan: 96, 165, 250;
@@ -1310,7 +1428,7 @@
   --mk-rgb-bg-dark: 10, 17, 38;
 }
 
-/* Graphite — neutral warm-grey marketing surfaces */
+/* Graphite - neutral warm-grey marketing surfaces */
 [data-theme='graphite'] {
   --mk-rgb-bg: 17, 17, 21;
   --mk-rgb-cyan: 148, 163, 184;
@@ -1319,7 +1437,7 @@
   --mk-rgb-bg-dark: 9, 9, 11;
 }
 
-/* Aurora — cyan/violet iridescent marketing surfaces */
+/* Aurora - cyan/violet iridescent marketing surfaces */
 [data-theme='aurora'] {
   --mk-rgb-bg: 8, 15, 28;
   --mk-rgb-cyan: 34, 211, 238;
@@ -1328,7 +1446,7 @@
   --mk-rgb-bg-dark: 3, 7, 18;
 }
 
-/* Light — inverted for light marketing surfaces */
+/* Light - inverted for light marketing surfaces */
 [data-theme='light'] {
   --mk-rgb-bg: 248, 250, 252;
   --mk-rgb-cyan: 14, 116, 144;

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import NdisContent from './NdisContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
     'NDIS Compliance System - Practice Standards & Quality Indicators | FormaOS',

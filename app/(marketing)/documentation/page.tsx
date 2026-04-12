@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import DocsPageContent from './DocsPageContent';
 import { siteUrl } from '@/lib/seo';
 
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Documentation & Knowledge Base | FormaOS',
   description:

@@ -57,7 +57,7 @@ function NQFDashboardVisual() {
           id: 'qa1',
           status: 'green',
           cells: {
-            area: 'QA1 — Educational program',
+            area: 'QA1 - Educational program',
             elements: '3 of 3',
             status: 'Meeting',
             score: '92%',
@@ -65,9 +65,9 @@ function NQFDashboardVisual() {
           expandedContent: {
             label: 'QA1 Detail',
             items: [
-              { key: 'Element 1.1', value: 'Program — Meeting NQS' },
-              { key: 'Element 1.2', value: 'Practice — Meeting NQS' },
-              { key: 'Element 1.3', value: 'Assessment — Meeting NQS' },
+              { key: 'Element 1.1', value: 'Program - Meeting NQS' },
+              { key: 'Element 1.2', value: 'Practice - Meeting NQS' },
+              { key: 'Element 1.3', value: 'Assessment - Meeting NQS' },
               { key: 'Evidence Count', value: '14 documents attached' },
             ],
           },
@@ -76,7 +76,7 @@ function NQFDashboardVisual() {
           id: 'qa2',
           status: 'green',
           cells: {
-            area: "QA2 — Children's health & safety",
+            area: "QA2 - Children's health & safety",
             elements: '3 of 3',
             status: 'Meeting',
             score: '88%',
@@ -84,8 +84,8 @@ function NQFDashboardVisual() {
           expandedContent: {
             label: 'QA2 Detail',
             items: [
-              { key: 'Element 2.1', value: 'Health — Meeting NQS' },
-              { key: 'Element 2.2', value: 'Safety — Meeting NQS' },
+              { key: 'Element 2.1', value: 'Health - Meeting NQS' },
+              { key: 'Element 2.2', value: 'Safety - Meeting NQS' },
               { key: 'Incident Reports', value: '0 open incidents' },
               { key: 'Evidence Count', value: '22 documents attached' },
             ],
@@ -95,7 +95,7 @@ function NQFDashboardVisual() {
           id: 'qa3',
           status: 'green',
           cells: {
-            area: 'QA3 — Physical environment',
+            area: 'QA3 - Physical environment',
             elements: '3 of 3',
             status: 'Meeting',
             score: '95%',
@@ -103,8 +103,8 @@ function NQFDashboardVisual() {
           expandedContent: {
             label: 'QA3 Detail',
             items: [
-              { key: 'Element 3.1', value: 'Design — Meeting NQS' },
-              { key: 'Element 3.2', value: 'Use — Exceeding NQS' },
+              { key: 'Element 3.1', value: 'Design - Meeting NQS' },
+              { key: 'Element 3.2', value: 'Use - Exceeding NQS' },
               { key: 'Last Inspection', value: '12 Feb 2026' },
               { key: 'Evidence Count', value: '8 documents attached' },
             ],
@@ -114,18 +114,18 @@ function NQFDashboardVisual() {
           id: 'qa4',
           status: 'amber',
           cells: {
-            area: 'QA4 — Staffing arrangements',
+            area: 'QA4 - Staffing arrangements',
             elements: '2 of 3',
             status: 'Working Towards',
             score: '78%',
           },
           expandedContent: {
-            label: 'QA4 Detail — NEEDS ATTENTION',
+            label: 'QA4 Detail - NEEDS ATTENTION',
             items: [
-              { key: 'Element 4.1', value: 'Organisation — Meeting NQS' },
+              { key: 'Element 4.1', value: 'Organisation - Meeting NQS' },
               {
                 key: 'Element 4.2',
-                value: 'Professionalism — Working Towards',
+                value: 'Professionalism - Working Towards',
               },
               { key: 'Gap', value: '2 educators with expired first aid' },
               {
@@ -139,7 +139,7 @@ function NQFDashboardVisual() {
           id: 'qa5',
           status: 'green',
           cells: {
-            area: 'QA5 — Relationships with children',
+            area: 'QA5 - Relationships with children',
             elements: '2 of 2',
             status: 'Exceeding',
             score: '100%',
@@ -147,8 +147,8 @@ function NQFDashboardVisual() {
           expandedContent: {
             label: 'QA5 Detail',
             items: [
-              { key: 'Element 5.1', value: 'Relationships — Exceeding NQS' },
-              { key: 'Element 5.2', value: 'Transitions — Exceeding NQS' },
+              { key: 'Element 5.1', value: 'Relationships - Exceeding NQS' },
+              { key: 'Element 5.2', value: 'Transitions - Exceeding NQS' },
               { key: 'Self-Assessment', value: 'Completed Mar 2026' },
               { key: 'Evidence Count', value: '11 documents attached' },
             ],
@@ -158,7 +158,7 @@ function NQFDashboardVisual() {
           id: 'qa6',
           status: 'green',
           cells: {
-            area: 'QA6 — Collaborative partnerships',
+            area: 'QA6 - Collaborative partnerships',
             elements: '3 of 3',
             status: 'Meeting',
             score: '85%',
@@ -166,8 +166,8 @@ function NQFDashboardVisual() {
           expandedContent: {
             label: 'QA6 Detail',
             items: [
-              { key: 'Element 6.1', value: 'Families — Meeting NQS' },
-              { key: 'Element 6.2', value: 'Community — Meeting NQS' },
+              { key: 'Element 6.1', value: 'Families - Meeting NQS' },
+              { key: 'Element 6.2', value: 'Community - Meeting NQS' },
               { key: 'Partnerships', value: '4 active community partnerships' },
               { key: 'Evidence Count', value: '9 documents attached' },
             ],
@@ -177,7 +177,7 @@ function NQFDashboardVisual() {
           id: 'qa7',
           status: 'green',
           cells: {
-            area: 'QA7 — Governance & leadership',
+            area: 'QA7 - Governance & leadership',
             elements: '3 of 3',
             status: 'Meeting',
             score: '90%',
@@ -185,8 +185,8 @@ function NQFDashboardVisual() {
           expandedContent: {
             label: 'QA7 Detail',
             items: [
-              { key: 'Element 7.1', value: 'Governance — Meeting NQS' },
-              { key: 'Element 7.2', value: 'Leadership — Meeting NQS' },
+              { key: 'Element 7.1', value: 'Governance - Meeting NQS' },
+              { key: 'Element 7.2', value: 'Leadership - Meeting NQS' },
               { key: 'QIP Status', value: 'Updated Mar 2026' },
               { key: 'Evidence Count', value: '16 documents attached' },
             ],
@@ -200,7 +200,7 @@ function NQFDashboardVisual() {
           type: 'alert',
         },
         {
-          message: 'QIP updated — all improvement actions on track',
+          message: 'QIP updated - all improvement actions on track',
           time: '2 days ago',
           type: 'success',
         },
@@ -284,7 +284,7 @@ export default function ChildcareComplianceContent() {
             </span>
           </>
         }
-        subheadline="NQF visits arrive with 48 hours notice. FormaOS keeps educator credentials, QIPs, and evidence organised — so you demonstrate quality, not scramble."
+        subheadline="NQF visits arrive with 48 hours notice. FormaOS keeps educator credentials, QIPs, and evidence organised - so you demonstrate quality, not scramble."
         primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
         secondaryCta={{ label: 'See Childcare Demo', href: '/contact' }}
         trustSignals={[
@@ -294,6 +294,12 @@ export default function ChildcareComplianceContent() {
           'ACECQA NQF aligned',
         ]}
         dashboardVisual={<NQFDashboardVisual />}
+        jurisdictionBadges={[
+          { label: 'NQF Quality Standards' },
+          { label: 'ACECQA Assessment' },
+          { label: 'ECEC Sector' },
+        ]}
+        socialProof="Trusted by childcare providers running multi-service operations"
       />
 
       <VisualDivider />
@@ -302,16 +308,16 @@ export default function ChildcareComplianceContent() {
         headline="The Childcare Compliance Gap"
         subheadline="The difference between scrambling and being assessment-ready."
         without={[
-          'NQF assessment arrives — staff scramble to gather evidence across shared drives, filing cabinets, and email threads',
+          'NQF assessment arrives - staff scramble to gather evidence across shared drives, filing cabinets, and email threads',
           'Educator WWC cards and first aid certificates expire without anyone noticing until the assessor checks',
-          'Quality Improvement Plan lives in a dusty Word document — last updated six months ago',
-          'Child safety incidents documented inconsistently — state-specific mandatory reporting requirements missed',
+          'Quality Improvement Plan lives in a dusty Word document - last updated six months ago',
+          'Child safety incidents documented inconsistently - state-specific mandatory reporting requirements missed',
         ]}
         withFormaOS={[
-          'Every piece of evidence is already linked to its quality area element — generate a structured evidence pack with one click',
-          'Automated 90/60/30-day alerts for every credential — RAG dashboard shows the entire team at a glance',
+          'Every piece of evidence is already linked to its quality area element - generate a structured evidence pack with one click',
+          'Automated 90/60/30-day alerts for every credential - RAG dashboard shows the entire team at a glance',
           'Living QIP with tracked improvement actions, linked evidence, named owners, and continuous progress updates',
-          'State-adapted mandatory reporting workflows guide staff step-by-step — every incident tracked to resolution with full audit trail',
+          'State-adapted mandatory reporting workflows guide staff step-by-step - every incident tracked to resolution with full audit trail',
         ]}
       />
 
@@ -388,7 +394,7 @@ export default function ChildcareComplianceContent() {
 
       <FrameworkExplorer
         headline="Every Childcare Framework. Pre-Built."
-        description="FormaOS ships with every major childcare regulatory framework pre-loaded. Your obligations are mapped from day one — no manual setup required."
+        description="FormaOS ships with every major childcare regulatory framework pre-loaded. Your obligations are mapped from day one - no manual setup required."
         frameworks={[
           {
             id: 'acecqa-nqf',
@@ -503,7 +509,7 @@ export default function ChildcareComplianceContent() {
             number: '01',
             title: 'Set up your service and quality areas',
             description:
-              'Select your service type (long day care, family day care, OSHC, preschool). FormaOS loads all 7 NQF quality areas with element-level requirements, self-assessment prompts, and evidence templates — ready to populate.',
+              'Select your service type (long day care, family day care, OSHC, preschool). FormaOS loads all 7 NQF quality areas with element-level requirements, self-assessment prompts, and evidence templates - ready to populate.',
             gradient:
               'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
             visual: (
@@ -538,22 +544,22 @@ export default function ChildcareComplianceContent() {
                 label="Educator Credentials"
                 rows={[
                   {
-                    k: 'Emma Wilson — WWC',
+                    k: 'Emma Wilson - WWC',
                     v: 'Valid to Nov 2027',
                     status: 'green',
                   },
                   {
-                    k: 'Priya Sharma — First Aid',
+                    k: 'Priya Sharma - First Aid',
                     v: 'Expiring May 2026',
                     status: 'amber',
                   },
                   {
-                    k: 'Liam Chen — Diploma ECEC',
+                    k: 'Liam Chen - Diploma ECEC',
                     v: 'Verified',
                     status: 'green',
                   },
                   {
-                    k: 'Sarah Nguyen — Anaphylaxis',
+                    k: 'Sarah Nguyen - Anaphylaxis',
                     v: 'Expired',
                     status: 'red',
                   },
@@ -565,7 +571,7 @@ export default function ChildcareComplianceContent() {
             number: '03',
             title: 'Collect evidence and stay assessment-ready',
             description:
-              'Attach evidence to each quality area element as part of daily operations. When an assessment visit is notified, generate a structured evidence pack per quality area — complete with gap analysis — in one click.',
+              'Attach evidence to each quality area element as part of daily operations. When an assessment visit is notified, generate a structured evidence pack per quality area - complete with gap analysis - in one click.',
             gradient:
               'from-violet-500/20 to-emerald-500/20 border-violet-500/30 text-violet-300',
             visual: (
@@ -595,12 +601,12 @@ export default function ChildcareComplianceContent() {
 
       <IndustryFeatures
         headline="Purpose-Built for Childcare Services"
-        subheadline="Every feature designed around real childcare compliance workflows — not generic task management."
+        subheadline="Every feature designed around real childcare compliance workflows - not generic task management."
         features={[
           {
             title: 'Educator Credentials Table',
             description:
-              "See every educator's credential status at a glance. WWC cards, first aid certificates, qualifications, and anaphylaxis training — all tracked with RAG status and expiry countdown alerts.",
+              "See every educator's credential status at a glance. WWC cards, first aid certificates, qualifications, and anaphylaxis training - all tracked with RAG status and expiry countdown alerts.",
             details: [
               'Working with Children check status per educator',
               'First aid and CPR certificate expiry tracking',
@@ -612,22 +618,22 @@ export default function ChildcareComplianceContent() {
                 label="Educator Credential Status"
                 rows={[
                   {
-                    k: 'Emma Wilson — WWC Check',
+                    k: 'Emma Wilson - WWC Check',
                     v: 'Valid to Nov 2027',
                     status: 'green',
                   },
                   {
-                    k: 'Priya Sharma — First Aid',
+                    k: 'Priya Sharma - First Aid',
                     v: 'Expiring May 2026',
                     status: 'amber',
                   },
                   {
-                    k: 'Liam Chen — Diploma ECEC',
+                    k: 'Liam Chen - Diploma ECEC',
                     v: 'Verified',
                     status: 'green',
                   },
                   {
-                    k: 'Sarah Nguyen — Anaphylaxis',
+                    k: 'Sarah Nguyen - Anaphylaxis',
                     v: 'Expired Mar 2026',
                     status: 'red',
                   },
@@ -651,22 +657,22 @@ export default function ChildcareComplianceContent() {
                 rows={[
                   {
                     k: 'QA1: Educational program',
-                    v: '92% — Meeting',
+                    v: '92% - Meeting',
                     status: 'green',
                   },
                   {
                     k: 'QA2: Health and safety',
-                    v: '88% — Meeting',
+                    v: '88% - Meeting',
                     status: 'green',
                   },
                   {
                     k: 'QA4: Staffing arrangements',
-                    v: '78% — Review',
+                    v: '78% - Review',
                     status: 'amber',
                   },
                   {
                     k: 'QA5: Relationships',
-                    v: '100% — Exceeding',
+                    v: '100% - Exceeding',
                     status: 'green',
                   },
                 ]}
@@ -685,7 +691,7 @@ export default function ChildcareComplianceContent() {
             ],
             visual: (
               <FeatureVisual
-                label="QIP — Active Improvements"
+                label="QIP - Active Improvements"
                 rows={[
                   {
                     k: 'QA1: Update curriculum documentation',
@@ -761,7 +767,7 @@ export default function ChildcareComplianceContent() {
           {
             title: 'Assessment Visit Readiness',
             description:
-              'One-click evidence pack export organised by quality area. When the assessor arrives, your evidence is ready — structured, complete, and linked to each NQS element.',
+              'One-click evidence pack export organised by quality area. When the assessor arrives, your evidence is ready - structured, complete, and linked to each NQS element.',
             details: [
               'One-click export organised by quality area',
               'Evidence completeness scoring before export',
@@ -813,32 +819,32 @@ export default function ChildcareComplianceContent() {
                 title="NQF Quality Area Compliance"
                 rows={[
                   {
-                    label: 'QA1 — Educational program and practice',
+                    label: 'QA1 - Educational program and practice',
                     value: '92%',
                     status: 'green',
                   },
                   {
-                    label: "QA2 — Children's health and safety",
+                    label: "QA2 - Children's health and safety",
                     value: '88%',
                     status: 'green',
                   },
                   {
-                    label: 'QA3 — Physical environment',
+                    label: 'QA3 - Physical environment',
                     value: '95%',
                     status: 'green',
                   },
                   {
-                    label: 'QA4 — Staffing arrangements',
+                    label: 'QA4 - Staffing arrangements',
                     value: '78%',
                     status: 'amber',
                   },
                   {
-                    label: 'QA5 — Relationships with children',
+                    label: 'QA5 - Relationships with children',
                     value: '100%',
                     status: 'green',
                   },
                   {
-                    label: 'QA6 — Collaborative partnerships',
+                    label: 'QA6 - Collaborative partnerships',
                     value: '85%',
                     status: 'green',
                   },
@@ -854,18 +860,18 @@ export default function ChildcareComplianceContent() {
               <DemoAuditExport
                 sections={[
                   {
-                    name: 'QA1 — Educational program',
+                    name: 'QA1 - Educational program',
                     score: '98%',
                     items: 14,
                   },
-                  { name: 'QA2 — Health and safety', score: '94%', items: 22 },
+                  { name: 'QA2 - Health and safety', score: '94%', items: 22 },
                   {
-                    name: 'QA3 — Physical environment',
+                    name: 'QA3 - Physical environment',
                     score: '96%',
                     items: 8,
                   },
                   {
-                    name: 'QA4 — Staffing arrangements',
+                    name: 'QA4 - Staffing arrangements',
                     score: '82%',
                     items: 18,
                   },
@@ -887,17 +893,17 @@ export default function ChildcareComplianceContent() {
                 steps={[
                   {
                     time: 'Today',
-                    label: 'Sarah Nguyen — Anaphylaxis training expired',
+                    label: 'Sarah Nguyen - Anaphylaxis training expired',
                     status: 'complete',
                   },
                   {
                     time: '7 days',
-                    label: 'Priya Sharma — First Aid expiring 15 May',
+                    label: 'Priya Sharma - First Aid expiring 15 May',
                     status: 'active',
                   },
                   {
                     time: '30 days',
-                    label: 'QA4 review — staffing ratio documentation due',
+                    label: 'QA4 review - staffing ratio documentation due',
                     status: 'pending',
                   },
                   {
@@ -907,12 +913,12 @@ export default function ChildcareComplianceContent() {
                   },
                   {
                     time: '90 days',
-                    label: 'Liam Chen — WWC renewal window opens',
+                    label: 'Liam Chen - WWC renewal window opens',
                     status: 'pending',
                   },
                   {
                     time: 'Ongoing',
-                    label: 'Self-assessment cycle — next QA due for reflection',
+                    label: 'Self-assessment cycle - next QA due for reflection',
                     status: 'pending',
                   },
                 ]}
@@ -928,8 +934,8 @@ export default function ChildcareComplianceContent() {
       <SocialProof
         metricsBanner={[
           '206+ tables with row-level security',
-          'AU-hosted by default — data never leaves Australia',
-          'Zero evidence gaps at assessment — continuous capture',
+          'AU-hosted by default - data never leaves Australia',
+          'Zero evidence gaps at assessment - continuous capture',
           'SOC 2 compliance in progress',
         ]}
         trustCards={[
@@ -990,24 +996,24 @@ export default function ChildcareComplianceContent() {
             question:
               'Can FormaOS help build and maintain our Quality Improvement Plan?',
             answer:
-              'Yes. The QIP Builder provides a structured template aligned to NQF quality areas. You create improvement actions linked to specific quality areas, assign owners and due dates, attach evidence of progress, and track completion — keeping your QIP current and assessment-ready at all times.',
+              'Yes. The QIP Builder provides a structured template aligned to NQF quality areas. You create improvement actions linked to specific quality areas, assign owners and due dates, attach evidence of progress, and track completion - keeping your QIP current and assessment-ready at all times.',
           },
           {
             question: 'How does FormaOS handle mandatory reporting by state?',
             answer:
-              'FormaOS provides state-specific mandatory reporting workflows that guide staff through the correct reporting process for their jurisdiction. Each incident is tracked through its lifecycle — from initial report to authority notification to investigation to resolution — with ACECQA notification timelines built in.',
+              'FormaOS provides state-specific mandatory reporting workflows that guide staff through the correct reporting process for their jurisdiction. Each incident is tracked through its lifecycle - from initial report to authority notification to investigation to resolution - with ACECQA notification timelines built in.',
           },
           {
             question:
               'Can FormaOS help us prepare for assessment and rating visits?',
             answer:
-              'FormaOS maintains continuous assessment readiness. Evidence is collected and organised by quality area as part of daily operations. When an assessment visit is notified, you can generate a structured evidence pack per quality area with one click — including gap analysis showing any missing evidence per element.',
+              'FormaOS maintains continuous assessment readiness. Evidence is collected and organised by quality area as part of daily operations. When an assessment visit is notified, you can generate a structured evidence pack per quality area with one click - including gap analysis showing any missing evidence per element.',
           },
           {
             question:
               'Does FormaOS track Working with Children checks for volunteers?',
             answer:
-              'Yes. FormaOS tracks WWC checks for all personnel including educators, volunteers, students on placement, and visiting professionals. Each jurisdiction has different screening requirements — FormaOS maps these automatically and alerts you to expiring or missing checks.',
+              'Yes. FormaOS tracks WWC checks for all personnel including educators, volunteers, students on placement, and visiting professionals. Each jurisdiction has different screening requirements - FormaOS maps these automatically and alerts you to expiring or missing checks.',
           },
           {
             question: 'Is our data stored in Australia?',
@@ -1017,7 +1023,7 @@ export default function ChildcareComplianceContent() {
           {
             question: 'How long does it take to get set up?',
             answer:
-              'Most services are assessment-ready within a day. Select your service type and FormaOS loads all 7 quality areas with element-level requirements. Add your educators, link their credentials, and start attaching evidence. No multi-week implementation — your compliance programme is live on day one.',
+              'Most services are assessment-ready within a day. Select your service type and FormaOS loads all 7 quality areas with element-level requirements. Add your educators, link their credentials, and start attaching evidence. No multi-week implementation - your compliance programme is live on day one.',
           },
         ]}
       />

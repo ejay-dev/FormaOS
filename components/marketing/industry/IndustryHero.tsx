@@ -2,9 +2,14 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Shield, CheckCircle } from 'lucide-react';
+import { ArrowRight, Shield, CheckCircle, Globe } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { AnimatedHeroBg } from './AnimatedHeroBg';
+
+export interface JurisdictionBadge {
+  label: string;
+  icon?: ReactNode;
+}
 
 export interface IndustryHeroProps {
   eyebrow: string;
@@ -18,6 +23,10 @@ export interface IndustryHeroProps {
   accent?: string;
   /** Optional stats bar ReactNode rendered below trust signals. */
   statsBar?: ReactNode;
+  /** Optional jurisdiction/regulatory badges rendered below trust signals. */
+  jurisdictionBadges?: JurisdictionBadge[];
+  /** Optional social proof counter text (e.g. "Trusted by 200+ regulated organisations"). */
+  socialProof?: string;
 }
 
 export function IndustryHero({
@@ -30,6 +39,8 @@ export function IndustryHero({
   dashboardVisual,
   accent,
   statsBar,
+  jurisdictionBadges,
+  socialProof,
 }: IndustryHeroProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -133,6 +144,36 @@ export function IndustryHero({
 
             {/* Stats bar */}
             {statsBar}
+
+            {/* Jurisdiction badges */}
+            {jurisdictionBadges && jurisdictionBadges.length > 0 && (
+              <motion.div
+                {...fadeUp(0.5)}
+                className="mt-6 flex flex-wrap items-center gap-2"
+              >
+                {jurisdictionBadges.map((badge) => (
+                  <span
+                    key={badge.label}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-slate-300"
+                  >
+                    {badge.icon ?? (
+                      <Globe className="h-3 w-3 text-cyan-400/70" />
+                    )}
+                    {badge.label}
+                  </span>
+                ))}
+              </motion.div>
+            )}
+
+            {/* Social proof */}
+            {socialProof && (
+              <motion.p
+                {...fadeUp(0.55)}
+                className="mt-5 text-[13px] font-medium text-slate-500"
+              >
+                {socialProof}
+              </motion.p>
+            )}
           </div>
 
           {/* Dashboard visual column */}

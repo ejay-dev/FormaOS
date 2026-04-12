@@ -408,6 +408,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.4,
     },
+    {
+      url: `${siteUrl}/terms`,
+      lastModified: new Date('2025-06-01'),
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
   ];
 
   const blogEntries: MetadataRoute.Sitemap = blogPosts.map((post) => ({

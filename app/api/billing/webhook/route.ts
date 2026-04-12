@@ -425,9 +425,15 @@ export async function POST(request: Request) {
         let failedErr: { message: string } | null = null;
         const { error: fullFailedErr } = await admin
           .from('org_subscriptions')
-          .update({ ...failedPayload, payment_failed_at: new Date().toISOString() })
+          .update({
+            ...failedPayload,
+            payment_failed_at: new Date().toISOString(),
+          })
           .match(matchCol);
-        if (fullFailedErr && fullFailedErr.message.includes('payment_failed_at')) {
+        if (
+          fullFailedErr &&
+          fullFailedErr.message.includes('payment_failed_at')
+        ) {
           const { error: fallbackErr } = await admin
             .from('org_subscriptions')
             .update(failedPayload)

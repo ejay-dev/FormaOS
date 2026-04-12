@@ -163,7 +163,7 @@ export function InteractiveDashboard({
   });
 
   const handleExport = useCallback(() => {
-    // Visual feedback only — this is a marketing demo
+    // Visual feedback only - this is a marketing demo
   }, []);
 
   const anim = (delay = 0) =>

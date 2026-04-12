@@ -112,7 +112,7 @@ export function FullControlMapSection() {
           </h2>
 
           <p className="mx-auto mb-10 max-w-3xl text-base leading-relaxed text-gray-400 sm:text-lg lg:text-xl">
-            70+ controls across 7 enterprise frameworks — all interconnected,
+            70+ controls across 7 enterprise frameworks - all interconnected,
             all continuously monitored, all audit-ready. Hover any node to trace
             its cross-framework compliance chain.
           </p>

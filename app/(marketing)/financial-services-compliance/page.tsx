@@ -41,7 +41,7 @@ export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title:
-    'Financial Services Compliance Software — ASIC, APRA & AUSTRAC | FormaOS',
+    'Financial Services Compliance Software - ASIC, APRA & AUSTRAC | FormaOS',
   description:
     'Map AFS licence obligations, manage breach registers, track AUSTRAC AML/CTF requirements, and generate board reporting packs. Built for Australian financial services compliance.',
   keywords: [
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteUrl}/financial-services-compliance` },
   openGraph: {
     title:
-      'Financial Services Compliance Software — ASIC, APRA & AUSTRAC | FormaOS',
+      'Financial Services Compliance Software - ASIC, APRA & AUSTRAC | FormaOS',
     description:
       'Map AFS licence obligations, manage breach registers, track AUSTRAC AML/CTF, and generate board reporting packs for Australian financial services.',
     url: `${siteUrl}/financial-services-compliance`,
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'Financial Services Compliance Software — ASIC, APRA & AUSTRAC | FormaOS',
+      'Financial Services Compliance Software - ASIC, APRA & AUSTRAC | FormaOS',
     description:
       'Map AFS licence obligations, manage breach registers, track AUSTRAC AML/CTF for Australian financial services.',
     images: [`${siteUrl}/og-image.png`],

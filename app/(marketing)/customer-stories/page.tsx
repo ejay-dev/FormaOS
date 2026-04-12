@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import CustomerStoriesContent from './CustomerStoriesContent';
 import { siteUrl } from '@/lib/seo';
+export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Customer Stories - Compliance Operations in Practice | FormaOS',
   description:

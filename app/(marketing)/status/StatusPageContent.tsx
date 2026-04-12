@@ -476,7 +476,7 @@ function RecentChecksTable({ rows }: { rows: StatusRow[] }) {
                           {row.latency_ms}ms
                         </span>
                       ) : (
-                        <span className="text-slate-600">—</span>
+                        <span className="text-slate-600"> - </span>
                       )}
                     </div>
                     <div className="col-span-2 text-right">
@@ -766,7 +766,7 @@ function IncidentResponseSection() {
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Our incident response commitments — transparent, fast, and
+              Our incident response commitments - transparent, fast, and
               focused on getting you back to normal operations.
             </p>
           </ScrollReveal>
@@ -1104,7 +1104,7 @@ function StatusHero({ data }: { data: StatusData }) {
                   <span className="text-cyan-400 text-sm">ms</span>
                 </>
               ) : (
-                <span className="text-slate-500">—</span>
+                <span className="text-slate-500"> - </span>
               )}
             </div>
             <div className="text-[10px] text-slate-500 uppercase tracking-wider">
@@ -1171,7 +1171,7 @@ export default function StatusPageContent({
                   value={
                     data.latencyAvgMs !== null
                       ? `${data.latencyAvgMs}`
-                      : '—'
+                      : ' - '
                   }
                   suffix={data.latencyAvgMs !== null ? 'ms' : ''}
                   label="Avg Latency"

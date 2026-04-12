@@ -18,7 +18,7 @@ const ndisFaqSchema = faqSchema([
   {
     question: 'Can FormaOS help with unannounced audits?',
     answer:
-      'FormaOS maintains continuous evidence chains so your compliance posture is audit-ready at all times — not just before scheduled visits. When the NDIS Commission arrives unannounced, your evidence pack is one click away.',
+      'FormaOS maintains continuous evidence chains so your compliance posture is audit-ready at all times - not just before scheduled visits. When the NDIS Commission arrives unannounced, your evidence pack is one click away.',
   },
   {
     question: 'Does FormaOS handle SIRS notifications?',
@@ -28,7 +28,7 @@ const ndisFaqSchema = faqSchema([
   {
     question: 'How does FormaOS handle state-specific worker screening?',
     answer:
-      'FormaOS tracks NDIS Worker Screening Check requirements by state and territory. Each jurisdiction has different screening units and processes — FormaOS maps these automatically and alerts you to expiring clearances.',
+      'FormaOS tracks NDIS Worker Screening Check requirements by state and territory. Each jurisdiction has different screening units and processes - FormaOS maps these automatically and alerts you to expiring clearances.',
   },
   {
     question: 'Is my data stored in Australia?',
@@ -41,7 +41,7 @@ export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title:
-    'NDIS Compliance Software — Practice Standards & Audit Ready | FormaOS',
+    'NDIS Compliance Software - Practice Standards & Audit Ready | FormaOS',
   description:
     'Operationalise all 8 NDIS Practice Standards modules. Worker screening tracking, SIRS notifications, audit-ready evidence. Trusted by Australian NDIS registered providers.',
   keywords: [
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteUrl}/ndis-providers` },
   openGraph: {
     title:
-      'NDIS Compliance Software — Practice Standards & Audit Ready | FormaOS',
+      'NDIS Compliance Software - Practice Standards & Audit Ready | FormaOS',
     description:
       'Operationalise all 8 NDIS Practice Standards modules. Worker screening tracking, SIRS notifications, and audit-ready evidence packs for registered providers.',
     url: `${siteUrl}/ndis-providers`,
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'NDIS Compliance Software — Practice Standards & Audit Ready | FormaOS',
+      'NDIS Compliance Software - Practice Standards & Audit Ready | FormaOS',
     description:
       'Operationalise all 8 NDIS Practice Standards modules. Worker screening, SIRS notifications, audit-ready evidence.',
     images: [`${siteUrl}/og-image.png`],
