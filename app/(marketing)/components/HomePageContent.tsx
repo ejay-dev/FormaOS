@@ -337,7 +337,7 @@ export function HomePageContent() {
             </p>
             <Link
               href="/product"
-              className="btn btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 inline-flex items-center gap-2"
+              className="mk-btn mk-btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 inline-flex items-center gap-2"
             >
               Explore Platform Architecture
               <ArrowRight className="h-4 w-4" />
@@ -407,7 +407,7 @@ export function HomePageContent() {
           >
             <Link
               href="/product"
-              className="btn btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 shadow-premium-lg"
+              className="mk-btn mk-btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5 shadow-premium-lg"
             >
               Explore Platform Architecture
             </Link>
@@ -531,7 +531,7 @@ export function HomePageContent() {
           >
             <Link
               href="/product"
-              className="btn btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5"
+              className="mk-btn mk-btn-primary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5"
             >
               View All Features
             </Link>
@@ -606,7 +606,7 @@ export function HomePageContent() {
 
           <div className="mt-8 p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
             <p className="text-sm text-primary">
-              <strong>Enterprise compliance from $159/mo</strong>  - 
+              <strong>Enterprise compliance from $159/mo</strong> -
               purpose-built for Australian regulated industries, without the
               enterprise price tag.{' '}
               <Link href="/compare" className="underline hover:text-foreground">
@@ -674,7 +674,7 @@ export function HomePageContent() {
           >
             <Link
               href="/industries"
-              className="btn btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5"
+              className="mk-btn mk-btn-secondary text-sm sm:text-lg px-6 sm:px-10 py-3 sm:py-5"
             >
               Explore All Industries
             </Link>

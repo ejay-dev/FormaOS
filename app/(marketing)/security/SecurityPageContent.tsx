@@ -52,7 +52,8 @@ function SecurityReviewBanner() {
                 Security review packet ready for your procurement team
               </h3>
               <p className="mt-1.5 text-sm text-slate-400 leading-relaxed max-w-xl">
-                Architecture overview, encryption protocols, identity governance, data residency details, and DPA - bundled and ready.
+                Architecture overview, encryption protocols, identity
+                governance, data residency details, and DPA - bundled and ready.
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
                 <span className="inline-flex items-center gap-1.5">

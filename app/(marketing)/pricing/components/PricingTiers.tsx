@@ -214,7 +214,7 @@ export function PricingTiers() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <section className="relative overflow-hidden py-18 sm:py-24 lg:py-32">
+    <section className="relative overflow-hidden py-20 sm:py-24 lg:py-32">
       {/* Background */}
       <div className="absolute inset-0 bg-[#0a0f1c]">
         <motion.div
