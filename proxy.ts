@@ -298,6 +298,7 @@ export async function proxy(request: NextRequest) {
       '/api/sso/', // SSO callbacks
       '/api/trust-packet/', // Public vendor trust packet (rate-limited separately)
       '/api/webhooks/', // Stripe/Trigger.dev webhooks (HMAC-secured)
+      '/api/billing/webhook', // Stripe billing webhook (signature-verified)
     ];
 
     if (pathname.startsWith('/api/')) {

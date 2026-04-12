@@ -356,23 +356,36 @@ export async function POST(request: Request) {
 
         const { data: existingRow } = await admin
           .from('org_subscriptions')
-          .select('organization_id, status, payment_failed_at')
+          .select('organization_id, status')
           .match(matchCol)
           .maybeSingle();
 
-        const wasPastDue =
-          existingRow?.status === 'past_due' || existingRow?.payment_failed_at;
+        const wasPastDue = existingRow?.status === 'past_due';
 
-        const { error: paidErr } = await admin
+        // Core update fields (always present in schema)
+        const updatePayload: Record<string, unknown> = {
+          status: 'active',
+          trial_started_at: null,
+          trial_expires_at: null,
+          updated_at: new Date().toISOString(),
+        };
+
+        // Try with payment_failed_at first, fall back without it
+        let paidErr: { message: string } | null = null;
+        const { error: fullErr } = await admin
           .from('org_subscriptions')
-          .update({
-            status: 'active',
-            trial_started_at: null,
-            trial_expires_at: null,
-            payment_failed_at: null,
-            updated_at: new Date().toISOString(),
-          })
+          .update({ ...updatePayload, payment_failed_at: null })
           .match(matchCol);
+        if (fullErr && fullErr.message.includes('payment_failed_at')) {
+          // Column doesn't exist yet — update without it
+          const { error: fallbackErr } = await admin
+            .from('org_subscriptions')
+            .update(updatePayload)
+            .match(matchCol);
+          paidErr = fallbackErr;
+        } else {
+          paidErr = fullErr;
+        }
         if (paidErr) {
           log.error(
             { err: paidErr.message },
@@ -402,14 +415,27 @@ export async function POST(request: Request) {
           ? { stripe_subscription_id: subscriptionId }
           : { stripe_customer_id: customerId };
 
-        const { error: failedErr } = await admin
+        // Core update fields
+        const failedPayload: Record<string, unknown> = {
+          status: 'past_due',
+          updated_at: new Date().toISOString(),
+        };
+
+        // Try with payment_failed_at first, fall back without it
+        let failedErr: { message: string } | null = null;
+        const { error: fullFailedErr } = await admin
           .from('org_subscriptions')
-          .update({
-            status: 'past_due',
-            payment_failed_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
+          .update({ ...failedPayload, payment_failed_at: new Date().toISOString() })
           .match(matchCol);
+        if (fullFailedErr && fullFailedErr.message.includes('payment_failed_at')) {
+          const { error: fallbackErr } = await admin
+            .from('org_subscriptions')
+            .update(failedPayload)
+            .match(matchCol);
+          failedErr = fallbackErr;
+        } else {
+          failedErr = fullFailedErr;
+        }
         if (failedErr) {
           log.error(
             { err: failedErr.message },
