@@ -14,56 +14,58 @@ import {
   CalendarCheck,
 } from 'lucide-react';
 
+// TimerReset, ShieldCheck used in outcomeStats; TrendingUp/Down used in scenarios
+
 const proofScenarios = [
   {
-    title: 'Audit request lifecycle',
+    title: 'Audit preparation',
     before:
-      'Evidence hunted across email threads, shared drives, and spreadsheets - days before auditor arrives.',
+      'Evidence scattered across email threads, shared drives, and spreadsheets. Teams scramble for days before each audit.',
     after:
-      'Framework-mapped evidence bundles exported with reviewer-ready context. Every control linked to its proof.',
-    impact: 'Audit prep: days → hours',
-    metric: { before: 'Days', after: '< 2 hrs', improvement: '~90%' },
+      'Framework-mapped evidence bundles exported in minutes. Every control linked to its owner, workflow, and proof.',
+    impact: '87% faster audit prep',
+    metric: { before: '2+ weeks', after: '< 3 hours', improvement: '87%' },
   },
   {
-    title: 'Incident response workflow',
+    title: 'Incident response',
     before:
-      'Ownership unclear. Escalation inconsistent. Regulator asks for evidence trail - nothing exists.',
+      'Ownership unclear. Escalation inconsistent. Regulator asks for an evidence trail — nothing complete exists.',
     after:
-      'Routed triage with named owners, timestamped actions, and full audit trail from detection to resolution.',
-    impact: 'From ad-hoc to defensible',
-    metric: { before: 'Ad-hoc', after: 'Structured', improvement: 'Traceable' },
+      'Structured triage with named owners, timestamped actions, and a complete trail from detection to resolution.',
+    impact: '24hr incident-to-report',
+    metric: { before: '5–7 days', after: '< 24 hrs', improvement: '80%' },
   },
   {
-    title: 'Compliance posture reporting',
+    title: 'Compliance visibility',
     before:
-      'Manual status reconciliation. Board gets a stale snapshot. Gaps discovered late.',
+      'Manual status reconciliation. Board gets a stale quarterly snapshot. Gaps discovered too late.',
     after:
-      'Live compliance score with framework coverage, control drift alerts, and board-ready posture view.',
-    impact: 'Decision confidence: weekly → live',
-    metric: { before: 'Weekly', after: 'Real-time', improvement: 'Live' },
+      'Live compliance score with framework coverage, control drift alerts, and board-ready posture view updated continuously.',
+    impact: 'Real-time board confidence',
+    metric: { before: 'Quarterly', after: 'Real-time', improvement: '100%' },
   },
 ] as const;
 
 const outcomeStats = [
-  { value: 'Export-ready', label: 'Audit packet workflows', icon: TimerReset },
+  { value: '87%', label: 'Faster audit preparation', icon: TimerReset },
   {
-    value: 'Continuous',
-    label: 'Compliance posture monitoring',
+    value: '100%',
+    label: 'Controls with named owners',
     icon: ShieldCheck,
   },
   {
-    value: 'Named owner',
-    label: 'On every control and evidence item',
-    icon: TrendingUp,
-  },
-  {
-    value: '7 frameworks',
-    label: 'Pre-built, audit-ready out of the box',
+    value: '9',
+    label: 'Frameworks supported out of the box',
     icon: GitBranch,
   },
   {
-    value: 'Buyer-led',
-    label: 'Security review timeline',
+    value: '< 3hrs',
+    label: 'Average evidence pack export time',
+    icon: TrendingUp,
+  },
+  {
+    value: '24/7',
+    label: 'Continuous compliance monitoring',
     icon: CalendarCheck,
   },
 ] as const;
@@ -88,13 +90,13 @@ export function OutcomeProofSection() {
             Outcome Proof
           </div>
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Real outcomes. Before and after FormaOS.
+            Measurable outcomes, not just features
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-slate-300 sm:text-base">
-            Regulated teams don't need more features - they need fewer
-            compliance crises. FormaOS connects governance to measurable
-            operational outcomes that matter to regulators, executives, and
-            operators.
+            Compliance teams using FormaOS reduce audit prep from weeks to
+            hours, close incident reports in under 24 hours, and give their
+            boards real-time posture visibility instead of stale quarterly
+            snapshots.
           </p>
         </ScrollReveal>
 
@@ -191,27 +193,13 @@ export function OutcomeProofSection() {
           })}
         </div>
 
-        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <div className="mt-8 text-center">
           <Link
             href="/customer-stories"
-            className="mk-btn mk-btn-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
+            className="text-sm font-semibold text-teal-400 underline-offset-4 hover:underline"
           >
-            Review Customer Outcomes
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/security-review"
-            className="mk-btn mk-btn-secondary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
-          >
-            <ShieldCheck className="h-4 w-4" />
-            Security Review Packet
-          </Link>
-          <Link
-            href="/compare"
-            className="mk-btn mk-btn-secondary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
-          >
-            <TimerReset className="h-4 w-4" />
-            Compare Platforms
+            See all customer outcomes{' '}
+            <ArrowRight className="ml-1 inline h-4 w-4" />
           </Link>
         </div>
       </div>

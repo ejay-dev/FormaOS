@@ -341,6 +341,9 @@ export function PricingTiers() {
                     {tier.period && (
                       <span className="text-lg text-gray-500 ml-2">
                         {tier.period}
+                        <span className="block text-xs text-gray-600 mt-0.5">
+                          per organization
+                        </span>
                       </span>
                     )}
                   </div>

@@ -1,107 +1,216 @@
 'use client';
 
+import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { DecisionTreePattern } from '@/components/marketing/SectionBackgrounds';
-import { CircleCheckBig, FileCheck2, HelpCircle, ShieldAlert, Quote, Globe, Lock, ArrowUpRight } from 'lucide-react';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import {
+  ArrowRight,
+  BadgeCheck,
+  Building2,
+  FileCheck2,
+  Globe,
+  Lock,
+  Quote,
+  ShieldAlert,
+  ShieldCheck,
+} from 'lucide-react';
+
+/* ── Top buyer objections with concise answers ── */
 
 const objectionCards = [
   {
-    objection: '"How do we complete security review before procurement sign-off?"',
+    objection: '"How do we complete security review before sign-off?"',
     response:
-      'FormaOS provides a security review packet with architecture overview, assurance context, vendor questionnaire material, and DPA support so buyer teams can start from current documentation.',
+      'FormaOS ships a security review packet with architecture overview, DPA, and vendor questionnaire material so your security team can start immediately.',
     icon: ShieldAlert,
     proof: 'Security packet included',
   },
   {
-    objection: '"Where is our data stored, and do we control residency?"',
+    objection: '"Where is our data stored?"',
     response:
-      'AU-based hosting is the default posture. Additional residency requirements are reviewed during procurement, and a Data Processing Agreement is available for privacy and legal review.',
+      'AU-hosted by default. Additional residency requirements are reviewed during procurement with a Data Processing Agreement available for legal review.',
     icon: Globe,
     proof: 'Data sovereignty controls',
   },
   {
-    objection: '"How do we know evidence is regulator-defensible?"',
-    response:
-      'Every evidence item is linked to its creator, workflow step, approver, control, and framework. Immutable audit logs preserve chain of custody - auditors can trace any action back to its origin.',
-    icon: FileCheck2,
-    proof: 'Immutable audit trail',
-  },
-  {
     objection: '"Can we get our data out if we leave?"',
     response:
-      'Evidence, controls, audit trails, and framework mappings export in portable formats. Exit windows and deletion handling follow the applicable agreement and documented retention policy.',
-    icon: ArrowUpRight,
+      'Evidence, controls, audit trails, and framework mappings export in standard formats. Full data portability is guaranteed.',
+    icon: Lock,
     proof: 'Full data portability',
   },
   {
-    objection: '"Will this work across multiple operating sites or entities?"',
+    objection: '"Does it work across multiple sites?"',
     response:
-      'Multi-entity and multi-site management is a core capability. Each entity has its own controls, evidence, and audit trail - with centralized oversight from the executive dashboard.',
-    icon: CircleCheckBig,
+      'Multi-entity and multi-site management is a core capability with centralized oversight and local accountability per site.',
+    icon: Building2,
     proof: 'Multi-entity by design',
   },
+] as const;
+
+/* ── 3-step procurement flow ── */
+
+const procurementSteps = [
   {
-    objection: '"Is this only for compliance teams, or does it work for operators?"',
-    response:
-      'Execution is mapped to real operators - not just compliance teams. Task routing, shift tracking, incident workflows, and credential management work for frontline and operational staff.',
-    icon: Lock,
-    proof: 'Workflow-first design',
+    step: '01',
+    title: 'Start your trial',
+    detail:
+      'Full platform access for 14 days. Bring your security, compliance, and operations stakeholders in from day one.',
+    icon: BadgeCheck,
   },
+  {
+    step: '02',
+    title: 'Run security review in parallel',
+    detail:
+      'Use the security packet and trust center artifacts while teams validate workspace fit in trial.',
+    icon: ShieldCheck,
+  },
+  {
+    step: '03',
+    title: 'Close with defensible proof',
+    detail:
+      'Present ownership trails, evidence chains, and readiness posture for approval without rework.',
+    icon: FileCheck2,
+  },
+] as const;
+
+const artifactBadges = [
+  'Security review packet',
+  'Trust center documents',
+  'Framework mapping overview',
+  'DPA & data residency docs',
+  'Access & identity model',
+  'Enterprise service terms',
 ] as const;
 
 export function ObjectionHandlingSection() {
   return (
     <section className="mk-section home-section home-section--proof relative overflow-hidden">
-      <DecisionTreePattern />
-      {/* Proof section treatment: monochrome, high-contrast, badge-heavy */}
-      <div className="absolute inset-x-0 top-0 h-px bg-white/[0.04]" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-white/[0.04]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/10 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-violet-400/10 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="mx-auto max-w-3xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white/70">
-            <HelpCircle className="h-3.5 w-3.5" />
-            Buyer Objections
+        {/* Header */}
+        <ScrollReveal
+          variant="blurIn"
+          range={[0, 0.3]}
+          className="mx-auto max-w-3xl text-center"
+        >
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-violet-300">
+            <BadgeCheck className="h-3.5 w-3.5" />
+            Enterprise Ready
           </div>
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">
-            Answer every procurement and security objection - before they slow you down
+          <h2 className="text-2xl font-bold text-white sm:text-4xl">
+            From evaluation to procurement — no blockers
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-base">
-            FormaOS ships with the artifacts, controls, and documentation buyer teams usually need first, without leaning on inflated public promises.
+            FormaOS ships with the trust artifacts, security documentation, and
+            buyer-facing proof that enterprise procurement teams need on day one.
           </p>
         </ScrollReveal>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Objection cards - 2x2 grid */}
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {objectionCards.map((card, idx) => (
             <ScrollReveal
               key={card.objection}
               variant="clipUp"
-              range={[idx * 0.04, 0.3 + idx * 0.04]}
+              range={[idx * 0.03, 0.28 + idx * 0.03]}
             >
-              <article className="home-panel home-panel--interactive group relative rounded-2xl bg-white/[0.02] border border-white/[0.06] p-6 hover:bg-white/[0.03] hover:border-white/[0.1] transition-all duration-300">
-                {/* Quote icon */}
-                <Quote className="w-8 h-8 text-white/[0.06] mb-4" />
+              <article className="group relative rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5 hover:bg-white/[0.03] hover:border-violet-400/15 transition-all duration-300">
+                <Quote className="w-6 h-6 text-white/[0.06] mb-3" />
 
-                {/* Objection text: high-contrast white */}
-                <p className="text-base font-semibold text-white leading-snug mb-4">
+                <p className="text-sm font-semibold text-white leading-snug mb-3">
                   {card.objection}
                 </p>
 
-                {/* Response */}
-                <p className="text-sm leading-relaxed text-slate-400 mb-5">
+                <p className="text-sm leading-relaxed text-slate-400 mb-4">
                   {card.response}
                 </p>
 
-                {/* Proof badge: monochrome */}
                 <div className="flex items-center gap-2">
-                  <card.icon className="h-4 w-4 text-white/40" />
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-white/40 bg-white/[0.04] border border-white/[0.06] rounded px-2 py-0.5">
+                  <card.icon className="h-3.5 w-3.5 text-violet-400/50" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-violet-400/50 bg-violet-500/[0.06] border border-violet-400/10 rounded px-2 py-0.5">
                     {card.proof}
                   </span>
                 </div>
               </article>
             </ScrollReveal>
           ))}
+        </div>
+
+        {/* Procurement 3-step flow */}
+        <ScrollReveal variant="slideUp" range={[0.05, 0.35]} className="mt-12">
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-5 text-center">
+            Typical evaluation path
+          </p>
+          <SectionChoreography
+            pattern="stagger-wave"
+            stagger={0.1}
+            className="grid gap-4 md:grid-cols-3"
+          >
+            {procurementSteps.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.step}
+                  className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 hover:border-violet-400/15 hover:bg-white/[0.04] transition-all duration-300"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="inline-flex items-center justify-center rounded-xl border border-violet-400/20 bg-violet-500/10 p-2.5">
+                      <Icon className="w-5 h-5 text-violet-400" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-400/60">
+                      Step {item.step}
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-semibold text-white mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-400">
+                    {item.detail}
+                  </p>
+                </div>
+              );
+            })}
+          </SectionChoreography>
+        </ScrollReveal>
+
+        {/* Artifact badges */}
+        <ScrollReveal variant="fadeUp" range={[0.05, 0.35]} className="mt-6">
+          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 relative overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/20 to-transparent" />
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
+              Buyer-facing artifacts included from day one
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {artifactBadges.map((badge) => (
+                <span
+                  key={badge}
+                  className="rounded-full border border-violet-400/15 bg-violet-500/[0.06] px-3 py-1 text-xs text-violet-300"
+                >
+                  {badge}
+                </span>
+              ))}
+            </div>
+          </div>
+        </ScrollReveal>
+
+        {/* CTAs */}
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link
+            href="/trust"
+            className="mk-btn mk-btn-primary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
+          >
+            Open Trust Center
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/security-review"
+            className="mk-btn mk-btn-secondary inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-white"
+          >
+            Review Security Packet
+          </Link>
         </div>
       </div>
     </section>

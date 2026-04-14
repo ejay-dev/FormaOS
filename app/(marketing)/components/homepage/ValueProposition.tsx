@@ -37,18 +37,19 @@ export function ValueProposition() {
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Built different. Works different.
+              Not a repository.{' '}
+              <span className="text-slate-400">A live system.</span>
             </h2>
 
             <p className="text-base sm:text-lg text-slate-400 mb-4 leading-relaxed max-w-2xl mx-auto">
-              FormaOS is the operating system that runs your compliance program.
-              Not a repository. Not a checklist. A live system that enforces
-              governance, tracks accountability, and produces defensible evidence.
+              Other tools store documents. FormaOS enforces your compliance
+              program — controls are gated, ownership is structural, and
+              evidence is generated as teams operate.
             </p>
 
             <p className="text-sm text-slate-500 max-w-xl mx-auto">
-              Real-time compliance state. Immutable evidence chains.
-              System-enforced accountability, not spreadsheet-level tracking.
+              Real-time posture. Continuous verification.
+              System-enforced accountability, not spreadsheet promises.
             </p>
           </ScrollReveal>
         </div>

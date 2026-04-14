@@ -168,15 +168,13 @@ export function ScrollStory() {
             How It Works
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            The Compliance
-            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-              {' '}Lifecycle
-            </span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+            Four steps from obligation{' '}
+            <span className="text-slate-400">to audit defense</span>
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            From framework mapping to audit defense - a complete workflow that
-            transforms obligations into enforceable controls with clear ownership.
+            Structure your governance, operationalize controls, validate
+            continuously, and defend with evidence that&apos;s already assembled.
           </p>
         </ScrollReveal>
 

@@ -12,10 +12,8 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const TRUST_BADGES = [
   { label: 'SOC 2-aligned', detail: 'Trust framework' },
-  { label: 'Audit-ready', detail: 'Continuous posture' },
-  { label: 'AU-hosted', detail: 'Additional residency reviewed' },
+  { label: 'AU-hosted', detail: 'Data sovereignty' },
   { label: 'Enterprise SSO', detail: 'SAML 2.0 + MFA' },
-  { label: 'Full data export', detail: 'Portable exit support' },
 ] as const;
 
 export function CTASection() {
@@ -50,20 +48,17 @@ export function CTASection() {
 
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <h2 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-5 sm:mb-6 leading-tight text-white">
-            Install the{' '}
-            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-              Operating System
-            </span>
+            Stop preparing for audits.
             <br />
-            <span className="text-white/90">Your Compliance Deserves</span>
+            <span className="text-slate-400">Start being audit-ready.</span>
           </h2>
         </ScrollReveal>
 
         <ScrollReveal variant="fadeUp" range={[0.02, 0.32]}>
           <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
-            Regulators don't accept "we were working on it." FormaOS enforces
-            controls, captures evidence automatically, and keeps your
-            organization audit-ready - every day, not just before the audit.
+            Join compliance teams across healthcare, NDIS, finance, and
+            government who reduced audit prep by 87% and gave their boards
+            real-time posture confidence.
           </p>
         </ScrollReveal>
 

@@ -264,20 +264,13 @@ export function Industries() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
         <ScrollReveal variant="slideUp" range={[0, 0.3]} className="text-center mb-16 lg:mb-20">
-          <div className="mk-eyebrow inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-400 text-sm font-medium mb-6">
-            <span className="w-2 h-2 rounded-full bg-teal-400" />
+          <div className="mk-eyebrow inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-400/20 text-amber-400 text-sm font-medium mb-6">
+            <span className="w-2 h-2 rounded-full bg-amber-400" />
             Industry Solutions
           </div>
 
-          <div className="relative">
-            <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse_at_center,rgba(45,212,191,0.06)_0%,transparent_70%)] pointer-events-none" />
-          </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            Built for{' '}
-            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-              High-Accountability
-            </span>{' '}
-            Industries
+            Built for high-accountability industries
           </h2>
           <p className="text-base md:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
             When compliance failure means regulatory action, accreditation loss,
@@ -302,14 +295,14 @@ export function Industries() {
                   onClick={() => toggleExpand(index)}
                   className={`w-full p-5 lg:p-6 rounded-2xl border text-left transition-all duration-300 ${
                     isExpanded
-                      ? 'bg-white/[0.06] border-teal-400/25'
-                      : 'bg-white/[0.02] border-white/[0.06] hover:border-teal-400/20 hover:bg-white/[0.04]'
+                      ? 'bg-white/[0.06] border-amber-400/25'
+                      : 'bg-white/[0.02] border-white/[0.06] hover:border-amber-400/20 hover:bg-white/[0.04]'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 lg:gap-5">
-                      <div className={`inline-flex items-center justify-center rounded-xl border border-teal-400/20 bg-teal-500/10 p-3 transition-transform duration-300 ${isExpanded ? 'scale-110' : ''}`}>
-                        <Icon className="w-5 h-5 lg:w-6 lg:h-6 text-teal-400" />
+                      <div className={`inline-flex items-center justify-center rounded-xl border border-amber-400/20 bg-amber-500/10 p-3 transition-transform duration-300 ${isExpanded ? 'scale-110' : ''}`}>
+                        <Icon className="w-5 h-5 lg:w-6 lg:h-6 text-amber-400" />
                       </div>
                       <div>
                         <h3 className="text-base lg:text-xl font-bold text-white mb-0.5">
@@ -323,7 +316,7 @@ export function Industries() {
                     <motion.div
                       animate={{ rotate: isExpanded ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
-                      className="text-teal-400 ml-4 shrink-0"
+                      className="text-amber-400 ml-4 shrink-0"
                     >
                       <ChevronDown className="w-5 h-5" />
                     </motion.div>
@@ -343,7 +336,7 @@ export function Industries() {
                       <div className="mt-1 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 lg:p-8">
                         {/* Regulator badge */}
                         <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-6">
-                          Regulated by: <span className="text-teal-400">{solution.regulators}</span>
+                          Regulated by: <span className="text-amber-400">{solution.regulators}</span>
                         </p>
 
                         <div className="grid lg:grid-cols-2 gap-8 mb-8">
@@ -373,7 +366,7 @@ export function Industries() {
                                   transition={{ delay: 0.1 + i * 0.08 }}
                                   className="flex items-start gap-2.5"
                                 >
-                                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-400/60" />
+                                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400/60" />
                                   <span className="text-slate-300 text-sm">{feature}</span>
                                 </motion.li>
                               ))}
@@ -393,8 +386,8 @@ export function Industries() {
                                 transition={{ delay: 0.2 + i * 0.1 }}
                                 className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4"
                               >
-                                <div className="inline-flex items-center justify-center rounded-lg border border-teal-400/20 bg-teal-500/10 p-2 mb-3">
-                                  <CapIcon className="w-4 h-4 text-teal-400" />
+                                <div className="inline-flex items-center justify-center rounded-lg border border-amber-400/20 bg-amber-500/10 p-2 mb-3">
+                                  <CapIcon className="w-4 h-4 text-amber-400" />
                                 </div>
                                 <h4 className="text-white text-sm font-semibold mb-1.5">
                                   {capability.title}

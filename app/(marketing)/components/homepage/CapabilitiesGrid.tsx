@@ -6,23 +6,12 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import {
   Workflow,
   Database,
-  Lock,
   GitBranch,
-  Layers,
-  Terminal,
+  Shield,
   Eye,
   Code2,
   Globe,
-  Shield,
-  ScanSearch,
-  FileStack,
-  Activity,
-  ShieldAlert,
-  Building,
-  ClipboardList,
-  HeartPulse,
   Bot,
-  ShieldCheck,
 } from 'lucide-react';
 
 const capabilities = [
@@ -30,144 +19,58 @@ const capabilities = [
     icon: Workflow,
     title: 'Automation Engine',
     description:
-      'Automation triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation notifications.',
+      'Triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation.',
     color: 'from-teal-400 to-emerald-500',
   },
   {
     icon: Database,
-    title: 'Evidence Versioning',
+    title: 'Evidence Vault',
     description:
-      'Evidence activity is logged with full audit trail context. Every upload, review, and approval is tracked for compliance readiness.',
+      'Every upload, review, and approval tracked with full audit trail context and chain of custody.',
     color: 'from-emerald-500 to-teal-600',
   },
   {
-    icon: Lock,
-    title: 'Compliance Score Engine',
-    description:
-      'Continuous compliance scoring with trend insights and snapshot history when enabled.',
-    color: 'from-purple-500 to-pink-500',
-  },
-  {
     icon: GitBranch,
-    title: 'Framework Packs',
+    title: '9 Framework Packs',
     description:
-      '7 pre-built frameworks: ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, and CIS Controls. NDIS Practice Standards and Essential Eight available as industry add-ons.',
-    color: 'from-pink-500 to-rose-500',
+      'SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, NDIS Practice Standards, and Essential Eight — pre-built.',
+    color: 'from-indigo-500 to-violet-500',
   },
   {
-    icon: Layers,
-    title: 'Cross-Framework Mapping',
+    icon: Shield,
+    title: 'Compliance Gates',
     description:
-      'Control mappings across SOC 2, NIST CSF, and CIS Controls with coverage visibility.',
-    color: 'from-rose-500 to-orange-500',
-  },
-  {
-    icon: Terminal,
-    title: 'Compliance Intelligence',
-    description:
-      'Real-time compliance scoring with trend analysis and risk insights across all frameworks.',
-    color: 'from-orange-500 to-yellow-500',
+      'Block non-compliant actions before they happen with real-time validation and enforcement.',
+    color: 'from-rose-500 to-pink-500',
   },
   {
     icon: Eye,
     title: 'Executive Dashboard',
     description:
-      'C-level visibility into compliance posture, framework health, and risk trends.',
-    color: 'from-yellow-500 to-lime-500',
-  },
-  {
-    icon: Code2,
-    title: 'REST API v1',
-    description:
-      'REST API v1 for compliance data, evidence uploads, and task management. Webhook endpoints deliver real-time event notifications to your SIEM or existing tooling.',
-    color: 'from-yellow-500 to-green-500',
+      'C-level visibility into compliance posture, framework health, risk trends, and control ownership.',
+    color: 'from-amber-500 to-orange-500',
   },
   {
     icon: Globe,
     title: 'Multi-Site Operations',
     description:
-      'Multi-entity and multi-site operations with centralized oversight. Each entity maintains its own controls, evidence, and audit trail - with cross-site rollup reporting for executive governance.',
-    color: 'from-green-500 to-teal-500',
+      'Each entity maintains its own controls and evidence with cross-site rollup reporting for executive governance.',
+    color: 'from-cyan-400 to-blue-500',
   },
   {
-    icon: Shield,
-    title: 'Compliance Gate Enforcement',
+    icon: Code2,
+    title: 'REST API + Webhooks',
     description:
-      'Block non-compliant actions before they happen. Real-time validation ensures controls are satisfied before proceeding.',
-    color: 'from-teal-500 to-emerald-500',
-  },
-  {
-    icon: ScanSearch,
-    title: 'Automated Compliance Gap Analysis',
-    description:
-      'Run gap analysis per framework to identify compliance gaps, missing evidence, and control weaknesses before auditors do.',
-    color: 'from-teal-500 to-emerald-500',
-  },
-  {
-    icon: FileStack,
-    title: 'Document Audit Trail',
-    description:
-      'Every document change is tracked with a complete audit log. Maintain audit-ready records with full visibility into who changed what and when.',
-    color: 'from-indigo-500 to-blue-500',
-  },
-  {
-    icon: Activity,
-    title: 'Compliance Activity Logging',
-    description:
-      'Comprehensive logging of compliance events across your organization. Track evidence uploads, task completions, and control changes in your audit log.',
-    color: 'from-emerald-500 to-teal-500',
-  },
-  {
-    icon: ShieldAlert,
-    title: 'Security Event Tracking',
-    description:
-      'Track and correlate security events across your compliance infrastructure with request-level correlation IDs, structured logging, and audit trail linkage.',
-    color: 'from-red-500 to-rose-500',
-  },
-  {
-    icon: Building,
-    title: 'Multi-Entity Compliance',
-    description:
-      'Manage compliance across multiple entities with centralized oversight and organization-scoped controls and evidence.',
+      'API v1 for compliance data, evidence uploads, and task management. Webhooks for SIEM and tooling integration.',
     color: 'from-violet-500 to-purple-500',
-  },
-  {
-    icon: ClipboardList,
-    title: 'Operational Registers',
-    description:
-      'Built-in training registers and asset registers to track staff certifications, equipment, and operational readiness in one place.',
-    color: 'from-amber-500 to-orange-500',
-  },
-  {
-    icon: HeartPulse,
-    title: 'Healthcare & Patient Management',
-    description:
-      'Purpose-built modules for progress notes, patient management, and clinical workflows designed for healthcare and allied health providers.',
-    color: 'from-pink-500 to-rose-500',
   },
   {
     icon: Bot,
     title: 'AI Compliance Assistant',
     description:
-      'Context-aware AI chat that understands your compliance posture. Draft policies, get evidence guidance, run gap analysis, and receive actionable implementation steps - powered by your live org data.',
-    color: 'from-cyan-400 to-blue-500',
+      'Context-aware AI that drafts policies, runs gap analysis, and gives actionable steps — powered by your live org data.',
+    color: 'from-teal-500 to-cyan-500',
   },
-  {
-    icon: ShieldCheck,
-    title: 'SOC 2 Self-Certification',
-    description:
-      'Automated readiness engine with weighted domain scoring, evidence collection across 11 controls, gap analysis with prioritised remediation, milestone tracking, and one-click certification reports.',
-    color: 'from-emerald-400 to-cyan-500',
-  },
-];
-
-// Group capabilities into categories for visual differentiation
-const capabilityCategories = [
-  { label: 'Core Engine', range: [0, 4] as const },
-  { label: 'Framework Intelligence', range: [4, 8] as const },
-  { label: 'Operational Infrastructure', range: [8, 12] as const },
-  { label: 'Domain Modules', range: [12, 16] as const },
-  { label: 'AI & Certification', range: [16, 19] as const },
 ];
 
 export function CapabilitiesGrid() {
@@ -177,89 +80,55 @@ export function CapabilitiesGrid() {
         <ScrollReveal
           variant="scaleUp"
           range={[0, 0.3]}
-          className="text-center mb-16"
+          className="text-center mb-14"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6">
             <span className="w-2 h-2 rounded-full bg-teal-400" />
             Platform Capabilities
           </div>
 
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-6">
-            Complete Compliance
-            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-              {' '}
-              Operating System
-            </span>
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
+            Everything you need.{' '}
+            <span className="text-slate-400">Nothing you don&apos;t.</span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Every capability is interconnected. Obligations flow to controls,
-            controls trigger tasks, tasks produce evidence. One system. One
-            truth.
+          <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            Obligations flow to controls, controls trigger tasks, tasks produce
+            evidence. One interconnected system.
           </p>
         </ScrollReveal>
 
-        <div className="space-y-10">
-          {capabilityCategories.map((category, catIdx) => {
-            const categoryCapabilities = capabilities.slice(
-              category.range[0],
-              category.range[1],
-            );
+        <SectionChoreography
+          pattern="stagger-wave"
+          stagger={0.04}
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
+          {capabilities.map((capability) => {
+            const Icon = capability.icon;
             return (
-              <div key={category.label}>
-                {/* Category label */}
-                <ScrollReveal
-                  variant="fadeLeft"
-                  range={[catIdx * 0.06, 0.2 + catIdx * 0.06]}
-                >
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="h-px flex-1 max-w-[40px] bg-gradient-to-r from-teal-500/40 to-transparent" />
-                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-teal-400/60">
-                      {category.label}
-                    </span>
-                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent" />
-                  </div>
-                </ScrollReveal>
+              <motion.div
+                key={capability.title}
+                whileHover={{ y: -4 }}
+                className="group relative p-6 rounded-xl bg-gray-950/50 border border-white/[0.06] hover:border-white/[0.12] transition-all cursor-default"
+              >
+                <div
+                  className={`absolute inset-0 rounded-xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
+                />
 
-                <SectionChoreography
-                  pattern="stagger-wave"
-                  stagger={0.04}
-                  className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                <div
+                  className={`inline-flex p-2.5 rounded-lg bg-gradient-to-br ${capability.color} mb-4 group-hover:scale-110 transition-transform`}
                 >
-                  {categoryCapabilities.map((capability) => {
-                    const Icon = capability.icon;
-                    return (
-                      <motion.div
-                        key={capability.title}
-                        whileHover={{ y: -4 }}
-                        className="home-panel home-panel--interactive group relative p-6 rounded-xl bg-gray-950/50 border-l-2 border-l-white/10 border border-white/[0.04] hover:border-l-teal-500/50 transition-all cursor-pointer"
-                      >
-                        <div
-                          className={`absolute inset-0 rounded-xl bg-gradient-to-br ${capability.color} opacity-0 group-hover:opacity-5 transition-opacity`}
-                        />
-
-                        <div className="flex items-start gap-4">
-                          <div
-                            className={`inline-flex p-2.5 rounded-lg bg-gradient-to-br ${capability.color} flex-shrink-0 group-hover:scale-110 transition-transform`}
-                          >
-                            <Icon className="w-5 h-5 text-white" />
-                          </div>
-                          <div>
-                            <h3 className="text-base font-semibold mb-1.5 group-hover:text-teal-400 transition-colors">
-                              {capability.title}
-                            </h3>
-                            <p className="text-sm text-gray-500 leading-relaxed">
-                              {capability.description}
-                            </p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </SectionChoreography>
-              </div>
+                  <Icon className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-base font-semibold mb-2 text-white group-hover:text-teal-300 transition-colors">
+                  {capability.title}
+                </h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  {capability.description}
+                </p>
+              </motion.div>
             );
           })}
-        </div>
+        </SectionChoreography>
       </div>
     </section>
   );

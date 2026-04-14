@@ -66,13 +66,7 @@ const ObjectionHandlingSection = dynamic(
     ),
   { ssr: false, loading: () => null },
 );
-const ProcurementFlowSection = dynamic(
-  () =>
-    import('./homepage/ProcurementFlowSection').then(
-      (m) => m.ProcurementFlowSection,
-    ),
-  { ssr: false, loading: () => null },
-);
+// ProcurementFlowSection merged into ObjectionHandlingSection
 const CTASection = dynamic(
   () => import('./homepage/CTASection').then((m) => m.CTASection),
   {
@@ -80,13 +74,7 @@ const CTASection = dynamic(
     loading: () => null,
   },
 );
-const TrustSection = dynamic(
-  () => import('./homepage/TrustSection').then((m) => m.TrustSection),
-  {
-    ssr: false,
-    loading: () => null,
-  },
-);
+// TrustSection merged into SecuritySection
 const TestimonialsSection = dynamic(
   () =>
     import('./homepage/TestimonialsSection').then((m) => m.TestimonialsSection),
@@ -259,15 +247,11 @@ export default function FormaOSHomepage({
                 440,
               )
             : null}
-          {sectionVisibility.procurement_flow !== false
-            ? renderSection('procurement_flow', <ProcurementFlowSection />, 440)
-            : null}
+          {/* Procurement flow merged into ObjectionHandlingSection - skipped */}
           {sectionVisibility.cta !== false
             ? renderSection('cta', <CTASection />, 380)
             : null}
-          {sectionVisibility.trust !== false
-            ? renderSection('trust', <TrustSection />, 400)
-            : null}
+          {/* TrustSection merged into SecuritySection - skipped */}
         </div>
       </div>
     </MotionProvider>

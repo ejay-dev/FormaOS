@@ -59,12 +59,8 @@ export function ComplianceNetworkSection() {
             Compliance Data Model
           </div>
 
-          <h2 className="mb-5 text-2xl font-bold sm:text-4xl lg:text-5xl">
-            See How Everything
-            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
-              {' '}
-              Connects
-            </span>
+          <h2 className="mb-5 text-2xl font-bold sm:text-4xl lg:text-5xl text-white">
+            See how everything connects
           </h2>
 
           <p className="mx-auto mb-7 max-w-2xl text-base leading-relaxed text-gray-400 sm:text-lg">
