@@ -15,6 +15,7 @@ import { organizationSchema, softwareApplicationSchema } from '@/lib/seo';
 import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
 import MarketingRouteBackdrop from '@/components/motion/MarketingRouteBackdrop';
 import { PageTransition } from '@/components/motion/PageTransition';
+import { MobileStickyCTA } from './components/MobileStickyCTA';
 
 // Force static rendering for all marketing pages
 export const dynamic = 'force-static';
@@ -55,7 +56,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           {/* Premium header with glass effect and micro-animations */}
           <header className="mk-header-premium sticky top-0 z-50">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="flex h-[68px] sm:h-[72px] lg:h-[76px] items-center justify-between gap-3 sm:gap-4 lg:gap-6">
+              <div className="flex h-[60px] sm:h-[72px] lg:h-[76px] items-center justify-between gap-3 sm:gap-4 lg:gap-6">
                 {/* Logo */}
                 <div className="flex shrink-0 items-center">
                   <Link
@@ -113,6 +114,9 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
           {/* Premium animated footer */}
           <Footer />
+
+          {/* Mobile sticky CTA — appears after scrolling past hero */}
+          <MobileStickyCTA />
         </div>
       </div>
     </>

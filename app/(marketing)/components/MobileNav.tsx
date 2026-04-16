@@ -131,7 +131,7 @@ export function MobileNav() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="mk-btn mk-btn-secondary flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-sm text-white font-medium active:scale-95"
+        className="mk-btn mk-btn-secondary flex cursor-pointer items-center justify-center rounded-xl min-h-[44px] min-w-[44px] px-3 py-2.5 text-sm text-white font-medium active:scale-95"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
@@ -209,19 +209,10 @@ export function MobileNav() {
               {/* Decorative top line */}
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-              <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-y-contain pb-[max(env(safe-area-inset-bottom),0.75rem)]">
-                {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
-                  <span className="text-sm font-bold text-white tracking-wide">
-                    Menu
-                  </span>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-                    aria-label="Close menu"
-                  >
-                    <X className="h-5 w-5 text-slate-400" />
-                  </button>
+              <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-y-contain pb-[max(env(safe-area-inset-bottom),0.75rem)]" style={{ touchAction: 'pan-y' }}>
+                {/* Pull indicator — native sheet affordance */}
+                <div className="flex justify-center pt-3 pb-2">
+                  <div className="w-8 h-1 rounded-full bg-white/20" />
                 </div>
 
                 {/* Navigation Links */}
@@ -247,7 +238,7 @@ export function MobileNav() {
                       });
                       handleLinkClick();
                     }}
-                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm"
+                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 min-h-[48px] text-sm"
                   >
                     <span>Login</span>
                     <ChevronRight className="h-4 w-4 text-white/50" />
@@ -265,7 +256,7 @@ export function MobileNav() {
                       });
                       handleLinkClick();
                     }}
-                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 text-sm"
+                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 min-h-[48px] text-sm"
                   >
                     <span>Talk to Sales</span>
                     <ChevronRight className="h-4 w-4 text-white/50" />
@@ -283,7 +274,7 @@ export function MobileNav() {
                       });
                       handleLinkClick();
                     }}
-                    className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-xl px-4 py-3.5 text-sm font-bold"
+                    className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-xl px-4 py-3.5 min-h-[48px] text-sm font-bold"
                   >
                     Start Free Trial
                   </Link>
@@ -291,13 +282,13 @@ export function MobileNav() {
 
                 {/* Footer trust indicators */}
                 <div className="px-4 pb-5 pt-2">
-                  <div className="flex items-center justify-center gap-6 text-[10px] text-slate-500">
+                  <div className="flex items-center justify-center gap-6 text-xs text-slate-500">
                     <span className="flex items-center gap-1.5">
-                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
+                      <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
                       14-day trial
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.5)]" />
+                      <div className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.5)]" />
                       No credit card
                     </span>
                   </div>

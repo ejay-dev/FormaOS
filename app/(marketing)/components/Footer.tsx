@@ -69,7 +69,7 @@ function FooterCTA() {
                   variant: 'primary',
                 })
               }
-              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-7 py-3.5 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:brightness-110"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-7 py-3.5 min-h-[48px] w-full sm:w-auto text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:brightness-110"
             >
               Start Free Trial
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -86,7 +86,7 @@ function FooterCTA() {
                   variant: 'secondary',
                 })
               }
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white/[0.08] hover:border-white/20"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-7 py-3.5 min-h-[48px] w-full sm:w-auto text-sm font-semibold text-white transition-all hover:bg-white/[0.08] hover:border-white/20"
             >
               Talk to Sales
             </Link>
@@ -166,7 +166,7 @@ export function Footer() {
 
         {/* Main Footer Content */}
         <div className="border-t border-white/[0.06] py-12 sm:py-14">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
+          <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
             {/* Brand column — wider */}
             <div className="col-span-2 sm:col-span-3 lg:col-span-2 mb-2 lg:mb-0">
               <Link href="/" className="inline-flex items-center gap-2.5 group">

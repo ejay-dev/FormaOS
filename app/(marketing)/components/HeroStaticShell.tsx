@@ -39,6 +39,7 @@ export function HeroStaticShell() {
         aria-hidden="true"
         fetchPriority="high"
         decoding="async"
+        sizes="100vw"
         className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.24]"
         style={{ objectPosition: '50% 30%' }}
       />
