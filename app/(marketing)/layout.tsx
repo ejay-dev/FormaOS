@@ -15,7 +15,6 @@ import { organizationSchema, softwareApplicationSchema } from '@/lib/seo';
 import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
 import MarketingRouteBackdrop from '@/components/motion/MarketingRouteBackdrop';
 import { PageTransition } from '@/components/motion/PageTransition';
-import { MobileStickyCTA } from './components/MobileStickyCTA';
 
 // Force static rendering for all marketing pages
 export const dynamic = 'force-static';
@@ -114,9 +113,6 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
           {/* Premium animated footer */}
           <Footer />
-
-          {/* Mobile sticky CTA — appears after scrolling past hero */}
-          <MobileStickyCTA />
         </div>
       </div>
     </>

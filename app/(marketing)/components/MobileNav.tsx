@@ -131,7 +131,7 @@ export function MobileNav() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="mk-btn mk-btn-secondary flex cursor-pointer items-center justify-center rounded-xl min-h-[44px] min-w-[44px] px-3 py-2.5 text-sm text-white font-medium active:scale-95"
+        className="mk-btn mk-btn-secondary flex cursor-pointer items-center justify-center rounded-2xl min-h-[48px] min-w-[48px] px-3 py-2.5 text-white font-medium active:scale-95 border-white/15 bg-white/[0.06]"
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
@@ -145,7 +145,7 @@ export function MobileNav() {
               exit={shouldReduceMotion ? undefined : { opacity: 0, rotate: 90 }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.15 }}
             >
-              <X className="h-5 w-5" />
+              <X className="h-[22px] w-[22px]" strokeWidth={2.25} />
             </motion.div>
           ) : (
             <motion.div
@@ -155,7 +155,7 @@ export function MobileNav() {
               exit={shouldReduceMotion ? undefined : { opacity: 0, rotate: -90 }}
               transition={{ duration: shouldReduceMotion ? 0 : 0.15 }}
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-[22px] w-[22px]" strokeWidth={2.25} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -238,10 +238,10 @@ export function MobileNav() {
                       });
                       handleLinkClick();
                     }}
-                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 min-h-[48px] text-sm"
+                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-2xl px-5 py-4 min-h-[54px] text-base font-semibold"
                   >
                     <span>Login</span>
-                    <ChevronRight className="h-4 w-4 text-white/50" />
+                    <ChevronRight className="h-5 w-5 text-white/60" />
                   </Link>
                   <Link
                     href="/contact"
@@ -256,10 +256,10 @@ export function MobileNav() {
                       });
                       handleLinkClick();
                     }}
-                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-xl px-4 py-3.5 min-h-[48px] text-sm"
+                    className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-2xl px-5 py-4 min-h-[54px] text-base font-semibold"
                   >
                     <span>Talk to Sales</span>
-                    <ChevronRight className="h-4 w-4 text-white/50" />
+                    <ChevronRight className="h-5 w-5 text-white/60" />
                   </Link>
                   <Link
                     href={`${appBase}/auth/signup?plan=pro&source=mobile_nav`}
@@ -274,7 +274,7 @@ export function MobileNav() {
                       });
                       handleLinkClick();
                     }}
-                    className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-xl px-4 py-3.5 min-h-[48px] text-sm font-bold"
+                    className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-2xl px-5 py-4 min-h-[58px] text-base font-bold tracking-tight"
                   >
                     Start Free Trial
                   </Link>
