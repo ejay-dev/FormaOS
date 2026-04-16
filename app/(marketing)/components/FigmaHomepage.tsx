@@ -189,8 +189,8 @@ export default function FormaOSHomepage({
           {!skipHero && renderSection('hero', <HeroSection />)}
           {renderSection(
             'framework_trust_strip',
-            <FrameworkTrustStrip className="-mt-2 sm:-mt-4 mb-2" />,
-            96,
+            <FrameworkTrustStrip />,
+            200,
           )}
           {sectionVisibility.value_proposition !== false
             ? renderSection('value_proposition', <ValueProposition />)

@@ -8,17 +8,17 @@ import { useCursorPosition } from '@/components/motion/CursorContext';
  * OurStoryHeroVisual - "Origin Path"
  * ────────────────────────────────────
  * 3D path stretching into perspective depth with converging SVG lines,
- * milestone markers (2022-2026), and floating glass icon cards.
+ * milestone markers (2024-2026), and floating glass icon cards.
  * Cursor tilts the path and adds parallax to milestones.
  * Desktop-only, pointer-events-none.
  */
 
 const MILESTONES = [
-  { year: '2022', label: 'Founded', y: 320, z: -10, delay: 0.9 },
-  { year: '2023', label: 'First Client', y: 255, z: -20, delay: 1.0 },
-  { year: '2024', label: 'SOC 2 Cert', y: 190, z: -30, delay: 1.1 },
-  { year: '2025', label: 'Series A', y: 125, z: -40, delay: 1.2 },
-  { year: '2026', label: 'Global', y: 60, z: -50, delay: 1.3 },
+  { year: '2024', label: 'Founded', y: 320, z: -10, delay: 0.9 },
+  { year: '2024', label: 'First Build', y: 255, z: -20, delay: 1.0 },
+  { year: '2025', label: 'Platform Launch', y: 190, z: -30, delay: 1.1 },
+  { year: '2025', label: 'Enterprise Ready', y: 125, z: -40, delay: 1.2 },
+  { year: '2026', label: 'Scaling', y: 60, z: -50, delay: 1.3 },
 ] as const;
 
 const FLOATING_CARDS = [

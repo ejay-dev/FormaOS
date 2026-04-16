@@ -143,6 +143,98 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v3.6.0',
+    codename: 'Horizon',
+    date: '2026-04-14',
+    summary:
+      'Enterprise marketing overhaul: 100x homepage upgrade with social proof and visual refresh, enterprise marketing pages Phase 1 & 2, Stripe webhook billing fix, Tailwind class audit with legacy btn migration, and reduced layout bloat across all marketing pages.',
+    isMajor: true,
+    changes: [
+      {
+        text: '100x homepage upgrade — social proof, section consolidation, and visual refresh',
+        tag: 'feature',
+        detail:
+          'Complete homepage redesign with bento grid security command center, visual-first industry accordions with stat cards, premium footer with CTA section, and consolidated trust signals. Every section upgraded to enterprise-grade visual fidelity.',
+      },
+      {
+        text: 'Enterprise marketing upgrade Phase 1 & 2',
+        tag: 'feature',
+        detail:
+          'Full overhaul of marketing page hierarchy: new ImmersiveHero component, upgraded product and solution pages, refined typography system, and consistent glassmorphism visual language across all marketing surfaces.',
+      },
+      {
+        text: 'Stripe webhook unblocked and invoice handlers hardened',
+        tag: 'fix',
+        detail:
+          'Fixed critical billing issue where Stripe webhooks were failing silently. Hardened all invoice event handlers with proper error boundaries, idempotency checks, and retry-safe processing.',
+      },
+      {
+        text: 'Tailwind class audit and legacy btn-to-mk-btn migration',
+        tag: 'improvement',
+        detail:
+          'Audited all Tailwind classes for invalid utilities, removed deprecated class references, and migrated legacy btn-* classes to the new mk-btn design system for consistency.',
+      },
+      {
+        text: 'Eliminated VisualDivider spacing bloat across all marketing pages',
+        tag: 'fix',
+        detail:
+          'Removed excessive padding and minHeight values from VisualDivider and DeferredSection wrappers that were creating unnecessary whitespace between marketing sections.',
+      },
+    ],
+  },
+  {
+    version: 'v3.5.0',
+    codename: 'Prism',
+    date: '2026-04-11',
+    summary:
+      'Product maturity and growth sprint: full billing, emails, onboarding, and monitoring infrastructure, comprehensive SEO engine with IndexNow and structured data, LCP performance fix from 4.2s to sub-2s, enterprise theme upgrade across all 5 themes, blog internal linking, and updated marketing mockups.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Full product maturity sprint — billing, emails, onboarding, security, monitoring',
+        tag: 'feature',
+        detail:
+          'Comprehensive infrastructure buildout: Stripe billing integration with subscription management, transactional email system, guided onboarding flow, security headers and CSP policies, error monitoring with Sentry, and admin upgrade/downgrade flows.',
+      },
+      {
+        text: 'Comprehensive SEO engine — metadata, structured data, IndexNow, OG images',
+        tag: 'feature',
+        detail:
+          'Full SEO overhaul across all marketing pages: dynamic metadata generation, JSON-LD structured data for organization and products, IndexNow integration for Bing instant indexing, auto-generated OG images, and robots.txt optimization.',
+      },
+      {
+        text: 'LCP performance fix from 4.2s to sub-2s',
+        tag: 'improvement',
+        detail:
+          'Eliminated largest contentful paint bottleneck by skipping initial page transition animation, server-rendering hero image, and adding preload hints for above-fold assets. Core Web Vitals now passing.',
+      },
+      {
+        text: 'Enterprise-level upgrade to all 5 app themes',
+        tag: 'feature',
+        detail:
+          'Complete visual refresh of all 5 themes (Default, Midnight, Arctic, Forest, Sunset) with refined color palettes, improved contrast ratios, consistent spacing tokens, and enterprise-appropriate visual density.',
+      },
+      {
+        text: 'Blog internal linking across 12 posts with RelatedPosts component',
+        tag: 'feature',
+        detail:
+          'Added contextual internal links to 12 blog posts connecting related content. New RelatedPosts component automatically surfaces relevant articles based on shared tags and topic proximity.',
+      },
+      {
+        text: 'Marketing mockups updated to match current FormaOS design system',
+        tag: 'improvement',
+        detail:
+          'Refreshed all product screenshots and marketing mockups to reflect the current app UI including count-up animations, RAG status indicators, stagger effects, and sidebar navigation updates.',
+      },
+      {
+        text: 'Industry landing pages upgraded with new shared components',
+        tag: 'feature',
+        detail:
+          'Rebuilt 5 industry landing pages (Healthcare, NDIS, Aged Care, Childcare, Financial Services) with shared IndustryHero, FrameworkGrid, and ComplianceJourney components for visual consistency.',
+      },
+    ],
+  },
+  {
     version: 'v3.4.0',
     codename: 'Sentinel',
     date: '2026-04-09',
@@ -2295,6 +2387,14 @@ const milestones = [
       'v3.1 Citadel: framework cross-mapping, task management, permissions matrix, policy lifecycle, dashboard builder, and integration marketplace.',
     accentRgb: '245,158,11',
   },
+  {
+    icon: Sparkles,
+    title: 'Enterprise Marketing & Growth',
+    date: 'April 2026',
+    description:
+      'v3.6 Horizon: 100x homepage redesign, comprehensive SEO engine, LCP performance fix, 5-theme enterprise upgrade, and full product maturity infrastructure.',
+    accentRgb: '52,211,153',
+  },
 ];
 
 function MilestonesSection() {
@@ -2316,7 +2416,7 @@ function MilestonesSection() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               The journey from{' '}
               <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">
-                Genesis to Citadel
+                Genesis to Horizon
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
