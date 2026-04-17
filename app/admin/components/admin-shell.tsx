@@ -24,13 +24,13 @@ import {
   SlidersHorizontal,
   Layers,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import { AdminQuickSearch } from '@/app/admin/components/admin-quick-search';
-import { ThemeToggle } from '@/components/theme-switcher';
 
 /* Admin Console Shell — Platform Operations Center */
 
@@ -98,6 +98,20 @@ export function AdminShell({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  // Admin surface was designed dark-first; many nested components use hardcoded
+  // slate tokens that render unreadably on a light background. Lock dark while
+  // mounted and restore the user's previous preference on unmount so the rest
+  // of the app still respects their theme choice.
+  useEffect(() => {
+    const previous = theme;
+    if (previous !== 'dark') setTheme('dark');
+    return () => {
+      if (previous && previous !== 'dark') setTheme(previous);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = async () => {
     const client = createSupabaseClient();
@@ -143,7 +157,6 @@ export function AdminShell({
           <div className="hidden sm:block text-xs text-muted-foreground truncate max-w-[200px]">
             {email || 'Admin'}
           </div>
-          <ThemeToggle />
           <button
             onClick={handleLogout}
             className="p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
