@@ -1,7 +1,18 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: ['class'],
+  // Theme provider sets `data-theme="<id>"` on <html> (see lib/theme/theme-provider.tsx),
+  // NOT the legacy `.dark` class. Bind Tailwind's `dark:` variant to every dark-family
+  // theme so `dark:` overrides actually fire. `light` is the only light theme.
+  darkMode: [
+    'variant',
+    [
+      '&:is([data-theme="dark"] *)',
+      '&:is([data-theme="midnight-blue"] *)',
+      '&:is([data-theme="graphite"] *)',
+      '&:is([data-theme="aurora"] *)',
+    ],
+  ],
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
