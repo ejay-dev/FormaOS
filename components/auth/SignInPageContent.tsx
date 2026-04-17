@@ -349,6 +349,9 @@ function SignInContent() {
           provider: 'google',
           options: {
             redirectTo: oauthRedirect.redirectTo,
+            // Force Google's account chooser so users switching accounts
+            // never silently re-land in a previously authenticated session.
+            queryParams: { prompt: 'select_account' },
           },
         }),
         SESSION_TIMEOUT_MS,

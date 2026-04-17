@@ -112,7 +112,13 @@ function SignUpContent() {
       const oauthResult = (await withTimeout(
         supabase.auth.signInWithOAuth({
           provider: 'google',
-          options: { redirectTo: oauthRedirect.redirectTo },
+          options: {
+            redirectTo: oauthRedirect.redirectTo,
+            // Force Google's account chooser so users testing signup or
+            // switching accounts never silently re-land in a previously
+            // authenticated Google session.
+            queryParams: { prompt: 'select_account' },
+          },
         }),
         SESSION_TIMEOUT_MS,
         'oauth',
