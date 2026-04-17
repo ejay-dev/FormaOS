@@ -304,8 +304,20 @@ export async function recoverUserWorkspace({
     onboardingCompleted: onboardingCompletedFlag,
     storedStep: status?.current_step ?? null,
   };
-  const onboardingComplete = isOnboardingComplete(onboardingSnapshot);
-  const onboardingStep = deriveOnboardingStep(onboardingSnapshot);
+  const derivedComplete = isOnboardingComplete(onboardingSnapshot);
+
+  // Trust the authoritative completion signal: when the explicit
+  // organizations.onboarding_completed flag AND the org_onboarding_status
+  // row both report completion, the user has already finished onboarding.
+  // A transient empty frameworks read (RLS lag / embedded-join failure)
+  // must not drag them back to step 5. A lone flag without status backing
+  // is suspicious — let the repair path below reset it.
+  const trustedCompletion = onboardingCompletedFlag && statusMarkedComplete;
+  const onboardingComplete = derivedComplete || trustedCompletion;
+
+  const onboardingStep = onboardingComplete
+    ? TOTAL_ONBOARDING_STEPS
+    : deriveOnboardingStep(onboardingSnapshot);
 
   if (!status?.organization_id) {
     await admin.from('org_onboarding_status').upsert({
@@ -326,7 +338,11 @@ export async function recoverUserWorkspace({
     actions.push('onboarding_step_repaired');
   }
 
-  if (!onboardingComplete && onboardingCompletedFlag) {
+  // Only repair the flag when there is NO status-level corroboration. If
+  // the status row confirms completion (completed_at or step 7 recorded),
+  // the flag is trustworthy even when a frameworks read is transiently
+  // empty — that's the loop we just fixed.
+  if (!onboardingComplete && onboardingCompletedFlag && !statusMarkedComplete) {
     await admin
       .from('organizations')
       .update({ onboarding_completed: false })

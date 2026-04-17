@@ -797,7 +797,13 @@ export default async function OnboardingPage({
   const { orgId, orgRecord, supabase, role } = await getOrgContext();
   const status = await getOnboardingStatus(supabase, orgId);
 
+  // Authoritative completion signal: organizations.onboarding_completed is
+  // set by the server action at the end of step 7. Trust it over derived
+  // checks — a transient empty frameworks read (RLS / embedded-join lag)
+  // must not trap a finished user back on the wizard.
+  const explicitlyCompleted = Boolean(orgRecord?.onboarding_completed);
   const onboardingStatusComplete =
+    explicitlyCompleted ||
     Boolean(status.completed_at) ||
     status.completed_steps.includes(TOTAL_STEPS);
   const hasRequiredOnboardingData =
@@ -806,7 +812,10 @@ export default async function OnboardingPage({
     Array.isArray(orgRecord?.frameworks) &&
     orgRecord.frameworks.length > 0;
 
-  if (onboardingStatusComplete && hasRequiredOnboardingData) {
+  if (
+    explicitlyCompleted ||
+    (onboardingStatusComplete && hasRequiredOnboardingData)
+  ) {
     if (!orgRecord?.onboarding_completed) {
       await createSupabaseAdminClient()
         .from('organizations')
