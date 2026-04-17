@@ -30,7 +30,7 @@ export function EnterpriseTrustStrip({
   return (
     <section
       className={clsx(
-        'border-y border-cyan-200 bg-cyan-50 backdrop-blur-sm dark:border-cyan-400/20 dark:bg-cyan-500/8',
+        'border-y border-cyan-200 bg-cyan-50 backdrop-blur-sm dark:border-cyan-400/20 dark:bg-cyan-500/[0.08]',
         className,
       )}
       aria-label="Enterprise trust signals"
