@@ -29,7 +29,7 @@ export default function AuthLayout({
         setTheme(previous);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   return <div className="min-h-screen bg-slate-950">{children}</div>;
