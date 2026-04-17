@@ -106,6 +106,9 @@ function SignInContent() {
   const [sessionTimeout, setSessionTimeout] = useState(false);
   const [ssoOrgId, setSsoOrgId] = useState<string | null>(null);
   const [ssoRequired, setSsoRequired] = useState(false);
+  const [existingSessionEmail, setExistingSessionEmail] = useState<
+    string | null
+  >(null);
 
   const logLoginFailure = useCallback(
     async (reason: string, provider: 'email' | 'google' = 'email') => {
@@ -217,6 +220,7 @@ function SignInContent() {
         const hasHash =
           typeof window !== 'undefined' &&
           window.location.hash.includes('access_token=');
+        let processedFreshTokens = false;
         if (hasHash) {
           const hash = window.location.hash.startsWith('#')
             ? window.location.hash.slice(1)
@@ -236,6 +240,7 @@ function SignInContent() {
               );
               return;
             }
+            processedFreshTokens = true;
             window.history.replaceState(
               null,
               '',
@@ -251,14 +256,24 @@ function SignInContent() {
         )) as Awaited<ReturnType<typeof supabase.auth.getSession>>;
         const { data } = sessionResult;
         if (data?.session) {
-          const bootstrapResult = await bootstrapAndRedirect();
-          if (!bootstrapResult?.ok) {
-            setErrorMessage(
-              getAuthBackendMessage(
-                bootstrapResult?.error,
-                'We could not complete sign-in. Please refresh and try again.',
-              ),
-            );
+          // Only auto-bootstrap when we just processed fresh OAuth/email tokens.
+          // A stale session (cookie left over from a prior login) should NOT
+          // silently redirect — that hides the form from anyone wanting to
+          // sign in as a different user, and creates the appearance of a
+          // multi-tenancy leak. Surface the active email instead and let the
+          // user choose to continue or sign out and switch accounts.
+          if (processedFreshTokens) {
+            const bootstrapResult = await bootstrapAndRedirect();
+            if (!bootstrapResult?.ok) {
+              setErrorMessage(
+                getAuthBackendMessage(
+                  bootstrapResult?.error,
+                  'We could not complete sign-in. Please refresh and try again.',
+                ),
+              );
+            }
+          } else {
+            setExistingSessionEmail(data.session.user?.email ?? 'your account');
           }
         }
       } catch (err) {
@@ -515,6 +530,52 @@ function SignInContent() {
                 >
                   Refresh
                 </button>
+              </div>
+            )}
+            {existingSessionEmail && (
+              <div className="mb-6 rounded-lg border border-sky-400/40 bg-sky-500/10 px-4 py-3 text-sm text-sky-100">
+                <div className="font-semibold">
+                  You are already signed in as {existingSessionEmail}
+                </div>
+                <div className="mt-1 text-sky-100/80">
+                  Continue to your dashboard, or sign out to use a different
+                  account.
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const result = await bootstrapAndRedirect();
+                      if (!result?.ok) {
+                        setErrorMessage(
+                          getAuthBackendMessage(
+                            result?.error,
+                            'We could not complete sign-in. Please refresh and try again.',
+                          ),
+                        );
+                      }
+                    }}
+                    className="inline-flex items-center justify-center rounded-md border border-sky-300/40 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold text-sky-100 hover:bg-sky-400/20"
+                  >
+                    Continue to dashboard
+                  </button>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const supabase = createSupabaseClient();
+                        await supabase.auth.signOut();
+                      } catch {
+                        // Best-effort
+                      }
+                      setExistingSessionEmail(null);
+                      window.location.href = '/auth/signin?session_cleared=true';
+                    }}
+                    className="inline-flex items-center justify-center rounded-md border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-white/10"
+                  >
+                    Sign out & use a different account
+                  </button>
+                </div>
               </div>
             )}
 
