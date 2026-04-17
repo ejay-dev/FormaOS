@@ -1320,51 +1320,11 @@
     opacity: 0.45;
   }
 
-  /* ============== CARDS / PANELS — premium feel ============== */
-  .home-panel,
-  .product-panel,
+  /* ============== CARDS — refine spacing only, preserve per-card visuals ============== */
+  /* mk-anchor cards use a flat dark bg and benefit from padding bump */
   .mk-anchor {
-    border-radius: 22px;
-    padding: 1.625rem;
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow:
-      0 12px 32px rgba(2, 6, 23, 0.4),
-      0 2px 8px rgba(2, 6, 23, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  }
-
-  /* Headings inside cards bigger */
-  .home-panel h3,
-  .product-panel h3,
-  .mk-anchor h3 {
-    font-size: 1.25rem;
-    line-height: 1.25;
-    font-weight: 700;
-    letter-spacing: -0.015em;
-  }
-
-  .home-panel p,
-  .product-panel p,
-  .mk-anchor p {
-    font-size: 0.9375rem;
-    line-height: 1.6;
-  }
-
-  /* ============== HEADINGS GLOBAL ============== */
-  .mk-marketing-flow h2,
-  .mk-enterprise-flow h2 {
-    font-size: clamp(1.75rem, 6vw, 2.5rem) !important;
-    line-height: 1.1 !important;
-    letter-spacing: -0.025em !important;
-    font-weight: 700 !important;
-  }
-
-  .mk-marketing-flow h3,
-  .mk-enterprise-flow h3 {
-    font-size: clamp(1.25rem, 4vw, 1.625rem) !important;
-    line-height: 1.2 !important;
-    font-weight: 700 !important;
+    padding: 1.5rem;
+    border-radius: 20px;
   }
 
   /* ============== ENTERPRISE FLOW BACKGROUND ============== */
