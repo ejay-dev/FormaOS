@@ -1,11 +1,7 @@
 'use client';
 
 import { useRef, useState, useCallback } from 'react';
-import {
-  motion,
-  useInView,
-  useReducedMotion,
-} from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ShieldCheck, ShieldOff, Clock, Link2, UserCheck } from 'lucide-react';
 import { duration, easing } from '@/config/motion';
 
@@ -63,6 +59,7 @@ function GlassCard({
       className={className}
     >
       <div
+        role="presentation"
         ref={ref}
         onMouseMove={onMove}
         onMouseEnter={() => setHovered(true)}
@@ -222,9 +219,9 @@ function PostureCard({
             Continuous Compliance Posture
           </h3>
           <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-md">
-            Real-time visibility into your entire compliance program.
-            Not point-in-time snapshots reconstructed before an audit —
-            live, always-current posture across every framework.
+            Real-time visibility into your entire compliance program. Not
+            point-in-time snapshots reconstructed before an audit — live,
+            always-current posture across every framework.
           </p>
           <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6">
             {stats.map((s, i) => (
@@ -286,7 +283,11 @@ function EnforcementCard({
         <motion.div
           initial={noMotion ? false : { opacity: 0, x: -12 }}
           animate={isInView ? { opacity: 1, x: 0 } : undefined}
-          transition={{ delay: 0.5, duration: duration.normal, ease: signatureEase }}
+          transition={{
+            delay: 0.5,
+            duration: duration.normal,
+            ease: signatureEase,
+          }}
           className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-rose-500/[0.05] border border-rose-500/[0.12]"
         >
           <ShieldOff className="w-4 h-4 text-rose-400 shrink-0" />
@@ -304,7 +305,11 @@ function EnforcementCard({
         <motion.div
           initial={noMotion ? false : { opacity: 0, x: -12 }}
           animate={isInView ? { opacity: 1, x: 0 } : undefined}
-          transition={{ delay: 0.65, duration: duration.normal, ease: signatureEase }}
+          transition={{
+            delay: 0.65,
+            duration: duration.normal,
+            ease: signatureEase,
+          }}
           className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-teal-500/[0.05] border border-teal-500/[0.12]"
         >
           <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
@@ -322,7 +327,11 @@ function EnforcementCard({
         <motion.div
           initial={noMotion ? false : { opacity: 0, x: -12 }}
           animate={isInView ? { opacity: 1, x: 0 } : undefined}
-          transition={{ delay: 0.8, duration: duration.normal, ease: signatureEase }}
+          transition={{
+            delay: 0.8,
+            duration: duration.normal,
+            ease: signatureEase,
+          }}
           className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-teal-500/[0.05] border border-teal-500/[0.12]"
         >
           <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
@@ -370,8 +379,8 @@ function EvidenceCard({
         <h3 className="text-base font-bold text-white">Evidence Chain</h3>
       </div>
       <p className="text-[13px] text-slate-500 leading-relaxed mb-5">
-        Every action is timestamped, immutable, and traceable. No
-        reconstruction needed.
+        Every action is timestamped, immutable, and traceable. No reconstruction
+        needed.
       </p>
 
       {/* Timeline */}
@@ -525,8 +534,8 @@ function AuditCard({
         <h3 className="text-base font-bold text-white">Audit-Ready</h3>
       </div>
       <p className="text-[13px] text-slate-500 leading-relaxed mb-6">
-        Export complete audit packets — evidence, ownership, control
-        history — without scrambling.
+        Export complete audit packets — evidence, ownership, control history —
+        without scrambling.
       </p>
 
       {/* Big metric */}
@@ -536,11 +545,15 @@ function AuditCard({
           animate={isInView ? { opacity: 1, scale: 1 } : undefined}
           transition={{ delay: 0.6, duration: 0.5, ease: signatureEase }}
         >
-          <span className="text-5xl sm:text-6xl font-black bg-clip-text" style={{
-            backgroundImage: 'linear-gradient(135deg, rgba(251,191,36,1), rgba(245,158,11,0.8))',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-          }}>
+          <span
+            className="text-5xl sm:text-6xl font-black bg-clip-text"
+            style={{
+              backgroundImage:
+                'linear-gradient(135deg, rgba(251,191,36,1), rgba(245,158,11,0.8))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Minutes
           </span>
           <div className="text-sm text-slate-500 mt-2 font-medium">
@@ -701,8 +714,8 @@ export function ValueProposition() {
             className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed"
           >
             Other tools store documents. FormaOS enforces your compliance
-            program — controls are gated, ownership is structural, and
-            evidence is generated as teams operate.
+            program — controls are gated, ownership is structural, and evidence
+            is generated as teams operate.
           </motion.p>
         </div>
 

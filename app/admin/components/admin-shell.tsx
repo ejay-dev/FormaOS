@@ -110,7 +110,6 @@ export function AdminShell({
     return () => {
       if (previous && previous !== 'dark') setTheme(previous);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = async () => {

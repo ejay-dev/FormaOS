@@ -13,7 +13,6 @@ import {
   Shield,
   Heart,
   ClipboardList,
-  ChevronDown,
 } from 'lucide-react';
 import { demoNavItems, demoNavCategories, demoOrg } from './demo-data';
 import type { DemoScreenId } from './demo-data';
@@ -51,7 +50,10 @@ const ragItems: Record<string, string> = {
   tasks: 'green',
 };
 
-export default function DemoSidebar({ activeScreen, onNavigate }: DemoSidebarProps) {
+export default function DemoSidebar({
+  activeScreen,
+  onNavigate,
+}: DemoSidebarProps) {
   return (
     <div className="flex h-full w-full flex-col bg-[#060d1a] border-r border-white/[0.08]">
       {/* Logo */}
@@ -61,7 +63,9 @@ export default function DemoSidebar({ activeScreen, onNavigate }: DemoSidebarPro
             <span className="text-[8px] font-bold text-white">FO</span>
           </div>
           <div className="min-w-0">
-            <span className="text-[11px] font-semibold text-white block leading-none">FormaOS</span>
+            <span className="text-[11px] font-semibold text-white block leading-none">
+              FormaOS
+            </span>
             <span className="text-[7px] text-white/30 uppercase tracking-[0.08em] leading-none">
               Compliance Operating System
             </span>
@@ -90,29 +94,43 @@ export default function DemoSidebar({ activeScreen, onNavigate }: DemoSidebarPro
               {items.map((item) => {
                 const Icon = iconMap[item.icon];
                 const isActive = activeScreen === item.id;
-                const isClickable = ['dashboard', 'policies', 'tasks', 'vault', 'audit'].includes(item.id);
+                const isClickable = [
+                  'dashboard',
+                  'policies',
+                  'tasks',
+                  'vault',
+                  'audit',
+                ].includes(item.id);
                 const rag = ragItems[item.id];
 
                 return (
                   <motion.button
                     key={item.id}
-                    onClick={() => isClickable && onNavigate(item.id as DemoScreenId)}
+                    onClick={() =>
+                      isClickable && onNavigate(item.id as DemoScreenId)
+                    }
                     className={`
                       relative flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[11px] font-medium transition-colors h-7
-                      ${isActive
-                        ? 'border-l-2 border-l-cyan-400 bg-cyan-500/10 text-cyan-300'
-                        : isClickable
-                          ? 'text-white/50 hover:bg-white/[0.04] hover:text-white/70'
-                          : 'text-white/30 cursor-default'
+                      ${
+                        isActive
+                          ? 'border-l-2 border-l-cyan-400 bg-cyan-500/10 text-cyan-300'
+                          : isClickable
+                            ? 'text-white/50 hover:bg-white/[0.04] hover:text-white/70'
+                            : 'text-white/30 cursor-default'
                       }
                     `}
                     whileHover={isClickable ? { x: 2 } : undefined}
-                    transition={{ duration: duration.fast, ease: easing.signature }}
+                    transition={{
+                      duration: duration.fast,
+                      ease: easing.signature,
+                    }}
                   >
                     {Icon && <Icon className="h-3.5 w-3.5 flex-shrink-0" />}
                     <span className="truncate flex-1">{item.label}</span>
                     {rag && (
-                      <span className={`w-1.5 h-1.5 rounded-full ${ragDotColor[rag]} flex-shrink-0`} />
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${ragDotColor[rag]} flex-shrink-0`}
+                      />
                     )}
                   </motion.button>
                 );

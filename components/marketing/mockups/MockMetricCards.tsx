@@ -4,7 +4,6 @@ import {
   motion,
   useReducedMotion,
   useInView,
-  useMotionValue,
   useSpring,
   animate,
 } from 'framer-motion';
