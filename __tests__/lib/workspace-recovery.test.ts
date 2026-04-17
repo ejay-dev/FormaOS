@@ -762,6 +762,180 @@ describe('recoverUserWorkspace', () => {
     expect(result.actions).toContain('onboarding_flag_repaired');
   });
 
+  // -------------------------------------------------------------------------
+  // Regression: onboarding-complete users must not loop back to step 5 when a
+  // frameworks read comes back empty (RLS lag / embedded-join race). The fix
+  // introduces `trustedCompletion = flag && statusMarkedComplete` and
+  // conditions the flag-repair branch on `!statusMarkedComplete`.
+  // -------------------------------------------------------------------------
+
+  it('routes to /app when flag + completed_at agree but frameworks reads empty (loop prevention)', async () => {
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'org_members')
+        return createBuilder({
+          data: [{ organization_id: orgId, role: 'owner' }],
+          error: null,
+        });
+      if (table === 'organizations')
+        return createBuilder({
+          data: {
+            id: orgId,
+            name: 'Org',
+            plan_key: 'pro',
+            industry: 'healthcare',
+            frameworks: null, // transient empty read
+            onboarding_completed: true,
+          },
+          error: null,
+        });
+      if (table === 'org_frameworks')
+        return createBuilder({ data: [], error: null });
+      if (table === 'org_onboarding_status')
+        return createBuilder({
+          data: {
+            organization_id: orgId,
+            current_step: 7,
+            completed_steps: [1, 2, 3, 4, 5, 6, 7],
+            completed_at: '2024-06-01',
+          },
+          error: null,
+        });
+      return createBuilder();
+    });
+
+    const result = await recoverUserWorkspace({ userId, source: 'test' });
+    expect(result.ok).toBe(true);
+    expect(result.nextPath).toBe('/app');
+    expect(result.onboardingComplete).toBe(true);
+    expect(result.onboardingStep).toBe(7);
+    expect(result.actions).not.toContain('onboarding_flag_repaired');
+  });
+
+  it('routes to /app when flag + completed_steps[7] agree even without completed_at', async () => {
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'org_members')
+        return createBuilder({
+          data: [{ organization_id: orgId, role: 'admin' }],
+          error: null,
+        });
+      if (table === 'organizations')
+        return createBuilder({
+          data: {
+            id: orgId,
+            name: 'Org',
+            plan_key: 'enterprise',
+            industry: 'finance',
+            frameworks: null,
+            onboarding_completed: true,
+          },
+          error: null,
+        });
+      if (table === 'org_frameworks')
+        return createBuilder({ data: [], error: null });
+      if (table === 'org_onboarding_status')
+        return createBuilder({
+          data: {
+            organization_id: orgId,
+            current_step: 7,
+            completed_steps: [1, 2, 3, 4, 5, 6, 7],
+            completed_at: null,
+          },
+          error: null,
+        });
+      return createBuilder();
+    });
+
+    const result = await recoverUserWorkspace({ userId, source: 'test' });
+    expect(result.nextPath).toBe('/app');
+    expect(result.onboardingComplete).toBe(true);
+    expect(result.actions).not.toContain('onboarding_flag_repaired');
+  });
+
+  it('does NOT repair onboarding flag when status row corroborates completion', async () => {
+    // Pathological-state: flag=true, snapshot would otherwise be incomplete
+    // (no frameworks), but the status row confirms completion. Pre-fix this
+    // would reset the flag and trap the user; post-fix it must trust both
+    // signals and leave the flag alone.
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'org_members')
+        return createBuilder({
+          data: [{ organization_id: orgId, role: 'owner' }],
+          error: null,
+        });
+      if (table === 'organizations')
+        return createBuilder({
+          data: {
+            id: orgId,
+            name: 'Org',
+            plan_key: 'pro',
+            industry: 'tech',
+            frameworks: null,
+            onboarding_completed: true,
+          },
+          error: null,
+        });
+      if (table === 'org_frameworks')
+        return createBuilder({ data: [], error: null });
+      if (table === 'org_onboarding_status')
+        return createBuilder({
+          data: {
+            organization_id: orgId,
+            current_step: 7,
+            completed_steps: [7],
+            completed_at: '2024-06-01',
+          },
+          error: null,
+        });
+      return createBuilder();
+    });
+
+    const result = await recoverUserWorkspace({ userId, source: 'test' });
+    expect(result.actions).not.toContain('onboarding_flag_repaired');
+    expect(result.onboardingComplete).toBe(true);
+    expect(result.nextPath).toBe('/app');
+  });
+
+  it('does NOT repair onboarding step when onboarding is complete (prevents step=5 rewrite)', async () => {
+    // Belt-and-braces: the step-repair branch is also gated on !onboardingComplete.
+    // Verify stored step=7 is untouched when completion is trusted.
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'org_members')
+        return createBuilder({
+          data: [{ organization_id: orgId, role: 'owner' }],
+          error: null,
+        });
+      if (table === 'organizations')
+        return createBuilder({
+          data: {
+            id: orgId,
+            name: 'Org',
+            plan_key: 'pro',
+            industry: 'tech',
+            frameworks: null,
+            onboarding_completed: true,
+          },
+          error: null,
+        });
+      if (table === 'org_frameworks')
+        return createBuilder({ data: [], error: null });
+      if (table === 'org_onboarding_status')
+        return createBuilder({
+          data: {
+            organization_id: orgId,
+            current_step: 7,
+            completed_steps: [7],
+            completed_at: '2024-06-01',
+          },
+          error: null,
+        });
+      return createBuilder();
+    });
+
+    const result = await recoverUserWorkspace({ userId, source: 'test' });
+    expect(result.actions).not.toContain('onboarding_step_repaired');
+    expect(result.onboardingStep).toBe(7);
+  });
+
   it('still returns ok when ensureUserProvisioning throws', async () => {
     ensureUserProvisioning.mockRejectedValue(new Error('boom'));
 
