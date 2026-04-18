@@ -6,6 +6,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
 import { isTrialEligiblePlan, resolvePlanKey } from '@/lib/plans';
 import { isFounder } from '@/lib/utils/founder';
+import { billingLogger } from '@/lib/observability/structured-logger';
 
 // Legacy plan_code uses different values (starter vs basic)
 function toLegacyPlanCode(planKey: string): string {
@@ -73,17 +74,6 @@ export async function startCheckout(formData: FormData) {
 
   let customerId = subscriptionRow?.stripe_customer_id ?? null;
 
-  if (!customerId) {
-    const customer = await stripe.customers.create({
-      email: user.email ?? undefined,
-      metadata: {
-        organization_id: orgId,
-        user_id: user.id,
-      },
-    });
-    customerId = customer.id;
-  }
-
   const priceId = getStripePriceId(planKey);
   if (!priceId) {
     redirect('/app/billing?status=missing_price');
@@ -92,46 +82,71 @@ export async function startCheckout(formData: FormData) {
   const appBase = appUrl.replace(/\/$/, '');
   const isTrialEligible = isTrialEligiblePlan(planKey);
 
-  const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',
-    customer: customerId,
-    line_items: [{ price: priceId, quantity: 1 }],
-    subscription_data: {
-      trial_period_days: isTrialEligible ? 14 : undefined,
+  try {
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email ?? undefined,
+        metadata: {
+          organization_id: orgId,
+          user_id: user.id,
+        },
+      });
+      customerId = customer.id;
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [{ price: priceId, quantity: 1 }],
+      subscription_data: {
+        trial_period_days: isTrialEligible ? 14 : undefined,
+        metadata: {
+          organization_id: orgId,
+          plan_key: planKey,
+        },
+      },
+      automatic_tax: { enabled: true },
+      allow_promotion_codes: true,
+      success_url: `${appBase}/app`,
+      cancel_url: `${siteBase}/pricing`,
       metadata: {
         organization_id: orgId,
         plan_key: planKey,
+        price_id: priceId,
       },
-    },
-    automatic_tax: { enabled: true },
-    allow_promotion_codes: true,
-    success_url: `${appBase}/app`,
-    cancel_url: `${siteBase}/pricing`,
-    metadata: {
+    });
+
+    await admin.from('org_subscriptions').upsert({
+      org_id: orgId,
       organization_id: orgId,
+      plan_code: toLegacyPlanCode(planKey),
       plan_key: planKey,
+      status: 'pending',
+      stripe_customer_id: customerId,
+      stripe_subscription_id: null,
       price_id: priceId,
-    },
-  });
+      updated_at: new Date().toISOString(),
+    });
 
-  await admin.from('org_subscriptions').upsert({
-    org_id: orgId, // Legacy column
-    organization_id: orgId,
-    plan_code: toLegacyPlanCode(planKey), // Legacy column with different values
-    plan_key: planKey,
-    status: 'pending',
-    stripe_customer_id: customerId,
-    stripe_subscription_id: null,
-    price_id: priceId,
-    updated_at: new Date().toISOString(),
-  });
+    if (!session.url) {
+      redirect('/app/billing?status=checkout_failed');
+    }
 
-  if (!session.url) {
-    throw new Error('Stripe checkout session missing url');
+    return session.url;
+  } catch (err) {
+    const isRedirectError =
+      err instanceof Error && err.message === 'NEXT_REDIRECT';
+    if (isRedirectError) throw err;
+    const errorObj =
+      err instanceof Error
+        ? err
+        : { code: 'UNKNOWN', message: String(err) };
+    billingLogger.error('checkout_session_failed', errorObj, {
+      planKey,
+      orgId,
+    });
+    redirect('/app/billing?status=checkout_failed');
   }
-
-  // Return the URL instead of redirecting for client-side handling
-  return session.url;
 }
 
 export async function openCustomerPortal() {

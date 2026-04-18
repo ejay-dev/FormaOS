@@ -143,12 +143,15 @@ async function buildVendorTrustPacketPdf(payload: {
 
   drawH2('Uptime Signals (Non-SLA)');
   drawP(`Last 24/7 ops signal based on published health checks:`);
-  drawP(
-    `7 days uptime: ${payload.uptime.last7d.uptimePercent}% (${payload.uptime.last7d.checks} checks)`,
-  );
-  drawP(
-    `30 days uptime: ${payload.uptime.last30d.uptimePercent}% (${payload.uptime.last30d.checks} checks)`,
-  );
+  const formatUptimeLine = (
+    label: string,
+    window: { uptimePercent: number; checks: number },
+  ) =>
+    window.checks > 0
+      ? `${label}: ${window.uptimePercent}% (${window.checks} checks)`
+      : `${label}: monitoring is active; published health data will populate this window shortly.`;
+  drawP(formatUptimeLine('7 days uptime', payload.uptime.last7d));
+  drawP(formatUptimeLine('30 days uptime', payload.uptime.last30d));
 
   y -= 8;
 

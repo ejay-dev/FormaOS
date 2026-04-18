@@ -113,24 +113,30 @@ function addCoverPage(
   doc.setTextColor(...COLORS.muted);
   doc.text(report.organizationName, 20, 140);
 
-  // Readiness score circle
-  const scoreX = pageWidth - 60;
-  const scoreY = 130;
-  const scoreRadius = 30;
+  // Trust packets are procurement summaries, not readiness scorecards — suppress the score circle.
+  // Also suppress the circle when no controls have been evaluated (score is meaningless).
+  const showScoreCircle =
+    reportType !== 'trust' && report.controlSummary.total > 0;
 
-  // Score background circle
-  doc.setFillColor(...COLORS.background);
-  doc.circle(scoreX, scoreY, scoreRadius, 'F');
+  if (showScoreCircle) {
+    const scoreX = pageWidth - 60;
+    const scoreY = 130;
+    const scoreRadius = 30;
 
-  // Score value
-  doc.setFontSize(28);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...getScoreColor(report.readinessScore));
-  doc.text(`${report.readinessScore}%`, scoreX, scoreY + 5, { align: 'center' });
+    doc.setFillColor(...COLORS.background);
+    doc.circle(scoreX, scoreY, scoreRadius, 'F');
 
-  doc.setFontSize(10);
-  doc.setTextColor(...COLORS.muted);
-  doc.text('Readiness', scoreX, scoreY + 15, { align: 'center' });
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...getScoreColor(report.readinessScore));
+    doc.text(`${report.readinessScore}%`, scoreX, scoreY + 5, {
+      align: 'center',
+    });
+
+    doc.setFontSize(10);
+    doc.setTextColor(...COLORS.muted);
+    doc.text('Readiness', scoreX, scoreY + 15, { align: 'center' });
+  }
 
   // Report metadata
   doc.setFontSize(11);
@@ -519,13 +525,36 @@ function getReportTitle(reportType: ReportType): string {
 }
 
 function getSummaryText(report: BaseReportPayload): string {
-  const score = report.readinessScore;
-  const status = score >= 80 ? 'audit-ready' : score >= 60 ? 'progressing well' : score >= 40 ? 'developing' : 'early stage';
+  if (report.frameworkCode === 'TRUST') {
+    return (
+      `This Buyer Trust Packet summarises ${report.organizationName}'s security, privacy, and operational posture for procurement review. ` +
+      `It describes implemented controls, evidence availability, and the organization's approach to aligned compliance frameworks (e.g. SOC 2, ISO 27001) using safe, verifiable language.`
+    );
+  }
 
-  return `This report provides a comprehensive assessment of ${report.organizationName}'s compliance posture for ${report.frameworkName}. ` +
+  if (report.controlSummary.total === 0) {
+    return (
+      `This report summarises ${report.organizationName}'s compliance posture for ${report.frameworkName}. ` +
+      `Control evaluations have not yet been recorded, so the readiness score and control counts will populate once assessments are completed.`
+    );
+  }
+
+  const score = report.readinessScore;
+  const status =
+    score >= 80
+      ? 'audit-ready'
+      : score >= 60
+        ? 'progressing well'
+        : score >= 40
+          ? 'developing'
+          : 'early stage';
+
+  return (
+    `This report provides a comprehensive assessment of ${report.organizationName}'s compliance posture for ${report.frameworkName}. ` +
     `With a current readiness score of ${score}%, the organization is at a ${status} compliance maturity level. ` +
     `${report.controlSummary.satisfied} of ${report.controlSummary.total} controls are satisfied, ` +
-    `with ${report.evidenceSummary.verified} pieces of verified evidence supporting the compliance program.`;
+    `with ${report.evidenceSummary.verified} pieces of verified evidence supporting the compliance program.`
+  );
 }
 
 function getScoreColor(score: number): [number, number, number] {

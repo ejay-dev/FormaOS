@@ -96,7 +96,16 @@ export function PlanComparisonTable() {
         window.location.href = result;
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start checkout');
+      const raw = err instanceof Error ? err.message : '';
+      const isFrameworkError =
+        raw.includes('Server Components render') ||
+        raw.includes('digest property') ||
+        !raw;
+      setError(
+        isFrameworkError
+          ? 'Checkout could not be started. Please try again, or contact Formaos.team@gmail.com if the issue persists.'
+          : raw,
+      );
     } finally {
       setLoadingPlan(null);
     }

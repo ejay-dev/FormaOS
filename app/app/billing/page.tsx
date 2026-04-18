@@ -194,6 +194,21 @@ export default function BillingPage() {
           Enterprise billing can be coordinated via Formaos.team@gmail.com.
         </div>
       ) : null}
+      {status === 'checkout_failed' ? (
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          We couldn&apos;t start checkout. Please try again, or contact Formaos.team@gmail.com if the issue persists.
+        </div>
+      ) : null}
+      {status === 'stripe_unavailable' ? (
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          Billing is temporarily unavailable. Please try again shortly.
+        </div>
+      ) : null}
+      {status === 'missing_price' ? (
+        <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          This plan isn&apos;t currently available for self-serve checkout. Contact Formaos.team@gmail.com to proceed.
+        </div>
+      ) : null}
       {trialExpired ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           Your trial has expired. Activate a subscription to regain access.
