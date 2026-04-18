@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Plus, Search, Filter, AlertTriangle, Users } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { ParticipantsEmptyState } from '@/components/empty-states';
 
 // Get industry-appropriate label
 function getEntityLabel(industry: string | null): {
@@ -349,35 +350,11 @@ export default async function ParticipantsPage({
                   ))}
                   {(!participants || participants.length === 0) && (
                     <tr>
-                      <td
-                        colSpan={6}
-                        className="px-4 py-12 text-center text-muted-foreground"
-                      >
-                        <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        {hasFilters ? (
-                          <>
-                            <p>
-                              No {labels.plural.toLowerCase()} matched your
-                              filters
-                            </p>
-                            <Link
-                              href="/app/participants"
-                              className="text-primary hover:underline mt-2 inline-block"
-                            >
-                              Clear filters
-                            </Link>
-                          </>
-                        ) : (
-                          <>
-                            <p>No {labels.plural.toLowerCase()} yet</p>
-                            <Link
-                              href="/app/participants/new"
-                              className="text-primary hover:underline mt-2 inline-block"
-                            >
-                              Add your first {labels.singular.toLowerCase()}
-                            </Link>
-                          </>
-                        )}
+                      <td colSpan={6} className="p-0">
+                        <ParticipantsEmptyState
+                          industry={industry as 'ndis' | 'healthcare' | 'aged_care' | 'childcare' | null}
+                          filtered={hasFilters}
+                        />
                       </td>
                     </tr>
                   )}

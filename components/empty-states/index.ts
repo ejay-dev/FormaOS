@@ -8,6 +8,9 @@ export {
   ComplianceEmptyState,
   IncidentsEmptyState,
   CertificatesEmptyState,
+  CarePlansEmptyState,
+  ParticipantsEmptyState,
+  EvidenceExpiringEmptyState,
   type EmptyStateProps,
   type EmptyStateAction,
 } from './empty-state';

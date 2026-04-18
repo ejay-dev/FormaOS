@@ -17,6 +17,7 @@ import {
   Target,
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { CarePlansEmptyState } from '@/components/empty-states';
 
 export const metadata = {
   title: 'Care Plans | FormaOS',
@@ -340,18 +341,10 @@ export default async function CarePlansPage() {
             })}
             {(!carePlans || carePlans.length === 0) && (
               <tr>
-                <td
-                  colSpan={7}
-                  className="px-4 py-8 text-center text-muted-foreground"
-                >
-                  <FileText className="h-8 w-8 mx-auto mb-3 opacity-50" />
-                  <p>No care plans created yet</p>
-                  <Link
-                    href="/app/care-plans/new"
-                    className="text-primary hover:underline mt-2 inline-block"
-                  >
-                    Create your first plan
-                  </Link>
+                <td colSpan={7} className="p-0">
+                  <CarePlansEmptyState
+                    industry={organization.industry as 'ndis' | 'healthcare' | 'aged_care' | 'childcare' | null}
+                  />
                 </td>
               </tr>
             )}

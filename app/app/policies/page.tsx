@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useOrgId } from '@/lib/stores/app';
 import { createSupabaseClient } from '@/lib/supabase/client';
+import { PoliciesEmptyState } from '@/components/empty-states';
 
 type PolicyRow = {
   id: string;
@@ -157,11 +158,7 @@ export default function PoliciesPage() {
         {/* The Table */}
         <div className="divide-y divide-border">
           {allPolicies.length === 0 ? (
-            <div className="py-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                No policies found. Create one or use an Industry Pack.
-              </p>
-            </div>
+            <PoliciesEmptyState />
           ) : (
             allPolicies.map((policy) => (
               <Link

@@ -18,7 +18,7 @@ import { FrameworkHealthWidget } from '@/components/intelligence/FrameworkHealth
 import { AIComplianceAssistantPanel } from '@/components/intelligence/AIComplianceAssistantPanel';
 import { ComplianceScoreHistory } from '@/components/compliance/ComplianceScoreHistory';
 import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePanel';
-import { ComplianceSummaryCards } from '@/components/compliance/ComplianceSummaryCards';
+import { ComplianceHeroBand } from '@/components/compliance/ComplianceHeroBand';
 import { MyActionsWidget } from '@/components/compliance/MyActionsWidget';
 import { UpcomingDeadlinesWidget } from '@/components/compliance/UpcomingDeadlinesWidget';
 import {
@@ -398,9 +398,9 @@ export function EmployerDashboard({
 
   return (
     <div className="space-y-4">
-      {/* Compliance Summary Cards */}
-      <ErrorBoundary name="ComplianceSummaryCards" level="component">
-        <ComplianceSummaryCards />
+      {/* Compliance readiness hero */}
+      <ErrorBoundary name="ComplianceHeroBand" level="component">
+        <ComplianceHeroBand />
       </ErrorBoundary>
 
       {/* Command center — actionable attention surface */}

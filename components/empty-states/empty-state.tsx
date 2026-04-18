@@ -11,6 +11,8 @@ import {
   CheckCircle,
   Upload,
   Search,
+  HeartPulse,
+  UserPlus,
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -42,6 +44,8 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
   certificates: CheckCircle,
   uploads: Upload,
   search: Search,
+  carePlans: HeartPulse,
+  participants: UserPlus,
   default: FolderOpen,
 };
 
@@ -210,14 +214,15 @@ export function PoliciesEmptyState({
   return (
     <EmptyState
       module="policies"
-      title="No policies created yet"
-      description="Policies define your organization's compliance posture. Start with a template or create from scratch."
-      action={{
-        label: 'Create Policy',
-        onClick: onCreateAction,
-      }}
+      title="Your policy library is empty"
+      description="Policies define your governance posture. Draft with AI, start from a template, or upload an existing document."
+      action={
+        onCreateAction
+          ? { label: 'Draft with AI', onClick: onCreateAction }
+          : { label: 'Draft with AI', href: '/app/policies/new' }
+      }
       secondaryAction={{
-        label: 'Browse Templates',
+        label: 'Use a template',
         href: '/app/policies?templates=true',
       }}
       ownerSuggestion="Compliance Lead or department head"
@@ -315,6 +320,108 @@ export function CertificatesEmptyState({
         label: 'Add Certificate',
         onClick: onAddAction,
       }}
+    />
+  );
+}
+
+type CareIndustry = 'ndis' | 'healthcare' | 'aged_care' | 'childcare' | null;
+
+export function CarePlansEmptyState({
+  industry,
+  filtered = false,
+}: {
+  industry?: CareIndustry;
+  filtered?: boolean;
+}) {
+  const planLabel =
+    industry === 'ndis'
+      ? 'support plan'
+      : industry === 'healthcare'
+        ? 'clinical plan'
+        : industry === 'childcare'
+          ? 'learning plan'
+          : 'care plan';
+
+  if (filtered) {
+    return (
+      <EmptyState
+        module="search"
+        title={`No ${planLabel}s matched your filters`}
+        description="Try clearing filters or adjusting the date range."
+        action={{ label: 'Clear filters', href: '/app/care-plans', variant: 'outline' }}
+        compact
+      />
+    );
+  }
+
+  return (
+    <EmptyState
+      module="carePlans"
+      title={`No ${planLabel}s yet`}
+      description={`${planLabel.charAt(0).toUpperCase() + planLabel.slice(1)}s turn assessed needs into daily routines your team can run against — with goals, supports, and review schedules.`}
+      action={{ label: `Create first ${planLabel}`, href: '/app/care-plans/new' }}
+      secondaryAction={{
+        label: 'Browse templates',
+        href: '/app/care-plans?templates=true',
+      }}
+      ownerSuggestion="Care coordinator or clinical lead"
+    />
+  );
+}
+
+export function ParticipantsEmptyState({
+  industry,
+  filtered = false,
+}: {
+  industry?: CareIndustry;
+  filtered?: boolean;
+}) {
+  const labels = {
+    ndis: { singular: 'participant', plural: 'participants' },
+    healthcare: { singular: 'patient', plural: 'patients' },
+    aged_care: { singular: 'resident', plural: 'residents' },
+    childcare: { singular: 'child', plural: 'children' },
+  } as const;
+
+  const l =
+    (industry && labels[industry as keyof typeof labels]) ??
+    ({ singular: 'client', plural: 'clients' } as const);
+
+  if (filtered) {
+    return (
+      <EmptyState
+        module="search"
+        title={`No ${l.plural} matched your filters`}
+        description="Adjust or clear your filters to see all records."
+        action={{ label: 'Clear filters', href: '/app/participants', variant: 'outline' }}
+        compact
+      />
+    );
+  }
+
+  return (
+    <EmptyState
+      module="participants"
+      title={`No ${l.plural} yet`}
+      description={`Add your first ${l.singular} to start tracking care records, goals, and visit schedules. You can also import a CSV.`}
+      action={{ label: `Add first ${l.singular}`, href: '/app/participants/new' }}
+      secondaryAction={{
+        label: 'Import CSV',
+        href: '/app/participants/import',
+      }}
+      ownerSuggestion="Intake coordinator"
+    />
+  );
+}
+
+export function EvidenceExpiringEmptyState() {
+  return (
+    <EmptyState
+      module="evidence"
+      icon={CheckCircle}
+      title="Nothing expiring soon"
+      description="All collected evidence is current. We'll alert you 30 days before any item expires."
+      compact
     />
   );
 }
