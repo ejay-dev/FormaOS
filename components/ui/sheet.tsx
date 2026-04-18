@@ -29,7 +29,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/50",
+        "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm",
         className
       )}
       {...props}
@@ -57,7 +57,7 @@ function SheetContent({
           side === "left" &&
             "inset-y-0 left-0 h-full w-[90vw] max-w-[360px] border-r border-glass-border sm:w-3/4 sm:max-w-sm",
           side === "top" &&
-            "inset-x-0 top-0 h-auto max-h-[90vh] border-b border-white/10",
+            "inset-x-0 top-0 h-auto max-h-[90vh] border-b border-border",
           side === "bottom" &&
             "inset-x-0 bottom-0 h-auto max-h-[90vh] border-t border-glass-border rounded-t-2xl",
           className
@@ -65,7 +65,7 @@ function SheetContent({
         {...props}
       >
         {children}
-        <SheetPrimitive.Close aria-label="Close" className="absolute top-4 right-4 rounded-md p-1 opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-sky-500/30">
+        <SheetPrimitive.Close aria-label="Close" className="absolute top-4 right-4 rounded-md p-1 opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50">
           <XIcon className="h-4 w-4 text-muted-foreground" />
           <span className="sr-only">Close</span>
         </SheetPrimitive.Close>
