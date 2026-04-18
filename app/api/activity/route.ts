@@ -2,25 +2,11 @@ import { NextResponse } from 'next/server';
 import { getActivityFeed } from '@/lib/activity/feed';
 import { requireNotificationContext } from '@/lib/notifications/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
-
-function toCsv(rows: Array<Record<string, unknown>>) {
-  if (!rows.length) return '';
-  const headers = Object.keys(rows[0]);
-  const lines = [
-    headers.join(','),
-    ...rows.map((row) =>
-      headers
-        .map((header) => {
-          const value = row[header];
-          const text =
-            typeof value === 'string' ? value : JSON.stringify(value ?? '');
-          return `"${text.replace(/"/g, '""')}"`;
-        })
-        .join(','),
-    ),
-  ];
-  return lines.join('\n');
-}
+import {
+  attachmentHeaders,
+  formatTabular,
+  parseFormatOrNull,
+} from '@/lib/exports/formatters';
 
 export async function GET(request: Request) {
   try {
@@ -33,7 +19,7 @@ export async function GET(request: Request) {
     }
     const { searchParams } = new URL(request.url);
     const context = await requireNotificationContext(searchParams.get('orgId'));
-    const format = searchParams.get('format');
+    const format = parseFormatOrNull(searchParams.get('format'));
     const result = await getActivityFeed(context.orgId, {
       cursor: searchParams.get('cursor'),
       limit: Number(searchParams.get('limit') ?? '25') || 25,
@@ -46,24 +32,23 @@ export async function GET(request: Request) {
       },
     });
 
-    if (format === 'csv') {
-      const csv = toCsv(
-        result.items.map((item) => ({
-          created_at: item.created_at,
-          actor_name: item.actor_name ?? item.actor_email ?? 'System',
-          action: item.action,
-          resource_type: item.resource_type,
-          resource_name: item.resource_name ?? '',
-          resource_id: item.resource_id ?? '',
-          metadata: JSON.stringify(item.metadata ?? {}),
-        })),
-      );
-
-      return new NextResponse(csv, {
-        headers: {
-          'Content-Type': 'text/csv; charset=utf-8',
-          'Content-Disposition': 'attachment; filename="activity-feed.csv"',
-        },
+    if (format) {
+      const rows = result.items.map((item) => ({
+        created_at: item.created_at,
+        actor_name: item.actor_name ?? item.actor_email ?? 'System',
+        action: item.action,
+        resource_type: item.resource_type,
+        resource_name: item.resource_name ?? '',
+        resource_id: item.resource_id ?? '',
+        metadata: JSON.stringify(item.metadata ?? {}),
+      }));
+      const exported = formatTabular(rows, format, {
+        title: 'Activity Feed',
+        generatedAt: new Date().toISOString(),
+        description: `Activity feed for organization ${context.orgId}.`,
+      });
+      return new NextResponse(exported.body, {
+        headers: attachmentHeaders('activity-feed', exported),
       });
     }
 

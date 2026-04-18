@@ -3,7 +3,7 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getUserDashboard } from '@/lib/dashboard/dashboard-engine';
 import { DashboardGrid } from '@/components/dashboard/dashboard-grid';
-import { LayoutDashboard, Plus, Settings } from 'lucide-react';
+import { LayoutDashboard, Settings } from 'lucide-react';
 
 export const metadata = { title: 'Dashboard | FormaOS' };
 
@@ -104,16 +104,10 @@ export default async function DashboardBuilderPage() {
         </div>
         <div className="flex gap-2">
           <a
-            href="/app/dashboard/customize"
+            href="/app/settings"
             className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded hover:bg-muted"
           >
-            <Settings className="h-4 w-4" /> Customize
-          </a>
-          <a
-            href="/app/dashboard/customize?add=true"
-            className="inline-flex items-center gap-1 px-3 py-2 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90"
-          >
-            <Plus className="h-4 w-4" /> Add Widget
+            <Settings className="h-4 w-4" /> Settings
           </a>
         </div>
       </div>

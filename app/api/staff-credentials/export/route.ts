@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
@@ -7,21 +7,16 @@ import {
   getUserIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
-
 } from '@/lib/security/rate-limiter';
+import {
+  attachmentHeaders,
+  formatTabular,
+  parseFormat,
+} from '@/lib/exports/formatters';
 
 const log = routeLog('/api/staff-credentials/export');
 
-function escapeCsv(value: unknown): string {
-  if (value === null || value === undefined) return '';
-  const text = String(value);
-  if (text.includes('"') || text.includes(',') || text.includes('\n')) {
-    return `"${text.replace(/"/g, '""')}"`;
-  }
-  return text;
-}
-
-export async function GET() {
+export async function GET(request: NextRequest) {
   const rlUserId = await getUserIdentifier();
   const rlIdentifier = rlUserId ?? (await getClientIdentifier());
   const rl = await checkRateLimit(RATE_LIMITS.EXPORT, rlIdentifier, rlUserId);
@@ -45,7 +40,7 @@ export async function GET() {
 
     const { data: membership } = await supabase
       .from('org_members')
-      .select('organization_id')
+      .select('organization_id, organizations(name)')
       .eq('user_id', user.id)
       .maybeSingle();
 
@@ -78,54 +73,43 @@ export async function GET() {
       .limit(5000);
 
     if (error) {
-      log.error({ err: error.message }, "[staff-credentials/export] query failed:");
+      log.error({ err: error.message }, '[staff-credentials/export] query failed:');
       return NextResponse.json({ error: 'export_query_failed' }, { status: 500 });
     }
 
-    const headers = [
-      'credential_id',
-      'staff_email',
-      'type',
-      'name',
-      'credential_number',
-      'issuing_authority',
-      'issue_date',
-      'expiry_date',
-      'status',
-      'verified_at',
-    ];
+    const mapped = (rows ?? []).map((row) => ({
+      credential_id: row.id,
+      staff_email: (row.user as { email?: string } | null)?.email ?? '',
+      type: row.credential_type,
+      name: row.credential_name,
+      credential_number: row.credential_number,
+      issuing_authority: row.issuing_authority,
+      issue_date: row.issue_date,
+      expiry_date: row.expiry_date,
+      status: row.status,
+      verified_at: row.verified_at,
+    }));
 
-    const lines = [headers.join(',')];
-    for (const row of rows ?? []) {
-      const values = [
-        row.id,
-        (row.user as { email?: string } | null)?.email ?? '',
-        row.credential_type,
-        row.credential_name,
-        row.credential_number,
-        row.issuing_authority,
-        row.issue_date,
-        row.expiry_date,
-        row.status,
-        row.verified_at,
-      ].map(escapeCsv);
-      lines.push(values.join(','));
-    }
-
+    const format = parseFormat(request.nextUrl.searchParams.get('format'));
+    const orgName =
+      (membership as unknown as { organizations?: { name?: string } })
+        ?.organizations?.name ?? 'Organization';
     const today = new Date().toISOString().slice(0, 10);
-    const filename = `staff_credentials_export_${today}.csv`;
-    const csv = lines.join('\n');
 
-    return new NextResponse(csv, {
+    const result = formatTabular(mapped, format, {
+      title: 'Staff Credentials',
+      organizationName: orgName,
+      generatedAt: new Date().toISOString(),
+      description:
+        'Staff credential register sorted by expiry date (most urgent first).',
+    });
+
+    return new NextResponse(result.body, {
       status: 200,
-      headers: {
-        'Content-Type': 'text/csv; charset=utf-8',
-        'Content-Disposition': `attachment; filename="${filename}"`,
-        'Cache-Control': 'no-store',
-      },
+      headers: attachmentHeaders(`staff_credentials_export_${today}`, result),
     });
   } catch (error) {
-    log.error({ err: error }, "[api/staff-credentials/export] Error:");
+    log.error({ err: error }, '[api/staff-credentials/export] Error:');
     return NextResponse.json(
       { error: 'Failed to export staff credentials' },
       { status: 500 },

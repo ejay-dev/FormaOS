@@ -172,10 +172,6 @@ export function UpgradeTriggerPoints() {
   const [showModal, setShowModal] = useState(false);
   const [modalFeature, setModalFeature] = useState('');
 
-  // Don't render if not applicable
-  if (!isTrialUser && !isExpired) return null;
-  if (!canManageBilling) return null;
-
   const dismissTrigger = useCallback((id: string) => {
     setTriggerState((prev) => ({
       ...prev,
@@ -189,16 +185,23 @@ export function UpgradeTriggerPoints() {
     setShowModal(true);
   }, []);
 
+  const shouldRender = (isTrialUser || isExpired) && canManageBilling;
+
   // Determine which trigger to show for current route
-  const matchedTrigger = ROUTE_TRIGGERS.find(
-    (t) =>
-      t.routes.some((r) => pathname === r || pathname.startsWith(r + '/')) &&
-      canShowTrigger(t.id, triggerState) &&
-      isFeatureLocked(t.featureId),
-  );
+  const matchedTrigger = shouldRender
+    ? ROUTE_TRIGGERS.find(
+        (t) =>
+          t.routes.some(
+            (r) => pathname === r || pathname.startsWith(r + '/'),
+          ) &&
+          canShowTrigger(t.id, triggerState) &&
+          isFeatureLocked(t.featureId),
+      )
+    : undefined;
 
   // Trigger 7: Usage milestone — fires on any page when total actions exceed threshold
   const showMilestoneTrigger =
+    shouldRender &&
     !matchedTrigger &&
     totalActions >= 20 &&
     canShowTrigger('usage-milestone', triggerState) &&
@@ -206,6 +209,7 @@ export function UpgradeTriggerPoints() {
 
   // Mark route trigger as shown
   useEffect(() => {
+    if (!shouldRender) return;
     const triggerId =
       matchedTrigger?.id ?? (showMilestoneTrigger ? 'usage-milestone' : null);
     if (triggerId && triggerId !== activeTriggerId) {
@@ -215,8 +219,9 @@ export function UpgradeTriggerPoints() {
         lastShown: { ...prev.lastShown, [triggerId]: Date.now() },
       }));
     }
-  }, [matchedTrigger?.id, showMilestoneTrigger, activeTriggerId]);
+  }, [shouldRender, matchedTrigger?.id, showMilestoneTrigger, activeTriggerId]);
 
+  if (!shouldRender) return null;
   if (!matchedTrigger && !showMilestoneTrigger) return null;
 
   if (matchedTrigger) {

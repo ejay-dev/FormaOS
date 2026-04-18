@@ -6,14 +6,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import {
-  Plus,
-  Search,
-  FileText,
-  Eye,
-  BarChart3,
-  ClipboardList,
-} from 'lucide-react';
+import { Plus, Search, FileText, Eye, BarChart3 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 
 function formatDate(date: string | null) {
@@ -119,14 +112,6 @@ export default async function FormsPage({
           </p>
         </div>
         <div className="flex gap-2">
-          <Link
-            href="/app/forms/templates"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border text-sm hover:bg-accent/30 transition-colors"
-            data-testid="browse-templates-btn"
-          >
-            <ClipboardList className="h-3.5 w-3.5" />
-            Templates
-          </Link>
           <Link
             href="/app/forms/builder/new"
             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
