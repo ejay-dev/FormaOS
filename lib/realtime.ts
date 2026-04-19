@@ -340,29 +340,4 @@ export async function logActivity(
   }
 }
 
-/**
- * Send notification to user
- */
-export async function sendNotification(
-  userId: string,
-  title: string,
-  message: string,
-  type: 'info' | 'success' | 'warning' | 'error' = 'info',
-  actionUrl?: string,
-) {
-  const supabase = createSupabaseClient();
-
-  const { error } = await supabase.from('notifications').insert({
-    user_id: userId,
-    title,
-    message,
-    type,
-    action_url: actionUrl,
-    read: false,
-    created_at: new Date().toISOString(),
-  });
-
-  if (error) {
-    console.error('Failed to send notification:', error);
-  }
-}
+export { sendNotification } from '@/lib/notifications/send';

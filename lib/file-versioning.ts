@@ -7,7 +7,7 @@
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from './audit-trail';
-import { sendNotification } from './realtime';
+import { sendNotification } from '@/lib/notifications/send';
 
 export interface FileVersion {
   id?: string;

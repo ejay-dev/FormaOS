@@ -7,7 +7,7 @@
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from '@/lib/audit-trail';
-import { sendNotification } from '@/lib/realtime';
+import { sendNotification } from '@/lib/notifications/send';
 
 export type ComplianceFramework =
   | 'soc2'
