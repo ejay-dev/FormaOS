@@ -6,11 +6,20 @@ import { updateComment, deleteComment } from '@/lib/comments';
 
 const log = routeLog('/api/comments/[commentId]');
 
-async function requireUser() {
+async function requireUserAndOrg() {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
-  return user;
+
+  const { data: membership } = await supabase
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', user.id)
+    .maybeSingle();
+  const orgId = membership?.organization_id as string | undefined;
+  if (!orgId) return null;
+
+  return { user, orgId };
 }
 
 export async function PUT(
@@ -23,8 +32,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
     }
 
-    const user = await requireUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const ctx = await requireUserAndOrg();
+    if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { commentId } = await params;
     const body = (await request.json().catch(() => ({}))) as { content?: string };
@@ -32,7 +41,7 @@ export async function PUT(
       return NextResponse.json({ error: 'content required' }, { status: 400 });
     }
 
-    const comment = await updateComment(commentId, user.id, body.content);
+    const comment = await updateComment(commentId, ctx.user.id, body.content, ctx.orgId);
     return NextResponse.json({ comment });
   } catch (err) {
     log.error({ err }, 'failed to update comment');
@@ -54,11 +63,11 @@ export async function DELETE(
       return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
     }
 
-    const user = await requireUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const ctx = await requireUserAndOrg();
+    if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { commentId } = await params;
-    await deleteComment(commentId, user.id);
+    await deleteComment(commentId, ctx.user.id, ctx.orgId);
     return NextResponse.json({ ok: true });
   } catch (err) {
     log.error({ err }, 'failed to delete comment');

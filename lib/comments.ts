@@ -212,17 +212,22 @@ export async function updateComment(
   commentId: string,
   userId: string,
   content: string,
+  callerOrgId: string,
 ): Promise<Comment> {
   const supabase = await createClient();
 
-  // Verify user owns the comment
+  // Verify user owns the comment and it belongs to caller's org
   const { data: existing } = await supabase
     .from('comments')
     .select('user_id, organization_id')
     .eq('id', commentId)
     .maybeSingle();
 
-  if (!existing || existing.user_id !== userId) {
+  if (!existing || existing.organization_id !== callerOrgId) {
+    throw new Error('Unauthorized to edit this comment');
+  }
+
+  if (existing.user_id !== userId) {
     throw new Error('Unauthorized to edit this comment');
   }
 
@@ -264,17 +269,22 @@ export async function updateComment(
 export async function deleteComment(
   commentId: string,
   userId: string,
+  callerOrgId: string,
 ): Promise<void> {
   const supabase = await createClient();
 
-  // Verify user owns the comment
+  // Verify user owns the comment and it belongs to caller's org
   const { data: existing } = await supabase
     .from('comments')
     .select('user_id, organization_id')
     .eq('id', commentId)
     .maybeSingle();
 
-  if (!existing || existing.user_id !== userId) {
+  if (!existing || existing.organization_id !== callerOrgId) {
+    throw new Error('Unauthorized to delete this comment');
+  }
+
+  if (existing.user_id !== userId) {
     throw new Error('Unauthorized to delete this comment');
   }
 
@@ -301,8 +311,20 @@ export async function addReaction(
   commentId: string,
   userId: string,
   emoji: string,
+  callerOrgId: string,
 ): Promise<CommentReaction> {
   const supabase = await createClient();
+
+  // Verify the comment belongs to the caller's org
+  const { data: comment } = await supabase
+    .from('comments')
+    .select('organization_id')
+    .eq('id', commentId)
+    .maybeSingle();
+
+  if (!comment || comment.organization_id !== callerOrgId) {
+    throw new Error('Unauthorized to react to this comment');
+  }
 
   // Check if user already reacted with this emoji
   const { data: existing } = await supabase
@@ -342,8 +364,31 @@ export async function addReaction(
 export async function removeReaction(
   reactionId: string,
   userId: string,
+  callerOrgId: string,
 ): Promise<void> {
   const supabase = await createClient();
+
+  // Verify the reaction's parent comment belongs to the caller's org
+  const { data: reaction } = await supabase
+    .from('comment_reactions')
+    .select('comment_id')
+    .eq('id', reactionId)
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (!reaction) {
+    throw new Error('Unauthorized to remove this reaction');
+  }
+
+  const { data: comment } = await supabase
+    .from('comments')
+    .select('organization_id')
+    .eq('id', reaction.comment_id)
+    .maybeSingle();
+
+  if (!comment || comment.organization_id !== callerOrgId) {
+    throw new Error('Unauthorized to remove this reaction');
+  }
 
   const { error } = await supabase
     .from('comment_reactions')

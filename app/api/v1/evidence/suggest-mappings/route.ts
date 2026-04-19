@@ -5,14 +5,14 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 
 const log = routeLog('/api/v1/evidence/suggest-mappings');
 
-const KEYWORD_RULES: Array<{ pattern: RegExp; controlCode: string; confidence: 'high' | 'medium' | 'low' }> = [
-  { pattern: /access[-_\s]?control|iam|rbac/i, controlCode: 'A.9', confidence: 'high' },
-  { pattern: /incident|breach|report/i, controlCode: 'A.16', confidence: 'high' },
-  { pattern: /backup|recovery|disaster/i, controlCode: 'A.17', confidence: 'high' },
-  { pattern: /encryption|crypto|tls|ssl/i, controlCode: 'A.10', confidence: 'medium' },
-  { pattern: /audit|log|monitoring/i, controlCode: 'A.12', confidence: 'medium' },
-  { pattern: /policy|procedure|standard/i, controlCode: 'A.5', confidence: 'medium' },
-  { pattern: /training|awareness/i, controlCode: 'A.7', confidence: 'low' },
+const KEYWORD_RULES: Array<{ pattern: RegExp; controlCode: string; confidence: 'high' | 'medium' | 'low'; reason: string }> = [
+  { pattern: /access[-_\s]?control|iam|rbac/i, controlCode: 'A.9', confidence: 'high', reason: 'File name references access control or identity management' },
+  { pattern: /incident|breach|report/i, controlCode: 'A.16', confidence: 'high', reason: 'File name references incident management or breach reporting' },
+  { pattern: /backup|recovery|disaster/i, controlCode: 'A.17', confidence: 'high', reason: 'File name references business continuity or disaster recovery' },
+  { pattern: /encryption|crypto|tls|ssl/i, controlCode: 'A.10', confidence: 'medium', reason: 'File name references cryptographic controls' },
+  { pattern: /audit|log|monitoring/i, controlCode: 'A.12', confidence: 'medium', reason: 'File name references operations security or monitoring' },
+  { pattern: /policy|procedure|standard/i, controlCode: 'A.5', confidence: 'medium', reason: 'File name references information security policies' },
+  { pattern: /training|awareness/i, controlCode: 'A.7', confidence: 'low', reason: 'File name references human resource security or training' },
 ];
 
 export async function POST(request: Request) {
@@ -54,9 +54,10 @@ export async function POST(request: Request) {
       const rule = matches.find((m) => m.controlCode === c.code);
       return {
         controlId: c.id as string,
-        controlCode: c.code as string,
-        controlTitle: c.title as string | null,
+        code: c.code as string,
+        title: (c.title as string | null) ?? '',
         confidence: rule?.confidence ?? 'low',
+        reason: rule?.reason ?? '',
       };
     });
 

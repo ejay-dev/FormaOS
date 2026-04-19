@@ -17,6 +17,14 @@ export async function POST(request: Request) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    const orgId = membership?.organization_id as string | undefined;
+    if (!orgId) return NextResponse.json({ error: 'No organization' }, { status: 400 });
+
     const body = (await request.json().catch(() => ({}))) as {
       commentId?: string;
       emoji?: string;
@@ -25,10 +33,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'commentId + emoji required' }, { status: 400 });
     }
 
-    const reaction = await addReaction(body.commentId, user.id, body.emoji);
+    const reaction = await addReaction(body.commentId, user.id, body.emoji, orgId);
     return NextResponse.json({ reaction });
   } catch (err) {
     log.error({ err }, 'failed to add reaction');
-    return NextResponse.json({ error: 'Failed' }, { status: 500 });
+    const status = err instanceof Error && err.message.includes('Unauthorized') ? 403 : 500;
+    return NextResponse.json({ error: 'Failed' }, { status });
   }
 }
