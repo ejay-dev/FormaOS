@@ -170,7 +170,7 @@ export default async function ComplianceFrameworksPage() {
     <div className="space-y-8 pb-12 animate-in fade-in duration-500">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-black text-foreground tracking-tight">
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">
           Framework Library
         </h1>
         <p className="text-muted-foreground mt-1">

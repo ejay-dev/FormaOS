@@ -131,7 +131,7 @@ export default function CredentialReviewPage() {
 
       <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">
             Verification Queue
           </h1>
           <p className="text-muted-foreground font-medium mt-1 tracking-tight">

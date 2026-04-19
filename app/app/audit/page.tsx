@@ -38,7 +38,7 @@ export default async function AuditTrailPage() {
         <div className="bg-red-50 h-20 w-20 rounded-3xl flex items-center justify-center mb-6 border border-red-100 shadow-sm">
           <AlertTriangle className="h-10 w-10 text-red-600" />
         </div>
-        <h1 className="text-2xl font-black text-neutral-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">
           Access Restricted
         </h1>
         <p className="text-neutral-500 mt-3 font-medium max-w-md mx-auto leading-relaxed">
@@ -74,7 +74,7 @@ export default async function AuditTrailPage() {
         <div className="bg-red-50 h-20 w-20 rounded-3xl flex items-center justify-center mb-6 border border-red-100 shadow-sm">
           <AlertTriangle className="h-10 w-10 text-red-600" />
         </div>
-        <h1 className="text-2xl font-black text-neutral-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">
           Configuration Error
         </h1>
         <p className="text-neutral-500 mt-3 font-medium max-w-md mx-auto leading-relaxed">

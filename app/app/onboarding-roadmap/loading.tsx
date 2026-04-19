@@ -5,7 +5,7 @@ export default function OnboardingRoadmapLoading() {
     <div className="space-y-6 pb-12 animate-in fade-in duration-300">
       <div className="space-y-2">
         <p className="text-xs uppercase tracking-widest text-muted-foreground">Roadmap</p>
-        <h1 className="text-2xl font-bold text-foreground/50">Industry Roadmap</h1>
+        <h1 className="text-2xl font-bold text-foreground/70">Industry Roadmap</h1>
         <Skeleton className="h-4 w-72" />
       </div>
 

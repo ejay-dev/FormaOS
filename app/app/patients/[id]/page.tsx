@@ -214,7 +214,7 @@ export default async function PatientDetailPage({
     <div className="space-y-8 pb-12">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-slate-50">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
             {patient.full_name}
           </h1>
           <p className="text-sm text-muted-foreground">

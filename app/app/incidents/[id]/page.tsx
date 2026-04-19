@@ -95,7 +95,7 @@ export default async function IncidentDetailPage({
           <ArrowLeft className="h-4 w-4" />
           Back to incidents
         </Link>
-        <h1 className="text-3xl font-black tracking-tight">Incident Detail</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Incident Detail</h1>
         <p className="text-sm text-muted-foreground">
           Case status, controls, and closure details.
         </p>

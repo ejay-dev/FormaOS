@@ -77,7 +77,7 @@ export default async function SettingsPage() {
           <div className="h-20 w-20 bg-rose-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-8 border border-rose-400/30 shadow-inner">
             <ShieldCheck className="h-10 w-10 text-rose-300" />
           </div>
-          <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center justify-center gap-3">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center justify-center gap-3">
             Configuration Access Denied
           </h1>
           <p className="text-muted-foreground mt-4 text-sm font-medium leading-relaxed max-w-lg mx-auto">

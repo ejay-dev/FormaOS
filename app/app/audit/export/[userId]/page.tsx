@@ -72,7 +72,7 @@ export default async function AuditExportPage({
       {/* Compliance Header */}
       <header className="border-b-4 border-edge-2 pb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold uppercase tracking-tighter mb-2">
             Compliance Pack
           </h1>
           <div className="flex items-center gap-3 text-muted-foreground">

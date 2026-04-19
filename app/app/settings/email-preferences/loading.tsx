@@ -4,7 +4,7 @@ export default function EmailPreferencesLoading() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       <div className="space-y-2">
-        <h1 className="text-3xl font-black tracking-tight text-foreground/50">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground/70">
           Email Preferences
         </h1>
         <Skeleton className="h-4 w-80" />

@@ -121,7 +121,7 @@ export default function PeoplePage() {
 
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">
             Personnel Oversight
           </h1>
           <p className="mt-1 text-muted-foreground font-medium tracking-tight">

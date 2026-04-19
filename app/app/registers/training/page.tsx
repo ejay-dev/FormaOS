@@ -127,7 +127,7 @@ export default function TrainingRegisterPage() {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">
             Staff Training Register
           </h1>
           <p className="text-muted-foreground mt-1 font-medium">

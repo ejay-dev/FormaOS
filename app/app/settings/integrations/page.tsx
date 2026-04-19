@@ -50,7 +50,7 @@ export default async function IntegrationSettingsPage() {
             <PlugZap className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-foreground">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
               Integration Control Plane
             </h1>
             <p className="mt-2 max-w-3xl text-sm text-muted-foreground">

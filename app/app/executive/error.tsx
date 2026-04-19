@@ -20,7 +20,7 @@ export default function ExecutiveError({
         <p className="text-xs font-black uppercase tracking-[0.24em] text-rose-200">
           Executive Dashboard
         </p>
-        <h1 className="mt-3 text-3xl font-black tracking-tight">
+        <h1 className="mt-3 text-3xl font-bold tracking-tight">
           Unable to load executive intelligence
         </h1>
         <p className="mt-3 text-sm text-rose-100/80">

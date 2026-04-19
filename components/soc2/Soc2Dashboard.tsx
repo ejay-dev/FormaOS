@@ -77,7 +77,7 @@ export function Soc2Dashboard({
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">SOC 2 Readiness</h1>
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">SOC 2 Readiness</h1>
           <p className="text-muted-foreground mt-1">
             Automated evidence collection, gap analysis, and certification readiness tracking.
           </p>

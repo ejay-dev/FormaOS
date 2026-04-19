@@ -149,7 +149,7 @@ export default async function ParticipantDetailPage({
             <ArrowLeft className="h-4 w-4" />
             Back to {label.toLowerCase()} list
           </Link>
-          <h1 className="text-3xl font-black tracking-tight">
+          <h1 className="text-3xl font-bold tracking-tight">
             {profile.full_name}
           </h1>
           <p className="text-sm text-muted-foreground">

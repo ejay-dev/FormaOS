@@ -94,7 +94,7 @@ export default async function StaffCredentialDetailPage({
           <ArrowLeft className="h-4 w-4" />
           Back to staff compliance
         </Link>
-        <h1 className="text-3xl font-black tracking-tight">{credential.credential_name}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{credential.credential_name}</h1>
         <p className="text-sm text-muted-foreground">
           Credential record and verification controls.
         </p>

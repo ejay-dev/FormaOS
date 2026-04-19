@@ -124,7 +124,7 @@ export default async function VisitDetailPage({
           <ArrowLeft className="h-4 w-4" />
           Back to visits
         </Link>
-        <h1 className="text-3xl font-black tracking-tight">Visit Detail</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Visit Detail</h1>
         <p className="text-sm text-muted-foreground">
           Operational details, timeline, and status controls.
         </p>
