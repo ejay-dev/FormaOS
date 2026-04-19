@@ -21,7 +21,7 @@ export function DemoBanner() {
           {/* Left: Demo indicator */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-surface-3 backdrop-blur-sm flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -39,7 +39,7 @@ export function DemoBanner() {
               onClick={restartDemo}
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/20 flex items-center gap-2"
+              className="text-white hover:bg-surface-3 flex items-center gap-2"
             >
               <RotateCcw className="w-4 h-4" />
               Restart Demo
@@ -48,7 +48,7 @@ export function DemoBanner() {
               onClick={exitDemo}
               variant="ghost"
               size="sm"
-              className="text-white hover:bg-white/20 flex items-center gap-2"
+              className="text-white hover:bg-surface-3 flex items-center gap-2"
             >
               <X className="w-4 h-4" />
               Exit Demo

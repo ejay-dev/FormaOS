@@ -37,7 +37,7 @@ function renderInviteState(options: {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] p-6">
       <div className="max-w-md w-full">
-        <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center">
+        <div className="bg-surface-1 rounded-2xl p-8 border border-edge-2 text-center">
           <div
             className={`mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full ${options.iconBg}`}
           >
@@ -115,7 +115,7 @@ export default async function AcceptInvitePage({
           </Link>
           <Link
             href="/auth/signout"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 px-6 py-3 font-semibold text-slate-200 transition-all hover:bg-white/10"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-surface-1 px-6 py-3 font-semibold text-slate-200 transition-all hover:bg-surface-2"
           >
             Sign Out
           </Link>
@@ -200,7 +200,7 @@ export default async function AcceptInvitePage({
           </Link>
           <Link
             href="/auth/signout"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 px-6 py-3 font-semibold text-slate-200 transition-all hover:bg-white/10"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-surface-1 px-6 py-3 font-semibold text-slate-200 transition-all hover:bg-surface-2"
           >
             Sign Out
           </Link>
@@ -212,7 +212,7 @@ export default async function AcceptInvitePage({
   return (
     <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] p-6">
       <div className="max-w-md w-full">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+        <div className="rounded-2xl border border-edge-2 bg-surface-1 p-8 text-center">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/10">
             <ShieldCheck className="h-12 w-12 text-emerald-500" />
           </div>
@@ -231,7 +231,7 @@ export default async function AcceptInvitePage({
                   : 'This invitation can no longer be accepted.'}
             </div>
           ) : null}
-          <div className="mb-8 rounded-2xl border border-white/10 bg-black/10 p-4 text-left">
+          <div className="mb-8 rounded-2xl border border-edge-2 bg-black/10 p-4 text-left">
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
               Invited Email
             </p>
@@ -255,7 +255,7 @@ export default async function AcceptInvitePage({
             </button>
             <Link
               href="/auth/signout"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 px-8 py-4 font-semibold text-slate-200 transition-all hover:bg-white/10"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-surface-1 px-8 py-4 font-semibold text-slate-200 transition-all hover:bg-surface-2"
             >
               Sign Out
             </Link>

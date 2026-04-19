@@ -25,7 +25,7 @@ export function IntegrationCard(props: IntegrationCardProps) {
         : 'outline';
 
   return (
-    <Card className="rounded-[2rem] border border-glass-border bg-white/5">
+    <Card className="rounded-[2rem] border border-glass-border bg-surface-1">
       <CardHeader className="gap-3">
         <div className="flex items-start justify-between gap-4">
           <div>

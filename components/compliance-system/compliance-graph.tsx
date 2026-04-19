@@ -315,7 +315,7 @@ export function LifecycleMini({
           <div
             className={cn(
               'h-2 w-2 rounded-full transition-all',
-              activeTypes.includes(type) ? colors[type] : 'bg-white/20',
+              activeTypes.includes(type) ? colors[type] : 'bg-surface-3',
             )}
             title={type}
           />

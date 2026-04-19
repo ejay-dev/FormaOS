@@ -155,7 +155,7 @@ export function PlanComparisonTable() {
                   ? 'border-sky-400/50 bg-sky-500/5 ring-1 ring-sky-400/20'
                   : isCurrent
                     ? 'border-emerald-400/30 bg-emerald-500/5'
-                    : 'border-glass-border bg-white/5'
+                    : 'border-glass-border bg-surface-1'
               }`}
             >
               {/* Recommended badge */}
@@ -247,10 +247,10 @@ export function PlanComparisonTable() {
       </div>
 
       {/* Detailed comparison table (desktop) */}
-      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-glass-border bg-white/5">
+      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-glass-border bg-surface-1">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/10">
+            <tr className="border-b border-edge-2">
               <th className="text-left px-6 py-4 text-muted-foreground font-medium">
                 Feature
               </th>

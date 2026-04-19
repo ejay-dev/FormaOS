@@ -68,8 +68,8 @@ export function UserActionButtons({ userId, initialLocked: _initialLocked = fals
         onClick={() => handleAction("lock")}
         disabled={loading !== null}
         className={cn(
-          "rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold",
-          "text-slate-200 hover:bg-white/5 transition-all",
+          "rounded-lg border border-edge-2 px-3 py-1.5 text-xs font-bold",
+          "text-slate-200 hover:bg-surface-1 transition-all",
           "flex items-center gap-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "active:scale-95 disabled:active:scale-100"
@@ -87,8 +87,8 @@ export function UserActionButtons({ userId, initialLocked: _initialLocked = fals
         onClick={() => handleAction("unlock")}
         disabled={loading !== null}
         className={cn(
-          "rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold",
-          "text-slate-200 hover:bg-white/5 transition-all",
+          "rounded-lg border border-edge-2 px-3 py-1.5 text-xs font-bold",
+          "text-slate-200 hover:bg-surface-1 transition-all",
           "flex items-center gap-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "active:scale-95 disabled:active:scale-100"
@@ -106,8 +106,8 @@ export function UserActionButtons({ userId, initialLocked: _initialLocked = fals
         onClick={() => handleAction("resend-confirmation")}
         disabled={loading !== null}
         className={cn(
-          "rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold",
-          "text-slate-200 hover:bg-white/5 transition-all",
+          "rounded-lg border border-edge-2 px-3 py-1.5 text-xs font-bold",
+          "text-slate-200 hover:bg-surface-1 transition-all",
           "flex items-center gap-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "active:scale-95 disabled:active:scale-100"

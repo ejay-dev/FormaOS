@@ -51,7 +51,7 @@ export default async function PublicFormPage({
   if (success === 'true') {
     return (
       <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white/5 rounded-2xl border border-white/10 shadow-sm p-8 text-center space-y-4">
+        <div className="max-w-md w-full bg-surface-1 rounded-2xl border border-edge-2 shadow-sm p-8 text-center space-y-4">
           <div className="mx-auto w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
             <CheckCircle2 className="w-6 h-6" />
           </div>
@@ -76,7 +76,7 @@ export default async function PublicFormPage({
   // Render Form
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto bg-white/5 rounded-2xl border border-white/10 shadow-sm overflow-hidden">
+      <div className="max-w-2xl mx-auto bg-surface-1 rounded-2xl border border-edge-2 shadow-sm overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-8 py-6 text-white">
           <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest opacity-70 mb-2">
@@ -120,7 +120,7 @@ export default async function PublicFormPage({
                     type="text"
                     required={field.validation?.required}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-3 rounded-lg border border-edge-2 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition"
                   />
                 )}
 
@@ -130,7 +130,7 @@ export default async function PublicFormPage({
                     type="email"
                     required={field.validation?.required}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition"
+                    className="w-full px-4 py-3 rounded-lg border border-edge-2 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition"
                   />
                 )}
 
@@ -140,7 +140,7 @@ export default async function PublicFormPage({
                     rows={4}
                     required={field.validation?.required}
                     placeholder={field.placeholder}
-                    className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition resize-none"
+                    className="w-full px-4 py-3 rounded-lg border border-edge-2 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition resize-none"
                   />
                 )}
 
@@ -149,7 +149,7 @@ export default async function PublicFormPage({
                     <select
                       name={field.id}
                       required={field.validation?.required}
-                      className="w-full px-4 py-3 rounded-lg border border-white/10 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition appearance-none bg-white/5"
+                      className="w-full px-4 py-3 rounded-lg border border-edge-2 focus:ring-2 focus:ring-sky-500/20 focus:border-transparent outline-none transition appearance-none bg-surface-1"
                     >
                       <option value="">Select an option...</option>
                       {field.options?.map(
@@ -166,7 +166,7 @@ export default async function PublicFormPage({
             ),
           )}
 
-          <div className="pt-6 border-t border-white/10">
+          <div className="pt-6 border-t border-edge-2">
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-widest hover:brightness-110 transition transform active:scale-[0.99]"

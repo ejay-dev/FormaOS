@@ -104,7 +104,7 @@ function ActivationMilestones({
           {Array.from({ length: 4 }).map((_, idx) => (
             <div
               key={`loading-${idx}`}
-              className="h-16 animate-pulse rounded-xl border border-glass-border bg-white/5"
+              className="h-16 animate-pulse rounded-xl border border-glass-border bg-surface-1"
             />
           ))}
         </div>

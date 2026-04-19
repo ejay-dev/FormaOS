@@ -39,7 +39,7 @@ export function PricingTierCard({
         relative rounded-3xl p-8 lg:p-10 h-full flex flex-col overflow-hidden group
         ${featured 
           ? 'glass-intense border-2 border-primary/30 shadow-premium-2xl' 
-          : 'glass-panel-strong shadow-premium-lg border border-white/5'
+          : 'glass-panel-strong shadow-premium-lg border border-edge-1'
         }
       `}
     >
@@ -293,7 +293,7 @@ export function AddOnCard({ icon: Icon, name, price, description, delay = 0 }: A
       viewport={{ once: true, margin: "-30px" }}
       transition={{ duration: 0.5, delay }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="relative glass-panel rounded-2xl p-7 shadow-premium group cursor-pointer overflow-hidden border border-white/5"
+      className="relative glass-panel rounded-2xl p-7 shadow-premium group cursor-pointer overflow-hidden border border-edge-1"
     >
       {/* Hover glow */}
       <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

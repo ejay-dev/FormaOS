@@ -200,7 +200,7 @@ export function SystemFeedback({
       )}
     >
       {/* Header */}
-      <div className="flex items-start gap-4 p-4 border-b border-white/10">
+      <div className="flex items-start gap-4 p-4 border-b border-edge-2">
         <div
           className={cn(
             'flex items-center justify-center h-10 w-10 rounded-xl',
@@ -231,7 +231,7 @@ export function SystemFeedback({
 
       {/* Node Changes */}
       {nodeChanges && nodeChanges.length > 0 && (
-        <div className="px-4 py-3 border-b border-white/10">
+        <div className="px-4 py-3 border-b border-edge-2">
           <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-2">
             Node Changes
           </div>
@@ -268,7 +268,7 @@ export function SystemFeedback({
 
       {/* Wire Changes */}
       {wireChanges && wireChanges.length > 0 && (
-        <div className="px-4 py-3 border-b border-white/10">
+        <div className="px-4 py-3 border-b border-edge-2">
           <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60 mb-2">
             Connections Updated
           </div>

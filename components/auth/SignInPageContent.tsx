@@ -571,7 +571,7 @@ function SignInContent() {
                       setExistingSessionEmail(null);
                       window.location.href = '/auth/signin?session_cleared=true';
                     }}
-                    className="inline-flex items-center justify-center rounded-md border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-white/10"
+                    className="inline-flex items-center justify-center rounded-md border border-edge-3 bg-surface-1 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-surface-2"
                   >
                     Sign out & use a different account
                   </button>
@@ -707,7 +707,7 @@ function SignInContent() {
             </form>
 
             {/* Sign Up Link */}
-            <div className="mt-8 pt-6 border-t border-white/10">
+            <div className="mt-8 pt-6 border-t border-edge-2">
               <p className="text-center text-sm text-muted-foreground">
                 New to FormaOS?{' '}
                 <Link

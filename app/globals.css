@@ -193,6 +193,20 @@
   --warning-foreground: 0 0% 0%;
   --info: 213 100% 60%;
   --info-foreground: 0 0% 100%;
+
+  /* Surface tier scale — theme-aware elevation.
+   * Replaces hand-rolled bg-white/5, bg-white/10, bg-white/20 patterns
+   * so light, dark, midnight-blue, graphite, and aurora all render a
+   * visible elevation lift without per-theme !important overrides.
+   * Use via bg-surface-1 / bg-surface-2 / bg-surface-3. */
+  --surface-1: rgba(255, 255, 255, 0.05);
+  --surface-2: rgba(255, 255, 255, 0.09);
+  --surface-3: rgba(255, 255, 255, 0.16);
+
+  /* Edge scale — border counterparts to the surface scale. */
+  --edge-1: rgba(255, 255, 255, 0.06);
+  --edge-2: rgba(255, 255, 255, 0.10);
+  --edge-3: rgba(255, 255, 255, 0.18);
 }
 
 /* =========================================================
@@ -280,6 +294,14 @@
   --warning-foreground: 0 0% 0%;
   --info: 243 75% 51%;
   --info-foreground: 0 0% 100%;
+
+  /* ── Surface tier scale — darker lifts over warm pearl canvas ── */
+  --surface-1: hsl(228 14% 94%);
+  --surface-2: hsl(228 14% 91%);
+  --surface-3: hsl(228 14% 87%);
+  --edge-1: hsl(224 16% 90%);
+  --edge-2: hsl(224 16% 85%);
+  --edge-3: hsl(224 16% 78%);
 
   /* ── Glassmorphism — warm white with backdrop blur ── */
   --glass-bg: rgba(255, 255, 255, 0.82);
@@ -704,6 +726,14 @@
   --info: 217 91% 60%;
   --info-foreground: 0 0% 100%;
 
+  /* Surface tier scale — blue-tinted lifts over deep navy canvas */
+  --surface-1: rgba(100, 160, 255, 0.05);
+  --surface-2: rgba(100, 160, 255, 0.09);
+  --surface-3: rgba(100, 160, 255, 0.15);
+  --edge-1: rgba(140, 180, 255, 0.08);
+  --edge-2: rgba(140, 180, 255, 0.14);
+  --edge-3: rgba(140, 180, 255, 0.24);
+
   /* Glass: moonlit blue-tinted overlays */
   --glass-bg: rgba(100, 160, 255, 0.04);
   --glass-bg-strong: rgba(100, 160, 255, 0.08);
@@ -825,6 +855,14 @@
   --info: 255 92% 76%;
   --info-foreground: 0 0% 100%;
 
+  /* Surface tier scale — restrained warm-neutral over charcoal */
+  --surface-1: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --surface-3: rgba(255, 255, 255, 0.12);
+  --edge-1: rgba(255, 255, 255, 0.06);
+  --edge-2: rgba(255, 255, 255, 0.11);
+  --edge-3: rgba(255, 255, 255, 0.18);
+
   /* Glass: warm-neutral frosted */
   --glass-bg: rgba(255, 255, 255, 0.035);
   --glass-bg-strong: rgba(255, 255, 255, 0.07);
@@ -945,6 +983,14 @@
   --warning-foreground: 0 0% 0%;
   --info: 189 94% 53%;
   --info-foreground: 0 0% 100%;
+
+  /* Surface tier scale — cyan-tinted lifts over abyssal void */
+  --surface-1: rgba(34, 211, 238, 0.05);
+  --surface-2: rgba(34, 211, 238, 0.09);
+  --surface-3: rgba(34, 211, 238, 0.15);
+  --edge-1: rgba(34, 211, 238, 0.10);
+  --edge-2: rgba(34, 211, 238, 0.18);
+  --edge-3: rgba(34, 211, 238, 0.28);
 
   /* Glass: aurora-tinted with cyan shimmer */
   --glass-bg: rgba(34, 211, 238, 0.04);

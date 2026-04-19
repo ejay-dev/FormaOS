@@ -255,7 +255,7 @@ export function CareOperationsHeroBand() {
               {expiring.map((cred) => (
                 <li
                   key={cred.id}
-                  className="flex items-center justify-between rounded-lg border border-glass-border bg-white/5 px-3 py-2"
+                  className="flex items-center justify-between rounded-lg border border-glass-border bg-surface-1 px-3 py-2"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm text-foreground/90">
@@ -301,7 +301,7 @@ export function CareOperationsHeroBand() {
               {reviews.map((review) => (
                 <div
                   key={review.id}
-                  className="relative flex items-center gap-3 rounded-lg border border-glass-border bg-white/5 px-3 py-2"
+                  className="relative flex items-center gap-3 rounded-lg border border-glass-border bg-surface-1 px-3 py-2"
                 >
                   <div className="relative flex h-8 w-8 shrink-0 items-center justify-center">
                     <div

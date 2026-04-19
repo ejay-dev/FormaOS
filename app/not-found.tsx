@@ -55,7 +55,7 @@ export default function NotFound() {
 
           <Link
             href="/app"
-            className="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/5 px-8 py-4 font-semibold text-white backdrop-blur-sm transition-all hover:scale-105 hover:border-white/30 hover:bg-white/10"
+            className="inline-flex items-center justify-center rounded-lg border border-edge-3 bg-surface-1 px-8 py-4 font-semibold text-white backdrop-blur-sm transition-all hover:scale-105 hover:border-white/30 hover:bg-surface-2"
           >
             Go to Dashboard
           </Link>

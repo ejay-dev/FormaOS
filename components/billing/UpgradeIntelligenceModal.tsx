@@ -123,7 +123,7 @@ export function UpgradeIntelligenceModal({
         </button>
 
         {/* Header */}
-        <div className="px-6 pt-6 pb-4 border-b border-white/10">
+        <div className="px-6 pt-6 pb-4 border-b border-edge-2">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-xl bg-gradient-to-br from-sky-500/20 to-indigo-500/20">
               {featureBenefit ? (
@@ -177,7 +177,7 @@ export function UpgradeIntelligenceModal({
                       ? 'border-sky-400/50 bg-sky-500/5 ring-2 ring-sky-400/30'
                       : meetsRequirement
                         ? 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong'
-                        : 'border-white/5 bg-white/[0.02] opacity-50 cursor-not-allowed'
+                        : 'border-edge-1 bg-white/[0.02] opacity-50 cursor-not-allowed'
                   }`}
                 >
                   {/* Recommended badge */}

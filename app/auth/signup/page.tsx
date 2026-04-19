@@ -252,7 +252,7 @@ function SignUpContent() {
       <div className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-lg">
           {/* Main Signup Card */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8">
+          <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-8">
             <div className="text-center mb-8">
               {plan ? (
                 <>
@@ -350,9 +350,9 @@ function SignUpContent() {
 
             {/* Divider */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="flex-1 border-t border-white/20" />
+              <div className="flex-1 border-t border-edge-3" />
               <span className="text-xs text-slate-400">or use email</span>
-              <div className="flex-1 border-t border-white/20" />
+              <div className="flex-1 border-t border-edge-3" />
             </div>
 
             {/* Email/Password Form */}
@@ -370,7 +370,7 @@ function SignUpContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@company.com"
-                  className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-edge-3 bg-surface-2 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                   required
                   disabled={isLoading}
                 />
@@ -389,7 +389,7 @@ function SignUpContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="12+ chars, upper/lower, number, symbol"
-                  className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-edge-3 bg-surface-2 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                   required
                   disabled={isLoading}
                 />
@@ -408,7 +408,7 @@ function SignUpContent() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm your password"
-                  className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-edge-3 bg-surface-2 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                   required
                   disabled={isLoading}
                 />
@@ -450,7 +450,7 @@ function SignUpContent() {
             )}
 
             {/* Sign In Link */}
-            <div className="mt-8 pt-6 border-t border-white/10">
+            <div className="mt-8 pt-6 border-t border-edge-2">
               <p className="text-center text-sm text-slate-400">
                 Already have an account?{' '}
                 <Link
@@ -473,7 +473,7 @@ export default function SignUpPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-          <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-6 py-4 text-sm text-slate-300">
+          <div className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm px-6 py-4 text-sm text-slate-300">
             <Logo variant="mark" size={18} />
             <span>Loading FormaOS signup...</span>
           </div>

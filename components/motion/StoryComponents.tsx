@@ -66,7 +66,7 @@ export function TimelineItem({
       <motion.div 
         whileHover={{ x: 5 }}
         transition={{ duration: 0.3 }}
-        className="relative glass-panel rounded-2xl p-8 lg:p-10 flex-1 shadow-premium-lg border border-white/5 overflow-hidden"
+        className="relative glass-panel rounded-2xl p-8 lg:p-10 flex-1 shadow-premium-lg border border-edge-1 overflow-hidden"
       >
         {/* Top edge highlight */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent group-hover:via-primary/40 transition-colors duration-300" />
@@ -109,7 +109,7 @@ export function NarrativeBlock({
   variant = "default"
 }: NarrativeBlockProps) {
   const variantClasses = {
-    default: "glass-panel border border-white/5",
+    default: "glass-panel border border-edge-1",
     emphasis: "glass-panel-strong border-l-4 border-primary/80",
     quote: "glass-intense border border-primary/20"
   };
@@ -169,7 +169,7 @@ export function ValueProp({ icon, title, description, delay = 0 }: ValuePropProp
       viewport={{ once: true, margin: "-30px" }}
       transition={{ duration: 0.6, delay }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="relative glass-panel rounded-2xl p-8 lg:p-10 shadow-premium-lg group overflow-hidden border border-white/5"
+      className="relative glass-panel rounded-2xl p-8 lg:p-10 shadow-premium-lg group overflow-hidden border border-edge-1"
     >
       {/* Top edge highlight */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-primary/30 transition-colors duration-300" />
@@ -278,7 +278,7 @@ export function TeamMember({ name, role, location, bio, delay = 0 }: TeamMemberP
       viewport={{ once: true, margin: "-30px" }}
       transition={{ duration: 0.7, delay }}
       whileHover={{ y: -8 }}
-      className="relative glass-panel rounded-2xl lg:rounded-3xl p-8 lg:p-10 shadow-premium-lg group overflow-hidden border border-white/5"
+      className="relative glass-panel rounded-2xl lg:rounded-3xl p-8 lg:p-10 shadow-premium-lg group overflow-hidden border border-edge-1"
     >
       {/* Top edge highlight */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-primary/30 transition-colors duration-300" />

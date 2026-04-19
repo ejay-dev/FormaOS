@@ -103,7 +103,7 @@ export function TeamComplianceTable({
     >
       <div className="overflow-x-auto overscroll-x-contain">
         <table className="min-w-[480px] sm:min-w-[520px] w-full text-sm">
-          <thead className="border-b border-white/10">
+          <thead className="border-b border-edge-2">
             <tr>
               <th className="px-4 py-2 text-left font-semibold">Employee</th>
               <th className="px-4 py-2 text-left font-semibold">Role</th>
@@ -207,7 +207,7 @@ export function CertificatesExpiry({
           certificates.map((cert) => (
             <div
               key={cert.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-white/10"
+              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-edge-2"
             >
               <div className="flex-1">
                 <p className="font-medium">{cert.title}</p>
@@ -274,7 +274,7 @@ export function EvidenceReview({
           submissions.map((sub) => (
             <div
               key={sub.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-white/10"
+              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-edge-2"
             >
               <div className="flex-1">
                 <p className="font-medium">{sub.title}</p>
@@ -335,7 +335,7 @@ export function TaskManagement({
           tasks.map((task) => (
             <div
               key={task.id}
-              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-white/10"
+              className="flex items-center justify-between p-3 rounded-lg bg-glass-subtle border border-edge-2"
             >
               <div className="flex-1">
                 <p className="font-medium">{task.title}</p>

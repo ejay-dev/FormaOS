@@ -344,7 +344,7 @@ function CredentialList({
         {credentials.map((cred) => (
           <div
             key={cred.id}
-            className="flex items-center justify-between p-2 rounded-lg bg-white/5"
+            className="flex items-center justify-between p-2 rounded-lg bg-surface-1"
           >
             <div>
               <div className="text-sm text-foreground/90">{cred.staffName}</div>
@@ -384,7 +384,7 @@ function ReviewList({
         {reviews.map((review) => (
           <div
             key={review.id}
-            className="flex items-center justify-between p-2 rounded-lg bg-white/5"
+            className="flex items-center justify-between p-2 rounded-lg bg-surface-1"
           >
             <div>
               <div className="text-sm text-foreground/90">{review.clientName}</div>

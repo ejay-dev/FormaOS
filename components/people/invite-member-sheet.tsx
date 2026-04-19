@@ -164,7 +164,7 @@ export function InviteMemberSheet() {
                     name="email"
                     type="email"
                     placeholder="teammate@company.com"
-                    className="w-full rounded-xl border border-glass-border p-2.5 pl-10 text-sm outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all bg-white/5"
+                    className="w-full rounded-xl border border-glass-border p-2.5 pl-10 text-sm outline-none focus:border-blue-400/50 focus:ring-2 focus:ring-blue-400/20 transition-all bg-surface-1"
                   />
                 </div>
               </div>

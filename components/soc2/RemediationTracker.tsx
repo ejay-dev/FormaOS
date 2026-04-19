@@ -70,7 +70,7 @@ export function RemediationTracker({ actions }: RemediationTrackerProps) {
             return (
               <div
                 key={action.id}
-                className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3"
+                className="flex items-start gap-3 rounded-xl border border-edge-1 bg-white/[0.02] p-3"
               >
                 <StatusIcon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/60" />
                 <div className="min-w-0 flex-1">
@@ -109,7 +109,7 @@ export function RemediationTracker({ actions }: RemediationTrackerProps) {
             {completed.map((action) => (
               <div
                 key={action.id}
-                className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.01] p-3 opacity-60"
+                className="flex items-center gap-3 rounded-xl border border-edge-1 bg-white/[0.01] p-3 opacity-60"
               >
                 <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
                 <span className="text-sm text-muted-foreground line-through">{action.title}</span>

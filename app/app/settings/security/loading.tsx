@@ -21,13 +21,13 @@ export default function SecuritySettingsLoading() {
         <SkeletonCard />
       </div>
 
-      <div className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6">
+      <div className="space-y-4 rounded-3xl border border-edge-2 bg-surface-1 p-6">
         <Skeleton className="h-5 w-40" />
         <Skeleton className="h-24 w-full rounded-2xl" />
         <Skeleton className="h-24 w-full rounded-2xl" />
       </div>
 
-      <div className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6">
+      <div className="space-y-4 rounded-3xl border border-edge-2 bg-surface-1 p-6">
         <Skeleton className="h-5 w-48" />
         <Skeleton className="h-32 w-full rounded-2xl" />
       </div>

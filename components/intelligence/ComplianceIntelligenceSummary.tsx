@@ -150,10 +150,10 @@ export function ComplianceIntelligenceSummary() {
         <div className="animate-pulse space-y-4">
           <div className="h-6 w-48 rounded bg-glass-strong" />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <div className="h-24 rounded-xl bg-white/5" />
-            <div className="h-24 rounded-xl bg-white/5" />
-            <div className="h-24 rounded-xl bg-white/5" />
-            <div className="h-24 rounded-xl bg-white/5" />
+            <div className="h-24 rounded-xl bg-surface-1" />
+            <div className="h-24 rounded-xl bg-surface-1" />
+            <div className="h-24 rounded-xl bg-surface-1" />
+            <div className="h-24 rounded-xl bg-surface-1" />
           </div>
         </div>
       </div>

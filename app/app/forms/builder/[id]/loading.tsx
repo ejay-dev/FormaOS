@@ -15,21 +15,21 @@ export default function FormBuilderLoading() {
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[260px_minmax(0,1fr)_320px]">
-        <div className="space-y-3 rounded-3xl border border-white/10 bg-white/5 p-4">
+        <div className="space-y-3 rounded-3xl border border-edge-2 bg-surface-1 p-4">
           <Skeleton className="h-5 w-28" />
           {Array.from({ length: 6 }).map((_, index) => (
             <Skeleton key={index} className="h-12 w-full rounded-2xl" />
           ))}
         </div>
 
-        <div className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-5">
+        <div className="space-y-4 rounded-3xl border border-edge-2 bg-surface-1 p-5">
           <Skeleton className="h-12 w-full rounded-2xl" />
           <Skeleton className="h-40 w-full rounded-[2rem]" />
           <Skeleton className="h-28 w-5/6 rounded-[2rem]" />
           <Skeleton className="h-56 w-full rounded-[2rem]" />
         </div>
 
-        <div className="space-y-3 rounded-3xl border border-white/10 bg-white/5 p-4">
+        <div className="space-y-3 rounded-3xl border border-edge-2 bg-surface-1 p-4">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-24 w-full rounded-2xl" />
           <Skeleton className="h-24 w-full rounded-2xl" />

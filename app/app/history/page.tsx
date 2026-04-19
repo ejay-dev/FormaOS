@@ -36,7 +36,7 @@ export default async function HistoryPage() {
     if (action.includes('policy')) return { icon: <FileText className="h-4 w-4 text-sky-300" />, bg: 'bg-sky-500/10', border: 'border-sky-400/30' };
     if (action.includes('asset')) return { icon: <ShieldAlert className="h-4 w-4 text-purple-300" />, bg: 'bg-purple-500/10', border: 'border-purple-400/30' };
     if (action.includes('invite')) return { icon: <User className="h-4 w-4 text-amber-300" />, bg: 'bg-amber-400/10', border: 'border-amber-400/30' };
-    return { icon: <CheckCircle2 className="h-4 w-4 text-muted-foreground" />, bg: 'bg-glass-strong', border: 'border-white/10' };
+    return { icon: <CheckCircle2 className="h-4 w-4 text-muted-foreground" />, bg: 'bg-glass-strong', border: 'border-edge-2' };
   };
 
   return (
@@ -46,7 +46,7 @@ export default async function HistoryPage() {
         <p className="text-muted-foreground text-sm">A permanent timeline of all governance events, policy changes, and incidents.</p>
       </div>
 
-      <div className="relative border-l-2 border-white/10 ml-4 space-y-8 pb-12">
+      <div className="relative border-l-2 border-edge-2 ml-4 space-y-8 pb-12">
         {auditLogs.map((log, _index) => {
            const style = getEventStyle(log.action);
            return (
@@ -55,7 +55,7 @@ export default async function HistoryPage() {
                 <div className={`absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-white ring-2 ${style.bg === 'bg-sky-500/10' ? 'ring-sky-400/30 bg-sky-500' : 'ring-white/10 bg-glass-strong'}`} />
                 
                 {/* Card Content */}
-                <div className="bg-white/5 p-5 rounded-2xl border border-white/10 shadow-sm hover:shadow-md transition-shadow">
+                <div className="bg-surface-1 p-5 rounded-2xl border border-edge-2 shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                             <div className={`p-1.5 rounded-lg ${style.bg}`}>
@@ -74,7 +74,7 @@ export default async function HistoryPage() {
                         {log.target ?? "System update"}
                     </h3>
                     
-                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/10">
+                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-edge-2">
                         <div className="h-5 w-5 rounded-full bg-glass-strong text-foreground flex items-center justify-center text-[8px] font-bold">
                             {(log.actor_email ?? "?")[0].toUpperCase()}
                         </div>

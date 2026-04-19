@@ -138,7 +138,7 @@ function CheckEmailContent() {
       </div>
 
       <div className="w-full max-w-md">
-        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8 text-center">
+        <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-8 text-center">
           {/* Icon */}
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center">
             <Mail className="w-10 h-10 text-emerald-400" />
@@ -194,7 +194,7 @@ function CheckEmailContent() {
           <button
             onClick={handleResend}
             disabled={isResending}
-            className="w-full py-3 px-6 rounded-xl border border-white/20 text-white font-medium hover:bg-white/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-3 px-6 rounded-xl border border-edge-3 text-white font-medium hover:bg-surface-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isResending ? (
               <>

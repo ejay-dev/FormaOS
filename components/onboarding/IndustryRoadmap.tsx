@@ -143,7 +143,7 @@ export function IndustryRoadmapEngine({
           <div className="relative z-10">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-glass-border-strong bg-white/5">
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-glass-border-strong bg-surface-1">
                   <IndustryIcon className="h-7 w-7 text-cyan-400" />
                 </div>
                 <div>
@@ -328,13 +328,13 @@ function RoadmapPhaseCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="overflow-hidden rounded-xl border border-glass-border bg-white/5"
+      className="overflow-hidden rounded-xl border border-glass-border bg-surface-1"
       data-testid={`industry-roadmap-phase-${phase.id}`}
     >
       {/* Phase Header */}
       <button
         onClick={onToggle}
-        className="w-full px-6 py-4 text-left transition-colors hover:bg-white/5"
+        className="w-full px-6 py-4 text-left transition-colors hover:bg-surface-1"
       >
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -402,7 +402,7 @@ function RoadmapPhaseCard({
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="border-t border-white/10"
+            className="border-t border-edge-2"
           >
             <div className="space-y-2 p-4">
               {phase.steps.map((step) => (

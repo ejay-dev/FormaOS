@@ -41,7 +41,7 @@ export function ActivateSubscriptionButton({
       >
         {/* Loading overlay */}
         {isPending && (
-          <div className="absolute inset-0 bg-white/20 flex items-center justify-center">
+          <div className="absolute inset-0 bg-surface-3 flex items-center justify-center">
             <Loader2 className="h-4 w-4 animate-spin" />
           </div>
         )}

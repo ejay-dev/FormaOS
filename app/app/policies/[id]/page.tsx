@@ -102,8 +102,8 @@ export default async function PolicyDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* LEFT: Main Editor */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white/5 border border-white/10 rounded-[2rem] shadow-sm overflow-hidden flex flex-col h-[70vh] md:h-[800px]">
-              <div className="p-6 sm:p-8 border-b border-white/10 bg-white/5">
+            <div className="bg-surface-1 border border-edge-2 rounded-[2rem] shadow-sm overflow-hidden flex flex-col h-[70vh] md:h-[800px]">
+              <div className="p-6 sm:p-8 border-b border-edge-2 bg-surface-1">
                 <input
                   name="title"
                   defaultValue={policy.title}
@@ -135,7 +135,7 @@ export default async function PolicyDetailPage({
             />
 
             {/* Document Controls */}
-            <div className="bg-white/5 border border-white/10 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-8 md:sticky md:top-6">
+            <div className="bg-surface-1 border border-edge-2 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-8 md:sticky md:top-6">
               <div className="space-y-3">
                 <label
                   htmlFor="field-206"
@@ -148,7 +148,7 @@ export default async function PolicyDetailPage({
                     name="status" // Ensure our Server Action handles 'status' update if intended
                     defaultValue={policy.status}
                     disabled={!isAdmin}
-                    className="w-full p-4 rounded-2xl border border-white/10 text-xs font-black bg-glass-strong cursor-pointer outline-none focus:bg-white/5 focus:ring-2 focus:ring-sky-500/20 transition-all appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full p-4 rounded-2xl border border-edge-2 text-xs font-black bg-glass-strong cursor-pointer outline-none focus:bg-surface-1 focus:ring-2 focus:ring-sky-500/20 transition-all appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <option value="draft">Drafting Mode</option>
                     <option value="review">Under Review</option>
@@ -159,7 +159,7 @@ export default async function PolicyDetailPage({
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 py-6 border-y border-white/10">
+              <div className="flex flex-col gap-4 py-6 border-y border-edge-2">
                 <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
                   <span className="text-muted-foreground">Version</span>
                   <span className="text-foreground bg-glass-strong px-2 py-1 rounded-lg">
@@ -183,7 +183,7 @@ export default async function PolicyDetailPage({
                   Commit Changes
                 </button>
               ) : (
-                <div className="p-4 bg-glass-strong rounded-2xl border border-white/10 text-xs font-black text-muted-foreground text-center uppercase tracking-widest flex items-center justify-center gap-2">
+                <div className="p-4 bg-glass-strong rounded-2xl border border-edge-2 text-xs font-black text-muted-foreground text-center uppercase tracking-widest flex items-center justify-center gap-2">
                   <ShieldCheck className="h-4 w-4" />
                   Read Only Mode
                 </div>

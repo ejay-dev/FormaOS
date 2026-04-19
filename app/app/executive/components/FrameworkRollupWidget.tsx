@@ -14,7 +14,7 @@ export function FrameworkRollupWidget({
 }: FrameworkRollupWidgetProps) {
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 animate-pulse">
         <div className="h-5 w-40 rounded bg-glass-strong mb-6" />
         <div className="grid gap-4 md:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
@@ -27,7 +27,7 @@ export function FrameworkRollupWidget({
 
   if (frameworks.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 p-8 text-center">
         <ShieldCheck className="h-12 w-12 text-muted-foreground/60 mx-auto mb-4" />
         <p className="text-muted-foreground">No compliance frameworks enabled.</p>
         <p className="text-sm text-muted-foreground/60 mt-2">
@@ -38,9 +38,9 @@ export function FrameworkRollupWidget({
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-edge-2 bg-surface-1">
           <ShieldCheck className="h-4 w-4 text-emerald-300" />
         </div>
         <div>
@@ -84,7 +84,7 @@ function FrameworkCard({ framework }: { framework: FrameworkRollupItem }) {
       : 'text-muted-foreground';
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-4 hover:bg-glass-strong transition-colors">
+    <div className="rounded-xl border border-edge-2 bg-surface-1 p-4 hover:bg-glass-strong transition-colors">
       <div className="flex items-start justify-between">
         <div>
           <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">

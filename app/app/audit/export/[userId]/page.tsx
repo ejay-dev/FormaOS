@@ -68,9 +68,9 @@ export default async function AuditExportPage({
   );
 
   return (
-    <div className="p-4 sm:p-8 md:p-12 lg:p-20 bg-white/5 min-h-screen text-foreground print:p-0 animate-in slide-in-from-bottom-4 duration-700">
+    <div className="p-4 sm:p-8 md:p-12 lg:p-20 bg-surface-1 min-h-screen text-foreground print:p-0 animate-in slide-in-from-bottom-4 duration-700">
       {/* Compliance Header */}
-      <header className="border-b-4 border-white/10 pb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
+      <header className="border-b-4 border-edge-2 pb-8 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
         <div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black uppercase tracking-tighter mb-2">
             Compliance Pack
@@ -106,7 +106,7 @@ export default async function AuditExportPage({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {credentials.length === 0 ? (
-            <div className="col-span-2 p-8 border-2 border-dashed border-white/10 rounded-2xl text-center text-muted-foreground text-sm font-bold">
+            <div className="col-span-2 p-8 border-2 border-dashed border-edge-2 rounded-2xl text-center text-muted-foreground text-sm font-bold">
               No verified documents on file.
             </div>
           ) : (
@@ -119,7 +119,7 @@ export default async function AuditExportPage({
               }) => (
                 <div
                   key={doc.id}
-                  className="border border-white/10 p-8 rounded-[2rem] flex items-center justify-between shadow-sm hover:shadow-md transition-shadow"
+                  className="border border-edge-2 p-8 rounded-[2rem] flex items-center justify-between shadow-sm hover:shadow-md transition-shadow"
                 >
                   <div>
                     <h3 className="font-black uppercase tracking-widest text-sm text-foreground">
@@ -146,7 +146,7 @@ export default async function AuditExportPage({
       </section>
 
       {/* Individual Audit Trail */}
-      <section className="mt-20 pt-12 border-t border-white/10">
+      <section className="mt-20 pt-12 border-t border-edge-2">
         <h2 className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground mb-10">
           Personnel Activity Log
         </h2>
@@ -159,7 +159,7 @@ export default async function AuditExportPage({
             logs.slice(0, 15).map((log) => (
               <div
                 key={log.id}
-                className="flex flex-col md:flex-row md:items-center justify-between py-4 border-b border-white/10 hover:bg-white/5 px-4 -mx-4 rounded-xl transition-colors"
+                className="flex flex-col md:flex-row md:items-center justify-between py-4 border-b border-edge-2 hover:bg-surface-1 px-4 -mx-4 rounded-xl transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-2 w-2 rounded-full bg-glass-strong" />
@@ -177,7 +177,7 @@ export default async function AuditExportPage({
       </section>
 
       {/* Print Footer */}
-      <div className="mt-20 pt-8 border-t-2 border-white/10 flex justify-between items-center print:hidden">
+      <div className="mt-20 pt-8 border-t-2 border-edge-2 flex justify-between items-center print:hidden">
         <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
           FormaOS Governance Engine
         </p>

@@ -15,11 +15,11 @@ export default function EmailPreferencesLoading() {
         <SkeletonCard />
       </div>
 
-      <div className="space-y-3 rounded-3xl border border-white/10 bg-white/5 p-6">
+      <div className="space-y-3 rounded-3xl border border-edge-2 bg-surface-1 p-6">
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
-            className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-5"
+            className="flex items-center justify-between gap-4 rounded-2xl border border-edge-2 bg-slate-950/40 px-4 py-5"
           >
             <div className="space-y-2">
               <Skeleton className="h-4 w-36" />

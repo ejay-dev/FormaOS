@@ -233,7 +233,7 @@ export function FeatureDiscoveryBanner({
 
           {/* Progress Indicator */}
           {relevantFeatures.length > 1 && (
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-edge-2">
               <div className="flex items-center gap-1">
                 {relevantFeatures.map((_, index) => (
                   <button

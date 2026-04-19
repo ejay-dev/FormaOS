@@ -44,16 +44,16 @@ export default async function CustomReportsPage() {
       <div className="flex gap-2">
         <Link
           href="/app/reports"
-          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground"
+          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-surface-1 hover:text-foreground"
         >
           Standard Reports
         </Link>
-        <span className="rounded-lg bg-white/10 px-3 py-1.5 text-sm font-semibold text-foreground">
+        <span className="rounded-lg bg-surface-2 px-3 py-1.5 text-sm font-semibold text-foreground">
           My Reports
         </span>
         <Link
           href="/app/reports/trends"
-          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/5 hover:text-foreground"
+          className="rounded-lg px-3 py-1.5 text-sm text-muted-foreground hover:bg-surface-1 hover:text-foreground"
         >
           Trends
         </Link>

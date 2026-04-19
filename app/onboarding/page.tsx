@@ -868,7 +868,7 @@ export default async function OnboardingPage({
       <OnboardingStepTracker step={safeStep} totalSteps={TOTAL_STEPS} />
       <div className="flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-2xl">
-          <div className="bg-white/5 rounded-[2rem] p-6 sm:p-8 md:p-10 shadow-2xl border border-white/10 relative overflow-hidden">
+          <div className="bg-surface-1 rounded-[2rem] p-6 sm:p-8 md:p-10 shadow-2xl border border-edge-2 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1.5 bg-[hsl(var(--card))]" />
 
             <div className="mb-8 text-center md:text-left">
@@ -882,7 +882,7 @@ export default async function OnboardingPage({
                 Step {safeStep} of {TOTAL_STEPS} · {planLabel}
               </p>
               <div className="mt-5 space-y-3">
-                <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
                   <div
                     className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
                     style={{ width: `${completedRatio}%` }}
@@ -900,7 +900,7 @@ export default async function OnboardingPage({
                             ? 'border-cyan-400/50 bg-cyan-500/10 text-cyan-200'
                             : isComplete
                               ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
-                              : 'border-white/10 bg-white/5'
+                              : 'border-edge-2 bg-surface-1'
                         }`}
                       >
                         {milestone.label}
@@ -924,7 +924,7 @@ export default async function OnboardingPage({
 
             {safeStep === 1 ? (
               <form action={advanceWelcome} className="space-y-6">
-                <div className="rounded-2xl border border-white/10 bg-[hsl(var(--card))] p-6 text-sm text-slate-300">
+                <div className="rounded-2xl border border-edge-2 bg-[hsl(var(--card))] p-6 text-sm text-slate-300">
                   <div className="flex items-start gap-3">
                     <Sparkles className="h-5 w-5 text-sky-400" />
                     <div>
@@ -961,7 +961,7 @@ export default async function OnboardingPage({
                     defaultValue={orgRecord?.name ?? ''}
                     placeholder="e.g. Acme Corp"
                     data-testid="organization-name"
-                    className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] focus:bg-white/5 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
+                    className="w-full p-4 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] focus:bg-surface-1 focus:outline-white/20 text-sm font-semibold transition-all shadow-inner"
                   />
                 </div>
 
@@ -976,7 +976,7 @@ export default async function OnboardingPage({
                     {TEAM_SIZE_OPTIONS.map((option) => (
                       <label
                         key={option.id}
-                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                        className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                       >
                         <input
                           required
@@ -985,7 +985,7 @@ export default async function OnboardingPage({
                           value={option.id}
                           defaultChecked={orgRecord?.team_size === option.id}
                           data-testid={`team-size-${option.id}`}
-                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                         />
                         <span>{option.label} people</span>
                       </label>
@@ -1004,7 +1004,7 @@ export default async function OnboardingPage({
                     {PLAN_CHOICES.map((option) => (
                       <label
                         key={option.key}
-                        className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-4 text-sm text-slate-200"
+                        className="flex flex-col gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-4 text-sm text-slate-200"
                       >
                         <div className="flex items-center gap-3">
                           <input
@@ -1014,7 +1014,7 @@ export default async function OnboardingPage({
                             value={option.key}
                             defaultChecked={planKey === option.key}
                             data-testid={`plan-option-${option.key}`}
-                            className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                            className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                           />
                           <span className="text-sm font-semibold text-slate-100">
                             {option.name}
@@ -1049,7 +1049,7 @@ export default async function OnboardingPage({
                     {INDUSTRY_OPTIONS.map((option) => (
                       <label
                         key={option.id}
-                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                        className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                       >
                         <input
                           required
@@ -1058,7 +1058,7 @@ export default async function OnboardingPage({
                           value={option.id}
                           defaultChecked={orgRecord?.industry === option.id}
                           data-testid={`industry-option-${option.id}`}
-                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                         />
                         <span>{option.label}</span>
                       </label>
@@ -1085,7 +1085,7 @@ export default async function OnboardingPage({
                     {ROLE_OPTIONS.map((option) => (
                       <label
                         key={option.id}
-                        className="flex gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                        className="flex gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                       >
                         <input
                           required
@@ -1094,7 +1094,7 @@ export default async function OnboardingPage({
                           value={option.id}
                           defaultChecked={defaultRoleOptionId === option.id}
                           data-testid={`role-option-${option.id}`}
-                          className="mt-1 h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          className="mt-1 h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                         />
                         <div className="space-y-1">
                           <div className="font-semibold text-slate-100">
@@ -1147,7 +1147,7 @@ export default async function OnboardingPage({
                       return (
                         <label
                           key={framework.id}
-                          className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
+                          className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200"
                         >
                           <input
                             type="checkbox"
@@ -1155,7 +1155,7 @@ export default async function OnboardingPage({
                             value={framework.id}
                             defaultChecked={checked}
                             data-testid={`framework-option-${framework.id}`}
-                            className="h-4 w-4 rounded border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                            className="h-4 w-4 rounded border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                           />
                           <span>{framework.label}</span>
                         </label>
@@ -1187,7 +1187,7 @@ export default async function OnboardingPage({
                     rows={4}
                     placeholder="Add emails separated by commas or new lines"
                     data-testid="invite-emails"
-                    className="w-full p-4 rounded-2xl border border-white/10 bg-[hsl(var(--card))] text-sm font-semibold text-slate-100"
+                    className="w-full p-4 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] text-sm font-semibold text-slate-100"
                   />
                 </div>
                 <SubmitButton loadingText="Sending invites...">
@@ -1214,13 +1214,13 @@ export default async function OnboardingPage({
                   ) : null}
                   <div className="space-y-3">
                     {!isReadOnlyPersona ? (
-                      <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
                         <input
                           type="radio"
                           name="firstAction"
                           value="create_task"
                           data-testid="first-action-create-task"
-                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                           defaultChecked={firstActionDefault === 'create_task'}
                           required
                         />
@@ -1228,13 +1228,13 @@ export default async function OnboardingPage({
                       </label>
                     ) : null}
                     {!isReadOnlyPersona ? (
-                      <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
                         <input
                           type="radio"
                           name="firstAction"
                           value="upload_evidence"
                           data-testid="first-action-upload-evidence"
-                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                           defaultChecked={
                             firstActionDefault === 'upload_evidence'
                           }
@@ -1242,26 +1242,26 @@ export default async function OnboardingPage({
                         <span>Prepare an evidence upload task</span>
                       </label>
                     ) : null}
-                    <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                    <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
                       <input
                         type="radio"
                         name="firstAction"
                         value="run_evaluation"
                         data-testid="first-action-run-evaluation"
-                        className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                        className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                         defaultChecked={firstActionDefault === 'run_evaluation'}
                         required={isReadOnlyPersona}
                       />
                       <span>Run the first compliance evaluation</span>
                     </label>
                     {isReadOnlyPersona ? (
-                      <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
+                      <label className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-[hsl(var(--card))] px-4 py-3 text-sm text-slate-200">
                         <input
                           type="radio"
                           name="firstAction"
                           value="review_dashboard"
                           data-testid="first-action-review-dashboard"
-                          className="h-4 w-4 border-white/20 bg-[hsl(var(--card))] text-sky-400"
+                          className="h-4 w-4 border-edge-3 bg-[hsl(var(--card))] text-sky-400"
                           defaultChecked={
                             firstActionDefault === 'review_dashboard'
                           }
@@ -1277,7 +1277,7 @@ export default async function OnboardingPage({
               </form>
             ) : null}
 
-            <div className="mt-10 pt-8 border-t border-white/10 flex items-center gap-3 text-emerald-300">
+            <div className="mt-10 pt-8 border-t border-edge-2 flex items-center gap-3 text-emerald-300">
               <ShieldCheck className="h-5 w-5" />
               <p className="text-[10px] font-black uppercase tracking-widest">
                 Onboarding progress stored securely

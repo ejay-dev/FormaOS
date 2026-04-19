@@ -60,7 +60,7 @@ function PlanCard({
         'relative rounded-3xl border-2 p-6 transition-all duration-300',
         recommended
           ? 'border-cyan-400/50 bg-gradient-to-br from-cyan-500/10 to-teal-500/10 shadow-[0_0_30px_rgba(34,211,238,0.2)]'
-          : 'border-glass-border bg-white/5',
+          : 'border-glass-border bg-surface-1',
         current &&
           'border-emerald-400/50 bg-gradient-to-br from-emerald-500/10 to-teal-500/10',
         !current &&
@@ -113,7 +113,7 @@ function PlanCard({
             ? 'bg-emerald-500/20 text-emerald-300 cursor-default'
             : recommended
               ? 'bg-gradient-to-r from-cyan-500 to-teal-500 text-white hover:brightness-110 active:scale-95'
-              : 'bg-glass-strong text-white hover:bg-white/20 active:scale-95',
+              : 'bg-glass-strong text-white hover:bg-surface-3 active:scale-95',
           isUpgrading && 'opacity-50 cursor-not-allowed',
         )}
       >

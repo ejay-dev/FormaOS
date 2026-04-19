@@ -68,8 +68,8 @@ export function InteractiveButton({
 
   const variantStyles = {
     primary: "bg-primary text-primary-foreground shadow-[0_4px_14px_rgba(0,212,251,0.25)] hover:shadow-[0_6px_20px_rgba(0,212,251,0.35)]",
-    secondary: "bg-transparent border border-glass-border text-foreground hover:bg-white/5",
-    ghost: "bg-transparent text-foreground hover:bg-white/5",
+    secondary: "bg-transparent border border-glass-border text-foreground hover:bg-surface-1",
+    ghost: "bg-transparent text-foreground hover:bg-surface-1",
     destructive: "bg-rose-500 text-white hover:bg-rose-600",
   };
 
@@ -277,7 +277,7 @@ export function Skeleton({ className = "", variant = "rect" }: SkeletonProps) {
   return (
     <div
       className={`
-        relative overflow-hidden bg-white/5
+        relative overflow-hidden bg-surface-1
         ${variantClasses[variant]}
         ${className}
       `}

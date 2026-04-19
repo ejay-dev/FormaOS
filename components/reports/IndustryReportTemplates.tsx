@@ -215,7 +215,7 @@ export function IndustryReportTemplates() {
     <div className="space-y-6">
       {/* Industry-specific reports */}
       {templates.length > 0 && (
-        <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
+        <div className="rounded-[2rem] border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
           <div className="mb-4 flex items-center gap-2 text-violet-300">
             <FileText className="h-5 w-5" />
             <span className="text-xs font-bold uppercase tracking-widest">
@@ -254,7 +254,7 @@ export function IndustryReportTemplates() {
       )}
 
       {/* Universal RAG Status Report — available to all industries */}
-      <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
+      <div className="rounded-[2rem] border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-4 sm:p-6 md:p-8">
         <div className="mb-4 flex items-center gap-2 text-emerald-300">
           <BarChart3 className="h-5 w-5" />
           <span className="text-xs font-bold uppercase tracking-widest">

@@ -93,7 +93,7 @@ function UsageWarningBanner({
       )}
       <button
         onClick={onDismiss}
-        className="shrink-0 rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-white/10 transition-colors"
+        className="shrink-0 rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
         aria-label="Dismiss warning"
       >
         <X className="h-4 w-4" />
@@ -148,7 +148,7 @@ export function DashboardUpgradeNudge() {
               </p>
               {atRiskItems.slice(0, 3).map((item) => (
                 <div key={item.key} className="flex items-center gap-2 text-xs">
-                  <div className="h-1.5 w-16 rounded-full bg-white/10 overflow-hidden">
+                  <div className="h-1.5 w-16 rounded-full bg-surface-2 overflow-hidden">
                     <div
                       className={`h-full rounded-full ${
                         item.percentage >= 100
@@ -179,7 +179,7 @@ export function DashboardUpgradeNudge() {
 
         <button
           onClick={() => setDismissed(true)}
-          className="rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-white/10 transition-colors"
+          className="rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
           aria-label="Dismiss"
         >
           <X className="h-4 w-4" />

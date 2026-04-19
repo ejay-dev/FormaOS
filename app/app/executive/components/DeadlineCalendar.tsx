@@ -11,7 +11,7 @@ interface DeadlineCalendarProps {
 export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalendarProps) {
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 animate-pulse">
         <div className="h-5 w-40 rounded bg-glass-strong mb-6" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -24,7 +24,7 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
 
   if (deadlines.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 text-center">
         <CheckCircle className="h-10 w-10 text-emerald-400 mx-auto mb-3" />
         <p className="text-foreground/90 font-medium">No Upcoming Deadlines</p>
         <p className="text-sm text-muted-foreground mt-1">
@@ -40,9 +40,9 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
   const upcoming = deadlines.filter((d) => d.status === 'upcoming');
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-edge-2 bg-surface-1">
           <Calendar className="h-4 w-4 text-sky-300" />
         </div>
         <div>
@@ -53,19 +53,19 @@ export function DeadlineCalendar({ deadlines, isLoading = false }: DeadlineCalen
 
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-2 mb-4">
-        <div className={`rounded-lg p-2 text-center ${overdue.length > 0 ? 'bg-red-500/10' : 'bg-white/5'}`}>
+        <div className={`rounded-lg p-2 text-center ${overdue.length > 0 ? 'bg-red-500/10' : 'bg-surface-1'}`}>
           <div className={`text-lg font-bold ${overdue.length > 0 ? 'text-red-400' : 'text-muted-foreground'}`}>
             {overdue.length}
           </div>
           <div className="text-xs text-muted-foreground uppercase">Overdue</div>
         </div>
-        <div className={`rounded-lg p-2 text-center ${dueSoon.length > 0 ? 'bg-amber-500/10' : 'bg-white/5'}`}>
+        <div className={`rounded-lg p-2 text-center ${dueSoon.length > 0 ? 'bg-amber-500/10' : 'bg-surface-1'}`}>
           <div className={`text-lg font-bold ${dueSoon.length > 0 ? 'text-amber-400' : 'text-muted-foreground'}`}>
             {dueSoon.length}
           </div>
           <div className="text-xs text-muted-foreground uppercase">Due Soon</div>
         </div>
-        <div className="rounded-lg bg-white/5 p-2 text-center">
+        <div className="rounded-lg bg-surface-1 p-2 text-center">
           <div className="text-lg font-bold text-foreground/70">{upcoming.length}</div>
           <div className="text-xs text-muted-foreground uppercase">Upcoming</div>
         </div>
@@ -113,7 +113,7 @@ function DeadlineRow({ deadline }: { deadline: ComplianceDeadline }) {
     upcoming: {
       icon: Calendar,
       color: 'text-muted-foreground',
-      bg: 'bg-white/5 border-white/10',
+      bg: 'bg-surface-1 border-edge-2',
       label: `${deadline.daysRemaining}d`,
     },
     completed: {
@@ -125,7 +125,7 @@ function DeadlineRow({ deadline }: { deadline: ComplianceDeadline }) {
     cancelled: {
       icon: Calendar,
       color: 'text-muted-foreground/60',
-      bg: 'bg-white/5 border-white/10',
+      bg: 'bg-surface-1 border-edge-2',
       label: 'CANCELLED',
     },
   };

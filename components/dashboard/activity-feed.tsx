@@ -54,7 +54,7 @@ function getSeverityMeta(severity?: string) {
         label: 'Low',
         color: 'text-muted-foreground',
         bg: 'bg-glass-strong',
-        border: 'border-white/10',
+        border: 'border-edge-2',
       };
     default:
       return null;
@@ -92,7 +92,7 @@ function getTypeMeta(type: ActivityItem['type']) {
         icon: User,
         color: 'text-muted-foreground',
         bg: 'bg-glass-strong',
-        border: 'border-white/10',
+        border: 'border-edge-2',
         label: 'System',
       };
   }

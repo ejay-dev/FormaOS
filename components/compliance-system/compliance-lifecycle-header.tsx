@@ -183,7 +183,7 @@ export function ComplianceLifecycleHeader({
 
   return (
     <div className={cn(
-      "relative overflow-hidden rounded-2xl border border-white/10",
+      "relative overflow-hidden rounded-2xl border border-edge-2",
       "bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))]",
       "shadow-[0_20px_60px_rgba(0,0,0,0.35)]",
       className
@@ -192,7 +192,7 @@ export function ComplianceLifecycleHeader({
       <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-r from-cyan-500/10 via-transparent to-violet-500/10 blur-2xl" />
       
       {/* Header content */}
-      <div className="relative px-6 py-5 border-b border-white/10">
+      <div className="relative px-6 py-5 border-b border-edge-2">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-sm font-bold tracking-tight text-foreground">

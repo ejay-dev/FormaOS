@@ -420,7 +420,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
       </div>
 
       {/* Status Summary */}
-      <div className="flex items-center gap-6 pt-4 border-t border-white/5">
+      <div className="flex items-center gap-6 pt-4 border-t border-edge-1">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 text-emerald-400" />
           <span className="text-xs text-muted-foreground">

@@ -10,13 +10,13 @@ export default function OnboardingRoadmapLoading() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6">
+        <div className="space-y-4 rounded-3xl border border-edge-2 bg-surface-1 p-6">
           <Skeleton className="h-5 w-40" />
           <div className="space-y-3">
             {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
-                className="flex items-center gap-4 rounded-2xl border border-white/10 bg-slate-950/40 p-4"
+                className="flex items-center gap-4 rounded-2xl border border-edge-2 bg-slate-950/40 p-4"
               >
                 <Skeleton className="h-10 w-10 rounded-2xl" />
                 <div className="flex-1 space-y-2">

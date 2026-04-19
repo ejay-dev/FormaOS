@@ -60,7 +60,7 @@ export default function PlanSelectPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] text-slate-100 p-6">
-      <div className="w-full max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-8">
+      <div className="w-full max-w-4xl rounded-2xl border border-edge-2 bg-surface-1 p-8">
         <h2 className="text-2xl font-semibold mb-4">Choose a plan</h2>
         <p className="text-sm text-slate-400 mb-6">Select a plan to continue into the app.</p>
 
@@ -68,7 +68,7 @@ export default function PlanSelectPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {Object.values(PLAN_CATALOG).map((p) => (
-            <div key={p.key} className={`rounded-lg border p-4 ${selected === p.key ? "border-sky-400" : "border-white/10"}`}>
+            <div key={p.key} className={`rounded-lg border p-4 ${selected === p.key ? "border-sky-400" : "border-edge-2"}`}>
               <h3 className="font-semibold">{p.name}</h3>
               <p className="text-sm text-slate-400">{p.summary}</p>
               <div className="mt-4">

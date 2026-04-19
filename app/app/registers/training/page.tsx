@@ -136,14 +136,14 @@ export default function TrainingRegisterPage() {
         </div>
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all shadow-xl active:scale-95"
+          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl active:scale-95"
         >
           <Plus className="h-4 w-4" />
           Add Certification
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[1fr_auto] items-center gap-3 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[1fr_auto] items-center gap-3 bg-surface-1 p-2 rounded-2xl border border-edge-2 shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
@@ -158,7 +158,7 @@ export default function TrainingRegisterPage() {
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
           aria-label="Filter by status"
-          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          className="h-10 rounded-xl border border-edge-2 bg-surface-1 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Statuses</option>
           <option value="active">Active</option>
@@ -172,11 +172,11 @@ export default function TrainingRegisterPage() {
         </div>
       ) : null}
 
-      <div className="bg-white/5 border border-white/10 rounded-[2.5rem] shadow-sm overflow-hidden">
+      <div className="bg-surface-1 border border-edge-2 rounded-[2.5rem] shadow-sm overflow-hidden">
         <div className="w-full overflow-x-auto">
           <table className="min-w-[860px] w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white/5 border-b border-white/10 text-xs font-semibold uppercase text-muted-foreground tracking-wider">
+              <tr className="bg-surface-1 border-b border-edge-2 text-xs font-semibold uppercase text-muted-foreground tracking-wider">
                 <th className="px-8 py-6">Personnel</th>
                 <th className="px-8 py-6">Certification / Training</th>
                 <th className="px-8 py-6">Completion</th>
@@ -199,7 +199,7 @@ export default function TrainingRegisterPage() {
               ) : filteredRecords.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-8 py-24 text-center">
-                    <div className="h-16 w-16 bg-glass-strong rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
+                    <div className="h-16 w-16 bg-glass-strong rounded-2xl flex items-center justify-center mx-auto mb-4 border border-edge-2">
                       <GraduationCap className="h-8 w-8 text-muted-foreground" />
                     </div>
                     <p className="text-sm font-black text-foreground tracking-tight">
@@ -219,11 +219,11 @@ export default function TrainingRegisterPage() {
                   return (
                     <tr
                       key={record.id}
-                      className="group hover:bg-white/5 transition-colors"
+                      className="group hover:bg-surface-1 transition-colors"
                     >
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-white/10 group-hover:bg-white/20 transition-colors">
+                          <div className="h-10 w-10 rounded-xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-edge-2 group-hover:bg-surface-3 transition-colors">
                             <User className="h-5 w-5" />
                           </div>
                           <div className="flex flex-col">

@@ -11,7 +11,7 @@ interface AuditReadinessGaugeProps {
 export function AuditReadinessGauge({ forecast, isLoading = false }: AuditReadinessGaugeProps) {
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 animate-pulse">
         <div className="h-5 w-40 rounded bg-glass-strong mb-6" />
         <div className="h-32 rounded-xl bg-glass-strong" />
       </div>
@@ -22,9 +22,9 @@ export function AuditReadinessGauge({ forecast, isLoading = false }: AuditReadin
   const isReady = forecast.readinessScore >= forecast.targetScore;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-edge-2 bg-surface-1">
           <Target className="h-4 w-4 text-sky-300" />
         </div>
         <div>
@@ -50,7 +50,7 @@ export function AuditReadinessGauge({ forecast, isLoading = false }: AuditReadin
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+        <div className="rounded-lg border border-edge-2 bg-surface-1 p-3">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <TrendingUp className="h-3 w-3" />
             Current Score
@@ -60,7 +60,7 @@ export function AuditReadinessGauge({ forecast, isLoading = false }: AuditReadin
           </div>
         </div>
 
-        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+        <div className="rounded-lg border border-edge-2 bg-surface-1 p-3">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Clock className="h-3 w-3" />
             Time to Ready
@@ -88,7 +88,7 @@ export function AuditReadinessGauge({ forecast, isLoading = false }: AuditReadin
 
       {/* Blockers */}
       {forecast.blockers.length > 0 && (
-        <div className="border-t border-white/10 pt-4">
+        <div className="border-t border-edge-2 pt-4">
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
             <AlertTriangle className="h-3 w-3 text-amber-400" />
             <span>Blocking Issues ({forecast.blockers.length})</span>
@@ -103,7 +103,7 @@ export function AuditReadinessGauge({ forecast, isLoading = false }: AuditReadin
 
       {/* Recommendations */}
       {forecast.recommendations.length > 0 && (
-        <div className="border-t border-white/10 pt-4 mt-4">
+        <div className="border-t border-edge-2 pt-4 mt-4">
           <div className="text-xs text-muted-foreground mb-2">Recommendations</div>
           <ul className="space-y-1">
             {forecast.recommendations.map((rec, index) => (
@@ -127,7 +127,7 @@ function BlockerRow({ blocker }: { blocker: AuditBlocker }) {
   };
 
   return (
-    <div className="flex items-start gap-2 p-2 rounded-lg bg-white/5">
+    <div className="flex items-start gap-2 p-2 rounded-lg bg-surface-1">
       <span
         className={`text-xs font-bold px-1.5 py-0.5 rounded border ${priorityColors[blocker.priority]}`}
       >

@@ -28,7 +28,7 @@ function StateCard(props: {
 }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] p-6">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+      <div className="w-full max-w-md rounded-2xl border border-edge-2 bg-surface-1 p-8 text-center">
         <h1 className="text-2xl font-bold text-slate-100">{props.title}</h1>
         <p className="mt-4 text-slate-400">{props.description}</p>
         <div className="mt-8 flex flex-col gap-3">
@@ -41,7 +41,7 @@ function StateCard(props: {
           {props.secondaryHref && props.secondaryLabel ? (
             <Link
               href={props.secondaryHref}
-              className="inline-flex items-center justify-center rounded-xl bg-white/5 px-6 py-3 font-semibold text-slate-200 transition-all hover:bg-white/10"
+              className="inline-flex items-center justify-center rounded-xl bg-surface-1 px-6 py-3 font-semibold text-slate-200 transition-all hover:bg-surface-2"
             >
               {props.secondaryLabel}
             </Link>
@@ -122,7 +122,7 @@ export default async function AcceptOrganizationInvitePage({
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] p-6">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
+      <div className="w-full max-w-md rounded-2xl border border-edge-2 bg-surface-1 p-8 text-center">
         <h1 className="text-2xl font-bold text-slate-100">
           Join {invitation.organization_name || 'organization'}
         </h1>

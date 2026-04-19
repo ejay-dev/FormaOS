@@ -57,9 +57,9 @@ export function AddNoteForm({ orgId }: AddNoteFormProps) {
         placeholder="Add a note for the team"
         disabled={loading}
         className={cn(
-          "flex-1 rounded-lg border border-white/10 bg-[hsl(var(--card))] px-3 py-2 text-sm text-slate-200",
+          "flex-1 rounded-lg border border-edge-2 bg-[hsl(var(--card))] px-3 py-2 text-sm text-slate-200",
           "disabled:opacity-50 disabled:cursor-not-allowed",
-          "focus:border-white/20 focus:outline-none focus:ring-2 focus:ring-white/5"
+          "focus:border-edge-3 focus:outline-none focus:ring-2 focus:ring-white/5"
         )}
         required
       />
@@ -67,8 +67,8 @@ export function AddNoteForm({ orgId }: AddNoteFormProps) {
         type="submit"
         disabled={loading || !note.trim()}
         className={cn(
-          "rounded-lg border border-white/10 px-4 py-2 text-sm font-bold",
-          "text-slate-200 hover:bg-white/5 transition-all",
+          "rounded-lg border border-edge-2 px-4 py-2 text-sm font-bold",
+          "text-slate-200 hover:bg-surface-1 transition-all",
           "flex items-center gap-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "active:scale-95 disabled:active:scale-100"

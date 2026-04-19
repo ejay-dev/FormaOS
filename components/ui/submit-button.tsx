@@ -63,7 +63,7 @@ export function SubmitButton({
       "disabled:opacity-70"
     ),
     secondary: cn(
-      "bg-transparent text-foreground/90 border border-white/10",
+      "bg-transparent text-foreground/90 border border-edge-2",
       "hover:bg-glass-subtle hover:border-glass-border-strong",
       "disabled:opacity-60"
     ),
@@ -74,7 +74,7 @@ export function SubmitButton({
     ),
     ghost: cn(
       "bg-transparent text-muted-foreground",
-      "hover:text-foreground/90 hover:bg-white/5",
+      "hover:text-foreground/90 hover:bg-surface-1",
       "disabled:opacity-60"
     ),
   }
@@ -142,7 +142,7 @@ export function AdminActionButton({
   const isDisabled = disabled || pending
 
   const variantClasses: Record<string, string> = {
-    secondary: "border-glass-border text-foreground/90 hover:bg-white/5",
+    secondary: "border-glass-border text-foreground/90 hover:bg-surface-1",
     danger: "border-rose-400/30 text-rose-300 hover:bg-rose-500/20",
   }
 

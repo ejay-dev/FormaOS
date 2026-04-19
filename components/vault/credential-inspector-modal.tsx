@@ -125,7 +125,7 @@ export function CredentialInspectorModal({
           {/* Direct embed of the credential file */}
           <iframe
             src={signedUrl || ''}
-            className="w-full h-full rounded-2xl shadow-lg bg-glass-strong border border-white/10"
+            className="w-full h-full rounded-2xl shadow-lg bg-glass-strong border border-edge-2"
             title="Credential Preview"
           />
         </div>
@@ -156,7 +156,7 @@ export function CredentialInspectorModal({
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-edge-2">
                 <div className="space-y-1">
                   <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">
                     Issue Date
@@ -179,7 +179,7 @@ export function CredentialInspectorModal({
                 </div>
               </div>
 
-              <div className="space-y-1 pt-6 border-t border-white/10">
+              <div className="space-y-1 pt-6 border-t border-edge-2">
                 <p className="text-xs font-black text-muted-foreground uppercase tracking-widest">
                   Personnel ID
                 </p>

@@ -164,7 +164,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                               setCopied(false)
                               router.refresh()
                             }}
-                            className="flex-1 rounded-xl border border-glass-border px-4 py-2 text-sm font-bold text-foreground transition-colors hover:bg-white/5"
+                            className="flex-1 rounded-xl border border-glass-border px-4 py-2 text-sm font-bold text-foreground transition-colors hover:bg-surface-1"
                           >
                             Close
                           </button>
@@ -174,7 +174,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                   </div>
                 ) : (
                   <>
-                    <div className="p-6 border-b border-white/10">
+                    <div className="p-6 border-b border-edge-2">
                       <div className="flex justify-between items-start">
                           <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
@@ -226,7 +226,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                                     className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all active:scale-[0.98] ${
                                       role === 'member' 
                                         ? 'border-blue-400/40 bg-blue-400/10 ring-1 ring-blue-400/30' 
-                                        : 'border-glass-border hover:border-glass-border-strong hover:bg-white/5'
+                                        : 'border-glass-border hover:border-glass-border-strong hover:bg-surface-1'
                                     }`}
                                 >
                                     <span className="flex items-center gap-2 text-xs font-bold text-foreground">
@@ -241,7 +241,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                                     className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all active:scale-[0.98] ${
                                       role === 'viewer' 
                                         ? 'border-blue-400/40 bg-blue-400/10 ring-1 ring-blue-400/30' 
-                                        : 'border-glass-border hover:border-glass-border-strong hover:bg-white/5'
+                                        : 'border-glass-border hover:border-glass-border-strong hover:bg-surface-1'
                                     }`}
                                 >
                                     <span className="flex items-center gap-2 text-xs font-bold text-foreground">

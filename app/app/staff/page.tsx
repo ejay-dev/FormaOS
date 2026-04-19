@@ -151,14 +151,14 @@ export default async function StaffDashboardPage() {
         <div className="flex flex-wrap gap-3">
           <Link
             href="/app/progress-notes"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
           >
             New Progress Note
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             href="/app/tasks"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
           >
             View Tasks
             <ArrowRight className="h-4 w-4" />
@@ -177,7 +177,7 @@ export default async function StaffDashboardPage() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <ClipboardCheck className="h-4 w-4 text-sky-300" />
             Assigned Tasks
@@ -189,7 +189,7 @@ export default async function StaffDashboardPage() {
               (tasks ?? []).map((task) => (
                 <div
                   key={task.id}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                  className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
                   <div className="text-sm font-semibold text-foreground">
                     {task.title}
@@ -203,7 +203,7 @@ export default async function StaffDashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <Users className="h-4 w-4 text-emerald-300" />
             Patient Caseload
@@ -216,7 +216,7 @@ export default async function StaffDashboardPage() {
                 <Link
                   key={patient.id}
                   href={`/app/patients/${patient.id}`}
-                  className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-foreground hover:bg-glass-strong"
+                  className="flex items-center justify-between rounded-xl border border-edge-2 bg-surface-1 px-4 py-3 text-sm text-foreground hover:bg-glass-strong"
                 >
                   <span>{patient.full_name}</span>
                   <span className="text-xs uppercase tracking-widest text-muted-foreground">
@@ -228,7 +228,7 @@ export default async function StaffDashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <FileText className="h-4 w-4 text-indigo-300" />
             Recent Notes
@@ -240,7 +240,7 @@ export default async function StaffDashboardPage() {
               (notes ?? []).map((note) => (
                 <div
                   key={note.id}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                  className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
                   <div className="text-xs uppercase tracking-widest text-muted-foreground">
                     {note.status_tag}
@@ -256,7 +256,7 @@ export default async function StaffDashboardPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <AlertTriangle className="h-4 w-4 text-rose-300" />
             Open Incidents
@@ -268,7 +268,7 @@ export default async function StaffDashboardPage() {
               (incidents ?? []).map((incident) => (
                 <div
                   key={incident.id}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                  className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
                   <div className="text-xs uppercase tracking-widest text-rose-300">
                     {incident.severity}
@@ -282,7 +282,7 @@ export default async function StaffDashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <section className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
             <CalendarDays className="h-4 w-4 text-sky-300" />
             Recent Shifts
@@ -294,7 +294,7 @@ export default async function StaffDashboardPage() {
               (shifts ?? []).map((shift) => (
                 <div
                   key={shift.id}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                  className="rounded-xl border border-edge-2 bg-surface-1 px-4 py-3"
                 >
                   <div className="text-xs uppercase tracking-widest text-muted-foreground">
                     {shift.status}

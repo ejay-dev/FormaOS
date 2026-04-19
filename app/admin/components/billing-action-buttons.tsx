@@ -148,8 +148,8 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
   }
 
   const btnBase = cn(
-    "rounded-lg border border-white/10 px-3 py-1.5 text-xs font-bold",
-    "text-slate-200 hover:bg-white/5 transition-all",
+    "rounded-lg border border-edge-2 px-3 py-1.5 text-xs font-bold",
+    "text-slate-200 hover:bg-surface-1 transition-all",
     "flex items-center gap-2",
     "disabled:opacity-50 disabled:cursor-not-allowed",
     "active:scale-95 disabled:active:scale-100"
@@ -167,7 +167,7 @@ export function BillingActionButtons({ orgId }: BillingActionButtonsProps) {
           max={90}
           disabled={loading !== null}
           className={cn(
-            "w-16 rounded-lg border border-white/10 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200",
+            "w-16 rounded-lg border border-edge-2 bg-[hsl(var(--card))] px-2 py-1 text-xs text-slate-200",
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}
         />

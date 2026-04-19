@@ -305,7 +305,7 @@ export default async function AdminSupportPage({
       </div>
 
       <section className="grid gap-4 xl:grid-cols-3">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="rounded-2xl border border-edge-2 bg-surface-1 p-5">
           <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
             Billing Watch
           </div>
@@ -317,7 +317,7 @@ export default async function AdminSupportPage({
             {billingSummary?.totalSubscriptions ?? 0} subscriptions.
           </p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="rounded-2xl border border-edge-2 bg-surface-1 p-5">
           <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
             Automation Failures
           </div>
@@ -329,7 +329,7 @@ export default async function AdminSupportPage({
             72 hours.
           </p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="rounded-2xl border border-edge-2 bg-surface-1 p-5">
           <div className="text-xs uppercase tracking-[0.3em] text-slate-500">
             Active Alerts
           </div>
@@ -342,7 +342,7 @@ export default async function AdminSupportPage({
         </div>
       </section>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-300">
             <thead className="text-xs uppercase text-slate-500">
@@ -395,7 +395,7 @@ export default async function AdminSupportPage({
       </div>
 
       <section className="grid gap-6 xl:grid-cols-2">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-semibold text-slate-100">
@@ -414,7 +414,7 @@ export default async function AdminSupportPage({
               ([status, count]) => (
                 <span
                   key={status}
-                  className="rounded-full border border-white/10 px-2 py-1"
+                  className="rounded-full border border-edge-2 px-2 py-1"
                 >
                   {status}: {count}
                 </span>
@@ -441,7 +441,7 @@ export default async function AdminSupportPage({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+        <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-semibold text-slate-100">
@@ -486,7 +486,7 @@ export default async function AdminSupportPage({
         </div>
       </section>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-5">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 space-y-5">
         <div>
           <h2 className="text-xl font-semibold text-slate-100">Account Repair</h2>
           <p className="text-sm text-slate-400">
@@ -500,7 +500,7 @@ export default async function AdminSupportPage({
             name="q"
             defaultValue={resolved?.q ?? ''}
             placeholder="Search by email, org name, or ID"
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-cyan-400/40 focus:outline-none"
+            className="w-full rounded-lg border border-edge-2 bg-surface-1 px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-cyan-400/40 focus:outline-none"
           />
           {resolved?.status ? (
             <input type="hidden" name="status" value={resolved.status} />
@@ -523,7 +523,7 @@ export default async function AdminSupportPage({
                   {provision.users.map((user) => (
                     <div
                       key={user.id}
-                      className="rounded-xl border border-white/10 bg-slate-900/40 p-4 space-y-3"
+                      className="rounded-xl border border-edge-2 bg-slate-900/40 p-4 space-y-3"
                     >
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div>
@@ -551,7 +551,7 @@ export default async function AdminSupportPage({
                           {user.orgs.map((org) => (
                             <div
                               key={org.id}
-                              className="rounded-lg border border-white/5 bg-white/5 px-3 py-2 text-xs text-slate-300"
+                              className="rounded-lg border border-edge-1 bg-surface-1 px-3 py-2 text-xs text-slate-300"
                             >
                               <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                                 <div className="font-semibold text-slate-100">
@@ -597,7 +597,7 @@ export default async function AdminSupportPage({
                   {provision.orgs.map((org) => (
                     <div
                       key={org.id}
-                      className="rounded-xl border border-white/10 bg-slate-900/40 p-4 text-sm text-slate-300"
+                      className="rounded-xl border border-edge-2 bg-slate-900/40 p-4 text-sm text-slate-300"
                     >
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div>

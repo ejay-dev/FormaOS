@@ -74,8 +74,8 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
       <button
         onClick={() => setExpanded(true)}
         className={cn(
-          "inline-flex items-center gap-1 rounded-md border border-white/10 px-2 py-1",
-          "text-[11px] font-semibold text-slate-300 hover:bg-white/5 transition-all",
+          "inline-flex items-center gap-1 rounded-md border border-edge-2 px-2 py-1",
+          "text-[11px] font-semibold text-slate-300 hover:bg-surface-1 transition-all",
           "active:scale-95"
         )}
       >
@@ -92,7 +92,7 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
         onChange={(e) => setStatus(e.target.value)}
         disabled={loading}
         className={cn(
-          "rounded-md border border-white/10 bg-slate-900 px-2 py-1 text-xs text-slate-200",
+          "rounded-md border border-edge-2 bg-slate-900 px-2 py-1 text-xs text-slate-200",
           "disabled:opacity-50"
         )}
       >
@@ -108,7 +108,7 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
         onChange={(e) => setAssignedTo(e.target.value)}
         disabled={loading}
         className={cn(
-          "rounded-md border border-white/10 bg-slate-900 px-2 py-1 text-xs text-slate-200",
+          "rounded-md border border-edge-2 bg-slate-900 px-2 py-1 text-xs text-slate-200",
           "placeholder:text-slate-500 disabled:opacity-50"
         )}
       />
@@ -120,7 +120,7 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
         disabled={loading}
         rows={2}
         className={cn(
-          "rounded-md border border-white/10 bg-slate-900 px-2 py-1 text-xs text-slate-200",
+          "rounded-md border border-edge-2 bg-slate-900 px-2 py-1 text-xs text-slate-200",
           "placeholder:text-slate-500 disabled:opacity-50 resize-none"
         )}
       />
@@ -142,8 +142,8 @@ export function SupportCaseActions({ requestId, currentStatus }: SupportCaseActi
           onClick={() => setExpanded(false)}
           disabled={loading}
           className={cn(
-            "flex items-center gap-1 rounded-md border border-white/10 px-2 py-1",
-            "text-[11px] font-semibold text-slate-400 hover:bg-white/5 transition-all",
+            "flex items-center gap-1 rounded-md border border-edge-2 px-2 py-1",
+            "text-[11px] font-semibold text-slate-400 hover:bg-surface-1 transition-all",
             "disabled:opacity-50 active:scale-95"
           )}
         >

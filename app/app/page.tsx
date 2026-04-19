@@ -40,9 +40,9 @@ function EmptyState({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 text-center rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-12">
+    <div className="flex flex-col items-center justify-center gap-3 text-center rounded-2xl border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-12">
       {icon ? (
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-edge-2 bg-surface-1">
           {icon}
         </div>
       ) : null}

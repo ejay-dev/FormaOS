@@ -205,7 +205,7 @@ export function TrialExpirationBanner() {
 
         {/* Expanded value recap (for urgent states) */}
         {hasValue && (isUrgent || isLastDay || isExpired) && !isLoading && (
-          <div className="mt-3 pt-3 border-t border-white/10">
+          <div className="mt-3 pt-3 border-t border-edge-2">
             <div className="flex flex-wrap items-center gap-4">
               <span className="text-xs text-muted-foreground flex items-center gap-1">
                 <Sparkles className="h-3 w-3" />

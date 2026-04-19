@@ -177,7 +177,7 @@ async function ComplianceScoreSection({
             {missingCodes.slice(0, 5).map((code: string) => (
               <div
                 key={code}
-                className="flex items-center justify-between border-b border-white/10 px-4 py-3 last:border-b-0"
+                className="flex items-center justify-between border-b border-edge-2 px-4 py-3 last:border-b-0"
               >
                 <div className="flex items-center gap-3 text-sm text-foreground">
                   <XCircle className="h-4 w-4 text-rose-300" />

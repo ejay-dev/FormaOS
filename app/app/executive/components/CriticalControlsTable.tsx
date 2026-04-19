@@ -15,7 +15,7 @@ export function CriticalControlsTable({
 }: CriticalControlsTableProps) {
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 animate-pulse">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 p-6 animate-pulse">
         <div className="h-5 w-40 rounded bg-glass-strong mb-6" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -39,7 +39,7 @@ export function CriticalControlsTable({
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
+    <div className="rounded-2xl border border-edge-2 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6">
       <div className="flex items-center gap-3 mb-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10">
           <AlertTriangle className="h-4 w-4 text-red-400" />
@@ -73,7 +73,7 @@ function ControlRow({ control }: { control: CriticalControl }) {
   };
 
   return (
-    <div className="group rounded-lg border border-white/10 bg-white/5 p-4 hover:bg-glass-strong transition-colors">
+    <div className="group rounded-lg border border-edge-2 bg-surface-1 p-4 hover:bg-glass-strong transition-colors">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -98,7 +98,7 @@ function ControlRow({ control }: { control: CriticalControl }) {
 
           <Link
             href={`/app/compliance?control=${control.controlCode}`}
-            className="p-2 rounded-lg border border-white/10 hover:bg-glass-strong transition-colors"
+            className="p-2 rounded-lg border border-edge-2 hover:bg-glass-strong transition-colors"
           >
             <ExternalLink className="h-4 w-4 text-muted-foreground" />
           </Link>
@@ -106,7 +106,7 @@ function ControlRow({ control }: { control: CriticalControl }) {
       </div>
 
       {control.gapDescription && (
-        <p className="text-xs text-muted-foreground mt-2 line-clamp-2 bg-white/5 p-2 rounded">
+        <p className="text-xs text-muted-foreground mt-2 line-clamp-2 bg-surface-1 p-2 rounded">
           {control.gapDescription}
         </p>
       )}

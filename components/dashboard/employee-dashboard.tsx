@@ -344,7 +344,7 @@ export function UploadEvidence({
 
         {/* Recent Submissions */}
         {recentSubmissions.length > 0 && (
-          <div className="mt-6 pt-6 border-t border-white/10">
+          <div className="mt-6 pt-6 border-t border-edge-2">
             <h4 className="text-sm font-semibold mb-3">Recent Submissions</h4>
             <div className="space-y-2">
               {recentSubmissions.map((sub) => {
@@ -364,7 +364,7 @@ export function UploadEvidence({
                 return (
                   <div
                     key={sub.id}
-                    className="flex items-center justify-between p-2 rounded bg-white/5"
+                    className="flex items-center justify-between p-2 rounded bg-surface-1"
                   >
                     <div className="flex-1">
                       <p className="text-sm font-medium">{sub.title}</p>
@@ -426,7 +426,7 @@ export function Training({
           courses.map((course) => (
             <div
               key={course.id}
-              className="p-4 rounded-lg bg-glass-subtle border border-white/10"
+              className="p-4 rounded-lg bg-glass-subtle border border-edge-2"
             >
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold">{course.title}</h4>
@@ -577,7 +577,7 @@ function RoleWorkflowBoard({
             className="group flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 transition-colors hover:bg-glass-strong sm:flex-row sm:items-start sm:justify-between"
           >
             <div className="flex items-start gap-3">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border bg-white/5">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border bg-surface-1">
                 <action.icon className="h-4 w-4 text-foreground/70" />
               </span>
               <div>

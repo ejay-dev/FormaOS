@@ -73,7 +73,7 @@ export default async function SettingsPage() {
       'No organization record was returned for the active membership.';
     return (
       <div className="flex items-center justify-center p-12 min-h-[60vh]">
-        <div className="max-w-2xl bg-white/5 rounded-[2.5rem] border border-glass-border p-12 shadow-2xl text-center animate-in fade-in zoom-in duration-500">
+        <div className="max-w-2xl bg-surface-1 rounded-[2.5rem] border border-glass-border p-12 shadow-2xl text-center animate-in fade-in zoom-in duration-500">
           <div className="h-20 w-20 bg-rose-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-8 border border-rose-400/30 shadow-inner">
             <ShieldCheck className="h-10 w-10 text-rose-300" />
           </div>
@@ -163,7 +163,7 @@ export default async function SettingsPage() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* LEFT COLUMN: Main Workspace Identity */}
           <div className="xl:col-span-2 space-y-8">
-            <div className="bg-white/5 border border-glass-border rounded-[2.5rem] p-10 shadow-sm space-y-10 relative overflow-hidden">
+            <div className="bg-surface-1 border border-glass-border rounded-[2.5rem] p-10 shadow-sm space-y-10 relative overflow-hidden">
               <div className="flex items-center gap-6 border-b border-glass-border pb-8">
                 <div className="h-20 w-20 rounded-[1.5rem] bg-glass-strong text-foreground flex items-center justify-center shadow-2xl shadow-black/40">
                   <Building2 className="h-9 w-9" />
@@ -193,7 +193,7 @@ export default async function SettingsPage() {
                     name="name"
                     defaultValue={activeOrganization.name}
                     disabled={!isAdmin}
-                    className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
                   />
                 </div>
                 <div className="space-y-3">
@@ -208,7 +208,7 @@ export default async function SettingsPage() {
                     defaultValue={activeOrganization.registration_number || ''}
                     placeholder="e.g. 12 345 678 901"
                     disabled={!isAdmin}
-                    className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
                   />
                 </div>
               </div>
@@ -227,14 +227,14 @@ export default async function SettingsPage() {
                     placeholder="company.com"
                     defaultValue={activeOrganization.domain || ''}
                     disabled={!isAdmin}
-                    className="w-full pl-14 pr-4 py-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    className="w-full pl-14 pr-4 py-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
                   />
                 </div>
               </div>
             </div>
 
             {/* Subscription & Billing Tier */}
-            <div className="bg-white/5 border border-glass-border rounded-[2.5rem] p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6 group hover:border-glass-border transition-all duration-500">
+            <div className="bg-surface-1 border border-glass-border rounded-[2.5rem] p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6 group hover:border-glass-border transition-all duration-500">
               <div className="flex items-center gap-6">
                 <div className="h-14 w-14 rounded-2xl bg-purple-500/10 text-purple-300 flex items-center justify-center border border-purple-400/30 shadow-sm group-hover:bg-purple-600 group-hover:text-foreground transition-all duration-300">
                   <CreditCard className="h-7 w-7" />
@@ -267,7 +267,7 @@ export default async function SettingsPage() {
             {/* Identity Card (Black) */}
             <div className="bg-glass-strong rounded-[2.5rem] p-10 text-foreground space-y-10 shadow-2xl relative overflow-hidden group">
               {/* Background Blur Effect */}
-              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-glass-strong transition-all duration-1000" />
+              <div className="absolute top-0 right-0 w-48 h-48 bg-surface-1 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-glass-strong transition-all duration-1000" />
 
               <div className="flex items-center gap-3 relative z-10">
                 <Fingerprint className="h-6 w-6 text-blue-400" />
@@ -280,7 +280,7 @@ export default async function SettingsPage() {
                 <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em]">
                   Workspace GUID
                 </p>
-                <p className="text-xs font-mono text-foreground break-all select-all bg-glass-strong p-3 rounded-lg border border-white/5">
+                <p className="text-xs font-mono text-foreground break-all select-all bg-glass-strong p-3 rounded-lg border border-edge-1">
                   {activeOrganization.id}
                 </p>
               </div>
@@ -298,7 +298,7 @@ export default async function SettingsPage() {
             </div>
 
             {/* Access Level Indicator */}
-            <div className="bg-white/5 border border-glass-border rounded-[2.25rem] p-8 shadow-sm flex items-center justify-between">
+            <div className="bg-surface-1 border border-glass-border rounded-[2.25rem] p-8 shadow-sm flex items-center justify-between">
               <div className="flex items-center gap-5">
                 <div className="h-12 w-12 rounded-2xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-glass-border">
                   <UserCircle className="h-6 w-6" />
@@ -332,7 +332,7 @@ export default async function SettingsPage() {
               </p>
               <button
                 disabled
-                className="w-full py-4 bg-white/5 border border-red-200 text-red-400 rounded-2xl text-xs font-black uppercase tracking-[0.2em] cursor-not-allowed shadow-sm"
+                className="w-full py-4 bg-surface-1 border border-red-200 text-red-400 rounded-2xl text-xs font-black uppercase tracking-[0.2em] cursor-not-allowed shadow-sm"
               >
                 Destroy Node
               </button>

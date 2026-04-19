@@ -65,7 +65,7 @@ export function UserNav({ userEmail }: { userEmail: string }) {
             </button>
           </div>
 
-          <div className="my-1 border-t border-white/10" />
+          <div className="my-1 border-t border-edge-2" />
           
           <button 
             onClick={handleLogout}

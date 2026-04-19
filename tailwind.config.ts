@@ -95,6 +95,21 @@ const config: Config = {
           'border-strong': 'var(--glass-border-strong)', // rgba(255,255,255,0.16)
         },
 
+        // Surface tier scale — theme-aware elevation lifts.
+        // Replaces bg-white/5, bg-white/10, bg-white/20 patterns so
+        // light / dark / midnight-blue / graphite / aurora all render
+        // consistent surface hierarchy.
+        surface: {
+          1: 'var(--surface-1)',  // subtle lift  (~bg-white/5 intent)
+          2: 'var(--surface-2)',  // medium lift  (~bg-white/10 intent)
+          3: 'var(--surface-3)',  // strong lift  (~bg-white/20 intent)
+        },
+        edge: {
+          1: 'var(--edge-1)',  // ~border-white/5 intent
+          2: 'var(--edge-2)',  // ~border-white/10 intent
+          3: 'var(--edge-3)',  // ~border-white/20 intent
+        },
+
         // Status semantic tokens
         success: 'hsl(var(--success))',
         'success-foreground': 'hsl(var(--success-foreground))',

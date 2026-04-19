@@ -127,8 +127,8 @@ export default function EmailPreferencesPage() {
         Manage which emails you receive from FormaOS
       </p>
 
-      <div className="bg-white/5 rounded-lg border border-white/10 p-6 space-y-6 shadow-sm">
-        <div className="pb-6 border-b border-white/10">
+      <div className="bg-surface-1 rounded-lg border border-edge-2 p-6 space-y-6 shadow-sm">
+        <div className="pb-6 border-b border-edge-2">
           <label className="flex items-start gap-3 cursor-pointer group">
             <input
               type="checkbox"
@@ -136,7 +136,7 @@ export default function EmailPreferencesPage() {
               onChange={(e) =>
                 setPreferences({ ...preferences, unsubscribed_all: e.target.checked })
               }
-              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
             />
             <div>
               <div className="font-semibold text-rose-300 group-hover:text-rose-200">Unsubscribe from all emails</div>
@@ -156,7 +156,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, welcome_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Welcome emails</div>
@@ -174,7 +174,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, invitation_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Team invitations</div>
@@ -192,7 +192,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, alert_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Alerts and notifications</div>
@@ -210,7 +210,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, weekly_digest: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Weekly digest</div>
@@ -228,7 +228,7 @@ export default function EmailPreferencesPage() {
                 setPreferences({ ...preferences, marketing_emails: e.target.checked })
               }
               disabled={preferences.unsubscribed_all}
-              className="mt-1 h-4 w-4 rounded border-white/10 text-foreground focus:ring-sky-500/20"
+              className="mt-1 h-4 w-4 rounded border-edge-2 text-foreground focus:ring-sky-500/20"
             />
             <div>
               <div className="font-medium text-foreground group-hover:text-foreground/90">Marketing and product updates</div>
@@ -239,11 +239,11 @@ export default function EmailPreferencesPage() {
           </label>
         </div>
 
-        <div className="pt-6 border-t border-white/10 flex items-center gap-4">
+        <div className="pt-6 border-t border-edge-2 flex items-center gap-4">
           <button
             onClick={savePreferences}
             disabled={saving}
-            className="px-6 py-2 bg-glass-strong text-foreground rounded-lg font-medium hover:bg-white/20 disabled:bg-glass-strong transition-all active:scale-95"
+            className="px-6 py-2 bg-glass-strong text-foreground rounded-lg font-medium hover:bg-surface-3 disabled:bg-glass-strong transition-all active:scale-95"
           >
             {saving ? 'Saving...' : 'Save Preferences'}
           </button>

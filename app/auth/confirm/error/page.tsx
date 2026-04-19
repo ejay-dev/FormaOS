@@ -33,7 +33,7 @@ export default async function ConfirmErrorPage({
           <p className="mb-6 text-sm leading-7 text-slate-200">{message}</p>
           <Link
             href="/auth/signin"
-            className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+            className="inline-flex items-center gap-2 rounded-lg bg-surface-2 px-4 py-2 text-sm font-semibold text-white transition hover:bg-surface-3"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to sign in

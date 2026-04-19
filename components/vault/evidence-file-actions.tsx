@@ -49,7 +49,7 @@ export function EvidenceFileActions({
         type="button"
         disabled={!filePath || loading}
         onClick={() => openFile('view')}
-        className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl bg-glass-strong hover:bg-white/20 text-xs font-bold text-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 py-3 flex items-center justify-center gap-2 rounded-xl bg-glass-strong hover:bg-surface-3 text-xs font-bold text-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
           <Loader2 className="h-4 w-4 animate-spin" />

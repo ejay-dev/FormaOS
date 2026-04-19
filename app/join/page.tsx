@@ -145,7 +145,7 @@ export default function JoinOrCreatePage() {
           )}
 
           {/* Option 1: Join with invite code */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6">
+          <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-500/10">
                 <Mail className="h-5 w-5 text-sky-400" />
@@ -166,7 +166,7 @@ export default function JoinOrCreatePage() {
                 value={inviteToken}
                 onChange={(e) => setInviteToken(e.target.value)}
                 placeholder="Paste invite code or link..."
-                className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20"
+                className="w-full rounded-lg border border-edge-3 bg-surface-2 px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20"
                 disabled={joining}
               />
               <button
@@ -191,13 +191,13 @@ export default function JoinOrCreatePage() {
 
           {/* Divider */}
           <div className="flex items-center gap-4">
-            <div className="flex-1 border-t border-white/20" />
+            <div className="flex-1 border-t border-edge-3" />
             <span className="text-xs text-slate-400">or</span>
-            <div className="flex-1 border-t border-white/20" />
+            <div className="flex-1 border-t border-edge-3" />
           </div>
 
           {/* Option 2: Create new org */}
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6">
+          <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10">
                 <Building2 className="h-5 w-5 text-emerald-400" />
@@ -215,7 +215,7 @@ export default function JoinOrCreatePage() {
             <button
               onClick={handleCreateOrg}
               disabled={creating}
-              className="w-full rounded-lg border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full rounded-lg border border-edge-3 bg-surface-1 px-6 py-3 text-sm font-semibold text-white hover:bg-surface-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {creating ? (
                 <>

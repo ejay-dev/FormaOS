@@ -161,7 +161,7 @@ function ComplianceToast({
       </div>
 
       {/* Progress bar for auto-dismiss */}
-      <div className="h-1 bg-white/5">
+      <div className="h-1 bg-surface-1">
         <div 
           className={cn(
             "h-full bg-gradient-to-r from-cyan-500 to-blue-500",

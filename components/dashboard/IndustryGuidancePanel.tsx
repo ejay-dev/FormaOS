@@ -200,7 +200,7 @@ export function IndustryGuidancePanel({
             <div className="h-16 w-16 rounded-full bg-glass-strong" />
           </div>
           <div className="mt-6 space-y-3">
-            <div className="h-20 rounded-lg bg-white/5" />
+            <div className="h-20 rounded-lg bg-surface-1" />
             <div className="h-4 w-48 rounded bg-glass-strong" />
           </div>
         </div>

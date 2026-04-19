@@ -89,7 +89,7 @@ function resolveContextMode(pathname: string): ContextMode {
   ) {
     return {
       label: 'Administration',
-      color: 'text-muted-foreground bg-white/5 border-white/10',
+      color: 'text-muted-foreground bg-surface-1 border-edge-2',
       icon: Settings2,
     };
   }

@@ -104,7 +104,7 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
               message.role === 'user'
                 ? 'bg-cyan-400/20'
-                : 'border border-glass-border bg-white/5'
+                : 'border border-glass-border bg-surface-1'
             }`}
           >
             {message.role === 'user' ? (
@@ -118,7 +118,7 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
             className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
               message.role === 'user'
                 ? 'bg-cyan-500/20 text-foreground/90 border border-cyan-400/20'
-                : 'bg-glass-subtle text-foreground/70 border border-white/10'
+                : 'bg-glass-subtle text-foreground/70 border border-edge-2'
             }`}
           >
             {message.role === 'assistant' ? (
@@ -137,7 +137,7 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
 
       {isLoading && (
         <div className="flex gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-glass-border bg-white/5">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-glass-border bg-surface-1">
             <Bot className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="rounded-2xl border border-glass-border bg-glass-subtle px-4 py-3">

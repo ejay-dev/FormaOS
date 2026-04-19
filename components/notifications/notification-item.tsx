@@ -120,7 +120,7 @@ export function NotificationItem({
   const meta = TYPE_META[notification.type] ?? {
     icon: BellRing,
     tone: 'text-foreground/90',
-    badge: 'bg-glass-strong border-white/10',
+    badge: 'bg-glass-strong border-edge-2',
   };
   const Icon = meta.icon;
 

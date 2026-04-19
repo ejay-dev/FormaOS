@@ -49,11 +49,11 @@ export default async function PatientsPage() {
             <input
               name="fullName"
               placeholder="New patient name"
-              className="w-56 rounded-xl border border-white/10 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
+              className="w-56 rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
             />
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+              className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
             >
               <Plus className="h-4 w-4" />
               Add
@@ -62,8 +62,8 @@ export default async function PatientsPage() {
         )}
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
-        <div className="flex items-center gap-2 border-b border-white/10 px-6 py-4 text-xs font-semibold text-foreground/90">
+      <div className="rounded-2xl border border-edge-2 bg-surface-1 overflow-hidden">
+        <div className="flex items-center gap-2 border-b border-edge-2 px-6 py-4 text-xs font-semibold text-foreground/90">
           <Users className="h-4 w-4 text-emerald-300" />
           Active Patients
         </div>

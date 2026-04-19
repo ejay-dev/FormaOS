@@ -50,10 +50,10 @@ export default async function EmailHistoryPage() {
         </div>
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-surface-1 border border-edge-2 rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto overscroll-x-contain">
         <table className="min-w-[640px] sm:min-w-[760px] w-full text-left text-sm">
-          <thead className="bg-glass-strong border-b border-white/10 text-muted-foreground font-medium">
+          <thead className="bg-glass-strong border-b border-edge-2 text-muted-foreground font-medium">
             <tr>
               <th className="px-4 sm:px-6 py-4">Recipient</th>
               <th className="px-4 sm:px-6 py-4">Type</th>
@@ -71,7 +71,7 @@ export default async function EmailHistoryPage() {
               </tr>
             ) : (
               logs.map((log) => (
-                <tr key={log.id} className="hover:bg-white/5 transition-colors group">
+                <tr key={log.id} className="hover:bg-surface-1 transition-colors group">
                   <td className="px-4 sm:px-6 py-4 font-medium text-foreground">
                     <div className="flex flex-col">
                       <span>{log.recipientEmail}</span>

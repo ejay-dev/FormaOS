@@ -123,7 +123,7 @@ export function Soc2Dashboard({
 
       {!assessment ? (
         <div className="rounded-2xl border border-glass-border bg-glass-subtle p-12 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-glass-border bg-white/5">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-glass-border bg-surface-1">
             <Play className="h-6 w-6 text-cyan-400" />
           </div>
           <h2 className="mt-4 text-lg font-semibold text-foreground/90">No Assessment Yet</h2>

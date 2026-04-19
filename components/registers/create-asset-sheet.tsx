@@ -176,7 +176,7 @@ export function CreateAssetSheet() {
                 <select
                   id="field-88"
                   name="type"
-                  className="w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"
+                  className="w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 bg-surface-1"
                 >
                   <option value="hardware">Hardware (Laptops, Servers)</option>
                   <option value="software">Software (SaaS, Apps)</option>
@@ -217,7 +217,7 @@ export function CreateAssetSheet() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <select
                     name="criticality"
-                    className="col-span-2 w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 bg-white/5"
+                    className="col-span-2 w-full rounded-xl border border-glass-border p-3 text-sm outline-none focus:border-teal-400/50 bg-surface-1"
                   >
                     <option value="low">Low - Internal Data</option>
                     <option value="medium">Medium - Operational</option>

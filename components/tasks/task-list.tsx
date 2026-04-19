@@ -41,7 +41,7 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
       critical: 'bg-red-100 text-red-700 border-red-200',
       high: 'bg-amber-400/10 text-amber-300 border-amber-400/30',
       medium: 'bg-sky-500/10 text-sky-300 border-sky-400/30',
-      low: 'bg-glass-strong text-muted-foreground border-white/10',
+      low: 'bg-glass-strong text-muted-foreground border-edge-2',
     };
     return styles[priority] || styles.low;
   };
@@ -86,7 +86,7 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
                         ${
                           isCompleted
                             ? 'bg-emerald-500 border-emerald-500 text-white shadow-sm'
-                            : 'bg-glass-strong border-glass-border text-transparent hover:border-white/20'
+                            : 'bg-glass-strong border-glass-border text-transparent hover:border-edge-3'
                         }`}
                     >
                       <Check className="h-3.5 w-3.5" strokeWidth={3} />

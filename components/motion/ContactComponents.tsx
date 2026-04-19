@@ -100,9 +100,9 @@ function FormField({
 }: FormFieldProps) {
   const inputClasses = `
     w-full rounded-xl glass-panel px-5 py-4 text-base text-foreground 
-    border border-white/10
+    border border-edge-2
     focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20 
-    hover:border-white/20
+    hover:border-edge-3
     transition-all duration-300
     placeholder:text-muted-foreground/40
     shadow-inner
@@ -157,7 +157,7 @@ export function ContactInfoCard({ icon: Icon, label, value, delay = 0 }: Contact
       viewport={{ once: true, margin: "-30px" }}
       transition={{ duration: 0.6, delay }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="relative glass-panel rounded-2xl p-8 lg:p-10 shadow-premium-lg group cursor-default overflow-hidden border border-white/5"
+      className="relative glass-panel rounded-2xl p-8 lg:p-10 shadow-premium-lg group cursor-default overflow-hidden border border-edge-1"
     >
       {/* Top edge highlight */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-primary/30 transition-colors duration-300" />
@@ -227,7 +227,7 @@ export function ContactOptionsGrid() {
           viewport={{ once: true, margin: "-30px" }}
           transition={{ duration: 0.6, delay: idx * 0.1 }}
           whileHover={option.action ? { y: -10, scale: 1.03 } : { y: -5 }}
-          className={`relative glass-panel rounded-2xl p-8 shadow-premium-lg group overflow-hidden border border-white/5 ${option.action ? 'cursor-pointer' : ''}`}
+          className={`relative glass-panel rounded-2xl p-8 shadow-premium-lg group overflow-hidden border border-edge-1 ${option.action ? 'cursor-pointer' : ''}`}
           onClick={option.action ? () => window.location.href = option.action : undefined}
         >
           {/* Top edge highlight */}

@@ -130,14 +130,14 @@ export default function PeoplePage() {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/20 transition-all shadow-xl active:scale-95"
+          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl active:scale-95"
         >
           <UserPlus className="h-4 w-4" />
           Provision Access
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] items-center gap-3 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_auto] items-center gap-3 bg-surface-1 p-2 rounded-2xl border border-edge-2 shadow-sm">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
@@ -153,7 +153,7 @@ export default function PeoplePage() {
           value={roleFilter}
           onChange={(event) => setRoleFilter(event.target.value)}
           aria-label="Filter by role"
-          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          className="h-10 rounded-xl border border-edge-2 bg-surface-1 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Roles</option>
           {roleOptions.map((role) => (
@@ -167,7 +167,7 @@ export default function PeoplePage() {
           value={complianceFilter}
           onChange={(event) => setComplianceFilter(event.target.value)}
           aria-label="Filter by compliance status"
-          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          className="h-10 rounded-xl border border-edge-2 bg-surface-1 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Statuses</option>
           {complianceOptions.map((status) => (
@@ -192,7 +192,7 @@ export default function PeoplePage() {
             </p>
           </div>
         ) : filteredMembers.length === 0 ? (
-          <div className="rounded-3xl border border-white/10 bg-white/5 py-14 text-center">
+          <div className="rounded-3xl border border-edge-2 bg-surface-1 py-14 text-center">
             <p className="text-sm font-semibold text-foreground/90">
               No personnel match the current filters.
             </p>
@@ -213,10 +213,10 @@ export default function PeoplePage() {
             return (
               <div
                 key={member.user_id}
-                className="group bg-white/5 border border-white/10 rounded-[2.5rem] p-6 hover:border-glass-border-strong transition-all shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+                className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 hover:border-glass-border-strong transition-all shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-6"
               >
                 <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-[1.25rem] bg-glass-strong border border-white/10 flex items-center justify-center text-muted-foreground group-hover:bg-white/20 group-hover:text-foreground transition-all duration-300">
+                  <div className="h-14 w-14 rounded-[1.25rem] bg-glass-strong border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-300">
                     <User className="h-6 w-6" />
                   </div>
                   <div>
@@ -247,7 +247,7 @@ export default function PeoplePage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-8 md:gap-16 border-t md:border-t-0 pt-6 md:pt-0 border-white/10">
+                <div className="flex items-center gap-8 md:gap-16 border-t md:border-t-0 pt-6 md:pt-0 border-edge-2">
                   <div className="text-center">
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                       Tasks
@@ -288,7 +288,7 @@ export default function PeoplePage() {
                 <div className="flex items-center gap-3">
                   <Link
                     href={`/app/staff-compliance?member=${member.user_id}`}
-                    className="px-6 py-3 bg-glass-strong text-foreground rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-white/20 transition-all"
+                    className="px-6 py-3 bg-glass-strong text-foreground rounded-xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all"
                   >
                     View Records
                   </Link>

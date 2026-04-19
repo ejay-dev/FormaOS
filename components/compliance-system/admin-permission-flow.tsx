@@ -221,7 +221,7 @@ function PermissionMatrix({
               !isGaining &&
                 !isLosing &&
                 (hasCurrent
-                  ? 'border-glass-border bg-white/5'
+                  ? 'border-glass-border bg-surface-1'
                   : 'border-slate-700/50 bg-slate-800/50'),
             )}
           >
@@ -463,7 +463,7 @@ export function AdminPermissionFlow({
       )}
 
       {/* Current Role Summary */}
-      <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-white/5">
+      <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-edge-1">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20 flex items-center justify-center">
             <Shield className="h-5 w-5 text-violet-400" />

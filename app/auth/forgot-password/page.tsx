@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
         </div>
         <div className="flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-md">
-            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8 text-center">
+            <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-8 text-center">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/20">
                 <CheckCircle2 className="h-6 w-6 text-emerald-400" />
               </div>
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
       </div>
       <div className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8">
+          <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-8">
             <div className="mb-6">
               <Link
                 href="/auth/signin"
@@ -128,7 +128,7 @@ export default function ForgotPasswordPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@company.com"
-                    className="w-full rounded-lg border border-white/20 bg-white/10 pl-10 pr-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                    className="w-full rounded-lg border border-edge-3 bg-surface-2 pl-10 pr-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                     required
                     disabled={isLoading}
                   />

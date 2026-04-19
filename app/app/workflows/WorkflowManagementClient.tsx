@@ -129,7 +129,7 @@ export function WorkflowManagementClient({
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-foreground hover:bg-white/[0.08]"
+            className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-foreground hover:bg-white/[0.08]"
             onClick={() =>
               startTransition(async () => {
                 const workflow = await createWorkflow({
@@ -159,7 +159,7 @@ export function WorkflowManagementClient({
       </div>
 
       {showTemplates ? (
-        <div className="space-y-4 rounded-[28px] border border-white/10 bg-slate-950/70 p-5">
+        <div className="space-y-4 rounded-[28px] border border-edge-2 bg-slate-950/70 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -194,13 +194,13 @@ export function WorkflowManagementClient({
           return (
             <div
               key={workflow.id}
-              className="rounded-[28px] border border-white/10 bg-slate-950/70 p-5"
+              className="rounded-[28px] border border-edge-2 bg-slate-950/70 p-5"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-3">
                     <h3 className="text-xl font-semibold text-foreground">{workflow.name}</h3>
-                    <span className="rounded-full border border-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-foreground/70">
+                    <span className="rounded-full border border-edge-2 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-foreground/70">
                       {workflow.trigger.type}
                     </span>
                     <span
@@ -223,7 +223,7 @@ export function WorkflowManagementClient({
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
-                    className="rounded-xl border border-white/10 p-2 text-foreground/90 hover:bg-glass-strong"
+                    className="rounded-xl border border-edge-2 p-2 text-foreground/90 hover:bg-glass-strong"
                     onClick={() => toggleWorkflow(workflow)}
                     disabled={isPending}
                   >
@@ -239,7 +239,7 @@ export function WorkflowManagementClient({
                   </button>
                   <Link
                     href={`/app/workflows/${workflow.id}`}
-                    className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold text-foreground hover:bg-glass-strong"
+                    className="inline-flex items-center gap-2 rounded-xl border border-edge-2 px-4 py-2 text-sm font-semibold text-foreground hover:bg-glass-strong"
                   >
                     <Workflow className="h-4 w-4" />
                     Open Builder
@@ -251,7 +251,7 @@ export function WorkflowManagementClient({
                   {workflow.tags.map((tag) => (
                     <span
                       key={`${workflow.id}-${tag}`}
-                      className="rounded-full border border-white/10 px-3 py-1 text-xs text-foreground/70"
+                      className="rounded-full border border-edge-2 px-3 py-1 text-xs text-foreground/70"
                     >
                       {tag}
                     </span>
@@ -264,7 +264,7 @@ export function WorkflowManagementClient({
       </div>
 
       {workflows.length === 0 ? (
-        <div className="rounded-[28px] border border-dashed border-white/10 bg-slate-950/50 p-8 text-center">
+        <div className="rounded-[28px] border border-dashed border-edge-2 bg-slate-950/50 p-8 text-center">
           <CheckCircle2 className="mx-auto h-10 w-10 text-cyan-300" />
           <h3 className="mt-4 text-lg font-semibold text-foreground">No workflows configured</h3>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -278,7 +278,7 @@ export function WorkflowManagementClient({
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[28px] border border-white/10 bg-slate-950/70 p-5">
+    <div className="rounded-[28px] border border-edge-2 bg-slate-950/70 p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
       <p className="mt-3 text-3xl font-semibold text-foreground">{value}</p>
     </div>

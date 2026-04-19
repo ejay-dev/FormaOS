@@ -62,8 +62,8 @@ export default async function IntegrationSettingsPage() {
         </div>
       </header>
 
-      <section className="grid gap-4 rounded-[2rem] border border-white/10 bg-white/5 p-6 md:grid-cols-3">
-        <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+      <section className="grid gap-4 rounded-[2rem] border border-edge-2 bg-surface-1 p-6 md:grid-cols-3">
+        <div className="rounded-2xl border border-edge-2 bg-slate-950/50 p-4">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
             Connected
           </p>
@@ -71,7 +71,7 @@ export default async function IntegrationSettingsPage() {
             {items.filter((item) => item.connected).length}
           </p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+        <div className="rounded-2xl border border-edge-2 bg-slate-950/50 p-4">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
             Healthy
           </p>
@@ -79,7 +79,7 @@ export default async function IntegrationSettingsPage() {
             {items.filter((item) => item.health === 'healthy').length}
           </p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+        <div className="rounded-2xl border border-edge-2 bg-slate-950/50 p-4">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
             Event Fanout
           </p>

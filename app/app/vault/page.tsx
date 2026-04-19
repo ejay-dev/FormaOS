@@ -366,7 +366,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                     {verified.map((item: ArtifactRow) => (
                       <tr
                         key={item.id}
-                        className="group hover:bg-white/5 transition-colors"
+                        className="group hover:bg-surface-1 transition-colors"
                       >
                         <td className="px-8 py-4">
                           <div className="flex items-center gap-3">

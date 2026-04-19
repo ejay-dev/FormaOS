@@ -147,7 +147,7 @@ export default function CredentialReviewPage() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 bg-white/5 p-2 rounded-2xl border border-white/10 shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 bg-surface-1 p-2 rounded-2xl border border-edge-2 shadow-sm">
         <div className="relative flex-1">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
@@ -162,7 +162,7 @@ export default function CredentialReviewPage() {
           value={docFilter}
           onChange={(event) => setDocFilter(event.target.value)}
           aria-label="Filter by document type"
-          className="h-10 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
+          className="h-10 rounded-xl border border-edge-2 bg-surface-1 px-3 text-xs font-semibold uppercase tracking-wider text-foreground/70"
         >
           <option value={ALL_FILTER}>All Types</option>
           {documentTypes.map((type) => (
@@ -186,7 +186,7 @@ export default function CredentialReviewPage() {
           </p>
         </div>
       ) : filteredDocs.length === 0 ? (
-        <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-24 text-center shadow-sm">
+        <div className="bg-surface-1 border border-edge-2 rounded-[2.5rem] p-24 text-center shadow-sm">
           <div className="h-20 w-20 bg-emerald-400/10 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-emerald-400/30 shadow-inner">
             <CheckCircle2 className="h-10 w-10 text-emerald-400" />
           </div>
@@ -202,10 +202,10 @@ export default function CredentialReviewPage() {
           {filteredDocs.map((doc) => (
             <div
               key={doc.id}
-              className="group bg-white/5 border border-white/10 rounded-[2.5rem] p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-sm hover:border-glass-border-strong transition-all duration-300"
+              className="group bg-surface-1 border border-edge-2 rounded-[2.5rem] p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 shadow-sm hover:border-glass-border-strong transition-all duration-300"
             >
               <div className="flex items-center gap-5">
-                <div className="h-16 w-16 rounded-[1.25rem] bg-glass-strong border border-white/10 flex items-center justify-center text-muted-foreground group-hover:bg-white/20 group-hover:text-foreground transition-all duration-500">
+                <div className="h-16 w-16 rounded-[1.25rem] bg-glass-strong border border-edge-2 flex items-center justify-center text-muted-foreground group-hover:bg-surface-3 group-hover:text-foreground transition-all duration-500">
                   <FileText className="h-7 w-7" />
                 </div>
                 <div>
@@ -233,7 +233,7 @@ export default function CredentialReviewPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setSelectedDoc(doc)}
-                  className="flex items-center gap-2 px-8 py-4 bg-glass-strong text-foreground rounded-2xl text-xs font-semibold uppercase tracking-wider hover:bg-white/20 transition-all shadow-xl active:scale-95"
+                  className="flex items-center gap-2 px-8 py-4 bg-glass-strong text-foreground rounded-2xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all shadow-xl active:scale-95"
                 >
                   <Eye className="h-4 w-4" />
                   Inspect & Verify
@@ -246,9 +246,9 @@ export default function CredentialReviewPage() {
       )}
 
       <div className="bg-glass-strong rounded-[2.5rem] p-10 text-foreground flex flex-col md:flex-row md:items-center md:justify-between gap-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-surface-1 rounded-full blur-3xl -mr-32 -mt-32" />
         <div className="flex items-start gap-6 relative z-10">
-          <div className="h-12 w-12 rounded-2xl bg-glass-strong flex items-center justify-center text-blue-400 border border-white/10 backdrop-blur-md">
+          <div className="h-12 w-12 rounded-2xl bg-glass-strong flex items-center justify-center text-blue-400 border border-edge-2 backdrop-blur-md">
             <ShieldCheck className="h-6 w-6" />
           </div>
           <div className="max-w-xl">

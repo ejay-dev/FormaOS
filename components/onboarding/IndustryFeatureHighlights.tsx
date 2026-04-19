@@ -336,7 +336,7 @@ export function IndustryOnboardingFeatures({
       </div>
 
       {/* Quick Wins */}
-      <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10">
+      <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-edge-2">
         <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
           <Clock className="h-5 w-5 text-indigo-400" />
           Quick Wins (Next 30 Minutes)
