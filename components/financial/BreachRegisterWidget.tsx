@@ -11,6 +11,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
+import { useComplianceAction } from '@/components/compliance-system';
 
 interface Breach {
   id: string;
@@ -43,16 +44,19 @@ const _STATUS_PIPELINE = [
 function BreachReportForm({
   breach,
   onClose,
+  onReported,
 }: {
   breach: Breach;
   onClose: () => void;
+  onReported: (breachId: string) => void;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { reportSuccess, reportError } = useComplianceAction();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      await fetch('/api/v1/registers/breach/' + breach.id + '/report', {
+      const res = await fetch('/api/v1/registers/breach/' + breach.id + '/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -61,11 +65,26 @@ function BreachReportForm({
           action: 'self-report',
         }),
       });
-    } catch {
-      console.warn('Failed to submit breach report');
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || `Report failed (${res.status})`);
+      }
+      onReported(breach.id);
+      reportSuccess({
+        title: 'Breach reported to ASIC',
+        message: `${breach.breach_id} — s912D self-report submitted`,
+        nodeType: 'audit',
+        nodeAction: 'created',
+      });
+      onClose();
+    } catch (err) {
+      reportError({
+        title: 'ASIC report failed',
+        message: err instanceof Error ? err.message : 'Unexpected error submitting breach report',
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
-    onClose();
   };
 
   return (
@@ -252,6 +271,15 @@ export function BreachRegisterWidget() {
               <BreachReportForm
                 breach={breaches.find((b) => b.id === reportingBreachId)!}
                 onClose={() => setReportingBreachId(null)}
+                onReported={(breachId) =>
+                  setBreaches((prev) =>
+                    prev.map((b) =>
+                      b.id === breachId
+                        ? { ...b, reported_to_asic: true }
+                        : b,
+                    ),
+                  )
+                }
               />
             )}
 

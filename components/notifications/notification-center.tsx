@@ -206,6 +206,8 @@ export function NotificationCenter({
 
   const handleMarkRead = useCallback(
     async (id: string) => {
+      const prev = items;
+      const prevCount = unreadCount;
       setItems((current) =>
         current.map((item) =>
           item.id === id
@@ -215,33 +217,49 @@ export function NotificationCenter({
       );
       setUnreadCount((count) => Math.max(0, count - 1));
 
-      await fetch('/api/notifications', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orgId, ids: [id], action: 'mark_read' }),
-      });
+      try {
+        const res = await fetch('/api/notifications', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orgId, ids: [id], action: 'mark_read' }),
+        });
+        if (!res.ok) throw new Error();
+      } catch {
+        setItems(prev);
+        setUnreadCount(prevCount);
+      }
     },
-    [orgId],
+    [orgId, items, unreadCount],
   );
 
   const handleArchive = useCallback(
     async (id: string) => {
+      const prev = items;
+      const prevCount = unreadCount;
       const target = items.find((item) => item.id === id);
       setItems((current) => current.filter((item) => item.id !== id));
       if (target && !target.read_at) {
         setUnreadCount((count) => Math.max(0, count - 1));
       }
 
-      await fetch('/api/notifications', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orgId, ids: [id], action: 'archive' }),
-      });
+      try {
+        const res = await fetch('/api/notifications', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orgId, ids: [id], action: 'archive' }),
+        });
+        if (!res.ok) throw new Error();
+      } catch {
+        setItems(prev);
+        setUnreadCount(prevCount);
+      }
     },
-    [items, orgId],
+    [items, orgId, unreadCount],
   );
 
   const handleMarkAllRead = useCallback(async () => {
+    const prev = items;
+    const prevCount = unreadCount;
     setItems((current) =>
       current.map((item) =>
         item.read_at ? item : { ...item, read_at: new Date().toISOString() },
@@ -249,12 +267,18 @@ export function NotificationCenter({
     );
     setUnreadCount(0);
 
-    await fetch('/api/notifications', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orgId, action: 'mark_all_read' }),
-    });
-  }, [orgId]);
+    try {
+      const res = await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orgId, action: 'mark_all_read' }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setItems(prev);
+      setUnreadCount(prevCount);
+    }
+  }, [orgId, items, unreadCount]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

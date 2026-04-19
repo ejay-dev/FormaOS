@@ -9,6 +9,7 @@
 
 import { useState, useEffect } from 'react';
 import { Building2, Check, Plus, ChevronDown } from 'lucide-react';
+import { useComplianceAction } from '@/components/compliance-system';
 
 interface Organization {
   id: string;
@@ -30,6 +31,8 @@ export default function OrganizationSwitcher({
   const [currentOrg, setCurrentOrg] = useState<Organization | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const { reportError } = useComplianceAction();
 
   useEffect(() => {
     fetchOrganizations();
@@ -56,17 +59,24 @@ export default function OrganizationSwitcher({
 
   const handleSwitch = async (orgId: string) => {
     try {
-      // Update current organization
-      await fetch('/api/organizations/switch', {
+      const res = await fetch('/api/organizations/switch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ organizationId: orgId }),
       });
 
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || `Switch failed (${res.status})`);
+      }
+
       // Reload page to update context
       window.location.reload();
     } catch (error) {
-      console.error('Failed to switch organization:', error);
+      reportError({
+        title: 'Organization switch failed',
+        message: error instanceof Error ? error.message : 'Could not switch organization',
+      });
     }
   };
 
