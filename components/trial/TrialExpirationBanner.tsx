@@ -181,7 +181,7 @@ export function TrialExpirationBanner() {
             {canManageBilling && (
               <Link
                 href="/app/billing"
-                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-semibold text-xs transition-all hover:scale-105 ${scheme.button}`}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-semibold text-xs transition-all motion-safe:hover:scale-105 ${scheme.button}`}
               >
                 {isExpired || isLastDay ? (
                   <Zap className="h-3 w-3" />

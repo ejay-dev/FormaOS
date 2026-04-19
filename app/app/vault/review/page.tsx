@@ -233,7 +233,7 @@ export default function CredentialReviewPage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setSelectedDoc(doc)}
-                  className="flex items-center gap-2 px-8 py-4 bg-glass-strong text-foreground rounded-2xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all shadow-xl active:scale-95"
+                  className="flex items-center gap-2 px-8 py-4 bg-glass-strong text-foreground rounded-2xl text-xs font-semibold uppercase tracking-wider hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
                 >
                   <Eye className="h-4 w-4" />
                   Inspect & Verify

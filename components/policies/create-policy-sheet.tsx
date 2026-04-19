@@ -93,7 +93,7 @@ export function CreatePolicySheet() {
       }}
     >
       <SheetTrigger asChild>
-        <button className="group flex items-center gap-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(6,182,212,0.35)] active:scale-[0.98]">
+        <button className="group flex items-center gap-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(6,182,212,0.35)] motion-safe:active:scale-[0.98]">
           <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
           New Policy
         </button>
@@ -190,7 +190,7 @@ export function CreatePolicySheet() {
             <SheetFooter className="border-t border-glass-border pt-4 mt-auto">
               <button
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-110 disabled:opacity-70 transition-all shadow-[0_10px_30px_rgba(6,182,212,0.35)] active:scale-[0.98]"
+                className="w-full py-3 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:brightness-110 disabled:opacity-70 transition-all shadow-[0_10px_30px_rgba(6,182,212,0.35)] motion-safe:active:scale-[0.98]"
               >
                 {loading ? (
                   <>

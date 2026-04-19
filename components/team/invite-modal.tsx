@@ -215,7 +215,7 @@ export function InviteModal({
                 <button
                   type="button"
                   onClick={() => setRole('viewer')}
-                  className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all motion-safe:hover:scale-[1.02] motion-safe:active:scale-[0.98] ${
                     role === 'viewer'
                       ? 'border-neutral-900 bg-neutral-900 text-white shadow-lg shadow-neutral-200'
                       : 'border-neutral-200 bg-white text-neutral-400 hover:border-neutral-300 hover:bg-neutral-50'
@@ -233,7 +233,7 @@ export function InviteModal({
                 <button
                   type="button"
                   onClick={() => setRole('member')}
-                  className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all motion-safe:hover:scale-[1.02] motion-safe:active:scale-[0.98] ${
                     role === 'member'
                       ? 'border-neutral-900 bg-neutral-900 text-white shadow-lg shadow-neutral-200'
                       : 'border-neutral-200 bg-white text-neutral-400 hover:border-neutral-300 hover:bg-neutral-50'
@@ -251,7 +251,7 @@ export function InviteModal({
                 <button
                   type="button"
                   onClick={() => setRole('admin')}
-                  className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border transition-all motion-safe:hover:scale-[1.02] motion-safe:active:scale-[0.98] ${
                     role === 'admin'
                       ? 'border-neutral-900 bg-neutral-900 text-white shadow-lg shadow-neutral-200'
                       : 'border-neutral-200 bg-white text-neutral-400 hover:border-neutral-300 hover:bg-neutral-50'
@@ -277,7 +277,7 @@ export function InviteModal({
               <button
                 disabled={loading}
                 type="submit"
-                className="w-full bg-neutral-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 disabled:opacity-70 disabled:active:scale-100"
+                className="w-full bg-neutral-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all flex items-center justify-center gap-3 shadow-xl motion-safe:active:scale-95 disabled:opacity-70 disabled:active:scale-100"
               >
                 {loading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

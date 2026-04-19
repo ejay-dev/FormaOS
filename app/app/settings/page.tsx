@@ -255,7 +255,7 @@ export default async function SettingsPage() {
               </div>
               <Link
                 href="/app/billing"
-                className="px-8 py-4 border border-glass-border rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-glass-strong transition-all active:scale-95 whitespace-nowrap inline-flex items-center justify-center"
+                className="px-8 py-4 border border-glass-border rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-glass-strong transition-all motion-safe:active:scale-95 whitespace-nowrap inline-flex items-center justify-center"
               >
                 Manage Node
               </Link>

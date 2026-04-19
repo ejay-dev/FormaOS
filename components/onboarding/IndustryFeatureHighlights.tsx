@@ -390,7 +390,7 @@ export function IndustryFeatureSpotlight({
           <a
             key={feature.title}
             href={feature.route}
-            className="group block p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all hover:scale-102"
+            className="group block p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all motion-safe:hover:scale-102"
           >
             <div className="flex items-start gap-3">
               <div

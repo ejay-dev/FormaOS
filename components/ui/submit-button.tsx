@@ -88,7 +88,7 @@ export function SubmitButton({
         "rounded-2xl font-black uppercase tracking-[0.2em]",
         "flex items-center justify-center gap-3",
         "transition-all duration-200",
-        "active:scale-95 disabled:active:scale-100",
+        "motion-safe:active:scale-95 disabled:active:scale-100",
         "group",
         
         // Width
@@ -153,7 +153,7 @@ export function AdminActionButton({
       className={cn(
         "rounded-lg border px-3 py-1.5 text-xs font-bold",
         "transition-all duration-200",
-        "active:scale-95 disabled:active:scale-100",
+        "motion-safe:active:scale-95 disabled:active:scale-100",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         "flex items-center gap-2",
         variantClasses[variant],
@@ -192,7 +192,7 @@ export function SaveButton({ className, disabled = false }: SaveButtonProps) {
         "font-black text-xs uppercase tracking-[0.2em]",
         "flex items-center justify-center gap-3",
         "hover:bg-glass-strong transition-all shadow-xl",
-        "active:scale-95 disabled:active:scale-100",
+        "motion-safe:active:scale-95 disabled:active:scale-100",
         "disabled:opacity-60 disabled:cursor-not-allowed",
         "relative z-10 group/btn",
         className

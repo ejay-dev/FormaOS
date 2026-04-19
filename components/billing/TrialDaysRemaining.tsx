@@ -28,7 +28,7 @@ export function TrialDaysRemaining() {
   return (
     <Link
       href="/app/billing"
-      className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-semibold transition-all hover:scale-105 ${colorClasses}`}
+      className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-semibold transition-all motion-safe:hover:scale-105 ${colorClasses}`}
       title={
         isExpired
           ? 'Trial expired — click to upgrade'

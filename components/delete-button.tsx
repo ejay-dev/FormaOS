@@ -115,7 +115,7 @@ export function DeleteButton({ id, tableName, itemTitle, onDelete }: DeleteButto
   return (
     <button 
       onClick={() => setConfirm(true)}
-      className="group p-2 text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 rounded-lg border border-transparent hover:border-rose-500/20 transition-all active:scale-95"
+      className="group p-2 text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 rounded-lg border border-transparent hover:border-rose-500/20 transition-all motion-safe:active:scale-95"
       title={`Delete ${nodeLabel.toLowerCase()}`}
     >
       <Trash2 className="h-4 w-4 group-hover:animate-pulse" />

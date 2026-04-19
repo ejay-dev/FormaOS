@@ -136,7 +136,7 @@ export default function TrainingRegisterPage() {
         </div>
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl active:scale-95"
+          className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
         >
           <Plus className="h-4 w-4" />
           Add Certification

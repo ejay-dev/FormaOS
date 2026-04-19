@@ -35,7 +35,7 @@ export function BundleGenerator({ disabled }: { disabled?: boolean }) {
       <button
         onClick={handleGenerate}
         disabled={disabled || isGenerating}
-        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-[0_10px_30px_rgba(59,130,246,0.35)] hover:brightness-110 transition-all active:scale-95 disabled:opacity-60"
+        className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-[0_10px_30px_rgba(59,130,246,0.35)] hover:brightness-110 transition-all motion-safe:active:scale-95 disabled:opacity-60"
       >
         {isGenerating ? (
           <>

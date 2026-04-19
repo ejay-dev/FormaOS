@@ -241,7 +241,7 @@ export function AutomationShowcase() {
           <div className="inline-flex flex-col sm:flex-row items-center gap-4">
             <a
               href={`${appBase}/auth/signup?plan=pro`}
-              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all motion-safe:hover:scale-105"
             >
               Start Automating Compliance
               <ArrowRight className="inline-block ml-2 w-5 h-5" />

@@ -65,7 +65,7 @@ export function FeatureGate({
             <div className="flex flex-col items-center gap-3">
               <Link
                 href="/app/billing"
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 transition-all motion-safe:hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20"
               >
                 <Zap className="h-4 w-4" />
                 Upgrade Now

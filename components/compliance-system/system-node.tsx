@@ -176,7 +176,7 @@ export function SystemNode({
           styles.pulse && 'animate-pulse',
           interactive &&
             !isLocked &&
-            'hover:scale-110 active:scale-95 cursor-pointer',
+            'motion-safe:hover:scale-110 motion-safe:active:scale-95 cursor-pointer',
           interactive && isLocked && 'cursor-not-allowed',
           !interactive && 'cursor-default',
         )}

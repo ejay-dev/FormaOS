@@ -231,7 +231,7 @@ export function CredentialInspectorModal({
               <button
                 onClick={() => handleVerify('verified')}
                 disabled={loading || blocked}
-                className={`flex-[2] py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95 ${blocked ? 'bg-glass-strong text-white/70 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white hover:brightness-110'}`}
+                className={`flex-[2] py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-xl motion-safe:active:scale-95 ${blocked ? 'bg-glass-strong text-white/70 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white hover:brightness-110'}`}
                 title={
                   blocked
                     ? 'Evidence approval blocked by non-compliant controls.'

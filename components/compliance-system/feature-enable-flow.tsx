@@ -190,7 +190,7 @@ function ModuleNode({
       className={cn(
         'group relative p-4 rounded-2xl border-2 transition-all duration-300',
         'flex flex-col items-center gap-2 text-center',
-        'hover:scale-105 active:scale-95',
+        'motion-safe:hover:scale-105 motion-safe:active:scale-95',
         colors.border,
         colors.bg,
         colors.glow,

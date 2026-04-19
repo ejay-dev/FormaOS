@@ -477,7 +477,7 @@ export function CommandPalette() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Open command palette"
-        className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white shadow-[0_8px_24px_rgba(0,212,251,0.3)] transition-transform hover:scale-105 active:scale-95 md:hidden"
+        className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white shadow-[0_8px_24px_rgba(0,212,251,0.3)] transition-transform motion-safe:hover:scale-105 motion-safe:active:scale-95 md:hidden"
       >
         <Search className="h-5 w-5" />
       </button>

@@ -187,7 +187,7 @@ export function ComplianceNode({
         // State-specific styles
         stateClasses[state],
         // Interactive styles
-        interactive && onClick && "cursor-pointer hover:scale-[1.02] hover:border-opacity-80 active:scale-[0.98]",
+        interactive && onClick && "cursor-pointer motion-safe:hover:scale-[1.02] hover:border-opacity-80 motion-safe:active:scale-[0.98]",
         className
       )}
     >

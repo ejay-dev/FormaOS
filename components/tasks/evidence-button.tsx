@@ -135,7 +135,7 @@ export function EvidenceButton({
   // Default state
   return (
     <div className="group/evidence flex items-center">
-      <label className="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-violet-400/30 bg-violet-400/5 text-violet-300 hover:border-violet-400/50 hover:bg-violet-400/10 transition-all active:scale-[0.98]">
+      <label className="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed border-violet-400/30 bg-violet-400/5 text-violet-300 hover:border-violet-400/50 hover:bg-violet-400/10 transition-all motion-safe:active:scale-[0.98]">
         <Upload className="h-3.5 w-3.5 group-hover/evidence:animate-bounce" />
         <span className="text-xs font-bold">Link Evidence</span>
         <input

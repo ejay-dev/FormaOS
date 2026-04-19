@@ -76,7 +76,7 @@ function InlineUpgradeNudge({
       <p className="flex-1 text-foreground/80">{message}</p>
       <button
         onClick={onUpgrade}
-        className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-3 py-1.5 text-xs font-bold text-slate-950 hover:scale-[1.02] transition-transform"
+        className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-3 py-1.5 text-xs font-bold text-slate-950 motion-safe:hover:scale-[1.02] transition-transform"
       >
         <Zap className="h-3 w-3" />
         Upgrade

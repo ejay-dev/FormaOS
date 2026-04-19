@@ -177,7 +177,7 @@ export function ArtifactSidebar({
                     key={item.id}
                     disabled={!!isLinking}
                     onClick={() => handleLink(item.id, itemName)}
-                    className="w-full flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-violet-400/30 hover:bg-violet-400/10 transition-all text-left group disabled:opacity-50 active:scale-[0.98]"
+                    className="w-full flex items-center justify-between p-2 rounded-xl border border-transparent hover:border-violet-400/30 hover:bg-violet-400/10 transition-all text-left group disabled:opacity-50 motion-safe:active:scale-[0.98]"
                   >
                     <div className="flex items-center gap-3 overflow-hidden">
                       <div

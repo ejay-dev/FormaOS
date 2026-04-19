@@ -132,7 +132,7 @@ function RoleCard({
           : 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong',
         !isCurrentRole &&
           !isChanging &&
-          'cursor-pointer hover:scale-[1.02] active:scale-[0.98]',
+          'cursor-pointer motion-safe:hover:scale-[1.02] motion-safe:active:scale-[0.98]',
         isChanging && 'opacity-50 cursor-not-allowed',
       )}
     >
@@ -446,7 +446,7 @@ export function AdminPermissionFlow({
               <button
                 onClick={handleConfirmChange}
                 disabled={isChanging}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 text-white font-bold hover:brightness-110 transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 text-white font-bold hover:brightness-110 transition-all motion-safe:active:scale-95 flex items-center justify-center gap-2"
               >
                 {isChanging ? (
                   <>

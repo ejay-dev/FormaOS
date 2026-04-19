@@ -112,8 +112,8 @@ function PlanCard({
           current
             ? 'bg-emerald-500/20 text-emerald-300 cursor-default'
             : recommended
-              ? 'bg-gradient-to-r from-cyan-500 to-teal-500 text-white hover:brightness-110 active:scale-95'
-              : 'bg-glass-strong text-white hover:bg-surface-3 active:scale-95',
+              ? 'bg-gradient-to-r from-cyan-500 to-teal-500 text-white hover:brightness-110 motion-safe:active:scale-95'
+              : 'bg-glass-strong text-white hover:bg-surface-3 motion-safe:active:scale-95',
           isUpgrading && 'opacity-50 cursor-not-allowed',
         )}
       >

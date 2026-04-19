@@ -243,7 +243,7 @@ export default function EmailPreferencesPage() {
           <button
             onClick={savePreferences}
             disabled={saving}
-            className="px-6 py-2 bg-glass-strong text-foreground rounded-lg font-medium hover:bg-surface-3 disabled:bg-glass-strong transition-all active:scale-95"
+            className="px-6 py-2 bg-glass-strong text-foreground rounded-lg font-medium hover:bg-surface-3 disabled:bg-glass-strong transition-all motion-safe:active:scale-95"
           >
             {saving ? 'Saving...' : 'Save Preferences'}
           </button>

@@ -53,7 +53,7 @@ export function TrialStatusBanner() {
       <Link 
         href="/app/billing"
         className={`
-          px-4 py-2 rounded-lg font-semibold text-xs transition-all hover:scale-105
+          px-4 py-2 rounded-lg font-semibold text-xs transition-all motion-safe:hover:scale-105
           ${isLastDay
             ? 'bg-rose-400 text-rose-950 hover:bg-rose-300'
             : 'bg-gradient-to-r from-sky-500 to-indigo-500 text-white hover:from-sky-400 hover:to-indigo-400'

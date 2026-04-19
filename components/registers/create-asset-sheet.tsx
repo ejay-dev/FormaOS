@@ -104,7 +104,7 @@ export function CreateAssetSheet() {
       }}
     >
       <SheetTrigger asChild>
-        <button className="group flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-500 px-4 py-2 text-sm font-bold text-white hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(20,184,166,0.35)] active:scale-[0.98]">
+        <button className="group flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-500 px-4 py-2 text-sm font-bold text-white hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(20,184,166,0.35)] motion-safe:active:scale-[0.98]">
           <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
           Add Asset
         </button>
@@ -234,7 +234,7 @@ export function CreateAssetSheet() {
               <button
                 disabled={loading}
                 type="submit"
-                className="w-full flex justify-center items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-500 py-4 text-sm font-bold text-white disabled:opacity-70 hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(20,184,166,0.35)] active:scale-[0.98]"
+                className="w-full flex justify-center items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-500 py-4 text-sm font-bold text-white disabled:opacity-70 hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(20,184,166,0.35)] motion-safe:active:scale-[0.98]"
               >
                 {loading ? (
                   <>

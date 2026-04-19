@@ -96,7 +96,7 @@ export function CompleteTaskButton({
     <button 
       onClick={toggleStatus}
       disabled={loading || isCompleted}
-      className={`group relative transition-all active:scale-95 ${
+      className={`group relative transition-all motion-safe:active:scale-95 ${
         isCompleted ? 'cursor-default' : blocked ? 'cursor-not-allowed' : 'cursor-pointer'
       }`}
       title={

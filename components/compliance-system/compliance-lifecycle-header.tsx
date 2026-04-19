@@ -241,7 +241,7 @@ export function ComplianceLifecycleHeader({
                   }}
                   className={cn(
                     "group relative flex flex-col items-center gap-2 p-3 rounded-xl border backdrop-blur-sm",
-                    "transition-all duration-300 hover:scale-105 cursor-pointer",
+                    "transition-all duration-300 motion-safe:hover:scale-105 cursor-pointer",
                     colors.bg,
                     colors.border,
                     isRiskNode && "ring-2 ring-rose-500/50 animate-pulse",
@@ -314,7 +314,7 @@ export function ComplianceLifecycleHeader({
                 href={node.href}
                 className={cn(
                   "flex items-center gap-3 p-3 rounded-xl border backdrop-blur-sm",
-                  "transition-all duration-300 active:scale-95",
+                  "transition-all duration-300 motion-safe:active:scale-95",
                   colors.bg,
                   colors.border
                 )}

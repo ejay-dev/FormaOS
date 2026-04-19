@@ -264,7 +264,7 @@ export function UploadArtifactModal({
           <button
             type="submit"
             disabled={!file || uploading}
-            className="w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white p-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 shadow-[0_10px_30px_rgba(139,92,246,0.35)] active:scale-[0.98]"
+            className="w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white p-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 shadow-[0_10px_30px_rgba(139,92,246,0.35)] motion-safe:active:scale-[0.98]"
           >
             {uploading ? (
               <>

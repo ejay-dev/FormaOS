@@ -177,7 +177,7 @@ export default async function PolicyDetailPage({
               {isAdmin ? (
                 <button
                   type="submit"
-                  className="w-full bg-glass-strong text-foreground py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-glass-strong transition-all shadow-xl active:scale-95 group"
+                  className="w-full bg-glass-strong text-foreground py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-glass-strong transition-all shadow-xl motion-safe:active:scale-95 group"
                 >
                   <Save className="h-4 w-4 transition-transform group-hover:scale-110" />
                   Commit Changes

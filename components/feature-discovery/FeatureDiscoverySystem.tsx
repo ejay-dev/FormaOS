@@ -281,7 +281,7 @@ export function FeatureCard({
     return (
       <a
         href={feature.href}
-        className="group block p-4 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all hover:scale-105"
+        className="group block p-4 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all motion-safe:hover:scale-105"
       >
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center border border-indigo-500/30">
@@ -311,7 +311,7 @@ export function FeatureCard({
   return (
     <a
       href={feature.href}
-      className="group block p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/10"
+      className="group block p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all motion-safe:hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/10"
     >
       <div className="flex items-start gap-4 mb-4">
         <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center border border-indigo-500/30 group-hover:scale-110 transition-transform">

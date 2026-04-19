@@ -127,7 +127,7 @@ export function ActionButton({
       className={cn(
         // Base styles
         "relative inline-flex items-center justify-center transition-all duration-200",
-        "active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100",
+        "motion-safe:active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100",
         // Size
         SIZE_STYLES[size],
         // State-specific variant
@@ -221,7 +221,7 @@ export function IconActionButton({
       title={tooltip}
       className={cn(
         "inline-flex items-center justify-center rounded-lg transition-all duration-200",
-        "active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed",
+        "motion-safe:active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed",
         sizeStyles[size],
         VARIANT_STYLES[variant].idle,
         className

@@ -112,7 +112,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
       <button 
         onClick={() => setOpen(true)}
         disabled={disabled}
-        className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(59,130,246,0.35)] disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.98]"
+        className="group flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(59,130,246,0.35)] disabled:opacity-60 disabled:cursor-not-allowed motion-safe:active:scale-[0.98]"
       >
         <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
         Invite Member
@@ -223,7 +223,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                                 <button
                                     type="button"
                                     onClick={() => setRole("member")}
-                                    className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all active:scale-[0.98] ${
+                                    className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all motion-safe:active:scale-[0.98] ${
                                       role === 'member' 
                                         ? 'border-blue-400/40 bg-blue-400/10 ring-1 ring-blue-400/30' 
                                         : 'border-glass-border hover:border-glass-border-strong hover:bg-surface-1'
@@ -238,7 +238,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                                 <button
                                     type="button"
                                     onClick={() => setRole("viewer")}
-                                    className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all active:scale-[0.98] ${
+                                    className={`p-3 rounded-xl border text-left flex flex-col gap-1 transition-all motion-safe:active:scale-[0.98] ${
                                       role === 'viewer' 
                                         ? 'border-blue-400/40 bg-blue-400/10 ring-1 ring-blue-400/30' 
                                         : 'border-glass-border hover:border-glass-border-strong hover:bg-surface-1'
@@ -263,7 +263,7 @@ export function InviteButton({ orgId, disabled }: { orgId: string; disabled?: bo
                             <button 
                                 type="submit" 
                                 disabled={loading}
-                                className="flex-1 py-3 rounded-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white hover:brightness-110 transition-all flex items-center justify-center gap-2 text-sm shadow-[0_10px_30px_rgba(59,130,246,0.35)] active:scale-[0.98]"
+                                className="flex-1 py-3 rounded-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white hover:brightness-110 transition-all flex items-center justify-center gap-2 text-sm shadow-[0_10px_30px_rgba(59,130,246,0.35)] motion-safe:active:scale-[0.98]"
                             >
                                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send Invite"}
                             </button>
