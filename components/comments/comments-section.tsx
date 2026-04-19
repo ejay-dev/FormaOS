@@ -302,8 +302,12 @@ export default function Comments({
 
                   {/* Add reaction */}
                   <div className="relative group">
-                    <button className="p-1 hover:bg-gray-100 rounded text-gray-500">
-                      <Smile className="h-4 w-4" />
+                    <button
+                      type="button"
+                      aria-label="Add reaction"
+                      className="p-1 hover:bg-gray-100 rounded text-gray-500"
+                    >
+                      <Smile className="h-4 w-4" aria-hidden="true" />
                     </button>
                     <div className="hidden group-hover:flex absolute bottom-full mb-1 bg-white border rounded-lg shadow-lg p-2 gap-1 z-10">
                       {EMOJI_OPTIONS.map((emoji) => (

@@ -126,8 +126,12 @@ export function TeamManagement({
       <div className="lg:col-span-1 rounded-lg border border-border bg-card">
         <div className="p-3 border-b border-border flex items-center justify-between">
           <h3 className="text-sm font-semibold text-foreground">Teams</h3>
-          <button className="p-1 hover:bg-muted rounded text-muted-foreground">
-            <UserPlus className="h-4 w-4" />
+          <button
+            type="button"
+            aria-label="Create team"
+            className="p-1 hover:bg-muted rounded text-muted-foreground"
+          >
+            <UserPlus className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
         <div className="p-2">
@@ -182,8 +186,12 @@ export function TeamManagement({
                         {member.role}
                       </span>
                     )}
-                    <button className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded text-muted-foreground hover:text-red-600">
-                      <Trash2 className="h-3 w-3" />
+                    <button
+                      type="button"
+                      aria-label={`Remove ${member.name} from team`}
+                      className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded text-muted-foreground hover:text-red-600"
+                    >
+                      <Trash2 className="h-3 w-3" aria-hidden="true" />
                     </button>
                   </div>
                 </div>

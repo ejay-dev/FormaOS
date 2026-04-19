@@ -51,11 +51,13 @@ export function ChatInput({ value, onChange, onSubmit, isLoading, disabled }: Ch
           className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-foreground/90 placeholder:text-muted-foreground/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary/30 disabled:opacity-50"
         />
         <button
+          type="button"
           onClick={onSubmit}
           disabled={!value.trim() || isLoading || disabled}
+          aria-label="Send message"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 transition-colors disabled:opacity-30 disabled:hover:bg-cyan-500"
         >
-          <Send className="h-4 w-4" />
+          <Send className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
       <div className="mt-1 flex items-center justify-between px-1">

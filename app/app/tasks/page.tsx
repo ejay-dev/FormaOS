@@ -361,8 +361,12 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
                     </td>
 
                     <td className="px-4 py-3 text-right">
-                      <button className="p-1.5 text-muted-foreground hover:text-foreground transition-colors">
-                        <MoreVertical className="h-4 w-4" />
+                      <button
+                        type="button"
+                        aria-label="Task actions"
+                        className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <MoreVertical className="h-4 w-4" aria-hidden="true" />
                       </button>
                     </td>
                   </tr>

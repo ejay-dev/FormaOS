@@ -128,26 +128,32 @@ export function CameraCapture({ onCapture, onCancel }: CameraCaptureProps) {
           <video ref={videoRef} className="w-full" autoPlay playsInline muted />
           <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
             <button
+              type="button"
               onClick={switchCamera}
+              aria-label="Switch camera"
               className="p-2.5 rounded-full bg-black/50 text-white hover:bg-black/70"
             >
-              <RotateCw className="h-5 w-5" />
+              <RotateCw className="h-5 w-5" aria-hidden="true" />
             </button>
             <button
+              type="button"
               onClick={takePhoto}
+              aria-label="Take photo"
               className="p-4 rounded-full bg-white hover:bg-gray-100 border-2 border-gray-300"
               data-testid="btn-capture"
             >
-              <Camera className="h-6 w-6 text-gray-700" />
+              <Camera className="h-6 w-6 text-gray-700" aria-hidden="true" />
             </button>
             <button
+              type="button"
               onClick={() => {
                 stopCamera();
                 onCancel?.();
               }}
+              aria-label="Close camera"
               className="p-2.5 rounded-full bg-black/50 text-white hover:bg-black/70"
             >
-              <X className="h-5 w-5" />
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
         </div>
