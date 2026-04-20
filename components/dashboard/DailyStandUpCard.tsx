@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  Sunrise,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  Trophy,
-} from 'lucide-react';
+import { Sunrise, ArrowRight, CheckCircle2, Clock, Trophy } from 'lucide-react';
 
 type Action = {
   id: string;
@@ -121,9 +115,7 @@ export function DailyStandUpCard() {
                       <span className="truncate">{action.title}</span>
                       <span className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0 ml-3">
                         {action.dueDate && (
-                          <span>
-                            {formatDueLabel(action.dueDate)}
-                          </span>
+                          <span>{formatDueLabel(action.dueDate)}</span>
                         )}
                         <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </span>
@@ -172,8 +164,8 @@ export function DailyStandUpCard() {
                   <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                   <span>
                     Heads up &mdash;{' '}
-                    <span className="font-medium">{deadline.label}</span>{' '}
-                    lands in{' '}
+                    <span className="font-medium">{deadline.label}</span> lands
+                    in{' '}
                     <span className="font-medium">
                       {deadline.daysAway === 0
                         ? 'today'

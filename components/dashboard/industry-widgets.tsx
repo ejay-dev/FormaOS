@@ -596,7 +596,9 @@ export function ChildcareEducatorCredentialsWidget() {
                   <th className="py-1.5 px-2 text-left font-semibold">
                     Educator
                   </th>
-                  <th className="py-1.5 px-2 text-center font-semibold">{wwcLabel}</th>
+                  <th className="py-1.5 px-2 text-center font-semibold">
+                    {wwcLabel}
+                  </th>
                   <th className="py-1.5 px-2 text-center font-semibold">
                     First Aid
                   </th>

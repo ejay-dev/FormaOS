@@ -133,19 +133,24 @@ export default async function SettingsPage() {
         : 'healthy';
 
   return (
-    <div
-      className="flex flex-col h-full"
-      data-tour="settings-header"
-    >
+    <div className="flex flex-col h-full" data-tour="settings-header">
       <div className="page-header">
         <div>
           <h1 className="page-title">Settings</h1>
-          <p className="page-description">Organization identity, security, and configuration</p>
+          <p className="page-description">
+            Organization identity, security, and configuration
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`status-pill ${healthState === 'healthy' ? 'status-pill-green' : healthState === 'review' ? 'status-pill-amber' : 'status-pill-red'}`}>
+          <span
+            className={`status-pill ${healthState === 'healthy' ? 'status-pill-green' : healthState === 'review' ? 'status-pill-amber' : 'status-pill-red'}`}
+          >
             <Activity className="h-3 w-3" />
-            {healthState === 'healthy' ? 'Healthy' : healthState === 'review' ? 'Review' : 'Alerts'}
+            {healthState === 'healthy'
+              ? 'Healthy'
+              : healthState === 'review'
+                ? 'Review'
+                : 'Alerts'}
           </span>
         </div>
       </div>
@@ -157,196 +162,198 @@ export default async function SettingsPage() {
           Notification Settings
         </Link>
 
-      <form action={handleUpdateOrg}>
-        {/* CRITICAL FIX: Hidden Input for ID so the server knows WHAT to update */}
-        <input type="hidden" name="orgId" value={activeOrganization.id} />
+        <form action={handleUpdateOrg}>
+          {/* CRITICAL FIX: Hidden Input for ID so the server knows WHAT to update */}
+          <input type="hidden" name="orgId" value={activeOrganization.id} />
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          {/* LEFT COLUMN: Main Workspace Identity */}
-          <div className="xl:col-span-2 space-y-8">
-            <div className="bg-surface-1 border border-glass-border rounded-[2.5rem] p-10 shadow-sm space-y-10 relative overflow-hidden">
-              <div className="flex items-center gap-6 border-b border-glass-border pb-8">
-                <div className="h-20 w-20 rounded-[1.5rem] bg-glass-strong text-foreground flex items-center justify-center shadow-2xl shadow-black/40">
-                  <Building2 className="h-9 w-9" />
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* LEFT COLUMN: Main Workspace Identity */}
+            <div className="xl:col-span-2 space-y-8">
+              <div className="bg-surface-1 border border-glass-border rounded-[2.5rem] p-10 shadow-sm space-y-10 relative overflow-hidden">
+                <div className="flex items-center gap-6 border-b border-glass-border pb-8">
+                  <div className="h-20 w-20 rounded-[1.5rem] bg-glass-strong text-foreground flex items-center justify-center shadow-2xl shadow-black/40">
+                    <Building2 className="h-9 w-9" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-foreground tracking-tight">
+                      {activeOrganization.name}
+                    </h3>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <p className="text-xs font-black text-emerald-300 uppercase tracking-widest">
+                        Node Fully Operational
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-black text-foreground tracking-tight">
-                    {activeOrganization.name}
-                  </h3>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <p className="text-xs font-black text-emerald-300 uppercase tracking-widest">
-                      Node Fully Operational
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label
+                      htmlFor="field-212"
+                      className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                    >
+                      Legal Entity Name
+                    </label>
+                    <input
+                      name="name"
+                      defaultValue={activeOrganization.name}
+                      disabled={!isAdmin}
+                      className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label
+                      htmlFor="field-211"
+                      className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                    >
+                      Registration (ABN/ACN)
+                    </label>
+                    <input
+                      name="registrationNumber"
+                      defaultValue={
+                        activeOrganization.registration_number || ''
+                      }
+                      placeholder="e.g. 12 345 678 901"
+                      disabled={!isAdmin}
+                      className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <label
+                    htmlFor="field-210"
+                    className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                  >
+                    Authorized Email Domain
+                  </label>
+                  <div className="relative group">
+                    <Globe className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-foreground transition-colors" />
+                    <input
+                      name="domain"
+                      placeholder="company.com"
+                      defaultValue={activeOrganization.domain || ''}
+                      disabled={!isAdmin}
+                      className="w-full pl-14 pr-4 py-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Subscription & Billing Tier */}
+              <div className="bg-surface-1 border border-glass-border rounded-[2.5rem] p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6 group hover:border-glass-border transition-all duration-500">
+                <div className="flex items-center gap-6">
+                  <div className="h-14 w-14 rounded-2xl bg-purple-500/10 text-purple-300 flex items-center justify-center border border-purple-400/30 shadow-sm group-hover:bg-purple-600 group-hover:text-foreground transition-all duration-300">
+                    <CreditCard className="h-7 w-7" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-base font-black text-foreground tracking-tight">
+                        Enterprise Pilot
+                      </span>
+                      <span className="px-2.5 py-1 bg-emerald-400/10 text-emerald-700 text-[9px] font-black uppercase rounded-full tracking-widest border border-emerald-400/30 shadow-sm">
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground font-bold mt-1.5 uppercase tracking-widest">
+                      Full Evidence Vault & Governance Enabled
                     </p>
                   </div>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <label
-                    htmlFor="field-212"
-                    className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
-                  >
-                    Legal Entity Name
-                  </label>
-                  <input
-                    name="name"
-                    defaultValue={activeOrganization.name}
-                    disabled={!isAdmin}
-                    className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <label
-                    htmlFor="field-211"
-                    className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
-                  >
-                    Registration (ABN/ACN)
-                  </label>
-                  <input
-                    name="registrationNumber"
-                    defaultValue={activeOrganization.registration_number || ''}
-                    placeholder="e.g. 12 345 678 901"
-                    disabled={!isAdmin}
-                    className="w-full p-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-3 pt-2">
-                <label
-                  htmlFor="field-210"
-                  className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+                <Link
+                  href="/app/billing"
+                  className="px-8 py-4 border border-glass-border rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-glass-strong transition-all motion-safe:active:scale-95 whitespace-nowrap inline-flex items-center justify-center"
                 >
-                  Authorized Email Domain
-                </label>
-                <div className="relative group">
-                  <Globe className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-foreground transition-colors" />
-                  <input
-                    name="domain"
-                    placeholder="company.com"
-                    defaultValue={activeOrganization.domain || ''}
-                    disabled={!isAdmin}
-                    className="w-full pl-14 pr-4 py-5 rounded-2xl border border-glass-border bg-glass-strong focus:bg-surface-1 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 text-sm font-bold transition-all disabled:opacity-60 shadow-inner"
-                  />
-                </div>
+                  Manage Node
+                </Link>
               </div>
             </div>
 
-            {/* Subscription & Billing Tier */}
-            <div className="bg-surface-1 border border-glass-border rounded-[2.5rem] p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6 group hover:border-glass-border transition-all duration-500">
-              <div className="flex items-center gap-6">
-                <div className="h-14 w-14 rounded-2xl bg-purple-500/10 text-purple-300 flex items-center justify-center border border-purple-400/30 shadow-sm group-hover:bg-purple-600 group-hover:text-foreground transition-all duration-300">
-                  <CreditCard className="h-7 w-7" />
+            {/* RIGHT COLUMN: Security Node Sidebar */}
+            <div className="space-y-6">
+              {/* Identity Card (Black) */}
+              <div className="bg-glass-strong rounded-[2.5rem] p-10 text-foreground space-y-10 shadow-2xl relative overflow-hidden group">
+                {/* Background Blur Effect */}
+                <div className="absolute top-0 right-0 w-48 h-48 bg-surface-1 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-glass-strong transition-all duration-1000" />
+
+                <div className="flex items-center gap-3 relative z-10">
+                  <Fingerprint className="h-6 w-6 text-blue-400" />
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">
+                    Security Identity
+                  </h3>
                 </div>
-                <div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-base font-black text-foreground tracking-tight">
-                      Enterprise Pilot
-                    </span>
-                    <span className="px-2.5 py-1 bg-emerald-400/10 text-emerald-700 text-[9px] font-black uppercase rounded-full tracking-widest border border-emerald-400/30 shadow-sm">
-                      Active
-                    </span>
+
+                <div className="space-y-2 relative z-10">
+                  <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em]">
+                    Workspace GUID
+                  </p>
+                  <p className="text-xs font-mono text-foreground break-all select-all bg-glass-strong p-3 rounded-lg border border-edge-1">
+                    {activeOrganization.id}
+                  </p>
+                </div>
+
+                <div className="pt-6 border-t border-glass-border space-y-4 relative z-10">
+                  <div className="flex items-start gap-4">
+                    <Lock className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <p className="text-xs text-muted-foreground leading-relaxed font-bold uppercase tracking-widest">
+                      Isolation enforced via Hardware-Level Row Security.
+                    </p>
                   </div>
-                  <p className="text-xs text-muted-foreground font-bold mt-1.5 uppercase tracking-widest">
-                    Full Evidence Vault & Governance Enabled
-                  </p>
                 </div>
+
+                {isAdmin && <SaveButton />}
               </div>
-              <Link
-                href="/app/billing"
-                className="px-8 py-4 border border-glass-border rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-glass-strong transition-all motion-safe:active:scale-95 whitespace-nowrap inline-flex items-center justify-center"
-              >
-                Manage Node
-              </Link>
+
+              {/* Access Level Indicator */}
+              <div className="bg-surface-1 border border-glass-border rounded-[2.25rem] p-8 shadow-sm flex items-center justify-between">
+                <div className="flex items-center gap-5">
+                  <div className="h-12 w-12 rounded-2xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-glass-border">
+                    <UserCircle className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em]">
+                      Authorized As
+                    </p>
+                    <p className="text-sm font-black text-foreground capitalize tracking-tight mt-0.5">
+                      {role}
+                    </p>
+                  </div>
+                </div>
+                <ShieldCheck className="h-6 w-6 text-emerald-500" />
+              </div>
+
+              {/* Expiry Widget (Dynamic) */}
+              <ExpiryAlertWidget atRiskDocs={atRiskDocs || []} />
+
+              {/* Danger Zone */}
+              <div className="bg-rose-500/10 border border-rose-400/30 rounded-[2.25rem] p-8 space-y-6 opacity-70 hover:opacity-100 transition-all">
+                <div className="flex items-center gap-3 text-rose-300">
+                  <AlertOctagon className="h-5 w-5" />
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em]">
+                    Danger Zone
+                  </h3>
+                </div>
+                <p className="text-xs text-red-800 leading-relaxed font-bold uppercase tracking-widest">
+                  Deleting this organization will permanently erase the
+                  un-editable audit history. This action is irreversible.
+                </p>
+                <button
+                  disabled
+                  className="w-full py-4 bg-surface-1 border border-red-200 text-red-400 rounded-2xl text-xs font-black uppercase tracking-[0.2em] cursor-not-allowed shadow-sm"
+                >
+                  Destroy Node
+                </button>
+              </div>
             </div>
           </div>
+        </form>
 
-          {/* RIGHT COLUMN: Security Node Sidebar */}
-          <div className="space-y-6">
-            {/* Identity Card (Black) */}
-            <div className="bg-glass-strong rounded-[2.5rem] p-10 text-foreground space-y-10 shadow-2xl relative overflow-hidden group">
-              {/* Background Blur Effect */}
-              <div className="absolute top-0 right-0 w-48 h-48 bg-surface-1 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-glass-strong transition-all duration-1000" />
+        {/* Plain-English label toggle */}
+        <PlainEnglishToggle />
 
-              <div className="flex items-center gap-3 relative z-10">
-                <Fingerprint className="h-6 w-6 text-blue-400" />
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">
-                  Security Identity
-                </h3>
-              </div>
-
-              <div className="space-y-2 relative z-10">
-                <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em]">
-                  Workspace GUID
-                </p>
-                <p className="text-xs font-mono text-foreground break-all select-all bg-glass-strong p-3 rounded-lg border border-edge-1">
-                  {activeOrganization.id}
-                </p>
-              </div>
-
-              <div className="pt-6 border-t border-glass-border space-y-4 relative z-10">
-                <div className="flex items-start gap-4">
-                  <Lock className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <p className="text-xs text-muted-foreground leading-relaxed font-bold uppercase tracking-widest">
-                    Isolation enforced via Hardware-Level Row Security.
-                  </p>
-                </div>
-              </div>
-
-              {isAdmin && <SaveButton />}
-            </div>
-
-            {/* Access Level Indicator */}
-            <div className="bg-surface-1 border border-glass-border rounded-[2.25rem] p-8 shadow-sm flex items-center justify-between">
-              <div className="flex items-center gap-5">
-                <div className="h-12 w-12 rounded-2xl bg-glass-strong flex items-center justify-center text-muted-foreground border border-glass-border">
-                  <UserCircle className="h-6 w-6" />
-                </div>
-                <div>
-                  <p className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em]">
-                    Authorized As
-                  </p>
-                  <p className="text-sm font-black text-foreground capitalize tracking-tight mt-0.5">
-                    {role}
-                  </p>
-                </div>
-              </div>
-              <ShieldCheck className="h-6 w-6 text-emerald-500" />
-            </div>
-
-            {/* Expiry Widget (Dynamic) */}
-            <ExpiryAlertWidget atRiskDocs={atRiskDocs || []} />
-
-            {/* Danger Zone */}
-            <div className="bg-rose-500/10 border border-rose-400/30 rounded-[2.25rem] p-8 space-y-6 opacity-70 hover:opacity-100 transition-all">
-              <div className="flex items-center gap-3 text-rose-300">
-                <AlertOctagon className="h-5 w-5" />
-                <h3 className="text-xs font-black uppercase tracking-[0.2em]">
-                  Danger Zone
-                </h3>
-              </div>
-              <p className="text-xs text-red-800 leading-relaxed font-bold uppercase tracking-widest">
-                Deleting this organization will permanently erase the
-                un-editable audit history. This action is irreversible.
-              </p>
-              <button
-                disabled
-                className="w-full py-4 bg-surface-1 border border-red-200 text-red-400 rounded-2xl text-xs font-black uppercase tracking-[0.2em] cursor-not-allowed shadow-sm"
-              >
-                Destroy Node
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-
-      {/* Plain-English label toggle */}
-      <PlainEnglishToggle />
-
-      {/* Appearance / Theme Settings */}
-      <AppearanceSettings />
+        {/* Appearance / Theme Settings */}
+        <AppearanceSettings />
       </div>
     </div>
   );

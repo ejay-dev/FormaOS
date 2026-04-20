@@ -24,7 +24,11 @@ interface Tile {
 }
 
 const SHARED_TILES: Tile[] = [
-  { label: 'Report an incident', href: '/app/incidents/new', icon: AlertTriangle },
+  {
+    label: 'Report an incident',
+    href: '/app/incidents/new',
+    icon: AlertTriangle,
+  },
   { label: 'Log evidence', href: '/app/evidence', icon: FileCheck },
 ];
 
@@ -32,17 +36,33 @@ const INDUSTRY_TILES: Record<string, Tile[]> = {
   aged_care: [
     ...SHARED_TILES,
     { label: 'Update a care plan', href: '/app/care-plans', icon: HeartPulse },
-    { label: 'Renew a credential', href: '/app/staff-compliance', icon: BadgeCheck },
+    {
+      label: 'Renew a credential',
+      href: '/app/staff-compliance',
+      icon: BadgeCheck,
+    },
   ],
   childcare: [
     ...SHARED_TILES,
     { label: 'Update a care plan', href: '/app/care-plans', icon: HeartPulse },
-    { label: 'Renew a credential', href: '/app/staff-compliance', icon: BadgeCheck },
+    {
+      label: 'Renew a credential',
+      href: '/app/staff-compliance',
+      icon: BadgeCheck,
+    },
   ],
   healthcare: [
     ...SHARED_TILES,
-    { label: 'Log a clinical incident', href: '/app/incidents/new', icon: Stethoscope },
-    { label: 'Handover brief', href: '/app/reports/custom', icon: ClipboardList },
+    {
+      label: 'Log a clinical incident',
+      href: '/app/incidents/new',
+      icon: Stethoscope,
+    },
+    {
+      label: 'Handover brief',
+      href: '/app/reports/custom',
+      icon: ClipboardList,
+    },
   ],
   financial_services: [
     ...SHARED_TILES,
@@ -58,13 +78,8 @@ const UNIVERSAL_TILES: Tile[] = [
   { label: 'Export audit log', href: '/app/reports/custom', icon: FileDown },
 ];
 
-export function QuickActionTiles({
-  industry,
-}: {
-  industry?: string | null;
-}) {
-  const tiles =
-    (industry && INDUSTRY_TILES[industry]) || UNIVERSAL_TILES;
+export function QuickActionTiles({ industry }: { industry?: string | null }) {
+  const tiles = (industry && INDUSTRY_TILES[industry]) || UNIVERSAL_TILES;
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">

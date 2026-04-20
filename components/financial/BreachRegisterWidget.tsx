@@ -98,7 +98,9 @@ function BreachReportForm({
 
   return (
     <div className="mt-2 rounded-lg border border-border bg-muted/30 p-4 space-y-3">
-      <h4 className="text-sm font-semibold">Self-Report to ASIC ({s912dLabel})</h4>
+      <h4 className="text-sm font-semibold">
+        Self-Report to ASIC ({s912dLabel})
+      </h4>
       <div className="text-xs text-muted-foreground space-y-1">
         <p>
           <strong>Breach ID:</strong> {breach.breach_id}

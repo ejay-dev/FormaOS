@@ -13,7 +13,9 @@ export function PlainEnglishToggle() {
           <Languages className="h-5 w-5" />
         </div>
         <div>
-          <h3 className="text-sm font-bold text-foreground">Language & Accessibility</h3>
+          <h3 className="text-sm font-bold text-foreground">
+            Language & Accessibility
+          </h3>
         </div>
       </div>
 

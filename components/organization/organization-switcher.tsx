@@ -75,7 +75,10 @@ export default function OrganizationSwitcher({
     } catch (error) {
       reportError({
         title: 'Organization switch failed',
-        message: error instanceof Error ? error.message : 'Could not switch organization',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Could not switch organization',
       });
     }
   };

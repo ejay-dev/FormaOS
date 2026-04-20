@@ -46,9 +46,7 @@ export function AppProviders({ children, initialState }: AppProvidersProps) {
           <ComplianceSystemProvider>
             <HelpAssistantProvider>
               <LabelProvider>
-                <AppShellErrorBoundary>
-                  {children}
-                </AppShellErrorBoundary>
+                <AppShellErrorBoundary>{children}</AppShellErrorBoundary>
               </LabelProvider>
             </HelpAssistantProvider>
           </ComplianceSystemProvider>
