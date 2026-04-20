@@ -1,168 +1,62 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Building2 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { brand } from '@/config/brand';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function FinalCTA() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.2, 0.35, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-emerald-500/20 via-cyan-500/15 to-transparent blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.15, 0.25, 0.15],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-blue-500/20 via-purple-500/10 to-transparent blur-3xl"
-        />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="depthSlide" range={[0, 0.35]} className="relative">
-          {/* Executive Panel */}
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden max-w-4xl mx-auto">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
-              <div className="text-center">
-                <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-emerald-400">
-                    <Building2 className="h-3 w-3" />
-                    Ready to Start
-                  </div>
-                </ScrollReveal>
-
-                <ScrollReveal variant="blurIn" range={[0.05, 0.4]}>
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6">
-                    <span className="text-white">
-                      Governance infrastructure that holds up
-                    </span>
-                    <br className="hidden sm:inline" />
-                    <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                      when regulators come looking
-                    </span>
-                  </h2>
-                </ScrollReveal>
-
-                <ScrollReveal variant="scaleUp" range={[0.1, 0.45]}>
-                  <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 mx-auto rounded-full" />
-                </ScrollReveal>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="px-8 sm:px-12 py-10 sm:py-12">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                {/* Value Props */}
-                <ScrollReveal variant="fadeLeft" range={[0.05, 0.4]} className="text-center lg:text-left">
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-6">
-                    Operational compliance from day one
-                  </h3>
-
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-center gap-3 justify-center lg:justify-start">
-                      <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                      <span className="text-sm text-gray-400">
-                        14-day free trial - no credit card required
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 justify-center lg:justify-start">
-                      <div className="w-2 h-2 rounded-full bg-cyan-400" />
-                      <span className="text-sm text-gray-400">
-                        Frameworks mapped and controls configured from day one
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 justify-center lg:justify-start">
-                      <div className="w-2 h-2 rounded-full bg-blue-400" />
-                      <span className="text-sm text-gray-400">
-                        Security review packet and DPA available during evaluation
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 justify-center lg:justify-start">
-                      <div className="w-2 h-2 rounded-full bg-violet-400" />
-                      <span className="text-sm text-gray-400">
-                        Dedicated implementation support for Enterprise
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="text-base text-gray-500 leading-relaxed">
-                    Built for regulated teams that need a clearer buying path from trial through procurement.
-                  </p>
-                </ScrollReveal>
-
-                {/* CTA Actions */}
-                <ScrollReveal variant="fadeRight" range={[0.1, 0.45]} className="text-center">
-                  <div className="space-y-4 mb-8">
-                    <Link
-                      href={`${appBase}/auth/signup`}
-                      onClick={() =>
-                        trackCtaClick({
-                          surface: 'pricing',
-                          section: 'final_cta',
-                          location: 'final_primary',
-                          ctaLabel: 'Start Free Trial',
-                          ctaHref: `${appBase}/auth/signup`,
-                          variant: 'final',
-                        })
-                      }
-                      className="mk-btn mk-btn-primary group w-full inline-block px-8 py-4 text-base"
-                    >
-                      <span className="relative z-10">Start Free Trial</span>
-                    </Link>
-
-                    <Link
-                      href="/contact?type=pricing&source=pricing_final_cta"
-                      onClick={() =>
-                        trackCtaClick({
-                          surface: 'pricing',
-                          section: 'final_cta',
-                          location: 'final_secondary',
-                          ctaLabel: 'Talk to Sales',
-                          ctaHref: '/contact?type=pricing&source=pricing_final_cta',
-                          variant: 'final',
-                        })
-                      }
-                      className="mk-btn mk-btn-secondary group w-full flex items-center justify-center gap-2 px-8 py-4 text-base"
-                    >
-                      <span>Talk to Sales</span>
-                      <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
-                    </Link>
-                  </div>
-
-                  <div className="text-xs text-gray-500">
-                    AU-hosted by default • DPA available • SOC 2-aligned workflows • SAML SSO
-                  </div>
-                </ScrollReveal>
-              </div>
-            </div>
-          </div>
-        </ScrollReveal>
+    <section className="relative overflow-hidden bg-slate-950 py-24">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(45,212,191,0.16),transparent_36%)]" />
+      <div className="relative mx-auto max-w-5xl px-6 text-center lg:px-12">
+        <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-100">
+          <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+          Closing decision
+        </div>
+        <h2 className="mt-6 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+          Stop relying on people to remember compliance
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-300">
+          Let the system enforce it instead. Get a compliance plan scoped to
+          your framework obligations, operating complexity, and audit risk.
+        </p>
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link
+            href="/contact?type=compliance-plan&source=pricing_final"
+            onClick={() =>
+              trackCtaClick({
+                surface: 'pricing',
+                section: 'final_cta',
+                location: 'final_primary',
+                ctaLabel: 'Get Your Compliance Plan',
+                ctaHref: '/contact?type=compliance-plan&source=pricing_final',
+                variant: 'final',
+              })
+            }
+            className="mk-btn mk-btn-primary min-h-[52px] justify-center px-8 py-4 text-base"
+          >
+            Get Your Compliance Plan
+            <ArrowRight className="h-5 w-5" aria-hidden="true" />
+          </Link>
+          <Link
+            href="/contact?type=expert&source=pricing_final"
+            onClick={() =>
+              trackCtaClick({
+                surface: 'pricing',
+                section: 'final_cta',
+                location: 'final_secondary',
+                ctaLabel: 'Talk to an Expert',
+                ctaHref: '/contact?type=expert&source=pricing_final',
+                variant: 'final',
+              })
+            }
+            className="mk-btn mk-btn-secondary min-h-[52px] justify-center px-8 py-4 text-base"
+          >
+            Talk to an Expert
+          </Link>
+        </div>
       </div>
     </section>
   );

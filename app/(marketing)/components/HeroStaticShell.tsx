@@ -104,8 +104,8 @@ export function HeroStaticShell() {
         </div>
 
         <p className="mt-6 text-sm text-slate-400">
-          No credit card required &middot; 14-day free trial &middot; AU-hosted
-          by default
+          Guided assessment &middot; AU-hosted by default &middot;
+          Evidence-backed workflows
         </p>
       </div>
     </section>

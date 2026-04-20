@@ -14,6 +14,8 @@
 /coverage
 /test-results
 /playwright-report
+/.lighthouseci/
+build_output.txt
 
 # next.js
 /.next/

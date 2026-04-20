@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Logo } from '@/components/brand/Logo';
 import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-import { getSignUpUrl } from '@/lib/urls';
 import { footerLinks } from '@/config/navigation';
 import {
   Mail,
@@ -15,7 +14,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-const signUpUrl = getSignUpUrl();
+const compliancePlanUrl = '/contact?type=compliance-plan&source=footer';
 
 /* ── Footer CTA ──────────────────────────────────────────── */
 
@@ -52,26 +51,26 @@ function FooterCTA() {
               See how FormaOS works for your team
             </h3>
             <p className="mt-3 text-slate-400 max-w-lg text-sm leading-relaxed">
-              14-day trial with full platform access. No credit card, no
-              commitment.
+              Get a guided compliance plan scoped to your frameworks,
+              evidence burden, and audit exposure.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 shrink-0">
             <Link
-              href={signUpUrl}
+              href={compliancePlanUrl}
               onClick={() =>
                 trackCtaClick({
                   surface: 'footer',
                   section: 'footer_cta',
                   location: 'footer_primary',
-                  ctaLabel: 'Start Free Trial',
-                  ctaHref: signUpUrl,
+                  ctaLabel: 'Get Compliance Plan',
+                  ctaHref: compliancePlanUrl,
                   variant: 'primary',
                 })
               }
               className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-7 py-3.5 min-h-[48px] w-full sm:w-auto text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:brightness-110"
             >
-              Start Free Trial
+              Get Compliance Plan
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link

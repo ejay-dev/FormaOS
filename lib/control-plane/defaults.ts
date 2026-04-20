@@ -26,11 +26,11 @@ export const DEFAULT_RUNTIME_MARKETING: RuntimeMarketingConfig = {
     headlinePrimary: 'Compliance That Runs Itself',
     headlineAccent: 'So Your Team Can Run the Business',
     subheadline:
-      'FormaOS turns regulatory obligations into governed workflows with named owners, immutable evidence chains, and audit-ready assurance — across every framework your team operates under.',
-    primaryCtaLabel: 'Start Free Trial',
-    primaryCtaHref: '/auth/signup?plan=pro',
-    secondaryCtaLabel: 'Talk to Sales',
-    secondaryCtaHref: '/contact',
+      'FormaOS turns regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance across every framework your team operates under.',
+    primaryCtaLabel: 'Get Compliance Plan',
+    primaryCtaHref: '/contact?type=compliance-plan&source=home_hero',
+    secondaryCtaLabel: 'View Pricing',
+    secondaryCtaHref: '/pricing',
   },
   runtime: {
     expensiveEffectsEnabled: true,

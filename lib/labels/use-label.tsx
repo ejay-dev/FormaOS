@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from 'react';
@@ -24,7 +25,7 @@ const LabelContext = createContext<LabelContextValue>({
 
 export function LabelProvider({ children }: { children: ReactNode }) {
   const [enabled, setEnabled] = useState(true);
-  const [loaded, setLoaded] = useState(false);
+  const userChangedBeforeLoad = useRef(false);
 
   // Load preference from user_profiles on mount
   useEffect(() => {
@@ -34,14 +35,16 @@ export function LabelProvider({ children }: { children: ReactNode }) {
         const res = await fetch('/api/v1/preferences/plain-english');
         if (res.ok) {
           const data = await res.json();
-          if (!cancelled && typeof data.enabled === 'boolean') {
+          if (
+            !cancelled &&
+            !userChangedBeforeLoad.current &&
+            typeof data.enabled === 'boolean'
+          ) {
             setEnabled(data.enabled);
           }
         }
       } catch {
         // Default stays true
-      } finally {
-        if (!cancelled) setLoaded(true);
       }
     }
     load();
@@ -52,6 +55,7 @@ export function LabelProvider({ children }: { children: ReactNode }) {
 
   // Persist changes
   const handleSetEnabled = useCallback((v: boolean) => {
+    userChangedBeforeLoad.current = true;
     setEnabled(v);
     fetch('/api/v1/preferences/plain-english', {
       method: 'PATCH',
@@ -72,7 +76,7 @@ export function LabelProvider({ children }: { children: ReactNode }) {
   return (
     <LabelContext.Provider
       value={{
-        enabled: loaded ? enabled : true,
+        enabled,
         setEnabled: handleSetEnabled,
         translate,
       }}

@@ -886,7 +886,7 @@ export function HomePageContent() {
                 <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
                   <div className="inline-flex items-center gap-2 glass-system rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 sm:mb-8">
                     <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                    Start Your Trial
+                    Get Your Compliance Plan
                   </div>
                 </ScrollReveal>
 
@@ -899,18 +899,18 @@ export function HomePageContent() {
                 </h2>
 
                 <p className="text-base sm:text-lg lg:text-xl text-foreground/70 mb-8 sm:mb-12 max-w-3xl mx-auto">
-                  Start your 14-day free trial. No credit card required. Full
-                  platform access.
+                  Scope your enforced workflows, evidence burden, and audit
+                  readiness path with a guided FormaOS plan.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                   <AnimatedLink
-                    href={`${appBase}/auth/signup?plan=pro`}
+                    href="/contact?type=compliance-plan&source=home_content"
                     variant="primary"
                     size="lg"
                     className="shadow-[0_8px_32px_rgba(0,212,251,0.35)] hover:shadow-[0_12px_40px_rgba(0,212,251,0.5)] w-full sm:w-auto text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6"
                   >
-                    Start Free Trial
+                    Get Compliance Plan
                   </AnimatedLink>
                   <AnimatedLink
                     href="/contact"
@@ -935,7 +935,7 @@ export function HomePageContent() {
                       }}
                       transition={{ duration: 2, repeat: Infinity }}
                     />
-                    <span>14-day free trial</span>
+                    <span>Guided assessment</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <motion.div
@@ -949,7 +949,7 @@ export function HomePageContent() {
                       }}
                       transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
                     />
-                    <span>No credit card</span>
+                    <span>Risk-scoped plan</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <motion.div
@@ -963,7 +963,7 @@ export function HomePageContent() {
                       }}
                       transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
                     />
-                    <span>Full access</span>
+                    <span>Evidence workflow map</span>
                   </div>
                 </div>
               </div>

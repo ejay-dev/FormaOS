@@ -632,7 +632,7 @@ const AuditLogCard = memo(function AuditLogCard({
             { value: 9, label: 'Framework packs', suffix: 'packs' },
             { value: 100, label: 'Audit coverage', suffix: '%' },
             { value: 4, label: 'Access roles', suffix: 'roles' },
-            { value: 14, label: 'Free trial', suffix: 'days' },
+            { value: 1, label: 'Guided plan', suffix: 'scope' },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}

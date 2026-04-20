@@ -1,87 +1,83 @@
-"use server"
+'use server';
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { revalidatePath } from "next/cache";
-import { logActivity } from "@/lib/logger";
-import { logActivity as logProductActivity } from "@/lib/activity/feed";
-import { requirePermission } from "@/app/app/actions/rbac";
-import { logAuditEvent } from "@/app/app/actions/audit-events";
-import { actionError, isNextInternalError } from "@/lib/actions/safe";
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { revalidatePath } from 'next/cache';
+import { logActivity } from '@/lib/logger';
+import { logActivity as logProductActivity } from '@/lib/activity/feed';
+import { getUserOrgMembership } from '@/app/app/actions/rbac';
+import { logAuditEvent } from '@/app/app/actions/audit-events';
+import { actionError, isNextInternalError } from '@/lib/actions/safe';
 
 export async function updateOrganization(data: {
   name: string;
+  industry?: string;
+  teamSize?: string;
   domain?: string;
   registrationNumber?: string;
 }) {
   try {
-  const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
-  const permissionCtx = await requirePermission("MANAGE_USERS");
+    const membership = await getUserOrgMembership();
 
-  // 1. Get current Admin's Org
-  const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    if (!['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER'].includes(membership.role)) {
+      throw new Error(
+        'Security Violation: Only owners and admins can modify organization settings.',
+      );
+    }
 
-  if (!membership || membership.organization_id !== permissionCtx.orgId) {
-    throw new Error("Security Violation: Only authorized users can modify organization settings.");
-  }
+    const admin = createSupabaseAdminClient();
 
-  const admin = createSupabaseAdminClient();
+    const { error } = await admin
+      .from('organizations')
+      .update({
+        name: data.name,
+        industry: data.industry,
+        team_size: data.teamSize,
+      })
+      .eq('id', membership.orgId);
 
-  // 2. Update Organization Metadata (admin client bypasses strict org RLS)
-  const { error } = await admin
-    .from("organizations")
-    .update({
-      name: data.name,
-      domain: data.domain,
-      registration_number: data.registrationNumber,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", membership.organization_id);
+    if (error) throw error;
 
-  if (error) throw error;
+    await logActivity(
+      membership.orgId,
+      'updated_policy',
+      'Admin updated organization profile settings.',
+    );
 
-  // 3. Log System Event
-  await logActivity(
-    membership.organization_id, 
-    "updated_policy", // Using as proxy for 'Governance Update'
-    `Admin updated organization profile and domain settings.`
-  );
+    await logProductActivity(
+      membership.orgId,
+      membership.userId,
+      'updated',
+      {
+        type: 'organization',
+        id: membership.orgId,
+        name: data.name,
+        path: '/app/settings',
+      },
+      {
+        industry: data.industry ?? null,
+        teamSize: data.teamSize ?? null,
+      },
+    );
 
-  await logProductActivity(
-    membership.organization_id,
-    user.id,
-    "updated",
-    {
-      type: "organization",
-      id: membership.organization_id,
-      name: data.name,
-      path: "/app/settings",
-    },
-    {
-      domain: data.domain ?? null,
-      registrationNumber: data.registrationNumber ?? null,
-    },
-  );
+    await logAuditEvent({
+      organizationId: membership.orgId,
+      actorUserId: membership.userId,
+      actorRole: membership.role,
+      entityType: 'organization',
+      entityId: membership.orgId,
+      actionType: 'ORG_UPDATED',
+      afterState: {
+        name: data.name,
+        industry: data.industry,
+        teamSize: data.teamSize,
+      },
+      reason: 'org_update',
+    });
 
-  await logAuditEvent({
-    organizationId: membership.organization_id,
-    actorUserId: user.id,
-    actorRole: permissionCtx.role,
-    entityType: "organization",
-    entityId: membership.organization_id,
-    actionType: "ORG_UPDATED",
-    afterState: { name: data.name, domain: data.domain, registrationNumber: data.registrationNumber },
-    reason: "org_update",
-  });
-
-  revalidatePath("/app/settings");
-  return { success: true };
+    revalidatePath('/app/settings');
+    revalidatePath('/app/settings/organization');
+    revalidatePath('/app');
+    return { success: true };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);

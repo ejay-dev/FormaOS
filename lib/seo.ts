@@ -49,8 +49,8 @@ export function softwareApplicationSchema() {
     offers: {
       '@type': 'AggregateOffer',
       priceCurrency: 'AUD',
-      lowPrice: '159',
-      highPrice: '399',
+      lowPrice: '297',
+      highPrice: '5000',
       offerCount: '3',
     },
   };
@@ -92,12 +92,12 @@ export function pricingSchema() {
     offers: [
       {
         '@type': 'Offer',
-        name: 'Starter',
-        price: '159',
+        name: 'Foundation',
+        price: '297',
         priceCurrency: 'AUD',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '159',
+          price: '297',
           priceCurrency: 'AUD',
           unitCode: 'MON',
         },
@@ -105,12 +105,12 @@ export function pricingSchema() {
       },
       {
         '@type': 'Offer',
-        name: 'Professional',
-        price: '239',
+        name: 'Growth',
+        price: '1800',
         priceCurrency: 'AUD',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '239',
+          price: '1800',
           priceCurrency: 'AUD',
           unitCode: 'MON',
         },
@@ -119,11 +119,12 @@ export function pricingSchema() {
       {
         '@type': 'Offer',
         name: 'Enterprise',
-        price: '399',
+        price: '5000',
         priceCurrency: 'AUD',
+        description: 'Custom compliance infrastructure pricing from $5,000/month.',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '399',
+          price: '5000',
           priceCurrency: 'AUD',
           unitCode: 'MON',
         },

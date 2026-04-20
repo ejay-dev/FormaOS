@@ -13,14 +13,94 @@ interface EmailPreferences {
   unsubscribed_all: boolean;
 }
 
+type EmailPreferenceRow = {
+  id?: string;
+  enabled?: boolean | null;
+  frequency?: string | null;
+  enabled_events?: unknown;
+  quiet_hours?: unknown;
+};
+
+const DEFAULT_EMAIL_PREFERENCES: EmailPreferences = {
+  welcome_emails: true,
+  invitation_emails: true,
+  alert_emails: true,
+  marketing_emails: false,
+  weekly_digest: true,
+  unsubscribed_all: false,
+};
+
+const EVENT_KEYS = {
+  welcome_emails: 'welcome',
+  invitation_emails: 'invitation',
+  alert_emails: 'compliance_alert',
+  marketing_emails: 'product_update',
+} as const;
+
+function readEnabledEvents(value: unknown) {
+  if (Array.isArray(value)) {
+    return new Set(value.filter((event): event is string => typeof event === 'string'));
+  }
+
+  if (value && typeof value === 'object') {
+    return new Set(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([, enabled]) => enabled === true)
+        .map(([event]) => event),
+    );
+  }
+
+  return new Set<string>();
+}
+
+function preferencesFromRow(row: EmailPreferenceRow | null): EmailPreferences {
+  if (!row) return DEFAULT_EMAIL_PREFERENCES;
+
+  const enabledEvents = readEnabledEvents(row.enabled_events);
+  const hasExplicitEvents = enabledEvents.size > 0;
+
+  return {
+    welcome_emails: hasExplicitEvents
+      ? enabledEvents.has(EVENT_KEYS.welcome_emails)
+      : DEFAULT_EMAIL_PREFERENCES.welcome_emails,
+    invitation_emails: hasExplicitEvents
+      ? enabledEvents.has(EVENT_KEYS.invitation_emails)
+      : DEFAULT_EMAIL_PREFERENCES.invitation_emails,
+    alert_emails: hasExplicitEvents
+      ? enabledEvents.has(EVENT_KEYS.alert_emails)
+      : DEFAULT_EMAIL_PREFERENCES.alert_emails,
+    marketing_emails: hasExplicitEvents
+      ? enabledEvents.has(EVENT_KEYS.marketing_emails)
+      : DEFAULT_EMAIL_PREFERENCES.marketing_emails,
+    weekly_digest: row.frequency === 'weekly_digest',
+    unsubscribed_all: row.enabled === false,
+  };
+}
+
+function rowFromPreferences(preferences: EmailPreferences) {
+  const enabledEvents = Object.entries(EVENT_KEYS)
+    .filter(([key]) => preferences[key as keyof typeof EVENT_KEYS])
+    .map(([, event]) => event);
+
+  return {
+    enabled: !preferences.unsubscribed_all,
+    frequency: preferences.weekly_digest ? 'weekly_digest' : 'immediate',
+    enabled_events: enabledEvents,
+    quiet_hours: {},
+    updated_at: new Date().toISOString(),
+  };
+}
+
 export default function EmailPreferencesPage() {
   const [preferences, setPreferences] = useState<EmailPreferences | null>(null);
+  const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   const supabase = useMemo(() => createSupabaseClient(), []);
   const userId = useAppStore((state) => state.user?.id ?? null);
+  const orgId = useAppStore((state) => state.organization?.id ?? null);
   const isHydrated = useAppStore((state) => state.isHydrated);
 
   useEffect(() => {
@@ -28,7 +108,7 @@ export default function EmailPreferencesPage() {
 
     async function loadPreferences() {
       if (!isHydrated) return;
-      if (!userId) {
+      if (!userId || !orgId) {
         setPreferences(null);
         setLoading(false);
         return;
@@ -39,8 +119,9 @@ export default function EmailPreferencesPage() {
       try {
         const { data, error } = await supabase
           .from('email_preferences')
-          .select('*')
+          .select('id, enabled, frequency, enabled_events, quiet_hours')
           .eq('user_id', userId)
+          .eq('organization_id', orgId)
           .maybeSingle();
 
         if (error) {
@@ -48,23 +129,17 @@ export default function EmailPreferencesPage() {
         }
 
         if (data) {
-          if (!cancelled) setPreferences(data as EmailPreferences);
+          if (!cancelled) {
+            setPreferenceId((data as EmailPreferenceRow).id ?? null);
+            setPreferences(preferencesFromRow(data as EmailPreferenceRow));
+          }
           return;
         }
 
-        const { data: newPrefs, error: insertError } = await supabase
-          .from('email_preferences')
-          .insert({ user_id: userId })
-          .select('*')
-          .single();
-
-        if (insertError) {
-          console.error('[EmailPreferencesPage] Insert error:', insertError.message);
-          if (!cancelled) setPreferences(null);
-          return;
+        if (!cancelled) {
+          setPreferenceId(null);
+          setPreferences(DEFAULT_EMAIL_PREFERENCES);
         }
-
-        if (!cancelled) setPreferences(newPrefs as EmailPreferences);
       } catch (error) {
         console.error('[EmailPreferencesPage] Unexpected error:', error);
         if (!cancelled) setPreferences(null);
@@ -78,21 +153,37 @@ export default function EmailPreferencesPage() {
     return () => {
       cancelled = true;
     };
-  }, [isHydrated, userId, supabase]);
+  }, [isHydrated, orgId, userId, supabase]);
 
   async function savePreferences() {
-    if (!preferences || !userId) return;
+    if (!preferences || !userId || !orgId) return;
 
     setSaving(true);
     setMessage('');
 
     try {
-      const { error } = await supabase
-        .from('email_preferences')
-        .update(preferences)
-        .eq('user_id', userId);
+      const payload = rowFromPreferences(preferences);
+      const query = preferenceId
+        ? supabase
+            .from('email_preferences')
+            .update(payload)
+            .eq('id', preferenceId)
+            .select('id')
+            .single()
+        : supabase
+            .from('email_preferences')
+            .insert({
+              user_id: userId,
+              organization_id: orgId,
+              ...payload,
+            })
+            .select('id')
+            .single();
+
+      const { data, error } = await query;
 
       if (error) throw error;
+      if (data?.id) setPreferenceId(data.id);
 
       setMessage('Preferences saved successfully!');
       setTimeout(() => setMessage(''), 3000);

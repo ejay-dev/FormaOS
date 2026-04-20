@@ -53,7 +53,10 @@ export function ComplianceToastAlerts() {
           id: latestEvent.id,
           type: getCriticalityType(latestEvent.trigger),
           title: getToastTitle(latestEvent.trigger),
-          message: getToastMessage(latestEvent.trigger, latestEvent.actionsExecuted),
+          message: getToastMessage(
+            latestEvent.trigger,
+            latestEvent.actionsExecuted,
+          ),
           timestamp: latestEvent.executedAt,
         };
 
@@ -151,7 +154,9 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
         >
           {toast.message}
         </p>
-        <p className="text-xs text-gray-500 mt-2">{formatRelativeTime(toast.timestamp)}</p>
+        <p className="text-xs text-gray-500 mt-2">
+          {formatRelativeTime(toast.timestamp)}
+        </p>
       </div>
 
       {/* Dismiss Button */}
@@ -172,7 +177,9 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
   );
 }
 
-function getCriticalityType(trigger: string): 'critical' | 'warning' | 'success' {
+function getCriticalityType(
+  trigger: string,
+): 'critical' | 'warning' | 'success' {
   if (['control_failed', 'risk_score_change'].includes(trigger)) {
     return 'critical';
   }
@@ -206,11 +213,15 @@ function getToastTitle(trigger: string): string {
 function getToastMessage(trigger: string, actionsExecuted: number): string {
   const messages: Record<string, string> = {
     control_failed: `Control compliance failed. ${actionsExecuted} remediation task${actionsExecuted > 1 ? 's' : ''} created and admins notified.`,
-    risk_score_change: 'Your compliance risk level has increased. Leadership has been notified.',
+    risk_score_change:
+      'Your compliance risk level has increased. Leadership has been notified.',
     control_incomplete: `${actionsExecuted} control${actionsExecuted > 1 ? 's' : ''} require${actionsExecuted === 1 ? 's' : ''} completion. Tasks created.`,
     task_overdue: `${actionsExecuted} overdue task${actionsExecuted > 1 ? 's' : ''}. Escalation notifications sent.`,
   };
-  return messages[trigger] || `Automation workflow executed ${actionsExecuted} actions.`;
+  return (
+    messages[trigger] ||
+    `Automation workflow executed ${actionsExecuted} actions.`
+  );
 }
 
 function formatRelativeTime(dateString: string): string {

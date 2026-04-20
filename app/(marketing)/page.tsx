@@ -3,6 +3,13 @@ import { HomeClientMarker } from './components/home-client-marker';
 import FigmaHomepage from './components/FigmaHomepage';
 import { HeroStaticShell } from './components/HeroStaticShell';
 import { HomeProofStaticShell } from './components/HomeProofStaticShell';
+import { FailurePrevention } from '@/components/FailurePrevention';
+import { HowItWorks } from '@/components/HowItWorks';
+import { ProductShowcase } from '@/components/ProductShowcase';
+import { ProofSection } from '@/components/ProofSection';
+import { ROIMetrics } from '@/components/ROIMetrics';
+import { TrustBar } from '@/components/TrustBar';
+import { WorkflowEnforcementDiagram } from '@/components/WorkflowEnforcementDiagram';
 import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
@@ -10,7 +17,7 @@ export const metadata: Metadata = {
   title:
     'FormaOS - Compliance Operating System for Australian Regulated Industries',
   description:
-    'FormaOS turns regulatory obligations into governed workflows with named owners, immutable evidence chains, and audit-ready assurance. NDIS, Healthcare, Financial Services, Childcare, Construction.',
+    'FormaOS turns regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance. NDIS, Healthcare, Financial Services, Childcare, Construction.',
   keywords: [
     'compliance software Australia',
     'compliance operating system',
@@ -44,7 +51,7 @@ export const metadata: Metadata = {
     title:
       'FormaOS - Compliance Operating System for Australian Regulated Industries',
     description:
-      'Turn regulatory obligations into governed workflows with named owners, immutable evidence chains, and audit-ready assurance across NDIS, Healthcare, Financial Services, Childcare, and Construction.',
+      'Turn regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance across NDIS, Healthcare, Financial Services, Childcare, and Construction.',
     images: [
       {
         url: `${siteUrl}/og-image.png`,
@@ -59,7 +66,7 @@ export const metadata: Metadata = {
     title:
       'FormaOS - Compliance Operating System for Australian Regulated Industries',
     description:
-      'Turn regulatory obligations into governed workflows with named owners, immutable evidence chains, and audit-ready assurance. NDIS, Healthcare, Financial Services, Childcare, Construction.',
+      'Turn regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance. NDIS, Healthcare, Financial Services, Childcare, Construction.',
     images: [`${siteUrl}/og-image.png`],
   },
 };
@@ -71,7 +78,17 @@ export default function HomePage() {
 
       {/* Server-rendered hero: copy is in the initial HTML for crawlers and LCP */}
       <HeroStaticShell />
+      <TrustBar />
+      <ROIMetrics
+        eyebrow="Risk Reduction Layer"
+        title="Compliance should be priced against failure, not features"
+      />
       <HomeProofStaticShell />
+      <ProductShowcase />
+      <FailurePrevention />
+      <WorkflowEnforcementDiagram />
+      <HowItWorks />
+      <ProofSection />
 
       {/* Client sections: animations, control-plane overrides, below-fold content */}
       <FigmaHomepage skipHero />

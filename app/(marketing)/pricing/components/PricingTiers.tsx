@@ -1,444 +1,98 @@
 'use client';
 
-import { useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Check, Target } from 'lucide-react';
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  useReducedMotion,
-  type MotionValue,
-} from 'framer-motion';
-import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { easing, duration } from '@/config/motion';
+import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { PUBLIC_PRICING_TIERS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-import { getAppBaseUrl } from '@/lib/urls';
-
-/* ── Cursor-tracking light-sweep wrapper for pricing cards ── */
-function PricingCard({
-  children,
-  featured,
-  borderColor,
-  gradientFrom,
-  gradientTo,
-  reducedMotion,
-}: {
-  children: React.ReactNode;
-  featured: boolean;
-  borderColor: string;
-  gradientFrom: string;
-  gradientTo: string;
-  reducedMotion: boolean;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const localX = useMotionValue(0.5);
-  const localY = useMotionValue(0.5);
-  const smoothX = useSpring(localX, { stiffness: 200, damping: 25 });
-  const smoothY = useSpring(localY, { stiffness: 200, damping: 25 });
-
-  const lightGradient = useTransform(
-    [smoothX, smoothY] as MotionValue<number>[],
-    ([x, y]: number[]) =>
-      `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.07) 0%, transparent 55%)`,
-  );
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (reducedMotion || !cardRef.current) return;
-      const rect = cardRef.current.getBoundingClientRect();
-      localX.set((e.clientX - rect.left) / rect.width);
-      localY.set((e.clientY - rect.top) / rect.height);
-    },
-    [reducedMotion, localX, localY],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    localX.set(0.5);
-    localY.set(0.5);
-  }, [localX, localY]);
-
-  return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      whileHover={
-        reducedMotion
-          ? undefined
-          : {
-              y: featured ? -16 : -4,
-              transition: { duration: duration.fast, ease: easing.smooth },
-            }
-      }
-      className="pointer-events-auto"
-    >
-      <div
-        className={`relative backdrop-blur-xl bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-3xl p-5 sm:p-8 border-2 ${featured ? borderColor : 'border-white/[0.08]'} shadow-2xl transition-all duration-500 group-hover:shadow-3xl ${featured ? 'group-hover:shadow-emerald-500/20' : ''} group-hover:border-opacity-100 overflow-hidden h-full`}
-        style={{
-          transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
-        }}
-      >
-        {/* Cursor-tracking light sweep overlay */}
-        {!reducedMotion && (
-          <motion.div
-            className="absolute inset-0 pointer-events-none rounded-[inherit] z-[1]"
-            style={{ background: lightGradient } as Record<string, unknown>}
-          />
-        )}
-
-        {/* Hover glow effect */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${gradientFrom} ${gradientTo} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10`}
-        />
-
-        {/* Card content */}
-        <div className="relative z-[2]">{children}</div>
-      </div>
-    </motion.div>
-  );
-}
-
-const appBase = getAppBaseUrl();
-
-const pricingTiers = [
-  {
-    name: 'Starter',
-    price: '$159',
-    period: '/ month',
-    tagline: 'For teams formalizing their first compliance layer',
-    description:
-      'Establish structured workflows, traceable evidence, and audit-ready records - without the overhead of enterprise complexity.',
-    features: [
-      'Core workflow modeling (Model → Execute → Verify → Prove)',
-      'Task management & recurring compliance activities',
-      'Evidence storage with immutable audit trail',
-      'Framework mapping: SOC 2, ISO 27001, GDPR',
-      'Document version control with change tracking',
-      'Compliance dashboard with basic analytics',
-      'Role-based access control (RBAC)',
-      'Secure, tamper-evident audit logs',
-      'Standard email support (business hours)',
-    ],
-    useCase:
-      'You need structured processes, traceable ownership, and defensible records - without enterprise overhead.',
-    buyingMotion: 'Self-serve monthly plan',
-    cta: 'Start Free Trial',
-    href: `${appBase}/auth/signup?plan=basic`,
-    featured: false,
-    color: 'cyan',
-    gradientFrom: 'from-cyan-500/20',
-    gradientTo: 'to-cyan-500/5',
-    borderColor: 'border-cyan-500/30',
-    accentColor: 'text-cyan-400',
-    iconBg: 'bg-cyan-500/20',
-  },
-  {
-    name: 'Professional',
-    price: '$239',
-    period: '/ month',
-    tagline: 'For regulated teams managing active multi-framework obligations',
-    description:
-      'Built for compliance teams that must demonstrate continuous readiness, reduce audit effort, and automate evidence across frameworks.',
-    starterPlus: true,
-    features: [
-      'Advanced compliance dashboards with real-time scoring',
-      'Full audit trail export (CSV / ZIP / PDF)',
-      'Automation engine: triggers, task routing, and escalations',
-      'Multi-entity and multi-site management',
-      'REST API access with integration hooks',
-      'Training registers and credential tracking',
-      'Asset registers with ownership mapping',
-      'Shift tracking, staff workflows, and visit logs',
-      'Real-time activity feed and compliance alerts',
-      'AI Compliance Assistant with streaming chat',
-      'SOC 2 workflow support and evidence exports',
-      'Priority support and guided review',
-    ],
-    useCase:
-      'You must reduce audit effort, enforce control ownership, and manage compliance obligations across teams or jurisdictions.',
-    buyingMotion: 'Self-serve monthly plan',
-    cta: 'Start Free Trial',
-    href: `${appBase}/auth/signup?plan=pro`,
-    featured: true,
-    color: 'emerald',
-    gradientFrom: 'from-emerald-500/25',
-    gradientTo: 'to-emerald-500/5',
-    borderColor: 'border-emerald-500/50',
-    accentColor: 'text-emerald-400',
-    iconBg: 'bg-emerald-500/20',
-  },
-  {
-    name: 'Enterprise',
-    price: '$399',
-    period: '/ month',
-    tagline:
-      'For organizations where compliance is mission-critical and non-negotiable',
-    description:
-      'Governance at scale for healthcare providers, NDIS operators, financial institutions, and government bodies - with guided enterprise review and rollout support.',
-    professionalPlus: true,
-    features: [
-      'SAML SSO and MFA controls for enterprise deployments',
-      'Session policy controls and access governance',
-      'Executive risk dashboard with trend analytics',
-      'Workflow gating for high-assurance compliance steps',
-      'Cross-framework control mappings (SOC 2, NIST CSF, CIS, HIPAA)',
-      'AU-hosted by default with additional residency needs reviewed during procurement',
-      'Custom regulatory export bundles and evidence packages',
-      'Compliance score engine with historical trending',
-      'AI-powered gap analysis and policy drafting',
-      'SOC 2 workflow support and audit-ready exports',
-      'Guided implementation and onboarding support',
-      'Vendor assurance packet, DPA, and enterprise service terms',
-      'Invoice-based procurement and rollout planning',
-    ],
-    useCase:
-      'Compliance is mission-critical, audits are frequent and high-stakes, and regulatory defensibility is non-negotiable.',
-    buyingMotion: 'Guided review, procurement, or invoiced rollout',
-    cta: 'Talk to Sales',
-    href: '/contact?type=enterprise&plan=enterprise&source=pricing_enterprise',
-    featured: false,
-    color: 'purple',
-    gradientFrom: 'from-purple-500/20',
-    gradientTo: 'to-purple-500/5',
-    borderColor: 'border-purple-500/30',
-    accentColor: 'text-purple-400',
-    iconBg: 'bg-purple-500/20',
-  },
-];
 
 export function PricingTiers() {
-  const shouldReduceMotion = useReducedMotion();
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <section className="relative overflow-hidden py-20 sm:py-24 lg:py-32">
-      {/* Background */}
-      <div className="absolute inset-0 bg-[#0a0f1c]">
-        <motion.div
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : {
-                  scale: [1, 1.2, 1],
-                  opacity: [0.15, 0.25, 0.15],
-                  x: [0, 50, 0],
-                }
-          }
-          transition={
-            shouldReduceMotion
-              ? undefined
-              : {
-                  duration: 15,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }
-          }
-          className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-emerald-500/20 to-transparent blur-3xl"
-        />
-        <motion.div
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : {
-                  scale: [1, 1.3, 1],
-                  opacity: [0.1, 0.2, 0.1],
-                  x: [0, -30, 0],
-                }
-          }
-          transition={
-            shouldReduceMotion
-              ? undefined
-              : {
-                  duration: 18,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: 3,
-                }
-          }
-          className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-tl from-purple-500/20 to-transparent blur-3xl"
-        />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Section Header */}
-        <ScrollReveal
-          variant="depthScale"
-          range={[0, 0.35]}
-          className="text-center mb-12 sm:mb-16"
-        >
-          <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6">
-              <Target className="h-3 w-3 text-emerald-400" />
-              <span className="text-gray-300">Choose Your Plan</span>
-            </div>
-          </ScrollReveal>
-
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-            Choose Your Compliance
-            <br className="hidden sm:block" />{' '}
-            <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-              Operating Level
-            </span>
-          </h2>
-
-          <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto">
-            All plans include the complete FormaOS compliance engine with
-            transparent monthly pricing.
+    <section id="pricing-table" className="relative overflow-hidden bg-slate-950 py-24">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.14),transparent_34%)]" />
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
+            Infrastructure Pricing
           </p>
-        </ScrollReveal>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+            Three buying paths, one enforced compliance system
+          </h2>
+          <p className="mt-4 text-base leading-7 text-slate-300">
+            Pricing scales with compliance scope, organisational complexity, and
+            risk exposure. Growth is the core plan for teams that need audit
+            readiness, not just software access.
+          </p>
+        </div>
 
-        {/* Pricing Cards */}
-        <SectionChoreography
-          pattern="center-burst"
-          stagger={0.06}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8"
-        >
-          {pricingTiers.map((tier) => (
-            <div
-              key={tier.name}
-              className={`group relative pointer-events-auto ${tier.featured ? 'lg:-mt-4 lg:mb-4' : ''}`}
+        <div className="mt-12 grid gap-5 lg:grid-cols-3">
+          {PUBLIC_PRICING_TIERS.map((tier) => (
+            <article
+              key={tier.id}
+              className={`relative flex min-h-full flex-col rounded-[2rem] border p-6 shadow-2xl ${
+                tier.featured
+                  ? 'border-emerald-300/40 bg-emerald-300/[0.08] shadow-emerald-950/35 lg:-mt-5 lg:mb-5'
+                  : 'border-white/[0.08] bg-white/[0.045] shadow-slate-950/35'
+              }`}
             >
-              {/* Featured badge */}
-              {tier.featured && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
-                  <ScrollReveal variant="scaleUp" range={[0.1, 0.4]}>
-                    <div className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full text-sm font-bold text-white shadow-lg shadow-emerald-500/30">
-                      Most Popular
-                    </div>
-                  </ScrollReveal>
-                </div>
-              )}
+              {tier.badge ? (
+                <span className="absolute right-6 top-6 rounded-full border border-emerald-300/30 bg-emerald-300/[0.12] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-100">
+                  {tier.badge}
+                </span>
+              ) : null}
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08]">
+                <ShieldCheck className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+              </div>
+              <h3 className="mt-6 text-2xl font-semibold text-white">{tier.name}</h3>
+              <p className="mt-2 min-h-[2.5rem] text-sm leading-5 text-slate-300">
+                {tier.audience}
+              </p>
+              <div className="mt-6 flex items-end gap-2">
+                <span className="text-4xl font-semibold tracking-tight text-white">
+                  {tier.priceLabel}
+                </span>
+                <span className="pb-1 text-sm font-medium text-slate-400">
+                  {tier.priceSubtext}
+                </span>
+              </div>
+              <p className="mt-5 text-sm leading-6 text-slate-400">{tier.summary}</p>
 
-              {/* Card with cursor-tracking light sweep */}
-              <PricingCard
-                featured={tier.featured}
-                borderColor={tier.borderColor}
-                gradientFrom={tier.gradientFrom}
-                gradientTo={tier.gradientTo}
-                reducedMotion={shouldReduceMotion ?? false}
+              <ul className="mt-7 flex-1 space-y-3">
+                {tier.features.map((feature) => (
+                  <li key={feature} className="flex gap-3 text-sm leading-6 text-slate-300">
+                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-300" aria-hidden="true" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                href={tier.ctaHref}
+                data-testid={`pricing-${tier.id}-cta`}
+                onClick={() =>
+                  trackCtaClick({
+                    surface: 'pricing',
+                    section: 'tiers',
+                    location: 'pricing_card',
+                    ctaLabel: tier.ctaLabel,
+                    ctaHref: tier.ctaHref,
+                    variant: tier.featured ? 'primary' : 'plan',
+                    plan: tier.id,
+                  })
+                }
+                className={`mt-8 inline-flex min-h-[50px] items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition ${
+                  tier.featured
+                    ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-950/40 hover:brightness-110'
+                    : 'border border-white/[0.1] bg-white/[0.06] text-white hover:bg-white/[0.1]'
+                }`}
               >
-                {/* Tier Header */}
-                <div className="mb-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    {tier.name}
-                  </h3>
-                  <p className={`text-sm font-medium ${tier.accentColor}`}>
-                    {tier.tagline}
-                  </p>
-                </div>
-
-                {/* Price */}
-                <div className="mb-6">
-                  <div className="flex items-baseline">
-                    <span
-                      className={`text-5xl font-bold bg-gradient-to-r ${tier.color === 'cyan' ? 'from-cyan-400 to-blue-400' : tier.color === 'emerald' ? 'from-emerald-400 to-cyan-400' : 'from-purple-400 to-pink-400'} bg-clip-text text-transparent`}
-                    >
-                      {tier.price}
-                    </span>
-                    {tier.period && (
-                      <span className="text-lg text-gray-500 ml-2">
-                        {tier.period}
-                        <span className="block text-xs text-gray-600 mt-0.5">
-                          per organization
-                        </span>
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                  {tier.description}
-                </p>
-
-                {/* Includes Label */}
-                {tier.starterPlus && (
-                  <p className="text-xs text-gray-500 mb-3 uppercase tracking-wider font-semibold">
-                    Everything in Starter, plus:
-                  </p>
-                )}
-                {tier.professionalPlus && (
-                  <p className="text-xs text-gray-500 mb-3 uppercase tracking-wider font-semibold">
-                    Everything in Professional, plus:
-                  </p>
-                )}
-                {!tier.starterPlus && !tier.professionalPlus && (
-                  <p className="text-xs text-gray-500 mb-3 uppercase tracking-wider font-semibold">
-                    Includes:
-                  </p>
-                )}
-
-                {/* Features */}
-                <ul className="space-y-3 mb-6">
-                  {tier.features.map((feature, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-3 text-sm text-gray-300"
-                    >
-                      <div
-                        className={`flex-shrink-0 w-5 h-5 rounded-full ${tier.iconBg} flex items-center justify-center mt-0.5`}
-                      >
-                        <Check className={`w-3 h-3 ${tier.accentColor}`} />
-                      </div>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Use When */}
-                <div className="mb-8 p-4 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
-                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-2 font-semibold">
-                    Best fit:
-                  </p>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    {tier.useCase}
-                  </p>
-                  <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    Buying path
-                  </p>
-                  <p className="mt-2 text-sm text-slate-300">
-                    {tier.buyingMotion}
-                  </p>
-                </div>
-
-                {/* CTA */}
-                <Link
-                  href={tier.href}
-                  data-testid={`pricing-${tier.name.toLowerCase()}-cta`}
-                  onClick={() =>
-                    trackCtaClick({
-                      surface: 'pricing',
-                      section: 'tiers',
-                      location: 'pricing_card',
-                      ctaLabel: tier.cta,
-                      ctaHref: tier.href,
-                      variant: 'plan',
-                      plan: tier.name.toLowerCase(),
-                    })
-                  }
-                  className={`group/btn relative block w-full py-4 px-6 rounded-2xl text-center font-semibold transition-all duration-300 overflow-hidden ${
-                    tier.featured
-                      ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-105'
-                      : `bg-white/10 hover:bg-white/20 text-white border ${tier.borderColor} hover:border-opacity-100`
-                  }`}
-                >
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                    {tier.cta}
-                    {!tier.featured && (
-                      <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
-                    )}
-                  </span>
-                  {tier.featured && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-cyan-600 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                  )}
-                </Link>
-              </PricingCard>
-            </div>
+                {tier.ctaLabel}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </article>
           ))}
-        </SectionChoreography>
+        </div>
       </div>
     </section>
   );

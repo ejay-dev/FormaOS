@@ -3,12 +3,9 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
-import { brand } from '@/config/brand';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const TRUST_BADGES = [
   { label: 'SOC 2-aligned', detail: 'Trust framework' },
@@ -41,7 +38,7 @@ export function CTASection() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 mb-6 sm:mb-8">
             <Sparkles className="w-4 h-4 text-teal-400" />
             <span className="text-sm text-teal-400 font-medium">
-              Start Your Free Trial
+              Get Your Compliance Plan
             </span>
           </div>
         </ScrollReveal>
@@ -57,7 +54,7 @@ export function CTASection() {
         <ScrollReveal variant="fadeUp" range={[0.02, 0.32]}>
           <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-10 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
             Join compliance teams across healthcare, NDIS, finance, and
-            government who reduced audit prep by 87% and gave their boards
+            government that need enforced workflows, live evidence, and
             real-time posture confidence.
           </p>
         </ScrollReveal>
@@ -65,14 +62,14 @@ export function CTASection() {
         <ScrollReveal variant="slideUp" range={[0.04, 0.34]}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
             <motion.a
-              href={`${appBase}/auth/signup?plan=pro`}
+              href="/contact?type=compliance-plan&source=home_final_cta"
               onClick={() =>
                 trackCtaClick({
                   surface: 'homepage',
                   section: 'final_cta',
                   location: 'final_primary',
-                  ctaLabel: 'Start Free Trial',
-                  ctaHref: `${appBase}/auth/signup?plan=pro`,
+                  ctaLabel: 'Get Compliance Plan',
+                  ctaHref: '/contact?type=compliance-plan&source=home_final_cta',
                   variant: 'primary',
                 })
               }
@@ -80,7 +77,7 @@ export function CTASection() {
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               className="mk-btn mk-btn-primary px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
             >
-              Start Free Trial
+              Get Compliance Plan
               <ArrowRight className="w-5 h-5" />
             </motion.a>
 
@@ -107,8 +104,8 @@ export function CTASection() {
 
         <ScrollReveal variant="fadeUp" range={[0.06, 0.36]}>
           <p className="text-sm text-slate-500 mt-6 sm:mt-8">
-            No credit card required &bull; 14-day free trial &bull; Security
-            review packet included &bull; Cancel anytime
+            Guided assessment &bull; Security review packet &bull; Evidence
+            workflow planning &bull; AU-hosted by default
           </p>
         </ScrollReveal>
 

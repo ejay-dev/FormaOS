@@ -1,181 +1,104 @@
 'use client';
 
 import Link from 'next/link';
-import { Check, DollarSign } from 'lucide-react';
-import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { ArrowRight, Calculator, ShieldCheck } from 'lucide-react';
+import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-import { PricingHeroVisual } from './PricingHeroVisual';
 
 export function PricingHero() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <ImmersiveHero
-      className="pricing-hero--dense"
-      theme="pricing"
-      visualContent={<PricingHeroVisual />}
-      badge={{
-        icon: <DollarSign className="w-4 h-4 text-violet-400" />,
-        text: 'Pricing & Procurement Path',
-        colorClass: 'violet',
-      }}
-      headline={
-        <>
-          Compliance Infrastructure,
-          <br />
-          <span className="bg-gradient-to-r from-violet-400 via-cyan-500 to-blue-500 bg-clip-text text-transparent">
-            Scaled to Your Organization
-          </span>
-        </>
-      }
-      subheadline={
-        <>
-          Not a productivity tool. Not a document repository.
-          <br />A compliance operating system - priced for regulated
-          accountability.
-        </>
-      }
-      extras={<PricingExtras onResourceClick={trackCtaClick} />}
-      primaryCta={{
-        href: '/auth/signup',
-        label: 'Start Free Trial',
-        testId: 'pricing-hero-start-trial',
-      }}
-      secondaryCta={{
-        href: '/contact?type=pricing&source=pricing_hero',
-        label: 'Talk to Sales',
-      }}
-      onPrimaryCtaClick={() =>
-        trackCtaClick({
-          surface: 'pricing',
-          section: 'hero',
-          location: 'hero_primary',
-          ctaLabel: 'Start Free Trial',
-          ctaHref: '/auth/signup',
-          variant: 'primary',
-        })
-      }
-      onSecondaryCtaClick={() =>
-        trackCtaClick({
-          surface: 'pricing',
-          section: 'hero',
-          location: 'hero_secondary',
-          ctaLabel: 'Talk to Sales',
-          ctaHref: '/contact?type=pricing&source=pricing_hero',
-          variant: 'secondary',
-        })
-      }
-    />
-  );
-}
+    <section className="relative isolate overflow-hidden bg-slate-950 py-24 sm:py-28 lg:py-32">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(45,212,191,0.22),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(16,185,129,0.14),transparent_30%),linear-gradient(180deg,#020617_0%,#07111f_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-300/30 to-transparent" />
+      </div>
 
-function PricingExtras({
-  onResourceClick,
-}: {
-  onResourceClick: ReturnType<typeof useMarketingTelemetry>['trackCtaClick'];
-}) {
-  return (
-    <div className="flex flex-col items-center gap-5">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl w-full text-sm">
-        <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
-          <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-          <div>
-            <span className="block font-semibold text-white text-sm">
-              No lock-in
-            </span>
-            <span className="text-xs text-slate-400">
-              Upgrade, downgrade, or exit on your terms
-            </span>
+      <div className="relative mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:px-12">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-100">
+            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+            Pricing and procurement
+          </div>
+          <h1
+            id="pricing-hero-title"
+            className="mt-6 max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-7xl"
+          >
+            Compliance that enforces itself - not something your team forgets
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+            FormaOS replaces manual compliance work with enforced workflows and
+            real-time audit evidence. Pricing is anchored to risk, compliance
+            scope, and organisational complexity - not feature unlocks.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/contact?type=compliance-plan&source=pricing_hero"
+              onClick={() =>
+                trackCtaClick({
+                  surface: 'pricing',
+                  section: 'hero',
+                  location: 'hero_primary',
+                  ctaLabel: 'Get Your Compliance Plan',
+                  ctaHref: '/contact?type=compliance-plan&source=pricing_hero',
+                  variant: 'primary',
+                })
+              }
+              className="mk-btn mk-btn-primary min-h-[52px] justify-center px-8 py-4 text-base"
+            >
+              Get Your Compliance Plan
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            </Link>
+            <Link
+              href="#pricing-table"
+              onClick={() =>
+                trackCtaClick({
+                  surface: 'pricing',
+                  section: 'hero',
+                  location: 'hero_secondary',
+                  ctaLabel: 'View Pricing',
+                  ctaHref: '#pricing-table',
+                  variant: 'secondary',
+                })
+              }
+              className="mk-btn mk-btn-secondary min-h-[52px] justify-center px-8 py-4 text-base"
+            >
+              View Pricing
+            </Link>
           </div>
         </div>
-        <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
-          <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-          <div>
-            <span className="block font-semibold text-white text-sm">
-              Clear buying path
-            </span>
-            <span className="text-xs text-slate-400">
-              Self-serve for smaller teams, guided review for enterprise buyers
-            </span>
+
+        <aside className="rounded-[2rem] border border-white/[0.1] bg-white/[0.055] p-5 shadow-2xl shadow-cyan-950/30 backdrop-blur-xl">
+          <div className="flex items-start gap-3">
+            <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/[0.08] p-3">
+              <Calculator className="h-5 w-5 text-emerald-200" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                The cost of doing this manually
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold text-white">
+                Price against audit exposure first
+              </h2>
+            </div>
           </div>
-        </div>
-        <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3">
-          <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-          <div>
-            <span className="block font-semibold text-white text-sm">
-              Procurement support
-            </span>
-            <span className="text-xs text-slate-400">
-              Security review packet, DPA, and enterprise review materials
-            </span>
+          <div className="mt-6 divide-y divide-white/[0.08] overflow-hidden rounded-3xl border border-white/[0.08]">
+            {MANUAL_COMPLIANCE_COST_ANCHORS.map((item) => (
+              <div key={item.label} className="grid grid-cols-[7rem_1fr_1fr] gap-3 px-4 py-4 text-sm">
+                <span className="font-semibold text-slate-400">{item.label}</span>
+                <span className="text-red-100">{item.manual}</span>
+                <span className="text-emerald-100">{item.formaos}</span>
+              </div>
+            ))}
           </div>
-        </div>
+          <p className="mt-5 text-sm leading-6 text-slate-400">
+            One failed audit, emergency remediation cycle, or avoidable
+            compliance gap can cost more than a year of the system that prevents
+            it.
+          </p>
+        </aside>
       </div>
-      <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-300">
-        <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1">
-          Security review packet
-        </span>
-        <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1">
-          No setup fee
-        </span>
-        <span className="rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1">
-          14-day trial included
-        </span>
-        <span className="rounded-full border border-violet-400/30 bg-violet-500/10 px-3 py-1">
-          Invoice billing available
-        </span>
-      </div>
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
-        <Link
-          href="/security-review"
-          onClick={() =>
-            onResourceClick({
-              surface: 'pricing',
-              section: 'hero',
-              location: 'security_review',
-              ctaLabel: 'Review security and procurement path',
-              ctaHref: '/security-review',
-              variant: 'resource',
-            })
-          }
-          className="font-medium text-cyan-300 underline decoration-cyan-500/60 underline-offset-4 hover:text-cyan-200"
-        >
-          Review security and procurement path
-        </Link>
-        <Link
-          href="/compare"
-          onClick={() =>
-            onResourceClick({
-              surface: 'pricing',
-              section: 'hero',
-              location: 'compare',
-              ctaLabel: 'Compare FormaOS',
-              ctaHref: '/compare',
-              variant: 'resource',
-            })
-          }
-          className="font-medium text-slate-300 underline decoration-white/20 underline-offset-4 hover:text-white"
-        >
-          Compare FormaOS
-        </Link>
-        <Link
-          href="/use-cases/financial-services"
-          onClick={() =>
-            onResourceClick({
-              surface: 'pricing',
-              section: 'hero',
-              location: 'financial_services',
-              ctaLabel: 'See financial services use case',
-              ctaHref: '/use-cases/financial-services',
-              variant: 'resource',
-              industry: 'financial_services',
-            })
-          }
-          className="font-medium text-slate-300 underline decoration-white/20 underline-offset-4 hover:text-white"
-        >
-          See financial services use case
-        </Link>
-      </div>
-    </div>
+    </section>
   );
 }

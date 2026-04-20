@@ -29,15 +29,19 @@ export function NavNotificationBadge() {
       const oneDayAgo = new Date();
       oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
-      const recentAlerts = history.filter((event: { executedAt: string; trigger: string }) => {
-        const eventDate = new Date(event.executedAt);
-        const isCritical = ['control_failed', 'risk_score_change'].includes(
-          event.trigger
-        );
-        const isHigh = ['control_incomplete', 'task_overdue'].includes(event.trigger);
+      const recentAlerts = history.filter(
+        (event: { executedAt: string; trigger: string }) => {
+          const eventDate = new Date(event.executedAt);
+          const isCritical = ['control_failed', 'risk_score_change'].includes(
+            event.trigger,
+          );
+          const isHigh = ['control_incomplete', 'task_overdue'].includes(
+            event.trigger,
+          );
 
-        return eventDate > oneDayAgo && (isCritical || isHigh);
-      });
+          return eventDate > oneDayAgo && (isCritical || isHigh);
+        },
+      );
 
       setUnreadCount(recentAlerts.length);
       setHasAlerts(recentAlerts.length > 0);

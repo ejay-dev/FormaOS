@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'FormaOS Pricing - Simple, transparent compliance management pricing';
+export const alt = 'FormaOS Pricing - Compliance infrastructure pricing';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -34,10 +34,10 @@ export default function Image() {
             Pricing
           </div>
           <div style={{ color: '#ffffff', fontSize: 56, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', maxWidth: 820 }}>
-            Simple, transparent pricing for compliance teams
+            Compliance infrastructure priced by risk and scope
           </div>
           <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-            {['14-day free trial', 'No setup fees', 'Cancel anytime'].map((badge) => (
+            {['Foundation $297/mo', 'Growth from $1,800/mo', 'Enterprise custom'].map((badge) => (
               <div key={badge} style={{
                 background: 'rgba(0,212,251,0.1)',
                 border: '1px solid rgba(0,212,251,0.2)',
@@ -54,7 +54,7 @@ export default function Image() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <div style={{ color: '#475569', fontSize: 15 }}>formaos.com.au</div>
           <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#334155' }} />
-          <div style={{ color: '#475569', fontSize: 15 }}>Start free today</div>
+          <div style={{ color: '#475569', fontSize: 15 }}>Get your compliance plan</div>
         </div>
 
         <div style={{

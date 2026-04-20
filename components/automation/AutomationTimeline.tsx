@@ -58,7 +58,8 @@ const TRIGGER_DESCRIPTIONS: Record<string, string> = {
   control_incomplete: 'Created completion task for at-risk control',
   task_overdue: 'Sent escalation notifications to task owners',
   risk_score_change: 'Notified leadership of compliance risk increase',
-  certification_expiring: 'Created renewal task and alerted compliance officers',
+  certification_expiring:
+    'Created renewal task and alerted compliance officers',
   org_onboarding: 'Generated onboarding task sequence',
 };
 
@@ -112,8 +113,8 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
           Automation is Monitoring
         </h3>
         <p className="text-sm text-gray-600 max-w-sm mx-auto">
-          FormaOS is actively monitoring your compliance. Automation events will appear here
-          as they occur.
+          FormaOS is actively monitoring your compliance. Automation events will
+          appear here as they occur.
         </p>
       </Card>
     );
@@ -190,7 +191,9 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
 
                   {event.errorMessage && (
                     <div className="mt-2 p-2 bg-red-50 rounded border border-red-100">
-                      <p className="text-xs text-red-700">{event.errorMessage}</p>
+                      <p className="text-xs text-red-700">
+                        {event.errorMessage}
+                      </p>
                     </div>
                   )}
                 </div>

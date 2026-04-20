@@ -6,7 +6,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getComplianceSummary, getAutomationHistory } from '@/app/app/actions/automation';
+import {
+  getComplianceSummary,
+  getAutomationHistory,
+} from '@/app/app/actions/automation';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -136,7 +139,9 @@ export function ComplianceDashboardWidget() {
               </p>
             </div>
           </div>
-          <Badge className={`${getRiskColor(summary.riskLevel)} border font-medium`}>
+          <Badge
+            className={`${getRiskColor(summary.riskLevel)} border font-medium`}
+          >
             {summary.riskLevel.toUpperCase()}
           </Badge>
         </div>
@@ -168,14 +173,28 @@ export function ComplianceDashboardWidget() {
                   className="transition-all duration-1000"
                 />
                 <defs>
-                  <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" className={`stop-color-${summary.score >= 80 ? 'green' : summary.score >= 60 ? 'yellow' : 'red'}-500`} />
-                    <stop offset="100%" className={`stop-color-${summary.score >= 80 ? 'emerald' : summary.score >= 60 ? 'orange' : 'rose'}-600`} />
+                  <linearGradient
+                    id="scoreGradient"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop
+                      offset="0%"
+                      className={`stop-color-${summary.score >= 80 ? 'green' : summary.score >= 60 ? 'yellow' : 'red'}-500`}
+                    />
+                    <stop
+                      offset="100%"
+                      className={`stop-color-${summary.score >= 80 ? 'emerald' : summary.score >= 60 ? 'orange' : 'rose'}-600`}
+                    />
                   </linearGradient>
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className={`text-4xl font-bold bg-gradient-to-br ${getScoreGradient(summary.score)} bg-clip-text text-transparent`}>
+                <div
+                  className={`text-4xl font-bold bg-gradient-to-br ${getScoreGradient(summary.score)} bg-clip-text text-transparent`}
+                >
                   {summary.score}
                 </div>
                 <div className="text-xs text-gray-500">out of 100</div>

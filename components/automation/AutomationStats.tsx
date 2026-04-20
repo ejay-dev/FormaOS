@@ -11,13 +11,7 @@ import {
   getAutomationHistory,
 } from '@/app/app/actions/automation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Activity,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Zap,
-} from 'lucide-react';
+import { Activity, CheckCircle, XCircle, Clock, Zap } from 'lucide-react';
 
 interface Stats {
   totalWorkflows: number;
@@ -80,9 +74,7 @@ export function AutomationStats() {
 
   const successRate =
     stats.totalExecutions > 0
-      ? Math.round(
-          (stats.successfulExecutions / stats.totalExecutions) * 100
-        )
+      ? Math.round((stats.successfulExecutions / stats.totalExecutions) * 100)
       : 0;
 
   return (

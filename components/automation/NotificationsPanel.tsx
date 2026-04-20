@@ -46,15 +46,23 @@ export function NotificationsPanel() {
       if (!Array.isArray(history)) return;
 
       // Transform automation history into notifications
-      const notifs: Notification[] = history.map((event: { id: string; status: string; trigger: string; actionsExecuted: number; executedAt: string }) => ({
-        id: event.id,
-        type: event.status === 'success' ? 'success' : 'alert',
-        title: getTriggerTitle(event.trigger),
-        message: getTriggerMessage(event.trigger, event.actionsExecuted),
-        timestamp: event.executedAt,
-        read: false,
-        priority: getTriggerPriority(event.trigger),
-      }));
+      const notifs: Notification[] = history.map(
+        (event: {
+          id: string;
+          status: string;
+          trigger: string;
+          actionsExecuted: number;
+          executedAt: string;
+        }) => ({
+          id: event.id,
+          type: event.status === 'success' ? 'success' : 'alert',
+          title: getTriggerTitle(event.trigger),
+          message: getTriggerMessage(event.trigger, event.actionsExecuted),
+          timestamp: event.executedAt,
+          read: false,
+          priority: getTriggerPriority(event.trigger),
+        }),
+      );
 
       setNotifications(notifs);
       setUnreadCount(notifs.filter((n) => !n.read).length);
@@ -67,7 +75,7 @@ export function NotificationsPanel() {
 
   function markAsRead(id: string) {
     setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
     );
     setUnreadCount((prev) => Math.max(0, prev - 1));
   }
@@ -166,7 +174,12 @@ function NotificationItem({
     <div
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); (e.currentTarget as HTMLElement).click(); } }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          (e.currentTarget as HTMLElement).click();
+        }
+      }}
       className={`group relative p-4 rounded-lg border transition-all ${
         notification.read
           ? 'bg-white border-gray-200'
@@ -287,12 +300,18 @@ function getTriggerMessage(trigger: string, actionsExecuted: number): string {
     task_overdue: `Sent ${actionsExecuted} escalation notification${actionsExecuted > 1 ? 's' : ''} to task owners`,
     risk_score_change: `Notified leadership of compliance risk increase`,
     certification_expiring: `Created ${actionsExecuted} renewal task${actionsExecuted > 1 ? 's' : ''} and alerted compliance officers`,
-    org_onboarding: 'Your automation system is now active and monitoring compliance',
+    org_onboarding:
+      'Your automation system is now active and monitoring compliance',
   };
-  return messages[trigger] || `Automation workflow executed ${actionsExecuted} actions`;
+  return (
+    messages[trigger] ||
+    `Automation workflow executed ${actionsExecuted} actions`
+  );
 }
 
-function getTriggerPriority(trigger: string): 'critical' | 'high' | 'medium' | 'low' {
+function getTriggerPriority(
+  trigger: string,
+): 'critical' | 'high' | 'medium' | 'low' {
   const priorities: Record<string, 'critical' | 'high' | 'medium' | 'low'> = {
     control_failed: 'critical',
     risk_score_change: 'critical',

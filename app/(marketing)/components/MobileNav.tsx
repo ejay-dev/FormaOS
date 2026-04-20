@@ -262,21 +262,21 @@ export function MobileNav() {
                     <ChevronRight className="h-5 w-5 text-white/60" />
                   </Link>
                   <Link
-                    href={`${appBase}/auth/signup?plan=pro&source=mobile_nav`}
+                    href="/contact?type=compliance-plan&source=mobile_nav"
                     onClick={() => {
                       trackCtaClick({
                         surface: 'navigation',
                         section: 'mobile_nav',
                         location: 'mobile_primary',
-                        ctaLabel: 'Start Free Trial',
-                        ctaHref: `${appBase}/auth/signup?plan=pro&source=mobile_nav`,
+                        ctaLabel: 'Get Compliance Plan',
+                        ctaHref: '/contact?type=compliance-plan&source=mobile_nav',
                         variant: 'primary',
                       });
                       handleLinkClick();
                     }}
                     className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-2xl px-5 py-4 min-h-[58px] text-base font-bold tracking-tight"
                   >
-                    Start Free Trial
+                    Get Compliance Plan
                   </Link>
                 </div>
 
@@ -285,11 +285,11 @@ export function MobileNav() {
                   <div className="flex items-center justify-center gap-6 text-xs text-slate-500">
                     <span className="flex items-center gap-1.5">
                       <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
-                      14-day trial
+                      Guided plan
                     </span>
                     <span className="flex items-center gap-1.5">
                       <div className="h-2 w-2 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.5)]" />
-                      No credit card
+                      AU-hosted
                     </span>
                   </div>
                 </div>

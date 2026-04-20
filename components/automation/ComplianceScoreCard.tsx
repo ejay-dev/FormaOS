@@ -121,14 +121,11 @@ export function ComplianceScoreCard() {
       <CardContent className="space-y-6">
         {/* Overall Score */}
         <div className="text-center">
-          <div
-            className={`text-6xl font-bold ${getScoreColor(summary.score)}`}
-          >
+          <div className={`text-6xl font-bold ${getScoreColor(summary.score)}`}>
             {summary.score}
           </div>
           <div className="text-sm text-gray-500 mt-2">
-            Last updated:{' '}
-            {new Date(summary.lastUpdated).toLocaleDateString()}
+            Last updated: {new Date(summary.lastUpdated).toLocaleDateString()}
           </div>
         </div>
 
@@ -148,19 +145,10 @@ export function ComplianceScoreCard() {
           </div>
 
           <div className="space-y-2">
-            <ScoreBar
-              label="Controls"
-              score={summary.breakdown.controls}
-            />
-            <ScoreBar
-              label="Evidence"
-              score={summary.breakdown.evidence}
-            />
+            <ScoreBar label="Controls" score={summary.breakdown.controls} />
+            <ScoreBar label="Evidence" score={summary.breakdown.evidence} />
             <ScoreBar label="Tasks" score={summary.breakdown.tasks} />
-            <ScoreBar
-              label="Policies"
-              score={summary.breakdown.policies}
-            />
+            <ScoreBar label="Policies" score={summary.breakdown.policies} />
           </div>
         </div>
       </CardContent>

@@ -83,10 +83,10 @@ function SimpleHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
               <Link
-                href={`${appBase}/auth/signup`}
+                href="/contact?type=compliance-plan&source=home_simple"
                 className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
               >
-                Start Free Trial
+                Get Compliance Plan
               </Link>
               <Link
                 href="/contact"
@@ -179,7 +179,7 @@ function SimpleContent() {
 
       <MarketingAnchor
         title="Ready to transform compliance?"
-        subtitle="Start your free trial and see FormaOS in action"
+        subtitle="Get a guided plan and see how FormaOS enforces audit-ready work"
         badge="Get Started"
       />
     </section>

@@ -54,21 +54,27 @@ export function Soc2Dashboard({
       try {
         const report = await generateReportAction();
         if ('error' in report) throw new Error(report.error);
-        setReportStatus(`Report generated: ${report.organizationName} — Score: ${report.overallScore}%`);
+        setReportStatus(
+          `Report generated: ${report.organizationName} — Score: ${report.overallScore}%`,
+        );
         // Update local state with fresh data from the report
         setAssessment({
           overallScore: report.overallScore,
           domainScores: report.domainScores,
           controlResults: report.controlResults,
           totalControls: report.controlResults.length,
-          satisfiedControls: report.controlResults.filter((c) => c.status === 'satisfied').length,
+          satisfiedControls: report.controlResults.filter(
+            (c) => c.status === 'satisfied',
+          ).length,
           assessedAt: report.assessmentDate,
         });
         setMilestones(report.milestones);
         setActions(report.remediationActions);
         setChecks(report.automatedChecks);
       } catch (err) {
-        setReportStatus(`Error: ${err instanceof Error ? err.message : 'Failed to generate report'}`);
+        setReportStatus(
+          `Error: ${err instanceof Error ? err.message : 'Failed to generate report'}`,
+        );
       }
     });
   };
@@ -78,9 +84,12 @@ export function Soc2Dashboard({
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">SOC 2 Readiness</h1>
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">
+            SOC 2 Readiness
+          </h1>
           <p className="text-muted-foreground mt-1">
-            Automated evidence collection, gap analysis, and certification readiness tracking.
+            Automated evidence collection, gap analysis, and certification
+            readiness tracking.
           </p>
           {assessment?.assessedAt && (
             <p className="text-xs text-muted-foreground/60 mt-2">
@@ -127,16 +136,23 @@ export function Soc2Dashboard({
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-glass-border bg-surface-1">
             <Play className="h-6 w-6 text-cyan-400" />
           </div>
-          <h2 className="mt-4 text-lg font-semibold text-foreground/90">No Assessment Yet</h2>
+          <h2 className="mt-4 text-lg font-semibold text-foreground/90">
+            No Assessment Yet
+          </h2>
           <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-            Run your first SOC 2 readiness assessment to see your compliance posture, identify gaps, and track remediation progress.
+            Run your first SOC 2 readiness assessment to see your compliance
+            posture, identify gaps, and track remediation progress.
           </p>
           <button
             onClick={handleRunAssessment}
             disabled={isAssessing}
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 text-sm font-semibold text-white hover:bg-cyan-600 transition-colors disabled:opacity-50"
           >
-            {isAssessing ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
+            {isAssessing ? (
+              <RefreshCw className="h-4 w-4 animate-spin" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
             {isAssessing ? 'Running Assessment...' : 'Run First Assessment'}
           </button>
         </div>
@@ -150,7 +166,8 @@ export function Soc2Dashboard({
             <div className="space-y-4">
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-muted-foreground">
-                  {assessment.satisfiedControls}/{assessment.totalControls} controls satisfied
+                  {assessment.satisfiedControls}/{assessment.totalControls}{' '}
+                  controls satisfied
                 </span>
               </div>
               <DomainBreakdown domains={assessment.domainScores} />
