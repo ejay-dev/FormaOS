@@ -1,4 +1,13 @@
 import { Activity, ClipboardCheck, FileCheck2, LayoutDashboard } from 'lucide-react';
+import {
+  AccentText,
+  IconFrame,
+  SectionEyebrow,
+  StatusPill,
+  SystemFrame,
+  SystemSection,
+  systemPanelCompactClass,
+} from '@/components/marketing/SystemMarketingPrimitives';
 
 const showcaseTabs = [
   {
@@ -29,47 +38,43 @@ const showcaseTabs = [
 
 export function ProductShowcase({ className = '' }: { className?: string }) {
   return (
-    <section className={`relative overflow-hidden bg-slate-950 py-24 ${className}`}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(45,212,191,0.14),transparent_36%)]" />
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+    <SystemSection variant="cyan" className={className}>
         <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
-              Product Visibility
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Real operating screens, not abstract promise art
+            <SectionEyebrow icon={LayoutDashboard}>Product Visibility</SectionEyebrow>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Real operating screens, not <AccentText>abstract promise art</AccentText>
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300">
               Serious buyers need to see the system working: dashboard, workflow
               builder, audit logs, and status panels that show proof and
               enforcement in one place.
             </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <StatusPill tone="live">Live system</StatusPill>
+              <StatusPill tone="valid">Enforcing</StatusPill>
+              <StatusPill tone="neutral">Immutable log</StatusPill>
+            </div>
           </div>
-          <div className="rounded-[2rem] border border-white/[0.08] bg-slate-900/80 p-4 shadow-2xl shadow-cyan-950/40">
-              <div className="rounded-[1.5rem] border border-white/[0.08] bg-slate-950">
-              <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
+          <SystemFrame label="LIVE SYSTEM" status="ENFORCING">
+              <div className="flex items-center justify-between border-b border-cyan-300/[0.1] px-5 py-4">
                 <div>
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
                     FormaOS live workspace
                   </p>
                   <p className="mt-1 font-semibold text-white">NDIS readiness command center</p>
                 </div>
-                <span className="rounded-full border border-emerald-300/20 bg-emerald-300/[0.08] px-3 py-1 text-xs font-semibold text-emerald-100">
-                  Enforcing
-                </span>
+                <StatusPill tone="valid">Enforcing</StatusPill>
               </div>
               <div className="grid gap-3 p-4 sm:grid-cols-2">
                 {showcaseTabs.map((tab) => (
                   <article
                     key={tab.title}
-                    className="rounded-2xl border border-white/[0.08] bg-white/[0.045] p-4"
+                    className={`p-4 ${systemPanelCompactClass}`}
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <div className="rounded-xl border border-cyan-300/20 bg-cyan-300/[0.08] p-2">
-                          <tab.icon className="h-4 w-4 text-cyan-200" aria-hidden="true" />
-                        </div>
+                        <IconFrame icon={tab.icon} className="h-9 w-9 rounded-xl" />
                         <h3 className="font-semibold text-white">{tab.title}</h3>
                       </div>
                       <span className="text-xs font-medium text-emerald-200">{tab.status}</span>
@@ -85,10 +90,8 @@ export function ProductShowcase({ className = '' }: { className?: string }) {
                   </article>
                 ))}
               </div>
-            </div>
-          </div>
+          </SystemFrame>
         </div>
-      </div>
-    </section>
+    </SystemSection>
   );
 }

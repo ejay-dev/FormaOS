@@ -4,28 +4,33 @@ import Link from 'next/link';
 import { ArrowRight, Calculator, ShieldCheck } from 'lucide-react';
 import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
+import {
+  AccentText,
+  IconFrame,
+  SectionEyebrow,
+  StatusPill,
+  SystemFrame,
+} from '@/components/marketing/SystemMarketingPrimitives';
 
 export function PricingHero() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <section className="relative isolate overflow-hidden bg-slate-950 py-24 sm:py-28 lg:py-32">
+    <section className="relative isolate overflow-hidden bg-[#020817] py-24 sm:py-28 lg:py-32">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(45,212,191,0.22),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(16,185,129,0.14),transparent_30%),linear-gradient(180deg,#020617_0%,#07111f_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(45,212,191,0.24),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(16,185,129,0.15),transparent_30%),linear-gradient(180deg,#020617_0%,#061525_48%,#020617_100%)]" />
+        <div className="mk-security-grid absolute inset-0 opacity-[0.22] [mask-image:radial-gradient(ellipse_at_center,black_0%,transparent_72%)]" />
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-300/30 to-transparent" />
       </div>
 
       <div className="relative mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:px-12">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/[0.08] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-100">
-            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-            Pricing and procurement
-          </div>
+          <SectionEyebrow icon={ShieldCheck}>Pricing and procurement</SectionEyebrow>
           <h1
             id="pricing-hero-title"
             className="mt-6 max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-7xl"
           >
-            Compliance that enforces itself - not something your team forgets
+            Compliance that <AccentText>enforces itself</AccentText> - not something your team forgets
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
             FormaOS replaces manual compliance work with enforced workflows and
@@ -69,11 +74,9 @@ export function PricingHero() {
           </div>
         </div>
 
-        <aside className="rounded-[2rem] border border-white/[0.1] bg-white/[0.055] p-5 shadow-2xl shadow-cyan-950/30 backdrop-blur-xl">
+        <SystemFrame label="PRICING ANCHOR" status="RISK MODEL">
           <div className="flex items-start gap-3">
-            <div className="rounded-2xl border border-emerald-300/20 bg-emerald-300/[0.08] p-3">
-              <Calculator className="h-5 w-5 text-emerald-200" aria-hidden="true" />
-            </div>
+            <IconFrame icon={Calculator} tone="valid" />
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 The cost of doing this manually
@@ -83,7 +86,7 @@ export function PricingHero() {
               </h2>
             </div>
           </div>
-          <div className="mt-6 divide-y divide-white/[0.08] overflow-hidden rounded-3xl border border-white/[0.08]">
+          <div className="mt-6 divide-y divide-cyan-300/[0.08] overflow-hidden rounded-3xl border border-cyan-300/[0.12] bg-slate-950/55">
             {MANUAL_COMPLIANCE_COST_ANCHORS.map((item) => (
               <div key={item.label} className="grid grid-cols-[7rem_1fr_1fr] gap-3 px-4 py-4 text-sm">
                 <span className="font-semibold text-slate-400">{item.label}</span>
@@ -97,7 +100,11 @@ export function PricingHero() {
             compliance gap can cost more than a year of the system that prevents
             it.
           </p>
-        </aside>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <StatusPill tone="warning">Manual exposure</StatusPill>
+            <StatusPill tone="valid">Automated evidence</StatusPill>
+          </div>
+        </SystemFrame>
       </div>
     </section>
   );

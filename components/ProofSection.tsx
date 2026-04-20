@@ -1,5 +1,15 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Clock3, FileCheck2, ShieldCheck } from 'lucide-react';
+import {
+  AccentText,
+  IconFrame,
+  SectionEyebrow,
+  StatusPill,
+  SystemFrame,
+  SystemSection,
+  systemPanelClass,
+  systemPanelCompactClass,
+} from '@/components/marketing/SystemMarketingPrimitives';
 
 const outcomeMetrics = [
   { label: 'Audit prep', before: '3 weeks', after: '4 hours' },
@@ -23,16 +33,12 @@ export function ProofSection({
   showCta?: boolean;
 }) {
   return (
-    <section className={`relative overflow-hidden bg-slate-950 py-24 ${className}`}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_20%,rgba(45,212,191,0.15),transparent_34%),radial-gradient(circle_at_82%_70%,rgba(16,185,129,0.12),transparent_34%)]" />
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+    <SystemSection variant="cyan" className={className}>
         <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
-              Proof Layer
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              A brutal proof block for buyers who need audit evidence, not vibes
+            <SectionEyebrow icon={ShieldCheck}>Proof Layer</SectionEyebrow>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              A brutal proof block for buyers who need <AccentText>audit evidence</AccentText>, not vibes
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300">
               This representative NDIS provider scenario shows the exact proof
@@ -40,11 +46,9 @@ export function ProofSection({
               evidence preview, and the operational reason pricing is anchored
               to risk.
             </p>
-            <div className="mt-8 rounded-3xl border border-white/[0.08] bg-white/[0.045] p-6">
+            <div className={`mt-8 p-6 ${systemPanelClass}`}>
               <div className="flex items-center gap-3">
-                <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08] p-3">
-                  <ShieldCheck className="h-5 w-5 text-cyan-200" aria-hidden="true" />
-                </div>
+                <IconFrame icon={ShieldCheck} />
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                     Representative case study
@@ -56,7 +60,7 @@ export function ProofSection({
                 {outcomeMetrics.map((metric) => (
                   <div
                     key={metric.label}
-                    className="rounded-2xl border border-white/[0.08] bg-slate-950/50 p-4"
+                    className={`p-4 ${systemPanelCompactClass}`}
                   >
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       {metric.label}
@@ -78,7 +82,7 @@ export function ProofSection({
             {showCta ? (
               <Link
                 href="/case-studies"
-                className="mt-8 inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/[0.1]"
+                className="mt-8 inline-flex items-center gap-2 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08] px-5 py-3 text-sm font-semibold text-white shadow-[0_0_26px_rgba(45,212,191,0.12)] transition hover:border-cyan-300/35 hover:bg-cyan-300/[0.12]"
               >
                 View case study structure
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -86,9 +90,9 @@ export function ProofSection({
             ) : null}
           </div>
           <div className="grid gap-4">
-            <article className="rounded-3xl border border-emerald-300/15 bg-emerald-300/[0.06] p-6">
+            <article className={`p-6 ${systemPanelClass}`}>
               <div className="flex items-center gap-3">
-                <Clock3 className="h-5 w-5 text-emerald-200" aria-hidden="true" />
+                <IconFrame icon={Clock3} tone="valid" />
                 <h3 className="font-semibold text-white">Metrics panel</h3>
               </div>
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -106,17 +110,15 @@ export function ProofSection({
                 </div>
               </div>
             </article>
-            <article className="overflow-hidden rounded-3xl border border-white/[0.08] bg-slate-950/80">
-              <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
+            <SystemFrame label="IMMUTABLE LOG" status="EXPORT READY">
+              <div className="flex items-center justify-between border-b border-cyan-300/[0.1] px-5 py-4">
                 <div className="flex items-center gap-3">
                   <FileCheck2 className="h-5 w-5 text-cyan-200" aria-hidden="true" />
                   <h3 className="font-semibold text-white">Evidence preview</h3>
                 </div>
-                <span className="rounded-full bg-emerald-300/[0.09] px-3 py-1 text-xs font-semibold text-emerald-100">
-                  Export ready
-                </span>
+                <StatusPill tone="valid">Sealed</StatusPill>
               </div>
-              <div className="divide-y divide-white/[0.06]">
+              <div className="divide-y divide-cyan-300/[0.08]">
                 {auditTrail.map((row) => (
                   <div key={`${row.time}-${row.event}`} className="grid grid-cols-[3.5rem_1fr] gap-4 px-5 py-4">
                     <span className="font-mono text-xs text-slate-500">{row.time}</span>
@@ -130,10 +132,9 @@ export function ProofSection({
                   </div>
                 ))}
               </div>
-            </article>
+            </SystemFrame>
           </div>
         </div>
-      </div>
-    </section>
+    </SystemSection>
   );
 }

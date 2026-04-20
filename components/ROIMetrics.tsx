@@ -1,4 +1,12 @@
 import { BarChart3, Clock3, DollarSign, ShieldAlert } from 'lucide-react';
+import {
+  AccentText,
+  IconFrame,
+  SectionEyebrow,
+  StatusPill,
+  SystemSection,
+  systemPanelClass,
+} from '@/components/marketing/SystemMarketingPrimitives';
 
 const roiMetrics = [
   {
@@ -37,15 +45,11 @@ export function ROIMetrics({
   className?: string;
 }) {
   return (
-    <section className={`relative overflow-hidden bg-slate-950 py-20 ${className}`}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(45,212,191,0.16),transparent_34%),radial-gradient(circle_at_80%_0%,rgba(16,185,129,0.12),transparent_28%)]" />
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+    <SystemSection variant="emerald" className={className}>
         <div className="max-w-3xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
-            {eyebrow}
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            {title}
+          <SectionEyebrow icon={BarChart3} tone="valid">{eyebrow}</SectionEyebrow>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <AccentText>{title}</AccentText>
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-300">
             Enterprise buyers do not buy features. They buy lower audit risk,
@@ -57,10 +61,13 @@ export function ROIMetrics({
           {roiMetrics.map((metric) => (
             <article
               key={metric.label}
-              className="rounded-3xl border border-white/[0.08] bg-white/[0.045] p-6 shadow-2xl shadow-slate-950/30"
+              className={`p-6 ${systemPanelClass}`}
             >
-              <div className="inline-flex rounded-2xl border border-emerald-300/20 bg-emerald-300/[0.08] p-3">
-                <metric.icon className="h-5 w-5 text-emerald-200" aria-hidden="true" />
+              <div className="flex items-start justify-between gap-3">
+                <IconFrame icon={metric.icon} tone="valid" />
+                <StatusPill tone={metric.value === 'Always on' ? 'live' : 'warning'}>
+                  {metric.value === 'Always on' ? 'Live' : 'Risk'}
+                </StatusPill>
               </div>
               <p className="mt-5 text-3xl font-semibold tracking-tight text-white">
                 {metric.value}
@@ -74,7 +81,6 @@ export function ROIMetrics({
             </article>
           ))}
         </div>
-      </div>
-    </section>
+    </SystemSection>
   );
 }

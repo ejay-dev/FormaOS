@@ -7,6 +7,7 @@ import { ProofSection } from '@/components/ProofSection';
 import { ROIMetrics } from '@/components/ROIMetrics';
 import { TrustBar } from '@/components/TrustBar';
 import { WorkflowEnforcementDiagram } from '@/components/WorkflowEnforcementDiagram';
+import { AccentText, SectionEyebrow, StatusPill } from '@/components/marketing/SystemMarketingPrimitives';
 import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
@@ -29,15 +30,14 @@ export const metadata: Metadata = {
 
 export default function CaseStudiesPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
-      <section className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-32">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(45,212,191,0.18),transparent_34%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.12),transparent_30%)]" />
+    <main className="relative min-h-screen overflow-hidden bg-[#020817] text-white">
+      <section className="relative isolate overflow-hidden px-6 py-24 lg:px-12 lg:py-32">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(45,212,191,0.22),transparent_34%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.13),transparent_30%),linear-gradient(180deg,#020617_0%,#061525_48%,#020617_100%)]" />
+        <div className="mk-security-grid pointer-events-none absolute inset-0 opacity-[0.2] [mask-image:radial-gradient(ellipse_at_center,black_0%,transparent_74%)]" />
         <div className="relative mx-auto max-w-7xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
-            Case Studies
-          </p>
+          <SectionEyebrow>Case Studies</SectionEyebrow>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-6xl">
-            Proof packs for buyers who need evidence before belief
+            Proof packs for buyers who need <AccentText>evidence before belief</AccentText>
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
             This page shows the case-study structure FormaOS should use for
@@ -58,6 +58,11 @@ export default function CaseStudiesPage() {
             >
               View Pricing
             </Link>
+          </div>
+          <div className="mt-7 flex flex-wrap gap-2">
+            <StatusPill tone="live">Live system preview</StatusPill>
+            <StatusPill tone="valid">Immutable log</StatusPill>
+            <StatusPill tone="blocked">Blocked state</StatusPill>
           </div>
         </div>
       </section>

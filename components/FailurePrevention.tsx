@@ -1,4 +1,14 @@
 import { AlertTriangle, CheckCircle2, ShieldOff, ShieldCheck } from 'lucide-react';
+import {
+  AccentText,
+  IconFrame,
+  SectionEyebrow,
+  StatusPill,
+  SystemFrame,
+  SystemSection,
+  systemPanelClass,
+  systemPanelCompactClass,
+} from '@/components/marketing/SystemMarketingPrimitives';
 
 const rows = [
   {
@@ -32,30 +42,26 @@ const failureModes = [
 
 export function FailurePrevention({ className = '' }: { className?: string }) {
   return (
-    <section className={`relative overflow-hidden bg-slate-950 py-20 ${className}`}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(239,68,68,0.12),transparent_30%),radial-gradient(circle_at_80%_90%,rgba(16,185,129,0.14),transparent_34%)]" />
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+    <SystemSection variant="red" className={className}>
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">
-              Failure Prevention
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Stop relying on people to remember compliance
+            <SectionEyebrow icon={ShieldOff} tone="blocked">Failure Prevention</SectionEyebrow>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Stop relying on people to <AccentText>remember compliance</AccentText>
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300">
               FormaOS is positioned as an enforcement system: it prevents
               incomplete workflows, blocks missing evidence paths, and keeps the
               record of what happened.
             </p>
-            <div className="mt-8 rounded-3xl border border-amber-300/15 bg-amber-300/[0.05] p-5">
+            <div className={`mt-8 p-5 ${systemPanelClass}`}>
               <div className="flex items-center gap-3">
-                <AlertTriangle className="h-5 w-5 text-amber-200" aria-hidden="true" />
+                <IconFrame icon={AlertTriangle} tone="warning" />
                 <h3 className="font-semibold text-white">Common failure modes</h3>
               </div>
               <ul className="mt-4 space-y-3">
                 {failureModes.map((mode) => (
-                  <li key={mode} className="flex gap-3 text-sm text-slate-300">
+                  <li key={mode} className={`flex gap-3 p-3 text-sm text-slate-300 ${systemPanelCompactClass}`}>
                     <ShieldOff className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" aria-hidden="true" />
                     <span>{mode}</span>
                   </li>
@@ -63,8 +69,25 @@ export function FailurePrevention({ className = '' }: { className?: string }) {
               </ul>
             </div>
           </div>
-          <div className="overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.045]">
-            <div className="grid grid-cols-2 border-b border-white/[0.08] text-sm font-semibold uppercase tracking-[0.16em]">
+          <SystemFrame label="ENFORCEMENT CONSOLE" status="POLICY ACTIVE">
+            <div className="border-b border-red-300/15 bg-red-500/[0.06] px-5 py-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <StatusPill tone="blocked" pulse>Blocked state</StatusPill>
+                  <p className="mt-3 text-lg font-semibold text-white">
+                    Action blocked - missing compliance step
+                  </p>
+                  <p className="mt-1 text-sm text-slate-400">
+                    Worker shift cannot close until incident review evidence is attached.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-red-300/25 bg-red-500/[0.08] px-4 py-3 text-right shadow-[0_0_34px_rgba(248,113,113,0.16)]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-red-100">Gate result</p>
+                  <p className="mt-1 text-2xl font-bold text-red-100">Blocked</p>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 border-b border-cyan-300/[0.1] text-sm font-semibold uppercase tracking-[0.16em]">
               <div className="flex items-center gap-2 bg-red-500/[0.06] px-5 py-4 text-red-100">
                 <ShieldOff className="h-4 w-4" aria-hidden="true" />
                 Without FormaOS
@@ -77,7 +100,7 @@ export function FailurePrevention({ className = '' }: { className?: string }) {
             {rows.map((row) => (
               <div
                 key={row.without}
-                className="grid grid-cols-2 border-b border-white/[0.06] last:border-b-0"
+                className="grid grid-cols-2 border-b border-cyan-300/[0.08] last:border-b-0"
               >
                 <div className="flex items-center gap-3 px-5 py-5 text-sm text-slate-400">
                   <AlertTriangle className="h-4 w-4 shrink-0 text-red-300" aria-hidden="true" />
@@ -89,9 +112,8 @@ export function FailurePrevention({ className = '' }: { className?: string }) {
                 </div>
               </div>
             ))}
-          </div>
+          </SystemFrame>
         </div>
-      </div>
-    </section>
+    </SystemSection>
   );
 }

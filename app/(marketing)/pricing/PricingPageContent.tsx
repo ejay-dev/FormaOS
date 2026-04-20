@@ -7,6 +7,15 @@ import { ProductShowcase } from '@/components/ProductShowcase';
 import { ProofSection } from '@/components/ProofSection';
 import { ROIMetrics } from '@/components/ROIMetrics';
 import { TrustBar } from '@/components/TrustBar';
+import {
+  AccentText,
+  IconFrame,
+  SectionEyebrow,
+  StatusPill,
+  SystemFrame,
+  SystemSection,
+  systemPanelClass,
+} from '@/components/marketing/SystemMarketingPrimitives';
 import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { FinalCTA, FAQSection, PricingHero, PricingTiers } from './components';
@@ -31,29 +40,30 @@ const pricingSteps = [
 
 function CostOfNonCompliance() {
   return (
-    <section className="relative overflow-hidden bg-slate-950 py-24">
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+    <SystemSection variant="amber">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300">
-              Cost Context
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              One failed audit can cost more than a year of FormaOS
+            <SectionEyebrow icon={ShieldCheck} tone="warning">Cost Context</SectionEyebrow>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              One failed audit can cost more than <AccentText>a year of FormaOS</AccentText>
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300">
               The page must justify price before asking for commitment. That
               means showing the manual compliance cost, not burying buyers in a
               feature comparison table.
             </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <StatusPill tone="warning">Manual risk</StatusPill>
+              <StatusPill tone="valid">System enforced</StatusPill>
+            </div>
           </div>
-          <div className="overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.045]">
-            <div className="grid grid-cols-[1fr_1fr] border-b border-white/[0.08] text-sm font-semibold uppercase tracking-[0.16em]">
+          <SystemFrame label="COST MODEL" status="RISK ANCHOR">
+            <div className="grid grid-cols-[1fr_1fr] border-b border-cyan-300/[0.1] text-sm font-semibold uppercase tracking-[0.16em]">
               <div className="px-5 py-4 text-red-100">Without FormaOS</div>
               <div className="px-5 py-4 text-emerald-100">With FormaOS</div>
             </div>
             {MANUAL_COMPLIANCE_COST_ANCHORS.map((item) => (
-              <div key={item.label} className="grid grid-cols-[1fr_1fr] border-b border-white/[0.06] last:border-b-0">
+              <div key={item.label} className="grid grid-cols-[1fr_1fr] border-b border-cyan-300/[0.08] last:border-b-0">
                 <div className="px-5 py-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                     {item.label}
@@ -68,23 +78,19 @@ function CostOfNonCompliance() {
                 </div>
               </div>
             ))}
-          </div>
+          </SystemFrame>
         </div>
-      </div>
-    </section>
+    </SystemSection>
   );
 }
 
 function HowPricingWorks() {
   return (
-    <section className="relative overflow-hidden bg-slate-950 py-24">
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+    <SystemSection variant="cyan">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
-            How Pricing Works
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Priced by compliance scope, not feature unlocks
+          <SectionEyebrow icon={Settings2}>How Pricing Works</SectionEyebrow>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Priced by <AccentText>compliance scope</AccentText>, not feature unlocks
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-300">
             The commercial logic matches the infrastructure promise: more risk,
@@ -95,11 +101,9 @@ function HowPricingWorks() {
           {pricingSteps.map((step, index) => (
             <article
               key={step.title}
-              className="rounded-3xl border border-white/[0.08] bg-white/[0.045] p-6"
+              className={`p-6 ${systemPanelClass}`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08]">
-                <step.icon className="h-5 w-5 text-cyan-200" aria-hidden="true" />
-              </div>
+              <IconFrame icon={step.icon} tone={index === 2 ? 'valid' : 'live'} />
               <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Step {index + 1}
               </p>
@@ -108,13 +112,12 @@ function HowPricingWorks() {
             </article>
           ))}
         </div>
-        <div className="mx-auto mt-10 flex max-w-3xl items-start gap-3 rounded-3xl border border-emerald-300/15 bg-emerald-300/[0.06] p-5 text-sm leading-6 text-slate-300">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-200" aria-hidden="true" />
+        <div className={`mx-auto mt-10 flex max-w-3xl items-start gap-3 p-5 text-sm leading-6 text-slate-300 ${systemPanelClass}`}>
+          <IconFrame icon={CheckCircle2} tone="valid" className="mt-0.5 h-10 w-10 shrink-0" />
           Pricing scales based on your compliance scope and organisational
           complexity - not arbitrary feature gates.
         </div>
-      </div>
-    </section>
+    </SystemSection>
   );
 }
 

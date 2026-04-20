@@ -1,4 +1,12 @@
 import { ClipboardList, FileCheck2, GitPullRequestArrow, ShieldCheck, Workflow } from 'lucide-react';
+import {
+  AccentText,
+  IconFrame,
+  SectionEyebrow,
+  StatusPill,
+  SystemSection,
+  systemPanelClass,
+} from '@/components/marketing/SystemMarketingPrimitives';
 
 const steps = [
   {
@@ -30,14 +38,11 @@ const steps = [
 
 export function HowItWorks({ className = '' }: { className?: string }) {
   return (
-    <section className={`relative overflow-hidden bg-slate-950 py-24 ${className}`}>
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+    <SystemSection variant="emerald" className={className}>
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
-            How It Works
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            From obligation to enforced evidence chain
+          <SectionEyebrow icon={Workflow} tone="valid">How It Works</SectionEyebrow>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            From obligation to <AccentText>enforced evidence chain</AccentText>
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-300">
             FormaOS turns compliance into a continuous operating loop rather
@@ -48,10 +53,11 @@ export function HowItWorks({ className = '' }: { className?: string }) {
           {steps.map((step, index) => (
             <article
               key={step.title}
-              className="rounded-3xl border border-white/[0.08] bg-white/[0.045] p-5"
+              className={`p-5 ${systemPanelClass}`}
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-300/20 bg-emerald-300/[0.08]">
-                <step.icon className="h-5 w-5 text-emerald-200" aria-hidden="true" />
+              <div className="flex items-center justify-between gap-3">
+                <IconFrame icon={step.icon} tone={index >= 2 ? 'valid' : 'live'} />
+                {index === 2 ? <StatusPill tone="valid">Enforcing</StatusPill> : null}
               </div>
               <p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 {String(index + 1).padStart(2, '0')}
@@ -61,7 +67,6 @@ export function HowItWorks({ className = '' }: { className?: string }) {
             </article>
           ))}
         </div>
-      </div>
-    </section>
+    </SystemSection>
   );
 }
