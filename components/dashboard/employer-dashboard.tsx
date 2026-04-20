@@ -47,6 +47,7 @@ import {
   CUSTOM_METRICS,
 } from '@/lib/monitoring/performance-monitor';
 import { QuickActions } from '@/components/dashboard/quick-actions';
+import { DailyStandUpCard } from '@/components/dashboard/DailyStandUpCard';
 import { getEntityLabel } from '@/components/dashboard/industry-labels';
 import {
   AttentionRail,
@@ -401,6 +402,11 @@ export function EmployerDashboard({
       {/* Compliance readiness hero */}
       <ErrorBoundary name="ComplianceHeroBand" level="component">
         <ComplianceHeroBand />
+      </ErrorBoundary>
+
+      {/* Daily stand-up: actions, wins, deadline */}
+      <ErrorBoundary name="DailyStandUpCard" level="component">
+        <DailyStandUpCard />
       </ErrorBoundary>
 
       {/* Command center — actionable attention surface */}
