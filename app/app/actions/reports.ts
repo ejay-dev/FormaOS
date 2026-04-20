@@ -21,6 +21,7 @@ import {
 } from '@/lib/security/rate-limiter';
 import { createCorrelationId } from '@/lib/security/correlation';
 import { buildSoc2Report } from '@/lib/audit/soc2-report';
+import { actionError, isNextInternalError } from '@/lib/actions/safe';
 
 type AuditBundleRow = {
   orgId: string;
@@ -212,27 +213,28 @@ async function safeSelectAuditLogs(supabase: ReportsDbClient, orgId: string) {
  * ✅ Existing function (kept)
  */
 export async function generateAuditSummary() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error('Unauthorized');
-  const permissionCtx = await requirePermission('EXPORT_REPORTS');
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Unauthorized');
+    const permissionCtx = await requirePermission('EXPORT_REPORTS');
 
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id')
-    .eq('user_id', user.id)
-    .maybeSingle();
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-  if (!membership) throw new Error('No organization found');
-  const orgId = membership.organization_id;
-  await requireEntitlement(orgId, 'reports');
+    if (!membership) throw new Error('No organization found');
+    const orgId = membership.organization_id;
+    await requireEntitlement(orgId, 'reports');
 
-  const { data: evidenceData, error } = await supabase
-    .from('org_tasks')
-    .select(
-      `
+    const { data: evidenceData, error } = await supabase
+      .from('org_tasks')
+      .select(
+        `
       title,
       status,
       completed_at,
@@ -242,28 +244,32 @@ export async function generateAuditSummary() {
         created_at
       )
     `,
-    )
-    .eq('organization_id', orgId)
-    .eq('status', 'completed');
+      )
+      .eq('organization_id', orgId)
+      .eq('status', 'completed');
 
-  if (error) throw error;
+    if (error) throw error;
 
-  await logActivity(
-    orgId,
-    'audit_export',
-    'Generated Comprehensive Audit Summary',
-  );
-  await logAuditEvent({
-    organizationId: orgId,
-    actorUserId: user.id,
-    actorRole: permissionCtx.role,
-    entityType: 'report',
-    entityId: null,
-    actionType: 'AUDIT_SUMMARY_EXPORTED',
-    afterState: { type: 'audit_summary' },
-    reason: 'export',
-  });
-  return evidenceData;
+    await logActivity(
+      orgId,
+      'audit_export',
+      'Generated Comprehensive Audit Summary',
+    );
+    await logAuditEvent({
+      organizationId: orgId,
+      actorUserId: user.id,
+      actorRole: permissionCtx.role,
+      entityType: 'report',
+      entityId: null,
+      actionType: 'AUDIT_SUMMARY_EXPORTED',
+      afterState: { type: 'audit_summary' },
+      reason: 'export',
+    });
+    return evidenceData;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
@@ -277,213 +283,220 @@ export async function generateAuditSummary() {
 export async function generateAuditBundlePdf(
   frameworkCode: string = 'ISO27001',
 ) {
-  // 1) Identify org + enforce gates
-  const membership = await requirePermission('EXPORT_REPORTS');
-  const { orgId } = await getOrgIdForUser();
-  if (membership.orgId !== orgId) throw new Error('Organization mismatch.');
-  const identifier = await getClientIdentifier();
-  const rateLimit = await checkRateLimit(
-    RATE_LIMITS.EXPORT,
-    identifier,
-    membership.userId,
-  );
-  if (!rateLimit.success) {
-    throw new Error('Export rate limit exceeded. Please try again later.');
-  }
-  const correlationId = createCorrelationId();
-  await requireEntitlement(orgId, 'audit_export');
-  await requireNoComplianceBlocks(orgId, 'AUDIT_EXPORT');
-
-  const supabase = await createSupabaseServerClient();
-
-  // 2) Fetch org name (best-effort)
-  const { data: orgRow } = await supabase
-    .from('organizations')
-    .select('name')
-    .eq('id', orgId)
-    .maybeSingle();
-
-  const orgName = orgRow?.name || 'FormaOS Client';
-
-  // 3) Latest compliance evaluation for framework (framework snapshots only)
-  let frameworkId: string | null = null;
   try {
-    const { data: frameworkRow } = await supabase
-      .from('compliance_frameworks')
-      .select('id')
-      .eq('code', frameworkCode)
+    // 1) Identify org + enforce gates
+    const membership = await requirePermission('EXPORT_REPORTS');
+    const _orgResult = await getOrgIdForUser();
+    if ('error' in _orgResult) throw new Error(_orgResult.error);
+    const { orgId } = _orgResult;
+    if (membership.orgId !== orgId) throw new Error('Organization mismatch.');
+    const identifier = await getClientIdentifier();
+    const rateLimit = await checkRateLimit(
+      RATE_LIMITS.EXPORT,
+      identifier,
+      membership.userId,
+    );
+    if (!rateLimit.success) {
+      throw new Error('Export rate limit exceeded. Please try again later.');
+    }
+    const correlationId = createCorrelationId();
+    await requireEntitlement(orgId, 'audit_export');
+    await requireNoComplianceBlocks(orgId, 'AUDIT_EXPORT');
+
+    const supabase = await createSupabaseServerClient();
+
+    // 2) Fetch org name (best-effort)
+    const { data: orgRow } = await supabase
+      .from('organizations')
+      .select('name')
+      .eq('id', orgId)
       .maybeSingle();
-    frameworkId = frameworkRow?.id ?? null;
-  } catch {
-    frameworkId = null;
-  }
 
-   
-  let evalRow: Record<string, any> | null = null;
-  try {
-    let evalQuery = supabase
-      .from('org_control_evaluations')
-      .select(
-        'compliance_score,total_controls,missing_control_codes,partial_control_codes,framework_id,created_at,evaluated_at,last_evaluated_at',
-      )
-      .eq('organization_id', orgId)
-      .eq('control_type', 'framework_snapshot');
+    const orgName = orgRow?.name || 'FormaOS Client';
 
-    if (frameworkId) evalQuery = evalQuery.eq('framework_id', frameworkId);
-
-    const { data, error } = await evalQuery
-      .order('last_evaluated_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (error) throw error;
-    evalRow = data;
-  } catch {
+    // 3) Latest compliance evaluation for framework (framework snapshots only)
+    let frameworkId: string | null = null;
     try {
-      let fallbackQuery = supabase
+      const { data: frameworkRow } = await supabase
+        .from('compliance_frameworks')
+        .select('id')
+        .eq('code', frameworkCode)
+        .maybeSingle();
+      frameworkId = frameworkRow?.id ?? null;
+    } catch {
+      frameworkId = null;
+    }
+
+    let evalRow: Record<string, any> | null = null;
+    try {
+      let evalQuery = supabase
         .from('org_control_evaluations')
-        .select('framework_id, created_at')
-        .eq('organization_id', orgId);
-      if (frameworkId)
-        fallbackQuery = fallbackQuery.eq('framework_id', frameworkId);
-      const { data } = await fallbackQuery
-        .order('created_at', { ascending: false })
+        .select(
+          'compliance_score,total_controls,missing_control_codes,partial_control_codes,framework_id,created_at,evaluated_at,last_evaluated_at',
+        )
+        .eq('organization_id', orgId)
+        .eq('control_type', 'framework_snapshot');
+
+      if (frameworkId) evalQuery = evalQuery.eq('framework_id', frameworkId);
+
+      const { data, error } = await evalQuery
+        .order('last_evaluated_at', { ascending: false })
         .limit(1)
         .maybeSingle();
-      evalRow = data ?? null;
+      if (error) throw error;
+      evalRow = data;
     } catch {
-      evalRow = null;
+      try {
+        let fallbackQuery = supabase
+          .from('org_control_evaluations')
+          .select('framework_id, created_at')
+          .eq('organization_id', orgId);
+        if (frameworkId)
+          fallbackQuery = fallbackQuery.eq('framework_id', frameworkId);
+        const { data } = await fallbackQuery
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        evalRow = data ?? null;
+      } catch {
+        evalRow = null;
+      }
     }
-  }
 
-  const complianceScore = evalRow?.compliance_score ?? 0;
-  const totalControls = evalRow?.total_controls ?? 0;
-  const missingCodes = (evalRow?.missing_control_codes ?? []) as string[];
-  const partialCodes = (evalRow?.partial_control_codes ?? []) as string[];
+    const complianceScore = evalRow?.compliance_score ?? 0;
+    const totalControls = evalRow?.total_controls ?? 0;
+    const missingCodes = (evalRow?.missing_control_codes ?? []) as string[];
+    const partialCodes = (evalRow?.partial_control_codes ?? []) as string[];
 
-  // 4) Fetch core datasets (defensive)
-  const [policiesData, evidenceData, tasksData, auditLogs] = await Promise.all([
-    safeSelectPolicies(supabase, orgId),
-    safeSelectEvidence(supabase, orgId),
-    safeSelectTasks(supabase, orgId),
-    safeSelectAuditLogs(supabase, orgId),
-  ]);
+    // 4) Fetch core datasets (defensive)
+    const [policiesData, evidenceData, tasksData, auditLogs] =
+      await Promise.all([
+        safeSelectPolicies(supabase, orgId),
+        safeSelectEvidence(supabase, orgId),
+        safeSelectTasks(supabase, orgId),
+        safeSelectAuditLogs(supabase, orgId),
+      ]);
 
-  const bundleData: AuditBundleRow = {
-    orgId,
-    orgName,
-    generatedAt: new Date().toISOString(),
-    frameworkCode,
-    complianceScore,
-    totalControls,
-    missingControls: missingCodes.length,
-    missingCodes,
-    partialCodes,
-    policies: policiesData,
-    evidence: evidenceData,
-    tasks: tasksData,
-    auditLogs,
-  };
+    const bundleData: AuditBundleRow = {
+      orgId,
+      orgName,
+      generatedAt: new Date().toISOString(),
+      frameworkCode,
+      complianceScore,
+      totalControls,
+      missingControls: missingCodes.length,
+      missingCodes,
+      partialCodes,
+      policies: policiesData,
+      evidence: evidenceData,
+      tasks: tasksData,
+      auditLogs,
+    };
 
-  // 5) Generate PDF on server (PDFKit)
-  const pdfBuffer = await buildAuditBundlePdf(bundleData);
+    // 5) Generate PDF on server (PDFKit)
+    const pdfBuffer = await buildAuditBundlePdf(bundleData);
 
-  // 6) Upload to Storage (private)
-  const datePart = new Date().toISOString().slice(0, 10);
-  const fileName = `Audit_Bundle_${safeFilePart(orgName)}_${frameworkCode}_${Date.now()}.pdf`;
-  const storagePath = `${orgId}/${datePart}/${fileName}`;
+    // 6) Upload to Storage (private)
+    const datePart = new Date().toISOString().slice(0, 10);
+    const fileName = `Audit_Bundle_${safeFilePart(orgName)}_${frameworkCode}_${Date.now()}.pdf`;
+    const storagePath = `${orgId}/${datePart}/${fileName}`;
 
-  const upload = await supabase.storage
-    .from('audit-bundles')
-    .upload(storagePath, pdfBuffer, {
-      contentType: 'application/pdf',
-      upsert: false,
-    });
+    const upload = await supabase.storage
+      .from('audit-bundles')
+      .upload(storagePath, pdfBuffer, {
+        contentType: 'application/pdf',
+        upsert: false,
+      });
 
-  if (upload.error) {
-    throw new Error(`Storage upload failed: ${upload.error.message}`);
-  }
+    if (upload.error) {
+      throw new Error(`Storage upload failed: ${upload.error.message}`);
+    }
 
-  // 7) Create a signed URL (1 hour)
-  const signed = await supabase.storage
-    .from('audit-bundles')
-    .createSignedUrl(storagePath, 60 * 60);
+    // 7) Create a signed URL (1 hour)
+    const signed = await supabase.storage
+      .from('audit-bundles')
+      .createSignedUrl(storagePath, 60 * 60);
 
-  if (signed.error) {
-    throw new Error(`Signed URL failed: ${signed.error.message}`);
-  }
+    if (signed.error) {
+      throw new Error(`Signed URL failed: ${signed.error.message}`);
+    }
 
-  // 8) Write audit log entry (immutable)
-  await logActivity(
-    orgId,
-    'audit_export',
-    `Generated Audit Bundle PDF (${frameworkCode}) @ ${storagePath}`,
-  );
-  try {
-    const { error: exportErr } = await supabase.from('org_exports').insert({
-      organization_id: orgId,
-      export_type: 'AUDIT_BUNDLE',
-      framework_id: frameworkId,
-      status: 'generated',
-      created_by: membership.userId,
-      payload: {
-        storagePath,
+    // 8) Write audit log entry (immutable)
+    await logActivity(
+      orgId,
+      'audit_export',
+      `Generated Audit Bundle PDF (${frameworkCode}) @ ${storagePath}`,
+    );
+    try {
+      const { error: exportErr } = await supabase.from('org_exports').insert({
+        organization_id: orgId,
+        export_type: 'AUDIT_BUNDLE',
+        framework_id: frameworkId,
+        status: 'generated',
+        created_by: membership.userId,
+        payload: {
+          storagePath,
+          frameworkCode,
+          complianceScore,
+          totalControls,
+          missing: missingCodes.length,
+          correlation_id: correlationId,
+        },
+      });
+      if (exportErr) throw exportErr;
+    } catch {
+      await supabase.from('org_exports').insert({
+        organization_id: orgId,
+        type: 'AUDIT_BUNDLE',
+        framework_code: frameworkCode,
+        snapshot_hash: null,
+        file_path: storagePath,
+        created_by: membership.userId,
+        payload: { correlation_id: correlationId },
+      });
+    }
+    await logAuditEvent({
+      organizationId: orgId,
+      actorUserId: membership.userId,
+      actorRole: membership.role,
+      entityType: 'export',
+      entityId: null,
+      actionType: 'AUDIT_BUNDLE_EXPORTED',
+      afterState: {
         frameworkCode,
+        storagePath,
         complianceScore,
         totalControls,
         missing: missingCodes.length,
         correlation_id: correlationId,
       },
+      reason: 'export',
     });
-    if (exportErr) throw exportErr;
-  } catch {
-    await supabase.from('org_exports').insert({
-      organization_id: orgId,
-      type: 'AUDIT_BUNDLE',
-      framework_code: frameworkCode,
-      snapshot_hash: null,
-      file_path: storagePath,
-      created_by: membership.userId,
-      payload: { correlation_id: correlationId },
-    });
+
+    revalidatePath('/app/reports');
+
+    return {
+      success: true,
+      filePath: storagePath,
+      signedUrl: signed.data.signedUrl,
+      meta: {
+        orgName,
+        frameworkCode,
+        complianceScore,
+        totalControls,
+        missing: missingCodes.length,
+        policies: bundleData.policies.length,
+        evidenceTotal: bundleData.evidence.length,
+        evidenceApproved: bundleData.evidence.filter(
+          (e) => e.status === 'approved',
+        ).length,
+        logsIncluded: bundleData.auditLogs.length,
+      },
+    };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
   }
-  await logAuditEvent({
-    organizationId: orgId,
-    actorUserId: membership.userId,
-    actorRole: membership.role,
-    entityType: 'export',
-    entityId: null,
-    actionType: 'AUDIT_BUNDLE_EXPORTED',
-    afterState: {
-      frameworkCode,
-      storagePath,
-      complianceScore,
-      totalControls,
-      missing: missingCodes.length,
-      correlation_id: correlationId,
-    },
-    reason: 'export',
-  });
-
-  revalidatePath('/app/reports');
-
-  return {
-    success: true,
-    filePath: storagePath,
-    signedUrl: signed.data.signedUrl,
-    meta: {
-      orgName,
-      frameworkCode,
-      complianceScore,
-      totalControls,
-      missing: missingCodes.length,
-      policies: bundleData.policies.length,
-      evidenceTotal: bundleData.evidence.length,
-      evidenceApproved: bundleData.evidence.filter(
-        (e) => e.status === 'approved',
-      ).length,
-      logsIncluded: bundleData.auditLogs.length,
-    },
-  };
 }
 
 /**
@@ -674,42 +687,53 @@ async function buildAuditBundlePdf(data: AuditBundleRow): Promise<Buffer> {
 }
 
 export async function generateSoc2ReportExport() {
-  const membership = await requirePermission('EXPORT_REPORTS');
-  const { orgId } = await getOrgIdForUser();
-  if (membership.orgId !== orgId) throw new Error('Organization mismatch.');
-  await requireEntitlement(orgId, 'audit_export');
+  try {
+    const membership = await requirePermission('EXPORT_REPORTS');
+    const _orgResult = await getOrgIdForUser();
+    if ('error' in _orgResult) throw new Error(_orgResult.error);
+    const { orgId } = _orgResult;
+    if (membership.orgId !== orgId) throw new Error('Organization mismatch.');
+    await requireEntitlement(orgId, 'audit_export');
 
-  const supabase = await createSupabaseServerClient();
-  const payload = await buildSoc2Report(orgId);
-  const correlationId = createCorrelationId();
+    const supabase = await createSupabaseServerClient();
+    const payload = await buildSoc2Report(orgId);
+    const correlationId = createCorrelationId();
 
-  await supabase.from('org_exports').insert({
-    organization_id: orgId,
-    export_type: 'SOC2_REPORT',
-    framework_id: null,
-    status: 'generated',
-    created_by: membership.userId,
-    payload: {
-      ...payload,
-      correlation_id: correlationId,
-    },
-  });
+    await supabase.from('org_exports').insert({
+      organization_id: orgId,
+      export_type: 'SOC2_REPORT',
+      framework_id: null,
+      status: 'generated',
+      created_by: membership.userId,
+      payload: {
+        ...payload,
+        correlation_id: correlationId,
+      },
+    });
 
-  await logActivity(orgId, 'audit_export', 'Generated SOC 2 readiness report');
+    await logActivity(
+      orgId,
+      'audit_export',
+      'Generated SOC 2 readiness report',
+    );
 
-  await logAuditEvent({
-    organizationId: orgId,
-    actorUserId: membership.userId,
-    actorRole: membership.role,
-    entityType: 'org_export',
-    entityId: null,
-    actionType: 'SOC2_REPORT_EXPORTED',
-    afterState: {
-      frameworkCode: 'SOC2',
-      readinessScore: payload.readinessScore,
-    },
-    reason: 'export',
-  });
+    await logAuditEvent({
+      organizationId: orgId,
+      actorUserId: membership.userId,
+      actorRole: membership.role,
+      entityType: 'org_export',
+      entityId: null,
+      actionType: 'SOC2_REPORT_EXPORTED',
+      afterState: {
+        frameworkCode: 'SOC2',
+        readinessScore: payload.readinessScore,
+      },
+      reason: 'export',
+    });
 
-  return payload;
+    return payload;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

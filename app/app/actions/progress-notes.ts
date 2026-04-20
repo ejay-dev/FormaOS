@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserOrgMembership, RoleKey } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 const NOTE_WRITE_ROLES = new Set<RoleKey>(["OWNER", "COMPLIANCE_OFFICER", "MANAGER", "STAFF"]);
 const NOTE_SIGNOFF_ROLES = new Set<RoleKey>(["OWNER", "COMPLIANCE_OFFICER", "MANAGER"]);
@@ -16,6 +17,7 @@ async function requireRole(allowed: Set<RoleKey>) {
 }
 
 export async function createProgressNote(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const membership = await requireRole(NOTE_WRITE_ROLES);
   const { data: { user } } = await supabase.auth.getUser();
@@ -63,9 +65,14 @@ export async function createProgressNote(formData: FormData) {
   });
 
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function signOffProgressNote(input: FormData | string) {
+  try {
   const supabase = await createSupabaseServerClient();
   const membership = await requireRole(NOTE_SIGNOFF_ROLES);
   const { data: { user } } = await supabase.auth.getUser();
@@ -106,4 +113,8 @@ export async function signOffProgressNote(input: FormData | string) {
   });
 
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

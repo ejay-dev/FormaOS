@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 function scoreAge(createdAt?: string | null) {
   if (!createdAt) return 0;
@@ -19,6 +20,7 @@ function normalize(text: string) {
 }
 
 export async function scoreEvidenceQuality(reason?: string) {
+  try {
   const supabase = await createSupabaseServerClient();
   const permissionCtx = await requirePermission('EDIT_CONTROLS');
 
@@ -123,12 +125,17 @@ export async function scoreEvidenceQuality(reason?: string) {
   });
 
   return { success: true, scored };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function autoMapEvidenceToControls(
   evidenceId: string,
   reason?: string,
 ) {
+  try {
   const supabase = await createSupabaseServerClient();
   const permissionCtx = await requirePermission('EDIT_CONTROLS');
 
@@ -191,4 +198,8 @@ export async function autoMapEvidenceToControls(
   });
 
   return { success: true, matchedControlCount: matchedControls.length };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

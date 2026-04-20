@@ -32,7 +32,7 @@ export function ComplianceToastAlerts() {
     try {
       const history = await getAutomationHistory(5);
 
-      if (history.length === 0) return;
+      if (!Array.isArray(history) || history.length === 0) return;
 
       // Get most recent event
       const latestEvent = history[0];

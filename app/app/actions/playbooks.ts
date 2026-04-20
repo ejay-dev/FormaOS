@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 export async function upsertFrameworkPlaybook(payload: {
   frameworkCode: string;
@@ -17,6 +18,7 @@ export async function upsertFrameworkPlaybook(payload: {
   }>;
   reason?: string;
 }) {
+  try {
   const supabase = await createSupabaseServerClient();
   const permissionCtx = await requirePermission("EDIT_CONTROLS");
 
@@ -82,4 +84,8 @@ export async function upsertFrameworkPlaybook(payload: {
   });
 
   return { success: true, playbookId: playbook.id };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

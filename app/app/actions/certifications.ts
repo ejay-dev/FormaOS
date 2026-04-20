@@ -5,8 +5,10 @@ import { requirePermission } from "@/app/app/actions/rbac";
 import { requireNoComplianceBlocks } from "@/app/app/actions/enforcement";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
 import { requireEntitlement } from "@/lib/billing/entitlements";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 export async function generateCertification(frameworkCode: string, reason?: string) {
+  try {
   const supabase = await createSupabaseServerClient();
   const permissionCtx = await requirePermission("GENERATE_CERTIFICATIONS");
   await requireEntitlement(permissionCtx.orgId, "certifications");
@@ -128,4 +130,8 @@ export async function generateCertification(frameworkCode: string, reason?: stri
     frameworkCode: framework.code,
     issuedAt,
   };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

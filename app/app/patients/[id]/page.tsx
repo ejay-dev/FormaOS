@@ -295,12 +295,18 @@ export default async function PatientDetailPage({
 
           {canWrite && (
             <form
-              action={updatePatient}
+              action={async (fd: FormData) => {
+                'use server';
+                await updatePatient(fd);
+              }}
               className="mt-6 grid gap-4 md:grid-cols-4"
             >
               <input type="hidden" name="patientId" value={patient.id} />
               <div className="md:col-span-2">
-                <label htmlFor="field-205" className="text-xs uppercase tracking-widest text-muted-foreground/60">
+                <label
+                  htmlFor="field-205"
+                  className="text-xs uppercase tracking-widest text-muted-foreground/60"
+                >
                   Full Name
                 </label>
                 <input
@@ -310,7 +316,10 @@ export default async function PatientDetailPage({
                 />
               </div>
               <div>
-                <label htmlFor="field-204" className="text-xs uppercase tracking-widest text-muted-foreground/60">
+                <label
+                  htmlFor="field-204"
+                  className="text-xs uppercase tracking-widest text-muted-foreground/60"
+                >
                   Status
                 </label>
                 <select
@@ -324,7 +333,10 @@ export default async function PatientDetailPage({
                 </select>
               </div>
               <div>
-                <label htmlFor="field-203" className="text-xs uppercase tracking-widest text-muted-foreground/60">
+                <label
+                  htmlFor="field-203"
+                  className="text-xs uppercase tracking-widest text-muted-foreground/60"
+                >
                   Risk
                 </label>
                 <select
@@ -373,7 +385,13 @@ export default async function PatientDetailPage({
                 <div className="text-sm text-foreground">
                   Started {fmtDate(activeShift.started_at)}
                 </div>
-                <form action={endShift} className="mt-3">
+                <form
+                  action={async (fd: FormData) => {
+                    'use server';
+                    await endShift(fd);
+                  }}
+                  className="mt-3"
+                >
                   <input type="hidden" name="shiftId" value={activeShift.id} />
                   <button
                     type="submit"
@@ -384,7 +402,12 @@ export default async function PatientDetailPage({
                 </form>
               </div>
             ) : (
-              <form action={startShift}>
+              <form
+                action={async (fd: FormData) => {
+                  'use server';
+                  await startShift(fd);
+                }}
+              >
                 <input type="hidden" name="patientId" value={patient.id} />
                 <button
                   type="submit"
@@ -397,7 +420,9 @@ export default async function PatientDetailPage({
           </div>
           <div className="mt-4 space-y-2">
             {(shifts ?? []).length === 0 ? (
-              <p className="text-xs text-muted-foreground">No shifts logged yet.</p>
+              <p className="text-xs text-muted-foreground">
+                No shifts logged yet.
+              </p>
             ) : (
               (shifts ?? []).map((shift) => (
                 <div
@@ -424,7 +449,13 @@ export default async function PatientDetailPage({
             Progress Notes
           </div>
           {canWrite && (
-            <form action={createProgressNote} className="mt-4 grid gap-3">
+            <form
+              action={async (fd: FormData) => {
+                'use server';
+                await createProgressNote(fd);
+              }}
+              className="mt-4 grid gap-3"
+            >
               <input type="hidden" name="patientId" value={patient.id} />
               <select
                 name="statusTag"
@@ -454,7 +485,9 @@ export default async function PatientDetailPage({
           )}
           <div className="mt-4 space-y-3">
             {(notes ?? []).length === 0 ? (
-              <p className="text-xs text-muted-foreground">No progress notes yet.</p>
+              <p className="text-xs text-muted-foreground">
+                No progress notes yet.
+              </p>
             ) : (
               (notes ?? []).map((note) => (
                 <div
@@ -476,7 +509,12 @@ export default async function PatientDetailPage({
                       </span>
                     ) : null}
                     {canAdmin && !note.signed_off_by && (
-                      <form action={signOffProgressNote}>
+                      <form
+                        action={async (fd: FormData) => {
+                          'use server';
+                          await signOffProgressNote(fd);
+                        }}
+                      >
                         <input type="hidden" name="noteId" value={note.id} />
                         <button
                           type="submit"
@@ -499,7 +537,13 @@ export default async function PatientDetailPage({
             Incident Log
           </div>
           {canWrite && (
-            <form action={createIncident} className="mt-4 grid gap-3">
+            <form
+              action={async (fd: FormData) => {
+                'use server';
+                await createIncident(fd);
+              }}
+              className="mt-4 grid gap-3"
+            >
               <input type="hidden" name="patientId" value={patient.id} />
               <select
                 name="severity"
@@ -533,7 +577,9 @@ export default async function PatientDetailPage({
           )}
           <div className="mt-4 space-y-3">
             {(incidents ?? []).length === 0 ? (
-              <p className="text-xs text-muted-foreground">No incidents recorded.</p>
+              <p className="text-xs text-muted-foreground">
+                No incidents recorded.
+              </p>
             ) : (
               (incidents ?? []).map((incident) => (
                 <div
@@ -551,7 +597,13 @@ export default async function PatientDetailPage({
                     Occurred {fmtDate(incident.occurred_at)}
                   </div>
                   {canAdmin && incident.status === 'open' && (
-                    <form action={resolveIncident} className="mt-3">
+                    <form
+                      action={async (fd: FormData) => {
+                        'use server';
+                        await resolveIncident(fd);
+                      }}
+                      className="mt-3"
+                    >
                       <input
                         type="hidden"
                         name="incidentId"
@@ -578,7 +630,13 @@ export default async function PatientDetailPage({
           Patient Tasks
         </div>
         {canAdmin && (
-          <form action={createTask} className="mt-4 grid gap-3 md:grid-cols-4">
+          <form
+            action={async (fd: FormData) => {
+              'use server';
+              await createTask(fd);
+            }}
+            className="mt-4 grid gap-3 md:grid-cols-4"
+          >
             <input type="hidden" name="patientId" value={patient.id} />
             <input
               name="title"

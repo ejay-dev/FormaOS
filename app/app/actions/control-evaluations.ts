@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { actionError, isNextInternalError } from '@/lib/actions/safe';
 
 type ControlStatus = 'compliant' | 'non_compliant' | 'at_risk';
 
@@ -301,165 +302,153 @@ async function logEvaluationAudit(
 }
 
 export async function evaluateOrgCompliance(orgId: string) {
-  const supabase = await createSupabaseServerClient();
-  if (!orgId) return;
+  try {
+    const supabase = await createSupabaseServerClient();
+    if (!orgId) return;
 
-  const evaluatedAt = new Date().toISOString();
-  const [tasks, evidence, policies] = await Promise.all([
-    safeSelectTasks(supabase, orgId),
-    safeSelectEvidence(supabase, orgId),
-    safeSelectPolicies(supabase, orgId),
-  ]);
+    const evaluatedAt = new Date().toISOString();
+    const [tasks, evidence, policies] = await Promise.all([
+      safeSelectTasks(supabase, orgId),
+      safeSelectEvidence(supabase, orgId),
+      safeSelectPolicies(supabase, orgId),
+    ]);
 
-  const evaluations: EvaluationRow[] = [];
+    const evaluations: EvaluationRow[] = [];
 
-  // Tasks
-  for (const task of tasks) {
-    const status = taskStatus(task);
-    evaluations.push({
-      organization_id: orgId,
-      control_type: 'task',
-      control_key: `task:${task.id}`,
-      required: true,
-      status,
-      last_evaluated_at: evaluatedAt,
-      details: {
-        title: task.title,
-        status: task.status,
-        due_at: task.due_at ?? task.due_date ?? null,
-        completed_at: task.completed_at ?? null,
-        reason: status === 'non_compliant' ? 'overdue' : undefined,
-      },
-    });
-  }
-
-  // Evidence
-  if (evidence.length === 0) {
-    evaluations.push({
-      organization_id: orgId,
-      control_type: 'evidence',
-      control_key: 'evidence_registry',
-      required: true,
-      status: 'at_risk',
-      last_evaluated_at: evaluatedAt,
-      details: {
-        reason: 'no_evidence_uploaded',
-      },
-    });
-  } else {
-    for (const item of evidence) {
+    // Tasks
+    for (const task of tasks) {
+      const status = taskStatus(task);
       evaluations.push({
         organization_id: orgId,
-        control_type: 'evidence',
-        control_key: `evidence:${item.id}`,
+        control_type: 'task',
+        control_key: `task:${task.id}`,
         required: true,
-        status: evidenceStatus(item),
+        status,
         last_evaluated_at: evaluatedAt,
         details: {
-          title: item.title,
-          status: item.status,
-          created_at: item.created_at ?? null,
+          title: task.title,
+          status: task.status,
+          due_at: task.due_at ?? task.due_date ?? null,
+          completed_at: task.completed_at ?? null,
+          reason: status === 'non_compliant' ? 'overdue' : undefined,
         },
       });
     }
-  }
 
-  // Policies (required + reviewed)
-  const policyMatches: Record<string, RawPolicy | null> = {};
-  for (const policy of policies) {
-    const title = policy.title || '';
-    const titleLower = title.toLowerCase();
-    for (const template of REQUIRED_POLICIES) {
-      if (template.match.some((m) => titleLower.includes(m))) {
-        policyMatches[template.key] = policy;
+    // Evidence
+    if (evidence.length === 0) {
+      evaluations.push({
+        organization_id: orgId,
+        control_type: 'evidence',
+        control_key: 'evidence_registry',
+        required: true,
+        status: 'at_risk',
+        last_evaluated_at: evaluatedAt,
+        details: {
+          reason: 'no_evidence_uploaded',
+        },
+      });
+    } else {
+      for (const item of evidence) {
+        evaluations.push({
+          organization_id: orgId,
+          control_type: 'evidence',
+          control_key: `evidence:${item.id}`,
+          required: true,
+          status: evidenceStatus(item),
+          last_evaluated_at: evaluatedAt,
+          details: {
+            title: item.title,
+            status: item.status,
+            created_at: item.created_at ?? null,
+          },
+        });
       }
     }
-  }
 
-  for (const template of REQUIRED_POLICIES) {
-    const matched = policyMatches[template.key] || null;
-    if (!matched) {
+    // Policies (required + reviewed)
+    const policyMatches: Record<string, RawPolicy | null> = {};
+    for (const policy of policies) {
+      const title = policy.title || '';
+      const titleLower = title.toLowerCase();
+      for (const template of REQUIRED_POLICIES) {
+        if (template.match.some((m) => titleLower.includes(m))) {
+          policyMatches[template.key] = policy;
+        }
+      }
+    }
+
+    for (const template of REQUIRED_POLICIES) {
+      const matched = policyMatches[template.key] || null;
+      if (!matched) {
+        evaluations.push({
+          organization_id: orgId,
+          control_type: 'policy',
+          control_key: `policy:${template.key}`,
+          required: true,
+          status: 'non_compliant',
+          last_evaluated_at: evaluatedAt,
+          details: {
+            policy_label: template.label,
+            reason: 'missing_required_policy',
+          },
+        });
+        continue;
+      }
+
+      const status = policyStatus(matched);
       evaluations.push({
         organization_id: orgId,
         control_type: 'policy',
         control_key: `policy:${template.key}`,
         required: true,
-        status: 'non_compliant',
+        status,
         last_evaluated_at: evaluatedAt,
         details: {
-          policy_label: template.label,
-          reason: 'missing_required_policy',
+          policy_id: matched.id,
+          title: matched.title,
+          status: matched.status,
+          updated_at: matched.updated_at ?? matched.created_at ?? null,
+          reason: status === 'non_compliant' ? 'unreviewed_policy' : undefined,
         },
       });
-      continue;
     }
 
-    const status = policyStatus(matched);
-    evaluations.push({
-      organization_id: orgId,
-      control_type: 'policy',
-      control_key: `policy:${template.key}`,
-      required: true,
-      status,
-      last_evaluated_at: evaluatedAt,
-      details: {
-        policy_id: matched.id,
-        title: matched.title,
-        status: matched.status,
-        updated_at: matched.updated_at ?? matched.created_at ?? null,
-        reason: status === 'non_compliant' ? 'unreviewed_policy' : undefined,
-      },
-    });
-  }
+    // Additional policies marked required in schema (if column exists)
+    const templateKeySet = new Set(REQUIRED_POLICIES.map((p) => p.key));
+    for (const policy of policies) {
+      if (!policy.required) continue;
+      const normalized = normalizeKey(policy.title);
+      if (normalized && templateKeySet.has(normalized)) continue;
+      const status = policyStatus(policy);
+      evaluations.push({
+        organization_id: orgId,
+        control_type: 'policy',
+        control_key: `policy:${normalized || policy.id}`,
+        required: true,
+        status,
+        last_evaluated_at: evaluatedAt,
+        details: {
+          policy_id: policy.id,
+          title: policy.title,
+          status: policy.status,
+          updated_at: policy.updated_at ?? policy.created_at ?? null,
+        },
+      });
+    }
 
-  // Additional policies marked required in schema (if column exists)
-  const templateKeySet = new Set(REQUIRED_POLICIES.map((p) => p.key));
-  for (const policy of policies) {
-    if (!policy.required) continue;
-    const normalized = normalizeKey(policy.title);
-    if (normalized && templateKeySet.has(normalized)) continue;
-    const status = policyStatus(policy);
-    evaluations.push({
-      organization_id: orgId,
-      control_type: 'policy',
-      control_key: `policy:${normalized || policy.id}`,
-      required: true,
-      status,
-      last_evaluated_at: evaluatedAt,
-      details: {
-        policy_id: policy.id,
-        title: policy.title,
-        status: policy.status,
-        updated_at: policy.updated_at ?? policy.created_at ?? null,
-      },
-    });
+    await upsertEvaluations(supabase, evaluations);
+    await logEvaluationAudit(supabase, orgId, evaluations);
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
   }
-
-  await upsertEvaluations(supabase, evaluations);
-  await logEvaluationAudit(supabase, orgId, evaluations);
 }
 
-export async function fetchComplianceSummary(
-  orgId: string,
-): Promise<ComplianceSummary> {
-  const supabase = await createSupabaseServerClient();
-  if (!orgId) {
-    return {
-      total: 0,
-      compliant: 0,
-      atRisk: 0,
-      nonCompliant: 0,
-      requiredNonCompliant: 0,
-    };
-  }
-
+export async function fetchComplianceSummary(orgId: string) {
   try {
-    const { data, error } = await supabase
-      .from('org_control_evaluations')
-      .select('status, required')
-      .eq('organization_id', orgId);
-
-    if (error || !data) {
+    const supabase = await createSupabaseServerClient();
+    if (!orgId) {
       return {
         total: 0,
         compliant: 0,
@@ -467,6 +456,76 @@ export async function fetchComplianceSummary(
         nonCompliant: 0,
         requiredNonCompliant: 0,
       };
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('org_control_evaluations')
+        .select('status, required')
+        .eq('organization_id', orgId);
+
+      if (error || !data) {
+        return {
+          total: 0,
+          compliant: 0,
+          atRisk: 0,
+          nonCompliant: 0,
+          requiredNonCompliant: 0,
+        };
+      }
+
+      const total = data.length;
+      const compliant = data.filter(
+        (r: { status: string; required?: boolean }) => r.status === 'compliant',
+      ).length;
+      const atRisk = data.filter(
+        (r: { status: string; required?: boolean }) => r.status === 'at_risk',
+      ).length;
+      const nonCompliant = data.filter(
+        (r: { status: string; required?: boolean }) =>
+          r.status === 'non_compliant',
+      ).length;
+      const requiredNonCompliant = data.filter(
+        (r: { status: string; required?: boolean }) =>
+          r.required && r.status === 'non_compliant',
+      ).length;
+
+      return {
+        total,
+        compliant,
+        atRisk,
+        nonCompliant,
+        requiredNonCompliant,
+      };
+    } catch {
+      return {
+        total: 0,
+        compliant: 0,
+        atRisk: 0,
+        nonCompliant: 0,
+        requiredNonCompliant: 0,
+      };
+    }
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function fetchComplianceSummaryStrict(orgId: string) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    if (!orgId) {
+      throw new Error('Organization context missing');
+    }
+
+    const { data, error } = await supabase
+      .from('org_control_evaluations')
+      .select('status, required')
+      .eq('organization_id', orgId);
+
+    if (error || !data) {
+      throw new Error('Compliance summary lookup failed');
     }
 
     const total = data.length;
@@ -492,76 +551,36 @@ export async function fetchComplianceSummary(
       nonCompliant,
       requiredNonCompliant,
     };
-  } catch {
-    return {
-      total: 0,
-      compliant: 0,
-      atRisk: 0,
-      nonCompliant: 0,
-      requiredNonCompliant: 0,
-    };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
   }
-}
-
-export async function fetchComplianceSummaryStrict(
-  orgId: string,
-): Promise<ComplianceSummary> {
-  const supabase = await createSupabaseServerClient();
-  if (!orgId) {
-    throw new Error('Organization context missing');
-  }
-
-  const { data, error } = await supabase
-    .from('org_control_evaluations')
-    .select('status, required')
-    .eq('organization_id', orgId);
-
-  if (error || !data) {
-    throw new Error('Compliance summary lookup failed');
-  }
-
-  const total = data.length;
-  const compliant = data.filter(
-    (r: { status: string; required?: boolean }) => r.status === 'compliant',
-  ).length;
-  const atRisk = data.filter(
-    (r: { status: string; required?: boolean }) => r.status === 'at_risk',
-  ).length;
-  const nonCompliant = data.filter(
-    (r: { status: string; required?: boolean }) => r.status === 'non_compliant',
-  ).length;
-  const requiredNonCompliant = data.filter(
-    (r: { status: string; required?: boolean }) =>
-      r.required && r.status === 'non_compliant',
-  ).length;
-
-  return {
-    total,
-    compliant,
-    atRisk,
-    nonCompliant,
-    requiredNonCompliant,
-  };
 }
 
 export async function fetchRequiredNonCompliantCount() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return 0;
-
   try {
-    const { data: membership, error } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    if (error || !membership?.organization_id) return 0;
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return 0;
 
-    const summary = await fetchComplianceSummary(membership.organization_id);
-    return summary.requiredNonCompliant;
-  } catch {
-    return 0;
+    try {
+      const { data: membership, error } = await supabase
+        .from('org_members')
+        .select('organization_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (error || !membership?.organization_id) return 0;
+
+      const summary = await fetchComplianceSummary(membership.organization_id);
+      if ('error' in summary) return 0;
+      return summary.requiredNonCompliant;
+    } catch {
+      return 0;
+    }
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
   }
 }

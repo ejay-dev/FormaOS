@@ -1,8 +1,8 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createPatient } from "@/app/app/actions/patients";
-import { normalizeRole } from "@/app/app/actions/rbac";
-import Link from "next/link";
-import { Users, AlertTriangle, Plus } from "lucide-react";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createPatient } from '@/app/app/actions/patients';
+import { normalizeRole } from '@/app/app/actions/rbac';
+import Link from 'next/link';
+import { Users, AlertTriangle, Plus } from 'lucide-react';
 
 type PatientRow = {
   id: string;
@@ -14,36 +14,50 @@ type PatientRow = {
 
 export default async function PatientsPage() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return null;
 
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id, role")
-    .eq("user_id", user.id)
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', user.id)
     .maybeSingle();
 
   if (!membership?.organization_id) return null;
 
   const roleKey = normalizeRole(membership.role ?? null);
-  const canWrite = ["OWNER", "COMPLIANCE_OFFICER", "MANAGER", "STAFF"].includes(roleKey);
+  const canWrite = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER', 'STAFF'].includes(
+    roleKey,
+  );
 
   const { data: patients } = await supabase
-    .from("org_patients")
-    .select("id, full_name, care_status, risk_level, emergency_flag")
-    .eq("organization_id", membership.organization_id)
-    .order("full_name", { ascending: true });
+    .from('org_patients')
+    .select('id, full_name, care_status, risk_level, emergency_flag')
+    .eq('organization_id', membership.organization_id)
+    .order('full_name', { ascending: true });
   const patientRows: PatientRow[] = patients ?? [];
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">Patients & Clients</h1>
-          <p className="text-sm text-muted-foreground">Track care status, risks, and documentation.</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+            Patients & Clients
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Track care status, risks, and documentation.
+          </p>
         </div>
         {canWrite && (
-          <form action={createPatient} className="flex flex-wrap items-center gap-3">
+          <form
+            action={async (fd: FormData) => {
+              'use server';
+              await createPatient(fd);
+            }}
+            className="flex flex-wrap items-center gap-3"
+          >
             <input type="hidden" name="careStatus" value="active" />
             <input type="hidden" name="riskLevel" value="low" />
             <input
@@ -69,7 +83,9 @@ export default async function PatientsPage() {
         </div>
         <div className="divide-y divide-white/10">
           {patientRows.length === 0 ? (
-            <div className="px-6 py-10 text-sm text-muted-foreground">No patients created yet.</div>
+            <div className="px-6 py-10 text-sm text-muted-foreground">
+              No patients created yet.
+            </div>
           ) : (
             patientRows.map((patient) => (
               <Link

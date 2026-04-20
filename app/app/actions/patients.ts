@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserOrgMembership, RoleKey } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 const STAFF_WRITE_ROLES = new Set<RoleKey>(["OWNER", "COMPLIANCE_OFFICER", "MANAGER", "STAFF"]);
 const ADMIN_ROLES = new Set<RoleKey>(["OWNER", "COMPLIANCE_OFFICER", "MANAGER"]);
@@ -16,6 +17,7 @@ async function requireRole(allowed: Set<RoleKey>) {
 }
 
 export async function createPatient(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const membership = await requireRole(STAFF_WRITE_ROLES);
   const { data: { user } } = await supabase.auth.getUser();
@@ -61,9 +63,14 @@ export async function createPatient(formData: FormData) {
   });
 
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function updatePatient(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const membership = await requireRole(STAFF_WRITE_ROLES);
   const { data: { user } } = await supabase.auth.getUser();
@@ -124,9 +131,14 @@ export async function updatePatient(formData: FormData) {
   });
 
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function createIncident(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const membership = await requireRole(STAFF_WRITE_ROLES);
   const { data: { user } } = await supabase.auth.getUser();
@@ -180,9 +192,14 @@ export async function createIncident(formData: FormData) {
   });
 
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function resolveIncident(input: FormData | string) {
+  try {
   const supabase = await createSupabaseServerClient();
   const membership = await requireRole(ADMIN_ROLES);
   const { data: { user } } = await supabase.auth.getUser();
@@ -222,9 +239,14 @@ export async function resolveIncident(input: FormData | string) {
   });
 
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function startShift(input?: FormData | string | null) {
+  try {
   const supabase = await createSupabaseServerClient();
   const membership = await requireRole(STAFF_WRITE_ROLES);
   const { data: { user } } = await supabase.auth.getUser();
@@ -272,9 +294,14 @@ export async function startShift(input?: FormData | string | null) {
   });
 
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function endShift(input: FormData | string) {
+  try {
   const supabase = await createSupabaseServerClient();
   const membership = await requireRole(STAFF_WRITE_ROLES);
   const { data: { user } } = await supabase.auth.getUser();
@@ -317,4 +344,8 @@ export async function endShift(input: FormData | string) {
   });
 
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

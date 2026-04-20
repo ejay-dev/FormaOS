@@ -48,7 +48,7 @@ export function CredentialInspectorModal({
     async function checkBlocks() {
       try {
         const count = await fetchRequiredNonCompliantCount();
-        if (mounted) setBlocked(count > 0);
+        if (mounted) setBlocked(typeof count === 'number' && typeof count === 'number' && count > 0);
       } catch {
         if (mounted) setBlocked(false);
       }
@@ -69,7 +69,7 @@ export function CredentialInspectorModal({
     async function loadSignedUrl() {
       try {
         const result = await getEvidenceSignedUrl(credential!.file_path!);
-        if (mounted) setSignedUrl(result.signedUrl);
+        if (mounted && 'signedUrl' in result && 'signedUrl' in result) setSignedUrl(result.signedUrl);
       } catch {
         if (mounted) setSignedUrl(null);
       }

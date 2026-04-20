@@ -60,9 +60,18 @@ export function EvidenceButton({
       formData.append('taskId', taskId);
       formData.append('file', file);
 
-      await uploadEvidence(formData);
+      const result = await uploadEvidence(formData);
 
       clearInterval(progressInterval);
+
+      if (!result.success) {
+        reportError({
+          title: 'Upload failed',
+          message: result.error,
+        });
+        return;
+      }
+
       setUploadProgress(100);
 
       // Show success state
@@ -76,7 +85,10 @@ export function EvidenceButton({
     } catch (error: unknown) {
       reportError({
         title: 'Upload failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Unexpected error uploading evidence',
       });
     } finally {
       setUploading(false);

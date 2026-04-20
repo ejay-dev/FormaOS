@@ -44,7 +44,13 @@ export default async function NewIncidentPage() {
       </div>
 
       {/* Form */}
-      <form action={createIncident} className="space-y-6">
+      <form
+        action={async (fd: FormData) => {
+          'use server';
+          await createIncident(fd);
+        }}
+        className="space-y-6"
+      >
         {/* Incident Details */}
         <div className="rounded-xl border border-border p-6 space-y-4">
           <h2 className="text-lg font-semibold">Incident Details</h2>

@@ -23,12 +23,13 @@ export function NavNotificationBadge() {
   async function loadUnreadCount() {
     try {
       const history = await getAutomationHistory(20);
+      if (!Array.isArray(history)) return;
 
       // Count recent critical/high priority events (last 24 hours)
       const oneDayAgo = new Date();
       oneDayAgo.setDate(oneDayAgo.getDate() - 1);
 
-      const recentAlerts = history.filter((event) => {
+      const recentAlerts = history.filter((event: { executedAt: string; trigger: string }) => {
         const eventDate = new Date(event.executedAt);
         const isCritical = ['control_failed', 'risk_score_change'].includes(
           event.trigger

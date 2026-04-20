@@ -52,8 +52,8 @@ export function AutomationStats() {
         getAutomationStats(),
         getAutomationHistory(5),
       ]);
-      setStats(statsData);
-      setHistory(historyData);
+      if (!('error' in statsData)) setStats(statsData);
+      if (Array.isArray(historyData)) setHistory(historyData);
     } catch (error) {
       console.error('Failed to load automation stats:', error);
     } finally {

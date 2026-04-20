@@ -20,6 +20,7 @@ import {
 } from '@/lib/security/rate-limiter';
 import { createCorrelationId } from '@/lib/security/correlation';
 import { exportLogger } from '@/lib/observability/structured-logger';
+import { actionError, isNextInternalError } from '@/lib/actions/safe';
 
 // Performance monitoring
 let lastExportMetrics: {
@@ -31,7 +32,12 @@ let lastExportMetrics: {
 } | null = null;
 
 export function getLastExportMetrics() {
-  return lastExportMetrics;
+  try {
+    return lastExportMetrics;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 function fmtDate(d?: string | null) {
@@ -177,264 +183,274 @@ async function buildAuditPDF(payload: {
 }
 
 export async function createAuditBundleAction() {
-  // ⏱️ START PERFORMANCE TRACKING
-  const startTime = Date.now();
-  let pdfSize = 0;
-
   try {
-    // 0) Who / org
-    const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Unauthorized');
+    // ⏱️ START PERFORMANCE TRACKING
+    const startTime = Date.now();
+    let pdfSize = 0;
 
-    const permissionCtx = await requirePermission('EXPORT_REPORTS');
-    const { orgId } = await getOrgIdForUser();
-    if (permissionCtx.orgId !== orgId)
-      throw new Error('Organization mismatch.');
-    const identifier = await getClientIdentifier();
-    const rateLimit = await checkRateLimit(
-      RATE_LIMITS.EXPORT,
-      identifier,
-      permissionCtx.userId,
-    );
-    if (!rateLimit.success) {
-      throw new Error('Export rate limit exceeded. Please try again later.');
-    }
-    const correlationId = createCorrelationId();
-    await requireEntitlement(orgId, 'audit_export');
+    try {
+      // 0) Who / org
+      const supabase = await createSupabaseServerClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error('Unauthorized');
 
-    // 1) HARD BLOCK, this is the lock-in
-    await requireNoComplianceBlocks(orgId, 'AUDIT_EXPORT');
-
-    // 2) Fetch org name
-    const { data: orgRow, error: orgError } = await supabase
-      .from('organizations')
-      .select('name')
-      .eq('id', orgId)
-      .maybeSingle();
-
-    if (orgError) throw orgError;
-
-    const orgName = orgRow?.name ?? 'Organization';
-
-    // 3) Latest compliance snapshot (framework snapshots only)
-    let latestEval: any = null;
-    const evalSelects = [
-      'framework_id, compliance_score, total_controls, missing_controls, missing_control_codes, snapshot_hash, created_at, last_evaluated_at',
-      'framework_id, created_at',
-    ];
-
-    let evalError: string | null = null;
-    for (const select of evalSelects) {
-      const { data, error } = await supabase
-        .from('org_control_evaluations')
-        .select(select)
-        .eq('organization_id', orgId)
-        .eq('control_type', 'framework_snapshot')
-        .order(
-          select.includes('last_evaluated_at')
-            ? 'last_evaluated_at'
-            : 'created_at',
-          { ascending: false },
-        )
-        .limit(1)
-        .maybeSingle();
-
-      if (!error) {
-        latestEval = data;
-        evalError = null;
-        break;
+      const permissionCtx = await requirePermission('EXPORT_REPORTS');
+      const _orgResult = await getOrgIdForUser();
+      if ('error' in _orgResult) throw new Error(_orgResult.error);
+      const { orgId } = _orgResult;
+      if (permissionCtx.orgId !== orgId)
+        throw new Error('Organization mismatch.');
+      const identifier = await getClientIdentifier();
+      const rateLimit = await checkRateLimit(
+        RATE_LIMITS.EXPORT,
+        identifier,
+        permissionCtx.userId,
+      );
+      if (!rateLimit.success) {
+        throw new Error('Export rate limit exceeded. Please try again later.');
       }
-      evalError = error.message;
-    }
+      const correlationId = createCorrelationId();
+      await requireEntitlement(orgId, 'audit_export');
 
-    if (evalError) {
-      throw new Error(evalError);
-    }
+      // 1) HARD BLOCK, this is the lock-in
+      await requireNoComplianceBlocks(orgId, 'AUDIT_EXPORT');
 
-    // Pull framework code if possible
-    let frameworkCode: string | null = null;
-    if (latestEval?.framework_id) {
-      const { data: fw, error: fwError } = await supabase
-        .from('compliance_frameworks')
-        .select('code')
-        .eq('id', latestEval.framework_id)
+      // 2) Fetch org name
+      const { data: orgRow, error: orgError } = await supabase
+        .from('organizations')
+        .select('name')
+        .eq('id', orgId)
         .maybeSingle();
-      if (fwError) throw fwError;
-      frameworkCode = fw?.code ?? null;
-    }
 
-    // 4) Compile bundle data (counts + key highlights)
-    // Policies (approved)
-    const { data: policies, error: policiesError } = await supabase
-      .from('org_policies')
-      .select('id')
-      .eq('organization_id', orgId)
-      .eq('status', 'approved');
-    if (policiesError) throw policiesError;
+      if (orgError) throw orgError;
 
-    // Tasks (completed)
-    const { data: tasks, error: tasksError } = await supabase
-      .from('org_tasks')
-      .select('id')
-      .eq('organization_id', orgId)
-      .eq('status', 'completed');
-    if (tasksError) throw tasksError;
+      const orgName = orgRow?.name ?? 'Organization';
 
-    // Evidence (approved)
-    const { data: evidence, error: evidenceError } = await supabase
-      .from('org_evidence')
-      .select('id')
-      .eq('organization_id', orgId)
-      .eq('status', 'approved');
-    if (evidenceError) throw evidenceError;
+      // 3) Latest compliance snapshot (framework snapshots only)
+      let latestEval: any = null;
+      const evalSelects = [
+        'framework_id, compliance_score, total_controls, missing_controls, missing_control_codes, snapshot_hash, created_at, last_evaluated_at',
+        'framework_id, created_at',
+      ];
 
-    // Registers
-    const { data: assets, error: assetsError } = await supabase
-      .from('org_assets')
-      .select('id')
-      .eq('organization_id', orgId);
-    if (assetsError) throw assetsError;
+      let evalError: string | null = null;
+      for (const select of evalSelects) {
+        const { data, error } = await supabase
+          .from('org_control_evaluations')
+          .select(select)
+          .eq('organization_id', orgId)
+          .eq('control_type', 'framework_snapshot')
+          .order(
+            select.includes('last_evaluated_at')
+              ? 'last_evaluated_at'
+              : 'created_at',
+            { ascending: false },
+          )
+          .limit(1)
+          .maybeSingle();
 
-    const { data: risks, error: risksError } = await supabase
-      .from('org_risks')
-      .select('id')
-      .eq('organization_id', orgId);
-    if (risksError) throw risksError;
+        if (!error) {
+          latestEval = data;
+          evalError = null;
+          break;
+        }
+        evalError = error.message;
+      }
 
-    // Training
-    const { data: training, error: trainingError } = await supabase
-      .from('org_training_records')
-      .select('id')
-      .eq('organization_id', orgId);
-    if (trainingError) throw trainingError;
+      if (evalError) {
+        throw new Error(evalError);
+      }
 
-    // 5) Generate PDF bytes
-    const nowISO = new Date().toISOString();
-    const pdfBytes = await buildAuditPDF({
-      orgName,
-      frameworkCode,
-      snapshotHash: latestEval?.snapshot_hash ?? null,
-      score: latestEval?.compliance_score ?? null,
-      missing: latestEval?.missing_controls ?? null,
-      total: latestEval?.total_controls ?? null,
-      missingCodes:
-        (latestEval?.missing_control_codes as string[] | null) ?? [],
-      policiesCount: policies?.length ?? 0,
-      completedTasksCount: tasks?.length ?? 0,
-      approvedEvidenceCount: evidence?.length ?? 0,
-      assetsCount: assets?.length ?? 0,
-      risksCount: risks?.length ?? 0,
-      trainingCount: training?.length ?? 0,
-      generatedAtISO: nowISO,
-    });
+      // Pull framework code if possible
+      let frameworkCode: string | null = null;
+      if (latestEval?.framework_id) {
+        const { data: fw, error: fwError } = await supabase
+          .from('compliance_frameworks')
+          .select('code')
+          .eq('id', latestEval.framework_id)
+          .maybeSingle();
+        if (fwError) throw fwError;
+        frameworkCode = fw?.code ?? null;
+      }
 
-    // ⏱️ TRACK PDF SIZE
-    pdfSize = pdfBytes.length;
+      // 4) Compile bundle data (counts + key highlights)
+      // Policies (approved)
+      const { data: policies, error: policiesError } = await supabase
+        .from('org_policies')
+        .select('id')
+        .eq('organization_id', orgId)
+        .eq('status', 'approved');
+      if (policiesError) throw policiesError;
 
-    // 6) Upload to Storage (private) + signed URL
-    const fileName = `audit_bundle_${nowISO.replace(/[:.]/g, '-')}.pdf`;
-    const filePath = `${orgId}/${fileName}`;
+      // Tasks (completed)
+      const { data: tasks, error: tasksError } = await supabase
+        .from('org_tasks')
+        .select('id')
+        .eq('organization_id', orgId)
+        .eq('status', 'completed');
+      if (tasksError) throw tasksError;
 
-    const { error: uploadErr } = await supabase.storage
-      .from('audit-bundles')
-      .upload(filePath, pdfBytes, {
-        contentType: 'application/pdf',
-        upsert: true,
+      // Evidence (approved)
+      const { data: evidence, error: evidenceError } = await supabase
+        .from('org_evidence')
+        .select('id')
+        .eq('organization_id', orgId)
+        .eq('status', 'approved');
+      if (evidenceError) throw evidenceError;
+
+      // Registers
+      const { data: assets, error: assetsError } = await supabase
+        .from('org_assets')
+        .select('id')
+        .eq('organization_id', orgId);
+      if (assetsError) throw assetsError;
+
+      const { data: risks, error: risksError } = await supabase
+        .from('org_risks')
+        .select('id')
+        .eq('organization_id', orgId);
+      if (risksError) throw risksError;
+
+      // Training
+      const { data: training, error: trainingError } = await supabase
+        .from('org_training_records')
+        .select('id')
+        .eq('organization_id', orgId);
+      if (trainingError) throw trainingError;
+
+      // 5) Generate PDF bytes
+      const nowISO = new Date().toISOString();
+      const pdfBytes = await buildAuditPDF({
+        orgName,
+        frameworkCode,
+        snapshotHash: latestEval?.snapshot_hash ?? null,
+        score: latestEval?.compliance_score ?? null,
+        missing: latestEval?.missing_controls ?? null,
+        total: latestEval?.total_controls ?? null,
+        missingCodes:
+          (latestEval?.missing_control_codes as string[] | null) ?? [],
+        policiesCount: policies?.length ?? 0,
+        completedTasksCount: tasks?.length ?? 0,
+        approvedEvidenceCount: evidence?.length ?? 0,
+        assetsCount: assets?.length ?? 0,
+        risksCount: risks?.length ?? 0,
+        trainingCount: training?.length ?? 0,
+        generatedAtISO: nowISO,
       });
 
-    if (uploadErr) throw uploadErr;
+      // ⏱️ TRACK PDF SIZE
+      pdfSize = pdfBytes.length;
 
-    // signed url (10 mins)
-    const { data: signed, error: signErr } = await supabase.storage
-      .from('audit-bundles')
-      .createSignedUrl(filePath, 60 * 10);
+      // 6) Upload to Storage (private) + signed URL
+      const fileName = `audit_bundle_${nowISO.replace(/[:.]/g, '-')}.pdf`;
+      const filePath = `${orgId}/${fileName}`;
 
-    if (signErr) throw signErr;
+      const { error: uploadErr } = await supabase.storage
+        .from('audit-bundles')
+        .upload(filePath, pdfBytes, {
+          contentType: 'application/pdf',
+          upsert: true,
+        });
 
-    // 7) Write export ledger row (supports legacy schema)
-    try {
-      const { error: exportErr } = await supabase.from('org_exports').insert({
-        organization_id: orgId,
-        export_type: 'AUDIT_BUNDLE',
-        framework_id: latestEval?.framework_id ?? null,
-        status: 'generated',
-        created_by: user.id,
-        payload: {
-          frameworkCode,
+      if (uploadErr) throw uploadErr;
+
+      // signed url (10 mins)
+      const { data: signed, error: signErr } = await supabase.storage
+        .from('audit-bundles')
+        .createSignedUrl(filePath, 60 * 10);
+
+      if (signErr) throw signErr;
+
+      // 7) Write export ledger row (supports legacy schema)
+      try {
+        const { error: exportErr } = await supabase.from('org_exports').insert({
+          organization_id: orgId,
+          export_type: 'AUDIT_BUNDLE',
+          framework_id: latestEval?.framework_id ?? null,
+          status: 'generated',
+          created_by: user.id,
+          payload: {
+            frameworkCode,
+            snapshot_hash: latestEval?.snapshot_hash ?? null,
+            file_path: filePath,
+            correlation_id: correlationId,
+          },
+        });
+
+        if (exportErr) {
+          throw exportErr;
+        }
+      } catch {
+        await supabase.from('org_exports').insert({
+          organization_id: orgId,
+          type: 'AUDIT_BUNDLE',
+          framework_code: frameworkCode,
           snapshot_hash: latestEval?.snapshot_hash ?? null,
           file_path: filePath,
-          correlation_id: correlationId,
-        },
-      });
-
-      if (exportErr) {
-        throw exportErr;
+          created_by: user.id,
+          payload: { correlation_id: correlationId },
+        });
       }
-    } catch {
-      await supabase.from('org_exports').insert({
-        organization_id: orgId,
-        type: 'AUDIT_BUNDLE',
-        framework_code: frameworkCode,
-        snapshot_hash: latestEval?.snapshot_hash ?? null,
-        file_path: filePath,
-        created_by: user.id,
-        payload: { correlation_id: correlationId },
+
+      // 8) Log immutable audit event
+      await logActivity(
+        orgId,
+        'AUDIT_EXPORT',
+        `Generated audit bundle (${fileName})`,
+      );
+      await logAuditEvent({
+        organizationId: orgId,
+        actorUserId: user.id,
+        actorRole: permissionCtx.role,
+        entityType: 'export',
+        entityId: null,
+        actionType: 'AUDIT_BUNDLE_EXPORTED',
+        afterState: { fileName, filePath, correlation_id: correlationId },
+        reason: 'export',
       });
+
+      // ⏱️ END PERFORMANCE TRACKING
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      lastExportMetrics = {
+        startTime,
+        endTime,
+        duration,
+        pdfSize,
+        success: true,
+      };
+
+      exportLogger.info('audit_export_completed', {
+        durationMs: duration,
+        pdfSizeKb: +(pdfSize / 1024).toFixed(2),
+      });
+
+      revalidatePath('/app/reports');
+
+      // 9) Redirect user to download
+      redirect(signed.signedUrl);
+    } catch (error) {
+      // ⏱️ TRACK FAILED EXPORTS
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      lastExportMetrics = {
+        startTime,
+        endTime,
+        duration,
+        pdfSize,
+        success: false,
+      };
+
+      console.error(
+        `[PERFORMANCE] Audit export FAILED after ${duration}ms:`,
+        error,
+      );
+      throw error;
     }
-
-    // 8) Log immutable audit event
-    await logActivity(
-      orgId,
-      'AUDIT_EXPORT',
-      `Generated audit bundle (${fileName})`,
-    );
-    await logAuditEvent({
-      organizationId: orgId,
-      actorUserId: user.id,
-      actorRole: permissionCtx.role,
-      entityType: 'export',
-      entityId: null,
-      actionType: 'AUDIT_BUNDLE_EXPORTED',
-      afterState: { fileName, filePath, correlation_id: correlationId },
-      reason: 'export',
-    });
-
-    // ⏱️ END PERFORMANCE TRACKING
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-    lastExportMetrics = {
-      startTime,
-      endTime,
-      duration,
-      pdfSize,
-      success: true,
-    };
-
-    exportLogger.info('audit_export_completed', { durationMs: duration, pdfSizeKb: +(pdfSize / 1024).toFixed(2) });
-
-    revalidatePath('/app/reports');
-
-    // 9) Redirect user to download
-    redirect(signed.signedUrl);
   } catch (error) {
-    // ⏱️ TRACK FAILED EXPORTS
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-    lastExportMetrics = {
-      startTime,
-      endTime,
-      duration,
-      pdfSize,
-      success: false,
-    };
-
-    console.error(
-      `[PERFORMANCE] Audit export FAILED after ${duration}ms:`,
-      error,
-    );
-    throw error;
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
   }
 }

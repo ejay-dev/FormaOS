@@ -7,12 +7,14 @@ import { logActivity } from "@/lib/logger";
 import { logActivity as logProductActivity } from "@/lib/activity/feed";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 export async function updateOrganization(data: {
   name: string;
   domain?: string;
   registrationNumber?: string;
 }) {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -80,4 +82,8 @@ export async function updateOrganization(data: {
 
   revalidatePath("/app/settings");
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

@@ -6,6 +6,7 @@ import { SkeletonCard } from '@/components/ui/skeleton';
 
 async function Soc2DashboardLoader() {
   const data = await getSoc2DashboardData();
+  if ('error' in data) throw new Error(data.error);
 
   return (
     <Soc2Dashboard

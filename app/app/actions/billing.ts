@@ -7,6 +7,7 @@ import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
 import { isTrialEligiblePlan, resolvePlanKey } from '@/lib/plans';
 import { isFounder } from '@/lib/utils/founder';
 import { billingLogger } from '@/lib/observability/structured-logger';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 // Legacy plan_code uses different values (starter vs basic)
 function toLegacyPlanCode(planKey: string): string {
@@ -14,6 +15,7 @@ function toLegacyPlanCode(planKey: string): string {
 }
 
 export async function startCheckout(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -147,9 +149,14 @@ export async function startCheckout(formData: FormData) {
     });
     redirect('/app/billing?status=checkout_failed');
   }
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function openCustomerPortal() {
+  try {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -203,4 +210,8 @@ export async function openCustomerPortal() {
 
   // Return the URL instead of redirecting for client-side handling
   return portalSession.url;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

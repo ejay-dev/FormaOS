@@ -29,6 +29,9 @@ export default async function NewPolicyPage() {
     'use server';
 
     const result = await createPolicy(formData);
+    if (!result || 'error' in result) {
+      redirect('/app/policies');
+    }
     if (result?.policyId) {
       redirect(`/app/policies/${result.policyId}`);
     }

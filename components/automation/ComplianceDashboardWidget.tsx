@@ -57,8 +57,8 @@ export function ComplianceDashboardWidget() {
         getComplianceSummary(),
         getAutomationHistory(3),
       ]);
-      setSummary(summaryData);
-      setAlerts(historyData);
+      if (!('error' in summaryData)) setSummary(summaryData);
+      if (Array.isArray(historyData)) setAlerts(historyData);
     } catch (error) {
       console.error('Failed to load compliance data:', error);
     } finally {

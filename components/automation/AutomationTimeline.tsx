@@ -73,7 +73,7 @@ export function AutomationTimeline({ limit = 10 }: { limit?: number }) {
   async function loadEvents() {
     try {
       const data = await getAutomationHistory(limit);
-      setEvents(data);
+      if (Array.isArray(data)) setEvents(data);
     } catch (error) {
       console.error('Failed to load automation history:', error);
     } finally {

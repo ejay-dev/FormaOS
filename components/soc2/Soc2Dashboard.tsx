@@ -43,7 +43,7 @@ export function Soc2Dashboard({
   const handleRunAssessment = () => {
     startAssessment(async () => {
       const result = await runSoc2Assessment();
-      setAssessment(result);
+      if (!('error' in result)) setAssessment(result);
       // Refresh the page data after assessment
       window.location.reload();
     });
@@ -53,6 +53,7 @@ export function Soc2Dashboard({
     startGenerate(async () => {
       try {
         const report = await generateReportAction();
+        if ('error' in report) throw new Error(report.error);
         setReportStatus(`Report generated: ${report.organizationName} — Score: ${report.overallScore}%`);
         // Update local state with fresh data from the report
         setAssessment({

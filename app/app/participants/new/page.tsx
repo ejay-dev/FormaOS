@@ -47,7 +47,13 @@ export default async function NewParticipantPage() {
       </div>
 
       {/* Form */}
-      <form action={createParticipant} className="space-y-6">
+      <form
+        action={async (fd: FormData) => {
+          'use server';
+          await createParticipant(fd);
+        }}
+        className="space-y-6"
+      >
         {/* Basic Information */}
         <div className="rounded-xl border border-border p-6 space-y-4">
           <h2 className="text-lg font-semibold">Basic Information</h2>

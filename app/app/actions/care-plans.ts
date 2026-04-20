@@ -2,10 +2,12 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 // ---- Care Plan CRUD ----
 
 export async function getCarePlan(planId: string, orgId: string) {
+  try {
   const db = await createSupabaseServerClient();
   const { data: plan } = await db
     .from('org_care_plans')
@@ -24,6 +26,10 @@ export async function getCarePlan(planId: string, orgId: string) {
     .order('created_at', { ascending: true });
 
   return { ...plan, goals: goals ?? [] };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function updateCarePlan(
@@ -31,6 +37,7 @@ export async function updateCarePlan(
   orgId: string,
   updates: Record<string, unknown>,
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data, error } = await db
     .from('org_care_plans')
@@ -43,6 +50,10 @@ export async function updateCarePlan(
   if (error) throw new Error(error.message);
   revalidatePath('/app/care-plans');
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function transitionPlanStatus(
@@ -51,6 +62,7 @@ export async function transitionPlanStatus(
   newStatus: 'draft' | 'active' | 'review' | 'completed' | 'archived',
   _reason?: string,
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data: current } = await db
     .from('org_care_plans')
@@ -89,6 +101,10 @@ export async function transitionPlanStatus(
   if (error) throw new Error(error.message);
   revalidatePath('/app/care-plans');
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function duplicateCarePlan(
@@ -96,6 +112,7 @@ export async function duplicateCarePlan(
   orgId: string,
   createdBy: string,
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data: source } = await db
     .from('org_care_plans')
@@ -122,6 +139,10 @@ export async function duplicateCarePlan(
   if (error) throw new Error(error.message);
   revalidatePath('/app/care-plans');
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // ---- Goal CRUD ----
@@ -140,6 +161,7 @@ export async function createGoal(
     participant_id?: string;
   },
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data, error } = await db
     .from('org_care_goals')
@@ -154,6 +176,10 @@ export async function createGoal(
   if (error) throw new Error(error.message);
   revalidatePath(`/app/care-plans/${planId}`);
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function updateGoal(
@@ -161,6 +187,7 @@ export async function updateGoal(
   orgId: string,
   updates: Record<string, unknown>,
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data, error } = await db
     .from('org_care_goals')
@@ -172,6 +199,10 @@ export async function updateGoal(
 
   if (error) throw new Error(error.message);
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function recordGoalProgress(
@@ -184,6 +215,7 @@ export async function recordGoalProgress(
     evidence_ids?: string[];
   },
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data, error } = await db
     .from('org_goal_progress_entries')
@@ -200,9 +232,14 @@ export async function recordGoalProgress(
 
   if (error) throw new Error(error.message);
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function getGoalHistory(goalId: string, orgId: string) {
+  try {
   const db = await createSupabaseServerClient();
   const { data } = await db
     .from('org_goal_progress_entries')
@@ -212,6 +249,10 @@ export async function getGoalHistory(goalId: string, orgId: string) {
     .order('recorded_at', { ascending: true });
 
   return data ?? [];
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // ---- Medication Actions ----
@@ -233,6 +274,7 @@ export async function createMedication(
     created_by?: string;
   },
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data, error } = await db
     .from('org_medications')
@@ -243,9 +285,14 @@ export async function createMedication(
   if (error) throw new Error(error.message);
   revalidatePath(`/app/participants/${participantId}/medications`);
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function discontinueMedication(medId: string, orgId: string) {
+  try {
   const db = await createSupabaseServerClient();
   const { data, error } = await db
     .from('org_medications')
@@ -257,6 +304,10 @@ export async function discontinueMedication(medId: string, orgId: string) {
 
   if (error) throw new Error(error.message);
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function recordMedicationAdministration(
@@ -271,6 +322,7 @@ export async function recordMedicationAdministration(
     witness_id?: string;
   },
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data, error } = await db
     .from('org_medication_administrations')
@@ -280,12 +332,17 @@ export async function recordMedicationAdministration(
 
   if (error) throw new Error(error.message);
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function getMedicationHistory(
   orgId: string,
   participantId: string,
 ) {
+  try {
   const db = await createSupabaseServerClient();
 
   const { data: meds } = await db
@@ -296,12 +353,17 @@ export async function getMedicationHistory(
     .order('created_at', { ascending: false });
 
   return meds ?? [];
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function getMedicationAdminLog(
   orgId: string,
   medicationId: string,
 ) {
+  try {
   const db = await createSupabaseServerClient();
   const { data } = await db
     .from('org_medication_administrations')
@@ -311,4 +373,8 @@ export async function getMedicationAdminLog(
     .order('administered_at', { ascending: false });
 
   return data ?? [];
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

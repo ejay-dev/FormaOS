@@ -43,9 +43,10 @@ export function NotificationsPanel() {
   async function loadNotifications() {
     try {
       const history = await getAutomationHistory(10);
+      if (!Array.isArray(history)) return;
 
       // Transform automation history into notifications
-      const notifs: Notification[] = history.map((event) => ({
+      const notifs: Notification[] = history.map((event: { id: string; status: string; trigger: string; actionsExecuted: number; executedAt: string }) => ({
         id: event.id,
         type: event.status === 'success' ? 'success' : 'alert',
         title: getTriggerTitle(event.trigger),

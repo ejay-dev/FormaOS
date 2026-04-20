@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { logActivity } from '@/lib/logger';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 export async function registerVaultArtifact(data: {
   title: string;
@@ -14,6 +15,7 @@ export async function registerVaultArtifact(data: {
   policyId?: string;
   checksum?: string;
 }) {
+  try {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -68,9 +70,14 @@ export async function registerVaultArtifact(data: {
   if (data.policyId) revalidatePath(`/app/policies/${data.policyId}`);
 
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function getEvidenceSignedUrl(filePath: string) {
+  try {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -99,4 +106,8 @@ export async function getEvidenceSignedUrl(filePath: string) {
   }
 
   return { signedUrl: data.signedUrl };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

@@ -4,6 +4,7 @@ import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 import { logActivity as logger } from '@/lib/logger';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 /**
  * GateKey union
@@ -99,6 +100,7 @@ async function safeLogActivity(
  * Return org context for current user (orgId, role, userId)
  */
 export async function getOrgIdForUser() {
+  try {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -121,6 +123,10 @@ export async function getOrgIdForUser() {
     role: membership.role as string | undefined,
     userId: user.id,
   };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
@@ -128,6 +134,7 @@ export async function getOrgIdForUser() {
  * If gateKey provided, it filters down to that gate (but still returns matches).
  */
 export async function getComplianceBlocks(orgId: string, gateKey?: GateKey) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   try {
@@ -149,6 +156,10 @@ export async function getComplianceBlocks(orgId: string, gateKey?: GateKey) {
   } catch {
     return [] as ComplianceBlock[];
   }
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
@@ -160,6 +171,7 @@ export async function requireNoComplianceBlocks(
   orgId: string,
   gateKey: GateKey,
 ) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   try {
@@ -228,12 +240,17 @@ export async function requireNoComplianceBlocks(
     // Any other unexpected error should not be swallowed, rethrow to surface auth/db issues
     throw err;
   }
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * Resolve compliance blocks for a given gate key (mark resolved_at and resolved_by).
  */
 export async function resolveComplianceBlocks(orgId: string, gateKey: GateKey) {
+  try {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -300,5 +317,9 @@ export async function resolveComplianceBlocks(orgId: string, gateKey: GateKey) {
     return { success: true };
   } catch (e) {
     throw e;
+  }
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
   }
 }

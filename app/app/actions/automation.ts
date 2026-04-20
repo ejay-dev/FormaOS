@@ -27,25 +27,36 @@ import {
   runScheduledCheck,
 } from '@/lib/automation/scheduled-processor';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 /**
  * Get current compliance score for organization
  */
-export async function getComplianceScore(): Promise<ComplianceScoreResult> {
+export async function getComplianceScore() {
+  try {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
   const score = await calculateComplianceScore(orgId);
   return score;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * Manually trigger compliance score recalculation
  */
-export async function recalculateComplianceScore(): Promise<ComplianceScoreResult> {
+export async function recalculateComplianceScore() {
+  try {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
   const score = await updateComplianceScore(orgId);
   return score;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
@@ -54,7 +65,8 @@ export async function recalculateComplianceScore(): Promise<ComplianceScoreResul
 export async function triggerAutomation(
   triggerType: TriggerType,
   metadata?: Record<string, any>,
-): Promise<AutomationResult> {
+) {
+  try {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
   const event: TriggerEvent = {
@@ -66,6 +78,10 @@ export async function triggerAutomation(
 
   const result = await processTrigger(event);
   return result;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
@@ -76,7 +92,8 @@ export async function triggerDatabaseEvent(
   entityId: string,
   entityType: string,
   metadata?: Record<string, any>,
-): Promise<{ triggered: boolean }> {
+) {
+  try {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
   const event: DatabaseEvent = {
@@ -90,22 +107,17 @@ export async function triggerDatabaseEvent(
 
   const result = await processEvent(event);
   return result;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * Get automation execution history
  */
-export async function getAutomationHistory(limit: number = 50): Promise<
-  Array<{
-    id: string;
-    workflowId: string;
-    trigger: string;
-    status: string;
-    actionsExecuted: number;
-    executedAt: string;
-    errorMessage?: string | null;
-  }>
-> {
+export async function getAutomationHistory(limit: number = 50) {
+  try {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
   const supabase = createSupabaseAdminClient();
@@ -144,21 +156,17 @@ export async function getAutomationHistory(limit: number = 50): Promise<
       }),
     ) || []
   );
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * Get active automation workflows
  */
-export async function getActiveWorkflows(): Promise<
-  Array<{
-    id: string;
-    name: string;
-    trigger: string;
-    enabled: boolean;
-    conditions: any[];
-    actions: any[];
-  }>
-> {
+export async function getActiveWorkflows() {
+  try {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
   const supabase = createSupabaseAdminClient();
@@ -174,16 +182,17 @@ export async function getActiveWorkflows(): Promise<
   }
 
   return data || [];
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * Admin-only: Run scheduled automation checks
  */
-export async function runScheduledChecks(): Promise<{
-  checksRun: number;
-  triggersExecuted: number;
-  errors: string[];
-}> {
+export async function runScheduledChecks() {
+  try {
   // Admin permission required
   const { role } = await requirePermission('VIEW_CONTROLS');
 
@@ -193,6 +202,10 @@ export async function runScheduledChecks(): Promise<{
 
   const result = await runScheduledAutomation();
   return result;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
@@ -200,7 +213,8 @@ export async function runScheduledChecks(): Promise<{
  */
 export async function runSpecificCheck(
   checkType: 'evidence' | 'policies' | 'tasks' | 'certifications' | 'scores',
-): Promise<any> {
+) {
+  try {
   const { role } = await requirePermission('VIEW_CONTROLS');
 
   if (role !== 'OWNER' && role !== 'COMPLIANCE_OFFICER') {
@@ -209,22 +223,17 @@ export async function runSpecificCheck(
 
   const result = await runScheduledCheck(checkType);
   return result;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * Get compliance score summary for dashboard
  */
-export async function getComplianceSummary(): Promise<{
-  score: number;
-  riskLevel: string;
-  lastUpdated: string;
-  breakdown: {
-    controls: number;
-    evidence: number;
-    tasks: number;
-    policies: number;
-  };
-}> {
+export async function getComplianceSummary() {
+  try {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
   const supabase = createSupabaseAdminClient();
@@ -262,19 +271,17 @@ export async function getComplianceSummary(): Promise<{
       policies: data.details?.policiesScore || 0,
     },
   };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * Get automation statistics
  */
-export async function getAutomationStats(): Promise<{
-  totalWorkflows: number;
-  activeWorkflows: number;
-  totalExecutions: number;
-  successfulExecutions: number;
-  failedExecutions: number;
-  lastExecutionDate?: string;
-}> {
+export async function getAutomationStats() {
+  try {
   const { orgId } = await requirePermission('VIEW_CONTROLS');
 
   const supabase = createSupabaseAdminClient();
@@ -326,4 +333,8 @@ export async function getAutomationStats(): Promise<{
     failedExecutions: failedExecutions || 0,
     lastExecutionDate: lastExecution?.executed_at,
   };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

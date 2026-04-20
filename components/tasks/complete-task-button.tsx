@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { createSupabaseClient } from "@/lib/supabase/client"
-import { CheckCircle2, Circle, Loader2, AlertTriangle } from "lucide-react"
-import { fetchRequiredNonCompliantCount } from "@/app/app/actions/control-evaluations"
-import { useComplianceAction } from "@/components/compliance-system"
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createSupabaseClient } from '@/lib/supabase/client';
+import { CheckCircle2, Circle, Loader2, AlertTriangle } from 'lucide-react';
+import { fetchRequiredNonCompliantCount } from '@/app/app/actions/control-evaluations';
+import { useComplianceAction } from '@/components/compliance-system';
 
 /**
  * =========================================================
@@ -13,73 +13,76 @@ import { useComplianceAction } from "@/components/compliance-system"
  * Node Type: Task (emerald)
  * Wire: Task → Control (green loop back)
  * =========================================================
- * 
+ *
  * Completing a task updates the compliance graph by marking
  * the task node as verified and strengthening connected wires.
  */
 
-export function CompleteTaskButton({ 
-  taskId, 
+export function CompleteTaskButton({
+  taskId,
   taskTitle,
-  initialStatus 
-}: { 
-  taskId: string, 
-  taskTitle?: string,
-  initialStatus: string 
+  initialStatus,
+}: {
+  taskId: string;
+  taskTitle?: string;
+  initialStatus: string;
 }) {
-  const [loading, setLoading] = useState(false)
-  const [blocked, setBlocked] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const router = useRouter()
-  const { taskCompleted, reportError, reportWarning } = useComplianceAction()
-  const isCompleted = initialStatus === 'completed'
+  const [loading, setLoading] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const router = useRouter();
+  const { taskCompleted, reportError, reportWarning } = useComplianceAction();
+  const isCompleted = initialStatus === 'completed';
 
   useEffect(() => {
-    let mounted = true
+    let mounted = true;
     async function checkBlocks() {
       try {
-        const count = await fetchRequiredNonCompliantCount()
-        if (mounted) setBlocked(count > 0)
+        const count = await fetchRequiredNonCompliantCount();
+        if (mounted) setBlocked(typeof count === 'number' && count > 0);
       } catch {
-        if (mounted) setBlocked(false)
+        if (mounted) setBlocked(false);
       }
     }
-    checkBlocks()
+    checkBlocks();
     return () => {
-      mounted = false
-    }
-  }, [])
+      mounted = false;
+    };
+  }, []);
 
   async function toggleStatus() {
-    if (isCompleted) return
-    
+    if (isCompleted) return;
+
     if (blocked) {
-      reportWarning({ title: "Cannot complete", message: "Non-compliant controls exist" })
-      return
+      reportWarning({
+        title: 'Cannot complete',
+        message: 'Non-compliant controls exist',
+      });
+      return;
     }
-    
-    setLoading(true)
-    const supabase = createSupabaseClient()
+
+    setLoading(true);
+    const supabase = createSupabaseClient();
     const { error } = await supabase
       .from('org_tasks')
       .update({ status: 'completed' })
-      .eq('id', taskId)
+      .eq('id', taskId);
 
     if (error) {
-      reportError({ title: "Completion failed", message: error.message })
+      reportError({ title: 'Completion failed', message: error.message });
     } else {
       // Show success animation
-      setShowSuccess(true)
-      
+      setShowSuccess(true);
+
       // Report to compliance system
-      taskCompleted(taskTitle || `Task ${taskId.slice(0, 8)}`)
-      
+      taskCompleted(taskTitle || `Task ${taskId.slice(0, 8)}`);
+
       // Refresh after animation
       setTimeout(() => {
-        router.refresh()
-      }, 500)
+        router.refresh();
+      }, 500);
     }
-    setLoading(false)
+    setLoading(false);
   }
 
   // Success animation state
@@ -89,22 +92,26 @@ export function CompleteTaskButton({
         <CheckCircle2 className="h-5 w-5 text-emerald-400 animate-in zoom-in-50 duration-300" />
         <div className="absolute inset-0 rounded-full bg-emerald-400/20 animate-ping" />
       </div>
-    )
+    );
   }
 
   return (
-    <button 
+    <button
       onClick={toggleStatus}
       disabled={loading || isCompleted}
       className={`group relative transition-all motion-safe:active:scale-95 ${
-        isCompleted ? 'cursor-default' : blocked ? 'cursor-not-allowed' : 'cursor-pointer'
+        isCompleted
+          ? 'cursor-default'
+          : blocked
+            ? 'cursor-not-allowed'
+            : 'cursor-pointer'
       }`}
       title={
-        blocked 
-          ? "Task completion blocked by non-compliant controls" 
-          : isCompleted 
-            ? "Task completed"
-            : "Click to complete task"
+        blocked
+          ? 'Task completion blocked by non-compliant controls'
+          : isCompleted
+            ? 'Task completed'
+            : 'Click to complete task'
       }
     >
       {loading ? (
@@ -122,5 +129,5 @@ export function CompleteTaskButton({
         <Circle className="h-5 w-5 text-muted-foreground group-hover:text-emerald-400 group-hover:drop-shadow-[0_0_4px_rgba(52,211,153,0.4)] transition-all" />
       )}
     </button>
-  )
+  );
 }

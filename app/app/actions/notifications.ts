@@ -3,6 +3,7 @@
 import { notify } from '@/lib/notifications/engine';
 import type { NotificationEventType } from '@/lib/notifications/types';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 /**
  * Canonical input type
@@ -40,6 +41,7 @@ function mapLegacyType(type: string): NotificationEventType {
  * - Type-level opt-outs
  */
 export async function createNotification(input: CreateNotificationInput) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -90,12 +92,17 @@ export async function createNotification(input: CreateNotificationInput) {
   });
 
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * 🔐 USER: Mark a single notification as read
  */
 export async function markNotificationRead(id: string) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -123,12 +130,17 @@ export async function markNotificationRead(id: string) {
   if (error) throw error;
 
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
  * 🔐 USER: Mark all notifications as read
  */
 export async function markAllNotificationsRead() {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -156,6 +168,10 @@ export async function markAllNotificationsRead() {
   if (error) throw error;
 
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /**
@@ -171,6 +187,7 @@ export async function notifySelf(params: {
   actionUrl?: string;
   metadata?: Record<string, any>;
 }) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -194,4 +211,8 @@ export async function notifySelf(params: {
   });
 
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { insertOrgTaskCompat } from "@/lib/tasks/persistence";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 async function requireUserOrganization(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
@@ -27,6 +28,7 @@ async function requireUserOrganization(
 // =========================================================
 
 export async function createParticipant(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -79,9 +81,14 @@ export async function createParticipant(formData: FormData) {
 
   revalidatePath("/app/participants");
   redirect("/app/participants");
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function updateParticipant(id: string, formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -122,6 +129,10 @@ export async function updateParticipant(id: string, formData: FormData) {
 
   revalidatePath(`/app/participants/${id}`);
   revalidatePath("/app/participants");
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // =========================================================
@@ -129,6 +140,7 @@ export async function updateParticipant(id: string, formData: FormData) {
 // =========================================================
 
 export async function createVisit(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -171,9 +183,14 @@ export async function createVisit(formData: FormData) {
 
   revalidatePath("/app/visits");
   redirect("/app/visits");
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function updateVisitStatus(id: string, status: string, notes?: string) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -203,6 +220,10 @@ export async function updateVisitStatus(id: string, status: string, notes?: stri
 
   revalidatePath("/app/visits");
   revalidatePath(`/app/visits/${id}`);
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // =========================================================
@@ -210,6 +231,7 @@ export async function updateVisitStatus(id: string, status: string, notes?: stri
 // =========================================================
 
 export async function createIncident(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -269,9 +291,14 @@ export async function createIncident(formData: FormData) {
 
   revalidatePath("/app/incidents");
   redirect("/app/incidents");
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function resolveIncident(id: string, formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -297,6 +324,10 @@ export async function resolveIncident(id: string, formData: FormData) {
 
   revalidatePath("/app/incidents");
   revalidatePath(`/app/incidents/${id}`);
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // =========================================================
@@ -304,6 +335,7 @@ export async function resolveIncident(id: string, formData: FormData) {
 // =========================================================
 
 export async function createStaffCredential(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -360,9 +392,14 @@ export async function createStaffCredential(formData: FormData) {
 
   revalidatePath("/app/staff-compliance");
   redirect("/app/staff-compliance");
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function verifyStaffCredential(id: string) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -384,6 +421,10 @@ export async function verifyStaffCredential(id: string) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/app/staff-compliance");
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // =========================================================
@@ -391,6 +432,7 @@ export async function verifyStaffCredential(id: string) {
 // =========================================================
 
 export async function createCarePlan(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -431,4 +473,8 @@ export async function createCarePlan(formData: FormData) {
 
   revalidatePath("/app/care-plans");
   redirect("/app/care-plans");
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

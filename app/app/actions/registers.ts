@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { logActivity } from "@/lib/logger";
 import { requirePermission } from "@/app/app/actions/rbac";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 export type AssetType = "hardware" | "software" | "data" | "people" | "facility";
 export type RiskCategory = "security" | "compliance" | "operational" | "financial" | "reputational";
@@ -28,6 +29,7 @@ export async function addTrainingRecord(data: {
   completionDate: string;
   expiryDate?: string;
 }) {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -58,12 +60,17 @@ export async function addTrainingRecord(data: {
 
   revalidatePath("/app/registers/training");
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /* =========================
    ASSETS (new)
    ========================= */
 export async function createAsset(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -112,12 +119,17 @@ export async function createAsset(formData: FormData) {
 
   revalidatePath("/app/registers");
   return { success: true, assetId: asset?.id };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 /* =========================
    RISKS (new)
    ========================= */
 export async function createRisk(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -169,4 +181,8 @@ export async function createRisk(formData: FormData) {
 
   revalidatePath("/app/registers");
   return { success: true, riskId: risk?.id, riskScore: score, severity };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

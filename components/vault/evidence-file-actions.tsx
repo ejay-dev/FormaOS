@@ -20,7 +20,9 @@ export function EvidenceFileActions({
 
     try {
       setLoading(true);
-      const { signedUrl } = await getEvidenceSignedUrl(filePath);
+      const result = await getEvidenceSignedUrl(filePath);
+      if ('error' in result) throw new Error(result.error);
+      const { signedUrl } = result;
 
       if (mode === 'download') {
         const anchor = document.createElement('a');

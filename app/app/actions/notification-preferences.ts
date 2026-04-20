@@ -1,8 +1,10 @@
 "use server";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 export async function getNotificationPreferences() {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -15,6 +17,10 @@ export async function getNotificationPreferences() {
 
   if (error) throw error;
   return data;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function updateNotificationPreferences(updates: {
@@ -25,6 +31,7 @@ export async function updateNotificationPreferences(updates: {
   task_updates?: boolean;
   security_updates?: boolean;
 }) {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -40,4 +47,8 @@ export async function updateNotificationPreferences(updates: {
   if (error) throw error;
 
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

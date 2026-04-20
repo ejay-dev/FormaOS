@@ -1,8 +1,8 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { fetchSystemState } from "@/lib/system-state/server";
-import { verifyStaffCredential } from "@/app/app/actions/care-operations";
-import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { fetchSystemState } from '@/lib/system-state/server';
+import { verifyStaffCredential } from '@/app/app/actions/care-operations';
+import { notFound, redirect } from 'next/navigation';
+import Link from 'next/link';
 import {
   ArrowLeft,
   BadgeCheck,
@@ -10,18 +10,18 @@ import {
   FileText,
   ShieldAlert,
   User,
-} from "lucide-react";
+} from 'lucide-react';
 
 function formatDate(value: string | null | undefined): string {
-  if (!value) return "N/A";
+  if (!value) return 'N/A';
   try {
-    return new Date(value).toLocaleDateString("en-AU", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
+    return new Date(value).toLocaleDateString('en-AU', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
     });
   } catch {
-    return "N/A";
+    return 'N/A';
   }
 }
 
@@ -46,16 +46,16 @@ export default async function StaffCredentialDetailPage({
   params?: Promise<{ id: string }>;
 }) {
   const resolvedParams = await params;
-  const credentialId = resolvedParams?.id ?? "";
-  if (!credentialId) redirect("/app/staff-compliance");
+  const credentialId = resolvedParams?.id ?? '';
+  if (!credentialId) redirect('/app/staff-compliance');
 
   const systemState = await fetchSystemState();
-  if (!systemState) redirect("/auth/signin");
+  if (!systemState) redirect('/auth/signin');
   const orgId = systemState.organization.id;
 
   const supabase = await createSupabaseServerClient();
   const { data: credentialData } = await supabase
-    .from("org_staff_credentials")
+    .from('org_staff_credentials')
     .select(
       `
       id,
@@ -72,17 +72,20 @@ export default async function StaffCredentialDetailPage({
       staff:user_id(id, email)
     `,
     )
-    .eq("organization_id", orgId)
-    .eq("id", credentialId)
+    .eq('organization_id', orgId)
+    .eq('id', credentialId)
     .maybeSingle();
 
   const credential = credentialData as CredentialRow | null;
   if (!credential) notFound();
 
-  const verifyAction = verifyStaffCredential.bind(null, credential.id);
+  const verifyAction = async () => {
+    'use server';
+    await verifyStaffCredential(credential.id);
+  };
   const canVerify =
-    credential.status !== "verified" &&
-    (systemState.role === "owner" || systemState.role === "admin");
+    credential.status !== 'verified' &&
+    (systemState.role === 'owner' || systemState.role === 'admin');
 
   return (
     <div className="space-y-6">
@@ -94,7 +97,9 @@ export default async function StaffCredentialDetailPage({
           <ArrowLeft className="h-4 w-4" />
           Back to staff compliance
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight">{credential.credential_name}</h1>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {credential.credential_name}
+        </h1>
         <p className="text-sm text-muted-foreground">
           Credential record and verification controls.
         </p>
@@ -102,20 +107,36 @@ export default async function StaffCredentialDetailPage({
 
       <div className="grid gap-4 md:grid-cols-4">
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">Status</p>
-          <p className="mt-1 text-2xl font-black capitalize">{credential.status}</p>
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            Status
+          </p>
+          <p className="mt-1 text-2xl font-black capitalize">
+            {credential.status}
+          </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">Staff</p>
-          <p className="mt-1 text-sm font-semibold">{credential.staff?.email || "N/A"}</p>
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            Staff
+          </p>
+          <p className="mt-1 text-sm font-semibold">
+            {credential.staff?.email || 'N/A'}
+          </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">Issue Date</p>
-          <p className="mt-1 text-sm font-semibold">{formatDate(credential.issue_date)}</p>
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            Issue Date
+          </p>
+          <p className="mt-1 text-sm font-semibold">
+            {formatDate(credential.issue_date)}
+          </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">Expiry Date</p>
-          <p className="mt-1 text-sm font-semibold">{formatDate(credential.expiry_date)}</p>
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+            Expiry Date
+          </p>
+          <p className="mt-1 text-sm font-semibold">
+            {formatDate(credential.expiry_date)}
+          </p>
         </div>
       </div>
 
@@ -128,15 +149,17 @@ export default async function StaffCredentialDetailPage({
           <dl className="mt-4 grid gap-3 text-sm">
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">Type</dt>
-              <dd className="capitalize">{credential.credential_type.replace("_", " ")}</dd>
+              <dd className="capitalize">
+                {credential.credential_type.replace('_', ' ')}
+              </dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">Credential Number</dt>
-              <dd>{credential.credential_number || "N/A"}</dd>
+              <dd>{credential.credential_number || 'N/A'}</dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">Issuing Authority</dt>
-              <dd>{credential.issuing_authority || "N/A"}</dd>
+              <dd>{credential.issuing_authority || 'N/A'}</dd>
             </div>
             <div className="flex justify-between gap-3">
               <dt className="text-muted-foreground">Verified At</dt>
@@ -155,7 +178,7 @@ export default async function StaffCredentialDetailPage({
             Notes
           </h2>
           <p className="mt-3 whitespace-pre-wrap text-sm text-foreground">
-            {credential.notes || "No additional notes were provided."}
+            {credential.notes || 'No additional notes were provided.'}
           </p>
         </section>
       </div>
@@ -167,7 +190,8 @@ export default async function StaffCredentialDetailPage({
             Verification
           </h2>
           <p className="mt-2 text-sm text-emerald-100">
-            Confirm this credential as verified after reviewing evidence and validity.
+            Confirm this credential as verified after reviewing evidence and
+            validity.
           </p>
           <form action={verifyAction} className="mt-4">
             <button
@@ -186,7 +210,8 @@ export default async function StaffCredentialDetailPage({
             Verification locked
           </div>
           <p className="mt-1 text-xs text-amber-200">
-            Only admins and owners can verify credentials, or this record is already verified.
+            Only admins and owners can verify credentials, or this record is
+            already verified.
           </p>
         </section>
       )}
@@ -194,7 +219,8 @@ export default async function StaffCredentialDetailPage({
       <div className="rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">
         <div className="inline-flex items-center gap-2">
           <CalendarClock className="h-4 w-4" />
-          Track expiring credentials from the staff compliance list for renewal actions.
+          Track expiring credentials from the staff compliance list for renewal
+          actions.
         </div>
       </div>
     </div>

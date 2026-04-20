@@ -38,7 +38,7 @@ export function ComplianceScoreCard() {
   async function loadSummary() {
     try {
       const data = await getComplianceSummary();
-      setSummary(data);
+      if (!('error' in data)) setSummary(data);
     } catch (error) {
       console.error('Failed to load compliance summary:', error);
     } finally {

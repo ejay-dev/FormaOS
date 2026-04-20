@@ -6,8 +6,10 @@ import { revalidatePath } from "next/cache";
 import { notifySelf } from "@/app/app/actions/notifications";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 export async function createPolicy(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -80,9 +82,14 @@ export async function createPolicy(formData: FormData) {
 
   revalidatePath("/app/policies");
   return { success: true, policyId: policy.id };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function updatePolicy(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -153,9 +160,14 @@ export async function updatePolicy(formData: FormData) {
 
   revalidatePath("/app/policies");
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 export async function linkArtifactToPolicy(policyId: string, evidenceId: string) {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -205,4 +217,8 @@ export async function linkArtifactToPolicy(policyId: string, evidenceId: string)
   });
 
   revalidatePath(`/app/policies/${policyId}`);
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

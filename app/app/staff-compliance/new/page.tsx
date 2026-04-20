@@ -56,7 +56,13 @@ export default async function NewCredentialPage() {
       </div>
 
       {/* Form */}
-      <form action={createStaffCredential} className="space-y-6">
+      <form
+        action={async (fd: FormData) => {
+          'use server';
+          await createStaffCredential(fd);
+        }}
+        className="space-y-6"
+      >
         {/* Staff & Credential Type */}
         <div className="rounded-xl border border-border p-6 space-y-4">
           <h2 className="text-lg font-semibold">Credential Details</h2>

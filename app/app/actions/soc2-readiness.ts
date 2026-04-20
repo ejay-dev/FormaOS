@@ -18,12 +18,14 @@ import type {
   AutomatedCheckResult,
   Soc2CertificationReport,
 } from '@/lib/soc2/types';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 // ---------------------------------------------------------------------------
 // Run a full SOC 2 readiness assessment
 // ---------------------------------------------------------------------------
 
-export async function runSoc2Assessment(): Promise<Soc2ReadinessResult> {
+export async function runSoc2Assessment() {
+  try {
   const permissionCtx = await requirePermission('EDIT_CONTROLS');
   const result = await calculateSoc2Readiness(permissionCtx.orgId);
 
@@ -35,6 +37,10 @@ export async function runSoc2Assessment(): Promise<Soc2ReadinessResult> {
   await analyzeSoc2Gaps(permissionCtx.orgId, result.controlResults);
 
   return result;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -48,7 +54,8 @@ interface Soc2DashboardData {
   automatedChecks: AutomatedCheckResult[];
 }
 
-export async function getSoc2DashboardData(): Promise<Soc2DashboardData> {
+export async function getSoc2DashboardData() {
+  try {
   const permissionCtx = await requirePermission('VIEW_CONTROLS');
   const orgId = permissionCtx.orgId;
 
@@ -70,6 +77,10 @@ export async function getSoc2DashboardData(): Promise<Soc2DashboardData> {
     remediationActions: remediationData,
     automatedChecks,
   };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 async function loadRemediationActions(
@@ -105,7 +116,8 @@ async function loadRemediationActions(
 export async function updateMilestoneAction(
   milestoneId: string,
   updates: { status?: Soc2Milestone['status']; targetDate?: string | null },
-): Promise<{ success: boolean }> {
+) {
+  try {
   const permissionCtx = await requirePermission('EDIT_CONTROLS');
   const supabase = await createSupabaseServerClient();
 
@@ -129,6 +141,10 @@ export async function updateMilestoneAction(
   if (error) throw new Error(`Failed to update milestone: ${error.message}`);
 
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -137,7 +153,8 @@ export async function updateMilestoneAction(
 
 export async function completeRemediationAction(
   actionId: string,
-): Promise<{ success: boolean }> {
+) {
+  try {
   const permissionCtx = await requirePermission('EDIT_CONTROLS');
   const supabase = await createSupabaseServerClient();
 
@@ -153,13 +170,22 @@ export async function completeRemediationAction(
   if (error) throw new Error(`Failed to complete remediation action: ${error.message}`);
 
   return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 // ---------------------------------------------------------------------------
 // Generate SOC 2 certification report
 // ---------------------------------------------------------------------------
 
-export async function generateReportAction(): Promise<Soc2CertificationReport> {
+export async function generateReportAction() {
+  try {
   const permissionCtx = await requirePermission('GENERATE_CERTIFICATIONS');
   return generateSoc2Report(permissionCtx.orgId);
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

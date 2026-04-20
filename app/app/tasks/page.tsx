@@ -132,7 +132,13 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               Add
             </summary>
             <div className="absolute right-0 mt-2 bg-card border border-border rounded-lg p-4 shadow-lg w-80 z-20">
-              <form action={createTask} className="space-y-3">
+              <form
+                action={async (fd: FormData) => {
+                  'use server';
+                  await createTask(fd);
+                }}
+                className="space-y-3"
+              >
                 <div className="space-y-1.5">
                   <label
                     htmlFor="field-216"

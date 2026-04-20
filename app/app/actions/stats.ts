@@ -1,6 +1,7 @@
 "use server"
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 type TaskRow = {
   status: string | null;
@@ -9,6 +10,7 @@ type TaskRow = {
 };
 
 export async function getComplianceStats() {
+  try {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
@@ -57,4 +59,8 @@ export async function getComplianceStats() {
       (t) => t.priority === "critical" && t.status !== "completed"
     ).length,
   };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

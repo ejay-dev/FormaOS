@@ -116,10 +116,12 @@ async function ComplianceScoreSection({
   let complianceBlocks: any[] = [];
   let requiredNonCompliantCount = 0;
   try {
-    complianceBlocks = await getComplianceBlocks(orgId, 'AUDIT_EXPORT');
+    const blocksResult = await getComplianceBlocks(orgId, 'AUDIT_EXPORT');
+    complianceBlocks = Array.isArray(blocksResult) ? blocksResult : [];
     await evaluateOrgCompliance(orgId);
     const summary = await fetchComplianceSummary(orgId);
-    requiredNonCompliantCount = summary.requiredNonCompliant;
+    if (!('error' in summary))
+      requiredNonCompliantCount = summary.requiredNonCompliant;
   } catch {
     complianceBlocks = [];
     requiredNonCompliantCount = 0;

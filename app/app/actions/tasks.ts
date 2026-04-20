@@ -12,8 +12,10 @@ import { requirePermission } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
 import { normalizeTaskPriority } from '@/lib/tasks/priority';
 import { insertOrgTaskCompat } from '@/lib/tasks/persistence';
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
 export async function createTask(formData: FormData) {
+  try {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -139,6 +141,10 @@ export async function createTask(formData: FormData) {
 
   revalidatePath('/app/tasks');
   return;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }
 
 async function _completeTaskCore(supabase: any, taskId: string, user: any) {

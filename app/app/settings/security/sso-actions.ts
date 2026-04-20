@@ -12,6 +12,7 @@ export async function saveOrgSsoConfigAction(input: {
   idpMetadataXml: string | null;
 }): Promise<{ ok: boolean; error?: string }> {
   const ctx = await getOrgIdForUser();
+  if ('error' in ctx) return { ok: false, error: ctx.error };
 
   if (ctx.orgId !== input.orgId) {
     return { ok: false, error: 'Organization mismatch.' };
@@ -54,7 +55,9 @@ export async function saveOrgSsoConfigAction(input: {
     orgId: input.orgId,
     enabled: Boolean(input.enabled),
     enforceSso: Boolean(input.enforceSso),
-    allowedDomains: Array.isArray(input.allowedDomains) ? input.allowedDomains : [],
+    allowedDomains: Array.isArray(input.allowedDomains)
+      ? input.allowedDomains
+      : [],
     idpMetadataXml: input.idpMetadataXml,
   });
 }

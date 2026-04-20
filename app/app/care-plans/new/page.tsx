@@ -3,38 +3,46 @@
  * Create a new care/support plan for a client
  */
 
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { fetchSystemState } from "@/lib/system-state/server";
-import { createCarePlan } from "@/app/app/actions/care-operations";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { fetchSystemState } from '@/lib/system-state/server';
+import { createCarePlan } from '@/app/app/actions/care-operations';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 function getCarePlanLabel(industry: string | null): string {
   switch (industry) {
-    case "ndis": return "Support Plan";
-    case "healthcare": return "Clinical Plan";
-    case "childcare": return "Learning Plan";
-    default: return "Care Plan";
+    case 'ndis':
+      return 'Support Plan';
+    case 'healthcare':
+      return 'Clinical Plan';
+    case 'childcare':
+      return 'Learning Plan';
+    default:
+      return 'Care Plan';
   }
 }
 
 function getClientLabel(industry: string | null): string {
   switch (industry) {
-    case "ndis": return "Participant";
-    case "healthcare": return "Patient";
-    case "childcare": return "Child";
-    default: return "Resident";
+    case 'ndis':
+      return 'Participant';
+    case 'healthcare':
+      return 'Patient';
+    case 'childcare':
+      return 'Child';
+    default:
+      return 'Resident';
   }
 }
 
 export const metadata = {
-  title: "New Care Plan | FormaOS",
+  title: 'New Care Plan | FormaOS',
 };
 
 export default async function NewCarePlanPage() {
   const systemState = await fetchSystemState();
-  if (!systemState) redirect("/auth/signin");
+  if (!systemState) redirect('/auth/signin');
 
   const { organization } = systemState;
   const label = getCarePlanLabel(organization.industry);
@@ -44,10 +52,10 @@ export default async function NewCarePlanPage() {
 
   // Fetch clients to populate the dropdown
   const { data: clients } = await supabase
-    .from("org_participants")
-    .select("id, full_name")
-    .eq("organization_id", organization.id)
-    .order("full_name", { ascending: true })
+    .from('org_participants')
+    .select('id, full_name')
+    .eq('organization_id', organization.id)
+    .order('full_name', { ascending: true })
     .limit(500);
 
   return (
@@ -62,12 +70,20 @@ export default async function NewCarePlanPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold">New {label}</h1>
-          <p className="text-muted-foreground">Create a new plan for a {clientLabel.toLowerCase()}</p>
+          <p className="text-muted-foreground">
+            Create a new plan for a {clientLabel.toLowerCase()}
+          </p>
         </div>
       </div>
 
       {/* Form */}
-      <form action={createCarePlan} className="space-y-6">
+      <form
+        action={async (fd: FormData) => {
+          'use server';
+          await createCarePlan(fd);
+        }}
+        className="space-y-6"
+      >
         {/* Plan Details */}
         <div className="rounded-xl border border-border p-6 space-y-4">
           <h2 className="text-lg font-semibold">Plan Details</h2>
@@ -88,7 +104,10 @@ export default async function NewCarePlanPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="client_id" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="client_id"
+                className="block text-sm font-medium mb-1"
+              >
                 {clientLabel} <span className="text-red-500">*</span>
               </label>
               <select
@@ -106,7 +125,12 @@ export default async function NewCarePlanPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="plan_type" className="block text-sm font-medium mb-1">Plan Type</label>
+              <label
+                htmlFor="plan_type"
+                className="block text-sm font-medium mb-1"
+              >
+                Plan Type
+              </label>
               <select
                 id="plan_type"
                 name="plan_type"
@@ -122,7 +146,12 @@ export default async function NewCarePlanPage() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium mb-1">Description</label>
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium mb-1"
+            >
+              Description
+            </label>
             <textarea
               id="description"
               name="description"
@@ -139,7 +168,10 @@ export default async function NewCarePlanPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="start_date" className="block text-sm font-medium mb-1">
+              <label
+                htmlFor="start_date"
+                className="block text-sm font-medium mb-1"
+              >
                 Start Date <span className="text-red-500">*</span>
               </label>
               <input
@@ -151,7 +183,12 @@ export default async function NewCarePlanPage() {
               />
             </div>
             <div>
-              <label htmlFor="end_date" className="block text-sm font-medium mb-1">End Date</label>
+              <label
+                htmlFor="end_date"
+                className="block text-sm font-medium mb-1"
+              >
+                End Date
+              </label>
               <input
                 id="end_date"
                 type="date"
@@ -160,7 +197,12 @@ export default async function NewCarePlanPage() {
               />
             </div>
             <div>
-              <label htmlFor="review_date" className="block text-sm font-medium mb-1">Review Date</label>
+              <label
+                htmlFor="review_date"
+                className="block text-sm font-medium mb-1"
+              >
+                Review Date
+              </label>
               <input
                 id="review_date"
                 type="date"
