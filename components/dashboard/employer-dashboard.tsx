@@ -48,6 +48,7 @@ import {
 } from '@/lib/monitoring/performance-monitor';
 import { QuickActions } from '@/components/dashboard/quick-actions';
 import { DailyStandUpCard } from '@/components/dashboard/DailyStandUpCard';
+import { QuickActionTiles } from '@/components/dashboard/QuickActionTiles';
 import { getEntityLabel } from '@/components/dashboard/industry-labels';
 import {
   AttentionRail,
@@ -403,6 +404,9 @@ export function EmployerDashboard({
       <ErrorBoundary name="ComplianceHeroBand" level="component">
         <ComplianceHeroBand />
       </ErrorBoundary>
+
+      {/* Task-first entry tiles: "I need to…" */}
+      <QuickActionTiles industry={industry} />
 
       {/* Daily stand-up: actions, wins, deadline */}
       <ErrorBoundary name="DailyStandUpCard" level="component">
