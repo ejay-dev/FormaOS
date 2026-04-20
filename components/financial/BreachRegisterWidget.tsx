@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { useComplianceAction } from '@/components/compliance-system';
+import { useLabel } from '@/lib/labels/use-label';
 
 interface Breach {
   id: string;
@@ -52,19 +53,24 @@ function BreachReportForm({
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { reportSuccess, reportError } = useComplianceAction();
+  const s912dLabel = useLabel('s912D');
+  const s912dFullLabel = useLabel('s912D Corporations Act 2001');
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const res = await fetch('/api/v1/registers/breach/' + breach.id + '/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          breach_id: breach.breach_id,
-          regulation: 's912D Corporations Act 2001',
-          action: 'self-report',
-        }),
-      });
+      const res = await fetch(
+        '/api/v1/registers/breach/' + breach.id + '/report',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            breach_id: breach.breach_id,
+            regulation: 's912D Corporations Act 2001',
+            action: 'self-report',
+          }),
+        },
+      );
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         throw new Error(data?.error || `Report failed (${res.status})`);
@@ -80,7 +86,10 @@ function BreachReportForm({
     } catch (err) {
       reportError({
         title: 'ASIC report failed',
-        message: err instanceof Error ? err.message : 'Unexpected error submitting breach report',
+        message:
+          err instanceof Error
+            ? err.message
+            : 'Unexpected error submitting breach report',
       });
     } finally {
       setIsSubmitting(false);
@@ -89,7 +98,7 @@ function BreachReportForm({
 
   return (
     <div className="mt-2 rounded-lg border border-border bg-muted/30 p-4 space-y-3">
-      <h4 className="text-sm font-semibold">Self-Report to ASIC (s912D)</h4>
+      <h4 className="text-sm font-semibold">Self-Report to ASIC ({s912dLabel})</h4>
       <div className="text-xs text-muted-foreground space-y-1">
         <p>
           <strong>Breach ID:</strong> {breach.breach_id}
@@ -101,7 +110,7 @@ function BreachReportForm({
           <strong>Detected:</strong> {breach.detected_date}
         </p>
         <p>
-          <strong>Regulation:</strong> s912D Corporations Act 2001
+          <strong>Regulation:</strong> {s912dFullLabel}
         </p>
         <p>
           <strong>Reporting Obligation:</strong> Report significant breaches
@@ -137,6 +146,7 @@ export function BreachRegisterWidget() {
     null,
   );
   const [expanded, setExpanded] = useState(false);
+  const s912dLabel = useLabel('s912D');
 
   useEffect(() => {
     let mounted = true;
@@ -161,7 +171,7 @@ export function BreachRegisterWidget() {
     <ErrorBoundary name="BreachRegisterWidget" level="component">
       <DashboardSectionCard
         title="Breach Register"
-        description="ASIC breach reporting pipeline (s912D)"
+        description={`ASIC breach reporting pipeline (${s912dLabel})`}
         icon={Scale}
       >
         {isLoading ? (
@@ -274,9 +284,7 @@ export function BreachRegisterWidget() {
                 onReported={(breachId) =>
                   setBreaches((prev) =>
                     prev.map((b) =>
-                      b.id === breachId
-                        ? { ...b, reported_to_asic: true }
-                        : b,
+                      b.id === breachId ? { ...b, reported_to_asic: true } : b,
                     ),
                   )
                 }

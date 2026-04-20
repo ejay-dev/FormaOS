@@ -20,6 +20,7 @@ import { requirePermission } from '@/app/app/actions/rbac';
 import { ExpiryAlertWidget } from '@/components/dashboard/expiry-alert-widget';
 import { SaveButton } from '@/components/ui/submit-button';
 import { AppearanceSettings } from '@/components/settings/appearance-settings';
+import { PlainEnglishToggle } from '@/components/settings/plain-english-toggle';
 import { fetchSystemState } from '@/lib/system-state/server';
 
 /**
@@ -340,6 +341,9 @@ export default async function SettingsPage() {
           </div>
         </div>
       </form>
+
+      {/* Plain-English label toggle */}
+      <PlainEnglishToggle />
 
       {/* Appearance / Theme Settings */}
       <AppearanceSettings />

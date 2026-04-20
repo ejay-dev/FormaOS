@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DashboardSectionCard } from '@/components/dashboard/unified-dashboard-layout';
+import { useLabel } from '@/lib/labels/use-label';
 
 // ==========================================================
 // RAG Helper
@@ -192,6 +193,7 @@ export function NDISParticipantSnapshot() {
 // NDIS — SIRS Notification Tracker
 // ==========================================================
 export function NDISSIRSTrackerWidget() {
+  const sirsLabel = useLabel('SIRS Notifications');
   const [counts, setCounts] = useState<{
     open: number;
     notified: number;
@@ -208,7 +210,7 @@ export function NDISSIRSTrackerWidget() {
   return (
     <ErrorBoundary name="NDISSIRSTrackerWidget" level="component">
       <DashboardSectionCard
-        title="SIRS Notifications"
+        title={sirsLabel}
         description="Serious incident reporting status"
         icon={AlertTriangle}
       >
@@ -251,6 +253,7 @@ interface Practitioner {
 }
 
 export function HealthcarePractitionerWidget() {
+  const ahpraLabel = useLabel('AHPRA');
   const [practitioners, setPractitioners] = useState<Practitioner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -274,7 +277,7 @@ export function HealthcarePractitionerWidget() {
     <ErrorBoundary name="HealthcarePractitionerWidget" level="component">
       <DashboardSectionCard
         title="Practitioner Register"
-        description="AHPRA status, CPD hours, indemnity"
+        description={`${ahpraLabel} status, CPD hours, indemnity`}
         icon={Stethoscope}
       >
         {isLoading ? (
@@ -359,6 +362,7 @@ interface NSQHSStandard {
 }
 
 export function HealthcareNSQHSWidget() {
+  const nsqhsLabel = useLabel('NSQHS Standards');
   const [standards, setStandards] = useState<NSQHSStandard[]>([]);
 
   useEffect(() => {
@@ -394,7 +398,7 @@ export function HealthcareNSQHSWidget() {
   return (
     <ErrorBoundary name="HealthcareNSQHSWidget" level="component">
       <DashboardSectionCard
-        title="NSQHS Standards"
+        title={nsqhsLabel}
         description="8 National Safety & Quality Standards"
         icon={Shield}
       >
@@ -539,6 +543,7 @@ interface EducatorCredential {
 }
 
 export function ChildcareEducatorCredentialsWidget() {
+  const wwcLabel = useLabel('WWC');
   const [educators, setEducators] = useState<EducatorCredential[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -591,7 +596,7 @@ export function ChildcareEducatorCredentialsWidget() {
                   <th className="py-1.5 px-2 text-left font-semibold">
                     Educator
                   </th>
-                  <th className="py-1.5 px-2 text-center font-semibold">WWC</th>
+                  <th className="py-1.5 px-2 text-center font-semibold">{wwcLabel}</th>
                   <th className="py-1.5 px-2 text-center font-semibold">
                     First Aid
                   </th>
@@ -659,6 +664,7 @@ interface QualityArea {
 }
 
 export function ChildcareNQFWidget() {
+  const nqfLabel = useLabel('NQF Quality Areas');
   const [areas, setAreas] = useState<QualityArea[]>([]);
 
   useEffect(() => {
@@ -688,7 +694,7 @@ export function ChildcareNQFWidget() {
   return (
     <ErrorBoundary name="ChildcareNQFWidget" level="component">
       <DashboardSectionCard
-        title="NQF Quality Areas"
+        title={nqfLabel}
         description="7 Quality Areas completion"
         icon={BookOpen}
       >

@@ -24,6 +24,7 @@ import { CommandProvider } from '@/components/ui/command-provider';
 import { ComplianceSystemProvider } from '@/components/compliance-system/provider';
 import { HelpAssistantProvider } from '@/components/help/help-assistant-context';
 import { AppShellErrorBoundary } from '@/components/app-shell-error-boundary';
+import { LabelProvider } from '@/lib/labels/use-label';
 import type { SystemState, UserEntitlements } from '@/lib/system-state/types';
 
 interface AppProvidersProps {
@@ -44,9 +45,11 @@ export function AppProviders({ children, initialState }: AppProvidersProps) {
         <CommandProvider>
           <ComplianceSystemProvider>
             <HelpAssistantProvider>
-              <AppShellErrorBoundary>
-                {children}
-              </AppShellErrorBoundary>
+              <LabelProvider>
+                <AppShellErrorBoundary>
+                  {children}
+                </AppShellErrorBoundary>
+              </LabelProvider>
             </HelpAssistantProvider>
           </ComplianceSystemProvider>
         </CommandProvider>
