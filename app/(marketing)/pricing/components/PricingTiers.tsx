@@ -4,24 +4,20 @@ import Link from 'next/link';
 import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { PUBLIC_PRICING_TIERS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-import {
-  AccentText,
-  IconFrame,
-  SectionEyebrow,
-  StatusPill,
-  SystemSection,
-  systemPanelClass,
-} from '@/components/marketing/SystemMarketingPrimitives';
 
 export function PricingTiers() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <SystemSection id="pricing-table" variant="emerald">
+    <section id="pricing-table" className="relative overflow-hidden bg-slate-950 py-24">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.14),transparent_34%)]" />
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
         <div className="mx-auto max-w-3xl text-center">
-          <SectionEyebrow icon={ShieldCheck} tone="valid">Infrastructure Pricing</SectionEyebrow>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl">
-            Three buying paths, one <AccentText>enforced compliance system</AccentText>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
+            Infrastructure Pricing
+          </p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
+            Three buying paths, one enforced compliance system
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-300">
             Pricing scales with compliance scope, organisational complexity, and
@@ -34,20 +30,20 @@ export function PricingTiers() {
           {PUBLIC_PRICING_TIERS.map((tier) => (
             <article
               key={tier.id}
-              className={`relative flex min-h-full flex-col p-6 ${
-                systemPanelClass
-              } ${
+              className={`relative flex min-h-full flex-col rounded-[2rem] border p-6 shadow-2xl ${
                 tier.featured
-                  ? 'border-emerald-300/40 bg-emerald-300/[0.09] shadow-[0_28px_90px_rgba(6,78,59,0.34),0_0_58px_rgba(52,211,153,0.14)] lg:-mt-5 lg:mb-5'
-                  : ''
+                  ? 'border-emerald-300/40 bg-emerald-300/[0.08] shadow-emerald-950/35 lg:-mt-5 lg:mb-5'
+                  : 'border-white/[0.08] bg-white/[0.045] shadow-slate-950/35'
               }`}
             >
               {tier.badge ? (
-                <span className="absolute right-6 top-6">
-                  <StatusPill tone="valid">{tier.badge}</StatusPill>
+                <span className="absolute right-6 top-6 rounded-full border border-emerald-300/30 bg-emerald-300/[0.12] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-100">
+                  {tier.badge}
                 </span>
               ) : null}
-              <IconFrame icon={ShieldCheck} tone={tier.featured ? 'valid' : 'live'} />
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08]">
+                <ShieldCheck className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+              </div>
               <h3 className="mt-6 text-2xl font-semibold text-white">{tier.name}</h3>
               <p className="mt-2 min-h-[2.5rem] text-sm leading-5 text-slate-300">
                 {tier.audience}
@@ -97,6 +93,7 @@ export function PricingTiers() {
             </article>
           ))}
         </div>
-    </SystemSection>
+      </div>
+    </section>
   );
 }
