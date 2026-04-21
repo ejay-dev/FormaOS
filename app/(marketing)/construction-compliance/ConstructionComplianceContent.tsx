@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 import {
   Shield,
   HardHat,
@@ -244,12 +245,12 @@ export default function ConstructionComplianceContent() {
           </>
         }
         subheadline="SafeWork inspectors arrive unannounced. FormaOS keeps SWMS current, inductions verified, and incidents tracked across every site."
-        primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
-        secondaryCta={{ label: 'See Construction Demo', href: '/contact' }}
+        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('construction_compliance') }}
+        secondaryCta={{ label: 'See Construction Demo', href: demoHref('construction_compliance') }}
         trustSignals={[
           'AU-hosted by default',
-          '14-day free trial',
-          'No credit card required',
+          'Assessment-led onboarding',
+          'Compliance plan scoped by framework',
           'SafeWork notification ready',
         ]}
         dashboardVisual={<ConstructionDashboardVisual />}

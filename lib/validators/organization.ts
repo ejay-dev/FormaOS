@@ -103,8 +103,8 @@ export const FRAMEWORK_OPTIONS = [
  * Plan options
  */
 export const PLAN_OPTIONS = [
-  { id: "basic", label: "Starter" },
-  { id: "pro", label: "Pro" },
+  { id: "basic", label: "Foundation" },
+  { id: "pro", label: "Growth" },
   { id: "enterprise", label: "Enterprise" },
 ] as const;
 

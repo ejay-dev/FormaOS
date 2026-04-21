@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 import {
   Bell,
   Shield,
@@ -231,12 +232,12 @@ export default function NDISProvidersContent() {
           </>
         }
         subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously - defensible every day, not just before audits."
-        primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
-        secondaryCta={{ label: 'See NDIS Demo', href: '/contact' }}
+        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('ndis_providers') }}
+        secondaryCta={{ label: PUBLIC_CTA_LABELS.seeDemo, href: demoHref('ndis_providers') }}
         trustSignals={[
           'AU-hosted by default',
-          '14-day free trial',
-          'No credit card required',
+          'Assessment-led onboarding',
+          'Compliance plan scoped by framework',
           'NDIS Commission aligned',
         ]}
         dashboardVisual={<NDISDashboardVisual />}
@@ -339,7 +340,7 @@ export default function NDISProvidersContent() {
             feature: 'Price',
             spreadsheets: 'Hidden',
             genericGrc: '$$$+',
-            formaos: 'From $159/mo',
+            formaos: 'Foundation $297/mo',
           },
         ]}
       />

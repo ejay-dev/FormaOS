@@ -38,8 +38,8 @@ export function TrialStatusBanner() {
         <div>
           <span className="font-semibold">
             {isLastDay 
-              ? "Trial expires today" 
-              : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left in your free trial`
+              ? "Evaluation access ends today"
+              : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left in your evaluation window`
             }
           </span>
           {!isLastDay && (

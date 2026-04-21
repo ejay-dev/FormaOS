@@ -206,7 +206,7 @@ export default function BillingPage() {
       ) : null}
       {status === 'missing_price' ? (
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-          This plan isn&apos;t currently available for self-serve checkout. Contact Formaos.team@gmail.com to proceed.
+          This plan requires a guided billing review. Contact Formaos.team@gmail.com to proceed.
         </div>
       ) : null}
       {trialExpired ? (
@@ -237,7 +237,7 @@ export default function BillingPage() {
         />
         {planKey === 'enterprise' ? (
           <div className="mt-3 text-xs text-muted-foreground">
-            Enterprise customers can self-serve or coordinate invoiced procurement with Formaos.team@gmail.com.
+            Enterprise billing is coordinated through procurement, security review, and invoiced rollout with Formaos.team@gmail.com.
           </div>
         ) : null}
         {trialEndsAt && !trialExpired ? (

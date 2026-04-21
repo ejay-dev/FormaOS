@@ -10,7 +10,6 @@ import {
   Lock,
   ShieldCheck,
 } from 'lucide-react';
-import { brand } from '@/config/brand';
 import { Reveal } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SecurityReviewHeroVisual } from './components/SecurityReviewHeroVisual';
@@ -18,8 +17,11 @@ import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { motion } from 'framer-motion';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  PUBLIC_CTA_LABELS,
+  securityReviewHref,
+  trustPacketHref,
+} from '@/lib/marketing/cta';
 
 const sections = [
   {
@@ -112,10 +114,13 @@ export default function SecurityReviewContent() {
         }}
         headline="Security Review Packet for Enterprise Buyers"
         subheadline="The core materials enterprise security, legal, and procurement teams usually review first: encryption, SSO, data handling, assurance posture, and DPA context."
-        primaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
+        primaryCta={{
+          href: securityReviewHref('security_review_hero'),
+          label: PUBLIC_CTA_LABELS.securityReview,
+        }}
         secondaryCta={{
-          href: `${appBase}/auth/signup?source=security_review`,
-          label: 'Start Trust-Ready Trial',
+          href: trustPacketHref('security_review_hero'),
+          label: PUBLIC_CTA_LABELS.trustPacket,
         }}
       />
 

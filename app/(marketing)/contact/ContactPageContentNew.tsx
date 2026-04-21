@@ -18,9 +18,7 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { ContactHeroVisual } from './components/ContactHeroVisual';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import { demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 type ContactIntent = 'general' | 'pricing' | 'enterprise' | 'procurement';
 
@@ -58,23 +56,23 @@ const CONTACT_INTENT_COPY: Record<
     closingTitle: 'Operational compliance starts with the right conversation',
     closingBody:
       "Whether you're early in your compliance transformation or managing complex regulated operations, we'll help you find the right path.",
-    secondaryHref: `${appBase}/auth/signup`,
-    secondaryLabel: 'Start Free Trial',
+    secondaryHref: demoHref('contact_general'),
+    secondaryLabel: PUBLIC_CTA_LABELS.bookDemo,
   },
   pricing: {
     badge: 'Pricing & Plans',
     headline: 'Find the Right Plan and Rollout Path',
     subheadline:
-      'Talk through plan fit, team scope, and when to move from self-serve into guided enterprise review.',
+      'Talk through plan fit, team scope, and when to move from Foundation into guided Growth or Enterprise review.',
     intro:
-      'Starter and Professional are self-serve. Enterprise buyers can run a guided review without losing momentum.',
+      'Foundation is assessment-led. Growth and Enterprise buyers can run a guided review without losing momentum.',
     formTitle: 'Tell us what you need from pricing',
     formBody:
       'Share the team shape, plan questions, and rollout expectations you want to validate.',
     submitLabel: 'Request Pricing Review',
     closingTitle: 'Choose the buying path that matches your compliance risk',
     closingBody:
-      'We can help you decide whether self-serve is enough or whether your team should move into enterprise evaluation.',
+      'We can help you decide whether Foundation is enough or whether your team should move into Growth or Enterprise evaluation.',
     secondaryHref: '/pricing',
     secondaryLabel: 'Back to Pricing',
   },

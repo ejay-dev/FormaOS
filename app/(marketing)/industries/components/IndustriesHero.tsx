@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { IndustriesHeroVisual } from './IndustriesHeroVisual';
 import { useDeviceTier } from '@/lib/device-tier';
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const VERTICALS = [
   { label: 'NDIS', color: 'bg-pink-400' },
@@ -42,8 +43,11 @@ export function IndustriesHero() {
       }
       subheadline="FormaOS adapts to your regulatory requirements - NDIS, AHPRA, NSQHS, ASIC, AUSTRAC, WHS, NQF. Pre-built frameworks. System-enforced controls."
       extras={<IndustriesExtras />}
-      primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
-      secondaryCta={{ href: '/contact', label: 'Request Demo' }}
+      primaryCta={{
+        href: compliancePlanHref('industries_hero'),
+        label: PUBLIC_CTA_LABELS.compliancePlan,
+      }}
+      secondaryCta={{ href: demoHref('industries_hero'), label: PUBLIC_CTA_LABELS.seeDemo }}
     />
   );
 }

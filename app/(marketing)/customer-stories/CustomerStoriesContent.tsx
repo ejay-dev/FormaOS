@@ -3,15 +3,17 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Quote, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { brand } from '@/config/brand';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { CustomerStoriesHeroVisual } from './components/CustomerStoriesHeroVisual';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 const stories = [
   {
@@ -105,10 +107,13 @@ export default function CustomerStoriesContent() {
           </>
         }
         subheadline="Anonymized scenarios from regulated organizations. Metrics reflect conditions at the time of deployment. We can discuss deeper walkthroughs during evaluation."
-        primaryCta={{ href: '/contact', label: 'Request a Guided Demo' }}
+        primaryCta={{
+          href: demoHref('customer_stories_hero'),
+          label: PUBLIC_CTA_LABELS.bookDemo,
+        }}
         secondaryCta={{
-          href: `${appBase}/auth/signup?source=customer_stories`,
-          label: 'Start Free Trial',
+          href: compliancePlanHref('customer_stories_hero'),
+          label: PUBLIC_CTA_LABELS.compliancePlan,
         }}
       />
 
@@ -344,7 +349,7 @@ export default function CustomerStoriesContent() {
                     Payback period
                   </div>
                   <div className="text-[10px] text-slate-500 mt-0.5">
-                    At Professional tier pricing
+                    At Growth tier pricing
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">

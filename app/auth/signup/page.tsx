@@ -263,14 +263,14 @@ function SignUpContent() {
                     </span>
                   </div>
                   <h1 className="text-3xl font-bold text-white mb-2">
-                    Start Your {plan.name} Trial
+                    Start Your {plan.name} Assessment
                   </h1>
                   <p className="text-slate-400 mb-4">{plan.summary}</p>
                   <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-medium">
                     <CheckCircle2 className="h-3 w-3" />
                     {plan.key !== 'enterprise'
-                      ? '14-day free trial'
-                      : 'Enterprise onboarding'}
+                      ? 'Guided onboarding assessment'
+                      : 'Enterprise governance onboarding'}
                   </div>
                 </>
               ) : (

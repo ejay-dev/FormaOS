@@ -53,16 +53,16 @@ const objectionCards = [
 const procurementSteps = [
   {
     step: '01',
-    title: 'Start your trial',
+    title: 'Start buyer review',
     detail:
-      'Full platform access for 14 days. Bring your security, compliance, and operations stakeholders in from day one.',
+      'Bring your security, compliance, procurement, and operations stakeholders into a guided evaluation from day one.',
     icon: BadgeCheck,
   },
   {
     step: '02',
     title: 'Run security review in parallel',
     detail:
-      'Use the security packet and trust center artifacts while teams validate workspace fit in trial.',
+      'Use the security packet and trust center artifacts while teams validate implementation fit.',
     icon: ShieldCheck,
   },
   {

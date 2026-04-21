@@ -10,6 +10,21 @@ const DEFAULT_PRICE_IDS: Record<PlanKey, string> = {
   enterprise: 'price_1T9cPKAHrAKKo3OliQN78Q83',
 };
 
+function configuredPriceIds(): Record<PlanKey, string> {
+  return {
+    basic:
+      process.env.STRIPE_PRICE_FOUNDATION ??
+      process.env.STRIPE_PRICE_BASIC ??
+      DEFAULT_PRICE_IDS.basic,
+    pro:
+      process.env.STRIPE_PRICE_GROWTH ??
+      process.env.STRIPE_PRICE_PRO ??
+      DEFAULT_PRICE_IDS.pro,
+    enterprise:
+      process.env.STRIPE_PRICE_ENTERPRISE ?? DEFAULT_PRICE_IDS.enterprise,
+  };
+}
+
 export function getStripeClient(): Stripe | null {
   if (stripeClient) return stripeClient;
 
@@ -27,12 +42,7 @@ export function getStripeClient(): Stripe | null {
 }
 
 export function getStripePriceId(planKey: string): string | null {
-  const priceMap: Record<string, string | undefined> = {
-    basic: process.env.STRIPE_PRICE_BASIC ?? DEFAULT_PRICE_IDS.basic,
-    pro: process.env.STRIPE_PRICE_PRO ?? DEFAULT_PRICE_IDS.pro,
-    enterprise:
-      process.env.STRIPE_PRICE_ENTERPRISE ?? DEFAULT_PRICE_IDS.enterprise,
-  };
+  const priceMap: Record<string, string | undefined> = configuredPriceIds();
 
   const priceId = priceMap[planKey];
   if (!priceId) {
@@ -48,22 +58,15 @@ export function resolvePlanKeyFromPriceId(
 ): PlanKey | null {
   if (!priceId) return null;
   const normalized = priceId.trim();
+  const priceIds = configuredPriceIds();
 
-  if (
-    normalized === (process.env.STRIPE_PRICE_BASIC ?? DEFAULT_PRICE_IDS.basic)
-  ) {
+  if (normalized === priceIds.basic) {
     return 'basic';
   }
-  if (normalized === (process.env.STRIPE_PRICE_PRO ?? DEFAULT_PRICE_IDS.pro)) {
+  if (normalized === priceIds.pro) {
     return 'pro';
   }
-  if (
-    process.env.STRIPE_PRICE_ENTERPRISE &&
-    normalized === process.env.STRIPE_PRICE_ENTERPRISE
-  ) {
-    return 'enterprise';
-  }
-  if (normalized === DEFAULT_PRICE_IDS.enterprise) {
+  if (normalized === priceIds.enterprise) {
     return 'enterprise';
   }
 

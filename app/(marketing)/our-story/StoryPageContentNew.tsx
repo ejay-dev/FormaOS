@@ -20,15 +20,17 @@ import dynamic from 'next/dynamic';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { DeferredSection } from '../components/shared';
-import { brand } from '@/config/brand';
 import { OurStoryHeroVisual } from './components/OurStoryHeroVisual';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 const DemoComplianceChain = dynamic(
   () => import('@/components/marketing/demo/DemoComplianceChain'),
   { ssr: false },
 );
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 // ============================================================================
 // OUR STORY PAGE - DESIGN SYNCED WITH HOME/PRODUCT VISUAL SYSTEM
@@ -58,12 +60,12 @@ export function StoryHero() {
       }
       subheadline="Built for organizations where a compliance failure isn't a setback - it's a shutdown. Infrastructure that makes accountability unavoidable."
       primaryCta={{
-        href: `${appBase}/auth/signup`,
-        label: 'Start Free Trial',
+        href: compliancePlanHref('our_story_hero'),
+        label: PUBLIC_CTA_LABELS.compliancePlan,
       }}
       secondaryCta={{
-        href: '/contact',
-        label: 'Request a Demo',
+        href: demoHref('our_story_hero'),
+        label: PUBLIC_CTA_LABELS.bookDemo,
       }}
     />
   );
@@ -919,26 +921,26 @@ function FinalCTA() {
                 className="flex flex-col sm:flex-row items-center justify-center gap-4"
               >
                 <Link
-                  href={`${appBase}/auth/signup`}
+                  href={compliancePlanHref('our_story_final')}
                   className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    Start Free Trial
+                    {PUBLIC_CTA_LABELS.compliancePlan}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>
                 <Link
-                  href="/contact"
+                  href={demoHref('our_story_final')}
                   className="group flex items-center gap-2 px-8 py-4 rounded-2xl border-2 border-white/20 text-base font-semibold text-white hover:bg-white/[0.08] hover:border-white/30 transition-all duration-300 backdrop-blur-sm"
                 >
-                  Request a Demo
+                  {PUBLIC_CTA_LABELS.bookDemo}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
               </motion.div>
 
               <div className="text-center mt-8 text-sm text-gray-500">
-                14-day free trial • No credit card required • Cancel anytime
+                Guided compliance plan • Assessment-led onboarding • Procurement-ready review
               </div>
             </div>
           </div>

@@ -22,10 +22,9 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { FAQHeroVisual } from './components/FAQHeroVisual';
-import { brand } from '@/config/brand';
 import { DotGrid } from '@/components/marketing/SectionBackgrounds';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import { brand } from '@/config/brand';
 
 // ============================================================================
 // FAQ DATA - Enterprise-Grade Content
@@ -142,17 +141,17 @@ const faqCategories = [
   },
   {
     id: 'pricing',
-    title: 'Pricing & Trials',
+    title: 'Pricing & Evaluation',
     icon: CreditCard,
     color: 'amber',
     questions: [
       {
-        q: 'Is there a free trial?',
-        a: 'Yes. FormaOS offers a 14-day free trial with full platform access. No credit card is required to start. During the trial, you can explore all features, model workflows, and evaluate how FormaOS fits your compliance needs. Our team is available to provide guidance throughout your trial.',
+        q: 'How do we evaluate FormaOS?',
+        a: 'FormaOS starts with a guided compliance plan. We scope frameworks, team structure, evidence volume, audit exposure, and procurement requirements before recommending Foundation, Growth, or Enterprise.',
       },
       {
-        q: 'Can we upgrade or downgrade plans?',
-        a: 'Absolutely. You can upgrade your plan at any time and the change takes effect immediately. Downgrades take effect at the end of your current billing period. Our flexible pricing ensures you only pay for the capabilities you need as your organization grows.',
+        q: 'Can the commercial scope change over time?',
+        a: 'Yes. The commercial scope can be reviewed as your frameworks, sites, teams, or governance requirements change. Growth and Enterprise are handled through guided commercial review rather than casual feature toggles.',
       },
       {
         q: 'What payment methods are accepted?',
@@ -212,7 +211,7 @@ const faqCategories = [
       },
       {
         q: 'How do I get help if I have an issue?',
-        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at Formaos.team@gmail.com. Professional and Enterprise plans include higher-touch support options, and critical platform issues are prioritized under the applicable support process.',
+        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at Formaos.team@gmail.com. Growth and Enterprise plans include higher-touch support options, and critical platform issues are prioritized under the applicable support process.',
       },
       {
         q: 'Do you provide training for our team?',
@@ -263,10 +262,10 @@ function FAQHero() {
           ))}
         </div>
       }
-      primaryCta={{ href: '/contact', label: 'Contact Us' }}
+      primaryCta={{ href: compliancePlanHref('faq_hero'), label: PUBLIC_CTA_LABELS.compliancePlan }}
       secondaryCta={{
-        href: `${appBase}/auth/signup`,
-        label: 'Start Free Trial',
+        href: demoHref('faq_hero'),
+        label: PUBLIC_CTA_LABELS.bookDemo,
       }}
     />
   );
@@ -487,15 +486,15 @@ function FAQCTA() {
                   whileTap={{ scale: 0.98 }}
                   className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
                 >
-                  <span>Contact Us</span>
+                  <span>{PUBLIC_CTA_LABELS.talkToSales}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.a>
 
                 <Link
-                  href={`${appBase}/auth/signup`}
+                  href={compliancePlanHref('faq_final')}
                   className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
                 >
-                  <span>Start Free Trial</span>
+                  <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>

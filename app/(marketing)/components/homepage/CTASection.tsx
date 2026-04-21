@@ -6,6 +6,11 @@ import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 const TRUST_BADGES = [
   { label: 'SOC 2-aligned', detail: 'Trust framework' },
@@ -38,7 +43,7 @@ export function CTASection() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 mb-6 sm:mb-8">
             <Sparkles className="w-4 h-4 text-teal-400" />
             <span className="text-sm text-teal-400 font-medium">
-              Get Your Compliance Plan
+              {PUBLIC_CTA_LABELS.compliancePlan}
             </span>
           </div>
         </ScrollReveal>
@@ -62,14 +67,14 @@ export function CTASection() {
         <ScrollReveal variant="slideUp" range={[0.04, 0.34]}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
             <motion.a
-              href="/contact?type=compliance-plan&source=home_final_cta"
+              href={compliancePlanHref('home_final_cta')}
               onClick={() =>
                 trackCtaClick({
                   surface: 'homepage',
                   section: 'final_cta',
                   location: 'final_primary',
-                  ctaLabel: 'Get Compliance Plan',
-                  ctaHref: '/contact?type=compliance-plan&source=home_final_cta',
+                  ctaLabel: PUBLIC_CTA_LABELS.compliancePlan,
+                  ctaHref: compliancePlanHref('home_final_cta'),
                   variant: 'primary',
                 })
               }
@@ -77,19 +82,19 @@ export function CTASection() {
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               className="mk-btn mk-btn-primary px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
             >
-              Get Compliance Plan
+              {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="w-5 h-5" />
             </motion.a>
 
             <motion.a
-              href="/contact"
+              href={demoHref('home_final_cta')}
               onClick={() =>
                 trackCtaClick({
                   surface: 'homepage',
                   section: 'final_cta',
                   location: 'final_secondary',
-                  ctaLabel: 'Book Enterprise Demo',
-                  ctaHref: '/contact',
+                  ctaLabel: PUBLIC_CTA_LABELS.bookDemo,
+                  ctaHref: demoHref('home_final_cta'),
                   variant: 'secondary',
                 })
               }
@@ -97,7 +102,7 @@ export function CTASection() {
               whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
               className="mk-btn mk-btn-secondary px-8 py-4 min-h-[48px] text-base sm:text-lg w-full sm:w-auto justify-center"
             >
-              Book Enterprise Demo
+              {PUBLIC_CTA_LABELS.bookDemo}
             </motion.a>
           </div>
         </ScrollReveal>

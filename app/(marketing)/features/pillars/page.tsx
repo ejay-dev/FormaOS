@@ -10,6 +10,11 @@ import {
   CheckCircle2,
   Sparkles,
 } from 'lucide-react';
+import {
+  compliancePlanHref,
+  PUBLIC_CTA_LABELS,
+  salesHref,
+} from '@/lib/marketing/cta';
 
 export const metadata: Metadata = {
   title: 'Features — 5 Pillars | FormaOS',
@@ -230,10 +235,10 @@ export default function FeaturesPillarsPage() {
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
-              href="/signup"
+              href={compliancePlanHref('features_pillars_hero')}
               className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-violet-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-[0_0_30px_rgba(0,212,251,0.3)] transition-transform hover:scale-[1.02]"
             >
-              Start 14-day trial
+              {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
@@ -243,7 +248,7 @@ export default function FeaturesPillarsPage() {
               View pricing
             </Link>
             <span className="text-xs text-muted-foreground">
-              No credit card. AU-hosted.
+              Assessment-led onboarding. AU-hosted.
             </span>
           </div>
         </div>
@@ -386,22 +391,22 @@ export default function FeaturesPillarsPage() {
             Ready to turn obligations into routines?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-            Start a 14-day trial. AU-hosted by default. No credit card. Your
-            first framework pack is live in under 10 minutes.
+            Get a scoped compliance plan. AU-hosted by default. Your first
+            framework pack is configured through guided onboarding.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/signup"
+              href={compliancePlanHref('features_pillars_final')}
               className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-violet-500 px-5 py-2.5 text-sm font-semibold text-slate-950"
             >
-              Start 14-day trial
+              {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/contact"
+              href={salesHref('features_pillars_final')}
               className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold"
             >
-              Talk to sales
+              {PUBLIC_CTA_LABELS.talkToSales}
             </Link>
           </div>
         </div>

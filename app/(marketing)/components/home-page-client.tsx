@@ -6,9 +6,11 @@ import { motion } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { ParallaxLayer } from '@/components/motion';
 import { MarketingAnchor } from './marketing-anchor';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 function SimpleHero() {
   return (
@@ -83,16 +85,17 @@ function SimpleHero() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
               <Link
-                href="/contact?type=compliance-plan&source=home_simple"
+                href={compliancePlanHref('home_simple')}
                 className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
               >
-                Get Compliance Plan
+                {PUBLIC_CTA_LABELS.compliancePlan}
               </Link>
               <Link
-                href="/contact"
+                href={demoHref('home_simple')}
                 className="w-full sm:w-auto text-sm font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start"
               >
-                Request Demo <ArrowRight className="ml-2 h-4 w-4" />
+                {PUBLIC_CTA_LABELS.bookDemo}{' '}
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </motion.div>
           </div>
@@ -180,7 +183,7 @@ function SimpleContent() {
       <MarketingAnchor
         title="Ready to transform compliance?"
         subtitle="Get a guided plan and see how FormaOS enforces audit-ready work"
-        badge="Get Started"
+        badge="Evaluation"
       />
     </section>
   );

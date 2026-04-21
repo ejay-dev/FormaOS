@@ -9,15 +9,17 @@ import {
   ShieldCheck,
   Target,
 } from 'lucide-react';
-import { brand } from '@/config/brand';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { FrameworksHeroVisual } from './components/FrameworksHeroVisual';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  compliancePlanHref,
+  PUBLIC_CTA_LABELS,
+  securityReviewHref,
+} from '@/lib/marketing/cta';
 
 const frameworkPacks = [
   {
@@ -81,8 +83,14 @@ export default function FrameworksContent() {
         badge={{ icon: <Layers className="h-4 w-4" />, text: 'Framework Coverage' }}
         headline="Framework-mapped controls, built for execution"
         subheadline="FormaOS ships framework packs that map obligations into controls and evidence workflows. This is alignment and operational mapping, not a certification claim."
-        primaryCta={{ href: `${appBase}/auth/signup?source=frameworks`, label: 'Start Free Trial' }}
-        secondaryCta={{ href: '/security-review', label: 'Security Review Packet' }}
+        primaryCta={{
+          href: compliancePlanHref('frameworks_hero'),
+          label: PUBLIC_CTA_LABELS.compliancePlan,
+        }}
+        secondaryCta={{
+          href: securityReviewHref('frameworks_hero'),
+          label: PUBLIC_CTA_LABELS.securityReview,
+        }}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>

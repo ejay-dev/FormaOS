@@ -7,7 +7,6 @@ import {
   Sparkles,
   Target,
 } from 'lucide-react';
-import { brand } from '@/config/brand';
 import { Reveal } from '@/components/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -15,6 +14,11 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { MarketingPageShell } from './shared/MarketingPageShell';
 import { DeferredSection } from './shared';
 import { OutcomeJourneyHeroVisual } from './OutcomeJourneyHeroVisual';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 type JourneyPageProps = {
   badge: string;
@@ -37,8 +41,6 @@ type JourneyPageProps = {
   trustArtifacts?: string[];
   journeyKey: 'evaluate' | 'prove' | 'operate' | 'govern';
 };
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const TRUST_ARTIFACTS = [
   'Framework-aligned controls',
@@ -110,12 +112,12 @@ export function OutcomeJourneyPage({
           </Reveal>
         }
         primaryCta={{
-          href: `${appBase}/auth/signup?journey=${journeyKey}`,
-          label: 'Start Free Trial',
+          href: compliancePlanHref(`outcome_${journeyKey}`),
+          label: PUBLIC_CTA_LABELS.compliancePlan,
         }}
         secondaryCta={{
-          href: '/contact',
-          label: 'Book Enterprise Demo',
+          href: demoHref(`outcome_${journeyKey}`),
+          label: PUBLIC_CTA_LABELS.bookDemo,
         }}
       />
 

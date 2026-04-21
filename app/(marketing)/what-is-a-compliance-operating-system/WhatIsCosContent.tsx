@@ -7,9 +7,11 @@ import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection, MarketingPageShell } from '../components/shared';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 export default function WhatIsCosContent() {
   return (
@@ -28,7 +30,10 @@ export default function WhatIsCosContent() {
         }
         subheadline="A compliance operating system turns regulatory obligations into executable workflows, evidence, and continuously testable readiness."
         primaryCta={{ href: '/product', label: 'See FormaOS in Action' }}
-        secondaryCta={{ href: `${appBase}/auth/signup`, label: 'Start Free Trial' }}
+        secondaryCta={{
+          href: demoHref('what_is_cos_hero'),
+          label: PUBLIC_CTA_LABELS.bookDemo,
+        }}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
@@ -277,10 +282,10 @@ export default function WhatIsCosContent() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href={`${appBase}/auth/signup`}
+              href={compliancePlanHref('what_is_cos_final')}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgba(34,211,238,0.25)] transition hover:shadow-[0_0_32px_rgba(34,211,238,0.4)]"
             >
-              Start Free Trial
+              {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link

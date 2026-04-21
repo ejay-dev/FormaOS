@@ -71,10 +71,10 @@ export function TrialCountdownBanner() {
 
   // Message
   const message = isExpired
-    ? 'Your trial has ended — upgrade to keep full access'
+    ? 'Your evaluation access has ended — activate your plan to keep full access'
     : isLastDay
-      ? 'Trial expires today — activate your plan now'
-      : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left in your free trial`;
+      ? 'Evaluation access ends today — activate your plan now'
+      : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left in your evaluation window`;
 
   const subMessage = isExpired
     ? 'Read-only access to core features. Upgrade to unlock everything.'

@@ -5,7 +5,6 @@ import { type ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { brand } from '@/config/brand';
 import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
@@ -13,8 +12,11 @@ import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { DeferredSection } from '../../components/shared';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { UseCaseHeroVisual } from './UseCaseHeroVisual';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 export interface UseCaseChallenge {
   icon: LucideIcon;
@@ -79,7 +81,7 @@ const relatedLinksByIndustry: Record<
     {
       href: '/pricing',
       label: 'Pricing',
-      description: 'Validate plan depth before moving into trial or procurement.',
+      description: 'Validate plan depth before moving into guided procurement.',
     },
   ],
   ndis_aged_care: [
@@ -183,15 +185,17 @@ export function UseCasePageTemplate({
   metrics,
   ctaTitle,
   ctaDescription,
-  ctaPrimaryLabel = 'Start Free Trial',
-  ctaPrimaryHref = `${appBase}/auth/signup`,
-  ctaSecondaryLabel = 'Schedule Demo',
-  ctaSecondaryHref = '/contact',
+  ctaPrimaryLabel = PUBLIC_CTA_LABELS.compliancePlan,
+  ctaPrimaryHref,
+  ctaSecondaryLabel = PUBLIC_CTA_LABELS.seeDemo,
+  ctaSecondaryHref,
   industryKey,
 }: UseCasePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks =
     relatedLinksByIndustry[industryKey] ?? relatedLinksByIndustry.healthcare;
+  const primaryHref = ctaPrimaryHref ?? compliancePlanHref(`use_case_${industryKey}`);
+  const secondaryHref = ctaSecondaryHref ?? demoHref(`use_case_${industryKey}`);
 
   return (
     <MarketingPageShell>
@@ -204,15 +208,15 @@ export function UseCasePageTemplate({
         }}
         headline={title}
         subheadline={description}
-        primaryCta={{ href: ctaPrimaryHref, label: ctaPrimaryLabel }}
-        secondaryCta={{ href: ctaSecondaryHref, label: ctaSecondaryLabel }}
+        primaryCta={{ href: primaryHref, label: ctaPrimaryLabel }}
+        secondaryCta={{ href: secondaryHref, label: ctaSecondaryLabel }}
         onPrimaryCtaClick={() =>
           trackCtaClick({
             surface: 'use_case',
             section: 'hero',
             location: 'hero_primary',
             ctaLabel: ctaPrimaryLabel,
-            ctaHref: ctaPrimaryHref,
+            ctaHref: primaryHref,
             variant: 'primary',
             industry: industryKey,
           })
@@ -223,7 +227,7 @@ export function UseCasePageTemplate({
             section: 'hero',
             location: 'hero_secondary',
             ctaLabel: ctaSecondaryLabel,
-            ctaHref: ctaSecondaryHref,
+            ctaHref: secondaryHref,
             variant: 'secondary',
             industry: industryKey,
           })
@@ -452,14 +456,14 @@ export function UseCasePageTemplate({
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href={ctaPrimaryHref}
+              href={primaryHref}
               onClick={() =>
                 trackCtaClick({
                   surface: 'use_case',
                   section: 'final_cta',
                   location: 'final_primary',
                   ctaLabel: ctaPrimaryLabel,
-                  ctaHref: ctaPrimaryHref,
+                  ctaHref: primaryHref,
                   variant: 'final',
                   industry: industryKey,
                 })
@@ -470,14 +474,14 @@ export function UseCasePageTemplate({
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href={ctaSecondaryHref}
+              href={secondaryHref}
               onClick={() =>
                 trackCtaClick({
                   surface: 'use_case',
                   section: 'final_cta',
                   location: 'final_secondary',
                   ctaLabel: ctaSecondaryLabel,
-                  ctaHref: ctaSecondaryHref,
+                  ctaHref: secondaryHref,
                   variant: 'final',
                   industry: industryKey,
                 })

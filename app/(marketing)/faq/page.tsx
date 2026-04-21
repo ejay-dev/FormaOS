@@ -51,9 +51,9 @@ const faqItems = [
       'FormaOS implements enterprise-grade security with data encryption in transit and at rest, role-based access controls, SSO support, and isolated tenant environments for regulated data protection.',
   },
   {
-    question: 'Is there a free trial?',
+    question: 'How do we evaluate FormaOS?',
     answer:
-      'Yes. FormaOS offers a 14-day free trial with full platform access. No credit card is required to start.',
+      'FormaOS starts with a guided compliance plan so the rollout matches your frameworks, operational risk, evidence burden, and procurement path.',
   },
   {
     question: 'How is FormaOS different from task or compliance software?',

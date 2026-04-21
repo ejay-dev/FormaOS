@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 import {
   Bell,
   Shield,
@@ -284,12 +285,12 @@ export default function ChildcareComplianceContent() {
           </>
         }
         subheadline="NQF visits arrive with 48 hours notice. FormaOS keeps educator credentials, QIPs, and evidence organised - so you demonstrate quality, not scramble."
-        primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
-        secondaryCta={{ label: 'See Childcare Demo', href: '/contact' }}
+        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('childcare_compliance') }}
+        secondaryCta={{ label: 'See Childcare Demo', href: demoHref('childcare_compliance') }}
         trustSignals={[
           'AU-hosted by default',
-          '14-day free trial',
-          'No credit card required',
+          'Assessment-led onboarding',
+          'Compliance plan scoped by framework',
           'ACECQA NQF aligned',
         ]}
         dashboardVisual={<NQFDashboardVisual />}

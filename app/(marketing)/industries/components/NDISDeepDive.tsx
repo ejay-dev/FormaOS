@@ -12,10 +12,8 @@ import {
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { brand } from '@/config/brand';
 import { useDeviceTier } from '@/lib/device-tier';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import { assessmentHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const ndisFeatures = [
   {
@@ -151,12 +149,12 @@ export function NDISDeepDive() {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </motion.a>
                   <motion.a
-                    href={`${appBase}/auth/signup`}
+                    href={assessmentHref('industries_ndis_deep_dive')}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                     className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/20 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all"
                   >
-                    Start Free Trial
+                    {PUBLIC_CTA_LABELS.startAssessment}
                   </motion.a>
                 </div>
               </div>

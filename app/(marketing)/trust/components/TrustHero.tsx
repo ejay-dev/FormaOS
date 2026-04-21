@@ -5,6 +5,11 @@ import { ShieldCheck } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { TrustHeroVisual } from './TrustHeroVisual';
+import {
+  PUBLIC_CTA_LABELS,
+  securityReviewHref,
+  trustPacketHref,
+} from '@/lib/marketing/cta';
 
 export function TrustHero() {
   const { trackCtaClick } = useMarketingTelemetry();
@@ -80,15 +85,21 @@ export function TrustHero() {
           </Link>
         </div>
       }
-      primaryCta={{ href: '/auth/signup?source=trust_center', label: 'Start Trust-Ready Trial' }}
-      secondaryCta={{ href: '/contact', label: 'Security Walkthrough' }}
+      primaryCta={{
+        href: trustPacketHref('trust_center_hero'),
+        label: PUBLIC_CTA_LABELS.trustPacket,
+      }}
+      secondaryCta={{
+        href: securityReviewHref('trust_center_hero'),
+        label: PUBLIC_CTA_LABELS.securityReview,
+      }}
       onPrimaryCtaClick={() =>
         trackCtaClick({
           surface: 'trust',
           section: 'hero',
           location: 'hero_primary',
-          ctaLabel: 'Start Trust-Ready Trial',
-          ctaHref: '/auth/signup?source=trust_center',
+          ctaLabel: PUBLIC_CTA_LABELS.trustPacket,
+          ctaHref: trustPacketHref('trust_center_hero'),
           variant: 'primary',
         })
       }
@@ -97,8 +108,8 @@ export function TrustHero() {
           surface: 'trust',
           section: 'hero',
           location: 'hero_secondary',
-          ctaLabel: 'Security Walkthrough',
-          ctaHref: '/contact',
+          ctaLabel: PUBLIC_CTA_LABELS.securityReview,
+          ctaHref: securityReviewHref('trust_center_hero'),
           variant: 'secondary',
         })
       }

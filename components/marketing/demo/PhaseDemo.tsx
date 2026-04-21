@@ -753,11 +753,11 @@ export default function PhaseDemo() {
               transition={{ duration: duration.slow, ease: easing.signature }}
             >
               <a
-                href="/auth/signup?source=phase_demo"
+                href="/contact?type=demo&source=phase_demo"
                 onClick={handleCtaClick}
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:brightness-110 transition-all"
               >
-                Try the Live Trial
+                Book Demo
                 <ArrowRight className="h-4 w-4" />
               </a>
             </motion.div>

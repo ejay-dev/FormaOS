@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 import { Shield, Scale, Landmark, Monitor, FileText, Bell } from 'lucide-react';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import {
@@ -243,12 +244,12 @@ export default function FinancialServicesContent() {
           </>
         }
         subheadline="ASIC, APRA, and AUSTRAC obligations mapped to named owners with immutable evidence. Every licence condition becomes a governed workflow."
-        primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
-        secondaryCta={{ label: 'Book a Demo', href: '/contact' }}
+        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('financial_services_compliance') }}
+        secondaryCta={{ label: PUBLIC_CTA_LABELS.bookDemo, href: demoHref('financial_services_compliance') }}
         trustSignals={[
           'AU-hosted infrastructure',
-          '14-day free trial',
-          'No credit card required',
+          'Assessment-led onboarding',
+          'Compliance plan scoped by framework',
           'ASIC-ready audit trail',
         ]}
         dashboardVisual={<ObligationsRegisterVisual />}
@@ -352,7 +353,7 @@ export default function FinancialServicesContent() {
             feature: 'Price',
             spreadsheets: 'Hidden',
             genericGrc: '$$$+',
-            formaos: 'From $159/mo',
+            formaos: 'Foundation $297/mo',
           },
         ]}
       />

@@ -96,7 +96,7 @@ export function DocsHero() {
       }
       subheadline="Comprehensive guides, tutorials, and API references to help you master the compliance operating system."
       extras={<DocsHeroExtras />}
-      primaryCta={{ href: '#getting-started', label: 'Get Started' }}
+      primaryCta={{ href: '#getting-started', label: 'Open Guides' }}
     />
   );
 }

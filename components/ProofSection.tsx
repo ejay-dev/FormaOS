@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Clock3, FileCheck2, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Ban, CheckCircle2, Clock3, FileCheck2, ShieldCheck } from 'lucide-react';
 import {
   AccentText,
   IconFrame,
@@ -18,11 +18,11 @@ const outcomeMetrics = [
 ];
 
 const auditTrail = [
-  { time: '09:12', event: 'Worker credential uploaded', result: 'Evidence captured' },
-  { time: '09:13', event: 'System expiry check', result: 'Passed' },
-  { time: '09:14', event: 'Manager review required', result: 'Approval requested' },
-  { time: '10:02', event: 'Approval completed', result: 'Audit trail sealed' },
-  { time: '10:03', event: 'Workflow released', result: 'Audit-ready' },
+  { time: '09:12', event: 'Worker credential uploaded', result: 'Evidence captured', tone: 'valid' },
+  { time: '09:13', event: 'System expiry check', result: 'Passed', tone: 'valid' },
+  { time: '09:14', event: 'Workflow attempted release', result: 'Blocked - manager review required', tone: 'blocked' },
+  { time: '10:02', event: 'Approval completed', result: 'Audit trail sealed', tone: 'valid' },
+  { time: '10:03', event: 'Workflow released', result: 'Audit-ready', tone: 'valid' },
 ];
 
 export function ProofSection({
@@ -124,8 +124,14 @@ export function ProofSection({
                     <span className="font-mono text-xs text-slate-500">{row.time}</span>
                     <div>
                       <p className="text-sm font-medium text-slate-200">{row.event}</p>
-                      <div className="mt-1 flex items-center gap-2 text-xs text-emerald-200">
-                        <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      <div className={`mt-1 flex items-center gap-2 text-xs ${
+                        row.tone === 'blocked' ? 'text-red-200' : 'text-emerald-200'
+                      }`}>
+                        {row.tone === 'blocked' ? (
+                          <Ban className="h-3.5 w-3.5" aria-hidden="true" />
+                        ) : (
+                          <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                        )}
                         {row.result}
                       </div>
                     </div>

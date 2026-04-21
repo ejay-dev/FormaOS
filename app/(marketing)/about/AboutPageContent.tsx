@@ -24,6 +24,7 @@ import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
 import { EnterpriseShaderHero } from '@/components/marketing/EnterpriseShaderHero';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const DemoAuditTrailCard = dynamic(
   () => import('@/components/marketing/demo/DemoAuditTrailCard'),
@@ -693,11 +694,12 @@ export default function AboutPageContent() {
                     <p className="text-gray-400 leading-relaxed">
                       We work with regulated operators who need certainty,
                       defensible evidence, and the operational infrastructure to
-                      prove it. Request a demo or start a trial today.
+                      prove it. Request a scoped compliance plan and evaluate
+                      FormaOS against your operating requirements.
                     </p>
                   </div>
                   <motion.a
-                    href="/contact"
+                    href={compliancePlanHref('about_final')}
                     whileHover={{
                       scale: 1.05,
                       boxShadow: '0 0 40px rgba(20, 184, 166, 0.4)',
@@ -705,7 +707,7 @@ export default function AboutPageContent() {
                     whileTap={{ scale: 0.98 }}
                     className="group px-8 py-4 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold text-lg flex items-center justify-center gap-3 shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 transition-all whitespace-nowrap w-full sm:w-auto"
                   >
-                    <span>Get Started</span>
+                    <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </motion.a>
                 </div>

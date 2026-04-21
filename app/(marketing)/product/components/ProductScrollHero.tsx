@@ -9,6 +9,7 @@ import {
   Workflow,
 } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const OUTCOME_METRICS = [
   {
@@ -186,8 +187,8 @@ export function ProductScrollHero() {
       }
       subheadline="Connect frameworks, controls, tasks, and evidence into one governed workflow - with named owners, immutable audit trails, and buyer-ready assurance."
       extras={<ProductHeroExtras />}
-      primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
-      secondaryCta={{ href: '/contact', label: 'Book Enterprise Demo' }}
+      primaryCta={{ href: compliancePlanHref('product_scroll_hero'), label: PUBLIC_CTA_LABELS.compliancePlan }}
+      secondaryCta={{ href: demoHref('product_scroll_hero'), label: PUBLIC_CTA_LABELS.bookDemo }}
     />
   );
 }

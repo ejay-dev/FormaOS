@@ -2,9 +2,6 @@
 
 import { ShieldCheck, Siren, LineChart, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 const SCENARIOS = [
   {
@@ -83,17 +80,17 @@ export function OperationalScenarioProof() {
 
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href={`${appBase}/auth/signup?source=operational_scenarios`}
+            href="/contact?type=compliance-plan&source=operational_scenarios"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white"
           >
-            Launch Guided Trial
+            Get Compliance Plan
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
-            href="/contact"
+            href="/contact?type=demo&source=operational_scenarios"
             className="inline-flex items-center justify-center rounded-xl border border-glass-border-strong px-6 py-3 text-sm font-semibold text-white hover:bg-glass-strong"
           >
-            See Live Enterprise Demo
+            Book Demo
           </Link>
         </div>
       </div>

@@ -1,5 +1,5 @@
 /**
- * Auto-provision trial access for authenticated users
+ * Auto-provision evaluation access for authenticated users
  * Ensures users with valid sessions always have access
  */
 
@@ -23,7 +23,7 @@ export async function autoProvisionTrialAccess(
       return { success: true, organizationId: existingMembership.organization_id };
     }
 
-    // User has no organization - auto-provision trial
+    // User has no organization - auto-provision an organization shell.
     const orgName = userEmail ? `${userEmail.split('@')[0]}'s Organization` : 'My Organization';
 
     // Create organization
@@ -55,25 +55,21 @@ export async function autoProvisionTrialAccess(
       return { success: false };
     }
 
-    // Create trial subscription
-    const trialEnd = new Date();
-    trialEnd.setDate(trialEnd.getDate() + 14); // 14 day trial
-
     const { error: subscriptionError } = await supabase
       .from('org_subscriptions')
       .insert({
         organization_id: newOrg.id,
         plan: 'basic',
-        status: 'trialing',
-        trial_expires_at: trialEnd.toISOString(),
-        current_period_end: trialEnd.toISOString(),
+        status: 'active',
+        trial_expires_at: null,
+        current_period_end: null,
       });
 
     if (subscriptionError) {
       console.error('[Auto-Provision] Failed to create subscription:', subscriptionError);
     }
 
-    billingLogger.info('trial_access_auto_provisioned', {
+    billingLogger.info('evaluation_access_auto_provisioned', {
       userId,
       organizationId: newOrg.id,
     });

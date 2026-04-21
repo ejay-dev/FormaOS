@@ -3,6 +3,11 @@
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Zap } from 'lucide-react';
+import {
+  compliancePlanHref,
+  salesHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 export interface IndustryCTAProps {
   industry: string;
@@ -12,21 +17,21 @@ export interface IndustryCTAProps {
 
 const plans = [
   {
-    name: 'Starter',
-    price: '$159',
-    description: 'For small teams getting started with compliance.',
+    name: 'Foundation',
+    price: '$297',
+    description: 'Controlled starting point for smaller regulated teams.',
     highlighted: false,
   },
   {
-    name: 'Professional',
-    price: '$239',
+    name: 'Growth',
+    price: 'From $1,800',
     description:
-      'For growing organisations with active compliance obligations.',
+      'Primary plan for operational compliance teams.',
     highlighted: true,
   },
   {
     name: 'Enterprise',
-    price: '$399',
+    price: 'Custom',
     description:
       'For regulated enterprises with complex multi-framework needs.',
     highlighted: false,
@@ -116,23 +121,22 @@ export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
           className="flex flex-wrap items-center justify-center gap-4 mb-6"
         >
           <Link
-            href="/auth/signup"
+            href={compliancePlanHref(`industry_${industry}`)}
             className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 px-8 py-4 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:shadow-cyan-500/30 hover:brightness-110"
           >
-            Start 14-Day Free Trial
+            {PUBLIC_CTA_LABELS.compliancePlan}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
-            href="/contact"
+            href={salesHref(`industry_${industry}`)}
             className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-white/10"
           >
-            Talk to a compliance specialist
+            {PUBLIC_CTA_LABELS.talkToSales}
           </Link>
         </motion.div>
 
         <p className="text-xs text-slate-600">
-          AU-hosted · No credit card required · Cancel anytime · Your data never
-          leaves Australia
+          AU-hosted by default · Assessment-led onboarding · Your data never leaves Australia
         </p>
       </div>
     </section>

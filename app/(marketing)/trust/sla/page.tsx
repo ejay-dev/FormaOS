@@ -28,19 +28,19 @@ export const metadata: Metadata = {
 
 const tiers = [
   {
-    tier: 'Starter',
+    tier: 'Foundation',
     points: [
       'No contractual SLA by default.',
       'Public status page and published uptime checks available.',
       'Standard email support (business hours); response time varies.',
-      'Platform access to FormaOS Trust Center for procurement self-service.',
+      'Platform access to FormaOS Trust Center for buyer review.',
     ],
   },
   {
-    tier: 'Professional',
+    tier: 'Growth',
     points: [
       'No contractual SLA by default; best-effort service model.',
-      'Priority email support with faster handling than Starter.',
+      'Priority email support with faster handling than Foundation.',
       'Public status page, incident history, and uptime reports available.',
       'Security review artifacts available via Trust Center for procurement.',
     ],

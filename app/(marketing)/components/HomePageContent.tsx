@@ -39,9 +39,11 @@ import {
 import { motion } from 'framer-motion';
 import { spacing, radius, depth } from '@/config/motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 const lifecycle = [
   {
@@ -505,7 +507,7 @@ export function HomePageContent() {
                 <span className="text-gradient-system">out of the box</span>
               </>
             }
-            subtitle="Evidence version control, workflow automation, and enterprise compliance. Built-in from $159/mo"
+            subtitle="Evidence version control, workflow automation, and enterprise compliance. Foundation starts at $297/mo with Growth as the primary operating tier."
             alignment="center"
           />
 
@@ -606,9 +608,9 @@ export function HomePageContent() {
 
           <div className="mt-8 p-4 rounded-lg bg-primary/10 border border-primary/20 text-center">
             <p className="text-sm text-primary">
-              <strong>Enterprise compliance from $159/mo</strong> -
-              purpose-built for Australian regulated industries, without the
-              enterprise price tag.{' '}
+              <strong>Infrastructure pricing from $297/mo</strong> -
+              purpose-built for Australian regulated industries, with Growth
+              scoped around operational risk.{' '}
               <Link href="/compare" className="underline hover:text-foreground">
                 See how we compare
               </Link>
@@ -886,7 +888,7 @@ export function HomePageContent() {
                 <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
                   <div className="inline-flex items-center gap-2 glass-system rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-6 sm:mb-8">
                     <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-                    Get Your Compliance Plan
+                  {PUBLIC_CTA_LABELS.compliancePlan}
                   </div>
                 </ScrollReveal>
 
@@ -905,20 +907,20 @@ export function HomePageContent() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
                   <AnimatedLink
-                    href="/contact?type=compliance-plan&source=home_content"
+                    href={compliancePlanHref('home_content')}
                     variant="primary"
                     size="lg"
                     className="shadow-[0_8px_32px_rgba(0,212,251,0.35)] hover:shadow-[0_12px_40px_rgba(0,212,251,0.5)] w-full sm:w-auto text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6"
                   >
-                    Get Compliance Plan
+                    {PUBLIC_CTA_LABELS.compliancePlan}
                   </AnimatedLink>
                   <AnimatedLink
-                    href="/contact"
+                    href={demoHref('home_content')}
                     variant="secondary"
                     size="lg"
                     className="w-full sm:w-auto text-sm sm:text-lg px-8 sm:px-12 py-4 sm:py-6"
                   >
-                    Request Demo
+                    {PUBLIC_CTA_LABELS.bookDemo}
                   </AnimatedLink>
                 </div>
 

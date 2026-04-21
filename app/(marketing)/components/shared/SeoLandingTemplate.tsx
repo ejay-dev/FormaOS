@@ -8,9 +8,11 @@ import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection, MarketingPageShell } from '.';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 export interface ComparisonRow {
   feature: string;
@@ -77,8 +79,11 @@ export function SeoLandingTemplate({
         badge={{ icon: badgeIcon, text: badge }}
         headline={headline}
         subheadline={subheadline}
-        primaryCta={{ href: `${appBase}/auth/signup`, label: 'Start Free Trial' }}
-        secondaryCta={{ href: '/product', label: 'Explore Platform' }}
+        primaryCta={{
+          href: compliancePlanHref('seo_landing'),
+          label: PUBLIC_CTA_LABELS.compliancePlan,
+        }}
+        secondaryCta={{ href: demoHref('seo_landing'), label: PUBLIC_CTA_LABELS.bookDemo }}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
@@ -257,17 +262,17 @@ export function SeoLandingTemplate({
           <p className="mx-auto mt-4 max-w-3xl text-slate-300">{ctaDescription}</p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href={`${appBase}/auth/signup`}
+              href={compliancePlanHref('seo_landing_final')}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgba(34,211,238,0.25)] transition hover:shadow-[0_0_32px_rgba(34,211,238,0.4)]"
             >
-              Start Free Trial
+              {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/contact"
+              href={demoHref('seo_landing_final')}
               className="inline-flex items-center justify-center rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
             >
-              Schedule Demo
+              {PUBLIC_CTA_LABELS.bookDemo}
             </Link>
           </div>
         </GlassCard>

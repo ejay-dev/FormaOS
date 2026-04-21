@@ -35,7 +35,7 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { brand } from '@/config/brand';
+import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 /* ─── Easing ──────────────────────────────────────────────── */
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -1204,7 +1204,7 @@ function IntegrationsCTA() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
-                    href={brand.seo.appUrl}
+                    href={compliancePlanHref('integrations_final')}
                     className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
                       bg-gradient-to-r from-emerald-500 to-teal-500
                       text-white font-semibold text-sm
@@ -1212,7 +1212,7 @@ function IntegrationsCTA() {
                       hover:shadow-xl hover:shadow-emerald-500/30
                       transition-all duration-300"
                   >
-                    Start Free Trial
+                    {PUBLIC_CTA_LABELS.compliancePlan}
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                   <a

@@ -7,9 +7,7 @@ import { duration } from '@/config/motion';
 import {
   ParallaxLayer,
 } from "@/components/motion";
-
-const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au')
-  .replace(/\/$/, '');
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 export function ProductHero() {
   return (
@@ -76,11 +74,11 @@ export function ProductHero() {
               transition={{ delay: 0.7, duration: duration.slower }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6"
             >
-              <Link href={`${appBase}/auth/signup`} className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
-                Start Free Trial
+              <Link href={compliancePlanHref('product_legacy_hero')} className="w-full sm:w-auto rounded-md bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors">
+                {PUBLIC_CTA_LABELS.compliancePlan}
               </Link>
-              <Link href="/contact" className="w-full sm:w-auto text-sm font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
-                Request Demo <ArrowRight className="ml-2 h-4 w-4" />
+              <Link href={demoHref('product_legacy_hero')} className="w-full sm:w-auto text-sm font-semibold leading-6 text-foreground hover:text-primary transition-colors flex items-center justify-center sm:justify-start">
+                {PUBLIC_CTA_LABELS.bookDemo} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </motion.div>
           </div>

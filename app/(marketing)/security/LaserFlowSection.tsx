@@ -91,10 +91,10 @@ export function LaserFlowSection() {
             </div>
 
             <Link
-              href="/contact"
+              href="/contact?type=security-review&source=security_laser_flow"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.06] border border-white/[0.12] text-sm font-medium text-white hover:bg-white/[0.1] hover:border-white/[0.2] transition-colors group"
             >
-              View Security Brief
+              Book Security Review
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </motion.div>

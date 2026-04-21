@@ -7,10 +7,17 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { easing } from '@/config/motion';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { NavLinks } from './NavLinks';
+import {
+  compliancePlanHref,
+  PUBLIC_CTA_LABELS,
+  salesHref,
+} from '@/lib/marketing/cta';
 
 const appBase = (
   process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au'
 ).replace(/\/$/, '');
+const mobileSalesHref = salesHref('mobile_nav');
+const mobileCompliancePlanHref = compliancePlanHref('mobile_nav');
 
 /**
  * =========================================================
@@ -244,39 +251,39 @@ export function MobileNav() {
                     <ChevronRight className="h-5 w-5 text-white/60" />
                   </Link>
                   <Link
-                    href="/contact"
+                    href={mobileSalesHref}
                     onClick={() => {
                       trackCtaClick({
                         surface: 'navigation',
                         section: 'mobile_nav',
                         location: 'mobile_contact',
-                        ctaLabel: 'Talk to Sales',
-                        ctaHref: '/contact',
+                        ctaLabel: PUBLIC_CTA_LABELS.talkToSales,
+                        ctaHref: mobileSalesHref,
                         variant: 'secondary',
                       });
                       handleLinkClick();
                     }}
                     className="mk-btn mk-btn-secondary flex items-center justify-between w-full rounded-2xl px-5 py-4 min-h-[54px] text-base font-semibold"
                   >
-                    <span>Talk to Sales</span>
+                    <span>{PUBLIC_CTA_LABELS.talkToSales}</span>
                     <ChevronRight className="h-5 w-5 text-white/60" />
                   </Link>
                   <Link
-                    href="/contact?type=compliance-plan&source=mobile_nav"
+                    href={mobileCompliancePlanHref}
                     onClick={() => {
                       trackCtaClick({
                         surface: 'navigation',
                         section: 'mobile_nav',
                         location: 'mobile_primary',
-                        ctaLabel: 'Get Compliance Plan',
-                        ctaHref: '/contact?type=compliance-plan&source=mobile_nav',
+                        ctaLabel: PUBLIC_CTA_LABELS.compliancePlan,
+                        ctaHref: mobileCompliancePlanHref,
                         variant: 'primary',
                       });
                       handleLinkClick();
                     }}
                     className="mk-btn mk-btn-primary flex items-center justify-center w-full rounded-2xl px-5 py-4 min-h-[58px] text-base font-bold tracking-tight"
                   >
-                    Get Compliance Plan
+                    {PUBLIC_CTA_LABELS.compliancePlan}
                   </Link>
                 </div>
 

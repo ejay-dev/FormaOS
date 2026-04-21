@@ -32,6 +32,8 @@ afterEach(() => {
 
 describe('getStripePriceId', () => {
   it('returns default price IDs when env vars are not set', () => {
+    delete process.env.STRIPE_PRICE_FOUNDATION;
+    delete process.env.STRIPE_PRICE_GROWTH;
     delete process.env.STRIPE_PRICE_BASIC;
     delete process.env.STRIPE_PRICE_PRO;
     delete process.env.STRIPE_PRICE_ENTERPRISE;
@@ -58,6 +60,22 @@ describe('getStripePriceId', () => {
     delete process.env.STRIPE_PRICE_ENTERPRISE;
   });
 
+  it('prefers Foundation and Growth env aliases over legacy names', () => {
+    process.env.STRIPE_PRICE_FOUNDATION = 'price_foundation';
+    process.env.STRIPE_PRICE_GROWTH = 'price_growth';
+    process.env.STRIPE_PRICE_BASIC = 'price_legacy_basic';
+    process.env.STRIPE_PRICE_PRO = 'price_legacy_pro';
+    const { getStripePriceId } = require('@/lib/billing/stripe');
+
+    expect(getStripePriceId('basic')).toBe('price_foundation');
+    expect(getStripePriceId('pro')).toBe('price_growth');
+
+    delete process.env.STRIPE_PRICE_FOUNDATION;
+    delete process.env.STRIPE_PRICE_GROWTH;
+    delete process.env.STRIPE_PRICE_BASIC;
+    delete process.env.STRIPE_PRICE_PRO;
+  });
+
   it('returns null for unknown plan keys', () => {
     const { getStripePriceId } = require('@/lib/billing/stripe');
     expect(getStripePriceId('nonexistent')).toBeNull();
@@ -66,6 +84,8 @@ describe('getStripePriceId', () => {
 
 describe('resolvePlanKeyFromPriceId', () => {
   beforeEach(() => {
+    delete process.env.STRIPE_PRICE_FOUNDATION;
+    delete process.env.STRIPE_PRICE_GROWTH;
     delete process.env.STRIPE_PRICE_BASIC;
     delete process.env.STRIPE_PRICE_PRO;
     delete process.env.STRIPE_PRICE_ENTERPRISE;
@@ -86,6 +106,18 @@ describe('resolvePlanKeyFromPriceId', () => {
     expect(resolvePlanKeyFromPriceId('price_custom_basic')).toBe('basic');
 
     delete process.env.STRIPE_PRICE_BASIC;
+  });
+
+  it('resolves Foundation and Growth env aliases', () => {
+    process.env.STRIPE_PRICE_FOUNDATION = 'price_foundation';
+    process.env.STRIPE_PRICE_GROWTH = 'price_growth';
+    const { resolvePlanKeyFromPriceId } = require('@/lib/billing/stripe');
+
+    expect(resolvePlanKeyFromPriceId('price_foundation')).toBe('basic');
+    expect(resolvePlanKeyFromPriceId('price_growth')).toBe('pro');
+
+    delete process.env.STRIPE_PRICE_FOUNDATION;
+    delete process.env.STRIPE_PRICE_GROWTH;
   });
 
   it('returns null for null/undefined/empty input', () => {

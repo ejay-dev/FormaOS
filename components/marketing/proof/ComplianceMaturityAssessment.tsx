@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { BarChart3, ArrowRight, Shield } from 'lucide-react';
+import { BarChart3, ArrowRight, Shield, Ban, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { assessmentHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 /**
  * =========================================================
@@ -153,10 +154,10 @@ function getMaturityLevel(score: number): {
   return {
     level: 'Foundational',
     color: 'text-destructive',
-    description:
-      'Your compliance program has significant gaps and manual processes.',
+      description:
+        'Your compliance program has significant gaps and manual processes.',
     recommendation:
-      'FormaOS can transform your posture from reactive to proactive in 14 days.',
+      'FormaOS can move the highest-risk gaps into enforced workflows during guided onboarding.',
   };
 }
 
@@ -176,14 +177,15 @@ export function ComplianceMaturityAssessment() {
 
   if (showResults) {
     return (
-      <section className="py-20">
+      <section className="relative overflow-hidden py-20">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.12),transparent_38%)]" />
         <div className="mx-auto max-w-3xl px-6">
-          <div className="p-8 rounded-2xl border border-border bg-card text-center">
+          <div className="relative overflow-hidden rounded-3xl border border-cyan-300/[0.14] bg-slate-950/70 p-8 text-center shadow-[0_28px_90px_rgba(8,47,73,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl">
             <BarChart3
-              className="h-10 w-10 text-primary mx-auto mb-4"
+              className="mx-auto mb-4 h-10 w-10 text-cyan-300 drop-shadow-[0_0_18px_rgba(34,211,238,0.35)]"
               aria-hidden="true"
             />
-            <h3 className="text-2xl font-bold text-foreground">
+            <h3 className="text-2xl font-bold text-white">
               Your Compliance Maturity Score
             </h3>
 
@@ -199,7 +201,7 @@ export function ComplianceMaturityAssessment() {
                   cy="60"
                   r="52"
                   fill="none"
-                  stroke="hsl(var(--muted))"
+                  stroke="rgba(148,163,184,0.18)"
                   strokeWidth="8"
                 />
                 <circle
@@ -207,14 +209,14 @@ export function ComplianceMaturityAssessment() {
                   cy="60"
                   r="52"
                   fill="none"
-                  stroke="hsl(var(--primary))"
+                  stroke="rgba(34,211,238,0.9)"
                   strokeWidth="8"
                   strokeDasharray={`${(percentScore / 100) * 327} 327`}
                   strokeLinecap="round"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold text-foreground">
+                <span className="text-3xl font-bold text-white">
                   {percentScore}%
                 </span>
                 <span className={cn('text-sm font-medium', maturity.color)}>
@@ -223,12 +225,33 @@ export function ComplianceMaturityAssessment() {
               </div>
             </div>
 
-            <p className="text-muted-foreground max-w-md mx-auto">
+            <p className="mx-auto max-w-md text-slate-300">
               {maturity.description}
             </p>
-            <p className="text-sm text-primary mt-4 font-medium">
+            <p className="mt-4 text-sm font-medium text-cyan-200">
               {maturity.recommendation}
             </p>
+
+            <div className="mx-auto mt-6 grid max-w-2xl gap-3 text-left sm:grid-cols-2">
+              <div className="rounded-2xl border border-emerald-300/15 bg-emerald-300/[0.06] p-4">
+                <div className="flex items-center gap-2 text-sm font-semibold text-emerald-100">
+                  <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                  Evidence trail ready
+                </div>
+                <p className="mt-2 text-xs leading-5 text-slate-400">
+                  Completed actions can be sealed into an immutable audit trail.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-red-300/20 bg-red-500/[0.08] p-4 shadow-[0_0_24px_rgba(248,113,113,0.12)]">
+                <div className="flex items-center gap-2 text-sm font-semibold text-red-100">
+                  <Ban className="h-4 w-4" aria-hidden="true" />
+                  Block incomplete steps
+                </div>
+                <p className="mt-2 text-xs leading-5 text-slate-400">
+                  Missing owner, approval, or evidence requirements stay blocked.
+                </p>
+              </div>
+            </div>
 
             <div className="flex justify-center gap-4 mt-8">
               <button
@@ -236,15 +259,16 @@ export function ComplianceMaturityAssessment() {
                   setShowResults(false);
                   setAnswers({});
                 }}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-slate-500 transition-colors hover:text-white"
               >
                 Retake assessment
               </button>
               <a
-                href="/auth/signup"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 transition-colors"
+                href={assessmentHref('maturity_assessment')}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:brightness-110"
               >
-                Start free trial <ArrowRight className="h-4 w-4" />
+                {PUBLIC_CTA_LABELS.startAssessment}{' '}
+                <ArrowRight className="h-4 w-4" />
               </a>
             </div>
           </div>
@@ -254,19 +278,20 @@ export function ComplianceMaturityAssessment() {
   }
 
   return (
-    <section className="py-20">
+    <section className="relative overflow-hidden py-20">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(34,211,238,0.1),transparent_34%),radial-gradient(circle_at_80%_85%,rgba(20,184,166,0.08),transparent_32%)]" />
       <div className="mx-auto max-w-3xl px-6">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/[0.08] px-4 py-1.5 text-sm font-medium text-cyan-200">
             <Shield className="h-4 w-4" aria-hidden="true" />
             Self-Assessment
           </div>
-          <h2 className="text-3xl font-bold text-foreground">
+          <h2 className="text-3xl font-bold text-white">
             What&apos;s your compliance maturity?
           </h2>
-          <p className="text-muted-foreground mt-3">
+          <p className="mt-3 text-slate-400">
             Answer 5 questions to see where you stand - and where FormaOS can
-            help.
+            enforce stronger operating controls.
           </p>
         </div>
 
@@ -274,10 +299,10 @@ export function ComplianceMaturityAssessment() {
           {questions.map((q, qi) => (
             <div
               key={q.id}
-              className="p-6 rounded-xl border border-border bg-card"
+              className="rounded-2xl border border-cyan-300/[0.12] bg-slate-950/65 p-6 shadow-[0_18px_60px_rgba(8,47,73,0.22),inset_0_1px_0_rgba(255,255,255,0.05)] backdrop-blur-xl"
             >
-              <p className="text-sm font-medium text-foreground mb-4">
-                <span className="text-muted-foreground mr-2">{qi + 1}.</span>
+              <p className="mb-4 text-sm font-medium text-slate-100">
+                <span className="mr-2 text-slate-500">{qi + 1}.</span>
                 {q.question}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -288,13 +313,13 @@ export function ComplianceMaturityAssessment() {
                     className={cn(
                       'p-3 rounded-lg border text-left transition-all',
                       answers[q.id] === opt.score
-                        ? 'border-primary bg-primary/5 text-foreground'
-                        : 'border-border bg-card hover:border-primary/30 text-muted-foreground hover:text-foreground',
+                        ? 'border-cyan-300/35 bg-cyan-300/[0.08] text-white shadow-[0_0_24px_rgba(34,211,238,0.12)]'
+                        : 'border-white/[0.08] bg-white/[0.035] text-slate-400 hover:border-cyan-300/25 hover:bg-white/[0.06] hover:text-white',
                     )}
                   >
                     <p className="text-sm font-medium">{opt.label}</p>
                     {opt.description && (
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="mt-1 text-xs text-slate-500">
                         {opt.description}
                       </p>
                     )}
@@ -308,7 +333,7 @@ export function ComplianceMaturityAssessment() {
             <div className="text-center">
               <button
                 onClick={() => setShowResults(true)}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-teal-400 px-8 py-4 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:brightness-110"
               >
                 See my score <ArrowRight className="h-4 w-4" />
               </button>
@@ -316,7 +341,7 @@ export function ComplianceMaturityAssessment() {
           )}
 
           {answeredCount > 0 && answeredCount < questions.length && (
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="text-center text-sm text-slate-500">
               {questions.length - answeredCount} question
               {questions.length - answeredCount > 1 ? 's' : ''} remaining
             </p>

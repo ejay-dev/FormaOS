@@ -3,6 +3,11 @@
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
+import {
+  compliancePlanHref,
+  PUBLIC_CTA_LABELS,
+  salesHref,
+} from '@/lib/marketing/cta';
 
 export function FinalCTA() {
   const { trackCtaClick } = useMarketingTelemetry();
@@ -24,37 +29,37 @@ export function FinalCTA() {
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
-            href="/contact?type=compliance-plan&source=pricing_final"
+            href={compliancePlanHref('pricing_final')}
             onClick={() =>
               trackCtaClick({
                 surface: 'pricing',
                 section: 'final_cta',
                 location: 'final_primary',
-                ctaLabel: 'Get Your Compliance Plan',
-                ctaHref: '/contact?type=compliance-plan&source=pricing_final',
+                ctaLabel: PUBLIC_CTA_LABELS.compliancePlan,
+                ctaHref: compliancePlanHref('pricing_final'),
                 variant: 'final',
               })
             }
             className="mk-btn mk-btn-primary min-h-[52px] justify-center px-8 py-4 text-base"
           >
-            Get Your Compliance Plan
+            {PUBLIC_CTA_LABELS.compliancePlan}
             <ArrowRight className="h-5 w-5" aria-hidden="true" />
           </Link>
           <Link
-            href="/contact?type=expert&source=pricing_final"
+            href={salesHref('pricing_final')}
             onClick={() =>
               trackCtaClick({
                 surface: 'pricing',
                 section: 'final_cta',
                 location: 'final_secondary',
-                ctaLabel: 'Talk to an Expert',
-                ctaHref: '/contact?type=expert&source=pricing_final',
+                ctaLabel: PUBLIC_CTA_LABELS.talkToSales,
+                ctaHref: salesHref('pricing_final'),
                 variant: 'final',
               })
             }
             className="mk-btn mk-btn-secondary min-h-[52px] justify-center px-8 py-4 text-base"
           >
-            Talk to an Expert
+            {PUBLIC_CTA_LABELS.talkToSales}
           </Link>
         </div>
       </div>

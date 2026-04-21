@@ -1,10 +1,6 @@
 export type PlanKey = 'basic' | 'pro' | 'enterprise';
 
-export const TRIAL_ELIGIBLE_PLANS: readonly PlanKey[] = [
-  'basic',
-  'pro',
-  'enterprise',
-] as const;
+export const TRIAL_ELIGIBLE_PLANS: readonly PlanKey[] = [] as const;
 
 export type PlanConfig = {
   key: PlanKey;
@@ -23,52 +19,52 @@ export type PlanConfig = {
 export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
   basic: {
     key: 'basic',
-    name: 'Starter',
-    summary: 'For teams formalising their first compliance layer',
-    priceMonthly: 159,
+    name: 'Foundation',
+    summary: 'Controlled starting point for smaller regulated teams',
+    priceMonthly: 297,
     limits: {
       maxSites: 2,
       maxUsers: 15,
       maxFrameworks: 2,
     },
     features: [
-      'Core compliance engine',
-      'Tasks and evidence management',
+      'Single-framework compliance assessment',
+      'Basic workflow enforcement',
       'Audit logs',
-      'Standard reporting',
+      'Guided onboarding review',
     ],
   },
   pro: {
     key: 'pro',
-    name: 'Professional',
-    summary: 'For regulated teams managing active multi-framework obligations',
-    priceMonthly: 239,
+    name: 'Growth',
+    summary: 'Primary plan for operational compliance teams',
+    priceMonthly: 1800,
     limits: {
       maxSites: 10,
       maxUsers: 75,
       maxFrameworks: 5,
     },
     features: [
-      'Everything in Starter',
-      'Advanced reporting',
-      'Governance controls',
+      'Everything in Foundation',
+      'Full workflow enforcement',
+      'Real-time audit evidence',
       'Operational dashboards',
-      'Workflow automation',
+      'Onboarding support',
     ],
   },
   enterprise: {
     key: 'enterprise',
     name: 'Enterprise',
     summary:
-      'For organisations where compliance is mission-critical and non-negotiable',
-    priceMonthly: 399,
+      'Tailored rollout, procurement, security review, and governance design',
+    priceMonthly: 0,
     limits: {
       maxSites: 'unlimited',
       maxUsers: 'unlimited',
       maxFrameworks: 'unlimited',
     },
     features: [
-      'Everything in Pro',
+      'Everything in Growth',
       'Unlimited sites, users & frameworks',
       'SSO & SAML authentication',
       'Custom compliance frameworks',

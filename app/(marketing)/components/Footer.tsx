@@ -5,6 +5,7 @@ import { Logo } from '@/components/brand/Logo';
 import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { footerLinks } from '@/config/navigation';
+import { compliancePlanHref, PUBLIC_CTA_LABELS, salesHref } from '@/lib/marketing/cta';
 import {
   Mail,
   MapPin,
@@ -14,7 +15,8 @@ import {
   ArrowRight,
 } from 'lucide-react';
 
-const compliancePlanUrl = '/contact?type=compliance-plan&source=footer';
+const compliancePlanUrl = compliancePlanHref('footer');
+const salesUrl = salesHref('footer');
 
 /* ── Footer CTA ──────────────────────────────────────────── */
 
@@ -63,31 +65,31 @@ function FooterCTA() {
                   surface: 'footer',
                   section: 'footer_cta',
                   location: 'footer_primary',
-                  ctaLabel: 'Get Compliance Plan',
+                  ctaLabel: PUBLIC_CTA_LABELS.compliancePlan,
                   ctaHref: compliancePlanUrl,
                   variant: 'primary',
                 })
               }
               className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-7 py-3.5 min-h-[48px] w-full sm:w-auto text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:brightness-110"
             >
-              Get Compliance Plan
+              {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
-              href="/contact"
+              href={salesUrl}
               onClick={() =>
                 trackCtaClick({
                   surface: 'footer',
                   section: 'footer_cta',
                   location: 'footer_secondary',
-                  ctaLabel: 'Talk to Sales',
-                  ctaHref: '/contact',
+                  ctaLabel: PUBLIC_CTA_LABELS.talkToSales,
+                  ctaHref: salesUrl,
                   variant: 'secondary',
                 })
               }
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-7 py-3.5 min-h-[48px] w-full sm:w-auto text-sm font-semibold text-white transition-all hover:bg-white/[0.08] hover:border-white/20"
             >
-              Talk to Sales
+              {PUBLIC_CTA_LABELS.talkToSales}
             </Link>
           </div>
         </div>

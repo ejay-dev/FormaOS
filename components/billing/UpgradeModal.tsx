@@ -288,8 +288,8 @@ export function UpgradeModal() {
           </div>
 
           <p className="text-xs text-center text-muted-foreground/60">
-            14-day free trial on Starter &amp; Professional · Cancel anytime ·
-            Your data is safe
+            Assessment-led onboarding · Controlled plan activation · Your data
+            is safe
           </p>
         </div>
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { DeferredSection } from '../components/shared';
@@ -29,6 +29,7 @@ const QuestionnaireAccelerator = dynamic(
 
 /** Page-level decorative compliance wire paths that draw on scroll */
 function TrustWirePaths() {
+  const [mounted, setMounted] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const tierConfig = useDeviceTier();
   const ref = useRef<HTMLDivElement>(null);
@@ -45,7 +46,11 @@ function TrustWirePaths() {
   const wire3 = useTransform(scrollYProgress, [0.3, 0.8], [0, 1]);
   const wire4 = useTransform(scrollYProgress, [0.5, 1], [0, 1]);
 
-  if (!shouldRenderWires) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !shouldRenderWires) return null;
 
   return (
     <div

@@ -54,7 +54,7 @@ export default function Image() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <div style={{ color: '#475569', fontSize: 15 }}>formaos.com.au</div>
           <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#334155' }} />
-          <div style={{ color: '#475569', fontSize: 15 }}>Get your compliance plan</div>
+          <div style={{ color: '#475569', fontSize: 15 }}>Get Compliance Plan</div>
         </div>
 
         <div style={{

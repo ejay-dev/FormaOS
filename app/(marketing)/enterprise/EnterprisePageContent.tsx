@@ -45,10 +45,8 @@ import {
 } from '@/components/marketing/SectionBackgrounds';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { brand } from '@/config/brand';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import { demoHref, PUBLIC_CTA_LABELS, salesHref } from '@/lib/marketing/cta';
 
 /* ─── Easing ──────────────────────────────────────────────── */
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
@@ -1189,14 +1187,14 @@ function EnterpriseCTA() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
-                    href={`${appBase}/contact?type=enterprise`}
+                    href={salesHref('enterprise_final')}
                     onClick={() =>
                       trackCtaClick({
                         surface: 'enterprise',
                         section: 'final_cta',
                         location: 'final_primary',
                         ctaLabel: 'Contact Enterprise Sales',
-                        ctaHref: `${appBase}/contact?type=enterprise`,
+                        ctaHref: salesHref('enterprise_final'),
                         variant: 'primary',
                       })
                     }
@@ -1211,14 +1209,14 @@ function EnterpriseCTA() {
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                   <Link
-                    href={appBase}
+                    href={demoHref('enterprise_final')}
                     onClick={() =>
                       trackCtaClick({
                         surface: 'enterprise',
                         section: 'final_cta',
                         location: 'final_secondary',
-                        ctaLabel: 'Start Free Trial',
-                        ctaHref: appBase,
+                        ctaLabel: PUBLIC_CTA_LABELS.bookDemo,
+                        ctaHref: demoHref('enterprise_final'),
                         variant: 'secondary',
                       })
                     }
@@ -1228,7 +1226,7 @@ function EnterpriseCTA() {
                       hover:bg-white/[0.08] hover:border-white/[0.2]
                       transition-all duration-300"
                   >
-                    Start Free Trial
+                    {PUBLIC_CTA_LABELS.bookDemo}
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -1378,14 +1376,14 @@ function EnterpriseHero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <Link
-            href={`${appBase}/contact?type=enterprise`}
+            href={salesHref('enterprise_hero')}
             onClick={() =>
               trackCtaClick({
                 surface: 'enterprise',
                 section: 'hero',
                 location: 'hero_primary',
                 ctaLabel: 'Talk to Enterprise Sales',
-                ctaHref: `${appBase}/contact?type=enterprise`,
+                ctaHref: salesHref('enterprise_hero'),
                 variant: 'primary',
               })
             }
@@ -1396,18 +1394,18 @@ function EnterpriseHero() {
               hover:shadow-xl hover:shadow-violet-500/30
               transition-all duration-300"
           >
-            Talk to Enterprise Sales
+            {PUBLIC_CTA_LABELS.talkToSales}
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
           <Link
-            href={appBase}
+            href={demoHref('enterprise_hero')}
             onClick={() =>
               trackCtaClick({
                 surface: 'enterprise',
                 section: 'hero',
                 location: 'hero_secondary',
-                ctaLabel: 'Start Free Trial',
-                ctaHref: appBase,
+                ctaLabel: PUBLIC_CTA_LABELS.bookDemo,
+                ctaHref: demoHref('enterprise_hero'),
                 variant: 'secondary',
               })
             }
@@ -1417,7 +1415,7 @@ function EnterpriseHero() {
               hover:bg-white/[0.08] hover:border-white/[0.2]
               transition-all duration-300"
           >
-            Start Free Trial
+            {PUBLIC_CTA_LABELS.bookDemo}
             <ChevronRight className="w-4 h-4" />
           </Link>
         </motion.div>

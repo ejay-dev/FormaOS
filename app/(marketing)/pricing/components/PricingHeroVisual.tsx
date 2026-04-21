@@ -27,7 +27,7 @@ interface TierCard {
 
 const TIERS: TierCard[] = [
   {
-    tier: 'STARTER',
+    tier: 'FOUNDATION',
     price: '$49',
     period: '/mo',
     z: -70,
@@ -46,7 +46,7 @@ const TIERS: TierCard[] = [
     ],
   },
   {
-    tier: 'PROFESSIONAL',
+    tier: 'GROWTH',
     price: '$149',
     period: '/mo',
     z: 0,

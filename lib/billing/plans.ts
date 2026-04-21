@@ -19,7 +19,7 @@ export interface SubscriptionPlan {
 export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
   free: {
     id: 'free',
-    name: 'Free',
+    name: 'Evaluation Access',
     price: 0,
     interval: 'month',
     features: [
@@ -39,17 +39,19 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
   },
   starter: {
     id: 'starter',
-    name: 'Starter',
-    price: 29,
+    name: 'Foundation',
+    price: 297,
     interval: 'month',
-    stripePriceId: process.env.STRIPE_STARTER_PRICE_ID,
+    stripePriceId:
+      process.env.STRIPE_PRICE_FOUNDATION ??
+      process.env.STRIPE_STARTER_PRICE_ID,
     features: [
-      'Up to 20 team members',
-      'Unlimited tasks',
-      '10GB storage',
-      '50 certificates',
+      'Controlled starting point',
+      'Basic workflow enforcement',
+      'Audit logs and evidence history',
+      'Guided setup review',
       'Email support',
-      'Analytics dashboard',
+      'Core compliance dashboard',
     ],
     limits: {
       members: 20,
@@ -61,17 +63,18 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
   },
   pro: {
     id: 'pro',
-    name: 'Professional',
-    price: 99,
+    name: 'Growth',
+    price: 1800,
     interval: 'month',
-    stripePriceId: process.env.STRIPE_PRO_PRICE_ID,
+    stripePriceId:
+      process.env.STRIPE_PRICE_GROWTH ?? process.env.STRIPE_PRO_PRICE_ID,
     features: [
-      'Up to 100 team members',
-      'Unlimited tasks',
-      '100GB storage',
-      'Unlimited certificates',
+      'Full workflow enforcement',
+      'Real-time audit evidence',
+      'Multi-team usage',
+      'Multiple compliance areas',
       'Priority support',
-      'Advanced analytics',
+      'Posture reporting',
       'Custom workflows',
       'API access',
     ],
@@ -86,9 +89,11 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
   enterprise: {
     id: 'enterprise',
     name: 'Enterprise',
-    price: 299,
+    price: 0,
     interval: 'month',
-    stripePriceId: process.env.STRIPE_ENTERPRISE_PRICE_ID,
+    stripePriceId:
+      process.env.STRIPE_PRICE_ENTERPRISE ??
+      process.env.STRIPE_ENTERPRISE_PRICE_ID,
     features: [
       'Unlimited team members',
       'Unlimited tasks',

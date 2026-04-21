@@ -1,4 +1,4 @@
-import { Activity, ClipboardCheck, FileCheck2, LayoutDashboard } from 'lucide-react';
+import { Activity, Ban, ClipboardCheck, FileCheck2, LayoutDashboard } from 'lucide-react';
 import {
   AccentText,
   IconFrame,
@@ -32,7 +32,7 @@ const showcaseTabs = [
     icon: Activity,
     title: 'Status panel',
     status: 'Live risk view',
-    lines: ['Incidents: controlled', 'Policies: review due', 'Evidence: complete'],
+    lines: ['Incidents: controlled', 'Policies: warning', 'Evidence gap: blocked'],
   },
 ];
 
@@ -89,6 +89,24 @@ export function ProductShowcase({ className = '' }: { className?: string }) {
                     </ul>
                   </article>
                 ))}
+                <article className="sm:col-span-2 rounded-2xl border border-red-300/20 bg-red-500/[0.075] p-4 shadow-[0_0_34px_rgba(248,113,113,0.12)]">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-start gap-3">
+                      <IconFrame icon={Ban} tone="blocked" className="h-9 w-9 rounded-xl" />
+                      <div>
+                        <p className="text-sm font-semibold text-red-100">
+                          Action blocked - approval missing
+                        </p>
+                        <p className="mt-1 text-xs leading-5 text-slate-400">
+                          The task cannot be marked audit-ready until the required reviewer signs off.
+                        </p>
+                      </div>
+                    </div>
+                    <StatusPill tone="blocked" pulse>
+                      Blocked
+                    </StatusPill>
+                  </div>
+                </article>
               </div>
           </SystemFrame>
         </div>

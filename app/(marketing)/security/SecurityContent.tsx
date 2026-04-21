@@ -366,10 +366,10 @@ export function SecurityCTA() {
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
                 <Link
-                  href="/contact"
+                  href="/contact?type=security-review&source=security_final"
                   className="mk-btn mk-btn-secondary text-base sm:text-lg px-8 sm:px-12 py-4 sm:py-6 w-full sm:w-auto text-center"
                 >
-                  Schedule Security Briefing
+                  Book Security Review
                 </Link>
               </div>
             </div>

@@ -4,9 +4,6 @@ import Link from 'next/link';
 import { Shield, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export function FinalSecurityCTA() {
   return (
@@ -113,19 +110,19 @@ export function FinalSecurityCTA() {
                   <div className="text-center">
                     <div className="space-y-4 mb-8">
                       <Link
-                        href="/contact"
+                        href="/contact?type=security-review&source=security_final_primary"
                         className="mk-btn mk-btn-primary group w-full inline-block px-8 py-4 text-base"
                       >
                         <span className="relative z-10">
-                          Request Security Overview
+                          Book Security Review
                         </span>
                       </Link>
 
                       <Link
-                        href={`${appBase}/auth/signup`}
+                        href="/contact?type=security-review&source=security_final"
                         className="mk-btn mk-btn-secondary group w-full flex items-center justify-center gap-2 px-8 py-4 text-base"
                       >
-                        <span>Start Secure Trial</span>
+                        <span>Book Security Review</span>
                         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                       </Link>
                     </div>

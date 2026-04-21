@@ -29,8 +29,8 @@ export const DEFAULT_RUNTIME_MARKETING: RuntimeMarketingConfig = {
       'FormaOS turns regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance across every framework your team operates under.',
     primaryCtaLabel: 'Get Compliance Plan',
     primaryCtaHref: '/contact?type=compliance-plan&source=home_hero',
-    secondaryCtaLabel: 'View Pricing',
-    secondaryCtaHref: '/pricing',
+    secondaryCtaLabel: 'Book Demo',
+    secondaryCtaHref: '/contact?type=demo&source=home_hero',
   },
   runtime: {
     expensiveEffectsEnabled: true,

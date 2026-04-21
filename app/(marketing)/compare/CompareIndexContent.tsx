@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Scale, ShieldCheck } from 'lucide-react';
-import { brand } from '@/config/brand';
 import { Reveal } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -11,8 +10,7 @@ import { DeferredSection } from '../components/shared';
 import { motion } from 'framer-motion';
 import { CompareHeroVisual } from './components/CompareHeroVisual';
 import { DotGrid } from '@/components/marketing/SectionBackgrounds';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const comparisons = [
   {
@@ -89,7 +87,10 @@ export default function CompareIndexContent() {
           href: '/contact?type=procurement&source=compare_index',
           label: 'Start Buyer Review',
         }}
-        secondaryCta={{ href: `${appBase}/auth/signup?source=compare`, label: 'Start Free Trial' }}
+        secondaryCta={{
+          href: compliancePlanHref('compare_index_hero'),
+          label: PUBLIC_CTA_LABELS.compliancePlan,
+        }}
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>

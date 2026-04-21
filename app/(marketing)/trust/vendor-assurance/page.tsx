@@ -1,12 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, FileText, CalendarDays, ShieldCheck } from 'lucide-react';
-import { brand } from '@/config/brand';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
 import { siteUrl } from '@/lib/seo';
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -142,10 +140,10 @@ export default function VendorAssurancePage() {
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
                 <Link
-                  href={`${appBase}/auth/signup?source=vendor_assurance`}
+                  href="/contact?type=security-review&source=vendor_assurance"
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted/30"
                 >
-                  Start Trial
+                  Book Security Review
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </div>

@@ -24,7 +24,7 @@ const procurementFlow = [
     step: '02',
     title: 'Run security review in parallel',
     detail:
-      'Use the security packet and trust center artifacts while teams validate workspace fit in trial.',
+      'Use the security packet and trust center artifacts while teams validate implementation fit.',
     icon: ShieldCheck,
   },
   {

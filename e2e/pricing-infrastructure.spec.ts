@@ -34,7 +34,7 @@ test.describe('Infrastructure pricing and proof pages', () => {
     }
 
     const heroHref = await page
-      .getByRole('link', { name: /Get Your Compliance Plan/i })
+      .getByRole('link', { name: /Get Compliance Plan/i })
       .first()
       .getAttribute('href');
     expect(heroHref).toMatch(/\/contact\?type=compliance-plan/);

@@ -11,7 +11,6 @@ import {
   AlertCircle,
   BarChart3,
 } from 'lucide-react';
-import { brand } from '@/config/brand';
 import { Reveal } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -23,8 +22,11 @@ import { motion } from 'framer-motion';
 import { CompareHeroVisual } from './CompareHeroVisual';
 import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 import { AppMockup } from '@/components/marketing/mockups';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import {
+  buyerReviewHref as getBuyerReviewHref,
+  compliancePlanHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 
 export interface ComparePoint {
   title: string;
@@ -70,7 +72,7 @@ const relatedLinksBySource: Record<
       href: '/pricing',
       label: 'Pricing',
       description:
-        'See plan structure before moving into trial or procurement.',
+        'See plan structure before moving into guided procurement.',
     },
   ],
   compare_drata: [
@@ -179,7 +181,8 @@ export function ComparePageTemplate({
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks =
     relatedLinksBySource[source] ?? relatedLinksBySource.compare_vanta;
-  const buyerReviewHref = `/contact?type=procurement&source=${source}`;
+  const buyerReviewHref = getBuyerReviewHref(source);
+  const complianceHref = compliancePlanHref(source);
 
   // Feature score computation
   const formaosScore = featureComparison.filter(
@@ -218,15 +221,15 @@ export function ComparePageTemplate({
         }
         primaryCta={{ href: buyerReviewHref, label: 'Start Buyer Review' }}
         secondaryCta={{
-          href: `${appBase}/auth/signup?source=${source}`,
-          label: 'Start Free Trial',
+          href: complianceHref,
+          label: PUBLIC_CTA_LABELS.compliancePlan,
         }}
         onPrimaryCtaClick={() =>
           trackCtaClick({
             surface: 'compare',
             section: 'hero',
             location: 'hero_primary',
-            ctaLabel: 'Start Buyer Review',
+            ctaLabel: PUBLIC_CTA_LABELS.buyerReview,
             ctaHref: buyerReviewHref,
             variant: 'primary',
             competitor,
@@ -238,8 +241,8 @@ export function ComparePageTemplate({
             surface: 'compare',
             section: 'hero',
             location: 'hero_secondary',
-            ctaLabel: 'Start Free Trial',
-            ctaHref: `${appBase}/auth/signup?source=${source}`,
+            ctaLabel: PUBLIC_CTA_LABELS.compliancePlan,
+            ctaHref: complianceHref,
             variant: 'secondary',
             competitor,
             compareSource: source,
@@ -389,20 +392,20 @@ export function ComparePageTemplate({
                   Ready to see the difference firsthand?
                 </h3>
                 <p className="mt-1 text-sm text-slate-400">
-                  Start a free trial or request a buyer review packet for your
-                  procurement team.
+                  Request a buyer review packet or get a compliance plan scoped
+                  to your procurement team.
                 </p>
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
                 <Link
-                  href={`${appBase}/auth/signup?source=${source}`}
+                  href={complianceHref}
                   onClick={() =>
                     trackCtaClick({
                       surface: 'compare',
                       section: 'mid_page_cta',
                       location: 'mid_page_primary',
-                      ctaLabel: 'Start Free Trial',
-                      ctaHref: `${appBase}/auth/signup?source=${source}`,
+                      ctaLabel: PUBLIC_CTA_LABELS.compliancePlan,
+                      ctaHref: complianceHref,
                       variant: 'primary',
                       competitor,
                       compareSource: source,
@@ -410,7 +413,7 @@ export function ComparePageTemplate({
                   }
                   className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:brightness-110"
                 >
-                  Start Free Trial
+                  {PUBLIC_CTA_LABELS.compliancePlan}
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
                 <Link

@@ -4,11 +4,9 @@ import { useRef, useEffect, useState } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
-import { brand } from '@/config/brand';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { CursorTilt } from '@/components/motion/CursorTilt';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 export function ProductHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -120,7 +118,7 @@ export function ProductHero() {
                 className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
               >
                 <motion.a
-                  href={`${appBase}/auth/signup`}
+                  href={compliancePlanHref('product_hero')}
                   whileHover={
                     shouldAnimateIntro
                       ? { scale: 1.05, boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)' }
@@ -129,17 +127,17 @@ export function ProductHero() {
                   whileTap={shouldAnimateIntro ? { scale: 0.98 } : undefined}
                   className="mk-btn mk-btn-primary group px-8 py-4 text-lg"
                 >
-                  <span>Start Free Trial</span>
+                  <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.a>
 
                 <motion.a
-                  href="/contact"
+                  href={demoHref('product_hero')}
                   whileHover={shouldAnimateIntro ? { scale: 1.05 } : undefined}
                   whileTap={shouldAnimateIntro ? { scale: 0.98 } : undefined}
                   className="mk-btn mk-btn-secondary group px-8 py-4 text-lg"
                 >
-                  <span>Request Demo</span>
+                  <span>{PUBLIC_CTA_LABELS.bookDemo}</span>
                 </motion.a>
               </motion.div>
             </motion.div>

@@ -123,7 +123,7 @@ const trustWorkflow = [
   {
     step: 'Accelerate',
     detail:
-      'Teams move into trial or procurement with fewer blockers, reusable trust artifacts, and pre-answered security questionnaires.',
+      'Teams move into buyer review or procurement with fewer blockers, reusable trust artifacts, and pre-answered security questionnaires.',
     subpoints: [
       'Pre-built security review packet covers common procurement and security-review topics',
       'Trust Center with public documentation: architecture overview, encryption posture, and data handling',

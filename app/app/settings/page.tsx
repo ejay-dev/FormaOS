@@ -101,7 +101,7 @@ async function saveWorkspaceProfileAction(formData: FormData) {
 }
 
 function formatPlanName(planKey: string | null | undefined) {
-  if (!planKey) return 'Free trial';
+  if (!planKey) return 'Evaluation access';
   return PLAN_CATALOG[planKey as keyof typeof PLAN_CATALOG]?.name ?? 'Plan';
 }
 

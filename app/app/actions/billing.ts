@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
-import { isTrialEligiblePlan, resolvePlanKey } from '@/lib/plans';
+import { resolvePlanKey } from '@/lib/plans';
 import { isFounder } from '@/lib/utils/founder';
 import { billingLogger } from '@/lib/observability/structured-logger';
 import { actionError, isNextInternalError } from "@/lib/actions/safe";
@@ -60,8 +60,6 @@ export async function startCheckout(formData: FormData) {
     redirect(`${siteUrl.replace(/\/$/, '')}/pricing`);
   }
 
-  // Enterprise now follows the same priced self-serve checkout path.
-
   const stripe = getStripeClient();
   if (!stripe) {
     redirect('/app/billing?status=stripe_unavailable');
@@ -82,7 +80,6 @@ export async function startCheckout(formData: FormData) {
   }
   const siteBase = siteUrl.replace(/\/$/, '');
   const appBase = appUrl.replace(/\/$/, '');
-  const isTrialEligible = isTrialEligiblePlan(planKey);
 
   try {
     if (!customerId) {
@@ -101,7 +98,6 @@ export async function startCheckout(formData: FormData) {
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
-        trial_period_days: isTrialEligible ? 14 : undefined,
         metadata: {
           organization_id: orgId,
           plan_key: planKey,

@@ -3,10 +3,8 @@
 import { Building2, ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { brand } from '@/config/brand';
 import { useDeviceTier } from '@/lib/device-tier';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 export function IndustriesCTA() {
   const shouldReduceMotion = useReducedMotion();
@@ -116,7 +114,7 @@ export function IndustriesCTA() {
                   <div className="text-center">
                     <div className="space-y-4 mb-6">
                       <motion.a
-                        href="/contact"
+                        href={demoHref('industries_cta')}
                         whileHover={{
                           scale: 1.05,
                           boxShadow: '0 0 40px rgba(16, 185, 129, 0.4)',
@@ -128,19 +126,18 @@ export function IndustriesCTA() {
                       </motion.a>
 
                       <motion.a
-                        href={`${appBase}/auth/signup`}
+                        href={compliancePlanHref('industries_cta')}
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
                         className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full border-2 border-white/20 text-white font-semibold hover:bg-white/[0.08] hover:border-white/30 transition-all"
                       >
-                        <span>Start Free Trial</span>
+                        <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
                         <ArrowRight className="h-5 w-5" />
                       </motion.a>
                     </div>
 
                     <p className="text-xs text-gray-500">
-                      No credit card required • Full platform access • Industry
-                      framework included
+                      Assessment-led onboarding • Industry framework mapping • Procurement-ready review
                     </p>
                   </div>
                 </ScrollReveal>

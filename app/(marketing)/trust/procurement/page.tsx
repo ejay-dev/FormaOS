@@ -65,7 +65,7 @@ const faqs = [
   {
     question: 'What is your uptime SLA?',
     answer:
-      'Enterprise agreements can include documented availability expectations, incident handling, maintenance communications, and escalation paths in the executed MSA/SOW. Starter and Professional plans operate on a best-effort basis with public status reporting at formaos.com.au/status.',
+      'Enterprise agreements can include documented availability expectations, incident handling, maintenance communications, and escalation paths in the executed MSA/SOW. Foundation and Growth operate with published support expectations and public status reporting at formaos.com.au/status.',
   },
   {
     question: 'How long does security review take?',
@@ -176,7 +176,7 @@ export default function ProcurementFAQPage() {
             Open enterprise operations proof →
           </Link>
           <Link
-            href="/contact"
+            href="/contact?type=security-review&source=trust_procurement"
             className="text-sm text-primary hover:underline"
           >
             Contact for custom security review →

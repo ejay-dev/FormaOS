@@ -3,9 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { brand } from '@/config/brand';
-
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 export function FinalCTA() {
   return (
@@ -37,17 +35,17 @@ export function FinalCTA() {
               <ScrollReveal variant="slideUp" range={[0.08, 0.4]}>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                   <Link
-                    href="/contact"
+                    href={demoHref('product_final')}
                     className="mk-btn mk-btn-primary group w-full sm:w-auto px-8 py-4 text-base"
                   >
-                    <span className="relative z-10">Request a Demo</span>
+                    <span className="relative z-10">{PUBLIC_CTA_LABELS.bookDemo}</span>
                   </Link>
 
                   <Link
-                    href={`${appBase}/auth/signup`}
+                    href={compliancePlanHref('product_final')}
                     className="mk-btn mk-btn-secondary group w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 text-base"
                   >
-                    <span>Start Free Trial</span>
+                    <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </Link>
                 </div>
@@ -57,11 +55,11 @@ export function FinalCTA() {
                 <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-gray-500">
                   <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
                     <CheckCircle className="w-4 h-4 text-green-400" />
-                    14-day free trial
+                    Guided compliance plan
                   </span>
                   <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
                     <CheckCircle className="w-4 h-4 text-green-400" />
-                    No credit card required
+                    Assessment-led onboarding
                   </span>
                   <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
                     <CheckCircle className="w-4 h-4 text-green-400" />

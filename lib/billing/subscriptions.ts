@@ -1,19 +1,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
-import {
-  isTrialEligiblePlan,
-  resolvePlanKey,
-  type PlanKey,
-} from '@/lib/plans';
+import { resolvePlanKey, type PlanKey } from '@/lib/plans';
 import { billingLogger } from '@/lib/observability/structured-logger';
-
-const TRIAL_DAYS = 14;
-
-function getTrialEndIso() {
-  const end = new Date();
-  end.setDate(end.getDate() + TRIAL_DAYS);
-  return end.toISOString();
-}
 
 // Legacy plan_code column uses different values than plan_key
 // plan_key: basic, pro, enterprise
@@ -39,34 +27,26 @@ export async function ensureSubscription(
     .eq('organization_id', orgId)
     .maybeSingle();
 
-  // If subscription exists with valid status, check if trial is still active
   if (existing?.status && ['active', 'trialing'].includes(existing.status)) {
-    // Check for EXPIRED trials — a 'trialing' status with a past expiration date
-    // means the user's free trial has ended. Reset to a fresh trial so returning
-    // users aren't permanently locked out of the app.
     const isExpiredTrial =
       existing.status === 'trialing' &&
       existing.trial_expires_at &&
       Date.now() > new Date(existing.trial_expires_at).getTime();
 
     if (!isExpiredTrial) {
-      // Active subscription or active trial — just ensure entitlements
       const existingPlan = resolvePlanKey(existing.plan_key) || resolvedPlan;
       await syncEntitlementsForPlan(orgId, existingPlan);
       return;
     }
 
-    // Expired trial: fall through to create a fresh trial subscription below
-    billingLogger.info('expired_trial_detected_refreshing', {
+    billingLogger.info('expired_evaluation_detected_converting_to_active', {
       orgId,
       previousExpiry: existing.trial_expires_at,
     });
   }
 
-  const isTrialEligible = isTrialEligiblePlan(resolvedPlan);
   const now = new Date();
   const nowIso = now.toISOString();
-  const trialEndIso = isTrialEligible ? getTrialEndIso() : null;
 
   // BACKFILL: Ensure legacy orgs table entry exists for org_subscriptions.org_id FK
   try {
@@ -102,10 +82,10 @@ export async function ensureSubscription(
   const basePayload = {
     organization_id: orgId,
     plan_key: resolvedPlan,
-    status: isTrialEligible ? 'trialing' : 'active',
-    current_period_end: trialEndIso,
-    trial_started_at: isTrialEligible ? nowIso : null,
-    trial_expires_at: trialEndIso,
+    status: 'active',
+    current_period_end: null,
+    trial_started_at: null,
+    trial_expires_at: null,
     updated_at: nowIso,
   };
 
@@ -145,6 +125,6 @@ export async function ensureSubscription(
     }
   }
 
-  // Sync entitlements for all plans (trial-eligible + enterprise)
+  // Sync entitlements for all plans.
   await syncEntitlementsForPlan(orgId, resolvedPlan);
 }

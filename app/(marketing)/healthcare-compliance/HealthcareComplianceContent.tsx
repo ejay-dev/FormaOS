@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 import {
   Bell,
   Shield,
@@ -234,12 +235,12 @@ export default function HealthcareComplianceContent() {
           </>
         }
         subheadline="AHPRA registrations, NSQHS accreditation, and credential expiry across 16 health professions. FormaOS keeps audit-ready evidence continuous."
-        primaryCta={{ label: 'Start Free Trial', href: '/auth/signup' }}
-        secondaryCta={{ label: 'See Healthcare Demo', href: '/contact' }}
+        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('healthcare_compliance') }}
+        secondaryCta={{ label: 'See Healthcare Demo', href: demoHref('healthcare_compliance') }}
         trustSignals={[
           'AU-hosted by default',
-          '14-day free trial',
-          'No credit card required',
+          'Assessment-led onboarding',
+          'Compliance plan scoped by framework',
           'AHPRA credential tracking',
         ]}
         dashboardVisual={<HealthcareDashboardVisual />}
@@ -342,7 +343,7 @@ export default function HealthcareComplianceContent() {
             feature: 'Price',
             spreadsheets: 'Hidden',
             genericGrc: '$$$+',
-            formaos: 'From $159/mo',
+            formaos: 'Foundation $297/mo',
           },
         ]}
       />

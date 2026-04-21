@@ -3,6 +3,11 @@
 import { Lock, Shield, Eye, FileCheck, Key } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SecurityHeroVisual } from './components/SecurityHeroVisual';
+import {
+  compliancePlanHref,
+  PUBLIC_CTA_LABELS,
+  securityReviewHref,
+} from '@/lib/marketing/cta';
 
 const SECURITY_PILLS = [
   { icon: Lock, label: 'AES-256 + TLS 1.3' },
@@ -46,8 +51,14 @@ export function SecurityHero() {
           ))}
         </div>
       }
-      primaryCta={{ href: '/auth/signup', label: 'Start Free Trial' }}
-      secondaryCta={{ href: '/contact', label: 'Security Briefing' }}
+      primaryCta={{
+        href: compliancePlanHref('security_hero'),
+        label: PUBLIC_CTA_LABELS.compliancePlan,
+      }}
+      secondaryCta={{
+        href: securityReviewHref('security_hero'),
+        label: PUBLIC_CTA_LABELS.securityReview,
+      }}
     />
   );
 }
