@@ -7,7 +7,7 @@ import { ProofSection } from '@/components/ProofSection';
 import { ROIMetrics } from '@/components/ROIMetrics';
 import { TrustBar } from '@/components/TrustBar';
 import { WorkflowEnforcementDiagram } from '@/components/WorkflowEnforcementDiagram';
-import { AccentText, SectionEyebrow, StatusPill } from '@/components/marketing/SystemMarketingPrimitives';
+import { SectionEyebrow } from '@/components/marketing/SystemMarketingPrimitives';
 import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
@@ -15,14 +15,14 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Case Studies - FormaOS Compliance Proof',
   description:
-    'Representative FormaOS compliance proof packs showing before/after audit preparation, enforced workflows, and evidence trails for regulated operators.',
+    'Representative FormaOS proof packs showing audit preparation, governed workflows, and evidence trails for regulated operators.',
   alternates: {
     canonical: `${siteUrl}/case-studies`,
   },
   openGraph: {
     title: 'FormaOS Case Studies',
     description:
-      'See the structure FormaOS uses to prove audit readiness: outcomes, workflow trail, evidence preview, and risk reduction.',
+      'See how FormaOS structures proof packs: baseline, workflow trail, evidence, and operational outcome.',
     url: `${siteUrl}/case-studies`,
     type: 'website',
   },
@@ -37,19 +37,19 @@ export default function CaseStudiesPage() {
         <div className="relative mx-auto max-w-7xl">
           <SectionEyebrow>Case Studies</SectionEyebrow>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-6xl">
-            Proof packs for buyers who need <AccentText>evidence before belief</AccentText>
+            Representative proof packs for regulated teams
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-            This page shows the case-study structure FormaOS should use for
-            NDIS and healthcare buyers: before/after metrics, workflow evidence,
-            audit trail preview, and failure-prevention logic.
+            Explore how FormaOS presents readiness to auditors, procurement
+            teams, and boards: the starting point, the governed workflow, the
+            evidence chain, and the outcome.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/contact?type=case-study&source=case_studies"
               className="mk-btn mk-btn-primary min-h-[52px] justify-center px-8 py-4 text-base"
             >
-              Build My Proof Plan
+              Build a Proof Walkthrough
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </Link>
             <Link
@@ -59,10 +59,19 @@ export default function CaseStudiesPage() {
               View Pricing
             </Link>
           </div>
-          <div className="mt-7 flex flex-wrap gap-2">
-            <StatusPill tone="live">Live system preview</StatusPill>
-            <StatusPill tone="valid">Immutable log</StatusPill>
-            <StatusPill tone="blocked">Blocked state</StatusPill>
+          <div className="mt-8 grid max-w-3xl gap-3 text-sm text-slate-300 sm:grid-cols-3">
+            <div className="border-l border-cyan-300/25 pl-4">
+              <p className="font-semibold text-white">Baseline</p>
+              <p className="mt-1 text-slate-400">What the team was managing manually.</p>
+            </div>
+            <div className="border-l border-cyan-300/25 pl-4">
+              <p className="font-semibold text-white">Workflow</p>
+              <p className="mt-1 text-slate-400">How controls, owners, and gates ran.</p>
+            </div>
+            <div className="border-l border-cyan-300/25 pl-4">
+              <p className="font-semibold text-white">Evidence</p>
+              <p className="mt-1 text-slate-400">What can be exported and reviewed.</p>
+            </div>
           </div>
         </div>
       </section>

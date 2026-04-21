@@ -1,6 +1,5 @@
 import { Activity, Ban, ClipboardCheck, FileCheck2, LayoutDashboard } from 'lucide-react';
 import {
-  AccentText,
   IconFrame,
   SectionEyebrow,
   StatusPill,
@@ -32,7 +31,7 @@ const showcaseTabs = [
     icon: Activity,
     title: 'Status panel',
     status: 'Live risk view',
-    lines: ['Incidents: controlled', 'Policies: warning', 'Evidence gap: blocked'],
+    lines: ['Incidents: controlled', 'Policies: review due', 'Evidence: complete'],
   },
 ];
 
@@ -42,17 +41,17 @@ export function ProductShowcase({ className = '' }: { className?: string }) {
         <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
           <div>
             <SectionEyebrow icon={LayoutDashboard}>Product Visibility</SectionEyebrow>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Real operating screens, not <AccentText>abstract promise art</AccentText>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              See the operating system behind the promise
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300">
-              Serious buyers need to see the system working: dashboard, workflow
-              builder, audit logs, and status panels that show proof and
-              enforcement in one place.
+              The workspace brings posture, workflows, evidence, and audit
+              history together so teams can see what is healthy, what needs
+              review, and what cannot move forward.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              <StatusPill tone="live">Live system</StatusPill>
-              <StatusPill tone="valid">Enforcing</StatusPill>
+              <StatusPill tone="live">Live workspace</StatusPill>
+              <StatusPill tone="valid">Evidence linked</StatusPill>
               <StatusPill tone="neutral">Immutable log</StatusPill>
             </div>
           </div>
@@ -95,10 +94,11 @@ export function ProductShowcase({ className = '' }: { className?: string }) {
                       <IconFrame icon={Ban} tone="blocked" className="h-9 w-9 rounded-xl" />
                       <div>
                         <p className="text-sm font-semibold text-red-100">
-                          Action blocked - approval missing
+                          Release blocked until approval is complete
                         </p>
                         <p className="mt-1 text-xs leading-5 text-slate-400">
-                          The task cannot be marked audit-ready until the required reviewer signs off.
+                          Review requirements stay visible before the task can
+                          be marked audit-ready.
                         </p>
                       </div>
                     </div>

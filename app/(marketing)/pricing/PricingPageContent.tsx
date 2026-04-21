@@ -42,9 +42,9 @@ function CostOfNonCompliance() {
               One failed audit can cost more than a year of FormaOS
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300">
-              The page must justify price before asking for commitment. That
-              means showing the manual compliance cost, not burying buyers in a
-              feature comparison table.
+              Pricing only makes sense when it is measured against the manual
+              work it replaces: evidence chasing, repeated reviews, escalation
+              gaps, and remediation when issues are found late.
             </p>
           </div>
           <div className="overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.045]">
@@ -87,8 +87,9 @@ function HowPricingWorks() {
             Priced by compliance scope, not feature unlocks
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-300">
-            The commercial logic matches the infrastructure promise: more risk,
-            more complexity, and more enforcement scope create the price.
+            Your plan is shaped by frameworks, sites, evidence volume, workflow
+            complexity, and the level of support required to keep the system
+            operating well.
           </p>
         </div>
         <div className="mt-12 grid gap-4 md:grid-cols-3">
@@ -125,7 +126,7 @@ export default function PricingPageContent() {
       <TrustBar />
       <ROIMetrics
         eyebrow="Manual Cost Anchor"
-        title="Make the current cost visible before the price table"
+        title="Price the system against the work it removes"
       />
       <PricingTiers />
       <CostOfNonCompliance />

@@ -6,13 +6,13 @@ type StatusTone = 'valid' | 'warning' | 'blocked' | 'live' | 'neutral';
 
 const glowByVariant: Record<SystemSectionVariant, string> = {
   cyan:
-    'bg-[radial-gradient(circle_at_18%_8%,rgba(45,212,191,0.2),transparent_32%),radial-gradient(circle_at_78%_76%,rgba(14,165,233,0.13),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_16%_10%,rgba(45,212,191,0.13),transparent_30%),radial-gradient(circle_at_82%_74%,rgba(20,184,166,0.08),transparent_34%)]',
   emerald:
-    'bg-[radial-gradient(circle_at_18%_8%,rgba(52,211,153,0.17),transparent_32%),radial-gradient(circle_at_78%_76%,rgba(45,212,191,0.13),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_18%_12%,rgba(52,211,153,0.12),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(45,212,191,0.08),transparent_34%)]',
   amber:
-    'bg-[radial-gradient(circle_at_18%_8%,rgba(245,158,11,0.15),transparent_30%),radial-gradient(circle_at_78%_76%,rgba(45,212,191,0.11),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_18%_12%,rgba(245,158,11,0.1),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(45,212,191,0.07),transparent_34%)]',
   red:
-    'bg-[radial-gradient(circle_at_18%_8%,rgba(248,113,113,0.16),transparent_30%),radial-gradient(circle_at_78%_76%,rgba(45,212,191,0.12),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_18%_12%,rgba(248,113,113,0.1),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(45,212,191,0.07),transparent_34%)]',
 };
 
 const statusTone: Record<StatusTone, string> = {
@@ -24,10 +24,10 @@ const statusTone: Record<StatusTone, string> = {
 };
 
 export const systemPanelClass =
-  'rounded-[1.75rem] border border-cyan-300/[0.14] bg-[rgba(10,20,40,0.62)] shadow-[0_24px_80px_rgba(2,6,23,0.5),inset_0_1px_0_rgba(255,255,255,0.06),0_0_42px_rgba(45,212,191,0.08)] backdrop-blur-xl transition duration-300 hover:border-cyan-300/25 hover:bg-[rgba(12,26,48,0.74)] hover:shadow-[0_28px_90px_rgba(2,6,23,0.54),inset_0_1px_0_rgba(255,255,255,0.08),0_0_52px_rgba(45,212,191,0.14)]';
+  'rounded-2xl border border-white/[0.075] bg-white/[0.035] shadow-[0_18px_56px_rgba(2,6,23,0.34),inset_0_1px_0_rgba(255,255,255,0.045)] backdrop-blur-xl transition duration-300 hover:border-teal-300/20 hover:bg-white/[0.05]';
 
 export const systemPanelCompactClass =
-  'rounded-2xl border border-cyan-300/[0.12] bg-slate-950/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_40px_rgba(2,6,23,0.35)] backdrop-blur-md transition duration-300 hover:border-cyan-300/22 hover:bg-slate-900/58';
+  'rounded-xl border border-white/[0.07] bg-slate-950/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_32px_rgba(2,6,23,0.28)] backdrop-blur-md transition duration-300 hover:border-teal-300/18 hover:bg-slate-900/55';
 
 export function SystemSection({
   children,
@@ -43,13 +43,12 @@ export function SystemSection({
   variant?: SystemSectionVariant;
 }) {
   return (
-    <section id={id} className={`relative isolate overflow-hidden bg-[#020817] py-20 sm:py-24 ${className}`}>
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#020617_0%,#061525_44%,#020617_100%)]" />
+    <section id={id} className={`relative isolate overflow-hidden bg-slate-950 py-20 sm:py-24 ${className}`}>
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#020617_0%,#07111f_48%,#020617_100%)]" />
       <div className={`pointer-events-none absolute inset-0 ${glowByVariant[variant]}`} />
-      <div className="mk-security-grid pointer-events-none absolute inset-0 opacity-[0.24] [mask-image:radial-gradient(ellipse_at_center,black_0%,transparent_72%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:18px_18px] opacity-[0.035]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/30 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-blue-300/15 to-transparent" />
+      <div className="mk-security-grid pointer-events-none absolute inset-0 opacity-[0.13] [mask-image:radial-gradient(ellipse_at_center,black_0%,transparent_74%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       <div className={`relative mx-auto max-w-7xl px-6 lg:px-12 ${containerClassName}`}>
         {children}
       </div>
@@ -108,7 +107,7 @@ export function StatusPill({
   pulse?: boolean;
 }) {
   return (
-    <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] ${statusTone[tone]}`}>
+    <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] ${statusTone[tone]}`}>
       <span className={`h-1.5 w-1.5 rounded-full ${
         tone === 'blocked'
           ? 'bg-red-300'
@@ -136,9 +135,9 @@ export function SystemFrame({
 }) {
   return (
     <div className={`${systemPanelClass} relative overflow-hidden p-3 ${className}`}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(45,212,191,0.16),transparent_42%)]" />
-      <div className="relative overflow-hidden rounded-[1.35rem] border border-cyan-300/[0.12] bg-slate-950/74">
-        <div className="flex items-center justify-between border-b border-cyan-300/[0.1] px-4 py-3">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(45,212,191,0.08),transparent_40%)]" />
+      <div className="relative overflow-hidden rounded-xl border border-white/[0.07] bg-slate-950/72">
+        <div className="flex items-center justify-between gap-4 border-b border-white/[0.07] px-4 py-3">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-red-300/80" />
             <span className="h-2 w-2 rounded-full bg-amber-300/80" />

@@ -1,6 +1,5 @@
 import { BarChart3, Clock3, DollarSign, ShieldAlert } from 'lucide-react';
 import {
-  AccentText,
   IconFrame,
   SectionEyebrow,
   StatusPill,
@@ -48,13 +47,13 @@ export function ROIMetrics({
     <SystemSection variant="emerald" className={className}>
         <div className="max-w-3xl">
           <SectionEyebrow icon={BarChart3} tone="valid">{eyebrow}</SectionEyebrow>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            <AccentText>{title}</AccentText>
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            {title}
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-300">
-            Enterprise buyers do not buy features. They buy lower audit risk,
-            lower manual overhead, and fewer compliance gaps. These anchors
-            make the cost of inaction visible before the plan table appears.
+            Pricing should reflect the work FormaOS removes: evidence chasing,
+            late remediation, repeated reviews, and the operational risk that
+            appears when control work happens outside a governed system.
           </p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

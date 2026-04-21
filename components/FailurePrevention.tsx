@@ -1,6 +1,5 @@
 import { AlertTriangle, CheckCircle2, ShieldOff, ShieldCheck } from 'lucide-react';
 import {
-  AccentText,
   IconFrame,
   SectionEyebrow,
   StatusPill,
@@ -46,13 +45,13 @@ export function FailurePrevention({ className = '' }: { className?: string }) {
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <div>
             <SectionEyebrow icon={ShieldOff} tone="blocked">Failure Prevention</SectionEyebrow>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Stop relying on people to <AccentText>remember compliance</AccentText>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Stop relying on memory for work that needs proof
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-300">
-              FormaOS is positioned as an enforcement system: it prevents
-              incomplete workflows, blocks missing evidence paths, and keeps the
-              record of what happened.
+              FormaOS turns recurring compliance obligations into required
+              workflow steps, so missing reviews, expired credentials, and
+              incomplete evidence are caught before they become audit issues.
             </p>
             <div className={`mt-8 p-5 ${systemPanelClass}`}>
               <div className="flex items-center gap-3">
@@ -75,10 +74,11 @@ export function FailurePrevention({ className = '' }: { className?: string }) {
                 <div>
                   <StatusPill tone="blocked" pulse>Blocked state</StatusPill>
                   <p className="mt-3 text-lg font-semibold text-white">
-                    Action blocked - missing compliance step
+                    Shift closure blocked until incident review is attached
                   </p>
                   <p className="mt-1 text-sm text-slate-400">
-                    Worker shift cannot close until incident review evidence is attached.
+                    The system keeps the exception visible and records the
+                    resolution path once the required review is complete.
                   </p>
                 </div>
                 <div className="rounded-2xl border border-red-300/25 bg-red-500/[0.08] px-4 py-3 text-right shadow-[0_0_34px_rgba(248,113,113,0.16)]">

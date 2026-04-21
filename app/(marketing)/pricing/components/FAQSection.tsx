@@ -36,7 +36,7 @@ export function FAQSection() {
                   ease: 'easeInOut',
                 }
           }
-          className="absolute bottom-1/4 right-1/3 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-purple-500/15 to-transparent blur-3xl"
+          className="absolute bottom-1/4 right-1/3 h-1/3 w-1/3 rounded-full bg-gradient-to-br from-teal-500/12 to-transparent blur-3xl"
         />
       </div>
 
@@ -49,7 +49,7 @@ export function FAQSection() {
         >
           <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
-              <HelpCircle className="h-3 w-3 text-purple-400" />
+              <HelpCircle className="h-3 w-3 text-teal-300" />
               <span className="text-gray-300">FAQ</span>
             </div>
           </ScrollReveal>
@@ -57,7 +57,7 @@ export function FAQSection() {
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Frequently Asked
             <br />
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-300 via-teal-200 to-emerald-300 bg-clip-text text-transparent">
               Questions
             </span>
           </h2>
@@ -82,7 +82,7 @@ export function FAQSection() {
               aria-controls={`pricing-faq-panel-${idx}`}
               className={`w-full text-left backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl p-6 border transition-all duration-300 ${
                 openIndex === idx
-                  ? 'border-purple-500/30'
+                  ? 'border-teal-400/30'
                   : 'border-white/10 hover:border-white/20'
               }`}
             >

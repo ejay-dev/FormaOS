@@ -1,6 +1,5 @@
 import { AlertTriangle, Ban, CheckCircle2, FileClock, GitBranch, LockKeyhole, UserCheck } from 'lucide-react';
 import {
-  AccentText,
   IconFrame,
   SectionEyebrow,
   StatusPill,
@@ -42,13 +41,13 @@ export function WorkflowEnforcementDiagram({ className = '' }: { className?: str
     <SystemSection variant="cyan" className={className}>
         <div className="mx-auto max-w-3xl text-center">
           <SectionEyebrow icon={LockKeyhole}>Workflow Enforcement</SectionEyebrow>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            User action - system check - <AccentText>allowed or blocked</AccentText> - logged - audit ready
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            Every compliance action is checked before it becomes evidence
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-300">
-            This is the shift from compliance software to compliance
-            infrastructure. FormaOS runs in the background and enforces rules at
-            execution level.
+            FormaOS checks ownership, approvals, due dates, and evidence
+            requirements at the point of work, then records the decision in the
+            audit trail.
           </p>
         </div>
         <div className="mt-10 grid gap-3 sm:grid-cols-3">

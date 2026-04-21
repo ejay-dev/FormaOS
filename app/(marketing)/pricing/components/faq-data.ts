@@ -1,8 +1,8 @@
 export const PRICING_FAQS = [
   {
-    question: 'Why is FormaOS not cheaper?',
+    question: 'How should we think about the price?',
     answer:
-      'Because the product is positioned as compliance infrastructure, not a casual productivity tool. The value is lower audit preparation effort, fewer missed compliance steps, and a defensible evidence trail when regulators or auditors ask for proof.',
+      'FormaOS is priced against the operational work it removes: audit preparation, evidence chasing, missed compliance steps, rework, and the time required to produce a defensible trail when regulators or auditors ask for proof.',
   },
   {
     question: 'Do we still need internal compliance staff?',
