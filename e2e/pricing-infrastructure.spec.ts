@@ -49,14 +49,14 @@ test.describe('Infrastructure pricing and proof pages', () => {
 
     await expect(page.getByText(/Designed for NDIS, AHPRA, ISO, and SOC 2/i).first()).toBeVisible();
     await expect(page.getByText(/Compliance should be priced against failure/i)).toBeVisible();
-    await expect(page.getByText(/Real operating screens, not abstract promise art/i)).toBeVisible();
-    await expect(page.getByText(/Stop relying on people to remember compliance/i).first()).toBeVisible();
-    await expect(page.getByText(/User action - system check - allowed or blocked/i)).toBeVisible();
-    await expect(page.getByText(/representative NDIS provider scenario/i)).toBeVisible();
+    await expect(page.getByText(/See the operating system behind the promise/i)).toBeVisible();
+    await expect(page.getByText(/Stop relying on memory for work that needs proof/i).first()).toBeVisible();
+    await expect(page.getByText(/Every compliance action is checked before it becomes evidence/i)).toBeVisible();
+    await expect(page.getByText('Representative proof pack', { exact: true })).toBeVisible();
     await expectNoFreeTrialLanguage(page);
 
     const caseStudyHref = await page
-      .getByRole('link', { name: /View case study structure/i })
+      .getByRole('link', { name: /View proof packs/i })
       .getAttribute('href');
     expect(caseStudyHref).toBe('/case-studies');
   });
@@ -67,10 +67,10 @@ test.describe('Infrastructure pricing and proof pages', () => {
     });
     expect(response?.status()).toBeLessThan(400);
 
-    await expect(page.getByRole('heading', { name: /Proof packs for buyers/i })).toBeVisible();
-    await expect(page.getByText(/Representative case study/i)).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Evidence preview' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Build My Proof Plan/i })).toHaveAttribute(
+    await expect(page.getByRole('heading', { name: /Representative proof packs for regulated teams/i })).toBeVisible();
+    await expect(page.getByText('Representative proof pack', { exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Workflow trail' })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Build a Proof Walkthrough/i })).toHaveAttribute(
       'href',
       /\/contact\?type=case-study/,
     );

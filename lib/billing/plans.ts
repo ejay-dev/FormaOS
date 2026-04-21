@@ -16,6 +16,9 @@ export interface SubscriptionPlan {
   };
 }
 
+const DEFAULT_FOUNDATION_PRICE_ID = 'price_1TOdz1AHrAKKo3OlfYxjk9WL';
+const DEFAULT_GROWTH_PRICE_ID = 'price_1TOe05AHrAKKo3OliCrZNnkx';
+
 export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
   free: {
     id: 'free',
@@ -44,7 +47,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
     interval: 'month',
     stripePriceId:
       process.env.STRIPE_PRICE_FOUNDATION ??
-      process.env.STRIPE_STARTER_PRICE_ID,
+      DEFAULT_FOUNDATION_PRICE_ID,
     features: [
       'Controlled starting point',
       'Basic workflow enforcement',
@@ -67,7 +70,8 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
     price: 1800,
     interval: 'month',
     stripePriceId:
-      process.env.STRIPE_PRICE_GROWTH ?? process.env.STRIPE_PRO_PRICE_ID,
+      process.env.STRIPE_PRICE_GROWTH ??
+      DEFAULT_GROWTH_PRICE_ID,
     features: [
       'Full workflow enforcement',
       'Real-time audit evidence',

@@ -66,7 +66,7 @@ describe('ensureSubscription', () => {
     expect(mockUpsert).not.toHaveBeenCalled();
   });
 
-  it('creates subscription with trialing status when no existing subscription', async () => {
+  it('creates active subscription when no existing subscription exists', async () => {
     mockMaybeSingle.mockResolvedValue({ data: null });
 
     await ensureSubscription(orgId, 'basic');
@@ -76,7 +76,9 @@ describe('ensureSubscription', () => {
     expect(upsertPayload).toMatchObject({
       organization_id: orgId,
       plan_key: 'basic',
-      status: 'trialing',
+      status: 'active',
+      trial_started_at: null,
+      trial_expires_at: null,
     });
     expect(syncEntitlementsForPlan).toHaveBeenCalledWith(orgId, 'basic');
   });
@@ -94,7 +96,7 @@ describe('ensureSubscription', () => {
     expect(syncEntitlementsForPlan).toHaveBeenCalledWith(orgId, 'basic');
   });
 
-  it('creates fresh subscription when trial is expired', async () => {
+  it('creates fresh active subscription when legacy trial is expired', async () => {
     const pastDate = new Date(Date.now() - 86400000).toISOString(); // 1 day ago
     mockMaybeSingle.mockResolvedValue({
       data: {
@@ -111,7 +113,9 @@ describe('ensureSubscription', () => {
     expect(upsertPayload).toMatchObject({
       organization_id: orgId,
       plan_key: 'basic',
-      status: 'trialing',
+      status: 'active',
+      trial_started_at: null,
+      trial_expires_at: null,
     });
   });
 

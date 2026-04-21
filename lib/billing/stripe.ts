@@ -5,21 +5,15 @@ import { billingLogger } from '@/lib/observability/structured-logger';
 let stripeClient: Stripe | null = null;
 
 const DEFAULT_PRICE_IDS: Record<PlanKey, string> = {
-  basic: 'price_1So1UsAHrAKKo3OlrgiqfEcc',
-  pro: 'price_1So1VmAHrAKKo3OlP6k9TMn4',
+  basic: 'price_1TOdz1AHrAKKo3OlfYxjk9WL',
+  pro: 'price_1TOe05AHrAKKo3OliCrZNnkx',
   enterprise: 'price_1T9cPKAHrAKKo3OliQN78Q83',
 };
 
 function configuredPriceIds(): Record<PlanKey, string> {
   return {
-    basic:
-      process.env.STRIPE_PRICE_FOUNDATION ??
-      process.env.STRIPE_PRICE_BASIC ??
-      DEFAULT_PRICE_IDS.basic,
-    pro:
-      process.env.STRIPE_PRICE_GROWTH ??
-      process.env.STRIPE_PRICE_PRO ??
-      DEFAULT_PRICE_IDS.pro,
+    basic: process.env.STRIPE_PRICE_FOUNDATION ?? DEFAULT_PRICE_IDS.basic,
+    pro: process.env.STRIPE_PRICE_GROWTH ?? DEFAULT_PRICE_IDS.pro,
     enterprise:
       process.env.STRIPE_PRICE_ENTERPRISE ?? DEFAULT_PRICE_IDS.enterprise,
   };

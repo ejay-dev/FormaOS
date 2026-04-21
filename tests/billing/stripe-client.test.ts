@@ -8,8 +8,8 @@
  */
 
 const DEFAULTS = {
-  basic: 'price_1So1UsAHrAKKo3OlrgiqfEcc',
-  pro: 'price_1So1VmAHrAKKo3OlP6k9TMn4',
+  basic: 'price_1TOdz1AHrAKKo3OlfYxjk9WL',
+  pro: 'price_1TOe05AHrAKKo3OliCrZNnkx',
   enterprise: 'price_1T9cPKAHrAKKo3OliQN78Q83',
 };
 
@@ -45,22 +45,22 @@ describe('getStripePriceId', () => {
     expect(getStripePriceId('enterprise')).toBe(DEFAULTS.enterprise);
   });
 
-  it('uses env var overrides when present', () => {
-    process.env.STRIPE_PRICE_BASIC = 'price_override_basic';
-    process.env.STRIPE_PRICE_PRO = 'price_override_pro';
+  it('uses preferred env var overrides when present', () => {
+    process.env.STRIPE_PRICE_FOUNDATION = 'price_override_foundation';
+    process.env.STRIPE_PRICE_GROWTH = 'price_override_growth';
     process.env.STRIPE_PRICE_ENTERPRISE = 'price_override_ent';
     const { getStripePriceId } = require('@/lib/billing/stripe');
 
-    expect(getStripePriceId('basic')).toBe('price_override_basic');
-    expect(getStripePriceId('pro')).toBe('price_override_pro');
+    expect(getStripePriceId('basic')).toBe('price_override_foundation');
+    expect(getStripePriceId('pro')).toBe('price_override_growth');
     expect(getStripePriceId('enterprise')).toBe('price_override_ent');
 
-    delete process.env.STRIPE_PRICE_BASIC;
-    delete process.env.STRIPE_PRICE_PRO;
+    delete process.env.STRIPE_PRICE_FOUNDATION;
+    delete process.env.STRIPE_PRICE_GROWTH;
     delete process.env.STRIPE_PRICE_ENTERPRISE;
   });
 
-  it('prefers Foundation and Growth env aliases over legacy names', () => {
+  it('ignores legacy Foundation and Growth env aliases so stale production vars cannot override current prices', () => {
     process.env.STRIPE_PRICE_FOUNDATION = 'price_foundation';
     process.env.STRIPE_PRICE_GROWTH = 'price_growth';
     process.env.STRIPE_PRICE_BASIC = 'price_legacy_basic';
@@ -100,12 +100,12 @@ describe('resolvePlanKeyFromPriceId', () => {
   });
 
   it('resolves env-overridden price IDs', () => {
-    process.env.STRIPE_PRICE_BASIC = 'price_custom_basic';
+    process.env.STRIPE_PRICE_FOUNDATION = 'price_custom_foundation';
     const { resolvePlanKeyFromPriceId } = require('@/lib/billing/stripe');
 
-    expect(resolvePlanKeyFromPriceId('price_custom_basic')).toBe('basic');
+    expect(resolvePlanKeyFromPriceId('price_custom_foundation')).toBe('basic');
 
-    delete process.env.STRIPE_PRICE_BASIC;
+    delete process.env.STRIPE_PRICE_FOUNDATION;
   });
 
   it('resolves Foundation and Growth env aliases', () => {

@@ -8,15 +8,15 @@ The safe production path is intentionally backward-compatible: keep database pla
 
 Product IDs are not hardcoded in the repository. Only Stripe price IDs are present.
 
-| Public plan | Internal plan key | Current fallback price ID | Preferred env var | Backward-compatible env var |
+| Public plan | Internal plan key | Current fallback price ID | Preferred env var | Deprecated legacy env var |
 | --- | --- | --- | --- | --- |
-| Foundation | `basic` | `price_1So1UsAHrAKKo3OlrgiqfEcc` | `STRIPE_PRICE_FOUNDATION` | `STRIPE_PRICE_BASIC` |
-| Growth | `pro` | `price_1So1VmAHrAKKo3OlP6k9TMn4` | `STRIPE_PRICE_GROWTH` | `STRIPE_PRICE_PRO` |
+| Foundation | `basic` | `price_1TOdz1AHrAKKo3OlfYxjk9WL` | `STRIPE_PRICE_FOUNDATION` | `STRIPE_PRICE_BASIC` |
+| Growth | `pro` | `price_1TOe05AHrAKKo3OliCrZNnkx` | `STRIPE_PRICE_GROWTH` | `STRIPE_PRICE_PRO` |
 | Enterprise | `enterprise` | `price_1T9cPKAHrAKKo3OliQN78Q83` | `STRIPE_PRICE_ENTERPRISE` | none |
 
-Legacy catalog references remain for compatibility:
+Legacy catalog env names remain documented only so operators can remove or mirror them safely:
 
-| Legacy catalog key | Preferred env var now supported | Legacy env var |
+| Legacy catalog key | Preferred env var | Deprecated legacy env var |
 | --- | --- | --- |
 | `starter` | `STRIPE_PRICE_FOUNDATION` | `STRIPE_STARTER_PRICE_ID` |
 | `pro` | `STRIPE_PRICE_GROWTH` | `STRIPE_PRO_PRICE_ID` |
@@ -65,7 +65,7 @@ Recommended grandfathering:
 
 - Do not rename database plan keys during the pricing cutover.
 - Leave webhook support for `trialing` status in place until all legacy trialing rows have ended or been manually migrated.
-- Keep old fallback price IDs in code until the new env vars are set and verified.
+- Remove stale compatibility env names during the cutover, or mirror them to the current Foundation and Growth price IDs for operator clarity. Active checkout no longer depends on them.
 - Do not bulk-change existing Stripe subscriptions unless a customer-specific commercial decision has been made.
 
 ## 6. Webhook Behavior That Must Remain
@@ -81,13 +81,13 @@ Keep these webhook behaviors intact:
 
 ## 7. Production Deployment Order
 
-1. Create the new Foundation and Growth prices in production Stripe.
+1. Confirm the active Foundation and Growth prices in production Stripe.
 2. Decide whether Enterprise remains sales-only. If sales-only, do not advertise direct Enterprise checkout.
 3. Add production Vercel env vars:
-   - `STRIPE_PRICE_FOUNDATION=<new_foundation_price_id>`
-   - `STRIPE_PRICE_GROWTH=<new_growth_price_id>`
+   - `STRIPE_PRICE_FOUNDATION=price_1TOdz1AHrAKKo3OlfYxjk9WL`
+   - `STRIPE_PRICE_GROWTH=price_1TOe05AHrAKKo3OliCrZNnkx`
    - `STRIPE_PRICE_ENTERPRISE=<enterprise_price_id>` only if direct Enterprise checkout is intentionally retained.
-4. Keep `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO` temporarily as fallback during the first deployment.
+4. Remove or mirror `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO`; active checkout uses `STRIPE_PRICE_FOUNDATION`, `STRIPE_PRICE_GROWTH`, or the current code fallback IDs.
 5. Deploy the code.
 6. Confirm `/pricing`, `/contact`, `/security`, `/compare/vanta`, and `/ndis-providers` route CTAs to guided contact flows.
 7. In staging or a controlled production test org, run a Checkout session for Foundation and Growth if direct in-app checkout remains enabled.
@@ -99,8 +99,8 @@ Keep these webhook behaviors intact:
 
 If pricing migration fails:
 
-1. Revert `STRIPE_PRICE_FOUNDATION` and `STRIPE_PRICE_GROWTH` in Vercel.
-2. Restore `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO` to the known old price IDs.
+1. Revert `STRIPE_PRICE_FOUNDATION` and `STRIPE_PRICE_GROWTH` in Vercel to the last known-good Stripe prices.
+2. Mirror any remaining legacy `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO` values for operator clarity, but rollbacks should use the preferred env vars above.
 3. Redeploy or trigger a Vercel env refresh.
 4. Disable any public or in-app direct checkout entry points if checkout errors continue.
 5. Keep public CTAs routed to contact/sales flows while Stripe is corrected.

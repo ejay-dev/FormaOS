@@ -6,8 +6,8 @@
  * Covers:
  * - Default plan fallback when null/invalid plan provided
  * - Existing active/trialing subscription short-circuit
- * - New subscription creation with trial for all self-serve plans
- * - Enterprise subscription creation aligns with priced trial flow
+ * - New subscription creation without automatic Stripe trialing status
+ * - Enterprise subscription creation aligns with the current sales-led model
  * - Legacy column fallback (org_id, plan_code missing)
  * - Entitlement sync on all paths
  */
@@ -150,33 +150,35 @@ describe('ensureSubscription', () => {
     });
   });
 
-  describe('trial logic', () => {
-    it('sets trialing status for basic plan', async () => {
+  describe('activation logic', () => {
+    it('creates an active basic subscription without trial dates', async () => {
       await ensureSubscription(ORG, 'basic');
 
       const subUpsert = dbCalls.upserts.find(u => u.table === 'org_subscriptions');
       const data = subUpsert!.data as Record<string, unknown>;
-      expect(data.status).toBe('trialing');
-      expect(data.trial_started_at).toBeTruthy();
-      expect(data.trial_expires_at).toBeTruthy();
+      expect(data.status).toBe('active');
+      expect(data.trial_started_at).toBeNull();
+      expect(data.trial_expires_at).toBeNull();
     });
 
-    it('sets trialing status for pro plan', async () => {
+    it('creates an active pro subscription without trial dates', async () => {
       await ensureSubscription(ORG, 'pro');
 
       const subUpsert = dbCalls.upserts.find(u => u.table === 'org_subscriptions');
       const data = subUpsert!.data as Record<string, unknown>;
-      expect(data.status).toBe('trialing');
+      expect(data.status).toBe('active');
+      expect(data.trial_started_at).toBeNull();
+      expect(data.trial_expires_at).toBeNull();
     });
 
-    it('sets trialing status for enterprise plan', async () => {
+    it('creates an active enterprise subscription without trial dates', async () => {
       await ensureSubscription(ORG, 'enterprise');
 
       const subUpsert = dbCalls.upserts.find(u => u.table === 'org_subscriptions');
       const data = subUpsert!.data as Record<string, unknown>;
-      expect(data.status).toBe('trialing');
-      expect(data.trial_started_at).toBeTruthy();
-      expect(data.trial_expires_at).toBeTruthy();
+      expect(data.status).toBe('active');
+      expect(data.trial_started_at).toBeNull();
+      expect(data.trial_expires_at).toBeNull();
     });
   });
 
