@@ -1,196 +1,466 @@
-# FormaOS Master Agent Prompts
+# FormaOS Master Agent Prompts — v2
 
-## End-to-End Product, Marketing, Backend, and Frontend Audit Prompt
+Canonical prompts for running a rigorous, cross-stack audit of FormaOS — and optionally remediating and shipping the fixes — from a single coding-agent session. v2 folds in the lessons from the 2026-04-22 audit+remediation pass: contract parity checks, fix discipline with changelog/version hygiene, known-drift traps, a verification ladder, and a ship protocol.
 
-Copy this prompt into a coding agent (Claude Code, VS Code agent) when you want a full FormaOS audit that checks whether the public marketing story, authenticated app, backend behavior, billing, admin console, and QA signals all line up.
+The prompts below are the contract an agent must follow. If something here conflicts with CLAUDE.md, CLAUDE.md wins.
+
+---
+
+## Prompt A — End-to-End Audit + Remediation (full)
+
+Copy this into Claude Code / VS Code agent when you want both the audit AND optional remediation in one session.
 
 ```text
-You are a coding agent working inside /Users/ejaz/FormaOS.
+You are a coding agent operating inside /Users/ejaz/FormaOS. Your job is to
+execute a serious cross-stack audit of FormaOS, and — if the user authorizes
+Remediate mode — apply the smallest safe fixes, verify, and ship. Treat
+marketing copy, the authenticated app, backend/API, billing, admin, data, and
+QA signals as a single product that must corroborate itself.
 
-Your job is to run a serious end-to-end audit of FormaOS and report what is missing, inconsistent, broken, or unsupported. Do not stop at reading code. Run the static checks, run the app, click through real CTAs in a browser, and compare what marketing promises against what the product actually ships.
+## 0. Preflight (do this first, every run)
 
-Core goal:
-Marketing pages, authenticated app, backend/API, billing, admin, data layer, and QA signals must all corroborate each other. Where they do not, report the mismatch with evidence and a concrete fix.
-
-## Start here (read, do not skip)
-
-1. Read, in this order:
+1. Run `git status --short` and note the branch + any untracked files. Never
+   overwrite, rename, or delete unrelated in-flight files (untracked audit
+   reports, FORMAOS_MASTER_PROMPTS*.md drafts, etc.).
+2. Read, in this exact order:
+   - CLAUDE.md (GitNexus wiring, project rules)
    - README.md
    - ENGINEERING_CHANGE_MATRIX.md
    - RELEASE_DISCIPLINE_CHECKLIST.md
    - PLATFORM_CONTROL_CONTRACTS.md
    - ADMIN_OPERATING_POLICY.md
-   - package.json (scripts + deps)
-   - The most recent dated audit report in the repo root (e.g. FORMAOS_CODEBASE_AUDIT_*.md, MARKETING_ENTERPRISE_AUDIT_*.md, APP_LINK_INTEGRITY_REPORT.md, ENTERPRISE_AUDIT_REPORT.md). Use these to avoid relitigating already-known issues — note which findings are still open vs fixed.
-2. Run `git status --short`. Do not overwrite, rename, or delete unrelated in-flight files (there are often untracked FORMAOS_MASTER_PROMPTS_V*.md and audit artifacts — leave them).
-3. Use the Grep and Glob tools for discovery. Do not shell out to `rg`, `find`, `cat`, or `ls` when a dedicated tool fits.
-4. Respect CLAUDE.md — it already wires GitNexus. If GitNexus is available, read `gitnexus://repo/formaos/context` once and use the appropriate gitnexus skill for architecture, impact, debugging, or refactoring questions. Do not duplicate GitNexus searches that CLAUDE.md already covers.
-5. Do not deploy, push, force-push, touch production Stripe/Supabase, send email/Slack, or run destructive commands (no `git reset --hard`, no `rm -rf`, no migration rollbacks) unless explicitly asked.
+   - package.json (scripts + version)
+   - The most recent dated audit report (FORMAOS_AUDIT_<date>.md,
+     APP_LINK_INTEGRITY_REPORT.md, MARKETING_ENTERPRISE_AUDIT_*.md,
+     ENTERPRISE_AUDIT_REPORT.md). Mark which prior findings are fixed vs open.
+3. If CLAUDE.md references GitNexus and the index is not stale, read
+   `gitnexus://repo/formaos/context` once and prefer the gitnexus skill for
+   architecture / impact / debugging / refactoring questions instead of raw
+   grepping.
+4. Use the Grep and Glob tools. Do NOT shell out to `rg`, `find`, `cat`,
+   `head`, `tail`, `sed`, `awk` when a dedicated tool fits.
+5. Record the audit tier AND the operating mode in the report header.
 
-## Pick a tier before starting
+## 1. Pick a tier
 
-Record the tier in the report header. Skip nothing silently.
-- **Quick (≤30 min):** static checks + structural grep + skim browser on 4–6 marketing routes. Good for PR-level sanity.
-- **Standard (≤90 min, DEFAULT):** full static suite + `qa:smoke` + `qa:a11y` + `test:visual` + manual browser on marketing/auth/app/admin + cross-claim grep.
-- **Release-readiness (2–4 hr):** Standard + `test:coverage` + `qa:enterprise` + `test:db` + `test:supabase-health` + `test:compliance:all` + full build.
+Record the tier, skip nothing silently.
+- Quick (≤30 min): static checks + grep for parity drift + skim browser on
+  4–6 marketing routes. Good for PR-level sanity.
+- Standard (≤90 min, DEFAULT): full static suite + qa:smoke + qa:a11y +
+  test:visual + manual browser on marketing/auth/app/admin + cross-claim
+  grep + targeted jest on changed areas.
+- Release-readiness (2–4 hr): Standard + build + test:coverage + qa:enterprise
+  + test:db + test:supabase-health + test:compliance:all.
 
-If env vars or services block a command, record the blocker verbatim and continue. Do not stub values or skip without noting it.
+If env vars or external services block a command, record the blocker verbatim
+and continue. Do not stub values.
 
-## Audit scope
+## 2. Pick an operating mode
 
-### Marketing & trust
-Inspect `app/(marketing)`, `lib/marketing`, `components/marketing`, public marketing assets, metadata, `app/sitemap.ts`, CTAs, forms, comparison and industry pages, `/pricing`, `/trust` + procurement/security/DPA/subprocessors, `/changelog`, blog, `/contact`/`/demo`/`/assessment`.
+- **Audit-only** (default): find and report. Do not change code. Do not
+  commit. Do not push.
+- **Remediate**: the user must explicitly authorize this mode. In Remediate
+  mode you may:
+    - apply the smallest safe fix for each finding up to the declared severity
+      ceiling (e.g. "fix up to P1", or "fix all P's"),
+    - add or update tests that protect the fix,
+    - update CHANGELOG.md + app/(marketing)/changelog/ChangelogPageContent.tsx +
+      package.json version per §6,
+    - commit following §7 and push to main (which triggers Vercel deploy) only
+      when verification is green per §5.
+  You may NOT, in any mode:
+    - deploy directly (no vercel CLI, no prod Stripe, no prod Supabase writes),
+    - push --force to main, skip pre-commit hooks, or amend a pushed commit,
+    - run destructive git commands (reset --hard, branch -D) or rm -rf,
+    - edit historical migrations,
+    - touch production secrets, send email / Slack, or hit live webhooks.
 
-Verify no copy claims: features, certifications (SOC 2, ISO 27001, HIPAA), automation, integrations, compliance guarantees, support SLAs, self-serve billing, free trials, or security posture the product does not actually support today. Pricing/plan language must match `lib/billing/*`, Stripe price env aliases, entitlement maps, and in-app plan gates.
+## 3. Audit scope — what must line up
 
-CTAs must route to a working destination (no `href="#"`, no 404, no route behind flags the user won't hit).
+For every claim/feature, ensure the chain of evidence is consistent across:
 
-Visual: check desktop and mobile widths. Flag overlap, broken media, unreadable contrast, layout jumps, weak app screenshots/mockups, and mismatched visual language between marketing and the authenticated app.
+  marketing copy  →  pricing config  →  plan catalog  →  Stripe env
+                                                     →  entitlement map
+                                                     →  in-app UI price / CTA
+                                                     →  checkout action
+                                                     →  webhook handler
+                                                     →  DB CHECK constraint
 
-### Authenticated app
-Inspect `app/app`, `app/onboarding`, dashboard, compliance, evidence, controls, frameworks, reports, tasks, team, settings, billing, notifications, workflows, exports, and role-gated surfaces.
+If any two disagree it's a finding. The authoritative sources are:
+- Plan catalog: lib/plans.ts (PLAN_CATALOG, PlanKey)
+- Entitlements: lib/billing/entitlements.ts (syncEntitlementsForPlan)
+- Stripe mapping: lib/billing/stripe.ts (getStripePriceId)
+- DB constraint: the most recent migration constraining
+  org_subscriptions.plan_key
+- Marketing price copy: lib/marketing/pricing.ts (PUBLIC_PRICING_TIERS) and
+  /pricing page components
+- In-app upgrade UI: components/billing/* (PlanComparisonTable,
+  UpgradeIntelligenceModal, plan-gates, trial banners)
+- Checkout: app/app/actions/billing.ts (startCheckout) + app/api/billing/* routes
 
-Confirm journeys promised on marketing pages are actually possible in-product. Check empty / blocked / loading / error / permission-denied states and mobile layout. Verify app navigation, sidebar/header, deep links, and cross-links between marketing, auth, and app.
+Any hardcoded price, plan key, or feature claim outside these files is a
+defect. Grep explicitly for: `\$\d{2,4}(?:,\d{3})?\s*(?:\/|per|\s*/mo)` to
+find rogue prices; for `'starter'` to find legacy-plan drift; for feature
+names (`'SSO'`, `'SAML'`, `'SOC 2'`, `'HIPAA'`) to confirm they resolve to a
+real control or a documented limitation.
 
-### Backend, API, data
-Inspect `app/api`, `app/app/actions`, `lib/**/*` services, Supabase clients, `supabase/migrations`, Trigger jobs (`trigger/`), Stripe webhooks, `openapi.json`, and server-side guards.
+### 3a. Marketing & trust
+Inspect app/(marketing), lib/marketing, components/marketing, public assets,
+metadata, app/sitemap.ts, CTAs, forms, comparison and industry pages,
+/pricing, /trust + procurement/security/DPA/subprocessors, /changelog, blog,
+/contact, /demo, /assessment. Flag any claim the product cannot honor
+today (certifications, automation, integrations, SLAs, self-serve states,
+trials).
 
-Confirm: org scoping, authz, Zod/input validation, CSRF where applicable, rate limiting, structured logging, audit trails, error handling. For admin / control-plane routes: permission gates, reason capture, approval requirements, audit logging. For billing: plan keys, Stripe price IDs/env aliases, lifecycle statuses, blocked/restore behavior, entitlement sync, webhook idempotency.
+### 3b. Authenticated app
+Inspect app/app, app/onboarding, dashboard, compliance, evidence, controls,
+frameworks, reports, tasks, team, settings, billing, notifications,
+workflows, exports, role-gated surfaces. Confirm every journey marketing
+promises is reachable in-product. Check empty / blocked / loading / error /
+permission-denied states, mobile layout, deep links, and that in-app upgrade
+notifications end in a successful Stripe checkout (or a documented sales path).
 
-Do not edit historical migrations. If schema/route mismatch exists, propose a new migration.
+### 3c. Backend / API / data
+Inspect app/api, app/app/actions, lib/**, Supabase clients,
+supabase/migrations, trigger/, Stripe webhooks, openapi.json, server guards.
+For every mutating route confirm: org scoping, authz (role gate), Zod input
+validation, CSRF validation where applicable, rate limiting, structured
+logging, audit trails, idempotency on webhooks. Never edit historical
+migrations — propose a new one.
 
-### Manual browser verification
-1. Start dev server with `npm run dev` (or reuse an existing local server — check port 3000 first).
-2. Drive the browser with the `webapp-testing` skill or Playwright MCP. Do not simulate clicks by grepping for hrefs; navigate them.
-3. Routes to hit at minimum:
-   - Marketing: `/`, `/pricing`, `/product`, `/features`, `/industries`, `/enterprise`, `/trust`, `/trust/procurement`, `/compare`, `/contact`, `/changelog`
-   - Buyer CTA paths: from header, footer, pricing cards, trust pages, mobile nav
-   - Auth handoff: `/auth/login`, `/auth/signup`, `/signin`, `/join`
-   - Product app: `/app` plus onboarding/settings/billing/compliance surfaces reachable in local test mode
-   - Admin: `/admin` plus critical admin routes in local founder/test mode
-4. For auth simulation, use `NEXT_PUBLIC_TEST_MODE=true` / local founder bypass if wired (check `lib/auth/*` and middleware). If you cannot authenticate, record that explicitly — do not fabricate observations.
-5. Test desktop (1440px) and mobile (375px) widths. Save screenshots to `screenshots/audit-YYYY-MM-DD/<route>.png`.
-6. Click the actual CTAs. An `href` is not proof the link works.
+### 3d. Admin & control plane
+Reason capture, approval requirements, audit logging, permission gates,
+founder bypass boundaries. Confirm every admin mutation writes to
+admin_audit_log and every plan change calls syncEntitlementsForPlan for
+every tier (basic, pro, enterprise) not just a subset.
 
-## Commands (baseline set)
+## 4. Known-drift traps (grep these every run)
 
-Run these as appropriate for the chosen tier. Record pass/fail/blocked for each.
+These bit us before. Re-check them by default; do not rely on memory.
 
-Fast (always):
-- `npm run check-root`
-- `npm run check-env`
-- `npm run typecheck`
-- `npm run lint`
-- `npm run audit:marketing-copy`
-- `npm run check:app-links`
-- `npm run check:admin-nav`
-- `npm run check:security-baseline`
+- **Plan vocabulary drift:** canonical PlanKey is `basic | pro | enterprise`
+  (lib/plans.ts) enforced by the org_subscriptions CHECK constraint. The
+  legacy column `plan_code` uses `starter` (not `basic`). `SUBSCRIPTION_PLANS`
+  in lib/billing/plans.ts is keyed by the legacy code. Anywhere that reads
+  `SUBSCRIPTION_PLANS[plan_key]` directly is a bug.
+- **Hardcoded UI prices:** grep components/billing/** for price literals.
+  Every number must come from PLAN_CATALOG; enterprise must render "Custom"
+  (priceMonthly === 0) and route to /contact, not Stripe.
+- **Dead code in components/billing/** — e.g. billing-dashboard.tsx shipped
+  unused. Confirm every exported surface has at least one import.
+- **Admin entitlement gates:** any branch that skips
+  syncEntitlementsForPlan for specific plans is suspect.
+- **Legacy Stripe imports:** `@/lib/billing` (lib/billing.ts) is the legacy
+  bundle; new code should import from `@/lib/billing/stripe`. Tests that
+  import from `@/lib/billing` may be intentional — verify before "fixing".
+- **Playwright managed dirs:** never redirect audit artifacts into
+  `test-results/`; Playwright wipes it. Use `artifacts/audit-<date>/` instead.
+- **proxy.ts vs middleware.ts:** Next.js 16 uses `proxy.ts`. Don't
+  reintroduce `middleware.ts`.
+- **Hook bypasses:** never use `--no-verify`, `--no-gpg-sign`,
+  `-c commit.gpgsign=false`, `--amend` on a pushed commit, or
+  `git reset --hard` without explicit user approval.
 
-Medium:
-- `npm run qa:smoke`
-- `npm run qa:a11y`
-- `npm run test:visual`
-- `npm run stylelint`
-- `npm run design:check`
+## 5. Commands matrix + verification ladder
 
-Heavy (release-readiness only):
-- `npm run build`
-- `npm run test:coverage`
-- `npm run qa:enterprise`
-- `npm run test:db`
-- `npm run test:supabase-health`
-- `npm run test:compliance:all`
+Run commands appropriate for tier. Record pass / fail / blocked for each.
 
-## Compare explicitly
+Static (every tier):
+- npm run check-root
+- npm run check-env
+- npm run typecheck
+- npm run lint
+- npm run audit:marketing-copy
+- npm run check:app-links
+- npm run check:admin-nav
+- npm run check:security-baseline
 
-- Marketing claim → product route / component / API / DB proof.
-- Pricing plan promise → billing entitlement / config / webhook / app gate proof.
-- Trust/security claim → implemented control, policy, audit trail, or a documented limitation.
-- CTA promise → actual route, form, auth handoff, or sales outcome.
-- App capability → marketing explanation. If the app does something useful that marketing hides, report it.
-- Backend invariant → frontend state. If APIs return blocked/pending/error states the UI does not handle, report it.
+E2E / visual (Standard+):
+- npm run qa:smoke
+- npm run qa:a11y
+- npm run test:visual
+- npm run stylelint
+- npm run design:check
 
-## When you find problems
+Release-readiness only:
+- npm run build
+- npm run test:coverage
+- npm run qa:enterprise
+- npm run test:db
+- npm run test:supabase-health
+- npm run test:compliance:all
 
-1. Capture exact route, file:line, command, screenshot path, or test output.
-2. Severity:
-   - **P0-Security/Data:** org isolation, authz bypass, secret leak, data loss, billing integrity, audit gap on high-impact mutation.
-   - **P0-Buyer/Product:** signup/auth/billing/core buyer or product journey broken.
-   - **P1:** public claim unsupported, CTA dead-ends, admin guarantee weak, major app workflow broken.
-   - **P2:** confusing UX, missing empty/error state, inconsistent copy, weak visual alignment, partial test gap.
-   - **P3:** polish, copy clarity, spacing, non-blocking doc cleanup.
-3. Recommend the smallest safe fix.
-4. If asked to implement fixes, patch the code, preserve existing patterns, and rerun the relevant validation.
+After ANY fix, run the targeted ladder based on what changed:
 
-## Output
+| Changed area | Minimum re-run |
+|---|---|
+| lib/plans.ts, lib/billing/plans.ts, pricing | typecheck, lint, jest billing+plans suites, check:app-links, audit:marketing-copy |
+| app/api/** or app/app/actions/** | typecheck, lint, targeted jest for the route, qa:smoke |
+| components/billing/** or components/dashboard/** | typecheck, lint, test:visual, qa:a11y |
+| app/(marketing)/** | check:app-links, audit:marketing-copy, test:visual |
+| supabase/migrations | test:db, test:supabase-health (release-readiness) |
+| lib/security/** or middleware/proxy | check:security-baseline, qa:smoke |
 
-Write the report to `FORMAOS_AUDIT_<YYYY-MM-DD>.md` in the repo root (overwrite if a same-day file exists, unless user says otherwise). Also print the Executive Summary section to the chat.
+Known flakes: qa:smoke includes a Supabase-auth signup journey that depends
+on live-ish env vars. If it fails on password-policy or mailbox delivery
+and the rest of smoke is green, document it — do not retry blindly.
 
-Screenshots: `screenshots/audit-<YYYY-MM-DD>/*.png`.
-Saved test outputs (if any): `test-results/audit-<YYYY-MM-DD>/*.json|txt`.
+## 6. Fix discipline (Remediate mode only)
+
+- Smallest safe fix. No refactors, no new abstractions, no "while I'm here".
+- Every user-visible fix must co-ship:
+    1. The code change.
+    2. A line in CHANGELOG.md under a new (or current) dated version entry.
+    3. A matching release entry in
+       app/(marketing)/changelog/ChangelogPageContent.tsx
+       (`releases` array) — include codename, date, summary, and one change
+       per fix with an appropriate tag (`feature | fix | improvement`).
+    4. A package.json version bump if the aggregate is user-visible
+       (usually minor bump for a coordinated fix pass).
+- Every in-app price or feature claim must derive from PLAN_CATALOG /
+  entitlement map. Never hardcode.
+- Every mutating API route must have: zod schema, auth check, org scope,
+  role gate, audit log, idempotency where relevant.
+- Never widen public exports to "make a test pass" — fix the test's import.
+- Never edit historical migrations. Add a new one.
+- Never bypass hooks or amend shared commits.
+
+## 7. Ship protocol (Remediate mode only)
+
+Before committing:
+- All §5 commands relevant to the touched surfaces are pass/expected-skip.
+- `git status --short` shows only files you intended to touch (inspect
+  untracked files; do not blindly `git add -A`).
+- Verification artifacts are written to artifacts/audit-<date>/, not
+  test-results/.
+
+Commit:
+- Stage explicit paths, never `.` or `-A`.
+- Conventional-commit subject (`fix:`, `feat:`, `chore:`, `test:`, `docs:`).
+- Body: 3–8 bullets, past tense, why over what.
+- Trailer: `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>`.
+- Use HEREDOC (`git commit -m "$(cat <<'EOF' ... EOF)"`) for correct formatting.
+- Do NOT `--amend` a published commit. If a pre-commit hook fails, fix the
+  issue and create a NEW commit.
+
+Push:
+- Push only to `main` (or the branch the user named).
+- `git push origin main` — Vercel auto-deploys from main. Print the commit
+  SHA + the GitHub commit URL when the push completes.
+- Never `--force` push to main.
+
+Post-push:
+- Tell the user: commit URL, what verification ran, any known skips, and
+  the expected Vercel deploy window.
+
+## 8. Severity ladder
+
+- **P0-Security/Data** — org isolation break, authz bypass, secret leak,
+  data-loss risk, billing integrity break, audit gap on a high-impact
+  mutation, silent payment mismatch.
+- **P0-Buyer/Product** — signup / auth / billing / core buyer or product
+  journey broken; marketing price ≠ charged price; upgrade CTA dead-ends.
+- **P1** — public claim unsupported with no documented caveat; admin
+  guarantee weak; major app workflow broken; missing zod/role-gate on
+  mutating route.
+- **P2** — confusing UX, missing empty/error state, inconsistent copy, weak
+  visual alignment, partial test gap, legacy-vocabulary drift with no
+  user impact today.
+- **P3** — polish, copy clarity, spacing, non-blocking docs, env alias
+  cleanup, dead-code removal.
+
+Every finding cites: route, file:line, command output or screenshot path,
+and a concrete fix.
+
+## 9. Manual browser verification
+
+Start the dev server with `npm run dev` (or reuse an existing one on :3000).
+Drive it with the webapp-testing skill or Playwright MCP. Do not substitute
+grep for clicks.
+
+Minimum route set:
+- Marketing: /, /pricing, /product, /features, /industries, /enterprise,
+  /trust, /trust/procurement, /compare, /contact, /changelog
+- Buyer CTAs: header, footer, pricing cards, trust modules, mobile nav
+- Auth: /auth/login, /auth/signup, /signin, /join
+- App: /app + onboarding / settings / billing / compliance / team
+- Admin: /admin + critical admin routes (local founder/test mode)
+
+For each: test at 1440px and 375px. Click the real CTAs. For upgrade CTAs,
+confirm they reach /app/billing AND that Stripe checkout starts with the
+right price (or routes to sales for enterprise).
+
+Save screenshots to screenshots/audit-<YYYY-MM-DD>/<route>.png. If auth is
+unavailable, note it; do not invent observations.
+
+## 10. Output
+
+Write the report to FORMAOS_AUDIT_<YYYY-MM-DD>.md in the repo root (overwrite
+if the same date already exists, unless the user says otherwise). Print the
+Executive Summary section to the chat.
+
+Screenshots: screenshots/audit-<YYYY-MM-DD>/
+Saved logs (if any): artifacts/audit-<YYYY-MM-DD>/
 
 Report structure:
 
-# FormaOS End-to-End Audit Report — <YYYY-MM-DD>
+# FormaOS End-to-End Audit — <YYYY-MM-DD>
 
 ## Executive Summary
-- Tier run:
+- Tier:
+- Mode: Audit-only | Remediate (severity ceiling: P?)
 - Overall readiness:
 - Biggest risk:
 - Best immediate fix:
 - Verified manually:
 - Verified by commands:
 - Could not verify (and why):
+- If Remediate: commit SHA + push status + expected Vercel deploy window.
 
 ## Command Results
-Table or list. For each command: pass / fail / blocked, duration if notable, and the meaningful failure excerpt.
+Table: command | pass/fail/blocked | duration | meaningful failure excerpt.
 
 ## Manual Browser Results
-Per route: desktop + mobile status, CTA click results, screenshot paths, observed issues.
+Per route: desktop + mobile status, CTA clicks, screenshot paths, issues.
 
-## Marketing-to-App Alignment
-Each mismatch: Severity / Marketing claim (page + quote) / Actual state / Evidence (file:line or screenshot) / Fix.
+## Contract Parity Checks
+For each parity chain in §3: ✅ aligned OR ❌ mismatch with evidence + fix.
 
-## App-to-Marketing Gaps
-Each: Capability / Product evidence / Suggested marketing update.
+## Findings (by severity)
+For each finding:
+- id: F-<date>-<n>
+- severity
+- title
+- route / file:line / command / screenshot
+- current state
+- expected state
+- smallest safe fix
+- validation needed after fix
 
-## Backend / API / Data Risks
-Each: Severity / Area / Evidence / Fix / Validation needed.
-
-## Frontend / UX / Visual Risks
-Each: Severity / Route or component / Desktop + mobile impact / Evidence / Fix.
-
-## Security, Admin, Billing, Compliance Notes
-Org isolation, CSRF, audit logging, permissions, RLS, Stripe, entitlements, trials, blocked states, compliance/trust claims.
-
-## Prioritized Fix Plan
-1. P0-Security/Data
-2. P0-Buyer/Product
-3. P1
-4. P2/P3 polish
-5. Tests to add or update
-
-## Release Recommendation
-One of: **Ready / Ready after listed fixes / Not ready**. Explain in plain English.
+## If Remediate mode
+### Fixes Applied
+id | severity | files changed | verification re-run | result
+### Co-shipped
+- CHANGELOG.md entry (version + date)
+- app/(marketing)/changelog entry (codename + date)
+- package.json version bump
+- tests added/updated
+### Ship
+- commit SHA + URL
+- push target
+- post-push verification
 
 ## Delta vs Prior Audit
-Reference the most recent prior audit report. List: still-open findings, newly fixed, newly introduced.
+Open → still open | Open → fixed now | Newly introduced
 
-## Ground rules
-- Be honest. Never claim a route, flow, or fix works without observing it or finding concrete code/test evidence.
-- Be practical. Prefer small, high-confidence fixes over broad rewrites.
-- Be specific. Every finding cites a route, file:line, command output, or screenshot.
-- Keep marketing honest and product strong. FormaOS should sell what it can prove, and the app should deliver what it sells.
+## Release Recommendation
+Ready / Ready after listed fixes / Not ready — in plain English.
+
+## Prompt Feedback (optional)
+If this prompt was hard to follow, missing a trap, or contradicted itself,
+say so. The next run's prompt improves from here.
+
+## 11. Ground rules
+
+- Honest: never claim a route, flow, or fix works without observing it or
+  concrete code/test evidence.
+- Specific: every finding cites route, file:line, command output, or screenshot.
+- Small: prefer a small high-confidence fix over a broad rewrite.
+- Truthful marketing: FormaOS should sell only what it can prove; the app
+  must deliver what it sells.
+- Reversible: before any action that's hard to undo (force push, history
+  rewrite, migration rollback, mass rename), stop and confirm.
 ```
 
-## Short Version
+---
+
+## Prompt B — Short version (one-shot, Audit-only)
 
 ```text
-End-to-end audit of FormaOS from /Users/ejaz/FormaOS. First read README.md, ENGINEERING_CHANGE_MATRIX.md, RELEASE_DISCIPLINE_CHECKLIST.md, PLATFORM_CONTROL_CONTRACTS.md, package.json, and the most recent dated audit report in the repo root. Run `git status --short` — do not overwrite unrelated untracked files.
+End-to-end audit of FormaOS from /Users/ejaz/FormaOS in Audit-only mode.
+First read CLAUDE.md, README.md, ENGINEERING_CHANGE_MATRIX.md,
+RELEASE_DISCIPLINE_CHECKLIST.md, PLATFORM_CONTROL_CONTRACTS.md, package.json,
+and the most recent dated audit report. Run `git status --short` — do not
+touch unrelated untracked files. Pick a tier (Quick / Standard /
+Release-readiness; Standard is default) and record it.
 
-Pick a tier (Quick / Standard / Release-readiness) and record it. Standard is default.
+Check the parity chain: marketing copy → PLAN_CATALOG → Stripe env →
+entitlement map → in-app UI price/CTA → checkout action → webhook → DB
+CHECK constraint. Flag every mismatch. Grep for hardcoded prices in
+components/billing/**, for `'starter'` plan drift, and for any admin
+mutation that skips syncEntitlementsForPlan or zod/role gates.
 
-Check marketing pages, pricing, trust claims, CTAs, authenticated app flows, admin/control-plane behavior, billing, APIs, Supabase schema/RLS, and tests all align. Drive a browser with the webapp-testing skill on desktop (1440) + mobile (375), click real CTAs, and run: check-root, check-env, typecheck, lint, audit:marketing-copy, check:app-links, check:admin-nav, check:security-baseline, qa:smoke, qa:a11y, test:visual. For release-readiness add: build, test:coverage, qa:enterprise, test:db, test:supabase-health, test:compliance:all.
+Drive the browser with the webapp-testing skill on 1440 + 375 across /,
+/pricing, /product, /enterprise, /trust, /compare, /contact, /changelog,
+/auth/signup, /app, /admin. Click real CTAs. Upgrade CTAs must reach
+/app/billing and start a Stripe session with the correct price (or route
+enterprise to sales).
 
-Write the report to FORMAOS_AUDIT_<YYYY-MM-DD>.md, screenshots to screenshots/audit-<YYYY-MM-DD>/. Severity ladder: P0-Security/Data, P0-Buyer/Product, P1, P2, P3. Every finding cites route, file:line, command output, or screenshot. Do not deploy, push, or touch production unless explicitly asked.
+Run: check-root, check-env, typecheck, lint, audit:marketing-copy,
+check:app-links, check:admin-nav, check:security-baseline, qa:smoke,
+qa:a11y, test:visual. Release-readiness adds build, test:coverage,
+qa:enterprise, test:db, test:supabase-health, test:compliance:all.
+
+Save the report to FORMAOS_AUDIT_<YYYY-MM-DD>.md, screenshots to
+screenshots/audit-<YYYY-MM-DD>/, logs to artifacts/audit-<YYYY-MM-DD>/.
+Never redirect logs into test-results/ (Playwright wipes it).
+
+Severity: P0-Security/Data, P0-Buyer/Product, P1, P2, P3. Every finding
+cites route, file:line, command output, or screenshot.
+
+Do not commit, push, deploy, touch prod Stripe/Supabase, or edit historical
+migrations. If the user subsequently asks for Remediate, switch to Prompt A
+§§6–7 for fix discipline and ship protocol.
 ```
+
+---
+
+## Prompt C — Remediate + Ship (shortcut)
+
+Use when you've already run an audit and want the agent to fix + ship in the
+same session.
+
+```text
+Operate in Remediate mode per FORMAOS_MASTER_PROMPTS.md Prompt A §§2, 6, 7.
+Severity ceiling: <P0 | P1 | P2 | P3> (inclusive — fix everything at or
+above this level). Source of findings: <FORMAOS_AUDIT_<date>.md | this
+chat | both>.
+
+For every fix:
+- smallest safe change,
+- update CHANGELOG.md + app/(marketing)/changelog/ChangelogPageContent.tsx
+  + bump package.json version,
+- re-run the verification ladder for the touched surface (§5),
+- keep /pricing, PLAN_CATALOG, in-app upgrade UI, and Stripe price IDs in
+  lock-step,
+- never hardcode a price, never skip syncEntitlementsForPlan, never edit
+  historical migrations, never bypass hooks.
+
+When all fixes pass verification, commit with a conventional-commit
+subject and the Co-Authored-By trailer, push to main, and return:
+- commit SHA + GitHub URL,
+- list of checks re-run and their results,
+- any known skips (call out env-dependent flakes like the qa:smoke signup
+  journey rather than retrying blindly),
+- expected Vercel deploy window.
+
+Do not force-push. Do not amend after push. Do not deploy outside Vercel's
+main-triggered pipeline.
+```
+
+---
+
+## Notes for whoever edits this file next
+
+- v2 is tuned to how FormaOS actually behaves as of 2026-04-22: PLAN_CATALOG
+  is the canonical plan source, SUBSCRIPTION_PLANS is legacy, proxy.ts is
+  middleware, org_subscriptions.plan_key has a DB CHECK constraint. Revisit
+  §3 "authoritative sources" and §4 "known-drift traps" whenever any of
+  those change.
+- Keep the parity chain in §3 and the traps in §4 short — if the list gets
+  long the agent starts skimming. Retire a trap once the underlying
+  vocabulary drift is collapsed.
+- The verification ladder in §5 is the single biggest time-saver. Update it
+  when a new targeted command (e.g. `npm run test:plans`) lands.
+- Don't delete Prompt B. Agents running under a tight budget need the
+  one-shot version.

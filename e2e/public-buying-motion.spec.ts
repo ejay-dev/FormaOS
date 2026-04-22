@@ -36,7 +36,7 @@ test.describe('Public buying motion', () => {
     // Foundation: public self-serve via /auth/signup handshake that sets the
     // checkout-intent cookie and auto-redirects into Stripe Checkout after
     // org bootstrap.
-    await expect(page.getByTestId('pricing-foundation-cta')).toHaveText(/Start Assessment/i);
+    await expect(page.getByTestId('pricing-foundation-cta')).toHaveText(/Start Foundation Plan/i);
     await expect(page.getByTestId('pricing-foundation-cta')).toHaveAttribute(
       'href',
       /\/auth\/signup\?plan=basic&intent=checkout&source=pricing/,

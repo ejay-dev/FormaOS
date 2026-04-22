@@ -14,7 +14,7 @@ test.describe('CRITICAL: User Journey Validation', () => {
     // Look for the public compliance-infrastructure CTAs.
     const ctaSelectors = [
       'text=Get Compliance Plan',
-      'text=Start Assessment',
+      'text=Start Foundation Plan',
       'text=Book Demo',
       'text=Talk to Sales',
       'a[href*="/contact"]',

@@ -209,7 +209,7 @@ test.describe('A) Marketing → App Entry', () => {
   }) => {
     await setupPage(page);
 
-    // Foundation self-serve lives on the pricing page as "Start Assessment"
+    // Foundation self-serve lives on the pricing page as "Start Foundation Plan"
     // and hands the user off to app-domain signup with the checkout intent.
     await page.goto(`${MARKETING_URL.replace(/\/$/, '')}/pricing`);
     await page.waitForLoadState('networkidle');
@@ -220,7 +220,7 @@ test.describe('A) Marketing → App Entry', () => {
     });
 
     const ctaButton = page
-      .getByRole('link', { name: /start assessment/i })
+      .getByRole('link', { name: /start foundation plan/i })
       .first();
     await expect(ctaButton).toBeVisible({ timeout: 10000 });
 

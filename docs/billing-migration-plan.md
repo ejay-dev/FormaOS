@@ -50,7 +50,7 @@ Foundation is publicly self-serve via an authenticated signup handshake. Growth 
 
 | Public plan | Buying motion | Public CTA | Destination | Payment instrument |
 | --- | --- | --- | --- | --- |
-| Foundation | Public self-serve | `Start Assessment` | `/auth/signup?plan=basic&intent=checkout&source=pricing` → signup → auto-redirect into Stripe Checkout after org bootstrap | Stripe Checkout Session via `startCheckout` |
+| Foundation | Public self-serve | `Start Foundation Plan` | `/auth/signup?plan=basic&intent=checkout&source=pricing` → signup → auto-redirect into Stripe Checkout after org bootstrap | Stripe Checkout Session via `startCheckout` |
 | Growth | Sales-led | `Get Compliance Plan` | `/contact?type=compliance-plan` → demo | Stripe Payment Link sent by sales post-demo |
 | Enterprise | Procurement-led | `Book Demo` | `/contact?type=enterprise` → demo + review | Stripe Invoicing (custom contract) |
 

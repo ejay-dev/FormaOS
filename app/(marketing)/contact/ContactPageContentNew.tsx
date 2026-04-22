@@ -297,14 +297,7 @@ function ContactHero() {
         text: copy.badge,
         colorClass: 'blue',
       }}
-      headline={
-        <>
-          {copy.headline} <br className="hidden sm:block" />
-          <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
-            for Regulated Operations
-          </span>
-        </>
-      }
+      headline={copy.headline}
       subheadline={copy.subheadline}
       extras={
         <p className="text-base text-gray-500 max-w-2xl mx-auto text-center">
@@ -323,7 +316,7 @@ function ContactHero() {
 
 function ContactInformation() {
   return (
-    <section id="contact-info" className="mk-section relative">
+    <section id="contact-info" className="mk-section mk-section--compact relative">
       <div className="max-w-5xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <ScrollReveal
@@ -713,7 +706,7 @@ function EnterpriseInquiries() {
   const intent = resolveContactIntent(searchParams);
 
   return (
-    <section className="mk-section relative">
+    <section className="mk-section mk-section--compact relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
           <div className="text-center p-6 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl">
@@ -754,7 +747,7 @@ function EnterpriseInquiries() {
 
 function SecurityTrust() {
   return (
-    <section className="mk-section relative">
+    <section className="mk-section mk-section--compact relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal
           variant="perspectiveUp"
@@ -788,7 +781,7 @@ function ClosingCTA() {
   const copy = CONTACT_INTENT_COPY[intent];
 
   return (
-    <section className="mk-section relative">
+    <section className="mk-section mk-section--compact relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">

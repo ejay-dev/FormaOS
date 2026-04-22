@@ -171,7 +171,7 @@ export function OutcomeJourneyPage({
 
       {/* Outcomes Grid */}
       <DeferredSection minHeight={280}>
-        <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionChoreography pattern="cascade" className="grid gap-4 md:grid-cols-2">
             {outcomes.map((outcome) => (
                 <div key={outcome} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-5 transition-colors hover:border-cyan-500/15">

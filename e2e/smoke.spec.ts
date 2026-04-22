@@ -99,7 +99,7 @@ test('Critical user journey smoke test', async ({ page }) => {
   // 3. Click the visible Foundation self-serve CTA. Falls back to direct
   //    /auth/signup navigation for resilience across layout variants.
   const foundationCta = page
-    .locator('a:has-text("Start Assessment"):visible')
+    .locator('a:has-text("Start Foundation Plan"):visible')
     .first();
   if ((await foundationCta.count()) > 0) {
     const href = await foundationCta.getAttribute('href');

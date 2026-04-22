@@ -1,7 +1,7 @@
 /**
  * Marketing-Product Alignment Smoke Tests
  * Verifies that marketing CTAs route to the three buying motions:
- *  - Foundation "Start Assessment" → /auth/signup with checkout intent (self-serve)
+ *  - Foundation "Start Foundation Plan" → /auth/signup with checkout intent (self-serve)
  *  - Growth "Get Compliance Plan" → /contact demo flow (sales sends Payment Link post-demo)
  *  - Enterprise "Book Demo" → /contact enterprise flow (Stripe Invoicing)
  */
@@ -40,7 +40,7 @@ test.describe('Marketing CTA Alignment', () => {
     await expect(growthCta).toBeVisible();
     await expect(enterpriseCta).toBeVisible();
 
-    await expect(foundationCta).toHaveText(/Start Assessment/);
+    await expect(foundationCta).toHaveText(/Start Foundation Plan/);
     await expect(growthCta).toHaveText(/Get Compliance Plan/);
     await expect(enterpriseCta).toHaveText(/Book Demo/);
 

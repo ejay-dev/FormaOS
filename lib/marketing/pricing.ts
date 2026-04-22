@@ -29,7 +29,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
     audience: 'For small operators getting compliance out of spreadsheets',
     summary:
       'A focused entry point for one compliance framework, basic enforcement, and audit logs without making FormaOS feel disposable.',
-    ctaLabel: 'Start Assessment',
+    ctaLabel: 'Start Foundation Plan',
     ctaHref: '/auth/signup?plan=basic&intent=checkout&source=pricing',
     features: [
       '1 compliance framework',

@@ -286,6 +286,14 @@
   position: relative;
 }
 
+/* Compact variant — for sections whose content is naturally short (contact
+   cards, single-card callouts, small trust blurbs). Halves the vertical
+   rhythm so content density feels intentional rather than sparse. */
+.mk-section--compact {
+  padding-top: clamp(2rem, 3.5vw, 3rem);
+  padding-bottom: clamp(2rem, 3.5vw, 3rem);
+}
+
 .mk-deferred-section__placeholder {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
@@ -584,6 +592,11 @@
 .mk-marketing-flow section[class*='py-18'] {
   padding-top: var(--mk-section-y);
   padding-bottom: var(--mk-section-y);
+}
+
+.mk-marketing-flow .mk-section.mk-section--compact {
+  padding-top: clamp(2rem, 3.5vw, 3rem);
+  padding-bottom: clamp(2rem, 3.5vw, 3rem);
 }
 
 .mk-marketing-flow [class*='max-w-7xl'],

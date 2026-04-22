@@ -384,7 +384,7 @@ export function ComparePageTemplate({
 
       {/* Mid-page conversion CTA */}
       <DeferredSection minHeight={80}>
-        <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <section className="mk-section mk-section--compact relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
             <div className="rounded-2xl border border-teal-500/10 bg-gradient-to-r from-teal-500/[0.06] via-white/[0.03] to-cyan-500/[0.06] backdrop-blur-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
@@ -479,7 +479,7 @@ export function ComparePageTemplate({
 
       {/* When competitor is the right choice */}
       <DeferredSection minHeight={140}>
-        <section className="mk-section relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <section className="mk-section mk-section--compact relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
               <h2 className="text-lg font-semibold text-white mb-1">
@@ -507,7 +507,7 @@ export function ComparePageTemplate({
       </div>
 
       <DeferredSection minHeight={180}>
-        <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
               <h2 className="text-lg font-semibold text-white">
@@ -556,7 +556,7 @@ export function ComparePageTemplate({
 
       {/* Procurement Evaluation */}
       <DeferredSection minHeight={200}>
-        <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7">
               <h2 className="text-lg font-semibold text-white">
@@ -596,7 +596,7 @@ export function ComparePageTemplate({
 
       {/* Ideal If + CTAs */}
       <DeferredSection minHeight={240}>
-        <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
