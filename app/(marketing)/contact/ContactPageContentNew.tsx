@@ -20,28 +20,38 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
-type ContactIntent = 'general' | 'pricing' | 'enterprise' | 'procurement';
+type ContactIntent =
+  | 'general'
+  | 'pricing'
+  | 'enterprise'
+  | 'procurement'
+  | 'compliance-plan'
+  | 'demo'
+  | 'sales'
+  | 'assessment'
+  | 'security-review'
+  | 'case-study'
+  | 'expert';
 
 type SearchParamReader = {
   get(name: string): string | null;
 };
 
-const CONTACT_INTENT_COPY: Record<
-  ContactIntent,
-  {
-    badge: string;
-    headline: string;
-    subheadline: string;
-    intro: string;
-    formTitle: string;
-    formBody: string;
-    submitLabel: string;
-    closingTitle: string;
-    closingBody: string;
-    secondaryHref: string;
-    secondaryLabel: string;
-  }
-> = {
+type ContactIntentCopy = {
+  badge: string;
+  headline: string;
+  subheadline: string;
+  intro: string;
+  formTitle: string;
+  formBody: string;
+  submitLabel: string;
+  closingTitle: string;
+  closingBody: string;
+  secondaryHref: string;
+  secondaryLabel: string;
+};
+
+const CONTACT_INTENT_COPY = {
   general: {
     badge: 'Contact',
     headline: 'Talk to the FormaOS Team',
@@ -110,14 +120,164 @@ const CONTACT_INTENT_COPY: Record<
     secondaryHref: '/security-review',
     secondaryLabel: 'Open Security Review',
   },
-};
+  'compliance-plan': {
+    badge: 'Compliance Plan',
+    headline: 'Scope a Compliance Plan for Your Regulated Operation',
+    subheadline:
+      'Talk through team shape, frameworks in scope, and how FormaOS enforces the evidence your auditors will ask for.',
+    intro:
+      'Growth buyers use this path when they already know Foundation is too small and need a guided rollout.',
+    formTitle: 'Scope your compliance plan',
+    formBody:
+      'Tell us your team size, frameworks (NDIS, AHPRA, ISO, SOC 2, HIPAA), and rollout timeline.',
+    submitLabel: PUBLIC_CTA_LABELS.compliancePlan,
+    closingTitle: 'Price compliance against failure, not seats',
+    closingBody:
+      "We'll help you choose the plan that matches your exposure, then hand off to a specialist for rollout.",
+    secondaryHref: '/pricing',
+    secondaryLabel: 'Back to Pricing',
+  },
+  demo: {
+    badge: 'Product Walkthrough',
+    headline: 'See FormaOS Enforce Compliance in Real Operations',
+    subheadline:
+      'Book a walkthrough of the exact workflows your team uses today — evidence, approvals, and the checks that happen before anything counts.',
+    intro:
+      'Demos are tailored to your framework and role, not a generic product tour.',
+    formTitle: 'Book a walkthrough',
+    formBody:
+      'Share your framework, role, and the scenario you want to see enforced end-to-end.',
+    submitLabel: PUBLIC_CTA_LABELS.bookDemo,
+    closingTitle: 'See the operating system behind the promise',
+    closingBody:
+      "We'll map the walkthrough to the workflows you actually run, so you can judge fit in one session.",
+    secondaryHref: '/pricing',
+    secondaryLabel: 'See Pricing',
+  },
+  sales: {
+    badge: 'Talk to Sales',
+    headline: 'Talk to Sales About Rollout and Commercial Fit',
+    subheadline:
+      'Direct line to a FormaOS specialist for rollout scope, commercial terms, and multi-entity deployments.',
+    intro:
+      'Use this path when you need a commercial answer, not a product tour.',
+    formTitle: 'Open a sales conversation',
+    formBody:
+      'Tell us the scope, stakeholders, and timeline. We route to the right specialist.',
+    submitLabel: PUBLIC_CTA_LABELS.talkToSales,
+    closingTitle: 'Get a commercial answer without a demo loop',
+    closingBody:
+      "We'll scope the commercials and only bring in product walkthroughs when your review needs them.",
+    secondaryHref: demoHref('contact_sales'),
+    secondaryLabel: PUBLIC_CTA_LABELS.bookDemo,
+  },
+  assessment: {
+    badge: 'Compliance Assessment',
+    headline: 'Run a Compliance Assessment Against Your Current Operation',
+    subheadline:
+      'Map your existing evidence, gaps, and framework exposure before committing to a rollout path.',
+    intro:
+      'Assessments are useful when you need to justify the compliance spend internally.',
+    formTitle: 'Request an assessment',
+    formBody:
+      "Share the frameworks in scope and what evidence your auditors are asking for that you can't produce today.",
+    submitLabel: PUBLIC_CTA_LABELS.startAssessment,
+    closingTitle: "Know your exposure before you buy",
+    closingBody:
+      "We'll produce a clear view of gaps, controls needed, and the plan fit that matches your risk.",
+    secondaryHref: '/pricing',
+    secondaryLabel: 'See Pricing',
+  },
+  'security-review': {
+    badge: 'Security Review',
+    headline: 'Run a Security Review Against FormaOS',
+    subheadline:
+      'Get the security documentation, control mappings, and architecture answers your review team needs without chasing sales.',
+    intro:
+      'Security reviews get direct access to our trust packet and a technical contact.',
+    formTitle: 'Book a security review',
+    formBody:
+      'Tell us your review scope: data classification, identity requirements, and the frameworks your security team validates against.',
+    submitLabel: PUBLIC_CTA_LABELS.securityReview,
+    closingTitle: 'Close security review without narrative drift',
+    closingBody:
+      "We'll route your request to the trust packet, technical contact, and any follow-ups your review team needs.",
+    secondaryHref: '/trust',
+    secondaryLabel: 'Open Trust Center',
+  },
+  'case-study': {
+    badge: 'Proof Pack Walkthrough',
+    headline: 'Walk Through a Representative Proof Pack',
+    subheadline:
+      'See how a regulated team produced the exact evidence their audit required — workflow trail, approvals, and the enforcement layer behind it.',
+    intro:
+      'Proof packs are representative — we walk you through how the evidence was produced, not just what it looks like.',
+    formTitle: 'Request a proof walkthrough',
+    formBody:
+      "Tell us your framework and the evidence you're trying to produce. We'll match you to a relevant proof pack.",
+    submitLabel: 'Request Proof Walkthrough',
+    closingTitle: 'See the evidence path, not just the outcome',
+    closingBody:
+      "We'll walk you through how a regulated team produced the evidence, so you can judge whether FormaOS fits your audit cycle.",
+    secondaryHref: '/case-studies',
+    secondaryLabel: 'Back to Proof Packs',
+  },
+  expert: {
+    badge: 'Talk to a Specialist',
+    headline: 'Talk to a FormaOS Specialist About Plan Fit',
+    subheadline:
+      'Use this path when you want a specialist to validate which plan matches your exposure before you buy.',
+    intro:
+      'Specialists focus on plan fit, not a generic demo.',
+    formTitle: 'Ask a specialist',
+    formBody:
+      'Share your team shape, frameworks, and the plan you think fits. A specialist will validate or redirect.',
+    submitLabel: 'Ask a Specialist',
+    closingTitle: 'Validate plan fit before you commit',
+    closingBody:
+      "We'll either confirm the plan matches your risk or route you to the right alternative.",
+    secondaryHref: '/pricing',
+    secondaryLabel: 'Back to Pricing',
+  },
+} as const satisfies Record<ContactIntent, ContactIntentCopy>;
 
 function resolveContactIntent(searchParams: SearchParamReader): ContactIntent {
   const raw = (searchParams.get('type') ?? '').toLowerCase();
-  if (raw === 'pricing') return 'pricing';
-  if (raw === 'enterprise') return 'enterprise';
-  if (raw === 'procurement') return 'procurement';
-  return 'general';
+  switch (raw) {
+    case 'pricing':
+    case 'enterprise':
+    case 'procurement':
+    case 'compliance-plan':
+    case 'demo':
+    case 'sales':
+    case 'assessment':
+    case 'security-review':
+    case 'case-study':
+    case 'expert':
+      return raw;
+    default:
+      return 'general';
+  }
+}
+
+function defaultPrimaryNeedForIntent(intent: ContactIntent): string {
+  switch (intent) {
+    case 'procurement':
+    case 'security-review':
+      return 'security_review';
+    case 'enterprise':
+      return 'enterprise_rollout';
+    case 'pricing':
+    case 'compliance-plan':
+    case 'assessment':
+    case 'expert':
+      return 'plan_fit';
+    case 'demo':
+    case 'case-study':
+    case 'sales':
+    case 'general':
+      return '';
+  }
 }
 
 // ============================================================================
@@ -407,15 +567,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                   <select
                     id="primaryNeed"
                     name="primaryNeed"
-                    defaultValue={
-                      intent === 'procurement'
-                        ? 'security_review'
-                        : intent === 'enterprise'
-                          ? 'enterprise_rollout'
-                          : intent === 'pricing'
-                            ? 'plan_fit'
-                            : ''
-                    }
+                    defaultValue={defaultPrimaryNeedForIntent(intent)}
                     className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                   >
                     <option value="" className="bg-[#0a0f1c]">
@@ -571,14 +723,18 @@ function EnterpriseInquiries() {
               <Building2 className="w-8 h-8 text-purple-400" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-              {intent === 'procurement'
+              {intent === 'procurement' || intent === 'security-review'
                 ? 'Procurement and Security Review Requests'
-                : 'Enterprise and Partnership Requests'}
+                : intent === 'case-study'
+                  ? 'Proof Pack and Case Study Requests'
+                  : 'Enterprise and Partnership Requests'}
             </h2>
             <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
-              {intent === 'procurement'
+              {intent === 'procurement' || intent === 'security-review'
                 ? 'If your review already needs direct coordination with legal, security, or procurement stakeholders, email us directly.'
-                : 'For large-scale deployments, compliance architecture discussions, or strategic partnerships, contact us directly.'}
+                : intent === 'case-study'
+                  ? 'If you need a proof walkthrough aligned to a specific framework or auditor question, email us directly.'
+                  : 'For large-scale deployments, compliance architecture discussions, or strategic partnerships, contact us directly.'}
             </p>
             <a
               href="mailto:Formaos.team@gmail.com"
