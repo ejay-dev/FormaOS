@@ -15,7 +15,6 @@ import {
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
-import { ContactHeroVisual } from './components/ContactHeroVisual';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
@@ -293,7 +292,6 @@ function ContactHero() {
     <ImmersiveHero
       className="contact-hero--focused"
       theme="contact"
-      visualContent={<ContactHeroVisual />}
       badge={{
         icon: <Mail className="w-4 h-4 text-blue-400" />,
         text: copy.badge,
