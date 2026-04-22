@@ -62,6 +62,7 @@ export default function BillingPage() {
   );
 
   const status = searchParams.get('status');
+  const resumeCheckoutPlan = searchParams.get('resumeCheckout');
   const trialEndsAt = useMemo(
     () =>
       subscription?.status === 'trialing'
@@ -192,6 +193,12 @@ export default function BillingPage() {
       {status === 'contact' ? (
         <div className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-2 text-sm text-primary">
           Enterprise billing can be coordinated via Formaos.team@gmail.com.
+        </div>
+      ) : null}
+      {resumeCheckoutPlan && !canSelfServe ? (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
+          Your checkout session timed out. Activate your subscription below to
+          finish setting up your workspace.
         </div>
       ) : null}
       {status === 'checkout_failed' ? (

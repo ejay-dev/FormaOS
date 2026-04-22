@@ -120,6 +120,26 @@ export default async function DashboardPage() {
     membership = null;
   }
 
+  // Cookie-expiry recovery: a recent signup with a membership but no active
+  // subscription is almost certainly a self-serve buyer whose checkout-intent
+  // cookie expired (30-min TTL) mid-flow. Route them to billing with a resume
+  // prompt instead of dropping them into an unprovisioned dashboard.
+  const userCreatedAt = user.created_at ? Date.parse(user.created_at) : 0;
+  const isRecentSignup =
+    userCreatedAt > 0 && userCreatedAt > Date.now() - 24 * 60 * 60 * 1000;
+  if (isRecentSignup && membership?.organization_id) {
+    const { data: sub } = await supabase
+      .from('org_subscriptions')
+      .select('status')
+      .eq('organization_id', membership.organization_id)
+      .maybeSingle();
+    const status = sub?.status ?? null;
+    const isProvisioned = status === 'active' || status === 'trialing';
+    if (!isProvisioned) {
+      redirect('/app/billing?resumeCheckout=basic');
+    }
+  }
+
   const orgName = safeOrgName(membership);
   const orgId = membership?.organization_id || '';
 
