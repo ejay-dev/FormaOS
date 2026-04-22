@@ -149,7 +149,10 @@ test.describe('Marketing CTA wiring', () => {
     await page.goto(`${SITE_BASE}/pricing`, { waitUntil: 'domcontentloaded' });
 
     // Foundation: public self-serve via signup handshake, auto-redirects into
-    // Stripe Checkout after org bootstrap.
+    // Stripe Checkout after org bootstrap. Href is relative on the pricing
+    // page (same-origin /auth/signup) — resolves to site base in prod and
+    // local dev alike. We only assert the handshake query shape, not a
+    // specific absolute origin.
     const foundationCta = page
       .getByRole('link', { name: /start assessment/i })
       .first();
@@ -157,10 +160,10 @@ test.describe('Marketing CTA wiring', () => {
     const foundationHref = normalizeHref(
       await foundationCta.getAttribute('href'),
     );
-    expect(foundationHref.startsWith(APP_BASE)).toBe(true);
     expect(foundationHref).toContain('/auth/signup');
     expect(foundationHref).toContain('plan=basic');
     expect(foundationHref).toContain('intent=checkout');
+    expect(foundationHref).toContain('source=pricing');
 
     // Growth: sales-led through Compliance Plan intake.
     const growthCta = page
