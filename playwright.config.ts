@@ -96,10 +96,10 @@ export default defineConfig({
       },
 
   /* Global setup */
-  // globalSetup: './e2e/global-setup.ts', // Commented out for initial testing
+  globalSetup: './e2e/global-setup.ts',
 
   /* Global teardown */
-  // globalTeardown: './e2e/global-teardown.ts', // Commented out for initial testing
+  globalTeardown: './e2e/global-teardown.ts',
 
   /* Test timeout */
   timeout: 120000,
