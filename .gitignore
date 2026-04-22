@@ -32,6 +32,8 @@ build_output.txt
 # local agent/ops artifacts
 /logs
 /memory
+/.claude/scheduled_tasks.lock
+/.claude/skills/*/scripts/
 
 # debug
 npm-debug.log*
@@ -49,11 +51,12 @@ artifacts/security-baseline-report.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-scripts/
-!scripts/test-*.js
-!scripts/check-*.js
-!scripts/check-*.mjs
-!scripts/run-*.mjs
+/scripts/*
+!/scripts/test-*.js
+!/scripts/check-*.js
+!/scripts/check-*.mjs
+!/scripts/run-*.mjs
+!/scripts/stylelint-lite.mjs
 .npm-cache/
 .gitnexus
 gitnexus/
