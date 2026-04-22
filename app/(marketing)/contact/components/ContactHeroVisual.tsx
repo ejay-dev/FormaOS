@@ -51,10 +51,10 @@ function ContactHeroVisualInner() {
       };
 
   return (
-    <div className="pointer-events-none hidden lg:flex h-[420px] w-[460px] items-center justify-center">
-      <div className="relative h-[420px] w-[460px]">
+    <div className="pointer-events-none hidden lg:flex h-[480px] w-[560px] items-center justify-center">
+      <div className="relative h-[480px] w-[560px]">
         <motion.div
-          className="absolute left-0 top-6 w-[320px] rounded-[28px] border border-white/10 bg-[linear-gradient(160deg,rgba(10,15,28,0.94),rgba(12,20,38,0.84))] p-6 shadow-[0_28px_90px_rgba(3,7,18,0.45)] backdrop-blur-xl"
+          className="absolute left-0 top-0 w-[300px] rounded-[28px] border border-white/10 bg-[linear-gradient(160deg,rgba(10,15,28,0.94),rgba(12,20,38,0.84))] p-6 shadow-[0_28px_90px_rgba(3,7,18,0.45)] backdrop-blur-xl"
           initial={{ opacity: 0, y: 18, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -115,7 +115,7 @@ function ContactHeroVisualInner() {
         </motion.div>
 
         <motion.div
-          className="absolute right-0 top-0 w-[186px] rounded-[24px] border border-white/10 bg-white/[0.06] p-4 backdrop-blur-xl"
+          className="absolute right-0 top-0 w-[220px] rounded-[24px] border border-white/10 bg-white/[0.06] p-4 backdrop-blur-xl"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
@@ -131,7 +131,7 @@ function ContactHeroVisualInner() {
         </motion.div>
 
         <motion.div
-          className="absolute bottom-16 right-3 w-[210px] rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,rgba(34,211,238,0.16),rgba(15,23,42,0.72))] p-4 shadow-[0_20px_60px_rgba(8,47,73,0.35)] backdrop-blur-xl"
+          className="absolute bottom-0 right-0 w-[220px] rounded-[24px] border border-white/10 bg-[linear-gradient(160deg,rgba(34,211,238,0.16),rgba(15,23,42,0.72))] p-4 shadow-[0_20px_60px_rgba(8,47,73,0.35)] backdrop-blur-xl"
           initial={{ opacity: 0, x: 18, y: 12 }}
           animate={{ opacity: 1, x: 0, y: 0 }}
           transition={{ duration: 0.7, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
