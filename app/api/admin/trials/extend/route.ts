@@ -23,6 +23,12 @@ import { logAdminAction } from '@/lib/admin/audit';
 const log = routeLog('/api/admin/trials/extend');
 
 /**
+ * LEGACY — Admin trial extension for grandfathered subscriptions only.
+ * New signups do not create trials, so this endpoint should only ever
+ * operate on rows with `status = 'trialing'` that predate the
+ * self-serve checkout migration.
+ */
+/**
  * =========================================================
  * ADMIN: Extend trial for an organization
  * =========================================================

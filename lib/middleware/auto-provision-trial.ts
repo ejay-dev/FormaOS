@@ -1,6 +1,11 @@
 /**
- * Auto-provision evaluation access for authenticated users
- * Ensures users with valid sessions always have access
+ * LEGACY — Grandfathered trial auto-provisioning.
+ *
+ * New Foundation signups go through the /auth/signup?intent=checkout
+ * handshake and are provisioned by the Stripe webhook. This helper is
+ * retained only for historical code paths and tests; it is not wired
+ * into the active signup flow. Do not re-enable without coordinating
+ * with the billing-migration-plan checkout handshake contract.
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';

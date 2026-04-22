@@ -5,8 +5,12 @@ import { TRIAL_DURATION_DAYS } from '@/lib/trial/constants';
 import { routeLog } from '@/lib/monitoring/server-logger';
 
 /**
- * GET /api/trial/value-recap
- * Returns trial value metrics for the current user's organization
+ * LEGACY — GET /api/trial/value-recap
+ *
+ * Returns trial value metrics for the current user's organization.
+ * Only meaningful for grandfathered `status = 'trialing'` subscriptions;
+ * new Foundation buyers check out directly through Stripe and never
+ * hit this endpoint. Retained for legacy dashboards.
  */
 const log = routeLog('/api/trial/value-recap');
 

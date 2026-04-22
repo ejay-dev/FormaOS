@@ -1,8 +1,17 @@
 /**
  * =========================================================
- * TRIAL SYSTEM CONSTANTS
+ * LEGACY TRIAL SYSTEM CONSTANTS — Grandfathered subscriptions only
  * =========================================================
- * Single source of truth for all trial-related configuration.
+ *
+ * New Foundation/Growth/Enterprise signups do NOT use a trial.
+ * Foundation buyers go through Stripe Checkout directly; Growth and
+ * Enterprise are sales-led with invoiced billing. These constants
+ * exist solely to keep the entitlements + trial-expiry UI working
+ * for subscriptions with `status = 'trialing'` that were seeded by
+ * historical code paths or admin tooling.
+ *
+ * Do not introduce new consumers of these constants for the
+ * post-migration buying motion — see docs/billing-migration-plan.md.
  */
 
 /** Default trial duration in days */

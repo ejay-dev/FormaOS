@@ -5,6 +5,11 @@ import { handleAdminError } from '@/app/api/admin/_helpers';
 import { parsePageParams } from '@/app/api/admin/_utils';
 import { fetchAuthEmailsByIds } from '@/app/api/admin/_auth-users';
 
+/**
+ * LEGACY — Admin trial listing for grandfathered subscriptions only.
+ * Surfaces rows with historical trial state; new signups go straight
+ * to Stripe Checkout and never appear here.
+ */
 export async function GET(request: Request) {
   try {
     await requireAdminAccess({ permission: 'trials:view' });
