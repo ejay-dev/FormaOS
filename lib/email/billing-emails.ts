@@ -1,4 +1,14 @@
 import { brand } from '@/config/brand';
+import {
+  buildUnsubscribeUrl,
+  generateUnsubscribeToken,
+} from '@/lib/email/unsubscribe-token';
+
+function buildUnsubscribePostUrl(baseUrl: string, userId: string): string {
+  const token = generateUnsubscribeToken(userId);
+  const base = baseUrl.replace(/\/$/, '');
+  return `${base}/api/unsubscribe?token=${encodeURIComponent(token)}`;
+}
 
 type BillingEmailType =
   | 'subscription_created'
@@ -35,13 +45,32 @@ const EMAIL_SUBJECTS: Record<BillingEmailType, string> = {
   plan_changed: `Your ${brand.appName} plan has been updated`,
 };
 
+function renderFooter(unsubscribeUrl: string): string {
+  const safeUrl = escapeHtml(unsubscribeUrl);
+  const siteUrl = escapeHtml(
+    (brand.seo.siteUrl || brand.seo.appUrl || '').replace(/\/$/, ''),
+  );
+  return `
+    <div style="border-top:1px solid rgba(148,163,184,0.15);margin-top:32px;padding-top:20px;color:#64748b;font-size:12px;line-height:1.6;text-align:center;">
+      <p style="margin:0 0 8px;">
+        You're receiving this because you have a ${escapeHtml(brand.appName)} subscription.
+      </p>
+      <p style="margin:0;">
+        <a href="${safeUrl}" style="color:#64748b;text-decoration:underline;">Unsubscribe from all ${escapeHtml(brand.appName)} emails</a>
+        ${siteUrl ? ` &middot; <a href="${siteUrl}" style="color:#64748b;text-decoration:underline;">${siteUrl.replace(/^https?:\/\//, '')}</a>` : ''}
+      </p>
+    </div>`;
+}
+
 function buildEmailHtml(
   type: BillingEmailType,
   context: BillingEmailContext,
+  unsubscribeUrl: string,
 ): string {
   const appUrl = (brand.seo.appUrl || brand.seo.siteUrl).replace(/\/$/, '');
   const billingUrl = `${appUrl}/app/billing`;
   const appName = escapeHtml(brand.appName);
+  const footer = renderFooter(unsubscribeUrl);
 
   const shell = (body: string) =>
     `<!DOCTYPE html><html><head><meta charset="utf-8"/></head>
@@ -50,7 +79,7 @@ function buildEmailHtml(
 <div style="padding:24px 32px;text-align:center;background:linear-gradient(135deg,#0f172a,#1e293b);border-bottom:1px solid rgba(34,211,238,0.2);">
 <div style="color:#22d3ee;font-size:24px;font-weight:800;">${appName}</div>
 </div>
-<div style="padding:32px;">${body}</div>
+<div style="padding:32px;">${body}${footer}</div>
 </div></body></html>`;
 
   switch (type) {
@@ -121,7 +150,9 @@ function buildEmailHtml(
 
 /**
  * Send a billing-related email to an organisation's owner/admins.
- * Queues to the email_queue table for async delivery.
+ * Queues to the email_queue table for async delivery. The queued payload
+ * carries a pre-built unsubscribe URL plus RFC 8058 `List-Unsubscribe`
+ * headers so the sender can attach them when dispatching.
  */
 export async function sendBillingEmail(
   admin: AdminClient,
@@ -131,9 +162,7 @@ export async function sendBillingEmail(
 ): Promise<void> {
   try {
     const subject = EMAIL_SUBJECTS[type];
-    const html = buildEmailHtml(type, context);
 
-    // Find the org owner email
     const { data: member } = await admin
       .from('org_members')
       .select('user_id')
@@ -145,15 +174,30 @@ export async function sendBillingEmail(
     )?.[0];
     if (!ownerMember) return;
 
-    // Queue the email for delivery
+    const appUrl = (brand.seo.appUrl || brand.seo.siteUrl).replace(/\/$/, '');
+    const unsubscribeUrl = buildUnsubscribeUrl(appUrl, ownerMember.user_id);
+    const unsubscribePostUrl = buildUnsubscribePostUrl(
+      appUrl,
+      ownerMember.user_id,
+    );
+    const html = buildEmailHtml(type, context, unsubscribeUrl);
+
     await admin.from('email_queue').insert({
       to: ownerMember.user_id,
       subject,
       template: type,
-      data: { orgId, type, html, ...context },
+      data: {
+        orgId,
+        type,
+        html,
+        headers: {
+          'List-Unsubscribe': `<${unsubscribeUrl}>, <${unsubscribePostUrl}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        },
+        ...context,
+      },
     });
   } catch (error) {
-    // Billing email failures should not break webhook processing
     console.error(
       `[billing-email] Failed to queue ${type} email for org ${orgId}:`,
       error,
