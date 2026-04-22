@@ -1,7 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 
+// `self-serve` is allowed in copy — the pricing page legitimately uses it
+// as a disclosure ("Enterprise contracts closed via Stripe Invoicing, not
+// self-serve checkout"). What we forbid is free-trial funnel language.
 const FORBIDDEN_PUBLIC_COPY =
-  /Start Free Trial|14-day free trial|14-day trial|14 day trial|no credit card required|self-serve/i;
+  /Start Free Trial|14-day free trial|14-day trial|14 day trial|no credit card required/i;
 
 async function expectInfrastructureBuyingMotion(page: Page, route: string) {
   const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
@@ -20,14 +23,31 @@ test.describe('Public buying motion', () => {
     await expect(secondary).toHaveAttribute('href', /\/contact\?type=demo/);
   });
 
-  test('pricing leads with compliance plan and assessment paths', async ({ page }) => {
+  test('pricing leads with compliance plan, self-serve foundation, and enterprise demo paths', async ({ page }) => {
     await expectInfrastructureBuyingMotion(page, '/pricing');
+
+    // Growth: sales-led through Compliance Plan intake.
     await expect(page.getByTestId('pricing-growth-cta')).toHaveText(/Get Compliance Plan/i);
-    await expect(page.getByTestId('pricing-growth-cta')).toHaveAttribute('href', /\/contact\?type=compliance-plan/);
+    await expect(page.getByTestId('pricing-growth-cta')).toHaveAttribute(
+      'href',
+      /\/contact\?type=compliance-plan/,
+    );
+
+    // Foundation: public self-serve via /auth/signup handshake that sets the
+    // checkout-intent cookie and auto-redirects into Stripe Checkout after
+    // org bootstrap.
     await expect(page.getByTestId('pricing-foundation-cta')).toHaveText(/Start Assessment/i);
-    await expect(page.getByTestId('pricing-foundation-cta')).toHaveAttribute('href', /\/contact\?type=assessment/);
+    await expect(page.getByTestId('pricing-foundation-cta')).toHaveAttribute(
+      'href',
+      /\/auth\/signup\?plan=basic&intent=checkout&source=pricing/,
+    );
+
+    // Enterprise: procurement-led, no direct checkout.
     await expect(page.getByTestId('pricing-enterprise-cta')).toHaveText(/Book Demo/i);
-    await expect(page.getByTestId('pricing-enterprise-cta')).toHaveAttribute('href', /\/contact\?type=enterprise/);
+    await expect(page.getByTestId('pricing-enterprise-cta')).toHaveAttribute(
+      'href',
+      /\/contact\?type=enterprise/,
+    );
   });
 
   test('contact page is sales/demo led', async ({ page }) => {

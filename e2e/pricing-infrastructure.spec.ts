@@ -22,8 +22,11 @@ test.describe('Infrastructure pricing and proof pages', () => {
     await expect(page.getByText(/One failed audit can cost more than a year of FormaOS/i)).toBeVisible();
     await expectNoFreeTrialLanguage(page);
 
+    // Foundation is public self-serve via the /auth/signup handshake that
+    // sets a checkout-intent cookie and auto-redirects into Stripe Checkout
+    // after email verification + org bootstrap.
     const ctaExpectations = [
-      ['pricing-foundation-cta', /\/contact\?type=assessment/],
+      ['pricing-foundation-cta', /\/auth\/signup\?plan=basic&intent=checkout&source=pricing/],
       ['pricing-growth-cta', /\/contact\?type=compliance-plan/],
       ['pricing-enterprise-cta', /\/contact\?type=enterprise/],
     ] as const;

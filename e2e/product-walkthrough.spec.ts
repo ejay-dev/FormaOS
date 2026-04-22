@@ -204,30 +204,31 @@ async function createQAUser(
 test.describe('A) Marketing → App Entry', () => {
   test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
 
-  test('A1: Home hero CTA → signup page loads', async ({ page }) => {
+  test('A1: Pricing Foundation CTA routes to app-domain signup handshake', async ({
+    page,
+  }) => {
     await setupPage(page);
 
-    // Go to marketing site
-    await page.goto(MARKETING_URL);
+    // Foundation self-serve lives on the pricing page as "Start Assessment"
+    // and hands the user off to app-domain signup with the checkout intent.
+    await page.goto(`${MARKETING_URL.replace(/\/$/, '')}/pricing`);
     await page.waitForLoadState('networkidle');
 
-    // Screenshot: Marketing homepage
     await page.screenshot({
-      path: 'test-results/screenshots/A1-marketing-home.png',
+      path: 'test-results/screenshots/A1-pricing-foundation-cta.png',
       fullPage: true,
     });
 
-    // Find and click CTA (Start Free Trial or similar)
     const ctaButton = page
-      .locator(
-        'a:has-text("Start Free"), a:has-text("Sign Up"), a:has-text("Get Started")',
-      )
+      .getByRole('link', { name: /start assessment/i })
       .first();
     await expect(ctaButton).toBeVisible({ timeout: 10000 });
 
-    // Verify CTA links to app domain
     const href = await ctaButton.getAttribute('href');
     expect(href).toContain('app.formaos.com.au');
+    expect(href).toContain('/auth/signup');
+    expect(href).toContain('plan=basic');
+    expect(href).toContain('intent=checkout');
 
     await page.screenshot({
       path: 'test-results/screenshots/A1-cta-visible.png',
@@ -501,7 +502,11 @@ test.describe('V2: Existing User Login', () => {
 
 test.describe('Entitlements Verification', () => {
   test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
-  test('Trial entitlements are correct', async () => {
+  // createQAUser manually inserts a trialing subscription so authenticated
+  // middleware lets QA traverse the app. New production signups do not
+  // provision trials; this test guards the legacy QA fixture, not the
+  // self-serve checkout flow.
+  test('Legacy QA fixture seeds basic entitlements and trialing subscription', async () => {
     // Verify entitlements via API
     if (!qaOrgIdV1) {
       test.skip();

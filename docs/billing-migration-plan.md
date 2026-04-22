@@ -46,21 +46,30 @@ Enterprise recommendation: keep Enterprise sales-led/invoiced unless the owner e
 
 ## 4. Expected Plan Behavior After Migration
 
-All three tiers are sales-led publicly. No anonymous self-serve checkout path is exposed on the marketing site until a provisioning handshake is built to link post-purchase Stripe customers to post-signup organizations.
+Foundation is publicly self-serve via an authenticated signup handshake. Growth is sales-led. Enterprise is procurement-led via Stripe Invoicing. No anonymous Payment Link is exposed on the marketing site, because the webhook requires `organization_id` in session metadata to provision.
 
 | Public plan | Buying motion | Public CTA | Destination | Payment instrument |
 | --- | --- | --- | --- | --- |
-| Foundation | Sales-led | `Start Assessment` | `/contact?type=assessment` → demo/qualification | Stripe Payment Link sent by sales post-demo |
+| Foundation | Public self-serve | `Start Assessment` | `/auth/signup?plan=basic&intent=checkout&source=pricing` → signup → auto-redirect into Stripe Checkout after org bootstrap | Stripe Checkout Session via `startCheckout` |
 | Growth | Sales-led | `Get Compliance Plan` | `/contact?type=compliance-plan` → demo | Stripe Payment Link sent by sales post-demo |
 | Enterprise | Procurement-led | `Book Demo` | `/contact?type=enterprise` → demo + review | Stripe Invoicing (custom contract) |
 
+Foundation self-serve handshake:
+
+1. Visitor clicks the Foundation CTA on `/pricing`.
+2. Browser lands on [app/auth/signup/page.tsx](../app/auth/signup/page.tsx) with `?plan=basic&intent=checkout`. The page stashes a short-lived `formaos_checkout_intent` cookie (30 minute TTL) keyed by the plan, gated by [lib/billing/checkout-intent.ts](../lib/billing/checkout-intent.ts) — only `basic` is in `SELF_SERVE_PLANS`.
+3. The user completes email verification + organization bootstrap.
+4. On first authenticated hit to `/app`, the cookie is read, cleared, and `startCheckout` from [app/app/actions/billing.ts](../app/app/actions/billing.ts) is invoked server-side. That call attaches `session.metadata.organization_id` so the webhook at [app/api/billing/webhook/route.ts](../app/api/billing/webhook/route.ts) provisions correctly.
+5. The button in [components/billing/BillingActionButtons.tsx](../components/billing/BillingActionButtons.tsx) clears the cookie after checkout is kicked off to prevent re-entry loops.
+
 Implementation notes:
 
-- Foundation and Growth Payment Links are stored server-side as `STRIPE_PAYMENT_LINK_FOUNDATION` and `STRIPE_PAYMENT_LINK_GROWTH`. They are **never** exposed to the browser (no `NEXT_PUBLIC_*` variant). Sales team references them from internal tooling only.
-- Authenticated in-app upgrades (`/app/billing`) continue to use Stripe Checkout Sessions via `startCheckout`, which sets `session.metadata.organization_id` so the webhook provisions correctly.
+- Only `basic` (Foundation) is in the `SELF_SERVE_PLANS` set. Adding Growth or Enterprise requires a separate product decision and would need their own commercial gating.
+- Growth Payment Links are stored server-side as `STRIPE_PAYMENT_LINK_GROWTH`. It is **never** exposed to the browser (no `NEXT_PUBLIC_*` variant). The sales team references it from internal tooling only. Foundation does not need a Payment Link — its flow uses an authenticated Checkout Session instead.
+- Authenticated in-app upgrades (`/app/billing`) continue to use Stripe Checkout Sessions via `startCheckout`, which sets `session.metadata.organization_id` so the webhook provisions correctly. Foundation self-serve reuses this same server action.
 - Enterprise has no Payment Link. Stripe Invoicing is driven from the Stripe dashboard after contract close.
 - New Checkout sessions from `app/app/actions/billing.ts` no longer set `trial_period_days`. Stripe Payment Links must also be configured with no trial.
-- **Do not** introduce `NEXT_PUBLIC_STRIPE_PAYMENT_LINK_FOUNDATION`: anonymous Payment Link buyers have no `organization_id` in session metadata, so the webhook at [app/api/billing/webhook/route.ts](../app/api/billing/webhook/route.ts) silently skips provisioning. Public self-serve requires a separate post-purchase handshake before it can be enabled.
+- **Do not** introduce `NEXT_PUBLIC_STRIPE_PAYMENT_LINK_FOUNDATION`: anonymous Payment Link buyers have no `organization_id` in session metadata, so the webhook silently skips provisioning. The authenticated signup → checkout handshake exists precisely to avoid that failure mode.
 
 ## 5. Legacy Subscriptions And Grandfathering
 
@@ -93,23 +102,22 @@ Keep these webhook behaviors intact:
 
 1. Confirm the active Foundation and Growth prices in production Stripe.
 2. Create (or confirm) the three Stripe billing instruments:
-   - Foundation: public **Payment Link** for `$297/mo` with no trial, success URL = `https://app.formaos.com.au/app`, metadata `plan_key=basic`.
+   - Foundation: recurring **Price** for `$297/mo` with no trial (checkout is driven by `startCheckout`, not a Payment Link).
    - Growth: internal **Payment Link** for `$1,800/mo` (sent post-demo), no trial, metadata `plan_key=pro`.
    - Enterprise: **Stripe Invoicing** — no Payment Link, no direct checkout.
 3. Add production Vercel env vars:
    - `STRIPE_PRICE_FOUNDATION=price_1TOdz1AHrAKKo3OlfYxjk9WL`
    - `STRIPE_PRICE_GROWTH=price_1TOe05AHrAKKo3OliCrZNnkx`
    - `STRIPE_PRICE_ENTERPRISE=<enterprise_price_id>` only if direct Enterprise checkout is intentionally retained.
-   - `STRIPE_PAYMENT_LINK_FOUNDATION=<foundation_payment_link_url>` (server-only, internal sales reference).
    - `STRIPE_PAYMENT_LINK_GROWTH=<growth_payment_link_url>` (server-only, internal sales reference).
 4. Remove or mirror `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO`; active checkout uses `STRIPE_PRICE_FOUNDATION`, `STRIPE_PRICE_GROWTH`, or the current code fallback IDs.
 5. Deploy the code.
 6. Smoke-test the public funnel on production:
-   - `/pricing` — Foundation CTA opens `/contact?type=assessment`.
+   - `/pricing` — Foundation CTA opens `/auth/signup?plan=basic&intent=checkout&source=pricing`.
    - `/pricing` — Growth CTA opens `/contact?type=compliance-plan`.
    - `/pricing` — Enterprise CTA opens `/contact?type=enterprise`.
-   - `/contact`, `/security`, `/compare/vanta`, `/ndis-providers` CTAs route to guided contact flows.
-7. Run an end-to-end Foundation Payment Link purchase in production with a test card; confirm webhook delivery updates `org_subscriptions.price_id` and `plan_key=basic`.
+   - `/contact`, `/security`, `/compare/vanta`, `/ndis-providers` CTAs route to guided contact or signup flows.
+7. Run an end-to-end Foundation self-serve purchase in production with a test card: sign up fresh, complete email verification + org bootstrap, confirm auto-redirect into Stripe Checkout, complete payment, and confirm webhook delivery updates `org_subscriptions.price_id` and `plan_key=basic`.
 8. Confirm `customer.subscription.created` + `checkout.session.completed` correctly provision the org and email the welcome sequence.
 9. Confirm customer portal displays the intended new Stripe product/price names.
 10. After 24-48 hours with no billing incidents, remove old env vars only if logs confirm the new vars are being used.
@@ -119,7 +127,7 @@ Keep these webhook behaviors intact:
 If pricing migration fails:
 
 1. Revert `STRIPE_PRICE_FOUNDATION` and `STRIPE_PRICE_GROWTH` in Vercel to the last known-good Stripe prices.
-2. Public CTAs already route to `/contact` — no public Payment Link env to unset. Instruct sales to stop sending Payment Links until Stripe is corrected.
+2. If Foundation self-serve checkout is failing repeatedly, temporarily point the Foundation CTA in [lib/marketing/pricing.ts](../lib/marketing/pricing.ts) at `/contact?type=assessment&plan=foundation&source=pricing` and redeploy. Growth and Enterprise are already sales-led so no public Payment Link env needs to be unset. Instruct sales to stop sending the Growth Payment Link until Stripe is corrected.
 3. Mirror any remaining legacy `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO` values for operator clarity, but rollbacks should use the preferred env vars above.
 4. Redeploy or trigger a Vercel env refresh.
 5. Disable any public or in-app direct checkout entry points if checkout errors continue.

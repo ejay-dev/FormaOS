@@ -240,32 +240,26 @@ test.describe('FormaOS Node & Wire Integrity Tests', () => {
       await expectOnSitePath(page, '/pricing');
     });
 
-    test('[UPDATED] should navigate to Signup with plan parameter', async ({
+    test('header primary CTA routes to Get Compliance Plan intake', async ({
       page,
     }, testInfo) => {
       await page.goto(SITE_BASE);
 
-      if (isMobileProject(testInfo.project.name)) {
-        const menu = await openMobileMenu(page);
-        await menu.getByRole('link', { name: /start free/i }).click();
-      } else {
-        // Find and click the "Start Free" button in header
-        const startFreeButton = page
-          .locator('a[href$="/auth/signup?plan=pro"]')
-          .first();
-        await startFreeButton.click();
-      }
+      const scope = isMobileProject(testInfo.project.name)
+        ? await openMobileMenu(page)
+        : page;
 
-      // Verify URL includes plan parameter
-      await expect(page).toHaveURL(
-        new RegExp(
-          `${escapeRegex(APP_BASE.replace(/\/$/, ''))}/auth/signup\\?plan=pro$`,
-        ),
-      );
+      const cta = scope.getByRole('link', { name: /get compliance plan/i }).first();
+      await cta.scrollIntoViewIfNeeded();
+      await expect(cta).toBeVisible();
+      await Promise.all([
+        page.waitForURL(/\/contact(\?|$)/, { waitUntil: 'domcontentloaded' }),
+        cta.click(),
+      ]);
 
-      // Verify plan parameter is in URL
       const url = page.url();
-      expect(url).toContain('plan=pro');
+      expect(url).toContain('/contact');
+      expect(url).toContain('type=compliance-plan');
     });
   });
 
@@ -274,7 +268,7 @@ test.describe('FormaOS Node & Wire Integrity Tests', () => {
   // ============================================================================
 
   test.describe('Homepage CTAs', () => {
-    test('should have Start Free Trial CTA with plan parameter', async ({
+    test('should have Get Compliance Plan CTA routing to contact intake', async ({
       page,
     }, testInfo) => {
       await page.goto(SITE_BASE);
@@ -283,62 +277,39 @@ test.describe('FormaOS Node & Wire Integrity Tests', () => {
         await openMobileMenu(page);
       }
 
-      const startTrialLinks = page.getByRole('link', {
-        name: /start free/i,
+      const compliancePlanLinks = page.getByRole('link', {
+        name: /get compliance plan/i,
       });
-      const count = await startTrialLinks.count();
-
-      console.log(`Found ${count} start-free CTAs on homepage`);
-
+      const count = await compliancePlanLinks.count();
       expect(count).toBeGreaterThan(0);
 
-      const hrefs = await startTrialLinks.evaluateAll((els) =>
+      const hrefs = await compliancePlanLinks.evaluateAll((els) =>
         els.map((el) => el.getAttribute('href') || ''),
       );
-      const hasAuthCta = hrefs.some((href) => href.includes('/auth'));
-      const hasPlanParam = hrefs.some(
-        (href) => href.includes('/auth/signup') && href.includes('plan='),
+      const allGoToContact = hrefs.every((href) => href.includes('/contact'));
+      const hasTypeParam = hrefs.some((href) =>
+        href.includes('type=compliance-plan'),
       );
 
-      expect(hasAuthCta).toBe(true);
-      expect(hasPlanParam).toBe(true);
+      expect(allGoToContact).toBe(true);
+      expect(hasTypeParam).toBe(true);
     });
 
-    test('should navigate to Contact from Request Demo', async ({ page }) => {
+    test('should navigate to Contact from Book Demo CTA', async ({ page }) => {
       await page.goto(SITE_BASE);
 
-      // Find "Request Demo" button
-      const requestDemoButton = page
-        .getByRole('link', { name: /request demo/i })
+      const bookDemoButton = page
+        .getByRole('link', { name: /book demo/i })
         .first();
-      await requestDemoButton.scrollIntoViewIfNeeded();
-      await expect(requestDemoButton).toBeVisible();
+      await bookDemoButton.scrollIntoViewIfNeeded();
+      await expect(bookDemoButton).toBeVisible();
       await Promise.all([
-        page.waitForURL(buildSiteUrlRegex('/contact'), {
-          waitUntil: 'domcontentloaded',
-        }),
-        requestDemoButton.click(),
+        page.waitForURL(/\/contact(\?|$)/, { waitUntil: 'domcontentloaded' }),
+        bookDemoButton.click(),
       ]);
 
-      await expectOnSitePath(page, '/contact');
-    });
-
-    test('should navigate to Contact from Schedule Demo', async ({ page }) => {
-      await page.goto(SITE_BASE);
-
-      const scheduleDemoLink = page
-        .getByRole('link', { name: /schedule demo/i })
-        .first();
-      await scheduleDemoLink.scrollIntoViewIfNeeded();
-      await expect(scheduleDemoLink).toBeVisible();
-      await Promise.all([
-        page.waitForURL(buildSiteUrlRegex('/contact'), {
-          waitUntil: 'domcontentloaded',
-        }),
-        scheduleDemoLink.click(),
-      ]);
-
-      await expectOnSitePath(page, '/contact');
+      expect(page.url()).toContain('/contact');
+      expect(page.url()).toContain('type=demo');
     });
   });
 

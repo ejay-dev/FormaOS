@@ -63,7 +63,7 @@ const siteBaseVariants = (() => {
 const buildSiteUrlRegex = (path: string) => {
   const normalizedPath = path === '/' ? '/?' : `${path.replace(/\/$/, '')}/?`;
   const escaped = siteBaseVariants.map(escapeRegex).join('|');
-  return new RegExp(`^(${escaped})${normalizedPath}$`);
+  return new RegExp(`^(${escaped})${normalizedPath}`);
 };
 
 const isMobileProject = (projectName: string) =>
@@ -87,7 +87,7 @@ const openMobileMenu = async (page: import('@playwright/test').Page) => {
 };
 
 test.describe('Marketing CTA wiring', () => {
-  test('header CTAs route to app domain on all marketing pages', async ({
+  test('header CTAs route correctly on all marketing pages', async ({
     page,
   }, testInfo) => {
     test.setTimeout(240_000);
@@ -99,17 +99,21 @@ test.describe('Marketing CTA wiring', () => {
       });
 
       const scope = useMobileMenu ? await openMobileMenu(page) : page;
+
       const loginLink = scope.getByRole('link', { name: /login/i }).first();
       await expect(loginLink).toBeVisible();
       const loginHref = normalizeHref(await loginLink.getAttribute('href'));
       expect(loginHref).toContain(`${APP_BASE}/auth/signin`);
 
-      const startFreeLink = scope
-        .getByRole('link', { name: /start free/i })
+      const compliancePlanLink = scope
+        .getByRole('link', { name: /get compliance plan/i })
         .first();
-      await expect(startFreeLink).toBeVisible();
-      const startHref = normalizeHref(await startFreeLink.getAttribute('href'));
-      expect(startHref.startsWith(APP_BASE)).toBe(true);
+      await expect(compliancePlanLink).toBeVisible();
+      const compliancePlanHref = normalizeHref(
+        await compliancePlanLink.getAttribute('href'),
+      );
+      expect(compliancePlanHref).toContain('/contact');
+      expect(compliancePlanHref).toContain('type=compliance-plan');
 
       if (useMobileMenu) {
         await page.keyboard.press('Escape').catch(() => null);
@@ -117,51 +121,74 @@ test.describe('Marketing CTA wiring', () => {
     }
   });
 
-  test('homepage primary CTAs route correctly', async ({ page }) => {
+  test('homepage primary CTAs route to guided buying flows', async ({
+    page,
+  }) => {
     await page.goto(SITE_BASE, { waitUntil: 'load' });
 
-    const startTrial = page
-      .getByRole('link', { name: /start free trial/i })
+    const compliancePlanCta = page
+      .getByRole('link', { name: /get compliance plan/i })
       .first();
-    await expect(startTrial).toBeVisible();
-    const startHref = normalizeHref(await startTrial.getAttribute('href'));
-    expect(startHref.startsWith(APP_BASE)).toBe(true);
+    await expect(compliancePlanCta).toBeVisible();
+    const compliancePlanUrl = normalizeHref(
+      await compliancePlanCta.getAttribute('href'),
+    );
+    expect(compliancePlanUrl).toContain('/contact');
+    expect(compliancePlanUrl).toContain('type=compliance-plan');
 
-    const requestDemo = page
-      .getByRole('link', { name: /book enterprise demo/i })
-      .first();
-    await requestDemo.scrollIntoViewIfNeeded();
-    await expect(requestDemo).toBeVisible();
-    await Promise.all([
-      page.waitForURL(buildSiteUrlRegex('/contact'), {
-        waitUntil: 'domcontentloaded',
-      }),
-      requestDemo.click(),
-    ]);
+    const bookDemoCta = page.getByRole('link', { name: /book demo/i }).first();
+    await expect(bookDemoCta).toBeVisible();
+    const bookDemoUrl = normalizeHref(await bookDemoCta.getAttribute('href'));
+    expect(bookDemoUrl).toContain('/contact');
+    expect(bookDemoUrl).toContain('type=demo');
   });
 
-  test('pricing plan actions route to app or contact', async ({ page }) => {
+  test('pricing plan actions route to the correct buying motion', async ({
+    page,
+  }) => {
     await page.goto(`${SITE_BASE}/pricing`, { waitUntil: 'domcontentloaded' });
 
-    const startTrialLinks = page.getByRole('link', {
-      name: /start free trial/i,
-    });
-    const trialCount = await startTrialLinks.count();
-    expect(trialCount).toBeGreaterThan(0);
+    // Foundation: public self-serve via signup handshake, auto-redirects into
+    // Stripe Checkout after org bootstrap.
+    const foundationCta = page
+      .getByRole('link', { name: /start assessment/i })
+      .first();
+    await expect(foundationCta).toBeVisible();
+    const foundationHref = normalizeHref(
+      await foundationCta.getAttribute('href'),
+    );
+    expect(foundationHref.startsWith(APP_BASE)).toBe(true);
+    expect(foundationHref).toContain('/auth/signup');
+    expect(foundationHref).toContain('plan=basic');
+    expect(foundationHref).toContain('intent=checkout');
 
-    for (let i = 0; i < Math.min(trialCount, 3); i++) {
-      const href = normalizeHref(
-        await startTrialLinks.nth(i).getAttribute('href'),
-      );
-      expect(href.startsWith(APP_BASE)).toBe(true);
-      expect(href).toContain('/auth');
-    }
+    // Growth: sales-led through Compliance Plan intake.
+    const growthCta = page
+      .getByRole('link', { name: /get compliance plan/i })
+      .first();
+    await expect(growthCta).toBeVisible();
+    const growthHref = normalizeHref(await growthCta.getAttribute('href'));
+    expect(growthHref).toContain('/contact');
+    expect(growthHref).toContain('type=compliance-plan');
 
-    const contactSales = page.getByRole('link', { name: /talk to sales/i });
-    if (await contactSales.count()) {
-      const href = normalizeHref(await contactSales.first().getAttribute('href'));
-      expect(href).toContain(`${SITE_BASE}/contact`);
-    }
+    // Enterprise: procurement-led through Book Demo.
+    const enterpriseCta = page
+      .getByRole('link', { name: /book demo/i })
+      .first();
+    await expect(enterpriseCta).toBeVisible();
+    const enterpriseHref = normalizeHref(
+      await enterpriseCta.getAttribute('href'),
+    );
+    expect(enterpriseHref).toContain('/contact');
+    expect(enterpriseHref).toContain('type=enterprise');
+  });
+
+  test('pricing page surfaces no free-trial language', async ({ page }) => {
+    await page.goto(`${SITE_BASE}/pricing`, { waitUntil: 'domcontentloaded' });
+    const body = await page.locator('body').innerText();
+    expect(body).not.toMatch(/start free trial/i);
+    expect(body).not.toMatch(/14[- ]day free trial/i);
+    expect(body).not.toMatch(/no credit card required/i);
   });
 
   test('footer links are present and non-empty', async ({ page }) => {
@@ -175,6 +202,15 @@ test.describe('Marketing CTA wiring', () => {
       const href = await footerLinks.nth(i).getAttribute('href');
       expect(href).toBeTruthy();
       expect(String(href).trim()).not.toBe('#');
+    }
+
+    // Route smoke test for one CTA link so the anchor regex stays exercised.
+    const firstContactLink = page
+      .locator('footer a[href*="/contact"]')
+      .first();
+    if (await firstContactLink.count()) {
+      const href = normalizeHref(await firstContactLink.getAttribute('href'));
+      expect(href).toMatch(buildSiteUrlRegex('/contact'));
     }
   });
 });

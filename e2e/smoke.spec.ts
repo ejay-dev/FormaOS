@@ -1,6 +1,6 @@
 /**
  * Critical User Journey Smoke Test
- * Tests: Home → Pricing → Signup → Trial Provisioning → Dashboard Access
+ * Tests: Home → Pricing → Foundation self-serve signup (plan=basic, intent=checkout) → Dashboard access
  */
 
 import { test, expect } from '@playwright/test';
@@ -96,20 +96,25 @@ test('Critical user journey smoke test', async ({ page }) => {
   await page.goto('/pricing', { waitUntil: 'networkidle' });
   await expect(page).toHaveTitle(/Pricing|FormaOS/i);
 
-  // 3. Click a visible Start Free CTA (desktop/mobile resilient)
-  const startFreeCta = page.locator('a:has-text("Start Free"):visible').first();
-  if ((await startFreeCta.count()) > 0) {
-    const href = await startFreeCta.getAttribute('href');
+  // 3. Click the visible Foundation self-serve CTA. Falls back to direct
+  //    /auth/signup navigation for resilience across layout variants.
+  const foundationCta = page
+    .locator('a:has-text("Start Assessment"):visible')
+    .first();
+  if ((await foundationCta.count()) > 0) {
+    const href = await foundationCta.getAttribute('href');
     if (href) {
       const target = new URL(href, page.url());
       await page.goto(`${target.pathname}${target.search}`, {
         waitUntil: 'networkidle',
       });
     } else {
-      await startFreeCta.click();
+      await foundationCta.click();
     }
   } else {
-    await page.goto('/auth/signup', { waitUntil: 'networkidle' });
+    await page.goto('/auth/signup?plan=basic&intent=checkout&source=pricing', {
+      waitUntil: 'networkidle',
+    });
   }
 
   // 4. Should land on signup page

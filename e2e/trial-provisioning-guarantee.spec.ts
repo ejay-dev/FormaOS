@@ -1,10 +1,18 @@
 /**
- * Trial Provisioning Reliability Test
+ * Legacy Trialing Subscription Data Integrity
  *
- * Validates that after signup:
- * - User has organization
- * - User has trial subscription (14 days)
- * - User has basic entitlements
+ * Foundation self-serve checkout no longer creates Stripe trials
+ * (see docs/billing-migration-plan.md §6). This suite covers the
+ * historical `status = 'trialing'` code path that must remain
+ * functional for grandfathered subscriptions so the entitlements
+ * layer, trial-expiry windows, and cleanup paths still work
+ * correctly when an admin or legacy webhook inserts a trialing
+ * subscription.
+ *
+ * These tests manually insert trialing rows through the service
+ * role client — they do NOT assert that a fresh signup now
+ * produces a trial. New signups route through Stripe Checkout
+ * with no trial period.
  */
 
 import { test, expect } from '@playwright/test';
@@ -103,7 +111,7 @@ async function cleanupUser(userId: string) {
   }
 }
 
-test.describe('Trial Provisioning - Data Integrity', () => {
+test.describe('Legacy Trialing Subscription - Data Integrity', () => {
   test.beforeAll(async () => {
     if (!admin) {
       throw new Error(
@@ -112,13 +120,15 @@ test.describe('Trial Provisioning - Data Integrity', () => {
     }
   });
 
-  test('Manual signup creates complete trial setup', async () => {
+  test('Legacy trialing subscription inserted via admin client preserves entitlements', async () => {
     const email = `signup_${Date.now()}@test.formaos.local`;
     const { userId } = await createTestUser(email);
 
     try {
-      // Simulate bootstrap by manually creating the trial setup
-      // (This is what the auth/callback endpoint should do)
+      // Simulate a legacy grandfathered trialing subscription by inserting
+      // the state directly via the service role client. New signups no longer
+      // create trials, but the DB/entitlements layer must still handle this
+      // state correctly for historical customers.
       const { data: org } = await admin!
         .from('organizations')
         .insert({
@@ -210,7 +220,7 @@ test.describe('Trial Provisioning - Data Integrity', () => {
     }
   });
 
-  test('Trial expiration date is correctly set', async () => {
+  test('Legacy trialing subscription stores trial_expires_at 14 days from start', async () => {
     const email = `trial_duration_${Date.now()}@test.formaos.local`;
     const { userId } = await createTestUser(email);
 
@@ -259,7 +269,7 @@ test.describe('Trial Provisioning - Data Integrity', () => {
     }
   });
 
-  test('Trial entitlements prevents access to locked features', async () => {
+  test('Legacy trialing org has basic entitlements but not pro-only features', async () => {
     const email = `entitlements_${Date.now()}@test.formaos.local`;
     const { userId } = await createTestUser(email);
 
