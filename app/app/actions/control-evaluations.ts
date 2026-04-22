@@ -6,14 +6,6 @@ import { actionError, isNextInternalError } from '@/lib/actions/safe';
 
 type ControlStatus = 'compliant' | 'non_compliant' | 'at_risk';
 
-type ComplianceSummary = {
-  total: number;
-  compliant: number;
-  atRisk: number;
-  nonCompliant: number;
-  requiredNonCompliant: number;
-};
-
 type RawTask = {
   id: string;
   title?: string | null;

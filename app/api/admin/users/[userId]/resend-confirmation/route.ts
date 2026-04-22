@@ -3,6 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
 
@@ -10,8 +11,11 @@ type Params = {
   params: Promise<{ userId: string }>;
 };
 
-export async function POST(_request: Request, { params }: Params) {
+export async function POST(request: Request, { params }: Params) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const access = await requireAdminAccess({ permission: 'users:manage' });
     const { userId } = await params;
     const admin = createSupabaseAdminClient();

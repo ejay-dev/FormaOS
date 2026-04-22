@@ -12,11 +12,8 @@ import {
 import { generateSoc2Report } from '@/lib/soc2/report-generator';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type {
-  Soc2ReadinessResult,
   Soc2Milestone,
   Soc2RemediationAction,
-  AutomatedCheckResult,
-  Soc2CertificationReport,
 } from '@/lib/soc2/types';
 import { actionError, isNextInternalError } from "@/lib/actions/safe";
 
@@ -46,13 +43,6 @@ export async function runSoc2Assessment() {
 // ---------------------------------------------------------------------------
 // Get dashboard data (assessment + milestones + remediation + checks)
 // ---------------------------------------------------------------------------
-
-interface Soc2DashboardData {
-  assessment: Soc2ReadinessResult | null;
-  milestones: Soc2Milestone[];
-  remediationActions: Soc2RemediationAction[];
-  automatedChecks: AutomatedCheckResult[];
-}
 
 export async function getSoc2DashboardData() {
   try {

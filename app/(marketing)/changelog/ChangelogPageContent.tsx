@@ -143,6 +143,34 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v3.7.1',
+    codename: 'Reconcile II',
+    date: '2026-04-22',
+    summary:
+      'Audit re-pass: added CSRF origin validation to three admin mutation routes that relied on SameSite cookies alone, brought in-app plan comparison copy back in line with marketing, and cleared all remaining eslint warnings.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Admin CSRF defence-in-depth',
+        tag: 'security',
+        detail:
+          'POST /api/admin/audit/run, /api/admin/orgs/[orgId]/notes, and /api/admin/users/[userId]/resend-confirmation now validate the request Origin/Referer header before any auth or DB call. All 23 admin mutation handlers are now CSRF-validated.',
+      },
+      {
+        text: 'In-app plan comparison parity',
+        tag: 'improvement',
+        detail:
+          'PLAN_CATALOG Foundation tier now lists Audit log export and Framework evaluation reports so the in-app billing UI reads identically to the /pricing page.',
+      },
+      {
+        text: 'Lint cleanup',
+        tag: 'improvement',
+        detail:
+          'Removed dead type imports and a stale const binding surfaced by eslint. Lint is now warning-free.',
+      },
+    ],
+  },
+  {
     version: 'v3.7.0',
     codename: 'Reconcile',
     date: '2026-04-22',

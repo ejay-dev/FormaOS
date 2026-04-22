@@ -30,7 +30,9 @@ export const PLAN_CATALOG: Record<PlanKey, PlanConfig> = {
     features: [
       'Single-framework compliance assessment',
       'Basic workflow enforcement',
-      'Audit logs',
+      'Audit logs and evidence history',
+      'Audit log export',
+      'Framework evaluation reports',
       'Guided onboarding review',
     ],
   },

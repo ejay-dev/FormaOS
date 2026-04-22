@@ -9,13 +9,11 @@ import { requirePermission } from './rbac';
 import {
   calculateComplianceScore,
   updateComplianceScore,
-  type ComplianceScoreResult,
 } from '@/lib/automation/compliance-score-engine';
 import {
   processTrigger,
   type TriggerEvent,
   type TriggerType,
-  type AutomationResult,
 } from '@/lib/automation/trigger-engine';
 import {
   processEvent,

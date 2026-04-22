@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 import {
   handleAdminError,
   parseAdminMutationPayload,
@@ -13,6 +14,9 @@ type Params = {
 
 export async function POST(request: Request, { params }: Params) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const access = await requireAdminAccess({ permission: 'orgs:manage' });
     const { orgId } = await params;
     const { payload: body } = await parseAdminMutationPayload(request);

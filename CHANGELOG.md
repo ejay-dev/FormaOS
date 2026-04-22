@@ -1,5 +1,16 @@
 # 📋 FormaOS Changelog
 
+## [3.7.1] - 2026-04-22
+
+### Audit Re-Pass — Admin CSRF Hardening, Plan Copy Parity, Lint Cleanup
+
+- **Admin CSRF defence-in-depth (P1):** Added `validateCsrfOrigin` to the three admin mutation routes that were relying on cookie SameSite alone. Audit run, org notes, and user resend-confirmation POSTs now reject untrusted-origin requests with `403` before any auth or DB call. All 23 admin mutation handlers are now CSRF-validated.
+- **Plan comparison parity:** `PLAN_CATALOG.basic.features` now mirrors the `/pricing` page — added `Audit log export` and `Framework evaluation reports`, upgraded `Audit logs` → `Audit logs and evidence history`. In-app and marketing cards now read identically.
+- **Lint cleanup:** Cleared 7 eslint warnings — dead type imports (`ComplianceScoreResult`, `AutomationResult`, `ComplianceSummary`, `Soc2DashboardData`, `Soc2CertificationReport`, cascades) and `prefer-const` in `scripts/fix-action-errors.js`. Lint is now green.
+- **Verified:** qa:smoke 19/19 passing, lint/typecheck/audit:marketing-copy/check:app-links/check:admin-nav/check:security-baseline all green.
+
+---
+
 ## [3.7.0] - 2026-04-22
 
 ### End-to-End Audit — Billing Accuracy, Link Integrity, Admin Hardening

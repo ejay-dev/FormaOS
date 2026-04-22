@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { handleAdminError } from '@/app/api/admin/_helpers';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
@@ -1097,6 +1098,9 @@ function buildSummary(checks: CheckResult[]) {
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     await requireAdminAccess({ permission: 'audit:view' });
 
     const body = await request.json();
