@@ -60,9 +60,7 @@ export async function POST(request: Request, { params }: Params) {
       await ensureSubscription(orgId, plan);
     }
 
-    if (plan === 'basic' || plan === 'pro') {
-      await syncEntitlementsForPlan(orgId, plan);
-    }
+    await syncEntitlementsForPlan(orgId, plan);
 
     await logAdminAction({
       actorUserId: access.user.id,

@@ -42,7 +42,8 @@ export async function GET(request: Request) {
       .maybeSingle();
 
     const planKey = (subscription?.plan_key as string | undefined) || 'free';
-    const currentPlan = SUBSCRIPTION_PLANS[planKey as keyof typeof SUBSCRIPTION_PLANS]
+    const legacyTier = planKey === 'basic' ? 'starter' : planKey;
+    const currentPlan = SUBSCRIPTION_PLANS[legacyTier as keyof typeof SUBSCRIPTION_PLANS]
       ?? SUBSCRIPTION_PLANS.free;
 
     const [membersCount, tasksCount, certsCount, evidenceCount] = await Promise.all([

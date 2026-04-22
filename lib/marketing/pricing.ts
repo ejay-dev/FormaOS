@@ -35,6 +35,8 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
       '1 compliance framework',
       'Basic workflow enforcement',
       'Audit logs and evidence history',
+      'Audit log export',
+      'Framework evaluation reports',
       'Limited users and workspace scope',
       'Guided setup checklist',
     ],

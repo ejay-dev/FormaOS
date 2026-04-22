@@ -208,12 +208,20 @@ export function UpgradeIntelligenceModal({
 
                   {/* Price */}
                   <div className="mb-4">
-                    <span className="text-3xl font-bold text-foreground">
-                      ${key === 'basic' ? '159' : key === 'pro' ? '239' : '399'}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      /month
-                    </span>
+                    {plan.priceMonthly > 0 ? (
+                      <>
+                        <span className="text-3xl font-bold text-foreground">
+                          ${plan.priceMonthly.toLocaleString()}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          /month
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-2xl font-bold text-foreground">
+                        Custom
+                      </span>
+                    )}
                   </div>
 
                   {/* Summary */}

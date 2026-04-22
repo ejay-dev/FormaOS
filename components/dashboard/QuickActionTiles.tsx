@@ -74,7 +74,7 @@ const INDUSTRY_TILES: Record<string, Tile[]> = {
 const UNIVERSAL_TILES: Tile[] = [
   { label: 'Upload evidence', href: '/app/evidence', icon: Upload },
   { label: 'Add a task', href: '/app/tasks', icon: ListChecks },
-  { label: 'Invite a teammate', href: '/app/settings/team', icon: UserPlus },
+  { label: 'Invite a teammate', href: '/app/team', icon: UserPlus },
   { label: 'Export audit log', href: '/app/reports/custom', icon: FileDown },
 ];
 

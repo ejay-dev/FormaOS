@@ -143,6 +143,58 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v3.7.0',
+    codename: 'Reconcile',
+    date: '2026-04-22',
+    summary:
+      'End-to-end audit sprint: fixed in-app upgrade prices to match marketing and Stripe, hardened the billing checkout API with schema validation and role gates, repaired a dashboard CTA link, and tightened trust claims on marketing.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'In-app upgrade pricing matches marketing and Stripe',
+        tag: 'fix',
+        detail:
+          'PlanComparisonTable and UpgradeIntelligenceModal now read prices from the canonical plan catalog ($297 Foundation / $1,800 Growth / Custom Enterprise) instead of hardcoded placeholder values. Enterprise CTA routes to sales contact instead of a broken checkout.',
+      },
+      {
+        text: 'Billing checkout API hardened',
+        tag: 'fix',
+        detail:
+          'POST /api/billing/checkout now validates the payload with a zod schema (UUID orgId, allowlisted planId) and explicitly gates on owner or admin role before initiating Stripe checkout.',
+      },
+      {
+        text: 'Billing plan lookup corrected',
+        tag: 'fix',
+        detail:
+          'GET /api/billing now maps plan_key "basic" to legacy plan_code "starter" before reading SUBSCRIPTION_PLANS, so paid Foundation customers no longer see the free plan in their billing response.',
+      },
+      {
+        text: 'Admin plan route syncs entitlements on every tier change',
+        tag: 'fix',
+        detail:
+          'Removed the basic|pro gate around syncEntitlementsForPlan on the admin org-plan route. Enterprise upgrades now provision entitlements the same way Foundation and Growth do.',
+      },
+      {
+        text: 'Dashboard quick action link fix',
+        tag: 'fix',
+        detail:
+          'The "Invite a teammate" tile now routes to /app/team instead of the non-existent /app/settings/team.',
+      },
+      {
+        text: 'Pricing page parity with product capability',
+        tag: 'improvement',
+        detail:
+          'Added Audit log export and Framework evaluation reports bullets to the Foundation tier on /pricing — both already ship at that tier per the entitlement map.',
+      },
+      {
+        text: 'Trust page framework claims tightened',
+        tag: 'improvement',
+        detail:
+          'NDIS Practice Standards and NSQHS now show as industry pack roadmap on /trust rather than as shipped framework packs.',
+      },
+    ],
+  },
+  {
     version: 'v3.6.0',
     codename: 'Horizon',
     date: '2026-04-14',

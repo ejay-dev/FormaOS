@@ -95,9 +95,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
     name: 'Enterprise',
     price: 0,
     interval: 'month',
-    stripePriceId:
-      process.env.STRIPE_PRICE_ENTERPRISE ??
-      process.env.STRIPE_ENTERPRISE_PRICE_ID,
+    stripePriceId: process.env.STRIPE_PRICE_ENTERPRISE,
     features: [
       'Unlimited team members',
       'Unlimited tasks',

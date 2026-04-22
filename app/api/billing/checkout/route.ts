@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
+
+const CheckoutSchema = z.object({
+  orgId: z.string().uuid().optional(),
+  planId: z.enum(['basic', 'pro', 'enterprise']),
+});
+
+const BILLING_ROLES = new Set(['owner', 'admin']);
 
 const log = routeLog('/api/billing/checkout');
 
@@ -17,12 +25,15 @@ export async function POST(request: Request) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const body = await request.json().catch(() => ({}));
-    const requestedOrgId = (body?.orgId as string | undefined) ?? null;
-    const planId = (body?.planId as string | undefined) ?? null;
-    if (!planId) {
-      return NextResponse.json({ error: 'planId required' }, { status: 400 });
+    const rawBody = await request.json().catch(() => ({}));
+    const parsed = CheckoutSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Invalid request', details: parsed.error.flatten() },
+        { status: 400 },
+      );
     }
+    const { orgId: requestedOrgId, planId } = parsed.data;
 
     const { data: membership } = await supabase
       .from('org_members')
@@ -30,10 +41,14 @@ export async function POST(request: Request) {
       .eq('user_id', user.id)
       .maybeSingle();
     const userOrgId = membership?.organization_id as string | undefined;
+    const userRole = (membership?.role as string | undefined) ?? '';
     const orgId = requestedOrgId || userOrgId;
 
     if (!orgId) return NextResponse.json({ error: 'No organization' }, { status: 403 });
     if (requestedOrgId && requestedOrgId !== userOrgId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    if (!BILLING_ROLES.has(userRole)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

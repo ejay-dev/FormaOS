@@ -1,13 +1,13 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-21T14:10:39.498Z
+Generated: 2026-04-22T10:01:46.100Z
 
 ## Summary
 
-- Total app internal links validated: 269
-- Valid links: 268
-- Broken links: 1
-- App routes discovered: 207
+- Total app internal links validated: 270
+- Valid links: 270
+- Broken links: 0
+- App routes discovered: 208
 
 ## Link Validation
 
@@ -53,6 +53,7 @@ Generated: 2026-04-21T14:10:39.498Z
 | `lib/navigation/industry-sidebar.ts` | `/app/audit` | YES | YES | auth | `/app/audit` |
 | `app/app/actions/billing.ts` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/components/TrialStatusBanner.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
+| `app/app/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/reports/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/settings/organization/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/settings/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
@@ -216,7 +217,6 @@ Generated: 2026-04-21T14:10:39.498Z
 | `app/app/settings/roles/page.tsx` | `/app/settings/roles/new` | YES | YES | auth | `/app/settings/roles/new` |
 | `app/app/settings/page.tsx` | `/app/settings/security` | YES | YES | auth | `/app/settings/security` |
 | `components/command-palette/CommandPalette.tsx` | `/app/settings/security` | YES | YES | auth | `/app/settings/security` |
-| `components/dashboard/QuickActionTiles.tsx` | `/app/settings/team` | NO | YES | auth | - |
 | `components/feature-discovery/FeatureDiscoverySystem.tsx` | `/app/staff` | YES | YES | auth | `/app/staff` |
 | `lib/navigation/industry-sidebar.ts` | `/app/staff` | YES | YES | auth | `/app/staff` |
 | `app/api/v1/compliance/deadlines/route.ts` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
@@ -254,6 +254,7 @@ Generated: 2026-04-21T14:10:39.498Z
 | `components/command-palette/CommandPalette.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
 | `components/dashboard/employer-dashboard.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
 | `components/dashboard/quick-actions.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
+| `components/dashboard/QuickActionTiles.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
 | `lib/navigation/industry-sidebar.ts` | `/app/team` | YES | YES | auth | `/app/team` |
 | `lib/onboarding/industry-checklists.ts` | `/app/team` | YES | YES | auth | `/app/team` |
 | `app/app/settings/organization/page.tsx` | `/app/team/org-chart` | YES | YES | auth | `/app/team/org-chart` |
@@ -484,6 +485,7 @@ Generated: 2026-04-21T14:10:39.498Z
 - `/trust/subprocessors`
 - `/trust/vendor-assurance`
 - `/unauthorized`
+- `/unsubscribe`
 - `/use-cases/financial-services`
 - `/use-cases/government-public-sector`
 - `/use-cases/healthcare`

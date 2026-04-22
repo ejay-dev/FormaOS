@@ -1,5 +1,20 @@
 # 📋 FormaOS Changelog
 
+## [3.7.0] - 2026-04-22
+
+### End-to-End Audit — Billing Accuracy, Link Integrity, Admin Hardening
+
+- **In-app upgrade pricing aligned with marketing/Stripe:** Fixed hardcoded `$159/$239/$399` in `PlanComparisonTable` and `UpgradeIntelligenceModal`. Both now read from the canonical `PLAN_CATALOG` (`$297` Foundation, `$1,800` Growth, `Custom` Enterprise). Enterprise CTA routes to `/contact?intent=enterprise` instead of attempting Stripe checkout with no price.
+- **Dashboard quick action link fix:** `Invite a teammate` now routes to `/app/team` (a real route) instead of the non-existent `/app/settings/team`.
+- **Admin plan route entitlement parity:** Removed the `basic|pro` gate around `syncEntitlementsForPlan`. Enterprise upgrades now sync entitlements too.
+- **Billing checkout API hardening:** Added `zod` schema validation for `orgId` (UUID) and `planId` (`basic|pro|enterprise`), plus explicit `owner|admin` role gate on `POST /api/billing/checkout`.
+- **Billing plan lookup correctness:** `GET /api/billing` now maps `plan_key='basic'` to legacy `plan_code='starter'` before looking up `SUBSCRIPTION_PLANS`, so the response no longer silently falls through to the free plan for paid Foundation customers.
+- **Pricing bullets parity:** Added `Audit log export` and `Framework evaluation reports` to the Foundation tier on `/pricing` (capability already shipped via `lib/billing/entitlements.ts`).
+- **Trust claim honesty:** Softened `/trust` framework coverage copy — NDIS and NSQHS flagged as industry pack (roadmap) rather than shipped.
+- **Cleanup:** Removed unused `components/billing/billing-dashboard.tsx`; dropped the legacy `STRIPE_ENTERPRISE_PRICE_ID` env alias now that `STRIPE_PRICE_ENTERPRISE` is canonical.
+
+---
+
 ## [3.4.0] - 2026-04-09
 
 ### Quality & Performance Sprint — TypeScript, Accessibility, Mobile, Coverage, Performance

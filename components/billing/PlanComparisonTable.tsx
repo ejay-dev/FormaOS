@@ -64,12 +64,6 @@ const FEATURE_ROWS: {
   { label: 'Priority Support SLA', basic: '—', pro: '—', enterprise: '✓' },
 ];
 
-const PLAN_PRICES: Record<PlanKey, { monthly: number; label: string }> = {
-  basic: { monthly: 159, label: '/mo' },
-  pro: { monthly: 239, label: '/mo' },
-  enterprise: { monthly: 399, label: '/mo' },
-};
-
 const PLAN_ICONS: Record<
   PlanKey,
   React.ComponentType<{ className?: string }>
@@ -140,8 +134,8 @@ export function PlanComparisonTable() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {plans.map((planKey) => {
           const catalog = PLAN_CATALOG[planKey];
-          const price = PLAN_PRICES[planKey];
           const PlanIcon = PLAN_ICONS[planKey];
+          const isCustomPrice = catalog.priceMonthly === 0;
           const isCurrent = plan === planKey;
           const isRecommended = planKey === recommendedPlan && !isCurrent;
           const isLoading = loadingPlan === planKey;
@@ -190,17 +184,17 @@ export function PlanComparisonTable() {
                 </div>
 
                 <div className="text-foreground">
-                  {price.monthly > 0 ? (
+                  {isCustomPrice ? (
+                    <span className="text-xl font-bold">Custom</span>
+                  ) : (
                     <>
                       <span className="text-3xl font-bold">
-                        ${price.monthly}
+                        ${catalog.priceMonthly.toLocaleString()}
                       </span>
                       <span className="text-sm text-muted-foreground">
-                        {price.label}
+                        /mo
                       </span>
                     </>
-                  ) : (
-                    <span className="text-xl font-bold">{price.label}</span>
                   )}
                 </div>
 
@@ -210,22 +204,32 @@ export function PlanComparisonTable() {
                     Active
                   </div>
                 ) : isUpgrade ? (
-                  <button
-                    onClick={() => handleUpgrade(planKey)}
-                    disabled={isLoading}
-                    className={`w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
-                      isRecommended
-                        ? 'bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 text-slate-950 motion-safe:hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20'
-                        : 'bg-glass-strong text-foreground hover:bg-white/15'
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                  >
-                    {isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
+                  isCustomPrice ? (
+                    <a
+                      href="/contact?intent=enterprise"
+                      className="w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-glass-strong text-foreground hover:bg-white/15"
+                    >
                       <ArrowRight className="h-4 w-4" />
-                    )}
-                    {isLoading ? 'Starting checkout...' : 'Upgrade'}
-                  </button>
+                      Contact sales
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => handleUpgrade(planKey)}
+                      disabled={isLoading}
+                      className={`w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                        isRecommended
+                          ? 'bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 text-slate-950 motion-safe:hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20'
+                          : 'bg-glass-strong text-foreground hover:bg-white/15'
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <ArrowRight className="h-4 w-4" />
+                      )}
+                      {isLoading ? 'Starting checkout...' : 'Upgrade'}
+                    </button>
+                  )
                 ) : null}
               </div>
 
