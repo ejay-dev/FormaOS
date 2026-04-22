@@ -478,3 +478,57 @@ export async function createCarePlan(formData: FormData) {
     return actionError(error);
   }
 }
+
+const CARE_PLAN_STATUSES = [
+  'draft',
+  'active',
+  'under_review',
+  'expired',
+  'archived',
+] as const;
+type CarePlanStatus = (typeof CARE_PLAN_STATUSES)[number];
+
+export async function updateCarePlanStatus(
+  planId: string,
+  nextStatus: string,
+) {
+  try {
+    if (!CARE_PLAN_STATUSES.includes(nextStatus as CarePlanStatus)) {
+      return actionError(new Error(`Invalid status: ${nextStatus}`));
+    }
+
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return actionError(new Error('Not authenticated'));
+
+    const orgId = await requireUserOrganization(supabase, user.id);
+
+    const { data: existing, error: readErr } = await supabase
+      .from('org_care_plans')
+      .select('id, status, title, organization_id')
+      .eq('id', planId)
+      .eq('organization_id', orgId)
+      .maybeSingle();
+
+    if (readErr) return actionError(readErr);
+    if (!existing) return actionError(new Error('Care plan not found'));
+    if (existing.status === nextStatus) return { success: true as const };
+
+    const { error: updateErr } = await supabase
+      .from('org_care_plans')
+      .update({ status: nextStatus, updated_at: new Date().toISOString() })
+      .eq('id', planId)
+      .eq('organization_id', orgId);
+
+    if (updateErr) return actionError(updateErr);
+
+    revalidatePath('/app/care-plans');
+    revalidatePath('/app/care-plans/journey');
+    return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}

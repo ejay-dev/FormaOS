@@ -7,6 +7,7 @@ import {
   AlertTriangle,
   XCircle,
   Clock,
+  Workflow,
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -204,6 +205,13 @@ export default async function ControlsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/app/controls/journey"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary/15 transition-colors"
+          >
+            <Workflow className="h-3.5 w-3.5" />
+            Journey view
+          </Link>
           <Link
             href="/app/compliance/frameworks"
             className="rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-glass-strong transition-colors"
