@@ -114,18 +114,17 @@ test.describe('Healthcare & NDIS Positioning Verification', () => {
     await expect(becomesEvidence).toBeVisible();
   });
 
-  test('Healthcare page CTA routes to correct signup', async ({ page }) => {
+  test('Healthcare page CTA routes to compliance plan contact flow', async ({ page }) => {
     await page.goto(`${BASE}/use-cases/healthcare`, {
       waitUntil: 'networkidle',
     });
 
-    // Find the first "Start Free Trial" button
-    const ctaButton = page.locator('text=Start Free Trial').first();
+    const ctaButton = page
+      .getByRole('link', { name: /Get Compliance Plan|Book Demo/i })
+      .first();
 
-    // Check that it has correct href with plan
     const href = await ctaButton.getAttribute('href');
-    expect(href).toContain('/auth/signup');
-    expect(href).toContain('plan=pro');
+    expect(href).toContain('/contact');
   });
 
   // ============================================
@@ -221,18 +220,17 @@ test.describe('Healthcare & NDIS Positioning Verification', () => {
     await expect(linkedToStandards).toBeVisible();
   });
 
-  test('NDIS page CTA routes to correct signup', async ({ page }) => {
+  test('NDIS page CTA routes to compliance plan contact flow', async ({ page }) => {
     await page.goto(`${BASE}/use-cases/ndis-aged-care`, {
       waitUntil: 'networkidle',
     });
 
-    // Find the first "Start Free Trial" button
-    const ctaButton = page.locator('text=Start Free Trial').first();
+    const ctaButton = page
+      .getByRole('link', { name: /Get Compliance Plan|Book Demo/i })
+      .first();
 
-    // Check that it has correct href with plan
     const href = await ctaButton.getAttribute('href');
-    expect(href).toContain('/auth/signup');
-    expect(href).toContain('plan=pro');
+    expect(href).toContain('/contact');
   });
 
   // ============================================
@@ -402,35 +400,29 @@ test.describe('Healthcare & NDIS Positioning Verification', () => {
     expect(ndisEvidenceText).toBeTruthy();
   });
 
-  test('All healthcare CTAs point to same signup plan', async ({ page }) => {
-    // Check home page - use link role to find actual anchor elements
+  test('All healthcare CTAs route through the compliance-infrastructure funnel', async ({ page }) => {
+    const ctaNameRegex = /Get Compliance Plan|Book Demo/i;
+
     await page.goto(BASE, { waitUntil: 'networkidle' });
     const homeCtaHref = await page
-      .getByRole('link', { name: 'Start Free Trial' })
+      .getByRole('link', { name: ctaNameRegex })
       .first()
       .getAttribute('href');
 
-    // Check healthcare page
-    await page.goto(`${BASE}/use-cases/healthcare`, {
-      waitUntil: 'networkidle',
-    });
+    await page.goto(`${BASE}/use-cases/healthcare`, { waitUntil: 'networkidle' });
     const healthcareCtaHref = await page
-      .getByRole('link', { name: 'Start Free Trial' })
+      .getByRole('link', { name: ctaNameRegex })
       .first()
       .getAttribute('href');
 
-    // Check NDIS page
-    await page.goto(`${BASE}/use-cases/ndis-aged-care`, {
-      waitUntil: 'networkidle',
-    });
+    await page.goto(`${BASE}/use-cases/ndis-aged-care`, { waitUntil: 'networkidle' });
     const ndisCtaHref = await page
-      .getByRole('link', { name: 'Start Free Trial' })
+      .getByRole('link', { name: ctaNameRegex })
       .first()
       .getAttribute('href');
 
-    // All should route to pro plan
-    expect(homeCtaHref).toContain('plan=pro');
-    expect(healthcareCtaHref).toContain('plan=pro');
-    expect(ndisCtaHref).toContain('plan=pro');
+    expect(homeCtaHref).toContain('/contact');
+    expect(healthcareCtaHref).toContain('/contact');
+    expect(ndisCtaHref).toContain('/contact');
   });
 });

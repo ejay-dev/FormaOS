@@ -11,15 +11,14 @@ test.describe('CRITICAL: User Journey Validation', () => {
     await page.goto(SITE_URL, { waitUntil: 'domcontentloaded' });
     expect(page.url()).toBeTruthy();
 
-    // Look for signup/get started CTA
+    // Look for the public compliance-infrastructure CTAs.
     const ctaSelectors = [
-      'text=Get Started',
-      'text=Sign Up',
-      'text=Start Free Trial',
-      'text=Try Free',
-      '[data-testid="signup-cta"]',
-      'a[href*="signup"]',
-      'a[href*="register"]',
+      'text=Get Compliance Plan',
+      'text=Start Assessment',
+      'text=Book Demo',
+      'text=Talk to Sales',
+      'a[href*="/contact"]',
+      'a[href*="/pricing"]',
     ];
 
     // Check for at least one CTA being visible (optional)

@@ -12,8 +12,14 @@ export type PublicPricingTier = {
   features: string[];
 };
 
-// Public positioning data for marketing pages. This does not mutate live Stripe
-// price IDs or checkout semantics; that migration should happen deliberately.
+// Buying motions:
+// - Foundation: public self-serve. CTA routes to /auth/signup with
+//   intent=checkout; after signup + org bootstrap the user is auto-redirected
+//   into Stripe Checkout with session.metadata.organization_id correctly set
+//   so the webhook can provision.
+// - Growth: sales-led. Demo first; sales sends Stripe Payment Link post-demo
+//   via the STRIPE_PAYMENT_LINK_GROWTH server env var (never exposed publicly).
+// - Enterprise: invoice-only via Stripe Invoicing. No Payment Link.
 export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
   {
     id: 'foundation',
@@ -24,7 +30,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
     summary:
       'A focused entry point for one compliance framework, basic enforcement, and audit logs without making FormaOS feel disposable.',
     ctaLabel: 'Start Assessment',
-    ctaHref: '/contact?type=assessment&plan=foundation&source=pricing',
+    ctaHref: '/auth/signup?plan=basic&intent=checkout&source=pricing',
     features: [
       '1 compliance framework',
       'Basic workflow enforcement',
@@ -61,7 +67,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
     priceSubtext: '$5k+/month',
     audience: 'For organisations requiring full compliance infrastructure',
     summary:
-      'Tailored compliance architecture for multi-site, high-risk, or procurement-heavy teams where audit failure is not an option.',
+      'Tailored compliance architecture for multi-site, high-risk, or procurement-heavy teams. Contracts closed via Stripe Invoicing, not self-serve checkout.',
     ctaLabel: 'Book Demo',
     ctaHref: '/contact?type=enterprise&plan=enterprise&source=pricing',
     features: [
@@ -70,7 +76,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
       'Dedicated onboarding',
       'Audit-period assistance',
       'Procurement and security review support',
-      'Tailored rollout planning',
+      'Invoice-based billing via Stripe Invoicing',
     ],
   },
 ];

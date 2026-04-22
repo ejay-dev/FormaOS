@@ -21,10 +21,10 @@ test.describe('Homepage enterprise regression', () => {
     await expect(orbital).toBeVisible();
 
     await expect(
-      page.getByRole('link', { name: /start free trial/i }).first(),
+      page.getByRole('link', { name: /get compliance plan/i }).first(),
     ).toBeVisible();
     await expect(
-      page.getByRole('link', { name: /request demo/i }).first(),
+      page.getByRole('link', { name: /book demo/i }).first(),
     ).toBeVisible();
 
     // Critical above-fold section should be present without waiting for deep scroll.
@@ -40,7 +40,7 @@ test.describe('Homepage enterprise regression', () => {
 
     const stickyCta = page
       .locator('a')
-      .filter({ hasText: /^Start Free Trial$/ })
+      .filter({ hasText: /^Get Compliance Plan$/ })
       .last();
 
     // Sticky CTA is conditionally mounted, so initial state should be detached or hidden.
@@ -55,7 +55,7 @@ test.describe('Homepage enterprise regression', () => {
 
     const stickyAfterScroll = page
       .locator('a')
-      .filter({ hasText: /^Start Free Trial$/ })
+      .filter({ hasText: /^Get Compliance Plan$/ })
       .last();
     await expect(stickyAfterScroll).toBeVisible({ timeout: 8000 });
   });

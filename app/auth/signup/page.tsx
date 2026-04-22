@@ -1,9 +1,14 @@
 'use client';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { PLAN_CATALOG, resolvePlanKey } from '@/lib/plans';
+import {
+  CHECKOUT_INTENT_COOKIE,
+  CHECKOUT_INTENT_TTL_SECONDS,
+  isSelfServePlan,
+} from '@/lib/billing/checkout-intent';
 import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Star } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
@@ -87,6 +92,19 @@ function SignUpContent() {
     () => (planParam ? PLAN_CATALOG[planParam] : null),
     [planParam],
   );
+
+  // If the visitor arrived from a self-serve pricing CTA (?intent=checkout),
+  // stash the plan in a short-lived cookie so we can auto-redirect them into
+  // Stripe Checkout after email verification + org bootstrap completes.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const intent = searchParams.get('intent');
+    if (intent === 'checkout' && planParam && isSelfServePlan(planParam)) {
+      document.cookie = `${CHECKOUT_INTENT_COOKIE}=${encodeURIComponent(
+        planParam,
+      )}; path=/; max-age=${CHECKOUT_INTENT_TTL_SECONDS}; SameSite=Lax`;
+    }
+  }, [planParam, searchParams]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

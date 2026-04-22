@@ -2,8 +2,13 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { DashboardWrapper } from './dashboard-wrapper';
 import { type DatabaseRole } from '@/lib/roles';
 import { ShieldCheck } from 'lucide-react';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
+import {
+  CHECKOUT_INTENT_COOKIE,
+  parseCheckoutIntent,
+} from '@/lib/billing/checkout-intent';
 
 /**
  * =========================================================
@@ -82,6 +87,16 @@ export default async function DashboardPage() {
   });
   if (recovery.ok && recovery.nextPath !== '/app') {
     redirect(recovery.nextPath);
+  }
+
+  // Self-serve buyers land here after signup + onboarding. If they arrived via
+  // the pricing page's checkout intent, route them into Stripe Checkout now.
+  const cookieStore = await cookies();
+  const intentPlan = parseCheckoutIntent(
+    cookieStore.get(CHECKOUT_INTENT_COOKIE)?.value ?? null,
+  );
+  if (intentPlan) {
+    redirect(`/app/billing?autoCheckout=${encodeURIComponent(intentPlan)}`);
   }
 
   // Fetch user's organization membership, role, and industry

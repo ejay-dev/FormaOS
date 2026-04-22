@@ -889,26 +889,26 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await expect(page.locator('text=/ENTERPRISE/i').first()).toBeVisible();
       await expect(page.locator('text=/Custom/i').first()).toBeVisible();
 
-      // Starter and Professional tiers should also appear
-      await expect(page.locator('text=/STARTER/i').first()).toBeVisible();
-      await expect(page.locator('text=/PROFESSIONAL/i').first()).toBeVisible();
+      // Foundation and Growth tiers should also appear (compliance-infrastructure rebrand)
+      await expect(page.locator('text=/FOUNDATION/i').first()).toBeVisible();
+      await expect(page.locator('text=/GROWTH/i').first()).toBeVisible();
 
       // Procurement / enterprise buying signals
       await expect(page.locator('text=/procurement/i').first()).toBeVisible();
     });
 
-    test('signup CTA buttons route to registration', async ({ page }) => {
+    test('marketing CTA buttons route through the compliance funnel', async ({ page }) => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
       await waitForPageContent(page);
 
       const ctaBtn = page
         .locator(
-          'a:has-text("Start"), a:has-text("Get Started"), a:has-text("Free Trial")',
+          'a:has-text("Get Compliance Plan"), a:has-text("Book Demo"), a:has-text("Talk to Sales")',
         )
         .first();
       if (await ctaBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
         const href = await ctaBtn.getAttribute('href');
-        expect(href).toMatch(/\/(auth\/signup|app|signup)/);
+        expect(href).toMatch(/\/contact/);
       }
     });
   });

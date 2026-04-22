@@ -46,11 +46,21 @@ Enterprise recommendation: keep Enterprise sales-led/invoiced unless the owner e
 
 ## 4. Expected Plan Behavior After Migration
 
-- Foundation: controlled entry path. Public site routes to `Start Assessment`; direct checkout should only be exposed inside the authenticated billing area if the owner intentionally allows direct purchase.
-- Growth: primary commercial plan. Public site routes to `Get Compliance Plan`; direct checkout may remain available in-app for already-qualified users.
-- Enterprise: procurement-led plan. Public site routes to `Book Demo`, `Talk to Sales`, or security/procurement review.
+All three tiers are sales-led publicly. No anonymous self-serve checkout path is exposed on the marketing site until a provisioning handshake is built to link post-purchase Stripe customers to post-signup organizations.
 
-New Checkout sessions from `app/app/actions/billing.ts` no longer set `trial_period_days`.
+| Public plan | Buying motion | Public CTA | Destination | Payment instrument |
+| --- | --- | --- | --- | --- |
+| Foundation | Sales-led | `Start Assessment` | `/contact?type=assessment` → demo/qualification | Stripe Payment Link sent by sales post-demo |
+| Growth | Sales-led | `Get Compliance Plan` | `/contact?type=compliance-plan` → demo | Stripe Payment Link sent by sales post-demo |
+| Enterprise | Procurement-led | `Book Demo` | `/contact?type=enterprise` → demo + review | Stripe Invoicing (custom contract) |
+
+Implementation notes:
+
+- Foundation and Growth Payment Links are stored server-side as `STRIPE_PAYMENT_LINK_FOUNDATION` and `STRIPE_PAYMENT_LINK_GROWTH`. They are **never** exposed to the browser (no `NEXT_PUBLIC_*` variant). Sales team references them from internal tooling only.
+- Authenticated in-app upgrades (`/app/billing`) continue to use Stripe Checkout Sessions via `startCheckout`, which sets `session.metadata.organization_id` so the webhook provisions correctly.
+- Enterprise has no Payment Link. Stripe Invoicing is driven from the Stripe dashboard after contract close.
+- New Checkout sessions from `app/app/actions/billing.ts` no longer set `trial_period_days`. Stripe Payment Links must also be configured with no trial.
+- **Do not** introduce `NEXT_PUBLIC_STRIPE_PAYMENT_LINK_FOUNDATION`: anonymous Payment Link buyers have no `organization_id` in session metadata, so the webhook at [app/api/billing/webhook/route.ts](../app/api/billing/webhook/route.ts) silently skips provisioning. Public self-serve requires a separate post-purchase handshake before it can be enabled.
 
 ## 5. Legacy Subscriptions And Grandfathering
 
@@ -82,16 +92,25 @@ Keep these webhook behaviors intact:
 ## 7. Production Deployment Order
 
 1. Confirm the active Foundation and Growth prices in production Stripe.
-2. Decide whether Enterprise remains sales-only. If sales-only, do not advertise direct Enterprise checkout.
+2. Create (or confirm) the three Stripe billing instruments:
+   - Foundation: public **Payment Link** for `$297/mo` with no trial, success URL = `https://app.formaos.com.au/app`, metadata `plan_key=basic`.
+   - Growth: internal **Payment Link** for `$1,800/mo` (sent post-demo), no trial, metadata `plan_key=pro`.
+   - Enterprise: **Stripe Invoicing** — no Payment Link, no direct checkout.
 3. Add production Vercel env vars:
    - `STRIPE_PRICE_FOUNDATION=price_1TOdz1AHrAKKo3OlfYxjk9WL`
    - `STRIPE_PRICE_GROWTH=price_1TOe05AHrAKKo3OliCrZNnkx`
    - `STRIPE_PRICE_ENTERPRISE=<enterprise_price_id>` only if direct Enterprise checkout is intentionally retained.
+   - `STRIPE_PAYMENT_LINK_FOUNDATION=<foundation_payment_link_url>` (server-only, internal sales reference).
+   - `STRIPE_PAYMENT_LINK_GROWTH=<growth_payment_link_url>` (server-only, internal sales reference).
 4. Remove or mirror `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO`; active checkout uses `STRIPE_PRICE_FOUNDATION`, `STRIPE_PRICE_GROWTH`, or the current code fallback IDs.
 5. Deploy the code.
-6. Confirm `/pricing`, `/contact`, `/security`, `/compare/vanta`, and `/ndis-providers` route CTAs to guided contact flows.
-7. In staging or a controlled production test org, run a Checkout session for Foundation and Growth if direct in-app checkout remains enabled.
-8. Confirm Stripe webhook delivery updates `org_subscriptions.price_id` to the new price ID.
+6. Smoke-test the public funnel on production:
+   - `/pricing` — Foundation CTA opens `/contact?type=assessment`.
+   - `/pricing` — Growth CTA opens `/contact?type=compliance-plan`.
+   - `/pricing` — Enterprise CTA opens `/contact?type=enterprise`.
+   - `/contact`, `/security`, `/compare/vanta`, `/ndis-providers` CTAs route to guided contact flows.
+7. Run an end-to-end Foundation Payment Link purchase in production with a test card; confirm webhook delivery updates `org_subscriptions.price_id` and `plan_key=basic`.
+8. Confirm `customer.subscription.created` + `checkout.session.completed` correctly provision the org and email the welcome sequence.
 9. Confirm customer portal displays the intended new Stripe product/price names.
 10. After 24-48 hours with no billing incidents, remove old env vars only if logs confirm the new vars are being used.
 
@@ -100,12 +119,13 @@ Keep these webhook behaviors intact:
 If pricing migration fails:
 
 1. Revert `STRIPE_PRICE_FOUNDATION` and `STRIPE_PRICE_GROWTH` in Vercel to the last known-good Stripe prices.
-2. Mirror any remaining legacy `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO` values for operator clarity, but rollbacks should use the preferred env vars above.
-3. Redeploy or trigger a Vercel env refresh.
-4. Disable any public or in-app direct checkout entry points if checkout errors continue.
-5. Keep public CTAs routed to contact/sales flows while Stripe is corrected.
-6. Reconcile any partially-created subscriptions by checking Stripe customer, subscription, and local `org_subscriptions.price_id`.
-7. Use `app/api/admin/subscriptions/[orgId]/resync-stripe/route.ts` only after confirming the Stripe subscription is correct.
+2. Public CTAs already route to `/contact` — no public Payment Link env to unset. Instruct sales to stop sending Payment Links until Stripe is corrected.
+3. Mirror any remaining legacy `STRIPE_PRICE_BASIC` and `STRIPE_PRICE_PRO` values for operator clarity, but rollbacks should use the preferred env vars above.
+4. Redeploy or trigger a Vercel env refresh.
+5. Disable any public or in-app direct checkout entry points if checkout errors continue.
+6. Keep public CTAs routed to contact/sales flows while Stripe is corrected.
+7. Reconcile any partially-created subscriptions by checking Stripe customer, subscription, and local `org_subscriptions.price_id`.
+8. Use `app/api/admin/subscriptions/[orgId]/resync-stripe/route.ts` only after confirming the Stripe subscription is correct.
 
 ## 9. Deferred Naming Cleanup
 

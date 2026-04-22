@@ -1,8 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import { startCheckout, openCustomerPortal } from "@/app/app/actions/billing";
 import { Loader2, CreditCard, Settings, AlertCircle } from "lucide-react";
+import {
+  CHECKOUT_INTENT_COOKIE,
+  parseCheckoutIntent,
+} from "@/lib/billing/checkout-intent";
 
 interface BillingActionButtonsProps {
   planKey: string | null;
@@ -17,28 +22,47 @@ export function BillingActionButtons({
 }: BillingActionButtonsProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const autoCheckoutTriggered = useRef(false);
 
-  const handleActivate = async () => {
-    setError(null);
-    
+  const runCheckout = (plan: string) => {
     startTransition(async () => {
       try {
-        // Create a FormData object with the plan
         const formData = new FormData();
-        formData.set("plan", planKey ?? "");
-        
-        // Call the server action
+        formData.set("plan", plan);
         const result = await startCheckout(formData);
-        
-        // If result is a URL, redirect to Stripe
-        if (typeof result === 'string' && result.startsWith('http')) {
+        if (typeof result === "string" && result.startsWith("http")) {
           window.location.href = result;
         }
       } catch (err) {
         console.error("Activation failed:", err);
-        setError(err instanceof Error ? err.message : "Failed to start checkout. Please try again.");
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to start checkout. Please try again.",
+        );
       }
     });
+  };
+
+  // Self-serve pricing-page flow: Foundation CTA routes new buyers through
+  // signup → /app → /app/billing?autoCheckout=basic. Only triggers once, and
+  // only when the org has no active subscription yet.
+  useEffect(() => {
+    if (autoCheckoutTriggered.current) return;
+    if (canSelfServe) return;
+    const autoPlan = parseCheckoutIntent(searchParams.get("autoCheckout"));
+    if (!autoPlan) return;
+    autoCheckoutTriggered.current = true;
+    if (typeof document !== "undefined") {
+      document.cookie = `${CHECKOUT_INTENT_COOKIE}=; path=/; max-age=0; SameSite=Lax`;
+    }
+    runCheckout(autoPlan);
+  }, [searchParams, canSelfServe]);
+
+  const handleActivate = async () => {
+    setError(null);
+    runCheckout(planKey ?? "");
   };
 
   const handleManagePortal = async () => {

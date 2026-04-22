@@ -11,47 +11,43 @@ test.describe('Complete User Journey', () => {
 
   // Test 1: Marketing CTAs
   test('Marketing CTAs route correctly', async ({ page }) => {
-    // Homepage
     await page.goto('/');
 
-    // Test "Start Free Trial" CTA
-    const startTrialBtn = page.locator('text=/Start.*Trial/i').first();
-    await expect(startTrialBtn).toBeVisible();
-    await startTrialBtn.click();
-    await expect(page).toHaveURL(/\/(app|auth\/signup|signup)/);
-
-    await page.goto('/');
-
-    // Test "Get Started" CTAs
-    const getStartedBtns = page.locator('text=/Get.*Started/i');
-    if (await getStartedBtns.count() > 0) {
-      await getStartedBtns.first().click();
-      await expect(page).toHaveURL(/\/(app|auth\/signup|signup)/);
-    }
+    const primaryCta = page
+      .getByRole('link', { name: /Get Compliance Plan/i })
+      .first();
+    await expect(primaryCta).toBeVisible();
+    const href = await primaryCta.getAttribute('href');
+    expect(href).toContain('/contact?type=compliance-plan');
   });
 
   test('Product page CTAs work', async ({ page }) => {
     await page.goto('/product');
     await expect(page).toHaveTitle(/Product|FormaOS/i);
 
-    const ctas = page.locator('a[href*="signup"], a[href*="/app"], button:has-text("Start")');
+    const ctas = page.locator(
+      'a[href*="/contact"], a:has-text("Get Compliance Plan"), a:has-text("Book Demo")',
+    );
     const count = await ctas.count();
     expect(count).toBeGreaterThan(0);
   });
 
-  test('Pricing page CTAs work', async ({ page }) => {
+  test('Pricing page CTAs route through new compliance funnel', async ({ page }) => {
     await page.goto('/pricing');
     await expect(page).toHaveTitle(/Pricing|FormaOS/i);
 
-    // Check for "Start Free Trial" or "Start Your Free Trial" links
-    const startTrialBtns = page.locator('a:has-text("Start Free Trial"), a:has-text("Start Your Free Trial")');
-    const count = await startTrialBtns.count();
-    expect(count).toBeGreaterThan(0);
+    const foundationCta = page.getByTestId('pricing-foundation-cta');
+    const growthCta = page.getByTestId('pricing-growth-cta');
+    const enterpriseCta = page.getByTestId('pricing-enterprise-cta');
 
-    // Verify at least one leads to signup
-    const firstBtn = startTrialBtns.first();
-    const href = await firstBtn.getAttribute('href');
-    expect(href).toContain('/auth/signup');
+    await expect(foundationCta).toBeVisible();
+    await expect(growthCta).toBeVisible();
+    await expect(enterpriseCta).toBeVisible();
+
+    const growthHref = await growthCta.getAttribute('href');
+    const enterpriseHref = await enterpriseCta.getAttribute('href');
+    expect(growthHref).toContain('/contact?type=compliance-plan');
+    expect(enterpriseHref).toContain('/contact?type=enterprise');
   });
 
   test('Industries page loads', async ({ page }) => {
