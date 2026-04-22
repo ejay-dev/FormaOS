@@ -231,7 +231,7 @@ export default function NDISProvidersContent() {
             </span>
           </>
         }
-        subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously - defensible every day, not just before audits."
+        subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously — defensible every day, not only during audits."
         primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('ndis_providers') }}
         secondaryCta={{ label: PUBLIC_CTA_LABELS.seeDemo, href: demoHref('ndis_providers') }}
         trustSignals={[

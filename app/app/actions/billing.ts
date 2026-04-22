@@ -98,6 +98,10 @@ export async function startCheckout(formData: FormData) {
       customer: customerId,
       line_items: [{ price: priceId, quantity: 1 }],
       subscription_data: {
+        // Explicit 0 keeps any Stripe Dashboard product-level trial default
+        // from silently applying to new Foundation/Growth subscriptions —
+        // the post-migration buying motion has no trial period.
+        trial_period_days: 0,
         metadata: {
           organization_id: orgId,
           plan_key: planKey,
