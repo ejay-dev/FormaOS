@@ -3,14 +3,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
+  Activity,
   ArrowRight,
-  Briefcase,
+  BarChart3,
   CheckCircle2,
   CheckSquare,
+  ClipboardList,
   FileText,
-  Home,
-  LineChart,
-  Table2,
+  Radio,
+  Rocket,
+  Target,
   TrendingUp,
   Users,
   type LucideIcon,
@@ -348,30 +350,30 @@ export function CommandCenter({
   const tabs: TabDef[] = [
     {
       key: 'command',
-      label: 'Overview',
-      icon: Home,
+      label: 'Command',
+      icon: Target,
       count: criticalQueueCount > 0 ? criticalQueueCount : undefined,
       countTone: 'danger',
     },
     {
       key: 'operations',
       label: 'Operations',
-      icon: Briefcase,
+      icon: Activity,
       count: openTasksCount > 0 ? openTasksCount : undefined,
       countTone: openTasksCount > 10 ? 'danger' : 'primary',
     },
     {
       key: 'readiness',
       label: 'Readiness',
-      icon: CheckCircle2,
+      icon: Rocket,
       count:
         activationMilestones.length - milestonesDone > 0
           ? activationMilestones.length - milestonesDone
           : undefined,
       countTone: 'warning',
     },
-    { key: 'pulse', label: 'Pulse', icon: LineChart },
-    { key: 'records', label: 'Records', icon: Table2 },
+    { key: 'pulse', label: 'Pulse', icon: BarChart3 },
+    { key: 'records', label: 'Records', icon: ClipboardList },
   ];
 
   const industryPanel = renderIndustryWidgets(industry);
@@ -406,6 +408,14 @@ export function CommandCenter({
             );
           })}
         </nav>
+
+        <span
+          className="hidden items-center gap-1 text-[10px] uppercase tracking-wider text-emerald-400/80 sm:inline-flex"
+          title="Live — counts refresh automatically"
+        >
+          <Radio className="h-3 w-3 animate-pulse" />
+          Live
+        </span>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto">
@@ -606,21 +616,19 @@ function ActivationMilestones({
         </div>
       ) : (
         <>
-          <div className="mb-3 rounded-lg border border-border bg-surface-1 px-3 py-2.5">
-            <div className="flex items-center justify-between">
-              <p className="text-[12px] font-semibold text-foreground">
-                Time to first proof
-              </p>
-              <p className="text-[12px] text-muted-foreground tabular-nums">
-                {completedCount} / {milestones.length}
-              </p>
-            </div>
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+          <div className="mb-3 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-3 py-2">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-cyan-200">
+              Time-To-First-Proof Tracker
+            </p>
+            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-glass-strong">
               <div
-                className="h-full rounded-full bg-primary"
+                className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
+            <p className="mt-1.5 text-[11px] text-foreground/70">
+              {completedCount} of {milestones.length} milestones completed
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -628,15 +636,15 @@ function ActivationMilestones({
               <Link
                 key={m.id}
                 href={m.href}
-                className="group flex items-start justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2.5 transition-colors hover:border-edge-3 hover:bg-surface-1"
+                className="group flex items-start justify-between gap-3 rounded-lg border border-glass-border bg-glass-subtle px-3 py-2 transition-colors hover:bg-glass-strong"
               >
                 <div className="flex items-start gap-2.5">
                   <span
                     className={cn(
-                      'mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full',
+                      'mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full border',
                       m.done
-                        ? 'bg-success/15 text-success'
-                        : 'bg-surface-2 text-muted-foreground',
+                        ? 'border-emerald-400/40 bg-emerald-500/20 text-emerald-200'
+                        : 'border-slate-500/40 bg-slate-700/20 text-foreground/70',
                     )}
                   >
                     <CheckCircle2 className="h-3 w-3" />
@@ -645,7 +653,7 @@ function ActivationMilestones({
                     <p className="text-[13px] font-semibold text-foreground">
                       {m.title}
                     </p>
-                    <p className="text-[12px] text-muted-foreground">
+                    <p className="text-[11px] text-muted-foreground">
                       {m.detail}
                     </p>
                   </div>
