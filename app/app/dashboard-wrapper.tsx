@@ -1,7 +1,7 @@
 'use client';
 
 import { UnifiedDashboardLayout } from '@/components/dashboard/unified-dashboard-layout';
-import { EmployerDashboard } from '@/components/dashboard/employer-dashboard';
+import { CommandCenter } from '@/components/dashboard/command-center';
 import { EmployeeDashboard } from '@/components/dashboard/employee-dashboard';
 import { DashboardUpgradeNudge } from '@/components/billing/UsageLimitWarnings';
 import { DatabaseRole, isEmployerRole } from '@/lib/roles';
@@ -31,7 +31,7 @@ export function DashboardWrapper({
     return (
       <UnifiedDashboardLayout userRole={userRole} organizationName={orgName}>
         <DashboardUpgradeNudge />
-        <EmployerDashboard
+        <CommandCenter
           organizationId={orgId}
           organizationName={orgName}
           industry={industry}
