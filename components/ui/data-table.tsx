@@ -11,9 +11,10 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronsUpDown, Search } from 'lucide-react';
 import Button from './button';
 import { Input } from './input';
+import { cn } from '@/lib/utils';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -65,27 +66,65 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Table */}
-      <div className="rounded-md border border-card-foreground/8 bg-card p-0 shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-lg border border-border bg-[hsl(var(--card))] shadow-sm">
         <div className="w-full overflow-x-auto overscroll-x-contain">
-          <table className="min-w-[560px] sm:min-w-[640px] w-full text-sm text-left">
-            <thead className="bg-card text-muted-foreground font-medium">
+          <table className="w-full min-w-[560px] text-left text-sm sm:min-w-[640px]">
+            <thead className="sticky top-0 z-10 bg-[hsl(var(--card))]/95 backdrop-blur">
               {table.getHeaderGroups().map((headerGroup) => (
-                <tr
-                  key={headerGroup.id}
-                  className="border-b border-card-foreground/8"
-                >
+                <tr key={headerGroup.id} className="border-b border-border">
                   {headerGroup.headers.map((header) => {
+                    const canSort = header.column.getCanSort();
+                    const sorted = header.column.getIsSorted();
+                    const SortIcon =
+                      sorted === 'asc'
+                        ? ArrowUp
+                        : sorted === 'desc'
+                          ? ArrowDown
+                          : ChevronsUpDown;
                     return (
                       <th
                         key={header.id}
-                        className={`px-4 text-left align-middle font-medium text-muted-foreground ${density === 'compact' ? 'h-8 text-xs' : 'h-10'}`}
+                        aria-sort={
+                          sorted === 'asc'
+                            ? 'ascending'
+                            : sorted === 'desc'
+                              ? 'descending'
+                              : 'none'
+                        }
+                        className={cn(
+                          'px-4 text-left align-middle text-[11px] font-semibold uppercase tracking-wider text-muted-foreground',
+                          density === 'compact' ? 'h-9' : 'h-11',
+                        )}
                       >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
+                        {header.isPlaceholder ? null : canSort ? (
+                          <button
+                            type="button"
+                            onClick={header.column.getToggleSortingHandler()}
+                            className={cn(
+                              'inline-flex items-center gap-1 transition-colors',
+                              sorted
+                                ? 'text-foreground'
+                                : 'hover:text-foreground',
+                            )}
+                          >
+                            {flexRender(
                               header.column.columnDef.header,
                               header.getContext(),
                             )}
+                            <SortIcon
+                              className={cn(
+                                'h-3 w-3',
+                                sorted ? 'opacity-100' : 'opacity-40',
+                              )}
+                              aria-hidden
+                            />
+                          </button>
+                        ) : (
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )
+                        )}
                       </th>
                     );
                   })}
@@ -97,12 +136,17 @@ export function DataTable<TData, TValue>({
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-b border-card-foreground/8 transition-colors hover:bg-card/8 data-[state=selected]:bg-card/8"
+                    className="border-b border-border transition-colors hover:bg-muted/30 data-[state=selected]:bg-muted/30"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
                         key={cell.id}
-                        className={`align-middle ${density === 'compact' ? 'px-4 py-1.5 text-[13px]' : 'p-4'}`}
+                        className={cn(
+                          'align-middle',
+                          density === 'compact'
+                            ? 'px-4 py-1.5 text-[13px]'
+                            : 'p-4',
+                        )}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
@@ -116,7 +160,7 @@ export function DataTable<TData, TValue>({
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="h-24 text-center text-muted-foreground"
+                    className="h-24 text-center text-sm text-muted-foreground"
                   >
                     No results found.
                   </td>

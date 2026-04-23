@@ -49,6 +49,22 @@ const MODULE_ICONS: Record<string, LucideIcon> = {
   default: FolderOpen,
 };
 
+export type EmptyStateTone =
+  | 'primary'
+  | 'emerald'
+  | 'amber'
+  | 'rose'
+  | 'slate';
+
+const TONE_TILE: Record<EmptyStateTone, string> = {
+  primary:
+    'bg-[hsl(var(--app-primary))]/10 ring-[hsl(var(--app-primary))]/10 text-[hsl(var(--app-primary))]',
+  emerald: 'bg-emerald-500/10 ring-emerald-500/10 text-emerald-500',
+  amber: 'bg-amber-500/10 ring-amber-500/10 text-amber-500',
+  rose: 'bg-rose-500/10 ring-rose-500/10 text-rose-500',
+  slate: 'bg-slate-500/10 ring-slate-500/10 text-slate-500',
+};
+
 export interface EmptyStateAction {
   label: string;
   onClick?: () => void;
@@ -71,6 +87,8 @@ export interface EmptyStateProps {
   secondaryAction?: EmptyStateAction;
   /** Suggested owner/assignee text */
   ownerSuggestion?: string;
+  /** Color accent for the icon tile */
+  tone?: EmptyStateTone;
   /** Additional class names */
   className?: string;
   /** Compact mode for inline use */
@@ -85,6 +103,7 @@ export function EmptyState({
   action,
   secondaryAction,
   ownerSuggestion,
+  tone = 'primary',
   className,
   compact = false,
 }: EmptyStateProps) {
@@ -102,15 +121,13 @@ export function EmptyState({
     >
       <div
         className={cn(
-          'rounded-2xl bg-muted/50 flex items-center justify-center mb-4',
-          compact ? 'h-12 w-12' : 'h-16 w-16',
+          'flex items-center justify-center rounded-full ring-[6px] mb-4',
+          TONE_TILE[tone],
+          compact ? 'h-12 w-12' : 'h-14 w-14',
         )}
       >
         <Icon
-          className={cn(
-            'text-muted-foreground',
-            compact ? 'h-6 w-6' : 'h-8 w-8',
-          )}
+          className={cn(compact ? 'h-5 w-5' : 'h-6 w-6')}
           aria-hidden="true"
         />
       </div>

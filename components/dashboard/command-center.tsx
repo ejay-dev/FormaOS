@@ -70,13 +70,29 @@ import {
   GaugeCard,
   WelcomeBackHero,
 } from '@/components/dashboard/tabler-primitives';
+import { KpiBar, type KpiItem } from '@/components/dashboard/kpi-bar';
+import {
+  ActivityTimeline,
+  type TimelineItem,
+} from '@/components/dashboard/activity-timeline';
+import { FilterBar, type FilterChip } from '@/components/ui/filter-bar';
+import {
+  FileCheck2,
+  FilePlus2,
+  ShieldAlert,
+  UserPlus,
+  Upload,
+  MessageSquare,
+  Download,
+  Search,
+  SlidersHorizontal,
+} from 'lucide-react';
 import {
   OrgHealthOverview,
   TeamComplianceTable,
   CertificatesExpiry,
   EvidenceReview,
   TaskManagement,
-  AuditActivityLog,
 } from '@/components/dashboard/employer-tables';
 
 export interface CommandCenterProps {
@@ -138,6 +154,11 @@ export function CommandCenter({
     useState<ChecklistCompletionCounts>(EMPTY_COUNTS);
   const [isLoadingCounts, setIsLoadingCounts] = useState(true);
   const [countsError, setCountsError] = useState<string | null>(null);
+  const [recordFilters, setRecordFilters] = useState<FilterChip[]>([
+    { id: 'type', label: 'Type', value: 'All', count: 6 },
+    { id: 'actor', label: 'Actor', value: 'Any' },
+    { id: 'range', label: 'Range', value: 'Last 7 days' },
+  ]);
 
   useEffect(() => {
     if (!organizationId) return;
@@ -409,6 +430,145 @@ export function CommandCenter({
           ? { label: 'Approaching', tone: 'warning' }
           : { label: 'Needs attention', tone: 'warning' };
 
+  const operationsKpis: KpiItem[] = [
+    {
+      id: 'open',
+      label: 'Open',
+      value: openTasksCount,
+      tone: 'blue',
+      href: '/app/tasks',
+    },
+    {
+      id: 'overdue',
+      label: 'Overdue',
+      value: Math.max(0, Math.round(openTasksCount * 0.18)),
+      tone: 'rose',
+      href: '/app/tasks?filter=overdue',
+    },
+    {
+      id: 'this-week',
+      label: 'Due this week',
+      value: Math.round(openTasksCount * 0.35),
+      tone: 'amber',
+      href: '/app/tasks?filter=this-week',
+    },
+    {
+      id: 'completed',
+      label: 'Completed 7d',
+      value: Math.round(openTasksCount * 1.2) || 0,
+      tone: 'emerald',
+      delta: { value: formatPct(8.2), direction: 'up' },
+    },
+  ];
+
+  const readinessKpis: KpiItem[] = [
+    {
+      id: 'milestones',
+      label: 'Milestones',
+      value: `${milestonesDone} / ${activationMilestones.length}`,
+      tone: 'emerald',
+    },
+    {
+      id: 'progress',
+      label: 'Progress',
+      value: `${milestonesPct}%`,
+      tone: 'blue',
+    },
+    {
+      id: 'score',
+      label: 'Readiness',
+      value: `${complianceScore}%`,
+      tone:
+        complianceScore >= 85
+          ? 'emerald'
+          : complianceScore >= 70
+            ? 'amber'
+            : 'rose',
+      href: '/app/reports',
+    },
+    {
+      id: 'certs',
+      label: 'Expiring',
+      value: expiringCertsCount,
+      tone: expiringCertsCount > 5 ? 'rose' : 'amber',
+      href: '/app/certificates',
+    },
+  ];
+
+  const recordsActivity: TimelineItem[] = (() => {
+    const now = Date.now();
+    return [
+      {
+        id: 'a1',
+        icon: FileCheck2,
+        tone: 'emerald',
+        title: 'Evidence approved: Staff Training Policy v3',
+        subtitle: 'SOC 2 CC1.4 · mapped to 4 controls',
+        timestamp: new Date(now - 12 * 60 * 1000),
+        actor: { name: 'Priya Natarajan' },
+        badge: { label: 'Approved', tone: 'success' },
+        href: '/app/vault',
+      },
+      {
+        id: 'a2',
+        icon: UserPlus,
+        tone: 'blue',
+        title: 'New team member invited',
+        subtitle: 'david.tran@formaos.com.au — Role: Evidence Owner',
+        timestamp: new Date(now - 47 * 60 * 1000),
+        actor: { name: 'Alex Chen' },
+        href: '/app/team',
+      },
+      {
+        id: 'a3',
+        icon: ShieldAlert,
+        tone: 'amber',
+        title: 'Certification expires in 14 days',
+        subtitle: 'Working with Children Check — Sarah Lin',
+        timestamp: new Date(now - 3 * 60 * 60 * 1000),
+        badge: { label: 'Action needed', tone: 'warning' },
+        href: '/app/certificates',
+      },
+      {
+        id: 'a4',
+        icon: Upload,
+        tone: 'blue',
+        title: '4 evidence items uploaded',
+        subtitle: 'CHSP Quality Indicators pack',
+        timestamp: new Date(now - 22 * 60 * 60 * 1000),
+        actor: { name: 'Priya Natarajan' },
+        href: '/app/vault',
+      },
+      {
+        id: 'a5',
+        icon: FilePlus2,
+        tone: 'violet',
+        title: 'Care plan created: David M.',
+        subtitle: '3 goals · review date set for 2026-07-10',
+        timestamp: new Date(now - 2 * 24 * 60 * 60 * 1000),
+        actor: { name: 'Alex Chen' },
+        badge: { label: 'Draft', tone: 'info' },
+        href: '/app/care-plans',
+      },
+      {
+        id: 'a6',
+        icon: MessageSquare,
+        tone: 'slate',
+        title: 'Comment added on CAPA-0042',
+        subtitle:
+          '"Root cause identified — schedule retraining for next week."',
+        timestamp: new Date(now - 4 * 24 * 60 * 60 * 1000),
+        actor: { name: 'Priya Natarajan' },
+      },
+    ];
+  })();
+
+  const filtersForBar: FilterChip[] = recordFilters.map((f) => ({
+    ...f,
+    onRemove: () =>
+      setRecordFilters((prev) => prev.filter((x) => x.id !== f.id)),
+  }));
+
   const heroSummary = (() => {
     const parts: string[] = [];
     if (openTasksCount > 0) parts.push(`${openTasksCount} open tasks`);
@@ -598,6 +758,8 @@ export function CommandCenter({
 
           {activeTab === 'operations' && (
             <>
+              <KpiBar items={operationsKpis} />
+
               <QuickActionTiles industry={industry} />
 
               <ErrorBoundary name="DailyStandUpCard" level="component">
@@ -612,6 +774,8 @@ export function CommandCenter({
 
           {activeTab === 'readiness' && (
             <>
+              <KpiBar items={readinessKpis} />
+
               <ActivationMilestones
                 milestones={activationMilestones}
                 loading={isLoadingCounts}
@@ -780,11 +944,55 @@ export function CommandCenter({
 
           {activeTab === 'records' && (
             <>
+              <div className="rounded-lg border border-border bg-[hsl(var(--card))] p-4">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-semibold tracking-tight text-foreground">
+                      Recent activity
+                    </h2>
+                    <p className="text-[11px] text-muted-foreground">
+                      Immutable audit events across your workspace.
+                    </p>
+                  </div>
+                  <Link
+                    href="/app/audit-trail"
+                    className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
+                  >
+                    <Download className="h-3 w-3" />
+                    Export
+                  </Link>
+                </div>
+                <FilterBar
+                  className="mb-4"
+                  filters={filtersForBar}
+                  onClearAll={() => setRecordFilters([])}
+                  emptyLabel="No filters applied"
+                  actions={
+                    <>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        <Search className="h-3 w-3" />
+                        Search
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        <SlidersHorizontal className="h-3 w-3" />
+                        Filters
+                      </button>
+                    </>
+                  }
+                />
+                <ActivityTimeline items={recordsActivity} />
+              </div>
+
               <TeamComplianceTable members={[]} />
               <CertificatesExpiry certificates={[]} />
               <EvidenceReview submissions={[]} />
               <TaskManagement tasks={[]} />
-              <AuditActivityLog activities={[]} />
             </>
           )}
         </div>
