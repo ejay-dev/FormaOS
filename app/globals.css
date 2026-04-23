@@ -216,6 +216,31 @@
 }
 
 /* =========================================================
+ * APP-THEME SCOPE
+ * Applied to the authenticated shell (/app/**). Remaps the
+ * brand primary + ring + ambient glow from cyan/violet to a
+ * single calm Tabler-style blue so enterprise surfaces read
+ * like Linear/Stripe. Marketing pages are untouched.
+ * ======================================================== */
+.app-theme {
+  --primary: 217 91% 60%; /* blue-500 */
+  --primary-foreground: 0 0% 100%;
+  --ring: 217 91% 60%;
+  --gradient-glow: radial-gradient(
+    ellipse at top,
+    hsl(217 91% 60% / 0.08) 0%,
+    hsl(217 91% 60% / 0.02) 50%,
+    transparent 75%
+  );
+}
+
+[data-theme='light'] .app-theme {
+  --primary: 217 91% 55%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 217 91% 55%;
+}
+
+/* =========================================================
  * LIGHT ENTERPRISE — World-class SaaS light mode
  * Warm pearl canvas · elevated white cards · blue-tinted depth
  * Inspired by Linear, Stripe, Notion, Vercel, Figma light modes.
