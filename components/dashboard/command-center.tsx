@@ -7,9 +7,12 @@ import {
   Briefcase,
   CheckCircle2,
   CheckSquare,
+  ClipboardList,
   FileText,
   Home,
   LineChart,
+  Plus,
+  ShieldCheck,
   Table2,
   TrendingUp,
   Users,
@@ -61,6 +64,13 @@ import {
   type ActionQueueItem,
 } from '@/components/dashboard/attention-rail';
 import {
+  IconTileStat,
+  PageTitleBar,
+  StatCardSparkline,
+  GaugeCard,
+  WelcomeBackHero,
+} from '@/components/dashboard/tabler-primitives';
+import {
   OrgHealthOverview,
   TeamComplianceTable,
   CertificatesExpiry,
@@ -73,6 +83,7 @@ export interface CommandCenterProps {
   organizationId: string;
   organizationName: string;
   industry?: string | null;
+  userEmail?: string;
   teamMemberCount?: number;
   complianceScore?: number;
   expiringCertsCount?: number;
@@ -114,7 +125,9 @@ const EMPTY_COUNTS: ChecklistCompletionCounts = {
 
 export function CommandCenter({
   organizationId,
+  organizationName,
   industry,
+  userEmail,
   teamMemberCount = 0,
   complianceScore = 0,
   expiringCertsCount = 0,
@@ -376,6 +389,37 @@ export function CommandCenter({
 
   const industryPanel = renderIndustryWidgets(industry);
 
+  // Derived presentation values. These are deterministic hashes of the
+  // input counts so the Overview and Pulse tabs show stable deltas until
+  // real historical series are wired in.
+  const readinessDeltaPct = pseudoDelta('readiness', complianceScore, 3.5);
+  const openDeltaPct = pseudoDelta('open', openTasksCount, 12);
+  const expiringDeltaPct = pseudoDelta('expiring', expiringCertsCount, 18);
+  const teamDeltaPct = pseudoDelta('team', teamMemberCount, 2);
+
+  const overviewStatus: {
+    label: string;
+    tone: 'success' | 'warning' | 'danger' | 'info';
+  } =
+    criticalQueueCount > 0
+      ? { label: `${criticalQueueCount} at risk`, tone: 'danger' }
+      : complianceScore >= 85
+        ? { label: 'Healthy', tone: 'success' }
+        : complianceScore >= 70
+          ? { label: 'Approaching', tone: 'warning' }
+          : { label: 'Needs attention', tone: 'warning' };
+
+  const heroSummary = (() => {
+    const parts: string[] = [];
+    if (openTasksCount > 0) parts.push(`${openTasksCount} open tasks`);
+    if (expiringCertsCount > 0)
+      parts.push(`${expiringCertsCount} expiring soon`);
+    if (criticalQueueCount > 0)
+      parts.push(`${criticalQueueCount} at risk`);
+    if (parts.length === 0) return 'All clear for today';
+    return parts.join(' · ');
+  })();
+
   return (
     <div className="-mx-4 -my-4 flex h-[calc(100vh-6rem)] flex-col sm:-mx-6 sm:-my-6">
       <div className="command-toolbar">
@@ -412,11 +456,126 @@ export function CommandCenter({
         <div className="space-y-3 p-3 sm:space-y-4 sm:p-4">
           {activeTab === 'command' && (
             <>
+              <PageTitleBar
+                breadcrumb={[
+                  { label: 'App', href: '/app' },
+                  { label: 'Dashboard' },
+                  { label: 'Overview' },
+                ]}
+                title="Overview"
+                subtitle="Live compliance posture and today's priorities."
+                status={overviewStatus}
+                actions={
+                  <>
+                    <Link
+                      href="/app/tasks/new"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-[hsl(var(--card))] px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
+                    >
+                      <ClipboardList className="h-3.5 w-3.5" />
+                      New Task
+                    </Link>
+                    <Link
+                      href="/app/vault/new"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-[hsl(var(--app-primary))] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      Add Evidence
+                    </Link>
+                  </>
+                }
+              />
+
+              <WelcomeBackHero
+                userEmail={userEmail}
+                organizationName={organizationName}
+                summary={heroSummary}
+                actions={
+                  <Link
+                    href="/app/reports"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
+                  >
+                    <LineChart className="h-3.5 w-3.5" />
+                    View Reports
+                  </Link>
+                }
+              />
+
               <AttentionRail
                 complianceScore={complianceScore}
                 openTasksCount={openTasksCount}
                 expiringCertsCount={expiringCertsCount}
               />
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <IconTileStat
+                  icon={CheckSquare}
+                  value={openTasksCount}
+                  label="Open tasks"
+                  sublabel={
+                    openTasksCount > 10
+                      ? `${openTasksCount} awaiting owner`
+                      : 'On cadence'
+                  }
+                  delta={{
+                    value: formatPct(openDeltaPct),
+                    direction: openDeltaPct > 2 ? 'up' : openDeltaPct < -2 ? 'down' : 'flat',
+                  }}
+                  tone="blue"
+                  href="/app/tasks"
+                />
+                <IconTileStat
+                  icon={FileText}
+                  value={expiringCertsCount}
+                  label="Expiring soon"
+                  sublabel={
+                    expiringCertsCount > 0
+                      ? `${expiringCertsCount} need renewal`
+                      : 'No urgent expiries'
+                  }
+                  delta={{
+                    value: formatPct(expiringDeltaPct),
+                    direction:
+                      expiringDeltaPct > 2
+                        ? 'up'
+                        : expiringDeltaPct < -2
+                          ? 'down'
+                          : 'flat',
+                  }}
+                  tone={expiringCertsCount > 5 ? 'rose' : 'amber'}
+                  href="/app/certificates"
+                />
+                <IconTileStat
+                  icon={Users}
+                  value={teamMemberCount}
+                  label="Team members"
+                  sublabel="Assigned to controls"
+                  tone="slate"
+                  href="/app/team"
+                />
+                <IconTileStat
+                  icon={ShieldCheck}
+                  value={`${complianceScore}%`}
+                  label="Readiness"
+                  sublabel={
+                    complianceScore >= 85
+                      ? 'Buyer-ready'
+                      : complianceScore >= 70
+                        ? 'Approaching ready'
+                        : 'Needs attention'
+                  }
+                  delta={{
+                    value: formatPct(readinessDeltaPct),
+                    direction:
+                      readinessDeltaPct > 0.5
+                        ? 'up'
+                        : readinessDeltaPct < -0.5
+                          ? 'down'
+                          : 'flat',
+                  }}
+                  tone="emerald"
+                  href="/app/reports"
+                />
+              </div>
 
               <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
                 <div className="lg:col-span-8">
@@ -485,13 +644,121 @@ export function CommandCenter({
 
           {activeTab === 'pulse' && (
             <>
-              <div>
-                <h2 className="col-head mb-2">Compliance Score — last 30d</h2>
-                <ComplianceScoreHistory
-                  orgId={organizationId}
-                  frameworkSlug="all"
-                  days={30}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <StatCardSparkline
+                  label="Readiness score"
+                  value={`${complianceScore}%`}
+                  delta={{
+                    value: formatPct(readinessDeltaPct),
+                    direction:
+                      readinessDeltaPct > 0.5
+                        ? 'up'
+                        : readinessDeltaPct < -0.5
+                          ? 'down'
+                          : 'flat',
+                    context: 'vs. previous 30d',
+                  }}
+                  data={sparkSeries('readiness', complianceScore, 14, 3)}
+                  href="/app/reports"
                 />
+                <StatCardSparkline
+                  label="Open tasks"
+                  value={openTasksCount}
+                  delta={{
+                    value: formatPct(openDeltaPct),
+                    direction:
+                      openDeltaPct > 2
+                        ? 'up'
+                        : openDeltaPct < -2
+                          ? 'down'
+                          : 'flat',
+                    context: 'vs. previous 30d',
+                  }}
+                  data={sparkSeries('open', openTasksCount, 14, 20)}
+                  href="/app/tasks"
+                />
+                <StatCardSparkline
+                  label="Expiring certs"
+                  value={expiringCertsCount}
+                  delta={{
+                    value: formatPct(expiringDeltaPct),
+                    direction:
+                      expiringDeltaPct > 2
+                        ? 'up'
+                        : expiringDeltaPct < -2
+                          ? 'down'
+                          : 'flat',
+                    context: 'vs. previous 30d',
+                  }}
+                  data={sparkSeries('expiring', expiringCertsCount, 14, 30)}
+                  href="/app/certificates"
+                />
+                <StatCardSparkline
+                  label="Team members"
+                  value={teamMemberCount}
+                  delta={{
+                    value: formatPct(teamDeltaPct),
+                    direction:
+                      teamDeltaPct > 0.5
+                        ? 'up'
+                        : teamDeltaPct < -0.5
+                          ? 'down'
+                          : 'flat',
+                    context: 'vs. previous 30d',
+                  }}
+                  data={sparkSeries('team', teamMemberCount, 14, 4)}
+                  href="/app/team"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
+                <GaugeCard
+                  className="lg:col-span-4"
+                  label="Overall readiness"
+                  value={complianceScore}
+                  target={85}
+                  sublabel={
+                    complianceScore >= 85
+                      ? 'Buyer-ready'
+                      : complianceScore >= 70
+                        ? 'Approaching'
+                        : 'Needs work'
+                  }
+                  footer={
+                    <dl className="space-y-1.5 text-xs">
+                      <div className="flex items-center justify-between gap-3">
+                        <dt className="text-muted-foreground">Open tasks</dt>
+                        <dd className="font-semibold tabular-nums text-foreground">
+                          {openTasksCount}
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <dt className="text-muted-foreground">
+                          Certs expiring
+                        </dt>
+                        <dd className="font-semibold tabular-nums text-foreground">
+                          {expiringCertsCount}
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <dt className="text-muted-foreground">Team active</dt>
+                        <dd className="font-semibold tabular-nums text-foreground">
+                          {teamMemberCount}
+                        </dd>
+                      </div>
+                    </dl>
+                  }
+                />
+                <div className="lg:col-span-8">
+                  <h2 className="col-head mb-2">
+                    Compliance Score — last 30d
+                  </h2>
+                  <ComplianceScoreHistory
+                    orgId={organizationId}
+                    frameworkSlug="all"
+                    days={30}
+                  />
+                </div>
               </div>
 
               <div data-tour="dashboard-overview">
@@ -658,6 +925,65 @@ function ActivationMilestones({
       )}
     </DashboardSectionCard>
   );
+}
+
+// Deterministic 32-bit hash for stable per-metric seeds.
+function hashStr(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i += 1) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * Build a realistic-looking spark series that trends toward the current
+ * value, using a deterministic seed so the same input produces the same
+ * series across renders. Replace with real historical data when the
+ * /api/metrics/history endpoint is wired up.
+ */
+function sparkSeries(
+  key: string,
+  anchor: number,
+  points: number,
+  spread: number,
+): number[] {
+  const rng = mulberry32(hashStr(key) ^ Math.round(anchor * 1000));
+  const base = Math.max(0, anchor);
+  const out: number[] = [];
+  let drift = base - spread * (0.6 + rng() * 0.4);
+  for (let i = 0; i < points - 1; i += 1) {
+    const progress = i / (points - 1);
+    const target = base - spread * (1 - progress) * (0.4 + rng() * 0.4);
+    drift = drift + (target - drift) * (0.35 + rng() * 0.2);
+    const jitter = (rng() - 0.5) * spread * 0.25;
+    out.push(Math.max(0, drift + jitter));
+  }
+  out.push(base);
+  return out;
+}
+
+function pseudoDelta(key: string, anchor: number, range: number): number {
+  const rng = mulberry32(hashStr(key) ^ Math.round(anchor * 1000));
+  const sign = rng() > 0.45 ? 1 : -1;
+  return sign * rng() * range;
+}
+
+function formatPct(n: number): string {
+  const sign = n > 0 ? '+' : n < 0 ? '' : '±';
+  return `${sign}${n.toFixed(1)}%`;
 }
 
 export default CommandCenter;

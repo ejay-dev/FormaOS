@@ -207,6 +207,12 @@
   --edge-1: rgba(255, 255, 255, 0.06);
   --edge-2: rgba(255, 255, 255, 0.10);
   --edge-3: rgba(255, 255, 255, 0.18);
+
+  /* App accent — solid Tabler-style blue for /app dashboards.
+   * Intentionally separate from --primary (cyan/indigo) so enterprise
+   * surfaces read calm without overriding marketing/brand identity. */
+  --app-primary: 217 91% 60%; /* blue-500 */
+  --app-primary-soft: 217 91% 60% / 0.15;
 }
 
 /* =========================================================

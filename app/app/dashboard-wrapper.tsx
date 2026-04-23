@@ -35,6 +35,7 @@ export function DashboardWrapper({
           organizationId={orgId}
           organizationName={orgName}
           industry={industry}
+          userEmail={userEmail}
         />
       </UnifiedDashboardLayout>
     );
