@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { LayoutList, ShieldCheck } from 'lucide-react';
+import { LayoutList, ShieldCheck, Radio } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SkeletonCard } from '@/components/ui/skeleton';
@@ -10,29 +10,14 @@ import {
   type JourneyItem,
   type JourneyStage,
 } from '@/components/journey/JourneyBoard';
-import { JourneySummary } from '@/components/journey/JourneySummary';
+import { JourneySegmentBar } from '@/components/journey/JourneySegmentBar';
 
 export const metadata = { title: 'Controls Journey | FormaOS' };
 
 const STAGES: JourneyStage[] = [
-  {
-    key: 'non_compliant',
-    label: 'Non-Compliant',
-    tone: 'danger',
-    description: 'Action required — evidence missing or failing.',
-  },
-  {
-    key: 'at_risk',
-    label: 'At Risk',
-    tone: 'warning',
-    description: 'Partial coverage — schedule a review.',
-  },
-  {
-    key: 'compliant',
-    label: 'Compliant',
-    tone: 'success',
-    description: 'Controls satisfied and attested.',
-  },
+  { key: 'non_compliant', label: 'Non-Compliant', tone: 'danger' },
+  { key: 'at_risk', label: 'At Risk', tone: 'warning' },
+  { key: 'compliant', label: 'Compliant', tone: 'success' },
 ];
 
 type ControlRow = {
@@ -53,15 +38,14 @@ function scoreTone(score: number | null): 'success' | 'warning' | 'danger' {
 }
 
 function formatRelativeDate(iso: string | null): string {
-  if (!iso) return 'Never';
+  if (!iso) return '—';
   const d = new Date(iso);
-  const now = Date.now();
-  const diffDays = Math.round((now - d.getTime()) / (1000 * 60 * 60 * 24));
-  if (diffDays <= 0) return 'Today';
-  if (diffDays === 1) return '1d ago';
-  if (diffDays < 30) return `${diffDays}d ago`;
+  const diffDays = Math.round((Date.now() - d.getTime()) / 86_400_000);
+  if (diffDays <= 0) return 'today';
+  if (diffDays === 1) return '1d';
+  if (diffDays < 30) return `${diffDays}d`;
   const months = Math.round(diffDays / 30);
-  return `${months}mo ago`;
+  return `${months}mo`;
 }
 
 async function ControlsJourney({ orgId }: { orgId: string }) {
@@ -79,25 +63,32 @@ async function ControlsJourney({ orgId }: { orgId: string }) {
 
   if (controls.length === 0) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle p-10 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-glass-border bg-glass-subtle">
-          <ShieldCheck className="h-5 w-5 text-muted-foreground" />
+      <div className="flex flex-1 items-center justify-center p-6">
+        <div className="w-full max-w-sm rounded-xl border border-glass-border bg-glass-subtle p-6 text-center">
+          <ShieldCheck className="mx-auto h-5 w-5 text-muted-foreground" />
+          <div className="mt-3 text-sm font-semibold">No controls yet</div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Enable a framework to populate the pipeline.
+          </p>
+          <Link
+            href="/app/compliance/frameworks"
+            className="mt-3 inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
+          >
+            View Frameworks
+          </Link>
         </div>
-        <div className="mt-4 text-sm font-semibold">
-          No controls provisioned yet
-        </div>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Enable a compliance framework to populate the journey board.
-        </p>
-        <Link
-          href="/app/compliance/frameworks"
-          className="mt-4 inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
-        >
-          View Frameworks
-        </Link>
       </div>
     );
   }
+
+  const lowestScore =
+    controls.reduce<number | null>(
+      (min, x) =>
+        x.compliance_score != null && (min == null || x.compliance_score < min)
+          ? x.compliance_score
+          : min,
+      null,
+    ) ?? null;
 
   const items: JourneyItem[] = controls.map((c) => {
     const details = (c.details ?? {}) as Record<string, unknown>;
@@ -112,16 +103,6 @@ async function ControlsJourney({ orgId }: { orgId: string }) {
     const scoreLabel =
       c.compliance_score != null ? `${c.compliance_score}%` : '—';
 
-    const lowestScore =
-      controls.reduce<number | null>(
-        (min, x) =>
-          x.compliance_score != null &&
-          (min == null || x.compliance_score < min)
-            ? x.compliance_score
-            : min,
-        null,
-      ) ?? null;
-
     const emphasise =
       c.status === 'non_compliant' &&
       lowestScore != null &&
@@ -135,7 +116,11 @@ async function ControlsJourney({ orgId }: { orgId: string }) {
       accent: code,
       badge: { label: frameworkCode, tone: 'info' },
       meta: [
-        { label: 'Score', value: scoreLabel, tone: scoreTone(c.compliance_score) },
+        {
+          label: 'Score',
+          value: scoreLabel,
+          tone: scoreTone(c.compliance_score),
+        },
         { label: 'Eval', value: formatRelativeDate(c.last_evaluated_at) },
       ],
       href: '/app/controls',
@@ -149,42 +134,82 @@ async function ControlsJourney({ orgId }: { orgId: string }) {
   }, {});
 
   const total = controls.length;
-  const compliantPct = total > 0 ? Math.round((counts.compliant / total) * 100) : 0;
+  const compliantPct =
+    total > 0 ? Math.round((counts.compliant / total) * 100) : 0;
 
   return (
-    <div className="space-y-4">
-      <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <JourneyBoard
-          stages={STAGES}
-          items={items}
-          emptyLabel="No controls in this stage"
-          realtime={{
-            table: 'org_control_evaluations',
-            orgColumn: 'organization_id',
-            orgId,
-          }}
-        />
-        <JourneySummary
-          title="Framework coverage"
-          description={`${total} controls across your enabled frameworks`}
-          centerValue={`${compliantPct}%`}
-          centerLabel="Compliant"
+    <>
+      <div className="flex items-center gap-3 border-b border-border bg-[hsl(var(--card))]/60 px-4 py-2 sm:px-6">
+        <h1 className="shrink-0 text-sm font-semibold tracking-tight">
+          Controls Journey
+        </h1>
+        <span className="h-4 w-px bg-border" aria-hidden="true" />
+        <JourneySegmentBar
+          className="min-w-0 flex-1"
           segments={[
             {
+              key: 'compliant',
               label: 'Compliant',
               value: counts.compliant ?? 0,
               tone: 'success',
             },
-            { label: 'At Risk', value: counts.at_risk ?? 0, tone: 'warning' },
             {
+              key: 'at_risk',
+              label: 'At Risk',
+              value: counts.at_risk ?? 0,
+              tone: 'warning',
+            },
+            {
+              key: 'non_compliant',
               label: 'Non-Compliant',
               value: counts.non_compliant ?? 0,
               tone: 'danger',
             },
           ]}
         />
+        <span className="hidden items-center gap-1.5 text-[11px] text-muted-foreground sm:inline-flex">
+          <span className="font-semibold tabular-nums text-foreground">
+            {compliantPct}%
+          </span>
+          compliant · {total} total
+        </span>
+        <span
+          className="hidden items-center gap-1 text-[10px] uppercase tracking-wider text-emerald-400/80 sm:inline-flex"
+          title="Live — updates stream from the evaluator"
+        >
+          <Radio className="h-3 w-3 animate-pulse" />
+          Live
+        </span>
+        <div className="ml-auto flex items-center gap-1.5">
+          <Link
+            href="/app/controls"
+            className="inline-flex items-center gap-1 rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
+          >
+            <LayoutList className="h-3 w-3" />
+            List
+          </Link>
+          <Link
+            href="/app/compliance/frameworks"
+            className="rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
+          >
+            Frameworks
+          </Link>
+        </div>
       </div>
-    </div>
+
+      <div className="min-h-0 flex-1 p-3 sm:p-4">
+        <JourneyBoard
+          stages={STAGES}
+          items={items}
+          emptyLabel="None"
+          realtime={{
+            table: 'org_control_evaluations',
+            orgColumn: 'organization_id',
+            orgId,
+          }}
+        />
+      </div>
+    </>
   );
 }
 
@@ -193,32 +218,14 @@ export default async function ControlsJourneyPage() {
   if (!state) redirect('/auth/signin');
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-xl font-bold">Controls Journey</h1>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            Pipeline view of every control flowing toward compliance.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/app/controls"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
-          >
-            <LayoutList className="h-3.5 w-3.5" />
-            List view
-          </Link>
-          <Link
-            href="/app/compliance/frameworks"
-            className="rounded-lg border border-glass-border bg-glass-subtle px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
-          >
-            Frameworks
-          </Link>
-        </div>
-      </div>
-
-      <Suspense fallback={<SkeletonCard className="h-96" />}>
+    <div className="-mx-4 -my-4 flex h-[calc(100vh-6rem)] flex-col sm:-mx-6 sm:-my-6">
+      <Suspense
+        fallback={
+          <div className="flex-1 p-4">
+            <SkeletonCard className="h-full" />
+          </div>
+        }
+      >
         <ControlsJourney orgId={state.organization.id} />
       </Suspense>
     </div>

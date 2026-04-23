@@ -116,7 +116,7 @@ function JourneyCard({
   onDragEnd,
 }: CardProps) {
   const className = cn(
-    'group relative flex flex-col gap-2 rounded-xl border p-3 transition-all',
+    'group relative flex flex-col gap-1.5 rounded-lg border p-2 transition-all',
     item.emphasise
       ? 'border-transparent bg-foreground text-background shadow-premium-lg'
       : 'border-glass-border bg-[hsl(var(--card))] hover:border-glass-border-strong hover:shadow-premium-lg',
@@ -138,10 +138,10 @@ function JourneyCard({
           <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
         </span>
       )}
-      <div className="flex items-start gap-2.5">
+      <div className="flex items-start gap-2">
         <div
           className={cn(
-            'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold',
+            'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold',
             item.emphasise
               ? 'bg-background/15 text-background'
               : 'bg-primary/10 text-primary',
@@ -153,7 +153,7 @@ function JourneyCard({
         <div className="min-w-0 flex-1">
           <div
             className={cn(
-              'truncate text-sm font-semibold leading-tight',
+              'truncate text-[12px] font-semibold leading-tight',
               item.emphasise ? 'text-background' : 'text-foreground',
             )}
           >
@@ -162,7 +162,7 @@ function JourneyCard({
           {item.subtitle && (
             <div
               className={cn(
-                'mt-0.5 line-clamp-1 text-xs',
+                'mt-0.5 line-clamp-1 text-[11px] leading-tight',
                 item.emphasise ? 'text-background/70' : 'text-muted-foreground',
               )}
             >
@@ -173,7 +173,7 @@ function JourneyCard({
       </div>
 
       {(item.badge || (item.meta && item.meta.length > 0)) && (
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+        <div className="flex flex-wrap items-center gap-1">
           {item.badge && (
             <span
               className={cn(
@@ -347,16 +347,11 @@ export function JourneyBoard({
   }
 
   return (
-    <div
-      className={cn(
-        'rounded-2xl border border-glass-border bg-glass-subtle/60 p-4 sm:p-5',
-        className,
-      )}
-    >
+    <div className={cn('flex h-full min-h-0 flex-col', className)}>
       {error && (
         <div
           role="alert"
-          className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-red-500/30 bg-red-500/5 px-3 py-2 text-xs text-red-400"
+          className="mb-2 flex items-center justify-between gap-3 rounded-lg border border-red-500/30 bg-red-500/5 px-3 py-1.5 text-xs text-red-400"
         >
           <span>Could not update: {error}</span>
           <button
@@ -369,11 +364,14 @@ export function JourneyBoard({
         </div>
       )}
 
-      <div className="flex items-stretch gap-2 overflow-x-auto pb-2 snap-x snap-mandatory">
+      <div className="flex min-h-0 flex-1 items-stretch gap-1.5 overflow-x-auto overflow-y-hidden">
         {grouped.map(({ stage, items: stageItems }, idx) => {
           const isDropTarget = dropTarget === stage.key;
           return (
-            <div key={stage.key} className="flex items-stretch gap-2">
+            <div
+              key={stage.key}
+              className="flex min-h-0 items-stretch gap-1.5"
+            >
               <section
                 aria-label={stage.label}
                 onDragOver={
@@ -398,13 +396,16 @@ export function JourneyBoard({
                 }
                 onDrop={canDrag ? () => handleDrop(stage.key) : undefined}
                 className={cn(
-                  'flex w-[260px] shrink-0 snap-start flex-col gap-2 rounded-xl border p-3 transition-colors',
+                  'flex min-h-0 w-[224px] shrink-0 flex-col rounded-xl border transition-colors',
                   TONE_SURFACE[stage.tone],
                   isDropTarget && 'ring-2 ring-primary/60',
                 )}
               >
-                <header className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
+                <header
+                  className="flex items-center justify-between gap-2 border-b border-glass-border/60 px-2.5 py-1.5"
+                  title={stage.description}
+                >
+                  <div className="flex items-center gap-1.5">
                     <span
                       className={cn(
                         'h-1.5 w-1.5 rounded-full',
@@ -412,24 +413,21 @@ export function JourneyBoard({
                       )}
                       aria-hidden="true"
                     />
-                    <h3 className="text-[11px] font-semibold uppercase tracking-wider text-foreground">
+                    <h3 className="text-[10px] font-semibold uppercase tracking-wider text-foreground">
                       {stage.label}
                     </h3>
                   </div>
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge
+                    variant="outline"
+                    className="px-1.5 py-0 text-[10px] leading-4"
+                  >
                     {stageItems.length}
                   </Badge>
                 </header>
 
-                {stage.description && (
-                  <p className="text-[11px] text-muted-foreground">
-                    {stage.description}
-                  </p>
-                )}
-
-                <div className="flex min-h-[60px] flex-col gap-2">
+                <div className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto p-2">
                   {stageItems.length === 0 ? (
-                    <div className="rounded-lg border border-dashed border-glass-border px-2.5 py-3 text-center text-[11px] text-muted-foreground">
+                    <div className="rounded-lg border border-dashed border-glass-border px-2 py-2 text-center text-[11px] text-muted-foreground">
                       {isDropTarget ? 'Drop here' : emptyLabel}
                     </div>
                   ) : (
@@ -455,10 +453,10 @@ export function JourneyBoard({
 
               {idx < grouped.length - 1 && (
                 <div
-                  className="flex w-5 shrink-0 items-center justify-center text-muted-foreground/40"
+                  className="flex w-4 shrink-0 items-center justify-center text-muted-foreground/40"
                   aria-hidden="true"
                 >
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-3.5 w-3.5" />
                 </div>
               )}
             </div>
