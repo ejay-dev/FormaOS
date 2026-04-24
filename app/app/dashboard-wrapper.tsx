@@ -4,7 +4,9 @@ import { UnifiedDashboardLayout } from '@/components/dashboard/unified-dashboard
 import { CommandCenter } from '@/components/dashboard/command-center';
 import { EmployeeDashboard } from '@/components/dashboard/employee-dashboard';
 import { DashboardUpgradeNudge } from '@/components/billing/UsageLimitWarnings';
+import { StartHereCard } from '@/components/onboarding/StartHereCard';
 import { DatabaseRole, isEmployerRole } from '@/lib/roles';
+import type { FirstSessionState } from '@/lib/onboarding/first-session';
 
 interface DashboardWrapperProps {
   orgId: string;
@@ -14,6 +16,7 @@ interface DashboardWrapperProps {
   industry?: string | null;
   teamMemberCount?: number;
   expiringCertsCount?: number;
+  firstSession?: FirstSessionState | null;
 }
 
 /**
@@ -28,13 +31,20 @@ export function DashboardWrapper({
   industry,
   teamMemberCount = 0,
   expiringCertsCount = 0,
+  firstSession = null,
 }: DashboardWrapperProps) {
   const isEmployer = isEmployerRole(userRole);
+  const showStartHere = Boolean(firstSession?.isFirstSession);
 
   if (isEmployer) {
     return (
       <UnifiedDashboardLayout userRole={userRole} organizationName={orgName}>
         <DashboardUpgradeNudge />
+        {showStartHere && firstSession ? (
+          <div className="mb-6">
+            <StartHereCard state={firstSession} />
+          </div>
+        ) : null}
         <CommandCenter
           organizationId={orgId}
           organizationName={orgName}
@@ -50,6 +60,11 @@ export function DashboardWrapper({
   return (
     <UnifiedDashboardLayout userRole={userRole} organizationName={orgName}>
       <DashboardUpgradeNudge />
+      {showStartHere && firstSession ? (
+        <div className="mb-6">
+          <StartHereCard state={firstSession} />
+        </div>
+      ) : null}
       <EmployeeDashboard
         employeeName={userEmail || 'Employee'}
         organizationName={orgName}

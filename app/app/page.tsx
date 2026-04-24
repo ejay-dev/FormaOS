@@ -9,6 +9,7 @@ import {
   CHECKOUT_INTENT_COOKIE,
   parseCheckoutIntent,
 } from '@/lib/billing/checkout-intent';
+import { getFirstSessionState } from '@/lib/onboarding/first-session';
 
 /**
  * =========================================================
@@ -143,6 +144,10 @@ export default async function DashboardPage() {
   const orgName = safeOrgName(membership);
   const orgId = membership?.organization_id || '';
 
+  const firstSession = orgId
+    ? await getFirstSessionState(orgId)
+    : null;
+
   // Live top-level KPIs — fetched here so the command center receives truthful
   // counts instead of the previous hard-coded 0 defaults.
   let teamMemberCount = 0;
@@ -189,6 +194,7 @@ export default async function DashboardPage() {
       industry={industry}
       teamMemberCount={teamMemberCount}
       expiringCertsCount={expiringCertsCount}
+      firstSession={firstSession}
     />
   );
 }

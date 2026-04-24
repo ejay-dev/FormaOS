@@ -1,11 +1,11 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-24T13:27:52.802Z
+Generated: 2026-04-24T13:56:50.497Z
 
 ## Summary
 
-- Total app internal links validated: 292
-- Valid links: 292
+- Total app internal links validated: 296
+- Valid links: 296
 - Broken links: 0
 - App routes discovered: 211
 
@@ -86,6 +86,7 @@ Generated: 2026-04-24T13:27:52.802Z
 | `app/app/care-plans/journey/page.tsx` | `/app/care-plans/new` | YES | YES | auth | `/app/care-plans/new` |
 | `app/app/care-plans/page.tsx` | `/app/care-plans/new` | YES | YES | auth | `/app/care-plans/new` |
 | `components/empty-states/empty-state.tsx` | `/app/care-plans/new` | YES | YES | auth | `/app/care-plans/new` |
+| `lib/onboarding/first-session.ts` | `/app/care-plans/new` | YES | YES | auth | `/app/care-plans/new` |
 | `components/dashboard/attention-rail.tsx` | `/app/certificates` | YES | YES | auth | `/app/certificates` |
 | `components/dashboard/employer-dashboard.tsx` | `/app/certificates` | YES | YES | auth | `/app/certificates` |
 | `components/dashboard/quick-actions.tsx` | `/app/certificates` | YES | YES | auth | `/app/certificates` |
@@ -151,6 +152,7 @@ Generated: 2026-04-24T13:27:52.802Z
 | `components/dashboard/quick-actions.tsx` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `components/empty-states/empty-state.tsx` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `lib/navigation/industry-sidebar.ts` | `/app/participants` | YES | YES | auth | `/app/participants` |
+| `lib/onboarding/first-session.ts` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `components/empty-states/empty-state.tsx` | `/app/participants/import` | YES | YES | auth | `/app/participants/:id` |
 | `app/app/participants/page.tsx` | `/app/participants/new` | YES | YES | auth | `/app/participants/new` |
 | `components/empty-states/empty-state.tsx` | `/app/participants/new` | YES | YES | auth | `/app/participants/new` |
@@ -266,6 +268,7 @@ Generated: 2026-04-24T13:27:52.802Z
 | `components/dashboard/quick-actions.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `lib/navigation/industry-sidebar.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
+| `lib/onboarding/first-session.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `lib/onboarding/industry-checklists.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/tasks/calendar/page.tsx` | `/app/tasks/board` | YES | YES | auth | `/app/tasks/board` |
 | `app/app/tasks/board/page.tsx` | `/app/tasks/calendar` | YES | YES | auth | `/app/tasks/calendar` |
@@ -288,6 +291,7 @@ Generated: 2026-04-24T13:27:52.802Z
 | `components/dashboard/employer-dashboard.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `components/dashboard/quick-actions.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `lib/navigation/industry-sidebar.ts` | `/app/vault` | YES | YES | auth | `/app/vault` |
+| `lib/onboarding/first-session.ts` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `lib/onboarding/industry-checklists.ts` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `components/dashboard/attention-rail.tsx` | `/app/vault/review` | YES | YES | auth | `/app/vault/review` |
 | `components/dashboard/command-center.tsx` | `/app/vault/review` | YES | YES | auth | `/app/vault/review` |
