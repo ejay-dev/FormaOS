@@ -157,7 +157,7 @@
   --secondary-foreground: 220 18% 92%;
 
   --muted: 225 30% 18%;
-  --muted-foreground: 215 16% 65%;
+  --muted-foreground: 215 20% 74%;
 
   --accent: 258 90% 66%;
   --accent-foreground: 220 18% 92%;
@@ -283,7 +283,7 @@
 
   /* Muted: de-emphasized surfaces and text */
   --muted: 228 14% 91%;
-  --muted-foreground: 220 9% 46%;
+  --muted-foreground: 220 9% 44%;
 
   /* Accent: vibrant violet — draws attention for CTAs and highlights */
   --accent: 263 70% 50%;
@@ -718,7 +718,7 @@
 
   /* Utility */
   --muted: 224 38% 16%;
-  --muted-foreground: 218 18% 60%;
+  --muted-foreground: 218 22% 72%;
 
   --accent: 174 72% 51%;
   --accent-foreground: 228 65% 10%;
@@ -847,7 +847,7 @@
 
   /* Utility */
   --muted: 240 3% 17%;
-  --muted-foreground: 240 3% 52%;
+  --muted-foreground: 240 4% 64%;
 
   --accent: 174 72% 51%;
   --accent-foreground: 240 4% 5%;
@@ -976,7 +976,7 @@
 
   /* Utility */
   --muted: 228 22% 14%;
-  --muted-foreground: 228 14% 52%;
+  --muted-foreground: 228 16% 66%;
 
   --accent: 292 84% 61%;
   --accent-foreground: 230 85% 4%;

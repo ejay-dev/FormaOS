@@ -1,130 +1,73 @@
 'use client';
 
 import { useTrialState } from '@/lib/trial/use-trial-state';
-import {
-  Clock,
-  AlertTriangle,
-  CheckCircle,
-  Zap,
-  ArrowRight,
-} from 'lucide-react';
+import { AlertTriangle, Zap } from 'lucide-react';
 import Link from 'next/link';
 
 /**
- * =========================================================
- * TrialCountdownBanner – Enhanced global trial banner
- * =========================================================
- * Replaces the old TrialStatusBanner with:
- * - Animated progress bar showing days elapsed
- * - Urgency tiers: active → expiring_soon → urgent → last_day → expired
- * - Smart CTA that changes based on trial phase
- * - Collapsed mode on mobile
- * - Does NOT render for paid users or founders
+ * Tiered trial escalation banner.
+ *
+ * The in-topbar `TrialDaysRemaining` chip handles casual visibility.
+ * This full-width banner appears only for the two states where missing
+ * the message could cause loss of access or revenue:
+ *
+ *   - `last_day` — evaluation ends today; conversion-critical.
+ *   - `expired`  — read-only mode; user needs the upgrade CTA.
+ *
+ * For `urgent` / `expiring_soon` / `active` we stay silent and defer
+ * to the chip. Founders and paid users never see the banner.
  */
 export function TrialCountdownBanner() {
-  const { status, daysRemaining, isTrialUser, isExpired, canManageBilling } =
-    useTrialState();
+  const { status, isTrialUser, isExpired, canManageBilling } = useTrialState();
 
-  // Don't render for non-trial users
-  if (!isTrialUser && !isExpired) return null;
+  const shouldRender =
+    (isTrialUser && status === 'last_day') || isExpired;
+  if (!shouldRender) return null;
 
-  const isLastDay = status === 'last_day';
-  const isUrgent = status === 'urgent';
-  const isExpiringSoon = status === 'expiring_soon';
+  const scheme = {
+    bg: 'trial-banner-danger',
+    accent: 'bg-rose-500 text-white hover:bg-rose-600',
+  };
 
-  // Color scheme based on urgency — uses semantic classes for both light & dark
-  const scheme = isExpired
-    ? {
-        bg: 'trial-banner-danger',
-        accent: 'bg-rose-500 text-white hover:bg-rose-600',
-      }
-    : isLastDay
-      ? {
-          bg: 'trial-banner-danger',
-          accent: 'bg-rose-500 text-white hover:bg-rose-600',
-        }
-      : isUrgent
-        ? {
-            bg: 'trial-banner-warning',
-            accent: 'bg-amber-500 text-white hover:bg-amber-600',
-          }
-        : isExpiringSoon
-          ? {
-              bg: 'trial-banner-warning',
-              accent:
-                'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500',
-            }
-          : {
-              bg: 'trial-banner-info',
-              accent:
-                'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500',
-            };
-
-  const Icon =
-    isExpired || isLastDay
-      ? AlertTriangle
-      : isUrgent
-        ? Clock
-        : isExpiringSoon
-          ? Clock
-          : CheckCircle;
-
-  // Message
   const message = isExpired
     ? 'Your evaluation access has ended — activate your plan to keep full access'
-    : isLastDay
-      ? 'Evaluation access ends today — activate your plan now'
-      : `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left in your evaluation window`;
+    : 'Evaluation access ends today — activate your plan now';
 
   const subMessage = isExpired
-    ? 'Read-only access to core features. Upgrade to unlock everything.'
-    : isLastDay || isUrgent
-      ? ''
-      : 'Full access to all features';
+    ? 'Read-only access to core features until you upgrade.'
+    : '';
 
-  const ctaLabel = isExpired
-    ? 'Upgrade Now'
-    : isLastDay
-      ? 'Activate Now'
-      : isUrgent
-        ? 'Choose Plan'
-        : 'View Plans';
+  const ctaLabel = isExpired ? 'Upgrade Now' : 'Activate Now';
 
   return (
     <div
       className={`border-b px-4 py-2.5 ${scheme.bg}`}
       role="status"
-      aria-live="polite"
+      aria-live="assertive"
+      data-trial-state={isExpired ? 'expired' : 'last_day'}
     >
       <div className="flex items-center justify-between gap-4">
-        {/* Left: Icon + message */}
         <div className="flex items-center gap-3 min-w-0">
-          <Icon
-            className={`h-4 w-4 flex-shrink-0 ${
-              isLastDay || isExpired ? 'animate-pulse' : ''
-            }`}
+          <AlertTriangle
+            className="h-4 w-4 flex-shrink-0 animate-pulse"
+            aria-hidden
           />
           <div className="min-w-0">
             <span className="font-semibold text-sm">{message}</span>
             {subMessage && (
-              <span className="ml-2 text-xs opacity-70 hidden sm:inline">
+              <span className="ml-2 text-xs opacity-80 hidden sm:inline">
                 {subMessage}
               </span>
             )}
           </div>
         </div>
 
-        {/* Right: CTA */}
         {canManageBilling && (
           <Link
             href="/app/billing"
             className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-semibold text-xs transition-all motion-safe:hover:scale-105 flex-shrink-0 ${scheme.accent}`}
           >
-            {isExpired || isLastDay ? (
-              <Zap className="h-3 w-3" />
-            ) : (
-              <ArrowRight className="h-3 w-3" />
-            )}
+            <Zap className="h-3 w-3" aria-hidden />
             {ctaLabel}
           </Link>
         )}

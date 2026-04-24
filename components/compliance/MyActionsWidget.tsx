@@ -1,34 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  CheckSquare,
-  Clock,
-  ChevronDown,
-} from 'lucide-react';
+import { CheckSquare, ChevronDown, Clock } from 'lucide-react';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { Skeleton } from '@/components/ui/skeleton';
-
-type TaskStatus =
-  | 'overdue'
-  | 'due_today'
-  | 'due_soon'
-  | 'in_progress'
-  | 'pending';
-
-interface MyAction {
-  id: string;
-  title: string;
-  dueDate: string;
-  status: TaskStatus;
-  type: 'obligation' | 'task' | 'evidence_review' | 'incident';
-  entityId?: string;
-  entityHref?: string;
-}
+import {
+  useMyActions,
+  useMyActionsMeta,
+  useMyActionsStore,
+  type MyActionStatus,
+} from '@/lib/stores/my-actions';
 
 const STATUS_CONFIG: Record<
-  TaskStatus,
+  MyActionStatus,
   { label: string; color: string; bgColor: string }
 > = {
   overdue: {
@@ -62,8 +47,8 @@ function StatusDropdown({
   currentStatus,
   onUpdate,
 }: {
-  currentStatus: TaskStatus;
-  onUpdate: (s: TaskStatus) => void;
+  currentStatus: MyActionStatus;
+  onUpdate: (s: MyActionStatus) => void;
 }) {
   const [open, setOpen] = useState(false);
   const config = STATUS_CONFIG[currentStatus];
@@ -76,16 +61,22 @@ function StatusDropdown({
           e.stopPropagation();
           setOpen(!open);
         }}
+        aria-haspopup="menu"
+        aria-expanded={open}
         className={`inline-flex items-center gap-1 rounded border px-2 py-0.5 text-[11px] font-semibold ${config.bgColor} ${config.color}`}
       >
         {config.label}
-        <ChevronDown className="h-3 w-3" />
+        <ChevronDown className="h-3 w-3" aria-hidden />
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1 w-36 rounded-lg border border-glass-border bg-card p-1 shadow-xl">
-          {(Object.keys(STATUS_CONFIG) as TaskStatus[]).map((s) => (
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-50 mt-1 w-36 rounded-lg border border-glass-border bg-card p-1 shadow-xl"
+        >
+          {(Object.keys(STATUS_CONFIG) as MyActionStatus[]).map((s) => (
             <button
               key={s}
+              role="menuitem"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -104,47 +95,40 @@ function StatusDropdown({
 }
 
 function MyActionsWidgetInner() {
-  const [actions, setActions] = useState<MyAction[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const actions = useMyActions();
+  const { isLoading, hasLoadedOnce, error } = useMyActionsMeta();
+  const fetchActions = useMyActionsStore((s) => s.fetch);
+  const updateStatus = useMyActionsStore((s) => s.updateStatus);
 
   useEffect(() => {
-    let mounted = true;
-    async function load() {
-      try {
-        const res = await fetch('/api/v1/tasks/my-actions');
-        if (!res.ok) throw new Error('Failed');
-        const data = await res.json();
-        if (mounted) setActions(data.actions ?? []);
-      } catch {
-        // Fallback: empty state
-      } finally {
-        if (mounted) setIsLoading(false);
-      }
-    }
-    load();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    const controller = new AbortController();
+    fetchActions({ signal: controller.signal });
+    return () => controller.abort();
+  }, [fetchActions]);
 
-  const handleStatusUpdate = (actionId: string, newStatus: TaskStatus) => {
-    setActions((prev) =>
-      prev.map((a) => (a.id === actionId ? { ...a, status: newStatus } : a)),
-    );
-    // Fire-and-forget API update
-    fetch(`/api/v1/tasks/${actionId}/status`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus }),
-    }).catch(() => {});
-  };
-
-  if (isLoading) {
+  if (!hasLoadedOnce && isLoading) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-2" aria-busy="true">
         {Array.from({ length: 4 }).map((_, i) => (
           <Skeleton key={i} className="h-14 w-full rounded-lg" />
         ))}
+      </div>
+    );
+  }
+
+  if (error && !hasLoadedOnce) {
+    return (
+      <div role="alert" className="flex items-center justify-between gap-3">
+        <p className="text-sm text-muted-foreground">
+          Couldn&apos;t load actions.
+        </p>
+        <button
+          type="button"
+          onClick={() => fetchActions({ force: true })}
+          className="rounded-md border border-border px-2 py-0.5 text-xs font-semibold text-foreground"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -166,23 +150,9 @@ function MyActionsWidgetInner() {
     );
   }
 
-  // Sort: overdue first, then by due date
-  const sortedActions = [...actions].sort((a, b) => {
-    const priority: Record<TaskStatus, number> = {
-      overdue: 0,
-      due_today: 1,
-      due_soon: 2,
-      in_progress: 3,
-      pending: 4,
-    };
-    const pDiff = priority[a.status] - priority[b.status];
-    if (pDiff !== 0) return pDiff;
-    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-  });
-
   return (
     <div className="space-y-1.5">
-      {sortedActions.slice(0, 8).map((action) => (
+      {actions.slice(0, 8).map((action) => (
         <Link
           key={action.id}
           href={action.entityHref ?? '/app/tasks'}
@@ -193,7 +163,7 @@ function MyActionsWidgetInner() {
               {action.title}
             </p>
             <p className="flex items-center gap-2 text-[11px] text-muted-foreground">
-              <Clock className="h-3 w-3" />
+              <Clock className="h-3 w-3" aria-hidden />
               <span className="font-mono">
                 {new Date(action.dueDate).toLocaleDateString()}
               </span>
@@ -201,7 +171,7 @@ function MyActionsWidgetInner() {
           </div>
           <StatusDropdown
             currentStatus={action.status}
-            onUpdate={(s) => handleStatusUpdate(action.id, s)}
+            onUpdate={(s) => updateStatus(action.id, s)}
           />
         </Link>
       ))}
@@ -218,8 +188,8 @@ function MyActionsWidgetInner() {
 }
 
 /**
- * My Actions Widget — tasks assigned to current user.
- * Sorted by urgency, inline status update.
+ * My Actions Widget — shares data with NextActionsStrip via `useMyActionsStore`.
+ * Inline status updates are optimistic and propagate across every consumer.
  */
 export function MyActionsWidget() {
   return (

@@ -5,11 +5,11 @@ import { TopBar } from '@/components/topbar';
 import { AppHydrator } from '@/components/app-hydrator';
 import { AppProviders } from '@/components/app-providers';
 import { fetchSystemState } from '@/lib/system-state/server';
-import { TrialCountdownBanner } from '@/components/billing/TrialCountdownBanner';
 import { UpgradeModal } from '@/components/billing/UpgradeModal';
 import { UpgradeSuggestionEngine } from '@/components/billing/UpgradeSuggestionEngine';
 import { UpgradeTriggerPoints } from '@/components/billing/UpgradeTriggerPoints';
 import { UsageLimitWarnings } from '@/components/billing/UsageLimitWarnings';
+import { TrialCountdownBanner } from '@/components/billing/TrialCountdownBanner';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { CommandPalette } from '@/components/command-palette/CommandPalette';
@@ -18,7 +18,6 @@ import { AiAssistant } from '@/components/ai-assistant/AiAssistant';
 import { NotificationToast } from '@/components/notifications/notification-toast';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
-import { EnterpriseTrustStrip } from '@/components/trust/EnterpriseTrustStrip';
 import { SecurityTrackingBootstrap } from '@/components/security/SecurityTrackingBootstrap';
 import { ControlPlaneRuntimeProvider } from '@/lib/control-plane/runtime-client';
 import { RuntimeOpsGuard } from '@/components/control-plane/runtime-ops-guard';
@@ -184,7 +183,6 @@ export default async function AppLayout({
                 </header>
 
                 <RuntimeOpsGuard surface="app" />
-                <EnterpriseTrustStrip surface="app" />
                 <TrialCountdownBanner />
                 <UsageLimitWarnings />
                 <UpgradeTriggerPoints />

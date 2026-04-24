@@ -3,11 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
+  AlertTriangle,
   ArrowRight,
   Briefcase,
   CheckCircle2,
   CheckSquare,
   ClipboardList,
+  Clock,
   FileText,
   Home,
   LineChart,
@@ -59,7 +61,6 @@ import { DailyStandUpCard } from '@/components/dashboard/DailyStandUpCard';
 import { QuickActionTiles } from '@/components/dashboard/QuickActionTiles';
 import { getEntityLabel } from '@/components/dashboard/industry-labels';
 import {
-  AttentionRail,
   PriorityActionQueue,
   type ActionQueueItem,
 } from '@/components/dashboard/attention-rail';
@@ -68,8 +69,8 @@ import {
   PageTitleBar,
   StatCardSparkline,
   GaugeCard,
-  WelcomeBackHero,
 } from '@/components/dashboard/tabler-primitives';
+import { NextActionsStrip } from '@/components/dashboard/next-actions-strip';
 import { KpiBar, type KpiItem } from '@/components/dashboard/kpi-bar';
 import {
   ActivityTimeline,
@@ -94,6 +95,10 @@ import {
   EvidenceReview,
   TaskManagement,
 } from '@/components/dashboard/employer-tables';
+import {
+  useComplianceStore,
+  useComplianceSummary,
+} from '@/lib/stores/compliance';
 
 export interface CommandCenterProps {
   organizationId: string;
@@ -141,15 +146,40 @@ const EMPTY_COUNTS: ChecklistCompletionCounts = {
 
 export function CommandCenter({
   organizationId,
-  organizationName,
+  organizationName: _organizationName,
   industry,
-  userEmail,
+  userEmail: _userEmail,
   teamMemberCount = 0,
-  complianceScore = 0,
-  expiringCertsCount = 0,
-  openTasksCount = 0,
+  complianceScore: complianceScoreProp = 0,
+  expiringCertsCount: expiringCertsCountProp = 0,
+  openTasksCount: openTasksCountProp = 0,
 }: CommandCenterProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('command');
+
+  // Live compliance data — shared with ComplianceStatusStrip in topbar,
+  // so the dashboard can't drift from the header counters. Store has a
+  // 30s debounce plus the topbar polls every 2 min, so we only trigger
+  // an initial fetch here and rely on the shared store for freshness.
+  const complianceSummary = useComplianceSummary();
+  const fetchComplianceSummary = useComplianceStore((s) => s.fetchSummary);
+  const complianceLastFetched = useComplianceStore((s) => s.lastFetched);
+
+  useEffect(() => {
+    fetchComplianceSummary();
+  }, [fetchComplianceSummary]);
+
+  // Live values override the props defaults. Props are kept as a manual
+  // override path for tests and Storybook.
+  const openTasksCount = Math.max(
+    0,
+    complianceSummary.total - complianceSummary.completed,
+  ) || openTasksCountProp;
+  const overdueTasksCount = complianceSummary.overdue;
+  const dueSoonCount = complianceSummary.dueSoon;
+  const completionPct = complianceSummary.completionPercentage;
+  const expiringCertsCount = expiringCertsCountProp;
+  const complianceScore = complianceScoreProp;
+  const liveDataReady = complianceLastFetched !== null;
   const [completionCounts, setCompletionCounts] =
     useState<ChecklistCompletionCounts>(EMPTY_COUNTS);
   const [isLoadingCounts, setIsLoadingCounts] = useState(true);
@@ -569,17 +599,6 @@ export function CommandCenter({
       setRecordFilters((prev) => prev.filter((x) => x.id !== f.id)),
   }));
 
-  const heroSummary = (() => {
-    const parts: string[] = [];
-    if (openTasksCount > 0) parts.push(`${openTasksCount} open tasks`);
-    if (expiringCertsCount > 0)
-      parts.push(`${expiringCertsCount} expiring soon`);
-    if (criticalQueueCount > 0)
-      parts.push(`${criticalQueueCount} at risk`);
-    if (parts.length === 0) return 'All clear for today';
-    return parts.join(' · ');
-  })();
-
   return (
     <div className="-mx-4 -my-4 flex h-[calc(100vh-6rem)] flex-col sm:-mx-6 sm:-my-6">
       <div className="command-toolbar">
@@ -645,93 +664,96 @@ export function CommandCenter({
                 }
               />
 
-              <WelcomeBackHero
-                userEmail={userEmail}
-                organizationName={organizationName}
-                summary={heroSummary}
-                actions={
-                  <Link
-                    href="/app/reports"
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
-                  >
-                    <LineChart className="h-3.5 w-3.5" />
-                    View Reports
-                  </Link>
-                }
-              />
+              <NextActionsStrip />
 
-              <AttentionRail
-                complianceScore={complianceScore}
-                openTasksCount={openTasksCount}
-                expiringCertsCount={expiringCertsCount}
-              />
-
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <IconTileStat
                   icon={CheckSquare}
-                  value={openTasksCount}
-                  label="Open tasks"
+                  value={liveDataReady ? openTasksCount : '—'}
+                  label="Open obligations"
                   sublabel={
-                    openTasksCount > 10
-                      ? `${openTasksCount} awaiting owner`
-                      : 'On cadence'
+                    !liveDataReady
+                      ? 'Loading live count'
+                      : openTasksCount > 10
+                        ? `${openTasksCount} awaiting owner`
+                        : openTasksCount > 0
+                          ? 'On cadence'
+                          : 'No open obligations'
                   }
-                  delta={{
-                    value: formatPct(openDeltaPct),
-                    direction: openDeltaPct > 2 ? 'up' : openDeltaPct < -2 ? 'down' : 'flat',
-                  }}
+                  delta={
+                    liveDataReady && openTasksCount > 0
+                      ? {
+                          value: formatPct(openDeltaPct),
+                          direction:
+                            openDeltaPct > 2 ? 'up' : openDeltaPct < -2 ? 'down' : 'flat',
+                        }
+                      : undefined
+                  }
                   tone="blue"
                   href="/app/tasks"
                 />
                 <IconTileStat
-                  icon={FileText}
-                  value={expiringCertsCount}
-                  label="Expiring soon"
+                  icon={AlertTriangle}
+                  value={liveDataReady ? overdueTasksCount : '—'}
+                  label="Overdue obligations"
                   sublabel={
-                    expiringCertsCount > 0
-                      ? `${expiringCertsCount} need renewal`
-                      : 'No urgent expiries'
+                    !liveDataReady
+                      ? 'Loading live count'
+                      : overdueTasksCount > 0
+                        ? 'Past SLA — resolve first'
+                        : 'Nothing past SLA'
                   }
-                  delta={{
-                    value: formatPct(expiringDeltaPct),
-                    direction:
-                      expiringDeltaPct > 2
-                        ? 'up'
-                        : expiringDeltaPct < -2
-                          ? 'down'
-                          : 'flat',
-                  }}
-                  tone={expiringCertsCount > 5 ? 'rose' : 'amber'}
-                  href="/app/certificates"
+                  tone={overdueTasksCount > 0 ? 'rose' : 'slate'}
+                  href="/app/tasks?filter=overdue"
                 />
                 <IconTileStat
-                  icon={Users}
-                  value={teamMemberCount}
-                  label="Team members"
-                  sublabel="Assigned to controls"
-                  tone="slate"
-                  href="/app/team"
+                  icon={Clock}
+                  value={liveDataReady ? dueSoonCount : '—'}
+                  label="Due this week"
+                  sublabel={
+                    !liveDataReady
+                      ? 'Loading live count'
+                      : dueSoonCount > 0
+                        ? `${dueSoonCount} within 7 days`
+                        : 'Nothing due this week'
+                  }
+                  tone={dueSoonCount > 5 ? 'rose' : dueSoonCount > 0 ? 'amber' : 'slate'}
+                  href="/app/tasks?filter=due_soon"
                 />
                 <IconTileStat
                   icon={ShieldCheck}
-                  value={`${complianceScore}%`}
-                  label="Readiness"
+                  value={
+                    complianceScore > 0
+                      ? `${complianceScore}%`
+                      : liveDataReady
+                        ? `${completionPct}%`
+                        : '—'
+                  }
+                  label={complianceScore > 0 ? 'Readiness' : 'Task completion'}
                   sublabel={
                     complianceScore >= 85
                       ? 'Buyer-ready'
                       : complianceScore >= 70
                         ? 'Approaching ready'
-                        : 'Needs attention'
+                        : complianceScore > 0
+                          ? 'Needs attention'
+                          : liveDataReady
+                            ? `${complianceSummary.completed} of ${complianceSummary.total} closed`
+                            : 'Loading completion'
                   }
-                  delta={{
-                    value: formatPct(readinessDeltaPct),
-                    direction:
-                      readinessDeltaPct > 0.5
-                        ? 'up'
-                        : readinessDeltaPct < -0.5
-                          ? 'down'
-                          : 'flat',
-                  }}
+                  delta={
+                    complianceScore > 0
+                      ? {
+                          value: formatPct(readinessDeltaPct),
+                          direction:
+                            readinessDeltaPct > 0.5
+                              ? 'up'
+                              : readinessDeltaPct < -0.5
+                                ? 'down'
+                                : 'flat',
+                        }
+                      : undefined
+                  }
                   tone="emerald"
                   href="/app/reports"
                 />
