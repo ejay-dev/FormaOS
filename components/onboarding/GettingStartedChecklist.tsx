@@ -47,13 +47,16 @@ export function GettingStartedChecklist({
   const organizationId = useAppStore((s) => s.organization?.id ?? null);
   const [counts, setCounts] = useState<ChecklistCompletionCounts>({
     tasks: 0,
+    tasksCompleted: 0,
     evidence: 0,
+    evidenceVerified: 0,
     members: 0,
     complianceChecks: 0,
     reports: 0,
     frameworks: 0,
     policies: 0,
     incidents: 0,
+    incidentsClosed: 0,
     registers: 0,
     workflows: 0,
     patients: 0,
@@ -96,13 +99,16 @@ export function GettingStartedChecklist({
         const data = await response.json();
         setCounts({
           tasks: data.tasks ?? 0,
+          tasksCompleted: data.tasksCompleted ?? 0,
           evidence: data.evidence ?? 0,
+          evidenceVerified: data.evidenceVerified ?? 0,
           members: data.members ?? 0,
           complianceChecks: data.complianceChecks ?? 0,
           reports: data.reports ?? 0,
           frameworks: data.frameworks ?? 0,
           policies: data.policies ?? 0,
           incidents: data.incidents ?? 0,
+          incidentsClosed: data.incidentsClosed ?? 0,
           registers: data.registers ?? 0,
           workflows: data.workflows ?? 0,
           patients: data.patients ?? 0,

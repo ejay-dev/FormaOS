@@ -7,6 +7,7 @@ import {
   AlertTriangle,
   CalendarClock,
   ClipboardList,
+  ClipboardCheck,
   Phone,
   ShieldAlert,
   User,
@@ -84,6 +85,7 @@ export default async function ParticipantDetailPage({
     { data: participant },
     { data: recentVisits },
     { data: recentIncidents },
+    { data: carePlans },
   ] = await Promise.all([
     supabase
       .from('org_patients')
@@ -128,6 +130,13 @@ export default async function ParticipantDetailPage({
       .eq('organization_id', orgId)
       .eq('patient_id', participantId)
       .order('occurred_at', { ascending: false })
+      .limit(6),
+    supabase
+      .from('org_care_plans')
+      .select('id, title, status, review_date, goals')
+      .eq('organization_id', orgId)
+      .eq('client_id', participantId)
+      .order('created_at', { ascending: false })
       .limit(6),
   ]);
 
@@ -363,6 +372,67 @@ export default async function ParticipantDetailPage({
           </div>
         </section>
       </div>
+
+      <section
+        className="rounded-xl border border-border bg-card p-5"
+        data-testid="participant-care-plans"
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <ClipboardCheck className="h-4 w-4" />
+            Care Plans
+          </h2>
+          <Link
+            href={`/app/care-plans/new?client_id=${participantId}`}
+            className="text-xs text-primary hover:underline"
+          >
+            + New care plan
+          </Link>
+        </div>
+        <div className="mt-4 space-y-2">
+          {(carePlans ?? []).length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No care plans linked to this {label.toLowerCase()} yet.
+            </p>
+          ) : (
+            (carePlans ?? []).map(
+              (plan: {
+                id: string;
+                title: string | null;
+                status: string;
+                review_date: string | null;
+                goals: unknown;
+              }) => {
+                const goalsCount = Array.isArray(plan.goals)
+                  ? plan.goals.length
+                  : 0;
+                return (
+                  <Link
+                    key={plan.id}
+                    href={`/app/care-plans/${plan.id}`}
+                    className="block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-medium">
+                        {plan.title ?? 'Untitled plan'}
+                      </span>
+                      <span className="text-xs text-muted-foreground capitalize">
+                        {plan.status}
+                      </span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {goalsCount} goal{goalsCount === 1 ? '' : 's'}
+                      {plan.review_date
+                        ? ` · Review ${new Date(plan.review_date).toLocaleDateString()}`
+                        : ''}
+                    </div>
+                  </Link>
+                );
+              },
+            )
+          )}
+        </div>
+      </section>
 
       {profile.communication_needs || profile.cultural_considerations ? (
         <section className="rounded-xl border border-border bg-card p-5">

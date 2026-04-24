@@ -10,6 +10,7 @@ import {
   ShieldAlert,
   BadgeCheck,
   NotebookPen,
+  ClipboardList,
 } from 'lucide-react';
 import { normalizeRole } from '@/app/app/actions/rbac';
 import {
@@ -133,6 +134,7 @@ export default async function PatientDetailPage({
     { data: incidentsData },
     { data: shiftsData },
     { data: evidenceData },
+    { data: carePlansData },
   ] = await Promise.all([
     supabase
       .from('org_patients')
@@ -179,6 +181,13 @@ export default async function PatientDetailPage({
       .eq('patient_id', patientId)
       .order('created_at', { ascending: false })
       .limit(10),
+    supabase
+      .from('org_care_plans')
+      .select('id, title, status, review_date, goals')
+      .eq('organization_id', membership.organization_id)
+      .eq('client_id', patientId)
+      .order('created_at', { ascending: false })
+      .limit(6),
   ]);
 
   const patient = patientData as PatientRow | null;
@@ -692,6 +701,73 @@ export default async function PatientDetailPage({
                 </div>
               </div>
             ))
+          )}
+        </div>
+      </section>
+
+      <section
+        className="rounded-2xl border border-edge-2 bg-surface-1 p-6"
+        data-testid="patient-care-plans"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-semibold text-foreground/90">
+            <ClipboardList className="h-4 w-4 text-emerald-300" />
+            Care Plans
+          </div>
+          <Link
+            href={`/app/care-plans/new?client_id=${patient.id}`}
+            className="text-xs text-primary hover:underline"
+          >
+            + New plan
+          </Link>
+        </div>
+        <div className="mt-4 space-y-3">
+          {((carePlansData ?? []) as Array<{
+            id: string;
+            title: string | null;
+            status: string;
+            review_date: string | null;
+            goals: unknown;
+          }>).length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              No care plans linked to this patient yet.
+            </p>
+          ) : (
+            (carePlansData ?? []).map(
+              (plan: {
+                id: string;
+                title: string | null;
+                status: string;
+                review_date: string | null;
+                goals: unknown;
+              }) => {
+                const goalsCount = Array.isArray(plan.goals)
+                  ? plan.goals.length
+                  : 0;
+                return (
+                  <Link
+                    key={plan.id}
+                    href={`/app/care-plans/${plan.id}`}
+                    className="block rounded-xl border border-edge-2 bg-surface-1 px-4 py-3 hover:bg-white/5"
+                  >
+                    <div className="flex items-center justify-between text-sm text-foreground">
+                      <span className="font-semibold">
+                        {plan.title ?? 'Untitled plan'}
+                      </span>
+                      <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                        {plan.status}
+                      </span>
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {goalsCount} goal{goalsCount === 1 ? '' : 's'}
+                      {plan.review_date
+                        ? ` · Review ${new Date(plan.review_date).toLocaleDateString()}`
+                        : ''}
+                    </div>
+                  </Link>
+                );
+              },
+            )
           )}
         </div>
       </section>

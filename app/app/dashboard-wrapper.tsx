@@ -12,6 +12,8 @@ interface DashboardWrapperProps {
   userRole: DatabaseRole;
   userEmail: string;
   industry?: string | null;
+  teamMemberCount?: number;
+  expiringCertsCount?: number;
 }
 
 /**
@@ -24,6 +26,8 @@ export function DashboardWrapper({
   userRole,
   userEmail,
   industry,
+  teamMemberCount = 0,
+  expiringCertsCount = 0,
 }: DashboardWrapperProps) {
   const isEmployer = isEmployerRole(userRole);
 
@@ -36,6 +40,8 @@ export function DashboardWrapper({
           organizationName={orgName}
           industry={industry}
           userEmail={userEmail}
+          teamMemberCount={teamMemberCount}
+          expiringCertsCount={expiringCertsCount}
         />
       </UnifiedDashboardLayout>
     );

@@ -143,6 +143,34 @@ export default async function DashboardPage() {
   const orgName = safeOrgName(membership);
   const orgId = membership?.organization_id || '';
 
+  // Live top-level KPIs — fetched here so the command center receives truthful
+  // counts instead of the previous hard-coded 0 defaults.
+  let teamMemberCount = 0;
+  let expiringCertsCount = 0;
+  if (orgId) {
+    const expiryHorizon = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
+    try {
+      const [teamResult, expiringResult] = await Promise.all([
+        supabase
+          .from('org_members')
+          .select('id', { count: 'exact', head: true })
+          .eq('organization_id', orgId),
+        supabase
+          .from('org_staff_credentials')
+          .select('id', { count: 'exact', head: true })
+          .eq('organization_id', orgId)
+          .not('expiry_date', 'is', null)
+          .lte('expiry_date', expiryHorizon),
+      ]);
+      teamMemberCount = teamResult.count ?? 0;
+      expiringCertsCount = expiringResult.count ?? 0;
+    } catch {
+      // Leave counts at 0 on RLS/query failure; UI renders "—" if ever needed.
+    }
+  }
+
   // Normalize and validate role as DatabaseRole type
   const rawRole = membership?.role?.toLowerCase() || 'member';
   const userRole = (
@@ -159,6 +187,8 @@ export default async function DashboardPage() {
       userRole={userRole}
       userEmail={user.email || 'User'}
       industry={industry}
+      teamMemberCount={teamMemberCount}
+      expiringCertsCount={expiringCertsCount}
     />
   );
 }

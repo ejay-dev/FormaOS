@@ -1,7 +1,15 @@
 import { NextResponse } from 'next/server';
+import { unstable_cache } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getChecklistCountsForOrg } from '@/lib/onboarding/checklist-data';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+
+const getCachedCounts = (orgId: string) =>
+  unstable_cache(
+    () => getChecklistCountsForOrg(orgId),
+    ['onboarding-checklist', orgId],
+    { tags: ['onboarding-checklist', `onboarding-checklist:${orgId}`], revalidate: 60 },
+  )();
 
 export async function GET(request: Request) {
   try {
@@ -33,7 +41,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const counts = await getChecklistCountsForOrg(orgId);
+    const counts = await getCachedCounts(orgId);
 
     return NextResponse.json(counts);
   } catch (error) {

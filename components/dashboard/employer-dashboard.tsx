@@ -195,13 +195,16 @@ export function EmployerDashboard({
   const [completionCounts, setCompletionCounts] =
     useState<ChecklistCompletionCounts>({
       tasks: 0,
+      tasksCompleted: 0,
       evidence: 0,
+      evidenceVerified: 0,
       members: 0,
       complianceChecks: 0,
       reports: 0,
       frameworks: 0,
       policies: 0,
       incidents: 0,
+      incidentsClosed: 0,
       registers: 0,
       workflows: 0,
       patients: 0,
@@ -222,14 +225,15 @@ export function EmployerDashboard({
       id: 'execution',
       title: 'Execution workflows started',
       detail: 'Tasks or workflows are actively driving control ownership.',
-      done: completionCounts.tasks > 0 || completionCounts.workflows > 0,
+      done:
+        completionCounts.tasksCompleted > 0 || completionCounts.workflows > 0,
       href: '/app/tasks',
     },
     {
       id: 'evidence',
       title: 'Evidence chain active',
       detail: 'Artifacts are being captured and linked to control execution.',
-      done: completionCounts.evidence > 0,
+      done: completionCounts.evidenceVerified > 0,
       href: '/app/vault',
     },
     {
@@ -348,13 +352,16 @@ export function EmployerDashboard({
 
         const newCounts: ChecklistCompletionCounts = {
           tasks: data.tasks ?? 0,
+          tasksCompleted: data.tasksCompleted ?? 0,
           evidence: data.evidence ?? 0,
+          evidenceVerified: data.evidenceVerified ?? 0,
           members: data.members ?? 0,
           complianceChecks: data.complianceChecks ?? 0,
           reports: data.reports ?? 0,
           frameworks: data.frameworks ?? 0,
           policies: data.policies ?? 0,
           incidents: data.incidents ?? 0,
+          incidentsClosed: data.incidentsClosed ?? 0,
           registers: data.registers ?? 0,
           workflows: data.workflows ?? 0,
           patients: data.patients ?? 0,

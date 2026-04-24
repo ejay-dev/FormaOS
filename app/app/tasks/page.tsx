@@ -26,6 +26,7 @@ type TaskRow = {
   status: string;
   priority: string | null;
   due_date: string | null;
+  assigned_to: string | null;
   framework_slug: string | null;
   control_ref: string | null;
   evidence?: Array<{ count: number }> | null;
@@ -36,6 +37,7 @@ type TasksPageProps = {
     q?: string | string[];
     priority?: string | string[];
     status?: string | string[];
+    filter?: string | string[];
   }>;
 };
 
@@ -63,6 +65,9 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   )
     ? statusFilterRaw
     : 'all';
+  const filterKey = parseSingleValue(resolvedSearchParams.filter)
+    .trim()
+    .toLowerCase();
 
   const systemState = await fetchSystemState();
   if (!systemState) {
@@ -86,6 +91,11 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
     .order('due_date', { ascending: true });
 
   const allTasks: TaskRow[] = tasks || [];
+  const now = Date.now();
+  const weekMs = 7 * 24 * 60 * 60 * 1000;
+  const userEmailLower = (systemState.user.email ?? '').toLowerCase();
+  const userId = systemState.user.id ?? '';
+
   const filteredTasks = allTasks.filter((task) => {
     const normalizedPriority = normalizeTaskPriority(task.priority);
     const normalizedStatus = (task.status ?? '').toLowerCase();
@@ -96,6 +106,26 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
       statusFilter === 'all' || normalizedStatus === statusFilter;
 
     if (!matchesPriority || !matchesStatus) {
+      return false;
+    }
+
+    if (filterKey === 'assigned_to_me') {
+      const assignee = (task.assigned_to ?? '').toLowerCase();
+      if (!assignee) return false;
+      if (assignee !== userEmailLower && assignee !== userId.toLowerCase()) {
+        return false;
+      }
+    } else if (filterKey === 'overdue') {
+      if (normalizedStatus === 'completed') return false;
+      if (!task.due_date) return false;
+      if (Date.parse(task.due_date) >= now) return false;
+    } else if (filterKey === 'due_soon' || filterKey === 'this-week') {
+      if (normalizedStatus === 'completed') return false;
+      if (!task.due_date) return false;
+      const dueMs = Date.parse(task.due_date);
+      if (dueMs < now || dueMs > now + weekMs) return false;
+    } else if (filterKey === 'expiring') {
+      // Retained for forward-compat; tasks don't have expiry windows.
       return false;
     }
 

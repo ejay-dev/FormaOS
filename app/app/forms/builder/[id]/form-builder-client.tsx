@@ -60,10 +60,10 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
       setOrgId(membership.organization_id);
 
       const { data, error } = await supabase
-        .from('forms')
+        .from('org_forms')
         .select('*')
         .eq('id', formId)
-        .eq('organization_id', membership.organization_id)
+        .eq('org_id', membership.organization_id)
         .maybeSingle();
 
       if (error) throw error;
@@ -91,10 +91,10 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
     try {
       const supabase = createSupabaseClient();
       const { error } = await supabase
-        .from('forms')
+        .from('org_forms')
         .update({ fields, updated_at: new Date().toISOString() })
         .eq('id', form.id)
-        .eq('organization_id', orgId);
+        .eq('org_id', orgId);
 
       if (error) throw error;
 

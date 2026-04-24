@@ -7,13 +7,16 @@ describe('industry roadmap progress', () => {
     const roadmap = getRoadmapForIndustry('ndis');
     const counts: ChecklistCompletionCounts = {
       tasks: 3,
+      tasksCompleted: 1,
       evidence: 1,
+      evidenceVerified: 1,
       members: 2,
       complianceChecks: 1,
       reports: 1,
       frameworks: 1,
       policies: 3,
       incidents: 1,
+      incidentsClosed: 1,
       registers: 1,
       workflows: 1,
       patients: 1,

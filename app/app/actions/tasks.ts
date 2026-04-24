@@ -3,7 +3,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { logActivity } from '@/app/app/actions/audit';
 import { logActivity as logProductActivity } from '@/lib/activity/feed';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import {
   notifySelf,
   createNotification,
@@ -276,4 +276,23 @@ async function _completeTaskCore(supabase: any, taskId: string, user: any) {
   }
 
   revalidatePath('/app/tasks');
+  revalidatePath('/app');
+  revalidateTag('onboarding-checklist', 'default');
+}
+
+export async function completeTask(taskId: string) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Unauthorized');
+    if (!taskId) throw new Error('Task ID required');
+
+    await _completeTaskCore(supabase, taskId, user);
+    return { ok: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
 }

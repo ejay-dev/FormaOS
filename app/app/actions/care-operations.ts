@@ -458,8 +458,6 @@ export async function createCarePlan(formData: FormData) {
     end_date: formData.get("end_date") as string || null,
     review_date: formData.get("review_date") as string || null,
     status: "draft",
-    goals: JSON.parse(formData.get("goals") as string || "[]"),
-    supports: JSON.parse(formData.get("supports") as string || "[]"),
     created_by: user.id,
   };
 
@@ -482,7 +480,9 @@ export async function createCarePlan(formData: FormData) {
 const CARE_PLAN_STATUSES = [
   'draft',
   'active',
+  'review',
   'under_review',
+  'completed',
   'expired',
   'archived',
 ] as const;
@@ -527,6 +527,260 @@ export async function updateCarePlanStatus(
     revalidatePath('/app/care-plans');
     revalidatePath('/app/care-plans/journey');
     return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+// =========================================================
+// CARE GOALS & SUPPORTS (JSONB-backed on org_care_plans)
+// =========================================================
+
+import {
+  normalizeGoal,
+  normalizeSupport,
+  type CareGoal,
+  type CareSupport,
+  type GoalStatus,
+  type SupportStatus,
+} from '@/lib/care-plans/normalize';
+
+async function loadPlanForWrite(planId: string) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  const orgId = await requireUserOrganization(supabase, user.id);
+
+  const { data: plan, error } = await supabase
+    .from('org_care_plans')
+    .select('id, organization_id, goals, supports, status')
+    .eq('id', planId)
+    .eq('organization_id', orgId)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!plan) throw new Error('Care plan not found');
+
+  const goals = Array.isArray(plan.goals)
+    ? (plan.goals as unknown[]).map(normalizeGoal)
+    : [];
+  const supports = Array.isArray(plan.supports)
+    ? (plan.supports as unknown[]).map(normalizeSupport)
+    : [];
+
+  return { supabase, orgId, plan, goals, supports };
+}
+
+async function persistPlan(
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  planId: string,
+  orgId: string,
+  patch: { goals?: CareGoal[]; supports?: CareSupport[] },
+) {
+  // Tenancy is enforced by RLS (care_plans_org_isolation) plus the explicit
+  // id + organization_id filters below — the authenticated user must be a
+  // member of orgId for the UPDATE to succeed.
+  const update: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
+  if (patch.goals) update.goals = patch.goals;
+  if (patch.supports) update.supports = patch.supports;
+  const { error } = await supabase
+    .from('org_care_plans')
+    .update(update)
+    .eq('id', planId)
+    .eq('organization_id', orgId);
+  if (error) throw error;
+  revalidatePath(`/app/care-plans/${planId}`);
+  revalidatePath('/app/care-plans');
+}
+
+export async function createGoal(planId: string, formData: FormData) {
+  try {
+    const title = String(formData.get('title') ?? '').trim();
+    if (!title) return actionError(new Error('Title is required'));
+    const description = String(formData.get('description') ?? '').trim();
+    const targetDate = String(formData.get('target_date') ?? '').trim();
+
+    const { supabase, orgId, goals } = await loadPlanForWrite(planId);
+
+    const goal: CareGoal = normalizeGoal({
+      id: crypto.randomUUID(),
+      title,
+      description: description || null,
+      status: 'pending',
+      target_date: targetDate || null,
+      progress_percentage: 0,
+      created_at: new Date().toISOString(),
+    });
+
+    await persistPlan(supabase, planId, orgId, { goals: [...goals, goal] });
+    return { success: true as const, goalId: goal.id };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function updateGoal(
+  planId: string,
+  goalId: string,
+  patch: {
+    title?: string;
+    description?: string | null;
+    status?: GoalStatus;
+    target_date?: string | null;
+    progress_percentage?: number;
+  },
+) {
+  try {
+    const { supabase, orgId, goals, supports } = await loadPlanForWrite(planId);
+    const idx = goals.findIndex((g) => g.id === goalId);
+    if (idx === -1) return actionError(new Error('Goal not found'));
+
+    const next = normalizeGoal({ ...goals[idx], ...patch });
+
+    if (next.status === 'achieved') next.progress_percentage = 100;
+    if (next.status === 'pending' && patch.progress_percentage === undefined) {
+      next.progress_percentage = 0;
+    }
+
+    const updatedGoals = [...goals];
+    updatedGoals[idx] = next;
+
+    await persistPlan(supabase, planId, orgId, {
+      goals: updatedGoals,
+      supports,
+    });
+    return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function deleteGoal(planId: string, goalId: string) {
+  try {
+    const { supabase, orgId, goals, supports } = await loadPlanForWrite(planId);
+    const remainingGoals = goals.filter((g) => g.id !== goalId);
+    if (remainingGoals.length === goals.length) {
+      return actionError(new Error('Goal not found'));
+    }
+    const remainingSupports = supports.filter((s) => s.goal_id !== goalId);
+    await persistPlan(supabase, planId, orgId, {
+      goals: remainingGoals,
+      supports: remainingSupports,
+    });
+    return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function createSupport(planId: string, formData: FormData) {
+  try {
+    const goalId = String(formData.get('goal_id') ?? '').trim();
+    if (!goalId) return actionError(new Error('Goal is required'));
+    const description = String(formData.get('description') ?? '').trim();
+    if (!description)
+      return actionError(new Error('Description is required'));
+    const assignedTo = String(formData.get('assigned_to') ?? '').trim();
+    const frequency = String(formData.get('frequency') ?? '').trim();
+
+    const { supabase, orgId, goals, supports } = await loadPlanForWrite(planId);
+    if (!goals.some((g) => g.id === goalId)) {
+      return actionError(new Error('Parent goal not found'));
+    }
+
+    const support: CareSupport = normalizeSupport({
+      id: crypto.randomUUID(),
+      goal_id: goalId,
+      description,
+      assigned_to: assignedTo || null,
+      frequency: frequency || null,
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    });
+
+    await persistPlan(supabase, planId, orgId, {
+      supports: [...supports, support],
+    });
+    return { success: true as const, supportId: support.id };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function updateSupport(
+  planId: string,
+  supportId: string,
+  patch: {
+    description?: string;
+    assigned_to?: string | null;
+    frequency?: string | null;
+    status?: SupportStatus;
+  },
+) {
+  try {
+    const { supabase, orgId, supports } = await loadPlanForWrite(planId);
+    const idx = supports.findIndex((s) => s.id === supportId);
+    if (idx === -1) return actionError(new Error('Support not found'));
+
+    const next = normalizeSupport({ ...supports[idx], ...patch });
+    const updated = [...supports];
+    updated[idx] = next;
+
+    await persistPlan(supabase, planId, orgId, { supports: updated });
+    return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function deleteSupport(planId: string, supportId: string) {
+  try {
+    const { supabase, orgId, supports } = await loadPlanForWrite(planId);
+    const remaining = supports.filter((s) => s.id !== supportId);
+    if (remaining.length === supports.length) {
+      return actionError(new Error('Support not found'));
+    }
+    await persistPlan(supabase, planId, orgId, { supports: remaining });
+    return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function syncCarePlanProgress(planId: string) {
+  try {
+    const { supabase, orgId, plan, goals } = await loadPlanForWrite(planId);
+    if (goals.length === 0) return { success: true as const };
+
+    const allAchieved = goals.every((g) => g.status === 'achieved');
+    const anyActive = goals.some((g) => g.status !== 'pending');
+
+    let nextStatus: string | null = null;
+    if (allAchieved && plan.status !== 'archived') nextStatus = 'active';
+    else if (anyActive && plan.status === 'draft') nextStatus = 'active';
+
+    if (!nextStatus) return { success: true as const };
+
+    await supabase
+      .from('org_care_plans')
+      .update({ status: nextStatus, updated_at: new Date().toISOString() })
+      .eq('id', planId)
+      .eq('organization_id', orgId);
+
+    revalidatePath(`/app/care-plans/${planId}`);
+    return { success: true as const, status: nextStatus };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);

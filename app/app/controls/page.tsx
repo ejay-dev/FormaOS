@@ -201,7 +201,15 @@ export default async function ControlsPage() {
         <div>
           <h1 className="text-xl font-bold">Controls</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            View and track compliance control evaluations across your frameworks
+            Controls are provisioned from your activated frameworks. Add or
+            update frameworks in{' '}
+            <Link
+              href="/app/compliance/frameworks"
+              className="underline decoration-muted-foreground/40 underline-offset-2 hover:text-foreground"
+            >
+              /app/compliance/frameworks
+            </Link>
+            .
           </p>
         </div>
         <div className="flex items-center gap-2">

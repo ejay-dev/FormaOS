@@ -40,7 +40,11 @@ export const metadata = {
   title: 'New Care Plan | FormaOS',
 };
 
-export default async function NewCarePlanPage() {
+export default async function NewCarePlanPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ client_id?: string }>;
+}) {
   const systemState = await fetchSystemState();
   if (!systemState) redirect('/auth/signin');
 
@@ -48,11 +52,13 @@ export default async function NewCarePlanPage() {
   const label = getCarePlanLabel(organization.industry);
   const clientLabel = getClientLabel(organization.industry);
 
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const preselectedClientId = resolvedSearchParams.client_id ?? '';
+
   const supabase = await createSupabaseServerClient();
 
-  // Fetch clients to populate the dropdown
   const { data: clients } = await supabase
-    .from('org_participants')
+    .from('org_patients')
     .select('id, full_name')
     .eq('organization_id', organization.id)
     .order('full_name', { ascending: true })
@@ -114,6 +120,7 @@ export default async function NewCarePlanPage() {
                 id="client_id"
                 name="client_id"
                 required
+                defaultValue={preselectedClientId}
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               >
                 <option value="">Select {clientLabel.toLowerCase()}...</option>
@@ -212,10 +219,6 @@ export default async function NewCarePlanPage() {
             </div>
           </div>
         </div>
-
-        {/* Hidden defaults for goals/supports (empty arrays) */}
-        <input type="hidden" name="goals" value="[]" />
-        <input type="hidden" name="supports" value="[]" />
 
         {/* Actions */}
         <div className="flex gap-4 justify-end">

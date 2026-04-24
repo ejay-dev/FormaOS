@@ -3,13 +3,16 @@ import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePa
 
 const completionCounts = {
   tasks: 0,
+  tasksCompleted: 0,
   evidence: 0,
+  evidenceVerified: 0,
   members: 0,
   complianceChecks: 0,
   reports: 0,
   frameworks: 0,
   policies: 0,
   incidents: 0,
+  incidentsClosed: 0,
   registers: 0,
   workflows: 0,
   patients: 0,

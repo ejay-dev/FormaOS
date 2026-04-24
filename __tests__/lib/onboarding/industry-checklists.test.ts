@@ -16,13 +16,16 @@ import {
 
 const EMPTY_COUNTS: ChecklistCompletionCounts = {
   tasks: 0,
+  tasksCompleted: 0,
   evidence: 0,
+  evidenceVerified: 0,
   members: 0,
   complianceChecks: 0,
   reports: 0,
   frameworks: 0,
   policies: 0,
   incidents: 0,
+  incidentsClosed: 0,
   registers: 0,
   workflows: 0,
   patients: 0,
@@ -31,13 +34,16 @@ const EMPTY_COUNTS: ChecklistCompletionCounts = {
 
 const FULL_COUNTS: ChecklistCompletionCounts = {
   tasks: 10,
+  tasksCompleted: 10,
   evidence: 5,
+  evidenceVerified: 5,
   members: 5,
   complianceChecks: 3,
   reports: 2,
   frameworks: 3,
   policies: 5,
   incidents: 0,
+  incidentsClosed: 0,
   registers: 2,
   workflows: 3,
   patients: 10,

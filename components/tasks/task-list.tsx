@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Check, RefreshCw, Calendar, Link2 } from 'lucide-react';
-// We removed the server action import for now to prevent build errors if the action is missing.
-// We will mock the toggle for now.
+import { useRouter } from 'next/navigation';
+import { completeTask } from '@/app/app/actions/tasks';
 
 type Task = {
   id: string;
@@ -21,19 +21,42 @@ type Task = {
   participant?: string | null;
 };
 
-// ✅ CORRECT EXPORT
 export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
+  const router = useRouter();
   const [tasks, setTasks] = useState(initialTasks);
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   const handleToggle = async (taskId: string, currentStatus: string) => {
-    // 1. Optimistic Update
     const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
+    const previousTasks = tasks;
     setTasks(
       tasks.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t)),
     );
+    setError(null);
 
-    // In a real scenario, you would call the server action here.
-    // await completeTask(taskId);
+    try {
+      if (newStatus === 'completed') {
+        const result = await completeTask(taskId);
+        if (result && 'error' in result && result.error) {
+          throw new Error(result.error);
+        }
+      } else {
+        const res = await fetch(`/api/v1/tasks/${taskId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'pending' }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          throw new Error(body?.error ?? 'Failed to update');
+        }
+      }
+      startTransition(() => router.refresh());
+    } catch (err) {
+      setTasks(previousTasks);
+      setError(err instanceof Error ? err.message : 'Failed to update task');
+    }
   };
 
   const getPriorityBadge = (priority: string) => {
@@ -48,7 +71,15 @@ export function TaskList({ initialTasks }: { initialTasks: Task[] }) {
 
   return (
     <div className="bg-glass-strong border border-glass-border rounded-2xl overflow-hidden shadow-sm">
-      <div className="overflow-x-auto">
+      {error && (
+        <div
+          role="alert"
+          className="border-b border-red-400/30 bg-red-500/10 px-4 py-2 text-xs text-red-300"
+        >
+          {error}
+        </div>
+      )}
+      <div className="overflow-x-auto" aria-busy={isPending}>
         <table className="min-w-[520px] w-full text-left text-sm">
           <thead className="bg-glass-strong border-b border-glass-border text-muted-foreground">
             <tr>

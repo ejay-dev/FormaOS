@@ -988,7 +988,7 @@ export const SAAS_TECHNOLOGY_NAV: NavItem[] = [
   },
   {
     name: 'AI Assistant',
-    href: '#ai-assistant',
+    href: '/app/settings/ai',
     icon: Bot,
     category: 'Certification',
     testId: 'nav-ai-assistant',
@@ -1136,7 +1136,7 @@ export const ENTERPRISE_NAV: NavItem[] = [
   },
   {
     name: 'AI Assistant',
-    href: '#ai-assistant',
+    href: '/app/settings/ai',
     icon: Bot,
     category: 'Certification',
     testId: 'nav-ai-assistant',
@@ -1289,7 +1289,7 @@ export const DEFAULT_ADMIN_NAV: NavItem[] = [
   },
   {
     name: 'AI Assistant',
-    href: '#ai-assistant',
+    href: '/app/settings/ai',
     icon: Bot,
     category: 'Certification',
     testId: 'nav-ai-assistant',

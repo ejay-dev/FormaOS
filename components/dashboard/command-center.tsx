@@ -72,29 +72,9 @@ import {
 } from '@/components/dashboard/tabler-primitives';
 import { NextActionsStrip } from '@/components/dashboard/next-actions-strip';
 import { KpiBar, type KpiItem } from '@/components/dashboard/kpi-bar';
-import {
-  ActivityTimeline,
-  type TimelineItem,
-} from '@/components/dashboard/activity-timeline';
 import { FilterBar, type FilterChip } from '@/components/ui/filter-bar';
-import {
-  FileCheck2,
-  FilePlus2,
-  ShieldAlert,
-  UserPlus,
-  Upload,
-  MessageSquare,
-  Download,
-  Search,
-  SlidersHorizontal,
-} from 'lucide-react';
-import {
-  OrgHealthOverview,
-  TeamComplianceTable,
-  CertificatesExpiry,
-  EvidenceReview,
-  TaskManagement,
-} from '@/components/dashboard/employer-tables';
+import { Download, Search, SlidersHorizontal } from 'lucide-react';
+import { OrgHealthOverview } from '@/components/dashboard/employer-tables';
 import {
   useComplianceStore,
   useComplianceSummary,
@@ -131,13 +111,16 @@ interface ActivationMilestone {
 
 const EMPTY_COUNTS: ChecklistCompletionCounts = {
   tasks: 0,
+  tasksCompleted: 0,
   evidence: 0,
+  evidenceVerified: 0,
   members: 0,
   complianceChecks: 0,
   reports: 0,
   frameworks: 0,
   policies: 0,
   incidents: 0,
+  incidentsClosed: 0,
   registers: 0,
   workflows: 0,
   patients: 0,
@@ -184,11 +167,7 @@ export function CommandCenter({
     useState<ChecklistCompletionCounts>(EMPTY_COUNTS);
   const [isLoadingCounts, setIsLoadingCounts] = useState(true);
   const [countsError, setCountsError] = useState<string | null>(null);
-  const [recordFilters, setRecordFilters] = useState<FilterChip[]>([
-    { id: 'type', label: 'Type', value: 'All', count: 6 },
-    { id: 'actor', label: 'Actor', value: 'Any' },
-    { id: 'range', label: 'Range', value: 'Last 7 days' },
-  ]);
+  const [recordFilters, setRecordFilters] = useState<FilterChip[]>([]);
 
   useEffect(() => {
     if (!organizationId) return;
@@ -222,13 +201,16 @@ export function CommandCenter({
         );
         const next: ChecklistCompletionCounts = {
           tasks: data.tasks ?? 0,
+          tasksCompleted: data.tasksCompleted ?? 0,
           evidence: data.evidence ?? 0,
+          evidenceVerified: data.evidenceVerified ?? 0,
           members: data.members ?? 0,
           complianceChecks: data.complianceChecks ?? 0,
           reports: data.reports ?? 0,
           frameworks: data.frameworks ?? 0,
           policies: data.policies ?? 0,
           incidents: data.incidents ?? 0,
+          incidentsClosed: data.incidentsClosed ?? 0,
           registers: data.registers ?? 0,
           workflows: data.workflows ?? 0,
           patients: data.patients ?? 0,
@@ -286,14 +268,15 @@ export function CommandCenter({
         id: 'execution',
         title: 'Execution workflows started',
         detail: 'Tasks or workflows are actively driving control ownership.',
-        done: completionCounts.tasks > 0 || completionCounts.workflows > 0,
-        href: '/app/tasks',
+        done:
+          completionCounts.tasksCompleted > 0 || completionCounts.workflows > 0,
+        href: '/app/tasks?status=open',
       },
       {
         id: 'evidence',
         title: 'Evidence chain active',
         detail: 'Artifacts are being captured and linked to control execution.',
-        done: completionCounts.evidence > 0,
+        done: completionCounts.evidenceVerified > 0,
         href: '/app/vault',
       },
       {
@@ -327,7 +310,7 @@ export function CommandCenter({
           openTasksCount > 0
             ? `Prioritize overdue ${entityLabel} items and assign owners.`
             : `No backlog detected. Confirm this week's ${entityLabel} cadence.`,
-        href: '/app/tasks',
+        href: '/app/tasks?filter=assigned_to_me',
         icon: CheckSquare,
         priority:
           openTasksCount > 10
@@ -348,7 +331,7 @@ export function CommandCenter({
           expiringCertsCount > 0
             ? 'Renew or replace evidence before renewal windows close.'
             : 'No urgent expiries. Keep monthly checks scheduled.',
-        href: '/app/certificates',
+        href: '/app/staff-compliance?filter=expiring',
         icon: FileText,
         priority:
           expiringCertsCount > 5
@@ -440,14 +423,6 @@ export function CommandCenter({
 
   const industryPanel = renderIndustryWidgets(industry);
 
-  // Derived presentation values. These are deterministic hashes of the
-  // input counts so the Overview and Pulse tabs show stable deltas until
-  // real historical series are wired in.
-  const readinessDeltaPct = pseudoDelta('readiness', complianceScore, 3.5);
-  const openDeltaPct = pseudoDelta('open', openTasksCount, 12);
-  const expiringDeltaPct = pseudoDelta('expiring', expiringCertsCount, 18);
-  const teamDeltaPct = pseudoDelta('team', teamMemberCount, 2);
-
   const overviewStatus: {
     label: string;
     tone: 'success' | 'warning' | 'danger' | 'info';
@@ -466,28 +441,14 @@ export function CommandCenter({
       label: 'Open',
       value: openTasksCount,
       tone: 'blue',
-      href: '/app/tasks',
-    },
-    {
-      id: 'overdue',
-      label: 'Overdue',
-      value: Math.max(0, Math.round(openTasksCount * 0.18)),
-      tone: 'rose',
-      href: '/app/tasks?filter=overdue',
-    },
-    {
-      id: 'this-week',
-      label: 'Due this week',
-      value: Math.round(openTasksCount * 0.35),
-      tone: 'amber',
-      href: '/app/tasks?filter=this-week',
+      href: '/app/tasks?status=open',
     },
     {
       id: 'completed',
-      label: 'Completed 7d',
-      value: Math.round(openTasksCount * 1.2) || 0,
+      label: 'Completed',
+      value: completionCounts.tasksCompleted,
       tone: 'emerald',
-      delta: { value: formatPct(8.2), direction: 'up' },
+      href: '/app/tasks?status=completed',
     },
   ];
 
@@ -521,77 +482,9 @@ export function CommandCenter({
       label: 'Expiring',
       value: expiringCertsCount,
       tone: expiringCertsCount > 5 ? 'rose' : 'amber',
-      href: '/app/certificates',
+      href: '/app/staff-compliance?filter=expiring',
     },
   ];
-
-  const recordsActivity: TimelineItem[] = (() => {
-    const now = Date.now();
-    return [
-      {
-        id: 'a1',
-        icon: FileCheck2,
-        tone: 'emerald',
-        title: 'Evidence approved: Staff Training Policy v3',
-        subtitle: 'SOC 2 CC1.4 · mapped to 4 controls',
-        timestamp: new Date(now - 12 * 60 * 1000),
-        actor: { name: 'Priya Natarajan' },
-        badge: { label: 'Approved', tone: 'success' },
-        href: '/app/vault',
-      },
-      {
-        id: 'a2',
-        icon: UserPlus,
-        tone: 'blue',
-        title: 'New team member invited',
-        subtitle: 'david.tran@formaos.com.au — Role: Evidence Owner',
-        timestamp: new Date(now - 47 * 60 * 1000),
-        actor: { name: 'Alex Chen' },
-        href: '/app/team',
-      },
-      {
-        id: 'a3',
-        icon: ShieldAlert,
-        tone: 'amber',
-        title: 'Certification expires in 14 days',
-        subtitle: 'Working with Children Check — Sarah Lin',
-        timestamp: new Date(now - 3 * 60 * 60 * 1000),
-        badge: { label: 'Action needed', tone: 'warning' },
-        href: '/app/certificates',
-      },
-      {
-        id: 'a4',
-        icon: Upload,
-        tone: 'blue',
-        title: '4 evidence items uploaded',
-        subtitle: 'CHSP Quality Indicators pack',
-        timestamp: new Date(now - 22 * 60 * 60 * 1000),
-        actor: { name: 'Priya Natarajan' },
-        href: '/app/vault',
-      },
-      {
-        id: 'a5',
-        icon: FilePlus2,
-        tone: 'violet',
-        title: 'Care plan created: David M.',
-        subtitle: '3 goals · review date set for 2026-07-10',
-        timestamp: new Date(now - 2 * 24 * 60 * 60 * 1000),
-        actor: { name: 'Alex Chen' },
-        badge: { label: 'Draft', tone: 'info' },
-        href: '/app/care-plans',
-      },
-      {
-        id: 'a6',
-        icon: MessageSquare,
-        tone: 'slate',
-        title: 'Comment added on CAPA-0042',
-        subtitle:
-          '"Root cause identified — schedule retraining for next week."',
-        timestamp: new Date(now - 4 * 24 * 60 * 60 * 1000),
-        actor: { name: 'Priya Natarajan' },
-      },
-    ];
-  })();
 
   const filtersForBar: FilterChip[] = recordFilters.map((f) => ({
     ...f,
@@ -647,14 +540,14 @@ export function CommandCenter({
                 actions={
                   <>
                     <Link
-                      href="/app/tasks/new"
+                      href="/app/tasks"
                       className="inline-flex items-center gap-1.5 rounded-md border border-border bg-[hsl(var(--card))] px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
                     >
                       <ClipboardList className="h-3.5 w-3.5" />
                       New Task
                     </Link>
                     <Link
-                      href="/app/vault/new"
+                      href="/app/vault"
                       className="inline-flex items-center gap-1.5 rounded-md bg-[hsl(var(--app-primary))] px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
                     >
                       <Plus className="h-3.5 w-3.5" />
@@ -680,17 +573,8 @@ export function CommandCenter({
                           ? 'On cadence'
                           : 'No open obligations'
                   }
-                  delta={
-                    liveDataReady && openTasksCount > 0
-                      ? {
-                          value: formatPct(openDeltaPct),
-                          direction:
-                            openDeltaPct > 2 ? 'up' : openDeltaPct < -2 ? 'down' : 'flat',
-                        }
-                      : undefined
-                  }
                   tone="blue"
-                  href="/app/tasks"
+                  href="/app/tasks?status=open"
                 />
                 <IconTileStat
                   icon={AlertTriangle}
@@ -740,19 +624,6 @@ export function CommandCenter({
                           : liveDataReady
                             ? `${complianceSummary.completed} of ${complianceSummary.total} closed`
                             : 'Loading completion'
-                  }
-                  delta={
-                    complianceScore > 0
-                      ? {
-                          value: formatPct(readinessDeltaPct),
-                          direction:
-                            readinessDeltaPct > 0.5
-                              ? 'up'
-                              : readinessDeltaPct < -0.5
-                                ? 'down'
-                                : 'flat',
-                        }
-                      : undefined
                   }
                   tone="emerald"
                   href="/app/reports"
@@ -834,65 +705,21 @@ export function CommandCenter({
                 <StatCardSparkline
                   label="Readiness score"
                   value={`${complianceScore}%`}
-                  delta={{
-                    value: formatPct(readinessDeltaPct),
-                    direction:
-                      readinessDeltaPct > 0.5
-                        ? 'up'
-                        : readinessDeltaPct < -0.5
-                          ? 'down'
-                          : 'flat',
-                    context: 'vs. previous 30d',
-                  }}
-                  data={sparkSeries('readiness', complianceScore, 14, 3)}
                   href="/app/reports"
                 />
                 <StatCardSparkline
                   label="Open tasks"
                   value={openTasksCount}
-                  delta={{
-                    value: formatPct(openDeltaPct),
-                    direction:
-                      openDeltaPct > 2
-                        ? 'up'
-                        : openDeltaPct < -2
-                          ? 'down'
-                          : 'flat',
-                    context: 'vs. previous 30d',
-                  }}
-                  data={sparkSeries('open', openTasksCount, 14, 20)}
-                  href="/app/tasks"
+                  href="/app/tasks?status=open"
                 />
                 <StatCardSparkline
                   label="Expiring certs"
                   value={expiringCertsCount}
-                  delta={{
-                    value: formatPct(expiringDeltaPct),
-                    direction:
-                      expiringDeltaPct > 2
-                        ? 'up'
-                        : expiringDeltaPct < -2
-                          ? 'down'
-                          : 'flat',
-                    context: 'vs. previous 30d',
-                  }}
-                  data={sparkSeries('expiring', expiringCertsCount, 14, 30)}
-                  href="/app/certificates"
+                  href="/app/staff-compliance"
                 />
                 <StatCardSparkline
                   label="Team members"
                   value={teamMemberCount}
-                  delta={{
-                    value: formatPct(teamDeltaPct),
-                    direction:
-                      teamDeltaPct > 0.5
-                        ? 'up'
-                        : teamDeltaPct < -0.5
-                          ? 'down'
-                          : 'flat',
-                    context: 'vs. previous 30d',
-                  }}
-                  data={sparkSeries('team', teamMemberCount, 14, 4)}
                   href="/app/team"
                 />
               </div>
@@ -970,10 +797,10 @@ export function CommandCenter({
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div>
                     <h2 className="text-sm font-semibold tracking-tight text-foreground">
-                      Recent activity
+                      Audit trail
                     </h2>
                     <p className="text-[11px] text-muted-foreground">
-                      Immutable audit events across your workspace.
+                      Immutable, hash-chained activity log for your workspace.
                     </p>
                   </div>
                   <Link
@@ -981,7 +808,7 @@ export function CommandCenter({
                     className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
                   >
                     <Download className="h-3 w-3" />
-                    Export
+                    Open audit trail
                   </Link>
                 </div>
                 <FilterBar
@@ -1008,13 +835,22 @@ export function CommandCenter({
                     </>
                   }
                 />
-                <ActivityTimeline items={recordsActivity} />
+                <div className="rounded-md border border-dashed border-border/80 bg-[hsl(var(--panel-2))] p-6 text-center">
+                  <p className="text-xs font-medium text-foreground">
+                    Detailed events live in the audit trail
+                  </p>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Open the full audit log for hash-chain integrity, export,
+                    and search across every workspace action.
+                  </p>
+                  <Link
+                    href="/app/audit-trail"
+                    className="mt-3 inline-flex items-center gap-1 rounded-md border border-border bg-[hsl(var(--card))] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
+                  >
+                    View audit trail
+                  </Link>
+                </div>
               </div>
-
-              <TeamComplianceTable members={[]} />
-              <CertificatesExpiry certificates={[]} />
-              <EvidenceReview submissions={[]} />
-              <TaskManagement tasks={[]} />
             </>
           )}
         </div>
@@ -1155,65 +991,6 @@ function ActivationMilestones({
       )}
     </DashboardSectionCard>
   );
-}
-
-// Deterministic 32-bit hash for stable per-metric seeds.
-function hashStr(s: string): number {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i += 1) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h >>> 0;
-}
-
-function mulberry32(seed: number) {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/**
- * Build a realistic-looking spark series that trends toward the current
- * value, using a deterministic seed so the same input produces the same
- * series across renders. Replace with real historical data when the
- * /api/metrics/history endpoint is wired up.
- */
-function sparkSeries(
-  key: string,
-  anchor: number,
-  points: number,
-  spread: number,
-): number[] {
-  const rng = mulberry32(hashStr(key) ^ Math.round(anchor * 1000));
-  const base = Math.max(0, anchor);
-  const out: number[] = [];
-  let drift = base - spread * (0.6 + rng() * 0.4);
-  for (let i = 0; i < points - 1; i += 1) {
-    const progress = i / (points - 1);
-    const target = base - spread * (1 - progress) * (0.4 + rng() * 0.4);
-    drift = drift + (target - drift) * (0.35 + rng() * 0.2);
-    const jitter = (rng() - 0.5) * spread * 0.25;
-    out.push(Math.max(0, drift + jitter));
-  }
-  out.push(base);
-  return out;
-}
-
-function pseudoDelta(key: string, anchor: number, range: number): number {
-  const rng = mulberry32(hashStr(key) ^ Math.round(anchor * 1000));
-  const sign = rng() > 0.45 ? 1 : -1;
-  return sign * rng() * range;
-}
-
-function formatPct(n: number): string {
-  const sign = n > 0 ? '+' : n < 0 ? '' : '±';
-  return `${sign}${n.toFixed(1)}%`;
 }
 
 export default CommandCenter;

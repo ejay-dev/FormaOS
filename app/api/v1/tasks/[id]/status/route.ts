@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
@@ -63,6 +64,10 @@ export async function PATCH(
       log.error({ err: error, taskId: id }, 'failed to update task status');
       return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
     }
+
+    revalidateTag('onboarding-checklist', 'default');
+    revalidatePath('/app');
+    revalidatePath('/app/tasks');
 
     return NextResponse.json({ ok: true, status: dbStatus });
   } catch (err) {

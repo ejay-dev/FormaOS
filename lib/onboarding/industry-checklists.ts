@@ -27,13 +27,16 @@ export type ChecklistItem = {
 
 export type ChecklistCompletionCounts = {
   tasks: number;
+  tasksCompleted: number;
   evidence: number;
+  evidenceVerified: number;
   members: number;
   complianceChecks: number;
   reports: number;
   frameworks: number;
   policies: number;
   incidents: number;
+  incidentsClosed: number;
   registers: number;
   workflows: number;
   patients: number;

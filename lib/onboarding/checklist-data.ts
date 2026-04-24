@@ -31,13 +31,16 @@ export async function getChecklistCountsForOrg(
 
   const [
     tasks,
+    tasksCompleted,
     evidence,
+    evidenceVerified,
     members,
     complianceChecks,
     reports,
     frameworks,
     policies,
     incidents,
+    incidentsClosed,
     registerRows,
     assetRows,
     workflows,
@@ -51,11 +54,27 @@ export async function getChecklistCountsForOrg(
         .eq('organization_id', orgId),
     ),
     safeCount(
+      'org_tasks_completed',
+      admin
+        .from('org_tasks')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('status', 'completed'),
+    ),
+    safeCount(
       'org_evidence',
       admin
         .from('org_evidence')
         .select('id', { count: 'exact', head: true })
         .eq('organization_id', orgId),
+    ),
+    safeCount(
+      'org_evidence_verified',
+      admin
+        .from('org_evidence')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('verification_status', 'verified'),
     ),
     safeCount(
       'org_members',
@@ -100,6 +119,14 @@ export async function getChecklistCountsForOrg(
         .eq('organization_id', orgId),
     ),
     safeCount(
+      'org_incidents_closed',
+      admin
+        .from('org_incidents')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('status', 'closed'),
+    ),
+    safeCount(
       'org_registers',
       admin
         .from('org_registers')
@@ -141,13 +168,16 @@ export async function getChecklistCountsForOrg(
 
   return {
     tasks,
+    tasksCompleted,
     evidence,
+    evidenceVerified,
     members,
     complianceChecks,
     reports,
     frameworks,
     policies,
     incidents,
+    incidentsClosed,
     registers: registerRows + assetRows,
     workflows,
     patients,
