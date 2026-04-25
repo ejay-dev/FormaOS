@@ -1,11 +1,21 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ComponentType } from 'react';
 import { usePathname } from 'next/navigation';
-import { CheckCircle2, X } from 'lucide-react';
+import {
+  CheckCircle2,
+  ClipboardList,
+  FileCheck2,
+  NotebookPen,
+  ShieldCheck,
+  Target,
+  X,
+} from 'lucide-react';
 
 import { markFirstSessionStepSeen } from '@/app/app/actions/onboarding-first-session';
 import { useOnboarding } from '@/lib/onboarding/onboarding-context';
+
+type IconType = ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
 
 const STEP_MESSAGE: Record<string, string> = {
   'create-care-plan': "Great! You've created your first Care Plan.",
@@ -14,6 +24,14 @@ const STEP_MESSAGE: Record<string, string> = {
     "Well done — your first progress note is live.",
   'upload-evidence': 'Evidence locked in. Your vault is no longer empty.',
   'review-task': 'Task reviewed. Compliance work now flows from the dashboard.',
+};
+
+const STEP_ICON: Record<string, IconType> = {
+  'create-care-plan': ClipboardList,
+  'add-goal': Target,
+  'log-progress-note': NotebookPen,
+  'upload-evidence': ShieldCheck,
+  'review-task': FileCheck2,
 };
 
 export function OnboardingSuccessToast() {
@@ -58,6 +76,8 @@ export function OnboardingSuccessToast() {
   if (!step || !visibleStepId) return null;
 
   const message = STEP_MESSAGE[step.id] ?? `Great! ${step.label} is done.`;
+  const StepIcon = STEP_ICON[step.id] ?? CheckCircle2;
+  const complianceNote = step.complianceNote;
 
   return (
     <div
@@ -68,15 +88,30 @@ export function OnboardingSuccessToast() {
       aria-live="polite"
     >
       <div className="pointer-events-auto flex items-start gap-3">
-        <CheckCircle2
-          className="mt-0.5 h-5 w-5 shrink-0 text-emerald-500"
-          aria-hidden="true"
-        />
+        <div className="relative mt-0.5">
+          <StepIcon
+            className="h-5 w-5 shrink-0 text-emerald-500"
+            aria-hidden
+          />
+          <CheckCircle2
+            className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-background text-emerald-500"
+            aria-hidden
+          />
+        </div>
         <div className="flex-1">
           <p className="text-sm font-semibold text-foreground">{message}</p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Keep going — the next step is waiting in the strip above.
-          </p>
+          {complianceNote ? (
+            <p
+              className="mt-0.5 text-xs text-muted-foreground"
+              data-testid="onboarding-success-toast-note"
+            >
+              {complianceNote}
+            </p>
+          ) : (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Keep going — the next step is waiting in the strip above.
+            </p>
+          )}
         </div>
         <button
           type="button"

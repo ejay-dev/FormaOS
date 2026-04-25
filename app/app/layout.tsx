@@ -28,6 +28,7 @@ import { ComplianceStatusStrip } from '@/components/compliance/ComplianceStatusS
 import { OnboardingProvider } from '@/lib/onboarding/onboarding-context';
 import { OnboardingStrip } from '@/components/onboarding/OnboardingStrip';
 import { OnboardingSuccessToast } from '@/components/onboarding/OnboardingSuccessToast';
+import { OnboardingGuide } from '@/components/onboarding/OnboardingGuide';
 import { getFirstSessionState } from '@/lib/onboarding/first-session';
 
 const log = routeLog('app/layout');
@@ -228,6 +229,7 @@ export default async function AppLayout({
             <FeedbackWidget />
             <RuntimeDebugIndicator />
             <OnboardingSuccessToast />
+            <OnboardingGuide />
           </div>
          </OnboardingProvider>
         </AppProviders>

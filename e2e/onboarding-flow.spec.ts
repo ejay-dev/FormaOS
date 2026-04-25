@@ -138,6 +138,11 @@ test.describe('Onboarding first-session flow', () => {
         '/app/care-plans/new',
       );
 
+      // Compliance micro-explanation renders under the active step.
+      await expect(
+        startHere.getByTestId('start-here-compliance-create-care-plan'),
+      ).toContainText(/audit/i);
+
       // Persistent Continue-onboarding strip is visible in the shell.
       const strip = page.getByTestId('onboarding-strip');
       await expect(strip).toBeVisible();
@@ -155,6 +160,21 @@ test.describe('Onboarding first-session flow', () => {
       await expect(
         page.getByTestId('onboarding-strip-label'),
       ).toContainText(/Create your first care plan/i);
+
+      // Guidance middleware: tasks page is off-track for step 1
+      // (basePath is /app/care-plans). Guide appears with next step + CTA.
+      const guide = page.getByTestId('onboarding-guide');
+      await expect(guide).toBeVisible();
+      await expect(
+        guide.getByTestId('onboarding-guide-step-label'),
+      ).toContainText(/Create your first care plan/i);
+      await expect(
+        guide.getByTestId('onboarding-guide-cta'),
+      ).toHaveAttribute('href', '/app/care-plans/new');
+
+      // "Remind me later" dismisses for the session.
+      await guide.getByTestId('onboarding-guide-later').click();
+      await expect(page.getByTestId('onboarding-guide')).toHaveCount(0);
 
       // 6. Simulate the user completing step 1 (creating a care plan).
       //    org_care_plans requires a patient (client_id FK) — seed one first.
@@ -311,6 +331,47 @@ test.describe('Onboarding first-session flow', () => {
         .locator('[data-testid^="nav-"][class*="text-foreground/40"]')
         .count();
       expect(dimmedNavCount).toBeGreaterThan(0);
+
+      // 12. Complete the remaining 3 steps via admin seeds → PostOnboardingHero
+      //     replaces StartHereCard on /app with concrete next-action CTAs.
+      await admin.from('org_progress_notes').insert({
+        organization_id: orgId,
+        patient_id: patientId,
+        staff_user_id: userId,
+        note_text: 'E2E: first progress note',
+        status_tag: 'routine',
+      });
+      const { data: taskRow } = await admin
+        .from('org_tasks')
+        .insert({
+          organization_id: orgId,
+          title: `E2E Onboarding Task ${unique}`,
+          status: 'pending',
+        })
+        .select('id')
+        .single();
+      const taskId = (taskRow as { id: string } | null)?.id;
+      await admin.from('org_evidence').insert({
+        organization_id: orgId,
+        task_id: taskId,
+        file_name: 'e2e-evidence.pdf',
+        file_path: `evidence/e2e-${unique}.pdf`,
+      });
+
+      await page.goto('/app', { waitUntil: 'domcontentloaded' });
+      const postHero = page.getByTestId('post-onboarding-hero');
+      await expect(postHero).toBeVisible();
+      await expect(
+        postHero.getByTestId('post-onboarding-cta-incidents'),
+      ).toHaveAttribute('href', '/app/incidents');
+      await expect(
+        postHero.getByTestId('post-onboarding-cta-staff'),
+      ).toHaveAttribute('href', '/app/staff-compliance');
+      await expect(
+        postHero.getByTestId('post-onboarding-cta-compliance'),
+      ).toHaveAttribute('href', '/app/compliance');
+      // StartHereCard should be gone once setup is complete.
+      await expect(page.getByTestId('start-here-card')).toHaveCount(0);
     } finally {
       if (orgId) {
         // Clean up in dependency order to avoid FK violations.
@@ -318,6 +379,9 @@ test.describe('Onboarding first-session flow', () => {
           .from('org_first_session_progress')
           .delete()
           .eq('organization_id', orgId);
+        await admin.from('org_evidence').delete().eq('organization_id', orgId);
+        await admin.from('org_tasks').delete().eq('organization_id', orgId);
+        await admin.from('org_progress_notes').delete().eq('organization_id', orgId);
         await admin.from('org_care_plans').delete().eq('organization_id', orgId);
         await admin.from('org_patients').delete().eq('organization_id', orgId);
         await admin.from('org_frameworks').delete().eq('org_id', orgId);

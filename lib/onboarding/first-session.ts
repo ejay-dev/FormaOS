@@ -15,6 +15,10 @@ export type FirstSessionStep = {
   id: FirstSessionStepId;
   label: string;
   description: string;
+  /** Ties the step to a concrete compliance benefit — used for trust copy. */
+  complianceNote: string;
+  /** Nav-section prefix for "on-track" detection by the guidance notification. */
+  basePath: string;
   href: string;
   done: boolean;
 };
@@ -48,11 +52,19 @@ async function fetchSeenSteps(
   orgId: string,
 ): Promise<FirstSessionStepId[]> {
   try {
-    const { data } = await admin
+    const { data, error } = await admin
       .from('org_first_session_progress')
       .select('seen_steps')
       .eq('organization_id', orgId)
       .maybeSingle();
+    if (error) {
+      // Missing table / permissions — log once so monitoring can pick it up.
+      console.warn(
+        '[onboarding-health] org_first_session_progress read failed',
+        { code: error.code, message: error.message },
+      );
+      return [];
+    }
     const raw = Array.isArray(data?.seen_steps) ? data.seen_steps : [];
     return raw.filter((id): id is FirstSessionStepId =>
       [
@@ -63,8 +75,8 @@ async function fetchSeenSteps(
         'review-task',
       ].includes(id as string),
     );
-  } catch {
-    // Table may not exist yet in pre-migration environments; degrade quietly.
+  } catch (err) {
+    console.warn('[onboarding-health] seen_steps fetch threw', err);
     return [];
   }
 }
@@ -144,6 +156,9 @@ async function _getFirstSessionState(
       id: 'create-care-plan',
       label: 'Create your first care plan',
       description: 'A plan is the anchor for goals, supports and progress.',
+      complianceNote:
+        'A care plan is the primary artefact auditors ask for. It links every participant action back to a documented obligation.',
+      basePath: '/app/care-plans',
       href: '/app/care-plans/new',
       done: carePlans >= 1,
     },
@@ -151,6 +166,9 @@ async function _getFirstSessionState(
       id: 'add-goal',
       label: 'Add your first goal',
       description: 'Goals drive plan progress and give your team a target.',
+      complianceNote:
+        'Goals turn a plan into measurable outcomes — the basis for NDIS outcome reporting and progress audits.',
+      basePath: '/app/care-plans',
       href: planId ? `/app/care-plans/${planId}` : '/app/care-plans',
       done: hasGoals,
     },
@@ -158,6 +176,9 @@ async function _getFirstSessionState(
       id: 'log-progress-note',
       label: 'Log your first progress note',
       description: 'Capture how a visit went — builds the participant record.',
+      complianceNote:
+        'Progress notes are real-time evidence for audits. Logging them early builds the longitudinal record regulators expect.',
+      basePath: '/app/participants',
       href: '/app/participants',
       done: progressNotes >= 1,
     },
@@ -165,6 +186,9 @@ async function _getFirstSessionState(
       id: 'upload-evidence',
       label: 'Upload your first evidence',
       description: 'Attach a credential, service agreement or consent form.',
+      complianceNote:
+        'Evidence in the vault maps directly to compliance controls — auditors sample these, so having real files reduces audit prep.',
+      basePath: '/app/vault',
       href: '/app/vault',
       done: evidence >= 1,
     },
@@ -172,6 +196,9 @@ async function _getFirstSessionState(
       id: 'review-task',
       label: 'Review an open task',
       description: 'Compliance tasks surface the obligations that matter next.',
+      complianceNote:
+        'Tasks are the system translating frameworks into everyday work. Reviewing one closes a compliance obligation.',
+      basePath: '/app/tasks',
       href: '/app/tasks',
       done: tasks >= 1,
     },

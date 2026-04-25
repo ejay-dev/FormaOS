@@ -5,6 +5,7 @@ import { CommandCenter } from '@/components/dashboard/command-center';
 import { EmployeeDashboard } from '@/components/dashboard/employee-dashboard';
 import { DashboardUpgradeNudge } from '@/components/billing/UsageLimitWarnings';
 import { StartHereCard } from '@/components/onboarding/StartHereCard';
+import { PostOnboardingHero } from '@/components/onboarding/PostOnboardingHero';
 import { DatabaseRole, isEmployerRole } from '@/lib/roles';
 import type { FirstSessionState } from '@/lib/onboarding/first-session';
 
@@ -35,6 +36,11 @@ export function DashboardWrapper({
 }: DashboardWrapperProps) {
   const isEmployer = isEmployerRole(userRole);
   const showStartHere = Boolean(firstSession?.isFirstSession);
+  const showPostOnboarding = Boolean(
+    firstSession &&
+      firstSession.total > 0 &&
+      firstSession.completed === firstSession.total,
+  );
 
   if (isEmployer) {
     return (
@@ -43,6 +49,10 @@ export function DashboardWrapper({
         {showStartHere && firstSession ? (
           <div className="mb-6">
             <StartHereCard state={firstSession} />
+          </div>
+        ) : showPostOnboarding && firstSession ? (
+          <div className="mb-6">
+            <PostOnboardingHero state={firstSession} />
           </div>
         ) : null}
         <CommandCenter

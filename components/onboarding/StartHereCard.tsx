@@ -190,6 +190,15 @@ function StepRow({
           <p className="mt-0.5 text-xs text-muted-foreground">
             {step.description}
           </p>
+          {isNext && step.complianceNote ? (
+            <p
+              className="mt-1.5 text-[11px] leading-4 text-primary/80"
+              data-testid={`start-here-compliance-${step.id}`}
+            >
+              <span className="font-semibold">Why this matters: </span>
+              {step.complianceNote}
+            </p>
+          ) : null}
         </div>
       </Link>
       {!step.done && (

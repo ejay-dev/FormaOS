@@ -1,11 +1,11 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-25T02:29:21.024Z
+Generated: 2026-04-25T03:56:22.295Z
 
 ## Summary
 
-- Total app internal links validated: 298
-- Valid links: 298
+- Total app internal links validated: 301
+- Valid links: 301
 - Broken links: 0
 - App routes discovered: 211
 
@@ -100,6 +100,7 @@ Generated: 2026-04-25T02:29:21.024Z
 | `components/dashboard/QuickActionTiles.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/empty-states/empty-state.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/financial/TransactionMonitoringWidget.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
+| `components/onboarding/PostOnboardingHero.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/onboarding/StartHereCard.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `lib/navigation/industry-sidebar.ts` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `app/app/compliance/page.tsx` | `/app/compliance/cross-map` | YES | YES | auth | `/app/compliance/cross-map` |
@@ -138,6 +139,7 @@ Generated: 2026-04-25T02:29:21.024Z
 | `app/app/incidents/page.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `app/app/registers/page.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `components/dashboard/quick-actions.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
+| `components/onboarding/PostOnboardingHero.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `components/onboarding/StartHereCard.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `lib/navigation/industry-sidebar.ts` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `app/app/incidents/[id]/investigation/page.tsx` | `/app/incidents/:param/investigation` | YES | YES | auth | `/app/incidents/:id/investigation` |
@@ -248,6 +250,7 @@ Generated: 2026-04-25T02:29:21.024Z
 | `components/dashboard/industry-widgets.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `components/dashboard/quick-actions.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
+| `components/onboarding/PostOnboardingHero.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `lib/navigation/industry-sidebar.ts` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `app/app/certificates/page.tsx` | `/app/staff-compliance/new` | YES | YES | auth | `/app/staff-compliance/new` |
 | `app/app/staff-compliance/page.tsx` | `/app/staff-compliance/new` | YES | YES | auth | `/app/staff-compliance/new` |
