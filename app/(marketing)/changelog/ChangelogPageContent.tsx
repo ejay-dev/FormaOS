@@ -143,6 +143,166 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v3.8.0',
+    codename: 'Evidence Integrity',
+    date: '2026-04-25',
+    summary:
+      'Evidence and audit integration pass: obligation uploads now write to Supabase storage, evidence rows link back to obligations and typed entities, the obligations register reads real evidence counts, and audit-trail activity is available through a new entity-filtered API.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Obligation evidence uploads now persist to storage',
+        tag: 'feature',
+        detail:
+          'The /api/v1/evidence/upload route writes files to the private evidence bucket, inserts org_evidence rows, rolls back storage on failed inserts, and emits audit events. Why it matters: evidence collection now produces real files and database records instead of a cosmetic upload path.',
+      },
+      {
+        text: 'Evidence counts in obligations are now truthful',
+        tag: 'improvement',
+        detail:
+          '/api/v1/compliance/obligations now counts org_evidence rows by obligation instead of returning hard-coded zeroes. The EvidenceDrawer refreshes the parent register after upload so the visible count tracks the underlying record.',
+      },
+      {
+        text: 'Entity evidence supports incidents and future source links',
+        tag: 'integration',
+        detail:
+          'org_evidence gained nullable task_id support plus entity_type and entity_id indexing, allowing evidence to attach to incidents and other operational records without pretending every file belongs to a task.',
+      },
+      {
+        text: 'Audit trail API backs evidence activity panels',
+        tag: 'feature',
+        detail:
+          'New GET /api/v1/audit-trail filters org_audit_logs by entity and powers activity views in evidence drawers and shared audit panels. For auditors: evidence now has clearer source and activity context.',
+      },
+      {
+        text: 'Storage bucket and RLS policies added for evidence',
+        tag: 'security',
+        detail:
+          'The 20260425_evidence_workflow_integrity migration provisions the private evidence bucket and org-scoped storage policies based on the first path segment matching the member organization.',
+      },
+      {
+        text: 'Deep evidence workflow coverage added',
+        tag: 'improvement',
+        detail:
+          'e2e/deep-workflow-integrity.spec.ts verifies obligation evidence upload through UI, database row, storage download, parent count refresh, and invalid-input rejection.',
+      },
+    ],
+  },
+  {
+    version: 'v3.7.4',
+    codename: 'Guided Start',
+    date: '2026-04-25',
+    summary:
+      'First-session onboarding now guides users through real setup work across care plans, goals, progress notes, evidence, and tasks, with persistent progress and contextual guidance inside the app.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Start Here card for the first five actions',
+        tag: 'feature',
+        detail:
+          'The dashboard now shows a Start Here card driven by lib/onboarding/first-session.ts. It checks real workspace counts and points users to care plan creation, goal setup, progress notes, vault evidence, and task review.',
+      },
+      {
+        text: 'Global onboarding strip and contextual banners',
+        tag: 'feature',
+        detail:
+          'OnboardingStrip keeps the next step visible across the authenticated shell, while OnboardingBanner appears inside relevant module pages such as care plans and vault.',
+      },
+      {
+        text: 'Cross-session completion feedback',
+        tag: 'improvement',
+        detail:
+          'org_first_session_progress stores seen completion steps so success feedback does not repeat after reloads or later sessions. Why it matters: onboarding now feels stateful rather than like a resettable checklist.',
+      },
+      {
+        text: 'Sidebar guidance and completion CTA',
+        tag: 'improvement',
+        detail:
+          'The sidebar and post-onboarding surfaces nudge users back to the active setup step, then move them toward incident and compliance work once the initial setup path is complete.',
+      },
+      {
+        text: 'Onboarding flow coverage expanded',
+        tag: 'improvement',
+        detail:
+          'e2e/onboarding-flow.spec.ts covers the Start Here card, active guidance, completion feedback, and persistence behavior.',
+      },
+    ],
+  },
+  {
+    version: 'v3.7.3',
+    codename: 'Careflow',
+    date: '2026-04-24',
+    summary:
+      'Care Plans moved from static records into a working module with goals, supports, progress calculation, participant context, status transitions, journey boards, and RLS hardening.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Care plan goals and supports',
+        tag: 'feature',
+        detail:
+          'Care-plan detail pages now support JSONB-backed goals and supports via app/app/actions/care-operations.ts and lib/care-plans/normalize.ts, including goal and support status updates.',
+      },
+      {
+        text: 'Progress calculation and persistence',
+        tag: 'feature',
+        detail:
+          'Plan progress is computed from goal progress and verified through reload checks. For teams: care-plan progress now reflects the underlying goal state rather than static page copy.',
+      },
+      {
+        text: 'Participant, progress note, and visit context',
+        tag: 'integration',
+        detail:
+          'Care plan detail surfaces link back to participant records and show related progress notes and visit context when available, making the plan easier to review in the participant timeline.',
+      },
+      {
+        text: 'Care-plan journey board',
+        tag: 'feature',
+        detail:
+          '/app/care-plans/journey and CarePlansJourneyBoard provide a pipeline-style view for status movement, matching the broader journey-board pattern introduced for controls.',
+      },
+      {
+        text: 'Care plans RLS update fix',
+        tag: 'security',
+        detail:
+          'The 20260617_fix_care_plans_rls_update migration recreates care_plans_org_isolation with explicit USING and WITH CHECK clauses so org-scoped updates remain allowed and isolated.',
+      },
+    ],
+  },
+  {
+    version: 'v3.7.2',
+    codename: 'Operating Motion',
+    date: '2026-04-24',
+    summary:
+      'Buying paths, dashboard signals, and workflow handoffs were cleaned up so the public site and authenticated app better match FormaOS as compliance infrastructure.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Foundation, Growth, and Enterprise buying motion clarified',
+        tag: 'enterprise',
+        detail:
+          'Public pricing now presents Foundation self-serve, Growth compliance-plan intake, and Enterprise demo/procurement routing. Foundation preserves plan and checkout intent through signup; Enterprise no longer implies direct public checkout.',
+      },
+      {
+        text: 'Free-trial funnel language removed from active buying paths',
+        tag: 'improvement',
+        detail:
+          'Public buying-motion tests guard against Start Free Trial and 14-day trial copy on core marketing routes. Why it matters: the page now sells infrastructure scope instead of a disposable trial funnel.',
+      },
+      {
+        text: 'Stripe readiness documented for the new commercial paths',
+        tag: 'integration',
+        detail:
+          'docs/billing-migration-plan.md documents Foundation checkout, Growth Payment Link readiness for post-demo sales motion, Enterprise invoicing, and rollback guidance.',
+      },
+      {
+        text: 'Dashboard shifted toward truthful operator data',
+        tag: 'improvement',
+        detail:
+          'The command-center dashboard, next-actions strip, KPI bar, timeline primitives, and dashboard truthfulness tests make the app surface more action-first and less demo-like.',
+      },
+    ],
+  },
+  {
     version: 'v3.7.1',
     codename: 'Reconcile II',
     date: '2026-04-22',
