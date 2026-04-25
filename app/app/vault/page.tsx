@@ -283,7 +283,23 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                         </div>
                       </td>
                       <td className="px-3 py-2 text-xs text-muted-foreground truncate max-w-[180px]">
-                        {item.task?.title || item.policy?.title || 'General'}
+                        {item.task_id && item.task?.title ? (
+                          <Link
+                            href="/app/compliance"
+                            className="hover:text-foreground hover:underline"
+                          >
+                            {item.task.title}
+                          </Link>
+                        ) : item.policy_id && item.policy?.title ? (
+                          <Link
+                            href={`/app/policies/${item.policy_id}`}
+                            className="hover:text-foreground hover:underline"
+                          >
+                            {item.policy.title}
+                          </Link>
+                        ) : (
+                          'General'
+                        )}
                       </td>
                       <td className="px-3 py-2 text-xs text-muted-foreground font-mono">
                         {getFileType(item)} · {getFileSizeKB(item)}KB
@@ -383,7 +399,23 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                         </td>
 
                         <td className="px-8 py-4 text-xs text-muted-foreground">
-                          {item.task?.title || item.policy?.title || 'N/A'}
+                          {item.task_id && item.task?.title ? (
+                            <Link
+                              href="/app/compliance"
+                              className="hover:text-foreground hover:underline"
+                            >
+                              {item.task.title}
+                            </Link>
+                          ) : item.policy_id && item.policy?.title ? (
+                            <Link
+                              href={`/app/policies/${item.policy_id}`}
+                              className="hover:text-foreground hover:underline"
+                            >
+                              {item.policy.title}
+                            </Link>
+                          ) : (
+                            'N/A'
+                          )}
                         </td>
 
                         <td className="px-8 py-4">

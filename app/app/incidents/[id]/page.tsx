@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   ClipboardCheck,
 } from 'lucide-react';
+import { EntityEvidencePanel } from '@/components/compliance/EntityEvidencePanel';
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return 'N/A';
@@ -40,6 +41,8 @@ type IncidentRow = {
   root_cause: string | null;
   preventive_measures: string | null;
   created_at: string;
+  patient_id: string | null;
+  reported_by: string | null;
   patient: { id: string; full_name: string } | null;
   reporter: { id: string; email: string | null } | null;
 };
@@ -58,6 +61,9 @@ export default async function IncidentDetailPage({
   const orgId = systemState.organization.id;
 
   const supabase = await createSupabaseServerClient();
+  // Plain select — relational joins (`patient:patient_id(...)`) require
+  // FKs that the production schema does not declare, so we resolve the
+  // related rows manually below.
   const { data: incidentData } = await supabase
     .from('org_incidents')
     .select(
@@ -76,16 +82,49 @@ export default async function IncidentDetailPage({
       root_cause,
       preventive_measures,
       created_at,
-      patient:patient_id(id, full_name),
-      reporter:reported_by(id, email)
+      patient_id,
+      reported_by
     `,
     )
     .eq('organization_id', orgId)
     .eq('id', incidentId)
     .maybeSingle();
 
-  const incident = incidentData as IncidentRow | null;
-  if (!incident) notFound();
+  if (!incidentData) notFound();
+
+  const [{ data: patientRow }, { data: reporterRow }] = await Promise.all([
+    incidentData.patient_id
+      ? supabase
+          .from('org_patients')
+          .select('id, full_name')
+          .eq('id', incidentData.patient_id)
+          .eq('organization_id', orgId)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    incidentData.reported_by
+      ? supabase
+          .from('user_profiles')
+          .select('user_id, full_name')
+          .eq('user_id', incidentData.reported_by)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
+  const incident: IncidentRow = {
+    ...(incidentData as Omit<IncidentRow, 'patient' | 'reporter'>),
+    patient: patientRow
+      ? {
+          id: patientRow.id as string,
+          full_name: patientRow.full_name as string,
+        }
+      : null,
+    reporter: reporterRow
+      ? {
+          id: reporterRow.user_id as string,
+          email: (reporterRow.full_name as string | null) ?? null,
+        }
+      : null,
+  };
 
   const isOpen = incident.status === 'open';
   const resolveAction = async (fd: FormData) => {
@@ -219,6 +258,13 @@ export default async function IncidentDetailPage({
           ) : null}
         </section>
       ) : null}
+
+      <EntityEvidencePanel
+        entityId={incident.id}
+        entityType="incident"
+        heading="Incident Evidence"
+        emptyState="Attach photos, witness statements, or documents related to this incident."
+      />
 
       {isOpen ? (
         <section className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5">

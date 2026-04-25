@@ -11,6 +11,7 @@ import {
   ShieldAlert,
   User,
 } from 'lucide-react';
+import { EntityEvidencePanel } from '@/components/compliance/EntityEvidencePanel';
 
 function formatDate(value: string | null | undefined): string {
   if (!value) return 'N/A';
@@ -54,6 +55,9 @@ export default async function StaffCredentialDetailPage({
   const orgId = systemState.organization.id;
 
   const supabase = await createSupabaseServerClient();
+  // Plain select — `staff:user_id(...)` would need an FK that the
+  // production schema doesn't declare. Resolve the staff profile in a
+  // separate query.
   const { data: credentialData } = await supabase
     .from('org_staff_credentials')
     .select(
@@ -69,15 +73,32 @@ export default async function StaffCredentialDetailPage({
       verified_at,
       notes,
       created_at,
-      staff:user_id(id, email)
+      user_id
     `,
     )
     .eq('organization_id', orgId)
     .eq('id', credentialId)
     .maybeSingle();
 
-  const credential = credentialData as CredentialRow | null;
-  if (!credential) notFound();
+  if (!credentialData) notFound();
+
+  const { data: staffRow } = credentialData.user_id
+    ? await supabase
+        .from('user_profiles')
+        .select('user_id, full_name')
+        .eq('user_id', credentialData.user_id)
+        .maybeSingle()
+    : { data: null };
+
+  const credential: CredentialRow = {
+    ...(credentialData as Omit<CredentialRow, 'staff'>),
+    staff: staffRow
+      ? {
+          id: staffRow.user_id as string,
+          email: (staffRow.full_name as string | null) ?? null,
+        }
+      : null,
+  };
 
   const verifyAction = async () => {
     'use server';
@@ -182,6 +203,13 @@ export default async function StaffCredentialDetailPage({
           </p>
         </section>
       </div>
+
+      <EntityEvidencePanel
+        entityId={credential.id}
+        entityType="staff_credential"
+        heading="Credential Evidence"
+        emptyState="Attach the certificate, renewal proof, or background-check letter for this credential."
+      />
 
       {canVerify ? (
         <section className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-5">

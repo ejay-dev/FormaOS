@@ -1,11 +1,11 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-25T03:56:22.295Z
+Generated: 2026-04-25T11:16:00.314Z
 
 ## Summary
 
-- Total app internal links validated: 301
-- Valid links: 301
+- Total app internal links validated: 302
+- Valid links: 302
 - Broken links: 0
 - App routes discovered: 211
 
@@ -92,6 +92,7 @@ Generated: 2026-04-25T03:56:22.295Z
 | `components/dashboard/quick-actions.tsx` | `/app/certificates` | YES | YES | auth | `/app/certificates` |
 | `app/api/v1/dashboard/stand-up/route.ts` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `app/app/executive/ExecutiveDashboardClient.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
+| `app/app/vault/page.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/automation/ComplianceDashboardWidget.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/compliance/ComplianceHeroBand.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/compliance/ComplianceStatusStrip.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |

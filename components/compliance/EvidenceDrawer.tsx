@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Paperclip,
   Lock,
@@ -11,6 +11,7 @@ import {
   Clock,
   Download,
   User,
+  AlertCircle,
 } from 'lucide-react';
 import {
   Sheet,
@@ -27,12 +28,13 @@ interface EvidenceItem {
   id: string;
   type: 'file' | 'link' | 'note';
   title: string;
-  description?: string;
+  description?: string | null;
   submittedBy: { name: string; avatarUrl?: string };
   submittedAt: string;
   locked: boolean;
   fileUrl?: string;
   linkUrl?: string;
+  filePath?: string | null;
 }
 
 interface ActivityEntry {
@@ -48,6 +50,9 @@ interface EvidenceDrawerProps {
   onOpenChange: (open: boolean) => void;
   obligationId: string;
   obligationTitle: string;
+  /** Called whenever the evidence list for this obligation changes
+   *  (after a successful upload). Use it to refresh the parent list. */
+  onEvidenceChanged?: (count: number) => void;
 }
 
 export function EvidenceDrawer({
@@ -55,12 +60,16 @@ export function EvidenceDrawer({
   onOpenChange,
   obligationId,
   obligationTitle,
+  onEvidenceChanged,
 }: EvidenceDrawerProps) {
   const [evidence, setEvidence] = useState<EvidenceItem[]>([]);
   const [activities, setActivities] = useState<ActivityEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [tab, setTab] = useState<'evidence' | 'activity'>('evidence');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open || !obligationId) return;
@@ -84,7 +93,10 @@ export function EvidenceDrawer({
           setActivities(actData.entries ?? []);
         }
       } catch {
-        // fail silently
+        if (mounted) {
+          setEvidence([]);
+          setActivities([]);
+        }
       } finally {
         if (mounted) setIsLoading(false);
       }
@@ -95,30 +107,72 @@ export function EvidenceDrawer({
     };
   }, [open, obligationId]);
 
+  const uploadFiles = useCallback(
+    async (files: File[]) => {
+      if (files.length === 0) return;
+      setUploadError(null);
+      setIsUploading(true);
+      try {
+        const formData = new FormData();
+        files.forEach((f) => formData.append('files', f));
+        formData.append('obligationId', obligationId);
+
+        const res = await fetch('/api/v1/evidence/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!res.ok) {
+          let message = 'Upload failed';
+          try {
+            const body = await res.json();
+            if (body?.error) message = String(body.error);
+          } catch {
+            // fall through with default
+          }
+          setUploadError(message);
+          return;
+        }
+
+        const data = await res.json();
+        const newItems: EvidenceItem[] = data.items ?? [];
+        const updated = [...newItems, ...evidence];
+        setEvidence(updated);
+        onEvidenceChanged?.(updated.length);
+      } catch (err) {
+        setUploadError(
+          err instanceof Error ? err.message : 'Upload failed',
+        );
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [obligationId, evidence, onEvidenceChanged],
+  );
+
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragOver(false);
       const files = Array.from(e.dataTransfer.files);
-      if (files.length === 0) return;
-
-      // Upload files
-      const formData = new FormData();
-      files.forEach((f) => formData.append('files', f));
-      formData.append('obligationId', obligationId);
-
-      fetch('/api/v1/evidence/upload', { method: 'POST', body: formData })
-        .then((res) => {
-          if (res.ok) return res.json();
-          throw new Error('Upload failed');
-        })
-        .then((data) => {
-          setEvidence((prev) => [...(data.items ?? []), ...prev]);
-        })
-        .catch(() => {});
+      void uploadFiles(files);
     },
-    [obligationId],
+    [uploadFiles],
   );
+
+  const handleFilePick = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files ?? []);
+      // Reset input so the same file can be selected twice in a row
+      e.target.value = '';
+      void uploadFiles(files);
+    },
+    [uploadFiles],
+  );
+
+  const triggerBrowse = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
 
   const typeIcon = (type: string) => {
     switch (type) {
@@ -147,6 +201,16 @@ export function EvidenceDrawer({
             {obligationTitle}
           </p>
         </SheetHeader>
+
+        {/* Hidden file input — reused for both browse and the dropzone CTA */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          className="sr-only"
+          onChange={handleFilePick}
+          data-testid="evidence-file-input"
+        />
 
         {/* Tabs */}
         <div className="flex gap-1 border-b border-glass-border">
@@ -185,21 +249,18 @@ export function EvidenceDrawer({
           ) : tab === 'evidence' ? (
             <div className="space-y-3 px-1">
               {/* Drop zone */}
-              <div
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                  }
-                }}
+              <button
+                type="button"
+                onClick={triggerBrowse}
                 onDragOver={(e) => {
                   e.preventDefault();
                   setIsDragOver(true);
                 }}
                 onDragLeave={() => setIsDragOver(false)}
                 onDrop={handleDrop}
-                className={`flex flex-col items-center gap-2 rounded-lg border-2 border-dashed p-4 text-center transition-colors ${
+                disabled={isUploading}
+                data-testid="evidence-dropzone"
+                className={`flex w-full flex-col items-center gap-2 rounded-lg border-2 border-dashed p-4 text-center transition-colors disabled:opacity-60 ${
                   isDragOver
                     ? 'border-[var(--wire-action)] bg-[var(--wire-action)]/5'
                     : 'border-glass-border hover:border-glass-border-strong'
@@ -207,17 +268,29 @@ export function EvidenceDrawer({
               >
                 <Upload className="h-5 w-5 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">
-                  Drag files here or{' '}
-                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                  <label className="cursor-pointer text-[var(--wire-action)] underline">
-                    browse
-                  </label>
+                  {isUploading
+                    ? 'Uploading…'
+                    : 'Drag files here or click to browse'}
                 </p>
-              </div>
+              </button>
+
+              {uploadError && (
+                <div
+                  role="alert"
+                  data-testid="evidence-upload-error"
+                  className="flex items-start gap-2 rounded-md border border-red-400/40 bg-red-400/10 px-3 py-2 text-xs text-red-500"
+                >
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                  <span>{uploadError}</span>
+                </div>
+              )}
 
               {/* Evidence list */}
               {evidence.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">
+                <p
+                  className="text-sm text-muted-foreground text-center py-4"
+                  data-testid="evidence-empty"
+                >
                   No evidence attached yet.
                 </p>
               ) : (
@@ -226,6 +299,7 @@ export function EvidenceDrawer({
                   return (
                     <div
                       key={item.id}
+                      data-testid="evidence-item"
                       className="flex items-start gap-3 rounded-lg border border-glass-border bg-glass-subtle p-3"
                     >
                       <Icon className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
@@ -323,14 +397,14 @@ export function EvidenceDrawer({
             size="sm"
             onClick={() => {
               window.open(
-                `/api/v1/evidence/export?obligationId=${encodeURIComponent(obligationId)}`,
+                `/api/v1/evidence?obligationId=${encodeURIComponent(obligationId)}`,
                 '_blank',
               );
             }}
             className="w-full"
           >
             <Download className="h-3.5 w-3.5 mr-2" />
-            Export Evidence Pack
+            View Evidence JSON
           </Button>
         </SheetFooter>
       </SheetContent>

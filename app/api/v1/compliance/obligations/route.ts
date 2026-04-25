@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 
@@ -45,25 +46,66 @@ export async function GET(request: Request) {
       return NextResponse.json({ obligations: [] });
     }
 
+    const taskList = tasks ?? [];
+
+    // Real evidence counts per task — keeps the obligations register honest
+    // when users attach evidence from the drawer.
+    let evidenceCountByTask = new Map<string, number>();
+    if (taskList.length > 0) {
+      const taskIds = taskList.map((t) => t.id as string);
+      // Use admin for the count read — we've already authorized the
+      // user via getUser() + membership lookup above. RLS on org_evidence
+      // varies between environments; this guarantees a real count.
+      const admin = createSupabaseAdminClient();
+      const { data: evidenceRows, error: evidenceError } = await admin
+        .from('org_evidence')
+        .select('task_id')
+        .eq('organization_id', orgId)
+        .in('task_id', taskIds);
+
+      if (evidenceError) {
+        log.warn(
+          { err: evidenceError },
+          'evidence count query failed; defaulting to zero',
+        );
+      } else {
+        evidenceCountByTask = (evidenceRows ?? []).reduce<Map<string, number>>(
+          (acc, row) => {
+            const id = row.task_id as string | null;
+            if (!id) return acc;
+            acc.set(id, (acc.get(id) ?? 0) + 1);
+            return acc;
+          },
+          new Map(),
+        );
+      }
+    }
+
     const now = Date.now();
     const weekFromNow = now + 7 * DAY_MS;
 
-    const obligations = (tasks ?? []).map((t) => {
+    const obligations = taskList.map((t) => {
       const due = t.due_date ? new Date(t.due_date as string).getTime() : null;
-      let status: 'overdue' | 'due_soon' | 'on_track' | 'completed' | 'not_started';
+      let status:
+        | 'overdue'
+        | 'due_soon'
+        | 'on_track'
+        | 'completed'
+        | 'not_started';
       if (t.status === 'completed') status = 'completed';
       else if (!t.due_date) status = 'not_started';
       else if (due !== null && due < now) status = 'overdue';
       else if (due !== null && due <= weekFromNow) status = 'due_soon';
       else status = 'on_track';
 
-      const risk = (t.priority as string) === 'critical'
-        ? 'critical'
-        : (t.priority as string) === 'high'
-          ? 'high'
-          : (t.priority as string) === 'low'
-            ? 'low'
-            : 'medium';
+      const risk =
+        (t.priority as string) === 'critical'
+          ? 'critical'
+          : (t.priority as string) === 'high'
+            ? 'high'
+            : (t.priority as string) === 'low'
+              ? 'low'
+              : 'medium';
 
       return {
         id: t.id as string,
@@ -73,7 +115,7 @@ export async function GET(request: Request) {
         owner: null,
         dueDate: (t.due_date as string) || '',
         status,
-        evidenceCount: 0,
+        evidenceCount: evidenceCountByTask.get(t.id as string) ?? 0,
         riskScore: risk,
       };
     });

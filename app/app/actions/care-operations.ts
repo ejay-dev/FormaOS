@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { insertOrgTaskCompat } from "@/lib/tasks/persistence";
 import { actionError, isNextInternalError } from "@/lib/actions/safe";
+import { logAuditEvent } from "@/app/app/actions/audit-events";
 
 async function requireUserOrganization(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
@@ -307,20 +308,40 @@ export async function resolveIncident(id: string, formData: FormData) {
   if (!user) redirect("/auth/signin");
   const organizationId = await requireUserOrganization(supabase, user.id);
 
+  const rootCause = (formData.get("root_cause") as string) || null;
+  const preventiveMeasures =
+    (formData.get("preventive_measures") as string) || null;
+  const resolvedAt = new Date().toISOString();
+
   const { error } = await supabase
     .from("org_incidents")
     .update({
       status: "resolved",
-      resolved_at: new Date().toISOString(),
+      resolved_at: resolvedAt,
       resolved_by: user.id,
-      root_cause: formData.get("root_cause") as string || null,
-      preventive_measures: formData.get("preventive_measures") as string || null,
-      follow_up_completed_at: new Date().toISOString(),
+      root_cause: rootCause,
+      preventive_measures: preventiveMeasures,
+      follow_up_completed_at: resolvedAt,
     })
     .eq("id", id)
     .eq("organization_id", organizationId);
 
   if (error) throw new Error(error.message);
+
+  await logAuditEvent({
+    organizationId,
+    actorUserId: user.id,
+    actorRole: null,
+    entityType: "incident",
+    entityId: id,
+    actionType: "INCIDENT_RESOLVED",
+    afterState: {
+      status: "resolved",
+      resolved_at: resolvedAt,
+      has_root_cause: Boolean(rootCause),
+    },
+    reason: "incident_resolution",
+  });
 
   revalidatePath("/app/incidents");
   revalidatePath(`/app/incidents/${id}`);
@@ -408,17 +429,29 @@ export async function verifyStaffCredential(id: string) {
   if (!user) redirect("/auth/signin");
   const organizationId = await requireUserOrganization(supabase, user.id);
 
+  const verifiedAt = new Date().toISOString();
   const { error } = await supabase
     .from("org_staff_credentials")
     .update({
       status: "verified",
-      verified_at: new Date().toISOString(),
+      verified_at: verifiedAt,
       verified_by: user.id,
     })
     .eq("id", id)
     .eq("organization_id", organizationId);
 
   if (error) throw new Error(error.message);
+
+  await logAuditEvent({
+    organizationId,
+    actorUserId: user.id,
+    actorRole: null,
+    entityType: "staff_credential",
+    entityId: id,
+    actionType: "STAFF_CREDENTIAL_VERIFIED",
+    afterState: { status: "verified", verified_at: verifiedAt },
+    reason: "credential_verification",
+  });
 
   revalidatePath("/app/staff-compliance");
   } catch (error) {
@@ -524,8 +557,21 @@ export async function updateCarePlanStatus(
 
     if (updateErr) return actionError(updateErr);
 
+    await logAuditEvent({
+      organizationId: orgId,
+      actorUserId: user.id,
+      actorRole: null,
+      entityType: 'care_plan',
+      entityId: planId,
+      actionType: 'CARE_PLAN_STATUS_CHANGED',
+      beforeState: { status: existing.status },
+      afterState: { status: nextStatus },
+      reason: `${existing.status} → ${nextStatus}`,
+    });
+
     revalidatePath('/app/care-plans');
     revalidatePath('/app/care-plans/journey');
+    revalidatePath(`/app/care-plans/${planId}`);
     return { success: true as const };
   } catch (error) {
     if (isNextInternalError(error)) throw error;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   ColumnDef,
   flexRender,
@@ -219,9 +219,20 @@ function ObligationsTableInner() {
   const [statusFilter, setStatusFilter] = useState('');
   const [riskFilter, setRiskFilter] = useState('');
 
+  const reload = useCallback(async () => {
+    try {
+      const res = await fetch('/api/v1/compliance/obligations');
+      if (!res.ok) throw new Error('Failed');
+      const json = await res.json();
+      setData(json.obligations ?? []);
+    } catch {
+      // empty
+    }
+  }, []);
+
   useEffect(() => {
     let mounted = true;
-    async function load() {
+    (async () => {
       try {
         const res = await fetch('/api/v1/compliance/obligations');
         if (!res.ok) throw new Error('Failed');
@@ -232,8 +243,7 @@ function ObligationsTableInner() {
       } finally {
         if (mounted) setIsLoading(false);
       }
-    }
-    load();
+    })();
     return () => {
       mounted = false;
     };
@@ -558,11 +568,23 @@ function ObligationsTableInner() {
 
       <EvidenceDrawer
         open={evidenceDrawer.open}
-        onOpenChange={(open) =>
-          setEvidenceDrawer((prev) => ({ ...prev, open }))
-        }
+        onOpenChange={(open) => {
+          setEvidenceDrawer((prev) => ({ ...prev, open }));
+          // When the drawer closes, refresh counts authoritatively so the
+          // register reflects whatever the user just attached.
+          if (!open) void reload();
+        }}
         obligationId={evidenceDrawer.id}
         obligationTitle={evidenceDrawer.title}
+        onEvidenceChanged={(count) => {
+          // Optimistically reflect the new count in the row; reload() on
+          // close will reconcile with the server-side aggregate.
+          setData((rows) =>
+            rows.map((r) =>
+              r.id === evidenceDrawer.id ? { ...r, evidenceCount: count } : r,
+            ),
+          );
+        }}
       />
     </>
   );
