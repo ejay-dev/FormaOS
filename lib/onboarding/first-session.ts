@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { cache } from 'react';
+
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 export type FirstSessionStepId =
@@ -57,7 +59,9 @@ async function firstCarePlanWithGoalsId(
   }
 }
 
-export async function getFirstSessionState(
+export const getFirstSessionState = cache(_getFirstSessionState);
+
+async function _getFirstSessionState(
   orgId: string,
 ): Promise<FirstSessionState> {
   const admin = createSupabaseAdminClient();

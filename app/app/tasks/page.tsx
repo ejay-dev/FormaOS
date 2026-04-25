@@ -18,6 +18,7 @@ import { createTask } from '@/app/app/actions/tasks';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { redirect } from 'next/navigation';
 import { normalizeTaskPriority, taskPriorityLabel } from '@/lib/tasks/priority';
+import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 
 type TaskRow = {
   id: string;
@@ -144,6 +145,7 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
 
   return (
     <div className="flex flex-col h-full">
+      <OnboardingBanner stepId="review-task" />
       {/* Header */}
       <div className="page-header" data-tour="tasks-header">
         <div>

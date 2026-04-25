@@ -34,6 +34,7 @@ import {
   type CareGoal,
   type CareSupport,
 } from '@/lib/care-plans/normalize';
+import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 
 export const metadata = { title: 'Care Plan Detail | FormaOS' };
 export const dynamic = 'force-dynamic';
@@ -207,6 +208,7 @@ export default async function CarePlanDetailPage({
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">
+      <OnboardingBanner stepId="add-goal" scrollTargetId="care-plan-goals" />
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link
@@ -337,6 +339,7 @@ export default async function CarePlanDetailPage({
 
           {/* SECTION 2 — Goals */}
           <section
+            id="care-plan-goals"
             className="rounded-lg border border-border bg-card"
             data-testid="care-plan-goals"
           >

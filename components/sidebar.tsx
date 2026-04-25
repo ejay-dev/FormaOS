@@ -25,6 +25,7 @@ import {
   type NavItem,
 } from '@/lib/navigation/industry-sidebar';
 import { useComplianceStore } from '@/lib/stores/compliance';
+import { useOnboarding } from '@/lib/onboarding/onboarding-context';
 
 type ContextMode = {
   label: string;
@@ -141,6 +142,8 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
   const prefetchedRoutes = useRef(new Set<string>());
   const warmupScheduled = useRef(false);
   const contextMode = useMemo(() => resolveContextMode(pathname), [pathname]);
+  const { state: onboardingState, isActive: onboardingActive } = useOnboarding();
+  const nextStepHref = onboardingState?.nextStep?.href ?? null;
 
   // Get industry-specific navigation (memoized to prevent prefetch re-runs)
   const { navigation, categories } = useMemo(
@@ -257,6 +260,10 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
                     item={item}
                     pathname={pathname}
                     onPrefetch={prefetchRoute}
+                    nextStepHref={nextStepHref}
+                    dimNonHighlighted={
+                      onboardingActive && Boolean(nextStepHref)
+                    }
                   />
                 ))}
             </div>
@@ -310,13 +317,29 @@ function SidebarNavItem({
   item,
   pathname,
   onPrefetch,
+  nextStepHref = null,
+  dimNonHighlighted = false,
 }: {
   item: NavItem;
   pathname: string;
   onPrefetch: (href: string) => void;
+  nextStepHref?: string | null;
+  dimNonHighlighted?: boolean;
 }) {
   const ragDotColor = useRAGDot(item.ragKey);
   const badgeCount = useTaskBadge(item.badgeKey);
+  const isOnboardingTarget = Boolean(
+    nextStepHref &&
+      item.href !== '/app' &&
+      (item.href === nextStepHref ||
+        nextStepHref === `${item.href}/new` ||
+        nextStepHref.startsWith(`${item.href}/`)),
+  );
+  const shouldDim =
+    dimNonHighlighted &&
+    !isOnboardingTarget &&
+    item.href !== '/app' &&
+    !pathname.startsWith(item.href);
 
   // Handle hash-based actions (e.g. #ai-assistant)
   if (item.href.startsWith('#')) {
@@ -355,6 +378,7 @@ function SidebarNavItem({
       <Link
         href={item.href}
         data-testid={item.testId}
+        data-onboarding-target={isOnboardingTarget ? 'true' : undefined}
         onClick={() => {
           if (item.href !== pathname) {
             markSidebarRouteTransition(item.href);
@@ -365,7 +389,11 @@ function SidebarNavItem({
         className={`group flex items-center gap-2 rounded-md px-3 h-8 text-sm font-medium transition-all duration-200 ${
           isActive
             ? 'sidebar-link-active bg-accent/50 text-foreground border-l-2 border-l-primary'
-            : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
+            : isOnboardingTarget
+              ? 'text-foreground bg-primary/10 border-l-2 border-l-primary hover:bg-primary/15'
+              : shouldDim
+                ? 'text-foreground/40 hover:bg-muted/40 hover:text-foreground/70'
+                : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
         }`}
       >
         <div className="relative shrink-0">

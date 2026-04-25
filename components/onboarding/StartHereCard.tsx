@@ -3,13 +3,21 @@ import {
   ArrowRight,
   CheckCircle2,
   Circle,
+  ShieldCheck,
   Sparkles,
+  TriangleAlert,
 } from 'lucide-react';
 
 import type {
   FirstSessionState,
   FirstSessionStep,
 } from '@/lib/onboarding/first-session';
+
+function progressMessage(completed: number, total: number) {
+  if (completed === 0) return "Let's get you set up.";
+  if (completed < total) return "You're getting set up.";
+  return "You're fully set up.";
+}
 
 type StartHereCardProps = {
   state: FirstSessionState;
@@ -42,12 +50,15 @@ export function StartHereCard({ state }: StartHereCardProps) {
           </div>
         </div>
         <div
-          className="min-w-[160px]"
+          className="min-w-[180px]"
           data-testid="start-here-progress"
         >
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              {completed} of {total} done
+          <div className="flex items-center justify-between text-xs">
+            <span
+              className="text-muted-foreground"
+              data-testid="start-here-progress-count"
+            >
+              {completed} of {total} completed
             </span>
             <span
               className="font-medium text-foreground"
@@ -62,6 +73,12 @@ export function StartHereCard({ state }: StartHereCardProps) {
               style={{ width: `${progress}%` }}
             />
           </div>
+          <p
+            className="mt-2 text-[11px] text-muted-foreground"
+            data-testid="start-here-progress-message"
+          >
+            {progressMessage(completed, total)}
+          </p>
         </div>
       </header>
 
@@ -75,13 +92,40 @@ export function StartHereCard({ state }: StartHereCardProps) {
           <ArrowRight className="h-4 w-4" />
         </Link>
       ) : (
-        <p
-          className="mt-5 inline-flex items-center gap-2 rounded-md border border-edge-2 bg-surface-1 px-4 py-2 text-sm text-muted-foreground"
+        <div
+          className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4"
           data-testid="start-here-complete"
         >
-          <CheckCircle2 className="h-4 w-4 text-green-500" /> You&apos;re set up —
-          the rest of the dashboard is now yours.
-        </p>
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="h-5 w-5 text-emerald-500" aria-hidden="true" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                You&apos;re fully set up.
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Ready for day-to-day compliance work.
+              </p>
+            </div>
+          </div>
+          <div className="ml-auto flex flex-wrap gap-2">
+            <Link
+              href="/app/incidents"
+              data-testid="start-here-complete-incidents"
+              className="inline-flex items-center gap-1.5 rounded-md border border-edge-2 bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/40"
+            >
+              <TriangleAlert className="h-3.5 w-3.5 text-amber-500" />
+              Manage incidents
+            </Link>
+            <Link
+              href="/app/compliance"
+              data-testid="start-here-complete-compliance"
+              className="inline-flex items-center gap-1.5 rounded-md border border-edge-2 bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/40"
+            >
+              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+              Review compliance
+            </Link>
+          </div>
+        </div>
       )}
 
       <ol className="mt-6 space-y-2" data-testid="start-here-steps">

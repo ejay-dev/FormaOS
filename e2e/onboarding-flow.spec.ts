@@ -120,6 +120,9 @@ test.describe('Onboarding first-session flow', () => {
         startHere.getByTestId('start-here-progress-value'),
       ).toHaveText('0%');
       await expect(
+        startHere.getByTestId('start-here-progress-count'),
+      ).toHaveText(/0 of 5 completed/);
+      await expect(
         startHere.locator('[data-testid^="start-here-step-"]'),
       ).toHaveCount(FIVE_STEPS);
       await expect(
@@ -134,6 +137,24 @@ test.describe('Onboarding first-session flow', () => {
         'href',
         '/app/care-plans/new',
       );
+
+      // Persistent Continue-onboarding strip is visible in the shell.
+      const strip = page.getByTestId('onboarding-strip');
+      await expect(strip).toBeVisible();
+      await expect(strip.getByTestId('onboarding-strip-label')).toContainText(
+        /Create your first care plan/i,
+      );
+      await expect(strip.getByTestId('onboarding-strip-cta')).toHaveAttribute(
+        'href',
+        '/app/care-plans/new',
+      );
+
+      // Strip persists across navigation (open tasks page).
+      await page.goto('/app/tasks', { waitUntil: 'domcontentloaded' });
+      await expect(page.getByTestId('onboarding-strip')).toBeVisible();
+      await expect(
+        page.getByTestId('onboarding-strip-label'),
+      ).toContainText(/Create your first care plan/i);
 
       // 6. Simulate the user completing step 1 (creating a care plan).
       //    org_care_plans requires a patient (client_id FK) — seed one first.
@@ -151,33 +172,57 @@ test.describe('Onboarding first-session flow', () => {
       const patientId = (patientRow as { id: string } | null)?.id;
       expect(patientId).toBeTruthy();
 
-      const { error: planErr } = await admin.from('org_care_plans').insert({
-        organization_id: orgId,
-        client_id: patientId,
-        plan_type: 'support',
-        title: `E2E Onboarding Plan ${unique}`,
-        start_date: now.slice(0, 10),
-        status: 'draft',
-        goals: [],
-        supports: [],
-        created_by: userId,
-      });
+      const { data: planRow, error: planErr } = await admin
+        .from('org_care_plans')
+        .insert({
+          organization_id: orgId,
+          client_id: patientId,
+          plan_type: 'support',
+          title: `E2E Onboarding Plan ${unique}`,
+          start_date: now.slice(0, 10),
+          status: 'draft',
+          goals: [],
+          supports: [],
+          created_by: userId,
+        })
+        .select('id')
+        .single();
       expect(planErr).toBeNull();
+      const planId = (planRow as { id: string } | null)?.id;
+      expect(planId).toBeTruthy();
 
-      // 7. Reload → progress advances to 20%, step 1 marked done, next step
-      //    now points to add-goal.
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      // 7. Return to /app → progress advances to 20%, step 1 marked done,
+      //    next step now points to add-goal. Strip reflects the new next step.
+      await page.goto('/app', { waitUntil: 'domcontentloaded' });
       const startHereAfter = page.getByTestId('start-here-card');
       await expect(startHereAfter).toBeVisible();
       await expect(
         startHereAfter.getByTestId('start-here-progress-value'),
       ).toHaveText('20%');
       await expect(
+        startHereAfter.getByTestId('start-here-progress-count'),
+      ).toHaveText(/1 of 5 completed/);
+      await expect(
         startHereAfter.getByTestId('start-here-step-create-care-plan'),
       ).toHaveAttribute('data-done', 'true');
       await expect(
         startHereAfter.getByTestId('start-here-next-cta'),
       ).toContainText(/Add your first goal/i);
+      await expect(
+        page.getByTestId('onboarding-strip-label'),
+      ).toContainText(/Add your first goal/i);
+
+      // 8. Open the freshly-created care plan → contextual banner appears for
+      //    the add-goal step with scroll-to-goals CTA.
+      await page.goto(`/app/care-plans/${planId}`, {
+        waitUntil: 'domcontentloaded',
+      });
+      const banner = page.getByTestId('onboarding-banner');
+      await expect(banner).toBeVisible();
+      await expect(banner).toHaveAttribute('data-step', 'add-goal');
+      await expect(
+        banner.getByTestId('onboarding-banner-cta'),
+      ).toBeVisible();
     } finally {
       if (orgId) {
         // Clean up in dependency order to avoid FK violations.

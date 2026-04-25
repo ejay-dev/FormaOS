@@ -13,6 +13,7 @@ import { redirect } from 'next/navigation';
 import { VaultUploadButton } from '@/components/vault/vault-upload-button';
 import { EvidenceFileActions } from '@/components/vault/evidence-file-actions';
 import Link from 'next/link';
+import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 
 type ArtifactRow = {
   id: string;
@@ -188,6 +189,7 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
 
   return (
     <div className="flex flex-col h-full">
+      <OnboardingBanner stepId="upload-evidence" />
       {/* Header */}
       <div className="page-header" data-tour="vault-header">
         <div>

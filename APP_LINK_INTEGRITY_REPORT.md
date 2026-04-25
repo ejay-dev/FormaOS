@@ -1,11 +1,11 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-24T13:56:50.497Z
+Generated: 2026-04-24T14:24:05.770Z
 
 ## Summary
 
-- Total app internal links validated: 296
-- Valid links: 296
+- Total app internal links validated: 298
+- Valid links: 298
 - Broken links: 0
 - App routes discovered: 211
 
@@ -100,6 +100,7 @@ Generated: 2026-04-24T13:56:50.497Z
 | `components/dashboard/QuickActionTiles.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/empty-states/empty-state.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/financial/TransactionMonitoringWidget.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
+| `components/onboarding/StartHereCard.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `lib/navigation/industry-sidebar.ts` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `app/app/compliance/page.tsx` | `/app/compliance/cross-map` | YES | YES | auth | `/app/compliance/cross-map` |
 | `app/app/controls/page.tsx` | `/app/compliance/cross-map` | YES | YES | auth | `/app/compliance/cross-map` |
@@ -137,6 +138,7 @@ Generated: 2026-04-24T13:56:50.497Z
 | `app/app/incidents/page.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `app/app/registers/page.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `components/dashboard/quick-actions.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
+| `components/onboarding/StartHereCard.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `lib/navigation/industry-sidebar.ts` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `app/app/incidents/[id]/investigation/page.tsx` | `/app/incidents/:param/investigation` | YES | YES | auth | `/app/incidents/:id/investigation` |
 | `app/app/incidents/page.tsx` | `/app/incidents/new` | YES | YES | auth | `/app/incidents/new` |

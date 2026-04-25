@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { Plus, Search, Filter, AlertTriangle, Users } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { ParticipantsEmptyState } from '@/components/empty-states';
+import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 
 // Get industry-appropriate label
 function getEntityLabel(industry: string | null): {
@@ -125,6 +126,7 @@ export default async function ParticipantsPage({
 
   return (
     <div className="flex flex-col h-full">
+      <OnboardingBanner stepId="log-progress-note" />
       {/* Header */}
       <div className="page-header">
         <div>

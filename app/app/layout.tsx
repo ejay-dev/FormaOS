@@ -25,6 +25,9 @@ import { RuntimeDebugIndicator } from '@/components/control-plane/runtime-debug-
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { FeedbackWidget } from '@/components/feedback/FeedbackWidget';
 import { ComplianceStatusStrip } from '@/components/compliance/ComplianceStatusStrip';
+import { OnboardingProvider } from '@/lib/onboarding/onboarding-context';
+import { OnboardingStrip } from '@/components/onboarding/OnboardingStrip';
+import { getFirstSessionState } from '@/lib/onboarding/first-session';
 
 const log = routeLog('app/layout');
 
@@ -107,6 +110,17 @@ export default async function AppLayout({
   // Track whether the onboarding wizard should be shown
   const showOnboardingWizard = !systemState.organization.onboardingCompleted;
 
+  // First-session guided state (5 care-ops steps). Drives the persistent
+  // Continue-onboarding strip, contextual page banners, and sidebar hint.
+  let firstSession: Awaited<ReturnType<typeof getFirstSessionState>> | null = null;
+  if (systemState.organization.id && systemState.organization.onboardingCompleted) {
+    try {
+      firstSession = await getFirstSessionState(systemState.organization.id);
+    } catch (err) {
+      log.error({ err }, 'getFirstSessionState crashed');
+    }
+  }
+
   /* -------------------------------------------------------
    * 3) APPLICATION FRAME
    *    - ControlPlaneRuntimeProvider: live feature-flag stream
@@ -138,6 +152,7 @@ export default async function AppLayout({
             isFounder: systemState.isFounder,
           }}
         >
+         <OnboardingProvider state={firstSession}>
           {showOnboardingWizard && <OnboardingWizard />}
           <div className="app-shell app-theme relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
             {/* Ambient background */}
@@ -186,6 +201,7 @@ export default async function AppLayout({
                 <TrialCountdownBanner />
                 <UsageLimitWarnings />
                 <UpgradeTriggerPoints />
+                <OnboardingStrip />
 
                 <main
                   id="main-content"
@@ -211,6 +227,7 @@ export default async function AppLayout({
             <FeedbackWidget />
             <RuntimeDebugIndicator />
           </div>
+         </OnboardingProvider>
         </AppProviders>
       </AppHydrator>
     </ControlPlaneRuntimeProvider>
