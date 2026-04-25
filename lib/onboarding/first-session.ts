@@ -26,6 +26,10 @@ export type FirstSessionState = {
   progress: number;
   nextStep: FirstSessionStep | null;
   steps: FirstSessionStep[];
+  /** Step ids the user has already seen the completion toast for. */
+  seenSteps: FirstSessionStepId[];
+  /** Done steps whose completion has not yet been acknowledged (toast pending). */
+  freshlyCompletedSteps: FirstSessionStepId[];
 };
 
 async function safeCount(
@@ -36,6 +40,32 @@ async function safeCount(
     return count ?? 0;
   } catch {
     return 0;
+  }
+}
+
+async function fetchSeenSteps(
+  admin: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+): Promise<FirstSessionStepId[]> {
+  try {
+    const { data } = await admin
+      .from('org_first_session_progress')
+      .select('seen_steps')
+      .eq('organization_id', orgId)
+      .maybeSingle();
+    const raw = Array.isArray(data?.seen_steps) ? data.seen_steps : [];
+    return raw.filter((id): id is FirstSessionStepId =>
+      [
+        'create-care-plan',
+        'add-goal',
+        'log-progress-note',
+        'upload-evidence',
+        'review-task',
+      ].includes(id as string),
+    );
+  } catch {
+    // Table may not exist yet in pre-migration environments; degrade quietly.
+    return [];
   }
 }
 
@@ -66,40 +96,48 @@ async function _getFirstSessionState(
 ): Promise<FirstSessionState> {
   const admin = createSupabaseAdminClient();
 
-  const [carePlans, tasks, evidence, incidents, { planId, hasGoals }, progressNotes] =
-    await Promise.all([
-      safeCount(
-        admin
-          .from('org_care_plans')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId),
-      ),
-      safeCount(
-        admin
-          .from('org_tasks')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId),
-      ),
-      safeCount(
-        admin
-          .from('org_evidence')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId),
-      ),
-      safeCount(
-        admin
-          .from('org_incidents')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId),
-      ),
-      firstCarePlanWithGoalsId(admin, orgId),
-      safeCount(
-        admin
-          .from('org_progress_notes')
-          .select('id', { count: 'exact', head: true })
-          .eq('organization_id', orgId),
-      ),
-    ]);
+  const [
+    carePlans,
+    tasks,
+    evidence,
+    incidents,
+    { planId, hasGoals },
+    progressNotes,
+    seenSteps,
+  ] = await Promise.all([
+    safeCount(
+      admin
+        .from('org_care_plans')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+    ),
+    safeCount(
+      admin
+        .from('org_tasks')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+    ),
+    safeCount(
+      admin
+        .from('org_evidence')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+    ),
+    safeCount(
+      admin
+        .from('org_incidents')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+    ),
+    firstCarePlanWithGoalsId(admin, orgId),
+    safeCount(
+      admin
+        .from('org_progress_notes')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+    ),
+    fetchSeenSteps(admin, orgId),
+  ]);
 
   const steps: FirstSessionStep[] = [
     {
@@ -150,6 +188,12 @@ async function _getFirstSessionState(
 
   const nextStep = steps.find((s) => !s.done) ?? null;
 
+  // Steps that are done but haven't had their success toast acknowledged yet.
+  // The toast component will mark them seen server-side after displaying.
+  const freshlyCompletedSteps = steps
+    .filter((s) => s.done && !seenSteps.includes(s.id))
+    .map((s) => s.id);
+
   return {
     isFirstSession,
     completed,
@@ -157,5 +201,7 @@ async function _getFirstSessionState(
     progress,
     nextStep,
     steps,
+    seenSteps,
+    freshlyCompletedSteps,
   };
 }

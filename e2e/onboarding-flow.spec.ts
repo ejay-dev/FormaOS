@@ -212,7 +212,52 @@ test.describe('Onboarding first-session flow', () => {
         page.getByTestId('onboarding-strip-label'),
       ).toContainText(/Add your first goal/i);
 
-      // 8. Open the freshly-created care plan → contextual banner appears for
+      // 8. Emotional feedback: first-step success toast appears once.
+      const toast = page.getByTestId('onboarding-success-toast');
+      await expect(toast).toBeVisible();
+      await expect(toast).toHaveAttribute('data-step', 'create-care-plan');
+      await expect(toast).toContainText(/Great.*Care Plan/i);
+
+      // Dismiss — this fires the mark-seen server action that persists
+      // acknowledgment. Firing on mount races with form submissions on
+      // sibling routes, so we wait for explicit dismiss instead.
+      await toast.getByTestId('onboarding-success-toast-dismiss').click();
+      await page.waitForTimeout(1500);
+
+      // Persistence depends on the 20260425 migration being applied. Probe
+      // the table; if the migration hasn't run yet, skip the persistence
+      // assertions but keep the UI-surface checks above.
+      const probe = await admin
+        .from('org_first_session_progress')
+        .select('organization_id')
+        .limit(1);
+      const progressTableExists = !probe.error;
+
+      if (progressTableExists) {
+        const { data: seenRow } = await admin
+          .from('org_first_session_progress')
+          .select('seen_steps')
+          .eq('organization_id', orgId)
+          .maybeSingle();
+        expect(
+          (seenRow as { seen_steps?: string[] } | null)?.seen_steps,
+        ).toContain('create-care-plan');
+
+        // 9. Reload — toast must NOT reappear (persisted across page loads).
+        await page.reload({ waitUntil: 'domcontentloaded' });
+        await expect(page.getByTestId('start-here-card')).toBeVisible();
+        await expect(
+          page.getByTestId('onboarding-success-toast'),
+        ).toHaveCount(0);
+      } else {
+        test.info().annotations.push({
+          type: 'skip',
+          description:
+            'Migration 20260425_first_session_progress not yet applied — persistence assertions skipped.',
+        });
+      }
+
+      // 10. Open the freshly-created care plan → contextual banner appears for
       //    the add-goal step with scroll-to-goals CTA.
       await page.goto(`/app/care-plans/${planId}`, {
         waitUntil: 'domcontentloaded',
@@ -223,9 +268,56 @@ test.describe('Onboarding first-session flow', () => {
       await expect(
         banner.getByTestId('onboarding-banner-cta'),
       ).toBeVisible();
+
+      // 11. Seed a goal → next step becomes log-progress-note, which maps to
+      //     /app/participants in NDIS nav. Sidebar should now surface the
+      //     "Next" onboarding badge on that nav item.
+      await admin
+        .from('org_care_plans')
+        .update({
+          goals: [
+            {
+              id: `goal-${unique}`,
+              title: 'E2E Goal',
+              status: 'pending',
+              progress_percentage: 0,
+            },
+          ],
+        })
+        .eq('id', planId);
+
+      await page.goto('/app', { waitUntil: 'domcontentloaded' });
+      await expect(
+        page.getByTestId('onboarding-strip-label'),
+      ).toContainText(/Log your first progress note/i);
+
+      // Second emotional beat: toast for add-goal. Only reliable once the
+      // previous step was marked seen — gate on migration state.
+      if (progressTableExists) {
+        const toast2 = page.getByTestId('onboarding-success-toast');
+        await expect(toast2).toBeVisible();
+        await expect(toast2).toHaveAttribute('data-step', 'add-goal');
+      }
+
+      // Sidebar shows the "Next" pill on the participants nav item
+      // (matches log-progress-note step) and dims non-matching items.
+      await expect(
+        page
+          .locator('[data-testid="nav-participants"]')
+          .locator('[data-testid="nav-onboarding-next"]'),
+      ).toBeVisible();
+
+      const dimmedNavCount = await page
+        .locator('[data-testid^="nav-"][class*="text-foreground/40"]')
+        .count();
+      expect(dimmedNavCount).toBeGreaterThan(0);
     } finally {
       if (orgId) {
         // Clean up in dependency order to avoid FK violations.
+        await admin
+          .from('org_first_session_progress')
+          .delete()
+          .eq('organization_id', orgId);
         await admin.from('org_care_plans').delete().eq('organization_id', orgId);
         await admin.from('org_patients').delete().eq('organization_id', orgId);
         await admin.from('org_frameworks').delete().eq('org_id', orgId);

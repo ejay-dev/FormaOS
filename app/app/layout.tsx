@@ -27,6 +27,7 @@ import { FeedbackWidget } from '@/components/feedback/FeedbackWidget';
 import { ComplianceStatusStrip } from '@/components/compliance/ComplianceStatusStrip';
 import { OnboardingProvider } from '@/lib/onboarding/onboarding-context';
 import { OnboardingStrip } from '@/components/onboarding/OnboardingStrip';
+import { OnboardingSuccessToast } from '@/components/onboarding/OnboardingSuccessToast';
 import { getFirstSessionState } from '@/lib/onboarding/first-session';
 
 const log = routeLog('app/layout');
@@ -226,6 +227,7 @@ export default async function AppLayout({
             <SecurityTrackingBootstrap />
             <FeedbackWidget />
             <RuntimeDebugIndicator />
+            <OnboardingSuccessToast />
           </div>
          </OnboardingProvider>
         </AppProviders>

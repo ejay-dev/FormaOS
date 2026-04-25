@@ -409,8 +409,17 @@ function SidebarNavItem({
           )}
         </div>
         <span className="flex-1">{item.name}</span>
+        {/* Onboarding next-step pill */}
+        {isOnboardingTarget && (
+          <span
+            className="ml-auto rounded-full bg-primary/20 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary"
+            data-testid="nav-onboarding-next"
+          >
+            Next
+          </span>
+        )}
         {/* Badge count */}
-        {badgeCount !== null && badgeCount > 0 && (
+        {!isOnboardingTarget && badgeCount !== null && badgeCount > 0 && (
           <span className="ml-auto rounded-full bg-primary/20 text-primary px-1.5 py-0.5 text-[10px] font-bold tabular-nums leading-none">
             {badgeCount > 99 ? '99+' : badgeCount}
           </span>
