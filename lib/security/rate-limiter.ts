@@ -110,15 +110,39 @@ const memoryStore = new Map<string, { count: number; resetAt: number }>();
 const failOpenWarningAtByScope = new Map<string, number>();
 const FAIL_OPEN_WARNING_COOLDOWN_MS = 60 * 1000;
 const E2E_RATE_LIMIT_BYPASS_HEADER = 'x-formaos-e2e';
+const E2E_RATE_LIMIT_BYPASS_COOKIE = 'fos_e2e';
 
 function shouldFailClosed(config: RateLimitConfig): boolean {
   return Boolean(config.failClosed) && process.env.NODE_ENV === 'production';
 }
 
-function isNonProductionE2EBypass(request: Request): boolean {
+function isDeployedProductionRuntime(): boolean {
+  return process.env.VERCEL_ENV === 'production';
+}
+
+function isLocalRequest(request: Request): boolean {
+  const hostname = new URL(request.url).hostname;
   return (
-    process.env.NODE_ENV !== 'production' &&
-    request.headers.get(E2E_RATE_LIMIT_BYPASS_HEADER) === '1'
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1'
+  );
+}
+
+function hasCookie(request: Request, name: string, value: string): boolean {
+  const cookieHeader = request.headers.get('cookie') ?? '';
+  return cookieHeader
+    .split(';')
+    .map((cookie) => cookie.trim())
+    .some((cookie) => cookie === `${name}=${value}`);
+}
+
+export function isLocalE2ERateLimitBypass(request: Request): boolean {
+  return (
+    !isDeployedProductionRuntime() &&
+    isLocalRequest(request) &&
+    (request.headers.get(E2E_RATE_LIMIT_BYPASS_HEADER) === '1' ||
+      hasCookie(request, E2E_RATE_LIMIT_BYPASS_COOKIE, '1'))
   );
 }
 
@@ -425,7 +449,7 @@ export async function rateLimitAuth(request: Request): Promise<{
   headers: Record<string, string>;
   error?: 'too_many_requests' | 'backend_unavailable';
 }> {
-  if (isNonProductionE2EBypass(request)) {
+  if (isLocalE2ERateLimitBypass(request)) {
     const result = createBypassResult(RATE_LIMITS.AUTH);
     return {
       allowed: true,
@@ -470,7 +494,7 @@ export async function rateLimitSignup(request: Request): Promise<{
   headers: Record<string, string>;
   error?: 'too_many_requests' | 'backend_unavailable';
 }> {
-  if (isNonProductionE2EBypass(request)) {
+  if (isLocalE2ERateLimitBypass(request)) {
     const result = createBypassResult(RATE_LIMITS.SIGNUP);
     return {
       allowed: true,
@@ -514,7 +538,7 @@ export async function rateLimitApi(
   request: Request,
   userId?: string | null,
 ): Promise<RateLimitResult> {
-  if (isNonProductionE2EBypass(request)) {
+  if (isLocalE2ERateLimitBypass(request)) {
     return createBypassResult(RATE_LIMITS.API);
   }
 

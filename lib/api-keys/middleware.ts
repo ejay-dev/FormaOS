@@ -55,6 +55,8 @@ function hasCookie(request: Request, name: string, value: string) {
 }
 
 function isLocalE2ERateLimitBypass(request: Request) {
+  if (process.env.VERCEL_ENV === 'production') return false;
+
   const hostname = new URL(request.url).hostname;
   const isLocalHost =
     hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';

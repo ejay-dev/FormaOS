@@ -69,16 +69,19 @@ export async function createPolicy(formData: FormData) {
     },
   });
 
-  await logAuditEvent({
-    organizationId: membership.organization_id,
-    actorUserId: user.id,
-    actorRole: permissionCtx.role,
-    entityType: "policy",
-    entityId: policy.id,
-    actionType: "POLICY_CREATED",
-    afterState: { title, status: "draft", framework },
-    reason: "create",
-  });
+  await logAuditEvent(
+    {
+      organizationId: membership.organization_id,
+      actorUserId: user.id,
+      actorRole: permissionCtx.role,
+      entityType: "policy",
+      entityId: policy.id,
+      actionType: "POLICY_CREATED",
+      afterState: { title, status: "draft", framework },
+      reason: "create",
+    },
+    { required: true },
+  );
 
   revalidatePath("/app/policies");
   return { success: true, policyId: policy.id };
@@ -146,17 +149,20 @@ export async function updatePolicy(formData: FormData) {
     },
   });
 
-  await logAuditEvent({
-    organizationId: oldPolicy.organization_id,
-    actorUserId: user.id,
-    actorRole: permissionCtx.role,
-    entityType: "policy",
-    entityId: policyId,
-    actionType: "POLICY_UPDATED",
-    beforeState: { title: oldPolicy.title },
-    afterState: { title, status },
-    reason: "update",
-  });
+  await logAuditEvent(
+    {
+      organizationId: oldPolicy.organization_id,
+      actorUserId: user.id,
+      actorRole: permissionCtx.role,
+      entityType: "policy",
+      entityId: policyId,
+      actionType: "POLICY_UPDATED",
+      beforeState: { title: oldPolicy.title },
+      afterState: { title, status },
+      reason: "update",
+    },
+    { required: true },
+  );
 
   revalidatePath("/app/policies");
   revalidatePath(`/app/policies/${policyId}`);
@@ -208,16 +214,19 @@ export async function linkArtifactToPolicy(policyId: string, evidenceId: string)
     metadata: { policyId, evidenceId },
   });
 
-  await logAuditEvent({
-    organizationId: policy.organization_id,
-    actorUserId: user.id,
-    actorRole: permissionCtx.role,
-    entityType: "policy",
-    entityId: policyId,
-    actionType: "POLICY_EVIDENCE_LINKED",
-    afterState: { evidenceId },
-    reason: "link_evidence",
-  });
+  await logAuditEvent(
+    {
+      organizationId: policy.organization_id,
+      actorUserId: user.id,
+      actorRole: permissionCtx.role,
+      entityType: "policy",
+      entityId: policyId,
+      actionType: "POLICY_EVIDENCE_LINKED",
+      afterState: { evidenceId },
+      reason: "link_evidence",
+    },
+    { required: true },
+  );
 
   revalidatePath(`/app/policies/${policyId}`);
   } catch (error) {

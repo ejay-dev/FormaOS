@@ -6,6 +6,7 @@ import {
   getClientIdentifier,
   getUserIdentifier,
   createRateLimitHeaders,
+  isLocalE2ERateLimitBypass,
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import { generateReportPdf } from '@/lib/audit-reports/pdf-generator';
@@ -34,15 +35,17 @@ const VALID_REPORT_TYPES: ReportType[] = [
  *   - format: pdf | json (default: pdf)
  */
 export async function GET(request: NextRequest) {
-  const rlUserId = await getUserIdentifier();
-  const rlIdentifier = rlUserId ?? (await getClientIdentifier());
-  const exportRateLimit = { ...RATE_LIMITS.EXPORT, failClosed: false };
-  const rl = await checkRateLimit(exportRateLimit, rlIdentifier, rlUserId);
-  if (!rl.success) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded', code: 'RATE_LIMIT_EXCEEDED' },
-      { status: 429, headers: createRateLimitHeaders(rl) },
-    );
+  if (!isLocalE2ERateLimitBypass(request)) {
+    const rlUserId = await getUserIdentifier();
+    const rlIdentifier = rlUserId ?? (await getClientIdentifier());
+    const exportRateLimit = { ...RATE_LIMITS.EXPORT, failClosed: false };
+    const rl = await checkRateLimit(exportRateLimit, rlIdentifier, rlUserId);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded', code: 'RATE_LIMIT_EXCEEDED' },
+        { status: 429, headers: createRateLimitHeaders(rl) },
+      );
+    }
   }
 
   let supabase;

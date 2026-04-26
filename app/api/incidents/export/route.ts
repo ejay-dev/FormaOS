@@ -6,6 +6,7 @@ import {
   getClientIdentifier,
   getUserIdentifier,
   createRateLimitHeaders,
+  isLocalE2ERateLimitBypass,
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import {
@@ -17,14 +18,16 @@ import {
 const log = routeLog('/api/incidents/export');
 
 export async function GET(request: NextRequest) {
-  const rlUserId = await getUserIdentifier();
-  const rlIdentifier = rlUserId ?? (await getClientIdentifier());
-  const rl = await checkRateLimit(RATE_LIMITS.EXPORT, rlIdentifier, rlUserId);
-  if (!rl.success) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded' },
-      { status: 429, headers: createRateLimitHeaders(rl) },
-    );
+  if (!isLocalE2ERateLimitBypass(request)) {
+    const rlUserId = await getUserIdentifier();
+    const rlIdentifier = rlUserId ?? (await getClientIdentifier());
+    const rl = await checkRateLimit(RATE_LIMITS.EXPORT, rlIdentifier, rlUserId);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429, headers: createRateLimitHeaders(rl) },
+      );
+    }
   }
 
   try {
@@ -57,6 +60,8 @@ export async function GET(request: NextRequest) {
       .select(
         `
         id,
+        patient_id,
+        reported_by,
         incident_type,
         severity,
         status,
@@ -65,9 +70,7 @@ export async function GET(request: NextRequest) {
         occurred_at,
         resolved_at,
         follow_up_required,
-        follow_up_due_date,
-        patient:patient_id(full_name),
-        reporter:reported_by(email)
+        follow_up_due_date
       `,
       )
       .eq('organization_id', orgId)
@@ -79,15 +82,56 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'export_query_failed' }, { status: 500 });
     }
 
+    const patientIds = [
+      ...new Set(
+        (incidents ?? [])
+          .map((item) => item.patient_id as string | null)
+          .filter(Boolean),
+      ),
+    ] as string[];
+    const reporterIds = [
+      ...new Set(
+        (incidents ?? [])
+          .map((item) => item.reported_by as string | null)
+          .filter(Boolean),
+      ),
+    ] as string[];
+
+    const [{ data: patients }, { data: reporters }] = await Promise.all([
+      patientIds.length
+        ? supabase
+            .from('org_patients')
+            .select('id, full_name')
+            .eq('organization_id', orgId)
+            .in('id', patientIds)
+        : Promise.resolve({ data: [] }),
+      reporterIds.length
+        ? supabase
+            .from('user_profiles')
+            .select('user_id, full_name')
+            .in('user_id', reporterIds)
+        : Promise.resolve({ data: [] }),
+    ]);
+    const patientNameById = new Map(
+      (patients ?? []).map((patient) => [
+        patient.id as string,
+        patient.full_name as string,
+      ]),
+    );
+    const reporterNameById = new Map(
+      (reporters ?? []).map((reporter) => [
+        reporter.user_id as string,
+        reporter.full_name as string,
+      ]),
+    );
+
     const mapped = (incidents ?? []).map((item) => ({
       incident_id: item.id,
       type: item.incident_type,
       severity: item.severity,
       status: item.status,
-      client_name:
-        (item.patient as { full_name?: string } | null)?.full_name ?? '',
-      reporter_email:
-        (item.reporter as { email?: string } | null)?.email ?? '',
+      client_name: patientNameById.get(item.patient_id as string) ?? '',
+      reporter: reporterNameById.get(item.reported_by as string) ?? '',
       occurred_at: item.occurred_at,
       resolved_at: item.resolved_at,
       follow_up_required: item.follow_up_required ? 'true' : 'false',

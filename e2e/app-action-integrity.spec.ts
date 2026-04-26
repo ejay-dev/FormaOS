@@ -127,7 +127,9 @@ test.describe('Authenticated app action integrity', () => {
     await page.goto(`/app/policies/${policy.id}/versions`, {
       waitUntil: 'domcontentloaded',
     });
-    await expect(page.locator('h1')).toContainText(policy.title);
+    await expect(
+      page.getByRole('heading', { name: policy.title as string }).first(),
+    ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Version History' }),
     ).toBeVisible();

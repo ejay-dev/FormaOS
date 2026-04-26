@@ -4,6 +4,7 @@ import {
   readAdminStreamVersion,
   resolveControlPlaneEnvironment,
 } from '@/lib/control-plane/server';
+import { createSafeSseWriter } from '@/lib/control-plane/sse';
 
 const SSE_POLL_MS = 500;
 const SSE_HEARTBEAT_MS = 20_000;
@@ -29,66 +30,88 @@ export async function GET(request: Request) {
       searchParams.get('environment') ?? undefined,
     );
 
-    let closed = false;
     const encoder = new TextEncoder();
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
-        let currentVersion = await readAdminStreamVersion(environment);
-        let heartbeatAt = Date.now();
+        const writer = createSafeSseWriter(controller, () => {
+          if (interval) {
+            clearInterval(interval);
+            interval = null;
+          }
+        });
 
-        // Emit prelude chunks to reduce buffering risk on some proxies.
-        controller.enqueue(encoder.encode('retry: 1500\n\n'));
-        controller.enqueue(encoder.encode(encodeSseComment('connected')));
+        request.signal.addEventListener('abort', writer.close, { once: true });
+
+        if (request.signal.aborted) {
+          writer.close();
+          return;
+        }
 
         const pushSnapshot = async () => {
           const snapshot = await getAdminControlPlaneSnapshot({ environment });
-          controller.enqueue(encoder.encode(encodeSse(snapshot)));
+          writer.enqueue(encoder.encode(encodeSse(snapshot)));
         };
 
-        await pushSnapshot();
+        try {
+          let currentVersion = await readAdminStreamVersion(environment);
+          let heartbeatAt = Date.now();
 
-        const interval = setInterval(async () => {
-          if (closed) return;
+          // Emit prelude chunks to reduce buffering risk on some proxies.
+          writer.enqueue(encoder.encode('retry: 1500\n\n'));
+          writer.enqueue(encoder.encode(encodeSseComment('connected')));
 
-          try {
-            const nextVersion = await readAdminStreamVersion(environment);
-            if (nextVersion !== currentVersion) {
-              currentVersion = nextVersion;
-              await pushSnapshot();
-              return;
-            }
+          await pushSnapshot();
 
-            if (Date.now() - heartbeatAt >= SSE_HEARTBEAT_MS) {
-              heartbeatAt = Date.now();
-              controller.enqueue(
+          interval = setInterval(async () => {
+            if (writer.isClosed()) return;
+
+            try {
+              const nextVersion = await readAdminStreamVersion(environment);
+              if (nextVersion !== currentVersion) {
+                currentVersion = nextVersion;
+                await pushSnapshot();
+                return;
+              }
+
+              if (Date.now() - heartbeatAt >= SSE_HEARTBEAT_MS) {
+                heartbeatAt = Date.now();
+                writer.enqueue(
+                  encoder.encode(
+                    encodeSseEvent('ping', {
+                      ts: new Date().toISOString(),
+                      stream: 'admin',
+                    }),
+                  ),
+                );
+              }
+            } catch {
+              writer.enqueue(
                 encoder.encode(
-                  encodeSseEvent('ping', {
-                    ts: new Date().toISOString(),
-                    stream: 'admin',
+                  encodeSse({
+                    error: 'stream_update_failed',
                   }),
                 ),
               );
             }
-          } catch {
-            controller.enqueue(
-              encoder.encode(
-                encodeSse({
-                  error: 'stream_update_failed',
-                }),
-              ),
-            );
-          }
-        }, SSE_POLL_MS);
-
-        request.signal.addEventListener('abort', () => {
-          closed = true;
-          clearInterval(interval);
-          controller.close();
-        });
+          }, SSE_POLL_MS);
+        } catch {
+          writer.enqueue(
+            encoder.encode(
+              encodeSse({
+                error: 'stream_start_failed',
+              }),
+            ),
+          );
+          writer.close();
+        }
       },
       cancel() {
-        closed = true;
+        if (interval) {
+          clearInterval(interval);
+          interval = null;
+        }
       },
     });
 

@@ -13,7 +13,12 @@ type RateLimitLogInput = {
   userAgent?: string | null;
 };
 
-const DB_WRITE_TIMEOUT_MS = 200;
+const DEFAULT_DB_WRITE_TIMEOUT_MS = 1500;
+const DB_WRITE_TIMEOUT_MS = Number.isFinite(
+  Number(process.env.SECURITY_LOG_DB_TIMEOUT_MS),
+)
+  ? Math.max(500, Math.min(5000, Number(process.env.SECURITY_LOG_DB_TIMEOUT_MS)))
+  : DEFAULT_DB_WRITE_TIMEOUT_MS;
 const IS_BUILD_PHASE = process.env.NEXT_PHASE === 'phase-production-build';
 
 async function withDbTimeout<T>(
@@ -29,7 +34,19 @@ async function withDbTimeout<T>(
   });
 
   try {
-    await Promise.race([promise, timeoutPromise]);
+    const result = await Promise.race([promise, timeoutPromise]);
+    if (
+      result &&
+      typeof result === 'object' &&
+      'error' in result &&
+      (result as { error?: unknown }).error
+    ) {
+      console.warn(`[RateLimit] ${operationName} failed`, {
+        error:
+          (result as { error?: { message?: string } }).error?.message ??
+          String((result as { error?: unknown }).error),
+      });
+    }
   } finally {
     if (timeoutId) clearTimeout(timeoutId);
   }

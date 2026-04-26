@@ -67,6 +67,26 @@ describe('getOrgSsoConfig', () => {
     expect(await getOrgSsoConfig('org-1')).toBeNull();
   });
 
+  it('treats missing organization_sso as optional without noisy logging', async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+    const builder = createBuilder({
+      data: null,
+      error: {
+        code: 'PGRST205',
+        message: "Could not find the table 'public.organization_sso'",
+      },
+    });
+    createSupabaseServerClient.mockResolvedValue({
+      from: jest.fn(() => builder),
+    });
+
+    expect(await getOrgSsoConfig('org-1')).toBeNull();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+
   it('returns normalized SSO config', async () => {
     const row = {
       enabled: true,
@@ -178,6 +198,29 @@ describe('upsertOrgSsoConfig', () => {
     expect(result.ok).toBe(false);
     expect(result.error).toBe('conflict');
   });
+
+  it('returns schema unavailable when organization_sso is missing', async () => {
+    const builder = createBuilder({
+      data: null,
+      error: {
+        code: '42P01',
+        message: 'relation "public.organization_sso" does not exist',
+      },
+    });
+    createSupabaseServerClient.mockResolvedValue({
+      from: jest.fn(() => builder),
+    });
+
+    const result = await upsertOrgSsoConfig({
+      orgId: 'org-1',
+      enabled: true,
+      enforceSso: false,
+      allowedDomains: [],
+      idpMetadataXml: null,
+    });
+    expect(result.ok).toBe(false);
+    expect(result.error).toBe('sso_schema_unavailable');
+  });
 });
 
 describe('discoverOrgSsoByEmail', () => {
@@ -206,6 +249,21 @@ describe('discoverOrgSsoByEmail', () => {
     const result = await discoverOrgSsoByEmail('user@example.com');
     expect(result.ok).toBe(false);
     expect(result.error).toBe('db error');
+  });
+
+  it('treats missing organization_sso as not found during discovery', async () => {
+    const builder = createBuilder({
+      data: null,
+      error: {
+        code: 'PGRST205',
+        message: "Could not find the table 'public.organization_sso'",
+      },
+    });
+    createSupabaseAdminClient.mockReturnValue({ from: jest.fn(() => builder) });
+
+    const result = await discoverOrgSsoByEmail('user@example.com');
+    expect(result.ok).toBe(false);
+    expect(result.error).toBe('not_found');
   });
 
   it('returns org with enforce SSO when enterprise active', async () => {

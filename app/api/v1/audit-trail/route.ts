@@ -23,9 +23,6 @@ type AuditLogRow = {
   action: string;
   target: string | null;
   actor_email: string | null;
-  domain: string | null;
-  severity: string | null;
-  metadata: Record<string, unknown> | null;
   created_at: string;
 };
 
@@ -97,7 +94,7 @@ export async function GET(request: Request) {
 
     let query = supabase
       .from('org_audit_logs')
-      .select('id, action, target, actor_email, domain, severity, metadata, created_at')
+      .select('id, action, target, actor_email, created_at')
       .eq('organization_id', orgId)
       .order('created_at', { ascending: false })
       .limit(limit);
@@ -122,8 +119,8 @@ export async function GET(request: Request) {
         name: row.actor_email || 'System',
       },
       timestamp: row.created_at,
-      locked: row.severity === 'high' || row.severity === 'critical',
-      metadata: row.metadata ?? {},
+      locked: false,
+      metadata: {},
     }));
 
     return NextResponse.json({ entries });

@@ -1,6 +1,7 @@
 "use server";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 
 type AuditEventInput = {
@@ -15,14 +16,31 @@ type AuditEventInput = {
   reason?: string | null;
 };
 
-export async function logAuditEvent(payload: AuditEventInput) {
+type AuditEventOptions = {
+  required?: boolean;
+};
+
+function toAuditWriteError(error: unknown) {
+  if (!error) return 'Unknown audit write failure';
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'object' && 'message' in error) {
+    return String((error as { message?: unknown }).message);
+  }
+  return String(error);
+}
+
+export async function logAuditEvent(
+  payload: AuditEventInput,
+  options: AuditEventOptions = {},
+) {
+  const required = options.required === true;
   const supabase = await createSupabaseServerClient();
   try {
     const entityLabel = payload.entityType
       ? `${payload.entityType}${payload.entityId ? `:${payload.entityId}` : ""}`
       : "system";
 
-    await insertOrgAuditLog(supabase, {
+    const row = {
       organization_id: payload.organizationId,
       actor_id: payload.actorUserId,
       actor_email: null,
@@ -39,8 +57,46 @@ export async function logAuditEvent(payload: AuditEventInput) {
         reason: payload.reason ?? null,
       },
       created_at: new Date().toISOString(),
+    };
+
+    const serverResult = await insertOrgAuditLog(supabase, row);
+    if (!serverResult.error) {
+      return { success: true as const };
+    }
+
+    const admin = createSupabaseAdminClient();
+    const adminResult = await insertOrgAuditLog(admin, row);
+    if (!adminResult.error) {
+      console.warn('[Audit] org audit log required service-role fallback', {
+        action: payload.actionType,
+        entityType: payload.entityType ?? null,
+        entityId: payload.entityId ?? null,
+        error: toAuditWriteError(serverResult.error),
+      });
+      return { success: true as const };
+    }
+
+    const errorMessage = toAuditWriteError(adminResult.error);
+    console.error('[Audit] org audit log write failed', {
+      action: payload.actionType,
+      entityType: payload.entityType ?? null,
+      entityId: payload.entityId ?? null,
+      error: errorMessage,
     });
-  } catch {
-    // audit logging must be best-effort to avoid blocking operations
+
+    if (required) {
+      throw new Error(`Required audit log write failed: ${errorMessage}`);
+    }
+
+    return { success: false as const, error: errorMessage };
+  } catch (error) {
+    if (required) throw error;
+    console.error('[Audit] org audit log unexpected failure', {
+      action: payload.actionType,
+      entityType: payload.entityType ?? null,
+      entityId: payload.entityId ?? null,
+      error: toAuditWriteError(error),
+    });
+    return { success: false as const, error: toAuditWriteError(error) };
   }
 }

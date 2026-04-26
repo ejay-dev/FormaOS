@@ -43,16 +43,19 @@ export async function createPolicy(formData: FormData) {
   // ✅ 4. LOG ACTIVITY
   await logActivity(membership.organization_id, "created_policy", title);
 
-  await logAuditEvent({
-    organizationId: membership.organization_id,
-    actorUserId: user.id,
-    actorRole: permissionCtx.role,
-    entityType: "policy",
-    entityId: null,
-    actionType: "POLICY_CREATED",
-    afterState: { title, status: "draft", version: "v0.1" },
-    reason: "policy_create",
-  });
+  await logAuditEvent(
+    {
+      organizationId: membership.organization_id,
+      actorUserId: user.id,
+      actorRole: permissionCtx.role,
+      entityType: "policy",
+      entityId: null,
+      actionType: "POLICY_CREATED",
+      afterState: { title, status: "draft", version: "v0.1" },
+      reason: "policy_create",
+    },
+    { required: true },
+  );
 
   revalidatePath("/app/policies");
 }
@@ -88,16 +91,19 @@ export async function deletePolicy(policyId: string) {
         await logActivity(policy.organization_id, "deleted_policy", policy.title);
     }
 
-    await logAuditEvent({
-      organizationId: policy.organization_id,
-      actorUserId: user.id,
-      actorRole: permissionCtx.role,
-      entityType: "policy",
-      entityId: policy.id,
-      actionType: "POLICY_DELETED",
-      beforeState: { title: policy.title, status: policy.status },
-      reason: "policy_delete",
-    });
+    await logAuditEvent(
+      {
+        organizationId: policy.organization_id,
+        actorUserId: user.id,
+        actorRole: permissionCtx.role,
+        entityType: "policy",
+        entityId: policy.id,
+        actionType: "POLICY_DELETED",
+        beforeState: { title: policy.title, status: policy.status },
+        reason: "policy_delete",
+      },
+      { required: true },
+    );
 
     revalidatePath("/app/policies");
 }
@@ -134,16 +140,19 @@ export async function updatePolicyContent(policyId: string, content: string) {
 
   if (error) throw new Error(error.message);
 
-  await logAuditEvent({
-    organizationId: policy.organization_id,
-    actorUserId: user.id,
-    actorRole: permissionCtx.role,
-    entityType: "policy",
-    entityId: policyId,
-    actionType: "POLICY_CONTENT_UPDATED",
-    afterState: { updated_at: new Date().toISOString() },
-    reason: "policy_update",
-  });
+  await logAuditEvent(
+    {
+      organizationId: policy.organization_id,
+      actorUserId: user.id,
+      actorRole: permissionCtx.role,
+      entityType: "policy",
+      entityId: policyId,
+      actionType: "POLICY_CONTENT_UPDATED",
+      afterState: { updated_at: new Date().toISOString() },
+      reason: "policy_update",
+    },
+    { required: true },
+  );
 
   revalidatePath(`/app/policies/${policyId}`);
 }
@@ -184,17 +193,20 @@ export async function publishPolicy(policyId: string) {
         await logActivity(policy.organization_id, "published_policy", policy.title);
     }
 
-    await logAuditEvent({
-      organizationId: policy.organization_id,
-      actorUserId: user.id,
-      actorRole: permissionCtx.role,
-      entityType: "policy",
-      entityId: policy.id,
-      actionType: "POLICY_PUBLISHED",
-      beforeState: { status: policy.status },
-      afterState: { status: "published", version: "v1.0" },
-      reason: "policy_publish",
-    });
+    await logAuditEvent(
+      {
+        organizationId: policy.organization_id,
+        actorUserId: user.id,
+        actorRole: permissionCtx.role,
+        entityType: "policy",
+        entityId: policy.id,
+        actionType: "POLICY_PUBLISHED",
+        beforeState: { status: policy.status },
+        afterState: { status: "published", version: "v1.0" },
+        reason: "policy_publish",
+      },
+      { required: true },
+    );
 
     revalidatePath("/app/policies");
 }

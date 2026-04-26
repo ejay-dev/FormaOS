@@ -5,6 +5,7 @@ import {
   readRuntimeStreamVersion,
   resolveControlPlaneEnvironment,
 } from '@/lib/control-plane/server';
+import { createSafeSseWriter } from '@/lib/control-plane/sse';
 
 const SSE_POLL_MS = 500;
 const SSE_HEARTBEAT_MS = 20_000;
@@ -57,17 +58,24 @@ export async function GET(request: Request) {
 
   const context = await resolveContext();
 
-  let closed = false;
   const encoder = new TextEncoder();
+  let interval: ReturnType<typeof setInterval> | null = null;
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      let currentVersion = (await readRuntimeStreamVersion(environment)).streamVersion;
-      let heartbeatAt = Date.now();
+      const writer = createSafeSseWriter(controller, () => {
+        if (interval) {
+          clearInterval(interval);
+          interval = null;
+        }
+      });
 
-      // Emit prelude chunks to reduce buffering risk on some proxies.
-      controller.enqueue(encoder.encode('retry: 1500\n\n'));
-      controller.enqueue(encoder.encode(encodeSseComment('connected')));
+      request.signal.addEventListener('abort', writer.close, { once: true });
+
+      if (request.signal.aborted) {
+        writer.close();
+        return;
+      }
 
       const pushSnapshot = async () => {
         const snapshot = await getRuntimeSnapshot({
@@ -75,52 +83,67 @@ export async function GET(request: Request) {
           context,
           includePrivateFlags: false,
         });
-        controller.enqueue(encoder.encode(encodeSse(snapshot)));
+        writer.enqueue(encoder.encode(encodeSse(snapshot)));
       };
 
-      await pushSnapshot();
+      try {
+        let currentVersion = (await readRuntimeStreamVersion(environment)).streamVersion;
+        let heartbeatAt = Date.now();
 
-      const interval = setInterval(async () => {
-        if (closed) return;
+        // Emit prelude chunks to reduce buffering risk on some proxies.
+        writer.enqueue(encoder.encode('retry: 1500\n\n'));
+        writer.enqueue(encoder.encode(encodeSseComment('connected')));
 
-        try {
-          const marker = await readRuntimeStreamVersion(environment);
-          if (marker.streamVersion !== currentVersion) {
-            currentVersion = marker.streamVersion;
-            await pushSnapshot();
-            return;
-          }
+        await pushSnapshot();
 
-          if (Date.now() - heartbeatAt >= SSE_HEARTBEAT_MS) {
-            heartbeatAt = Date.now();
-            controller.enqueue(
+        interval = setInterval(async () => {
+          if (writer.isClosed()) return;
+
+          try {
+            const marker = await readRuntimeStreamVersion(environment);
+            if (marker.streamVersion !== currentVersion) {
+              currentVersion = marker.streamVersion;
+              await pushSnapshot();
+              return;
+            }
+
+            if (Date.now() - heartbeatAt >= SSE_HEARTBEAT_MS) {
+              heartbeatAt = Date.now();
+              writer.enqueue(
+                encoder.encode(
+                  encodeSseEvent('ping', {
+                    ts: new Date().toISOString(),
+                    stream: 'runtime',
+                  }),
+                ),
+              );
+            }
+          } catch {
+            writer.enqueue(
               encoder.encode(
-                encodeSseEvent('ping', {
-                  ts: new Date().toISOString(),
-                  stream: 'runtime',
+                encodeSse({
+                  error: 'runtime_stream_update_failed',
                 }),
               ),
             );
           }
-        } catch {
-          controller.enqueue(
-            encoder.encode(
-              encodeSse({
-                error: 'runtime_stream_update_failed',
-              }),
-            ),
-          );
-        }
-      }, SSE_POLL_MS);
-
-      request.signal.addEventListener('abort', () => {
-        closed = true;
-        clearInterval(interval);
-        controller.close();
-      });
+        }, SSE_POLL_MS);
+      } catch {
+        writer.enqueue(
+          encoder.encode(
+            encodeSse({
+              error: 'runtime_stream_start_failed',
+            }),
+          ),
+        );
+        writer.close();
+      }
     },
     cancel() {
-      closed = true;
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
     },
   });
 

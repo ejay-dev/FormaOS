@@ -6,6 +6,7 @@ import {
   getClientIdentifier,
   getUserIdentifier,
   createRateLimitHeaders,
+  isLocalE2ERateLimitBypass,
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import {
@@ -17,14 +18,16 @@ import {
 const log = routeLog('/api/staff-credentials/export');
 
 export async function GET(request: NextRequest) {
-  const rlUserId = await getUserIdentifier();
-  const rlIdentifier = rlUserId ?? (await getClientIdentifier());
-  const rl = await checkRateLimit(RATE_LIMITS.EXPORT, rlIdentifier, rlUserId);
-  if (!rl.success) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded' },
-      { status: 429, headers: createRateLimitHeaders(rl) },
-    );
+  if (!isLocalE2ERateLimitBypass(request)) {
+    const rlUserId = await getUserIdentifier();
+    const rlIdentifier = rlUserId ?? (await getClientIdentifier());
+    const rl = await checkRateLimit(RATE_LIMITS.EXPORT, rlIdentifier, rlUserId);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429, headers: createRateLimitHeaders(rl) },
+      );
+    }
   }
 
   try {
@@ -57,6 +60,7 @@ export async function GET(request: NextRequest) {
       .select(
         `
         id,
+        user_id,
         credential_type,
         credential_name,
         credential_number,
@@ -64,8 +68,7 @@ export async function GET(request: NextRequest) {
         issue_date,
         expiry_date,
         status,
-        verified_at,
-        user:user_id(email)
+        verified_at
       `,
       )
       .eq('organization_id', orgId)
@@ -77,9 +80,29 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'export_query_failed' }, { status: 500 });
     }
 
+    const userIds = [
+      ...new Set(
+        (rows ?? [])
+          .map((row) => row.user_id as string | null)
+          .filter(Boolean),
+      ),
+    ] as string[];
+    const { data: profiles } = userIds.length
+      ? await supabase
+          .from('user_profiles')
+          .select('user_id, full_name')
+          .in('user_id', userIds)
+      : { data: [] };
+    const profileNameByUserId = new Map(
+      (profiles ?? []).map((profile) => [
+        profile.user_id as string,
+        profile.full_name as string,
+      ]),
+    );
+
     const mapped = (rows ?? []).map((row) => ({
       credential_id: row.id,
-      staff_email: (row.user as { email?: string } | null)?.email ?? '',
+      staff_name: profileNameByUserId.get(row.user_id as string) ?? '',
       type: row.credential_type,
       name: row.credential_name,
       credential_number: row.credential_number,

@@ -40,9 +40,25 @@ import {
 } from '@/lib/security/rate-limiter';
 
 describe('security/rate-limiter', () => {
+  const originalNodeEnv = process.env.NODE_ENV;
+  const originalVercelEnv = process.env.VERCEL_ENV;
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockHeadersMap.clear();
+  });
+
+  afterEach(() => {
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: originalNodeEnv,
+      configurable: true,
+      writable: true,
+    });
+    if (originalVercelEnv === undefined) {
+      delete process.env.VERCEL_ENV;
+    } else {
+      process.env.VERCEL_ENV = originalVercelEnv;
+    }
   });
 
   // ── Constants ──
@@ -195,6 +211,23 @@ describe('security/rate-limiter', () => {
       const result = await rateLimitAuth(request);
       expect(result.allowed).toBe(true);
     });
+
+    it('does not allow the e2e bypass in deployed production', async () => {
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        configurable: true,
+        writable: true,
+      });
+      process.env.VERCEL_ENV = 'production';
+
+      const request = new Request('http://localhost/api/auth/signin', {
+        headers: { 'x-formaos-e2e': '1' },
+      });
+
+      const result = await rateLimitAuth(request);
+      expect(result.allowed).toBe(false);
+      expect(result.error).toBe('backend_unavailable');
+    });
   });
 
   // ── rateLimitSignup ──
@@ -234,6 +267,26 @@ describe('security/rate-limiter', () => {
     it('bypasses in non-production with e2e header', async () => {
       const request = new Request('http://localhost/api/v1/anything', {
         headers: { 'x-formaos-e2e': '1' },
+      });
+      const result = await rateLimitApi(request);
+      expect(result.success).toBe(true);
+      expect(result.remaining).toBe(RATE_LIMITS.API.maxRequests);
+    });
+
+    it('requires localhost for the non-production e2e bypass', async () => {
+      mockHeadersMap.set('x-forwarded-for', '55.0.0.1');
+      const request = new Request('https://app.formaos.test/api/v1/anything', {
+        headers: { 'x-formaos-e2e': '1' },
+      });
+
+      const result = await rateLimitApi(request);
+      expect(result.success).toBe(true);
+      expect(result.remaining).toBe(RATE_LIMITS.API.maxRequests - 1);
+    });
+
+    it('accepts localhost e2e cookie bypass for browser sessions', async () => {
+      const request = new Request('http://127.0.0.1:3000/api/v1/anything', {
+        headers: { cookie: 'fos_e2e=1' },
       });
       const result = await rateLimitApi(request);
       expect(result.success).toBe(true);

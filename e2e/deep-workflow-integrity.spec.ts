@@ -202,8 +202,24 @@ test.describe('Deep workflow integrity', () => {
     );
     await page.getByTestId('resolve-incident-submit').click();
 
-    // Reload — the resolution record + closed status must persist
-    await page.waitForURL(`**/app/incidents/${incidentId}`);
+    await expect(async () => {
+      const { data: row } = await context.admin
+        .from('org_incidents')
+        .select('status, root_cause, resolved_at')
+        .eq('id', incidentId)
+        .eq('organization_id', context.orgId)
+        .maybeSingle();
+
+      expect(row?.status).toBe('resolved');
+      expect(row?.root_cause).toContain('E2E root cause');
+      expect(row?.resolved_at).toBeTruthy();
+    }).toPass({ timeout: 30_000 });
+
+    // Reload after the persisted write so the server-rendered detail page
+    // proves the resolution record survives a fresh request.
+    await page.goto(`/app/incidents/${incidentId}`, {
+      waitUntil: 'domcontentloaded',
+    });
     await expect(page.locator('text=Resolution Record')).toBeVisible({
       timeout: 10_000,
     });

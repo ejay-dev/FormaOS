@@ -100,10 +100,26 @@ const { validateApiKey } = require('@/lib/api-keys/manager');
 const { getSessionRateLimit } = require('@/lib/api-keys/manager');
 
 describe('api-keys/middleware', () => {
+  const originalNodeEnv = process.env.NODE_ENV;
+  const originalVercelEnv = process.env.VERCEL_ENV;
+
   beforeEach(() => {
     jest.clearAllMocks();
     getServerClient().auth.getUser.mockResolvedValue({ data: { user: null } });
     getServerClient().from.mockImplementation(() => createBuilder());
+  });
+
+  afterEach(() => {
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: originalNodeEnv,
+      configurable: true,
+      writable: true,
+    });
+    if (originalVercelEnv === undefined) {
+      delete process.env.VERCEL_ENV;
+    } else {
+      process.env.VERCEL_ENV = originalVercelEnv;
+    }
   });
 
   // ── Pure helpers ──
@@ -353,6 +369,72 @@ describe('api-keys/middleware', () => {
         headers: { Authorization: 'Bearer session-token' },
       });
       const result = await authenticateV1Request(request);
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.response.status).toBe(429);
+    });
+
+    it('allows localhost E2E bypass during local production-mode test runs', async () => {
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        configurable: true,
+        writable: true,
+      });
+      delete process.env.VERCEL_ENV;
+
+      getServerClient().auth.getUser.mockResolvedValueOnce({
+        data: { user: { id: 'user-1' } },
+      });
+      getServerClient().from.mockImplementation(() =>
+        createBuilder({
+          data: { organization_id: 'org-1', role: 'owner' },
+          error: null,
+        }),
+      );
+      getSessionRateLimit.mockResolvedValueOnce({
+        success: false,
+        limit: 100,
+        remaining: 0,
+        reset: Date.now() + 60000,
+      });
+
+      const request = new Request('http://localhost/api/v1/test', {
+        headers: { cookie: 'fos_e2e=1' },
+      });
+      const result = await authenticateV1Request(request);
+
+      expect(result.ok).toBe(true);
+      expect(getSessionRateLimit).not.toHaveBeenCalled();
+    });
+
+    it('does not allow E2E bypass on deployed production', async () => {
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'production',
+        configurable: true,
+        writable: true,
+      });
+      process.env.VERCEL_ENV = 'production';
+
+      getServerClient().auth.getUser.mockResolvedValueOnce({
+        data: { user: { id: 'user-1' } },
+      });
+      getServerClient().from.mockImplementation(() =>
+        createBuilder({
+          data: { organization_id: 'org-1', role: 'owner' },
+          error: null,
+        }),
+      );
+      getSessionRateLimit.mockResolvedValueOnce({
+        success: false,
+        limit: 100,
+        remaining: 0,
+        reset: Date.now() + 60000,
+      });
+
+      const request = new Request('http://localhost/api/v1/test', {
+        headers: { cookie: 'fos_e2e=1' },
+      });
+      const result = await authenticateV1Request(request);
+
       expect(result.ok).toBe(false);
       if (!result.ok) expect(result.response.status).toBe(429);
     });

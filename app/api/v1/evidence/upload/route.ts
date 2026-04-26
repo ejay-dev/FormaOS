@@ -291,8 +291,8 @@ export async function POST(request: Request) {
         fileName: row.file_name as string,
       });
 
-      try {
-        await logAuditEvent({
+      await logAuditEvent(
+        {
           organizationId: orgId,
           actorUserId: user.id,
           actorRole: (membership?.role as string | null) ?? null,
@@ -311,10 +311,9 @@ export async function POST(request: Request) {
             : entityType
               ? `${entityType}_attachment`
               : 'general_attachment',
-        });
-      } catch (auditErr) {
-        log.warn({ err: auditErr }, 'audit log failed (non-fatal)');
-      }
+        },
+        { required: true },
+      );
     }
 
     return NextResponse.json({ items });

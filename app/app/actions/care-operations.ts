@@ -328,20 +328,23 @@ export async function resolveIncident(id: string, formData: FormData) {
 
   if (error) throw new Error(error.message);
 
-  await logAuditEvent({
-    organizationId,
-    actorUserId: user.id,
-    actorRole: null,
-    entityType: "incident",
-    entityId: id,
-    actionType: "INCIDENT_RESOLVED",
-    afterState: {
-      status: "resolved",
-      resolved_at: resolvedAt,
-      has_root_cause: Boolean(rootCause),
+  await logAuditEvent(
+    {
+      organizationId,
+      actorUserId: user.id,
+      actorRole: null,
+      entityType: "incident",
+      entityId: id,
+      actionType: "INCIDENT_RESOLVED",
+      afterState: {
+        status: "resolved",
+        resolved_at: resolvedAt,
+        has_root_cause: Boolean(rootCause),
+      },
+      reason: "incident_resolution",
     },
-    reason: "incident_resolution",
-  });
+    { required: true },
+  );
 
   revalidatePath("/app/incidents");
   revalidatePath(`/app/incidents/${id}`);
@@ -442,16 +445,19 @@ export async function verifyStaffCredential(id: string) {
 
   if (error) throw new Error(error.message);
 
-  await logAuditEvent({
-    organizationId,
-    actorUserId: user.id,
-    actorRole: null,
-    entityType: "staff_credential",
-    entityId: id,
-    actionType: "STAFF_CREDENTIAL_VERIFIED",
-    afterState: { status: "verified", verified_at: verifiedAt },
-    reason: "credential_verification",
-  });
+  await logAuditEvent(
+    {
+      organizationId,
+      actorUserId: user.id,
+      actorRole: null,
+      entityType: "staff_credential",
+      entityId: id,
+      actionType: "STAFF_CREDENTIAL_VERIFIED",
+      afterState: { status: "verified", verified_at: verifiedAt },
+      reason: "credential_verification",
+    },
+    { required: true },
+  );
 
   revalidatePath("/app/staff-compliance");
   } catch (error) {
@@ -557,17 +563,20 @@ export async function updateCarePlanStatus(
 
     if (updateErr) return actionError(updateErr);
 
-    await logAuditEvent({
-      organizationId: orgId,
-      actorUserId: user.id,
-      actorRole: null,
-      entityType: 'care_plan',
-      entityId: planId,
-      actionType: 'CARE_PLAN_STATUS_CHANGED',
-      beforeState: { status: existing.status },
-      afterState: { status: nextStatus },
-      reason: `${existing.status} → ${nextStatus}`,
-    });
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'care_plan',
+        entityId: planId,
+        actionType: 'CARE_PLAN_STATUS_CHANGED',
+        beforeState: { status: existing.status },
+        afterState: { status: nextStatus },
+        reason: `${existing.status} → ${nextStatus}`,
+      },
+      { required: true },
+    );
 
     revalidatePath('/app/care-plans');
     revalidatePath('/app/care-plans/journey');

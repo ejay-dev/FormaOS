@@ -9,6 +9,15 @@ type RedisConfig = {
 let cachedClient: Redis | null = null;
 let cachedConfig: RedisConfig | null = null;
 let hasWarnedAboutProtocol = false;
+let hasWarnedAboutMissingProductionRedis = false;
+
+function isRedisRequiredRuntime() {
+  return (
+    process.env.REDIS_REQUIRED === 'true' ||
+    process.env.VERCEL_ENV === 'production' ||
+    process.env.NODE_ENV === 'production'
+  );
+}
 
 function normalizeRestUrl(value: string | undefined): string | null {
   if (!value) return null;
@@ -68,6 +77,12 @@ export function getRedisClient(): Redis | null {
         '[Redis] TCP URL detected without REST credentials. Upstash REST features remain disabled.',
       );
       hasWarnedAboutProtocol = true;
+    }
+    if (isRedisRequiredRuntime() && !hasWarnedAboutMissingProductionRedis) {
+      console.error(
+        '[Redis] Upstash REST credentials are missing in a Redis-required runtime. Auth/admin rate limits fail closed; non-critical API paths use degraded in-memory limits.',
+      );
+      hasWarnedAboutMissingProductionRedis = true;
     }
     return null;
   }

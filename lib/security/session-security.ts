@@ -340,19 +340,37 @@ export function logSecurityEvent(event: {
   userAgent?: string;
   metadata?: Record<string, unknown>;
 }): void {
+  const defaultTimeoutMs = 1500;
+  const configuredTimeoutMs = Number(process.env.SECURITY_LOG_DB_TIMEOUT_MS);
+  const dbWriteTimeoutMs = Number.isFinite(configuredTimeoutMs)
+    ? Math.max(500, Math.min(5000, configuredTimeoutMs))
+    : defaultTimeoutMs;
+
   const withTimeout = async <T>(promise: Promise<T> | PromiseLike<T>, operationName: string) => {
     let timeoutId: NodeJS.Timeout | undefined;
     const timeoutPromise = new Promise<null>((resolve) => {
       timeoutId = setTimeout(() => {
         console.warn(
-          `[Security] ${operationName} exceeded 200ms; skipping write`,
+          `[Security] ${operationName} exceeded ${dbWriteTimeoutMs}ms; skipping write`,
         );
         resolve(null);
-      }, 200);
+      }, dbWriteTimeoutMs);
     });
 
     try {
-      await Promise.race([promise, timeoutPromise]);
+      const result = await Promise.race([promise, timeoutPromise]);
+      if (
+        result &&
+        typeof result === 'object' &&
+        'error' in result &&
+        (result as { error?: unknown }).error
+      ) {
+        console.warn(`[Security] ${operationName} failed`, {
+          error:
+            (result as { error?: { message?: string } }).error?.message ??
+            String((result as { error?: unknown }).error),
+        });
+      }
     } finally {
       if (timeoutId) clearTimeout(timeoutId);
     }

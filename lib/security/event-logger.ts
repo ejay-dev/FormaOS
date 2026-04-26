@@ -33,7 +33,12 @@ const REDACTED = '[REDACTED]';
 const SENSITIVE_KEY_PATTERN =
   /(token|password|otp|secret|authorization|cookie|session|refresh)/i;
 
-const DB_WRITE_TIMEOUT_MS = 200;
+const DEFAULT_DB_WRITE_TIMEOUT_MS = 1500;
+const DB_WRITE_TIMEOUT_MS = Number.isFinite(
+  Number(process.env.SECURITY_LOG_DB_TIMEOUT_MS),
+)
+  ? Math.max(500, Math.min(5000, Number(process.env.SECURITY_LOG_DB_TIMEOUT_MS)))
+  : DEFAULT_DB_WRITE_TIMEOUT_MS;
 const DEFAULT_FLUSH_INTERVAL_MS = 3000;
 const DEFAULT_BATCH_SIZE = 100;
 
@@ -235,6 +240,19 @@ async function withDbTimeout<T>(
 
   try {
     const result = await Promise.race([promise, timeoutPromise]);
+    if (
+      result &&
+      typeof result === 'object' &&
+      'error' in result &&
+      (result as { error?: unknown }).error
+    ) {
+      console.warn(`[Security] ${operationName} failed`, {
+        error:
+          (result as { error?: { message?: string } }).error?.message ??
+          String((result as { error?: unknown }).error),
+      });
+      return null;
+    }
     return result as T | null;
   } finally {
     if (timeoutId) clearTimeout(timeoutId);
@@ -458,8 +476,10 @@ async function flushQueues(): Promise<void> {
         flushUserActivityBatch(admin, activityBatch),
       ]);
     }
-  } catch {
-    // Best-effort logging only.
+  } catch (error) {
+    console.warn('[Security] queued event flush failed', {
+      error: error instanceof Error ? error.message : String(error),
+    });
   } finally {
     flushInProgress = false;
     if (securityEventQueue.length > 0 || userActivityQueue.length > 0) {

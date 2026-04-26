@@ -35,6 +35,8 @@ function checkGlobalApiRateLimit(ip: string): boolean {
 }
 
 function isLocalE2ERateLimitBypass(request: NextRequest): boolean {
+  if (process.env.VERCEL_ENV === 'production') return false;
+
   const host = request.nextUrl.hostname;
   const isLocalHost =
     host === 'localhost' || host === '127.0.0.1' || host === '::1';

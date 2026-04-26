@@ -71,6 +71,43 @@ Static validation after the fixes:
 - Forms builder creation now uses a route handler for explicit GET redirect semantics instead of doing the mutation from a page render.
 - Local authenticated E2E sessions now set a localhost-only `fos_e2e=1` marker and the standard cookie consent cookie. The app uses that marker only on localhost to bypass local/global rate-limit ceilings that were masking export and V1 route behavior when Redis was unavailable.
 
+## Operational Stability Hardening
+
+### Redis and rate limits
+
+- Audited the Redis-backed rate-limit paths in `lib/security/rate-limiter.ts`, `lib/ratelimit.ts`, `lib/api-keys/middleware.ts`, and `proxy.ts`.
+- Production Redis expectation is now explicit: `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are required for distributed auth/admin limits. `REDIS_REQUIRED=true` can force the same requirement outside production.
+- Auth rate limits fail closed in production when Redis is unavailable and return a clear backend-unavailable path instead of silently degrading distributed brute-force protection.
+- Non-critical app/API/export paths degrade to in-memory limits with throttled server warnings so product availability is preserved during a Redis outage.
+- Local/dev use deterministic in-memory fallback when Redis credentials are absent.
+- E2E rate-limit bypass is constrained to localhost requests and requires either `x-formaos-e2e: 1` or the localhost-only `fos_e2e=1` cookie. It remains available when Playwright runs `next start` locally with `NODE_ENV=production`, but it is disabled for deployed production via `VERCEL_ENV=production` and does not work on non-local hosts.
+- `.env.example` documents production Redis credentials and `SECURITY_LOG_DB_TIMEOUT_MS`.
+
+### Audit and security logging
+
+- Audited audit/security logging paths for evidence upload, incident resolution, staff credential verification, care plan status changes, policy actions, rate-limit logging, session-security logging, and queued security event logging.
+- Compliance-critical audit events now call `logAuditEvent(..., { required: true })`. If both the session-scoped insert and service-role fallback fail, the user action fails instead of showing success without a required audit trail.
+- Non-critical telemetry/security events remain non-blocking, but Supabase write errors and queued flush failures are logged to server logs instead of disappearing silently.
+- Security log DB write timeouts are configurable with `SECURITY_LOG_DB_TIMEOUT_MS` and default to 1500ms, clamped to 500-5000ms, to avoid slow logging writes turning into UI/test timeouts.
+- `/api/v1/audit-trail` no longer selects optional `org_audit_logs.domain`, `severity`, or `metadata` columns, so older environments with the base audit table do not emit `42703` schema warnings during drawer/audit-panel reads.
+
+### Enterprise SSO schema
+
+- `organization_sso` is an expected enterprise SSO table. The original enterprise migration path existed, but environments could still miss the table or have schema-cache drift.
+- Added `supabase/migrations/20260426_002_ensure_organization_sso_schema.sql` as an idempotent repair migration. It creates/repairs `organization_sso`, expected columns, RLS policies, indexes, and updated-at trigger.
+- Code now treats a missing `organization_sso` table as an optional enterprise feature for reads/discovery without noisy `PGRST205` logging. SSO writes return `sso_schema_unavailable` rather than pretending success.
+
+### Runtime control-plane streams
+
+- `runtime/control-plane/stream ERR_INVALID_STATE` was traced to SSE controller abort/cancel races under parallel E2E load.
+- Runtime and admin control-plane streams now use a shared safe SSE writer that guards enqueue/close after abort and makes duplicate close paths idempotent.
+- Added focused unit coverage for duplicate-close and already-closed enqueue behavior. This is classified as an app stream-handling bug fixed in the route layer, not a production data issue.
+
+### Export schema-cache compatibility
+
+- `/api/reports/export`, `/api/incidents/export`, and `/api/staff-credentials/export` now honor the same localhost-only E2E rate-limit bypass used by authenticated app API routes, preventing local in-memory export buckets from masking export behavior under parallel Playwright.
+- Incident and staff credential exports no longer depend on Supabase relationship-cache joins for `reported_by` or `user_id`. They read flat org-scoped rows and resolve related display names separately, avoiding schema-cache relationship warnings.
+
 ## Hidden Or Deferred Features
 
 - Industry-specific report exports are deferred until the backend supports those exact report types.
@@ -113,12 +150,19 @@ Forms schema note: `supabase/migrations/20260402_forms_platform.sql` is the orig
 - Retry after fixes: `npx playwright test e2e/deep-workflow-integrity.spec.ts --project=chromium --reporter=list` passed, 5 passed.
 - A later full parallel critical run under Redis-unavailable local load passed 12/18 and produced repeated `runtime/control-plane/stream` `ERR_INVALID_STATE` unhandled rejections plus slow/dropped telemetry writes. Retrying the failing set with one worker passed onboarding and system integration, but exposed a real `forms-new` route bug. `/app/forms/builder/new` has been fixed and `npx playwright test e2e/forms-new.spec.ts --project=chromium --reporter=list` now passes.
 - Final validation commands were rerun after this doc update; see the final delivery report for exact command output.
+- Operational stability validation on 2026-04-26:
+  - Focused unit suites for rate limits, API-key middleware, SSO guards, and SSE writer passed: 6 suites, 74 tests.
+  - `npm run typecheck`, `npm run lint`, `npm run build`, and `npm run check:app-links` passed.
+  - Targeted parallel Playwright stability suite passed with `--workers=2`: 20 passed in 2.3m.
+  - No `runtime/control-plane/stream ERR_INVALID_STATE` appeared in the final two-worker run.
+  - Previous local failures were classified and addressed: local built-server startup timeout was harness/server-start state, policy heading duplicate was a test locator issue, incident resolution was a test race against a same-URL server action, and report export timeout was a local in-memory rate-limit masking issue.
 
 ## Remaining Risks
 
 - Forms schema drift risk is now low for the configured Supabase project because the repair migration is applied and proven. Other environments still need `supabase/migrations/20260426_001_ensure_forms_platform_schema.sql` applied if they missed the original forms migration.
-- Local Redis remains unavailable in this shell, so telemetry/rate-limit persistence logs show degraded in-memory fallback and skipped slow log writes. Local E2E now bypasses rate-limit ceilings only on localhost with the E2E marker; production behavior is unchanged.
-- Optional environment/schema warnings such as missing `organization_sso` still appear in app logs. They did not block the audited app actions but remain environment-readiness items.
+- Redis remains unavailable in this local shell by design, but the behavior is now explicit: local/dev use in-memory limits, production auth limits fail closed, and non-critical API paths log degraded fallback.
+- Enterprise SSO schema risk is low after the repair migration and missing-table guards. Environments that enable SSO should still apply `supabase/migrations/20260426_002_ensure_organization_sso_schema.sql` before exposing SSO settings.
+- Parallel E2E stability should be run with the documented targeted worker count. If future full-suite parallel runs fail, classify by route/action and retry the failing shard once before treating it as a product regression.
 
 ## Verdict
 

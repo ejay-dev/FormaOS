@@ -28,6 +28,24 @@ function normalizeDomains(domains: string[] | null | undefined) {
   return (domains ?? []).map((domain) => domain.trim().toLowerCase()).filter(Boolean);
 }
 
+function isMissingOrganizationSsoTable(error: unknown) {
+  const message =
+    typeof error === 'object' && error !== null && 'message' in error
+      ? String((error as { message?: unknown }).message)
+      : String(error ?? '');
+  const code =
+    typeof error === 'object' && error !== null && 'code' in error
+      ? String((error as { code?: unknown }).code)
+      : '';
+
+  return (
+    code === 'PGRST205' ||
+    code === '42P01' ||
+    message.includes("Could not find the table 'public.organization_sso'") ||
+    message.includes('relation "public.organization_sso" does not exist')
+  );
+}
+
 export async function getOrgSsoConfig(orgId: string): Promise<OrgSsoConfig | null> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
@@ -39,7 +57,9 @@ export async function getOrgSsoConfig(orgId: string): Promise<OrgSsoConfig | nul
     .maybeSingle();
 
   if (error) {
-    console.error('[org-sso] getOrgSsoConfig error:', error.message);
+    if (!isMissingOrganizationSsoTable(error)) {
+      console.error('[org-sso] getOrgSsoConfig error:', error.message);
+    }
     return null;
   }
   if (!data) return null;
@@ -114,6 +134,9 @@ export async function upsertOrgSsoConfig(params: {
   );
 
   if (error) {
+    if (isMissingOrganizationSsoTable(error)) {
+      return { ok: false, error: 'sso_schema_unavailable' };
+    }
     return { ok: false, error: error.message };
   }
 
@@ -142,6 +165,9 @@ export async function discoverOrgSsoByEmail(email: string): Promise<{
     .maybeSingle();
 
   if (error) {
+    if (isMissingOrganizationSsoTable(error)) {
+      return { ok: false, error: 'not_found' };
+    }
     return { ok: false, error: error.message };
   }
   if (!data) {
