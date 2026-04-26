@@ -159,6 +159,9 @@ export async function updatePolicy(formData: FormData) {
   });
 
   revalidatePath("/app/policies");
+  revalidatePath(`/app/policies/${policyId}`);
+  revalidatePath(`/app/policies/${policyId}/edit`);
+  revalidatePath(`/app/policies/${policyId}/versions`);
   return { success: true };
   } catch (error) {
     if (isNextInternalError(error)) throw error;

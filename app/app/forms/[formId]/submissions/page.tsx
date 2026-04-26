@@ -145,13 +145,14 @@ export default async function FormSubmissionsPage({
             <Download className="h-4 w-4" />
             Export CSV
           </Link>
-          <Link
-            href={`/app/forms/${formId}/analytics`}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors text-sm"
+          <button
+            type="button"
+            disabled
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-muted/40 text-muted-foreground text-sm"
           >
             <BarChart3 className="h-4 w-4" />
-            Analytics
-          </Link>
+            Analytics coming soon
+          </button>
         </div>
       </div>
 

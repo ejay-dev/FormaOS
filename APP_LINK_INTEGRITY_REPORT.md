@@ -1,13 +1,13 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-25T14:57:28.725Z
+Generated: 2026-04-26T10:45:28.236Z
 
 ## Summary
 
-- Total app internal links validated: 302
-- Valid links: 302
+- Total app internal links validated: 303
+- Valid links: 303
 - Broken links: 0
-- App routes discovered: 211
+- App routes discovered: 214
 
 ## Link Validation
 
@@ -53,7 +53,6 @@ Generated: 2026-04-25T14:57:28.725Z
 | `components/dashboard/quick-actions.tsx` | `/app/audit` | YES | YES | auth | `/app/audit` |
 | `lib/navigation/industry-sidebar.ts` | `/app/audit` | YES | YES | auth | `/app/audit` |
 | `components/dashboard/command-center.tsx` | `/app/audit-trail` | YES | YES | auth | `/app/audit-trail` |
-| `app/app/actions/billing.ts` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/components/TrialStatusBanner.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/reports/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
@@ -179,6 +178,7 @@ Generated: 2026-04-25T14:57:28.725Z
 | `app/app/policies/new/page.tsx` | `/app/policies/:param` | YES | YES | auth | `/app/policies/:id` |
 | `app/app/policies/page.tsx` | `/app/policies/new` | YES | YES | auth | `/app/policies/new` |
 | `components/empty-states/empty-state.tsx` | `/app/policies/new` | YES | YES | auth | `/app/policies/new` |
+| `app/app/policies/[id]/versions/page.tsx` | `/app/policies/versions` | YES | YES | auth | `/app/policies/versions` |
 | `components/command-palette/CommandPalette.tsx` | `/app/profile` | YES | YES | auth | `/app/profile` |
 | `components/topbar.tsx` | `/app/profile` | YES | YES | auth | `/app/profile` |
 | `app/app/patients/[id]/page.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
@@ -235,6 +235,7 @@ Generated: 2026-04-25T14:57:28.725Z
 | `app/app/settings/page.tsx` | `/app/settings/retention` | YES | YES | auth | `/app/settings/retention` |
 | `app/app/settings/organization/page.tsx` | `/app/settings/roles` | YES | YES | auth | `/app/settings/roles` |
 | `app/app/settings/page.tsx` | `/app/settings/roles` | YES | YES | auth | `/app/settings/roles` |
+| `app/app/settings/roles/[roleId]/page.tsx` | `/app/settings/roles` | YES | YES | auth | `/app/settings/roles` |
 | `app/app/settings/roles/new/page.tsx` | `/app/settings/roles` | YES | YES | auth | `/app/settings/roles` |
 | `app/app/settings/roles/new/page.tsx` | `/app/settings/roles/new` | YES | YES | auth | `/app/settings/roles/new` |
 | `app/app/settings/roles/page.tsx` | `/app/settings/roles/new` | YES | YES | auth | `/app/settings/roles/new` |
@@ -397,6 +398,8 @@ Generated: 2026-04-25T14:57:28.725Z
 - `/app/people`
 - `/app/policies`
 - `/app/policies/:id`
+- `/app/policies/:id/edit`
+- `/app/policies/:id/versions`
 - `/app/policies/new`
 - `/app/policies/versions`
 - `/app/profile`
@@ -421,6 +424,7 @@ Generated: 2026-04-25T14:57:28.725Z
 - `/app/settings/organization`
 - `/app/settings/retention`
 - `/app/settings/roles`
+- `/app/settings/roles/:roleId`
 - `/app/settings/roles/new`
 - `/app/settings/security`
 - `/app/staff`

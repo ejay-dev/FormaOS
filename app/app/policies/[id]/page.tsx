@@ -55,7 +55,7 @@ export default async function PolicyDetailPage({
     .select('*')
     .eq('organization_id', membership.organization_id);
 
-  const isAdmin = membership?.role === 'admin';
+  const isAdmin = membership?.role === 'admin' || membership?.role === 'owner';
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in duration-700">

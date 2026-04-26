@@ -1,9 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import {
   FileText,
-  ArrowRight,
+  Lock,
   ShieldCheck,
   Users,
   AlertTriangle,
@@ -23,7 +22,6 @@ interface ReportTemplate {
   description: string;
   icon: LucideIcon;
   color: string;
-  href: string;
 }
 
 const NDIS_REPORTS: ReportTemplate[] = [
@@ -34,7 +32,6 @@ const NDIS_REPORTS: ReportTemplate[] = [
       'Evidence mapping across all NDIS Practice Standards with gap identification',
     icon: ShieldCheck,
     color: 'from-pink-500/20 to-pink-500/5 border-pink-400/20',
-    href: '/api/reports/export?type=ndis-practice-standards&format=pdf&mode=sync',
   },
   {
     id: 'ndis-worker-screening',
@@ -43,7 +40,6 @@ const NDIS_REPORTS: ReportTemplate[] = [
       'Staff clearance status, expiry tracking, and non-compliant worker summary',
     icon: Users,
     color: 'from-rose-500/20 to-rose-500/5 border-rose-400/20',
-    href: '/api/reports/export?type=ndis-worker-screening&format=pdf&mode=sync',
   },
   {
     id: 'ndis-sirs',
@@ -52,7 +48,6 @@ const NDIS_REPORTS: ReportTemplate[] = [
       'Reportable incidents, notification timelines, and NDIS Commission compliance',
     icon: AlertTriangle,
     color: 'from-amber-500/20 to-amber-500/5 border-amber-400/20',
-    href: '/api/reports/export?type=ndis-sirs&format=pdf&mode=sync',
   },
 ];
 
@@ -64,7 +59,6 @@ const HEALTHCARE_REPORTS: ReportTemplate[] = [
       'National Safety and Quality Health Service Standards compliance posture',
     icon: HeartPulse,
     color: 'from-sky-500/20 to-sky-500/5 border-sky-400/20',
-    href: '/api/reports/export?type=nsqhs&format=pdf&mode=sync',
   },
   {
     id: 'healthcare-practitioner',
@@ -73,7 +67,6 @@ const HEALTHCARE_REPORTS: ReportTemplate[] = [
       'AHPRA registration, CPD hours, and professional indemnity expiry tracker',
     icon: Users,
     color: 'from-teal-500/20 to-teal-500/5 border-teal-400/20',
-    href: '/api/reports/export?type=practitioner-credentials&format=pdf&mode=sync',
   },
   {
     id: 'healthcare-clinical-incidents',
@@ -82,7 +75,6 @@ const HEALTHCARE_REPORTS: ReportTemplate[] = [
       'Open/closed incidents with severity breakdown and regulator notification status',
     icon: AlertTriangle,
     color: 'from-rose-500/20 to-rose-500/5 border-rose-400/20',
-    href: '/api/reports/export?type=clinical-incidents&format=pdf&mode=sync',
   },
 ];
 
@@ -94,7 +86,6 @@ const AGED_CARE_REPORTS: ReportTemplate[] = [
       'ACQS compliance status with evidence mapping and star rating indicators',
     icon: Home,
     color: 'from-violet-500/20 to-violet-500/5 border-violet-400/20',
-    href: '/api/reports/export?type=acqs&format=pdf&mode=sync',
   },
   {
     id: 'aged-care-care-plans',
@@ -103,7 +94,6 @@ const AGED_CARE_REPORTS: ReportTemplate[] = [
       'Plan review timeliness, overdue reviews, and resident care coverage',
     icon: ClipboardList,
     color: 'from-emerald-500/20 to-emerald-500/5 border-emerald-400/20',
-    href: '/api/reports/export?type=care-plan-compliance&format=pdf&mode=sync',
   },
   {
     id: 'aged-care-star-rating',
@@ -112,7 +102,6 @@ const AGED_CARE_REPORTS: ReportTemplate[] = [
       'Estimated quality rating breakdown with improvement recommendations',
     icon: BarChart3,
     color: 'from-amber-500/20 to-amber-500/5 border-amber-400/20',
-    href: '/api/reports/export?type=star-rating&format=pdf&mode=sync',
   },
 ];
 
@@ -124,7 +113,6 @@ const CHILDCARE_REPORTS: ReportTemplate[] = [
       'National Quality Framework compliance across all 7 quality areas',
     icon: Baby,
     color: 'from-fuchsia-500/20 to-fuchsia-500/5 border-fuchsia-400/20',
-    href: '/api/reports/export?type=nqf&format=pdf&mode=sync',
   },
   {
     id: 'childcare-educator',
@@ -133,7 +121,6 @@ const CHILDCARE_REPORTS: ReportTemplate[] = [
       'WWC checks, first aid, qualifications status, and renewal timeline',
     icon: Users,
     color: 'from-orange-500/20 to-orange-500/5 border-orange-400/20',
-    href: '/api/reports/export?type=educator-credentials&format=pdf&mode=sync',
   },
   {
     id: 'childcare-safety',
@@ -142,7 +129,6 @@ const CHILDCARE_REPORTS: ReportTemplate[] = [
       'Incident log, mandatory reporting compliance, and safety audit history',
     icon: ShieldCheck,
     color: 'from-rose-500/20 to-rose-500/5 border-rose-400/20',
-    href: '/api/reports/export?type=child-safety&format=pdf&mode=sync',
   },
 ];
 
@@ -154,7 +140,6 @@ const FINANCIAL_REPORTS: ReportTemplate[] = [
       'Open breaches, self-reported incidents, and ASIC/APRA notification log',
     icon: AlertTriangle,
     color: 'from-red-500/20 to-red-500/5 border-red-400/20',
-    href: '/api/reports/export?type=breach-register&format=pdf&mode=sync',
   },
   {
     id: 'financial-board-report',
@@ -163,7 +148,6 @@ const FINANCIAL_REPORTS: ReportTemplate[] = [
       'Executive summary for board reporting with RAG status across obligations',
     icon: Landmark,
     color: 'from-indigo-500/20 to-indigo-500/5 border-indigo-400/20',
-    href: '/api/reports/export?type=board-compliance&format=pdf&mode=sync',
   },
   {
     id: 'financial-aml-kyc',
@@ -172,7 +156,6 @@ const FINANCIAL_REPORTS: ReportTemplate[] = [
       'Anti-money laundering program compliance and customer due diligence status',
     icon: ShieldCheck,
     color: 'from-sky-500/20 to-sky-500/5 border-sky-400/20',
-    href: '/api/reports/export?type=aml-kyc&format=pdf&mode=sync',
   },
 ];
 
@@ -183,7 +166,6 @@ const RAG_STATUS_REPORT: ReportTemplate = {
     'Comprehensive red/amber/green status across all obligations, controls, and frameworks',
   icon: BarChart3,
   color: 'from-cyan-500/20 to-cyan-500/5 border-cyan-400/20',
-  href: '/api/reports/export?type=rag-status&format=pdf&mode=sync',
 };
 
 function getIndustryReports(industry: string | null): {
@@ -239,14 +221,15 @@ export function IndustryReportTemplates() {
                     </p>
                   </div>
                 </div>
-                <Link
-                  href={tmpl.href}
-                  prefetch={false}
-                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-200 hover:text-cyan-100"
+                <button
+                  type="button"
+                  disabled
+                  data-testid="unsupported-report-export"
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-amber-400/25 bg-amber-400/10 px-2.5 py-1.5 text-xs font-semibold text-amber-200"
                 >
-                  Generate report
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
+                  <Lock className="h-3.5 w-3.5" />
+                  Export coming soon
+                </button>
               </div>
             ))}
           </div>
@@ -275,14 +258,15 @@ export function IndustryReportTemplates() {
               </p>
             </div>
           </div>
-          <Link
-            href={RAG_STATUS_REPORT.href}
-            prefetch={false}
-            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-cyan-200 hover:text-cyan-100"
+          <button
+            type="button"
+            disabled
+            data-testid="unsupported-report-export"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-amber-400/25 bg-amber-400/10 px-2.5 py-1.5 text-xs font-semibold text-amber-200"
           >
-            Generate report
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+            <Lock className="h-3.5 w-3.5" />
+            Export coming soon
+          </button>
         </div>
       </div>
     </div>

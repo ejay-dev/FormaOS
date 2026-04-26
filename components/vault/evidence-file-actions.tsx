@@ -79,6 +79,7 @@ export function EvidenceFileActions({
         type="button"
         disabled={!filePath || loading}
         onClick={() => openFile('download')}
+        data-testid="evidence-download-button"
         className="p-2 hover:bg-glass-strong rounded-lg text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         title="Download file"
         aria-label="Download file"

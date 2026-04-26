@@ -217,18 +217,25 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <Link
-              href="/api/reports/export?type=trust&format=pdf&mode=sync"
-              prefetch={false}
-              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium ${
-                disableExports
-                  ? 'pointer-events-none border border-border text-muted-foreground/60'
-                  : 'bg-primary text-primary-foreground'
-              }`}
-            >
-              Generate
-              <ArrowRight className="h-3 w-3" />
-            </Link>
+            {disableExports ? (
+              <button
+                type="button"
+                disabled
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground/60"
+              >
+                Generate unavailable
+              </button>
+            ) : (
+              <Link
+                href="/api/reports/export?type=trust&format=pdf&mode=sync"
+                prefetch={false}
+                data-testid="report-export-link"
+                className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground"
+              >
+                Generate
+                <ArrowRight className="h-3 w-3" />
+              </Link>
+            )}
             <Link
               href="/app/governance"
               className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent/30"
@@ -274,14 +281,25 @@ function ExportSection({ disableExports }: { disableExports: boolean }) {
               <p className="mt-1 text-[10px] text-foreground/70 line-clamp-2">
                 {card.description}
               </p>
-              <Link
-                href={`/api/reports/export?type=${card.type}&format=pdf&mode=sync`}
-                prefetch={false}
-                className={`mt-2 inline-flex items-center gap-1 text-[10px] font-medium ${disableExports ? 'pointer-events-none text-muted-foreground/60' : 'text-primary hover:underline'}`}
-              >
-                Generate
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+              {disableExports ? (
+                <button
+                  type="button"
+                  disabled
+                  className="mt-2 inline-flex items-center gap-1 text-[10px] font-medium text-muted-foreground/60"
+                >
+                  Requires admin export access
+                </button>
+              ) : (
+                <Link
+                  href={`/api/reports/export?type=${card.type}&format=pdf&mode=sync`}
+                  prefetch={false}
+                  data-testid="report-export-link"
+                  className="mt-2 inline-flex items-center gap-1 text-[10px] font-medium text-primary hover:underline"
+                >
+                  Generate
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              )}
             </div>
           ))}
         </div>
