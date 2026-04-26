@@ -31,9 +31,11 @@ export function BillingActionButtons({
         const formData = new FormData();
         formData.set("plan", plan);
         const result = await startCheckout(formData);
-        if (typeof result === "string" && result.startsWith("http")) {
-          window.location.href = result;
+        if (result.success) {
+          window.location.href = result.url;
+          return;
         }
+        setError(result.error);
       } catch (err) {
         console.error("Activation failed:", err);
         setError(
@@ -73,10 +75,11 @@ export function BillingActionButtons({
         // Call the server action
         const result = await openCustomerPortal();
         
-        // If result is a URL, redirect to Stripe portal
-        if (typeof result === 'string' && result.startsWith('http')) {
-          window.location.href = result;
+        if (result.success) {
+          window.location.href = result.url;
+          return;
         }
+        setError(result.error);
       } catch (err) {
         console.error("Portal access failed:", err);
         setError(err instanceof Error ? err.message : "Failed to open billing portal. Please try again.");

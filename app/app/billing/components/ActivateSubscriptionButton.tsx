@@ -25,7 +25,12 @@ export function ActivateSubscriptionButton({
       try {
         const formData = new FormData();
         formData.append("plan", planKey);
-        await startCheckout(formData);
+        const result = await startCheckout(formData);
+        if (result.success) {
+          window.location.href = result.url;
+          return;
+        }
+        setError(result.error);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to start checkout");
       }

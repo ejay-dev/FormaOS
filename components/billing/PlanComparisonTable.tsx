@@ -86,9 +86,11 @@ export function PlanComparisonTable() {
       const formData = new FormData();
       formData.set('plan', targetPlan);
       const result = await startCheckout(formData);
-      if (typeof result === 'string' && result.startsWith('http')) {
-        window.location.href = result;
+      if (result.success) {
+        window.location.href = result.url;
+        return;
       }
+      setError(result.error);
     } catch (err) {
       const raw = err instanceof Error ? err.message : '';
       const isFrameworkError =

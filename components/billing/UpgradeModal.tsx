@@ -85,9 +85,11 @@ export function UpgradeModal() {
       const formData = new FormData();
       formData.set('plan', planKey);
       const result = await startCheckout(formData);
-      if (typeof result === 'string' && result.startsWith('http')) {
-        window.location.href = result;
+      if (result.success) {
+        window.location.href = result.url;
+        return;
       }
+      setError(result.error);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Checkout failed');
     } finally {

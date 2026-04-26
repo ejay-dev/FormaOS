@@ -56,31 +56,50 @@ export async function POST(request: Request) {
     const priceId = getStripePriceId(planId);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
-    if (!stripe || !priceId) {
-      // Graceful fallback in dev/staging: fake-flip the subscription plan so the UI can proceed.
-      const nowIso = new Date().toISOString();
-      await supabase
-        .from('org_subscriptions')
-        .upsert(
-          {
-            organization_id: orgId,
-            plan_key: planId,
-            status: 'active',
-            updated_at: nowIso,
-          },
-          { onConflict: 'organization_id' }
-        );
-      return NextResponse.json({
-        url: `${appUrl}/app/billing?upgraded=${encodeURIComponent(planId)}`,
-        mode: 'simulated',
-      });
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Stripe is not configured' },
+        { status: 503 },
+      );
+    }
+
+    if (!priceId) {
+      return NextResponse.json(
+        { error: 'Missing Stripe price for plan' },
+        { status: 400 },
+      );
     }
 
     const { data: subscription } = await supabase
       .from('org_subscriptions')
-      .select('stripe_customer_id')
+      .select('status, stripe_customer_id, stripe_subscription_id')
       .eq('organization_id', orgId)
       .maybeSingle();
+
+    const currentStatus =
+      (subscription?.status as string | null)?.toLowerCase() ?? '';
+    if (
+      subscription?.stripe_customer_id &&
+      subscription.stripe_subscription_id &&
+      ['active', 'trialing', 'past_due'].includes(currentStatus)
+    ) {
+      const portalSession = await stripe.billingPortal.sessions.create({
+        customer: subscription.stripe_customer_id,
+        return_url: `${appUrl}/app/billing`,
+      });
+
+      if (!portalSession.url) {
+        return NextResponse.json(
+          { error: 'Failed to create billing portal session' },
+          { status: 500 },
+        );
+      }
+
+      return NextResponse.json({
+        url: portalSession.url,
+        mode: 'portal',
+      });
+    }
 
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
@@ -90,9 +109,17 @@ export async function POST(request: Request) {
       client_reference_id: orgId,
       success_url: `${appUrl}/app/billing?checkout=success`,
       cancel_url: `${appUrl}/app/billing?checkout=cancelled`,
+      subscription_data: {
+        trial_period_days: 0,
+        metadata: {
+          organization_id: orgId,
+          plan_key: planId,
+        },
+      },
       metadata: {
         organization_id: orgId,
         plan_key: planId,
+        price_id: priceId,
         initiated_by: user.id,
       },
     });
