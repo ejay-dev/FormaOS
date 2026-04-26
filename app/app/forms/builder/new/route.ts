@@ -1,13 +1,17 @@
-import { redirect } from 'next/navigation';
+import { NextRequest, NextResponse } from 'next/server';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export const metadata = { title: 'New Form | FormaOS' };
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
-export default async function NewFormPage() {
+function redirectTo(request: NextRequest, path: string) {
+  return NextResponse.redirect(new URL(path, request.url), { status: 303 });
+}
+
+export async function GET(request: NextRequest) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) return redirectTo(request, '/signin');
 
   const db = await createSupabaseServerClient();
   const orgId = state.organization.id;
@@ -31,8 +35,8 @@ export default async function NewFormPage() {
 
   if (error || !data?.id) {
     const msg = error?.message ?? 'Unable to create form';
-    redirect(`/app/forms?error=${encodeURIComponent(msg)}`);
+    return redirectTo(request, `/app/forms?error=${encodeURIComponent(msg)}`);
   }
 
-  redirect(`/app/forms/builder/${data.id}`);
+  return redirectTo(request, `/app/forms/builder/${data.id}`);
 }

@@ -46,6 +46,26 @@ function isAdminRole(role: string | null | undefined) {
   return role === 'owner' || role === 'admin';
 }
 
+function hasCookie(request: Request, name: string, value: string) {
+  const cookieHeader = request.headers.get('cookie') ?? '';
+  return cookieHeader
+    .split(';')
+    .map((cookie) => cookie.trim())
+    .some((cookie) => cookie === `${name}=${value}`);
+}
+
+function isLocalE2ERateLimitBypass(request: Request) {
+  const hostname = new URL(request.url).hostname;
+  const isLocalHost =
+    hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+  if (!isLocalHost) return false;
+
+  return (
+    request.headers.get('x-formaos-e2e') === '1' ||
+    hasCookie(request, 'fos_e2e', '1')
+  );
+}
+
 function sessionHasScopes(
   role: string | null,
   requiredScopes: ApiKeyScope[],
@@ -205,7 +225,14 @@ export async function authenticateV1Request(
   }
 
   const identifier = user.id || getClientIp(request);
-  const rateLimit = await getSessionRateLimit(identifier);
+  const rateLimit = isLocalE2ERateLimitBypass(request)
+    ? {
+        success: true,
+        limit: Number.MAX_SAFE_INTEGER,
+        remaining: Number.MAX_SAFE_INTEGER,
+        reset: Date.now() + 60_000,
+      }
+    : await getSessionRateLimit(identifier);
   if (!rateLimit.success) {
     const response = NextResponse.json(
       { error: 'Rate limit exceeded', retryAfter: rateLimit.reset },

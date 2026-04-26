@@ -78,7 +78,7 @@ test.describe('System integration', () => {
     });
     const obligationId = obligation.id as string;
 
-    await authenticateWorkspacePage(page);
+    await authenticateWorkspacePage(page, context.email);
     await page.goto('/app/compliance');
 
     const row = page.locator('tr', { hasText: obligation.title as string });
@@ -158,7 +158,7 @@ test.describe('System integration', () => {
     });
     const incidentId = incident.id as string;
 
-    await authenticateWorkspacePage(page);
+    await authenticateWorkspacePage(page, context.email);
     await page.goto(`/app/incidents/${incidentId}`);
 
     // Inline evidence panel exists on incident detail
@@ -213,14 +213,7 @@ test.describe('System integration', () => {
       'textarea[name="preventive_measures"]',
       'E2E systemic prevention',
     );
-    // Submit the resolve form directly — click() can flake if an overlay
-    // (help assistant, banner, etc.) intercepts pointer events.
-    await page.evaluate(() => {
-      const form = document.querySelector(
-        'form:has(textarea[name="root_cause"])',
-      ) as HTMLFormElement | null;
-      form?.requestSubmit();
-    });
+    await page.getByTestId('resolve-incident-submit').click();
     await page.waitForURL(`**/app/incidents/${incidentId}`);
     await expect(page.locator('text=Resolution Record')).toBeVisible({
       timeout: 10_000,
@@ -306,7 +299,7 @@ test.describe('System integration', () => {
     const planId = plan?.id as string;
 
     try {
-      await authenticateWorkspacePage(page);
+      await authenticateWorkspacePage(page, context.email);
       await page.goto(`/app/care-plans/${planId}`);
 
       // Activate the plan via the status transition button

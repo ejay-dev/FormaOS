@@ -364,14 +364,32 @@ export async function setPlaywrightSession(
   const cookieUrl = `${base.protocol}//${base.host}`;
 
   await context.addCookies(
-    chunks.map((chunk) => ({
-      name: chunk.name,
-      value: chunk.value,
-      url: cookieUrl,
-      httpOnly: false,
-      secure: base.protocol === 'https:',
-      sameSite: 'Lax',
-    })),
+    [
+      ...chunks.map((chunk) => ({
+        name: chunk.name,
+        value: chunk.value,
+        url: cookieUrl,
+        httpOnly: false,
+        secure: base.protocol === 'https:',
+        sameSite: 'Lax',
+      })),
+      {
+        name: 'fos_e2e',
+        value: '1',
+        url: cookieUrl,
+        httpOnly: true,
+        secure: base.protocol === 'https:',
+        sameSite: 'Lax',
+      },
+      {
+        name: 'formaos_cookie_consent',
+        value: 'accepted',
+        url: cookieUrl,
+        httpOnly: false,
+        secure: base.protocol === 'https:',
+        sameSite: 'Lax',
+      },
+    ],
   );
 }
 

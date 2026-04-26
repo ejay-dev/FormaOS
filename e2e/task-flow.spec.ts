@@ -24,7 +24,7 @@ test.describe('Task completion flow', () => {
     const taskId = seeded.id as string;
 
     try {
-      await authenticateWorkspacePage(page);
+      await authenticateWorkspacePage(page, context.email);
 
       await page.goto('/app/tasks', { waitUntil: 'domcontentloaded' });
       await expect(page.getByText(taskTitle).first()).toBeVisible();

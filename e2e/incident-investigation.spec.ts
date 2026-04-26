@@ -25,7 +25,7 @@ test.describe('Incident investigation flow', () => {
     expect(incidentId).toBeTruthy();
 
     try {
-      await authenticateWorkspacePage(page);
+      await authenticateWorkspacePage(page, context.email);
       await page.goto(`/app/incidents/${incidentId}/investigation`, {
         waitUntil: 'domcontentloaded',
       });

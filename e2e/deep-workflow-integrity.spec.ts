@@ -43,7 +43,7 @@ test.describe('Deep workflow integrity', () => {
       .eq('task_id', obligationId);
     expect(beforeCount ?? 0).toBe(0);
 
-    await authenticateWorkspacePage(page);
+    await authenticateWorkspacePage(page, context.email);
     await page.goto('/app/compliance');
     await expect(page.locator('text=Obligations Register')).toBeVisible();
 
@@ -186,9 +186,11 @@ test.describe('Deep workflow integrity', () => {
     });
     const incidentId = incident.id as string;
 
-    await authenticateWorkspacePage(page);
+    await authenticateWorkspacePage(page, context.email);
     await page.goto(`/app/incidents/${incidentId}`);
-    await expect(page.locator('text=Incident Detail')).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Incident Detail' }).first(),
+    ).toBeVisible();
 
     await page.fill(
       'textarea[name="root_cause"]',
@@ -198,14 +200,7 @@ test.describe('Deep workflow integrity', () => {
       'textarea[name="preventive_measures"]',
       'E2E preventive: monthly inspection',
     );
-    // Submit the resolve form directly — click() can flake if the
-    // help-assistant overlay intercepts pointer events.
-    await page.evaluate(() => {
-      const form = document.querySelector(
-        'form:has(textarea[name="root_cause"])',
-      ) as HTMLFormElement | null;
-      form?.requestSubmit();
-    });
+    await page.getByTestId('resolve-incident-submit').click();
 
     // Reload — the resolution record + closed status must persist
     await page.waitForURL(`**/app/incidents/${incidentId}`);
@@ -269,7 +264,7 @@ test.describe('Deep workflow integrity', () => {
     const planId = plan?.id as string;
 
     try {
-      await authenticateWorkspacePage(page);
+      await authenticateWorkspacePage(page, context.email);
       await page.goto(`/app/care-plans/${planId}`);
       await expect(
         page.locator('[data-testid="care-plan-title"]'),
@@ -391,7 +386,7 @@ test.describe('Deep workflow integrity', () => {
     const path2 = await insert();
 
     try {
-      await authenticateWorkspacePage(page);
+      await authenticateWorkspacePage(page, context.email);
       await page.goto('/app/compliance');
       const row = page.locator('tr', { hasText: obligation.title as string });
       await expect(row).toBeVisible({ timeout: 15_000 });

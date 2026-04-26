@@ -50,7 +50,7 @@ test.describe('Care plans end-to-end', () => {
     expect(planId).toBeTruthy();
 
     try {
-      await authenticateWorkspacePage(page);
+      await authenticateWorkspacePage(page, context.email);
 
       await page.goto(`/app/care-plans/${planId}`, {
         waitUntil: 'domcontentloaded',
@@ -83,9 +83,25 @@ test.describe('Care plans end-to-end', () => {
         .fill('Maintain independence');
       await addGoalForm.getByTestId('submit-goal').click();
 
-      // Server action persisted — reload to pick up the new goal
-      // (React 19 action-result handling can keep the nested fragment stale)
-      await page.waitForTimeout(500);
+      // Server action persisted — wait for DB state before reloading, since
+      // parallel E2E workers can make a fixed sleep race the mutation.
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_care_plans')
+              .select('goals')
+              .eq('id', planId)
+              .maybeSingle();
+            const goals = Array.isArray(data?.goals) ? data.goals : [];
+            return goals.some(
+              (goal: { title?: string }) =>
+                goal.title === `E2E Goal ${unique}`,
+            );
+          },
+          { timeout: 15_000 },
+        )
+        .toBe(true);
       await page.reload({ waitUntil: 'domcontentloaded' });
       await expect(page.getByTestId('care-plan-goal').first()).toBeVisible();
       await expect(page.getByText(`E2E Goal ${unique}`)).toBeVisible();
@@ -136,9 +152,27 @@ test.describe('Care plans end-to-end', () => {
         .fill('Daily');
       await supportForm.locator('button[type="submit"]').click();
 
-      // Server action persisted — reload to pick up the new support
-      // (React 19 action result handling can keep stale nested fragments)
-      await page.waitForTimeout(500);
+      // Server action persisted — wait for DB state before reloading, since
+      // parallel E2E workers can make a fixed sleep race the mutation.
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_care_plans')
+              .select('supports')
+              .eq('id', planId)
+              .maybeSingle();
+            const supports = Array.isArray(data?.supports)
+              ? data.supports
+              : [];
+            return supports.some(
+              (support: { description?: string }) =>
+                support.description === `E2E Support ${unique}`,
+            );
+          },
+          { timeout: 15_000 },
+        )
+        .toBe(true);
       await page.reload({ waitUntil: 'domcontentloaded' });
       await expect(page.getByText(`E2E Support ${unique}`)).toBeVisible();
 
@@ -178,7 +212,7 @@ test.describe('Care plans end-to-end', () => {
       await page.goto(`/app/participants/${participantId}`, {
         waitUntil: 'domcontentloaded',
       });
-      const carePlansSection = page.getByTestId('participant-care-plans');
+      const carePlansSection = page.getByTestId('participant-care-plans').first();
       await expect(carePlansSection).toBeVisible();
       await expect(
         carePlansSection.getByText(`E2E Care Plan ${unique}`),

@@ -129,7 +129,11 @@ export default async function IncidentDetailPage({
   const isOpen = incident.status === 'open';
   const resolveAction = async (fd: FormData) => {
     'use server';
-    await resolveIncident(incident.id, fd);
+    const result = await resolveIncident(incident.id, fd);
+    if (result && 'success' in result && !result.success) {
+      throw new Error(result.error);
+    }
+    redirect(`/app/incidents/${incident.id}`);
   };
 
   return (
@@ -272,7 +276,11 @@ export default async function IncidentDetailPage({
             <AlertTriangle className="h-4 w-4" />
             Resolve Incident
           </h2>
-          <form action={resolveAction} className="mt-4 space-y-3">
+          <form
+            action={resolveAction}
+            className="mt-4 space-y-3"
+            data-testid="resolve-incident-form"
+          >
             <div>
               <label
                 htmlFor="field-8"
@@ -308,6 +316,7 @@ export default async function IncidentDetailPage({
             <button
               type="submit"
               className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400 transition-colors"
+              data-testid="resolve-incident-submit"
             >
               <CheckCircle2 className="h-4 w-4" />
               Mark Resolved

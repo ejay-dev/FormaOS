@@ -1,13 +1,13 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-26T10:45:28.236Z
+Generated: 2026-04-26T13:24:00.384Z
 
 ## Summary
 
-- Total app internal links validated: 303
-- Valid links: 303
+- Total app internal links validated: 302
+- Valid links: 302
 - Broken links: 0
-- App routes discovered: 214
+- App routes discovered: 213
 
 ## Link Validation
 
@@ -127,10 +127,8 @@ Generated: 2026-04-26T10:45:28.236Z
 | `components/dashboard/quick-actions.tsx` | `/app/executive` | YES | YES | auth | `/app/executive` |
 | `lib/navigation/industry-sidebar.ts` | `/app/executive` | YES | YES | auth | `/app/executive` |
 | `app/app/forms/[formId]/submissions/page.tsx` | `/app/forms` | YES | YES | auth | `/app/forms` |
-| `app/app/forms/builder/new/page.tsx` | `/app/forms` | YES | YES | auth | `/app/forms` |
 | `lib/navigation/industry-sidebar.ts` | `/app/forms` | YES | YES | auth | `/app/forms` |
-| `app/app/forms/builder/new/page.tsx` | `/app/forms/builder/:param` | YES | YES | auth | `/app/forms/builder/:id` |
-| `app/app/forms/page.tsx` | `/app/forms/builder/new` | YES | YES | auth | `/app/forms/builder/new` |
+| `app/app/forms/page.tsx` | `/app/forms/builder/new` | YES | YES | auth | `/app/forms/builder/:id` |
 | `app/app/reports/page.tsx` | `/app/governance` | YES | YES | auth | `/app/governance` |
 | `app/app/actions/care-operations.ts` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `app/app/incidents/[id]/investigation/page.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
@@ -142,6 +140,7 @@ Generated: 2026-04-26T10:45:28.236Z
 | `components/onboarding/PostOnboardingHero.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `components/onboarding/StartHereCard.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `lib/navigation/industry-sidebar.ts` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
+| `app/app/incidents/[id]/page.tsx` | `/app/incidents/:param` | YES | YES | auth | `/app/incidents/:id` |
 | `app/app/incidents/[id]/investigation/page.tsx` | `/app/incidents/:param/investigation` | YES | YES | auth | `/app/incidents/:id/investigation` |
 | `app/app/incidents/page.tsx` | `/app/incidents/new` | YES | YES | auth | `/app/incidents/new` |
 | `app/app/participants/[id]/page.tsx` | `/app/incidents/new` | YES | YES | auth | `/app/incidents/new` |
@@ -379,7 +378,6 @@ Generated: 2026-04-26T10:45:28.236Z
 - `/app/forms`
 - `/app/forms/:formId/submissions`
 - `/app/forms/builder/:id`
-- `/app/forms/builder/new`
 - `/app/governance`
 - `/app/history`
 - `/app/incidents`

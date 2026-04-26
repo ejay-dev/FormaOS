@@ -16,6 +16,8 @@ if (process.env.STRICT_ENV_VALIDATION === 'true') {
 // Individual routes may apply stricter limits via Redis-backed rate limiting.
 const API_RATE_WINDOW_MS = 60_000; // 1 minute
 const API_RATE_MAX_REQUESTS = 120; // 120 req/min per IP
+const E2E_RATE_LIMIT_BYPASS_COOKIE = 'fos_e2e';
+const E2E_RATE_LIMIT_BYPASS_HEADER = 'x-formaos-e2e';
 const apiRateBuckets = new Map<
   string,
   { count: number; windowStart: number }
@@ -30,6 +32,18 @@ function checkGlobalApiRateLimit(ip: string): boolean {
   }
   bucket.count++;
   return bucket.count <= API_RATE_MAX_REQUESTS;
+}
+
+function isLocalE2ERateLimitBypass(request: NextRequest): boolean {
+  const host = request.nextUrl.hostname;
+  const isLocalHost =
+    host === 'localhost' || host === '127.0.0.1' || host === '::1';
+  if (!isLocalHost) return false;
+
+  return (
+    request.headers.get(E2E_RATE_LIMIT_BYPASS_HEADER) === '1' ||
+    request.cookies.get(E2E_RATE_LIMIT_BYPASS_COOKIE)?.value === '1'
+  );
 }
 
 // Periodic cleanup to prevent memory leak (runs every 2 minutes)
@@ -308,7 +322,10 @@ export async function proxy(request: NextRequest) {
         request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
         request.headers.get('x-real-ip') ||
         'unknown';
-      if (!checkGlobalApiRateLimit(clientIp)) {
+      if (
+        !isLocalE2ERateLimitBypass(request) &&
+        !checkGlobalApiRateLimit(clientIp)
+      ) {
         return finalizePassThrough(
           NextResponse.json(
             { error: 'Too many requests' },
