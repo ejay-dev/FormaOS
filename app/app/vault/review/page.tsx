@@ -21,7 +21,6 @@ type PendingCredential = {
   document_type: string | null;
   issue_date: string | null;
   expiry_date: string | null;
-  notes: string | null;
   created_at: string;
   verification_status: string;
   file_path: string | null;
@@ -62,7 +61,7 @@ export default function CredentialReviewPage() {
         const { data, error: fetchError } = await supabase
           .from('org_credentials')
           .select(
-            'id, user_id, document_type, issue_date, expiry_date, notes, created_at, verification_status, file_path',
+            'id, user_id, document_type, issue_date, expiry_date, created_at, verification_status, file_path',
           )
           .eq('organization_id', orgId)
           .eq('verification_status', 'pending')

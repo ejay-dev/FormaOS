@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logIdentityEvent } from '@/lib/identity/audit';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 const TENANT_TABLES = [
   { table: 'org_members', orgColumn: 'organization_id' },
@@ -90,6 +91,16 @@ export async function verifyIsolation(orgId: string) {
   });
 
   if (error) {
+    if (
+      isMissingSupabaseTableError(error, 'isolation_verification_results') ||
+      error.message?.includes('isolation_verification_results') ||
+      error.message?.includes('schema cache')
+    ) {
+      return {
+        generatedAt: new Date().toISOString(),
+        results: [],
+      };
+    }
     throw new Error(error.message);
   }
 

@@ -105,8 +105,13 @@ export function ExecutiveDashboardClient({
         });
         setLastUpdated(new Date());
       }
-    } catch (error) {
-      console.error('[Executive Dashboard] Failed to fetch data:', error);
+    } catch {
+      setData({
+        posture: null,
+        auditForecast: null,
+        automationMetrics: null,
+        actionDeadlines: [],
+      });
     } finally {
       setIsLoading(false);
     }

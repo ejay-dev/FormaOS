@@ -119,13 +119,29 @@ export async function GET(request: NextRequest) {
         ?.organizations?.name ?? 'Organization';
     const today = new Date().toISOString().slice(0, 10);
 
-    const result = formatTabular(mapped, format, {
-      title: 'Staff Credentials',
-      organizationName: orgName,
-      generatedAt: new Date().toISOString(),
-      description:
-        'Staff credential register sorted by expiry date (most urgent first).',
-    });
+    const result = formatTabular(
+      mapped,
+      format,
+      {
+        title: 'Staff Credentials',
+        organizationName: orgName,
+        generatedAt: new Date().toISOString(),
+        description:
+          'Staff credential register sorted by expiry date (most urgent first).',
+      },
+      [
+        'credential_id',
+        'staff_name',
+        'type',
+        'name',
+        'credential_number',
+        'issuing_authority',
+        'issue_date',
+        'expiry_date',
+        'status',
+        'verified_at',
+      ],
+    );
 
     return new NextResponse(result.body, {
       status: 200,

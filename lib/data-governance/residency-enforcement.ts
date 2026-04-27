@@ -5,6 +5,7 @@ import {
   type DataRegion,
 } from '@/lib/data-residency';
 import { logIdentityEvent } from '@/lib/identity/audit';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 export type ResidencyOperation =
   | 'read'
@@ -79,6 +80,9 @@ export async function listResidencyViolations(orgId: string) {
     .limit(25);
 
   if (error) {
+    if (isMissingSupabaseTableError(error, 'data_residency_violations')) {
+      return [];
+    }
     throw new Error(error.message);
   }
 

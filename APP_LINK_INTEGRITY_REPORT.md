@@ -1,13 +1,13 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-26T14:28:26.502Z
+Generated: 2026-04-27T16:02:27.723Z
 
 ## Summary
 
-- Total app internal links validated: 302
-- Valid links: 302
+- Total app internal links validated: 307
+- Valid links: 307
 - Broken links: 0
-- App routes discovered: 213
+- App routes discovered: 215
 
 ## Link Validation
 
@@ -68,7 +68,9 @@ Generated: 2026-04-26T14:28:26.502Z
 | `components/dashboard/quick-actions.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `components/topbar.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `components/trial/TrialExpirationBanner.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
+| `app/app/capa/[id]/page.tsx` | `/app/capa` | YES | YES | auth | `/app/capa` |
 | `app/app/capa/new/page.tsx` | `/app/capa` | YES | YES | auth | `/app/capa` |
+| `app/app/capa/[id]/page.tsx` | `/app/capa/:param` | YES | YES | auth | `/app/capa/:id` |
 | `app/app/capa/new/page.tsx` | `/app/capa/new` | YES | YES | auth | `/app/capa/new` |
 | `app/app/capa/page.tsx` | `/app/capa/new` | YES | YES | auth | `/app/capa/new` |
 | `app/app/actions/care-operations.ts` | `/app/care-plans` | YES | YES | auth | `/app/care-plans` |
@@ -180,6 +182,7 @@ Generated: 2026-04-26T14:28:26.502Z
 | `app/app/policies/[id]/versions/page.tsx` | `/app/policies/versions` | YES | YES | auth | `/app/policies/versions` |
 | `components/command-palette/CommandPalette.tsx` | `/app/profile` | YES | YES | auth | `/app/profile` |
 | `components/topbar.tsx` | `/app/profile` | YES | YES | auth | `/app/profile` |
+| `app/app/care-plans/[id]/page.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
 | `app/app/patients/[id]/page.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
 | `app/app/staff/page.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
 | `components/dashboard/quick-actions.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
@@ -199,6 +202,7 @@ Generated: 2026-04-26T14:28:26.502Z
 | `components/dashboard/quick-actions.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `lib/navigation/industry-sidebar.ts` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `lib/onboarding/industry-checklists.ts` | `/app/reports` | YES | YES | auth | `/app/reports` |
+| `app/app/reports/custom/[id]/page.tsx` | `/app/reports/custom` | YES | YES | auth | `/app/reports/custom` |
 | `app/app/reports/custom/new/page.tsx` | `/app/reports/custom` | YES | YES | auth | `/app/reports/custom` |
 | `app/app/reports/page.tsx` | `/app/reports/custom` | YES | YES | auth | `/app/reports/custom` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/reports/custom` | YES | YES | auth | `/app/reports/custom` |
@@ -227,6 +231,7 @@ Generated: 2026-04-26T14:28:26.502Z
 | `app/app/settings/page.tsx` | `/app/settings/email-preferences` | YES | YES | auth | `/app/settings/email-preferences` |
 | `lib/navigation/industry-sidebar.ts` | `/app/settings/email-preferences` | YES | YES | auth | `/app/settings/email-preferences` |
 | `app/app/settings/page.tsx` | `/app/settings/executive-digest` | YES | YES | auth | `/app/settings/executive-digest` |
+| `app/app/settings/integrations/marketplace/page.tsx` | `/app/settings/integrations` | YES | YES | auth | `/app/settings/integrations` |
 | `app/app/settings/page.tsx` | `/app/settings/integrations` | YES | YES | auth | `/app/settings/integrations` |
 | `app/app/settings/page.tsx` | `/app/settings/notifications` | YES | YES | auth | `/app/settings/notifications` |
 | `components/notifications/notification-center.tsx` | `/app/settings/notifications` | YES | YES | auth | `/app/settings/notifications` |
@@ -357,6 +362,7 @@ Generated: 2026-04-26T14:28:26.502Z
 - `/app/audit/export/:userId`
 - `/app/billing`
 - `/app/capa`
+- `/app/capa/:id`
 - `/app/capa/new`
 - `/app/care-plans`
 - `/app/care-plans/:id`
@@ -406,6 +412,7 @@ Generated: 2026-04-26T14:28:26.502Z
 - `/app/registers/training`
 - `/app/reports`
 - `/app/reports/custom`
+- `/app/reports/custom/:id`
 - `/app/reports/custom/new`
 - `/app/reports/trends`
 - `/app/search`

@@ -6,6 +6,8 @@ import {
   authenticateWorkspacePage,
   getWorkspaceSeedContext,
   seedEvidence,
+  seedIncident,
+  seedStaffCredential,
 } from './helpers/workspace-seed';
 
 async function enableReportExports(context: Awaited<ReturnType<typeof getWorkspaceSeedContext>>) {
@@ -262,5 +264,52 @@ test.describe('Export and download integrity', () => {
       .delete()
       .eq('org_id', context.orgId)
       .eq('id', form!.id);
+  });
+
+  test('incident and staff credential exports return non-empty files', async ({
+    page,
+  }) => {
+    const failures = installDownloadGuards(page);
+    const context = await getWorkspaceSeedContext();
+    const unique = randomUUID().slice(0, 8);
+
+    const incident = await seedIncident(context, {
+      description: `Export integrity incident ${unique}`,
+      severity: 'low',
+      status: 'open',
+    });
+    const credential = await seedStaffCredential(context, {
+      credentialName: `Export Integrity Credential ${unique}`,
+      status: 'verified',
+    });
+
+    await authenticateWorkspacePage(page, context.email);
+
+    for (const endpoint of [
+      '/api/incidents/export',
+      '/api/staff-credentials/export',
+    ]) {
+      const response = await page.request.get(endpoint);
+      expect(response.status(), `${endpoint} status`).toBe(200);
+      const body = await response.text();
+      expect(body.length, `${endpoint} should not be empty`).toBeGreaterThan(20);
+      expect(
+        response.headers()['content-disposition'] ?? '',
+        `${endpoint} should be a download`,
+      ).toMatch(/attachment/);
+    }
+
+    expect(failures, failures.join('\n')).toEqual([]);
+
+    await context.admin
+      .from('org_incidents')
+      .delete()
+      .eq('organization_id', context.orgId)
+      .eq('id', incident.id);
+    await context.admin
+      .from('org_staff_credentials')
+      .delete()
+      .eq('organization_id', context.orgId)
+      .eq('id', credential.id);
   });
 });

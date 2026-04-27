@@ -71,11 +71,11 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           }),
         ]);
 
-        const prefsPayload = (await prefsResponse.json()) as {
-          preferences: PreferenceRow[];
+        const prefsPayload = (await prefsResponse.json().catch(() => ({}))) as {
+          preferences?: PreferenceRow[];
         };
-        const channelsPayload = (await channelsResponse.json()) as {
-          channels: Array<ChannelConfig & { config?: Record<string, unknown> }>;
+        const channelsPayload = (await channelsResponse.json().catch(() => ({}))) as {
+          channels?: Array<ChannelConfig & { config?: Record<string, unknown> }>;
         };
 
         if (cancelled) return;
@@ -88,7 +88,7 @@ export function NotificationPreferences({ orgId }: { orgId: string }) {
           })),
         );
 
-        const firstQuietHours = prefsPayload.preferences.find(
+        const firstQuietHours = (prefsPayload.preferences ?? []).find(
           (item) => item.quiet_hours && Object.keys(item.quiet_hours).length > 0,
         )?.quiet_hours as Record<string, unknown> | undefined;
 

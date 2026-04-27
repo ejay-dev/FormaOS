@@ -702,7 +702,7 @@ export default async function CarePlanDetailPage({
               </h2>
               {participant && (
                 <Link
-                  href={`/app/participants/${participant.id}/progress-notes`}
+                  href="/app/progress-notes"
                   className="text-xs text-primary hover:underline"
                 >
                   View all

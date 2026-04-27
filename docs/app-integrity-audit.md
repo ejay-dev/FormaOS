@@ -176,3 +176,13 @@ The four known broken surfaces are fixed:
 Current app link inventory is zero-broken for static `/app` links. User-visible unsupported exports/actions touched in this pass are now disabled with truthful copy instead of linking to broken endpoints.
 
 Post-migration export and app-action integrity suites pass with no skipped forms export coverage. The critical regression failures that remained after the first full rerun were classified and fixed as test/session stability issues, not unresolved visible product breakages.
+
+## 2026-04-27 Full App Action Crawler Sweep
+
+Added `e2e/full-app-action-crawler.spec.ts` and generated `docs/app-action-inventory.md` plus `docs/full-app-action-crawler-report.md`.
+
+- Crawler result: 21 modules, 81 authenticated routes, 368 visible actions recorded.
+- Status split: 268 PASS, 100 DISABLED, 0 FAIL.
+- Export/download actions recorded: 11, with no visible unsupported export endpoint left broken.
+- Key fixes: integration marketplace stale connect links, activity/incident/staff export headers, CAPA/custom report detail and schema guards, care-plan backlink, certificate and credential-review schema drift, registers/training drift, workflow/governance/notification/executive degraded states, task board client handler boundary, and identity audit export fallback.
+- Validation: typecheck, lint, build, check:app-links, app-action E2E, export E2E, and full crawler all pass.

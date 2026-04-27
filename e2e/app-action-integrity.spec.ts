@@ -4,15 +4,18 @@ import { randomUUID } from 'crypto';
 import {
   authenticateWorkspacePage,
   getWorkspaceSeedContext,
+  seedParticipant,
   seedPolicy,
 } from './helpers/workspace-seed';
 
 const SIDEBAR_ROUTES = [
   '/app',
+  '/app/dashboard',
   '/app/compliance',
   '/app/policies',
   '/app/vault',
   '/app/participants',
+  '/app/care-plans',
   '/app/visits',
   '/app/progress-notes',
   '/app/incidents',
@@ -21,8 +24,15 @@ const SIDEBAR_ROUTES = [
   '/app/registers',
   '/app/forms',
   '/app/reports',
+  '/app/reports/custom',
   '/app/executive',
   '/app/settings',
+  '/app/settings/roles',
+  '/app/settings/ai',
+  '/app/billing',
+  '/app/workflows',
+  '/app/audit-trail',
+  '/app/capa',
 ];
 
 function installIntegrityGuards(page: Page) {
@@ -67,6 +77,35 @@ function installIntegrityGuards(page: Page) {
   return failures;
 }
 
+async function gotoAppRoute(page: Page, route: string) {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await page.goto(route, {
+        waitUntil: 'domcontentloaded',
+        timeout: 45_000,
+      });
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      if (!message.includes('ERR_ABORTED') || attempt === 2) {
+        throw error;
+      }
+      await page.waitForTimeout(500 * (attempt + 1));
+    }
+  }
+  throw lastError;
+}
+
+function isMissingTableError(error: unknown, table: string) {
+  const value = error as { code?: string; message?: string } | null;
+  return (
+    value?.code === 'PGRST205' &&
+    typeof value.message === 'string' &&
+    value.message.includes(table)
+  );
+}
+
 async function assertNoIntegrityFailures(failures: string[]) {
   expect(failures, failures.join('\n')).toEqual([]);
 }
@@ -83,10 +122,7 @@ test.describe('Authenticated app action integrity', () => {
     await authenticateWorkspacePage(page);
 
     for (const route of SIDEBAR_ROUTES) {
-      const response = await page.goto(route, {
-        waitUntil: 'domcontentloaded',
-        timeout: 45_000,
-      });
+      const response = await gotoAppRoute(page, route);
       const body = (await page.locator('body').textContent()) ?? '';
 
       expect(
@@ -137,8 +173,10 @@ test.describe('Authenticated app action integrity', () => {
     await page.goto(`/app/policies/${policy.id}/edit`, {
       waitUntil: 'domcontentloaded',
     });
-    await expect(page.locator('h1')).toContainText('Edit Policy');
-    await expect(page.locator('input[name="title"]')).toHaveValue(policy.title);
+    await expect(page.locator('h1').first()).toContainText('Edit Policy');
+    await expect(page.locator('input[name="title"]').first()).toHaveValue(
+      policy.title,
+    );
 
     await assertNoIntegrityFailures(failures);
 
@@ -223,5 +261,191 @@ test.describe('Authenticated app action integrity', () => {
     await expect(page.locator('h1')).toContainText('Create Custom Role');
 
     await assertNoIntegrityFailures(failures);
+  });
+
+  test('row detail links discovered by the crawler resolve end to end', async ({
+    page,
+  }) => {
+    const failures = installIntegrityGuards(page);
+    const context = await getWorkspaceSeedContext();
+    const unique = randomUUID().slice(0, 8);
+
+    const { data: report, error: reportError } = await context.admin
+      .from('org_saved_reports')
+      .insert({
+        org_id: context.orgId,
+        name: `Integrity Custom Report ${unique}`,
+        description: 'Custom report detail route regression fixture.',
+        type: 'custom',
+        config: { dataset: 'controls', filters: {}, columns: [] },
+        created_by: context.userId,
+      })
+      .select('id')
+      .single();
+    const customReportsSchemaMissing = isMissingTableError(
+      reportError,
+      'org_saved_reports',
+    );
+    if (!customReportsSchemaMissing) {
+      expect(reportError).toBeFalsy();
+    }
+
+    const participant = await seedParticipant(context, {
+      fullName: `Integrity Care Client ${unique}`,
+      externalId: `ACT-${unique}`,
+      careStatus: 'active',
+      riskLevel: 'low',
+    });
+    const now = new Date().toISOString();
+    const { data: carePlan, error: carePlanError } = await context.admin
+      .from('org_care_plans')
+      .insert({
+        organization_id: context.orgId,
+        client_id: participant.id,
+        plan_type: 'support',
+        title: `Integrity Care Plan ${unique}`,
+        description: 'Care plan backlink regression fixture.',
+        start_date: now.slice(0, 10),
+        status: 'draft',
+        goals: [],
+        supports: [],
+        created_by: context.userId,
+        created_at: now,
+        updated_at: now,
+      })
+      .select('id')
+      .single();
+    expect(carePlanError).toBeFalsy();
+
+    await authenticateWorkspacePage(page, context.email);
+
+    if (customReportsSchemaMissing) {
+      await page.goto('/app/reports/custom', {
+        waitUntil: 'domcontentloaded',
+      });
+      await expect(
+        page.getByTestId('custom-reports-schema-disabled'),
+      ).toBeDisabled();
+      await expect(
+        page.locator('text=Custom report storage is not enabled'),
+      ).toBeVisible();
+    } else {
+      await page.goto(`/app/reports/custom/${report!.id}`, {
+        waitUntil: 'domcontentloaded',
+      });
+      await expect(page.locator('h1')).toContainText(
+        `Integrity Custom Report ${unique}`,
+      );
+      await expect(
+        page.getByTestId('custom-report-generation-disabled'),
+      ).toBeDisabled();
+      await expect(
+        page.locator('text=In-app generation and scheduling are not enabled'),
+      ).toBeVisible();
+    }
+
+    await page.goto(`/app/care-plans/${carePlan!.id}`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await page
+      .getByTestId('care-plan-progress-notes')
+      .getByRole('link', { name: 'View all' })
+      .click();
+    await page.waitForURL('**/app/progress-notes');
+    await expect(page.locator('h1')).toContainText('Progress Notes');
+
+    await assertNoIntegrityFailures(failures);
+
+    await context.admin
+      .from('org_care_plans')
+      .delete()
+      .eq('organization_id', context.orgId)
+      .eq('id', carePlan!.id);
+    await context.admin
+      .from('org_patients')
+      .delete()
+      .eq('organization_id', context.orgId)
+      .eq('id', participant.id);
+    if (!customReportsSchemaMissing) {
+      await context.admin
+        .from('org_saved_reports')
+        .delete()
+        .eq('org_id', context.orgId)
+        .eq('id', report!.id);
+    }
+  });
+
+  test('CAPA create form persists and opens the detail workflow', async ({
+    page,
+  }) => {
+    const failures = installIntegrityGuards(page);
+    const context = await getWorkspaceSeedContext();
+    const title = `Integrity CAPA ${randomUUID().slice(0, 8)}`;
+    const { error: schemaError } = await context.admin
+      .from('org_capa_items')
+      .select('id')
+      .eq('organization_id', context.orgId)
+      .limit(1);
+    const capaSchemaMissing = isMissingTableError(
+      schemaError,
+      'org_capa_items',
+    );
+
+    await authenticateWorkspacePage(page, context.email);
+    if (capaSchemaMissing) {
+      await page.goto('/app/capa', { waitUntil: 'domcontentloaded' });
+      await expect(page.getByTestId('capa-schema-disabled')).toBeDisabled();
+      await expect(page.locator('text=CAPA storage is not enabled')).toBeVisible();
+      await page.goto('/app/capa/new', { waitUntil: 'domcontentloaded' });
+      await expect(page.getByTestId('capa-create-disabled')).toBeVisible();
+      await assertNoIntegrityFailures(failures);
+      return;
+    }
+
+    await page.goto('/app/capa/new', { waitUntil: 'domcontentloaded' });
+    await page.locator('input[name="title"]').fill(title);
+    await page.locator('select[name="type"]').selectOption('preventive');
+    await page.locator('select[name="priority"]').selectOption('high');
+    await page.getByRole('button', { name: 'Create CAPA' }).click();
+    await page.waitForURL('**/app/capa');
+    await expect(page.getByRole('link', { name: title })).toBeVisible();
+
+    const { data: capa } = await context.admin
+      .from('org_capa_items')
+      .select('id, type, priority, status')
+      .eq('organization_id', context.orgId)
+      .eq('title', title)
+      .maybeSingle();
+    expect(capa?.id).toBeTruthy();
+    expect(capa?.type).toBe('preventive');
+    expect(capa?.priority).toBe('high');
+    expect(capa?.status).toBe('open');
+
+    await page.getByRole('link', { name: title }).click();
+    await page.waitForURL(`**/app/capa/${capa!.id}`);
+    await expect(page.locator('h1')).toContainText(title);
+    await page.locator('select[name="status"]').selectOption('in_progress');
+    await page.getByRole('button', { name: 'Update status' }).click();
+    await page.waitForURL(`**/app/capa/${capa!.id}`);
+
+    await expect
+      .poll(async () => {
+        const { data } = await context.admin
+          .from('org_capa_items')
+          .select('status')
+          .eq('organization_id', context.orgId)
+          .eq('id', capa!.id)
+          .maybeSingle();
+        return data?.status;
+      })
+      .toBe('in_progress');
+
+    await assertNoIntegrityFailures(failures);
+
+    await context.admin
+      .from('org_capa_items')
+      .delete()
+      .eq('organization_id', context.orgId)
+      .eq('id', capa!.id);
   });
 });

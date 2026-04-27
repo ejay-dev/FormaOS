@@ -1,8 +1,9 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { fetchSystemState } from '@/lib/system-state/server';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { Plus, Clock, Calendar, FileBarChart } from 'lucide-react';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { Plus, Clock, Calendar, FileBarChart, Lock } from 'lucide-react';
 
 export const metadata = { title: 'My Reports | FormaOS' };
 
@@ -10,13 +11,18 @@ export default async function CustomReportsPage() {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const db = await createSupabaseServerClient();
+  const db = createSupabaseAdminClient();
 
-  const { data: reports } = await db
+  const { data: reports, error: reportsError } = await db
     .from('org_saved_reports')
     .select('id, name, description, type, schedule, created_at, updated_at')
     .eq('org_id', state.organization.id)
     .order('updated_at', { ascending: false });
+
+  const reportsUnavailable = isMissingSupabaseTableError(
+    reportsError,
+    'org_saved_reports',
+  );
 
   const items = reports ?? [];
   const scheduled = items.filter((r) => r.schedule != null);
@@ -31,13 +37,25 @@ export default async function CustomReportsPage() {
             Build custom reports and schedule automated delivery.
           </p>
         </div>
-        <Link
-          href="/app/reports/custom/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" />
-          New Report
-        </Link>
+        {reportsUnavailable ? (
+          <button
+            type="button"
+            disabled
+            data-testid="custom-reports-schema-disabled"
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground"
+          >
+            <Lock className="h-4 w-4" />
+            Custom reports unavailable
+          </button>
+        ) : (
+          <Link
+            href="/app/reports/custom/new"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            <Plus className="h-4 w-4" />
+            New Report
+          </Link>
+        )}
       </div>
 
       {/* Sub-navigation */}
@@ -90,7 +108,19 @@ export default async function CustomReportsPage() {
           <h2 className="font-semibold">All Reports</h2>
         </div>
         <div className="divide-y divide-border">
-          {items.map((r) => (
+          {reportsUnavailable && (
+            <div className="px-4 py-12 text-center text-muted-foreground">
+              <Lock className="mx-auto h-8 w-8 opacity-50" />
+              <p className="mt-2 text-sm">
+                Custom report storage is not enabled for this workspace yet.
+              </p>
+              <p className="mt-1 text-xs">
+                The create and schedule actions are disabled until the reporting
+                schema is provisioned.
+              </p>
+            </div>
+          )}
+          {!reportsUnavailable && items.map((r) => (
             <Link
               key={r.id}
               href={`/app/reports/custom/${r.id}`}
@@ -119,7 +149,7 @@ export default async function CustomReportsPage() {
               </div>
             </Link>
           ))}
-          {items.length === 0 && (
+          {!reportsUnavailable && items.length === 0 && (
             <div className="px-4 py-12 text-center text-muted-foreground">
               <FileBarChart className="mx-auto h-8 w-8 opacity-50" />
               <p className="mt-2 text-sm">

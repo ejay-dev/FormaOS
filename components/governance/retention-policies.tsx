@@ -6,12 +6,14 @@ type Props = {
   orgId: string;
   initialPolicies: Array<Record<string, any>>;
   initialExecutions: Array<Record<string, any>>;
+  disabledReason?: string | null;
 };
 
 export function RetentionPolicies({
   orgId,
   initialPolicies,
   initialExecutions,
+  disabledReason,
 }: Props) {
   const [isPending, startTransition] = useTransition();
   const [policies, setPolicies] = useState(initialPolicies);
@@ -21,6 +23,8 @@ export function RetentionPolicies({
   const [action, setAction] = useState<'archive' | 'delete' | 'anonymize'>('archive');
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const actionsDisabled = Boolean(disabledReason) || isPending;
 
   const refresh = async () => {
     const response = await fetch(`/api/governance/retention?orgId=${encodeURIComponent(orgId)}`, {
@@ -84,12 +88,17 @@ export function RetentionPolicies({
           <p className="text-sm text-muted-foreground">
             Configure record lifecycles, preview impact, and execute dry-runs.
           </p>
+          {disabledReason ? (
+            <p className="mt-2 text-sm text-amber-300" data-testid="retention-schema-disabled">
+              {disabledReason}
+            </p>
+          ) : null}
         </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => runRetention(true)}
-            disabled={isPending}
+            disabled={actionsDisabled}
             className="rounded-xl border border-glass-border bg-glass-subtle px-4 py-2 text-sm text-foreground/90 disabled:opacity-50"
           >
             Dry Run
@@ -97,7 +106,7 @@ export function RetentionPolicies({
           <button
             type="button"
             onClick={() => runRetention(false)}
-            disabled={isPending}
+            disabled={actionsDisabled}
             className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-100 disabled:opacity-50"
           >
             Execute
@@ -109,6 +118,7 @@ export function RetentionPolicies({
         <input
           value={resourceType}
           onChange={(event) => setResourceType(event.target.value)}
+          disabled={actionsDisabled}
           className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
           placeholder="resource_type"
         />
@@ -116,11 +126,13 @@ export function RetentionPolicies({
           type="number"
           value={retentionDays}
           onChange={(event) => setRetentionDays(Number(event.target.value || 365))}
+          disabled={actionsDisabled}
           className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
         />
         <select
           value={action}
           onChange={(event) => setAction(event.target.value as typeof action)}
+          disabled={actionsDisabled}
           className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
         >
           <option value="archive">archive</option>
@@ -137,7 +149,7 @@ export function RetentionPolicies({
         <button
           type="button"
           onClick={savePolicy}
-          disabled={isPending}
+          disabled={actionsDisabled}
           className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 disabled:opacity-50"
         >
           Save Policy

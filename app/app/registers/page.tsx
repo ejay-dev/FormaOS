@@ -85,17 +85,28 @@ export default function RegistersPage() {
         return;
       }
       const supabase = createSupabaseClient();
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('org_registers')
         .select('id, name, description, type, category, risk_level, created_at')
         .eq('organization_id', orgId)
         .order('created_at', { ascending: false })
         .limit(100);
 
+      if (error?.code === '42703' && error.message?.includes('organization_id')) {
+        const fallback = await supabase
+          .from('org_registers')
+          .select('id, name, description, type, category, risk_level, created_at')
+          .eq('org_id', orgId)
+          .order('created_at', { ascending: false })
+          .limit(100);
+        data = fallback.data;
+        error = fallback.error;
+      }
+
       if (error) throw error;
       setRegisters(data || []);
-    } catch (err) {
-      console.error('Error fetching registers:', err);
+    } catch {
+      setRegisters([]);
     } finally {
       setLoading(false);
     }

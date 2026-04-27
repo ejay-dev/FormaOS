@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import Link from 'next/link';
 import {
   AlertTriangle,
@@ -8,6 +9,7 @@ import {
   Clock,
   Wrench,
   Plus,
+  Lock,
 } from 'lucide-react';
 
 export const metadata = { title: 'CAPA Register' };
@@ -16,13 +18,17 @@ export default async function CAPAPage() {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
-  const db = await createSupabaseServerClient();
+  const db = createSupabaseAdminClient();
 
-  const { data: items } = await db
+  const { data: items, error: itemsError } = await db
     .from('org_capa_items')
     .select('*, org_incidents(title), org_investigations(id)')
     .eq('organization_id', state.organization.id)
     .order('created_at', { ascending: false });
+  const capaUnavailable = isMissingSupabaseTableError(
+    itemsError,
+    'org_capa_items',
+  );
 
   const capaItems = items ?? [];
 
@@ -63,15 +69,32 @@ export default async function CAPAPage() {
           <h1 className="page-title">CAPA Register</h1>
           <p className="page-description">Corrective and Preventive Actions tracking</p>
         </div>
-        <Link
-          href="/app/capa/new"
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-        >
-          <Plus className="h-3.5 w-3.5" /> New CAPA
-        </Link>
+        {capaUnavailable ? (
+          <button
+            type="button"
+            disabled
+            data-testid="capa-schema-disabled"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-sm font-medium text-muted-foreground"
+          >
+            <Lock className="h-3.5 w-3.5" /> CAPA unavailable
+          </button>
+        ) : (
+          <Link
+            href="/app/capa/new"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <Plus className="h-3.5 w-3.5" /> New CAPA
+          </Link>
+        )}
       </div>
 
       <div className="page-content space-y-4">
+      {capaUnavailable && (
+        <div className="rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">
+          CAPA storage is not enabled for this workspace yet. Create and status
+          update actions are disabled until the CAPA schema is provisioned.
+        </div>
+      )}
       {/* Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="metric-card metric-card-neutral">
@@ -119,7 +142,7 @@ export default async function CAPAPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {capaItems.map((item) => {
+            {!capaUnavailable && capaItems.map((item) => {
               const Icon = statusIcons[item.status] ?? Clock;
               const isOverdue =
                 item.due_date &&
@@ -193,7 +216,7 @@ export default async function CAPAPage() {
                 </tr>
               );
             })}
-            {!capaItems.length && (
+            {!capaUnavailable && !capaItems.length && (
               <tr>
                 <td
                   colSpan={7}

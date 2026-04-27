@@ -99,11 +99,7 @@ export default async function TasksBoardPage() {
         ))}
       </div>
 
-      <KanbanBoard
-        columns={columns}
-        onMoveTask={() => {}}
-        onSelectTask={() => {}}
-      />
+      <KanbanBoard columns={columns} />
     </div>
   );
 }

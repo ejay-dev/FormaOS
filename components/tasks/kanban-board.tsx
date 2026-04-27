@@ -15,8 +15,8 @@ interface Task {
 
 interface Props {
   columns: Record<string, Task[]>;
-  onMoveTask: (taskId: string, newStatus: string) => void;
-  onSelectTask: (task: Task) => void;
+  onMoveTask?: (taskId: string, newStatus: string) => void;
+  onSelectTask?: (task: Task) => void;
 }
 
 const COLUMN_CONFIG: { key: string; label: string; color: string }[] = [
@@ -35,7 +35,11 @@ const PRIORITY_BADGE: Record<string, string> = {
   low: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
 };
 
-export function KanbanBoard({ columns, onMoveTask, onSelectTask }: Props) {
+export function KanbanBoard({
+  columns,
+  onMoveTask = () => {},
+  onSelectTask = () => {},
+}: Props) {
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 

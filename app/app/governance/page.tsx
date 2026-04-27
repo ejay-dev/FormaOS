@@ -6,6 +6,7 @@ import { generateClassificationReport } from '@/lib/data-governance/classificati
 import { generateIsolationReport } from '@/lib/data-governance/isolation-verifier';
 import { listResidencyViolations } from '@/lib/data-governance/residency-enforcement';
 import {
+  getRetentionSchemaStatus,
   listRetentionExecutions,
   listRetentionPolicies,
 } from '@/lib/data-governance/retention';
@@ -14,6 +15,7 @@ import { RetentionPolicies } from '@/components/governance/retention-policies';
 import { PiiDashboard } from '@/components/governance/pii-dashboard';
 import { IsolationStatus } from '@/components/governance/isolation-status';
 import { IdentityAuditLog } from '@/components/identity/identity-audit-log';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,12 +60,32 @@ export default async function GovernancePage() {
   }
 
   const admin = createSupabaseAdminClient();
-  const [policies, executions, classificationReport, isolationReport, region, violations, piiResults] =
+  const isolationSchemaCheck = await admin
+    .from('isolation_verification_results')
+    .select('id')
+    .limit(1);
+  const isolationSchemaAvailable = !(
+    isMissingSupabaseTableError(
+      isolationSchemaCheck.error,
+      'isolation_verification_results',
+    ) ||
+    isolationSchemaCheck.error?.message?.includes(
+      'isolation_verification_results',
+    ) ||
+    isolationSchemaCheck.error?.message?.includes('schema cache')
+  );
+  const [retentionSchema, policies, executions, classificationReport, isolationReport, region, violations, piiResults] =
     await Promise.all([
+      getRetentionSchemaStatus(),
       listRetentionPolicies(orgId),
       listRetentionExecutions(orgId),
       generateClassificationReport(orgId),
-      generateIsolationReport(orgId),
+      isolationSchemaAvailable
+        ? generateIsolationReport(orgId)
+        : Promise.resolve({
+            generatedAt: new Date().toISOString(),
+            results: [],
+          }),
       getOrgDataRegion(orgId),
       listResidencyViolations(orgId),
       admin
@@ -72,7 +94,18 @@ export default async function GovernancePage() {
         .eq('org_id', orgId)
         .order('created_at', { ascending: false })
         .limit(10)
-        .then((result: { data: unknown[] | null }) => result.data ?? []),
+        .then((result: { data: unknown[] | null; error?: unknown }) => {
+          if (
+            isMissingSupabaseTableError(
+              result.error as Parameters<typeof isMissingSupabaseTableError>[0],
+              'pii_scan_results',
+            )
+          ) {
+            return [];
+          }
+          if (result.error) throw result.error;
+          return result.data ?? [];
+        }),
     ]);
 
   const cards = [
@@ -131,6 +164,13 @@ export default async function GovernancePage() {
             orgId={orgId}
             initialPolicies={policies as Array<Record<string, any>>}
             initialExecutions={executions as Array<Record<string, any>>}
+            disabledReason={
+              retentionSchema.available
+                ? null
+                : `Retention policy actions are unavailable until the ${retentionSchema.missing.join(
+                    ', ',
+                  )} database table${retentionSchema.missing.length === 1 ? ' is' : 's are'} migrated.`
+            }
           />
         </div>
         <div className="xl:col-span-4 space-y-4">

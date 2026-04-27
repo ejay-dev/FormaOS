@@ -105,18 +105,14 @@ export default async function IntegrationMarketplacePage() {
               </p>
             )}
             <a
-              href={
-                item.connected
-                  ? `/app/settings/integrations/${item.key}`
-                  : `/app/settings/integrations/${item.key}/connect`
-              }
+              href="/app/settings/integrations"
               className={`block w-full py-2 text-xs font-medium rounded text-center ${
                 item.connected
                   ? 'border border-border text-foreground hover:bg-muted'
                   : 'bg-primary text-primary-foreground hover:bg-primary/90'
               }`}
             >
-              {item.connected ? 'Configure' : 'Connect'}
+              {item.connected ? 'Configure' : 'Open control plane'}
             </a>
           </div>
         ))}

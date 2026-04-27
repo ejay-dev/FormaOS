@@ -30,8 +30,11 @@ export function isMissingSupabaseTableError(
   if (table) {
     return (
       message.includes(`table 'public.${table}'`) ||
+      message.includes(`table "${table}"`) ||
+      message.includes(`table '${table}'`) ||
       message.includes(`relation "${table}" does not exist`) ||
-      message.includes(`relation public.${table} does not exist`)
+      message.includes(`relation public.${table} does not exist`) ||
+      (message.includes(table) && message.includes('schema cache'))
     );
   }
 

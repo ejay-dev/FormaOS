@@ -4,7 +4,7 @@
  * Provides a certificate-focused view of org_staff_credentials
  */
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Plus, ShieldCheck, AlertTriangle, CheckCircle, Clock, User, Calendar, Award } from "lucide-react";
@@ -59,7 +59,7 @@ export default async function CertificatesPage() {
   if (!systemState) redirect("/auth/signin");
 
   const { organization } = systemState;
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
 
   // Fetch staff credentials (certificates)
   const { data: certificates, error } = await supabase
@@ -75,10 +75,7 @@ export default async function CertificatesPage() {
       status,
       verified_at,
       created_at,
-      staff:user_id (
-        id,
-        email
-      )
+      user_id
     `)
     .eq("organization_id", organization.id)
     .order("expiry_date", { ascending: true })
@@ -87,6 +84,22 @@ export default async function CertificatesPage() {
   if (error) {
     console.error("[CertificatesPage] Error fetching certificates:", error);
   }
+
+  const staffUserIds = Array.from(
+    new Set((certificates ?? []).map((cert) => cert.user_id).filter(Boolean)),
+  ) as string[];
+  const { data: staffUsers } = staffUserIds.length
+    ? await supabase
+        .from("user_profiles")
+        .select("user_id, email, full_name")
+        .in("user_id", staffUserIds)
+    : { data: [] };
+  const staffByUserId = new Map(
+    (staffUsers ?? []).map((staff) => [
+      staff.user_id as string,
+      ((staff.full_name as string | null) || (staff.email as string | null) || "").trim(),
+    ]),
+  );
 
   // Calculate stats
   type Certificate = NonNullable<typeof certificates>[number];
@@ -196,7 +209,7 @@ export default async function CertificatesPage() {
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">
-                        {(cert.staff as { email?: string } | null)?.email?.split("@")[0] || "-"}
+                        {staffByUserId.get(cert.user_id as string) || "-"}
                       </span>
                     </div>
                   </td>

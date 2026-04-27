@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 export const metadata = { title: 'New Custom Report | FormaOS' };
 
@@ -17,7 +18,7 @@ async function createCustomReport(formData: FormData) {
 
   if (!name) redirect('/app/reports/custom/new?error=name-required');
 
-  const db = await createSupabaseServerClient();
+  const db = createSupabaseAdminClient();
   const { error } = await db.from('org_saved_reports').insert({
     org_id: state.organization.id,
     name,
@@ -39,6 +40,15 @@ export default async function NewCustomReportPage({
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
   const { error } = await searchParams;
+  const db = createSupabaseAdminClient();
+  const { error: schemaError } = await db
+    .from('org_saved_reports')
+    .select('id', { count: 'exact', head: true })
+    .eq('org_id', state.organization.id);
+  const reportsUnavailable = isMissingSupabaseTableError(
+    schemaError,
+    'org_saved_reports',
+  );
 
   return (
     <div className="flex flex-col h-full">
@@ -60,12 +70,21 @@ export default async function NewCustomReportPage({
       </div>
 
       <div className="page-content max-w-2xl">
-        {error && (
+        {reportsUnavailable && (
+          <div
+            className="rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground"
+            data-testid="custom-report-create-disabled"
+          >
+            Custom report creation is unavailable until the reporting storage
+            schema is provisioned for this workspace.
+          </div>
+        )}
+        {!reportsUnavailable && error && (
           <div className="mb-4 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive">
             {error}
           </div>
         )}
-        <form
+        {!reportsUnavailable && <form
           action={createCustomReport}
           className="space-y-4 rounded-lg border border-border bg-card p-5"
         >
@@ -131,7 +150,7 @@ export default async function NewCustomReportPage({
               Create Report
             </button>
           </div>
-        </form>
+        </form>}
       </div>
     </div>
   );

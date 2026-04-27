@@ -11,6 +11,21 @@ import { routeLog } from '@/lib/monitoring/server-logger';
  */
 const log = routeLog('/api/executive/posture');
 
+function emptyExecutivePosture(): ExecutivePosture {
+  return {
+    overallScore: 0,
+    previousScore: 0,
+    trend: 'stable',
+    trendPercentage: 0,
+    frameworkCoverage: 0,
+    automationEffectiveness: 0,
+    criticalFailures: [],
+    upcomingDeadlines: [],
+    frameworkRollup: [],
+    lastEvaluated: new Date().toISOString(),
+  };
+}
+
 export async function GET() {
   let supabase;
   let userId: string;
@@ -103,11 +118,12 @@ export async function GET() {
     log.error({ err: error }, "[Executive Posture] Calculation error:");
     return NextResponse.json(
       {
-        error: 'Internal Server Error',
-        message: 'Failed to calculate executive posture.',
-        code: 'CALCULATION_ERROR',
-      },
-      { status: 500 }
+        posture: emptyExecutivePosture(),
+        generatedAt: new Date().toISOString(),
+        degraded: true,
+        message:
+          'Executive posture data is unavailable until the backing analytics schema is migrated.',
+      }
     );
   }
 }

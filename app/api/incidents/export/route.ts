@@ -146,13 +146,31 @@ export async function GET(request: NextRequest) {
         ?.organizations?.name ?? 'Organization';
     const today = new Date().toISOString().slice(0, 10);
 
-    const result = formatTabular(mapped, format, {
-      title: 'Incident Report',
-      organizationName: orgName,
-      generatedAt: new Date().toISOString(),
-      description:
-        'Incident register sorted by occurrence date (most recent first).',
-    });
+    const result = formatTabular(
+      mapped,
+      format,
+      {
+        title: 'Incident Report',
+        organizationName: orgName,
+        generatedAt: new Date().toISOString(),
+        description:
+          'Incident register sorted by occurrence date (most recent first).',
+      },
+      [
+        'incident_id',
+        'type',
+        'severity',
+        'status',
+        'client_name',
+        'reporter',
+        'occurred_at',
+        'resolved_at',
+        'follow_up_required',
+        'follow_up_due_date',
+        'location',
+        'description',
+      ],
+    );
 
     return new NextResponse(result.body, {
       status: 200,

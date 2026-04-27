@@ -3,6 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireNotificationContext } from '@/lib/notifications/server';
 import type { NotificationChannelType } from '@/lib/notifications/types';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 export async function GET(request: Request) {
   try {
@@ -17,6 +18,9 @@ export async function GET(request: Request) {
       .order('channel_type', { ascending: true });
 
     if (error) {
+      if (isMissingSupabaseTableError(error, 'notification_channels')) {
+        return NextResponse.json({ channels: [], degraded: true });
+      }
       throw error;
     }
 

@@ -1,6 +1,10 @@
 import { jsPDF } from 'jspdf';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import {
+  isMissingSupabaseColumnError,
+  isMissingSupabaseTableError,
+} from '@/lib/supabase/schema-compat';
 
 export type IdentityEventType =
   | 'scim.user.create'
@@ -176,6 +180,15 @@ export async function queryIdentityEvents(filters: IdentityAuditFilters): Promis
     .range(offset, offset + limit - 1);
 
   if (error) {
+    if (
+      isMissingSupabaseTableError(error, 'identity_audit_events') ||
+      isMissingSupabaseColumnError(error, 'identity_audit_events')
+    ) {
+      return {
+        events: [],
+        total: 0,
+      };
+    }
     throw new Error(error.message);
   }
 

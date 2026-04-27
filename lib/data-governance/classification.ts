@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 export type DataClassificationLevel =
   | 'public'
@@ -72,6 +73,9 @@ export async function listClassifications(orgId: string) {
     .order('field_name', { ascending: true });
 
   if (error) {
+    if (isMissingSupabaseTableError(error, 'data_classifications')) {
+      return [];
+    }
     throw new Error(error.message);
   }
 

@@ -8,6 +8,7 @@ import {
   type NotificationEventType,
 } from '@/lib/notifications/types';
 import { requireNotificationContext } from '@/lib/notifications/server';
+import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 
 function createDefaultPreferences(userId: string, orgId: string) {
   return NOTIFICATION_EVENT_TYPES.flatMap((eventType) =>
@@ -37,7 +38,15 @@ export async function GET(request: Request) {
       .eq('org_id', context.orgId)
       .order('event_type', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      if (isMissingSupabaseTableError(error, 'notification_preferences')) {
+        return NextResponse.json({
+          preferences: createDefaultPreferences(context.user.id, context.orgId),
+          degraded: true,
+        });
+      }
+      throw error;
+    }
 
     return NextResponse.json({
       preferences:

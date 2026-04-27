@@ -34,6 +34,7 @@ export default function TrainingRegisterPage() {
   const [members, setMembers] = useState<OrgMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [schemaAvailable, setSchemaAvailable] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState(ALL_FILTER);
 
@@ -72,15 +73,26 @@ export default function TrainingRegisterPage() {
             .eq('organization_id', orgId),
         ]);
 
+        if (
+          recError?.code === 'PGRST205' &&
+          recError.message?.includes('org_training_records')
+        ) {
+          if (cancelled) return;
+          setSchemaAvailable(false);
+          setRecords([]);
+          setMembers((mems ?? []) as OrgMember[]);
+          return;
+        }
+
         if (recError) throw recError;
         if (memberError) throw memberError;
 
         if (cancelled) return;
+        setSchemaAvailable(true);
         setRecords((recs ?? []) as TrainingRecord[]);
         setMembers((mems ?? []) as OrgMember[]);
-      } catch (err) {
+      } catch {
         if (cancelled) return;
-        console.error('[TrainingRegisterPage] fetch failed:', err);
         setError('Unable to load training register right now.');
         setRecords([]);
         setMembers([]);
@@ -136,12 +148,28 @@ export default function TrainingRegisterPage() {
         </div>
         <button
           onClick={() => setIsOpen(true)}
+          disabled={!schemaAvailable}
+          title={
+            schemaAvailable
+              ? undefined
+              : 'Training records are unavailable until the org_training_records table is migrated.'
+          }
           className="flex items-center gap-2 bg-glass-strong text-foreground px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-surface-3 transition-all shadow-xl motion-safe:active:scale-95"
         >
           <Plus className="h-4 w-4" />
           Add Certification
         </button>
       </div>
+
+      {!schemaAvailable ? (
+        <div
+          className="rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-sm text-amber-100"
+          data-testid="training-register-schema-disabled"
+        >
+          Training register actions are unavailable until the
+          org_training_records database table is migrated.
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[1fr_auto] items-center gap-3 bg-surface-1 p-2 rounded-2xl border border-edge-2 shadow-sm">
         <div className="relative flex-1">

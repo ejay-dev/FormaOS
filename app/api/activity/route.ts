@@ -42,11 +42,24 @@ export async function GET(request: Request) {
         resource_id: item.resource_id ?? '',
         metadata: JSON.stringify(item.metadata ?? {}),
       }));
-      const exported = formatTabular(rows, format, {
-        title: 'Activity Feed',
-        generatedAt: new Date().toISOString(),
-        description: `Activity feed for organization ${context.orgId}.`,
-      });
+      const exported = formatTabular(
+        rows,
+        format,
+        {
+          title: 'Activity Feed',
+          generatedAt: new Date().toISOString(),
+          description: `Activity feed for organization ${context.orgId}.`,
+        },
+        [
+          'created_at',
+          'actor_name',
+          'action',
+          'resource_type',
+          'resource_name',
+          'resource_id',
+          'metadata',
+        ],
+      );
       return new NextResponse(exported.body, {
         headers: attachmentHeaders('activity-feed', exported),
       });

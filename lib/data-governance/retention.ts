@@ -1,5 +1,9 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logIdentityEvent } from '@/lib/identity/audit';
+import {
+  isMissingSupabaseColumnError,
+  isMissingSupabaseTableError,
+} from '@/lib/supabase/schema-compat';
 
 export type RetentionAction = 'archive' | 'delete' | 'anonymize';
 
@@ -175,6 +179,12 @@ export async function listRetentionPolicies(orgId: string) {
     .order('resource_type', { ascending: true });
 
   if (error) {
+    if (
+      isMissingSupabaseTableError(error, 'retention_policies') ||
+      isMissingSupabaseColumnError(error, 'retention_policies')
+    ) {
+      return [];
+    }
     throw new Error(error.message);
   }
 
@@ -337,8 +347,38 @@ export async function listRetentionExecutions(orgId: string) {
     .limit(25);
 
   if (error) {
+    if (
+      isMissingSupabaseTableError(error, 'retention_executions') ||
+      isMissingSupabaseColumnError(error, 'retention_executions')
+    ) {
+      return [];
+    }
     throw new Error(error.message);
   }
 
   return data ?? [];
+}
+
+export async function getRetentionSchemaStatus() {
+  const admin = createSupabaseAdminClient();
+  const checks = await Promise.all([
+    admin.from('retention_policies').select('id, resource_type').limit(1),
+    admin.from('retention_executions').select('id, executed_at').limit(1),
+  ]);
+  const missing = checks
+    .map((result, index) => ({
+      table: index === 0 ? 'retention_policies' : 'retention_executions',
+      error: result.error,
+    }))
+    .filter(
+      (item) =>
+        isMissingSupabaseTableError(item.error, item.table) ||
+        isMissingSupabaseColumnError(item.error, item.table),
+    )
+    .map((item) => item.table);
+
+  return {
+    available: missing.length === 0,
+    missing,
+  };
 }
