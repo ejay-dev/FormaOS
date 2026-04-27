@@ -328,7 +328,7 @@ test.describe('Onboarding first-session flow', () => {
       ).toBeVisible();
 
       const dimmedNavCount = await page
-        .locator('[data-testid^="nav-"][class*="text-foreground/40"]')
+        .locator('[data-testid^="nav-"][class*="text-muted-foreground"]')
         .count();
       expect(dimmedNavCount).toBeGreaterThan(0);
 
