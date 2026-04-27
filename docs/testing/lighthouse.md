@@ -17,7 +17,7 @@ Start the app, then run:
 LIGHTHOUSE_BASE_URL=http://localhost:3000 npm run test:lighthouse:public
 ```
 
-Reports are written under `.lighthouseci/public/`.
+JSON reports and `summary.json` are written under `.lighthouseci/public/`. The directory is ignored and should not be committed.
 
 ## Categories
 
