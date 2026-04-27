@@ -248,7 +248,7 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
         <nav className="space-y-4">
           {categories.map((cat) => (
             <div key={cat} className="space-y-0.5">
-              <h3 className="px-3 py-2 text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">
+              <h3 className="px-3 py-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
                 {cat}
               </h3>
 
@@ -389,16 +389,16 @@ function SidebarNavItem({
         className={`group flex items-center gap-2 rounded-md px-3 h-8 text-sm font-medium transition-all duration-200 ${
           isActive
             ? 'sidebar-link-active bg-accent/50 text-foreground border-l-2 border-l-primary'
-            : isOnboardingTarget
-              ? 'text-foreground bg-primary/10 border-l-2 border-l-primary hover:bg-primary/15'
+              : isOnboardingTarget
+                ? 'text-foreground bg-primary/10 border-l-2 border-l-primary hover:bg-primary/15'
               : shouldDim
-                ? 'text-foreground/40 hover:bg-muted/40 hover:text-foreground/70'
-                : 'text-foreground/70 hover:bg-muted/50 hover:text-foreground'
+                ? 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+                : 'text-foreground/85 hover:bg-muted/50 hover:text-foreground'
         }`}
       >
         <div className="relative shrink-0">
           <item.icon
-            className={`h-3.5 w-3.5 transition-colors duration-200 ${isActive ? 'text-primary' : 'text-foreground/50 group-hover:text-foreground/80'}`}
+            className={`h-3.5 w-3.5 transition-colors duration-200 ${isActive ? 'text-primary' : 'text-foreground/70 group-hover:text-foreground/90'}`}
           />
           {/* RAG indicator dot */}
           {ragDotColor && (

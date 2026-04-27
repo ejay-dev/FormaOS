@@ -187,7 +187,7 @@ export function FrameworkHealthWidget() {
               </li>
             ))}
             {data.gaps.missingEvidence.length === 0 ? (
-              <li className="text-xs text-muted-foreground/60">
+              <li className="text-xs text-muted-foreground">
                 No critical evidence gaps detected.
               </li>
             ) : null}

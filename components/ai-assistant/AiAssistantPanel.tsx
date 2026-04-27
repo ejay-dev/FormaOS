@@ -223,6 +223,7 @@ export function AiAssistantPanel() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowSidebar(!showSidebar)}
+              aria-label={showSidebar ? 'Hide assistant conversations' : 'Show assistant conversations'}
               className="hidden rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors md:inline-flex"
             >
               {showSidebar ? (
@@ -238,6 +239,7 @@ export function AiAssistantPanel() {
           </div>
           <button
             onClick={close}
+            aria-label="Close assistant panel"
             className="rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors"
           >
             <X className="h-5 w-5" />

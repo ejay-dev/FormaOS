@@ -68,7 +68,7 @@ export function FeedbackWidget() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+    <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5rem)] right-4 z-50 flex flex-col items-end gap-3 sm:right-6">
       {/* Panel */}
       {(state === 'open' || state === 'submitting') && (
         <div

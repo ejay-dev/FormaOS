@@ -175,7 +175,7 @@ export default async function AppLayout({
                 <div className="flex flex-1 overflow-y-auto">
                   <Sidebar role={systemState.role} />
                 </div>
-                <div className="border-t border-border px-4 py-3 text-[10px] text-muted-foreground/60">
+                <div className="border-t border-border px-4 py-3 text-[10px] text-muted-foreground">
                   <div className="font-medium">
                     © {new Date().getFullYear()} {brand.appName}
                   </div>

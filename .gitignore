@@ -32,6 +32,8 @@ build_output.txt
 # local agent/ops artifacts
 /logs
 /memory
+/artifacts/
+/e2e/_design-audit-inspect.spec.ts
 /.claude/scheduled_tasks.lock
 /.claude/skills/*/scripts/
 

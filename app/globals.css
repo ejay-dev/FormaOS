@@ -223,13 +223,13 @@
  * like Linear/Stripe. Marketing pages are untouched.
  * ======================================================== */
 .app-theme {
-  --primary: 217 91% 60%; /* blue-500 */
-  --primary-foreground: 0 0% 100%;
-  --ring: 217 91% 60%;
+  --primary: 213 94% 68%; /* accessible blue accent on dark app surfaces */
+  --primary-foreground: 228 65% 10%;
+  --ring: 213 94% 68%;
   --gradient-glow: radial-gradient(
     ellipse at top,
-    hsl(217 91% 60% / 0.08) 0%,
-    hsl(217 91% 60% / 0.02) 50%,
+    hsl(213 94% 68% / 0.08) 0%,
+    hsl(213 94% 68% / 0.02) 50%,
     transparent 75%
   );
 }
