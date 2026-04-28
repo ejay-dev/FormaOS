@@ -1,6 +1,6 @@
 # Entitlements Plan
 
-This note maps disabled or schema-degraded actions from the disabled-actions review to the product plan and role model. It is a design note only; no new gating behavior was implemented in this cleanup.
+This note maps disabled or schema-degraded actions from the disabled-actions review to the product plan and role model. CAPA phase 1 implements role-limited authoring but does not add full plan gating yet.
 
 ## Existing Grounding
 
@@ -29,14 +29,14 @@ Disabled actions that belong here:
 
 Growth should unlock operational scale features that teams use weekly:
 
-- CAPA create/update and status management.
+- CAPA create/update and status management. Implemented in phase 1 without full Growth entitlement enforcement.
 - Custom reports and saved report definitions.
 - Form submission analytics.
 - Industry-specific report packs once backed by real data and exports.
 
 Disabled actions that belong here:
 
-- `/app/capa` `CAPA unavailable`
+- `/app/capa` `CAPA unavailable` only when the CAPA lifecycle migration is absent
 - `/app/reports/custom` `Custom reports unavailable`
 - `/app/forms/[formId]/submissions` `Analytics coming soon`
 - Future replacement for the removed `/app/reports` placeholder industry exports
@@ -79,7 +79,7 @@ Recommended new entitlement keys:
 ## Role Notes
 
 - Admin: can configure plan-gated settings, SSO, directory sync, retention, workflow execution, and CAPA administration.
-- Manager: can create and update operational artifacts such as CAPA items, workflows, reports, and analytics views when the plan allows it.
+- Manager: should be able to create and update operational artifacts such as CAPA items, workflows, reports, and analytics views when the plan allows it. In the current system-state mapping, manager/compliance roles resolve to `admin`, so CAPA phase 1 authoring is implemented for owner/admin.
 - Viewer: read-only by default; can view records, dashboards, and shared reports, but cannot mutate settings, retention policies, workflow definitions, or CAPA status.
 - Auditor: read-only audit/evidence/report access; can inspect workflow executions and CAPA history when shared, but should not edit.
 
@@ -98,9 +98,9 @@ Recommended new entitlement keys:
 
 ## Near-Term Recommendation
 
-Do not implement broad gating in the cleanup sprint. First add entitlement keys and read helpers behind tests, then migrate one vertical slice at a time:
+Do not implement broad gating until the entitlement helper is extended. First add entitlement keys and read helpers behind tests, then migrate one vertical slice at a time:
 
-1. CAPA management as Growth + Manager/Admin.
+1. CAPA management as Growth + Manager/Admin, replacing the current role-only phase 1 behavior.
 2. Custom reports as Growth + Manager/Admin.
 3. Workflow automation as Enterprise + Manager/Admin.
 4. SSO/directory sync and retention governance as Enterprise + Admin only.

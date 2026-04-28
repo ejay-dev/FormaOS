@@ -135,6 +135,20 @@ export async function POST(request: Request) {
           { status: 404 },
         );
       }
+    } else if (entityId && entityType === 'capa') {
+      const { data: capa } = await supabase
+        .from('org_capa_items')
+        .select('id')
+        .eq('id', entityId)
+        .eq('organization_id', orgId)
+        .maybeSingle();
+
+      if (!capa) {
+        return NextResponse.json(
+          { error: 'CAPA not found' },
+          { status: 404 },
+        );
+      }
     } else if (entityId) {
       // Unknown entity type — refuse rather than write orphan evidence
       return NextResponse.json(
@@ -314,6 +328,29 @@ export async function POST(request: Request) {
         },
         { required: true },
       );
+
+      if (entityId && entityType) {
+        await logAuditEvent(
+          {
+            organizationId: orgId,
+            actorUserId: user.id,
+            actorRole: (membership?.role as string | null) ?? null,
+            entityType,
+            entityId,
+            actionType:
+              entityType === 'capa'
+                ? 'CAPA_EVIDENCE_UPLOADED'
+                : 'ENTITY_EVIDENCE_UPLOADED',
+            afterState: {
+              evidence_id: row.id,
+              file_name: file.name,
+              file_size: file.size,
+            },
+            reason: `${entityType}_attachment`,
+          },
+          { required: true },
+        );
+      }
     }
 
     return NextResponse.json({ items });

@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   CheckCircle2,
   ClipboardCheck,
+  Plus,
 } from 'lucide-react';
 import { EntityEvidencePanel } from '@/components/compliance/EntityEvidencePanel';
 
@@ -269,6 +270,28 @@ export default async function IncidentDetailPage({
         heading="Incident Evidence"
         emptyState="Attach photos, witness statements, or documents related to this incident."
       />
+
+      <section className="rounded-xl border border-border bg-card p-5">
+        <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          <ClipboardCheck className="h-4 w-4" />
+          Corrective Action
+        </h2>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Create a CAPA linked to this incident when follow-up requires
+            tracked corrective or preventive action.
+          </p>
+          <Link
+            href={`/app/capa/new?source_type=incident&source_id=${incident.id}&title=${encodeURIComponent(
+              `CAPA for ${incident.incident_type || 'incident'}`,
+            )}`}
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            <Plus className="h-4 w-4" />
+            Create CAPA
+          </Link>
+        </div>
+      </section>
 
       {isOpen ? (
         <section className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-5">

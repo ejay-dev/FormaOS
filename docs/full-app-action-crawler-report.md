@@ -1,11 +1,11 @@
 # Full App Action Crawler Report
 
 Generated: 2026-04-27T16:09:12.435Z
-Updated: 2026-04-28 cleanup pass
+Updated: 2026-04-28 cleanup pass plus CAPA phase 1 implementation
 
 ## Executive Verdict
 
-The authenticated app action crawler passes against the production build. In the tested seeded workspace, no visible app 404s, unsupported export links, or failing crawler actions remain. The cleanup pass removed low-value report export placeholders and merged the workflow schema-disabled creation state into one clear placeholder action. Confidence: high for routes/actions covered by the crawler, with schema-deferred areas truthfully disabled where the connected database is missing tables.
+The authenticated app action crawler passes against the production build from the last snapshot. In the tested seeded workspace, no visible app 404s, unsupported export links, or failing crawler actions remain. The cleanup pass removed low-value report export placeholders and merged the workflow schema-disabled creation state into one clear placeholder action. CAPA phase 1 now has real schema, lifecycle UI, server actions, evidence upload, audit trail, and incident source linking; the CAPA disabled guard remains truthful until the lifecycle migration is applied in the connected database.
 
 ## Inventory Summary
 
@@ -13,7 +13,7 @@ The authenticated app action crawler passes against the production build. In the
 - Routes inspected: 81
 - Visible actions recorded: 363
 - Passing actions/page loads: 269
-- Disabled truthful actions: 94
+- Disabled truthful actions: 94 in the last crawler snapshot; expected 93 once CAPA migration is applied and crawler is rerun
 - Failed actions: 0
 
 ## Modules Audited
@@ -44,7 +44,7 @@ The authenticated app action crawler passes against the production build. In the
 
 - Integrations marketplace exposed provider-specific Connect/Configure links that routed to missing per-provider pages. Fixed by routing marketplace actions to the working integration control plane.
 - Activity CSV export returned HTTP 200 with an empty body when there were no rows. Fixed by exporting stable CSV headers; incident and staff credential exports received the same header guard.
-- CAPA and custom report UI exposed workflows while connected schemas could be missing. Added detail routes, schema guards, and truthful disabled states.
+- CAPA and custom report UI exposed workflows while connected schemas could be missing. Added schema guards and truthful disabled states; CAPA now has phase 1 lifecycle implementation behind the required migration.
 - Care plan progress-note backlink pointed at a missing participant nested route. Fixed to the real progress notes route.
 - Certificates page selected a nonexistent embedded staff relationship. Reworked staff display lookup.
 - Credential review selected a missing notes column. Removed the bad column from the queue query.
@@ -72,7 +72,8 @@ Mutation/export APIs now guard schema drift, validate org context via existing a
 - Workflow automation is disabled with copy when workflow tables are absent. Severity: P2 schema deployment dependency.
 - Training register creation is disabled with copy when org_training_records is absent. Severity: P2 schema deployment dependency.
 - Governance retention actions are disabled with copy when retention tables/columns are absent. Severity: P2 schema deployment dependency.
-- CAPA/custom reports are disabled with copy when their tables are absent. Severity: P2 schema deployment dependency.
+- Custom reports are disabled with copy when their tables are absent. Severity: P2 schema deployment dependency.
+- CAPA is implemented in code but remains disabled with copy when the CAPA lifecycle migration is absent. Severity: P1 deployment dependency.
 
 ## Validation
 
@@ -83,6 +84,10 @@ Mutation/export APIs now guard schema drift, validate org context via existing a
 - npm run test:e2e:app-actions: PASS, 6 passed
 - npm run test:e2e:exports: PASS, 4 passed
 - npx playwright test e2e/full-app-action-crawler.spec.ts --project=chromium --reporter=list: PASS, 1 passed
+
+Additional CAPA phase 1 validation added:
+
+- npx playwright test e2e/capa-flow.spec.ts --project=chromium --reporter=list
 
 ## Risk Rating
 

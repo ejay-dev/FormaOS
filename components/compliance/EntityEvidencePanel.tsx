@@ -23,7 +23,7 @@ interface EvidenceItem {
 
 interface EntityEvidencePanelProps {
   entityId: string;
-  entityType: 'incident' | 'staff_credential' | 'care_plan';
+  entityType: 'incident' | 'staff_credential' | 'care_plan' | 'capa';
   /** Heading + helper text for the upload area. */
   heading?: string;
   emptyState?: string;

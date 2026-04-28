@@ -1,11 +1,11 @@
 # APP Link Integrity Report
 
-Generated: 2026-04-28T03:31:37.903Z
+Generated: 2026-04-28T14:41:13.483Z
 
 ## Summary
 
-- Total app internal links validated: 307
-- Valid links: 307
+- Total app internal links validated: 306
+- Valid links: 306
 - Broken links: 0
 - App routes discovered: 215
 
@@ -70,8 +70,7 @@ Generated: 2026-04-28T03:31:37.903Z
 | `components/trial/TrialExpirationBanner.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/capa/[id]/page.tsx` | `/app/capa` | YES | YES | auth | `/app/capa` |
 | `app/app/capa/new/page.tsx` | `/app/capa` | YES | YES | auth | `/app/capa` |
-| `app/app/capa/[id]/page.tsx` | `/app/capa/:param` | YES | YES | auth | `/app/capa/:id` |
-| `app/app/capa/new/page.tsx` | `/app/capa/new` | YES | YES | auth | `/app/capa/new` |
+| `app/app/capa/actions.ts` | `/app/capa/:param` | YES | YES | auth | `/app/capa/:id` |
 | `app/app/capa/page.tsx` | `/app/capa/new` | YES | YES | auth | `/app/capa/new` |
 | `app/app/actions/care-operations.ts` | `/app/care-plans` | YES | YES | auth | `/app/care-plans` |
 | `app/app/care-plans/[id]/page.tsx` | `/app/care-plans` | YES | YES | auth | `/app/care-plans` |

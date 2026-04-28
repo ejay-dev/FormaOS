@@ -99,10 +99,12 @@ async function gotoAppRoute(page: Page, route: string) {
 
 function isMissingTableError(error: unknown, table: string) {
   const value = error as { code?: string; message?: string } | null;
+  const message = value?.message ?? '';
   return (
-    value?.code === 'PGRST205' &&
-    typeof value.message === 'string' &&
-    value.message.includes(table)
+    value?.code === 'PGRST205' ||
+    message.includes(table) ||
+    message.includes('Could not find the') ||
+    message.includes('schema cache')
   );
 }
 
@@ -378,7 +380,9 @@ test.describe('Authenticated app action integrity', () => {
     const title = `Integrity CAPA ${randomUUID().slice(0, 8)}`;
     const { error: schemaError } = await context.admin
       .from('org_capa_items')
-      .select('id')
+      .select(
+        'id, severity, owner_id, source_type, source_id, root_cause, corrective_action, preventive_action, verification_notes',
+      )
       .eq('organization_id', context.orgId)
       .limit(1);
     const capaSchemaMissing = isMissingTableError(
@@ -400,27 +404,24 @@ test.describe('Authenticated app action integrity', () => {
     await page.goto('/app/capa/new', { waitUntil: 'domcontentloaded' });
     await page.locator('input[name="title"]').fill(title);
     await page.locator('select[name="type"]').selectOption('preventive');
-    await page.locator('select[name="priority"]').selectOption('high');
+    await page.locator('select[name="severity"]').selectOption('high');
     await page.getByRole('button', { name: 'Create CAPA' }).click();
-    await page.waitForURL('**/app/capa');
-    await expect(page.getByRole('link', { name: title })).toBeVisible();
+    await page.waitForURL('**/app/capa/*');
 
     const { data: capa } = await context.admin
       .from('org_capa_items')
-      .select('id, type, priority, status')
+      .select('id, type, severity, status')
       .eq('organization_id', context.orgId)
       .eq('title', title)
       .maybeSingle();
     expect(capa?.id).toBeTruthy();
     expect(capa?.type).toBe('preventive');
-    expect(capa?.priority).toBe('high');
+    expect(capa?.severity).toBe('high');
     expect(capa?.status).toBe('open');
 
-    await page.getByRole('link', { name: title }).click();
-    await page.waitForURL(`**/app/capa/${capa!.id}`);
     await expect(page.locator('h1')).toContainText(title);
-    await page.locator('select[name="status"]').selectOption('in_progress');
-    await page.getByRole('button', { name: 'Update status' }).click();
+    await page.locator('select[name="status"]').selectOption('investigating');
+    await page.getByRole('button', { name: 'Move status' }).click();
     await page.waitForURL(`**/app/capa/${capa!.id}`);
 
     await expect
@@ -433,7 +434,7 @@ test.describe('Authenticated app action integrity', () => {
           .maybeSingle();
         return data?.status;
       })
-      .toBe('in_progress');
+      .toBe('investigating');
 
     await assertNoIntegrityFailures(failures);
 

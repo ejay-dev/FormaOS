@@ -41,6 +41,26 @@ function humanizeAction(action: string): string {
       return 'resolved this incident';
     case 'INVESTIGATION_STARTED':
       return 'started investigation';
+    case 'CAPA_CREATED':
+      return 'created this CAPA';
+    case 'CAPA_UPDATED':
+      return 'updated this CAPA';
+    case 'CAPA_ASSIGNED':
+      return 'assigned this CAPA';
+    case 'CAPA_STATUS_CHANGED':
+      return 'changed CAPA status';
+    case 'CAPA_ROOT_CAUSE_ADDED':
+      return 'updated root cause';
+    case 'CAPA_CORRECTIVE_ACTION_ADDED':
+      return 'updated corrective action';
+    case 'CAPA_PREVENTIVE_ACTION_ADDED':
+      return 'updated preventive action';
+    case 'CAPA_VERIFICATION_COMPLETED':
+      return 'completed verification';
+    case 'CAPA_CLOSED':
+      return 'closed this CAPA';
+    case 'CAPA_EVIDENCE_UPLOADED':
+      return 'attached CAPA evidence';
     default:
       return normalized.toLowerCase().replace(/_/g, ' ');
   }

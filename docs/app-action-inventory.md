@@ -1,7 +1,7 @@
 # App Action Inventory
 
 Generated from `e2e/full-app-action-crawler.spec.ts` on 2026-04-27T16:09:12.433Z.
-Updated on 2026-04-28 after removing report placeholder exports and merging the workflow creation placeholder.
+Updated on 2026-04-28 after removing report placeholder exports, merging the workflow creation placeholder, and implementing CAPA phase 1.
 
 ## Summary
 
@@ -9,7 +9,7 @@ Updated on 2026-04-28 after removing report placeholder exports and merging the 
 - Routes inspected: 81
 - Visible actions recorded: 363
 - PASS: 269
-- DISABLED: 94
+- DISABLED: 94 in this snapshot; expected 93 after CAPA lifecycle migration is applied and crawler is rerun.
 - FAIL: 0
 
 ## By Module
@@ -18,7 +18,7 @@ Updated on 2026-04-28 after removing report placeholder exports and merging the 
 |---|---:|---:|---:|
 | Audit Trail | 3 | 14 | 4 |
 | Billing | 1 | 3 | 1 |
-| CAPA | 2 | 9 | 3 |
+| CAPA | 2 | 9 | 3 in this snapshot; expected 2 after migration |
 | Care Plans | 4 | 16 | 4 |
 | Compliance | 6 | 24 | 7 |
 | Dashboard | 4 | 43 | 7 |
