@@ -1,12 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { FailurePrevention } from '@/components/FailurePrevention';
-import { ProductShowcase } from '@/components/ProductShowcase';
 import { ProofSection } from '@/components/ProofSection';
-import { ROIMetrics } from '@/components/ROIMetrics';
-import { TrustBar } from '@/components/TrustBar';
-import { WorkflowEnforcementDiagram } from '@/components/WorkflowEnforcementDiagram';
 import { SectionEyebrow } from '@/components/marketing/SystemMarketingPrimitives';
 import { siteUrl } from '@/lib/seo';
 
@@ -75,15 +70,7 @@ export default function CaseStudiesPage() {
           </div>
         </div>
       </section>
-      <TrustBar />
       <ProofSection showCta={false} />
-      <ROIMetrics
-        eyebrow="Outcome Model"
-        title="The buyer needs to see time saved, risk controlled, and evidence produced"
-      />
-      <ProductShowcase />
-      <WorkflowEnforcementDiagram />
-      <FailurePrevention />
     </main>
   );
 }

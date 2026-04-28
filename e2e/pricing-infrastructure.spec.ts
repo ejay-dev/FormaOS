@@ -17,8 +17,7 @@ test.describe('Infrastructure pricing and proof pages', () => {
     await expect(page.getByText('$297')).toBeVisible();
     await expect(page.getByText('From $1,800')).toBeVisible();
     await expect(page.getByText('Custom', { exact: true }).first()).toBeVisible();
-    await expect(page.getByText(/Manual tracking/i)).toBeVisible();
-    await expect(page.getByText(/Automated enforcement/i)).toBeVisible();
+    await expect(page.getByText('Evidence generated as work happens', { exact: true }).first()).toBeVisible();
     await expect(page.getByText(/One failed audit can cost more than a year of FormaOS/i)).toBeVisible();
     await expectNoFreeTrialLanguage(page);
 
@@ -46,22 +45,22 @@ test.describe('Infrastructure pricing and proof pages', () => {
     await expect(page).toHaveURL(/#pricing-table$/);
   });
 
-  test('homepage exposes trust, ROI, product, prevention, and proof layers', async ({ page }) => {
+  test('homepage exposes trust and core operating-system proof', async ({ page }) => {
     const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
     expect(response?.status()).toBeLessThan(400);
 
     await expect(page.getByText(/Designed for NDIS, AHPRA, ISO, and SOC 2/i).first()).toBeVisible();
-    await expect(page.getByText(/Compliance should be priced against failure/i)).toBeVisible();
-    await expect(page.getByText(/See the operating system behind the promise/i)).toBeVisible();
-    await expect(page.getByText(/Stop relying on memory for work that needs proof/i).first()).toBeVisible();
-    await expect(page.getByText(/Every compliance action is checked before it becomes evidence/i)).toBeVisible();
-    await expect(page.getByText('Representative proof pack', { exact: true })).toBeVisible();
+    await expect(page.getByText(/Controls run as workflows, not as documents/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /From obligation to enforced evidence chain/i })).toBeVisible();
+    await expect(page.getByText(/Compliance should be priced against failure/i)).toHaveCount(0);
+    await expect(page.getByText(/See the operating system behind the promise/i)).toHaveCount(0);
+    await expect(page.getByText(/Stop relying on memory for work that needs proof/i)).toHaveCount(0);
     await expectNoFreeTrialLanguage(page);
 
-    const caseStudyHref = await page
-      .getByRole('link', { name: /View proof packs/i })
+    const productHref = await page
+      .getByRole('link', { name: /See how it works/i })
       .getAttribute('href');
-    expect(caseStudyHref).toBe('/case-studies');
+    expect(productHref).toBe('/product');
   });
 
   test('case studies page loads the proof pack route', async ({ page }) => {

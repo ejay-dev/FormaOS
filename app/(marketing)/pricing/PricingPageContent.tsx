@@ -1,11 +1,6 @@
 'use client';
 
 import { CheckCircle2, ClipboardCheck, Settings2, ShieldCheck } from 'lucide-react';
-import { FailurePrevention } from '@/components/FailurePrevention';
-import { HowItWorks } from '@/components/HowItWorks';
-import { ProductShowcase } from '@/components/ProductShowcase';
-import { ProofSection } from '@/components/ProofSection';
-import { ROIMetrics } from '@/components/ROIMetrics';
 import { TrustBar } from '@/components/TrustBar';
 import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -124,17 +119,9 @@ export default function PricingPageContent() {
     <MarketingPageShell className="text-white">
       <PricingHero />
       <TrustBar />
-      <ROIMetrics
-        eyebrow="Manual Cost Anchor"
-        title="Price the system against the work it removes"
-      />
       <PricingTiers />
       <CostOfNonCompliance />
-      <ProofSection />
-      <ProductShowcase />
-      <FailurePrevention />
       <HowPricingWorks />
-      <HowItWorks />
       <FAQSection />
       <FinalCTA />
     </MarketingPageShell>

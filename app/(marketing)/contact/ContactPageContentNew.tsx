@@ -130,7 +130,7 @@ const CONTACT_INTENT_COPY = {
     formBody:
       'Tell us your team size, frameworks (NDIS, AHPRA, ISO, SOC 2, HIPAA), and rollout timeline.',
     submitLabel: PUBLIC_CTA_LABELS.compliancePlan,
-    closingTitle: 'Price compliance against failure, not seats',
+    closingTitle: 'Match the plan to your operating risk',
     closingBody:
       "We'll help you choose the plan that matches your exposure, then hand off to a specialist for rollout.",
     secondaryHref: '/pricing',
@@ -147,7 +147,7 @@ const CONTACT_INTENT_COPY = {
     formBody:
       'Share your framework, role, and the scenario you want to see enforced end-to-end.',
     submitLabel: PUBLIC_CTA_LABELS.bookDemo,
-    closingTitle: 'See the operating system behind the promise',
+    closingTitle: 'Walk through the workflows your team actually runs',
     closingBody:
       "We'll map the walkthrough to the workflows you actually run, so you can judge fit in one session.",
     secondaryHref: '/pricing',

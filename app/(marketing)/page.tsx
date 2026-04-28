@@ -3,13 +3,8 @@ import { HomeClientMarker } from './components/home-client-marker';
 import FigmaHomepage from './components/FigmaHomepage';
 import { HeroStaticShell } from './components/HeroStaticShell';
 import { HomeProofStaticShell } from './components/HomeProofStaticShell';
-import { FailurePrevention } from '@/components/FailurePrevention';
 import { HowItWorks } from '@/components/HowItWorks';
-import { ProductShowcase } from '@/components/ProductShowcase';
-import { ProofSection } from '@/components/ProofSection';
-import { ROIMetrics } from '@/components/ROIMetrics';
 import { TrustBar } from '@/components/TrustBar';
-import { WorkflowEnforcementDiagram } from '@/components/WorkflowEnforcementDiagram';
 import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
@@ -79,16 +74,8 @@ export default function HomePage() {
       {/* Server-rendered hero: copy is in the initial HTML for crawlers and LCP */}
       <HeroStaticShell />
       <TrustBar />
-      <ROIMetrics
-        eyebrow="Risk Reduction Layer"
-        title="Compliance should be priced against failure, not features"
-      />
       <HomeProofStaticShell />
-      <ProductShowcase />
-      <FailurePrevention />
-      <WorkflowEnforcementDiagram />
       <HowItWorks />
-      <ProofSection />
 
       {/* Client sections: animations, control-plane overrides, below-fold content */}
       <FigmaHomepage skipHero />
