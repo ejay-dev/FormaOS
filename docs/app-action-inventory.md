@@ -1,15 +1,15 @@
 # App Action Inventory
 
-Generated from `e2e/full-app-action-crawler.spec.ts` on 2026-04-27T16:09:12.433Z.
-Updated on 2026-04-28 after removing report placeholder exports, merging the workflow creation placeholder, and implementing CAPA phase 1.
+Generated from `e2e/full-app-action-crawler.spec.ts`.
+Updated on 2026-04-29 after CAPA post-migration verification.
 
 ## Summary
 
 - Modules audited: 21
 - Routes inspected: 81
-- Visible actions recorded: 363
-- PASS: 269
-- DISABLED: 94 in this snapshot; expected 93 after CAPA lifecycle migration is applied and crawler is rerun.
+- Visible actions recorded: 368
+- PASS: 274
+- DISABLED: 94
 - FAIL: 0
 
 ## By Module
@@ -18,7 +18,7 @@ Updated on 2026-04-28 after removing report placeholder exports, merging the wor
 |---|---:|---:|---:|
 | Audit Trail | 3 | 14 | 4 |
 | Billing | 1 | 3 | 1 |
-| CAPA | 2 | 9 | 3 in this snapshot; expected 2 after migration |
+| CAPA | 3 | 14 | 3 |
 | Care Plans | 4 | 16 | 4 |
 | Compliance | 6 | 24 | 7 |
 | Dashboard | 4 | 43 | 7 |
@@ -328,13 +328,18 @@ Updated on 2026-04-28 after removing report placeholder exports, merging the wor
 | Tasks | /app/tasks/calendar | Quick Search⌘K | modal/dropdown | safe opener | Opens or toggles visible UI without app errors | opened overlay | PASS |  |
 | CAPA | /app/capa | Page load | link | /app/capa | Authenticated page loads without 404 or crash | HTTP 200 | PASS |  |
 | CAPA | /app/capa | Skip to main content | link | /app/capa | Destination resolves without app 404 | HTTP 200 | PASS |  |
-| CAPA | /app/capa | CAPA unavailable | button | capa-schema-disabled | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
+| CAPA | /app/capa | New CAPA | link | /app/capa/new | Destination resolves without app 404 | HTTP 200 | PASS |  |
+| CAPA | /app/capa | Crawler CAPA d6aa8880 | link | /app/capa/3cb45ec8-de76-4772-ac90-6c4c61428624 | Destination resolves without app 404 | HTTP 200 | PASS |  |
 | CAPA | /app/capa | Send message | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
 | CAPA | /app/capa | Quick Search⌘K | modal/dropdown | safe opener | Opens or toggles visible UI without app errors | opened overlay | PASS |  |
+| CAPA | /app/capa | Apply filters | modal/dropdown | safe opener | Opens or toggles visible UI without app errors | opened overlay | PASS |  |
 | CAPA | /app/capa/new | Page load | link | /app/capa/new | Authenticated page loads without 404 or crash | HTTP 200 | PASS |  |
-| CAPA | /app/capa/new | Skip to main content | link | /app/capa/new | Destination resolves without app 404 | HTTP 200 | PASS |  |
 | CAPA | /app/capa/new | Send message | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
 | CAPA | /app/capa/new | Quick Search⌘K | modal/dropdown | safe opener | Opens or toggles visible UI without app errors | opened overlay | PASS |  |
+| CAPA | /app/capa/3cb45ec8-de76-4772-ac90-6c4c61428624 | Page load | link | /app/capa/3cb45ec8-de76-4772-ac90-6c4c61428624 | Authenticated page loads without 404 or crash | HTTP 200 | PASS |  |
+| CAPA | /app/capa/3cb45ec8-de76-4772-ac90-6c4c61428624 | Send message | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
+| CAPA | /app/capa/3cb45ec8-de76-4772-ac90-6c4c61428624 | file input | upload |  | Upload control is present and enabled where exposed | visible enabled file input | PASS |  |
+| CAPA | /app/capa/3cb45ec8-de76-4772-ac90-6c4c61428624 | Quick Search⌘K | modal/dropdown | safe opener | Opens or toggles visible UI without app errors | opened overlay | PASS |  |
 | Dashboard | /app/governance | Page load | link | /app/governance | Authenticated page loads without 404 or crash | HTTP 200 | PASS |  |
 | Dashboard | /app/governance | Export CSV | download/export | /api/identity/audit?orgId=bdb38fb5-21c0-42cb-b09a-7b6bd6d2a043&format=csv | Endpoint responds with non-empty file | HTTP 200 | PASS |  |
 | Dashboard | /app/governance | Export PDF | download/export | /api/identity/audit?orgId=bdb38fb5-21c0-42cb-b09a-7b6bd6d2a043&format=pdf | Endpoint responds with non-empty file | HTTP 200 | PASS |  |

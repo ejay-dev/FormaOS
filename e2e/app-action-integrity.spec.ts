@@ -406,7 +406,9 @@ test.describe('Authenticated app action integrity', () => {
     await page.locator('select[name="type"]').selectOption('preventive');
     await page.locator('select[name="severity"]').selectOption('high');
     await page.getByRole('button', { name: 'Create CAPA' }).click();
-    await page.waitForURL('**/app/capa/*');
+    await page.waitForURL((url) =>
+      /^\/app\/capa\/[0-9a-f-]{36}$/i.test(url.pathname),
+    );
 
     const { data: capa } = await context.admin
       .from('org_capa_items')

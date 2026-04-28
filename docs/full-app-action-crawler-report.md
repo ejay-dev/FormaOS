@@ -1,19 +1,19 @@
 # Full App Action Crawler Report
 
-Generated: 2026-04-27T16:09:12.435Z
-Updated: 2026-04-28 cleanup pass plus CAPA phase 1 implementation
+Generated from `e2e/full-app-action-crawler.spec.ts`.
+Updated: 2026-04-29 CAPA post-migration verification
 
 ## Executive Verdict
 
-The authenticated app action crawler passes against the production build from the last snapshot. In the tested seeded workspace, no visible app 404s, unsupported export links, or failing crawler actions remain. The cleanup pass removed low-value report export placeholders and merged the workflow schema-disabled creation state into one clear placeholder action. CAPA phase 1 now has real schema, lifecycle UI, server actions, evidence upload, audit trail, and incident source linking; the CAPA disabled guard remains truthful until the lifecycle migration is applied in the connected database.
+The authenticated app action crawler passes against the production build. In the tested seeded workspace, no visible app 404s, unsupported export links, or failing crawler actions remain. CAPA phase 1 is now verified against the connected Supabase project: the schema is live, the CAPA unavailable guard is gone, list/new/detail/evidence actions pass, and the remaining CAPA disabled actions are only truthful empty assistant sends.
 
 ## Inventory Summary
 
 - Modules audited: 21
 - Routes inspected: 81
-- Visible actions recorded: 363
-- Passing actions/page loads: 269
-- Disabled truthful actions: 94 in the last crawler snapshot; expected 93 once CAPA migration is applied and crawler is rerun
+- Visible actions recorded: 368
+- Passing actions/page loads: 274
+- Disabled truthful actions: 94
 - Failed actions: 0
 
 ## Modules Audited
@@ -44,7 +44,7 @@ The authenticated app action crawler passes against the production build from th
 
 - Integrations marketplace exposed provider-specific Connect/Configure links that routed to missing per-provider pages. Fixed by routing marketplace actions to the working integration control plane.
 - Activity CSV export returned HTTP 200 with an empty body when there were no rows. Fixed by exporting stable CSV headers; incident and staff credential exports received the same header guard.
-- CAPA and custom report UI exposed workflows while connected schemas could be missing. Added schema guards and truthful disabled states; CAPA now has phase 1 lifecycle implementation behind the required migration.
+- CAPA and custom report UI exposed workflows while connected schemas could be missing. CAPA now has phase 1 lifecycle implementation verified against the connected database; custom reports still degrade truthfully when their schema is absent.
 - Care plan progress-note backlink pointed at a missing participant nested route. Fixed to the real progress notes route.
 - Certificates page selected a nonexistent embedded staff relationship. Reworked staff display lookup.
 - Credential review selected a missing notes column. Removed the bad column from the queue query.
@@ -61,7 +61,7 @@ Crawler and export suite verified visible export/download actions return non-emp
 
 ## Form and Modal Result
 
-The app-action suite covers policy edit/version routes, custom role detail, primary CTAs, row detail links, and CAPA create/detail when schema is available. The crawler opens safe dropdown/dialog surfaces and records disabled unfinished actions.
+The app-action suite covers policy edit/version routes, custom role detail, primary CTAs, row detail links, and CAPA create/detail against the migrated schema. The crawler opens safe dropdown/dialog surfaces and records disabled unfinished actions.
 
 ## API/Server Action Result
 
@@ -73,21 +73,22 @@ Mutation/export APIs now guard schema drift, validate org context via existing a
 - Training register creation is disabled with copy when org_training_records is absent. Severity: P2 schema deployment dependency.
 - Governance retention actions are disabled with copy when retention tables/columns are absent. Severity: P2 schema deployment dependency.
 - Custom reports are disabled with copy when their tables are absent. Severity: P2 schema deployment dependency.
-- CAPA is implemented in code but remains disabled with copy when the CAPA lifecycle migration is absent. Severity: P1 deployment dependency.
+- CAPA no longer appears as unavailable in the connected migrated workspace. Remaining CAPA phase 2 work is source linking beyond incidents and entitlement enforcement.
 
 ## Validation
 
 - npm run typecheck: PASS
 - npm run lint: PASS
 - npm run build: PASS
-- npm run check:app-links: PASS, 307 links validated
+- npm run check:app-links: PASS, 306 links validated
 - npm run test:e2e:app-actions: PASS, 6 passed
 - npm run test:e2e:exports: PASS, 4 passed
 - npx playwright test e2e/full-app-action-crawler.spec.ts --project=chromium --reporter=list: PASS, 1 passed
+- npx playwright test e2e/system-integration.spec.ts e2e/deep-workflow-integrity.spec.ts --project=chromium --reporter=list: PASS, 11 passed
 
 Additional CAPA phase 1 validation added:
 
-- npx playwright test e2e/capa-flow.spec.ts --project=chromium --reporter=list
+- npx playwright test e2e/capa-flow.spec.ts --project=chromium --reporter=list: PASS, 1 passed
 
 ## Risk Rating
 

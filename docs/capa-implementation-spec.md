@@ -1,6 +1,6 @@
 # CAPA Implementation Spec
 
-Updated 2026-04-28 for CAPA phase 1 implementation. The first implementation adds real Supabase schema, server actions, lifecycle validation, incident source links, entity evidence uploads, and audit trail display. Remaining phase 2 work is called out below.
+Updated 2026-04-29 for CAPA post-migration verification. The first implementation adds real Supabase schema, server actions, lifecycle validation, incident source links, entity evidence uploads, and audit trail display. The connected Supabase project has been verified with the focused CAPA E2E flow and app action crawler. Remaining phase 2 work is called out below.
 
 ## Product Goal
 
@@ -256,6 +256,12 @@ Regression checks:
 - `npm run test:e2e:app-actions`
 - `npx playwright test e2e/full-app-action-crawler.spec.ts --project=chromium --reporter=list`
 - `npx playwright test e2e/capa-flow.spec.ts --project=chromium --reporter=list`
+
+Post-migration result:
+
+- `e2e/capa-flow.spec.ts` now runs without skip and passes against the connected Supabase project.
+- Verified create, owner assignment, root cause, corrective action, preventive action, status transitions, verification, close, evidence upload, audit trail display after reload, persistence after reload, and incident backlink.
+- Schema probe confirmed authenticated org-scoped CAPA reads/writes, CAPA event writes, `org_evidence.entity_type='capa'`, and cross-org write blocking by RLS.
 
 ## Phase 2 Items
 

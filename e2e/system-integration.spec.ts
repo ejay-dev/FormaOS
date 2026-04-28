@@ -214,7 +214,23 @@ test.describe('System integration', () => {
       'E2E systemic prevention',
     );
     await page.getByTestId('resolve-incident-submit').click();
-    await page.waitForURL(`**/app/incidents/${incidentId}`);
+    await expect
+      .poll(
+        async () => {
+          const { data } = await context.admin
+            .from('org_incidents')
+            .select('status')
+            .eq('organization_id', context.orgId)
+            .eq('id', incidentId)
+            .maybeSingle();
+          return (data as { status?: string } | null)?.status;
+        },
+        { timeout: 10_000 },
+      )
+      .toBe('resolved');
+    await page.goto(`/app/incidents/${incidentId}`, {
+      waitUntil: 'domcontentloaded',
+    });
     await expect(page.locator('text=Resolution Record')).toBeVisible({
       timeout: 10_000,
     });

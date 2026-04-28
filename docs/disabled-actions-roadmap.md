@@ -1,24 +1,23 @@
 # Disabled Actions Roadmap
 
 Generated from `docs/app-action-inventory.md` and `docs/full-app-action-crawler-report.md`.
-Updated on 2026-04-28 after CAPA phase 1 implementation.
+Updated on 2026-04-29 after CAPA post-migration verification.
 
 ## Summary
 
-- Total visible actions crawled: 363
-- Passing actions: 269
-- Disabled truthful actions remaining in the last crawler snapshot: 94
-- Expected disabled truthful actions after the CAPA migration is applied and crawler is rerun: 93
+- Total visible actions crawled: 368
+- Passing actions: 274
+- Disabled truthful actions remaining: 94
 - Remaining failed actions: 0
 - Main finding: 81 disabled actions are the AI assistant `Send message` button in its truthful empty-input state. They should not become roadmap work unless the assistant entry pattern changes.
 - Cleanup delta: removed 4 report placeholder exports and merged the workflow schema-disabled creation/template placeholders into one `Create workflow` disabled action.
-- CAPA delta: CAPA moved from roadmap BUILD_NEXT into implemented phase 1 with schema, lifecycle, evidence, audit trail, and incident source link. The UI still shows a truthful schema-disabled state in environments where the migration has not been applied.
+- CAPA delta: CAPA moved from roadmap BUILD_NEXT into implemented phase 1 with schema, lifecycle, evidence, audit trail, and incident source link. The migrated connected workspace no longer shows `CAPA unavailable`; the raw disabled count stayed at 94 because the crawler now includes the CAPA detail route and its truthful empty assistant `Send message` disabled state.
 
 ## Classification Breakdown
 
 | Recommendation | Count | Meaning |
 |---|---:|---|
-| KEEP_DISABLED | 84 | Correct state-gated disabled controls, mostly empty assistant sends plus stateful refresh/report/feed buttons. |
+| KEEP_DISABLED | 85 | Correct state-gated disabled controls, mostly empty assistant sends plus stateful refresh/report/feed buttons. |
 | PLAN_GATE | 9 | Useful paid capabilities, but should ship behind Growth or Enterprise entitlements. |
 | REMOVE | 0 | Previous report export placeholders were removed from `/app/reports`. |
 | BUILD_NEXT | 0 | CAPA was implemented in phase 1. |
@@ -33,7 +32,7 @@ Updated on 2026-04-28 after CAPA phase 1 implementation.
 |---|---|---|---|---|---|---|---|
 | A1 Empty assistant send | Disabled button | Prompt input is empty or assistant input is unavailable. | Low as a standalone action; protects users from blank sends. | Low directly; avoids noisy or unauditable assistant requests. | Low | Low | KEEP_DISABLED |
 | A2 Stateful report/feed/refresh | Disabled button | Required prerequisite is missing, loading is active, or there is no more data. | Medium; communicates current state. | Medium when tied to SOC 2 or audit trails. | Low | Low | KEEP_DISABLED |
-| B1 CAPA workflow | Implemented; schema guard remains | Phase 1 requires `org_capa_items` lifecycle columns and `org_capa_events`; older DBs remain truthfully disabled. | High for incident follow-up and corrective action ownership. | High for auditability, closure evidence, and regulator readiness. | Completed phase 1; phase 2 medium | Lower after migration | IMPLEMENTED |
+| B1 CAPA workflow | Implemented and verified | `org_capa_items`, `org_capa_events`, lifecycle columns, evidence uploads, and audit events are live in the connected Supabase project. | High for incident follow-up and corrective action ownership. | High for auditability, closure evidence, and regulator readiness. | Completed phase 1; phase 2 medium | Lower after migration | IMPLEMENTED |
 | B2 Workflow schema | Schema-degraded disabled CTA | `workflow_definitions` or `workflow_executions` tables can be absent. | High for automation and repeatable operations. | High for obligation execution trails. | High | Medium | PLAN_GATE |
 | B3 Custom reports schema | Schema-degraded disabled CTA | `org_saved_reports` backing table can be absent. | Medium for power users and recurring exports. | Medium for scheduled evidence packs. | Medium | Medium | PLAN_GATE |
 | B4 Enterprise identity/sync | Disabled until configured | SSO must be enabled or a directory provider selected. | Medium for IT admins. | Medium for access governance. | Medium | Medium | PLAN_GATE |
@@ -120,7 +119,7 @@ Scores are `user/compliance/sales/effort/risk`. Row numbers remain the original 
 | 76 | Tasks | `/app/tasks` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 77 | Tasks | `/app/tasks/board` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 78 | Tasks | `/app/tasks/calendar` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
-| 79 | CAPA | `/app/capa` | CAPA unavailable | B1 | H/H/H/M/H | Removed from migrated environments; remains as truthful schema guard until DB migration |
+| 79 | CAPA | `/app/capa/[id]` | Send message | A1 | L/L/L/L/L | Detail-route assistant send remains disabled until input |
 | 80 | CAPA | `/app/capa` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 81 | CAPA | `/app/capa/new` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 82 | Dashboard | `/app/governance` | Dry Run | B5 | M/H/M/M/M | Enterprise; Admin only |
@@ -181,7 +180,7 @@ Scores are `user/compliance/sales/effort/risk`. Row numbers remain the original 
 - Keep workflow creation represented by one clear action while schema is unavailable.
 - Add clearer disabled copy for empty AI assistant input if users mistake the disabled send icon for a broken feature.
 - Keep `Generate Report` disabled until a SOC 2 assessment exists; optionally add inline copy explaining the prerequisite.
-- Apply the CAPA migration to preview/production and rerun the crawler so the `CAPA unavailable` guard disappears from migrated environments.
+- Keep CAPA crawler coverage on list/new/detail so schema regressions reappear as real failures rather than roadmap ambiguity.
 
 ## High-Effort Future Features
 
@@ -193,8 +192,8 @@ Scores are `user/compliance/sales/effort/risk`. Row numbers remain the original 
 
 ## Recommended Next Engineering Sprint
 
-1. CAPA deployment verification: apply `20260618_capa_lifecycle_workflow.sql`, run the focused CAPA flow, then rerun app-action crawler.
-2. CAPA phase 2 planning: add obligation, policy, and investigation source links after phase 1 is stable.
-3. Enterprise gate design: define entitlement checks for Growth and Enterprise so CAPA, workflow, retention, custom reports, SSO, directory sync, and analytics can ship behind clear plan boundaries.
-4. Workflow foundation: deploy workflow schema and enable read/list plus creation before template execution.
-5. Report packs: only reintroduce industry-specific export CTAs when one pack is backed by real data and a working export endpoint.
+1. CAPA phase 2 planning: add obligation, policy, and investigation source links after phase 1 is stable.
+2. Enterprise gate design: define entitlement checks for Growth and Enterprise so CAPA, workflow, retention, custom reports, SSO, directory sync, and analytics can ship behind clear plan boundaries.
+3. Workflow foundation: deploy workflow schema and enable read/list plus creation before template execution.
+4. Report packs: only reintroduce industry-specific export CTAs when one pack is backed by real data and a working export endpoint.
+5. Verification discipline: keep `e2e/capa-flow.spec.ts`, app-action integrity, and the full crawler in the release lane for CAPA changes.

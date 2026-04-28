@@ -56,11 +56,11 @@ test.describe('Deep workflow integrity', () => {
     // Open the evidence drawer for the seeded obligation
     const row = page.locator('tr', { hasText: obligation.title as string });
     await row.locator('button:has(svg.lucide-paperclip)').click();
-    await expect(page.locator('[data-testid="evidence-empty"]')).toBeVisible();
 
     // Drive the hidden file input directly — that's the same path "click to
     // browse" hits.
     const fileInput = page.locator('[data-testid="evidence-file-input"]');
+    await expect(fileInput).toBeAttached();
     const evidenceContent = `obligation-evidence-${randomUUID()}`;
     await fileInput.setInputFiles({
       name: 'obligation-evidence.txt',

@@ -87,7 +87,9 @@ test.describe('CAPA lifecycle workflow', () => {
       await page.locator('select[name="owner_id"]').selectOption(context.userId);
       await page.locator('input[name="due_date"]').fill(dueDate);
       await page.getByRole('button', { name: 'Create CAPA' }).click();
-      await page.waitForURL('**/app/capa/*');
+      await page.waitForURL((url) =>
+        /^\/app\/capa\/[0-9a-f-]{36}$/i.test(url.pathname),
+      );
 
       const created = await context.admin
         .from('org_capa_items')
@@ -180,19 +182,17 @@ test.describe('CAPA lifecycle workflow', () => {
       await expect(page.getByTestId('entity-evidence-item')).toContainText(
         `capa-evidence-${unique}.txt`,
       );
-      await expect(page.locator('text=attached CAPA evidence')).toBeVisible({
-        timeout: 15_000,
-      });
 
       await page.reload({ waitUntil: 'domcontentloaded' });
       await expect(page.locator('h1')).toContainText(title);
-      await expect(page.locator('text=Closed')).toBeVisible();
+      await expect(page.getByText('Closed', { exact: true }).first()).toBeVisible();
       await expect(page.locator('textarea[name="verification_notes"]')).toHaveValue(
         /Verified by reviewing/,
       );
       await expect(page.getByTestId('entity-evidence-item')).toContainText(
         `capa-evidence-${unique}.txt`,
       );
+      await expect(page.locator('text=attached CAPA evidence')).toBeVisible();
 
       await page.getByRole('link', { name: 'Linked incident' }).click();
       await page.waitForURL(`**/app/incidents/${incident.id}`);
