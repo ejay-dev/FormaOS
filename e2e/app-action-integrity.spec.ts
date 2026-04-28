@@ -234,7 +234,7 @@ test.describe('Authenticated app action integrity', () => {
       .eq('id', role!.id);
   });
 
-  test('primary CTAs resolve or are truthfully unavailable', async ({ page }) => {
+  test('primary CTAs resolve without placeholder export clutter', async ({ page }) => {
     const failures = installIntegrityGuards(page);
     await authenticateWorkspacePage(page);
 
@@ -244,12 +244,7 @@ test.describe('Authenticated app action integrity', () => {
     const unsupportedExports = page.locator(
       '[data-testid="unsupported-report-export"]',
     );
-    const unsupportedCount = await unsupportedExports.count();
-    for (let i = 0; i < unsupportedCount; i += 1) {
-      const item = unsupportedExports.nth(i);
-      await expect(item).toContainText('Export coming soon');
-      await expect(item).toBeDisabled();
-    }
+    await expect(unsupportedExports).toHaveCount(0);
 
     await page.goto('/app/settings/roles', { waitUntil: 'domcontentloaded' });
     const newRole = page.locator('a[href="/app/settings/roles/new"]').first();

@@ -1,24 +1,26 @@
 # Disabled Actions Roadmap
 
 Generated from `docs/app-action-inventory.md` and `docs/full-app-action-crawler-report.md`.
+Updated on 2026-04-28 after the disabled-surface cleanup sprint.
 
 ## Summary
 
-- Total visible actions crawled: 368
-- Passing actions: 268
-- Disabled truthful actions reviewed: 100
+- Total visible actions crawled: 363
+- Passing actions: 269
+- Disabled truthful actions remaining: 94
 - Remaining failed actions: 0
 - Main finding: 81 disabled actions are the AI assistant `Send message` button in its truthful empty-input state. They should not become roadmap work unless the assistant entry pattern changes.
+- Cleanup delta: removed 4 report placeholder exports and merged the workflow schema-disabled creation/template placeholders into one `Create workflow` disabled action.
 
 ## Classification Breakdown
 
 | Recommendation | Count | Meaning |
 |---|---:|---|
 | KEEP_DISABLED | 84 | Correct state-gated disabled controls, mostly empty assistant sends plus stateful refresh/report/feed buttons. |
-| PLAN_GATE | 10 | Useful paid capabilities, but should ship behind Growth or Enterprise entitlements. |
-| REMOVE | 4 | Visible "coming soon" report export buttons that add clutter and make the product feel unfinished. |
+| PLAN_GATE | 9 | Useful paid capabilities, but should ship behind Growth or Enterprise entitlements. |
+| REMOVE | 0 | Previous report export placeholders were removed from `/app/reports`. |
 | BUILD_NEXT | 1 | CAPA schema enablement is high product/compliance value and should be in the next product sprint. |
-| MERGE_WITH_EXISTING | 1 | Duplicate workflow template affordance should collapse into the single template workflow. |
+| MERGE_WITH_EXISTING | 0 | Previous duplicate workflow template affordance was merged into one `Create workflow` placeholder. |
 | BUILD_NOW | 0 | No docs-only pass item was small enough to implement safely without changing product behavior. |
 | ROLE_GATE | 0 | No action should be classified only by role; several plan-gated items also need role restrictions when built. |
 
@@ -34,12 +36,12 @@ Generated from `docs/app-action-inventory.md` and `docs/full-app-action-crawler-
 | B4 Enterprise identity/sync | Disabled until configured | SSO must be enabled or a directory provider selected. | Medium for IT admins. | Medium for access governance. | Medium | Medium | PLAN_GATE |
 | B5 Retention governance | Schema-degraded disabled CTA | Retention tables or columns can be absent. | Medium for admins. | High for data lifecycle and legal hold controls. | Medium | Medium | PLAN_GATE |
 | B6 Form analytics | Coming soon disabled CTA | Analytics surface is not yet implemented. | Medium for operations users. | Medium for submission trend evidence. | Medium | Low | PLAN_GATE |
-| C1 Unsupported industry exports | Coming soon disabled CTA | Export template is advertised without a backing export. | Low until backed by real report data. | Medium only if report is implemented. | Medium | Medium | REMOVE |
-| C2 Duplicate template action | Disabled duplicate action | Same workflow template action appears twice in crawler inventory. | Low as duplicate UI. | Low | Low | Low | MERGE_WITH_EXISTING |
+| C1 Unsupported industry exports | Removed | Export template placeholders were advertised without backing exports. | Low until backed by real report data. | Medium only if report is implemented. | Medium | Resolved | REMOVE completed |
+| C2 Duplicate template action | Merged | Workflow unavailable state now shows one `Create workflow` placeholder. | Low as duplicate UI. | Low | Low | Resolved | MERGE completed |
 
 ## Full Action Classification Matrix
 
-Scores are `user/compliance/sales/effort/risk`.
+Scores are `user/compliance/sales/effort/risk`. Row numbers remain the original crawler row identifiers where unchanged; removed rows are omitted so follow-up diffs are easy to trace.
 
 | # | Module | Route | Action label | Profile | Scores | Plan/role gate |
 |---:|---|---|---|---|---|---|
@@ -79,11 +81,7 @@ Scores are `user/compliance/sales/effort/risk`.
 | 34 | Registers | `/app/registers/training` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 35 | Forms | `/app/forms` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 36 | Forms | `/app/forms/builder/new` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
-| 37 | Reports | `/app/reports` | Export coming soon | C1 | L/M/L/M/M | Remove; rebuild later as Growth/Enterprise report pack |
-| 38 | Reports | `/app/reports` | Export coming soon | C1 | L/M/L/M/M | Remove; rebuild later as Growth/Enterprise report pack |
-| 39 | Reports | `/app/reports` | Export coming soon | C1 | L/M/L/M/M | Remove; rebuild later as Growth/Enterprise report pack |
-| 40 | Reports | `/app/reports` | Export coming soon | C1 | L/M/L/M/M | Remove; rebuild later as Growth/Enterprise report pack |
-| 41 | Reports | `/app/reports` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
+| 37 | Reports | `/app/reports` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 42 | Reports | `/app/reports/custom` | Custom reports unavailable | B3 | M/M/M/M/M | Growth plan; Manager/Admin authoring |
 | 43 | Reports | `/app/reports/custom` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 44 | Reports | `/app/reports/custom/new` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
@@ -110,10 +108,8 @@ Scores are `user/compliance/sales/effort/risk`.
 | 65 | Settings | `/app/settings/auditor-access` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 66 | Settings | `/app/settings/auditor-access/new` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 67 | Billing | `/app/billing` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
-| 68 | Workflows | `/app/workflows` | Blank Workflow | B2 | H/H/H/H/M | Enterprise; Admin/Manager only |
-| 69 | Workflows | `/app/workflows` | From Template | B2 | H/H/H/H/M | Enterprise; Admin/Manager only |
+| 68 | Workflows | `/app/workflows` | Create workflow | B2 | H/H/H/H/M | Enterprise; Admin/Manager only |
 | 70 | Workflows | `/app/workflows` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
-| 71 | Workflows | `/app/workflows` | From Template | C2 | L/L/L/L/L | Merge with row 69 |
 | 72 | Audit Trail | `/app/audit-trail` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 73 | Audit Trail | `/app/audit` | Send message | A1 | L/L/L/L/L | Viewer read-only keeps disabled until input |
 | 74 | Audit Trail | `/app/activity` | End of feed | A2 | L/L/L/L/L | Foundation; state-dependent |
@@ -147,21 +143,21 @@ Scores are `user/compliance/sales/effort/risk`.
 ## Top 10 Build Priorities
 
 1. CAPA schema enablement and create/update flow. High user, compliance, and demo value; medium effort; high risk if left disabled.
-2. Workflow schema deployment and blank workflow creation. High user, compliance, and sales value; high effort; should be Enterprise-gated.
-3. Workflow template creation from curated templates. High sales/demo value; high effort; merge duplicate template CTA while building.
+2. Workflow schema deployment and creation path. High user, compliance, and sales value; high effort; should be Enterprise-gated.
+3. Workflow template creation from curated templates. High sales/demo value; high effort; keep behind the single creation path.
 4. Retention policy save. High compliance value; medium effort; Enterprise/Admin-only.
 5. Retention dry-run preview. High compliance value because it makes lifecycle execution safe; medium effort; Enterprise/Admin-only.
 6. Custom report builder schema. Medium-high buyer value; medium effort; Growth or Enterprise gate.
 7. SSO test connection. High enterprise sales value; medium effort; Enterprise/Admin-only.
 8. Directory sync save and immediate sync. High enterprise sales value; medium effort; Enterprise/Admin-only.
 9. Form submission analytics. Medium user/compliance/demo value; medium effort; Growth gate.
-10. Replace unsupported industry export placeholders with one real next report pack, preferably NDIS or healthcare based on target sales motion.
+10. Add one real industry report pack, preferably NDIS or healthcare based on target sales motion, before reintroducing industry export CTAs.
 
 ## Remove Candidates
 
 | Action | Why remove |
 |---|---|
-| 4 x `Export coming soon` on `/app/reports` | They are the clearest clutter. They advertise report exports that do not exist, duplicate the working standard report export pattern, and make the product feel less finished. Remove the buttons now; reintroduce as real report cards when a report pack is implemented. |
+| None remaining after cleanup | The 4 `Export coming soon` buttons on `/app/reports` were removed. Reintroduce industry report CTAs only when backed by working exports. |
 
 ## Plan And Role Gate Candidates
 
@@ -178,8 +174,8 @@ Scores are `user/compliance/sales/effort/risk`.
 
 ## Quick Wins
 
-- Remove the four `Export coming soon` buttons from `/app/reports` and keep only working report exports.
-- Collapse the duplicate workflow `From Template` affordance into the single template entry point.
+- Keep `/app/reports` limited to working exports and meaningful navigation.
+- Keep workflow creation represented by one clear action while schema is unavailable.
 - Add clearer disabled copy for empty AI assistant input if users mistake the disabled send icon for a broken feature.
 - Keep `Generate Report` disabled until a SOC 2 assessment exists; optionally add inline copy explaining the prerequisite.
 
@@ -193,8 +189,8 @@ Scores are `user/compliance/sales/effort/risk`.
 
 ## Recommended Next Engineering Sprint
 
-1. Product hygiene: remove the 4 unsupported report export CTAs and merge the duplicate workflow template action.
-2. Schema sprint: provision and validate CAPA tables first, then implement the CAPA create/update path with audit logging and role checks.
-3. Enterprise gate design: define entitlement checks for Growth and Enterprise so workflow, retention, custom reports, SSO, directory sync, and analytics can ship behind clear plan boundaries.
-4. Workflow foundation: deploy workflow schema and enable read/list plus blank workflow creation before template execution.
+1. Schema sprint: provision and validate the expanded CAPA lifecycle first, then implement the CAPA create/update path with audit logging and role checks.
+2. Enterprise gate design: define entitlement checks for Growth and Enterprise so workflow, retention, custom reports, SSO, directory sync, and analytics can ship behind clear plan boundaries.
+3. Workflow foundation: deploy workflow schema and enable read/list plus creation before template execution.
+4. Report packs: only reintroduce industry-specific export CTAs when one pack is backed by real data and a working export endpoint.
 5. Verification: rerun the app action crawler after each UI cleanup/schema enablement slice so disabled counts drop for real reasons, not by hiding broken paths.

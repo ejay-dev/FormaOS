@@ -1,14 +1,15 @@
 # App Action Inventory
 
 Generated from `e2e/full-app-action-crawler.spec.ts` on 2026-04-27T16:09:12.433Z.
+Updated on 2026-04-28 after removing report placeholder exports and merging the workflow creation placeholder.
 
 ## Summary
 
 - Modules audited: 21
 - Routes inspected: 81
-- Visible actions recorded: 368
-- PASS: 268
-- DISABLED: 100
+- Visible actions recorded: 363
+- PASS: 269
+- DISABLED: 94
 - FAIL: 0
 
 ## By Module
@@ -23,19 +24,19 @@ Generated from `e2e/full-app-action-crawler.spec.ts` on 2026-04-27T16:09:12.433Z
 | Dashboard | 4 | 43 | 7 |
 | Evidence Vault | 4 | 14 | 4 |
 | Executive | 2 | 9 | 3 |
-| Forms | 4 | 20 | 5 |
+| Forms | 4 | 24 | 5 |
 | Incidents | 5 | 21 | 5 |
-| Participants | 5 | 22 | 5 |
+| Participants | 5 | 19 | 5 |
 | Policies | 6 | 23 | 6 |
 | Progress Notes | 1 | 3 | 1 |
 | Registers | 2 | 7 | 2 |
-| Reports | 4 | 26 | 9 |
+| Reports | 4 | 22 | 5 |
 | Settings | 15 | 62 | 18 |
 | Staff Compliance | 4 | 17 | 4 |
 | Tasks | 3 | 11 | 3 |
 | Team | 2 | 7 | 2 |
 | Visits | 3 | 11 | 3 |
-| Workflows | 1 | 6 | 4 |
+| Workflows | 1 | 4 | 2 |
 
 ## Actions
 
@@ -209,10 +210,6 @@ Generated from `e2e/full-app-action-crawler.spec.ts` on 2026-04-27T16:09:12.433Z
 | Reports | /app/reports | Generate | download/export | /api/reports/export?type=iso27001&format=pdf&mode=sync | Endpoint responds with non-empty file | HTTP 200 | PASS |  |
 | Reports | /app/reports | Generate | download/export | /api/reports/export?type=ndis&format=pdf&mode=sync | Endpoint responds with non-empty file | HTTP 200 | PASS |  |
 | Reports | /app/reports | Generate | download/export | /api/reports/export?type=hipaa&format=pdf&mode=sync | Endpoint responds with non-empty file | HTTP 200 | PASS |  |
-| Reports | /app/reports | Export coming soon | button | unsupported-report-export | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
-| Reports | /app/reports | Export coming soon | button | unsupported-report-export | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
-| Reports | /app/reports | Export coming soon | button | unsupported-report-export | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
-| Reports | /app/reports | Export coming soon | button | unsupported-report-export | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
 | Reports | /app/reports | Send message | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
 | Reports | /app/reports | Quick Search⌘K | modal/dropdown | safe opener | Opens or toggles visible UI without app errors | opened overlay | PASS |  |
 | Reports | /app/reports/custom | Page load | link | /app/reports/custom | Authenticated page loads without 404 or crash | HTTP 200 | PASS |  |
@@ -301,11 +298,9 @@ Generated from `e2e/full-app-action-crawler.spec.ts` on 2026-04-27T16:09:12.433Z
 | Billing | /app/billing | Send message | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
 | Billing | /app/billing | Quick Search⌘K | modal/dropdown | safe opener | Opens or toggles visible UI without app errors | opened overlay | PASS |  |
 | Workflows | /app/workflows | Page load | link | /app/workflows | Authenticated page loads without 404 or crash | HTTP 200 | PASS |  |
-| Workflows | /app/workflows | Blank Workflow | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
-| Workflows | /app/workflows | From Template | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
+| Workflows | /app/workflows | Create workflow | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
 | Workflows | /app/workflows | Send message | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |
 | Workflows | /app/workflows | Quick Search⌘K | modal/dropdown | safe opener | Opens or toggles visible UI without app errors | opened overlay | PASS |  |
-| Workflows | /app/workflows | From Template | button | safe opener | Disabled action is not user-actionable | disabled | DISABLED |  |
 | Audit Trail | /app/audit-trail | Page load | link | /app/audit-trail | Authenticated page loads without 404 or crash | HTTP 200 | PASS |  |
 | Audit Trail | /app/audit-trail | Skip to main content | link | /app/audit-trail | Destination resolves without app 404 | HTTP 200 | PASS |  |
 | Audit Trail | /app/audit-trail | Send message | button |  | Disabled actions must not be silently clickable | disabled in UI | DISABLED |  |

@@ -89,7 +89,7 @@ test.describe('Export and download integrity', () => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
   });
 
-  test('report export links download files and unsupported templates are disabled', async ({
+  test('report export links download files without placeholder template exports', async ({
     page,
   }) => {
     const failures = installDownloadGuards(page);
@@ -102,12 +102,7 @@ test.describe('Export and download integrity', () => {
     const unsupportedExports = page.locator(
       '[data-testid="unsupported-report-export"]',
     );
-    const unsupportedCount = await unsupportedExports.count();
-    for (let i = 0; i < unsupportedCount; i += 1) {
-      const item = unsupportedExports.nth(i);
-      await expect(item).toContainText('Export coming soon');
-      await expect(item).toBeDisabled();
-    }
+    await expect(unsupportedExports).toHaveCount(0);
 
     const exportLinks = page.locator('[data-testid="report-export-link"]');
     await expect(exportLinks.first()).toBeVisible();

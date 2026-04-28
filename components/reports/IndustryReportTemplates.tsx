@@ -2,7 +2,6 @@
 
 import {
   FileText,
-  Lock,
   ShieldCheck,
   Users,
   AlertTriangle,
@@ -221,15 +220,6 @@ export function IndustryReportTemplates() {
                     </p>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  disabled
-                  data-testid="unsupported-report-export"
-                  className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-amber-400/25 bg-amber-400/10 px-2.5 py-1.5 text-xs font-semibold text-amber-200"
-                >
-                  <Lock className="h-3.5 w-3.5" />
-                  Export coming soon
-                </button>
               </div>
             ))}
           </div>
@@ -258,15 +248,6 @@ export function IndustryReportTemplates() {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            disabled
-            data-testid="unsupported-report-export"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-md border border-amber-400/25 bg-amber-400/10 px-2.5 py-1.5 text-xs font-semibold text-amber-200"
-          >
-            <Lock className="h-3.5 w-3.5" />
-            Export coming soon
-          </button>
         </div>
       </div>
     </div>

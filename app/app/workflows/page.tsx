@@ -63,29 +63,22 @@ export default async function WorkflowsPage() {
             <h2 className="text-lg font-semibold text-foreground">
               Workflow automation is not available in this environment
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               The backing database tables are not migrated yet:
               {' '}
               <span className="font-mono text-foreground">
                 {missingWorkflowTables.join(', ')}
               </span>
-              . Workflow create, template, run, and toggle actions are disabled until
-              the workflow schema is present.
+              . Workflow creation, template installation, runs, and toggles are
+              unavailable until the workflow schema is present.
             </p>
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-5">
               <button
                 type="button"
                 disabled
                 className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-foreground opacity-50"
               >
-                Blank Workflow
-              </button>
-              <button
-                type="button"
-                disabled
-                className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 opacity-50"
-              >
-                From Template
+                Create workflow
               </button>
             </div>
           </section>

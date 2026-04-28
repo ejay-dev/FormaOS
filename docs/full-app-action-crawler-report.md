@@ -1,18 +1,19 @@
 # Full App Action Crawler Report
 
 Generated: 2026-04-27T16:09:12.435Z
+Updated: 2026-04-28 cleanup pass
 
 ## Executive Verdict
 
-The authenticated app action crawler passes against the production build. In the tested seeded workspace, no visible app 404s, unsupported export links, or failing crawler actions remain. Confidence: high for routes/actions covered by the crawler, with schema-deferred areas truthfully disabled where the connected database is missing tables.
+The authenticated app action crawler passes against the production build. In the tested seeded workspace, no visible app 404s, unsupported export links, or failing crawler actions remain. The cleanup pass removed low-value report export placeholders and merged the workflow schema-disabled creation state into one clear placeholder action. Confidence: high for routes/actions covered by the crawler, with schema-deferred areas truthfully disabled where the connected database is missing tables.
 
 ## Inventory Summary
 
 - Modules audited: 21
 - Routes inspected: 81
-- Visible actions recorded: 368
-- Passing actions/page loads: 268
-- Disabled truthful actions: 100
+- Visible actions recorded: 363
+- Passing actions/page loads: 269
+- Disabled truthful actions: 94
 - Failed actions: 0
 
 ## Modules Audited
@@ -51,10 +52,12 @@ The authenticated app action crawler passes against the production build. In the
 - Training register, workflows, governance retention/isolation, notification preferences, and executive intelligence now degrade truthfully when backing tables are missing or older.
 - Task board passed server event handlers into a client component. Converted handlers to client-side optional defaults.
 - Identity audit export returned 403 when its backing table was unavailable. Fixed to return valid empty exports.
+- Report templates no longer advertise unavailable "Export coming soon" actions.
+- Workflow schema-disabled state now exposes one clear `Create workflow` placeholder instead of separate blank/template placeholders plus a duplicate template opener.
 
 ## Export/Download Result
 
-Crawler and export suite verified visible export/download actions return non-empty files or truthful disabled states. Activity, incident, staff credential, forms submissions, vault evidence, and identity audit export paths are covered.
+Crawler and export suite verified visible export/download actions return non-empty files. Unsupported report template export placeholders have been removed from `/app/reports`. Activity, incident, staff credential, forms submissions, vault evidence, and identity audit export paths are covered.
 
 ## Form and Modal Result
 
