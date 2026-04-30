@@ -7,6 +7,14 @@ import { notifySelf } from "@/app/app/actions/notifications";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
 import { actionError, isNextInternalError } from "@/lib/actions/safe";
+import {
+  createInitialVersion,
+  getLatestVersion,
+  publishApprovedVersion,
+  recordApprovalDecision,
+  submitVersionForReview,
+  upsertDraftVersion,
+} from "@/lib/policies/lifecycle";
 
 export async function createPolicy(formData: FormData) {
   try {
@@ -46,6 +54,22 @@ export async function createPolicy(formData: FormData) {
     .single();
 
   if (error) throw new Error(`Policy Creation Failed: ${error.message}`);
+
+  // Lifecycle wiring (Phase 1): seed version 1 in policy_versions.
+  // Failures are logged but non-fatal so the create flow doesn't break if
+  // 20260403_policy_lifecycle.sql / 20260430_007_policy_lifecycle_repair.sql
+  // hasn't been applied yet.
+  try {
+    await createInitialVersion(supabase, {
+      orgId: membership.organization_id,
+      policyId: policy.id,
+      title,
+      content: content ?? "",
+      createdBy: user.id,
+    });
+  } catch (versionErr) {
+    console.warn("[policies.createPolicy] initial version seed failed:", versionErr);
+  }
 
   await logActivity(membership.organization_id, "CREATE_POLICY", {
     resourceName: title,
@@ -115,6 +139,27 @@ export async function updatePolicy(formData: FormData) {
     throw new Error("Organization mismatch.");
   }
 
+  // Lifecycle wiring (Phase 1): if a version is currently awaiting approval,
+  // refuse the edit so authors can't silently bypass the approval flow by
+  // editing the underlying org_policies row.
+  try {
+    const latestVersion = await getLatestVersion(supabase, policyId);
+    if (latestVersion && latestVersion.status === "pending_approval") {
+      throw new Error(
+        "This policy has a version awaiting approval. Approve or reject the pending version before making further edits.",
+      );
+    }
+  } catch (lifecycleErr) {
+    // Re-throw the user-facing message; swallow other errors so a missing
+    // lifecycle table doesn't block updates pre-migration.
+    if (
+      lifecycleErr instanceof Error &&
+      lifecycleErr.message.includes("awaiting approval")
+    ) {
+      throw lifecycleErr;
+    }
+  }
+
   const { error } = await supabase
     .from("org_policies")
     .update({
@@ -128,6 +173,21 @@ export async function updatePolicy(formData: FormData) {
     .eq("organization_id", oldPolicy.organization_id);
 
   if (error) throw error;
+
+  // Lifecycle wiring (Phase 1): mirror the edit into policy_versions so the
+  // approval workflow has a typed revision to operate on. Best-effort —
+  // failures are logged, not thrown, so an unmigrated DB doesn't break edits.
+  try {
+    await upsertDraftVersion(supabase, {
+      orgId: oldPolicy.organization_id,
+      policyId,
+      title,
+      content: content ?? "",
+      createdBy: user.id,
+    });
+  } catch (versionErr) {
+    console.warn("[policies.updatePolicy] draft version upsert failed:", versionErr);
+  }
 
   await logActivity(oldPolicy.organization_id, "UPDATE_POLICY", {
     resourceName: title,
@@ -229,6 +289,284 @@ export async function linkArtifactToPolicy(policyId: string, evidenceId: string)
   );
 
   revalidatePath(`/app/policies/${policyId}`);
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+// ============================================================
+// LIFECYCLE ACTIONS (Phase 1)
+//
+// Wire submit / approve / reject / publish onto the existing
+// policy_versions + policy_approvals tables. UI surfaces these via the
+// detail page at /app/policies/[id].
+// ============================================================
+
+const APPROVAL_ROLES = new Set(["owner", "admin"]);
+
+async function getLifecycleContext(policyId: string) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const { data: membership } = await supabase
+    .from("org_members")
+    .select("organization_id, role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!membership) throw new Error("Organization context lost");
+
+  const { data: policy } = await supabase
+    .from("org_policies")
+    .select("organization_id, title, status")
+    .eq("id", policyId)
+    .eq("organization_id", membership.organization_id)
+    .maybeSingle();
+  if (!policy) throw new Error("Policy not found");
+
+  return { supabase, user, membership, policy };
+}
+
+/**
+ * Submit the latest draft for review. Author submits; an admin/owner approves.
+ * Phase 1 keeps reviewer assignment implicit — approvers are anyone in the
+ * org with role owner/admin who hits the Approve button.
+ */
+export async function submitPolicyForReview(formData: FormData) {
+  try {
+    const policyId = formData.get("policyId") as string;
+    if (!policyId) throw new Error("policyId required");
+
+    const { supabase, user, membership, policy } =
+      await getLifecycleContext(policyId);
+
+    const latest = await getLatestVersion(supabase, policyId);
+    if (!latest) {
+      throw new Error(
+        "This policy has no version history yet. Save an edit first.",
+      );
+    }
+    if (latest.status !== "draft") {
+      throw new Error(
+        `Cannot submit: latest version is in status="${latest.status}".`,
+      );
+    }
+
+    await submitVersionForReview(supabase, {
+      versionId: latest.id,
+      approverIds: [], // Phase 1: no pre-assigned reviewers; any owner/admin can decide.
+    });
+
+    // Mirror status onto org_policies for back-compat with the existing list/detail UI.
+    await supabase
+      .from("org_policies")
+      .update({
+        status: "review",
+        last_updated_at: new Date().toISOString(),
+        last_updated_by: user.id,
+      })
+      .eq("id", policyId)
+      .eq("organization_id", membership.organization_id);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: (membership.role as string | null) ?? null,
+        entityType: "policy",
+        entityId: policyId,
+        actionType: "POLICY_SUBMITTED_FOR_REVIEW",
+        afterState: {
+          version_id: latest.id,
+          version_number: latest.version_number,
+          title: policy.title,
+        },
+        reason: "submit_for_review",
+      },
+      { required: true },
+    );
+
+    revalidatePath(`/app/policies/${policyId}`);
+    revalidatePath(`/app/policies/${policyId}/versions`);
+    return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+/**
+ * Approve the pending version. Owner/admin only. Phase 1 single-approver
+ * semantics: one approval flips status to `approved`, then the same action
+ * publishes it (atomic-from-the-user's-POV) and marks org_policies.status
+ * = 'published'.
+ */
+export async function approvePolicy(formData: FormData) {
+  try {
+    const policyId = formData.get("policyId") as string;
+    const comment = (formData.get("comment") as string | null) ?? null;
+    if (!policyId) throw new Error("policyId required");
+
+    const { supabase, user, membership, policy } =
+      await getLifecycleContext(policyId);
+
+    const role = (membership.role as string | null) ?? "";
+    if (!APPROVAL_ROLES.has(role)) {
+      throw new Error("Only owner or admin can approve policies.");
+    }
+
+    const latest = await getLatestVersion(supabase, policyId);
+    if (!latest) throw new Error("No policy version to approve.");
+    if (latest.status !== "pending_approval") {
+      throw new Error(
+        `Cannot approve: latest version is in status="${latest.status}".`,
+      );
+    }
+
+    // Block self-approval — author cannot approve their own version.
+    if (latest.created_by === user.id) {
+      throw new Error(
+        "You cannot approve a policy version you authored. A different owner or admin must review.",
+      );
+    }
+
+    // Record decision (flips version → approved).
+    await recordApprovalDecision(supabase, {
+      versionId: latest.id,
+      approverId: user.id,
+      decision: "approved",
+      comment,
+    });
+
+    // Publish immediately in Phase 1 (no separate publish step in the UI yet).
+    await publishApprovedVersion(supabase, latest.id);
+
+    // Mirror onto org_policies for the existing UI.
+    await supabase
+      .from("org_policies")
+      .update({
+        status: "published",
+        last_updated_at: new Date().toISOString(),
+        last_updated_by: user.id,
+      })
+      .eq("id", policyId)
+      .eq("organization_id", membership.organization_id);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: role,
+        entityType: "policy",
+        entityId: policyId,
+        actionType: "POLICY_APPROVED_AND_PUBLISHED",
+        afterState: {
+          version_id: latest.id,
+          version_number: latest.version_number,
+          title: policy.title,
+          comment,
+        },
+        reason: "approve",
+      },
+      { required: true },
+    );
+
+    await notifySelf({
+      organizationId: membership.organization_id,
+      type: "POLICY_APPROVED",
+      title: "Policy Published",
+      body: policy.title,
+      actionUrl: `/app/policies/${policyId}`,
+      metadata: {
+        policyId,
+        versionNumber: latest.version_number,
+      },
+    });
+
+    revalidatePath(`/app/policies/${policyId}`);
+    revalidatePath(`/app/policies/${policyId}/versions`);
+    revalidatePath("/app/policies");
+    return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+/**
+ * Reject the pending version. Owner/admin only. Returns the version to
+ * draft so the author can revise.
+ */
+export async function rejectPolicy(formData: FormData) {
+  try {
+    const policyId = formData.get("policyId") as string;
+    const comment = (formData.get("comment") as string | null) ?? null;
+    if (!policyId) throw new Error("policyId required");
+
+    const { supabase, user, membership, policy } =
+      await getLifecycleContext(policyId);
+
+    const role = (membership.role as string | null) ?? "";
+    if (!APPROVAL_ROLES.has(role)) {
+      throw new Error("Only owner or admin can reject policies.");
+    }
+
+    const latest = await getLatestVersion(supabase, policyId);
+    if (!latest) throw new Error("No policy version to reject.");
+    if (latest.status !== "pending_approval") {
+      throw new Error(
+        `Cannot reject: latest version is in status="${latest.status}".`,
+      );
+    }
+
+    if (latest.created_by === user.id) {
+      throw new Error(
+        "You cannot reject a policy version you authored.",
+      );
+    }
+
+    await recordApprovalDecision(supabase, {
+      versionId: latest.id,
+      approverId: user.id,
+      decision: "rejected",
+      comment,
+    });
+
+    await supabase
+      .from("org_policies")
+      .update({
+        status: "draft",
+        last_updated_at: new Date().toISOString(),
+        last_updated_by: user.id,
+      })
+      .eq("id", policyId)
+      .eq("organization_id", membership.organization_id);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: role,
+        entityType: "policy",
+        entityId: policyId,
+        actionType: "POLICY_REJECTED",
+        afterState: {
+          version_id: latest.id,
+          version_number: latest.version_number,
+          title: policy.title,
+          comment,
+        },
+        reason: "reject",
+      },
+      { required: true },
+    );
+
+    revalidatePath(`/app/policies/${policyId}`);
+    revalidatePath(`/app/policies/${policyId}/versions`);
+    return { success: true };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);

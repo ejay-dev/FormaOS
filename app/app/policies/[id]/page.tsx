@@ -2,8 +2,14 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import { ChevronLeft, Save, ShieldCheck, History } from 'lucide-react';
 import Link from 'next/link';
-import { updatePolicy } from '@/app/app/actions/policies';
+import {
+  approvePolicy,
+  rejectPolicy,
+  submitPolicyForReview,
+  updatePolicy,
+} from '@/app/app/actions/policies';
 import { ArtifactSidebar } from '@/components/policies/artifact-sidebar';
+import { getLatestVersion } from '@/lib/policies/lifecycle';
 
 export default async function PolicyDetailPage({
   params,
@@ -56,6 +62,24 @@ export default async function PolicyDetailPage({
     .eq('organization_id', membership.organization_id);
 
   const isAdmin = membership?.role === 'admin' || membership?.role === 'owner';
+
+  // 4. Lifecycle state — latest policy_version row drives the Submit/
+  // Approve/Reject controls. Best-effort; if the lifecycle tables aren't
+  // populated yet we fall back to legacy controls.
+  let latestVersion: Awaited<ReturnType<typeof getLatestVersion>> = null;
+  try {
+    latestVersion = await getLatestVersion(supabase, policyId);
+  } catch (lifecycleErr) {
+    console.warn('[policies/[id]] lifecycle fetch failed:', lifecycleErr);
+  }
+
+  const lifecycleStatus = latestVersion?.status ?? null;
+  const canSubmit = isAdmin && lifecycleStatus === 'draft';
+  const isAuthorOfPending =
+    latestVersion?.status === 'pending_approval' &&
+    latestVersion.created_by === user.id;
+  const canDecide =
+    isAdmin && lifecycleStatus === 'pending_approval' && !isAuthorOfPending;
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in duration-700">
@@ -163,9 +187,19 @@ export default async function PolicyDetailPage({
                 <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
                   <span className="text-muted-foreground">Version</span>
                   <span className="text-foreground bg-glass-strong px-2 py-1 rounded-lg">
-                    {policy.version || 'v1.0'}
+                    {latestVersion
+                      ? `v${latestVersion.version_number}`
+                      : policy.version || 'v1.0'}
                   </span>
                 </div>
+                {latestVersion ? (
+                  <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
+                    <span className="text-muted-foreground">Lifecycle</span>
+                    <span className="text-foreground bg-glass-strong px-2 py-1 rounded-lg">
+                      {latestVersion.status.replace(/_/g, ' ')}
+                    </span>
+                  </div>
+                ) : null}
                 <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
                   <span className="text-muted-foreground">Governance ID</span>
                   <span className="font-mono text-muted-foreground">
@@ -180,7 +214,7 @@ export default async function PolicyDetailPage({
                   className="w-full bg-glass-strong text-foreground py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-glass-strong transition-all shadow-xl motion-safe:active:scale-95 group"
                 >
                   <Save className="h-4 w-4 transition-transform group-hover:scale-110" />
-                  Commit Changes
+                  Save Draft
                 </button>
               ) : (
                 <div className="p-4 bg-glass-strong rounded-2xl border border-edge-2 text-xs font-black text-muted-foreground text-center uppercase tracking-widest flex items-center justify-center gap-2">
@@ -192,6 +226,99 @@ export default async function PolicyDetailPage({
           </div>
         </div>
       </form>
+
+      {/* Lifecycle controls — separate forms because each posts a different
+          server action. Visible only when there's a versioned lifecycle row
+          (i.e., createPolicy/updatePolicy seeded one) and the user has the
+          right role. */}
+      {latestVersion ? (
+        <div className="mt-6 bg-surface-1 border border-edge-2 rounded-[2rem] p-6 sm:p-8 shadow-sm">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-1">
+              <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                Approval Workflow
+              </p>
+              <p className="text-sm text-foreground">
+                Latest version{' '}
+                <span className="font-mono">v{latestVersion.version_number}</span>{' '}
+                is currently{' '}
+                <span className="font-bold">
+                  {latestVersion.status.replace(/_/g, ' ')}
+                </span>
+                .
+                {isAuthorOfPending
+                  ? ' You authored this version, so a different owner or admin must approve it.'
+                  : ''}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              {canSubmit ? (
+                <form
+                  action={async (formData) => {
+                    'use server';
+                    await submitPolicyForReview(formData);
+                  }}
+                >
+                  <input type="hidden" name="policyId" value={policy.id} />
+                  <button
+                    type="submit"
+                    className="bg-glass-strong text-foreground px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-glass-strong transition-all shadow-sm motion-safe:active:scale-95"
+                  >
+                    Submit for Review
+                  </button>
+                </form>
+              ) : null}
+
+              {canDecide ? (
+                <>
+                  <form
+                    action={async (formData) => {
+                      'use server';
+                      await approvePolicy(formData);
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <input type="hidden" name="policyId" value={policy.id} />
+                    <input
+                      type="text"
+                      name="comment"
+                      placeholder="Approval note (optional)"
+                      className="text-xs px-3 py-2 rounded-xl border border-edge-2 bg-glass-strong text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-emerald-400/40"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-emerald-500/15 text-emerald-700 border border-emerald-400/40 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-500/25 transition-all motion-safe:active:scale-95"
+                    >
+                      Approve & Publish
+                    </button>
+                  </form>
+                  <form
+                    action={async (formData) => {
+                      'use server';
+                      await rejectPolicy(formData);
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <input type="hidden" name="policyId" value={policy.id} />
+                    <input
+                      type="text"
+                      name="comment"
+                      placeholder="Rejection reason"
+                      className="text-xs px-3 py-2 rounded-xl border border-edge-2 bg-glass-strong text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-rose-400/40"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-rose-500/15 text-rose-700 border border-rose-400/40 px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-rose-500/25 transition-all motion-safe:active:scale-95"
+                    >
+                      Reject
+                    </button>
+                  </form>
+                </>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
