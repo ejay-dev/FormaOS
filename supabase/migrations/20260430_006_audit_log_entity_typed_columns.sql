@@ -1,4 +1,4 @@
--- Audit log entity typing + backfill.
+-- Audit log entity typing (no backfill on immutable tables).
 --
 -- Background:
 --   org_audit_logs already has an entity_id uuid column (added by
@@ -7,8 +7,7 @@
 --   constructs target='entityType:entityId' as a free-form string. The
 --   audit-trail reader at /api/v1/audit-trail then filters with
 --   target.eq.X OR target.like '%:Y', which is fragile and can't be
---   indexed efficiently. Older rows whose target doesn't follow the
---   convention are silently invisible to entity panels.
+--   indexed efficiently.
 --
 --   Audit P1 finding #20 in docs/deep-codebase-audit.md.
 --
@@ -16,20 +15,16 @@
 --   1. Adds public.org_audit_logs.entity_type text (sibling to entity_id).
 --   2. Adds a composite index on (organization_id, entity_type, entity_id,
 --      created_at DESC) for entity-scoped panel queries.
---   3. Backfills entity_type and entity_id from existing rows:
---      a. From metadata.entity_type / metadata.entity_id IF the metadata
---         column exists on this DB. (The writer puts hints there via the
---         stripUnsupportedColumn recovery path; not every environment has
---         the metadata column added by later migrations.)
---      b. From the legacy target='entityType:entityId' string for rows
---         that lack metadata-based hints but follow the convention.
---      c. From bare-UUID targets (oldest rows). Recovers entity_id only.
---      Rows whose target is action-shape (no colon) or system labels are
---      left with NULL typed columns; the reader will fall back to the
---      legacy target filter for those.
+--   3. Attempts to backfill the typed columns from existing rows IF AND
+--      ONLY IF the audit-log immutability trigger from
+--      20250319_production_hardening.sql is NOT present. When that
+--      trigger is in place (which it should be in production), the
+--      historical rows stay as-is — they remain reachable via the
+--      reader's legacy target-string fallback. The backfill is a
+--      nice-to-have; the structural win is the typed columns + index for
+--      all new writes from this point forward.
 --
--- Idempotent and guarded — safe to re-run, no-op if the table is missing,
--- and each backfill block guards on the columns it actually touches.
+-- Idempotent and guarded — safe to re-run.
 
 BEGIN;
 
@@ -38,6 +33,7 @@ DECLARE
   has_metadata boolean;
   has_target boolean;
   has_entity_id boolean;
+  immutability_trigger_present boolean;
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_class c
@@ -53,13 +49,29 @@ BEGIN
   -- 1. Add the entity_type column. entity_id already exists from 20250310.
   EXECUTE 'ALTER TABLE public.org_audit_logs ADD COLUMN IF NOT EXISTS entity_type text';
 
-  -- 2. Composite index for entity-panel lookups. created_at DESC matches the
-  --    reader's ORDER BY clause.
+  -- 2. Composite index for entity-panel lookups. created_at DESC matches
+  --    the reader's ORDER BY clause.
   EXECUTE 'CREATE INDEX IF NOT EXISTS idx_org_audit_logs_entity_lookup '
        || 'ON public.org_audit_logs (organization_id, entity_type, entity_id, created_at DESC)';
 
-  -- Detect which optional columns this DB actually has, so the backfill
-  -- only touches what's available.
+  -- Detect the immutability trigger from 20250319_production_hardening.sql.
+  -- If present, we MUST NOT issue UPDATE statements against
+  -- org_audit_logs — the trigger raises "Audit records are immutable".
+  SELECT EXISTS (
+    SELECT 1
+    FROM pg_trigger
+    WHERE tgrelid = 'public.org_audit_logs'::regclass
+      AND tgname = 'org_audit_logs_immutable'
+      AND NOT tgisinternal
+  ) INTO immutability_trigger_present;
+
+  IF immutability_trigger_present THEN
+    RAISE NOTICE
+      'org_audit_logs_immutable trigger detected (audit immutability is a compliance feature, see 20250319_production_hardening.sql). Skipping historical backfill — typed columns will populate for all new writes from this point forward, and the audit-trail reader falls back to target-string filtering for older rows.';
+    RETURN;
+  END IF;
+
+  -- Detect which optional columns this DB actually has.
   SELECT EXISTS (
     SELECT 1 FROM information_schema.columns
     WHERE table_schema = 'public'
@@ -82,12 +94,11 @@ BEGIN
   ) INTO has_entity_id;
 
   IF NOT has_entity_id THEN
-    RAISE NOTICE 'org_audit_logs.entity_id missing; skipping all backfill (entity_id was added by 20250310_phase7_11_enterprise_controls.sql)';
+    RAISE NOTICE 'org_audit_logs.entity_id missing; skipping backfill';
     RETURN;
   END IF;
 
-  -- 3a. Backfill from metadata where the writer has been stashing the
-  --     values. Only runs if the metadata column actually exists on this DB.
+  -- 3a. Backfill from metadata (only if column exists).
   IF has_metadata THEN
     EXECUTE $SQL$
       UPDATE public.org_audit_logs
@@ -104,13 +115,9 @@ BEGIN
         AND metadata IS NOT NULL
         AND jsonb_typeof(metadata) = 'object'
     $SQL$;
-  ELSE
-    RAISE NOTICE 'org_audit_logs.metadata missing; skipping metadata-based backfill';
   END IF;
 
-  -- 3b. Backfill from target='entityType:entityId' string convention for
-  --     rows still missing typed columns. Match strictly: lowercase ascii
-  --     entity_type followed by ':' and a UUID.
+  -- 3b. Backfill from target='entityType:entityId' string convention.
   IF has_target THEN
     EXECUTE $SQL$
       UPDATE public.org_audit_logs
@@ -129,9 +136,7 @@ BEGIN
         AND target ~ '^[a-z][a-z0-9_]*:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
     $SQL$;
 
-    -- 3c. Older rows where target itself was just a bare UUID (pre-convention).
-    --     We can recover entity_id but not entity_type — leave entity_type null
-    --     and let the reader's legacy fallback handle these.
+    -- 3c. Older rows where target was a bare UUID.
     EXECUTE $SQL$
       UPDATE public.org_audit_logs
       SET entity_id = COALESCE(
@@ -141,8 +146,6 @@ BEGIN
       WHERE entity_id IS NULL
         AND target ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
     $SQL$;
-  ELSE
-    RAISE NOTICE 'org_audit_logs.target missing; skipping target-based backfill';
   END IF;
 END$$;
 
