@@ -17,44 +17,70 @@
 --   2. Re-creates the org_form_submissions INSERT policy to read EITHER key,
 --      so a future code-only fix to standardize on requires_auth doesn't
 --      regress in-flight forms.
+--
+-- Idempotency: guarded so the migration is a no-op against environments
+-- where the forms platform tables were never created.
 
 BEGIN;
 
--- Backfill: copy requireAuthentication into requires_auth where missing.
-UPDATE public.org_forms
-SET settings = jsonb_set(
-      COALESCE(settings, '{}'::jsonb),
-      '{requires_auth}',
-      to_jsonb(COALESCE((settings->>'requireAuthentication')::boolean, false)),
-      true
-    )
-WHERE settings ? 'requireAuthentication'
-  AND NOT settings ? 'requires_auth';
+DO $$
+BEGIN
+  -- Backfill org_forms.settings if the table exists.
+  IF EXISTS (
+    SELECT 1 FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relname = 'org_forms'
+      AND c.relkind = 'r'
+  ) THEN
+    UPDATE public.org_forms
+    SET settings = jsonb_set(
+          COALESCE(settings, '{}'::jsonb),
+          '{requires_auth}',
+          to_jsonb(COALESCE((settings->>'requireAuthentication')::boolean, false)),
+          true
+        )
+    WHERE settings ? 'requireAuthentication'
+      AND NOT settings ? 'requires_auth';
+  ELSE
+    RAISE NOTICE 'org_forms does not exist; skipping settings backfill';
+  END IF;
 
--- Re-create the public-insert policy to honor either key. Drop the existing
--- policy first to avoid ambiguity (Postgres RLS unions across policies).
-DROP POLICY IF EXISTS org_form_submissions_insert ON public.org_form_submissions;
-
-CREATE POLICY org_form_submissions_insert
-  ON public.org_form_submissions
-  FOR INSERT
-  WITH CHECK (
-    org_id IN (
-      SELECT organization_id
-      FROM public.org_members
-      WHERE user_id = auth.uid()
-    )
-    OR EXISTS (
-      SELECT 1
-      FROM public.org_forms f
-      WHERE f.id = form_id
-        AND f.status = 'published'
-        AND COALESCE(
-              (f.settings->>'requires_auth')::boolean,
-              (f.settings->>'requireAuthentication')::boolean,
-              false
-            ) IS NOT TRUE
-    )
-  );
+  -- Re-create org_form_submissions INSERT policy if that table exists.
+  IF EXISTS (
+    SELECT 1 FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relname = 'org_form_submissions'
+      AND c.relkind = 'r'
+  ) THEN
+    EXECUTE 'DROP POLICY IF EXISTS org_form_submissions_insert ON public.org_form_submissions';
+    EXECUTE $POLICY$
+      CREATE POLICY org_form_submissions_insert
+        ON public.org_form_submissions
+        FOR INSERT
+        WITH CHECK (
+          org_id IN (
+            SELECT organization_id
+            FROM public.org_members
+            WHERE user_id = auth.uid()
+          )
+          OR EXISTS (
+            SELECT 1
+            FROM public.org_forms f
+            WHERE f.id = form_id
+              AND f.status = 'published'
+              AND COALESCE(
+                    (f.settings->>'requires_auth')::boolean,
+                    (f.settings->>'requireAuthentication')::boolean,
+                    false
+                  ) IS NOT TRUE
+          )
+        )
+    $POLICY$;
+  ELSE
+    RAISE NOTICE 'org_form_submissions does not exist; skipping policy update';
+  END IF;
+END$$;
 
 COMMIT;

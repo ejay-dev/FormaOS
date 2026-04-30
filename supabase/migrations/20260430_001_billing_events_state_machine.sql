@@ -33,9 +33,12 @@ ALTER TABLE public.billing_events
   ADD COLUMN IF NOT EXISTS last_error text;
 
 -- Backfill: rows that pre-date this migration are treated as already handled.
+-- billing_events has `processed_at` (the legacy timestamp column from
+-- 20250317_billing_core.sql:84-88) but no `created_at`, so we use processed_at
+-- as the historical "when the event was first persisted" anchor.
 UPDATE public.billing_events
 SET status = COALESCE(status, 'succeeded'),
-    completed_at = COALESCE(completed_at, created_at, now())
+    completed_at = COALESCE(completed_at, processed_at, now())
 WHERE status IS NULL;
 
 -- Default and constraint after backfill

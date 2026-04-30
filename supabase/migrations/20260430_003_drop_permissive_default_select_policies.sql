@@ -33,27 +33,60 @@
 -- Any table where 20260405 did NOT add an isolation policy will become
 -- effectively unreadable by users — by design — until a proper policy ships.
 --
+-- IMPORTANT (operator-action): before applying, run the diagnostic query
+-- from docs/deep-codebase-audit.md (or the README that ships alongside
+-- this migration) to confirm which tables still carry the permissive
+-- policy and which already have a tenant-scoped policy from 20260405.
+--
+-- Idempotency: each DROP is wrapped in an IF EXISTS table guard so the
+-- migration is safe against environments where the upstream table or the
+-- earlier permissive policy was never created.
+--
 -- Audit P0 finding #1 in docs/deep-codebase-audit.md.
 
 BEGIN;
 
-DROP POLICY IF EXISTS control_evidence_select       ON public.control_evidence;
-DROP POLICY IF EXISTS control_tasks_select          ON public.control_tasks;
-DROP POLICY IF EXISTS integration_events_select     ON public.integration_events;
-DROP POLICY IF EXISTS memberships_select            ON public.memberships;
-DROP POLICY IF EXISTS org_audit_log_select          ON public.org_audit_log;
-DROP POLICY IF EXISTS org_certifications_select     ON public.org_certifications;
-DROP POLICY IF EXISTS org_entities_select           ON public.org_entities;
-DROP POLICY IF EXISTS org_entity_members_select     ON public.org_entity_members;
-DROP POLICY IF EXISTS org_files_select              ON public.org_files;
-DROP POLICY IF EXISTS org_industries_select         ON public.org_industries;
-DROP POLICY IF EXISTS org_memberships_select        ON public.org_memberships;
-DROP POLICY IF EXISTS org_registers_select          ON public.org_registers;
-DROP POLICY IF EXISTS policies_select               ON public.policies;
-DROP POLICY IF EXISTS registers_select              ON public.registers;
-DROP POLICY IF EXISTS report_generations_select     ON public.report_generations;
-DROP POLICY IF EXISTS tasks_select                  ON public.tasks;
-DROP POLICY IF EXISTS webhook_deliveries_select     ON public.webhook_deliveries;
+DO $$
+DECLARE
+  target text;
+  targets text[] := ARRAY[
+    'control_evidence',
+    'control_tasks',
+    'integration_events',
+    'memberships',
+    'org_audit_log',
+    'org_certifications',
+    'org_entities',
+    'org_entity_members',
+    'org_files',
+    'org_industries',
+    'org_memberships',
+    'org_registers',
+    'policies',
+    'registers',
+    'report_generations',
+    'tasks',
+    'webhook_deliveries'
+  ];
+BEGIN
+  FOREACH target IN ARRAY targets LOOP
+    IF EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE n.nspname = 'public'
+        AND c.relname = target
+        AND c.relkind = 'r'
+    ) THEN
+      EXECUTE format(
+        'DROP POLICY IF EXISTS %I ON public.%I',
+        target || '_select',
+        target
+      );
+    ELSE
+      RAISE NOTICE 'skipping %: table does not exist', target;
+    END IF;
+  END LOOP;
+END$$;
 
 -- Tables where 20260405 added an isolation policy that already covers SELECT
 -- via FOR ALL: the drops above leave the isolation policy as the only
@@ -63,7 +96,7 @@ DROP POLICY IF EXISTS webhook_deliveries_select     ON public.webhook_deliveries
 -- non-service-role SELECT until a tenant policy ships. That is the intended
 -- safe-by-default state. Operators should run, post-deploy:
 --
---   SELECT schemaname, tablename, policyname
+--   SELECT schemaname, tablename, policyname, cmd, qual
 --   FROM pg_policies
 --   WHERE schemaname = 'public'
 --     AND tablename IN (
