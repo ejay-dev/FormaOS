@@ -35,6 +35,10 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
 };
 
 // ---- Plan Limits ----
+//
+// Keyed by canonical PlanKey ('basic' | 'pro' | 'enterprise'). Legacy
+// 'starter' lookups continue to resolve to the basic limits via
+// resolvePlanLimits below.
 
 interface PlanLimits {
   messagesPerMonth: number;
@@ -43,7 +47,7 @@ interface PlanLimits {
 }
 
 const PLAN_LIMITS: Record<string, PlanLimits> = {
-  starter: {
+  basic: {
     messagesPerMonth: 1000,
     tokensPerMonth: 500000,
     modelsAllowed: ['gpt-4o-mini'],
@@ -59,6 +63,11 @@ const PLAN_LIMITS: Record<string, PlanLimits> = {
     modelsAllowed: ['gpt-4o-mini', 'gpt-4o'],
   },
 };
+
+function resolvePlanLimits(planCode: string): PlanLimits {
+  const normalized = planCode === 'starter' ? 'basic' : planCode;
+  return PLAN_LIMITS[normalized] ?? PLAN_LIMITS.basic;
+}
 
 // ---- Usage Tracking ----
 
@@ -199,7 +208,7 @@ export async function checkUsageLimit(
   tokensLimit: number;
   percentUsed: number;
 }> {
-  const limits = PLAN_LIMITS[planCode] ?? PLAN_LIMITS.starter;
+  const limits = resolvePlanLimits(planCode);
 
   // Current month range
   const now = new Date();

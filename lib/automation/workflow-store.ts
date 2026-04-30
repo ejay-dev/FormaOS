@@ -209,6 +209,15 @@ export async function saveWorkflowDefinition(
   return mapDefinitionRow(data as DefinitionRow);
 }
 
+/**
+ * Lookup a workflow definition by ID without enforcing an org scope.
+ *
+ * Intended for INTERNAL workflow-store callers that already established
+ * org context (e.g. {@link updateWorkflow}, {@link getWorkflow}). External
+ * callers (route handlers, server components) MUST use
+ * {@link getWorkflowDefinitionForOrg} instead so a leaked or guessed
+ * workflow ID from another tenant cannot be read.
+ */
 export async function getWorkflowDefinition(
   id: string,
   version?: number,
@@ -235,6 +244,22 @@ export async function getWorkflowDefinition(
   }
 
   return mapDefinitionRow(data as DefinitionRow);
+}
+
+/**
+ * Org-scoped wrapper. Returns null when the workflow exists but belongs to
+ * a different tenant, preventing cross-org leakage via raw IDs.
+ */
+export async function getWorkflowDefinitionForOrg(
+  id: string,
+  orgId: string,
+  version?: number,
+): Promise<WorkflowDefinition | null> {
+  const definition = await getWorkflowDefinition(id, version);
+  if (!definition || definition.org_id !== orgId) {
+    return null;
+  }
+  return definition;
 }
 
 export async function listWorkflows(
@@ -288,15 +313,30 @@ export async function listWorkflows(
   };
 }
 
+/**
+ * Returns execution history scoped to a single org. Calls that omit orgId
+ * are rejected — execution rows can leak workflow internals across tenants.
+ */
 export async function getWorkflowExecutionHistory(
   workflowId: string,
+  orgId: string,
   filters?: ExecutionHistoryFilters,
 ): Promise<WorkflowExecutionSummary[]> {
+  if (!orgId) {
+    automationLogger.error(
+      'Refusing workflow execution history call without orgId',
+      new Error('orgId required'),
+      { workflowId },
+    );
+    return [];
+  }
+
   const supabase = createSupabaseAdminClient();
   let query = supabase
     .from('workflow_executions')
     .select('*, workflow_definitions(name)')
     .eq('workflow_id', workflowId)
+    .eq('org_id', orgId)
     .order('started_at', { ascending: false });
 
   if (filters?.status) {
@@ -341,6 +381,11 @@ export async function getWorkflowExecutionHistory(
   });
 }
 
+/**
+ * Internal-only execution lookup — DOES NOT enforce org scope. Used by
+ * workflow runners that have already established org context. External
+ * callers must use {@link getExecutionDetailForOrg}.
+ */
 export async function getExecutionDetail(
   executionId: string,
 ): Promise<WorkflowExecutionRecord | null> {
@@ -349,6 +394,26 @@ export async function getExecutionDetail(
     .from('workflow_executions')
     .select('*')
     .eq('id', executionId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapExecutionRow(data as ExecutionRow);
+}
+
+export async function getExecutionDetailForOrg(
+  executionId: string,
+  orgId: string,
+): Promise<WorkflowExecutionRecord | null> {
+  if (!orgId) return null;
+  const supabase = createSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from('workflow_executions')
+    .select('*')
+    .eq('id', executionId)
+    .eq('org_id', orgId)
     .maybeSingle();
 
   if (error || !data) {

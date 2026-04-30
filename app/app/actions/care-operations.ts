@@ -358,6 +358,19 @@ export async function resolveIncident(id: string, formData: FormData) {
 // STAFF CREDENTIAL ACTIONS
 // =========================================================
 
+const STAFF_CREDENTIAL_WRITE_ROLES = new Set([
+  "owner",
+  "admin",
+  "compliance_officer",
+  "manager",
+]);
+
+const STAFF_CREDENTIAL_VERIFIER_ROLES = new Set([
+  "owner",
+  "admin",
+  "compliance_officer",
+]);
+
 export async function createStaffCredential(formData: FormData) {
   try {
   const supabase = await createSupabaseServerClient();
@@ -367,17 +380,47 @@ export async function createStaffCredential(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/signin");
 
-  const { data: membership } = await supabase
+  // Fetch the actor's membership including role so we can gate who can
+  // register credentials and validate the target user belongs to the same org.
+  const { data: actorMembership } = await supabase
     .from("org_members")
-    .select("organization_id")
+    .select("organization_id, role")
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!membership) throw new Error("No organization found");
+  if (!actorMembership) throw new Error("No organization found");
+
+  const actorRole = (actorMembership.role as string | null) ?? "";
+  if (!STAFF_CREDENTIAL_WRITE_ROLES.has(actorRole)) {
+    throw new Error(
+      "Forbidden: only owner/admin/compliance/manager roles can register staff credentials.",
+    );
+  }
+
+  const targetUserIdRaw = (formData.get("user_id") as string | null) ?? "";
+  const targetUserId = targetUserIdRaw.trim() || user.id;
+
+  // Validate the target user is a member of the same organization. Without
+  // this check, any org member could register credentials against an
+  // arbitrary user_id (audit P1 #12).
+  if (targetUserId !== user.id) {
+    const { data: targetMembership } = await supabase
+      .from("org_members")
+      .select("user_id")
+      .eq("user_id", targetUserId)
+      .eq("organization_id", actorMembership.organization_id)
+      .maybeSingle();
+
+    if (!targetMembership) {
+      throw new Error(
+        "Target user is not a member of this organization.",
+      );
+    }
+  }
 
   const credential = {
-    organization_id: membership.organization_id,
-    user_id: formData.get("user_id") as string || user.id,
+    organization_id: actorMembership.organization_id,
+    user_id: targetUserId,
     credential_type: formData.get("credential_type") as string,
     credential_name: formData.get("credential_name") as string,
     credential_number: formData.get("credential_number") as string || null,
@@ -389,13 +432,35 @@ export async function createStaffCredential(formData: FormData) {
     created_by: user.id,
   };
 
-  const { error } = await supabase
+  const { data: insertedCredential, error } = await supabase
     .from("org_staff_credentials")
     .insert(credential)
-    .select()
+    .select("id")
     .single();
 
   if (error) throw new Error(error.message);
+
+  // Audit-log the registration so the trail isn't asymmetric with
+  // verifyStaffCredential (which already logs).
+  await logAuditEvent(
+    {
+      organizationId: actorMembership.organization_id,
+      actorUserId: user.id,
+      actorRole,
+      entityType: "staff_credential",
+      entityId: insertedCredential?.id ?? null,
+      actionType: "STAFF_CREDENTIAL_CREATED",
+      afterState: {
+        target_user_id: targetUserId,
+        credential_type: credential.credential_type,
+        credential_name: credential.credential_name,
+        expiry_date: credential.expiry_date,
+        status: credential.status,
+      },
+      reason: "credential_registration",
+    },
+    { required: false },
+  );
 
   // Create reminder task if expiry date is set
   if (credential.expiry_date) {
@@ -404,7 +469,7 @@ export async function createStaffCredential(formData: FormData) {
     reminderDate.setDate(reminderDate.getDate() - 30); // 30 days before expiry
 
     await insertOrgTaskCompat(supabase, {
-      organization_id: membership.organization_id,
+      organization_id: actorMembership.organization_id,
       title: `Credential Expiring: ${credential.credential_name}`,
       description: `${credential.credential_type} credential expires on ${expiryDate.toLocaleDateString()}`,
       priority: "high",
@@ -430,7 +495,26 @@ export async function verifyStaffCredential(id: string) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/signin");
-  const organizationId = await requireUserOrganization(supabase, user.id);
+
+  // Verifier role gate. Previously any org member could flip credentials
+  // to verified, which is unacceptable for regulated workforce proof
+  // (audit P1 #12).
+  const { data: actorMembership } = await supabase
+    .from("org_members")
+    .select("organization_id, role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!actorMembership) throw new Error("No organization found");
+
+  const actorRole = (actorMembership.role as string | null) ?? "";
+  if (!STAFF_CREDENTIAL_VERIFIER_ROLES.has(actorRole)) {
+    throw new Error(
+      "Forbidden: only owner/admin/compliance roles can verify credentials.",
+    );
+  }
+
+  const organizationId = actorMembership.organization_id;
 
   const verifiedAt = new Date().toISOString();
   const { error } = await supabase
@@ -449,7 +533,7 @@ export async function verifyStaffCredential(id: string) {
     {
       organizationId,
       actorUserId: user.id,
-      actorRole: null,
+      actorRole,
       entityType: "staff_credential",
       entityId: id,
       actionType: "STAFF_CREDENTIAL_VERIFIED",

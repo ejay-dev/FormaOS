@@ -4,18 +4,23 @@ import { billingLogger } from '@/lib/observability/structured-logger';
 
 let stripeClient: Stripe | null = null;
 
-const DEFAULT_PRICE_IDS: Record<PlanKey, string> = {
+// Dev/test fallbacks. In production we fail closed (return null) when env is
+// missing rather than charging against an unverified price ID.
+const DEV_FALLBACK_PRICE_IDS: Record<PlanKey, string> = {
   basic: 'price_1TOdz1AHrAKKo3OlfYxjk9WL',
   pro: 'price_1TOe05AHrAKKo3OliCrZNnkx',
   enterprise: 'price_1T9cPKAHrAKKo3OliQN78Q83',
 };
 
-function configuredPriceIds(): Record<PlanKey, string> {
+function configuredPriceIds(): Record<PlanKey, string | null> {
+  const isProduction = process.env.NODE_ENV === 'production';
+  const fallback = (key: PlanKey) =>
+    isProduction ? null : DEV_FALLBACK_PRICE_IDS[key];
+
   return {
-    basic: process.env.STRIPE_PRICE_FOUNDATION ?? DEFAULT_PRICE_IDS.basic,
-    pro: process.env.STRIPE_PRICE_GROWTH ?? DEFAULT_PRICE_IDS.pro,
-    enterprise:
-      process.env.STRIPE_PRICE_ENTERPRISE ?? DEFAULT_PRICE_IDS.enterprise,
+    basic: process.env.STRIPE_PRICE_FOUNDATION ?? fallback('basic'),
+    pro: process.env.STRIPE_PRICE_GROWTH ?? fallback('pro'),
+    enterprise: process.env.STRIPE_PRICE_ENTERPRISE ?? fallback('enterprise'),
   };
 }
 
@@ -36,11 +41,14 @@ export function getStripeClient(): Stripe | null {
 }
 
 export function getStripePriceId(planKey: string): string | null {
-  const priceMap: Record<string, string | undefined> = configuredPriceIds();
+  const priceMap = configuredPriceIds() as Record<string, string | null | undefined>;
 
   const priceId = priceMap[planKey];
   if (!priceId) {
-    billingLogger.warn('stripe_price_id_missing', { planKey });
+    billingLogger.warn('stripe_price_id_missing', {
+      planKey,
+      env: process.env.NODE_ENV,
+    });
     return null;
   }
 
@@ -54,13 +62,13 @@ export function resolvePlanKeyFromPriceId(
   const normalized = priceId.trim();
   const priceIds = configuredPriceIds();
 
-  if (normalized === priceIds.basic) {
+  if (priceIds.basic && normalized === priceIds.basic) {
     return 'basic';
   }
-  if (normalized === priceIds.pro) {
+  if (priceIds.pro && normalized === priceIds.pro) {
     return 'pro';
   }
-  if (normalized === priceIds.enterprise) {
+  if (priceIds.enterprise && normalized === priceIds.enterprise) {
     return 'enterprise';
   }
 

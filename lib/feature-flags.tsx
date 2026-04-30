@@ -127,27 +127,15 @@ export class FeatureFlagManager {
     }
   }
 
-  // For admin users - override flags for testing
-  public setTestingMode(overrides: Partial<FeatureFlags>): void {
-    if (typeof window !== 'undefined') {
-      const isFounder = this.checkFounderAccess()
-      if (isFounder) {
-        this.flags = { ...this.flags, ...overrides }
-        localStorage.setItem('formaos_feature_flags_testing', JSON.stringify(overrides))
-      }
-    }
-  }
-
-  private checkFounderAccess(): boolean {
-    if (typeof window === 'undefined') {
-      return false
-    }
-
-    try {
-      return localStorage.getItem('formaos_is_founder') === 'true'
-    } catch {
-      return false
-    }
+  // For admin users - override flags for testing.
+  // Caller must pass isFounder explicitly; this method does not read founder
+  // status from localStorage (which is client-spoofable). Resolve via the
+  // server-hydrated app store before invoking.
+  public setTestingMode(overrides: Partial<FeatureFlags>, isFounder: boolean): void {
+    if (typeof window === 'undefined') return;
+    if (!isFounder) return;
+    this.flags = { ...this.flags, ...overrides }
+    localStorage.setItem('formaos_feature_flags_testing', JSON.stringify(overrides))
   }
 }
 

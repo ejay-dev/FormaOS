@@ -16,6 +16,7 @@ import {
   processReportExportJob,
 } from '@/lib/reports/export-jobs';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 
 const log = routeLog('/api/reports/export');
 
@@ -145,6 +146,27 @@ export async function GET(request: NextRequest) {
         code: 'ORG_LOOKUP_ERROR',
       },
       { status: 500 },
+    );
+  }
+
+  // Entitlement gate: 'audit_export' covers compliance/audit-style report
+  // exports (soc2/iso27001/ndis/hipaa/trust). Plans without this entitlement
+  // get a 403 even if the user has owner/admin role on the org.
+  try {
+    await requireEntitlement(orgId, 'audit_export');
+  } catch (entitlementError) {
+    log.warn(
+      { err: entitlementError, orgId, reportType },
+      '[Report Export] Entitlement check failed',
+    );
+    return NextResponse.json(
+      {
+        error: 'Forbidden',
+        message:
+          'Report exports require an active plan with audit export enabled.',
+        code: 'ENTITLEMENT_REQUIRED',
+      },
+      { status: 403 },
     );
   }
 

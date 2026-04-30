@@ -96,14 +96,11 @@ export function AppHydrator({ children, initialState }: AppHydratorProps) {
     fetchAndHydrate();
   }, [isHydrated, initialState, hydrate, setHydrating, setHydrationError]);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const isFounder = initialState?.isFounder ?? useAppStore.getState().isFounder;
-    localStorage.setItem('formaos_is_founder', isFounder ? 'true' : 'false');
-  }, [initialState?.isFounder, isHydrated]);
+  // NOTE: founder status is intentionally NOT persisted to localStorage.
+  // Founder gating is enforced server-side (proxy.ts admin guard,
+  // requireAdminAccess, isFounder env allowlist). Client code that needs
+  // the hint should read it from useAppStore (hydrated from /api/system-state),
+  // not from a spoofable localStorage value.
 
   return <>{children}</>;
 }

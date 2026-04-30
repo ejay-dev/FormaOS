@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
-  getExecutionDetail,
+  getExecutionDetailForOrg,
   getWorkflow,
   getWorkflowExecutionHistory,
 } from '@/lib/automation/workflow-store';
@@ -38,9 +38,16 @@ export default async function WorkflowDetailPage({
     notFound();
   }
 
-  const executions = await getWorkflowExecutionHistory(workflow.id, { limit: 25 });
+  const executions = await getWorkflowExecutionHistory(
+    workflow.id,
+    membership.organization_id,
+    { limit: 25 },
+  );
   const latestExecution = executions[0]
-    ? await getExecutionDetail(executions[0].id)
+    ? await getExecutionDetailForOrg(
+        executions[0].id,
+        membership.organization_id,
+      )
     : null;
 
   return (

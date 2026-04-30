@@ -7,6 +7,8 @@ import { PROMPT_TEMPLATES } from '@/lib/ai/prompt-templates';
 import { hasPermission, normalizeRole } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { checkUsageLimit, trackUsage } from '@/lib/ai/usage-meter';
+import { resolvePlanKey } from '@/lib/plans';
 
 /**
  * =========================================================
@@ -66,6 +68,48 @@ export async function POST(request: Request) {
 
     const orgId = membership.organization_id as string;
     const role = normalizeRole(membership.role as string | null);
+    const admin = createSupabaseAdminClient();
+
+    // 4a. Plan / usage gating. Resolve the org's plan once and enforce
+    // monthly message + token caps before kicking off a stream we'd then
+    // have to abort. AI usage is not advisory — exhausted budgets short-
+    // circuit with 429 (audit P1 #18).
+    let planKey: string = 'basic';
+    try {
+      const { data: subRow } = await admin
+        .from('org_subscriptions')
+        .select('plan_key')
+        .eq('organization_id', orgId)
+        .maybeSingle();
+      planKey = resolvePlanKey(subRow?.plan_key ?? null) ?? 'basic';
+    } catch {
+      // If subscription lookup fails, default to the most restrictive plan.
+      planKey = 'basic';
+    }
+
+    try {
+      const usage = await checkUsageLimit(admin, orgId, planKey);
+      if (!usage.allowed) {
+        return NextResponse.json(
+          {
+            error: 'AI usage limit reached',
+            details: {
+              messagesUsed: usage.messagesUsed,
+              messagesLimit: usage.messagesLimit,
+              tokensUsed: usage.tokensUsed,
+              tokensLimit: usage.tokensLimit,
+              percentUsed: usage.percentUsed,
+              planKey,
+            },
+          },
+          { status: 429 },
+        );
+      }
+    } catch (usageErr) {
+      console.warn('[API v1 /ai/chat] usage limit check failed:', usageErr);
+      // Fail-open on infrastructure errors (no usage table yet, etc.) but
+      // surface a warning header so callers can detect the degraded mode.
+    }
 
     // 5. Parse request body
     let body: Record<string, unknown>;
@@ -105,7 +149,6 @@ export async function POST(request: Request) {
       templateSuffix = `\n\n${template.systemPromptSuffix}`;
     }
 
-    const admin = createSupabaseAdminClient();
     let persistenceAvailable = true;
 
     // 7. Create conversation if none provided
@@ -193,6 +236,38 @@ export async function POST(request: Request) {
       systemPrompt,
       messages: history,
       onFinish: async (finished) => {
+        // Persist usage regardless of whether ai_chat_messages exists.
+        // Usage tracking is what makes plan limits enforceable across calls
+        // (audit P1 #18). Errors here are non-fatal — log and continue.
+        try {
+          const usageInfo = finished.usage as
+            | {
+                inputTokens?: number;
+                outputTokens?: number;
+                promptTokens?: number;
+                completionTokens?: number;
+              }
+            | undefined;
+          const inputTokens =
+            usageInfo?.inputTokens ?? usageInfo?.promptTokens ?? 0;
+          const outputTokens =
+            usageInfo?.outputTokens ?? usageInfo?.completionTokens ?? 0;
+          if (inputTokens > 0 || outputTokens > 0) {
+            await trackUsage(
+              admin,
+              orgId,
+              user.id,
+              'gpt-4o-mini',
+              inputTokens,
+              outputTokens,
+              conversationId,
+              templateId ?? 'chat',
+            );
+          }
+        } catch (usageErr) {
+          console.warn('[API v1 /ai/chat] trackUsage failed:', usageErr);
+        }
+
         if (!persistenceAvailable || !conversationId) {
           return;
         }

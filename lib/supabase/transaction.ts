@@ -128,9 +128,16 @@ export async function bootstrapOrganizationAtomic(params: {
       );
     }
 
-    // 5. Create subscription
-    const trialEnd = new Date();
-    trialEnd.setDate(trialEnd.getDate() + 14);
+    // 5. Create subscription record in pending_checkout state.
+    //
+    // Historical behavior set status='trialing' for 14 days, but
+    // TRIAL_ELIGIBLE_PLANS is empty (commercial posture is no-trial), so
+    // a "trialing" status was misleading. We now mark the subscription as
+    // pending_checkout with a 14-day grace deadline (trial_expires_at) and
+    // allow requireActiveSubscription to honor that window for self-serve
+    // plans during the checkout-completion handoff.
+    const graceEnd = new Date();
+    graceEnd.setDate(graceEnd.getDate() + 14);
 
     const { error: subError } = await admin.from('org_subscriptions').upsert(
       {
@@ -138,9 +145,9 @@ export async function bootstrapOrganizationAtomic(params: {
         org_id: organizationId,
         plan_key: planKey,
         plan_code: planKey === 'basic' ? 'starter' : planKey,
-        status: 'trialing',
-        trial_started_at: now,
-        trial_expires_at: trialEnd.toISOString(),
+        status: 'pending_checkout',
+        trial_started_at: null,
+        trial_expires_at: graceEnd.toISOString(),
         updated_at: now,
       },
       { onConflict: 'organization_id' },

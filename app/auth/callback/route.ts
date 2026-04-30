@@ -133,7 +133,11 @@ export async function GET(request: Request) {
   const oauthState = searchParams.get('state');
   const storedOAuthState = cookieStore.get(OAUTH_STATE_COOKIE_NAME)?.value ?? null;
 
-  if (authProvider === 'google') {
+  // Validate OAuth state whenever EITHER side of the handshake carries it.
+  // Previously gated on provider=google, which silently skipped CSRF
+  // protection for any callback whose URL omitted the provider param.
+  const stateHandshakePresent = Boolean(oauthState) || Boolean(storedOAuthState);
+  if (stateHandshakePresent) {
     const hasValidState =
       Boolean(oauthState) &&
       Boolean(storedOAuthState) &&
@@ -143,6 +147,7 @@ export async function GET(request: Request) {
       authLogger.warn('oauth_state_validation_failed', {
         hasState: Boolean(oauthState),
         hasStoredState: Boolean(storedOAuthState),
+        provider: authProvider ?? 'unknown',
       });
       return redirectWithCookies(
         `${appBase}/auth/signin?error=oauth_state_invalid&message=${encodeURIComponent(

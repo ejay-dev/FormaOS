@@ -45,25 +45,82 @@ export async function POST(request: Request) {
 
   const admin = createSupabaseAdminClient();
 
-  // Idempotency: persist the Stripe event id before side effects.
-  // If it already exists, we treat this delivery as a duplicate and no-op.
+  // Idempotency state machine.
+  //
+  // We CANNOT short-circuit on a unique-constraint violation alone, because
+  // the previous attempt may have failed mid-way through side effects. Stripe
+  // will retry; we have to re-run those side effects. The contract:
+  //
+  //   1. Try to atomically claim the event (insert pending OR update an
+  //      existing pending/failed row to claim a new attempt).
+  //   2. If the row is already 'succeeded', return 200 — true no-op.
+  //   3. If we claim it, proceed; on success mark 'succeeded'; on throw mark
+  //      'failed' so Stripe's retry will reclaim it next delivery.
+  const startedAt = new Date().toISOString();
+
   const { error: insertEventError } = await admin
     .from('billing_events')
     .insert({
       id: event.id,
       event_type: event.type,
+      status: 'pending',
+      attempts: 1,
+      started_at: startedAt,
     });
+
+  let claimed = !insertEventError;
 
   if (insertEventError) {
     if (insertEventError.code === '23505') {
-      return NextResponse.json({ received: true });
+      const { data: existing } = await admin
+        .from('billing_events')
+        .select('status, attempts')
+        .eq('id', event.id)
+        .maybeSingle();
+
+      if (existing?.status === 'succeeded') {
+        return NextResponse.json({ received: true, idempotent: true });
+      }
+
+      // pending or failed → claim a new attempt and proceed.
+      const { error: claimErr } = await admin
+        .from('billing_events')
+        .update({
+          status: 'pending',
+          attempts: (existing?.attempts ?? 0) + 1,
+          started_at: startedAt,
+          last_error: null,
+        })
+        .eq('id', event.id);
+
+      if (claimErr) {
+        log.error(
+          { err: claimErr.message },
+          '[billing/webhook] failed to claim billing_events row for retry',
+        );
+        return NextResponse.json(
+          { error: 'Webhook claim failed' },
+          { status: 500 },
+        );
+      }
+
+      claimed = true;
+    } else {
+      log.error(
+        { err: insertEventError.message },
+        '[billing/webhook] billing_events insert failed:',
+      );
+      return NextResponse.json(
+        { error: 'Webhook persistence failed' },
+        { status: 500 },
+      );
     }
-    log.error(
-      { err: insertEventError.message },
-      '[billing/webhook] billing_events insert failed:',
-    );
+  }
+
+  if (!claimed) {
+    // Defensive — should be unreachable.
     return NextResponse.json(
-      { error: 'Webhook persistence failed' },
+      { error: 'Webhook claim indeterminate' },
       { status: 500 },
     );
   }
@@ -471,9 +528,47 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     log.error({ err: error }, 'Stripe webhook processing error:');
+
+    // Mark this attempt failed so Stripe's retry will reclaim and re-run
+    // side effects. Without this the next delivery would see status='pending'
+    // and treat the row as in-flight.
+    const message = error instanceof Error ? error.message : String(error);
+    const { error: failErr } = await admin
+      .from('billing_events')
+      .update({
+        status: 'failed',
+        completed_at: new Date().toISOString(),
+        last_error: message.slice(0, 1000),
+      })
+      .eq('id', event.id);
+    if (failErr) {
+      log.error(
+        { err: failErr.message },
+        '[billing/webhook] failed to mark billing_events row as failed',
+      );
+    }
+
     return NextResponse.json(
       { error: 'Webhook processing failed' },
       { status: 500 },
+    );
+  }
+
+  // Side effects landed — mark the event row succeeded so Stripe retries
+  // (which would carry the same event.id) become true no-ops.
+  const { error: doneErr } = await admin
+    .from('billing_events')
+    .update({
+      status: 'succeeded',
+      completed_at: new Date().toISOString(),
+    })
+    .eq('id', event.id);
+  if (doneErr) {
+    // The side effects already ran; we just couldn't update the marker.
+    // Stripe retrying would be safe (would re-run idempotent upserts).
+    log.error(
+      { err: doneErr.message },
+      '[billing/webhook] failed to mark billing_events row succeeded',
     );
   }
 

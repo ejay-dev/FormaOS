@@ -612,8 +612,14 @@ export async function proxy(request: NextRequest) {
     }
 
     // ============================================================
-    // 🚨 STEP 2: SHORT-CIRCUIT /admin FOR FOUNDERS
-    // If founder accessing /admin → ALLOW IMMEDIATELY, bypass ALL guards
+    // STEP 2: GATE /admin AT THE EDGE
+    // Founder bypass stays — fast path with no DB lookup.
+    // For non-founders we INTENTIONALLY pass through so the admin layout's
+    // requireAdminAccess() (server component, app/admin/layout.tsx) can run,
+    // honoring delegated admin assignments (platform_admin_assignments).
+    // The layout redirects to /app for non-admins, so authorization is still
+    // enforced — just one hop later, where the DB lookup is allowed.
+    // Audit P1 finding #15 in docs/deep-codebase-audit.md.
     // ============================================================
     if (isAdminPath) {
       if (!user) {
@@ -627,25 +633,27 @@ export async function proxy(request: NextRequest) {
       }
 
       if (isUserFounder) {
-        // ✅ FOUNDER → ALLOW ACCESS, bypass everything
         if (middlewareDebug) {
           console.log('[Middleware] founder access granted', {
             userId,
             path: pathname,
           });
         }
-        logTiming('admin-allow');
+        logTiming('admin-allow-founder');
         return finalizePassThrough(response);
-      } else {
-        // ❌ NOT A FOUNDER → DENY ACCESS
-        console.warn('[Middleware] non-founder blocked from /admin', {
-          userId,
-          redirectTo: '/unauthorized',
-        });
-        const url = request.nextUrl.clone();
-        url.pathname = '/unauthorized';
-        return await redirectWithLoopGuard(url, true, '/admin-non-founder');
       }
+
+      // Authenticated non-founder. Defer to the admin layout's
+      // requireAdminAccess() — it consults platform_admin_assignments and
+      // either grants delegated access or redirects to /app.
+      if (middlewareDebug) {
+        console.log('[Middleware] /admin defer to layout authz', {
+          userId,
+          path: pathname,
+        });
+      }
+      logTiming('admin-defer-layout');
+      return finalizePassThrough(response);
     }
 
     // ============================================================

@@ -9,12 +9,22 @@ export type EntitlementKey =
   | 'certifications'
   | 'team_limit'
   | 'ai_assistant'
-  | 'soc2_certification';
+  | 'soc2_certification'
+  | 'capa_management'
+  | 'custom_reports'
+  | 'form_analytics'
+  | 'workflow_automation'
+  | 'sso_saml'
+  | 'directory_sync'
+  | 'retention_governance'
+  | 'executive_rollup';
 
-const PLAN_ENTITLEMENTS: Record<
-  PlanKey,
-  { enabled: EntitlementKey[]; limits: Record<string, number> }
-> = {
+export type PlanEntitlementDefinition = {
+  enabled: EntitlementKey[];
+  limits: Record<string, number | null>;
+};
+
+export const PLAN_ENTITLEMENTS: Record<PlanKey, PlanEntitlementDefinition> = {
   basic: {
     enabled: ['audit_export', 'reports', 'framework_evaluations', 'team_limit'],
     limits: {
@@ -30,6 +40,9 @@ const PLAN_ENTITLEMENTS: Record<
       'team_limit',
       'ai_assistant',
       'soc2_certification',
+      'capa_management',
+      'custom_reports',
+      'form_analytics',
     ],
     limits: {
       team_limit: PLAN_CATALOG.pro.limits.maxUsers as number,
@@ -44,9 +57,17 @@ const PLAN_ENTITLEMENTS: Record<
       'team_limit',
       'ai_assistant',
       'soc2_certification',
+      'capa_management',
+      'custom_reports',
+      'form_analytics',
+      'workflow_automation',
+      'sso_saml',
+      'directory_sync',
+      'retention_governance',
+      'executive_rollup',
     ],
     limits: {
-      team_limit: null as unknown as number, // unlimited
+      team_limit: null, // unlimited
     },
   },
 };
@@ -63,20 +84,26 @@ export async function requireActiveSubscription(orgId: string) {
     throw new Error('Subscription lookup failed');
   }
 
-  if (!data?.status || !['active', 'trialing'].includes(data.status)) {
+  if (
+    !data?.status ||
+    !['active', 'trialing', 'pending_checkout'].includes(data.status)
+  ) {
     throw new Error('Subscription inactive');
   }
 
-  if (data.status === 'trialing') {
-    const trialEndValue =
+  // pending_checkout is the post-bootstrap, pre-payment grace window for
+  // self-serve plans. trialing is reserved for plans that genuinely have a
+  // free trial. Both honor trial_expires_at as the deadline.
+  if (data.status === 'trialing' || data.status === 'pending_checkout') {
+    const deadlineValue =
       (data as { trial_expires_at?: string | null }).trial_expires_at ??
       data.current_period_end;
-    if (!trialEndValue) {
-      throw new Error('Trial expired');
+    if (!deadlineValue) {
+      throw new Error('Subscription grace period expired');
     }
-    const trialEnd = new Date(trialEndValue).getTime();
-    if (Number.isNaN(trialEnd) || Date.now() > trialEnd) {
-      throw new Error('Trial expired');
+    const deadline = new Date(deadlineValue).getTime();
+    if (Number.isNaN(deadline) || Date.now() > deadline) {
+      throw new Error('Subscription grace period expired');
     }
   }
 

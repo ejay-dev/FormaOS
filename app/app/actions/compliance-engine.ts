@@ -240,10 +240,17 @@ async function safeLogActivity(
 
 type DbClient = Awaited<ReturnType<typeof createSupabaseServerClient>>;
 
+// In production we now default `strict` to true so schema/RLS errors propagate
+// instead of silently returning [] (which produced precise-looking compliance
+// scores from sparse data — audit P1 #13). Callers in non-production
+// environments can explicitly pass `strict: false` to retain the old
+// fallback behavior while back-filling missing migrations.
+const SAFE_SELECT_STRICT_DEFAULT = process.env.NODE_ENV === 'production';
+
 async function safeSelectFrameworks(
   supabase: DbClient,
   orgId?: string,
-  strict: boolean = false,
+  strict: boolean = SAFE_SELECT_STRICT_DEFAULT,
 ): Promise<FrameworkRow[]> {
   try {
     const { data, error } = await supabase
@@ -292,7 +299,7 @@ async function safeSelectFrameworks(
 async function safeSelectControls(
   supabase: DbClient,
   frameworkId: string,
-  strict: boolean = false,
+  strict: boolean = SAFE_SELECT_STRICT_DEFAULT,
 ) {
   try {
     const { data, error } = await supabase
@@ -316,7 +323,7 @@ async function safeSelectControlEvidence(
   supabase: DbClient,
   orgId: string,
   controlIds: string[],
-  strict: boolean = false,
+  strict: boolean = SAFE_SELECT_STRICT_DEFAULT,
 ): Promise<EvidenceRow[]> {
   if (!controlIds.length) return [];
 
@@ -362,7 +369,7 @@ async function safeSelectControlTasks(
   supabase: DbClient,
   orgId: string,
   controlIds: string[],
-  strict: boolean = false,
+  strict: boolean = SAFE_SELECT_STRICT_DEFAULT,
 ): Promise<Array<{ control_id: string; task_id: string }>> {
   if (!controlIds.length) return [];
 
@@ -391,7 +398,7 @@ async function safeSelectTasksByIds(
   supabase: DbClient,
   orgId: string,
   taskIds: string[],
-  strict: boolean = false,
+  strict: boolean = SAFE_SELECT_STRICT_DEFAULT,
 ): Promise<TaskRow[]> {
   if (!taskIds.length) return [];
   try {
