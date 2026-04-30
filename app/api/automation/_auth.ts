@@ -7,6 +7,7 @@ export interface AutomationApiContext {
   userEmail?: string;
   orgId: string;
   role: string;
+  canUseWorkflowAutomation: boolean;
 }
 
 export async function getAutomationApiContext(): Promise<AutomationApiContext | null> {
@@ -29,11 +30,19 @@ export async function getAutomationApiContext(): Promise<AutomationApiContext | 
     return null;
   }
 
+  const { data: entitlement } = await supabase
+    .from('org_entitlements')
+    .select('enabled')
+    .eq('organization_id', membership.organization_id)
+    .eq('feature_key', 'workflow_automation')
+    .maybeSingle();
+
   return {
     userId: user.id,
     userEmail: user.email,
     orgId: membership.organization_id as string,
     role: membership.role as string,
+    canUseWorkflowAutomation: entitlement?.enabled === true,
   };
 }
 
@@ -43,6 +52,13 @@ export function automationUnauthorized() {
 
 export function automationForbidden() {
   return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+}
+
+export function automationPlanRequired() {
+  return NextResponse.json(
+    { error: 'Workflow automation requires an Enterprise entitlement' },
+    { status: 403 },
+  );
 }
 
 export function canManageAutomation(role: string): boolean {
