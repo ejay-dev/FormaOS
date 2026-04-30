@@ -107,29 +107,60 @@ export async function GET(request: Request) {
       );
     }
 
-    // org_audit_logs.target stores `entityType:entityId`. Match on either
-    // the suffix (when caller doesn't specify a type) or the full prefix.
+    // Prefer the typed (entity_type, entity_id) columns added by
+    // 20260430_006_audit_log_entity_typed_columns.sql. Fall back to the
+    // legacy `target='entityType:entityId'` string filter for rows whose
+    // backfill couldn't recover entity_id (e.g., target was not the
+    // canonical shape and metadata didn't carry the id either).
     const targetExact = entityType ? `${entityType}:${entityId}` : null;
     const targetSuffix = `:${entityId}`;
 
-    let query = supabase
-      .from('org_audit_logs')
-      .select('id, action, target, actor_email, created_at')
-      .eq('organization_id', orgId)
-      .order('created_at', { ascending: false })
-      .limit(limit);
+    const baseQuery = () =>
+      supabase
+        .from('org_audit_logs')
+        .select('id, action, target, actor_email, created_at')
+        .eq('organization_id', orgId)
+        .order('created_at', { ascending: false });
 
-    if (targetExact) {
-      query = query.eq('target', targetExact);
-    } else {
-      query = query.or(`target.eq.${entityId},target.like.%${targetSuffix}`);
+    // Primary query — typed columns. Fast, indexed.
+    let typedQuery = baseQuery().eq('entity_id', entityId).limit(limit);
+    if (entityType) {
+      typedQuery = typedQuery.eq('entity_type', entityType);
     }
-
-    const { data, error } = await query;
-    if (error) {
-      log.error({ err: error }, 'failed to load audit trail');
+    const typedResult = await typedQuery;
+    if (typedResult.error) {
+      log.error({ err: typedResult.error }, 'failed to load audit trail (typed)');
       return NextResponse.json({ entries: [] });
     }
+    let rows = (typedResult.data ?? []) as AuditLogRow[];
+
+    // Fallback query — legacy target-string match. Skip when the typed
+    // query already filled the page; the index makes the typed query the
+    // canonical path going forward.
+    if (rows.length < limit) {
+      const remaining = limit - rows.length;
+      const seenIds = new Set(rows.map((row) => row.id));
+      let legacyQuery = baseQuery().is('entity_id', null).limit(remaining);
+      if (targetExact) {
+        legacyQuery = legacyQuery.eq('target', targetExact);
+      } else {
+        legacyQuery = legacyQuery.or(
+          `target.eq.${entityId},target.like.%${targetSuffix}`,
+        );
+      }
+      const legacyResult = await legacyQuery;
+      if (!legacyResult.error) {
+        for (const row of (legacyResult.data ?? []) as AuditLogRow[]) {
+          if (!seenIds.has(row.id)) {
+            rows.push(row);
+          }
+        }
+        rows.sort((a, b) => b.created_at.localeCompare(a.created_at));
+        rows = rows.slice(0, limit);
+      }
+    }
+
+    const data = rows;
 
     const entries = ((data ?? []) as AuditLogRow[]).map((row) => ({
       id: row.id,

@@ -20,6 +20,12 @@ export interface OrgAuditLogPayload {
   metadata?: unknown;
   details?: unknown;
   diff?: unknown;
+  /**
+   * Structured entity columns. Prefer these over a free-form `target`
+   * string — the audit-trail reader filters on (entity_type, entity_id)
+   * when present and falls back to legacy target parsing otherwise.
+   */
+  entity_type?: string | null;
   entity_id?: string | null;
   created_at?: string | null;
 }
@@ -58,18 +64,27 @@ function buildMetadata(payload: OrgAuditLogPayload) {
 }
 
 function buildRow(payload: OrgAuditLogPayload) {
+  // Prefer an explicit target. If the caller didn't pass one but did pass
+  // typed entity columns, synthesize the legacy `target='entityType:entityId'`
+  // shape so the audit panel's fallback path keeps working alongside the
+  // new typed-column lookup.
+  const explicitTarget =
+    payload.target?.trim() || payload.target_resource?.trim();
+  const synthesizedTarget =
+    !explicitTarget && payload.entity_type && payload.entity_id
+      ? `${payload.entity_type}:${payload.entity_id}`
+      : null;
+
   return {
     organization_id: payload.organization_id,
     action: payload.action,
-    target:
-      payload.target?.trim() ||
-      payload.target_resource?.trim() ||
-      payload.action,
+    target: explicitTarget || synthesizedTarget || payload.action,
     actor_email: payload.actor_email?.trim() || 'system@formaos.com',
     actor_id: payload.actor_id ?? null,
     domain: payload.domain ?? null,
     severity: payload.severity ?? null,
     metadata: buildMetadata(payload),
+    entity_type: payload.entity_type ?? null,
     entity_id: payload.entity_id ?? null,
     created_at: payload.created_at ?? new Date().toISOString(),
   };

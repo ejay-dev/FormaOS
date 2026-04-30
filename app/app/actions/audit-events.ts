@@ -45,7 +45,12 @@ export async function logAuditEvent(
       actor_id: payload.actorUserId,
       actor_email: null,
       action: payload.actionType,
+      // target stays for back-compat; entity_type/entity_id are the
+      // structured columns the reader now prefers (see migration
+      // 20260430_006_audit_log_entity_typed_columns.sql).
       target: entityLabel,
+      entity_type: payload.entityType ?? null,
+      entity_id: payload.entityId ?? null,
       domain: "compliance",
       severity: "low",
       metadata: {
