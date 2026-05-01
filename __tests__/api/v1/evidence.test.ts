@@ -17,6 +17,10 @@ jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(async () => mockSupabase),
 }));
 
+jest.mock('@/lib/supabase/admin', () => ({
+  createSupabaseAdminClient: jest.fn(() => ({ from: mockFrom })),
+}));
+
 jest.mock('@/lib/security/rate-limiter', () => ({
   rateLimitApi: jest.fn().mockResolvedValue({ success: true }),
 }));
@@ -54,7 +58,7 @@ describe('GET /api/v1/evidence', () => {
 
   it('returns 403 when insufficient permissions', async () => {
     mockGetUser.mockResolvedValue({ data: { user: { id: 'u1' } } });
-    mockRequirePermission.mockResolvedValue(null);
+    mockRequirePermission.mockRejectedValue(new Error('Forbidden'));
     const res = await GET(makeRequest());
     expect(res.status).toBe(403);
   });

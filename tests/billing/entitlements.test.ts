@@ -212,7 +212,7 @@ describe('requireActiveSubscription', () => {
     };
 
     await expect(requireActiveSubscription('org-1')).rejects.toThrow(
-      'Trial expired',
+      'Subscription grace period expired',
     );
   });
 

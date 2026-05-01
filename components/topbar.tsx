@@ -8,7 +8,6 @@ import { TopbarSearch } from './topbar-search';
 import {
   Search,
   ChevronRight,
-  User,
   Settings,
   LogOut,
   ChevronDown,
@@ -26,6 +25,8 @@ import { useHelpAssistant } from '@/components/help/help-assistant-context';
 
 import Button from './ui/button';
 import { Badge } from './ui/badge';
+import { Avatar } from './ui/avatar-stack';
+import { useCurrentUserAvatar } from '@/lib/users/use-current-user-avatar';
 
 // ✅ Notification Center Component
 import { NotificationCenter } from '@/components/notifications/notification-center';
@@ -53,9 +54,8 @@ export function TopBar({
   role: UserRole;
 }) {
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [displayName, setDisplayName] = useState<string | null>(null);
   const { open: openHelp } = useHelpAssistant();
+  const { displayName, avatarUrl } = useCurrentUserAvatar(userId);
 
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -77,47 +77,13 @@ export function TopBar({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadProfile = async () => {
-      if (!userId) return;
-
-      // Query profiles table for display name and avatar
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name, avatar_url')
-        .eq('id', userId)
-        .maybeSingle();
-
-      if (!isMounted) return;
-
-      setDisplayName(profile?.full_name ?? null);
-      setAvatarUrl(profile?.avatar_url ?? null);
-    };
-
-    loadProfile();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [supabase, userId]);
-
   // Logout
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.push('/auth/signin');
   };
 
-  const initialsSource = displayName || userEmail || '';
-  const initials = initialsSource
-    ? initialsSource
-        .split(' ')
-        .map((part) => part[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase()
-    : 'US';
+  const avatarName = displayName || userEmail || 'User';
 
   const menuItems: MenuItem[] = [
     { label: 'Profile', icon: UserCircle, href: '/app/profile' },
@@ -197,17 +163,12 @@ export function TopBar({
             aria-expanded={showUserMenu}
             className="flex items-center gap-1 sm:gap-2 rounded-full pl-1 pr-2.5 sm:pr-3 py-1.5"
           >
-            <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-muted text-xs font-bold text-card-foreground">
-              {avatarUrl ? (
-                <img
-                  src={avatarUrl}
-                  alt="User avatar"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                initials || <User className="h-4 w-4" />
-              )}
-            </div>
+            <Avatar
+              name={avatarName}
+              src={avatarUrl}
+              size="md"
+              className="ring-0"
+            />
             <ChevronDown
               className={`h-3 w-3 text-card-foreground/70 transition-transform ${
                 showUserMenu ? 'rotate-180' : ''

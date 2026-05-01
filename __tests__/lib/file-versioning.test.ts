@@ -23,7 +23,7 @@ jest.mock('@/lib/audit-trail', () => ({
   logActivity: (...args: unknown[]) => logActivity(...args),
 }));
 
-jest.mock('@/lib/realtime', () => ({
+jest.mock('@/lib/notifications/send', () => ({
   sendNotification: (...args: unknown[]) => sendNotification(...args),
 }));
 
@@ -36,9 +36,15 @@ describe('file-versioning', () => {
 
   it('creates file metadata and an initial version record', async () => {
     supabase.setResolver((operation) => {
-      if (operation.table === 'file_metadata' && operation.action === 'insert') {
+      if (
+        operation.table === 'file_metadata' &&
+        operation.action === 'insert'
+      ) {
         return {
-          data: { id: 'file-1', ...(operation.values as Record<string, unknown>) },
+          data: {
+            id: 'file-1',
+            ...(operation.values as Record<string, unknown>),
+          },
           error: null,
         };
       }
@@ -77,7 +83,10 @@ describe('file-versioning', () => {
 
   it('uploads a new file version, updates metadata, and notifies the uploader', async () => {
     supabase.setResolver((operation) => {
-      if (operation.table === 'file_metadata' && operation.action === 'select') {
+      if (
+        operation.table === 'file_metadata' &&
+        operation.action === 'select'
+      ) {
         return {
           data: {
             id: 'file-1',
@@ -88,7 +97,10 @@ describe('file-versioning', () => {
           error: null,
         };
       }
-      if (operation.table === 'file_versions' && operation.action === 'insert') {
+      if (
+        operation.table === 'file_versions' &&
+        operation.action === 'insert'
+      ) {
         return {
           data: {
             id: 'version-3',
@@ -134,7 +146,10 @@ describe('file-versioning', () => {
 
   it('compares two versions and reports meaningful differences', async () => {
     supabase.setResolver((operation) => {
-      if (operation.table === 'file_versions' && operation.action === 'select') {
+      if (
+        operation.table === 'file_versions' &&
+        operation.action === 'select'
+      ) {
         const versionNumber = operation.filters.find(
           (filter) => filter.column === 'version_number',
         )?.value;
@@ -161,7 +176,8 @@ describe('file-versioning', () => {
             version_number: 2,
             file_name: 'policy-v2.docx',
             file_size: 1500,
-            mime_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            mime_type:
+              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             uploaded_by: 'user-2',
             checksum: 'b',
             created_at: '2026-03-11T12:00:00.000Z',
@@ -186,7 +202,10 @@ describe('file-versioning', () => {
 
   it('restores an older version by creating a new current version', async () => {
     supabase.setResolver((operation) => {
-      if (operation.table === 'file_versions' && operation.action === 'select') {
+      if (
+        operation.table === 'file_versions' &&
+        operation.action === 'select'
+      ) {
         return {
           data: {
             file_id: 'file-1',
@@ -202,7 +221,10 @@ describe('file-versioning', () => {
           error: null,
         };
       }
-      if (operation.table === 'file_metadata' && operation.action === 'select') {
+      if (
+        operation.table === 'file_metadata' &&
+        operation.action === 'select'
+      ) {
         return {
           data: {
             id: 'file-1',
@@ -212,7 +234,10 @@ describe('file-versioning', () => {
           error: null,
         };
       }
-      if (operation.table === 'file_versions' && operation.action === 'insert') {
+      if (
+        operation.table === 'file_versions' &&
+        operation.action === 'insert'
+      ) {
         return {
           data: {
             id: 'version-4',
@@ -224,7 +249,12 @@ describe('file-versioning', () => {
       return { data: null, error: null };
     });
 
-    const restored = await restoreVersion('file-1', 2, 'user-9', 'Rollback bad change');
+    const restored = await restoreVersion(
+      'file-1',
+      2,
+      'user-9',
+      'Rollback bad change',
+    );
     expect(restored.version_number).toBe(4);
     expect(restored.change_summary).toContain('Rollback bad change');
     expect(
@@ -239,7 +269,10 @@ describe('file-versioning', () => {
 
   it('prunes old versions and updates the retained version count', async () => {
     supabase.setResolver((operation) => {
-      if (operation.table === 'file_versions' && operation.action === 'select') {
+      if (
+        operation.table === 'file_versions' &&
+        operation.action === 'select'
+      ) {
         return {
           data: [
             { id: 'v4', version_number: 4 },
@@ -275,10 +308,16 @@ describe('file-versioning', () => {
     expect(checksum).toHaveLength(64);
 
     supabase.setResolver((operation) => {
-      if (operation.table === 'file_metadata' && operation.action === 'select') {
+      if (
+        operation.table === 'file_metadata' &&
+        operation.action === 'select'
+      ) {
         return { data: { current_version: 3 }, error: null };
       }
-      if (operation.table === 'file_versions' && operation.action === 'select') {
+      if (
+        operation.table === 'file_versions' &&
+        operation.action === 'select'
+      ) {
         return {
           data: {
             file_id: 'file-1',
@@ -292,6 +331,8 @@ describe('file-versioning', () => {
     });
 
     await expect(hasFileChanged('file-1', checksum)).resolves.toBe(false);
-    await expect(hasFileChanged('file-1', 'different-checksum')).resolves.toBe(true);
+    await expect(hasFileChanged('file-1', 'different-checksum')).resolves.toBe(
+      true,
+    );
   });
 });

@@ -226,7 +226,7 @@ describe('getWorkflowExecutionHistory', () => {
         error: null,
       }),
     );
-    const result = await getWorkflowExecutionHistory('wf-1');
+    const result = await getWorkflowExecutionHistory('wf-1', 'org-1');
     expect(result.length).toBe(1);
     expect(result[0]).toHaveProperty('workflowName', 'WF1');
   });
@@ -235,7 +235,7 @@ describe('getWorkflowExecutionHistory', () => {
     getClient().from.mockImplementation(() =>
       createBuilder({ data: null, error: { message: 'fail' } }),
     );
-    expect(await getWorkflowExecutionHistory('wf-1')).toEqual([]);
+    expect(await getWorkflowExecutionHistory('wf-1', 'org-1')).toEqual([]);
   });
 });
 

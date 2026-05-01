@@ -12,33 +12,65 @@ export async function POST(request: Request) {
   try {
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { data: membership } = await supabase
       .from('org_members')
-      .select('organization_id')
+      .select('organization_id, role')
       .eq('user_id', user.id)
       .maybeSingle();
     const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) return NextResponse.json({ error: 'No organization' }, { status: 400 });
+    if (!orgId)
+      return NextResponse.json({ error: 'No organization' }, { status: 400 });
+
+    const inviterRole = (membership?.role as string | undefined) ?? '';
+    const canInvite = inviterRole === 'owner' || inviterRole === 'admin';
+    if (!canInvite) {
+      return NextResponse.json(
+        { error: 'Forbidden - only owners and admins can invite members' },
+        { status: 403 },
+      );
+    }
 
     const body = (await request.json().catch(() => ({}))) as {
       invites?: Array<{ email?: string; role?: string }>;
     };
-    const invites = Array.isArray(body.invites) ? body.invites.slice(0, 10) : [];
+    const invites = Array.isArray(body.invites)
+      ? body.invites.slice(0, 10)
+      : [];
     if (invites.length === 0) {
-      return NextResponse.json({ error: 'No invites provided' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'No invites provided' },
+        { status: 400 },
+      );
     }
 
     const results: Array<{ email: string; ok: boolean; error?: string }> = [];
     for (const inv of invites) {
       const email = (inv.email || '').trim().toLowerCase();
-      const role = VALID_ROLES.has(inv.role || '') ? (inv.role as InviteRole) : 'member';
+      const role = VALID_ROLES.has(inv.role || '')
+        ? (inv.role as InviteRole)
+        : 'member';
+      // Only owners can grant owner role
+      if (role === 'owner' && inviterRole !== 'owner') {
+        results.push({
+          email,
+          ok: false,
+          error: 'Only owners can invite other owners',
+        });
+        continue;
+      }
       if (!email) {
         results.push({ email, ok: false, error: 'Missing email' });
         continue;

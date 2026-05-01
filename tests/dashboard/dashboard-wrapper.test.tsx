@@ -22,8 +22,8 @@ jest.mock('@/components/dashboard/unified-dashboard-layout', () => ({
   ),
 }));
 
-jest.mock('@/components/dashboard/employer-dashboard', () => ({
-  EmployerDashboard: ({
+jest.mock('@/components/dashboard/command-center', () => ({
+  CommandCenter: ({
     organizationId,
     organizationName,
     industry,
@@ -36,6 +36,18 @@ jest.mock('@/components/dashboard/employer-dashboard', () => ({
       {organizationId}:{organizationName}:{industry ?? 'none'}
     </div>
   ),
+}));
+
+jest.mock('@/components/billing/UsageLimitWarnings', () => ({
+  DashboardUpgradeNudge: () => null,
+}));
+
+jest.mock('@/components/onboarding/StartHereCard', () => ({
+  StartHereCard: () => null,
+}));
+
+jest.mock('@/components/onboarding/PostOnboardingHero', () => ({
+  PostOnboardingHero: () => null,
 }));
 
 jest.mock('@/components/dashboard/employee-dashboard', () => ({

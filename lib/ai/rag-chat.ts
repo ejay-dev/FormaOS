@@ -91,7 +91,7 @@ export async function buildControlContext(
   controlId: string,
 ): Promise<string> {
   const { data: control } = await db
-    .from('org_compliance_controls')
+    .from('org_controls')
     .select('control_id, title, description, category, status')
     .eq('id', controlId)
     .eq('org_id', orgId)

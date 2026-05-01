@@ -53,7 +53,7 @@ jest.mock('@/lib/audit-trail', () => ({
   logActivity: jest.fn(),
 }));
 
-jest.mock('@/lib/realtime', () => ({
+jest.mock('@/lib/notifications/send', () => ({
   sendNotification: jest.fn(),
 }));
 

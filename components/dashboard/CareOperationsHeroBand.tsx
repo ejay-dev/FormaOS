@@ -48,18 +48,11 @@ function CareIndexRing({
         viewBox="0 0 160 160"
         aria-hidden="true"
       >
-        <defs>
-          <linearGradient id="care-stroke" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#f472b6" />
-            <stop offset="50%" stopColor="#a78bfa" />
-            <stop offset="100%" stopColor="#00d4fb" />
-          </linearGradient>
-        </defs>
         <circle
           cx="80"
           cy="80"
           r={radius}
-          className="stroke-glass-border"
+          className="stroke-border"
           strokeWidth="10"
           fill="transparent"
         />
@@ -67,13 +60,13 @@ function CareIndexRing({
           cx="80"
           cy="80"
           r={radius}
-          stroke="url(#care-stroke)"
+          className="stroke-primary"
           strokeWidth="10"
           fill="transparent"
           strokeDasharray={circumference}
           strokeDashoffset={isLoading ? circumference : offset}
           strokeLinecap="round"
-          className="transition-[stroke-dashoffset] duration-1000 ease-out"
+          style={{ transition: 'stroke-dashoffset 1s ease-out' }}
         />
       </svg>
       <div className="flex flex-col items-center">
@@ -100,14 +93,14 @@ function MiniStat({
   tone: 'success' | 'warning' | 'danger' | 'neutral';
 }) {
   const toneClass = {
-    success: 'text-emerald-400',
-    warning: 'text-amber-400',
-    danger: 'text-rose-400',
+    success: 'text-emerald-500',
+    warning: 'text-amber-500',
+    danger: 'text-rose-500',
     neutral: 'text-muted-foreground',
   }[tone];
 
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-glass-border bg-glass-subtle px-3 py-2">
+    <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2">
       <Icon className={`h-3.5 w-3.5 ${toneClass}`} aria-hidden="true" />
       <div className="flex flex-col leading-tight">
         <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
@@ -152,7 +145,7 @@ export function CareOperationsHeroBand() {
   if (!isLoading && !data) return null;
   if (!data) {
     return (
-      <div className="h-44 animate-pulse rounded-2xl border border-glass-border bg-glass-subtle" />
+      <div className="h-44 animate-pulse rounded-lg border border-border bg-card" />
     );
   }
 
@@ -183,23 +176,14 @@ export function CareOperationsHeroBand() {
         : 'success';
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-glass-border bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-6 shadow-premium-lg">
-      <div
-        className="pointer-events-none absolute -top-16 -right-10 h-60 w-60 rounded-full bg-[radial-gradient(circle_at_center,rgba(244,114,182,0.18),transparent_70%)]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -bottom-20 -left-16 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(167,139,250,0.14),transparent_70%)]"
-        aria-hidden="true"
-      />
-
-      <div className="relative grid gap-6 lg:grid-cols-[auto,1fr,1fr] lg:items-center">
+    <div className="rounded-lg border border-border bg-card p-6">
+      <div className="grid gap-6 lg:grid-cols-[auto,1fr,1fr] lg:items-center">
         {/* Left: ring + title */}
         <div className="flex items-center gap-4">
           <CareIndexRing score={careIndex} isLoading={isLoading} />
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-pink-400" aria-hidden="true" />
+              <Heart className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 Care Operations
               </span>
@@ -247,7 +231,7 @@ export function CareOperationsHeroBand() {
             )}
           </div>
           {expiring.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-glass-border bg-glass-subtle px-3 py-4 text-center text-xs text-muted-foreground">
+            <div className="rounded-lg border border-dashed border-border bg-muted/30 px-3 py-4 text-center text-xs text-muted-foreground">
               Nothing expiring in the next 30 days.
             </div>
           ) : (
@@ -255,7 +239,7 @@ export function CareOperationsHeroBand() {
               {expiring.map((cred) => (
                 <li
                   key={cred.id}
-                  className="flex items-center justify-between rounded-lg border border-glass-border bg-surface-1 px-3 py-2"
+                  className="flex items-center justify-between rounded-lg border border-border bg-card px-3 py-2"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm text-foreground/90">
@@ -268,8 +252,8 @@ export function CareOperationsHeroBand() {
                   <span
                     className={`ml-2 shrink-0 rounded-md px-2 py-0.5 text-[11px] font-bold tabular-nums ${
                       cred.daysUntilExpiry <= 7
-                        ? 'bg-rose-500/15 text-rose-300'
-                        : 'bg-amber-500/15 text-amber-300'
+                        ? 'bg-rose-500/10 text-rose-500'
+                        : 'bg-amber-500/10 text-amber-500'
                     }`}
                   >
                     {cred.daysUntilExpiry}d
@@ -293,7 +277,7 @@ export function CareOperationsHeroBand() {
             )}
           </div>
           {reviews.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-glass-border bg-glass-subtle px-3 py-4 text-center text-xs text-muted-foreground">
+            <div className="rounded-lg border border-dashed border-border bg-muted/30 px-3 py-4 text-center text-xs text-muted-foreground">
               No reviews due in the next 7 days.
             </div>
           ) : (
@@ -301,21 +285,21 @@ export function CareOperationsHeroBand() {
               {reviews.map((review) => (
                 <div
                   key={review.id}
-                  className="relative flex items-center gap-3 rounded-lg border border-glass-border bg-surface-1 px-3 py-2"
+                  className="relative flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2"
                 >
                   <div className="relative flex h-8 w-8 shrink-0 items-center justify-center">
                     <div
                       className={`absolute inset-0 rounded-full ${
                         review.daysUntilReview <= 3
-                          ? 'bg-rose-500/15'
-                          : 'bg-amber-500/15'
+                          ? 'bg-rose-500/10'
+                          : 'bg-amber-500/10'
                       }`}
                     />
                     <Clock
                       className={`h-3.5 w-3.5 ${
                         review.daysUntilReview <= 3
-                          ? 'text-rose-300'
-                          : 'text-amber-300'
+                          ? 'text-rose-500'
+                          : 'text-amber-500'
                       }`}
                       aria-hidden="true"
                     />
@@ -340,7 +324,7 @@ export function CareOperationsHeroBand() {
 
       {/* Footer row — critical alerts */}
       {data.alerts.filter((a) => a.type === 'critical').length > 0 && (
-        <div className="relative mt-4 flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
+        <div className="mt-4 flex items-center gap-2 rounded-md border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-500">
           <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span>
             {data.alerts.filter((a) => a.type === 'critical').length} critical

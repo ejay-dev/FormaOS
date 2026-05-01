@@ -157,9 +157,6 @@ export default async function AppLayout({
          <OnboardingProvider state={firstSession}>
           {showOnboardingWizard && <OnboardingWizard />}
           <div className="app-shell app-theme relative flex min-h-screen w-full overflow-hidden bg-background text-foreground">
-            {/* Ambient background */}
-            <div className="pointer-events-none absolute inset-x-0 -top-32 h-64 bg-gradient-glow blur-3xl opacity-40" />
-
             {/* App shell grid */}
             <div className="flex h-full w-full min-w-0">
               {/* Sidebar */}

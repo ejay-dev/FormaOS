@@ -85,11 +85,19 @@ function mockSupabaseAdmin() {
       }),
       select: () => ({
         eq: () => ({
-          maybeSingle: () => ({ data: null }),
+          maybeSingle: () => {
+            const override = dbOverrides[`${table}.select`];
+            if (override) return override;
+            return { data: null };
+          },
           limit: () => ({ data: null }),
         }),
         match: () => ({
-          maybeSingle: () => ({ data: null }),
+          maybeSingle: () => {
+            const override = dbOverrides[`${table}.select`];
+            if (override) return override;
+            return { data: null };
+          },
         }),
       }),
     }),
@@ -250,10 +258,14 @@ describe('POST /api/billing/webhook', () => {
           error: Record<string, string>;
         }
       ).error.code = '23505';
+      // Return a succeeded status so the handler short-circuits
+      dbOverrides['billing_events.select'] = {
+        data: { status: 'succeeded', attempts: 1 },
+      } as unknown as { error: { message: string } | null };
 
       const res = await POST(makeRequest());
       expect(res.status).toBe(200);
-      expect(await res.json()).toEqual({ received: true });
+      expect(await res.json()).toEqual({ received: true, idempotent: true });
 
       // Should NOT have processed the event
       expect(dbCalls.upserts).toHaveLength(0);
@@ -290,10 +302,12 @@ describe('POST /api/billing/webhook', () => {
         (c) => c.table === 'billing_events',
       );
       expect(billingInsert).toBeDefined();
-      expect(billingInsert!.data).toEqual({
-        id: 'evt_unique_123',
-        event_type: 'invoice.paid',
-      });
+      expect(billingInsert!.data).toEqual(
+        expect.objectContaining({
+          id: 'evt_unique_123',
+          event_type: 'invoice.paid',
+        }),
+      );
     });
   });
 

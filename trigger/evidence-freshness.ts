@@ -31,7 +31,7 @@ export const evidenceFreshnessTask = schedules.task({
       if (expiring && expiring.length > 0) {
         // Create notifications for org admins
         const { data: admins } = await db
-          .from('org_memberships')
+          .from('org_members')
           .select('user_id')
           .eq('organization_id', org.id)
           .in('role', ['owner', 'admin']);

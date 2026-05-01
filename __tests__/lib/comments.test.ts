@@ -152,9 +152,9 @@ describe('updateComment', () => {
         error: null,
       }),
     );
-    await expect(updateComment('c1', 'u1', 'new content')).rejects.toThrow(
-      'Unauthorized to edit',
-    );
+    await expect(
+      updateComment('c1', 'u1', 'new content', 'org-1'),
+    ).rejects.toThrow('Unauthorized to edit');
   });
 
   it('updates comment when user is owner', async () => {
@@ -173,7 +173,7 @@ describe('updateComment', () => {
         error: null,
       });
     });
-    const result = await updateComment('c1', 'u1', 'updated');
+    const result = await updateComment('c1', 'u1', 'updated', 'org-1');
     expect(result.edited).toBe(true);
   });
 });
@@ -190,7 +190,7 @@ describe('deleteComment', () => {
         error: null,
       }),
     );
-    await expect(deleteComment('c1', 'u1')).rejects.toThrow(
+    await expect(deleteComment('c1', 'u1', 'org-1')).rejects.toThrow(
       'Unauthorized to delete',
     );
   });
@@ -206,7 +206,7 @@ describe('deleteComment', () => {
         });
       return createBuilder({ error: null });
     });
-    await deleteComment('c1', 'u1');
+    await deleteComment('c1', 'u1', 'org-1');
     expect(logActivity).toHaveBeenCalledWith(
       'org-1',
       'u1',
@@ -223,25 +223,35 @@ describe('addReaction', () => {
   });
 
   it('throws if already reacted', async () => {
-    getClient().from.mockImplementation(() =>
-      createBuilder({ data: { id: 'r1' }, error: null }),
-    );
-    await expect(addReaction('c1', 'u1', 'thumbsup')).rejects.toThrow(
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'comments')
+        return createBuilder({
+          data: { organization_id: 'org-1' },
+          error: null,
+        });
+      return createBuilder({ data: { id: 'r1' }, error: null });
+    });
+    await expect(addReaction('c1', 'u1', 'thumbsup', 'org-1')).rejects.toThrow(
       'Already reacted',
     );
   });
 
   it('adds reaction', async () => {
-    let callCount = 0;
-    getClient().from.mockImplementation(() => {
-      callCount++;
-      if (callCount === 1) return createBuilder({ data: null, error: null });
+    let crCallCount = 0;
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'comments')
+        return createBuilder({
+          data: { organization_id: 'org-1' },
+          error: null,
+        });
+      crCallCount++;
+      if (crCallCount === 1) return createBuilder({ data: null, error: null });
       return createBuilder({
         data: { id: 'r1', comment_id: 'c1', user_id: 'u1', emoji: 'thumbsup' },
         error: null,
       });
     });
-    const result = await addReaction('c1', 'u1', 'thumbsup');
+    const result = await addReaction('c1', 'u1', 'thumbsup', 'org-1');
     expect(result.emoji).toBe('thumbsup');
   });
 });
@@ -252,8 +262,19 @@ describe('removeReaction', () => {
   });
 
   it('removes reaction', async () => {
-    getClient().from.mockImplementation(() => createBuilder({ error: null }));
-    await removeReaction('r1', 'u1');
+    let crCallCount = 0;
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'comments')
+        return createBuilder({
+          data: { organization_id: 'org-1' },
+          error: null,
+        });
+      crCallCount++;
+      if (crCallCount === 1)
+        return createBuilder({ data: { comment_id: 'c1' }, error: null });
+      return createBuilder({ error: null });
+    });
+    await removeReaction('r1', 'u1', 'org-1');
     expect(getClient().from).toHaveBeenCalledWith('comment_reactions');
   });
 
@@ -261,8 +282,8 @@ describe('removeReaction', () => {
     getClient().from.mockImplementation(() =>
       createBuilder({ error: { message: 'fail' } }),
     );
-    await expect(removeReaction('r1', 'u1')).rejects.toThrow(
-      'Failed to remove reaction',
+    await expect(removeReaction('r1', 'u1', 'org-1')).rejects.toThrow(
+      'Unauthorized to remove this reaction',
     );
   });
 });

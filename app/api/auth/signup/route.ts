@@ -10,6 +10,7 @@ import {
   requireJsonContentType,
 } from '@/lib/security/api-validation';
 import { validatePassword } from '@/lib/security/password-security';
+import { rateLimitSignup } from '@/lib/security/rate-limiter';
 
 const log = routeLog('/api/auth/signup');
 
@@ -25,6 +26,14 @@ export async function POST(request: Request) {
   const contentTypeError = requireJsonContentType(request);
   if (contentTypeError) {
     return contentTypeError;
+  }
+
+  const rl = await rateLimitSignup(request);
+  if (!rl.success) {
+    return NextResponse.json(
+      { ok: false, error: 'too_many_requests' },
+      { status: 429 },
+    );
   }
 
   const admin = createSupabaseAdminClient();
@@ -66,7 +75,10 @@ export async function POST(request: Request) {
       });
 
     if (createUserError) {
-      log.error({ err: createUserError }, "[api/auth/signup] createUser failed:");
+      log.error(
+        { err: createUserError },
+        '[api/auth/signup] createUser failed:',
+      );
       const isEmailTaken =
         createUserError.message?.toLowerCase().includes('already registered') ||
         createUserError.message
@@ -102,11 +114,14 @@ export async function POST(request: Request) {
     if (bootstrapResult.error || !bootstrapResult.data?.organizationId) {
       log.error(
         { err: bootstrapResult.error },
-        "[api/auth/signup] bootstrapOrganizationAtomic failed:",
+        '[api/auth/signup] bootstrapOrganizationAtomic failed:',
       );
       if (createdUserId) {
         await admin.auth.admin.deleteUser(createdUserId).catch((cleanupErr) => {
-          log.error({ err: cleanupErr }, "[api/auth/signup] auth cleanup failed:");
+          log.error(
+            { err: cleanupErr },
+            '[api/auth/signup] auth cleanup failed:',
+          );
         });
       }
       return NextResponse.json(
@@ -120,12 +135,19 @@ export async function POST(request: Request) {
     try {
       await ensureSubscription(organizationId, plan);
     } catch (subErr) {
-      log.error({ err: subErr }, "[api/auth/signup] ensureSubscription failed:");
+      log.error(
+        { err: subErr },
+        '[api/auth/signup] ensureSubscription failed:',
+      );
     }
 
-    return NextResponse.json({ ok: true, userId: createdUserId, organizationId });
+    return NextResponse.json({
+      ok: true,
+      userId: createdUserId,
+      organizationId,
+    });
   } catch (err) {
-    log.error({ err: err }, "[api/auth/signup] unexpected error:");
+    log.error({ err: err }, '[api/auth/signup] unexpected error:');
     if (createdUserId) {
       await admin.auth.admin.deleteUser(createdUserId).catch(() => undefined);
     }

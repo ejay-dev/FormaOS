@@ -10,30 +10,45 @@ export async function POST(request: Request) {
   try {
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await request.json().catch(() => ({}));
     const requestedOrgId = (body?.orgId as string | undefined) ?? null;
 
     const { data: membership } = await supabase
       .from('org_members')
-      .select('organization_id')
+      .select('organization_id, role')
       .eq('user_id', user.id)
       .maybeSingle();
     const userOrgId = membership?.organization_id as string | undefined;
     const orgId = requestedOrgId || userOrgId;
 
-    if (!orgId) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    if (!orgId)
+      return NextResponse.json({ error: 'No organization' }, { status: 403 });
     if (requestedOrgId && requestedOrgId !== userOrgId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const BILLING_ROLES = new Set(['owner', 'admin']);
+    if (!membership?.role || !BILLING_ROLES.has(membership.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      'http://localhost:3000';
 
     const { data: subscription } = await supabase
       .from('org_subscriptions')
@@ -59,6 +74,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: session.url });
   } catch (err) {
     log.error({ err }, 'portal error');
-    return NextResponse.json({ error: 'Failed to create portal session' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create portal session' },
+      { status: 500 },
+    );
   }
 }

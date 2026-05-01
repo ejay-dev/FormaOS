@@ -16,12 +16,12 @@ import {
 } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import Button from './ui/button';
-import { Badge } from './ui/badge';
+import { Avatar } from './ui/avatar-stack';
+import { useCurrentUserAvatar } from '@/lib/users/use-current-user-avatar';
 import { useAppStore } from '@/lib/stores/app';
 import { markSidebarRouteTransition } from '@/lib/monitoring/route-transition';
 import {
   getIndustryNavigation,
-  getIndustryLabel,
   type NavItem,
 } from '@/lib/navigation/industry-sidebar';
 import { useComplianceStore } from '@/lib/stores/compliance';
@@ -29,7 +29,6 @@ import { useOnboarding } from '@/lib/onboarding/onboarding-context';
 
 type ContextMode = {
   label: string;
-  color: string;
   icon: React.ElementType;
 };
 
@@ -40,11 +39,7 @@ function resolveContextMode(pathname: string): ContextMode {
     pathname.startsWith('/app/care-plans') ||
     pathname.startsWith('/app/progress-notes')
   ) {
-    return {
-      label: 'Care Operations',
-      color: 'text-rose-300 bg-rose-500/10 border-rose-400/20',
-      icon: HeartPulse,
-    };
+    return { label: 'Care Operations', icon: HeartPulse };
   }
   if (
     pathname.startsWith('/app/compliance') ||
@@ -52,11 +47,7 @@ function resolveContextMode(pathname: string): ContextMode {
     pathname.startsWith('/app/frameworks') ||
     pathname.startsWith('/app/staff-compliance')
   ) {
-    return {
-      label: 'Compliance',
-      color: 'text-primary bg-primary/10 border-primary/20',
-      icon: Shield,
-    };
+    return { label: 'Compliance', icon: Shield };
   }
   if (
     pathname.startsWith('/app/policies') ||
@@ -65,11 +56,7 @@ function resolveContextMode(pathname: string): ContextMode {
     pathname.startsWith('/app/vault') ||
     pathname.startsWith('/app/tasks')
   ) {
-    return {
-      label: 'Governance',
-      color: 'text-violet-300 bg-violet-500/10 border-violet-400/20',
-      icon: FileText,
-    };
+    return { label: 'Governance', icon: FileText };
   }
   if (
     pathname.startsWith('/app/audit') ||
@@ -77,28 +64,16 @@ function resolveContextMode(pathname: string): ContextMode {
     pathname.startsWith('/app/executive') ||
     pathname.startsWith('/app/intelligence')
   ) {
-    return {
-      label: 'Intelligence',
-      color: 'text-emerald-300 bg-emerald-500/10 border-emerald-400/20',
-      icon: BarChart3,
-    };
+    return { label: 'Intelligence', icon: BarChart3 };
   }
   if (
     pathname.startsWith('/app/settings') ||
     pathname.startsWith('/app/team') ||
     pathname.startsWith('/app/billing')
   ) {
-    return {
-      label: 'Administration',
-      color: 'text-muted-foreground bg-surface-1 border-edge-2',
-      icon: Settings2,
-    };
+    return { label: 'Administration', icon: Settings2 };
   }
-  return {
-    label: 'Overview',
-    color: 'text-primary bg-primary/10 border-primary/20',
-    icon: Shield,
-  };
+  return { label: 'Overview', icon: Shield };
 }
 
 type UserRole = 'viewer' | 'member' | 'admin' | 'owner' | 'staff' | 'auditor';
@@ -138,12 +113,15 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
   const pathname = usePathname();
   const router = useRouter();
   const organization = useAppStore((state) => state.organization);
+  const user = useAppStore((state) => state.user);
   const industry = organization?.industry ?? null;
   const prefetchedRoutes = useRef(new Set<string>());
   const warmupScheduled = useRef(false);
   const contextMode = useMemo(() => resolveContextMode(pathname), [pathname]);
   const { state: onboardingState, isActive: onboardingActive } = useOnboarding();
   const nextStepHref = onboardingState?.nextStep?.href ?? null;
+  const { displayName, avatarUrl } = useCurrentUserAvatar(user?.id);
+  const userName = displayName || user?.name || user?.email || 'User';
 
   // Get industry-specific navigation (memoized to prevent prefetch re-runs)
   const { navigation, categories } = useMemo(
@@ -223,24 +201,14 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
 
   return (
     <div className="flex h-full w-full flex-col justify-between px-3 py-4">
-      {/* Context Mode + Industry Badge */}
-      <div className="mb-3 space-y-1.5 px-3">
-        <div
-          className={`flex items-center gap-1.5 rounded-md border px-2 py-1 transition-all duration-300 ${contextMode.color}`}
-        >
+      {/* Context Mode */}
+      <div className="mb-3 px-3">
+        <div className="flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2 py-1 text-muted-foreground">
           <contextMode.icon className="h-3 w-3 shrink-0" />
-          <span className="text-[10px] font-semibold tracking-wide">
+          <span className="text-[10px] font-semibold tracking-wide uppercase">
             {contextMode.label}
           </span>
         </div>
-        {industry && (
-          <Badge
-            variant="default"
-            className="bg-primary/10 text-primary border-primary/20 hover:bg-primary/15 text-[10px]"
-          >
-            {getIndustryLabel(industry)}
-          </Badge>
-        )}
       </div>
 
       {/* Navigation */}
@@ -273,6 +241,27 @@ export function Sidebar({ role = 'owner' }: { role?: UserRole }) {
 
       {/* Bottom actions */}
       <div className="space-y-0.5 border-t border-border pt-3">
+        {/* User identity */}
+        <Link
+          href="/app/profile"
+          className="mb-1 flex items-center gap-2 rounded-md px-2 py-2 hover:bg-muted/50"
+        >
+          <Avatar
+            name={userName}
+            src={avatarUrl}
+            size="md"
+            className="ring-0 shrink-0"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-xs font-semibold text-foreground">
+              {userName}
+            </div>
+            <div className="truncate text-[10px] uppercase tracking-wide text-muted-foreground">
+              {role}
+            </div>
+          </div>
+        </Link>
+
         {/* Theme Switcher */}
         <ThemeSwitcher />
 

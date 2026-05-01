@@ -55,7 +55,7 @@ export default async function AuditTrailPage() {
   /**
    * 🔒 STEP 2: Role Gate
    */
-  if (membership.role !== 'admin' && membership.role !== 'manager') {
+  if (membership.role !== 'admin' && membership.role !== 'owner') {
     redirect('/app');
   }
 

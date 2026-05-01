@@ -6,7 +6,7 @@ jest.mock('@/lib/supabase/server', () => ({
 jest.mock('@/lib/audit-trail', () => ({
   logActivity: jest.fn().mockResolvedValue(undefined),
 }));
-jest.mock('@/lib/realtime', () => ({
+jest.mock('@/lib/notifications/send', () => ({
   sendNotification: jest.fn().mockResolvedValue(undefined),
 }));
 

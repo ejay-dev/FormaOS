@@ -3,18 +3,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
-  AlertTriangle,
   ArrowRight,
   Briefcase,
   CheckCircle2,
   CheckSquare,
   ClipboardList,
-  Clock,
   FileText,
   Home,
   LineChart,
   Plus,
-  ShieldCheck,
   Table2,
   TrendingUp,
   Users,
@@ -65,9 +62,8 @@ import {
   type ActionQueueItem,
 } from '@/components/dashboard/attention-rail';
 import {
-  IconTileStat,
   PageTitleBar,
-  StatCardSparkline,
+  StatTile,
   GaugeCard,
 } from '@/components/dashboard/tabler-primitives';
 import { NextActionsStrip } from '@/components/dashboard/next-actions-strip';
@@ -559,12 +555,11 @@ export function CommandCenter({
 
               <NextActionsStrip />
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <IconTileStat
-                  icon={CheckSquare}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <StatTile
                   value={liveDataReady ? openTasksCount : '—'}
                   label="Open obligations"
-                  sublabel={
+                  caption={
                     !liveDataReady
                       ? 'Loading live count'
                       : openTasksCount > 10
@@ -576,11 +571,10 @@ export function CommandCenter({
                   tone="blue"
                   href="/app/tasks?status=open"
                 />
-                <IconTileStat
-                  icon={AlertTriangle}
+                <StatTile
                   value={liveDataReady ? overdueTasksCount : '—'}
                   label="Overdue obligations"
-                  sublabel={
+                  caption={
                     !liveDataReady
                       ? 'Loading live count'
                       : overdueTasksCount > 0
@@ -590,11 +584,10 @@ export function CommandCenter({
                   tone={overdueTasksCount > 0 ? 'rose' : 'slate'}
                   href="/app/tasks?filter=overdue"
                 />
-                <IconTileStat
-                  icon={Clock}
+                <StatTile
                   value={liveDataReady ? dueSoonCount : '—'}
                   label="Due this week"
-                  sublabel={
+                  caption={
                     !liveDataReady
                       ? 'Loading live count'
                       : dueSoonCount > 0
@@ -604,8 +597,7 @@ export function CommandCenter({
                   tone={dueSoonCount > 5 ? 'rose' : dueSoonCount > 0 ? 'amber' : 'slate'}
                   href="/app/tasks?filter=due_soon"
                 />
-                <IconTileStat
-                  icon={ShieldCheck}
+                <StatTile
                   value={
                     complianceScore > 0
                       ? `${complianceScore}%`
@@ -614,7 +606,7 @@ export function CommandCenter({
                         : '—'
                   }
                   label={complianceScore > 0 ? 'Readiness' : 'Task completion'}
-                  sublabel={
+                  caption={
                     complianceScore >= 85
                       ? 'Buyer-ready'
                       : complianceScore >= 70
@@ -681,7 +673,7 @@ export function CommandCenter({
               {industry && industry !== 'other' && (
                 <>
                   {countsError ? (
-                    <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-sm text-amber-400">
+                    <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-500">
                       {countsError}. Refresh the page to try again.
                     </div>
                   ) : (
@@ -702,24 +694,41 @@ export function CommandCenter({
           {activeTab === 'pulse' && (
             <>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <StatCardSparkline
+                <StatTile
                   label="Readiness score"
                   value={`${complianceScore}%`}
+                  tone={
+                    complianceScore >= 85
+                      ? 'emerald'
+                      : complianceScore >= 70
+                        ? 'amber'
+                        : 'rose'
+                  }
+                  caption={
+                    complianceScore >= 85
+                      ? 'Buyer-ready'
+                      : complianceScore >= 70
+                        ? 'Approaching'
+                        : 'Needs work'
+                  }
                   href="/app/reports"
                 />
-                <StatCardSparkline
+                <StatTile
                   label="Open tasks"
                   value={openTasksCount}
+                  tone="blue"
                   href="/app/tasks?status=open"
                 />
-                <StatCardSparkline
+                <StatTile
                   label="Expiring certs"
                   value={expiringCertsCount}
+                  tone={expiringCertsCount > 0 ? 'amber' : 'slate'}
                   href="/app/staff-compliance"
                 />
-                <StatCardSparkline
+                <StatTile
                   label="Team members"
                   value={teamMemberCount}
+                  tone="slate"
                   href="/app/team"
                 />
               </div>

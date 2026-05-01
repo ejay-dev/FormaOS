@@ -458,6 +458,82 @@ export function IconTileStat({
   );
 }
 
+// ---------- StatTile ----------
+// Pure typography-driven stat tile: large number, label, optional caption.
+// No icon block, no gradient. Use for hero KPI rows where the number is the point.
+
+const dotByTone: Record<Tone, string> = {
+  blue: 'bg-[hsl(var(--app-primary))]',
+  emerald: 'bg-emerald-500',
+  amber: 'bg-amber-500',
+  rose: 'bg-rose-500',
+  slate: 'bg-slate-400',
+};
+
+interface StatTileProps {
+  label: string;
+  value: string | number;
+  caption?: string;
+  delta?: { value: string; direction: TrendDirection };
+  tone?: Tone;
+  href?: string;
+  className?: string;
+}
+
+export function StatTile({
+  label,
+  value,
+  caption,
+  delta,
+  tone,
+  href,
+  className,
+}: StatTileProps) {
+  const body = (
+    <div
+      className={cn(
+        CARD_BASE,
+        'flex flex-col justify-between gap-3 p-4 min-h-[110px]',
+        href && CARD_HOVER,
+        className,
+      )}
+    >
+      <div className="flex items-center gap-2">
+        {tone && (
+          <span
+            aria-hidden
+            className={cn('h-1.5 w-1.5 rounded-full', dotByTone[tone])}
+          />
+        )}
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {label}
+        </span>
+      </div>
+      <div className="flex items-baseline gap-2">
+        <span className="text-[32px] font-bold leading-none tabular-nums tracking-tight text-foreground">
+          {value}
+        </span>
+        {delta && (
+          <DeltaBadge direction={delta.direction} value={delta.value} />
+        )}
+      </div>
+      {caption && (
+        <div className="truncate text-[11px] text-muted-foreground">
+          {caption}
+        </div>
+      )}
+    </div>
+  );
+
+  return href ? (
+    <Link href={href} className={cn('block rounded-lg', FOCUS_RING)}>
+      {body}
+    </Link>
+  ) : (
+    body
+  );
+}
+
 // ---------- WelcomeBackHero ----------
 
 interface WelcomeBackHeroProps {

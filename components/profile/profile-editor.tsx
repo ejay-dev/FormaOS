@@ -12,6 +12,7 @@ import {
   Loader2,
   CheckCircle2,
 } from 'lucide-react';
+import { Avatar } from '@/components/ui/avatar-stack';
 
 const MAX_AVATAR_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -256,8 +257,12 @@ export function ProfileEditor({
                 onError={() => setCurrentAvatarUrl(null)}
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-foreground/70">
-                <UserIcon className="h-10 w-10" />
+              <div className="flex h-full w-full items-center justify-center">
+                <Avatar
+                  name={fullName || userEmail || 'User'}
+                  size="lg"
+                  className="h-20 w-20 text-2xl ring-0"
+                />
               </div>
             )}
           </div>

@@ -15,7 +15,7 @@ async function extractEvidenceText(
   evidenceId: string,
 ): Promise<{ text: string; metadata: Record<string, unknown> } | null> {
   const { data } = await db
-    .from('evidence')
+    .from('org_evidence')
     .select('title, description, file_name, tags, control_id, created_at')
     .eq('id', evidenceId)
     .eq('org_id', orgId)
@@ -46,7 +46,7 @@ async function extractPolicyText(
   policyId: string,
 ): Promise<{ text: string; metadata: Record<string, unknown> } | null> {
   const { data } = await db
-    .from('policies')
+    .from('org_policies')
     .select('title, content, status, version, category, created_at')
     .eq('id', policyId)
     .eq('org_id', orgId)
@@ -75,7 +75,7 @@ async function extractControlText(
   controlId: string,
 ): Promise<{ text: string; metadata: Record<string, unknown> } | null> {
   const { data } = await db
-    .from('org_compliance_controls')
+    .from('org_controls')
     .select('control_id, title, description, category, status, framework_id')
     .eq('id', controlId)
     .eq('org_id', orgId)
@@ -109,7 +109,7 @@ async function extractTaskText(
   taskId: string,
 ): Promise<{ text: string; metadata: Record<string, unknown> } | null> {
   const { data } = await db
-    .from('tasks')
+    .from('org_tasks')
     .select('title, description, status, priority, due_date')
     .eq('id', taskId)
     .eq('org_id', orgId)
@@ -237,7 +237,7 @@ export async function fullReindex(
 
   // Index evidence
   const { data: evidence } = await db
-    .from('evidence')
+    .from('org_evidence')
     .select('id')
     .eq('org_id', orgId);
 
@@ -252,7 +252,7 @@ export async function fullReindex(
 
   // Index policies
   const { data: policies } = await db
-    .from('policies')
+    .from('org_policies')
     .select('id')
     .eq('org_id', orgId);
 
@@ -267,7 +267,7 @@ export async function fullReindex(
 
   // Index controls
   const { data: controls } = await db
-    .from('org_compliance_controls')
+    .from('org_controls')
     .select('id')
     .eq('org_id', orgId);
 
@@ -282,7 +282,7 @@ export async function fullReindex(
 
   // Index tasks
   const { data: tasks } = await db
-    .from('tasks')
+    .from('org_tasks')
     .select('id')
     .eq('org_id', orgId);
 
@@ -310,9 +310,9 @@ export async function incrementalIndex(
   let errors = 0;
 
   const tables: Array<{ table: string; sourceType: SourceType }> = [
-    { table: 'evidence', sourceType: 'evidence' },
-    { table: 'policies', sourceType: 'policy' },
-    { table: 'tasks', sourceType: 'task' },
+    { table: 'org_evidence', sourceType: 'evidence' },
+    { table: 'org_policies', sourceType: 'policy' },
+    { table: 'org_tasks', sourceType: 'task' },
   ];
 
   for (const { table, sourceType } of tables) {

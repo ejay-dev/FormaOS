@@ -13,11 +13,14 @@ const mockCheckRateLimit = jest.fn();
 const mockGetClientIdentifier = jest.fn();
 const mockGetUserIdentifier = jest.fn();
 const mockCreateRateLimitHeaders = jest.fn(() => ({}));
+const mockIsLocalE2ERateLimitBypass = jest.fn(() => false);
 jest.mock('@/lib/security/rate-limiter', () => ({
   checkRateLimit: (...a: any[]) => mockCheckRateLimit(...a),
   getClientIdentifier: (...a: any[]) => mockGetClientIdentifier(...a),
   getUserIdentifier: (...a: any[]) => mockGetUserIdentifier(...a),
   createRateLimitHeaders: (...a: any[]) => mockCreateRateLimitHeaders(...a),
+  isLocalE2ERateLimitBypass: (...a: any[]) =>
+    mockIsLocalE2ERateLimitBypass(...a),
   RATE_LIMITS: { EXPORT: { limit: 5, window: 3600 } },
 }));
 

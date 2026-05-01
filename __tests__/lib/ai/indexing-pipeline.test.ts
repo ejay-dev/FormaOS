@@ -239,16 +239,16 @@ describe('removeEntityIndex', () => {
 describe('fullReindex', () => {
   it('indexes all entity types for an org', async () => {
     const db = createMockDb((table: string) => {
-      if (table === 'evidence')
+      if (table === 'org_evidence')
         return createBuilder({
           data: [{ id: 'e1' }, { id: 'e2' }],
           error: null,
         });
-      if (table === 'policies')
+      if (table === 'org_policies')
         return createBuilder({ data: [{ id: 'p1' }], error: null });
-      if (table === 'org_compliance_controls')
+      if (table === 'org_controls')
         return createBuilder({ data: [{ id: 'c1' }], error: null });
-      if (table === 'tasks')
+      if (table === 'org_tasks')
         return createBuilder({ data: [{ id: 't1' }], error: null });
       // Individual entity fetches return data
       return createBuilder({
@@ -274,12 +274,12 @@ describe('fullReindex', () => {
     );
 
     const db = createMockDb((table: string) => {
-      if (table === 'evidence')
+      if (table === 'org_evidence')
         return createBuilder({ data: [{ id: 'e1' }], error: null });
-      if (table === 'policies') return createBuilder({ data: [], error: null });
-      if (table === 'org_compliance_controls')
+      if (table === 'org_policies') return createBuilder({ data: [], error: null });
+      if (table === 'org_controls')
         return createBuilder({ data: [], error: null });
-      if (table === 'tasks') return createBuilder({ data: [], error: null });
+      if (table === 'org_tasks') return createBuilder({ data: [], error: null });
       return createBuilder({
         data: {
           title: 'Test',
@@ -311,11 +311,11 @@ describe('incrementalIndex', () => {
     const since = '2024-06-01T00:00:00Z';
 
     const db = createMockDb((table: string) => {
-      if (table === 'evidence')
+      if (table === 'org_evidence')
         return createBuilder({ data: [{ id: 'e1' }], error: null });
-      if (table === 'policies')
+      if (table === 'org_policies')
         return createBuilder({ data: [{ id: 'p1' }], error: null });
-      if (table === 'tasks') return createBuilder({ data: [], error: null });
+      if (table === 'org_tasks') return createBuilder({ data: [], error: null });
       return createBuilder({
         data: {
           title: 'Updated',

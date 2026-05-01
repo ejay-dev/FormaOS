@@ -53,7 +53,7 @@ export async function getComplianceMetrics(
 
   // Get certificate counts
   const { data: certificates } = await supabase
-    .from('certificates')
+    .from('org_certifications')
     .select('id, expiry_date, status')
     .eq('org_id', orgId);
 
@@ -82,7 +82,7 @@ export async function getComplianceMetrics(
 
   // Get average completion time
   const { data: tasks } = await supabase
-    .from('tasks')
+    .from('org_tasks')
     .select('created_at, completed_at')
     .eq('org_id', orgId)
     .eq('status', 'completed')
@@ -143,7 +143,7 @@ export async function getTeamMetrics(orgId: string): Promise<TeamMetrics> {
 
   // Get tasks per member
   const { data: tasks } = await supabase
-    .from('tasks')
+    .from('org_tasks')
     .select('assigned_to, status')
     .eq('org_id', orgId);
 
@@ -200,7 +200,7 @@ export async function getComplianceTrend(orgId: string): Promise<TrendData[]> {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
   const { data: completedTasks } = await supabase
-    .from('tasks')
+    .from('org_tasks')
     .select('completed_at')
     .eq('org_id', orgId)
     .eq('status', 'completed')
@@ -239,7 +239,7 @@ export async function calculateRiskScore(orgId: string): Promise<RiskScore> {
 
   // Factor 1: Expired certificates
   const { data: expiredCerts } = await supabase
-    .from('certificates')
+    .from('org_certifications')
     .select('id')
     .eq('org_id', orgId)
     .lt('expiry_date', new Date().toISOString());
@@ -256,7 +256,7 @@ export async function calculateRiskScore(orgId: string): Promise<RiskScore> {
 
   // Factor 2: Overdue tasks
   const { data: overdueTasks } = await supabase
-    .from('tasks')
+    .from('org_tasks')
     .select('id')
     .eq('org_id', orgId)
     .eq('status', 'pending')

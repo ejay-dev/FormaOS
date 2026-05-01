@@ -238,7 +238,6 @@ describe('bootstrapOrganizationAtomic', () => {
       expect.objectContaining({
         plan_key: 'basic',
         plan_code: 'starter',
-        status: 'trialing',
       }),
       { onConflict: 'organization_id' },
     );

@@ -211,7 +211,7 @@ describe('multi-org', () => {
           if (callCount === 1) return prefBuilder; // first call: get pref
           return upsertBuilder; // subsequent: upsert
         }
-        if (table === 'team_members') return memberBuilder;
+        if (table === 'org_members') return memberBuilder;
         if (table === 'organizations') return orgBuilder;
         return createBuilder();
       });
@@ -242,7 +242,7 @@ describe('multi-org', () => {
       const upsertBuilder = createBuilder({ data: null, error: null });
 
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') return memberBuilder;
+        if (table === 'org_members') return memberBuilder;
         if (table === 'user_preferences') return upsertBuilder;
         return createBuilder();
       });
@@ -288,7 +288,7 @@ describe('multi-org', () => {
 
       mockClient.from.mockImplementation((table: string) => {
         if (table === 'organizations') return insertBuilder;
-        if (table === 'team_members') return memberListBuilder;
+        if (table === 'org_members') return memberListBuilder;
         if (table === 'user_preferences') return upsertBuilder;
         return createBuilder();
       });
@@ -302,7 +302,7 @@ describe('multi-org', () => {
           if (orgCallCount === 1) return slugCheckBuilder;
           return insertBuilder;
         }
-        if (table === 'team_members') return memberListBuilder;
+        if (table === 'org_members') return memberListBuilder;
         if (table === 'user_preferences') return upsertBuilder;
         return createBuilder();
       });
@@ -361,7 +361,7 @@ describe('multi-org', () => {
 
       let teamMemberCallCount = 0;
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') {
+        if (table === 'org_members') {
           teamMemberCallCount++;
           if (teamMemberCallCount === 1) {
             // First call: role check
@@ -412,7 +412,7 @@ describe('multi-org', () => {
 
       const _callCount = 0;
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') return memberBuilder;
+        if (table === 'org_members') return memberBuilder;
         if (table === 'organizations') return updateBuilder;
         return createBuilder();
       });
@@ -499,7 +499,7 @@ describe('multi-org', () => {
       });
 
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') return inviterBuilder;
+        if (table === 'org_members') return inviterBuilder;
         if (table === 'organizations') return orgNameBuilder;
         return createBuilder();
       });
@@ -552,7 +552,7 @@ describe('multi-org', () => {
 
       let teamCallCount = 0;
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') {
+        if (table === 'org_members') {
           teamCallCount++;
           if (teamCallCount === 1) return inviterBuilder;
           if (teamCallCount === 2) return existingCheckBuilder;
@@ -583,7 +583,7 @@ describe('multi-org', () => {
 
       let teamCallCount = 0;
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') {
+        if (table === 'org_members') {
           teamCallCount++;
           if (teamCallCount === 1) return inviterBuilder;
           return existingBuilder;
@@ -629,7 +629,7 @@ describe('multi-org', () => {
 
       let teamCallCount = 0;
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') {
+        if (table === 'org_members') {
           teamCallCount++;
           if (teamCallCount === 1) return inviterBuilder;
           if (teamCallCount === 2) return existingCheckBuilder;
@@ -665,7 +665,7 @@ describe('multi-org', () => {
       });
 
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') return memberBuilder;
+        if (table === 'org_members') return memberBuilder;
         if (table === 'organizations') return orgBuilder;
         return createBuilder();
       });
@@ -721,7 +721,7 @@ describe('multi-org', () => {
 
       let callCount = 0;
       mockClient.from.mockImplementation((table: string) => {
-        if (table === 'team_members') {
+        if (table === 'org_members') {
           callCount++;
           if (callCount === 1) return removerBuilder;
           if (callCount === 2) return memberBuilder;

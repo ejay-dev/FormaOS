@@ -36,6 +36,10 @@ jest.mock('@/app/api/admin/_helpers', () => ({
   }),
 }));
 
+jest.mock('@/lib/security/csrf', () => ({
+  validateCsrfOrigin: jest.fn().mockReturnValue(null),
+}));
+
 // ── Supabase admin mock (for DB checks) ─────────────────────────────────────
 function createBuilder(result = { data: null, error: null }) {
   const b: Record<string, any> = {};

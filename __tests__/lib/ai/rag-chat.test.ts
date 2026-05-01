@@ -118,7 +118,7 @@ describe('rag-chat', () => {
   describe('buildControlContext', () => {
     it('builds context with control details and evidence', async () => {
       const callResults: Record<string, any> = {
-        org_compliance_controls: {
+        org_controls: {
           data: {
             control_id: 'CC-1.1',
             title: 'Access Control',
@@ -155,7 +155,7 @@ describe('rag-chat', () => {
 
     it('returns empty string when control not found', async () => {
       const db = createMockDb({
-        org_compliance_controls: { data: null },
+        org_controls: { data: null },
       });
 
       const result = await buildControlContext(db, 'org-1', 'missing');
@@ -164,7 +164,7 @@ describe('rag-chat', () => {
 
     it('handles control with null description and category', async () => {
       const db = createMockDb({
-        org_compliance_controls: {
+        org_controls: {
           data: {
             control_id: 'CC-2.1',
             title: 'Data Backup',
@@ -185,7 +185,7 @@ describe('rag-chat', () => {
 
     it('handles control with empty evidence list', async () => {
       const db = createMockDb({
-        org_compliance_controls: {
+        org_controls: {
           data: {
             control_id: 'CC-3.1',
             title: 'Logging',
@@ -274,7 +274,7 @@ describe('rag-chat', () => {
         org_frameworks: { data: null },
         tasks: { data: null },
         evidence: { data: null, count: null },
-        org_compliance_controls: {
+        org_controls: {
           data: {
             control_id: 'CC-1.1',
             title: 'Test',

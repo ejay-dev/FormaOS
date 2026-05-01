@@ -75,7 +75,7 @@ export async function getUserOrganizations(
       const supabase = await createClient();
 
       const { data, error } = await supabase
-        .from('team_members')
+        .from('org_members')
         .select(
           `
           id,
@@ -92,8 +92,6 @@ export async function getUserOrganizations(
             description,
             logo_url,
             settings,
-            subscription_tier,
-            subscription_status,
             created_at,
             owner_id
           )
@@ -252,7 +250,7 @@ export async function createOrganization(
   }
 
   // Add creator as owner
-  await supabase.from('team_members').insert({
+  await supabase.from('org_members').insert({
     organization_id: org.id,
     user_id: userId,
     role: 'owner',
@@ -281,7 +279,7 @@ export async function updateOrganization(
 
   // Verify user is owner/admin
   const { data: membership } = await supabase
-    .from('team_members')
+    .from('org_members')
     .select('role')
     .eq('organization_id', organizationId)
     .eq('user_id', userId)
@@ -305,7 +303,7 @@ export async function updateOrganization(
 
   // Invalidate cache for all members
   const { data: members } = await supabase
-    .from('team_members')
+    .from('org_members')
     .select('user_id')
     .eq('organization_id', organizationId);
 
@@ -367,7 +365,7 @@ export async function inviteToOrganization(
 
   // Verify inviter has permission
   const { data: inviter } = await supabase
-    .from('team_members')
+    .from('org_members')
     .select('role')
     .eq('organization_id', organizationId)
     .eq('user_id', invitedBy)
@@ -418,7 +416,7 @@ export async function inviteToOrganization(
 
   // Check if already a member
   const { data: existing } = await supabase
-    .from('team_members')
+    .from('org_members')
     .select('id')
     .eq('organization_id', organizationId)
     .eq('user_id', user.id)
@@ -430,7 +428,7 @@ export async function inviteToOrganization(
 
   // Create membership
   const { data: membership, error: insertError } = await supabase
-    .from('team_members')
+    .from('org_members')
     .insert({
       organization_id: organizationId,
       user_id: user.id,
@@ -475,7 +473,7 @@ export async function getPendingInvitation(
 ): Promise<PendingOrganizationInvitation | null> {
   const supabase = await createClient();
   const { data: membership } = await supabase
-    .from('team_members')
+    .from('org_members')
     .select('id, organization_id, user_id, role, status')
     .eq('id', membershipId)
     .maybeSingle();
@@ -511,7 +509,7 @@ export async function acceptInvitation(
 
   // Update membership status
   const { error } = await supabase
-    .from('team_members')
+    .from('org_members')
     .update({
       status: 'active',
       joined_at: new Date().toISOString(),
@@ -540,7 +538,7 @@ export async function removeMember(
 
   // Verify remover has permission
   const { data: remover } = await supabase
-    .from('team_members')
+    .from('org_members')
     .select('role')
     .eq('organization_id', organizationId)
     .eq('user_id', removedBy)
@@ -552,7 +550,7 @@ export async function removeMember(
 
   // Cannot remove owner
   const { data: member } = await supabase
-    .from('team_members')
+    .from('org_members')
     .select('role, user_id')
     .eq('id', memberId)
     .maybeSingle();
@@ -563,7 +561,7 @@ export async function removeMember(
 
   // Remove member
   const { error } = await supabase
-    .from('team_members')
+    .from('org_members')
     .delete()
     .eq('id', memberId)
     .eq('organization_id', organizationId);
@@ -596,7 +594,7 @@ export async function getOrganizationStats(organizationId: string): Promise<{
 
       const [members, tasks, certificates, evidence] = await Promise.all([
         supabase
-          .from('team_members')
+          .from('org_members')
           .select('id', { count: 'exact', head: true })
           .eq('organization_id', organizationId)
           .eq('status', 'active'),

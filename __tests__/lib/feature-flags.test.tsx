@@ -10,7 +10,7 @@ describe('feature flags', () => {
   it('allows founder testing overrides when founder state is present in localStorage', () => {
     window.localStorage.setItem('formaos_is_founder', 'true');
 
-    featureFlags.setTestingMode({ enableAuditLogging: true });
+    featureFlags.setTestingMode({ enableAuditLogging: true }, true);
 
     expect(
       JSON.parse(

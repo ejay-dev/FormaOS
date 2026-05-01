@@ -145,10 +145,12 @@ describe('GET /api/executive/audit-forecast', () => {
     expect(res.status).toBe(500);
   });
 
-  it('returns 500 on calculation error', async () => {
+  it('returns 200 (degraded) on calculation error', async () => {
     mockCalculateAuditForecast.mockRejectedValue(new Error('calc fail'));
     const res = await GET(makeReq());
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(200);
+    const json = await res.json();
+    expect(json.degraded).toBe(true);
   });
 
   it('passes framework filter to calculation', async () => {
