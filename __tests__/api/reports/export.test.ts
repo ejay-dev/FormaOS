@@ -9,6 +9,11 @@ jest.mock('@/lib/monitoring/server-logger', () => ({
   routeLog: () => ({ info: jest.fn(), warn: jest.fn(), error: jest.fn() }),
 }));
 
+const mockRequireEntitlement = jest.fn();
+jest.mock('@/lib/billing/entitlements', () => ({
+  requireEntitlement: (...a: any[]) => mockRequireEntitlement(...a),
+}));
+
 const mockCheckRateLimit = jest.fn();
 const mockGetClientIdentifier = jest.fn();
 const mockGetUserIdentifier = jest.fn();
@@ -95,6 +100,7 @@ describe('GET /api/reports/export', () => {
     mockGetUserIdentifier.mockResolvedValue('u1');
     mockGetClientIdentifier.mockResolvedValue('ip:1.2.3.4');
     mockCheckRateLimit.mockResolvedValue({ success: true });
+    mockRequireEntitlement.mockResolvedValue(undefined);
     authResult = { data: { user: { id: 'u1' } }, error: null };
     fromBuilder = createBuilder({
       data: { organization_id: 'org1', role: 'admin' },
