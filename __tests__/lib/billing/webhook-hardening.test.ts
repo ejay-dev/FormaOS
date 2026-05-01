@@ -164,7 +164,22 @@ describe('Stripe Webhook Handler', () => {
     // Default: idempotency insert succeeds
     mockAdminFrom.mockImplementation((table: string) => {
       if (table === 'billing_events') {
-        return { insert: jest.fn().mockResolvedValue({ error: null }) };
+        // The webhook idempotency state machine (introduced in c3a856c)
+        // calls insert (initial claim), select+eq+maybeSingle (look up
+        // existing row when 23505 fires), and update+eq (mark succeeded
+        // / failed / claimed-for-retry). All three chains must be present
+        // on the mock or the success path throws TypeError.
+        return {
+          insert: jest.fn().mockResolvedValue({ error: null }),
+          select: jest.fn().mockReturnThis(),
+          eq: jest.fn().mockReturnThis(),
+          maybeSingle: jest
+            .fn()
+            .mockResolvedValue({ data: null, error: null }),
+          update: jest.fn().mockReturnValue({
+            eq: jest.fn().mockResolvedValue({ error: null }),
+          }),
+        };
       }
       return {
         select: jest.fn().mockReturnThis(),
@@ -261,12 +276,23 @@ describe('Stripe Webhook Handler', () => {
         data: { object: {} },
       });
 
-      // Simulate duplicate: insert returns unique constraint violation
+      // Simulate a TRUE duplicate: insert returns 23505 AND the existing
+      // row has status='succeeded' (a previous attempt landed). The new
+      // state machine should short-circuit with idempotent:true.
       mockAdminFrom.mockImplementation((table: string) => {
         if (table === 'billing_events') {
           return {
             insert: jest.fn().mockResolvedValue({
               error: { code: '23505', message: 'duplicate key' },
+            }),
+            select: jest.fn().mockReturnThis(),
+            eq: jest.fn().mockReturnThis(),
+            maybeSingle: jest.fn().mockResolvedValue({
+              data: { status: 'succeeded', attempts: 1 },
+              error: null,
+            }),
+            update: jest.fn().mockReturnValue({
+              eq: jest.fn().mockResolvedValue({ error: null }),
             }),
           };
         }
