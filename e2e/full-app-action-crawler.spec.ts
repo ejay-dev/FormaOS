@@ -215,7 +215,9 @@ async function seedCrawlerSurface(
   for (const featureKey of [
     'audit_export',
     'framework_evaluations',
+    'capa_management',
     'custom_reports',
+    'form_analytics',
     'team',
   ]) {
     const { data: existing } = await context.admin

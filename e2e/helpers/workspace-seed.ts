@@ -815,6 +815,41 @@ export async function ensureTeamPlanAccess(context: WorkspaceSeedContext) {
       limit_value: null,
       updated_at: now,
     },
+    {
+      organization_id: context.orgId,
+      feature_key: 'audit_export',
+      enabled: true,
+      limit_value: null,
+      updated_at: now,
+    },
+    {
+      organization_id: context.orgId,
+      feature_key: 'framework_evaluations',
+      enabled: true,
+      limit_value: null,
+      updated_at: now,
+    },
+    {
+      organization_id: context.orgId,
+      feature_key: 'capa_management',
+      enabled: true,
+      limit_value: null,
+      updated_at: now,
+    },
+    {
+      organization_id: context.orgId,
+      feature_key: 'custom_reports',
+      enabled: true,
+      limit_value: null,
+      updated_at: now,
+    },
+    {
+      organization_id: context.orgId,
+      feature_key: 'form_analytics',
+      enabled: true,
+      limit_value: null,
+      updated_at: now,
+    },
   ];
 
   for (const row of entitlementRows) {
