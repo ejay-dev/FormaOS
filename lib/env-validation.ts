@@ -35,13 +35,30 @@ export const REQUIRED_APP_VARS = [
 export const REQUIRED_ADMIN_VARS = ['FOUNDER_EMAILS'] as const;
 
 /**
+ * Required environment variables for security-critical features.
+ * Missing any of these in production causes a startup failure.
+ */
+export const REQUIRED_SECURITY_VARS = [
+  'TOTP_ENCRYPTION_KEY',
+  'CRON_SECRET',
+] as const;
+
+/**
+ * Required environment variables for self-serve billing.
+ * Missing either in production means checkout will silently fail for that plan.
+ */
+export const REQUIRED_BILLING_VARS = [
+  'STRIPE_PRICE_FOUNDATION',
+  'STRIPE_PRICE_GROWTH',
+] as const;
+
+/**
  * Optional but validated environment variables (warn if missing)
  */
 export const OPTIONAL_VALIDATED_VARS = [
   'ENABLE_STRICT_SESSION_SECURITY',
   'CSP_ALLOW_INLINE_SCRIPTS',
   'CSP_ALLOW_EVAL_SCRIPTS',
-  'CRON_SECRET',
   'SAML_ENABLED',
   'NEXT_PUBLIC_SENTRY_DSN',
   'SENTRY_ORG',
@@ -77,7 +94,9 @@ const PUBLIC_SECRET_ENV_VARS = [
 export type RequiredEnvVar =
   | (typeof REQUIRED_SUPABASE_VARS)[number]
   | (typeof REQUIRED_APP_VARS)[number]
-  | (typeof REQUIRED_ADMIN_VARS)[number];
+  | (typeof REQUIRED_ADMIN_VARS)[number]
+  | (typeof REQUIRED_SECURITY_VARS)[number]
+  | (typeof REQUIRED_BILLING_VARS)[number];
 
 /**
  * All optional validated environment variable names
@@ -199,6 +218,8 @@ export function validateAllEnvVars(): EnvValidationResult {
     ...REQUIRED_SUPABASE_VARS,
     ...REQUIRED_APP_VARS,
     ...REQUIRED_ADMIN_VARS,
+    ...(process.env.NODE_ENV === 'production' ? REQUIRED_SECURITY_VARS : []),
+    ...(process.env.NODE_ENV === 'production' ? REQUIRED_BILLING_VARS : []),
   ];
 
   for (const varName of allVars) {

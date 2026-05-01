@@ -6,27 +6,48 @@ async function expectNoFreeTrialLanguage(page: Page) {
 }
 
 test.describe('Infrastructure pricing and proof pages', () => {
-  test('pricing page presents risk-first pricing and working CTAs', async ({ page }) => {
-    const response = await page.goto('/pricing', { waitUntil: 'domcontentloaded' });
+  test('pricing page presents risk-first pricing and working CTAs', async ({
+    page,
+  }) => {
+    const response = await page.goto('/pricing', {
+      waitUntil: 'domcontentloaded',
+    });
     expect(response?.status()).toBeLessThan(400);
 
-    await expect(page.getByRole('heading', { name: /Compliance that enforces itself/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Foundation' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Compliance that enforces itself/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Foundation' }),
+    ).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Growth' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Enterprise' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Enterprise' }),
+    ).toBeVisible();
     await expect(page.getByText('$297')).toBeVisible();
     await expect(page.getByText('From $1,800')).toBeVisible();
-    await expect(page.getByText('Custom', { exact: true }).first()).toBeVisible();
-    await expect(page.getByText('Evidence generated as work happens', { exact: true }).first()).toBeVisible();
-    await expect(page.getByText(/One failed audit can cost more than a year of FormaOS/i)).toBeVisible();
+    await expect(
+      page.getByText('Custom', { exact: true }).first(),
+    ).toBeVisible();
+    await expect(
+      page
+        .getByText('Evidence generated as work happens', { exact: true })
+        .first(),
+    ).toBeVisible();
+    await expect(
+      page.getByText(/One failed audit can cost more than a year of FormaOS/i),
+    ).toBeVisible();
     await expectNoFreeTrialLanguage(page);
 
     // Foundation is public self-serve via the /auth/signup handshake that
     // sets a checkout-intent cookie and auto-redirects into Stripe Checkout
     // after email verification + org bootstrap.
     const ctaExpectations = [
-      ['pricing-foundation-cta', /\/auth\/signup\?plan=basic&intent=checkout&source=pricing/],
-      ['pricing-growth-cta', /\/contact\?type=compliance-plan/],
+      [
+        'pricing-foundation-cta',
+        /\/auth\/signup\?plan=basic&intent=checkout&source=pricing/,
+      ],
+      ['pricing-growth-cta', /\/auth\/signup\?plan=pro/],
       ['pricing-enterprise-cta', /\/contact\?type=enterprise/],
     ] as const;
 
@@ -41,20 +62,39 @@ test.describe('Infrastructure pricing and proof pages', () => {
       .getAttribute('href');
     expect(heroHref).toMatch(/\/contact\?type=compliance-plan/);
 
-    await page.getByRole('link', { name: /View Pricing/i }).first().click();
+    await page
+      .getByRole('link', { name: /View Pricing/i })
+      .first()
+      .click();
     await expect(page).toHaveURL(/#pricing-table$/);
   });
 
-  test('homepage exposes trust and core operating-system proof', async ({ page }) => {
+  test('homepage exposes trust and core operating-system proof', async ({
+    page,
+  }) => {
     const response = await page.goto('/', { waitUntil: 'domcontentloaded' });
     expect(response?.status()).toBeLessThan(400);
 
-    await expect(page.getByText(/Designed for NDIS, AHPRA, ISO, and SOC 2/i).first()).toBeVisible();
-    await expect(page.getByText(/Controls run as workflows, not as documents/i)).toBeVisible();
-    await expect(page.getByRole('heading', { name: /From obligation to enforced evidence chain/i })).toBeVisible();
-    await expect(page.getByText(/Compliance should be priced against failure/i)).toHaveCount(0);
-    await expect(page.getByText(/See the operating system behind the promise/i)).toHaveCount(0);
-    await expect(page.getByText(/Stop relying on memory for work that needs proof/i)).toHaveCount(0);
+    await expect(
+      page.getByText(/Designed for NDIS, AHPRA, ISO, and SOC 2/i).first(),
+    ).toBeVisible();
+    await expect(
+      page.getByText(/Controls run as workflows, not as documents/i),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', {
+        name: /From obligation to enforced evidence chain/i,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(/Compliance should be priced against failure/i),
+    ).toHaveCount(0);
+    await expect(
+      page.getByText(/See the operating system behind the promise/i),
+    ).toHaveCount(0);
+    await expect(
+      page.getByText(/Stop relying on memory for work that needs proof/i),
+    ).toHaveCount(0);
     await expectNoFreeTrialLanguage(page);
 
     const productHref = await page
@@ -69,13 +109,20 @@ test.describe('Infrastructure pricing and proof pages', () => {
     });
     expect(response?.status()).toBeLessThan(400);
 
-    await expect(page.getByRole('heading', { name: /Representative proof packs for regulated teams/i })).toBeVisible();
-    await expect(page.getByText('Representative proof pack', { exact: true })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Workflow trail' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Build a Proof Walkthrough/i })).toHaveAttribute(
-      'href',
-      /\/contact\?type=case-study/,
-    );
+    await expect(
+      page.getByRole('heading', {
+        name: /Representative proof packs for regulated teams/i,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByText('Representative proof pack', { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Workflow trail' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /Build a Proof Walkthrough/i }),
+    ).toHaveAttribute('href', /\/contact\?type=case-study/);
     await expectNoFreeTrialLanguage(page);
   });
 });

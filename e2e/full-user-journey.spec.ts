@@ -8,7 +8,6 @@ import { test, expect } from '@playwright/test';
 const TEST_EMAIL = `test-${Date.now()}@formaos-qa.com`;
 const TEST_PASSWORD = 'TestPass123!@#';
 test.describe('Complete User Journey', () => {
-
   // Test 1: Marketing CTAs
   test('Marketing CTAs route correctly', async ({ page }) => {
     await page.goto('/');
@@ -32,7 +31,9 @@ test.describe('Complete User Journey', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('Pricing page CTAs route through new compliance funnel', async ({ page }) => {
+  test('Pricing page CTAs route through new compliance funnel', async ({
+    page,
+  }) => {
     await page.goto('/pricing');
     await expect(page).toHaveTitle(/Pricing|FormaOS/i);
 
@@ -46,7 +47,9 @@ test.describe('Complete User Journey', () => {
 
     const growthHref = await growthCta.getAttribute('href');
     const enterpriseHref = await enterpriseCta.getAttribute('href');
-    expect(growthHref).toContain('/contact?type=compliance-plan');
+    expect(growthHref).toContain('/auth/signup');
+    expect(growthHref).toContain('plan=pro');
+    expect(growthHref).toContain('intent=checkout');
     expect(enterpriseHref).toContain('/contact?type=enterprise');
   });
 
@@ -77,7 +80,9 @@ test.describe('Complete User Journey', () => {
     }
 
     // Submit
-    await page.click('button[type="submit"], button:has-text("Sign up"), button:has-text("Create account")');
+    await page.click(
+      'button[type="submit"], button:has-text("Sign up"), button:has-text("Create account")',
+    );
 
     // Should redirect to check-email page
     await page.waitForURL(/\/auth\/check-email/, { timeout: 10000 });
@@ -106,7 +111,7 @@ test.describe('Complete User Journey', () => {
       '/use-cases/healthcare',
       '/use-cases/ndis-aged-care',
       '/use-cases/incident-management',
-      '/use-cases/workforce-credentials'
+      '/use-cases/workforce-credentials',
     ];
 
     for (const industry of industries) {
@@ -114,7 +119,9 @@ test.describe('Complete User Journey', () => {
 
       // Should NOT see paywall or upgrade prompt
       await expect(page.locator('text=/upgrade.*required/i')).not.toBeVisible();
-      await expect(page.locator('text=/subscribe.*to.*access/i')).not.toBeVisible();
+      await expect(
+        page.locator('text=/subscribe.*to.*access/i'),
+      ).not.toBeVisible();
 
       // Should see content
       await expect(page.locator('h1, h2').first()).toBeVisible();
@@ -139,7 +146,9 @@ test.describe('Complete User Journey', () => {
 
       // Should not see 404 or error
       await expect(page.locator('text=/404|not found/i')).not.toBeVisible();
-      await expect(page.locator('text=/error|something went wrong/i')).not.toBeVisible();
+      await expect(
+        page.locator('text=/error|something went wrong/i'),
+      ).not.toBeVisible();
     }
   });
 
@@ -174,20 +183,31 @@ test.describe('Complete User Journey', () => {
     await page.goto('/app/tasks');
 
     // Look for "Create" or "New Task" button
-    const createBtn = page.locator('button:has-text("Create"), button:has-text("New Task"), a:has-text("Create Task")').first();
+    const createBtn = page
+      .locator(
+        'button:has-text("Create"), button:has-text("New Task"), a:has-text("Create Task")',
+      )
+      .first();
 
     if (await createBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
       await createBtn.click();
 
       // Fill task form
-      await page.fill('input[name="title"], input[placeholder*="title" i]', 'E2E Test Task');
+      await page.fill(
+        'input[name="title"], input[placeholder*="title" i]',
+        'E2E Test Task',
+      );
 
       // Submit
-      await page.click('button[type="submit"], button:has-text("Save"), button:has-text("Create")');
+      await page.click(
+        'button[type="submit"], button:has-text("Save"), button:has-text("Create")',
+      );
 
       // Should redirect back to tasks or show success
       await page.waitForTimeout(2000);
-      await expect(page.locator('text=/E2E Test Task|success|created/i')).toBeVisible();
+      await expect(
+        page.locator('text=/E2E Test Task|success|created/i'),
+      ).toBeVisible();
     }
   });
 
@@ -196,17 +216,25 @@ test.describe('Complete User Journey', () => {
     await page.goto('/app/dashboard');
 
     // Find logout button/link
-    const logoutBtn = page.locator('button:has-text("Logout"), button:has-text("Sign out"), a:has-text("Logout"), a:has-text("Sign out")').first();
+    const logoutBtn = page
+      .locator(
+        'button:has-text("Logout"), button:has-text("Sign out"), a:has-text("Logout"), a:has-text("Sign out")',
+      )
+      .first();
 
     if (await logoutBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
       await logoutBtn.click();
 
       // Should redirect to signin
-      await page.waitForURL(/\/(auth\/(signin|login)|signin|login|\/)/, { timeout: 10000 });
+      await page.waitForURL(/\/(auth\/(signin|login)|signin|login|\/)/, {
+        timeout: 10000,
+      });
 
       // Try to access protected route - should redirect
       await page.goto('/app/dashboard');
-      await page.waitForURL(/\/(auth\/(signin|login)|signin|login)/, { timeout: 5000 });
+      await page.waitForURL(/\/(auth\/(signin|login)|signin|login)/, {
+        timeout: 5000,
+      });
     }
   });
 });
@@ -236,7 +264,7 @@ test.describe('Critical Routes Checklist', () => {
 
       // Check for console errors
       const errors: string[] = [];
-      page.on('console', msg => {
+      page.on('console', (msg) => {
         if (msg.type() === 'error') {
           errors.push(msg.text());
         }
@@ -245,10 +273,9 @@ test.describe('Critical Routes Checklist', () => {
       await page.waitForTimeout(2000);
 
       // Filter out known non-critical errors
-      const criticalErrors = errors.filter(e =>
-        !e.includes('favicon') &&
-        !e.includes('chunk') &&
-        !e.includes('404')
+      const criticalErrors = errors.filter(
+        (e) =>
+          !e.includes('favicon') && !e.includes('chunk') && !e.includes('404'),
       );
 
       expect(criticalErrors.length).toBe(0);

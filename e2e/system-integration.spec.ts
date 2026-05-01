@@ -43,14 +43,13 @@ test.describe('System integration', () => {
     expect(href).toContain('intent=checkout');
     expect(href).toContain('source=pricing');
 
-    // Growth + Enterprise are sales-led; both must route through /contact
-    // with the correct inquiry type so submitMarketingLead tags the lead.
+    // Growth is self-serve via signup handshake; Enterprise is sales-led.
     const growthHref = await page
       .locator('[data-testid="pricing-growth-cta"]')
       .getAttribute('href');
-    expect(growthHref).toContain('/contact?');
-    expect(growthHref).toContain('type=compliance-plan');
-    expect(growthHref).toContain('plan=growth');
+    expect(growthHref).toContain('/auth/signup');
+    expect(growthHref).toContain('plan=pro');
+    expect(growthHref).toContain('intent=checkout');
 
     const enterpriseHref = await page
       .locator('[data-testid="pricing-enterprise-cta"]')
@@ -84,9 +83,7 @@ test.describe('System integration', () => {
     const row = page.locator('tr', { hasText: obligation.title as string });
     await expect(row).toBeVisible({ timeout: 15_000 });
     await row.locator('button:has(svg.lucide-paperclip)').click();
-    await expect(
-      page.locator('[data-testid="evidence-empty"]'),
-    ).toBeVisible();
+    await expect(page.locator('[data-testid="evidence-empty"]')).toBeVisible();
 
     const fileInput = page.locator('[data-testid="evidence-file-input"]');
     const evidenceContent = `system-int-${randomUUID()}`;
@@ -96,10 +93,9 @@ test.describe('System integration', () => {
       buffer: Buffer.from(evidenceContent, 'utf8'),
     });
 
-    await expect(page.locator('[data-testid="evidence-item"]')).toHaveCount(
-      1,
-      { timeout: 10_000 },
-    );
+    await expect(page.locator('[data-testid="evidence-item"]')).toHaveCount(1, {
+      timeout: 10_000,
+    });
 
     // Cross-module assertion #1 — evidence appears in the global vault
     await page.goto('/app/vault');
@@ -179,9 +175,7 @@ test.describe('System integration', () => {
     // the migration is still pending in this environment, the panel will
     // surface a clear error and we skip the persistence assertion rather
     // than fail the whole journey.
-    const entityError = page.locator(
-      '[data-testid="entity-evidence-error"]',
-    );
+    const entityError = page.locator('[data-testid="entity-evidence-error"]');
     const entityItem = page.locator('[data-testid="entity-evidence-item"]');
     const settled = await Promise.race([
       entityError
@@ -205,10 +199,7 @@ test.describe('System integration', () => {
     }
 
     // Resolve the incident
-    await page.fill(
-      'textarea[name="root_cause"]',
-      'E2E systemic root cause',
-    );
+    await page.fill('textarea[name="root_cause"]', 'E2E systemic root cause');
     await page.fill(
       'textarea[name="preventive_measures"]',
       'E2E systemic prevention',

@@ -23,8 +23,8 @@ describe('checkout-intent helpers', () => {
       expect(isSelfServePlan('basic')).toBe(true);
     });
 
-    it('blocks Growth (pro) — sales-led', () => {
-      expect(isSelfServePlan('pro')).toBe(false);
+    it('treats Growth (pro) as self-serve', () => {
+      expect(isSelfServePlan('pro')).toBe(true);
     });
 
     it('blocks Enterprise — invoice-only via Stripe Invoicing', () => {
@@ -35,14 +35,18 @@ describe('checkout-intent helpers', () => {
   describe('parseCheckoutIntent', () => {
     it('returns the plan key when input is a self-serve plan', () => {
       expect(parseCheckoutIntent('basic')).toBe('basic');
+      expect(parseCheckoutIntent('pro')).toBe('pro');
     });
 
     it('normalizes case so query params and cookie values match', () => {
       expect(parseCheckoutIntent('BASIC')).toBe('basic');
     });
 
-    it('returns null for sales-led plans even if they are valid plan keys', () => {
-      expect(parseCheckoutIntent('pro')).toBeNull();
+    it('returns null for enterprise — invoice-only via Stripe Invoicing', () => {
+      expect(parseCheckoutIntent('enterprise')).toBeNull();
+    });
+
+    it('returns null for sales-led plans — only enterprise is blocked', () => {
       expect(parseCheckoutIntent('enterprise')).toBeNull();
     });
 

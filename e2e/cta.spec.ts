@@ -165,14 +165,15 @@ test.describe('Marketing CTA wiring', () => {
     expect(foundationHref).toContain('intent=checkout');
     expect(foundationHref).toContain('source=pricing');
 
-    // Growth: sales-led through Compliance Plan intake.
+    // Growth: self-serve via signup handshake, same as Foundation.
     const growthCta = page
-      .getByRole('link', { name: /get compliance plan/i })
+      .getByRole('link', { name: /start growth plan/i })
       .first();
     await expect(growthCta).toBeVisible();
     const growthHref = normalizeHref(await growthCta.getAttribute('href'));
-    expect(growthHref).toContain('/contact');
-    expect(growthHref).toContain('type=compliance-plan');
+    expect(growthHref).toContain('/auth/signup');
+    expect(growthHref).toContain('plan=pro');
+    expect(growthHref).toContain('intent=checkout');
 
     // Enterprise: procurement-led through Book Demo.
     const enterpriseCta = page
@@ -208,9 +209,7 @@ test.describe('Marketing CTA wiring', () => {
     }
 
     // Route smoke test for one CTA link so the anchor regex stays exercised.
-    const firstContactLink = page
-      .locator('footer a[href*="/contact"]')
-      .first();
+    const firstContactLink = page.locator('footer a[href*="/contact"]').first();
     if (await firstContactLink.count()) {
       const href = normalizeHref(await firstContactLink.getAttribute('href'));
       expect(href).toMatch(buildSiteUrlRegex('/contact'));

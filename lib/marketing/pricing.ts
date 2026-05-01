@@ -50,8 +50,8 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
     audience: 'For organisations that need audit-ready compliance',
     summary:
       'The core FormaOS operating layer: enforced workflows, live evidence, multi-team usage, and onboarding support.',
-    ctaLabel: 'Get Compliance Plan',
-    ctaHref: '/contact?type=compliance-plan&plan=growth&source=pricing',
+    ctaLabel: 'Start Growth Plan',
+    ctaHref: '/auth/signup?plan=pro&intent=checkout&source=pricing',
     featured: true,
     features: [
       'Full workflow enforcement',
@@ -85,7 +85,19 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
 
 export const MANUAL_COMPLIANCE_COST_ANCHORS = [
   { label: 'Audit prep', manual: '2-6 weeks', formaos: 'Hours' },
-  { label: 'Staff hours', manual: '80-200+', formaos: 'Evidence generated as work happens' },
-  { label: 'Failure risk', manual: 'High', formaos: 'Controlled by workflow gates' },
-  { label: 'Evidence state', manual: 'Chased late', formaos: 'Logged continuously' },
+  {
+    label: 'Staff hours',
+    manual: '80-200+',
+    formaos: 'Evidence generated as work happens',
+  },
+  {
+    label: 'Failure risk',
+    manual: 'High',
+    formaos: 'Controlled by workflow gates',
+  },
+  {
+    label: 'Evidence state',
+    manual: 'Chased late',
+    formaos: 'Logged continuously',
+  },
 ] as const;

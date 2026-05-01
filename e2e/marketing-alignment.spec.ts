@@ -2,14 +2,16 @@
  * Marketing-Product Alignment Smoke Tests
  * Verifies that marketing CTAs route to the three buying motions:
  *  - Foundation "Start Foundation Plan" → /auth/signup with checkout intent (self-serve)
- *  - Growth "Get Compliance Plan" → /contact demo flow (sales sends Payment Link post-demo)
+ *  - Growth "Start Growth Plan" → /auth/signup with checkout intent (self-serve, like Foundation)
  *  - Enterprise "Book Demo" → /contact enterprise flow (Stripe Invoicing)
  */
 
 import { test, expect } from '@playwright/test';
 
 test.describe('Marketing CTA Alignment', () => {
-  test('Homepage primary CTA routes to compliance plan contact flow', async ({ page }) => {
+  test('Homepage primary CTA routes to compliance plan contact flow', async ({
+    page,
+  }) => {
     await page.goto('/');
 
     const primaryCta = page
@@ -29,7 +31,9 @@ test.describe('Marketing CTA Alignment', () => {
     expect(body).not.toMatch(/no credit card required/i);
   });
 
-  test('Pricing page presents three compliance tiers with correct CTAs', async ({ page }) => {
+  test('Pricing page presents three compliance tiers with correct CTAs', async ({
+    page,
+  }) => {
     await page.goto('/pricing');
 
     const foundationCta = page.getByTestId('pricing-foundation-cta');
@@ -41,7 +45,7 @@ test.describe('Marketing CTA Alignment', () => {
     await expect(enterpriseCta).toBeVisible();
 
     await expect(foundationCta).toHaveText(/Start Foundation Plan/);
-    await expect(growthCta).toHaveText(/Get Compliance Plan/);
+    await expect(growthCta).toHaveText(/Start Growth Plan/);
     await expect(enterpriseCta).toHaveText(/Book Demo/);
 
     const foundationHref = (await foundationCta.getAttribute('href')) ?? '';
@@ -54,8 +58,11 @@ test.describe('Marketing CTA Alignment', () => {
     expect(foundationHref).toContain('plan=basic');
     expect(foundationHref).toContain('intent=checkout');
 
-    // Growth is sales-led — demo first.
-    expect(growthHref).toContain('/contact?type=compliance-plan');
+    // Growth is self-serve: signup with checkout intent → auto-redirect to
+    // Stripe Checkout post-signup. plan=pro is the internal PlanKey.
+    expect(growthHref).toContain('/auth/signup');
+    expect(growthHref).toContain('plan=pro');
+    expect(growthHref).toContain('intent=checkout');
 
     // Enterprise is procurement-led — demo + security/procurement review.
     expect(enterpriseHref).toContain('/contact?type=enterprise');
@@ -96,7 +103,9 @@ test.describe('Marketing CTA Alignment', () => {
 });
 
 test.describe('Mobile Alignment', () => {
-  test('Homepage is mobile-responsive and surfaces compliance CTA', async ({ page }) => {
+  test('Homepage is mobile-responsive and surfaces compliance CTA', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
     await expect(page.locator('body')).toBeVisible();
