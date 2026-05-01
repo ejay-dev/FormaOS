@@ -168,26 +168,57 @@ export async function processReportExportJob(
       throw new Error(`Signed URL failed: ${signed.error?.message ?? 'Unknown error'}`)
     }
 
-    await admin
+    // Persist BOTH the typed columns (storage_path/storage_bucket) and the
+    // legacy file_url + metadata. The status route reader prefers the typed
+    // columns and regenerates a fresh signed URL on every call, so file_url
+    // is effectively a fallback for environments where the migration hasn't
+    // applied yet (audit P2 #17 — completed exports rotted at the 1-hour
+    // signed-URL boundary).
+    const completionPayload: Record<string, unknown> = {
+      status: 'completed',
+      progress: 100,
+      file_url: signed.data.signedUrl,
+      file_size: fileBuffer.length,
+      metadata: {
+        storagePath,
+        bucket,
+        reportType,
+        format,
+        signedUrlExpiresIn: 3600,
+      },
+      completed_at: new Date().toISOString(),
+      locked_at: null,
+      locked_by: null,
+      last_error: null,
+    }
+
+    // Try with typed columns; fall back without them if the migration
+    // 20260501_002_report_export_storage_path.sql hasn't applied yet.
+    let updateError: { message: string } | null = null
+    const { error: typedErr } = await admin
       .from('report_export_jobs')
       .update({
-        status: 'completed',
-        progress: 100,
-        file_url: signed.data.signedUrl,
-        file_size: fileBuffer.length,
-        metadata: {
-          storagePath,
-          bucket,
-          reportType,
-          format,
-          signedUrlExpiresIn: 3600,
-        },
-        completed_at: new Date().toISOString(),
-        locked_at: null,
-        locked_by: null,
-        last_error: null,
+        ...completionPayload,
+        storage_path: storagePath,
+        storage_bucket: bucket,
       })
       .eq('id', jobId)
+    if (
+      typedErr &&
+      (typedErr.message.includes('storage_path') ||
+        typedErr.message.includes('storage_bucket'))
+    ) {
+      const { error: legacyErr } = await admin
+        .from('report_export_jobs')
+        .update(completionPayload)
+        .eq('id', jobId)
+      updateError = legacyErr
+    } else {
+      updateError = typedErr
+    }
+    if (updateError) {
+      throw new Error(`Job completion update failed: ${updateError.message}`)
+    }
 
     return { ok: true, fileUrl: signed.data.signedUrl }
   } catch (error) {
