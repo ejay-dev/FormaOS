@@ -8,6 +8,7 @@ import {
 import { startWorkflowExecution } from '@/lib/automation/workflow-executor';
 import {
   automationForbidden,
+  automationPlanRequired,
   automationUnauthorized,
   canManageAutomation,
   getAutomationApiContext,
@@ -20,6 +21,9 @@ export async function GET(
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
+  }
+  if (!context.canUseWorkflowAutomation) {
+    return automationPlanRequired();
   }
 
   const workflow = await getWorkflow((await params).id, context.orgId);
@@ -38,6 +42,9 @@ export async function PATCH(
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
+  }
+  if (!context.canUseWorkflowAutomation) {
+    return automationPlanRequired();
   }
 
   if (!canManageAutomation(context.role)) {
@@ -67,6 +74,9 @@ export async function DELETE(
   if (!context) {
     return automationUnauthorized();
   }
+  if (!context.canUseWorkflowAutomation) {
+    return automationPlanRequired();
+  }
 
   if (!canManageAutomation(context.role)) {
     return automationForbidden();
@@ -90,6 +100,9 @@ export async function POST(
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
+  }
+  if (!context.canUseWorkflowAutomation) {
+    return automationPlanRequired();
   }
 
   if (!canManageAutomation(context.role)) {

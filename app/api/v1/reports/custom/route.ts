@@ -4,6 +4,7 @@ import {
   logV1Access,
 } from '@/lib/api-keys/middleware';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
+import { requireCustomReportsEntitlement } from './_entitlement';
 
 export const runtime = 'nodejs';
 
@@ -12,6 +13,9 @@ export async function GET(request: Request) {
     requiredScopes: ['reports:read'],
   });
   if (!auth.ok) return auth.response;
+
+  const entitlementError = await requireCustomReportsEntitlement(auth.context);
+  if (entitlementError) return entitlementError;
 
   const { limit, offset } = getPagination(request, 25, 100);
 
@@ -46,6 +50,9 @@ export async function POST(request: Request) {
     requiredScopes: ['reports:write'],
   });
   if (!auth.ok) return auth.response;
+
+  const entitlementError = await requireCustomReportsEntitlement(auth.context);
+  if (entitlementError) return entitlementError;
 
   try {
     const body = await request.json();

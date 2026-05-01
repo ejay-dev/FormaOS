@@ -6,8 +6,12 @@
  */
 
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { syncEntitlementsForPlan, type EntitlementKey } from "@/lib/billing/entitlements";
-import { PLAN_CATALOG, resolvePlanKey, type PlanKey } from "@/lib/plans";
+import {
+  PLAN_ENTITLEMENTS,
+  syncEntitlementsForPlan,
+  type EntitlementKey,
+} from "@/lib/billing/entitlements";
+import { resolvePlanKey } from "@/lib/plans";
 import { billingLogger } from "@/lib/observability/structured-logger";
 
 export interface EntitlementSet {
@@ -30,28 +34,6 @@ export interface DriftDetectionResult {
   corrections: EntitlementCorrection[];
   autoFixed: boolean;
 }
-
-// Source of truth for plan entitlements
-const PLAN_ENTITLEMENTS: Record<PlanKey, EntitlementSet> = {
-  basic: {
-    enabled: ["audit_export", "reports", "framework_evaluations", "team_limit"],
-    limits: {
-      team_limit: PLAN_CATALOG.basic.limits.maxUsers as number,
-    },
-  },
-  pro: {
-    enabled: ["audit_export", "reports", "framework_evaluations", "certifications", "team_limit"],
-    limits: {
-      team_limit: PLAN_CATALOG.pro.limits.maxUsers as number,
-    },
-  },
-  enterprise: {
-    enabled: ["audit_export", "reports", "framework_evaluations", "certifications", "team_limit"],
-    limits: {
-      team_limit: null, // Unlimited
-    },
-  },
-};
 
 export function shouldAutoFixEntitlements(status: string | null): boolean {
   return ["active", "trialing"].includes(status ?? "");

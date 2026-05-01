@@ -119,10 +119,28 @@ describe('syncEntitlementsForPlan', () => {
           enabled: true,
           limit_value: null,
         },
+        {
+          organization_id: TEST_ORG_ID,
+          feature_key: 'capa_management',
+          enabled: true,
+          limit_value: null,
+        },
+        {
+          organization_id: TEST_ORG_ID,
+          feature_key: 'custom_reports',
+          enabled: true,
+          limit_value: null,
+        },
+        {
+          organization_id: TEST_ORG_ID,
+          feature_key: 'form_analytics',
+          enabled: true,
+          limit_value: null,
+        },
       ]),
     );
 
-    expect(records).toHaveLength(7);
+    expect(records).toHaveLength(10);
 
     for (const record of records) {
       expect(record.organization_id).toBe(TEST_ORG_ID);
@@ -149,7 +167,42 @@ describe('syncEntitlementsForPlan', () => {
       limit_value: null,
     });
 
-    expect(records).toHaveLength(7);
+    expect(records).toEqual(
+      expect.arrayContaining([
+        {
+          organization_id: TEST_ORG_ID,
+          feature_key: 'workflow_automation',
+          enabled: true,
+          limit_value: null,
+        },
+        {
+          organization_id: TEST_ORG_ID,
+          feature_key: 'sso_saml',
+          enabled: true,
+          limit_value: null,
+        },
+        {
+          organization_id: TEST_ORG_ID,
+          feature_key: 'directory_sync',
+          enabled: true,
+          limit_value: null,
+        },
+        {
+          organization_id: TEST_ORG_ID,
+          feature_key: 'retention_governance',
+          enabled: true,
+          limit_value: null,
+        },
+        {
+          organization_id: TEST_ORG_ID,
+          feature_key: 'executive_rollup',
+          enabled: true,
+          limit_value: null,
+        },
+      ]),
+    );
+
+    expect(records).toHaveLength(15);
 
     for (const record of records) {
       expect(record.organization_id).toBe(TEST_ORG_ID);

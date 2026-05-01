@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { scheduleReport, unscheduleReport } from '@/lib/reports/scheduler';
+import { requireCustomReportsEntitlement } from '../../_entitlement';
 
 export async function POST(
   req: NextRequest,
@@ -12,6 +13,8 @@ export async function POST(
       requiredScopes: ['reports:write'],
     });
     if (!auth.ok) return auth.response;
+    const entitlementError = await requireCustomReportsEntitlement(auth.context);
+    if (entitlementError) return entitlementError;
 
     const { reportId } = await params;
     const body = await req.json();
@@ -56,6 +59,8 @@ export async function DELETE(
       requiredScopes: ['reports:write'],
     });
     if (!auth.ok) return auth.response;
+    const entitlementError = await requireCustomReportsEntitlement(auth.context);
+    if (entitlementError) return entitlementError;
 
     const { reportId } = await params;
 

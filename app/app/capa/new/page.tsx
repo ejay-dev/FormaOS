@@ -24,6 +24,17 @@ type MemberOption = {
   role: string | null;
 };
 
+const SUPPORTED_SOURCE_TYPES = ['incident', 'obligation', 'policy'] as const;
+
+function normalizeSourceType(params: SearchParams) {
+  if (params.incident_id) return 'incident';
+  return SUPPORTED_SOURCE_TYPES.includes(
+    params.source_type as (typeof SUPPORTED_SOURCE_TYPES)[number],
+  )
+    ? params.source_type!
+    : 'manual';
+}
+
 async function getMemberOptions(db: ReturnType<typeof createSupabaseAdminClient>, orgId: string) {
   const { data: members } = await db
     .from('org_members')
@@ -75,13 +86,12 @@ export default async function NewCapaPage({
 
   const canAuthor = ['owner', 'admin'].includes(state.role);
   const memberOptions = capaUnavailable ? [] : await getMemberOptions(db, state.organization.id);
-  const sourceType =
-    params.source_type === 'incident' || params.incident_id ? 'incident' : 'manual';
+  const sourceType = normalizeSourceType(params);
   const sourceId = params.source_id || params.incident_id || '';
   const suggestedTitle =
     params.title ||
-    (sourceType === 'incident' && sourceId
-      ? 'CAPA from incident'
+    (sourceType !== 'manual' && sourceId
+      ? `CAPA from ${sourceType}`
       : '');
 
   return (
@@ -243,9 +253,9 @@ export default async function NewCapaPage({
                 />
               </div>
             </div>
-            {sourceType === 'incident' && sourceId && (
+            {sourceType !== 'manual' && sourceId && (
               <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
-                This CAPA will be linked to the selected incident.
+                This CAPA will be linked to the selected {sourceType}.
               </div>
             )}
             <div className="flex items-center justify-end gap-2 pt-2">

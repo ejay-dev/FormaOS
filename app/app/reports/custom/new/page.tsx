@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 
 export const metadata = { title: 'New Custom Report | FormaOS' };
 
@@ -11,6 +12,11 @@ async function createCustomReport(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
+  try {
+    await requireEntitlement(state.organization.id, 'custom_reports');
+  } catch {
+    redirect('/app/reports/custom/new?error=custom-reports-entitlement-required');
+  }
 
   const name = String(formData.get('name') ?? '').trim();
   const description = String(formData.get('description') ?? '').trim();
@@ -41,6 +47,13 @@ export default async function NewCustomReportPage({
   if (!state) redirect('/signin');
   const { error } = await searchParams;
   const db = createSupabaseAdminClient();
+  const { data: entitlement } = await db
+    .from('org_entitlements')
+    .select('enabled')
+    .eq('organization_id', state.organization.id)
+    .eq('feature_key', 'custom_reports')
+    .maybeSingle();
+  const customReportsEnabled = entitlement?.enabled === true;
   const { error: schemaError } = await db
     .from('org_saved_reports')
     .select('id', { count: 'exact', head: true })
@@ -70,21 +83,22 @@ export default async function NewCustomReportPage({
       </div>
 
       <div className="page-content max-w-2xl">
-        {reportsUnavailable && (
+        {(reportsUnavailable || !customReportsEnabled) && (
           <div
             className="rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground"
             data-testid="custom-report-create-disabled"
           >
-            Custom report creation is unavailable until the reporting storage
-            schema is provisioned for this workspace.
+            {customReportsEnabled
+              ? 'Custom report creation is unavailable until the reporting storage schema is provisioned for this workspace.'
+              : 'Custom report creation requires a Growth or Enterprise entitlement.'}
           </div>
         )}
-        {!reportsUnavailable && error && (
+        {!reportsUnavailable && customReportsEnabled && error && (
           <div className="mb-4 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive">
             {error}
           </div>
         )}
-        {!reportsUnavailable && <form
+        {!reportsUnavailable && customReportsEnabled && <form
           action={createCustomReport}
           className="space-y-4 rounded-lg border border-border bg-card p-5"
         >

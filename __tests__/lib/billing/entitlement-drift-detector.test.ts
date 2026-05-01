@@ -46,6 +46,47 @@ jest.mock('@/lib/supabase/admin', () => ({
 }));
 
 jest.mock('@/lib/billing/entitlements', () => ({
+  PLAN_ENTITLEMENTS: {
+    basic: {
+      enabled: ['audit_export', 'reports', 'framework_evaluations', 'team_limit'],
+      limits: { team_limit: 10 },
+    },
+    pro: {
+      enabled: [
+        'audit_export',
+        'reports',
+        'framework_evaluations',
+        'certifications',
+        'team_limit',
+        'ai_assistant',
+        'soc2_certification',
+        'capa_management',
+        'custom_reports',
+        'form_analytics',
+      ],
+      limits: { team_limit: 50 },
+    },
+    enterprise: {
+      enabled: [
+        'audit_export',
+        'reports',
+        'framework_evaluations',
+        'certifications',
+        'team_limit',
+        'ai_assistant',
+        'soc2_certification',
+        'capa_management',
+        'custom_reports',
+        'form_analytics',
+        'workflow_automation',
+        'sso_saml',
+        'directory_sync',
+        'retention_governance',
+        'executive_rollup',
+      ],
+      limits: { team_limit: null },
+    },
+  },
   syncEntitlementsForPlan: jest.fn(),
 }));
 

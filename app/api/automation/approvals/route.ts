@@ -10,6 +10,7 @@ import {
 import { resumeWorkflowExecution } from '@/lib/automation/workflow-executor';
 import {
   automationForbidden,
+  automationPlanRequired,
   automationUnauthorized,
   canManageAutomation,
   getAutomationApiContext,
@@ -20,6 +21,9 @@ export async function GET() {
     const context = await getAutomationApiContext();
     if (!context) {
       return automationUnauthorized();
+    }
+    if (!context.canUseWorkflowAutomation) {
+      return automationPlanRequired();
     }
 
     const approvals = await getPendingApprovals(context.orgId);
@@ -38,6 +42,9 @@ export async function POST(request: NextRequest) {
     const context = await getAutomationApiContext();
     if (!context) {
       return automationUnauthorized();
+    }
+    if (!context.canUseWorkflowAutomation) {
+      return automationPlanRequired();
     }
 
     if (!canManageAutomation(context.role)) {

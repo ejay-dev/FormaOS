@@ -6,6 +6,7 @@ import type { WorkflowTriggerType } from '@/lib/automation/workflow-types';
 import {
   canManageAutomation,
   getAutomationApiContext,
+  automationPlanRequired,
   automationForbidden,
   automationUnauthorized,
 } from '../_auth';
@@ -19,6 +20,9 @@ export async function GET(request: NextRequest) {
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
+  }
+  if (!context.canUseWorkflowAutomation) {
+    return automationPlanRequired();
   }
 
   const { searchParams } = request.nextUrl;
@@ -37,6 +41,9 @@ export async function POST(request: NextRequest) {
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
+  }
+  if (!context.canUseWorkflowAutomation) {
+    return automationPlanRequired();
   }
 
   if (!canManageAutomation(context.role)) {

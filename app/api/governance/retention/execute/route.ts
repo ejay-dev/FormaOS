@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import {
   evaluateRetention,
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
     const context = await requireOrgAdminContext(
       (body.orgId as string | undefined) ?? null,
     );
+    await requireEntitlement(context.orgId, 'retention_governance');
     const dryRun = body.dryRun !== false;
     const preview = await evaluateRetention(context.orgId);
     const result = await executeRetention(context.orgId, dryRun);

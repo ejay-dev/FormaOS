@@ -1,8 +1,8 @@
 'use server';
 
 import { getOrgIdForUser } from '@/app/app/actions/enforcement';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 import { upsertOrgSsoConfig } from '@/lib/sso/org-sso';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export async function saveOrgSsoConfigAction(input: {
   orgId: string;
@@ -22,32 +22,23 @@ export async function saveOrgSsoConfigAction(input: {
     return { ok: false, error: 'Insufficient permissions.' };
   }
 
-  // Enterprise identity gate: SAML SSO is reserved for enterprise plans by default.
-  // (This is a commercial gate and a procurement expectation.)
-  const supabase = await createSupabaseServerClient();
-  const { data: sub } = await supabase
-    .from('org_subscriptions')
-    .select('plan_key, status')
-    .eq('organization_id', input.orgId)
-    .maybeSingle();
-
-  const subRow = sub as { plan_key?: string; status?: string } | null;
-  const planKey = subRow?.plan_key ?? null;
-  const status = subRow?.status ?? null;
-  const isActive = status === 'active' || status === 'trialing';
-  const isEnterprise = planKey === 'enterprise';
-
-  if (input.enabled && (!isActive || !isEnterprise)) {
-    return {
-      ok: false,
-      error: 'SAML SSO is available on Enterprise plans only.',
-    };
+  if (input.enabled || input.enforceSso) {
+    try {
+      await requireEntitlement(input.orgId, 'sso_saml');
+    } catch {
+      return {
+        ok: false,
+        error: input.enforceSso
+          ? 'SSO enforcement is available on Enterprise plans only.'
+          : 'SAML SSO is available on Enterprise plans only.',
+      };
+    }
   }
 
-  if (input.enforceSso && (!isActive || !isEnterprise)) {
+  if (input.enforceSso && !input.enabled) {
     return {
       ok: false,
-      error: 'SSO enforcement is available on Enterprise plans only.',
+      error: 'Enable SSO before enforcing SSO.',
     };
   }
 

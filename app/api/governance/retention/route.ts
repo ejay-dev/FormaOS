@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import {
   applyRetentionPolicy,
@@ -21,6 +22,7 @@ export async function GET(request: Request) {
     }
     const orgId = new URL(request.url).searchParams.get('orgId');
     const context = await requireOrgAdminContext(orgId);
+    await requireEntitlement(context.orgId, 'retention_governance');
     const [policies, executions] = await Promise.all([
       listRetentionPolicies(context.orgId),
       listRetentionExecutions(context.orgId),
@@ -53,6 +55,7 @@ export async function POST(request: Request) {
     const context = await requireOrgAdminContext(
       (body.orgId as string | undefined) ?? null,
     );
+    await requireEntitlement(context.orgId, 'retention_governance');
     const policy = await applyRetentionPolicy(context.orgId, {
       resource_type: String(body.resource_type ?? body.resourceType ?? ''),
       retention_days: Number(body.retention_days ?? body.retentionDays ?? 0),

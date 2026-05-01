@@ -12,6 +12,13 @@ export default async function CustomReportsPage() {
   if (!state) redirect('/signin');
 
   const db = createSupabaseAdminClient();
+  const { data: entitlement } = await db
+    .from('org_entitlements')
+    .select('enabled')
+    .eq('organization_id', state.organization.id)
+    .eq('feature_key', 'custom_reports')
+    .maybeSingle();
+  const customReportsEnabled = entitlement?.enabled === true;
 
   const { data: reports, error: reportsError } = await db
     .from('org_saved_reports')
@@ -37,7 +44,7 @@ export default async function CustomReportsPage() {
             Build custom reports and schedule automated delivery.
           </p>
         </div>
-        {reportsUnavailable ? (
+        {reportsUnavailable || !customReportsEnabled ? (
           <button
             type="button"
             disabled
@@ -45,7 +52,9 @@ export default async function CustomReportsPage() {
             className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground"
           >
             <Lock className="h-4 w-4" />
-            Custom reports unavailable
+            {customReportsEnabled
+              ? 'Custom reports unavailable'
+              : 'Custom reports gated'}
           </button>
         ) : (
           <Link
@@ -108,19 +117,27 @@ export default async function CustomReportsPage() {
           <h2 className="font-semibold">All Reports</h2>
         </div>
         <div className="divide-y divide-border">
-          {reportsUnavailable && (
+          {(reportsUnavailable || !customReportsEnabled) && (
             <div className="px-4 py-12 text-center text-muted-foreground">
               <Lock className="mx-auto h-8 w-8 opacity-50" />
-              <p className="mt-2 text-sm">
-                Custom report storage is not enabled for this workspace yet.
-              </p>
-              <p className="mt-1 text-xs">
-                The create and schedule actions are disabled until the reporting
-                schema is provisioned.
-              </p>
+              {customReportsEnabled ? (
+                <>
+                  <p className="mt-2 text-sm">
+                    Custom report storage is not enabled for this workspace yet.
+                  </p>
+                  <p className="mt-1 text-xs">
+                    The create and schedule actions are disabled until the reporting
+                    schema is provisioned.
+                  </p>
+                </>
+              ) : (
+                <p className="mt-2 text-sm">
+                  Custom reports require a Growth or Enterprise entitlement.
+                </p>
+              )}
             </div>
           )}
-          {!reportsUnavailable && items.map((r) => (
+          {!reportsUnavailable && customReportsEnabled && items.map((r) => (
             <Link
               key={r.id}
               href={`/app/reports/custom/${r.id}`}
@@ -149,7 +166,7 @@ export default async function CustomReportsPage() {
               </div>
             </Link>
           ))}
-          {!reportsUnavailable && items.length === 0 && (
+          {!reportsUnavailable && customReportsEnabled && items.length === 0 && (
             <div className="px-4 py-12 text-center text-muted-foreground">
               <FileBarChart className="mx-auto h-8 w-8 opacity-50" />
               <p className="mt-2 text-sm">

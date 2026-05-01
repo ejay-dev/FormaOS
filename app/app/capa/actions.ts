@@ -6,6 +6,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 import {
   CAPA_STATUS_LABELS,
   CAPA_STATUSES,
@@ -69,12 +70,54 @@ async function getCapaActionContext(): Promise<CapaActionContext> {
     redirectWithError('/app/capa', 'CAPA changes require an admin or manager role.');
   }
 
+  try {
+    await requireEntitlement(state.organization.id, 'capa_management');
+  } catch {
+    redirectWithError('/app/capa', 'CAPA management requires an active Growth or Enterprise entitlement.');
+  }
+
   return {
     db: createSupabaseAdminClient(),
     orgId: state.organization.id,
     userId: state.user.id,
     role: state.role,
   };
+}
+
+async function validateCapaSource(
+  ctx: CapaActionContext,
+  sourceType: string,
+  sourceId: string | null,
+) {
+  if (!sourceId || sourceType === 'manual') return;
+
+  const sourceConfig: Record<
+    Exclude<(typeof CAPA_SOURCE_TYPES)[number], 'manual'>,
+    { table: string; label: string }
+  > = {
+    incident: { table: 'org_incidents', label: 'incident' },
+    obligation: { table: 'org_tasks', label: 'obligation' },
+    policy: { table: 'org_policies', label: 'policy' },
+  };
+
+  const config =
+    sourceConfig[sourceType as Exclude<(typeof CAPA_SOURCE_TYPES)[number], 'manual'>];
+  if (!config) redirectWithError('/app/capa/new', 'Invalid source type.');
+
+  const { data, error } = await ctx.db
+    .from(config.table)
+    .select('id')
+    .eq('id', sourceId)
+    .eq('organization_id', ctx.orgId)
+    .maybeSingle();
+
+  if (error) redirectWithError('/app/capa/new', error.message);
+  if (!data) {
+    redirectWithError(
+      '/app/capa/new',
+      `Linked ${config.label} was not found in this organization.`,
+    );
+  }
 }
 
 async function loadCapa(ctx: CapaActionContext, id: string) {
@@ -163,15 +206,7 @@ export async function createCapa(formData: FormData) {
     redirectWithError('/app/capa/new', 'Invalid source type.');
   }
 
-  if (sourceType === 'incident' && sourceId) {
-    const { data: incident } = await ctx.db
-      .from('org_incidents')
-      .select('id')
-      .eq('id', sourceId)
-      .eq('organization_id', ctx.orgId)
-      .maybeSingle();
-    if (!incident) redirectWithError('/app/capa/new', 'Linked incident was not found.');
-  }
+  await validateCapaSource(ctx, sourceType, sourceId);
 
   const { data, error } = await ctx.db
     .from('org_capa_items')

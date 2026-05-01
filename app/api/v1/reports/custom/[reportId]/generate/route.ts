@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { resolveWidgetData } from '@/lib/reports/widget-data';
+import { requireCustomReportsEntitlement } from '../../_entitlement';
 import {
   generateCSV,
   flattenWidgetToSection,
@@ -15,6 +16,8 @@ export async function POST(
     requiredScopes: ['reports:write'],
   });
   if (!auth.ok) return auth.response;
+  const entitlementError = await requireCustomReportsEntitlement(auth.context);
+  if (entitlementError) return entitlementError;
 
   const { reportId } = await params;
   const body = await req.json();
