@@ -22,6 +22,26 @@ on:
 env:
   NODE_VERSION: '20'
   DEPLOYMENT_TIMEOUT: '600' # 10 minutes
+  NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || vars.SUPABASE_SERVICE_ROLE_KEY || '' }}
+  NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL || vars.NEXT_PUBLIC_APP_URL || 'https://app.formaos.com.au' }}
+  NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || vars.NEXT_PUBLIC_SITE_URL || 'https://www.formaos.com.au' }}
+  FOUNDER_EMAILS: ${{ secrets.FOUNDER_EMAILS || vars.FOUNDER_EMAILS || '' }}
+  HEALTH_DETAILED_FOUNDER_TOKEN: ${{ secrets.HEALTH_DETAILED_FOUNDER_TOKEN || '' }}
+  STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY || '' }}
+  STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET || '' }}
+  STRIPE_PRICE_FOUNDATION: ${{ secrets.STRIPE_PRICE_FOUNDATION || vars.STRIPE_PRICE_FOUNDATION || '' }}
+  STRIPE_PRICE_GROWTH: ${{ secrets.STRIPE_PRICE_GROWTH || vars.STRIPE_PRICE_GROWTH || '' }}
+  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY || '' }}
+  RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL || vars.RESEND_FROM_EMAIL || '' }}
+  UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL || vars.UPSTASH_REDIS_REST_URL || '' }}
+  UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN || '' }}
+  CRON_SECRET: ${{ secrets.CRON_SECRET || '' }}
+  NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN || vars.NEXT_PUBLIC_SENTRY_DSN || '' }}
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN || '' }}
+  SENTRY_ORG: ${{ secrets.SENTRY_ORG || vars.SENTRY_ORG || '' }}
+  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT || vars.SENTRY_PROJECT || '' }}
 
 jobs:
   # Pre-deployment validation
@@ -63,11 +83,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Production configuration validation (critical)
+        run: npm run check:production-config
+
       - name: TypeScript compilation (critical)
         run: npx tsc --noEmit
 
       - name: ESLint validation (critical)
         run: npm run lint -- --max-warnings 350 # Temporarily increased while fixing legacy warnings
+
+      - name: Security baseline (critical)
+        run: SECURITY_BASELINE_STRICT=1 npm run check:security-baseline
 
       - name: Build verification (critical)
         run: npm run build

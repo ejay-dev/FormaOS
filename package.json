@@ -12,6 +12,7 @@
     "check:app-links": "node scripts/app-link-integrity-audit.mjs",
     "check:admin-nav": "node scripts/check-admin-nav-integrity.mjs",
     "check:security-baseline": "node scripts/check-security-baseline.mjs",
+    "check:production-config": "CHECK_ENV_STRICT=1 CHECK_ENV_PROFILE=production node scripts/check-env.js",
     "verify:security-monitoring": "node scripts/verify-security-monitoring.js",
     "predev": "npm run check-root && npm run check-env",
     "dev": "next dev",

@@ -45,6 +45,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      - run: SECURITY_BASELINE_STRICT=1 npm run check:security-baseline
       - run: npm run build
       - run: npm run check:app-links
       - run: npm run db:test:verify

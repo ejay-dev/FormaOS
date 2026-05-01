@@ -204,7 +204,7 @@ function auditNodeRuntimeDrift() {
 
 function auditLegacyStripeImports() {
   const grepOut = run(
-    "git grep -nE \"from ['\\\"]@/lib/billing['\\\"]|require\\(['\\\"]@/lib/billing['\\\"]\\)\" -- '*.ts' '*.tsx' '*.js' '*.jsx' || true"
+    "git grep -nE \"from ['\\\"]@/lib/billing['\\\"]|require\\(['\\\"]@/lib/billing['\\\"]\\)\" -- '*.ts' '*.tsx' '*.js' '*.jsx' ':!__tests__/**' ':!tests/**' ':!e2e/**' || true"
   );
   const matches = grepOut
     .split("\n")

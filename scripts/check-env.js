@@ -3,11 +3,21 @@
 const fs = require('fs');
 const path = require('path');
 
-// Skip env checks on Vercel and GitHub Actions CI - environment is pre-validated
-if (
+const strictValidation =
+  process.env.STRICT_ENV_VALIDATION === 'true' ||
+  process.env.CHECK_ENV_STRICT === '1';
+const envProfile = process.env.CHECK_ENV_PROFILE || 'development';
+const isSecretManagerRuntime =
   process.env.VERCEL === '1' ||
   process.env.CI === 'true' ||
-  process.env.GITHUB_ACTIONS === 'true'
+  process.env.GITHUB_ACTIONS === 'true';
+
+// Skip non-strict env checks on managed runtimes. Strict/profile checks are
+// intentionally evaluated against process.env so CI/Vercel secrets cannot drift silently.
+if (
+  !strictValidation &&
+  envProfile === 'development' &&
+  isSecretManagerRuntime
 ) {
   process.exit(0);
 }
@@ -24,6 +34,23 @@ const requiredKeys = [
   'FOUNDER_EMAILS',
 ];
 
+const productionRequiredKeys = [
+  'STRIPE_SECRET_KEY',
+  'STRIPE_WEBHOOK_SECRET',
+  'STRIPE_PRICE_FOUNDATION',
+  'STRIPE_PRICE_GROWTH',
+  'RESEND_API_KEY',
+  'RESEND_FROM_EMAIL',
+  'UPSTASH_REDIS_REST_URL',
+  'UPSTASH_REDIS_REST_TOKEN',
+  'CRON_SECRET',
+  'HEALTH_DETAILED_FOUNDER_TOKEN',
+  'NEXT_PUBLIC_SENTRY_DSN',
+  'SENTRY_AUTH_TOKEN',
+  'SENTRY_ORG',
+  'SENTRY_PROJECT',
+];
+
 const recommendedKeys = [
   'STRIPE_SECRET_KEY',
   'STRIPE_WEBHOOK_SECRET',
@@ -33,7 +60,13 @@ const recommendedKeys = [
   'RESEND_FROM_EMAIL',
 ];
 
-const forbiddenPublicKeys = ['NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY'];
+const forbiddenPublicKeys = [
+  'NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY',
+  'NEXT_PUBLIC_STRIPE_SECRET_KEY',
+  'NEXT_PUBLIC_STRIPE_WEBHOOK_SECRET',
+  'NEXT_PUBLIC_UPSTASH_REDIS_REST_TOKEN',
+  'NEXT_PUBLIC_SENTRY_AUTH_TOKEN',
+];
 
 const parseEnvFile = (content) => {
   const entries = {};
@@ -59,7 +92,7 @@ const parseEnvFile = (content) => {
   return entries;
 };
 
-if (!fs.existsSync(envPath)) {
+if (!fs.existsSync(envPath) && !isSecretManagerRuntime) {
   console.error('\nMissing .env.local.');
   console.error('Create one by copying .env.example and filling in values.');
   console.error('No secrets are logged by this check.');
@@ -68,7 +101,9 @@ if (!fs.existsSync(envPath)) {
 
 let fileVars = {};
 try {
-  fileVars = parseEnvFile(fs.readFileSync(envPath, 'utf8'));
+  fileVars = fs.existsSync(envPath)
+    ? parseEnvFile(fs.readFileSync(envPath, 'utf8'))
+    : {};
 } catch {
   console.error('\nUnable to read .env.local.');
   console.error('Check file permissions and try again.');
@@ -76,7 +111,11 @@ try {
 }
 
 const combinedVars = { ...fileVars, ...process.env };
-const missingRequired = requiredKeys.filter((key) => !combinedVars[key]);
+const activeRequiredKeys =
+  envProfile === 'production'
+    ? [...requiredKeys, ...productionRequiredKeys]
+    : requiredKeys;
+const missingRequired = activeRequiredKeys.filter((key) => !combinedVars[key]);
 const exposedPublicSecrets = forbiddenPublicKeys.filter((key) => !!combinedVars[key]);
 
 if (missingRequired.length > 0 || exposedPublicSecrets.length > 0) {
@@ -88,7 +127,11 @@ if (missingRequired.length > 0 || exposedPublicSecrets.length > 0) {
     console.error('\nForbidden public secrets detected:');
     console.error(exposedPublicSecrets.map((key) => `- ${key}`).join('\n'));
   }
-  console.error('\nUpdate .env.local and re-run npm run dev.');
+  console.error(
+    isSecretManagerRuntime
+      ? '\nUpdate managed environment secrets and re-run this check.'
+      : '\nUpdate .env.local and re-run npm run dev.',
+  );
   process.exit(1);
 }
 
@@ -132,9 +175,6 @@ if (supabaseUrl) {
 }
 
 if (invalidRequired.length > 0 || invalidSupabaseUrl) {
-  const strictValidation =
-    process.env.STRICT_ENV_VALIDATION === 'true' ||
-    process.env.CHECK_ENV_STRICT === '1';
   const logger = strictValidation ? console.error : console.warn;
 
   logger('\nInvalid placeholder environment variables detected:');
@@ -151,7 +191,10 @@ if (invalidRequired.length > 0 || invalidSupabaseUrl) {
   }
 }
 
-const missingRecommended = recommendedKeys.filter((key) => !combinedVars[key]);
+const missingRecommended =
+  envProfile === 'production'
+    ? []
+    : recommendedKeys.filter((key) => !combinedVars[key]);
 if (missingRecommended.length > 0) {
   console.warn(
     '\nOptional environment variables not set (dev may still work):',

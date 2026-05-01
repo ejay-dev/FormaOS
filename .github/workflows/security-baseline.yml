@@ -26,10 +26,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Run baseline audit (non-blocking mode)
+      - name: Run baseline audit (blocking mode)
         run: node scripts/check-security-baseline.mjs
         env:
-          SECURITY_BASELINE_STRICT: "0"
+          SECURITY_BASELINE_STRICT: "1"
 
       - name: Upload baseline report
         uses: actions/upload-artifact@v4
