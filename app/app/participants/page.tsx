@@ -10,6 +10,9 @@ import { Plus, Search, Filter, AlertTriangle, Users } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { ParticipantsEmptyState } from '@/components/empty-states';
 import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
+import { buildOrSearch } from '@/lib/utils/postgrest-search';
+
+const PARTICIPANTS_PAGE_SIZE = 50;
 
 // Get industry-appropriate label
 function getEntityLabel(industry: string | null): {
@@ -35,12 +38,16 @@ export default async function ParticipantsPage({
     q?: string;
     status?: string;
     risk?: string;
+    page?: string;
   }>;
 }) {
   const params = (await searchParams) ?? {};
   const q = (params.q ?? '').trim();
   const statusFilter = (params.status ?? '').trim();
   const riskFilter = (params.risk ?? '').trim();
+  const pageParam = parseInt((params.page ?? '1').trim(), 10);
+  const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
+  const offset = (page - 1) * PARTICIPANTS_PAGE_SIZE;
   const hasFilters =
     q.length > 0 || statusFilter.length > 0 || riskFilter.length > 0;
 
@@ -79,17 +86,15 @@ export default async function ParticipantsPage({
       `,
       )
       .eq('organization_id', orgId)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(offset, offset + PARTICIPANTS_PAGE_SIZE - 1);
 
-    if (q) {
-      query = query.or(
-        [
-          `full_name.ilike.%${q}%`,
-          `preferred_name.ilike.%${q}%`,
-          `external_id.ilike.%${q}%`,
-          `ndis_number.ilike.%${q}%`,
-        ].join(','),
-      );
+    const orPredicate = buildOrSearch(
+      ['full_name', 'preferred_name', 'external_id', 'ndis_number'],
+      q,
+    );
+    if (orPredicate) {
+      query = query.or(orPredicate);
     }
     if (statusFilter) {
       query = query.eq('care_status', statusFilter);

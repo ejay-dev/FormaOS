@@ -38,8 +38,20 @@ export function getArrayParam(
     .filter(Boolean);
 }
 
+/**
+ * Sanitize for use inside an ilike LITERAL. Strips both LIKE wildcards
+ * (% _) and the PostgREST `.or()` separators (commas, parens, asterisk,
+ * backtick, double-quote, backslash) so any callsite that interpolates
+ * the result into a `.or(...)` predicate can't be tricked into adding
+ * extra OR clauses. See lib/utils/postgrest-search.ts for the
+ * explicitly `.or()`-shaped helpers.
+ */
 export function sanitizeLikeQuery(value: string): string {
-  return value.replace(/[%_]/g, '').trim();
+  return value
+    .replace(/[\\]/g, '')
+    .replace(/[(),*`"%_]/g, '')
+    .trim()
+    .slice(0, 100);
 }
 
 export function buildIlikePattern(value: string): string {

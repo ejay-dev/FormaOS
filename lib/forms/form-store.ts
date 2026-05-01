@@ -1,4 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
+import { buildOrSearch } from '@/lib/utils/postgrest-search';
 
 // =========================================================
 // FORM STORE - CRUD operations for org_forms
@@ -218,9 +219,10 @@ export async function listForms(
   }
 
   if (options.search) {
-    query = query.or(
-      `title.ilike.%${options.search}%,description.ilike.%${options.search}%`,
-    );
+    const predicate = buildOrSearch(['title', 'description'], options.search);
+    if (predicate) {
+      query = query.or(predicate);
+    }
   }
 
   const { data, count, error } = await query;

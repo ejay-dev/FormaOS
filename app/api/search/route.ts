@@ -3,6 +3,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import {
+  buildOrSearch,
+  sanitizeOrSearchTerm,
+} from '@/lib/utils/postgrest-search';
 
 const log = routeLog('/api/search');
 
@@ -40,25 +44,36 @@ export async function GET(request: Request) {
       10,
     );
 
+    const safeTerm = sanitizeOrSearchTerm(q);
+    const ilikePattern = safeTerm ? `%${safeTerm}%` : '%';
+    const evidencePredicate = buildOrSearch(['title', 'file_name'], q);
+
     const [policies, tasks, evidence] = await Promise.all([
       supabase
         .from('org_policies')
         .select('id, title')
         .eq('organization_id', membership.orgId)
-        .ilike('title', `%${q}%`)
+        .ilike('title', ilikePattern)
         .limit(limitEach),
       supabase
         .from('org_tasks')
         .select('id, title')
         .eq('organization_id', membership.orgId)
-        .ilike('title', `%${q}%`)
+        .ilike('title', ilikePattern)
         .limit(limitEach),
-      supabase
-        .from('org_evidence')
-        .select('id, title, file_name')
-        .eq('organization_id', membership.orgId)
-        .or(`title.ilike.%${q}%,file_name.ilike.%${q}%`)
-        .limit(limitEach),
+      evidencePredicate
+        ? supabase
+            .from('org_evidence')
+            .select('id, title, file_name')
+            .eq('organization_id', membership.orgId)
+            .or(evidencePredicate)
+            .limit(limitEach)
+        : supabase
+            .from('org_evidence')
+            .select('id, title, file_name')
+            .eq('organization_id', membership.orgId)
+            .ilike('title', '%')
+            .limit(limitEach),
     ]);
 
     if (policies.error || tasks.error || evidence.error) {

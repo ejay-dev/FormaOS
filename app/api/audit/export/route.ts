@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { buildOrSearch } from '@/lib/utils/postgrest-search';
 
 const log = routeLog('/api/audit/export');
 
@@ -58,8 +59,10 @@ export async function GET(request: Request) {
     if (dateFrom) query = query.gte('created_at', dateFrom);
     if (dateTo) query = query.lte('created_at', dateTo);
     if (search) {
-      const escaped = search.replace(/[%_]/g, '\\$&');
-      query = query.or(`action.ilike.%${escaped}%,resource_type.ilike.%${escaped}%`);
+      const predicate = buildOrSearch(['action', 'resource_type'], search);
+      if (predicate) {
+        query = query.or(predicate);
+      }
     }
 
     const { data, error } = await query;

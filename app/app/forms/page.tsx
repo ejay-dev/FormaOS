@@ -8,6 +8,9 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Plus, Search, FileText, Eye, BarChart3 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { buildOrSearch } from '@/lib/utils/postgrest-search';
+
+const FORMS_PAGE_SIZE = 50;
 
 function formatDate(date: string | null) {
   if (!date) return '—';
@@ -37,11 +40,15 @@ export default async function FormsPage({
   searchParams?: Promise<{
     q?: string;
     status?: string;
+    page?: string;
   }>;
 }) {
   const params = (await searchParams) ?? {};
   const q = (params.q ?? '').trim();
   const statusFilter = (params.status ?? '').trim();
+  const pageParam = parseInt((params.page ?? '1').trim(), 10);
+  const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
+  const offset = (page - 1) * FORMS_PAGE_SIZE;
 
   const systemState = await fetchSystemState();
   if (!systemState) {
@@ -69,14 +76,16 @@ export default async function FormsPage({
       .from('org_forms')
       .select('*, submission_count:org_form_submissions(count)')
       .eq('org_id', orgId)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(offset, offset + FORMS_PAGE_SIZE - 1);
 
     if (statusFilter) {
       query = query.eq('status', statusFilter);
     }
 
-    if (q) {
-      query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%`);
+    const orPredicate = buildOrSearch(['title', 'description'], q);
+    if (orPredicate) {
+      query = query.or(orPredicate);
     }
 
     const { data, error } = await query;
