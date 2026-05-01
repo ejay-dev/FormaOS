@@ -14,13 +14,15 @@ Overall maturity: **Mostly ready for controlled production, not fully self-runni
 
 Production readiness rating: **Mostly ready / 7 out of 10.** Core authenticated workflows are working and broadly tested. Biggest launch risks are external configuration and unfinished governance features, not a single broken app surface.
 
+Local verification on 2026-04-29 confirmed `check-env`, `typecheck`, `lint`, `build`, `check:app-links`, `db:test:verify`, `audit:marketing-copy`, and the Chromium smoke/app-link route suite. `test:supabase-health` skipped because the shell environment did not expose `NEXT_PUBLIC_SUPABASE_URL`, while `db:test:verify` loaded enough local configuration to verify the Supabase project host `bvfniosswcvuyfaaicze.supabase.co`.
+
 ## 2. Architecture And Stack
 
 Core stack:
 
 | Area | Current implementation |
 | --- | --- |
-| Framework | Next.js `^16.1.6`, App Router, React Server Components and route handlers |
+| Framework | Next.js declared as `^16.1.6` in `package.json`, resolved locally to `16.2.4` in `package-lock.json`; App Router, React Server Components and route handlers |
 | React | `react` / `react-dom` `19.2.3` |
 | Language | TypeScript `5.9.3`, strict typecheck via `tsconfig.typecheck.json` |
 | Styling | Tailwind CSS `3.4.17`, local design tokens, `components/ui`, `lucide-react` icons |
@@ -83,7 +85,7 @@ npm run load:public:docker
 
 ## 4. Public Website Audit
 
-Public routes found: 72 marketing routes under `app/(marketing)`.
+Public routes found: 70 marketing page routes under `app/(marketing)`; the broader marketing surface contains 92 route/metadata entry files when route handlers and OG/twitter/sitemap files are included.
 
 | Route group | Purpose and key files | CTA flow | State |
 | --- | --- | --- | --- |
@@ -298,9 +300,9 @@ Known limitations:
 
 Current test inventory:
 
-- `__tests__`: 327 files
-- `tests`: 57 files
-- `e2e`: 78 files
+- `__tests__`: 327 test/spec files, 328 files total
+- `tests`: 36 test/spec files, 66 files total
+- `e2e`: 72 spec files, 77 files total
 - `load-tests`: 4 k6 scripts
 
 Key suites:
