@@ -12,12 +12,12 @@ const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 const isSecretManagerRuntime =
   isVercelBuild || process.env.CI === 'true' || isGitHubActions;
 
-// In GitHub Actions CI (not a Vercel build), skip the strict production config
-// check. Production secrets live in Vercel's environment — Vercel validates them
+// In GitHub Actions CI (not a Vercel build), skip all strict env checks.
+// Production secrets live in Vercel's environment — Vercel validates them
 // during its own build. CI runners don't have (and shouldn't need) those secrets.
-if (strictValidation && envProfile === 'production' && isGitHubActions && !isVercelBuild) {
+if (strictValidation && isGitHubActions && !isVercelBuild) {
   console.log(
-    'ℹ️  Skipping production env check in GitHub Actions CI — validated by Vercel at build time.',
+    'ℹ️  Skipping strict env check in GitHub Actions CI — validated by Vercel at build time.',
   );
   process.exit(0);
 }
