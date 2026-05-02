@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   }
 
   const rl = await rateLimitSignup(request);
-  if (!rl.success) {
+  if (!rl.allowed) {
     return NextResponse.json(
       { ok: false, error: 'too_many_requests' },
       { status: 429 },
