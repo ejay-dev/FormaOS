@@ -79,12 +79,25 @@ export function DashboardHero({
       <div className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:p-8">
         {/* Left: identity */}
         <div className="flex items-center gap-4 min-w-0">
-          <Avatar
-            name={avatarFullName}
-            src={avatarUrl}
-            size="lg"
-            className="h-14 w-14 text-base ring-0 shrink-0"
-          />
+          {avatarUrl ? (
+            <Avatar
+              name={avatarFullName}
+              src={avatarUrl}
+              size="lg"
+              className="h-14 w-14 text-base ring-0 shrink-0"
+            />
+          ) : (
+            <span
+              role="img"
+              aria-label={`${greeting} wave`}
+              title={greeting}
+              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-border bg-muted/40 text-3xl leading-none select-none"
+            >
+              <span className="origin-[70%_70%] motion-safe:animate-[wave_1.6s_ease-in-out_infinite]">
+                👋
+              </span>
+            </span>
+          )}
           <div className="min-w-0">
             <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               {greeting} · {dateStr}

@@ -5,11 +5,7 @@ import { TopBar } from '@/components/topbar';
 import { AppHydrator } from '@/components/app-hydrator';
 import { AppProviders } from '@/components/app-providers';
 import { fetchSystemState } from '@/lib/system-state/server';
-import { UpgradeModal } from '@/components/billing/UpgradeModal';
-import { UpgradeSuggestionEngine } from '@/components/billing/UpgradeSuggestionEngine';
-import { UpgradeTriggerPoints } from '@/components/billing/UpgradeTriggerPoints';
 import { UsageLimitWarnings } from '@/components/billing/UsageLimitWarnings';
-import { TrialCountdownBanner } from '@/components/billing/TrialCountdownBanner';
 import { brand } from '@/config/brand';
 import { Logo } from '@/components/brand/Logo';
 import { CommandPalette } from '@/components/command-palette/CommandPalette';
@@ -197,9 +193,7 @@ export default async function AppLayout({
                 </header>
 
                 <RuntimeOpsGuard surface="app" />
-                <TrialCountdownBanner />
                 <UsageLimitWarnings />
-                <UpgradeTriggerPoints />
                 <OnboardingStrip />
 
                 <main
@@ -214,8 +208,6 @@ export default async function AppLayout({
             </div>
 
             <CommandPalette />
-            <UpgradeModal />
-            <UpgradeSuggestionEngine />
             <HelpAssistant />
             <AiAssistant />
             <NotificationToast

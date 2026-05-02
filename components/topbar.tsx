@@ -18,7 +18,6 @@ import {
   Building2,
 } from 'lucide-react';
 import { MobileSidebar } from '@/components/mobile-sidebar';
-import { TrialDaysRemaining } from '@/components/billing/TrialDaysRemaining';
 import { useHelpAssistant } from '@/components/help/help-assistant-context';
 // Product tour disabled — import removed
 // import { useProductTour } from '@/lib/onboarding/product-tour';
@@ -122,11 +121,6 @@ export function TopBar({
 
       {/* Right: Actions */}
       <div className="ml-auto flex items-center gap-1 sm:gap-2">
-        {/* Trial days remaining badge */}
-        <div className="hidden md:flex">
-          <TrialDaysRemaining />
-        </div>
-
         {/* Mobile search trigger */}
         <Button
           variant="ghost"
