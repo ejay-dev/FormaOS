@@ -56,13 +56,13 @@ export function MyComplianceStatus({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'on_track':
-        return 'bg-green-500/20 border-green-400/30 text-green-300';
+        return 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500';
       case 'at_risk':
-        return 'bg-amber-500/20 border-amber-400/30 text-amber-300';
+        return 'bg-amber-500/10 border-amber-500/30 text-amber-500';
       case 'review_needed':
-        return 'bg-red-500/20 border-red-400/30 text-red-300';
+        return 'bg-rose-500/10 border-rose-500/30 text-rose-500';
       default:
-        return 'bg-slate-500/20 border-slate-400/30 text-foreground/70';
+        return 'bg-muted/40 border-border text-muted-foreground';
     }
   };
 
@@ -84,9 +84,9 @@ export function MyComplianceStatus({
               </p>
             </div>
           </div>
-          <div className="relative h-32 rounded-lg bg-slate-700/50 p-4 flex items-end justify-center">
+          <div className="relative h-32 rounded-lg bg-muted/40 p-4 flex items-end justify-center">
             <div
-              className="w-12 bg-gradient-to-t from-green-500 to-green-400 rounded"
+              className="w-12 bg-primary rounded"
               style={{ height: `${complianceScore}%` }}
             />
             <p className="absolute top-2 text-xs text-muted-foreground">
@@ -101,25 +101,25 @@ export function MyComplianceStatus({
             className={`px-4 py-2 rounded-lg border font-semibold ${getStatusColor(status)}`}
           >
             {status === 'on_track'
-              ? '✓ On Track'
+              ? 'On Track'
               : status === 'at_risk'
-                ? '⚠ At Risk'
-                : '⚠ Review Needed'}
+                ? 'At Risk'
+                : 'Review Needed'}
           </span>
           {nextAuditDate && (
             <p className="text-sm text-muted-foreground">
               Next audit:{' '}
-              <span className="font-semibold text-white">{nextAuditDate}</span>
+              <span className="font-semibold text-foreground">{nextAuditDate}</span>
             </p>
           )}
         </div>
 
         {/* Quick Actions */}
-        <div className="pt-4 border-t border-glass-border flex flex-col sm:flex-row gap-2">
-          <button className="w-full sm:flex-1 px-4 py-2 rounded-lg bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-colors font-semibold text-sm">
+        <div className="pt-4 border-t border-border flex flex-col sm:flex-row gap-2">
+          <button className="w-full sm:flex-1 px-4 py-2 rounded-md border border-border bg-primary/10 text-primary hover:bg-primary/15 transition-colors font-semibold text-sm">
             View Full Report
           </button>
-          <button className="w-full sm:flex-1 px-4 py-2 rounded-lg bg-slate-700/50 text-foreground/70 hover:bg-slate-700 transition-colors font-semibold text-sm">
+          <button className="w-full sm:flex-1 px-4 py-2 rounded-md border border-border bg-muted/40 text-foreground hover:bg-muted/60 transition-colors font-semibold text-sm">
             Request Help
           </button>
         </div>
@@ -146,13 +146,13 @@ export function MyCertificates({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-500/20 text-green-300 border-green-400/30';
+        return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30';
       case 'expiring_soon':
-        return 'bg-amber-500/20 text-amber-300 border-amber-400/30';
+        return 'bg-amber-500/10 text-amber-500 border-amber-500/30';
       case 'expired':
-        return 'bg-red-500/20 text-red-300 border-red-400/30';
+        return 'bg-rose-500/10 text-rose-500 border-rose-500/30';
       default:
-        return 'bg-slate-500/20 text-foreground/70';
+        return 'bg-muted/40 text-muted-foreground border-border';
     }
   };
 
@@ -171,7 +171,7 @@ export function MyCertificates({
           certificates.map((cert) => (
             <div
               key={cert.id}
-              className="p-4 rounded-lg bg-glass-subtle border border-glass-border hover:bg-glass-strong transition-colors"
+              className="p-4 rounded-lg bg-card border border-border hover:bg-muted/30 transition-colors"
             >
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold">{cert.title}</h4>
@@ -224,15 +224,15 @@ export function MyTasks({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-slate-500/20 text-foreground/70 border-slate-400/30';
+        return 'bg-muted/40 text-muted-foreground border-border';
       case 'in_progress':
-        return 'bg-blue-500/20 text-blue-300 border-blue-400/30';
+        return 'bg-primary/10 text-primary border-primary/30';
       case 'completed':
-        return 'bg-green-500/20 text-green-300 border-green-400/30';
+        return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30';
       case 'overdue':
-        return 'bg-red-500/20 text-red-300 border-red-400/30';
+        return 'bg-rose-500/10 text-rose-500 border-rose-500/30';
       default:
-        return 'bg-slate-500/20 text-foreground/70';
+        return 'bg-muted/40 text-muted-foreground border-border';
     }
   };
 
@@ -251,7 +251,7 @@ export function MyTasks({
           tasks.map((task) => (
             <div
               key={task.id}
-              className="p-4 rounded-lg bg-glass-subtle border border-glass-border hover:bg-glass-strong transition-colors"
+              className="p-4 rounded-lg bg-card border border-border hover:bg-muted/30 transition-colors"
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
@@ -270,8 +270,8 @@ export function MyTasks({
                     : task.status === 'in_progress'
                       ? 'In Progress'
                       : task.status === 'completed'
-                        ? '✓ Completed'
-                        : '⚠ Overdue'}
+                        ? 'Completed'
+                        : 'Overdue'}
                 </span>
               </div>
 
@@ -294,9 +294,9 @@ export function MyTasks({
                     <p className="text-xs font-semibold mb-1">
                       {task.completionPercentage}%
                     </p>
-                    <div className="h-2 w-24 bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-2 w-24 bg-muted rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-500"
+                        className="h-full bg-primary"
                         style={{ width: `${task.completionPercentage}%` }}
                       />
                     </div>
@@ -333,7 +333,7 @@ export function UploadEvidence({
     >
       <div className="space-y-4">
         {/* Upload Area */}
-        <div className="border-2 border-dashed border-glass-border-strong rounded-lg p-8 text-center hover:border-white/40 hover:bg-glass-subtle transition-all cursor-pointer">
+        <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/40 hover:bg-muted/30 transition-all cursor-pointer">
           <p className="text-sm text-muted-foreground mb-2">
             Click or drag files to upload
           </p>
@@ -344,27 +344,27 @@ export function UploadEvidence({
 
         {/* Recent Submissions */}
         {recentSubmissions.length > 0 && (
-          <div className="mt-6 pt-6 border-t border-edge-2">
+          <div className="mt-6 pt-6 border-t border-border">
             <h4 className="text-sm font-semibold mb-3">Recent Submissions</h4>
             <div className="space-y-2">
               {recentSubmissions.map((sub) => {
                 const getStatusColor = (status: string) => {
                   switch (status) {
                     case 'pending':
-                      return 'bg-blue-500/20 text-blue-300 border-blue-400/30';
+                      return 'bg-primary/10 text-primary border-primary/30';
                     case 'approved':
-                      return 'bg-green-500/20 text-green-300 border-green-400/30';
+                      return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30';
                     case 'rejected':
-                      return 'bg-red-500/20 text-red-300 border-red-400/30';
+                      return 'bg-rose-500/10 text-rose-500 border-rose-500/30';
                     default:
-                      return 'bg-slate-500/20 text-foreground/70';
+                      return 'bg-muted/40 text-muted-foreground border-border';
                   }
                 };
 
                 return (
                   <div
                     key={sub.id}
-                    className="flex items-center justify-between p-2 rounded bg-surface-1"
+                    className="flex items-center justify-between p-2 rounded bg-muted/30"
                   >
                     <div className="flex-1">
                       <p className="text-sm font-medium">{sub.title}</p>
@@ -385,8 +385,8 @@ export function UploadEvidence({
                       {sub.status === 'pending'
                         ? 'Pending'
                         : sub.status === 'approved'
-                          ? '✓ Approved'
-                          : '✗ Rejected'}
+                          ? 'Approved'
+                          : 'Rejected'}
                     </span>
                   </div>
                 );
@@ -426,11 +426,11 @@ export function Training({
           courses.map((course) => (
             <div
               key={course.id}
-              className="p-4 rounded-lg bg-glass-subtle border border-edge-2"
+              className="p-4 rounded-lg bg-card border border-border"
             >
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-semibold">{course.title}</h4>
-                <span className="text-sm font-bold text-blue-300">
+                <span className="text-sm font-bold text-primary">
                   {course.completionPercentage}%
                 </span>
               </div>
@@ -438,13 +438,13 @@ export function Training({
                 {course.description}
               </p>
               {course.requiredFor && (
-                <p className="text-xs text-amber-300 mb-3">
+                <p className="text-xs text-amber-500 mb-3">
                   Required for: {course.requiredFor}
                 </p>
               )}
-              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 transition-all"
+                  className="h-full bg-primary transition-all"
                   style={{ width: `${course.completionPercentage}%` }}
                 />
               </div>
@@ -547,19 +547,19 @@ function RoleWorkflowBoard({
       icon={Briefcase}
     >
       <div className="mb-4 grid grid-cols-3 gap-2">
-        <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-lg border border-border bg-card p-3 text-center">
           <p className="text-lg font-bold text-foreground">{tasksAssigned}</p>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Assigned
           </p>
         </div>
-        <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-lg border border-border bg-card p-3 text-center">
           <p className="text-lg font-bold text-foreground">{tasksPending}</p>
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Pending
           </p>
         </div>
-        <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+        <div className="rounded-lg border border-border bg-card p-3 text-center">
           <p className="text-lg font-bold text-foreground">
             {complianceScore}%
           </p>
@@ -574,10 +574,10 @@ function RoleWorkflowBoard({
           <Link
             key={action.label}
             href={action.href}
-            className="group flex flex-col gap-3 rounded-xl border border-glass-border bg-glass-subtle px-4 py-3 transition-colors hover:bg-glass-strong sm:flex-row sm:items-start sm:justify-between"
+            className="group flex flex-col gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:bg-muted/30 sm:flex-row sm:items-start sm:justify-between"
           >
             <div className="flex items-start gap-3">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border bg-surface-1">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted/40">
                 <action.icon className="h-4 w-4 text-foreground/70" />
               </span>
               <div>
@@ -636,7 +636,7 @@ export function EmployeeDashboard({
         <ComplianceSummaryCards />
       </ErrorBoundary>
 
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle px-4 sm:px-5 py-4">
+      <div className="rounded-2xl border border-border bg-card px-4 sm:px-5 py-4">
         <p className="text-xs uppercase tracking-wider text-muted-foreground">
           Workspace Context
         </p>

@@ -29,6 +29,7 @@ import { ComplianceScoreHistory } from '@/components/compliance/ComplianceScoreH
 import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePanel';
 import { MyActionsWidget } from '@/components/compliance/MyActionsWidget';
 import { UpcomingDeadlinesWidget } from '@/components/compliance/UpcomingDeadlinesWidget';
+import { RecentActivityWidget } from '@/components/dashboard/RecentActivityWidget';
 import {
   NDISWorkerScreeningWidget,
   NDISParticipantSnapshot,
@@ -623,21 +624,26 @@ export function CommandCenter({
               </div>
 
               <div className="grid grid-cols-1 gap-3 lg:grid-cols-12">
-                <div className="lg:col-span-8">
+                <div className="space-y-3 lg:col-span-8">
                   <ErrorBoundary
                     name="FrameworkHealthWidget"
                     level="component"
                   >
                     <FrameworkHealthWidget />
                   </ErrorBoundary>
+                  <PriorityActionQueue items={actionQueue} />
                 </div>
-                <div className="space-y-3 lg:col-span-4">
+                <aside className="space-y-3 lg:col-span-4 lg:sticky lg:top-16 lg:self-start">
                   <MyActionsWidget />
                   <UpcomingDeadlinesWidget />
-                </div>
+                  <ErrorBoundary
+                    name="RecentActivityWidget"
+                    level="component"
+                  >
+                    <RecentActivityWidget />
+                  </ErrorBoundary>
+                </aside>
               </div>
-
-              <PriorityActionQueue items={actionQueue} />
             </>
           )}
 
