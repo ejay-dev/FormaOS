@@ -510,7 +510,7 @@ export function StatTile({
         </span>
       </div>
       <div className="flex items-baseline gap-2">
-        <span className="text-[32px] font-bold leading-none tabular-nums tracking-tight text-foreground">
+        <span className="text-[36px] font-bold leading-none tabular-nums tracking-tight text-foreground">
           {value}
         </span>
         {delta && (

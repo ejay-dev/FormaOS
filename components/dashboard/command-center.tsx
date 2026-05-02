@@ -7,11 +7,9 @@ import {
   Briefcase,
   CheckCircle2,
   CheckSquare,
-  ClipboardList,
   FileText,
   Home,
   LineChart,
-  Plus,
   Table2,
   TrendingUp,
   Users,
@@ -30,6 +28,7 @@ import { IndustryGuidancePanel } from '@/components/dashboard/IndustryGuidancePa
 import { MyActionsWidget } from '@/components/compliance/MyActionsWidget';
 import { UpcomingDeadlinesWidget } from '@/components/compliance/UpcomingDeadlinesWidget';
 import { RecentActivityWidget } from '@/components/dashboard/RecentActivityWidget';
+import { DashboardHero } from '@/components/dashboard/DashboardHero';
 import {
   NDISWorkerScreeningWidget,
   NDISParticipantSnapshot,
@@ -63,7 +62,6 @@ import {
   type ActionQueueItem,
 } from '@/components/dashboard/attention-rail';
 import {
-  PageTitleBar,
   StatTile,
   GaugeCard,
 } from '@/components/dashboard/tabler-primitives';
@@ -420,18 +418,6 @@ export function CommandCenter({
 
   const industryPanel = renderIndustryWidgets(industry);
 
-  const overviewStatus: {
-    label: string;
-    tone: 'success' | 'warning' | 'danger' | 'info';
-  } =
-    criticalQueueCount > 0
-      ? { label: `${criticalQueueCount} at risk`, tone: 'danger' }
-      : complianceScore >= 85
-        ? { label: 'Healthy', tone: 'success' }
-        : complianceScore >= 70
-          ? { label: 'Approaching', tone: 'warning' }
-          : { label: 'Needs attention', tone: 'warning' };
-
   const operationsKpis: KpiItem[] = [
     {
       id: 'open',
@@ -525,33 +511,13 @@ export function CommandCenter({
         <div className="space-y-3 p-3 sm:space-y-4 sm:p-4">
           {activeTab === 'command' && (
             <>
-              <PageTitleBar
-                breadcrumb={[
-                  { label: 'App', href: '/app' },
-                  { label: 'Dashboard' },
-                  { label: 'Overview' },
-                ]}
-                title="Overview"
-                subtitle="Live compliance posture and today's priorities."
-                status={overviewStatus}
-                actions={
-                  <>
-                    <Link
-                      href="/app/tasks"
-                      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-[hsl(var(--card))] px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:border-[hsl(var(--app-primary))]/50"
-                    >
-                      <ClipboardList className="h-3.5 w-3.5" />
-                      New Task
-                    </Link>
-                    <Link
-                      href="/app/vault"
-                      className="inline-flex items-center gap-1.5 rounded-md bg-[hsl(var(--app-primary))] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                      Add Evidence
-                    </Link>
-                  </>
-                }
+              <DashboardHero
+                organizationName={_organizationName}
+                userEmail={_userEmail}
+                complianceScore={complianceScore}
+                openTasksCount={openTasksCount}
+                dueSoonCount={dueSoonCount}
+                liveDataReady={liveDataReady}
               />
 
               <NextActionsStrip />
