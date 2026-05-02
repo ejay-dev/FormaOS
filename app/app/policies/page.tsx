@@ -3,17 +3,15 @@
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
-  Plus,
   FileText,
   Search,
   Filter,
   ChevronRight,
-  ShieldCheck,
-  Clock,
 } from 'lucide-react';
 import { useOrgId } from '@/lib/stores/app';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { PoliciesEmptyState } from '@/components/empty-states';
+import { PoliciesPageHero } from '@/components/policies/PoliciesPageHero';
 
 type PolicyRow = {
   id: string;
@@ -41,7 +39,7 @@ export default function PoliciesPage() {
   const supabase = useMemo(() => createSupabaseClient(), []);
 
   const [allPolicies, setAllPolicies] = useState<PolicyRow[]>([]);
-  const [_isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const publishedCount = useMemo(
@@ -90,54 +88,25 @@ export default function PoliciesPage() {
   }
 
   if (error) {
-    return <div className="text-center text-red-400">Error: {error}</div>;
+    return (
+      <div className="rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
+        Error: {error}
+      </div>
+    );
   }
+
+  const drafts = allPolicies.length - publishedCount;
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Policy Library</h1>
-          <p className="page-description">
-            Manage your organization&apos;s governance framework
-          </p>
-        </div>
-        <Link
-          href="/app/policies/new"
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          New Policy
-        </Link>
-      </div>
+      <PoliciesPageHero
+        total={allPolicies.length}
+        published={publishedCount}
+        drafts={drafts}
+        loading={isLoading}
+      />
 
       <div className="page-content space-y-4">
-      {/* Stats Bar */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="metric-card metric-card-neutral">
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Total</p>
-          </div>
-          <p className="text-2xl font-bold">{allPolicies.length}</p>
-        </div>
-        <div className="metric-card metric-card-success">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Published</p>
-          </div>
-          <p className="text-2xl font-bold">{publishedCount}</p>
-        </div>
-        <div className={`metric-card ${allPolicies.length - publishedCount > 0 ? 'metric-card-warning' : 'metric-card-success'}`}>
-          <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Drafts</p>
-          </div>
-          <p className="text-2xl font-bold">{allPolicies.length - publishedCount}</p>
-        </div>
-      </div>
-
       {/* Policies List */}
       <div className="rounded-lg border border-border overflow-hidden">
         {/* Simple Toolbar */}
