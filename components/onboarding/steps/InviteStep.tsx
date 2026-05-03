@@ -33,11 +33,17 @@ export function InviteStep({
   const [role, setRole] = useState('member');
   const [isSending, setIsSending] = useState(false);
   const [sent, setSent] = useState(state.teamInvited);
+  const [sentCount, setSentCount] = useState(
+    state.teamInvited ? state.inviteCount : 0,
+  );
+  const [failedCount, setFailedCount] = useState(0);
+  const [sendError, setSendError] = useState<string | null>(null);
 
   const addInvite = () => {
-    if (!email.trim() || invites.length >= 3) return;
-    if (invites.some((inv) => inv.email === email.trim())) return;
-    setInvites((prev) => [...prev, { email: email.trim(), role }]);
+    const normalized = email.trim().toLowerCase();
+    if (!normalized || invites.length >= 3) return;
+    if (invites.some((inv) => inv.email.toLowerCase() === normalized)) return;
+    setInvites((prev) => [...prev, { email: normalized, role }]);
     setEmail('');
   };
 
@@ -50,22 +56,61 @@ export function InviteStep({
       handleSkip();
       return;
     }
+
     setIsSending(true);
+    setSendError(null);
+    setFailedCount(0);
+
     try {
       const res = await fetch('/api/v1/members/invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ invites }),
       });
+
       if (!res.ok) {
-        console.warn('Invite API returned non-ok:', res.status);
+        const errorPayload = (await res.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        setSendError(
+          errorPayload.error ??
+            'Unable to send invitations right now. Please try again.',
+        );
+        return;
+      }
+
+      const payload = (await res.json().catch(() => ({}))) as {
+        results?: Array<{ ok?: boolean }>;
+      };
+
+      const okCount = Array.isArray(payload.results)
+        ? payload.results.filter((result) => Boolean(result?.ok)).length
+        : invites.length;
+      const failCount = Math.max(invites.length - okCount, 0);
+
+      if (okCount === 0) {
+        setSendError(
+          'No invitations were sent. Please confirm email addresses and try again.',
+        );
+        return;
+      }
+
+      setSent(true);
+      setSentCount(okCount);
+      setFailedCount(failCount);
+      updateState({ teamInvited: true, inviteCount: okCount });
+
+      if (failCount > 0) {
+        setSendError(
+          `${failCount} invitation${failCount > 1 ? 's' : ''} failed to send. You can continue and retry from Team later.`,
+        );
       }
     } catch {
-      console.warn('Invite API call failed');
+      setSendError('Unable to send invitations right now. Please try again.');
+      return;
+    } finally {
+      setIsSending(false);
     }
-    setSent(true);
-    setIsSending(false);
-    updateState({ teamInvited: true, inviteCount: invites.length });
   };
 
   const handleSkip = () => {
@@ -152,9 +197,15 @@ export function InviteStep({
 
       {sent && (
         <div className="rounded-lg border border-[var(--wire-success)]/30 bg-[var(--wire-success)]/10 p-3 text-sm text-[var(--wire-success)]">
-          {state.inviteCount > 0
-            ? `${state.inviteCount} invitation${state.inviteCount > 1 ? 's' : ''} sent!`
+          {sentCount > 0
+            ? `${sentCount} invitation${sentCount > 1 ? 's' : ''} sent${failedCount > 0 ? ` • ${failedCount} failed` : ''}!`
             : 'Step skipped'}
+        </div>
+      )}
+
+      {sendError && (
+        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300">
+          {sendError}
         </div>
       )}
 
@@ -190,7 +241,7 @@ export function InviteStep({
                 ? 'Continue'
                 : invites.length > 0
                   ? 'Send Invites'
-                  : 'Skip for now'}
+                  : 'Continue'}
           </button>
         </div>
       </div>
