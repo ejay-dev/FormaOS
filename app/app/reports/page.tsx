@@ -21,6 +21,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { SkeletonCard } from '@/components/ui/skeleton';
 import { IndustryReportTemplates } from '@/components/reports/IndustryReportTemplates';
+import { PageHero } from '@/components/ui/page-hero';
 
 type EntitlementRow = {
   feature_key: string;
@@ -327,37 +328,35 @@ export default async function ReportsPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Reports Center</h1>
-          <p className="page-description">
-            Generate audit-ready compliance artifacts and regulatory
-            assessments.
-          </p>
-        </div>
-        <div className="flex gap-1.5">
-          <span className="rounded-md bg-accent/50 px-2.5 py-1 text-xs font-medium text-foreground">
-            Standard
-          </span>
-          <Link
-            href="/app/reports/custom"
-            className="rounded-md px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground"
-          >
-            My Reports
-          </Link>
-          <Link
-            href="/app/reports/trends"
-            className="rounded-md px-2.5 py-1 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground"
-          >
-            Trends
-          </Link>
-        </div>
-      </div>
+      <PageHero
+        eyebrow="Intelligence · Reports"
+        title="Reports Center"
+        subtitle="Generate audit-ready compliance artifacts and regulatory assessments."
+        actions={
+          <>
+            <span className="inline-flex items-center rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+              Standard
+            </span>
+            <Link
+              href="/app/reports/custom"
+              className="inline-flex items-center rounded-md px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+            >
+              My Reports
+            </Link>
+            <Link
+              href="/app/reports/trends"
+              className="inline-flex items-center rounded-md px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Trends
+            </Link>
+          </>
+        }
+      />
       <div className="page-content space-y-4">
         {!hasSubscription && (
-          <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-6 py-4 text-amber-100">
+          <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-500">
             <div className="text-sm font-semibold">Subscription required</div>
-            <div className="mt-1 text-xs text-amber-200">
+            <div className="mt-1 text-xs text-amber-500/80">
               Activate your plan to unlock report exports and framework
               evaluations.
             </div>
@@ -371,9 +370,9 @@ export default async function ReportsPage() {
         )}
 
         {!hasAdminAccess && (
-          <div className="rounded-xl border border-sky-400/30 bg-sky-500/10 px-6 py-4 text-sky-100">
+          <div className="rounded-md border border-primary/30 bg-primary/10 px-4 py-3 text-primary">
             <div className="text-sm font-semibold">Admin access required</div>
-            <div className="mt-1 text-xs text-sky-200">
+            <div className="mt-1 text-xs text-primary/80">
               Reports and trust exports are restricted to organization owners
               and admins.
             </div>

@@ -20,6 +20,7 @@ import {
   Filter,
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 function formatDateTime(date: string | null) {
   if (!date) return '-';
@@ -197,73 +198,49 @@ export default async function VisitsPage({
     ).length,
   };
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Total', value: stats.total, sub: label.toLowerCase() },
+    {
+      label: 'Scheduled',
+      value: stats.scheduled,
+      sub: stats.scheduled > 0 ? 'upcoming' : 'none scheduled',
+      tone: stats.scheduled > 0 ? 'warning' : 'neutral',
+    },
+    {
+      label: 'Completed',
+      value: stats.completed,
+      sub: stats.completed > 0 ? 'delivered' : 'none yet',
+      tone: 'success',
+    },
+    {
+      label: 'Missed',
+      value: stats.missed,
+      sub: stats.missed > 0 ? 'review needed' : 'none missed',
+      tone: stats.missed > 0 ? 'danger' : 'neutral',
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="visits-title">
-            {label}
-          </h1>
-          <p className="page-description">
-            Track and manage {label.toLowerCase()}
-          </p>
-        </div>
-        <Link
-          href="/app/visits/new"
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-          data-testid="add-visit-btn"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          New Visit
-        </Link>
-      </div>
+      <PageHero
+        eyebrow={`Care Operations · ${label}`}
+        title={label}
+        titleTestId="visits-title"
+        subtitle={`Track and manage ${label.toLowerCase()}.`}
+        metrics={heroMetrics}
+        actions={
+          <Link
+            href="/app/visits/new"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+            data-testid="add-visit-btn"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New Visit
+          </Link>
+        }
+      />
 
       <div className="page-content space-y-4">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="metric-card metric-card-neutral">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Total
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.total}</p>
-          </div>
-          <div
-            className={`metric-card ${stats.scheduled > 0 ? 'metric-card-warning' : 'metric-card-neutral'}`}
-          >
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Scheduled
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.scheduled}</p>
-          </div>
-          <div className="metric-card metric-card-success">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Completed
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.completed}</p>
-          </div>
-          <div
-            className={`metric-card ${stats.missed > 0 ? 'metric-card-danger' : 'metric-card-success'}`}
-          >
-            <div className="flex items-center gap-2">
-              <XCircle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Missed
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.missed}</p>
-          </div>
-        </div>
-
         <form method="GET" className="flex flex-col lg:flex-row gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
