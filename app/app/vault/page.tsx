@@ -10,10 +10,10 @@ import {
 import { verifyEvidence } from '@/app/app/actions/evidence';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { redirect } from 'next/navigation';
-import { VaultUploadButton } from '@/components/vault/vault-upload-button';
 import { EvidenceFileActions } from '@/components/vault/evidence-file-actions';
 import Link from 'next/link';
 import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
+import { VaultPageHero } from '@/components/vault/VaultPageHero';
 
 type ArtifactRow = {
   id: string;
@@ -179,6 +179,12 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
     ) || 0;
   const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
 
+  // Hero metrics use unfiltered totals (true posture, not search-affected).
+  const heroPending = allArtifacts.filter(
+    (a: ArtifactRow) => getVerificationStatus(a) !== 'verified',
+  ).length;
+  const heroVerified = allArtifacts.length - heroPending;
+
   // Split (upgrade feature)
   const pending = filteredArtifacts.filter(
     (a: ArtifactRow) => getVerificationStatus(a) !== 'verified',
@@ -190,21 +196,13 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
   return (
     <div className="flex flex-col h-full">
       <OnboardingBanner stepId="upload-evidence" />
-      {/* Header */}
-      <div className="page-header" data-tour="vault-header">
-        <div>
-          <h1 className="page-title">Evidence Vault</h1>
-          <p className="page-description">
-            Encrypted repository for compliance artifacts
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground font-mono">
-            {filteredArtifacts.length} items · {sizeInMB} MB
-          </span>
-          <VaultUploadButton />
-        </div>
-      </div>
+
+      <VaultPageHero
+        total={allArtifacts.length}
+        pending={heroPending}
+        verified={heroVerified}
+        sizeMB={sizeInMB}
+      />
 
       <div className="page-content space-y-4">
         {/* Search / Filter bar */}
