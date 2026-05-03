@@ -19,6 +19,7 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { redirect } from 'next/navigation';
 import { normalizeTaskPriority, taskPriorityLabel } from '@/lib/tasks/priority';
 import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 type TaskRow = {
   id: string;
@@ -139,27 +140,55 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
   });
 
   const completed = allTasks.filter((t) => t.status === 'completed');
+  const overdue = allTasks.filter(
+    (t) =>
+      t.status !== 'completed' &&
+      t.due_date &&
+      Date.parse(t.due_date) < now,
+  ).length;
+  const critical = allTasks.filter(
+    (t) =>
+      t.status !== 'completed' &&
+      normalizeTaskPriority(t.priority) === 'critical',
+  ).length;
   const hasFilters = Boolean(
     query || priorityFilter !== 'all' || statusFilter !== 'all',
   );
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Total', value: allTasks.length, sub: 'tasks' },
+    {
+      label: 'Verified',
+      value: completed.length,
+      sub: allTasks.length > 0 ? `of ${allTasks.length}` : 'none yet',
+      tone: 'success',
+    },
+    {
+      label: 'Overdue',
+      value: overdue,
+      sub: overdue > 0 ? 'past due' : 'on cadence',
+      tone: overdue > 0 ? 'danger' : 'neutral',
+    },
+    {
+      label: 'Critical',
+      value: critical,
+      sub: critical > 0 ? 'open' : 'none open',
+      tone: critical > 0 ? 'warning' : 'neutral',
+    },
+  ];
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" data-tour="tasks-header">
       <OnboardingBanner stepId="review-task" />
-      {/* Header */}
-      <div className="page-header" data-tour="tasks-header">
-        <div>
-          <h1 className="page-title">Compliance Roadmap</h1>
-          <p className="page-description">
-            Execute mandatory controls and link evidence artifacts
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground font-mono">
-            {completed.length}/{allTasks.length} verified
-          </span>
+
+      <PageHero
+        eyebrow="Compliance · Roadmap"
+        title="Compliance Roadmap"
+        subtitle="Execute mandatory controls and link evidence artifacts."
+        metrics={heroMetrics}
+        actions={
           <details className="group relative">
-            <summary className="list-none cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+            <summary className="list-none cursor-pointer inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90">
               <Plus className="h-3.5 w-3.5" />
               Add
             </summary>
@@ -248,8 +277,8 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               </form>
             </div>
           </details>
-        </div>
-      </div>
+        }
+      />
 
       <div className="page-content space-y-4">
         {/* Filters */}

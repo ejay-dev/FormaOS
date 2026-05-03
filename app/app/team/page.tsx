@@ -4,6 +4,7 @@ import { Users, Mail, Clock, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { hasPermission, normalizeRole } from "@/app/app/actions/rbac";
+import { PageHero, type PageHeroMetric } from "@/components/ui/page-hero";
 
 type EntitlementRow = {
   feature_key: string;
@@ -105,27 +106,42 @@ export default async function TeamPage() {
   const inviteCount = inviteRows.length;
   const reachedLimit = teamLimit !== null && memberCount + inviteCount >= teamLimit;
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: "Members", value: memberCount, sub: "active" },
+    {
+      label: "Invites",
+      value: inviteCount,
+      sub: inviteCount > 0 ? "pending" : "none pending",
+      tone: inviteCount > 0 ? "warning" : "neutral",
+    },
+    {
+      label: "Limit",
+      value: teamLimit !== null ? `${memberCount + inviteCount}/${teamLimit}` : "—",
+      sub: teamLimit !== null ? "of plan" : "no cap",
+      tone: reachedLimit ? "danger" : "neutral",
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Team Management</h1>
-          <p className="page-description">Manage access, roles, and pending invitations</p>
-        </div>
-        {orgId && <InviteButton orgId={orgId} disabled={!hasSubscription || reachedLimit} />}
-      </div>
+      <PageHero
+        eyebrow="Administration · Team"
+        title="Team Management"
+        subtitle="Manage access, roles, and pending invitations."
+        metrics={heroMetrics}
+        actions={orgId ? <InviteButton orgId={orgId} disabled={!hasSubscription || reachedLimit} /> : undefined}
+      />
 
       <div className="page-content space-y-4">
       {!hasSubscription ? (
-        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-sm text-amber-600">
+        <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
           Subscription required to invite team members.{" "}
           <Link href="/app/billing" className="underline">Upgrade</Link>
         </div>
       ) : null}
 
       {hasSubscription && reachedLimit ? (
-        <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-sm text-amber-600">
+        <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
           Team limit reached ({memberCount + inviteCount}/{teamLimit}).{" "}
           <Link href="/app/billing" className="underline">Upgrade</Link>
         </div>

@@ -33,6 +33,7 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { PLAN_CATALOG } from '@/lib/plans';
 import { getIntegrationStatus } from '@/lib/integrations/manager';
 import { listAuditorAccess } from '@/lib/auditor/portal';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 type OrganizationRow = {
   id: string;
@@ -542,49 +543,64 @@ export default async function SettingsPage() {
     },
   ];
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Plan', value: planName, sub: planSummary },
+    { label: 'Team', value: String(memberCount), sub: 'members' },
+    {
+      label: 'Modules',
+      value: `${enabledFeatureCount}/${featureEntries.length}`,
+      sub: enabledFeatureLabels.length > 0 ? 'enabled' : 'using defaults',
+    },
+    {
+      label: 'Alerts',
+      value: String(atRiskCount),
+      sub:
+        atRiskCount > 0
+          ? 'credentials need review'
+          : 'no active alerts',
+      tone: atRiskCount > 0 ? 'warning' : 'success',
+    },
+  ];
+
+  const healthLabel =
+    healthState === 'healthy'
+      ? 'Healthy'
+      : healthState === 'review'
+        ? 'Needs review'
+        : 'Action required';
+  const healthTone =
+    healthState === 'healthy'
+      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+      : healthState === 'review'
+        ? 'bg-amber-500/10 text-amber-500 border-amber-500/30'
+        : 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+
   return (
     <div className="space-y-8 pb-24" data-tour="settings-header">
-      <header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-            <Activity className="h-3.5 w-3.5" />
-            Settings
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Workspace settings
-            </h1>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-              Manage organization identity, security, communications, governance,
-              integrations, and personal preferences from one place.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <StatusBadge
-            tone={
-              healthState === 'healthy'
-                ? 'positive'
-                : healthState === 'review'
-                  ? 'warning'
-                  : 'danger'
-            }
-          >
-            {healthState === 'healthy'
-              ? 'Healthy'
-              : healthState === 'review'
-                ? 'Needs review'
-                : 'Action required'}
-          </StatusBadge>
-          <StatusBadge tone="default">{titleCase(systemState.role)} access</StatusBadge>
-        </div>
-      </header>
+      <PageHero
+        eyebrow="Administration · Settings"
+        title="Workspace settings"
+        subtitle="Manage organization identity, security, communications, governance, integrations, and personal preferences from one place."
+        metrics={heroMetrics}
+        actions={
+          <>
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold ${healthTone}`}
+            >
+              <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
+              {healthLabel}
+            </span>
+            <span className="inline-flex items-center rounded-md border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+              {titleCase(systemState.role)} access
+            </span>
+          </>
+        }
+      />
 
       {(hasMissingIdentityData || atRiskCount > 0) && (
-        <section className="rounded-[1.75rem] border border-amber-400/30 bg-amber-500/10 px-5 py-4 text-sm text-amber-100">
+        <section className="rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-500">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="mt-0.5 h-4 w-4 flex-none text-amber-300" />
+            <AlertTriangle className="mt-0.5 h-4 w-4 flex-none" />
             <div className="space-y-1">
               {hasMissingIdentityData ? (
                 <p>
@@ -604,42 +620,6 @@ export default async function SettingsPage() {
           </div>
         </section>
       )}
-
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <OverviewMetric
-          icon={CreditCard}
-          label="Plan"
-          value={planName}
-          detail={planSummary}
-        />
-        <OverviewMetric
-          icon={Users}
-          label="Team members"
-          value={String(memberCount)}
-          detail="People with access to this workspace"
-        />
-        <OverviewMetric
-          icon={Sparkles}
-          label="Enabled modules"
-          value={`${enabledFeatureCount}/${featureEntries.length}`}
-          detail={
-            enabledFeatureLabels.length > 0
-              ? enabledFeatureLabels.join(', ')
-              : 'Using default modules'
-          }
-        />
-        <OverviewMetric
-          icon={ShieldCheck}
-          label="Credential alerts"
-          value={String(atRiskCount)}
-          detail={
-            atRiskCount > 0
-              ? 'Evidence or credential follow-up needed'
-              : 'No active credential alerts'
-          }
-          tone={atRiskCount > 0 ? 'warning' : 'positive'}
-        />
-      </section>
 
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.9fr)]">
         <div className="space-y-8">
@@ -1020,45 +1000,6 @@ export default async function SettingsPage() {
   );
 }
 
-function OverviewMetric({
-  icon: Icon,
-  label,
-  value,
-  detail,
-  tone = 'default',
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  detail: string;
-  tone?: 'default' | 'positive' | 'warning';
-}) {
-  return (
-    <div className="rounded-[1.75rem] border border-border bg-card p-5 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{label}</p>
-          <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">
-            {value}
-          </p>
-        </div>
-        <div
-          className={`flex h-10 w-10 items-center justify-center rounded-2xl ${
-            tone === 'positive'
-              ? 'bg-emerald-500/10 text-emerald-300'
-              : tone === 'warning'
-                ? 'bg-amber-500/10 text-amber-200'
-                : 'bg-primary/10 text-primary'
-          }`}
-        >
-          <Icon className="h-5 w-5" />
-        </div>
-      </div>
-      <p className="mt-3 text-sm leading-6 text-muted-foreground">{detail}</p>
-    </div>
-  );
-}
-
 function SettingsAreaCard({ area }: { area: SettingsArea }) {
   const Icon = area.icon;
 
@@ -1216,12 +1157,12 @@ function StatusBadge({
     <span
       className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold ${
         tone === 'positive'
-          ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-200'
+          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
           : tone === 'warning'
-            ? 'border-amber-400/30 bg-amber-500/10 text-amber-100'
+            ? 'border-amber-500/30 bg-amber-500/10 text-amber-500'
             : tone === 'danger'
-              ? 'border-rose-400/30 bg-rose-500/10 text-rose-200'
-              : 'border-border bg-background/60 text-muted-foreground'
+              ? 'border-rose-500/30 bg-rose-500/10 text-rose-500'
+              : 'border-border bg-card text-muted-foreground'
       }`}
     >
       {children}

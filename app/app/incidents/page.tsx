@@ -16,6 +16,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 function formatDate(date: string | null) {
   if (!date) return '-';
@@ -132,99 +133,70 @@ export default async function IncidentsPage({
     ).length,
   };
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Total', value: stats.total, sub: 'incidents' },
+    {
+      label: 'Open',
+      value: stats.open,
+      sub: stats.open > 0 ? 'awaiting' : 'all closed',
+      tone: stats.open > 0 ? 'warning' : 'neutral',
+    },
+    {
+      label: 'Resolved',
+      value: stats.resolved,
+      sub: stats.resolved > 0 ? 'closed' : 'none yet',
+      tone: 'success',
+    },
+    {
+      label: 'Critical',
+      value: stats.critical,
+      sub: stats.critical > 0 ? 'high severity' : 'none critical',
+      tone: stats.critical > 0 ? 'danger' : 'neutral',
+    },
+    {
+      label: 'Follow-up',
+      value: stats.pendingFollowUp,
+      sub: stats.pendingFollowUp > 0 ? 'pending' : 'none pending',
+      tone: stats.pendingFollowUp > 0 ? 'warning' : 'neutral',
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="incidents-title">
-            Incidents
-          </h1>
-          <p className="page-description">
-            Report, track, and manage incidents
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link
-            href="/api/incidents/export"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border text-sm hover:bg-accent/30 transition-colors"
-            data-testid="export-incidents-btn"
-          >
-            <Download className="h-3.5 w-3.5" />
-            Export
-          </Link>
-          <Link
-            href="/app/incidents/new"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-            data-testid="report-incident-btn"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Report
-          </Link>
-        </div>
-      </div>
+      <PageHero
+        eyebrow="Governance · Incidents"
+        title="Incidents"
+        titleTestId="incidents-title"
+        subtitle="Report, track, and manage incidents."
+        metrics={heroMetrics}
+        actions={
+          <>
+            <Link
+              href="/api/incidents/export"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50"
+              data-testid="export-incidents-btn"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </Link>
+            <Link
+              href="/app/incidents/new"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+              data-testid="report-incident-btn"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Report
+            </Link>
+          </>
+        }
+      />
 
       <div className="page-content space-y-4">
         {fetchErrorMessage ? (
-          <div className="rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          <div className="rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
             Incident data could not be loaded. {fetchErrorMessage}
           </div>
         ) : null}
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <div className="metric-card metric-card-neutral">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Total
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.total}</p>
-          </div>
-          <div
-            className={`metric-card ${stats.open > 0 ? 'metric-card-warning' : 'metric-card-success'}`}
-          >
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Open
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.open}</p>
-          </div>
-          <div className="metric-card metric-card-success">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Resolved
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.resolved}</p>
-          </div>
-          <div
-            className={`metric-card ${stats.critical > 0 ? 'metric-card-danger' : 'metric-card-success'}`}
-          >
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Critical
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.critical}</p>
-          </div>
-          <div
-            className={`metric-card ${stats.pendingFollowUp > 0 ? 'metric-card-warning' : 'metric-card-success'}`}
-          >
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Follow-up
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.pendingFollowUp}</p>
-          </div>
-        </div>
 
         {/* Search and Filter */}
         <form method="GET" className="flex flex-col lg:flex-row gap-3">

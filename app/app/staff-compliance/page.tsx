@@ -18,6 +18,7 @@ import {
   Download,
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 function formatDate(date: string | null) {
   if (!date) return '-';
@@ -190,85 +191,61 @@ export default async function StaffCompliancePage() {
     }).length,
   };
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Total', value: stats.total, sub: 'credentials' },
+    {
+      label: 'Verified',
+      value: stats.verified,
+      sub: stats.verified > 0 ? 'confirmed' : 'none yet',
+      tone: 'success',
+    },
+    {
+      label: 'Expiring',
+      value: stats.expiringSoon,
+      sub: stats.expiringSoon > 0 ? 'within 30 days' : 'none soon',
+      tone: stats.expiringSoon > 0 ? 'warning' : 'neutral',
+    },
+    {
+      label: 'Expired',
+      value: stats.expired,
+      sub: stats.expired > 0 ? 'past due' : 'none expired',
+      tone: stats.expired > 0 ? 'danger' : 'neutral',
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="staff-compliance-title">
-            {label}
-          </h1>
-          <p className="page-description">
-            Track staff qualifications, checks, and expiry dates
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link
-            href="/api/staff-credentials/export"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border text-sm hover:bg-accent/30 transition-colors"
-          >
-            <Download className="h-3.5 w-3.5" />
-            Export
-          </Link>
-          <Link
-            href="/app/staff-compliance/new"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-            data-testid="add-credential-btn"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Add
-          </Link>
-        </div>
-      </div>
+      <PageHero
+        eyebrow={`Workforce · ${label}`}
+        title={label}
+        titleTestId="staff-compliance-title"
+        subtitle="Track staff qualifications, checks, and expiry dates."
+        metrics={heroMetrics}
+        actions={
+          <>
+            <Link
+              href="/api/staff-credentials/export"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </Link>
+            <Link
+              href="/app/staff-compliance/new"
+              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+              data-testid="add-credential-btn"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add
+            </Link>
+          </>
+        }
+      />
 
       <div className="page-content space-y-4">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="metric-card metric-card-neutral">
-            <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Total
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.total}</p>
-          </div>
-          <div className="metric-card metric-card-success">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Verified
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.verified}</p>
-          </div>
-          <div
-            className={`metric-card ${stats.expiringSoon > 0 ? 'metric-card-warning' : 'metric-card-success'}`}
-          >
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Expiring
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.expiringSoon}</p>
-          </div>
-          <div
-            className={`metric-card ${stats.expired > 0 ? 'metric-card-danger' : 'metric-card-success'}`}
-          >
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Expired
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.expired}</p>
-          </div>
-        </div>
-
         {/* Alert for expiring/expired */}
         {(stats.expiringSoon > 0 || stats.expired > 0) && (
-          <div className="flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-sm text-amber-600">
+          <div className="flex items-center gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-500">
             <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
             <span>
               {stats.expired > 0 && `${stats.expired} expired. `}
