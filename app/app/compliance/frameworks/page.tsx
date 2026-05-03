@@ -8,6 +8,7 @@ import {
 import { getControlMappingSummary } from '@/lib/frameworks/mappings';
 import { SkeletonCard, SkeletonTable } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import { PageHero } from '@/components/ui/page-hero';
 
 /** Streamed: Framework grid (requires org framework data) */
 async function FrameworkGrid({ orgId }: { orgId: string }) {
@@ -167,17 +168,12 @@ export default async function ComplianceFrameworksPage() {
   const orgId = await getCurrentOrgId();
 
   return (
-    <div className="space-y-8 pb-12 animate-in fade-in duration-500">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground tracking-tight">
-          Framework Library
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Enabled frameworks, control coverage, and domain structure for your
-          organization.
-        </p>
-      </div>
+    <div className="space-y-6 pb-12 animate-in fade-in duration-500">
+      <PageHero
+        eyebrow="Compliance · Frameworks"
+        title="Framework Library"
+        subtitle="Enabled frameworks, control coverage, and domain structure for your organization."
+      />
 
       {/* Framework grid — streams when data resolves */}
       <Suspense

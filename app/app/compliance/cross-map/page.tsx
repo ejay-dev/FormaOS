@@ -5,7 +5,7 @@ import {
   CrossMapMatrix,
   DeduplicationOpportunities,
 } from '@/components/compliance/cross-map-matrix';
-import { Shield, GitMerge, Zap, Layers } from 'lucide-react';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 export default async function CrossMapPage() {
   const state = await fetchSystemState();
@@ -79,60 +79,30 @@ export default async function CrossMapPage() {
   const totalGroups = groups?.length || 0;
   const totalOpportunities = opportunities.length;
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Mappings', value: totalMappings, sub: 'total' },
+    { label: 'Groups', value: totalGroups, sub: 'control groups' },
+    {
+      label: 'Dedup',
+      value: totalOpportunities,
+      sub: totalOpportunities > 0 ? 'opportunities' : 'none found',
+      tone: totalOpportunities > 0 ? 'success' : 'neutral',
+    },
+    {
+      label: 'Frameworks',
+      value: frameworks.length,
+      sub: 'mapped',
+    },
+  ];
+
   return (
     <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">
-          Framework Cross-Mapping
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Reuse evidence across frameworks and eliminate duplicate compliance
-          work
-        </p>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        {[
-          {
-            label: 'Total Mappings',
-            value: totalMappings,
-            icon: GitMerge,
-            color: 'text-blue-600 dark:text-blue-400',
-          },
-          {
-            label: 'Control Groups',
-            value: totalGroups,
-            icon: Layers,
-            color: 'text-purple-600 dark:text-purple-400',
-          },
-          {
-            label: 'Dedup Opportunities',
-            value: totalOpportunities,
-            icon: Zap,
-            color: 'text-green-600 dark:text-green-400',
-          },
-          {
-            label: 'Frameworks Mapped',
-            value: frameworks.length,
-            icon: Shield,
-            color: 'text-orange-600 dark:text-orange-400',
-          },
-        ].map((card) => (
-          <div
-            key={card.label}
-            className="rounded-lg border border-border bg-card p-4"
-          >
-            <div className="flex items-center gap-2 mb-1">
-              <card.icon className={`h-4 w-4 ${card.color}`} />
-              <span className="text-xs text-muted-foreground">
-                {card.label}
-              </span>
-            </div>
-            <p className="text-2xl font-bold text-foreground">{card.value}</p>
-          </div>
-        ))}
-      </div>
+      <PageHero
+        eyebrow="Compliance · Cross-Map"
+        title="Framework Cross-Mapping"
+        subtitle="Reuse evidence across frameworks and eliminate duplicate compliance work."
+        metrics={heroMetrics}
+      />
 
       {/* Matrix */}
       <div className="rounded-lg border border-border bg-card p-6">
