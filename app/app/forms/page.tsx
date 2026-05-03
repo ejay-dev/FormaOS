@@ -6,9 +6,10 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Search, FileText, Eye, BarChart3 } from 'lucide-react';
+import { Plus, Search, FileText, Eye } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { buildOrSearch } from '@/lib/utils/postgrest-search';
+import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 const FORMS_PAGE_SIZE = 50;
 
@@ -108,73 +109,48 @@ export default async function FormsPage({
     ),
   };
 
+  const heroMetrics: PageHeroMetric[] = [
+    { label: 'Total', value: stats.total, sub: 'forms' },
+    {
+      label: 'Published',
+      value: stats.published,
+      sub: stats.published > 0 ? 'live' : 'none yet',
+      tone: 'success',
+    },
+    {
+      label: 'Drafts',
+      value: stats.draft,
+      sub: stats.draft > 0 ? 'in progress' : 'all published',
+      tone: stats.draft > 0 ? 'warning' : 'neutral',
+    },
+    {
+      label: 'Submissions',
+      value: stats.totalSubmissions,
+      sub: 'collected',
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="forms-title">
-            Forms
-          </h1>
-          <p className="page-description">
-            Build, publish, and collect structured data for compliance
-          </p>
-        </div>
-        <div className="flex gap-2">
+      <PageHero
+        eyebrow="Governance · Forms"
+        title="Forms"
+        titleTestId="forms-title"
+        subtitle="Build, publish, and collect structured data for compliance."
+        metrics={heroMetrics}
+        actions={
           <Link
             href="/app/forms/builder/new"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
             data-testid="create-form-btn"
           >
             <Plus className="h-3.5 w-3.5" />
             New Form
           </Link>
-        </div>
-      </div>
+        }
+      />
 
       <div className="page-content space-y-4">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="metric-card metric-card-neutral">
-            <div className="flex items-center gap-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Total
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.total}</p>
-          </div>
-          <div className="metric-card metric-card-success">
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Published
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.published}</p>
-          </div>
-          <div
-            className={`metric-card ${stats.draft > 0 ? 'metric-card-warning' : 'metric-card-neutral'}`}
-          >
-            <div className="flex items-center gap-2">
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Drafts
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.draft}</p>
-          </div>
-          <div className="metric-card metric-card-neutral">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Submissions
-              </p>
-            </div>
-            <p className="text-2xl font-bold">{stats.totalSubmissions}</p>
-          </div>
-        </div>
-
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-2">
           <form className="relative flex-1" action="/app/forms" method="GET">

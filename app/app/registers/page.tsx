@@ -6,6 +6,7 @@ import { CreateAssetSheet } from '@/components/registers/create-asset-sheet';
 import { DeleteButton } from '@/components/delete-button';
 import { exportRegistersToPDF } from '@/lib/utils/export-helper';
 import { useAppStore } from '@/lib/stores/app';
+import { PageHero } from '@/components/ui/page-hero';
 import Link from 'next/link';
 import {
   Laptop,
@@ -147,32 +148,32 @@ export default function RegistersPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title" data-testid="registers-title">
-            Registers
-          </h1>
-          <p className="page-description">
-            {isCareIndustry
-              ? 'Access client, incident, service, and compliance registers'
-              : 'Monitor asset health and security risk levels'}
-          </p>
-        </div>
-        {activeTab === 'assets' && (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() =>
-                exportRegistersToPDF(registers, 'FormaOS Organization')
-              }
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border text-sm hover:bg-accent/30 transition-colors"
-            >
-              <Download className="h-3.5 w-3.5" />
-              Export
-            </button>
-            <CreateAssetSheet />
-          </div>
-        )}
-      </div>
+      <PageHero
+        eyebrow="Governance · Registers"
+        title="Registers"
+        titleTestId="registers-title"
+        subtitle={
+          isCareIndustry
+            ? 'Access client, incident, service, and compliance registers.'
+            : 'Monitor asset health and security risk levels.'
+        }
+        actions={
+          activeTab === 'assets' ? (
+            <>
+              <button
+                onClick={() =>
+                  exportRegistersToPDF(registers, 'FormaOS Organization')
+                }
+                className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50"
+              >
+                <Download className="h-3.5 w-3.5" />
+                Export
+              </button>
+              <CreateAssetSheet />
+            </>
+          ) : undefined
+        }
+      />
 
       <div className="page-content space-y-4">
         {isCareIndustry && (

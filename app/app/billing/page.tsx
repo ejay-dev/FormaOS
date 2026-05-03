@@ -10,6 +10,7 @@ import { FeatureUsageIndicators } from '@/components/billing/FeatureUsageIndicat
 import { useOrgId } from '@/lib/stores/app';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { PageSkeleton } from '@/components/ui/skeleton';
+import { PageHero } from '@/components/ui/page-hero';
 
 type EntitlementRow = {
   feature_key: string;
@@ -153,21 +154,34 @@ export default function BillingPage() {
   }
 
   if (error) {
-    return <div className="text-center text-red-400">Error: {error}</div>;
+    return (
+      <div className="rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-500">
+        Error: {error}
+      </div>
+    );
   }
+
+  const subStatus = subscription?.status ?? 'not active';
+  const subTone =
+    subStatus === 'active' || subStatus === 'trialing'
+      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+      : 'bg-rose-500/10 text-rose-500 border-rose-500/30';
 
   return (
     <div className="flex flex-col h-full">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Billing & Plan</h1>
-          <p className="page-description">Manage subscription status and entitlements</p>
-        </div>
-        <span className="status-pill status-pill-green">
-          <ShieldCheck className="h-3 w-3" />
-          {subscription?.status ?? 'not active'}
-        </span>
-      </div>
+      <PageHero
+        eyebrow="Administration · Billing"
+        title="Billing & Plan"
+        subtitle="Manage subscription status and entitlements."
+        actions={
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold capitalize ${subTone}`}
+          >
+            <ShieldCheck className="h-3.5 w-3.5" />
+            {subStatus}
+          </span>
+        }
+      />
 
       <div className="page-content max-w-3xl space-y-4">
       {status === 'success' ? (

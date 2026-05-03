@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { History, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { redirect } from 'next/navigation';
+import { PageHero } from '@/components/ui/page-hero';
 
 /**
  * ✅ HELPER: Extract meaningful labels from the JSON details blob
@@ -35,17 +36,17 @@ export default async function AuditTrailPage() {
   if (membershipError || !membership) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 text-center animate-in fade-in zoom-in duration-500">
-        <div className="bg-red-50 h-20 w-20 rounded-3xl flex items-center justify-center mb-6 border border-red-100 shadow-sm">
-          <AlertTriangle className="h-10 w-10 text-red-600" />
+        <div className="h-20 w-20 rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30 bg-rose-500/10">
+          <AlertTriangle className="h-10 w-10 text-rose-500" />
         </div>
-        <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">
           Access Restricted
         </h1>
-        <p className="text-neutral-500 mt-3 font-medium max-w-md mx-auto leading-relaxed">
+        <p className="text-muted-foreground mt-3 font-medium max-w-md mx-auto leading-relaxed">
           No active organization membership found. If you just created a
           workspace, the link might still be propagating.
         </p>
-        <div className="mt-8 bg-neutral-900 text-white px-6 py-4 rounded-xl font-mono text-xs">
+        <div className="mt-8 rounded-md border border-border bg-muted/40 px-6 py-4 font-mono text-xs text-foreground">
           Diagnostic ID: {user.id}
         </div>
       </div>
@@ -71,13 +72,13 @@ export default async function AuditTrailPage() {
   if (orgError || !organization) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 sm:p-8 md:p-12 text-center animate-in fade-in zoom-in duration-500">
-        <div className="bg-red-50 h-20 w-20 rounded-3xl flex items-center justify-center mb-6 border border-red-100 shadow-sm">
-          <AlertTriangle className="h-10 w-10 text-red-600" />
+        <div className="h-20 w-20 rounded-2xl flex items-center justify-center mb-6 border border-rose-500/30 bg-rose-500/10">
+          <AlertTriangle className="h-10 w-10 text-rose-500" />
         </div>
-        <h1 className="text-2xl font-bold text-neutral-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">
           Configuration Error
         </h1>
-        <p className="text-neutral-500 mt-3 font-medium max-w-md mx-auto leading-relaxed">
+        <p className="text-muted-foreground mt-3 font-medium max-w-md mx-auto leading-relaxed">
           We could not verify your organization details. This usually indicates
           an RLS restriction or a deleted workspace.
         </p>
@@ -101,19 +102,17 @@ export default async function AuditTrailPage() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Audit Trail</h1>
-          <p className="page-description">
-            Immutable governance log — ISO 27001 non-repudiation
-          </p>
-        </div>
-        <span className="status-pill status-pill-green">
-          <ShieldCheck className="h-3 w-3" />
-          {verifiedCount} Events
-        </span>
-      </div>
+      <PageHero
+        eyebrow="Intelligence · Audit"
+        title="Audit Trail"
+        subtitle="Immutable governance log — ISO 27001 non-repudiation."
+        actions={
+          <span className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-500">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            {verifiedCount} {verifiedCount === 1 ? 'Event' : 'Events'}
+          </span>
+        }
+      />
 
       <div className="page-content space-y-4">
         {/* Table */}

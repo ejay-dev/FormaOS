@@ -7,8 +7,8 @@ import {
   AlertCircle,
   FileText,
   Clock,
-  Building,
 } from 'lucide-react';
+import { PageHero } from '@/components/ui/page-hero';
 
 export default async function EmployeeProfilePage() {
   const supabase = await createSupabaseServerClient();
@@ -45,33 +45,30 @@ export default async function EmployeeProfilePage() {
     non_compliant: 'bg-rose-500/10 text-red-700 border-rose-400/30',
   };
 
+  const status = profile.compliance_status ?? 'active';
+  const statusTone =
+    status === 'active'
+      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30'
+      : status === 'at_risk'
+        ? 'bg-amber-500/10 text-amber-500 border-amber-500/30'
+        : 'bg-rose-500/10 text-rose-500 border-rose-500/30';
+  const StatusIcon = status === 'active' ? ShieldCheck : AlertCircle;
+
   return (
     <div className="flex flex-col h-full">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Personal Profile</h1>
-          <p className="page-description flex items-center gap-1.5">
-            <Building className="h-3 w-3" />
-            {profile.organizations.name}
-          </p>
-        </div>
-        <span
-          className={`status-pill ${
-            profile.compliance_status === 'active'
-              ? 'status-pill-green'
-              : profile.compliance_status === 'at_risk'
-                ? 'status-pill-amber'
-                : 'status-pill-red'
-          }`}
-        >
-          {profile.compliance_status === 'active' ? (
-            <ShieldCheck className="h-3 w-3" />
-          ) : (
-            <AlertCircle className="h-3 w-3" />
-          )}
-          {profile.compliance_status || 'Active'}
-        </span>
-      </div>
+      <PageHero
+        eyebrow={`Administration · ${profile.organizations.name}`}
+        title="Personal Profile"
+        subtitle="Manage your contact details, organization identity, and credential record."
+        actions={
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold capitalize ${statusTone}`}
+          >
+            <StatusIcon className="h-3.5 w-3.5" />
+            {status}
+          </span>
+        }
+      />
 
       <div className="page-content max-w-4xl space-y-4">
         <ProfileEditor

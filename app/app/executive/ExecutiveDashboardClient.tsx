@@ -14,6 +14,7 @@ import {
   ListChecks,
 } from 'lucide-react';
 import { KPICard } from '@/components/dashboard/kpi-card';
+import { PageHero } from '@/components/ui/page-hero';
 import { CompliancePostureRing } from './components/CompliancePostureRing';
 import { FrameworkRollupWidget } from './components/FrameworkRollupWidget';
 import { CriticalControlsTable } from './components/CriticalControlsTable';
@@ -216,38 +217,37 @@ export function ExecutiveDashboardClient({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Page header */}
-      <div className="page-header">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/app"
-            className="p-1.5 rounded-md border border-border hover:bg-accent/30 transition-colors"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-          </Link>
-          <div>
-            <h1 className="page-title">Executive Dashboard</h1>
-            <p className="page-description">{organizationName}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {lastUpdated && (
-            <span className="text-xs text-muted-foreground font-mono">
-              {lastUpdated.toLocaleTimeString()}
-            </span>
-          )}
-          <button
-            onClick={fetchData}
-            disabled={isLoading}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border hover:bg-accent/30 transition-colors disabled:opacity-50 text-sm"
-          >
-            <RefreshCw
-              className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`}
-            />
-            Refresh
-          </button>
-        </div>
-      </div>
+      <PageHero
+        eyebrow={`Intelligence · ${organizationName}`}
+        title="Executive Dashboard"
+        subtitle="C-level visibility into organization-wide compliance posture."
+        actions={
+          <>
+            <Link
+              href="/app"
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Back
+            </Link>
+            {lastUpdated && (
+              <span className="text-[11px] text-muted-foreground font-mono">
+                {lastUpdated.toLocaleTimeString()}
+              </span>
+            )}
+            <button
+              onClick={fetchData}
+              disabled={isLoading}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50 disabled:opacity-50"
+            >
+              <RefreshCw
+                className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`}
+              />
+              Refresh
+            </button>
+          </>
+        }
+      />
 
       {/* Page content */}
       <div className="page-content max-w-7xl mx-auto w-full">
