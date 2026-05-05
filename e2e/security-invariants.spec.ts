@@ -21,7 +21,15 @@ async function getCredentials(): Promise<{ email: string; password: string }> {
     };
     return testCredentials;
   }
-  testCredentials = await getTestCredentials();
+  try {
+    testCredentials = await getTestCredentials();
+  } catch (error) {
+    if (error instanceof E2EAuthBootstrapError) {
+      test.skip(true, error.message);
+      return undefined as never; // unreachable
+    }
+    throw error;
+  }
   return testCredentials;
 }
 

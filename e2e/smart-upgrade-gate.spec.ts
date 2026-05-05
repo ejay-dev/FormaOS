@@ -4,7 +4,7 @@
  */
 
 import { test, expect, type Page } from '@playwright/test';
-import { getTestCredentials, cleanupTestUser } from './helpers/test-auth';
+import { getTestCredentials, cleanupTestUser, E2EAuthBootstrapError } from './helpers/test-auth';
 
 let testCredentials: { email: string; password: string } | null = null;
 
@@ -17,7 +17,15 @@ async function getCredentials(): Promise<{ email: string; password: string }> {
     };
     return testCredentials;
   }
-  testCredentials = await getTestCredentials();
+  try {
+    testCredentials = await getTestCredentials();
+  } catch (error) {
+    if (error instanceof E2EAuthBootstrapError) {
+      test.skip(true, error.message);
+      return undefined as never; // unreachable
+    }
+    throw error;
+  }
   return testCredentials;
 }
 

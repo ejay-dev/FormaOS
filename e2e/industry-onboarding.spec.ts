@@ -7,6 +7,7 @@ import { test, expect, type Page } from '@playwright/test';
 import {
   getTestCredentials,
   cleanupTestUser,
+  E2EAuthBootstrapError,
 } from './helpers/test-auth';
 
 // Cached credentials for the test run
@@ -16,7 +17,15 @@ let testCredentials: { email: string; password: string } | null = null;
 async function loginAsAdmin(page: Page) {
   // Get or create test credentials
   if (!testCredentials) {
-    testCredentials = await getTestCredentials();
+    try {
+      testCredentials = await getTestCredentials();
+    } catch (error) {
+      if (error instanceof E2EAuthBootstrapError) {
+        test.skip(true, error.message);
+        return; // unreachable
+      }
+      throw error;
+    }
   }
 
   await page.goto('/auth/signin');
