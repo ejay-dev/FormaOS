@@ -7,73 +7,14 @@
  */
 
 import { test, expect, type Page } from '@playwright/test';
-import { getTestCredentials, cleanupTestUser } from './helpers/test-auth';
-
-// Test credentials - cached across tests
-let testCredentials: { email: string; password: string } | null = null;
-
-// Helper to get or create test credentials
-async function getCredentials(): Promise<{ email: string; password: string }> {
-  if (testCredentials) return testCredentials;
-
-  // Use env vars if available (preferred for local dev)
-  if (process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) {
-    testCredentials = {
-      email: process.env.E2E_TEST_EMAIL,
-      password: process.env.E2E_TEST_PASSWORD,
-    };
-    return testCredentials;
-  }
-
-  // Fall back to test-auth helper (creates user via service role if available)
-  testCredentials = await getTestCredentials();
-  return testCredentials;
-}
-
-// Helper to login
-async function loginAs(page: Page, email: string, password: string) {
-  // Set E2E test mode flag BEFORE navigating to prevent Product Tour from hijacking navigation
-  await page.goto('/auth/signin');
-  await page.evaluate(() => {
-    localStorage.setItem('e2e_test_mode', 'true');
-  });
-
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL(/\/app/, { timeout: 15000 });
-
-  // Dismiss Product Tour if it still appears
-  await dismissProductTour(page);
-}
-
-// Helper to dismiss Product Tour overlay
-async function dismissProductTour(page: Page) {
-  try {
-    // Wait for network to settle first
-    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
-
-    // Look for the Product Tour by its text content
-    const tourText = page.locator('text="Product Tour"');
-    if (await tourText.isVisible({ timeout: 2000 })) {
-      console.log('[E2E] Product Tour detected, dismissing...');
-
-      // Find and click Skip Tour button
-      const skipBtn = page.locator('button:has-text("Skip Tour")');
-      await skipBtn.click({ timeout: 3000 });
-
-      // Wait for tour to close
-      await tourText.waitFor({ state: 'hidden', timeout: 5000 });
-      console.log('[E2E] Product Tour dismissed');
-
-      // Extra wait for state persistence
-      await page.waitForTimeout(500);
-    }
-  } catch (_err) {
-    // Tour not present or already closed
-    console.log('[E2E] No Product Tour to dismiss');
-  }
-}
+import { cleanupTestUser } from './helpers/test-auth';
+import {
+  dismissProductTour,
+  getCredentials,
+  gotoAppRoute,
+  loginAs,
+  waitForAppReady,
+} from './helpers/fixtures';
 
 // Helper to check if element exists with timeout
 async function isVisible(page: Page, selector: string, timeout = 3000): Promise<boolean> {
@@ -84,6 +25,8 @@ async function isVisible(page: Page, selector: string, timeout = 3000): Promise<
     return false;
   }
 }
+
+test.describe.configure({ mode: 'serial' });
 
 // =========================================================
 // CARE INDUSTRY NAVIGATION TESTS
@@ -102,7 +45,7 @@ test.describe('Care Industry Navigation', () => {
   });
 
   test('Dashboard loads without infinite spinner', async ({ page }) => {
-    await page.goto('/app');
+    await gotoAppRoute(page, '/app');
 
     // Should not show loading spinner forever
     const spinner = page.locator('[data-testid="loading-spinner"], .animate-spin');
@@ -117,13 +60,10 @@ test.describe('Care Industry Navigation', () => {
   });
 
   test('Sidebar navigation items are clickable', async ({ page }) => {
-    await page.goto('/app');
+    await gotoAppRoute(page, '/app');
 
     // Dismiss Product Tour if it appears
     await dismissProductTour(page);
-
-    // Wait for sidebar to load
-    await page.waitForLoadState('networkidle');
 
     // Check for common nav items (these exist across industries)
     const navItems = [
@@ -134,14 +74,21 @@ test.describe('Care Industry Navigation', () => {
     ];
 
     for (const item of navItems) {
-      const navElement = page.getByTestId(item.testId);
+      await gotoAppRoute(page, item.expectedUrl === '/app' ? '/app/settings' : '/app');
+      await dismissProductTour(page);
+
+      const navElement = page.getByTestId(item.testId).first();
       if (await navElement.isVisible()) {
+        await expect(navElement).toHaveAttribute('href', item.expectedUrl);
         await navElement.click();
-        // Wait for URL to change (Next.js client-side navigation)
-        if (item.expectedUrl !== '/app') {
-          await page.waitForURL(new RegExp(item.expectedUrl), { timeout: 5000 });
-        }
-        expect(page.url()).toContain(item.expectedUrl);
+        await page.waitForURL(
+          (url) => url.pathname === item.expectedUrl,
+          { timeout: 30_000 },
+        );
+        await waitForAppReady(page, {
+          expectedPath: item.expectedUrl,
+          timeout: 30_000,
+        });
         console.log(`✓ ${item.testId} navigates correctly`);
       }
     }
@@ -159,7 +106,7 @@ test.describe('Participants Page', () => {
 
   test('Participants page loads with proper states', async ({ page }) => {
     console.log('[E2E] Navigating to /app/participants...');
-    await page.goto('/app/participants');
+    await gotoAppRoute(page, '/app/participants');
     console.log('[E2E] After goto, URL is:', page.url());
 
     // Dismiss Product Tour if it reappears after navigation
@@ -186,11 +133,12 @@ test.describe('Participants Page', () => {
   });
 
   test('Add participant button navigates to form', async ({ page }) => {
-    await page.goto('/app/participants');
+    await gotoAppRoute(page, '/app/participants');
     await dismissProductTour(page);
 
-    await expect(page.getByTestId('add-participant-btn')).toBeVisible({ timeout: 10000 });
-    await page.getByTestId('add-participant-btn').click();
+    const addParticipantButton = page.getByTestId('add-participant-btn').first();
+    await expect(addParticipantButton).toBeVisible({ timeout: 10000 });
+    await addParticipantButton.click();
 
     await page.waitForURL('/app/participants/new', { timeout: 5000 });
 
@@ -203,7 +151,7 @@ test.describe('Participants Page', () => {
   });
 
   test('Participant form is accessible', async ({ page }) => {
-    await page.goto('/app/participants/new');
+    await gotoAppRoute(page, '/app/participants/new');
     await dismissProductTour(page);
 
     // Form should be visible (use form with full_name input)
@@ -230,9 +178,9 @@ test.describe('Visits Page', () => {
   });
 
   test('Visits page loads without errors', async ({ page }) => {
-    await page.goto('/app/visits');
+    await gotoAppRoute(page, '/app/visits');
 
-    await expect(page.getByTestId('visits-title')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('visits-title').first()).toBeVisible({ timeout: 10000 });
 
     // Should not be stuck loading
     const loadingIndicator = page.locator('.animate-spin');
@@ -246,16 +194,18 @@ test.describe('Visits Page', () => {
   });
 
   test('Add visit button is accessible', async ({ page }) => {
-    await page.goto('/app/visits');
+    await gotoAppRoute(page, '/app/visits');
 
-    const addBtn = page.getByTestId('add-visit-btn');
+    const addBtn = page.getByTestId('add-visit-btn').first();
     await expect(addBtn).toBeVisible({ timeout: 10000 });
 
     await addBtn.click();
     await page.waitForURL('/app/visits/new', { timeout: 5000 });
 
     // Form should have required fields
-    await expect(page.locator('select[name="client_id"]')).toBeVisible();
+    await expect(page.locator('select[name="client_id"]')).toBeVisible({
+      timeout: 30_000,
+    });
 
     console.log('✓ Visit form accessible');
   });
@@ -271,9 +221,9 @@ test.describe('Incidents Page', () => {
   });
 
   test('Incidents page loads without errors', async ({ page }) => {
-    await page.goto('/app/incidents');
+    await gotoAppRoute(page, '/app/incidents');
 
-    await expect(page.getByTestId('incidents-title')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('incidents-title').first()).toBeVisible({ timeout: 10000 });
 
     // Should not be stuck loading
     const loadingIndicator = page.locator('.animate-spin');
@@ -287,9 +237,9 @@ test.describe('Incidents Page', () => {
   });
 
   test('Report incident button exists', async ({ page }) => {
-    await page.goto('/app/incidents');
+    await gotoAppRoute(page, '/app/incidents');
 
-    const reportBtn = page.getByTestId('report-incident-btn');
+    const reportBtn = page.getByTestId('report-incident-btn').first();
     await expect(reportBtn).toBeVisible({ timeout: 10000 });
 
     console.log('✓ Report incident button accessible');
@@ -306,9 +256,9 @@ test.describe('Staff Compliance Page', () => {
   });
 
   test('Staff compliance page loads without errors', async ({ page }) => {
-    await page.goto('/app/staff-compliance');
+    await gotoAppRoute(page, '/app/staff-compliance');
 
-    await expect(page.getByTestId('staff-compliance-title')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('staff-compliance-title').first()).toBeVisible({ timeout: 10000 });
 
     // Should not be stuck loading
     const loadingIndicator = page.locator('.animate-spin');
@@ -322,9 +272,9 @@ test.describe('Staff Compliance Page', () => {
   });
 
   test('Add credential button exists', async ({ page }) => {
-    await page.goto('/app/staff-compliance');
+    await gotoAppRoute(page, '/app/staff-compliance');
 
-    const addBtn = page.getByTestId('add-credential-btn');
+    const addBtn = page.getByTestId('add-credential-btn').first();
     await expect(addBtn).toBeVisible({ timeout: 10000 });
 
     console.log('✓ Add credential button accessible');
@@ -341,9 +291,9 @@ test.describe('Registers Page', () => {
   });
 
   test('Registers page loads without errors', async ({ page }) => {
-    await page.goto('/app/registers');
+    await gotoAppRoute(page, '/app/registers');
 
-    await expect(page.getByTestId('registers-title')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByTestId('registers-title').first()).toBeVisible({ timeout: 10000 });
 
     // Should not be stuck loading
     const loadingIndicator = page.locator('.animate-spin');
@@ -353,10 +303,7 @@ test.describe('Registers Page', () => {
   });
 
   test('Care registers grid shows for care industries', async ({ page }) => {
-    await page.goto('/app/registers');
-
-    // Wait for page to load
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/registers');
 
     // Check if care registers grid exists (depends on org industry)
     const careGrid = page.getByTestId('care-registers-grid');
@@ -364,10 +311,10 @@ test.describe('Registers Page', () => {
 
     if (hasCareGrid) {
       // Verify register links
-      await expect(page.getByTestId('register-clients')).toBeVisible();
-      await expect(page.getByTestId('register-incidents')).toBeVisible();
-      await expect(page.getByTestId('register-visits')).toBeVisible();
-      await expect(page.getByTestId('register-staff')).toBeVisible();
+      await expect(page.getByTestId('register-clients').first()).toBeVisible();
+      await expect(page.getByTestId('register-incidents').first()).toBeVisible();
+      await expect(page.getByTestId('register-visits').first()).toBeVisible();
+      await expect(page.getByTestId('register-staff').first()).toBeVisible();
       console.log('✓ Care registers grid displayed');
     } else {
       // Non-care industry - should show asset registers
@@ -391,7 +338,7 @@ test.describe('Error Handling', () => {
       route.abort('failed');
     });
 
-    await page.goto('/app/participants');
+    await gotoAppRoute(page, '/app/participants');
 
     // Should show error message, not crash or infinite load
     await page.waitForTimeout(3000);

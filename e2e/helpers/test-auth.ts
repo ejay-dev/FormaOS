@@ -61,10 +61,6 @@ function toBootstrapErrorMessage(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
   if (
     message.includes('ENOTFOUND') ||
-    message.includes('fetch failed') ||
-    message.includes('TimeoutError') ||
-    message.includes('timeout') ||
-    message.includes('upstream connect error') ||
     message.includes("Unexpected token '<'") ||
     message.includes('Invalid API key') ||
     message.includes('invalid api key') ||
@@ -77,6 +73,18 @@ function toBootstrapErrorMessage(error: unknown) {
     );
   }
   return null;
+}
+
+function isTransientAuthProbeError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return (
+    message.includes('fetch failed') ||
+    message.includes('TimeoutError') ||
+    message.includes('timeout') ||
+    message.includes('upstream connect error') ||
+    message.includes('ECONNRESET') ||
+    message.includes('socket hang up')
+  );
 }
 
 export class E2EAuthBootstrapError extends Error {
@@ -158,10 +166,19 @@ export async function getTestCredentials(): Promise<{
 
   const cachedTestUser = loadCachedTestUser();
   if (cachedTestUser) {
-    createdTestUser = cachedTestUser;
+    createdTestUser =
+      (await ensureCachedTestUserProvisioned(cachedTestUser)) ?? null;
+    if (!createdTestUser) {
+      clearCachedTestUser();
+      const testUser = await createTemporaryTestUser();
+      return {
+        email: testUser.email,
+        password: testUser.password,
+      };
+    }
     return {
-      email: cachedTestUser.email,
-      password: cachedTestUser.password,
+      email: createdTestUser.email,
+      password: createdTestUser.password,
     };
   }
 
@@ -171,6 +188,140 @@ export async function getTestCredentials(): Promise<{
     email: testUser.email,
     password: testUser.password,
   };
+}
+
+async function ensureCachedTestUserProvisioned(
+  user: TestUser,
+): Promise<TestUser | null> {
+  let env: SupabaseEnv;
+  try {
+    env = resolveSupabaseEnv();
+  } catch {
+    return user;
+  }
+
+  const adminClient = createClient(env.url, env.serviceRoleKey, {
+    auth: { persistSession: false },
+  });
+
+  const { data: authUser, error: authUserError } =
+    await adminClient.auth.admin.getUserById(user.id);
+  if (authUserError || !authUser?.user) {
+    return null;
+  }
+
+  const { data: memberships, error: membershipError } = await adminClient
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', user.id);
+
+  if (membershipError) {
+    console.warn('[E2E] Failed to inspect cached user memberships:', membershipError.message);
+    return user;
+  }
+
+  const orgIds = Array.from(
+    new Set(
+      (memberships ?? [])
+        .map((membership) => membership.organization_id)
+        .filter((orgId): orgId is string => typeof orgId === 'string'),
+    ),
+  );
+
+  if (orgIds.length === 0) {
+    return null;
+  }
+
+  const nowIso = new Date().toISOString();
+  const trialEnd = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+
+  for (const orgId of orgIds) {
+    await adminClient
+      .from('organizations')
+      .update({
+        industry: 'healthcare',
+        team_size: '1-10',
+        plan_key: 'pro',
+        frameworks: ['soc2'],
+        onboarding_completed: true,
+        updated_at: nowIso,
+      })
+      .eq('id', orgId);
+
+    await adminClient.from('orgs').upsert(
+      {
+        id: orgId,
+        name: `E2E Test Org ${user.email.split('@')[0]}`,
+        created_by: user.id,
+        created_at: nowIso,
+        updated_at: nowIso,
+      },
+      { onConflict: 'id' },
+    );
+
+    await adminClient.from('org_frameworks').upsert(
+      {
+        organization_id: orgId,
+        framework_slug: 'soc2',
+        enabled_at: nowIso,
+      },
+      { onConflict: 'organization_id,framework_slug' },
+    );
+
+    await adminClient.from('org_onboarding_status').upsert(
+      {
+        organization_id: orgId,
+        current_step: 7,
+        completed_steps: [1, 2, 3, 4, 5, 6, 7],
+        completed_at: nowIso,
+        updated_at: nowIso,
+      },
+      { onConflict: 'organization_id' },
+    );
+
+    const subscriptionPatch = {
+      status: 'trialing',
+      trial_expires_at: trialEnd,
+      current_period_end: trialEnd,
+      updated_at: nowIso,
+    };
+
+    const { data: subscription } = await adminClient
+      .from('org_subscriptions')
+      .select('id')
+      .eq('organization_id', orgId)
+      .limit(1)
+      .maybeSingle();
+
+    if (subscription?.id) {
+      await adminClient
+        .from('org_subscriptions')
+        .update(subscriptionPatch)
+        .eq('id', subscription.id);
+    } else {
+      await adminClient.from('org_subscriptions').insert({
+        organization_id: orgId,
+        org_id: orgId,
+        plan_key: 'pro',
+        plan_code: 'pro',
+        ...subscriptionPatch,
+      });
+    }
+  }
+
+  await adminClient.from('user_security').upsert(
+    {
+      user_id: user.id,
+      two_factor_enabled: true,
+      two_factor_enabled_at: nowIso,
+      updated_at: nowIso,
+    },
+    { onConflict: 'user_id' },
+  );
+
+  const repairedUser = { ...user, orgId: orgIds[0] };
+  persistCachedTestUser(repairedUser);
+  return repairedUser;
 }
 
 function resolveSupabaseEnv(): SupabaseEnv {
@@ -234,6 +385,13 @@ export async function getSupabaseAuthWriteAvailability(): Promise<AuthWriteAvail
     return cachedAuthWriteAvailability;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
+    if (isTransientAuthProbeError(error)) {
+      return {
+        available: true,
+        reason: `Supabase Auth probe was transiently unavailable: ${message}`,
+      };
+    }
+
     cachedAuthWriteAvailability = {
       available: false,
       reason: `Supabase Auth write endpoints are unavailable: ${message}`,
@@ -350,6 +508,54 @@ export async function createMagicLinkSession(email: string): Promise<Session> {
   }
 }
 
+export async function createPasswordSession(
+  email: string,
+  password: string,
+): Promise<Session> {
+  const { url, anonKey } = resolveSupabaseEnv();
+  try {
+    await assertSupabaseAuthWriteAvailability();
+    const userClient = createClient(url, anonKey, {
+      auth: { persistSession: false },
+    });
+
+    let data: Awaited<ReturnType<typeof userClient.auth.signInWithPassword>>['data'] | null =
+      null;
+    let error: Awaited<ReturnType<typeof userClient.auth.signInWithPassword>>['error'] | null =
+      null;
+
+    for (let attempt = 1; attempt <= 4; attempt += 1) {
+      const response = await userClient.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      data = response.data;
+      error = response.error;
+
+      if (!error && data.session) {
+        break;
+      }
+
+      if (attempt < 4) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1_000));
+      }
+    }
+
+    if (error || !data?.session) {
+      throw new Error(`Failed to create password session: ${error?.message}`);
+    }
+
+    return data.session;
+  } catch (error) {
+    const bootstrapMessage = toBootstrapErrorMessage(error);
+    if (bootstrapMessage) {
+      throw new E2EAuthBootstrapError(bootstrapMessage);
+    }
+    throw error;
+  }
+}
+
 export async function setPlaywrightSession(
   context: { addCookies: (cookies: any[]) => Promise<void> },
   session: Session,
@@ -409,10 +615,9 @@ async function createTemporaryTestUser(): Promise<TestUser> {
       auth: { persistSession: false },
     });
 
-    // Generate unique test email
-    const testId = `e2e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const email = `${testId}@test.formaos.local`;
-    const password = `TestPass${testId}!`;
+    let testId = `e2e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    let email = `${testId}@test.formaos.local`;
+    let password = `TestPass${testId}!`;
 
     // Create user with admin API (auto-confirms email)
     let userData: Awaited<
@@ -422,7 +627,13 @@ async function createTemporaryTestUser(): Promise<TestUser> {
       ReturnType<typeof adminClient.auth.admin.createUser>
     >['error'] | null = null;
 
-    for (let attempt = 1; attempt <= 3; attempt += 1) {
+    for (let attempt = 1; attempt <= 6; attempt += 1) {
+      if (attempt > 1) {
+        testId = `e2e_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        email = `${testId}@test.formaos.local`;
+        password = `TestPass${testId}!`;
+      }
+
       const response = await adminClient.auth.admin.createUser({
         email,
         password,
@@ -440,8 +651,8 @@ async function createTemporaryTestUser(): Promise<TestUser> {
         break;
       }
 
-      if (attempt < 3) {
-        await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+      if (attempt < 6) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1_000));
       }
     }
 
@@ -460,23 +671,41 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     }
 
     // Create test organization
-    const { data: orgData, error: orgError } = await adminClient
-      .from('organizations')
-      .insert({
-        name: `E2E Test Org ${testId}`,
-        industry: 'healthcare',
-        team_size: '1-10',
-        plan_key: 'pro',
-        frameworks: ['soc2'],
-        onboarding_completed: true, // Skip onboarding for tests
-      })
-      .select('id')
-      .single();
+    let orgData: { id: string } | null = null;
+    let orgError: { message: string } | null = null;
 
-    if (orgError) {
+    for (let attempt = 1; attempt <= 6; attempt += 1) {
+      const response = await adminClient
+        .from('organizations')
+        .insert({
+          name: `E2E Test Org ${testId}`,
+          industry: 'healthcare',
+          team_size: '1-10',
+          plan_key: 'pro',
+          frameworks: ['soc2'],
+          onboarding_completed: true, // Skip onboarding for tests
+        })
+        .select('id')
+        .single();
+
+      orgData = response.data;
+      orgError = response.error;
+
+      if (!orgError && orgData?.id) {
+        break;
+      }
+
+      if (attempt < 6) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1_000));
+      }
+    }
+
+    if (orgError || !orgData?.id) {
       // Cleanup user if org creation fails
       await adminClient.auth.admin.deleteUser(userData.user.id);
-      throw new Error(`Failed to create test org: ${orgError.message}`);
+      throw new Error(
+        `Failed to create test org: ${orgError?.message ?? 'unknown_error'}`,
+      );
     }
 
     const nowIso = new Date().toISOString();
@@ -497,11 +726,38 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     }
 
     // Add user as org owner
-    const { error: memberError } = await adminClient.from('org_members').insert({
-      user_id: userData.user.id,
-      organization_id: orgData.id,
-      role: 'owner',
-    });
+    let memberError: { message: string } | null = null;
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      const response = await adminClient.from('org_members').insert({
+          user_id: userData.user.id,
+          organization_id: orgData.id,
+          role: 'owner',
+        });
+
+      memberError = response.error;
+      if (!memberError) {
+        break;
+      }
+
+      const message = memberError.message.toLowerCase();
+      if (message.includes('statement timeout') || message.includes('timeout')) {
+        const { data: existingMember } = await adminClient
+          .from('org_members')
+          .select('id')
+          .eq('user_id', userData.user.id)
+          .eq('organization_id', orgData.id)
+          .maybeSingle();
+
+        if (existingMember) {
+          memberError = null;
+          break;
+        }
+      }
+
+      if (attempt < 3) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+      }
+    }
 
     if (memberError) {
       // Cleanup
@@ -603,6 +859,18 @@ async function createTemporaryTestUser(): Promise<TestUser> {
  * Call this in globalTeardown or afterAll
  */
 export async function cleanupTestUser(): Promise<void> {
+  const forceCleanup = process.env.E2E_FORCE_TEST_USER_CLEANUP === '1';
+  const isPlaywrightWorker =
+    process.env.TEST_WORKER_INDEX !== undefined ||
+    process.env.PLAYWRIGHT_WORKER_INDEX !== undefined;
+
+  if (isPlaywrightWorker && !forceCleanup) {
+    if (process.env.E2E_DEBUG === '1') {
+      console.log('[E2E Cleanup] deferred until global teardown');
+    }
+    return;
+  }
+
   if (!createdTestUser) {
     createdTestUser = loadCachedTestUser();
   }

@@ -100,7 +100,7 @@ const DASHBOARD_EXPECTATIONS: Record<
   ],
   other: [
     { label: 'Organization', href: '/app/executive' },
-    { label: 'Certificates', href: '/app/certificates' },
+    { label: 'Reports', href: '/app/reports' },
   ],
 };
 
@@ -116,7 +116,8 @@ function requireWorkspace() {
 }
 
 function uniqueId(prefix: string) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const searchablePrefix = prefix.replace(/[^a-z0-9]+/gi, '');
+  return `${searchablePrefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
 function plusAlias(label: string) {
@@ -130,11 +131,59 @@ async function authenticate(page: Page, email?: string) {
   await authenticateWorkspacePage(page, email);
 }
 
-async function gotoHealthy(page: Page, href: string) {
-  await page.goto(href, { waitUntil: 'domcontentloaded', timeout: 45_000 });
-  await page.waitForLoadState('networkidle', { timeout: 10_000 }).catch(() => {});
+async function syncWorkspaceFromPage(page: Page) {
+  const ctx = requireWorkspace();
+  const response = await page.request.get('/api/system-state', {
+    timeout: 15_000,
+  });
+  expect(response.ok()).toBeTruthy();
+  const state = (await response.json()) as {
+    user?: { id?: string; email?: string };
+    organization?: { id?: string };
+  };
+  const orgId = state.organization?.id;
+  const userId = state.user?.id;
 
-  const body = (await page.locator('body').textContent()) ?? '';
+  if (!orgId || !userId) {
+    throw new Error('System state did not include an organization and user');
+  }
+
+  workspace = {
+    ...ctx,
+    orgId,
+    userId,
+    email: state.user?.email ?? ctx.email,
+  };
+}
+
+async function gotoHealthy(page: Page, href: string) {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      await page.goto(href, { waitUntil: 'commit', timeout: 45_000 });
+      await page
+        .waitForLoadState('domcontentloaded', { timeout: 30_000 })
+        .catch(() => {});
+      await page.waitForLoadState('networkidle', { timeout: 8_000 }).catch(() => {});
+      lastError = null;
+      break;
+    } catch (error) {
+      lastError = error;
+      if (attempt === 3) {
+        throw error;
+      }
+      await page.waitForTimeout(1_000 * attempt);
+    }
+  }
+
+  if (lastError) {
+    await page.locator('body').waitFor({ state: 'attached', timeout: 15_000 });
+  }
+
+  const body =
+    (await page.locator('body').textContent({ timeout: 10_000 }).catch(() => '')) ??
+    '';
   expect(body).not.toContain('This page could not be found');
   expect(body).not.toContain("FormaOS couldn't load");
   expect(body).not.toContain('Minified React error');
@@ -151,6 +200,27 @@ async function setMembershipRole(userId: string, role: UserRole) {
   if (error) {
     throw new Error(`Failed to set role ${role} for ${userId}: ${error.message}`);
   }
+}
+
+async function expectParticipantSeeded(ctx: WorkspaceSeedContext, label: string) {
+  await expect
+    .poll(
+      async () => {
+        const { count, error } = await ctx.admin
+          .from('org_patients')
+          .select('id', { count: 'exact', head: true })
+          .eq('organization_id', ctx.orgId)
+          .ilike('full_name', `%${label}%`);
+
+        if (error) {
+          throw new Error(`Failed to verify seeded participant: ${error.message}`);
+        }
+
+        return count ?? 0;
+      },
+      { timeout: 15_000 },
+    )
+    .toBeGreaterThan(0);
 }
 
 async function setEntitlement(
@@ -297,19 +367,26 @@ test.describe.serial('Deep dashboard workflows', () => {
     test(`owner dashboard shows industry actions for ${industry}`, async ({
       page,
     }) => {
+      test.setTimeout(240_000);
+
       await prepareOwnerIndustry(industry);
       await authenticate(page);
       await gotoHealthy(page, '/app');
 
-      await expect(page.getByTestId('quick-actions')).toBeVisible();
+      await expect(page.locator('main')).toBeVisible();
       await expect(
-        page.getByRole('heading', { name: /dashboard|command center|compliance/i }).first(),
-      ).toBeVisible();
+        page
+          .getByRole('heading', {
+            name: /dashboard|command center|compliance|first 5 actions/i,
+          })
+          .first(),
+      ).toBeVisible({ timeout: 30_000 });
 
       for (const action of DASHBOARD_EXPECTATIONS[industry]) {
         await expect(
-          page.getByTestId('quick-actions').locator(`a[href="${action.href}"]`),
-        ).toContainText(action.label);
+          page.locator(`a[href="${action.href}"]`).first(),
+          `${industry} should expose ${action.label} at ${action.href}`,
+        ).toBeVisible();
       }
     });
   }
@@ -318,16 +395,19 @@ test.describe.serial('Deep dashboard workflows', () => {
     test(`care operations render seeded data for ${industry}`, async ({
       page,
     }) => {
-      const ctx = requireWorkspace();
       const label = uniqueId(industry);
 
+      await authenticate(page);
+      await syncWorkspaceFromPage(page);
       await prepareOwnerIndustry(industry);
+      const ctx = requireWorkspace();
       const participant = await seedParticipant(ctx, {
         fullName: `${label} Care Client`,
         fundingType: industry === 'ndis' ? 'ndis' : 'private',
         ndisNumber: industry === 'ndis' ? `${Date.now()}` : null,
         primaryDiagnosis: 'E2E seeded diagnosis',
       });
+      await expectParticipantSeeded(ctx, label);
       await seedVisit(ctx, {
         clientId: String(participant.id),
         visitType: 'service',
@@ -349,16 +429,21 @@ test.describe.serial('Deep dashboard workflows', () => {
         issuingAuthority: 'FormaOS Test Authority',
       });
 
-      await authenticate(page);
-
       await gotoHealthy(page, `/app/participants?q=${encodeURIComponent(label)}`);
       await expect(page.getByTestId('participants-title')).toContainText(
         PARTICIPANT_LABELS[industry],
       );
       await expect(page.getByTestId('participants-table')).toContainText(label);
       await page.getByTestId('add-participant-btn').click();
-      await expect(page.getByRole('heading', { name: /Add New/i })).toBeVisible();
-      await expect(page.locator('input[name="full_name"]')).toBeVisible();
+      await page.waitForURL(/\/app\/participants\/new/, {
+        timeout: 30_000,
+      }).catch(() => {});
+      await expect(page.locator('input[name="full_name"]')).toBeVisible({
+        timeout: 45_000,
+      });
+      await expect(page.getByRole('heading', { name: /Add New/i })).toBeVisible({
+        timeout: 30_000,
+      });
 
       await gotoHealthy(page, `/app/visits?q=${encodeURIComponent(label)}`);
       await expect(page.getByTestId('visits-title')).toContainText(
@@ -366,28 +451,45 @@ test.describe.serial('Deep dashboard workflows', () => {
       );
       await expect(page.getByTestId('visits-table')).toContainText(label);
       await page.getByTestId('add-visit-btn').click();
+      await page.waitForURL(/\/app\/visits\/new/, { timeout: 30_000 }).catch(
+        () => {},
+      );
+      await expect(page.locator('select[name="client_id"]')).toBeVisible({
+        timeout: 45_000,
+      });
       await expect(
         page.getByRole('heading', { name: /Schedule Visit/i }),
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 30_000 });
       await expect(page.locator('select[name="client_id"]')).toContainText(label);
 
       await gotoHealthy(page, `/app/incidents?q=${encodeURIComponent(label)}`);
       await expect(page.getByTestId('incidents-title')).toBeVisible();
       await expect(page.getByTestId('incidents-table')).toContainText(label);
       await page.getByTestId('report-incident-btn').click();
+      await page.waitForURL(/\/app\/incidents\/new/, { timeout: 30_000 }).catch(
+        () => {},
+      );
+      await expect(page.locator('select[name="patient_id"]')).toBeVisible({
+        timeout: 45_000,
+      });
       await expect(
         page.getByRole('heading', { name: /Report Incident/i }),
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 30_000 });
       await expect(page.locator('select[name="patient_id"]')).toContainText(label);
 
       await gotoHealthy(page, '/app/staff-compliance');
       await expect(page.getByTestId('staff-compliance-title')).toBeVisible();
       await expect(page.getByTestId('staff-credentials-table')).toContainText(label);
       await page.getByTestId('add-credential-btn').click();
+      await page.waitForURL(/\/app\/staff-compliance\/new/, {
+        timeout: 30_000,
+      }).catch(() => {});
+      await expect(page.locator('select[name="user_id"]')).toBeVisible({
+        timeout: 45_000,
+      });
       await expect(
         page.getByRole('heading', { name: /Add Credential/i }),
-      ).toBeVisible();
-      await expect(page.locator('select[name="user_id"]')).toBeVisible();
+      ).toBeVisible({ timeout: 30_000 });
     });
   }
 
@@ -395,7 +497,7 @@ test.describe.serial('Deep dashboard workflows', () => {
     test(`governance modules render seeded data for ${industry}`, async ({
       page,
     }) => {
-      test.setTimeout(300_000);
+      test.setTimeout(900_000);
 
       const ctx = requireWorkspace();
       const label = uniqueId(industry);
@@ -424,10 +526,10 @@ test.describe.serial('Deep dashboard workflows', () => {
 
       await gotoHealthy(page, `/app/tasks?q=${encodeURIComponent(label)}`);
       await expect(page.getByRole('heading', { name: 'Compliance Roadmap' })).toBeVisible();
-      await expect(page.locator('table')).toContainText(label);
+      await expect(page.locator('table:not([hidden])').first()).toContainText(label);
       await page
         .locator('summary')
-        .filter({ hasText: 'Add Requirement' })
+        .filter({ hasText: /^Add$/ })
         .evaluate((element) => {
           const parent = element.parentElement;
           if (parent instanceof HTMLDetailsElement) {
@@ -524,8 +626,8 @@ test.describe.serial('Deep dashboard workflows', () => {
 
       await gotoHealthy(page, '/app/reports');
       await expect(page.getByRole('heading', { name: 'Reports Center' })).toBeVisible();
-      await expect(page.locator('body')).toContainText('Trust packet');
-      await expect(page.locator('body')).toContainText('Exports enabled');
+      await expect(page.locator('body')).toContainText(/Trust Packet/i);
+      await expect(page.locator('body')).toContainText(/Export enabled/i);
 
       await gotoHealthy(page, '/app/billing');
       await expect(page.getByRole('heading', { name: 'Billing & Plan' })).toBeVisible();

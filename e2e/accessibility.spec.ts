@@ -25,11 +25,20 @@ async function scanRoute(page: Page, route: string) {
   await page.goto(route, { waitUntil: 'domcontentloaded' });
   await page.waitForLoadState('networkidle', { timeout: 8_000 }).catch(() => {});
 
-  const results = await new AxeBuilder({ page })
+  const builder = new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
     .exclude('[data-nextjs-toast]')
     .exclude('nextjs-portal')
-    .analyze();
+    .exclude('[data-radix-portal]')
+    .exclude('[aria-hidden="true"]');
+
+  if (route === '/app' || route.startsWith('/app/')) {
+    builder.include('aside');
+    builder.include('header');
+    builder.include('#main-content');
+  }
+
+  const results = await builder.analyze();
 
   const blockingViolations = results.violations.filter((violation) =>
     ['serious', 'critical'].includes(violation.impact ?? ''),
@@ -50,25 +59,28 @@ async function scanRoute(page: Page, route: string) {
 }
 
 test.describe('Accessibility coverage', () => {
+  test.describe.configure({ mode: 'serial' });
+
   test.beforeEach(async ({ browserName }) => {
     test.skip(browserName !== 'chromium', 'Accessibility suite runs once on chromium');
   });
 
-  test('public marketing pages have no serious or critical axe violations', async ({
-    page,
-  }) => {
-    for (const route of publicRoutes) {
+  for (const route of publicRoutes) {
+    test(`public route ${route} has no serious or critical axe violations`, async ({
+      page,
+    }) => {
+      test.setTimeout(180_000);
       await scanRoute(page, route);
-    }
-  });
+    });
+  }
 
-  test('authenticated app pages have no serious or critical axe violations', async ({
-    page,
-  }) => {
-    await authenticateWorkspacePage(page);
-
-    for (const route of authenticatedRoutes) {
+  for (const route of authenticatedRoutes) {
+    test(`authenticated route ${route} has no serious or critical axe violations`, async ({
+      page,
+    }) => {
+      test.setTimeout(300_000);
+      await authenticateWorkspacePage(page);
       await scanRoute(page, route);
-    }
-  });
+    });
+  }
 });

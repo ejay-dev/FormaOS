@@ -214,7 +214,7 @@ async function prepareScenario(
 
 async function assertDashboardShell(page: Page, role: UserRole) {
   if (role === 'owner' || role === 'admin') {
-    await expect(page.getByTestId('quick-actions')).toBeVisible();
+    await expect(page.getByText('Operator Action Queue')).toBeVisible();
     await expect(page.getByText('My Compliance Status')).toHaveCount(0);
     return;
   }
@@ -397,9 +397,11 @@ test.describe('Full platform matrix', () => {
       await assertNoAppCrash(page, '/app/billing');
       await expect(page.getByText('Billing & Plan')).toBeVisible();
       await expect(
-        page
-          .locator('div.text-xl.font-semibold')
-          .filter({ hasText: new RegExp(`^${PLAN_CATALOG[planKey].name}$`) }),
+        page.locator('div').filter({
+          hasText: new RegExp(
+            `Current plan\\s*${PLAN_CATALOG[planKey].name}`,
+          ),
+        }).first(),
       ).toBeVisible();
       await expect(page.getByText('trialing')).toBeVisible();
     });
@@ -451,7 +453,7 @@ test.describe('Full platform matrix', () => {
 
     const timestamp = Date.now();
     const email = `ejazhussaini313+formaos-signup-${timestamp}@gmail.com`;
-    const password = `FormaOS!${timestamp}StrongPass`;
+    const password = 'Vexa9!Cobalt#42River';
 
     await page.goto('/auth/signup', { waitUntil: 'domcontentloaded' });
     await page.getByLabel('Email Address').fill(email);

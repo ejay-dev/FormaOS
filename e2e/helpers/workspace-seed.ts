@@ -5,10 +5,11 @@ import type { Page } from '@playwright/test';
 import {
   E2EAuthBootstrapError,
   createMagicLinkSession,
+  createPasswordSession,
   getTestCredentials,
   setPlaywrightSession,
 } from './test-auth';
-import { dismissProductTour } from './fixtures';
+import { dismissProductTour, waitForAppReady } from './fixtures';
 
 type SeedClient = ReturnType<typeof createClient>;
 
@@ -118,6 +119,27 @@ type WorkspaceStateInput = {
 };
 
 const createdUserIds = new Set<string>();
+
+function pickSeedMembership<
+  T extends {
+    role?: string | null;
+    organization_id?: string | null;
+  },
+>(memberships: T[]): T | null {
+  if (!memberships.length) return null;
+  const weight = (role?: string | null) => {
+    const normalized = (role ?? '').toLowerCase();
+    if (normalized === 'owner') return 3;
+    if (normalized === 'admin') return 2;
+    return 1;
+  };
+  return (
+    memberships
+      .slice()
+      .sort((a, b) => weight(b.role) - weight(a.role))
+      .at(0) ?? memberships[0]
+  );
+}
 
 function getFrameworkCodeForSlug(slug: string) {
   switch (slug) {
@@ -284,15 +306,31 @@ export async function getWorkspaceSeedContext(): Promise<WorkspaceSeedContext> {
   }
 
   const userId = signInResult.data.user.id;
-  const { data: membership, error: membershipError } = await admin
+  const { data: sessionMemberships, error: sessionMembershipError } = await anon
     .from('org_members')
-    .select('organization_id')
+    .select('organization_id, role')
     .eq('user_id', userId)
-    .maybeSingle();
+    .limit(50);
+  const { data: adminMemberships, error: adminMembershipError } = sessionMemberships
+    ?.length
+    ? { data: null, error: null }
+    : await admin
+        .from('org_members')
+        .select('organization_id, role')
+        .eq('user_id', userId)
+        .limit(50);
+  const membership = pickSeedMembership(
+    ((sessionMemberships?.length ? sessionMemberships : adminMemberships) ??
+      []) as Array<{ organization_id?: string | null; role?: string | null }>,
+  );
 
-  if (membershipError || !membership?.organization_id) {
+  if (!membership?.organization_id) {
     throw new Error(
-      `Failed to resolve organization membership for ${creds.email}: ${membershipError?.message ?? 'missing membership'}`,
+      `Failed to resolve organization membership for ${creds.email}: ${
+        sessionMembershipError?.message ??
+        adminMembershipError?.message ??
+        'missing membership'
+      }`,
     );
   }
 
@@ -312,19 +350,42 @@ export async function authenticateWorkspacePage(
 ) {
   const { url } = resolveEnv();
   const appBase = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
-  const targetEmail = email ?? (await getWorkspaceSeedContext()).email;
-  const session = await createMagicLinkSession(targetEmail);
+  const creds = await getTestCredentials();
+  const targetEmail = email ?? creds.email;
+  const password =
+    targetEmail.toLowerCase() === creds.email.toLowerCase()
+      ? creds.password
+      : null;
+  let session;
+
+  if (password) {
+    try {
+      session = await createPasswordSession(targetEmail, password);
+    } catch (error) {
+      if (error instanceof E2EAuthBootstrapError) {
+        throw error;
+      }
+      console.warn(
+        '[E2E] Workspace password session failed, falling back to magic link:',
+        error,
+      );
+      session = await createMagicLinkSession(targetEmail);
+    }
+  } else {
+    session = await createMagicLinkSession(targetEmail);
+  }
 
   await setPlaywrightSession(page.context(), session, appBase);
   let bootstrapResponse: Awaited<ReturnType<Page['request']['post']>> | null = null;
   let bootstrapFailure: Error | null = null;
 
-  for (let attempt = 0; attempt < 3; attempt += 1) {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
     try {
       bootstrapResponse = await page.request.post(`${appBase}/api/auth/bootstrap`, {
         headers: {
           'x-formaos-e2e': '1',
         },
+        timeout: 45_000,
       });
 
       if (bootstrapResponse.ok()) {
@@ -333,13 +394,13 @@ export async function authenticateWorkspacePage(
       }
 
       const retryableStatus = bootstrapResponse.status() >= 500;
-      if (!retryableStatus || attempt === 2) {
+      if (!retryableStatus || attempt === 4) {
         throw new Error(`Workspace bootstrap failed with status ${bootstrapResponse.status()}`);
       }
     } catch (error) {
       bootstrapFailure =
         error instanceof Error ? error : new Error(String(error));
-      if (attempt === 2) {
+      if (attempt === 4) {
         break;
       }
     }
@@ -357,8 +418,32 @@ export async function authenticateWorkspacePage(
       ? bootstrapPayload.next
       : '/app';
 
-  await page.goto(nextPath, { waitUntil: 'domcontentloaded' });
+  let navigationError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      await page.goto(nextPath, {
+        waitUntil: 'domcontentloaded',
+        timeout: 30_000,
+      });
+      navigationError = null;
+      break;
+    } catch (error) {
+      navigationError = error;
+      if (attempt < 3) {
+        await page.goto('about:blank', { timeout: 5_000 }).catch(() => {});
+        await page.waitForTimeout(attempt * 500);
+      }
+    }
+  }
+
+  if (navigationError) {
+    throw navigationError;
+  }
+
   await dismissProductTour(page);
+  if (nextPath === '/app' || nextPath.startsWith('/app/')) {
+    await waitForAppReady(page, { expectedPath: nextPath });
+  }
 
   const landedOnAuth = page.url().includes('/auth/');
   if (landedOnAuth && bootstrapFailure) {
@@ -1016,26 +1101,51 @@ export async function createSecondaryUser(
     options.password ??
     `TestPass${Math.random().toString(36).slice(2, 8)}!`;
 
-  const { data, error } = await context.admin.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true,
-    user_metadata: {
-      is_e2e_test: true,
-      created_at: new Date().toISOString(),
-    },
-  });
+  let createdUser:
+    | Awaited<ReturnType<typeof context.admin.auth.admin.createUser>>['data']['user']
+    | null = null;
+  let createError: unknown = null;
 
-  if (error || !data.user) {
-    throw new Error(`Failed to create secondary user: ${error?.message ?? 'unknown error'}`);
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const { data, error } = await context.admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: {
+          is_e2e_test: true,
+          created_at: new Date().toISOString(),
+        },
+      });
+
+      if (!error && data.user) {
+        createdUser = data.user;
+        createError = null;
+        break;
+      }
+
+      createError = error ?? new Error('unknown error');
+    } catch (error) {
+      createError = error;
+    }
+
+    if (attempt < 3) {
+      await new Promise((resolve) => setTimeout(resolve, attempt * 750));
+    }
   }
 
-  createdUserIds.add(data.user.id);
+  if (!createdUser) {
+    const message =
+      createError instanceof Error ? createError.message : String(createError ?? 'unknown error');
+    throw new Error(`Failed to create secondary user: ${message}`);
+  }
+
+  createdUserIds.add(createdUser.id);
 
   if (options.addMembership) {
     const { error: membershipError } = await context.admin.from('org_members').insert({
       organization_id: context.orgId,
-      user_id: data.user.id,
+      user_id: createdUser.id,
       role: options.role ?? 'member',
     });
 
@@ -1047,7 +1157,7 @@ export async function createSecondaryUser(
   return {
     email,
     password,
-    userId: data.user.id,
+    userId: createdUser.id,
   };
 }
 
