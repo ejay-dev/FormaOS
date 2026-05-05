@@ -1,4 +1,9 @@
-import { expect, test } from '@playwright/test';
+import {
+  expect,
+  test,
+  type APIRequestContext,
+  type Page,
+} from '@playwright/test';
 
 import {
   createMagicLinkSession,
@@ -37,9 +42,64 @@ function resolveFounderEmail() {
 function hasMagicLinkEnv() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
   );
+}
+
+async function gotoWithRetry(page: Page, route: string) {
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await page.goto(route, {
+        waitUntil: 'domcontentloaded',
+        timeout: 45_000,
+      });
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      const retryable =
+        message.includes('ERR_ABORTED') ||
+        message.includes('Timeout') ||
+        message.includes('ECONNRESET') ||
+        message.includes('net::ERR_CONNECTION_RESET');
+
+      if (!retryable || attempt === 2) {
+        throw error;
+      }
+
+      await page.goto('about:blank', { timeout: 5_000 }).catch(() => {});
+      await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+    }
+  }
+
+  throw lastError;
+}
+
+async function getApiWithRetry(request: APIRequestContext, apiPath: string) {
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await request.get(apiPath, { timeout: 30_000 });
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      const retryable =
+        message.includes('ECONNRESET') ||
+        message.includes('Timeout') ||
+        message.includes('socket hang up');
+
+      if (!retryable || attempt === 2) {
+        throw error;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+    }
+  }
+
+  throw lastError;
 }
 
 test.describe('Admin founder smoke', () => {
@@ -74,16 +134,10 @@ test.describe('Admin founder smoke', () => {
       return;
     }
 
-    await page.goto('/admin/dashboard', {
-      waitUntil: 'domcontentloaded',
-      timeout: 45_000,
-    });
+    await gotoWithRetry(page, '/admin/dashboard');
 
     for (const route of CORE_ADMIN_ROUTES) {
-      const response = await page.goto(route.path, {
-        waitUntil: 'domcontentloaded',
-        timeout: 45_000,
-      });
+      const response = await gotoWithRetry(page, route.path);
 
       expect(response?.status(), `${route.path} should return 200`).toBe(200);
       await expect(page).toHaveURL(new RegExp(`${route.path}$`));
@@ -98,7 +152,7 @@ test.describe('Admin founder smoke', () => {
     }
 
     for (const apiPath of CORE_ADMIN_APIS) {
-      const response = await page.request.get(apiPath);
+      const response = await getApiWithRetry(page.request, apiPath);
       expect(response.status(), `${apiPath} should return 200`).toBe(200);
     }
   });

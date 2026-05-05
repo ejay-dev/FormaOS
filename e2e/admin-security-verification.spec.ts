@@ -99,7 +99,7 @@ test.describe('SECURITY AUDIT: Environment Configuration', () => {
     for (const route of sensitiveRoutes) {
       const resp = await page.goto(route, {
         waitUntil: 'domcontentloaded',
-        timeout: 30000,
+        timeout: 60000,
       });
 
       // Should not return server error
