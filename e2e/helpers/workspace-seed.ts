@@ -294,7 +294,16 @@ function createSeedClients() {
 }
 
 export async function getWorkspaceSeedContext(): Promise<WorkspaceSeedContext> {
-  const creds = await getTestCredentials();
+  let creds: { email: string; password: string };
+  try {
+    creds = await getTestCredentials();
+  } catch (error) {
+    if (error instanceof E2EAuthBootstrapError) {
+      test.skip(true, error.message);
+      return undefined as never; // unreachable
+    }
+    throw error;
+  }
   const { admin, anon } = createSeedClients();
 
   const signInResult = await anon.auth.signInWithPassword({
