@@ -1,6 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import { config } from 'dotenv';
+import {
+  getTestCredentials,
+  createPasswordSession,
+  createMagicLinkSession,
+} from './helpers/test-auth';
+import type { Session } from '@supabase/supabase-js';
 
 const SESSION_CACHE_PATH = path.join(
   process.cwd(),
@@ -65,8 +71,6 @@ async function prewarmSession(): Promise<void> {
   }
 
   // Dynamically import to avoid hard-wiring Supabase into global setup
-  const { getTestCredentials, createPasswordSession, createMagicLinkSession } =
-    await import('./helpers/test-auth');
 
   let creds: { email: string; password: string };
   try {
@@ -76,7 +80,7 @@ async function prewarmSession(): Promise<void> {
     return;
   }
 
-  let session: import('@supabase/supabase-js').Session | null = null;
+  let session: Session | null = null;
   try {
     session = await createPasswordSession(creds.email, creds.password);
   } catch {
