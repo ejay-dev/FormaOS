@@ -64,7 +64,13 @@ async function runCurrentUserScenario(
   await page.goto('/app', { waitUntil: 'domcontentloaded' });
 
   if (scenario.expectedDashboard === 'employer') {
-    await expect(page.getByTestId('quick-actions')).toBeVisible();
+    // quick-actions lives on the 'operations' tab; click it if present
+    const opsTab = page.locator('[role="tab"]').filter({ hasText: /operations/i }).first();
+    const opsTabVisible = await opsTab.isVisible({ timeout: 5000 }).catch(() => false);
+    if (opsTabVisible) {
+      await opsTab.click();
+    }
+    await expect(page.getByTestId('quick-actions')).toBeVisible({ timeout: 10000 });
     await expect(page.getByText('My Compliance Status')).toHaveCount(0);
   } else {
     await expect(page.getByText('My Compliance Status')).toBeVisible();

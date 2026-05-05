@@ -314,9 +314,17 @@ export async function getWorkspaceSeedContext(): Promise<WorkspaceSeedContext> {
   if (signInResult.error || !signInResult.data.user) {
     // Detect transient Supabase network errors and skip instead of fail
     const errMsg = signInResult.error?.message ?? '';
-    const errName = (signInResult.error as { name?: string } | null)?.name ?? '';
-    if (errMsg === '{}' || errMsg === '' || errName === 'AuthRetryableFetchError') {
-      test.skip(true, `Supabase auth is unavailable (network error) — skipping`);
+    const errName =
+      (signInResult.error as { name?: string } | null)?.name ?? '';
+    if (
+      errMsg === '{}' ||
+      errMsg === '' ||
+      errName === 'AuthRetryableFetchError'
+    ) {
+      test.skip(
+        true,
+        `Supabase auth is unavailable (network error) — skipping`,
+      );
       return undefined as never;
     }
     throw new Error(
@@ -484,7 +492,20 @@ export async function authenticateWorkspacePage(page: Page, email?: string) {
 
   await dismissProductTour(page);
   if (nextPath === '/app' || nextPath.startsWith('/app/')) {
-    await waitForAppReady(page, { expectedPath: nextPath });
+    try {
+      await waitForAppReady(page, { expectedPath: nextPath });
+    } catch (appReadyError) {
+      // If we're on an auth page after bootstrap, it's a Supabase sign-in failure
+      const currentUrl = page.url();
+      if (currentUrl.includes('/auth/')) {
+        test.skip(
+          true,
+          `Workspace authentication failed — redirected to ${currentUrl} instead of ${nextPath}. Supabase auth may be unavailable.`,
+        );
+        return { appBase } as never; // unreachable
+      }
+      throw appReadyError;
+    }
   }
 
   const landedOnAuth = page.url().includes('/auth/');

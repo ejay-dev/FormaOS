@@ -309,9 +309,19 @@ test.describe('Onboarding hardening — concurrency, idempotency, boundaries', (
     await authenticateWorkspacePage(page);
 
     for (let step = 1; step <= 7; step += 1) {
-      await page.goto(`/onboarding?step=${step}`, {
-        waitUntil: 'domcontentloaded',
-      });
+      try {
+        await page.goto(`/onboarding?step=${step}`, {
+          waitUntil: 'domcontentloaded',
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.includes('ERR_ABORTED') || msg.includes('net::ERR_')) {
+          // Navigation aborted by redirect — check where we ended up
+          const url = page.url();
+          if (url.includes('/app')) continue; // correctly bounced to /app
+        }
+        throw err;
+      }
       await expect(
         page,
         `step=${step} did not bounce to /app`,
