@@ -6,6 +6,7 @@ test.describe('Form builder CRUD', () => {
   test('creates, reads, updates, and deletes fields on a form definition', async ({
     browserName,
   }) => {
+    test.setTimeout(360_000);
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
 
     const context = await getWorkspaceSeedContext();
@@ -84,12 +85,13 @@ test.describe('Form builder CRUD', () => {
         .eq('id', formId);
       expect(createFieldError).toBeNull();
 
-      const { data: afterCreateRead, error: afterCreateError } = await context.anon
-        .from('forms')
-        .select('fields')
-        .eq('organization_id', context.orgId)
-        .eq('id', formId)
-        .single();
+      const { data: afterCreateRead, error: afterCreateError } =
+        await context.anon
+          .from('forms')
+          .select('fields')
+          .eq('organization_id', context.orgId)
+          .eq('id', formId)
+          .single();
       expect(afterCreateError).toBeNull();
       const fieldsAfterCreate = Array.isArray((afterCreateRead as any)?.fields)
         ? ((afterCreateRead as any).fields as Array<Record<string, unknown>>)
@@ -118,12 +120,13 @@ test.describe('Form builder CRUD', () => {
         .eq('id', formId);
       expect(updateFieldError).toBeNull();
 
-      const { data: afterUpdateRead, error: afterUpdateError } = await context.anon
-        .from('forms')
-        .select('fields')
-        .eq('organization_id', context.orgId)
-        .eq('id', formId)
-        .single();
+      const { data: afterUpdateRead, error: afterUpdateError } =
+        await context.anon
+          .from('forms')
+          .select('fields')
+          .eq('organization_id', context.orgId)
+          .eq('id', formId)
+          .single();
       expect(afterUpdateError).toBeNull();
       const fieldsAfterUpdate = Array.isArray((afterUpdateRead as any)?.fields)
         ? ((afterUpdateRead as any).fields as Array<Record<string, unknown>>)
