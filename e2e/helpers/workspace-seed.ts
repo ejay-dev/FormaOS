@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { createClient } from '@supabase/supabase-js';
-import type { Page } from '@playwright/test';
+import { test, type Page } from '@playwright/test';
 
 import {
   E2EAuthBootstrapError,
@@ -350,7 +350,17 @@ export async function authenticateWorkspacePage(
 ) {
   const { url } = resolveEnv();
   const appBase = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
-  const creds = await getTestCredentials();
+  let creds: { email: string; password: string };
+  try {
+    creds = await getTestCredentials();
+  } catch (error) {
+    if (error instanceof E2EAuthBootstrapError) {
+      test.skip(true, error.message);
+      // unreachable — test.skip throws internally
+      return { appBase } as never;
+    }
+    throw error;
+  }
   const targetEmail = email ?? creds.email;
   const password =
     targetEmail.toLowerCase() === creds.email.toLowerCase()
