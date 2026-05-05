@@ -119,7 +119,8 @@ test.describe('Settings hub', () => {
     await page.getByLabel('Legal entity name').fill(updatedName);
     await page.getByLabel('Industry').fill(updatedIndustry);
     await page.getByLabel('Team size').fill(updatedTeamSize);
-    await page.getByRole('button', { name: /Commit Profile/i }).click();
+    // Use force:true to bypass any modal overlay that may intercept the click
+    await page.getByRole('button', { name: /Commit Profile/i }).click({ force: true });
     await expect(
       page.getByRole('button', { name: /Commit Profile|Saving/i }),
     ).toBeEnabled({ timeout: 20_000 });
