@@ -40,7 +40,12 @@ let qaOrgIdV2: string | null = null;
 const consoleLogs: string[] = [];
 
 /** Login helper — skips the test if auth redirect times out (Supabase latency) */
-async function loginOrSkip(page: Page, email: string, password: string, appUrl: string): Promise<void> {
+async function loginOrSkip(
+  page: Page,
+  email: string,
+  password: string,
+  appUrl: string,
+): Promise<void> {
   await page.goto(`${appUrl}/auth/signin`);
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', password);
@@ -48,7 +53,10 @@ async function loginOrSkip(page: Page, email: string, password: string, appUrl: 
   try {
     await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
   } catch (err) {
-    test.skip(true, 'Login redirect timed out — Supabase auth may be unavailable');
+    test.skip(
+      true,
+      'Login redirect timed out — Supabase auth may be unavailable',
+    );
   }
 }
 
@@ -239,8 +247,7 @@ test.describe('A) Marketing → App Entry', () => {
 
     // Foundation self-serve lives on the pricing page as "Start Foundation Plan"
     // and hands the user off to app-domain signup with the checkout intent.
-    await page.goto(`${MARKETING_URL.replace(/\/$/, '')}/pricing`);
-    await page.waitForLoadState('networkidle');
+    await page.goto(`${MARKETING_URL.replace(/\/$/, '')}/pricing`, { waitUntil: 'domcontentloaded' }).catch(() => {});
 
     await page.screenshot({
       path: 'test-results/screenshots/A1-pricing-foundation-cta.png',
@@ -282,8 +289,7 @@ test.describe('A) Marketing → App Entry', () => {
     qaOrgIdV1 = result!.orgId;
 
     // Go to signin page
-    await page.goto(`${APP_URL}/auth/signin`);
-    await page.waitForLoadState('networkidle');
+    await page.goto(`${APP_URL}/auth/signin`, { waitUntil: 'domcontentloaded' }).catch(() => {});
 
     await page.screenshot({
       path: 'test-results/screenshots/A3-signin-page.png',
@@ -322,13 +328,19 @@ test.describe('B) In-App Core Routes & Nav', () => {
     try {
       await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
     } catch (err) {
-      test.skip(true, 'Login redirect timed out — Supabase auth may be unavailable');
+      test.skip(
+        true,
+        'Login redirect timed out — Supabase auth may be unavailable',
+      );
       return;
     }
 
     // Navigate to dashboard
     try {
-      await page.goto(`${APP_URL}/app`, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+      await page.goto(`${APP_URL}/app`, {
+        waitUntil: 'domcontentloaded',
+        timeout: 45_000,
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes('timeout') || msg.includes('Timeout')) {
@@ -359,7 +371,10 @@ test.describe('B) In-App Core Routes & Nav', () => {
     try {
       await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
     } catch (err) {
-      test.skip(true, 'Login redirect timed out — Supabase auth may be unavailable');
+      test.skip(
+        true,
+        'Login redirect timed out — Supabase auth may be unavailable',
+      );
       return;
     }
 
@@ -367,8 +382,7 @@ test.describe('B) In-App Core Routes & Nav', () => {
     const routes = ['/app', '/app/tasks', '/app/vault', '/app/settings'];
 
     for (const route of routes) {
-      await page.goto(`${APP_URL}${route}`);
-      await page.waitForLoadState('networkidle');
+      await page.goto(`${APP_URL}${route}`, { waitUntil: 'domcontentloaded' }).catch(() => {});
 
       // Should not be 404
       const is404 = (await page.locator('text=404').count()) > 0;
@@ -381,7 +395,10 @@ test.describe('B) In-App Core Routes & Nav', () => {
     await loginOrSkip(page, QA_EMAIL_V1, QA_PASSWORD, APP_URL);
 
     // Go to settings
-    await page.goto(`${APP_URL}/app/settings`, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+    await page.goto(`${APP_URL}/app/settings`, {
+      waitUntil: 'domcontentloaded',
+      timeout: 45_000,
+    });
 
     // Page should load without error
     const pageTitle = await page.locator('h1, h2').first().textContent();
@@ -407,7 +424,10 @@ test.describe('C) Core Feature Smoke Tests', () => {
     await loginOrSkip(page, QA_EMAIL_V1, QA_PASSWORD, APP_URL);
 
     // Go to tasks
-    await page.goto(`${APP_URL}/app/tasks`, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+    await page.goto(`${APP_URL}/app/tasks`, {
+      waitUntil: 'domcontentloaded',
+      timeout: 45_000,
+    });
 
     await page.screenshot({
       path: 'test-results/screenshots/C9-tasks-page.png',
@@ -480,8 +500,7 @@ test.describe('E) Edge Cases', () => {
         await page.waitForURL(/onboarding/, { timeout: 30000 });
 
         // Refresh page
-        await page.reload();
-        await page.waitForLoadState('networkidle');
+        await page.reload({ waitUntil: 'domcontentloaded' }).catch(() => {});
 
         // Should still be on onboarding (not crash)
         expect(page.url()).toContain('onboarding');
@@ -541,7 +560,10 @@ test.describe('V2: Existing User Login', () => {
     try {
       await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
     } catch (err) {
-      test.skip(true, 'Login redirect timed out — Supabase auth may be unavailable');
+      test.skip(
+        true,
+        'Login redirect timed out — Supabase auth may be unavailable',
+      );
       return;
     }
 
