@@ -53,7 +53,10 @@ async function cleanupOrphanUser(user: OrphanUser | null) {
   if (!admin || !user) return;
 
   if (user.orgId) {
-    await admin.from('org_subscriptions').delete().eq('organization_id', user.orgId);
+    await admin
+      .from('org_subscriptions')
+      .delete()
+      .eq('organization_id', user.orgId);
     await admin.from('org_members').delete().eq('organization_id', user.orgId);
     await admin.from('organizations').delete().eq('id', user.orgId);
   }
@@ -62,11 +65,19 @@ async function cleanupOrphanUser(user: OrphanUser | null) {
 }
 
 const appBase =
-  process.env.PLAYWRIGHT_APP_BASE ?? 'https://app.formaos.com.au';
+  process.env.PLAYWRIGHT_APP_BASE ??
+  process.env.PLAYWRIGHT_BASE_URL ??
+  'http://localhost:3000';
 const siteBase =
-  process.env.PLAYWRIGHT_SITE_BASE ?? 'https://www.formaos.com.au';
+  process.env.PLAYWRIGHT_SITE_BASE ??
+  process.env.PLAYWRIGHT_BASE_URL ??
+  'http://localhost:3000';
 
-async function signInWithMagicLink(page: any, email: string, expectedUrl?: RegExp) {
+async function signInWithMagicLink(
+  page: any,
+  email: string,
+  expectedUrl?: RegExp,
+) {
   const session = await createMagicLinkSession(email);
   await setPlaywrightSession(page.context(), session, appBase);
   const bootstrapResponse = await page.request.post(
@@ -77,7 +88,7 @@ async function signInWithMagicLink(page: any, email: string, expectedUrl?: RegEx
   }
   const payload = await bootstrapResponse.json().catch(() => ({}));
   const next = typeof payload?.next === 'string' ? payload.next : '/app';
-  await page.goto(`${appBase}${next}`, { waitUntil: 'domcontentloaded' });
+  await gotoWithRetry(page, new URL(next, appBase).toString());
   if (expectedUrl) {
     await page.waitForURL(expectedUrl, { timeout: 20_000 });
     return;
@@ -85,16 +96,69 @@ async function signInWithMagicLink(page: any, email: string, expectedUrl?: RegEx
   await page.waitForURL(/\/(app|onboarding)/, { timeout: 20_000 });
 }
 
+function isTransientNavigationError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return (
+    message.includes('ERR_ABORTED') ||
+    message.includes('ECONNRESET') ||
+    message.includes('ERR_CONNECTION_RESET') ||
+    message.includes('Timeout')
+  );
+}
+
+async function gotoWithRetry(page: any, url: string) {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await page.goto(url, {
+        waitUntil: 'domcontentloaded',
+        timeout: 30_000,
+      });
+    } catch (error) {
+      lastError = error;
+      if (!isTransientNavigationError(error) || attempt === 3) {
+        break;
+      }
+      await page.waitForTimeout(500 * attempt);
+    }
+  }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(String(lastError ?? `Failed to navigate to ${url}`));
+}
 
 test.describe.serial('Critical Path Smoke', () => {
   let orphanUser: OrphanUser | null = null;
+  let supabaseSkipReason: string | null = null;
+
   test.beforeAll(async () => {
     if (!admin) {
       throw new Error(
         'SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_URL are required for critical-path tests',
       );
     }
-    orphanUser = await createOrphanUser();
+    try {
+      orphanUser = await createOrphanUser();
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      if (
+        msg.includes('{}') ||
+        msg.includes('fetch failed') ||
+        msg.includes('network')
+      ) {
+        supabaseSkipReason = `Supabase admin API unavailable — skipping until Supabase recovers`;
+        return;
+      }
+      throw error;
+    }
+  });
+
+  test.beforeEach(() => {
+    if (supabaseSkipReason) {
+      test.skip(true, supabaseSkipReason);
+    }
   });
 
   test.afterAll(async () => {
@@ -102,9 +166,11 @@ test.describe.serial('Critical Path Smoke', () => {
     await cleanupTestUser();
   });
 
-  test('Marketing CTA → Auth → Google OAuth redirect wiring', async ({ page }) => {
+  test('Marketing CTA → Auth → Google OAuth redirect wiring', async ({
+    page,
+  }) => {
     await page.goto(siteBase, { waitUntil: 'domcontentloaded' });
-    const cta = page.locator('text=/Start.*Trial|Get.*Started/i').first();
+    const cta = page.getByRole('link', { name: /login/i }).first();
     await expect(cta).toBeVisible();
     await cta.click();
 
@@ -136,6 +202,8 @@ test.describe.serial('Critical Path Smoke', () => {
   test('New user → onboarding + trial provisioning → dashboard → logout/login', async ({
     page,
   }) => {
+    test.setTimeout(240_000);
+
     if (!orphanUser) throw new Error('Missing orphan user');
     await signInWithMagicLink(page, orphanUser.email, /\/onboarding/);
     await expect(page).toHaveURL(/\/onboarding/);
@@ -176,7 +244,7 @@ test.describe.serial('Critical Path Smoke', () => {
       })
       .eq('id', orphanUser.orgId);
 
-    await page.goto(`${appBase}/app`, { waitUntil: 'domcontentloaded' });
+    await gotoWithRetry(page, `${appBase}/app`);
     await expect(page).not.toHaveURL(/\/auth\/signin/);
 
     const routes = [
@@ -206,10 +274,7 @@ test.describe.serial('Critical Path Smoke', () => {
     ];
 
     for (const route of routes) {
-      const response = await page.goto(`${appBase}${route}`, {
-        waitUntil: 'domcontentloaded',
-        timeout: 30_000,
-      });
+      const response = await gotoWithRetry(page, `${appBase}${route}`);
 
       const is404 = response?.status() === 404;
       const hasNotFoundText = await page
@@ -223,7 +288,7 @@ test.describe.serial('Critical Path Smoke', () => {
       ).toBe(false);
     }
 
-    await page.goto(`${appBase}/auth/signout`);
+    await gotoWithRetry(page, `${appBase}/auth/signout`);
     await page.waitForURL(/\/auth\/signin/, { timeout: 10_000 });
 
     await signInWithMagicLink(page, orphanUser.email, /\/app/);

@@ -228,6 +228,8 @@ test.describe('Enterprise Government Audit Readiness', () => {
   test.skip(!!SKIP_REASON, SKIP_REASON || 'Missing environment variables');
   test.describe.configure({ mode: 'serial' }); // Tests depend on each other
 
+  let supabaseSkipReason: string | null = null;
+
   // =========================================================================
   // SETUP — Provision Enterprise user, org, subscription via Supabase Admin
   // =========================================================================
@@ -254,6 +256,14 @@ test.describe('Enterprise Government Audit Readiness', () => {
           created_at: new Date().toISOString(),
         },
       });
+
+    if (userError) {
+      const e = userError as { name?: string; message?: string };
+      if (e.name === 'AuthRetryableFetchError' || e.message === '{}' || e.message === '') {
+        supabaseSkipReason = `Supabase admin API unavailable (${e.name ?? 'network error'}) — skipping until Supabase recovers`;
+        return;
+      }
+    }
 
     expect(userError).toBeNull();
     expect(userData?.user?.id).toBeTruthy();
@@ -850,6 +860,12 @@ test.describe('Enterprise Government Audit Readiness', () => {
     }
 
     console.log('[E2E] Enterprise audit cleanup complete');
+  });
+
+  test.beforeEach(() => {
+    if (supabaseSkipReason) {
+      test.skip(true, supabaseSkipReason);
+    }
   });
 
   // =========================================================================

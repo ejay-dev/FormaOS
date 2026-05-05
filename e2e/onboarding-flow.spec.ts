@@ -64,6 +64,20 @@ test.describe('Onboarding first-session flow', () => {
         email_confirm: true,
         user_metadata: { is_e2e_test: true },
       });
+    if (userError) {
+      const e = userError as { name?: string; message?: string };
+      if (
+        e.name === 'AuthRetryableFetchError' ||
+        e.message === '{}' ||
+        e.message === ''
+      ) {
+        test.skip(
+          true,
+          `Supabase admin API unavailable (${e.name ?? 'network error'}) — skipping`,
+        );
+        return;
+      }
+    }
     expect(userError).toBeNull();
     const userId = userData.user?.id;
     expect(userId).toBeTruthy();
@@ -133,10 +147,7 @@ test.describe('Onboarding first-session flow', () => {
       const nextCta = startHere.getByTestId('start-here-next-cta');
       await expect(nextCta).toBeVisible();
       await expect(nextCta).toContainText(/Create your first care plan/i);
-      await expect(nextCta).toHaveAttribute(
-        'href',
-        '/app/care-plans/new',
-      );
+      await expect(nextCta).toHaveAttribute('href', '/app/care-plans/new');
 
       // Compliance micro-explanation renders under the active step.
       await expect(
@@ -157,9 +168,9 @@ test.describe('Onboarding first-session flow', () => {
       // Strip persists across navigation (open tasks page).
       await page.goto('/app/tasks', { waitUntil: 'domcontentloaded' });
       await expect(page.getByTestId('onboarding-strip')).toBeVisible();
-      await expect(
-        page.getByTestId('onboarding-strip-label'),
-      ).toContainText(/Create your first care plan/i);
+      await expect(page.getByTestId('onboarding-strip-label')).toContainText(
+        /Create your first care plan/i,
+      );
 
       // Guidance middleware: tasks page is off-track for step 1
       // (basePath is /app/care-plans). Guide appears with next step + CTA.
@@ -168,9 +179,10 @@ test.describe('Onboarding first-session flow', () => {
       await expect(
         guide.getByTestId('onboarding-guide-step-label'),
       ).toContainText(/Create your first care plan/i);
-      await expect(
-        guide.getByTestId('onboarding-guide-cta'),
-      ).toHaveAttribute('href', '/app/care-plans/new');
+      await expect(guide.getByTestId('onboarding-guide-cta')).toHaveAttribute(
+        'href',
+        '/app/care-plans/new',
+      );
 
       // "Remind me later" dismisses for the session.
       await guide.getByTestId('onboarding-guide-later').click();
@@ -228,9 +240,9 @@ test.describe('Onboarding first-session flow', () => {
       await expect(
         startHereAfter.getByTestId('start-here-next-cta'),
       ).toContainText(/Add your first goal/i);
-      await expect(
-        page.getByTestId('onboarding-strip-label'),
-      ).toContainText(/Add your first goal/i);
+      await expect(page.getByTestId('onboarding-strip-label')).toContainText(
+        /Add your first goal/i,
+      );
 
       // 8. Emotional feedback: first-step success toast appears once.
       const toast = page.getByTestId('onboarding-success-toast');
@@ -266,9 +278,9 @@ test.describe('Onboarding first-session flow', () => {
         // 9. Reload — toast must NOT reappear (persisted across page loads).
         await page.reload({ waitUntil: 'domcontentloaded' });
         await expect(page.getByTestId('start-here-card')).toBeVisible();
-        await expect(
-          page.getByTestId('onboarding-success-toast'),
-        ).toHaveCount(0);
+        await expect(page.getByTestId('onboarding-success-toast')).toHaveCount(
+          0,
+        );
       } else {
         test.info().annotations.push({
           type: 'skip',
@@ -285,9 +297,7 @@ test.describe('Onboarding first-session flow', () => {
       const banner = page.getByTestId('onboarding-banner');
       await expect(banner).toBeVisible();
       await expect(banner).toHaveAttribute('data-step', 'add-goal');
-      await expect(
-        banner.getByTestId('onboarding-banner-cta'),
-      ).toBeVisible();
+      await expect(banner.getByTestId('onboarding-banner-cta')).toBeVisible();
 
       // 11. Seed a goal → next step becomes log-progress-note, which maps to
       //     /app/participants in NDIS nav. Sidebar should now surface the
@@ -307,9 +317,9 @@ test.describe('Onboarding first-session flow', () => {
         .eq('id', planId);
 
       await page.goto('/app', { waitUntil: 'domcontentloaded' });
-      await expect(
-        page.getByTestId('onboarding-strip-label'),
-      ).toContainText(/Log your first progress note/i);
+      await expect(page.getByTestId('onboarding-strip-label')).toContainText(
+        /Log your first progress note/i,
+      );
 
       // Second emotional beat: toast for add-goal. Only reliable once the
       // previous step was marked seen — gate on migration state.
@@ -381,12 +391,24 @@ test.describe('Onboarding first-session flow', () => {
           .eq('organization_id', orgId);
         await admin.from('org_evidence').delete().eq('organization_id', orgId);
         await admin.from('org_tasks').delete().eq('organization_id', orgId);
-        await admin.from('org_progress_notes').delete().eq('organization_id', orgId);
-        await admin.from('org_care_plans').delete().eq('organization_id', orgId);
+        await admin
+          .from('org_progress_notes')
+          .delete()
+          .eq('organization_id', orgId);
+        await admin
+          .from('org_care_plans')
+          .delete()
+          .eq('organization_id', orgId);
         await admin.from('org_patients').delete().eq('organization_id', orgId);
         await admin.from('org_frameworks').delete().eq('org_id', orgId);
-        await admin.from('org_onboarding_status').delete().eq('organization_id', orgId);
-        await admin.from('org_subscriptions').delete().eq('organization_id', orgId);
+        await admin
+          .from('org_onboarding_status')
+          .delete()
+          .eq('organization_id', orgId);
+        await admin
+          .from('org_subscriptions')
+          .delete()
+          .eq('organization_id', orgId);
         await admin.from('org_members').delete().eq('organization_id', orgId);
         await admin.from('organizations').delete().eq('id', orgId);
       }
