@@ -10,7 +10,7 @@
  * Migration: Replace inline copies in spec files with imports from here.
  */
 
-import type { Page } from '@playwright/test';
+import { test, type Page } from '@playwright/test';
 import {
   E2EAuthBootstrapError,
   createMagicLinkSession,
@@ -44,7 +44,15 @@ export async function getCredentials(): Promise<{
     return cachedCredentials;
   }
 
-  return getTestCredentials();
+  try {
+    return await getTestCredentials();
+  } catch (error) {
+    if (error instanceof E2EAuthBootstrapError) {
+      test.skip(true, error.message);
+      return undefined as never; // unreachable — test.skip throws internally
+    }
+    throw error;
+  }
 }
 
 type AppReadyOptions = {

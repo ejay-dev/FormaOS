@@ -98,7 +98,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
       setTimeout(
         () => reject(new Error(`E2E_AUTH_SIGN_IN_TIMEOUT after ${ms}ms`)),
         ms,
-      )
+      ),
     ),
   ]);
 }
@@ -120,7 +120,10 @@ export function isE2EAuthBootstrapError(
 let createdTestUser: TestUser | null = null;
 const E2E_CACHE_DIR = path.join(process.cwd(), 'test-results');
 const E2E_AUTH_CACHE_PATH = path.join(E2E_CACHE_DIR, 'e2e-auth-user.json');
-const E2E_SESSION_CACHE_PATH = path.join(E2E_CACHE_DIR, 'e2e-session-cache.json');
+const E2E_SESSION_CACHE_PATH = path.join(
+  E2E_CACHE_DIR,
+  'e2e-session-cache.json',
+);
 let cachedAuthWriteAvailability: AuthWriteAvailability | null = null;
 
 function loadCachedTestUser(): TestUser | null {
@@ -221,9 +224,13 @@ async function ensureCachedTestUserProvisioned(
     auth: { persistSession: false },
   });
 
-  const { data: authUser, error: authUserError } =
-    await withTimeout(adminClient.auth.admin.getUserById(user.id), 12_000)
-      .catch(() => ({ data: null, error: new Error('E2E_AUTH_SIGN_IN_TIMEOUT after 12000ms') }));
+  const { data: authUser, error: authUserError } = await withTimeout(
+    adminClient.auth.admin.getUserById(user.id),
+    12_000,
+  ).catch(() => ({
+    data: null,
+    error: new Error('E2E_AUTH_SIGN_IN_TIMEOUT after 12000ms'),
+  }));
   if (authUserError || !authUser?.user) {
     return null;
   }
@@ -234,7 +241,10 @@ async function ensureCachedTestUserProvisioned(
     .eq('user_id', user.id);
 
   if (membershipError) {
-    console.warn('[E2E] Failed to inspect cached user memberships:', membershipError.message);
+    console.warn(
+      '[E2E] Failed to inspect cached user memberships:',
+      membershipError.message,
+    );
     return user;
   }
 
@@ -251,7 +261,9 @@ async function ensureCachedTestUserProvisioned(
   }
 
   const nowIso = new Date().toISOString();
-  const trialEnd = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+  const trialEnd = new Date(
+    Date.now() + 14 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
   for (const orgId of orgIds) {
     await adminClient
@@ -345,7 +357,9 @@ async function ensureCachedTestUserProvisioned(
 function resolveSupabaseEnv(): SupabaseEnv {
   const supabaseUrl = sanitizeEnvValue(process.env.NEXT_PUBLIC_SUPABASE_URL);
   const anonKey = sanitizeEnvValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-  const serviceRoleKey = sanitizeEnvValue(process.env.SUPABASE_SERVICE_ROLE_KEY);
+  const serviceRoleKey = sanitizeEnvValue(
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) {
     throw new E2EAuthBootstrapError(
@@ -540,8 +554,13 @@ export async function createPasswordSession(
   try {
     // Fast-path: use session pre-warmed by global-setup if still fresh enough
     try {
-      const cached = JSON.parse(fs.readFileSync(E2E_SESSION_CACHE_PATH, 'utf8')) as Session;
-      if (cached?.access_token && (cached.expires_at ?? 0) * 1000 > Date.now() + 5 * 60 * 1000) {
+      const cached = JSON.parse(
+        fs.readFileSync(E2E_SESSION_CACHE_PATH, 'utf8'),
+      ) as Session;
+      if (
+        cached?.access_token &&
+        (cached.expires_at ?? 0) * 1000 > Date.now() + 5 * 60 * 1000
+      ) {
         return cached;
       }
     } catch {
@@ -553,10 +572,12 @@ export async function createPasswordSession(
       auth: { persistSession: false },
     });
 
-    let data: Awaited<ReturnType<typeof userClient.auth.signInWithPassword>>['data'] | null =
-      null;
-    let error: Awaited<ReturnType<typeof userClient.auth.signInWithPassword>>['error'] | null =
-      null;
+    let data:
+      | Awaited<ReturnType<typeof userClient.auth.signInWithPassword>>['data']
+      | null = null;
+    let error:
+      | Awaited<ReturnType<typeof userClient.auth.signInWithPassword>>['error']
+      | null = null;
 
     for (let attempt = 1; attempt <= 4; attempt += 1) {
       const response = await withTimeout(
@@ -603,40 +624,58 @@ export async function setPlaywrightSession(
   const base = new URL(appBaseUrl);
   const cookieUrl = `${base.protocol}//${base.host}`;
 
-  await context.addCookies(
-    [
-      ...chunks.map((chunk) => ({
-        name: chunk.name,
-        value: chunk.value,
-        url: cookieUrl,
-        httpOnly: false,
-        secure: base.protocol === 'https:',
-        sameSite: 'Lax',
-      })),
-      {
-        name: 'fos_e2e',
-        value: '1',
-        url: cookieUrl,
-        httpOnly: true,
-        secure: base.protocol === 'https:',
-        sameSite: 'Lax',
-      },
-      {
-        name: 'formaos_cookie_consent',
-        value: 'accepted',
-        url: cookieUrl,
-        httpOnly: false,
-        secure: base.protocol === 'https:',
-        sameSite: 'Lax',
-      },
-    ],
-  );
+  await context.addCookies([
+    ...chunks.map((chunk) => ({
+      name: chunk.name,
+      value: chunk.value,
+      url: cookieUrl,
+      httpOnly: false,
+      secure: base.protocol === 'https:',
+      sameSite: 'Lax',
+    })),
+    {
+      name: 'fos_e2e',
+      value: '1',
+      url: cookieUrl,
+      httpOnly: true,
+      secure: base.protocol === 'https:',
+      sameSite: 'Lax',
+    },
+    {
+      name: 'formaos_cookie_consent',
+      value: 'accepted',
+      url: cookieUrl,
+      httpOnly: false,
+      secure: base.protocol === 'https:',
+      sameSite: 'Lax',
+    },
+  ]);
 }
 
 /**
  * Create a temporary test user via Supabase Admin API
  */
 async function createTemporaryTestUser(): Promise<TestUser> {
+  if (createdTestUser) {
+    return createdTestUser;
+  }
+
+  // Cap the entire user-creation flow to 30s so a slow Supabase never
+  // blocks the full test suite for minutes.
+  try {
+    return await withTimeout(_createTemporaryTestUserImpl(), 30_000);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes('E2E_AUTH_SIGN_IN_TIMEOUT')) {
+      throw new E2EAuthBootstrapError(
+        'E2E auth bootstrap unavailable: Supabase admin API timed out creating test user.',
+      );
+    }
+    throw error;
+  }
+}
+
+async function _createTemporaryTestUserImpl(): Promise<TestUser> {
   if (createdTestUser) {
     return createdTestUser;
   }
@@ -654,12 +693,12 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     let password = `TestPass${testId}!`;
 
     // Create user with admin API (auto-confirms email)
-    let userData: Awaited<
-      ReturnType<typeof adminClient.auth.admin.createUser>
-    >['data'] | null = null;
-    let userError: Awaited<
-      ReturnType<typeof adminClient.auth.admin.createUser>
-    >['error'] | null = null;
+    let userData:
+      | Awaited<ReturnType<typeof adminClient.auth.admin.createUser>>['data']
+      | null = null;
+    let userError:
+      | Awaited<ReturnType<typeof adminClient.auth.admin.createUser>>['error']
+      | null = null;
 
     for (let attempt = 1; attempt <= 6; attempt += 1) {
       if (attempt > 1) {
@@ -766,10 +805,10 @@ async function createTemporaryTestUser(): Promise<TestUser> {
     let memberError: { message: string } | null = null;
     for (let attempt = 1; attempt <= 3; attempt += 1) {
       const response = await adminClient.from('org_members').insert({
-          user_id: userData.user.id,
-          organization_id: orgData.id,
-          role: 'owner',
-        });
+        user_id: userData.user.id,
+        organization_id: orgData.id,
+        role: 'owner',
+      });
 
       memberError = response.error;
       if (!memberError) {
@@ -777,7 +816,10 @@ async function createTemporaryTestUser(): Promise<TestUser> {
       }
 
       const message = memberError.message.toLowerCase();
-      if (message.includes('statement timeout') || message.includes('timeout')) {
+      if (
+        message.includes('statement timeout') ||
+        message.includes('timeout')
+      ) {
         const { data: existingMember } = await adminClient
           .from('org_members')
           .select('id')
@@ -833,45 +875,45 @@ async function createTemporaryTestUser(): Promise<TestUser> {
       console.warn('[E2E] Failed to seed org_onboarding_status:', error);
     }
 
-  // Ensure MFA is enabled for privileged test users to satisfy enforcement
-  try {
-    await adminClient.from('user_security').upsert(
-      {
-        user_id: userData.user.id,
-        two_factor_enabled: true,
-        two_factor_enabled_at: nowIso,
+    // Ensure MFA is enabled for privileged test users to satisfy enforcement
+    try {
+      await adminClient.from('user_security').upsert(
+        {
+          user_id: userData.user.id,
+          two_factor_enabled: true,
+          two_factor_enabled_at: nowIso,
+          updated_at: nowIso,
+        },
+        { onConflict: 'user_id' },
+      );
+    } catch (error) {
+      console.warn('[E2E] Failed to set MFA for test user:', error);
+    }
+
+    // Create trial subscription (required by middleware)
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + 14); // 14 day trial
+
+    const { error: subscriptionError } = await adminClient
+      .from('org_subscriptions')
+      .insert({
+        organization_id: orgData.id,
+        org_id: orgData.id, // Legacy column, still required
+        plan_key: 'pro',
+        plan_code: 'pro', // Legacy FK requires plan_code in some schemas
+        status: 'trialing',
+        trial_expires_at: trialEnd.toISOString(),
+        current_period_end: trialEnd.toISOString(),
         updated_at: nowIso,
-      },
-      { onConflict: 'user_id' },
-    );
-  } catch (error) {
-    console.warn('[E2E] Failed to set MFA for test user:', error);
-  }
+      });
 
-  // Create trial subscription (required by middleware)
-  const trialEnd = new Date();
-  trialEnd.setDate(trialEnd.getDate() + 14); // 14 day trial
-
-  const { error: subscriptionError } = await adminClient
-    .from('org_subscriptions')
-    .insert({
-      organization_id: orgData.id,
-      org_id: orgData.id, // Legacy column, still required
-      plan_key: 'pro',
-      plan_code: 'pro', // Legacy FK requires plan_code in some schemas
-      status: 'trialing',
-      trial_expires_at: trialEnd.toISOString(),
-      current_period_end: trialEnd.toISOString(),
-      updated_at: nowIso,
-    });
-
-  if (subscriptionError) {
-    console.warn(
-      '[E2E] Failed to create subscription:',
-      subscriptionError.message,
-    );
-    // Don't fail - subscription might already exist or be optional
-  }
+    if (subscriptionError) {
+      console.warn(
+        '[E2E] Failed to create subscription:',
+        subscriptionError.message,
+      );
+      // Don't fail - subscription might already exist or be optional
+    }
 
     createdTestUser = {
       id: userData.user.id,
