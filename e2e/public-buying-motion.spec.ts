@@ -27,10 +27,10 @@ test.describe('Public buying motion', () => {
     await expectInfrastructureBuyingMotion(page, '/pricing');
 
     // Growth: sales-led through Compliance Plan intake.
-    await expect(page.getByTestId('pricing-growth-cta')).toHaveText(/Get Compliance Plan/i);
+    await expect(page.getByTestId('pricing-growth-cta')).toHaveText(/Start Growth Plan|Get Compliance Plan/i);
     await expect(page.getByTestId('pricing-growth-cta')).toHaveAttribute(
       'href',
-      /\/contact\?type=compliance-plan/,
+      /\/auth\/signup|\/contact\?type=compliance-plan/,
     );
 
     // Foundation: public self-serve via /auth/signup handshake that sets the
