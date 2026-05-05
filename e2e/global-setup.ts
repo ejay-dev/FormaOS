@@ -1,11 +1,19 @@
+import fs from 'fs';
+import path from 'path';
 import { config } from 'dotenv';
+
+const SESSION_CACHE_PATH = path.join(
+  process.cwd(),
+  'test-results',
+  'e2e-session-cache.json',
+);
 
 /**
  * Playwright global setup — runs once before all tests.
  *
- * Keep this minimal: load `.env.local` so specs see the same vars local
- * dev does, and surface missing/placeholder secrets up-front so the run
- * fails fast with a clear message instead of dozens of flaky auth errors.
+ * - Loads `.env.local` so specs see the same vars local dev does.
+ * - Pre-warms a single Supabase session and writes it to disk so every
+ *   worker process can reuse it without hitting Supabase auth individually.
  */
 export default async function globalSetup(): Promise<void> {
   config({ path: '.env.local' });
@@ -29,7 +37,65 @@ export default async function globalSetup(): Promise<void> {
     }
   }
 
+  // Pre-warm a single session so individual spec files don't each hit
+  // Supabase independently. Workers read the cached session from disk.
+  await prewarmSession();
+
   if (process.env.E2E_DEBUG === '1') {
     console.log(`[e2e/global-setup] baseURL=${baseUrl}`);
+  }
+}
+
+async function prewarmSession(): Promise<void> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+
+  if (!supabaseUrl || !anonKey) return;
+
+  // Skip if a fresh cached session already exists (< 45 min old)
+  try {
+    const existing = JSON.parse(fs.readFileSync(SESSION_CACHE_PATH, 'utf8'));
+    const expiresAt = (existing?.expires_at ?? 0) * 1000;
+    if (expiresAt > Date.now() + 45 * 60 * 1000) {
+      console.log('[e2e/global-setup] Reusing existing pre-warmed session.');
+      return;
+    }
+  } catch {
+    // No cached session yet — create one below
+  }
+
+  // Dynamically import to avoid hard-wiring Supabase into global setup
+  const { getTestCredentials, createPasswordSession, createMagicLinkSession } =
+    await import('./helpers/test-auth');
+
+  let creds: { email: string; password: string };
+  try {
+    creds = await getTestCredentials();
+  } catch (err) {
+    console.warn('[e2e/global-setup] Could not resolve test credentials:', err);
+    return;
+  }
+
+  let session: import('@supabase/supabase-js').Session | null = null;
+  try {
+    session = await createPasswordSession(creds.email, creds.password);
+  } catch {
+    try {
+      session = await createMagicLinkSession(creds.email);
+    } catch (err2) {
+      console.warn(
+        '[e2e/global-setup] Session pre-warm failed (tests will auth individually):',
+        err2,
+      );
+      return;
+    }
+  }
+
+  if (session) {
+    fs.mkdirSync(path.dirname(SESSION_CACHE_PATH), { recursive: true });
+    fs.writeFileSync(SESSION_CACHE_PATH, JSON.stringify(session, null, 2));
+    console.log(
+      `[e2e/global-setup] Session pre-warmed, expires at ${new Date((session.expires_at ?? 0) * 1000).toISOString()}`,
+    );
   }
 }

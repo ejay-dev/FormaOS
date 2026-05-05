@@ -65,11 +65,13 @@ function toBootstrapErrorMessage(error: unknown) {
     message.includes('Invalid API key') ||
     message.includes('invalid api key') ||
     message.includes('invalid jwt') ||
-    message.includes('unauthorized')
+    message.includes('unauthorized') ||
+    message.includes('upstream request timeout') ||
+    message.includes('E2E_AUTH_SIGN_IN_TIMEOUT')
   ) {
     return (
-      'E2E auth bootstrap unavailable: provide real Supabase env values or ' +
-      'set E2E_TEST_EMAIL/E2E_TEST_PASSWORD.'
+      'E2E auth bootstrap unavailable: Supabase auth is timing out. ' +
+      'Tests will be skipped until Supabase recovers.'
     );
   }
   return null;
@@ -82,9 +84,23 @@ function isTransientAuthProbeError(error: unknown) {
     message.includes('TimeoutError') ||
     message.includes('timeout') ||
     message.includes('upstream connect error') ||
+    message.includes('upstream request timeout') ||
     message.includes('ECONNRESET') ||
     message.includes('socket hang up')
   );
+}
+
+/** Race a promise against a timeout, rejecting with a recognisable error. */
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`E2E_AUTH_SIGN_IN_TIMEOUT after ${ms}ms`)),
+        ms,
+      )
+    ),
+  ]);
 }
 
 export class E2EAuthBootstrapError extends Error {
@@ -104,6 +120,7 @@ export function isE2EAuthBootstrapError(
 let createdTestUser: TestUser | null = null;
 const E2E_CACHE_DIR = path.join(process.cwd(), 'test-results');
 const E2E_AUTH_CACHE_PATH = path.join(E2E_CACHE_DIR, 'e2e-auth-user.json');
+const E2E_SESSION_CACHE_PATH = path.join(E2E_CACHE_DIR, 'e2e-session-cache.json');
 let cachedAuthWriteAvailability: AuthWriteAvailability | null = null;
 
 function loadCachedTestUser(): TestUser | null {
@@ -377,6 +394,12 @@ export async function getSupabaseAuthWriteAvailability(): Promise<AuthWriteAvail
       return cachedAuthWriteAvailability;
     }
 
+    // 504 / 5xx from the probe — treat as transient so we try sign-in
+    // (the actual sign-in has its own withTimeout guard)
+    if (response.status >= 500) {
+      return { available: true, reason: null };
+    }
+
     const responseText = await response.text().catch(() => '');
     cachedAuthWriteAvailability = {
       available: false,
@@ -514,6 +537,16 @@ export async function createPasswordSession(
 ): Promise<Session> {
   const { url, anonKey } = resolveSupabaseEnv();
   try {
+    // Fast-path: use session pre-warmed by global-setup if still fresh enough
+    try {
+      const cached = JSON.parse(fs.readFileSync(E2E_SESSION_CACHE_PATH, 'utf8')) as Session;
+      if (cached?.access_token && (cached.expires_at ?? 0) * 1000 > Date.now() + 5 * 60 * 1000) {
+        return cached;
+      }
+    } catch {
+      // No cache or stale — fall through to live sign-in
+    }
+
     await assertSupabaseAuthWriteAvailability();
     const userClient = createClient(url, anonKey, {
       auth: { persistSession: false },
@@ -525,10 +558,10 @@ export async function createPasswordSession(
       null;
 
     for (let attempt = 1; attempt <= 4; attempt += 1) {
-      const response = await userClient.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const response = await withTimeout(
+        userClient.auth.signInWithPassword({ email, password }),
+        12_000,
+      );
 
       data = response.data;
       error = response.error;
