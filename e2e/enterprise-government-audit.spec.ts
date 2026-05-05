@@ -241,576 +241,597 @@ test.describe('Enterprise Government Audit Readiness', () => {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    enterpriseEmail = `qa.gov-audit.${timestamp}@formaos.team`;
+    // Wrap entire setup in try-catch to handle Supabase DB/network timeouts
+    try {
+      enterpriseEmail = `qa.gov-audit.${timestamp}@formaos.team`;
 
-    // Create Enterprise test user
-    const { data: userData, error: userError } =
-      await admin.auth.admin.createUser({
-        email: enterpriseEmail,
-        password: PASSWORD,
-        email_confirm: true,
-        user_metadata: {
-          is_e2e_test: true,
-          full_name: 'Dr. Sarah Chen',
-          role: 'Government Compliance Officer',
-          created_at: new Date().toISOString(),
-        },
-      });
+      // Create Enterprise test user
+      const { data: userData, error: userError } =
+        await admin.auth.admin.createUser({
+          email: enterpriseEmail,
+          password: PASSWORD,
+          email_confirm: true,
+          user_metadata: {
+            is_e2e_test: true,
+            full_name: 'Dr. Sarah Chen',
+            role: 'Government Compliance Officer',
+            created_at: new Date().toISOString(),
+          },
+        });
 
-    if (userError) {
-      const e = userError as { name?: string; message?: string };
-      if (e.name === 'AuthRetryableFetchError' || e.message === '{}' || e.message === '') {
-        supabaseSkipReason = `Supabase admin API unavailable (${e.name ?? 'network error'}) — skipping until Supabase recovers`;
-        return;
+      if (userError) {
+        const e = userError as { name?: string; message?: string };
+        if (
+          e.name === 'AuthRetryableFetchError' ||
+          e.message === '{}' ||
+          e.message === ''
+        ) {
+          supabaseSkipReason = `Supabase admin API unavailable (${e.name ?? 'network error'}) — skipping until Supabase recovers`;
+          return;
+        }
       }
-    }
 
-    expect(userError).toBeNull();
-    expect(userData?.user?.id).toBeTruthy();
-    enterpriseUserId = userData!.user!.id;
-    createdUserIds.push(enterpriseUserId);
+      expect(userError).toBeNull();
+      expect(userData?.user?.id).toBeTruthy();
+      enterpriseUserId = userData!.user!.id;
+      createdUserIds.push(enterpriseUserId);
 
-    // Create Enterprise org
-    const nowIso = new Date().toISOString();
-    const { data: orgData, error: orgError } = await admin
-      .from('organizations')
-      .insert({
-        name: `Meridian Health Group — Enterprise Audit (${timestamp})`,
-        industry: 'enterprise',
-        team_size: '200+',
-        plan_key: 'enterprise',
-        frameworks: ENTERPRISE_FRAMEWORKS as unknown as string[],
-        onboarding_completed: true,
-      })
-      .select('id')
-      .single();
-
-    expect(orgError).toBeNull();
-    enterpriseOrgId = orgData!.id;
-    createdOrgIds.add(enterpriseOrgId);
-
-    // Backfill legacy orgs table
-    await admin
-      .from('orgs')
-      .upsert(
-        {
-          id: enterpriseOrgId,
+      // Create Enterprise org
+      const nowIso = new Date().toISOString();
+      const { data: orgData, error: orgError } = await admin
+        .from('organizations')
+        .insert({
           name: `Meridian Health Group — Enterprise Audit (${timestamp})`,
-          created_by: enterpriseUserId,
-          created_at: nowIso,
-          updated_at: nowIso,
-        },
-        { onConflict: 'id' },
-      )
-      .then(() => {});
+          industry: 'enterprise',
+          team_size: '200+',
+          plan_key: 'enterprise',
+          frameworks: ENTERPRISE_FRAMEWORKS as unknown as string[],
+          onboarding_completed: true,
+        })
+        .select('id')
+        .single();
 
-    // Add user as org owner
-    const { error: memberError } = await admin.from('org_members').insert({
-      user_id: enterpriseUserId,
-      organization_id: enterpriseOrgId,
-      role: 'owner',
-    });
-    expect(memberError).toBeNull();
+      expect(orgError).toBeNull();
+      enterpriseOrgId = orgData!.id;
+      createdOrgIds.add(enterpriseOrgId);
 
-    // Install all compliance frameworks
-    for (const fw of ENTERPRISE_FRAMEWORKS) {
-      await admin.from('org_frameworks').upsert(
+      // Backfill legacy orgs table
+      await admin
+        .from('orgs')
+        .upsert(
+          {
+            id: enterpriseOrgId,
+            name: `Meridian Health Group — Enterprise Audit (${timestamp})`,
+            created_by: enterpriseUserId,
+            created_at: nowIso,
+            updated_at: nowIso,
+          },
+          { onConflict: 'id' },
+        )
+        .then(() => {});
+
+      // Add user as org owner
+      const { error: memberError } = await admin.from('org_members').insert({
+        user_id: enterpriseUserId,
+        organization_id: enterpriseOrgId,
+        role: 'owner',
+      });
+      expect(memberError).toBeNull();
+
+      // Install all compliance frameworks
+      for (const fw of ENTERPRISE_FRAMEWORKS) {
+        await admin.from('org_frameworks').upsert(
+          {
+            organization_id: enterpriseOrgId,
+            framework_slug: fw,
+            enabled_at: nowIso,
+          },
+          { onConflict: 'organization_id,framework_slug' },
+        );
+      }
+
+      // Mark onboarding complete
+      await admin.from('org_onboarding_status').upsert(
         {
           organization_id: enterpriseOrgId,
-          framework_slug: fw,
-          enabled_at: nowIso,
+          current_step: 7,
+          completed_steps: [1, 2, 3, 4, 5, 6, 7],
+          completed_at: nowIso,
+          updated_at: nowIso,
         },
-        { onConflict: 'organization_id,framework_slug' },
+        { onConflict: 'organization_id' },
       );
-    }
 
-    // Mark onboarding complete
-    await admin.from('org_onboarding_status').upsert(
-      {
+      // Enable MFA for Enterprise compliance
+      await admin.from('user_security').upsert(
+        {
+          user_id: enterpriseUserId,
+          two_factor_enabled: true,
+          two_factor_enabled_at: nowIso,
+          updated_at: nowIso,
+        },
+        { onConflict: 'user_id' },
+      );
+
+      // Enterprise subscription (active, not trial)
+      const periodEnd = new Date();
+      periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+      await admin.from('org_subscriptions').insert({
         organization_id: enterpriseOrgId,
-        current_step: 7,
-        completed_steps: [1, 2, 3, 4, 5, 6, 7],
-        completed_at: nowIso,
+        org_id: enterpriseOrgId,
+        plan_key: 'enterprise',
+        plan_code: 'enterprise',
+        status: 'active',
+        current_period_end: periodEnd.toISOString(),
         updated_at: nowIso,
-      },
-      { onConflict: 'organization_id' },
-    );
+      });
 
-    // Enable MFA for Enterprise compliance
-    await admin.from('user_security').upsert(
-      {
-        user_id: enterpriseUserId,
-        two_factor_enabled: true,
-        two_factor_enabled_at: nowIso,
-        updated_at: nowIso,
-      },
-      { onConflict: 'user_id' },
-    );
+      // -----------------------------------------------------------------------
+      // Seed multi-industry data: policies, tasks, assets for all 9 industries
+      // -----------------------------------------------------------------------
 
-    // Enterprise subscription (active, not trial)
-    const periodEnd = new Date();
-    periodEnd.setFullYear(periodEnd.getFullYear() + 1);
-    await admin.from('org_subscriptions').insert({
-      organization_id: enterpriseOrgId,
-      org_id: enterpriseOrgId,
-      plan_key: 'enterprise',
-      plan_code: 'enterprise',
-      status: 'active',
-      current_period_end: periodEnd.toISOString(),
-      updated_at: nowIso,
-    });
+      const industryPolicies = [
+        // NDIS
+        {
+          org_id: enterpriseOrgId,
+          title: 'Incident Management Policy',
+          industry: 'ndis',
+          status: 'published',
+          content:
+            'NDIS incident management procedures for all reportable incidents under the NDIS Quality and Safeguards Commission.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'NDIS Code of Conduct',
+          industry: 'ndis',
+          status: 'published',
+          content:
+            'Worker conduct expectations aligned with NDIS Practice Standards and Code of Conduct requirements.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'NDIS Complaints Management',
+          industry: 'ndis',
+          status: 'published',
+          content:
+            'Clear pathway for participant feedback, complaints resolution, and escalation procedures.',
+          created_by: enterpriseUserId,
+        },
+        // Healthcare
+        {
+          org_id: enterpriseOrgId,
+          title: 'Patient Privacy & Confidentiality Policy',
+          industry: 'healthcare',
+          status: 'published',
+          content:
+            'HIPAA-compliant patient data handling, access controls, and breach notification procedures.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Infection Control Policy',
+          industry: 'healthcare',
+          status: 'published',
+          content:
+            'Standard precautions, PPE requirements, and sterilization protocols for clinical environments.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Clinical Data Breach Response Plan',
+          industry: 'healthcare',
+          status: 'published',
+          content:
+            'Immediate response steps, notification timelines, and remediation procedures for data breaches.',
+          created_by: enterpriseUserId,
+        },
+        // Childcare
+        {
+          org_id: enterpriseOrgId,
+          title: 'Child Protection Policy',
+          industry: 'childcare',
+          status: 'published',
+          content:
+            'Mandatory reporting obligations, child safety protocols, and worker screening requirements under NQF.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Delivery and Collection of Children Policy',
+          industry: 'childcare',
+          status: 'published',
+          content:
+            'Procedures ensuring safe arrival and departure of children, authorized pickup verification.',
+          created_by: enterpriseUserId,
+        },
+        // Aged Care
+        {
+          org_id: enterpriseOrgId,
+          title: 'Dignity and Choice Policy',
+          industry: 'aged_care',
+          status: 'published',
+          content:
+            'Consumer rights framework ensuring dignity, informed consent, and choice in care delivery.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Clinical Governance Framework',
+          industry: 'aged_care',
+          status: 'published',
+          content:
+            'Governance structure for clinical care quality, medication management, and clinical escalation.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Serious Incident Response Scheme (SIRS)',
+          industry: 'aged_care',
+          status: 'published',
+          content:
+            'Mandatory reporting of Priority 1 and Priority 2 incidents to the Aged Care Quality and Safety Commission.',
+          created_by: enterpriseUserId,
+        },
+        // Community Services
+        {
+          org_id: enterpriseOrgId,
+          title: 'Client Rights & Advocacy Policy',
+          industry: 'community_services',
+          status: 'published',
+          content:
+            'Client rights framework with accessible advocacy pathways and complaint mechanisms.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Service Delivery Standards',
+          industry: 'community_services',
+          status: 'published',
+          content:
+            'Quality and consistency standards for community service delivery programs.',
+          created_by: enterpriseUserId,
+        },
+        // Financial Services
+        {
+          org_id: enterpriseOrgId,
+          title: 'AML/CTF Compliance Policy',
+          industry: 'financial_services',
+          status: 'published',
+          content:
+            'Anti-money laundering and counter-terrorism financing procedures, KYC requirements, and suspicious transaction reporting.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Enterprise Risk Management Framework',
+          industry: 'financial_services',
+          status: 'published',
+          content:
+            'Enterprise-wide risk identification, assessment, mitigation, and monitoring framework.',
+          created_by: enterpriseUserId,
+        },
+        // SaaS / Technology
+        {
+          org_id: enterpriseOrgId,
+          title: 'Information Security Policy (SOC 2)',
+          industry: 'saas_technology',
+          status: 'published',
+          content:
+            'Information security controls, access management, and SOC 2 Trust Service Criteria alignment.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Incident Response Plan',
+          industry: 'saas_technology',
+          status: 'published',
+          content:
+            'Security incident detection, response, communication, and post-incident review procedures.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Data Retention & Disposal Policy',
+          industry: 'saas_technology',
+          status: 'published',
+          content:
+            'Data lifecycle management, retention schedules, and secure disposal procedures.',
+          created_by: enterpriseUserId,
+        },
+        // Enterprise / Multi-site
+        {
+          org_id: enterpriseOrgId,
+          title: 'Business Continuity Plan',
+          industry: 'enterprise',
+          status: 'published',
+          content:
+            'Operational resilience, disaster recovery, and business continuity procedures across all sites.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'Vendor & Third-Party Management Policy',
+          industry: 'enterprise',
+          status: 'published',
+          content:
+            'Third-party risk assessment, vendor due diligence, and supply chain compliance requirements.',
+          created_by: enterpriseUserId,
+        },
+        // General
+        {
+          org_id: enterpriseOrgId,
+          title: 'General Privacy Policy',
+          industry: 'other',
+          status: 'published',
+          content:
+            'Personal information protection in accordance with applicable privacy legislation.',
+          created_by: enterpriseUserId,
+        },
+        {
+          org_id: enterpriseOrgId,
+          title: 'General Risk Management Policy',
+          industry: 'other',
+          status: 'published',
+          content:
+            'Organizational risk identification, assessment, and management processes.',
+          created_by: enterpriseUserId,
+        },
+      ];
 
-    // -----------------------------------------------------------------------
-    // Seed multi-industry data: policies, tasks, assets for all 9 industries
-    // -----------------------------------------------------------------------
+      // Attempt to seed policies (best-effort — table may not exist in all envs)
+      try {
+        await admin.from('policies').insert(industryPolicies);
+      } catch (err) {
+        console.warn('[E2E] Policy seeding skipped:', err);
+      }
 
-    const industryPolicies = [
-      // NDIS
-      {
-        org_id: enterpriseOrgId,
-        title: 'Incident Management Policy',
-        industry: 'ndis',
-        status: 'published',
-        content:
-          'NDIS incident management procedures for all reportable incidents under the NDIS Quality and Safeguards Commission.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'NDIS Code of Conduct',
-        industry: 'ndis',
-        status: 'published',
-        content:
-          'Worker conduct expectations aligned with NDIS Practice Standards and Code of Conduct requirements.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'NDIS Complaints Management',
-        industry: 'ndis',
-        status: 'published',
-        content:
-          'Clear pathway for participant feedback, complaints resolution, and escalation procedures.',
-        created_by: enterpriseUserId,
-      },
-      // Healthcare
-      {
-        org_id: enterpriseOrgId,
-        title: 'Patient Privacy & Confidentiality Policy',
-        industry: 'healthcare',
-        status: 'published',
-        content:
-          'HIPAA-compliant patient data handling, access controls, and breach notification procedures.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Infection Control Policy',
-        industry: 'healthcare',
-        status: 'published',
-        content:
-          'Standard precautions, PPE requirements, and sterilization protocols for clinical environments.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Clinical Data Breach Response Plan',
-        industry: 'healthcare',
-        status: 'published',
-        content:
-          'Immediate response steps, notification timelines, and remediation procedures for data breaches.',
-        created_by: enterpriseUserId,
-      },
-      // Childcare
-      {
-        org_id: enterpriseOrgId,
-        title: 'Child Protection Policy',
-        industry: 'childcare',
-        status: 'published',
-        content:
-          'Mandatory reporting obligations, child safety protocols, and worker screening requirements under NQF.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Delivery and Collection of Children Policy',
-        industry: 'childcare',
-        status: 'published',
-        content:
-          'Procedures ensuring safe arrival and departure of children, authorized pickup verification.',
-        created_by: enterpriseUserId,
-      },
-      // Aged Care
-      {
-        org_id: enterpriseOrgId,
-        title: 'Dignity and Choice Policy',
-        industry: 'aged_care',
-        status: 'published',
-        content:
-          'Consumer rights framework ensuring dignity, informed consent, and choice in care delivery.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Clinical Governance Framework',
-        industry: 'aged_care',
-        status: 'published',
-        content:
-          'Governance structure for clinical care quality, medication management, and clinical escalation.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Serious Incident Response Scheme (SIRS)',
-        industry: 'aged_care',
-        status: 'published',
-        content:
-          'Mandatory reporting of Priority 1 and Priority 2 incidents to the Aged Care Quality and Safety Commission.',
-        created_by: enterpriseUserId,
-      },
-      // Community Services
-      {
-        org_id: enterpriseOrgId,
-        title: 'Client Rights & Advocacy Policy',
-        industry: 'community_services',
-        status: 'published',
-        content:
-          'Client rights framework with accessible advocacy pathways and complaint mechanisms.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Service Delivery Standards',
-        industry: 'community_services',
-        status: 'published',
-        content:
-          'Quality and consistency standards for community service delivery programs.',
-        created_by: enterpriseUserId,
-      },
-      // Financial Services
-      {
-        org_id: enterpriseOrgId,
-        title: 'AML/CTF Compliance Policy',
-        industry: 'financial_services',
-        status: 'published',
-        content:
-          'Anti-money laundering and counter-terrorism financing procedures, KYC requirements, and suspicious transaction reporting.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Enterprise Risk Management Framework',
-        industry: 'financial_services',
-        status: 'published',
-        content:
-          'Enterprise-wide risk identification, assessment, mitigation, and monitoring framework.',
-        created_by: enterpriseUserId,
-      },
-      // SaaS / Technology
-      {
-        org_id: enterpriseOrgId,
-        title: 'Information Security Policy (SOC 2)',
-        industry: 'saas_technology',
-        status: 'published',
-        content:
-          'Information security controls, access management, and SOC 2 Trust Service Criteria alignment.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Incident Response Plan',
-        industry: 'saas_technology',
-        status: 'published',
-        content:
-          'Security incident detection, response, communication, and post-incident review procedures.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Data Retention & Disposal Policy',
-        industry: 'saas_technology',
-        status: 'published',
-        content:
-          'Data lifecycle management, retention schedules, and secure disposal procedures.',
-        created_by: enterpriseUserId,
-      },
-      // Enterprise / Multi-site
-      {
-        org_id: enterpriseOrgId,
-        title: 'Business Continuity Plan',
-        industry: 'enterprise',
-        status: 'published',
-        content:
-          'Operational resilience, disaster recovery, and business continuity procedures across all sites.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'Vendor & Third-Party Management Policy',
-        industry: 'enterprise',
-        status: 'published',
-        content:
-          'Third-party risk assessment, vendor due diligence, and supply chain compliance requirements.',
-        created_by: enterpriseUserId,
-      },
-      // General
-      {
-        org_id: enterpriseOrgId,
-        title: 'General Privacy Policy',
-        industry: 'other',
-        status: 'published',
-        content:
-          'Personal information protection in accordance with applicable privacy legislation.',
-        created_by: enterpriseUserId,
-      },
-      {
-        org_id: enterpriseOrgId,
-        title: 'General Risk Management Policy',
-        industry: 'other',
-        status: 'published',
-        content:
-          'Organizational risk identification, assessment, and management processes.',
-        created_by: enterpriseUserId,
-      },
-    ];
+      // Seed tasks across industries
+      const industryTasks = [
+        {
+          organization_id: enterpriseOrgId,
+          title: 'NDIS Worker Screening Check',
+          description:
+            'Verify NDIS worker screening clearances for all support workers.',
+          status: 'pending',
+          priority: 'high',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'RACGP Accreditation Review',
+          description:
+            'Prepare documentation for annual RACGP practice accreditation.',
+          status: 'pending',
+          priority: 'critical',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'Working with Children Checks',
+          description:
+            'Audit WWCC validity for all educators and childcare staff.',
+          status: 'pending',
+          priority: 'high',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'Aged Care Staffing Roster Review',
+          description:
+            'Ensure adequate staffing levels per new minimum staffing regulations.',
+          status: 'in_progress',
+          priority: 'high',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'Vulnerable Persons Clearance Audit',
+          description:
+            'Verify working with vulnerable persons clearances for community services staff.',
+          status: 'pending',
+          priority: 'high',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'AML/CTF Compliance Review',
+          description:
+            'Review anti-money laundering controls and transaction monitoring effectiveness.',
+          status: 'pending',
+          priority: 'critical',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'SOC 2 Readiness Assessment',
+          description:
+            'Evaluate current security controls against SOC 2 Type II Trust Service Criteria.',
+          status: 'in_progress',
+          priority: 'critical',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'Multi-site Compliance Baseline',
+          description:
+            'Establish compliance baseline across all 12 operational sites.',
+          status: 'pending',
+          priority: 'high',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'Enterprise Vendor Risk Assessment',
+          description:
+            'Complete risk assessments for all 47 critical third-party vendors.',
+          status: 'pending',
+          priority: 'medium',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'Annual Staff Compliance Training',
+          description:
+            'Ensure all 200+ staff complete mandatory regulatory compliance training.',
+          status: 'pending',
+          priority: 'medium',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'Food Safety Audit — Aged Care Facilities',
+          description:
+            'Internal audit of kitchen operations and meal service across residential facilities.',
+          status: 'completed',
+          priority: 'medium',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          title: 'Emergency Evacuation Plan Review',
+          description:
+            'Conduct quarterly fire drill rehearsal and update evacuation procedures.',
+          status: 'completed',
+          priority: 'low',
+          created_by: enterpriseUserId,
+        },
+      ];
 
-    // Attempt to seed policies (best-effort — table may not exist in all envs)
-    try {
-      await admin.from('policies').insert(industryPolicies);
-    } catch (err) {
-      console.warn('[E2E] Policy seeding skipped:', err);
+      try {
+        await admin.from('tasks').insert(industryTasks);
+      } catch (err) {
+        console.warn('[E2E] Task seeding skipped:', err);
+      }
+
+      // Seed participants / care plan data
+      const participants = [
+        {
+          organization_id: enterpriseOrgId,
+          first_name: 'James',
+          last_name: 'Morrison',
+          date_of_birth: '1958-03-14',
+          ndis_number: 'NDI-2026-001',
+          status: 'active',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          first_name: 'Fatima',
+          last_name: 'Al-Rashid',
+          date_of_birth: '1985-11-22',
+          ndis_number: 'NDI-2026-002',
+          status: 'active',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          first_name: 'Chen',
+          last_name: 'Wei',
+          date_of_birth: '1972-07-09',
+          ndis_number: 'NDI-2026-003',
+          status: 'active',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          first_name: 'Margaret',
+          last_name: "O'Brien",
+          date_of_birth: '1944-01-30',
+          status: 'active',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          first_name: 'Raj',
+          last_name: 'Patel',
+          date_of_birth: '1990-06-17',
+          ndis_number: 'NDI-2026-004',
+          status: 'active',
+          created_by: enterpriseUserId,
+        },
+      ];
+
+      try {
+        await admin.from('participants').insert(participants);
+      } catch (err) {
+        console.warn('[E2E] Participant seeding skipped:', err);
+      }
+
+      // Seed staff compliance records
+      const staffRecords = [
+        {
+          organization_id: enterpriseOrgId,
+          staff_name: 'Dr. Emily Torres',
+          credential_type: 'Medical License',
+          credential_number: 'MED-2024-1847',
+          expiry_date: '2026-12-31',
+          status: 'current',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          staff_name: 'Nurse Aisha Khan',
+          credential_type: 'Nursing Registration',
+          credential_number: 'NUR-2024-0923',
+          expiry_date: '2026-09-15',
+          status: 'current',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          staff_name: 'Mark Thompson',
+          credential_type: 'NDIS Worker Screening',
+          credential_number: 'WSC-2025-3341',
+          expiry_date: '2027-06-30',
+          status: 'current',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          staff_name: 'Lisa Chen',
+          credential_type: 'Working with Children Check',
+          credential_number: 'WWCC-2025-7712',
+          expiry_date: '2026-08-20',
+          status: 'expiring_soon',
+          created_by: enterpriseUserId,
+        },
+        {
+          organization_id: enterpriseOrgId,
+          staff_name: 'David Okafor',
+          credential_type: 'First Aid Certificate',
+          credential_number: 'FA-2025-0044',
+          expiry_date: '2026-04-01',
+          status: 'expired',
+          created_by: enterpriseUserId,
+        },
+      ];
+
+      try {
+        await admin.from('staff_compliance').insert(staffRecords);
+      } catch (err) {
+        console.warn('[E2E] Staff compliance seeding skipped:', err);
+      }
+
+      console.log(
+        `[E2E] Enterprise audit user provisioned: ${enterpriseEmail} | Org: ${enterpriseOrgId}`,
+      );
+    } catch (setupErr) {
+      const msg =
+        setupErr instanceof Error ? setupErr.message : String(setupErr);
+      if (
+        msg.includes('upstream request timeout') ||
+        msg.includes('statement timeout') ||
+        msg.includes('fetch failed') ||
+        msg.includes('network') ||
+        msg.includes('{}')
+      ) {
+        supabaseSkipReason = `Supabase DB/network unavailable during setup: ${msg.slice(0, 100)} — skipping until Supabase recovers`;
+        return;
+      }
+      throw setupErr;
     }
-
-    // Seed tasks across industries
-    const industryTasks = [
-      {
-        organization_id: enterpriseOrgId,
-        title: 'NDIS Worker Screening Check',
-        description:
-          'Verify NDIS worker screening clearances for all support workers.',
-        status: 'pending',
-        priority: 'high',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'RACGP Accreditation Review',
-        description:
-          'Prepare documentation for annual RACGP practice accreditation.',
-        status: 'pending',
-        priority: 'critical',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'Working with Children Checks',
-        description:
-          'Audit WWCC validity for all educators and childcare staff.',
-        status: 'pending',
-        priority: 'high',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'Aged Care Staffing Roster Review',
-        description:
-          'Ensure adequate staffing levels per new minimum staffing regulations.',
-        status: 'in_progress',
-        priority: 'high',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'Vulnerable Persons Clearance Audit',
-        description:
-          'Verify working with vulnerable persons clearances for community services staff.',
-        status: 'pending',
-        priority: 'high',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'AML/CTF Compliance Review',
-        description:
-          'Review anti-money laundering controls and transaction monitoring effectiveness.',
-        status: 'pending',
-        priority: 'critical',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'SOC 2 Readiness Assessment',
-        description:
-          'Evaluate current security controls against SOC 2 Type II Trust Service Criteria.',
-        status: 'in_progress',
-        priority: 'critical',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'Multi-site Compliance Baseline',
-        description:
-          'Establish compliance baseline across all 12 operational sites.',
-        status: 'pending',
-        priority: 'high',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'Enterprise Vendor Risk Assessment',
-        description:
-          'Complete risk assessments for all 47 critical third-party vendors.',
-        status: 'pending',
-        priority: 'medium',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'Annual Staff Compliance Training',
-        description:
-          'Ensure all 200+ staff complete mandatory regulatory compliance training.',
-        status: 'pending',
-        priority: 'medium',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'Food Safety Audit — Aged Care Facilities',
-        description:
-          'Internal audit of kitchen operations and meal service across residential facilities.',
-        status: 'completed',
-        priority: 'medium',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        title: 'Emergency Evacuation Plan Review',
-        description:
-          'Conduct quarterly fire drill rehearsal and update evacuation procedures.',
-        status: 'completed',
-        priority: 'low',
-        created_by: enterpriseUserId,
-      },
-    ];
-
-    try {
-      await admin.from('tasks').insert(industryTasks);
-    } catch (err) {
-      console.warn('[E2E] Task seeding skipped:', err);
-    }
-
-    // Seed participants / care plan data
-    const participants = [
-      {
-        organization_id: enterpriseOrgId,
-        first_name: 'James',
-        last_name: 'Morrison',
-        date_of_birth: '1958-03-14',
-        ndis_number: 'NDI-2026-001',
-        status: 'active',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        first_name: 'Fatima',
-        last_name: 'Al-Rashid',
-        date_of_birth: '1985-11-22',
-        ndis_number: 'NDI-2026-002',
-        status: 'active',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        first_name: 'Chen',
-        last_name: 'Wei',
-        date_of_birth: '1972-07-09',
-        ndis_number: 'NDI-2026-003',
-        status: 'active',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        first_name: 'Margaret',
-        last_name: "O'Brien",
-        date_of_birth: '1944-01-30',
-        status: 'active',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        first_name: 'Raj',
-        last_name: 'Patel',
-        date_of_birth: '1990-06-17',
-        ndis_number: 'NDI-2026-004',
-        status: 'active',
-        created_by: enterpriseUserId,
-      },
-    ];
-
-    try {
-      await admin.from('participants').insert(participants);
-    } catch (err) {
-      console.warn('[E2E] Participant seeding skipped:', err);
-    }
-
-    // Seed staff compliance records
-    const staffRecords = [
-      {
-        organization_id: enterpriseOrgId,
-        staff_name: 'Dr. Emily Torres',
-        credential_type: 'Medical License',
-        credential_number: 'MED-2024-1847',
-        expiry_date: '2026-12-31',
-        status: 'current',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        staff_name: 'Nurse Aisha Khan',
-        credential_type: 'Nursing Registration',
-        credential_number: 'NUR-2024-0923',
-        expiry_date: '2026-09-15',
-        status: 'current',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        staff_name: 'Mark Thompson',
-        credential_type: 'NDIS Worker Screening',
-        credential_number: 'WSC-2025-3341',
-        expiry_date: '2027-06-30',
-        status: 'current',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        staff_name: 'Lisa Chen',
-        credential_type: 'Working with Children Check',
-        credential_number: 'WWCC-2025-7712',
-        expiry_date: '2026-08-20',
-        status: 'expiring_soon',
-        created_by: enterpriseUserId,
-      },
-      {
-        organization_id: enterpriseOrgId,
-        staff_name: 'David Okafor',
-        credential_type: 'First Aid Certificate',
-        credential_number: 'FA-2025-0044',
-        expiry_date: '2026-04-01',
-        status: 'expired',
-        created_by: enterpriseUserId,
-      },
-    ];
-
-    try {
-      await admin.from('staff_compliance').insert(staffRecords);
-    } catch (err) {
-      console.warn('[E2E] Staff compliance seeding skipped:', err);
-    }
-
-    console.log(
-      `[E2E] Enterprise audit user provisioned: ${enterpriseEmail} | Org: ${enterpriseOrgId}`,
-    );
   });
 
   // =========================================================================
@@ -913,7 +934,9 @@ test.describe('Enterprise Government Audit Readiness', () => {
       await expect(page.locator('text=/procurement/i').first()).toBeVisible();
     });
 
-    test('marketing CTA buttons route through the compliance funnel', async ({ page }) => {
+    test('marketing CTA buttons route through the compliance funnel', async ({
+      page,
+    }) => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
       await waitForPageContent(page);
 

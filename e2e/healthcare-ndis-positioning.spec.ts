@@ -13,7 +13,10 @@
  */
 import { test, expect } from '@playwright/test';
 
-const BASE = process.env.BASE_URL ?? 'http://localhost:3000';
+const BASE =
+  process.env.PLAYWRIGHT_BASE_URL ??
+  process.env.BASE_URL ??
+  'http://localhost:3000';
 
 test.describe('Healthcare & NDIS positioning', () => {
   test.describe.configure({ timeout: 60_000 });
@@ -26,9 +29,7 @@ test.describe('Healthcare & NDIS positioning', () => {
     });
 
     await expect(page.locator('h1').first()).toContainText(/healthcare/i);
-    await expect(
-      page.getByText('Healthcare Compliance').first(),
-    ).toBeVisible();
+    await expect(page.getByText('Healthcare Compliance').first()).toBeVisible();
     await expect(page.getByText(/AHPRA/i).first()).toBeVisible();
   });
 
