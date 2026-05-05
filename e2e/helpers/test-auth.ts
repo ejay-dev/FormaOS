@@ -222,7 +222,8 @@ async function ensureCachedTestUserProvisioned(
   });
 
   const { data: authUser, error: authUserError } =
-    await adminClient.auth.admin.getUserById(user.id);
+    await withTimeout(adminClient.auth.admin.getUserById(user.id), 12_000)
+      .catch(() => ({ data: null, error: new Error('E2E_AUTH_SIGN_IN_TIMEOUT after 12000ms') }));
   if (authUserError || !authUser?.user) {
     return null;
   }
@@ -667,15 +668,18 @@ async function createTemporaryTestUser(): Promise<TestUser> {
         password = `TestPass${testId}!`;
       }
 
-      const response = await adminClient.auth.admin.createUser({
-        email,
-        password,
-        email_confirm: true, // Auto-confirm for testing
-        user_metadata: {
-          is_e2e_test: true,
-          created_at: new Date().toISOString(),
-        },
-      });
+      const response = await withTimeout(
+        adminClient.auth.admin.createUser({
+          email,
+          password,
+          email_confirm: true, // Auto-confirm for testing
+          user_metadata: {
+            is_e2e_test: true,
+            created_at: new Date().toISOString(),
+          },
+        }),
+        15_000,
+      );
 
       userData = response.data;
       userError = response.error;

@@ -45,7 +45,11 @@ export default async function globalSetup(): Promise<void> {
 
   // Pre-warm a single session so individual spec files don't each hit
   // Supabase independently. Workers read the cached session from disk.
-  await prewarmSession();
+  // Cap the total pre-warm time so a slow Supabase doesn't stall the run.
+  await Promise.race([
+    prewarmSession(),
+    new Promise<void>((resolve) => setTimeout(resolve, 30_000)),
+  ]);
 
   if (process.env.E2E_DEBUG === '1') {
     console.log(`[e2e/global-setup] baseURL=${baseUrl}`);
