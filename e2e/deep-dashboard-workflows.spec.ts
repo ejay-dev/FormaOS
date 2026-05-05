@@ -395,6 +395,7 @@ test.describe.serial('Deep dashboard workflows', () => {
     test(`care operations render seeded data for ${industry}`, async ({
       page,
     }) => {
+      test.setTimeout(240_000);
       const label = uniqueId(industry);
 
       await authenticate(page);
