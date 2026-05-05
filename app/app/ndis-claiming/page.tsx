@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
@@ -12,7 +13,12 @@ import {
 
 export const metadata = { title: 'NDIS Claiming | FormaOS' };
 
-export default async function NdisClaimingPage() {
+export default async function NdisClaimingPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const resolvedSearchParams = (await searchParams) ?? {};
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
 
@@ -58,6 +64,13 @@ export default async function NdisClaimingPage() {
     .filter((i) => i.status === 'rejected')
     .reduce((s, i) => s + Number(i.total_amount), 0);
 
+  const generatedCount = Number(resolvedSearchParams.generated ?? 0);
+  const failedCount = Number(resolvedSearchParams.failed ?? 0);
+  const errorCode =
+    typeof resolvedSearchParams.error === 'string'
+      ? resolvedSearchParams.error
+      : null;
+
   const statusColors: Record<string, string> = {
     draft: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
     ready: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300',
@@ -69,6 +82,21 @@ export default async function NdisClaimingPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
+      {(generatedCount > 0 || failedCount > 0) && (
+        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
+          Generated {generatedCount} claim item{generatedCount === 1 ? '' : 's'}
+          {failedCount > 0 ? `, ${failedCount} failed` : ''}.
+        </div>
+      )}
+
+      {errorCode && (
+        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300">
+          {errorCode === 'no_claims'
+            ? 'No draft or ready claim items are available to export yet.'
+            : 'The NDIS claiming action could not be completed. Please try again.'}
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">NDIS Claiming</h1>
@@ -78,12 +106,17 @@ export default async function NdisClaimingPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted">
-            <RefreshCw className="h-4 w-4" /> Generate from Visits
-          </button>
-          <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground hover:bg-primary/90">
+          <form action="/api/ndis-claiming/generate" method="POST">
+            <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted">
+              <RefreshCw className="h-4 w-4" /> Generate from Visits
+            </button>
+          </form>
+          <Link
+            href="/api/ndis-claiming/export"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground hover:bg-primary/90"
+          >
             <Download className="h-4 w-4" /> Export Claim File
-          </button>
+          </Link>
         </div>
       </div>
 

@@ -10,6 +10,23 @@ const APP_BASE = (
   'https://app.formaos.com.au'
 ).replace(/\/$/, '');
 
+const isLoopbackHost = (hostname: string) =>
+  ['localhost', '127.0.0.1', '[::1]'].includes(hostname);
+
+const expectedAuthBase = (() => {
+  try {
+    const app = new URL(APP_BASE);
+    const site = new URL(SITE_BASE);
+    if (isLoopbackHost(app.hostname) && isLoopbackHost(site.hostname)) {
+      return site.origin;
+    }
+  } catch {
+    // Fall through to APP_BASE for invalid env values.
+  }
+
+  return APP_BASE;
+})();
+
 const marketingPages = [
   { name: 'Home', path: '/' },
   { name: 'Product', path: '/product' },
@@ -103,7 +120,7 @@ test.describe('Marketing CTA wiring', () => {
       const loginLink = scope.getByRole('link', { name: /login/i }).first();
       await expect(loginLink).toBeVisible();
       const loginHref = normalizeHref(await loginLink.getAttribute('href'));
-      expect(loginHref).toContain(`${APP_BASE}/auth/signin`);
+      expect(loginHref).toContain(`${expectedAuthBase}/auth/signin`);
 
       const compliancePlanLink = scope
         .getByRole('link', { name: /get compliance plan/i })
@@ -154,7 +171,7 @@ test.describe('Marketing CTA wiring', () => {
     // local dev alike. We only assert the handshake query shape, not a
     // specific absolute origin.
     const foundationCta = page
-      .getByRole('link', { name: /start assessment/i })
+      .getByRole('link', { name: /start foundation plan/i })
       .first();
     await expect(foundationCta).toBeVisible();
     const foundationHref = normalizeHref(

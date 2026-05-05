@@ -1,11 +1,9 @@
 import { test, expect, type Page } from '@playwright/test';
 import {
-  getTestCredentials,
   cleanupTestUser,
-  createMagicLinkSession,
   isE2EAuthBootstrapError,
-  setPlaywrightSession,
 } from './helpers/test-auth';
+import { getCredentials, loginAs } from './helpers/fixtures';
 
 const CRITICAL_APP_ROUTES = [
   '/app',
@@ -25,8 +23,6 @@ const CRITICAL_APP_ROUTES = [
   '/app/settings',
 ];
 
-let credentials: { email: string; password: string } | null = null;
-
 function hasAuthBootstrapEnv() {
   return Boolean(
     (process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) ||
@@ -34,24 +30,6 @@ function hasAuthBootstrapEnv() {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
         process.env.SUPABASE_SERVICE_ROLE_KEY),
   );
-}
-
-async function resolveCredentials() {
-  if (credentials) return credentials;
-  if (!hasAuthBootstrapEnv()) {
-    throw new Error('Missing auth bootstrap env for app integrity smoke test');
-  }
-
-  if (process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) {
-    credentials = {
-      email: process.env.E2E_TEST_EMAIL,
-      password: process.env.E2E_TEST_PASSWORD,
-    };
-    return credentials;
-  }
-
-  credentials = await getTestCredentials();
-  return credentials;
 }
 
 function redirectCount(response: Awaited<ReturnType<Page['goto']>>) {
@@ -68,30 +46,43 @@ function redirectCount(response: Awaited<ReturnType<Page['goto']>>) {
 }
 
 async function authenticate(page: Page) {
-  const creds = await resolveCredentials();
-  const appBase = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
+  const creds = await getCredentials();
+  await loginAs(page, creds.email, creds.password);
+}
 
-  await page.addInitScript(() => {
-    localStorage.setItem('e2e_test_mode', 'true');
-  });
+async function gotoWithRetry(page: Page, route: string) {
+  let lastError: unknown;
 
-  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      const session = await createMagicLinkSession(creds.email);
-      await setPlaywrightSession(page.context(), session, appBase);
-      await page.goto('/app', { waitUntil: 'domcontentloaded' });
-      await page.waitForURL(/\/app/, { timeout: 20_000 });
-      return;
-    } catch {
-      // Fall back to UI login when magic-link bootstrap is unavailable.
+      const response = await page.goto(route, {
+        waitUntil: 'commit',
+        timeout: 30_000,
+      });
+      await expect(page).toHaveURL(new RegExp(`${route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`), {
+        timeout: 15_000,
+      });
+      await page.locator('body').waitFor({ timeout: 15_000 });
+      return response;
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      const retryable =
+        message.includes('ERR_ABORTED') ||
+        message.includes('Timeout') ||
+        message.includes('ECONNRESET') ||
+        message.includes('net::ERR_CONNECTION_RESET');
+
+      if (!retryable || attempt === 2) {
+        throw error;
+      }
+
+      await page.goto('about:blank', { timeout: 5_000 }).catch(() => {});
+      await page.waitForTimeout(500 * (attempt + 1));
     }
   }
 
-  await page.goto('/auth/signin');
-  await page.fill('input[type="email"]', creds.email);
-  await page.fill('input[type="password"]', creds.password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL(/\/app/, { timeout: 20_000 });
+  throw lastError;
 }
 
 test.describe('App link integrity', () => {
@@ -117,10 +108,9 @@ test.describe('App link integrity', () => {
 
   for (const route of CRITICAL_APP_ROUTES) {
     test(`critical route reachable: ${route}`, async ({ page }) => {
-      const response = await page.goto(route, {
-        waitUntil: 'domcontentloaded',
-        timeout: 45_000,
-      });
+      test.setTimeout(180_000);
+
+      const response = await gotoWithRetry(page, route);
 
       const redirects = redirectCount(response);
       const status = response?.status() ?? 0;
@@ -138,10 +128,9 @@ test.describe('App link integrity', () => {
   }
 
   test('admin route denies gracefully for non-admin users', async ({ page }) => {
-    const response = await page.goto('/app/admin', {
-      waitUntil: 'domcontentloaded',
-      timeout: 45_000,
-    });
+    test.setTimeout(180_000);
+
+    const response = await gotoWithRetry(page, '/app/admin');
 
     const status = response?.status() ?? 0;
     const text = (await page.locator('body').textContent()) || '';

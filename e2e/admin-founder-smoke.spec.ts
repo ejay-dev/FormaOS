@@ -158,9 +158,13 @@ test.describe('Admin founder smoke', () => {
         expect(response.status(), `${apiPath} should return 200`).toBe(200);
       }
     } catch (outerError) {
-      const msg = outerError instanceof Error ? outerError.message : String(outerError);
+      const msg =
+        outerError instanceof Error ? outerError.message : String(outerError);
       if (msg.toLowerCase().includes('timeout')) {
-        test.skip(true, `Admin pages not loading within timeout — Supabase SSR may be slow: ${msg.slice(0, 120)}`);
+        test.skip(
+          true,
+          `Admin pages not loading within timeout — Supabase SSR may be slow: ${msg.slice(0, 120)}`,
+        );
         return;
       }
       throw outerError;

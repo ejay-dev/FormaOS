@@ -52,7 +52,10 @@ async function loginAs(page: Page, email: string, password: string) {
         await page.waitForURL(/\/app/, { timeout: 15000 });
       } catch {
         const url = page.url();
-        test.skip(true, `loginAs (magic link): landed on ${url} instead of /app`);
+        test.skip(
+          true,
+          `loginAs (magic link): landed on ${url} instead of /app`,
+        );
         return;
       }
       await dismissProductTour(page);
@@ -73,7 +76,10 @@ async function loginAs(page: Page, email: string, password: string) {
     await page.waitForURL(/\/app/, { timeout: 15000 });
   } catch {
     const url = page.url();
-    test.skip(true, `loginAs (UI): landed on ${url} instead of /app — Supabase auth or onboarding not complete`);
+    test.skip(
+      true,
+      `loginAs (UI): landed on ${url} instead of /app — Supabase auth or onboarding not complete`,
+    );
     return;
   }
   await dismissProductTour(page);
@@ -125,7 +131,10 @@ test.describe('Enterprise QA Smoke Suite', () => {
     // Should be logged in after beforeEach
     const url = page.url();
     if (!url.includes('/app')) {
-      test.skip(true, `Auth flow landed on ${url} instead of /app — Supabase auth or onboarding not complete`);
+      test.skip(
+        true,
+        `Auth flow landed on ${url} instead of /app — Supabase auth or onboarding not complete`,
+      );
       return;
     }
     console.log('PASS: Authentication flow works');
@@ -228,7 +237,10 @@ test.describe('Enterprise QA Smoke Suite', () => {
       .catch(() => false);
 
     if (!hasContent) {
-      test.skip(true, `Billing page content not found — may have redirected to onboarding or auth (url: ${page.url()})`);
+      test.skip(
+        true,
+        `Billing page content not found — may have redirected to onboarding or auth (url: ${page.url()})`,
+      );
       return;
     }
     console.log('PASS: Billing page accessible');

@@ -7,6 +7,7 @@ import { Building2, ShieldCheck, Sparkles } from 'lucide-react';
 import { SubmitButton } from '@/components/ui/submit-button';
 import { applyIndustryPack } from '@/app/app/onboarding/actions';
 import { createInvitation } from '@/lib/invitations/create-invitation';
+import { sendEmail } from '@/lib/email/send-email';
 import { resolvePlanKey, PLAN_CATALOG } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import {
@@ -599,7 +600,7 @@ async function saveFrameworkSelection(formData: FormData) {
 async function saveInvites(formData: FormData) {
   'use server';
   try {
-    const { orgId, user } = await getOrgContext();
+    const { orgId, orgRecord, user } = await getOrgContext();
     const inviteEmails = parseInviteEmails(
       formData.get('inviteEmails') as string | null,
     );
@@ -610,27 +611,73 @@ async function saveInvites(formData: FormData) {
     }
 
     if (validation.validEmails.length > 0) {
-      const inviteResults = await Promise.allSettled(
-        validation.validEmails.map((email) =>
-          createInvitation({
+      const inviteBase =
+        process.env.NEXT_PUBLIC_APP_URL ??
+        process.env.NEXT_PUBLIC_SITE_URL ??
+        'https://app.formaos.com.au';
+      const inviterName =
+        user.user_metadata?.full_name ||
+        user.user_metadata?.name ||
+        user.email?.split('@')[0] ||
+        'A team member';
+      const inviterEmail =
+        user.email ?? process.env.SUPPORT_EMAIL ?? 'Formaos.team@gmail.com';
+
+      const inviteResults = await Promise.all(
+        validation.validEmails.map(async (email) => {
+          const invitation = await createInvitation({
             organizationId: orgId,
             email,
             role: 'member',
             invitedBy: user.id,
-          }),
-        ),
+          });
+
+          if (!invitation.success || !invitation.data) {
+            const errorMessage =
+              invitation.error instanceof Error
+                ? invitation.error.message
+                : String(invitation.error ?? 'Failed to create invitation');
+
+            return {
+              email,
+              ok: false,
+              error: errorMessage,
+            };
+          }
+
+          const inviteUrl = `${inviteBase.replace(/\/$/, '')}/accept-invite/${invitation.data.token}`;
+          const emailResult = await sendEmail({
+            type: 'invite',
+            to: email,
+            inviterName,
+            inviterEmail,
+            organizationName: orgRecord?.name || 'Organization',
+            inviteUrl,
+            role: 'member',
+            organizationId: orgId,
+            userId: user.id,
+          });
+
+          return {
+            email,
+            ok: emailResult.success,
+            error: emailResult.success
+              ? null
+              : (emailResult.error ?? 'Failed to deliver invite email'),
+          };
+        }),
       );
 
-      const failedInvites = inviteResults.filter(
-        (result) => result.status === 'rejected',
-      );
+      const failedInvites = inviteResults.filter((result) => !result.ok);
 
       if (failedInvites.length > 0) {
         console.warn('[onboarding] invitation creation encountered failures', {
           orgId,
           failureCount: failedInvites.length,
           inviteCount: validation.validEmails.length,
+          failedInvites,
         });
+        redirect('/onboarding?step=6&error=1');
       }
     }
 

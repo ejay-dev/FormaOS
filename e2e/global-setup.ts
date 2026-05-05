@@ -34,7 +34,10 @@ export default async function globalSetup(): Promise<void> {
   // Playwright jobs on CI run without them, so don't block the suite here
   // — individual specs that need Supabase should guard themselves.
   if (process.env.CI && process.env.E2E_REQUIRE_SUPABASE === '1') {
-    const required = ['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY'];
+    const required = [
+      'NEXT_PUBLIC_SUPABASE_URL',
+      'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    ];
     const missing = required.filter((key) => !process.env[key]?.trim());
     if (missing.length > 0) {
       throw new Error(

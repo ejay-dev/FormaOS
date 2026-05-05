@@ -22,13 +22,13 @@ const sizeMap: Record<Size, { box: string; text: string }> = {
 };
 
 const toneBg: Record<AvatarTone, string> = {
-  blue: 'bg-[hsl(var(--app-primary))]',
-  emerald: 'bg-emerald-500',
-  amber: 'bg-amber-500',
-  rose: 'bg-rose-500',
-  slate: 'bg-slate-500',
-  violet: 'bg-violet-500',
-  cyan: 'bg-cyan-500',
+  blue: 'bg-blue-700',
+  emerald: 'bg-emerald-700',
+  amber: 'bg-amber-800',
+  rose: 'bg-rose-700',
+  slate: 'bg-slate-700',
+  violet: 'bg-violet-700',
+  cyan: 'bg-cyan-800',
 };
 
 export interface AvatarProps {

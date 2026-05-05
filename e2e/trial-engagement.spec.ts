@@ -4,7 +4,11 @@
  */
 
 import { test, expect, type Page } from '@playwright/test';
-import { getTestCredentials, cleanupTestUser, E2EAuthBootstrapError } from './helpers/test-auth';
+import {
+  getTestCredentials,
+  cleanupTestUser,
+  E2EAuthBootstrapError,
+} from './helpers/test-auth';
 
 let testCredentials: { email: string; password: string } | null = null;
 
@@ -43,7 +47,9 @@ async function loginAs(page: Page, email: string, password: string) {
 
 async function dismissProductTour(page: Page) {
   try {
-    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
+    await page
+      .waitForLoadState('networkidle', { timeout: 5000 })
+      .catch(() => {});
     const tourText = page.locator('text="Product Tour"');
     if (await tourText.isVisible({ timeout: 2000 })) {
       const skipBtn = page.locator('button:has-text("Skip Tour")');
@@ -76,8 +82,13 @@ test.describe('Trial Expiration Banners', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for trial banner
-    const trialBanner = page.locator('[data-testid="trial-banner"], text=/trial|days? (left|remaining)/i');
-    const hasBanner = await trialBanner.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const trialBanner = page.locator(
+      '[data-testid="trial-banner"], text=/trial|days? (left|remaining)/i',
+    );
+    const hasBanner = await trialBanner
+      .first()
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
 
     if (hasBanner) {
       console.log('Trial banner displayed for trial account');
@@ -92,7 +103,10 @@ test.describe('Trial Expiration Banners', () => {
 
     // Look for countdown text
     const countdown = page.locator('text=/\\d+ days?/i');
-    const hasCountdown = await countdown.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const hasCountdown = await countdown
+      .first()
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
 
     if (hasCountdown) {
       // Extract days number
@@ -111,12 +125,22 @@ test.describe('Trial Expiration Banners', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for trial-related upgrade button
-    const trialBanner = page.locator('[data-testid="trial-banner"], text=/trial/i');
-    const hasBanner = await trialBanner.first().isVisible({ timeout: 3000 }).catch(() => false);
+    const trialBanner = page.locator(
+      '[data-testid="trial-banner"], text=/trial/i',
+    );
+    const hasBanner = await trialBanner
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
 
     if (hasBanner) {
-      const upgradeBtn = page.locator('button:has-text("Upgrade"), a:has-text("Upgrade"), button:has-text("Choose Plan")');
-      const hasUpgrade = await upgradeBtn.first().isVisible({ timeout: 3000 }).catch(() => false);
+      const upgradeBtn = page.locator(
+        'button:has-text("Upgrade"), a:has-text("Upgrade"), button:has-text("Choose Plan")',
+      );
+      const hasUpgrade = await upgradeBtn
+        .first()
+        .isVisible({ timeout: 3000 })
+        .catch(() => false);
       expect(hasUpgrade).toBe(true);
       console.log('Trial banner includes upgrade CTA');
     }
@@ -137,13 +161,26 @@ test.describe('Trial Urgency Messaging', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for colored banners (amber for warning, red for critical)
-    const amberBanner = page.locator('.bg-amber-500, .border-amber-500, .text-amber-');
+    const amberBanner = page.locator(
+      '.bg-amber-500, .border-amber-500, .text-amber-',
+    );
     const redBanner = page.locator('.bg-red-500, .border-red-500, .text-red-');
-    const blueBanner = page.locator('.bg-blue-500, .border-blue-500, .text-blue-');
+    const blueBanner = page.locator(
+      '.bg-blue-500, .border-blue-500, .text-blue-',
+    );
 
-    const hasAmber = await amberBanner.first().isVisible({ timeout: 3000 }).catch(() => false);
-    const hasRed = await redBanner.first().isVisible({ timeout: 3000 }).catch(() => false);
-    const hasBlue = await blueBanner.first().isVisible({ timeout: 3000 }).catch(() => false);
+    const hasAmber = await amberBanner
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
+    const hasRed = await redBanner
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
+    const hasBlue = await blueBanner
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
 
     if (hasAmber) console.log('Warning (amber) banner displayed');
     if (hasRed) console.log('Critical (red) banner displayed');
@@ -155,13 +192,26 @@ test.describe('Trial Urgency Messaging', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for urgency-related messaging
-    const urgentText = page.locator('text=/expires? (today|tomorrow)|last day|urgent|final/i');
-    const warningText = page.locator('text=/only \\d+ days?|almost over|running out/i');
+    const urgentText = page.locator(
+      'text=/expires? (today|tomorrow)|last day|urgent|final/i',
+    );
+    const warningText = page.locator(
+      'text=/only \\d+ days?|almost over|running out/i',
+    );
     const infoText = page.locator('text=/\\d+ days? (left|remaining)/i');
 
-    const hasUrgent = await urgentText.first().isVisible({ timeout: 3000 }).catch(() => false);
-    const hasWarning = await warningText.first().isVisible({ timeout: 3000 }).catch(() => false);
-    const hasInfo = await infoText.first().isVisible({ timeout: 3000 }).catch(() => false);
+    const hasUrgent = await urgentText
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
+    const hasWarning = await warningText
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
+    const hasInfo = await infoText
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
 
     if (hasUrgent) console.log('Urgent messaging (1 day or less)');
     if (hasWarning) console.log('Warning messaging (3 days or less)');
@@ -199,8 +249,13 @@ test.describe('Trial Value Recap', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for value recap content
-    const valueRecap = page.locator('text=/completed|uploaded|achieved|progress/i');
-    const hasValueRecap = await valueRecap.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const valueRecap = page.locator(
+      'text=/completed|uploaded|achieved|progress/i',
+    );
+    const hasValueRecap = await valueRecap
+      .first()
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
 
     if (hasValueRecap) {
       console.log('Value recap activity summary displayed');
@@ -212,8 +267,13 @@ test.describe('Trial Value Recap', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for value highlights
-    const highlights = page.locator('[data-testid="value-highlight"], text=/tasks?|evidence|compliance|score/i');
-    const hasHighlights = await highlights.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const highlights = page.locator(
+      '[data-testid="value-highlight"], text=/tasks?|evidence|compliance|score/i',
+    );
+    const hasHighlights = await highlights
+      .first()
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
 
     if (hasHighlights) {
       console.log('Value highlights displayed');
@@ -235,15 +295,25 @@ test.describe('Trial Expiration Flow', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for expired trial messaging
-    const expiredText = page.locator('text=/trial (has )?expired|trial ended|no longer active/i');
-    const hasExpired = await expiredText.first().isVisible({ timeout: 3000 }).catch(() => false);
+    const expiredText = page.locator(
+      'text=/trial (has )?expired|trial ended|no longer active/i',
+    );
+    const hasExpired = await expiredText
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
 
     if (hasExpired) {
       console.log('Expired trial messaging displayed');
 
       // Should show upgrade option
-      const upgradeBtn = page.locator('button:has-text("Upgrade"), a:has-text("Upgrade")');
-      const hasUpgrade = await upgradeBtn.first().isVisible({ timeout: 3000 }).catch(() => false);
+      const upgradeBtn = page.locator(
+        'button:has-text("Upgrade"), a:has-text("Upgrade")',
+      );
+      const hasUpgrade = await upgradeBtn
+        .first()
+        .isVisible({ timeout: 3000 })
+        .catch(() => false);
       expect(hasUpgrade).toBe(true);
     } else {
       console.log('Trial not expired or account is paid');
@@ -255,8 +325,13 @@ test.describe('Trial Expiration Flow', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for dismissable banner
-    const dismissBtn = page.locator('[data-testid="dismiss-trial-banner"], button[aria-label*="dismiss"], button[aria-label*="close"]');
-    const hasDismiss = await dismissBtn.first().isVisible({ timeout: 3000 }).catch(() => false);
+    const dismissBtn = page.locator(
+      '[data-testid="dismiss-trial-banner"], button[aria-label*="dismiss"], button[aria-label*="close"]',
+    );
+    const hasDismiss = await dismissBtn
+      .first()
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
 
     if (hasDismiss) {
       await dismissBtn.first().click();

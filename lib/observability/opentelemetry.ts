@@ -1,9 +1,15 @@
 import 'server-only';
 
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION,
+} from '@opentelemetry/semantic-conventions';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { createLangfuseSpanProcessor } from '@/lib/observability/langfuse';
@@ -36,6 +42,12 @@ function parseOtelHeaders(
 
 async function startOpenTelemetry(): Promise<boolean> {
   const spanProcessors = [];
+  const serviceName = process.env.OTEL_SERVICE_NAME?.trim() || 'formaos';
+  const serviceVersion =
+    process.env.NEXT_PUBLIC_APP_VERSION?.trim() ||
+    process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ||
+    process.env.GIT_COMMIT_SHA?.slice(0, 12) ||
+    'local';
 
   const langfuseProcessor = createLangfuseSpanProcessor();
   if (langfuseProcessor) {
@@ -62,11 +74,15 @@ async function startOpenTelemetry(): Promise<boolean> {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
   }
 
-  if (!process.env.OTEL_SERVICE_NAME) {
-    process.env.OTEL_SERVICE_NAME = 'formaos';
-  }
+  process.env.OTEL_SERVICE_NAME = serviceName;
 
   const provider = new NodeTracerProvider({
+    resource: resourceFromAttributes({
+      [ATTR_SERVICE_NAME]: serviceName,
+      [ATTR_SERVICE_VERSION]: serviceVersion,
+      'deployment.environment.name':
+        process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
+    }),
     spanProcessors,
   });
   provider.register();
@@ -75,6 +91,17 @@ async function startOpenTelemetry(): Promise<boolean> {
     tracerProvider: provider,
     instrumentations: [
       new HttpInstrumentation(),
+      getNodeAutoInstrumentations({
+        '@opentelemetry/instrumentation-dns': {
+          enabled: false,
+        },
+        '@opentelemetry/instrumentation-fs': {
+          enabled: false,
+        },
+        '@opentelemetry/instrumentation-winston': {
+          enabled: false,
+        },
+      }),
     ],
   });
 

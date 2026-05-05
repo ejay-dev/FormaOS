@@ -95,10 +95,9 @@ export async function waitForAppReady(
 
   if (!pathMatches(currentPath, expectedPath)) {
     await page
-      .waitForURL(
-        (url) => pathMatches(new URL(url).pathname, expectedPath),
-        { timeout },
-      )
+      .waitForURL((url) => pathMatches(new URL(url).pathname, expectedPath), {
+        timeout,
+      })
       .catch(() => {
         throw new Error(
           `Expected FormaOS app route ${expectedPath}, current URL is ${page.url()}`,
@@ -116,10 +115,7 @@ export async function waitForAppReady(
     .catch(() => {});
 }
 
-export async function gotoAppRoute(
-  page: Page,
-  path = '/app',
-): Promise<void> {
+export async function gotoAppRoute(page: Page, path = '/app'): Promise<void> {
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= 3; attempt += 1) {
@@ -187,12 +183,15 @@ async function bootstrapSession(page: Page, email: string, password: string) {
   let lastError: unknown;
   for (let attempt = 1; attempt <= BOOTSTRAP_ATTEMPTS; attempt += 1) {
     try {
-      const response = await page.request.post(`${appBase}/api/auth/bootstrap`, {
-        headers: {
-          'x-formaos-e2e': '1',
+      const response = await page.request.post(
+        `${appBase}/api/auth/bootstrap`,
+        {
+          headers: {
+            'x-formaos-e2e': '1',
+          },
+          timeout: BOOTSTRAP_REQUEST_TIMEOUT_MS,
         },
-        timeout: BOOTSTRAP_REQUEST_TIMEOUT_MS,
-      });
+      );
 
       if (response.ok()) {
         return;

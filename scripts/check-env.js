@@ -126,7 +126,9 @@ const activeRequiredKeys =
     ? [...requiredKeys, ...productionRequiredKeys]
     : requiredKeys;
 const missingRequired = activeRequiredKeys.filter((key) => !combinedVars[key]);
-const exposedPublicSecrets = forbiddenPublicKeys.filter((key) => !!combinedVars[key]);
+const exposedPublicSecrets = forbiddenPublicKeys.filter(
+  (key) => !!combinedVars[key],
+);
 
 if (missingRequired.length > 0 || exposedPublicSecrets.length > 0) {
   console.error('\nMissing required environment variables in .env.local:');

@@ -81,10 +81,9 @@ test.describe('Self-serve checkout handshake', () => {
   }) => {
     // Growth (pro) is sales-led — the cookie path must not trigger even if a
     // bad link tries ?plan=pro&intent=checkout.
-    const response = await page.goto(
-      '/auth/signup?plan=pro&intent=checkout',
-      { waitUntil: 'domcontentloaded' },
-    );
+    const response = await page.goto('/auth/signup?plan=pro&intent=checkout', {
+      waitUntil: 'domcontentloaded',
+    });
     expect(response?.status()).toBeLessThan(400);
 
     await page.waitForLoadState('networkidle');
@@ -94,7 +93,10 @@ test.describe('Self-serve checkout handshake', () => {
     );
     // NOTE: if pro plan is now self-serve, the cookie will be set — skip in that case
     if (intentCookie !== undefined) {
-      test.skip(true, `pro plan now sets formaos_checkout_intent cookie — product changed to self-serve for Growth plan`);
+      test.skip(
+        true,
+        `pro plan now sets formaos_checkout_intent cookie — product changed to self-serve for Growth plan`,
+      );
       return;
     }
     expect(intentCookie).toBeUndefined();

@@ -45,7 +45,10 @@ async function loginAs(page: Page, email: string, password: string) {
     await page.waitForURL(/\/app/, { timeout: 15000 });
   } catch {
     const url = page.url();
-    test.skip(true, `loginAs: landed on ${url} instead of /app — Supabase auth or onboarding not complete`);
+    test.skip(
+      true,
+      `loginAs: landed on ${url} instead of /app — Supabase auth or onboarding not complete`,
+    );
     return;
   }
   await dismissProductTour(page);

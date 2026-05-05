@@ -12,10 +12,9 @@ import {
   PUBLIC_CTA_LABELS,
   salesHref,
 } from '@/lib/marketing/cta';
+import { getSignInUrl } from '@/lib/urls';
 
-const appBase = (
-  process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au'
-).replace(/\/$/, '');
+const mobileSignInHref = getSignInUrl();
 const mobileSalesHref = salesHref('mobile_nav');
 const mobileCompliancePlanHref = compliancePlanHref('mobile_nav');
 
@@ -233,14 +232,14 @@ export function MobileNav() {
                 {/* Auth buttons */}
                 <div className="p-4 space-y-3">
                   <Link
-                    href={`${appBase}/auth/signin`}
+                    href={mobileSignInHref}
                     onClick={() => {
                       trackCtaClick({
                         surface: 'navigation',
                         section: 'mobile_nav',
                         location: 'mobile_login',
                         ctaLabel: 'Login',
-                        ctaHref: `${appBase}/auth/signin`,
+                        ctaHref: mobileSignInHref,
                         variant: 'secondary',
                       });
                       handleLinkClick();

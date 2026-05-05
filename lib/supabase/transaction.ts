@@ -1,4 +1,6 @@
 import { createSupabaseAdminClient } from './admin';
+import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
+import { resolvePlanKey } from '@/lib/plans';
 
 /**
  * Execute multiple database operations within a transaction-like wrapper.
@@ -158,6 +160,20 @@ export async function bootstrapOrganizationAtomic(params: {
         '[bootstrap] Subscription creation failed (non-critical):',
         subError.message,
       );
+    } else {
+      try {
+        await syncEntitlementsForPlan(
+          organizationId!,
+          resolvePlanKey(planKey) ?? 'basic',
+        );
+      } catch (entitlementError) {
+        console.warn(
+          '[bootstrap] Entitlement sync failed (non-critical):',
+          entitlementError instanceof Error
+            ? entitlementError.message
+            : String(entitlementError),
+        );
+      }
     }
 
     return {

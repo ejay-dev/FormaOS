@@ -316,6 +316,7 @@ export async function proxy(request: NextRequest) {
       '/api/webhooks/', // Stripe/Trigger.dev webhooks (HMAC-secured)
       '/api/billing/webhook', // Stripe billing webhook (signature-verified)
       '/api/unsubscribe', // RFC 8058 one-click unsubscribe (HMAC-token secured)
+      '/api/admin/', // Admin routes self-guard via requireAdminAccess → returns 403 not 401
     ];
 
     if (pathname.startsWith('/api/')) {

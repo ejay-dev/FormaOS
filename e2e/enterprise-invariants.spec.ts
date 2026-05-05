@@ -3,70 +3,17 @@
  * Tests: Critical business logic that must always work
  */
 
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import {
-  getTestCredentials,
   cleanupTestUser,
-  createMagicLinkSession,
   isE2EAuthBootstrapError,
-  setPlaywrightSession,
 } from './helpers/test-auth';
-
-let testCredentials: { email: string; password: string } | null = null;
-
-async function getCredentials(): Promise<{ email: string; password: string }> {
-  if (testCredentials) return testCredentials;
-  if (process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) {
-    testCredentials = {
-      email: process.env.E2E_TEST_EMAIL,
-      password: process.env.E2E_TEST_PASSWORD,
-    };
-    return testCredentials;
-  }
-  testCredentials = await getTestCredentials();
-  return testCredentials;
-}
-
-async function loginAs(page: Page, email: string, password: string) {
-  await page.goto('/');
-  await page.evaluate(() => {
-    localStorage.setItem('e2e_test_mode', 'true');
-  });
-
-  const appBase = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
-
-  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    try {
-      const session = await createMagicLinkSession(email);
-      await setPlaywrightSession(page.context(), session, appBase);
-      return;
-    } catch (error) {
-      console.warn('[E2E] Magic link session failed, falling back to UI login', error);
-    }
-  }
-
-  await page.goto('/auth/signin');
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL(/\/app/, { timeout: 15000 });
-  await dismissProductTour(page);
-}
-
-async function dismissProductTour(page: Page) {
-  try {
-    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
-    const tourText = page.locator('text="Product Tour"');
-    if (await tourText.isVisible({ timeout: 2000 })) {
-      const skipBtn = page.locator('button:has-text("Skip Tour")');
-      await skipBtn.click({ timeout: 3000 });
-      await tourText.waitFor({ state: 'hidden', timeout: 5000 });
-      await page.waitForTimeout(500);
-    }
-  } catch {
-    // Tour not present
-  }
-}
+import {
+  getCredentials,
+  gotoAppRoute,
+  loginAs,
+  waitForAppReady,
+} from './helpers/fixtures';
 
 // =========================================================
 // DASHBOARD STABILITY TESTS
@@ -97,8 +44,7 @@ test.describe('Dashboard Stability', () => {
       jsErrors.push(error.message);
     });
 
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Allow minor errors, but fail on critical ones
     const criticalErrors = jsErrors.filter(
@@ -119,15 +65,13 @@ test.describe('Dashboard Stability', () => {
       jsErrors.push(error.message);
     });
 
-    await page.goto('/app/executive');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/executive');
 
     // Should show either dashboard content or access denied (not crash)
     const hasContent = await page
-      .locator('[data-testid], .text-2xl, text=/score|compliance|framework|not authorized/i')
-      .first()
-      .isVisible({ timeout: 10000 })
-      .catch(() => false);
+      .locator('body')
+      .textContent()
+      .then((text) => /executive dashboard|command center|overall score|not authorized/i.test(text ?? ''));
 
     expect(hasContent).toBe(true);
 
@@ -139,8 +83,7 @@ test.describe('Dashboard Stability', () => {
   });
 
   test('Compliance dashboard handles empty state', async ({ page }) => {
-    await page.goto('/app/compliance');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/compliance');
 
     // Should show either data or empty state (not error)
     const hasContent = await page
@@ -173,7 +116,7 @@ test.describe('API Resilience', () => {
 
   test('APIs return valid JSON on success', async ({ page }) => {
     const apis = [
-      '/api/compliance/controls',
+      '/api/v1/controls',
       '/api/customer-health/score',
     ];
 
@@ -196,7 +139,9 @@ test.describe('API Resilience', () => {
 
   test('APIs handle errors gracefully', async ({ page }) => {
     // Request with invalid params should not crash
-    const response = await page.request.get('/api/compliance/controls?invalid_param=true');
+    const response = await page.request.get(
+      '/api/reports/export?type=invalid-framework&format=json&mode=sync',
+    );
 
     // Should return JSON error, not HTML error page
     const contentType = response.headers()['content-type'] || '';
@@ -246,8 +191,7 @@ test.describe('Subscription Invariants', () => {
   });
 
   test('Billing page loads without error', async ({ page }) => {
-    await page.goto('/app/billing');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/billing');
 
     // Should show billing info or upgrade prompt
     const hasContent = await page
@@ -308,8 +252,7 @@ test.describe('Navigation Invariants', () => {
   });
 
   test('All main nav links work', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     const navLinks = [
       { selector: 'a[href="/app"]', name: 'Dashboard' },
@@ -323,7 +266,7 @@ test.describe('Navigation Invariants', () => {
 
       if (isVisible) {
         await element.click();
-        await page.waitForLoadState('networkidle');
+        await waitForAppReady(page);
 
         // Should not show error page
         const errorPage = page.locator('text=/error|500|something went wrong/i');
@@ -368,8 +311,7 @@ test.describe('Data Integrity', () => {
   });
 
   test('Dates are valid ISO strings', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Check audit logs for valid dates
     const response = await page.request.get('/api/audit/logs?limit=5');

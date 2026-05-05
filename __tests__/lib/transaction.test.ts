@@ -7,7 +7,9 @@ import { bootstrapOrganizationAtomic } from '@/lib/supabase/transaction';
 const mockDeleteEq = jest.fn().mockResolvedValue({ error: null });
 const mockDelete = jest.fn().mockReturnValue({ eq: mockDeleteEq });
 const mockInsertSelectSingle = jest.fn();
-const mockInsertSelect = jest.fn().mockReturnValue({ single: mockInsertSelectSingle });
+const mockInsertSelect = jest
+  .fn()
+  .mockReturnValue({ single: mockInsertSelectSingle });
 const mockInsert = jest.fn();
 const mockUpsert = jest.fn();
 
@@ -19,13 +21,15 @@ jest.mock('@/lib/supabase/admin', () => ({
   }),
 }));
 
-function setupMocks(overrides: {
-  orgResult?: { data: any; error: any };
-  legacyResult?: { error: any };
-  memberResult?: { error: any };
-  onboardingResult?: { error: any };
-  subscriptionResult?: { error: any };
-} = {}) {
+function setupMocks(
+  overrides: {
+    orgResult?: { data: any; error: any };
+    legacyResult?: { error: any };
+    memberResult?: { error: any };
+    onboardingResult?: { error: any };
+    subscriptionResult?: { error: any };
+  } = {},
+) {
   const defaults = {
     orgResult: { data: { id: 'org-123' }, error: null },
     legacyResult: { error: null },
@@ -40,14 +44,16 @@ function setupMocks(overrides: {
     // Track which table insert was called for
     const lastTable = mockFrom.mock.calls[mockFrom.mock.calls.length - 1]?.[0];
     if (lastTable === 'org_members') return Promise.resolve(cfg.memberResult);
-    if (lastTable === 'org_onboarding_status') return Promise.resolve(cfg.onboardingResult);
+    if (lastTable === 'org_onboarding_status')
+      return Promise.resolve(cfg.onboardingResult);
     // fallback for organizations (handled via select chain)
     return { select: mockInsertSelect };
   });
   mockUpsert.mockImplementation(() => {
     const lastTable = mockFrom.mock.calls[mockFrom.mock.calls.length - 1]?.[0];
     if (lastTable === 'orgs') return Promise.resolve(cfg.legacyResult);
-    if (lastTable === 'org_subscriptions') return Promise.resolve(cfg.subscriptionResult);
+    if (lastTable === 'org_subscriptions')
+      return Promise.resolve(cfg.subscriptionResult);
     return Promise.resolve({ error: null });
   });
 
@@ -66,19 +72,25 @@ function setupMocks(overrides: {
     }
     if (table === 'org_members') {
       return {
-        insert: jest.fn().mockImplementation(() => Promise.resolve(cfg.memberResult)),
+        insert: jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(cfg.memberResult)),
         delete: mockDelete,
       };
     }
     if (table === 'org_onboarding_status') {
       return {
-        insert: jest.fn().mockImplementation(() => Promise.resolve(cfg.onboardingResult)),
+        insert: jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(cfg.onboardingResult)),
         delete: mockDelete,
       };
     }
     if (table === 'org_subscriptions') {
       return {
-        upsert: jest.fn().mockImplementation(() => Promise.resolve(cfg.subscriptionResult)),
+        upsert: jest
+          .fn()
+          .mockImplementation(() => Promise.resolve(cfg.subscriptionResult)),
         delete: mockDelete,
       };
     }
@@ -164,8 +176,12 @@ describe('bootstrapOrganizationAtomic', () => {
     const _deletedTables = mockFrom.mock.calls
       .filter((_call: any, idx: number) => {
         const returnVal = mockFrom.mock.results[idx]?.value;
-        return returnVal && typeof returnVal.delete === 'function' &&
-          mockFrom.mock.calls[idx][0] !== 'organizations' || false;
+        return (
+          (returnVal &&
+            typeof returnVal.delete === 'function' &&
+            mockFrom.mock.calls[idx][0] !== 'organizations') ||
+          false
+        );
       })
       .map((call: any) => call[0]);
 

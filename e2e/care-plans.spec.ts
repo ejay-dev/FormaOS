@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import {
   authenticateWorkspacePage,
@@ -6,11 +6,23 @@ import {
   seedParticipant,
 } from './helpers/workspace-seed';
 
+async function waitForCarePlanDetail(page: Page) {
+  await expect(
+    page.locator('#main-content [data-testid="care-plan-overview"]:visible').first(),
+  ).toBeVisible({ timeout: 30_000 });
+}
+
+async function reloadCarePlanDetail(page: Page) {
+  await page.reload({ waitUntil: 'commit' });
+  await waitForCarePlanDetail(page);
+}
+
 test.describe('Care plans end-to-end', () => {
   test('create plan, add goal, add support, update status, persistence', async ({
     page,
     browserName,
   }) => {
+    test.setTimeout(240_000);
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
 
     const context = await getWorkspaceSeedContext();
@@ -53,8 +65,9 @@ test.describe('Care plans end-to-end', () => {
       await authenticateWorkspacePage(page, context.email);
 
       await page.goto(`/app/care-plans/${planId}`, {
-        waitUntil: 'domcontentloaded',
+        waitUntil: 'commit',
       });
+      await waitForCarePlanDetail(page);
 
       // Dismiss cookie consent dialog if present (intercepts clicks otherwise)
       try {
@@ -102,7 +115,7 @@ test.describe('Care plans end-to-end', () => {
           { timeout: 15_000 },
         )
         .toBe(true);
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await reloadCarePlanDetail(page);
       await expect(page.getByTestId('care-plan-goal').first()).toBeVisible();
       await expect(page.getByText(`E2E Goal ${unique}`)).toBeVisible();
 
@@ -122,8 +135,25 @@ test.describe('Care plans end-to-end', () => {
         .fill('2027-01-15');
       await editGoalForm.getByTestId('save-goal-edit').click();
 
-      await page.waitForTimeout(500);
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_care_plans')
+              .select('goals')
+              .eq('id', planId)
+              .maybeSingle();
+            const goals = Array.isArray(data?.goals) ? data.goals : [];
+            return goals.some(
+              (goal: { title?: string; description?: string }) =>
+                goal.title === `E2E Goal Renamed ${unique}` &&
+                goal.description === 'Edited description — revised',
+            );
+          },
+          { timeout: 15_000, intervals: [500, 1000, 2000] },
+        )
+        .toBe(true);
+      await reloadCarePlanDetail(page);
       // Assert against paragraphs to avoid matching the edit-form's
       // textarea/input which still hold the same values as defaultValue
       await expect(
@@ -173,7 +203,7 @@ test.describe('Care plans end-to-end', () => {
           { timeout: 15_000 },
         )
         .toBe(true);
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await reloadCarePlanDetail(page);
       await expect(page.getByText(`E2E Support ${unique}`)).toBeVisible();
 
       // Change goal status to "achieved" — scope to the goal-status form
@@ -186,20 +216,48 @@ test.describe('Care plans end-to-end', () => {
         .first();
       await goalStatusForm.locator('select[name="status"]').selectOption('achieved');
       await goalStatusForm.locator('button[type="submit"]').click();
-      await page.waitForTimeout(500);
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_care_plans')
+              .select('goals')
+              .eq('id', planId)
+              .maybeSingle();
+            const goals = Array.isArray(data?.goals) ? data.goals : [];
+            const renamedGoal = goals.find(
+              (goal: { title?: string }) =>
+                goal.title === `E2E Goal Renamed ${unique}`,
+            ) as
+              | { status?: string; progress_percentage?: number }
+              | undefined;
+            return {
+              status: renamedGoal?.status ?? null,
+              progress: renamedGoal?.progress_percentage ?? null,
+            };
+          },
+          { timeout: 15_000, intervals: [500, 1000, 2000] },
+        )
+        .toEqual({ status: 'achieved', progress: 100 });
+      await reloadCarePlanDetail(page);
 
       // Plan progress should derive from goal progress → 100%
       await expect(page.getByTestId('plan-progress-value')).toHaveText('100%');
 
       // Reload — verify persistence (renamed goal, description, support, progress)
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await reloadCarePlanDetail(page);
       await expect(
-        page.locator('p', { hasText: `E2E Goal Renamed ${unique}` }).first(),
+        page
+          .getByTestId('care-plan-goal')
+          .first()
+          .getByText(`E2E Goal Renamed ${unique}`)
+          .first(),
       ).toBeVisible();
       await expect(
         page
-          .locator('p', { hasText: 'Edited description — revised' })
+          .getByTestId('care-plan-goal')
+          .first()
+          .getByText('Edited description — revised')
           .first(),
       ).toBeVisible();
       await expect(page.getByText(`E2E Support ${unique}`)).toBeVisible();
@@ -210,7 +268,7 @@ test.describe('Care plans end-to-end', () => {
 
       // Cross-module: participant page lists the plan
       await page.goto(`/app/participants/${participantId}`, {
-        waitUntil: 'domcontentloaded',
+        waitUntil: 'commit',
       });
       const carePlansSection = page.getByTestId('participant-care-plans').first();
       await expect(carePlansSection).toBeVisible();

@@ -40,7 +40,10 @@ function skipOnSupabaseNetworkError(error: unknown): void {
     String(e.message ?? '').includes('fetch failed') ||
     String(e.message ?? '').includes('network');
   if (isNetworkError) {
-    test.skip(true, `Supabase admin API unavailable (${e.name ?? 'network error'}) — skipping until Supabase recovers`);
+    test.skip(
+      true,
+      `Supabase admin API unavailable (${e.name ?? 'network error'}) — skipping until Supabase recovers`,
+    );
   }
 }
 

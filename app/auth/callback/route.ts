@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
+import type { User } from '@supabase/supabase-js';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import {
@@ -235,75 +236,91 @@ export async function GET(request: Request) {
   });
   const admin = createSupabaseAdminClient();
 
+  let user: User | null = null;
+
   if (!code) {
-    // No authorization code present — this is not a valid OAuth callback.
-    // (The old setup=1 mode for signInWithIdToken / Google One Tap has been
-    //  removed; the only supported flow is Supabase signInWithOAuth which
-    //  always sends a ?code= parameter.)
+    // Confirmation links can arrive here after /auth/confirm verifies an OTP
+    // and establishes the session. Reuse that session so the shared
+    // provisioning path below still creates the workspace and entitlements.
     const { data } = await supabase.auth.getUser();
 
     if (data?.user) {
-      // User has an existing session — just send them to the app
       authLogger.info('no_code_session_exists', { email: data.user.email });
-      return redirectWithCookies(`${appBase}${requestedNext ?? '/app'}`);
+      user = data.user;
+    } else {
+      // No code, no session — redirect to sign-in
+      authLogger.info('no_code_no_session');
+      return redirectWithCookies(`${appBase}/auth/signin`);
+    }
+  } else {
+    const { exchangeData, exchangeError } = await exchangeOAuthCode({
+      appBase,
+      code,
+      cookieDomain,
+      cookieNames,
+      cookieSnapshot,
+      hasPkceVerifier,
+      requestHost: requestUrl.hostname,
+      serviceRoleKey,
+      supabase,
+      supabaseAnonKey,
+      supabaseUrl,
+    });
+
+    if (exchangeError || !exchangeData?.user) {
+      authLogger.error(
+        'oauth_code_exchange_failed',
+        {
+          code: isPkceExchangeError(exchangeError)
+            ? 'PKCE_EXCHANGE_FAILED'
+            : 'OAUTH_EXCHANGE_FAILED',
+          message:
+            isPkceExchangeError(exchangeError)
+              ? 'Sign-in verification failed during PKCE exchange.'
+              : 'Failed to exchange OAuth code for a session.',
+        },
+        {
+          errorCode:
+            exchangeError && typeof exchangeError === 'object' && 'code' in exchangeError
+              ? exchangeError.code
+              : undefined,
+          errorMessage:
+            exchangeError &&
+            typeof exchangeError === 'object' &&
+            'message' in exchangeError
+              ? exchangeError.message
+              : undefined,
+          hasPkceVerifier,
+        },
+      );
+      const isPkce = isPkceExchangeError(exchangeError);
+      const errorType = isPkce ? 'pkce_failed' : 'oauth_exchange_failed';
+      const errorMsg = isPkce
+        ? 'Sign-in verification failed. This can happen on some browsers. Please try again.'
+        : 'Failed to authenticate. Please try again.';
+      return redirectWithCookies(
+        `${appBase}/auth/signin?error=${errorType}&message=${encodeURIComponent(errorMsg)}`,
+      );
     }
 
-    // No code, no session — redirect to sign-in
-    authLogger.info('no_code_no_session');
-    return redirectWithCookies(`${appBase}/auth/signin`);
+    user = exchangeData.user;
   }
 
-  const { exchangeData, exchangeError } = await exchangeOAuthCode({
-    appBase,
-    code,
-    cookieDomain,
-    cookieNames,
-    cookieSnapshot,
-    hasPkceVerifier,
-    requestHost: requestUrl.hostname,
-    serviceRoleKey,
-    supabase,
-    supabaseAnonKey,
-    supabaseUrl,
-  });
-
-  if (exchangeError || !exchangeData?.user) {
+  if (!user) {
     authLogger.error(
       'oauth_code_exchange_failed',
       {
-        code: isPkceExchangeError(exchangeError)
-          ? 'PKCE_EXCHANGE_FAILED'
-          : 'OAUTH_EXCHANGE_FAILED',
-        message:
-          isPkceExchangeError(exchangeError)
-            ? 'Sign-in verification failed during PKCE exchange.'
-            : 'Failed to exchange OAuth code for a session.',
-      },
-      {
-        errorCode:
-          exchangeError && typeof exchangeError === 'object' && 'code' in exchangeError
-            ? exchangeError.code
-            : undefined,
-        errorMessage:
-          exchangeError &&
-          typeof exchangeError === 'object' &&
-          'message' in exchangeError
-            ? exchangeError.message
-            : undefined,
-        hasPkceVerifier,
+        code: 'OAUTH_EXCHANGE_FAILED',
+        message: 'Failed to resolve authenticated user from callback.',
       },
     );
-    const isPkce = isPkceExchangeError(exchangeError);
-    const errorType = isPkce ? 'pkce_failed' : 'oauth_exchange_failed';
-    const errorMsg = isPkce
-      ? 'Sign-in verification failed. This can happen on some browsers. Please try again.'
-      : 'Failed to authenticate. Please try again.';
     return redirectWithCookies(
-      `${appBase}/auth/signin?error=${errorType}&message=${encodeURIComponent(errorMsg)}`,
+      `${appBase}/auth/signin?error=oauth_exchange_failed&message=${encodeURIComponent(
+        'Failed to authenticate. Please try again.',
+      )}`,
     );
   }
 
-  const user = exchangeData.user;
   authLogger.info('session_established', { email: user.email });
 
   // 2. CHECK IF USER IS A FOUNDER

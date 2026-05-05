@@ -3,49 +3,34 @@
  * Tests: Industry-specific visibility, metrics display, credential alerts
  */
 
-import { test, expect, type Page } from '@playwright/test';
-import { getTestCredentials, cleanupTestUser } from './helpers/test-auth';
+import { test, expect, type APIResponse, type Page } from '@playwright/test';
+import { cleanupTestUser } from './helpers/test-auth';
+import { getCredentials, gotoAppRoute, loginAs } from './helpers/fixtures';
 
-let testCredentials: { email: string; password: string } | null = null;
+test.describe.configure({ mode: 'serial' });
 
-async function getCredentials(): Promise<{ email: string; password: string }> {
-  if (testCredentials) return testCredentials;
-  if (process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) {
-    testCredentials = {
-      email: process.env.E2E_TEST_EMAIL,
-      password: process.env.E2E_TEST_PASSWORD,
-    };
-    return testCredentials;
-  }
-  testCredentials = await getTestCredentials();
-  return testCredentials;
-}
-
-async function loginAs(page: Page, email: string, password: string) {
-  await page.goto('/auth/signin');
-  await page.evaluate(() => {
-    localStorage.setItem('e2e_test_mode', 'true');
-  });
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL(/\/app/, { timeout: 15000 });
-  await dismissProductTour(page);
-}
-
-async function dismissProductTour(page: Page) {
-  try {
-    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
-    const tourText = page.locator('text="Product Tour"');
-    if (await tourText.isVisible({ timeout: 2000 })) {
-      const skipBtn = page.locator('button:has-text("Skip Tour")');
-      await skipBtn.click({ timeout: 3000 });
-      await tourText.waitFor({ state: 'hidden', timeout: 5000 });
-      await page.waitForTimeout(500);
+async function getApiWithRetry(
+  page: Page,
+  url: string,
+): Promise<APIResponse> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await page.request.get(url);
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      const retryable =
+        message.includes('ECONNRESET') ||
+        message.includes('ERR_NETWORK_CHANGED') ||
+        message.includes('ERR_CONNECTION_RESET');
+      if (!retryable || attempt === 2) {
+        throw error;
+      }
+      await page.waitForTimeout(500 * (attempt + 1));
     }
-  } catch {
-    // Tour not present
   }
+  throw lastError;
 }
 
 // =========================================================
@@ -64,8 +49,7 @@ test.describe('Care Operations Scorecard', () => {
   });
 
   test('Dashboard shows scorecard for care industries', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Look for care operations scorecard component
     const scorecard = page.locator('[data-testid="care-scorecard"], text=/care operations/i');
@@ -90,8 +74,7 @@ test.describe('Care Operations Scorecard', () => {
   });
 
   test('Scorecard shows staff compliance percentage', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Look for compliance percentage
     const compliancePercentage = page.locator('text=/%/');
@@ -111,8 +94,7 @@ test.describe('Care Operations Scorecard', () => {
   });
 
   test('Scorecard displays credential alerts', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Look for alert indicators
     const alerts = page.locator('[data-testid="credential-alert"], .bg-amber-500, .bg-red-500, text=/expir/i');
@@ -126,8 +108,7 @@ test.describe('Care Operations Scorecard', () => {
   });
 
   test('Scorecard shows visit completion rate', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Look for visit metrics
     const visitMetrics = page.locator('text=/visit/i');
@@ -149,7 +130,10 @@ test.describe('Care Operations API', () => {
   });
 
   test('Scorecard API returns data for care industries', async ({ page }) => {
-    const response = await page.request.get('/api/care-operations/scorecard');
+    const response = await getApiWithRetry(
+      page,
+      '/api/care-operations/scorecard',
+    );
 
     // Returns 200 for care industries, 403 for others
     expect([200, 403]).toContain(response.status());
@@ -166,7 +150,10 @@ test.describe('Care Operations API', () => {
   });
 
   test('Credential alerts API returns expiring credentials', async ({ page }) => {
-    const response = await page.request.get('/api/care-operations/credential-alerts');
+    const response = await getApiWithRetry(
+      page,
+      '/api/care-operations/credential-alerts',
+    );
 
     expect([200, 401, 403]).toContain(response.status());
 
@@ -180,7 +167,10 @@ test.describe('Care Operations API', () => {
   });
 
   test('Credential alerts API supports day filter', async ({ page }) => {
-    const response = await page.request.get('/api/care-operations/credential-alerts?days=30');
+    const response = await getApiWithRetry(
+      page,
+      '/api/care-operations/credential-alerts?days=30',
+    );
 
     expect([200, 401, 403]).toContain(response.status());
 
@@ -203,7 +193,10 @@ test.describe('Industry-Specific Visibility', () => {
 
   test('Scorecard hidden for non-care industries', async ({ page }) => {
     // This test checks that the scorecard API returns 403 for non-care industries
-    const response = await page.request.get('/api/care-operations/scorecard');
+    const response = await getApiWithRetry(
+      page,
+      '/api/care-operations/scorecard',
+    );
 
     // If 403, scorecard is correctly hidden for non-care industry
     // If 200, user is in a care industry
@@ -216,8 +209,7 @@ test.describe('Industry-Specific Visibility', () => {
 
   test('Scorecard shows for NDIS industry', async ({ page }) => {
     // Navigate to dashboard and check for industry indicator
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Look for industry text
     const industryText = page.locator('text=/ndis|healthcare|aged care/i');

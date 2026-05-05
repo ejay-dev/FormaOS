@@ -150,13 +150,16 @@ function NextActionsStripInner() {
   if (!hasLoadedOnce && isLoading) {
     return (
       <div
+        role="status"
         aria-busy="true"
         aria-label="Loading your next actions"
+        aria-live="polite"
         className="grid grid-cols-1 gap-2 sm:grid-cols-3"
       >
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
+            aria-hidden="true"
             className="h-[76px] animate-pulse rounded-lg border border-border bg-[hsl(var(--card))]"
           />
         ))}

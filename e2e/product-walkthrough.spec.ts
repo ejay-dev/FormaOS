@@ -247,7 +247,11 @@ test.describe('A) Marketing → App Entry', () => {
 
     // Foundation self-serve lives on the pricing page as "Start Foundation Plan"
     // and hands the user off to app-domain signup with the checkout intent.
-    await page.goto(`${MARKETING_URL.replace(/\/$/, '')}/pricing`, { waitUntil: 'domcontentloaded' }).catch(() => {});
+    await page
+      .goto(`${MARKETING_URL.replace(/\/$/, '')}/pricing`, {
+        waitUntil: 'domcontentloaded',
+      })
+      .catch(() => {});
 
     await page.screenshot({
       path: 'test-results/screenshots/A1-pricing-foundation-cta.png',
@@ -289,7 +293,9 @@ test.describe('A) Marketing → App Entry', () => {
     qaOrgIdV1 = result!.orgId;
 
     // Go to signin page
-    await page.goto(`${APP_URL}/auth/signin`, { waitUntil: 'domcontentloaded' }).catch(() => {});
+    await page
+      .goto(`${APP_URL}/auth/signin`, { waitUntil: 'domcontentloaded' })
+      .catch(() => {});
 
     await page.screenshot({
       path: 'test-results/screenshots/A3-signin-page.png',
@@ -382,7 +388,9 @@ test.describe('B) In-App Core Routes & Nav', () => {
     const routes = ['/app', '/app/tasks', '/app/vault', '/app/settings'];
 
     for (const route of routes) {
-      await page.goto(`${APP_URL}${route}`, { waitUntil: 'domcontentloaded' }).catch(() => {});
+      await page
+        .goto(`${APP_URL}${route}`, { waitUntil: 'domcontentloaded' })
+        .catch(() => {});
 
       // Should not be 404
       const is404 = (await page.locator('text=404').count()) > 0;

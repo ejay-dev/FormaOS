@@ -139,15 +139,20 @@ export async function cacheWithFallback<T>(
   const ttlMs = options?.ttlMs ?? DEFAULT_CACHE_TTL_MS;
   const staleWhileRevalidate = options?.staleWhileRevalidate ?? true;
 
-  // Check for fresh cache
-  const cached = getFromCache<T>(key);
-  if (cached !== null) {
-    return cached;
+  const entry = cacheStore.get(key) as CacheEntry<T> | undefined;
+  const now = Date.now();
+
+  // Check for fresh cache without deleting an expired entry that could be
+  // used as stale data if the recompute fails.
+  if (entry && now <= entry.expiresAt) {
+    return entry.data;
   }
 
   // Check for stale cache (if stale-while-revalidate is enabled)
-  const staleEntry = cacheStore.get(key);
-  const hasStale = staleEntry && staleWhileRevalidate;
+  const staleEntry = staleWhileRevalidate ? entry : undefined;
+  if (entry && !staleWhileRevalidate && now > entry.expiresAt) {
+    cacheStore.delete(key);
+  }
 
   try {
     const data = await compute();
@@ -158,7 +163,7 @@ export async function cacheWithFallback<T>(
     console.error(`[Cache] Compute failed for ${key}:`, error);
 
     // Return stale data if available
-    if (hasStale && staleEntry) {
+    if (staleEntry) {
       apiLogger.info('dashboard_cache_returning_stale', { key });
       return staleEntry.data as T;
     }

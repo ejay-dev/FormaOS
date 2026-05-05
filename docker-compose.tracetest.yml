@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tracetest
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tracetest"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - tracetest-postgres:/var/lib/postgresql/data
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.115.1
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./tracetest/collector.config.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+
+  tracetest:
+    image: kubeshop/tracetest:v1.7.1
+    ports:
+      - "11633:11633"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+
+volumes:
+  tracetest-postgres:

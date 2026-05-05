@@ -238,7 +238,10 @@ test.describe('Onboarding dashboard and sidebar access', () => {
     try {
       await expect(page).toHaveURL(/\/onboarding\?step=3/);
     } catch (err) {
-      test.skip(true, `Onboarding step 2→3 did not advance (current: ${page.url()}) — server may be slow or plan-option UI changed`);
+      test.skip(
+        true,
+        `Onboarding step 2→3 did not advance (current: ${page.url()}) — server may be slow or plan-option UI changed`,
+      );
       return;
     }
     await page.getByTestId('industry-option-healthcare').check();

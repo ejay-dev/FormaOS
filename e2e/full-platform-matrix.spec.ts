@@ -10,10 +10,7 @@ import {
   getWorkspaceSeedContext,
   type WorkspaceSeedContext,
 } from './helpers/workspace-seed';
-import {
-  E2EAuthBootstrapError,
-  cleanupTestUser,
-} from './helpers/test-auth';
+import { E2EAuthBootstrapError, cleanupTestUser } from './helpers/test-auth';
 import {
   FRAMEWORK_OPTIONS,
   INDUSTRY_OPTIONS,
@@ -36,10 +33,7 @@ type SecondaryAccount = {
 const INDUSTRIES = INDUSTRY_OPTIONS.map((option) => option.id);
 const PLANS = PLAN_OPTIONS.map((option) => option.id as PlanKey);
 const FRAMEWORK_MATRIX = Array.from(
-  new Set([
-    ...FRAMEWORK_OPTIONS.map((option) => option.id),
-    ...PACK_SLUGS,
-  ]),
+  new Set([...FRAMEWORK_OPTIONS.map((option) => option.id), ...PACK_SLUGS]),
 );
 const SCOREABLE_FRAMEWORKS = new Set(PACK_SLUGS);
 const DEFAULT_FRAMEWORKS = ['soc2', 'hipaa'];
@@ -105,7 +99,9 @@ async function setMembershipRole(userId: string, role: UserRole) {
     .eq('user_id', userId);
 
   if (error) {
-    throw new Error(`Failed to set role ${role} for ${userId}: ${error.message}`);
+    throw new Error(
+      `Failed to set role ${role} for ${userId}: ${error.message}`,
+    );
   }
 }
 
@@ -235,7 +231,10 @@ async function assertNoAppCrash(page: Page, href: string) {
     const message = error instanceof Error ? error.message : String(error);
     if (!message.includes('ERR_ABORTED')) {
       if (message.includes('Timeout') || message.includes('timeout')) {
-        test.skip(true, `Page navigation to ${href} timed out — server may be slow (Supabase latency)`);
+        test.skip(
+          true,
+          `Page navigation to ${href} timed out — server may be slow (Supabase latency)`,
+        );
         return;
       }
       throw error;
@@ -297,7 +296,10 @@ async function expectCtasToReachAuth(page: Page, route: string) {
     'a[href*="/auth/signup"], a[href*="/auth/signin"], a[href*="/app"], button',
   );
   const count = await ctas.count();
-  expect(count, `${route} should surface at least one app/auth CTA`).toBeGreaterThan(0);
+  expect(
+    count,
+    `${route} should surface at least one app/auth CTA`,
+  ).toBeGreaterThan(0);
 }
 
 test.describe('Full platform matrix', () => {
@@ -330,7 +332,9 @@ test.describe('Full platform matrix', () => {
   test.afterAll(async () => {
     if (workspace) {
       for (const userId of signupUserIds) {
-        await workspace.admin.auth.admin.deleteUser(userId).catch(() => undefined);
+        await workspace.admin.auth.admin
+          .deleteUser(userId)
+          .catch(() => undefined);
       }
     }
     await cleanupSecondaryUsers();
@@ -373,7 +377,10 @@ test.describe('Full platform matrix', () => {
       test(`${role} user in ${industry} lands in the correct dashboard shell`, async ({
         page,
       }) => {
-        test.skip(Boolean(bootstrapSkipReason), bootstrapSkipReason ?? undefined);
+        test.skip(
+          Boolean(bootstrapSkipReason),
+          bootstrapSkipReason ?? undefined,
+        );
 
         const actor = await prepareScenario(role, industry, 'enterprise');
         await authenticateWorkspacePage(page, actor.email);
@@ -401,11 +408,14 @@ test.describe('Full platform matrix', () => {
       await assertNoAppCrash(page, '/app/billing');
       await expect(page.getByText('Billing & Plan')).toBeVisible();
       await expect(
-        page.locator('div').filter({
-          hasText: new RegExp(
-            `Current plan\\s*${PLAN_CATALOG[planKey].name}`,
-          ),
-        }).first(),
+        page
+          .locator('div')
+          .filter({
+            hasText: new RegExp(
+              `Current plan\\s*${PLAN_CATALOG[planKey].name}`,
+            ),
+          })
+          .first(),
       ).toBeVisible();
       await expect(page.getByText('trialing')).toBeVisible();
     });
@@ -509,6 +519,8 @@ test.describe('Full platform matrix', () => {
     await page.getByRole('button', { name: 'Access FormaOS' }).click();
 
     await page.waitForURL(/\/(app|onboarding)/, { timeout: 30_000 });
-    await expect(page.locator('body')).toContainText(/FormaOS|Welcome|Dashboard/i);
+    await expect(page.locator('body')).toContainText(
+      /FormaOS|Welcome|Dashboard/i,
+    );
   });
 });

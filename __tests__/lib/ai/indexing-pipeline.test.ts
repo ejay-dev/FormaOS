@@ -276,10 +276,12 @@ describe('fullReindex', () => {
     const db = createMockDb((table: string) => {
       if (table === 'org_evidence')
         return createBuilder({ data: [{ id: 'e1' }], error: null });
-      if (table === 'org_policies') return createBuilder({ data: [], error: null });
+      if (table === 'org_policies')
+        return createBuilder({ data: [], error: null });
       if (table === 'org_controls')
         return createBuilder({ data: [], error: null });
-      if (table === 'org_tasks') return createBuilder({ data: [], error: null });
+      if (table === 'org_tasks')
+        return createBuilder({ data: [], error: null });
       return createBuilder({
         data: {
           title: 'Test',
@@ -315,7 +317,8 @@ describe('incrementalIndex', () => {
         return createBuilder({ data: [{ id: 'e1' }], error: null });
       if (table === 'org_policies')
         return createBuilder({ data: [{ id: 'p1' }], error: null });
-      if (table === 'org_tasks') return createBuilder({ data: [], error: null });
+      if (table === 'org_tasks')
+        return createBuilder({ data: [], error: null });
       return createBuilder({
         data: {
           title: 'Updated',

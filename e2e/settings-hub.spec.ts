@@ -4,15 +4,13 @@ import {
   authenticateWorkspacePage,
   getWorkspaceSeedContext,
 } from './helpers/workspace-seed';
-import {
-  cleanupTestUser,
-  isE2EAuthBootstrapError,
-} from './helpers/test-auth';
+import { cleanupTestUser, isE2EAuthBootstrapError } from './helpers/test-auth';
 
 const ROUTES_TO_VALIDATE = [
   {
     href: '/app/settings/security',
-    expected: /Security Controls|Multi-Factor Authentication|SSO Configuration/i,
+    expected:
+      /Security Controls|Multi-Factor Authentication|SSO Configuration/i,
   },
   {
     href: '/app/settings/notifications',
@@ -120,7 +118,9 @@ test.describe('Settings hub', () => {
     await page.getByLabel('Industry').fill(updatedIndustry);
     await page.getByLabel('Team size').fill(updatedTeamSize);
     // Use force:true to bypass any modal overlay that may intercept the click
-    await page.getByRole('button', { name: /Commit Profile/i }).click({ force: true });
+    await page
+      .getByRole('button', { name: /Commit Profile/i })
+      .click({ force: true });
     await expect(
       page.getByRole('button', { name: /Commit Profile|Saving/i }),
     ).toBeEnabled({ timeout: 20_000 });
@@ -145,7 +145,7 @@ test.describe('Settings hub', () => {
           industry: updatedIndustry,
           team_size: updatedTeamSize,
         }),
-    );
+      );
 
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(page.locator('input[name="name"]')).toHaveValue(updatedName);

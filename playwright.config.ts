@@ -10,6 +10,10 @@ const reuseExistingServer =
 const skipWebServer =
   process.env.PW_SKIP_WEBSERVER === 'true' ||
   process.env.PW_SKIP_WEBSERVER === '1';
+const webServerTimeout = Number.parseInt(
+  process.env.PLAYWRIGHT_WEB_SERVER_TIMEOUT_MS ?? '900000',
+  10,
+);
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -92,7 +96,7 @@ export default defineConfig({
           : 'npm run build && npm run start',
         url: 'http://localhost:3000',
         reuseExistingServer,
-        timeout: 240000,
+        timeout: Number.isFinite(webServerTimeout) ? webServerTimeout : 900000,
       },
 
   /* Global setup */

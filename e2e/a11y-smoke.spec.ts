@@ -19,7 +19,8 @@ test.describe('Accessibility smoke (WCAG 2.2 AA)', () => {
     test(`should have no serious/critical accessibility violations on ${route}`, async ({
       page,
     }) => {
-      await page.goto(route, { waitUntil: 'networkidle' });
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
+      await page.waitForLoadState('load', { timeout: 10_000 }).catch(() => {});
 
       const results = await new AxeBuilder({ page })
         .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])

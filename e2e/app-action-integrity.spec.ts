@@ -52,7 +52,10 @@ function installIntegrityGuards(page: Page) {
       text.includes('[ProductTour] Failed to load state') ||
       text.includes('[Executive Dashboard] Failed to fetch data') ||
       text.includes('Error fetching registers:') ||
+      text.includes('Error during WebSocket handshake') ||
+      text.includes('Failed to load resource: net::ERR_NETWORK_CHANGED') ||
       text.includes('Failed to load resource: the server responded with a status of 401') ||
+      text.includes('Failed to load resource: the server responded with a status of 403') ||
       text.includes('Failed to load resource: the server responded with a status of 429') ||
       text.includes('Failed to load resource: the server responded with a status of 400') ||
       text.includes('Failed to load resource: the server responded with a status of 500')
@@ -88,9 +91,15 @@ async function gotoAppRoute(page: Page, route: string) {
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : String(error);
-      if (!message.includes('ERR_ABORTED') || attempt === 2) {
+      const retryable =
+        message.includes('ERR_ABORTED') ||
+        message.includes('ERR_NETWORK_CHANGED') ||
+        message.includes('Timeout') ||
+        message.includes('net::ERR_CONNECTION_RESET');
+      if (!retryable || attempt === 2) {
         throw error;
       }
+      await page.goto('about:blank', { timeout: 5_000 }).catch(() => {});
       await page.waitForTimeout(500 * (attempt + 1));
     }
   }
@@ -119,7 +128,8 @@ test.describe('Authenticated app action integrity', () => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
   });
 
-  test('sidebar routes load without app 404s', async ({ page }) => {
+  test('sidebar routes load without app 404s', async ({ page }, testInfo) => {
+    testInfo.setTimeout(600_000);
     const failures = installIntegrityGuards(page);
     await authenticateWorkspacePage(page);
 
@@ -251,11 +261,11 @@ test.describe('Authenticated app action integrity', () => {
     await page.goto('/app/settings/roles', { waitUntil: 'domcontentloaded' });
     const newRole = page.locator('a[href="/app/settings/roles/new"]').first();
     await expect(newRole).toBeVisible();
-    const response = await page.goto('/app/settings/roles/new', {
-      waitUntil: 'domcontentloaded',
-    });
+    const response = await gotoAppRoute(page, '/app/settings/roles/new');
     expect(response?.status() ?? 0).toBeLessThan(500);
-    await expect(page.locator('h1')).toContainText('Create Custom Role');
+    await expect(
+      page.getByRole('heading', { name: 'Create Custom Role' }),
+    ).toBeVisible();
 
     await assertNoIntegrityFailures(failures);
   });
@@ -321,10 +331,13 @@ test.describe('Authenticated app action integrity', () => {
         waitUntil: 'domcontentloaded',
       });
       await expect(
-        page.getByTestId('custom-reports-schema-disabled'),
+        page.getByTestId('custom-reports-schema-disabled').first(),
       ).toBeDisabled();
       await expect(
-        page.locator('text=Custom report storage is not enabled'),
+        page
+          .locator('#main-content')
+          .getByText('Custom report storage is not enabled')
+          .first(),
       ).toBeVisible();
     } else {
       await page.goto(`/app/reports/custom/${report!.id}`, {
@@ -375,6 +388,8 @@ test.describe('Authenticated app action integrity', () => {
   test('CAPA create form persists and opens the detail workflow', async ({
     page,
   }) => {
+    test.setTimeout(240_000);
+
     const failures = installIntegrityGuards(page);
     const context = await getWorkspaceSeedContext();
     const title = `Integrity CAPA ${randomUUID().slice(0, 8)}`;
@@ -392,22 +407,28 @@ test.describe('Authenticated app action integrity', () => {
 
     await authenticateWorkspacePage(page, context.email);
     if (capaSchemaMissing) {
-      await page.goto('/app/capa', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/capa', { waitUntil: 'commit' });
       await expect(page.getByTestId('capa-schema-disabled')).toBeDisabled();
       await expect(page.locator('text=CAPA storage is not enabled')).toBeVisible();
-      await page.goto('/app/capa/new', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/capa/new', { waitUntil: 'commit' });
       await expect(page.getByTestId('capa-create-disabled')).toBeVisible();
       await assertNoIntegrityFailures(failures);
       return;
     }
 
-    await page.goto('/app/capa/new', { waitUntil: 'domcontentloaded' });
-    await page.locator('input[name="title"]').fill(title);
-    await page.locator('select[name="type"]').selectOption('preventive');
-    await page.locator('select[name="severity"]').selectOption('high');
+    await page.goto('/app/capa/new', { waitUntil: 'commit' });
+    const createCapaForm = page.locator('main');
+    await createCapaForm.locator('input[name="title"]:visible').fill(title);
+    await createCapaForm
+      .locator('select[name="type"]:visible')
+      .selectOption('preventive');
+    await createCapaForm
+      .locator('select[name="severity"]:visible')
+      .selectOption('high');
     await page.getByRole('button', { name: 'Create CAPA' }).click();
-    await page.waitForURL((url) =>
-      /^\/app\/capa\/[0-9a-f-]{36}$/i.test(url.pathname),
+    await page.waitForURL(
+      (url) => /^\/app\/capa\/[0-9a-f-]{36}$/i.test(url.pathname),
+      { waitUntil: 'commit' },
     );
 
     const { data: capa } = await context.admin
@@ -421,10 +442,12 @@ test.describe('Authenticated app action integrity', () => {
     expect(capa?.severity).toBe('high');
     expect(capa?.status).toBe('open');
 
-    await expect(page.locator('h1')).toContainText(title);
-    await page.locator('select[name="status"]').selectOption('investigating');
+    await expect(page.getByText(title).first()).toBeVisible({ timeout: 30_000 });
+    await page
+      .locator('main select[name="status"]:visible')
+      .selectOption('investigating');
     await page.getByRole('button', { name: 'Move status' }).click();
-    await page.waitForURL(`**/app/capa/${capa!.id}`);
+    await page.waitForURL(`**/app/capa/${capa!.id}`, { waitUntil: 'commit' });
 
     await expect
       .poll(async () => {

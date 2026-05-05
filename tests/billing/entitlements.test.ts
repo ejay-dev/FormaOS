@@ -13,7 +13,11 @@
 // ---- Mocks ----
 
 const dbCalls = {
-  selects: [] as Array<{ table: string; columns: string; filters: Record<string, unknown> }>,
+  selects: [] as Array<{
+    table: string;
+    columns: string;
+    filters: Record<string, unknown>;
+  }>,
   upserts: [] as Array<{ table: string; data: unknown; opts: unknown }>,
 };
 
@@ -91,16 +95,27 @@ describe('syncEntitlementsForPlan', () => {
   it('upserts correct entitlements for basic plan', async () => {
     await syncEntitlementsForPlan('org-1', 'basic');
 
-    const upsert = dbCalls.upserts.find(u => u.table === 'org_entitlements');
+    const upsert = dbCalls.upserts.find((u) => u.table === 'org_entitlements');
     expect(upsert).toBeDefined();
 
-    const records = upsert!.data as Array<{ feature_key: string; enabled: boolean; limit_value: unknown }>;
+    const records = upsert!.data as Array<{
+      feature_key: string;
+      enabled: boolean;
+      limit_value: unknown;
+    }>;
     expect(records).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ feature_key: 'audit_export', enabled: true }),
         expect.objectContaining({ feature_key: 'reports', enabled: true }),
-        expect.objectContaining({ feature_key: 'framework_evaluations', enabled: true }),
-        expect.objectContaining({ feature_key: 'team_limit', enabled: true, limit_value: 15 }),
+        expect.objectContaining({
+          feature_key: 'framework_evaluations',
+          enabled: true,
+        }),
+        expect.objectContaining({
+          feature_key: 'team_limit',
+          enabled: true,
+          limit_value: 15,
+        }),
       ]),
     );
   });
@@ -108,35 +123,44 @@ describe('syncEntitlementsForPlan', () => {
   it('upserts correct entitlements for pro plan', async () => {
     await syncEntitlementsForPlan('org-1', 'pro');
 
-    const upsert = dbCalls.upserts.find(u => u.table === 'org_entitlements');
-    const records = upsert!.data as Array<{ feature_key: string; limit_value: unknown }>;
+    const upsert = dbCalls.upserts.find((u) => u.table === 'org_entitlements');
+    const records = upsert!.data as Array<{
+      feature_key: string;
+      limit_value: unknown;
+    }>;
 
     // Pro includes certifications
     expect(records).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ feature_key: 'certifications', enabled: true }),
+        expect.objectContaining({
+          feature_key: 'certifications',
+          enabled: true,
+        }),
       ]),
     );
 
     // Team limit is 75
-    const teamLimit = records.find(r => r.feature_key === 'team_limit');
+    const teamLimit = records.find((r) => r.feature_key === 'team_limit');
     expect(teamLimit?.limit_value).toBe(75);
   });
 
   it('upserts unlimited team_limit (null) for enterprise', async () => {
     await syncEntitlementsForPlan('org-1', 'enterprise');
 
-    const upsert = dbCalls.upserts.find(u => u.table === 'org_entitlements');
-    const records = upsert!.data as Array<{ feature_key: string; limit_value: unknown }>;
+    const upsert = dbCalls.upserts.find((u) => u.table === 'org_entitlements');
+    const records = upsert!.data as Array<{
+      feature_key: string;
+      limit_value: unknown;
+    }>;
 
-    const teamLimit = records.find(r => r.feature_key === 'team_limit');
+    const teamLimit = records.find((r) => r.feature_key === 'team_limit');
     expect(teamLimit?.limit_value).toBeNull();
   });
 
   it('sets organization_id on all records', async () => {
     await syncEntitlementsForPlan('org-xyz', 'basic');
 
-    const upsert = dbCalls.upserts.find(u => u.table === 'org_entitlements');
+    const upsert = dbCalls.upserts.find((u) => u.table === 'org_entitlements');
     const records = upsert!.data as Array<{ organization_id: string }>;
     for (const r of records) {
       expect(r.organization_id).toBe('org-xyz');
@@ -146,7 +170,7 @@ describe('syncEntitlementsForPlan', () => {
   it('uses onConflict for upsert', async () => {
     await syncEntitlementsForPlan('org-1', 'basic');
 
-    const upsert = dbCalls.upserts.find(u => u.table === 'org_entitlements');
+    const upsert = dbCalls.upserts.find((u) => u.table === 'org_entitlements');
     expect(upsert!.opts).toEqual({
       onConflict: 'organization_id,feature_key',
     });
@@ -175,7 +199,12 @@ describe('requireActiveSubscription', () => {
 
   it('returns plan info for active subscription', async () => {
     selectResults['org_subscriptions'] = {
-      data: { plan_key: 'pro', status: 'active', current_period_end: null, trial_expires_at: null },
+      data: {
+        plan_key: 'pro',
+        status: 'active',
+        current_period_end: null,
+        trial_expires_at: null,
+      },
       error: null,
     };
 
@@ -229,7 +258,11 @@ describe('requireActiveSubscription', () => {
 
   it('throws when plan_key is invalid', async () => {
     selectResults['org_subscriptions'] = {
-      data: { plan_key: 'invalid_plan', status: 'active', current_period_end: null },
+      data: {
+        plan_key: 'invalid_plan',
+        status: 'active',
+        current_period_end: null,
+      },
       error: null,
     };
 

@@ -4,48 +4,33 @@
  */
 
 import { test, expect, type Page } from '@playwright/test';
-import { getTestCredentials, cleanupTestUser } from './helpers/test-auth';
+import { cleanupTestUser } from './helpers/test-auth';
+import { getCredentials, gotoAppRoute, loginAs } from './helpers/fixtures';
 
-let testCredentials: { email: string; password: string } | null = null;
+async function getApiWithRetry(page: Page, path: string) {
+  let lastError: unknown;
 
-async function getCredentials(): Promise<{ email: string; password: string }> {
-  if (testCredentials) return testCredentials;
-  if (process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) {
-    testCredentials = {
-      email: process.env.E2E_TEST_EMAIL,
-      password: process.env.E2E_TEST_PASSWORD,
-    };
-    return testCredentials;
-  }
-  testCredentials = await getTestCredentials();
-  return testCredentials;
-}
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await page.request.get(path, { timeout: 15_000 });
+    } catch (error) {
+      lastError = error;
+      const message = error instanceof Error ? error.message : String(error);
+      const retryable =
+        message.includes('ECONNRESET') ||
+        message.includes('ERR_NETWORK_CHANGED') ||
+        message.includes('ERR_CONNECTION_RESET') ||
+        message.includes('Timeout');
 
-async function loginAs(page: Page, email: string, password: string) {
-  await page.goto('/auth/signin');
-  await page.evaluate(() => {
-    localStorage.setItem('e2e_test_mode', 'true');
-  });
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL(/\/app/, { timeout: 15000 });
-  await dismissProductTour(page);
-}
+      if (!retryable || attempt === 2) {
+        throw error;
+      }
 
-async function dismissProductTour(page: Page) {
-  try {
-    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
-    const tourText = page.locator('text="Product Tour"');
-    if (await tourText.isVisible({ timeout: 2000 })) {
-      const skipBtn = page.locator('button:has-text("Skip Tour")');
-      await skipBtn.click({ timeout: 3000 });
-      await tourText.waitFor({ state: 'hidden', timeout: 5000 });
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(500 * (attempt + 1));
     }
-  } catch {
-    // Tour not present
   }
+
+  throw lastError;
 }
 
 // =========================================================
@@ -64,7 +49,7 @@ test.describe('Customer Health Score API', () => {
   });
 
   test('Health score API returns valid response', async ({ page }) => {
-    const response = await page.request.get('/api/customer-health/score');
+    const response = await getApiWithRetry(page, '/api/customer-health/score');
 
     expect([200, 401, 403]).toContain(response.status());
 
@@ -87,7 +72,7 @@ test.describe('Customer Health Score API', () => {
   });
 
   test('Health score includes factors breakdown', async ({ page }) => {
-    const response = await page.request.get('/api/customer-health/score');
+    const response = await getApiWithRetry(page, '/api/customer-health/score');
 
     if (response.status() === 200) {
       const data = await response.json();
@@ -104,7 +89,7 @@ test.describe('Customer Health Score API', () => {
   });
 
   test('Health score includes alerts', async ({ page }) => {
-    const response = await page.request.get('/api/customer-health/score');
+    const response = await getApiWithRetry(page, '/api/customer-health/score');
 
     if (response.status() === 200) {
       const data = await response.json();
@@ -118,7 +103,7 @@ test.describe('Customer Health Score API', () => {
   });
 
   test('Health score includes recommended actions', async ({ page }) => {
-    const response = await page.request.get('/api/customer-health/score');
+    const response = await getApiWithRetry(page, '/api/customer-health/score');
 
     if (response.status() === 200) {
       const data = await response.json();
@@ -142,7 +127,7 @@ test.describe('Health Status Thresholds', () => {
   });
 
   test('Health status matches score threshold', async ({ page }) => {
-    const response = await page.request.get('/api/customer-health/score');
+    const response = await getApiWithRetry(page, '/api/customer-health/score');
 
     if (response.status() === 200) {
       const data = await response.json();
@@ -175,7 +160,7 @@ test.describe('Founder Health Rankings', () => {
   });
 
   test('Rankings API requires founder access', async ({ page }) => {
-    const response = await page.request.get('/api/customer-health/rankings');
+    const response = await getApiWithRetry(page, '/api/customer-health/rankings');
 
     // Should return 403 for non-founders
     expect([200, 403]).toContain(response.status());
@@ -192,7 +177,7 @@ test.describe('Founder Health Rankings', () => {
   });
 
   test('Rankings include summary statistics', async ({ page }) => {
-    const response = await page.request.get('/api/customer-health/rankings');
+    const response = await getApiWithRetry(page, '/api/customer-health/rankings');
 
     if (response.status() === 200) {
       const data = await response.json();
@@ -210,8 +195,7 @@ test.describe('Founder Health Rankings', () => {
   });
 
   test('Admin health page loads for founders', async ({ page }) => {
-    await page.goto('/admin/health');
-    await page.waitForLoadState('networkidle');
+    await page.goto('/admin/health', { waitUntil: 'domcontentloaded' });
 
     // Should show either rankings or access denied
     const hasContent = await page.waitForSelector(
@@ -234,8 +218,7 @@ test.describe('Health Score Display', () => {
   });
 
   test('Dashboard may show health indicator', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Look for health-related indicators
     const healthIndicator = page.locator('[data-testid="health-score"], text=/health|status|healthy|warning|at risk/i');
@@ -249,8 +232,7 @@ test.describe('Health Score Display', () => {
   });
 
   test('Health alerts may be shown when applicable', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Look for health alerts
     const alerts = page.locator('[data-testid="health-alert"], text=/action required|attention|improve/i');

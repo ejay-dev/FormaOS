@@ -25,14 +25,16 @@ export default async function AuditPortalReports({
       description: 'Statement of Applicability coverage',
     },
     {
-      name: 'Evidence Coverage Summary',
-      type: 'coverage',
-      description: 'Evidence coverage per control domain',
+      name: 'Buyer Trust Packet',
+      type: 'trust',
+      description:
+        'Procurement-ready summary across security and privacy controls',
     },
     {
-      name: 'Gap Analysis',
-      type: 'gap',
-      description: 'Controls without adequate evidence',
+      name: 'NDIS Compliance Snapshot',
+      type: 'ndis',
+      description:
+        'Practice standards, evidence posture, and participant safety metrics',
     },
   ];
 
@@ -59,7 +61,7 @@ export default async function AuditPortalReports({
                   {report.description}
                 </p>
                 <a
-                  href={`/api/reports/export?type=${report.type}&format=pdf&mode=sync`}
+                  href={`/audit-portal/${token}/reports/download?type=${report.type}`}
                   className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
                 >
                   <Download className="h-3.5 w-3.5" />

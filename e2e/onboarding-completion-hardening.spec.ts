@@ -7,10 +7,7 @@ import {
   authenticateWorkspacePage,
   type WorkspaceSeedContext,
 } from './helpers/workspace-seed';
-import {
-  E2EAuthBootstrapError,
-  cleanupTestUser,
-} from './helpers/test-auth';
+import { E2EAuthBootstrapError, cleanupTestUser } from './helpers/test-auth';
 
 /**
  * =============================================================================
@@ -76,7 +73,11 @@ async function readStatus(context: WorkspaceSeedContext) {
       current_step: number | null;
       completed_steps: number[] | null;
       completed_at: string | null;
-    } | null) ?? { current_step: null, completed_steps: null, completed_at: null }
+    } | null) ?? {
+      current_step: null,
+      completed_steps: null,
+      completed_at: null,
+    }
   );
 }
 
@@ -322,10 +323,10 @@ test.describe('Onboarding hardening — concurrency, idempotency, boundaries', (
         }
         throw err;
       }
-      await expect(
-        page,
-        `step=${step} did not bounce to /app`,
-      ).toHaveURL(/\/app(?:\/|$|\?)/, { timeout: 15000 });
+      await expect(page, `step=${step} did not bounce to /app`).toHaveURL(
+        /\/app(?:\/|$|\?)/,
+        { timeout: 15000 },
+      );
     }
   });
 

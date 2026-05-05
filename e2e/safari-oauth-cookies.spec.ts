@@ -197,7 +197,10 @@ test.describe('Mobile Safari OAuth Cookie Persistence', () => {
         // May happen during a server-side redirect; check if we're still on a valid page
         const currentUrl = page.url();
         if (currentUrl.includes('/auth/')) {
-          test.skip(true, `Reload redirected to ${currentUrl} — session was cleared`);
+          test.skip(
+            true,
+            `Reload redirected to ${currentUrl} — session was cleared`,
+          );
           return;
         }
         // otherwise continue — page may have redirected but is still valid

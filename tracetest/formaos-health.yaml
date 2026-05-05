@@ -1,0 +1,22 @@
+type: Test
+spec:
+  id: formaos-health-trace
+  name: FormaOS health trace
+  description: Verifies a live FormaOS health request produces HTTP spans.
+  trigger:
+    type: http
+    httpRequest:
+      url: http://host.docker.internal:3000/api/health
+      method: GET
+      headers:
+        - key: User-Agent
+          value: formaos-tracetest
+  specs:
+    - name: Health endpoint returned a traced 200 response
+      selector: span[tracetest.span.type="http" http.target="/api/health" http.status_code="200"]
+      assertions:
+        - attr:tracetest.selected_spans.count >= 1
+    - name: Next API route execution is visible in the trace
+      selector: span[name="executing api route (app) /api/health"]
+      assertions:
+        - attr:tracetest.selected_spans.count >= 1

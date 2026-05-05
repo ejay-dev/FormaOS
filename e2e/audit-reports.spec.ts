@@ -3,49 +3,50 @@
  * Tests: Report generation, PDF export, framework-specific reports
  */
 
-import { test, expect, type Page } from '@playwright/test';
-import { getTestCredentials, cleanupTestUser } from './helpers/test-auth';
+import { test, expect, type APIResponse, type Page } from '@playwright/test';
+import { cleanupTestUser } from './helpers/test-auth';
+import { getCredentials, gotoAppRoute, loginAs } from './helpers/fixtures';
 
-let testCredentials: { email: string; password: string } | null = null;
+test.describe.configure({ mode: 'serial' });
 
-async function getCredentials(): Promise<{ email: string; password: string }> {
-  if (testCredentials) return testCredentials;
-  if (process.env.E2E_TEST_EMAIL && process.env.E2E_TEST_PASSWORD) {
-    testCredentials = {
-      email: process.env.E2E_TEST_EMAIL,
-      password: process.env.E2E_TEST_PASSWORD,
-    };
-    return testCredentials;
-  }
-  testCredentials = await getTestCredentials();
-  return testCredentials;
+function unwrapReportPayload(payload: any) {
+  return payload?.report && typeof payload.report === 'object'
+    ? payload.report
+    : payload;
 }
 
-async function loginAs(page: Page, email: string, password: string) {
-  await page.goto('/auth/signin');
-  await page.evaluate(() => {
-    localStorage.setItem('e2e_test_mode', 'true');
-  });
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL(/\/app/, { timeout: 15000 });
-  await dismissProductTour(page);
+function isTransientRequestError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return (
+    message.includes('ECONNRESET') ||
+    message.includes('ERR_CONNECTION_RESET') ||
+    message.includes('socket hang up') ||
+    message.includes('Timeout') ||
+    message.includes('Target page, context or browser has been closed')
+  );
 }
 
-async function dismissProductTour(page: Page) {
-  try {
-    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
-    const tourText = page.locator('text="Product Tour"');
-    if (await tourText.isVisible({ timeout: 2000 })) {
-      const skipBtn = page.locator('button:has-text("Skip Tour")');
-      await skipBtn.click({ timeout: 3000 });
-      await tourText.waitFor({ state: 'hidden', timeout: 5000 });
-      await page.waitForTimeout(500);
+async function getReportExportWithRetry(
+  page: Page,
+  url: string,
+): Promise<APIResponse> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      return await page.request.get(url, { timeout: 20_000 });
+    } catch (error) {
+      lastError = error;
+      if (!isTransientRequestError(error) || attempt === 3) {
+        break;
+      }
+      await page.waitForTimeout(500 * attempt);
     }
-  } catch {
-    // Tour not present
   }
+
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(String(lastError ?? 'Report export request failed'));
 }
 
 // =========================================================
@@ -64,26 +65,28 @@ test.describe('Audit Reports Page', () => {
   });
 
   test('Reports page loads', async ({ page }) => {
-    await page.goto('/app/reports');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/reports');
 
     // Should show reports page content
-    const hasContent = await page.waitForSelector(
-      'text=/reports?|certification|compliance|audit/i',
-      { timeout: 10000 }
-    ).catch(() => null);
+    const hasContent = await page
+      .waitForSelector('text=/reports?|certification|compliance|audit/i', {
+        timeout: 10000,
+      })
+      .catch(() => null);
 
     expect(hasContent).not.toBeNull();
     console.log('Reports page loaded');
   });
 
   test('Report type selector shows available frameworks', async ({ page }) => {
-    await page.goto('/app/reports');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/reports');
 
     // Look for framework options
     const frameworks = page.locator('text=/soc ?2|iso ?27001|ndis|hipaa/i');
-    const hasFrameworks = await frameworks.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const hasFrameworks = await frameworks
+      .first()
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
 
     if (hasFrameworks) {
       const count = await frameworks.count();
@@ -91,12 +94,15 @@ test.describe('Audit Reports Page', () => {
     }
   });
 
-  test('Certification reports section shows available reports', async ({ page }) => {
-    await page.goto('/app/reports');
-    await page.waitForLoadState('networkidle');
+  test('Certification reports section shows available reports', async ({
+    page,
+  }) => {
+    await gotoAppRoute(page, '/app/reports');
 
     // Look for certification report cards
-    const reportCards = page.locator('[data-testid="report-card"], .rounded-xl.border');
+    const reportCards = page.locator(
+      '[data-testid="report-card"], .rounded-xl.border',
+    );
     const count = await reportCards.count();
 
     expect(count).toBeGreaterThan(0);
@@ -114,12 +120,15 @@ test.describe('Report Export API', () => {
   });
 
   test('SOC2 report export returns data', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=soc2&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=soc2&format=json&mode=sync',
+    );
 
     expect([200, 401, 403]).toContain(response.status());
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       expect(data).toHaveProperty('frameworkCode');
       expect(data).toHaveProperty('readinessScore');
       expect(data).toHaveProperty('controlSummary');
@@ -128,12 +137,15 @@ test.describe('Report Export API', () => {
   });
 
   test('ISO27001 report export returns data', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=iso27001&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=iso27001&format=json&mode=sync',
+    );
 
     expect([200, 401, 403]).toContain(response.status());
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       expect(data).toHaveProperty('frameworkCode', 'ISO27001');
       expect(data).toHaveProperty('statementOfApplicability');
       expect(data).toHaveProperty('riskAssessmentSummary');
@@ -142,12 +154,15 @@ test.describe('Report Export API', () => {
   });
 
   test('NDIS report export returns data', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=ndis&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=ndis&format=json&mode=sync',
+    );
 
     expect([200, 401, 403]).toContain(response.status());
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       expect(data).toHaveProperty('frameworkCode', 'NDIS');
       expect(data).toHaveProperty('practiceStandards');
       expect(data).toHaveProperty('participantSafetyMetrics');
@@ -156,12 +171,15 @@ test.describe('Report Export API', () => {
   });
 
   test('HIPAA report export returns data', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=hipaa&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=hipaa&format=json&mode=sync',
+    );
 
     expect([200, 401, 403]).toContain(response.status());
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       expect(data).toHaveProperty('frameworkCode', 'HIPAA');
       expect(data).toHaveProperty('privacyRuleCompliance');
       expect(data).toHaveProperty('securityRuleCompliance');
@@ -172,7 +190,10 @@ test.describe('Report Export API', () => {
   test('PDF export triggers download', async ({ page }) => {
     // Note: Playwright can't easily verify PDF download content,
     // but we can verify the response headers
-    const response = await page.request.get('/api/reports/export?type=soc2&format=pdf');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=soc2&format=pdf&mode=sync',
+    );
 
     expect([200, 401, 403]).toContain(response.status());
 
@@ -194,10 +215,13 @@ test.describe('Report Content', () => {
   });
 
   test('Report includes organization name', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=soc2&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=soc2&format=json&mode=sync',
+    );
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       expect(data).toHaveProperty('organizationName');
       expect(data.organizationName.length).toBeGreaterThan(0);
       console.log(`Report for organization: ${data.organizationName}`);
@@ -205,10 +229,13 @@ test.describe('Report Content', () => {
   });
 
   test('Report includes control summary', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=soc2&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=soc2&format=json&mode=sync',
+    );
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       const summary = data.controlSummary;
 
       expect(summary).toHaveProperty('total');
@@ -221,10 +248,13 @@ test.describe('Report Content', () => {
   });
 
   test('Report includes evidence summary', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=soc2&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=soc2&format=json&mode=sync',
+    );
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       const evidence = data.evidenceSummary;
 
       expect(evidence).toHaveProperty('total');
@@ -236,15 +266,20 @@ test.describe('Report Content', () => {
   });
 
   test('Report includes gaps', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=soc2&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=soc2&format=json&mode=sync',
+    );
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       expect(data).toHaveProperty('gaps');
       expect(data.gaps).toHaveProperty('criticalGaps');
       expect(Array.isArray(data.gaps.criticalGaps)).toBe(true);
 
-      console.log(`Report identifies ${data.gaps.criticalGaps.length} critical gaps`);
+      console.log(
+        `Report identifies ${data.gaps.criticalGaps.length} critical gaps`,
+      );
     }
   });
 });
@@ -259,10 +294,13 @@ test.describe('Framework-Specific Reports', () => {
   });
 
   test('ISO27001 includes Statement of Applicability', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=iso27001&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=iso27001&format=json&mode=sync',
+    );
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       expect(Array.isArray(data.statementOfApplicability)).toBe(true);
 
       if (data.statementOfApplicability.length > 0) {
@@ -276,10 +314,13 @@ test.describe('Framework-Specific Reports', () => {
   });
 
   test('NDIS includes practice standards', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=ndis&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=ndis&format=json&mode=sync',
+    );
 
     if (response.status() === 200) {
-      const data = await response.json();
+      const data = unwrapReportPayload(await response.json());
       expect(Array.isArray(data.practiceStandards)).toBe(true);
 
       if (data.practiceStandards.length > 0) {
@@ -292,13 +333,25 @@ test.describe('Framework-Specific Reports', () => {
   });
 
   test('HIPAA includes rule compliance', async ({ page }) => {
-    const response = await page.request.get('/api/reports/export?type=hipaa&format=json');
+    const response = await getReportExportWithRetry(
+      page,
+      '/api/reports/export?type=hipaa&format=json&mode=sync',
+    );
 
     if (response.status() === 200) {
-      const data = await response.json();
-      expect(data.privacyRuleCompliance).toHaveProperty('ruleName', 'Privacy Rule');
-      expect(data.securityRuleCompliance).toHaveProperty('ruleName', 'Security Rule');
-      expect(data.breachNotificationCompliance).toHaveProperty('ruleName', 'Breach Notification');
+      const data = unwrapReportPayload(await response.json());
+      expect(data.privacyRuleCompliance).toHaveProperty(
+        'ruleName',
+        'Privacy Rule',
+      );
+      expect(data.securityRuleCompliance).toHaveProperty(
+        'ruleName',
+        'Security Rule',
+      );
+      expect(data.breachNotificationCompliance).toHaveProperty(
+        'ruleName',
+        'Breach Notification',
+      );
       console.log('HIPAA rule compliance included');
     }
   });
@@ -314,12 +367,16 @@ test.describe('Export UI', () => {
   });
 
   test('Export button is visible on reports page', async ({ page }) => {
-    await page.goto('/app/reports');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/reports');
 
     // Look for export/download buttons
-    const exportBtn = page.locator('button:has-text("Export"), button:has-text("Download"), a:has-text("Export")');
-    const hasExport = await exportBtn.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const exportBtn = page.locator(
+      'button:has-text("Export"), button:has-text("Download"), a:has-text("Export")',
+    );
+    const hasExport = await exportBtn
+      .first()
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
 
     if (hasExport) {
       console.log('Export button visible on reports page');
@@ -327,12 +384,14 @@ test.describe('Export UI', () => {
   });
 
   test('Format selection is available', async ({ page }) => {
-    await page.goto('/app/reports');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/reports');
 
     // Look for format options
     const formats = page.locator('text=/pdf|json|csv/i');
-    const hasFormats = await formats.first().isVisible({ timeout: 5000 }).catch(() => false);
+    const hasFormats = await formats
+      .first()
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
 
     if (hasFormats) {
       console.log('Format selection available');

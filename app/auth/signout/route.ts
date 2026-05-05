@@ -18,10 +18,27 @@ function getProjectRef(url: string): string {
   }
 }
 
+function isLoopbackHost(hostname: string): boolean {
+  return ['localhost', '127.0.0.1', '[::1]'].includes(hostname);
+}
+
 const resolveRedirectUrl = (request: Request) => {
   const { origin } = new URL(request.url);
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? origin;
-  return `${appUrl.replace(/\/$/, '')}/auth/signin`;
+
+  try {
+    const configured = new URL(appUrl);
+    const requestOrigin = new URL(origin);
+    if (
+      isLoopbackHost(configured.hostname) &&
+      isLoopbackHost(requestOrigin.hostname)
+    ) {
+      return `${requestOrigin.origin}/auth/signin`;
+    }
+    return `${configured.origin}/auth/signin`;
+  } catch {
+    return `${origin}/auth/signin`;
+  }
 };
 
 // Clear all Supabase auth cookies for complete session cleanup

@@ -171,6 +171,17 @@ describe('validateCsrfOrigin', () => {
     expect(result).toBeNull();
   });
 
+  it('trusts server-configured extra origins', () => {
+    process.env.CSRF_TRUSTED_ORIGINS =
+      'http://localhost:3002, https://preview.formaos.test';
+    const result = validateCsrfOrigin(
+      makeRequest('POST', 'http://localhost:3002/api/data', {
+        origin: 'http://localhost:3002',
+      }),
+    );
+    expect(result).toBeNull();
+  });
+
   // --- Development mode localhost ---
 
   it('trusts localhost:3000 in development', () => {
@@ -178,6 +189,26 @@ describe('validateCsrfOrigin', () => {
     const result = validateCsrfOrigin(
       makeRequest('POST', 'http://localhost:3000/api/data', {
         origin: 'http://localhost:3000',
+      }),
+    );
+    expect(result).toBeNull();
+  });
+
+  it('trusts alternate localhost ports in development', () => {
+    process.env.NODE_ENV = 'development';
+    const result = validateCsrfOrigin(
+      makeRequest('POST', 'http://localhost:3002/api/data', {
+        origin: 'http://localhost:3002',
+      }),
+    );
+    expect(result).toBeNull();
+  });
+
+  it('trusts IPv6 loopback in development', () => {
+    process.env.NODE_ENV = 'development';
+    const result = validateCsrfOrigin(
+      makeRequest('POST', 'http://[::1]:3002/api/data', {
+        origin: 'http://[::1]:3002',
       }),
     );
     expect(result).toBeNull();

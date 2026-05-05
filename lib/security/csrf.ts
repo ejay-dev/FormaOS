@@ -35,6 +35,10 @@ function getTrustedOrigins(): Set<string> {
     process.env.VERCEL_BRANCH_URL
       ? `https://${process.env.VERCEL_BRANCH_URL}`
       : undefined,
+    ...(process.env.CSRF_TRUSTED_ORIGINS ?? '')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
   ];
 
   for (const raw of envVars) {
@@ -54,6 +58,20 @@ function getTrustedOrigins(): Set<string> {
   }
 
   return origins;
+}
+
+function isDevelopmentLoopbackOrigin(origin: string): boolean {
+  if (process.env.NODE_ENV === 'production') return false;
+
+  try {
+    const url = new URL(origin);
+    return (
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)
+    );
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -99,7 +117,7 @@ export function validateCsrfOrigin(request: Request): NextResponse | null {
   }
 
   const trusted = getTrustedOrigins();
-  if (!trusted.has(requestOrigin)) {
+  if (!trusted.has(requestOrigin) && !isDevelopmentLoopbackOrigin(requestOrigin)) {
     console.warn('[CSRF] Blocked request from untrusted origin', {
       requestOrigin,
       method,

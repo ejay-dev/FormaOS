@@ -586,12 +586,18 @@ test.describe.serial('Deep dashboard workflows', () => {
       await page.waitForTimeout(3_000);
       await gotoHealthy(page, `/app/tasks?q=${encodeURIComponent(label)}`);
       // UI task creation depends on form submission completing — skip if not persisted (Supabase latency)
-      const uiTaskPresent = await page.locator('body').textContent().then(
-        (t) => (t ?? '').includes(`${label} UI Task`),
-        () => false,
-      );
+      const uiTaskPresent = await page
+        .locator('body')
+        .textContent()
+        .then(
+          (t) => (t ?? '').includes(`${label} UI Task`),
+          () => false,
+        );
       if (!uiTaskPresent) {
-        test.skip(true, `${label} UI Task not found after form submission — likely Supabase latency`);
+        test.skip(
+          true,
+          `${label} UI Task not found after form submission — likely Supabase latency`,
+        );
       }
 
       await gotoHealthy(page, `/app/policies`);

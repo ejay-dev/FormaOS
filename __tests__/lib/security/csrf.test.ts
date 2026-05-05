@@ -161,6 +161,21 @@ describe('validateCsrfOrigin', () => {
   });
 
   describe('development mode', () => {
+    it('trusts server-configured extra origins', () => {
+      process.env.CSRF_TRUSTED_ORIGINS =
+        'http://localhost:3002, https://preview.formaos.test';
+
+      jest.resetModules();
+      const {
+        validateCsrfOrigin: freshValidate,
+      } = require('@/lib/security/csrf');
+
+      const result = freshValidate(
+        makeRequest('POST', { origin: 'http://localhost:3002' }),
+      );
+      expect(result).toBeNull();
+    });
+
     it('trusts localhost in development', () => {
       process.env.NODE_ENV = 'development';
 
@@ -175,6 +190,20 @@ describe('validateCsrfOrigin', () => {
       expect(result).toBeNull();
     });
 
+    it('trusts alternate localhost ports in development', () => {
+      process.env.NODE_ENV = 'development';
+
+      jest.resetModules();
+      const {
+        validateCsrfOrigin: freshValidate,
+      } = require('@/lib/security/csrf');
+
+      const result = freshValidate(
+        makeRequest('POST', { origin: 'http://localhost:3002' }),
+      );
+      expect(result).toBeNull();
+    });
+
     it('trusts 127.0.0.1 in development', () => {
       process.env.NODE_ENV = 'development';
 
@@ -185,6 +214,20 @@ describe('validateCsrfOrigin', () => {
 
       const result = freshValidate(
         makeRequest('POST', { origin: 'http://127.0.0.1:3000' }),
+      );
+      expect(result).toBeNull();
+    });
+
+    it('trusts IPv6 loopback in development', () => {
+      process.env.NODE_ENV = 'development';
+
+      jest.resetModules();
+      const {
+        validateCsrfOrigin: freshValidate,
+      } = require('@/lib/security/csrf');
+
+      const result = freshValidate(
+        makeRequest('POST', { origin: 'http://[::1]:3002' }),
       );
       expect(result).toBeNull();
     });

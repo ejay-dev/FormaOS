@@ -36,6 +36,13 @@ async function expectCapaStatus(
     .toBe(status);
 }
 
+async function moveCapaStatus(page: import('@playwright/test').Page, status: string) {
+  const statusSelect = page.locator('main select[name="status"]:visible');
+  await statusSelect.selectOption(status);
+  await expect(statusSelect).toHaveValue(status);
+  await page.getByRole('button', { name: 'Move status' }).click();
+}
+
 test.describe('CAPA lifecycle workflow', () => {
   test.beforeEach(async ({ browserName }) => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
@@ -44,6 +51,8 @@ test.describe('CAPA lifecycle workflow', () => {
   test('creates, progresses, verifies, closes, attaches evidence, and persists', async ({
     page,
   }) => {
+    test.setTimeout(240_000);
+
     const context = await getWorkspaceSeedContext();
     const { error: schemaError } = await context.admin
       .from('org_capa_items')
@@ -73,22 +82,24 @@ test.describe('CAPA lifecycle workflow', () => {
     try {
       await authenticateWorkspacePage(page, context.email);
       await page.goto(`/app/incidents/${incident.id}`, {
-        waitUntil: 'domcontentloaded',
+        waitUntil: 'commit',
       });
       await page.getByRole('link', { name: 'Create CAPA' }).click();
-      await page.waitForURL('**/app/capa/new**');
+      await page.waitForURL('**/app/capa/new**', { waitUntil: 'commit' });
 
-      await page.locator('input[name="title"]').fill(title);
+      const main = page.locator('main');
+      await main.locator('input[name="title"]:visible').fill(title);
       await page
-        .locator('textarea[name="description"]')
+        .locator('main textarea[name="description"]:visible')
         .fill('Phase-one CAPA workflow validation.');
-      await page.locator('select[name="type"]').selectOption('corrective');
-      await page.locator('select[name="severity"]').selectOption('high');
-      await page.locator('select[name="owner_id"]').selectOption(context.userId);
-      await page.locator('input[name="due_date"]').fill(dueDate);
+      await main.locator('select[name="type"]:visible').selectOption('corrective');
+      await main.locator('select[name="severity"]:visible').selectOption('high');
+      await main.locator('select[name="owner_id"]:visible').selectOption(context.userId);
+      await main.locator('input[name="due_date"]:visible').fill(dueDate);
       await page.getByRole('button', { name: 'Create CAPA' }).click();
-      await page.waitForURL((url) =>
-        /^\/app\/capa\/[0-9a-f-]{36}$/i.test(url.pathname),
+      await page.waitForURL(
+        (url) => /^\/app\/capa\/[0-9a-f-]{36}$/i.test(url.pathname),
+        { waitUntil: 'commit' },
       );
 
       const created = await context.admin
@@ -110,11 +121,12 @@ test.describe('CAPA lifecycle workflow', () => {
         incident.id,
       );
 
-      await expect(page.locator('h1')).toContainText(title);
+      await expect(page.getByRole('heading', { name: title })).toBeVisible({
+        timeout: 30_000,
+      });
       await expect(page.getByRole('link', { name: 'Linked incident' })).toBeVisible();
 
-      await page.locator('select[name="status"]').selectOption('investigating');
-      await page.getByRole('button', { name: 'Move status' }).click();
+      await moveCapaStatus(page, 'investigating');
       await expectCapaStatus(context, capaId!, 'investigating');
 
       await page
@@ -132,8 +144,7 @@ test.describe('CAPA lifecycle workflow', () => {
         })
         .toContain('Supplier process drift');
 
-      await page.locator('select[name="status"]').selectOption('action_assigned');
-      await page.getByRole('button', { name: 'Move status' }).click();
+      await moveCapaStatus(page, 'action_assigned');
       await expectCapaStatus(context, capaId!, 'action_assigned');
 
       await page
@@ -145,8 +156,7 @@ test.describe('CAPA lifecycle workflow', () => {
         .fill('Add a monthly control review and owner sign-off.');
       await page.getByRole('button', { name: 'Save preventive action' }).click();
 
-      await page.locator('select[name="status"]').selectOption('verification');
-      await page.getByRole('button', { name: 'Move status' }).click();
+      await moveCapaStatus(page, 'verification');
       await expectCapaStatus(context, capaId!, 'verification');
 
       await page
@@ -167,11 +177,11 @@ test.describe('CAPA lifecycle workflow', () => {
         })
         .toBe('verified');
 
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page.reload({ waitUntil: 'commit' });
       await page.getByRole('button', { name: 'Close CAPA' }).click();
       await expectCapaStatus(context, capaId!, 'closed');
 
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page.reload({ waitUntil: 'commit' });
       await page
         .getByTestId('entity-evidence-file-input')
         .setInputFiles({
@@ -183,7 +193,7 @@ test.describe('CAPA lifecycle workflow', () => {
         `capa-evidence-${unique}.txt`,
       );
 
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page.reload({ waitUntil: 'commit' });
       await expect(page.locator('h1')).toContainText(title);
       await expect(page.getByText('Closed', { exact: true }).first()).toBeVisible();
       await expect(page.locator('textarea[name="verification_notes"]')).toHaveValue(
@@ -195,7 +205,9 @@ test.describe('CAPA lifecycle workflow', () => {
       await expect(page.locator('text=attached CAPA evidence')).toBeVisible();
 
       await page.getByRole('link', { name: 'Linked incident' }).click();
-      await page.waitForURL(`**/app/incidents/${incident.id}`);
+      await page.waitForURL(`**/app/incidents/${incident.id}`, {
+        waitUntil: 'commit',
+      });
       await expect(page.locator('h1')).toContainText('Incident Detail');
     } finally {
       if (capaId) {

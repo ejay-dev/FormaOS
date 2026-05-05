@@ -76,12 +76,27 @@ export async function POST(request: Request) {
         continue;
       }
       try {
-        await createInvitation({
+        const invitation = await createInvitation({
           organizationId: orgId,
           email,
           role,
           invitedBy: user.id,
         });
+
+        if (!invitation.success) {
+          const errorMessage =
+            invitation.error instanceof Error
+              ? invitation.error.message
+              : String(invitation.error ?? 'Failed');
+
+          results.push({
+            email,
+            ok: false,
+            error: errorMessage,
+          });
+          continue;
+        }
+
         results.push({ email, ok: true });
       } catch (err) {
         log.warn({ err, email }, 'invitation failed');

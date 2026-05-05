@@ -40,7 +40,10 @@ function skipOnSupabaseNetworkError(error: unknown): void {
     String(e.message ?? '').includes('fetch failed') ||
     String(e.message ?? '').includes('network');
   if (isNetworkError) {
-    test.skip(true, `Supabase admin API unavailable (${e.name ?? 'network error'}) — skipping until Supabase recovers`);
+    test.skip(
+      true,
+      `Supabase admin API unavailable (${e.name ?? 'network error'}) — skipping until Supabase recovers`,
+    );
   }
 }
 
@@ -64,7 +67,9 @@ async function waitForSignedInApp(page: import('@playwright/test').Page) {
     .catch(() => {
       const currentPath = new URL(page.url()).pathname;
       if (!/\/(app|dashboard)/.test(currentPath)) {
-        throw new Error(`Expected app route after sign-in, current URL is ${page.url()}`);
+        throw new Error(
+          `Expected app route after sign-in, current URL is ${page.url()}`,
+        );
       }
     });
 }
@@ -75,7 +80,9 @@ async function completeOnboardingForOrg(
   name: string,
 ) {
   const nowIso = new Date().toISOString();
-  const trialEnd = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+  const trialEnd = new Date(
+    Date.now() + 14 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
   await admin.from('orgs').upsert(
     {
@@ -236,8 +243,14 @@ test.describe('Compliance Evidence Export', () => {
     try {
       await waitForSignedInApp(page);
     } catch (signInError) {
-      const msg = signInError instanceof Error ? signInError.message : String(signInError);
-      test.skip(true, `Sign-in did not redirect to app — Supabase may be slow: ${msg.slice(0, 120)}`);
+      const msg =
+        signInError instanceof Error
+          ? signInError.message
+          : String(signInError);
+      test.skip(
+        true,
+        `Sign-in did not redirect to app — Supabase may be slow: ${msg.slice(0, 120)}`,
+      );
       return;
     }
 
@@ -381,8 +394,14 @@ test.describe('Compliance Evidence Export', () => {
     try {
       await waitForSignedInApp(page);
     } catch (signInError) {
-      const msg = signInError instanceof Error ? signInError.message : String(signInError);
-      test.skip(true, `Sign-in did not redirect to app — Supabase may be slow: ${msg.slice(0, 120)}`);
+      const msg =
+        signInError instanceof Error
+          ? signInError.message
+          : String(signInError);
+      test.skip(
+        true,
+        `Sign-in did not redirect to app — Supabase may be slow: ${msg.slice(0, 120)}`,
+      );
       return;
     }
 
