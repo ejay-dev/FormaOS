@@ -16,6 +16,7 @@
 /playwright-report
 /.lighthouseci/
 build_output.txt
+/screenshots
 
 # next.js
 /.next/
