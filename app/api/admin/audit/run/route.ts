@@ -38,9 +38,13 @@ interface CheckResult {
 const ROOT = process.cwd();
 const IS_VERCEL = Boolean(process.env.VERCEL);
 
+function workspacePath(...segments: string[]): string {
+  return path.join(/* turbopackIgnore: true */ process.cwd(), ...segments);
+}
+
 /** Resolve a file path, trying .ts → .js fallback for Vercel compiled bundles. */
 function resolveFile(rel: string): string | null {
-  const full = path.join(ROOT, rel);
+  const full = workspacePath(rel);
   if (fs.existsSync(full)) return full;
   // On Vercel, .ts files are compiled to .js
   if (rel.endsWith('.ts') || rel.endsWith('.tsx')) {
@@ -49,7 +53,7 @@ function resolveFile(rel: string): string | null {
   }
   // Also check .next/server for config files
   if (IS_VERCEL) {
-    const nextServer = path.join(ROOT, '.next', 'server', rel);
+    const nextServer = workspacePath('.next', 'server', rel);
     if (fs.existsSync(nextServer)) return nextServer;
   }
   return null;
@@ -77,7 +81,7 @@ function fileContains(rel: string, pattern: string | RegExp): boolean {
 
 /** Recursively collect files matching a predicate. Gracefully returns [] if dir is absent. */
 function walkDir(dir: string, match: (name: string) => boolean, maxDepth = 8): string[] {
-  const root = path.join(ROOT, dir);
+  const root = workspacePath(dir);
   if (!fs.existsSync(root)) return [];
   const results: string[] = [];
   function walk(d: string, depth: number) {
@@ -122,7 +126,7 @@ function getRouteDirectories(dir: string): string[] {
       }
     }
   }
-  walk(path.join(ROOT, dir), 0);
+  walk(workspacePath(dir), 0);
   return dirs;
 }
 
@@ -357,7 +361,7 @@ function checkErrorBoundaries(): CheckResult {
   // Also count parent error.tsx files that cover child routes
   const parentErrorDirs = routeDirs.filter((d) => {
     let parent = path.dirname(d);
-    while (parent.length >= path.join(ROOT, 'app').length) {
+    while (parent.length >= workspacePath('app').length) {
       try {
         if (fs.existsSync(path.join(parent, 'error.tsx'))) return true;
       } catch { /* skip */ }
@@ -399,7 +403,7 @@ function checkLoadingStates(): CheckResult {
   const withoutLoading: string[] = [];
 
   for (const rel of dataHeavyPaths) {
-    const full = path.join(ROOT, rel);
+    const full = workspacePath(rel);
     try {
       if (fs.existsSync(full) && fs.statSync(full).isDirectory()) {
         if (fs.existsSync(path.join(full, 'loading.tsx'))) {
@@ -699,7 +703,7 @@ async function checkRLSPolicies(): Promise<CheckResult> {
 }
 
 function checkMigrations(): CheckResult {
-  const migrationsDir = path.join(ROOT, 'supabase', 'migrations');
+  const migrationsDir = workspacePath('supabase', 'migrations');
   let count = 0;
   try {
     const files = fs.readdirSync(migrationsDir).filter((f) => f.endsWith('.sql'));
@@ -882,7 +886,7 @@ function checkEnvExample(): CheckResult {
 }
 
 function checkCIPipeline(): CheckResult {
-  const workflowDir = path.join(ROOT, '.github', 'workflows');
+  const workflowDir = workspacePath('.github', 'workflows');
   let ymlCount = 0;
   try {
     const files = fs.readdirSync(workflowDir).filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'));

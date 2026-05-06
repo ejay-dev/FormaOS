@@ -17,7 +17,7 @@
     "predev": "npm run check-root && npm run check-env",
     "dev": "next dev",
     "prebuild": "npm run check-root && CHECK_ENV_STRICT=1 npm run check-env",
-    "build": "__NEXT_PRIVATE_STANDALONE_CONFIG= NEXT_WEBPACK_PARALLELISM=${NEXT_WEBPACK_PARALLELISM:-1} NODE_OPTIONS='--max-old-space-size=4096' next build --webpack",
+    "build": "__NEXT_PRIVATE_STANDALONE_CONFIG= NODE_OPTIONS='--max-old-space-size=4096' next build --turbopack",
     "prestart": "npm run check-root && CHECK_ENV_STRICT=1 npm run check-env",
     "start": "next start",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
