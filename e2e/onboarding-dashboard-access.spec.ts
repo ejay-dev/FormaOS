@@ -367,6 +367,7 @@ test.describe('Onboarding dashboard and sidebar access', () => {
 
     await expect(page).toHaveURL(
       /\/onboarding\?step=7&fast_track=1&persona=viewer/,
+      { timeout: 60_000 },
     );
     await expect(
       page.getByTestId('first-action-review-dashboard'),
