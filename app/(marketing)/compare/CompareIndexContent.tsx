@@ -87,7 +87,7 @@ export default function CompareIndexContent() {
             </span>
           </>
         }
-        subheadline="See how FormaOS compares to GRC tools, care software, and legacy compliance approaches — across the features that matter for NDIS, aged care, and healthcare providers."
+        subheadline="How FormaOS compares to GRC tools, care software, and legacy compliance — on the features that matter for NDIS, aged care, and healthcare."
         primaryCta={{
           href: '/contact?type=procurement&source=compare_index',
           label: 'Start Buyer Review',

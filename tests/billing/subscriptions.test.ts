@@ -207,12 +207,13 @@ describe('ensureSubscription', () => {
 
       await ensureSubscription(ORG, 'basic');
 
-      // Should have attempted upsert twice (legacy then fallback)
+      // ensureSubscription walks through 4 payload variants:
+      // legacy_full → legacy_org_id → legacy_plan_code → base
       const subUpserts = dbCalls.upserts.filter(u => u.table === 'org_subscriptions');
-      expect(subUpserts.length).toBe(2);
+      expect(subUpserts.length).toBe(4);
 
-      // Fallback should NOT have org_id or plan_code
-      const fallback = subUpserts[1].data as Record<string, unknown>;
+      // Final fallback (base payload) should NOT have org_id or plan_code
+      const fallback = subUpserts[subUpserts.length - 1].data as Record<string, unknown>;
       expect(fallback).not.toHaveProperty('org_id');
       expect(fallback).not.toHaveProperty('plan_code');
     });
