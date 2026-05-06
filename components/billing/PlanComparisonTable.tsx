@@ -107,7 +107,7 @@ const FEATURE_ROWS: {
     label: 'Custom Frameworks',
     basic: '—',
     pro: '—',
-    scale: '✓',
+    scale: '—',
     enterprise: '✓',
   },
   {

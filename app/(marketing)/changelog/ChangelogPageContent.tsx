@@ -342,7 +342,7 @@ const releases: ChangelogRelease[] = [
         text: 'In-app upgrade pricing matches marketing and Stripe',
         tag: 'fix',
         detail:
-          'PlanComparisonTable and UpgradeIntelligenceModal now read prices from the canonical plan catalog ($297 Foundation / $1,800 Growth / Custom Enterprise) instead of hardcoded placeholder values. Enterprise CTA routes to sales contact instead of a broken checkout.',
+          'PlanComparisonTable and UpgradeIntelligenceModal now read prices from the canonical plan catalog ($297 Foundation / $797 Growth / $1,800 Scale / Custom Enterprise) instead of hardcoded placeholder values. Enterprise CTA routes to sales contact instead of a broken checkout.',
       },
       {
         text: 'Billing checkout API hardened',
