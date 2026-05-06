@@ -117,7 +117,11 @@ export default async function AcceptOrganizationInvitePage({
     }
 
     await acceptInvitation(membershipId, actionUser.id);
-    redirect('/app?invite_accepted=1');
+
+    // Direct member/viewer roles to the employee onboarding wizard
+    const isEmployeeRole =
+      currentInvitation.role === 'member' || currentInvitation.role === 'viewer';
+    redirect(isEmployeeRole ? '/onboarding/employee' : '/app?invite_accepted=1');
   }
 
   return (

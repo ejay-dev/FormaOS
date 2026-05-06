@@ -38,8 +38,8 @@ export function DashboardWrapper({
   const showStartHere = Boolean(firstSession?.isFirstSession);
   const showPostOnboarding = Boolean(
     firstSession &&
-      firstSession.total > 0 &&
-      firstSession.completed === firstSession.total,
+    firstSession.total > 0 &&
+    firstSession.completed === firstSession.total,
   );
 
   if (isEmployer) {
@@ -52,7 +52,11 @@ export function DashboardWrapper({
           </div>
         ) : showPostOnboarding && firstSession ? (
           <div className="mb-6">
-            <PostOnboardingHero state={firstSession} />
+            <PostOnboardingHero
+              state={firstSession}
+              industry={industry}
+              orgName={orgName}
+            />
           </div>
         ) : null}
         <CommandCenter

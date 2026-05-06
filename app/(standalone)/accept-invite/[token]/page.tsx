@@ -168,7 +168,15 @@ export default async function AcceptInvitePage({
       },
     );
 
-    redirect('/app?invite_accepted=1');
+    // Direct employees and viewers to the onboarding wizard;
+    // owners and admins go straight to the main app.
+    const isEmployeeRole =
+      currentInvitation.role === 'member' ||
+      currentInvitation.role === 'viewer';
+
+    redirect(
+      isEmployeeRole ? '/onboarding/employee' : '/app?invite_accepted=1',
+    );
   }
 
   if (invitation.email.toLowerCase() !== user.email?.toLowerCase()) {
