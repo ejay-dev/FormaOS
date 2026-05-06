@@ -189,8 +189,13 @@ test.describe('Organization Isolation', () => {
   });
 
   test('Dashboard only shows own org data', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await page.goto('/app', { waitUntil: 'domcontentloaded' });
+    await expect(
+      page.getByRole('link', { name: /dashboard/i }).first(),
+    ).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('body')).toContainText(/dashboard/i, {
+      timeout: 15000,
+    });
 
     // Should not see "Access Denied" or other org names
     const accessDenied = page.locator(

@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
+import { shouldOpenBillingPortalForCheckout } from '@/lib/billing/checkout-routing';
 
 const CheckoutSchema = z.object({
   orgId: z.string().uuid().optional(),
@@ -72,19 +73,22 @@ export async function POST(request: Request) {
 
     const { data: subscription } = await supabase
       .from('org_subscriptions')
-      .select('status, stripe_customer_id, stripe_subscription_id')
+      .select('plan_key, status, stripe_customer_id, stripe_subscription_id')
       .eq('organization_id', orgId)
       .maybeSingle();
 
-    const currentStatus =
-      (subscription?.status as string | null)?.toLowerCase() ?? '';
-    if (
-      subscription?.stripe_customer_id &&
-      subscription.stripe_subscription_id &&
-      ['active', 'trialing', 'past_due'].includes(currentStatus)
-    ) {
+    const portalCustomerId = subscription?.stripe_customer_id ?? null;
+    const shouldUsePortal = shouldOpenBillingPortalForCheckout({
+      targetPlan: planId,
+      currentPlan: subscription?.plan_key,
+      status: subscription?.status,
+      stripeCustomerId: portalCustomerId,
+      stripeSubscriptionId: subscription?.stripe_subscription_id,
+    });
+
+    if (shouldUsePortal && portalCustomerId) {
       const portalSession = await stripe.billingPortal.sessions.create({
-        customer: subscription.stripe_customer_id,
+        customer: portalCustomerId,
         return_url: `${appUrl}/app/billing`,
       });
 

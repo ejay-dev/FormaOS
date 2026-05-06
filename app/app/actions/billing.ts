@@ -7,6 +7,10 @@ import { resolvePlanKey } from '@/lib/plans';
 import { isFounder } from '@/lib/utils/founder';
 import { billingLogger } from '@/lib/observability/structured-logger';
 import { actionError, isNextInternalError } from '@/lib/actions/safe';
+import {
+  planCodeForBilling,
+  shouldOpenBillingPortalForCheckout,
+} from '@/lib/billing/checkout-routing';
 
 type BillingActionResult =
   | { success: true; url: string }
@@ -19,11 +23,6 @@ function billingActionError(
   status?: string,
 ): BillingActionResult {
   return { success: false, error, status };
-}
-
-// Legacy plan_code uses different values (starter vs basic)
-function toLegacyPlanCode(planKey: string): string {
-  return planKey === 'basic' ? 'starter' : planKey;
 }
 
 export async function startCheckout(
@@ -69,13 +68,14 @@ export async function startCheckout(
     const orgId = membership.organization_id as string;
     const { data: organization } = await supabase
       .from('organizations')
-      .select('plan_key')
+      .select('plan_key, name, created_by')
       .eq('id', orgId)
       .maybeSingle();
 
     const planInput = formData.get('plan') as string | null;
     const planKey = resolvePlanKey(planInput ?? organization?.plan_key ?? null);
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ?? 'https://formaos.com.au';
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? siteUrl;
 
     if (!planKey) {
@@ -93,7 +93,9 @@ export async function startCheckout(
 
     const { data: subscriptionRow } = await admin
       .from('org_subscriptions')
-      .select('id, plan_key, status, stripe_customer_id, stripe_subscription_id')
+      .select(
+        'id, plan_key, status, stripe_customer_id, stripe_subscription_id',
+      )
       .eq('organization_id', orgId)
       .maybeSingle();
 
@@ -110,12 +112,13 @@ export async function startCheckout(
     const appBase = appUrl.replace(/\/$/, '');
 
     try {
-      const currentStatus =
-        (subscriptionRow?.status as string | null)?.toLowerCase() ?? '';
-      const shouldUsePortal =
-        customerId &&
-        subscriptionRow?.stripe_subscription_id &&
-        ['active', 'trialing', 'past_due'].includes(currentStatus);
+      const shouldUsePortal = shouldOpenBillingPortalForCheckout({
+        targetPlan: planKey,
+        currentPlan: subscriptionRow?.plan_key,
+        status: subscriptionRow?.status,
+        stripeCustomerId: customerId,
+        stripeSubscriptionId: subscriptionRow?.stripe_subscription_id,
+      });
 
       if (shouldUsePortal) {
         const portalSession = await stripe.billingPortal.sessions.create({
@@ -139,6 +142,25 @@ export async function startCheckout(
           },
         });
         customerId = customer.id;
+      }
+
+      if (organization?.name) {
+        const { error: legacyOrgError } = await admin.from('orgs').upsert(
+          {
+            id: orgId,
+            name: organization.name,
+            created_by: organization.created_by ?? null,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'id' },
+        );
+
+        if (legacyOrgError) {
+          billingLogger.warn('legacy_orgs_upsert_failed', {
+            orgId,
+            error: legacyOrgError.message,
+          });
+        }
       }
 
       const session = await stripe.checkout.sessions.create({
@@ -168,8 +190,9 @@ export async function startCheckout(
       const { error: upsertError } = await admin
         .from('org_subscriptions')
         .upsert({
+          org_id: orgId,
           organization_id: orgId,
-          plan_code: toLegacyPlanCode(planKey),
+          plan_code: planCodeForBilling(planKey),
           plan_key: planKey,
           status: 'pending',
           stripe_customer_id: customerId,
@@ -192,9 +215,7 @@ export async function startCheckout(
       return { success: true, url: session.url };
     } catch (err) {
       const errorObj =
-        err instanceof Error
-          ? err
-          : { code: 'UNKNOWN', message: String(err) };
+        err instanceof Error ? err : { code: 'UNKNOWN', message: String(err) };
       billingLogger.error('checkout_session_failed', errorObj, {
         planKey,
         orgId,

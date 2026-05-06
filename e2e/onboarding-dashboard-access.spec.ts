@@ -263,10 +263,10 @@ test.describe('Onboarding dashboard and sidebar access', () => {
     await page.getByRole('button', { name: 'Complete setup' }).click();
 
     await expect(page).toHaveURL(/\/app/, { timeout: 30000 });
-    await expect(page.getByTestId('quick-actions')).toBeVisible();
     await expect(
-      page.getByTestId('quick-actions').getByText('Patients'),
+      page.getByRole('link', { name: /dashboard/i }).first(),
     ).toBeVisible();
+    await expect(page.getByText('Northwind Health')).toBeVisible();
     await expectSidebarItems(
       page,
       ['nav-dashboard', 'nav-patients', 'nav-staff-credentials', 'nav-team'],

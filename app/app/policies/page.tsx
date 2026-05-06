@@ -54,6 +54,7 @@ export default function PoliciesPage() {
       return;
     }
 
+    let cancelled = false;
     const fetchPolicies = async () => {
       try {
         setIsLoading(true);
@@ -64,19 +65,26 @@ export default function PoliciesPage() {
           .order('created_at', { ascending: false });
 
         if (fetchError) throw fetchError;
+        if (cancelled) return;
         setAllPolicies(policies || []);
         setError(null);
       } catch (err) {
+        if (cancelled) return;
         const message =
           err instanceof Error ? err.message : 'Failed to load policies';
         setError(message);
         console.error('[Policies] Error:', err);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchPolicies();
+    return () => {
+      cancelled = true;
+    };
   }, [orgId, supabase]);
 
   if (!orgId) {
