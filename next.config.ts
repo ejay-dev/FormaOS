@@ -2,9 +2,18 @@ import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 import path from 'node:path';
 
+const isVercelBuild = process.env.VERCEL === '1';
+const buildCpuCount = Number(
+  process.env.NEXT_BUILD_CPUS ?? (isVercelBuild ? 2 : 4),
+);
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   experimental: {
+    cpus: buildCpuCount,
+    staticGenerationMaxConcurrency: isVercelBuild ? 2 : 4,
+    staticGenerationMinPagesPerWorker: isVercelBuild ? 8 : 25,
+    webpackMemoryOptimizations: true,
     // Tree-shake large icon/animation/chart libraries — reduces JS bundle per page
     optimizePackageImports: ['lucide-react', 'framer-motion', 'recharts'],
   },
