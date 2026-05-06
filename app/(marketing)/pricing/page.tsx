@@ -8,7 +8,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Pricing - FormaOS Compliance Infrastructure | From $297/mo',
   description:
-    'Infrastructure pricing for enforced compliance workflows. Foundation $297/mo, Growth from $1,800/mo, and Enterprise custom for high-risk regulated teams.',
+    'Infrastructure pricing for enforced compliance workflows. Foundation $297/mo, Growth $797/mo, Scale $1,800/mo, and Enterprise custom for high-risk regulated teams.',
   keywords: [
     'compliance software pricing Australia',
     'FormaOS pricing',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     siteName: 'FormaOS',
     title: 'Pricing - FormaOS Compliance Infrastructure | From $297/mo',
     description:
-      'Infrastructure pricing for enforced compliance workflows. Foundation $297/mo, Growth from $1,800/mo, and Enterprise custom for regulated teams.',
+      'Infrastructure pricing for enforced compliance workflows. Foundation $297/mo, Growth $797/mo, Scale $1,800/mo, and Enterprise custom for regulated teams.',
     images: [
       {
         url: `${siteUrl}/og-image.png`,
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Pricing - FormaOS Compliance Infrastructure | From $297/mo',
     description:
-      'Infrastructure pricing for enforced compliance workflows. Foundation $297/mo, Growth from $1,800/mo, and Enterprise custom.',
+      'Infrastructure pricing for enforced compliance workflows. Foundation $297/mo, Growth $797/mo, Scale $1,800/mo, and Enterprise custom.',
     images: [`${siteUrl}/og-image.png`],
     creator: '@EjazDev',
     site: '@FormaOS',

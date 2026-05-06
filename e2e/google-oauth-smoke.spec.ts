@@ -107,9 +107,10 @@ test.describe('Google OAuth Smoke Tests', () => {
     expect(is200 || isRedirect).toBe(true);
 
     // Page should not show a server error
-    const body = await page.textContent('body');
-    expect(body).not.toContain('Internal Server Error');
-    expect(body).not.toContain('500');
+    const bodyText = await page.locator('body').innerText();
+    expect(bodyText).not.toContain('Internal Server Error');
+    expect(bodyText).not.toContain('Application error');
+    expect(bodyText).not.toMatch(/^500$|(^|\n)\s*500\s*(\n|$)/);
   });
 
   test('no GIS script loaded on any auth page', async ({ page }) => {

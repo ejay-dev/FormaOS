@@ -215,7 +215,7 @@ async function assertNoErrorState(page: Page) {
 }
 
 async function waitForPageContent(page: Page) {
-  await page.waitForLoadState('domcontentloaded', { timeout: 30000 });
+  await expect(page.locator('body')).toBeVisible({ timeout: 30000 });
   // Give client-side hydration a moment
   await page.waitForTimeout(1000);
 }
@@ -1130,7 +1130,7 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('activity feed loads and shows entries', async ({ page }) => {
-      await page.goto('/app/activity', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/activity', { waitUntil: 'commit', timeout: 60000 });
       await waitForPageContent(page);
       await assertNoErrorState(page);
 

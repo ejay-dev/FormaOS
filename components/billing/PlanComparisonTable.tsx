@@ -11,6 +11,7 @@ import {
   Zap,
   Crown,
   Building2,
+  Layers,
   Loader2,
   Sparkles,
 } from 'lucide-react';
@@ -28,40 +29,44 @@ const FEATURE_ROWS: {
   label: string;
   basic: string;
   pro: string;
+  scale: string;
   enterprise: string;
 }[] = [
   {
     label: 'Sites',
-    basic: 'Up to 2',
-    pro: 'Up to 10',
+    basic: 'Up to 1',
+    pro: 'Up to 3',
+    scale: 'Unlimited',
     enterprise: 'Unlimited',
   },
   {
     label: 'Team Members',
-    basic: 'Up to 15',
-    pro: 'Up to 75',
+    basic: 'Up to 10',
+    pro: 'Up to 25',
+    scale: 'Up to 75',
     enterprise: 'Unlimited',
   },
   {
     label: 'Frameworks',
     basic: 'Up to 2',
-    pro: 'Up to 5',
+    pro: 'Up to 4',
+    scale: 'Unlimited',
     enterprise: 'Unlimited',
   },
-  { label: 'Compliance Engine', basic: '✓', pro: '✓', enterprise: '✓' },
-  { label: 'Tasks & Evidence', basic: '✓', pro: '✓', enterprise: '✓' },
-  { label: 'Audit Logs', basic: '✓', pro: '✓', enterprise: '✓' },
-  { label: 'Standard Reporting', basic: '✓', pro: '✓', enterprise: '✓' },
-  { label: 'Advanced Reporting', basic: '—', pro: '✓', enterprise: '✓' },
-  { label: 'Governance Controls', basic: '—', pro: '✓', enterprise: '✓' },
-  { label: 'Operational Dashboards', basic: '—', pro: '✓', enterprise: '✓' },
-  { label: 'Workflow Automation', basic: '—', pro: '✓', enterprise: '✓' },
-  { label: 'White-glove Onboarding', basic: '—', pro: '—', enterprise: '✓' },
-  { label: 'Custom Frameworks', basic: '—', pro: '—', enterprise: '✓' },
-  { label: 'Dedicated Support', basic: '—', pro: '—', enterprise: '✓' },
-  { label: 'SSO & SAML', basic: '—', pro: '—', enterprise: '✓' },
-  { label: 'Webhook Integrations', basic: '—', pro: '—', enterprise: '✓' },
-  { label: 'Priority Support SLA', basic: '—', pro: '—', enterprise: '✓' },
+  { label: 'Compliance Engine', basic: '✓', pro: '✓', scale: '✓', enterprise: '✓' },
+  { label: 'Tasks & Evidence', basic: '✓', pro: '✓', scale: '✓', enterprise: '✓' },
+  { label: 'Audit Logs', basic: '✓', pro: '✓', scale: '✓', enterprise: '✓' },
+  { label: 'Standard Reporting', basic: '✓', pro: '✓', scale: '✓', enterprise: '✓' },
+  { label: 'Advanced Reporting', basic: '—', pro: '✓', scale: '✓', enterprise: '✓' },
+  { label: 'Governance Controls', basic: '—', pro: '✓', scale: '✓', enterprise: '✓' },
+  { label: 'Operational Dashboards', basic: '—', pro: '✓', scale: '✓', enterprise: '✓' },
+  { label: 'Workflow Automation', basic: '—', pro: '✓', scale: '✓', enterprise: '✓' },
+  { label: 'Custom Frameworks', basic: '—', pro: '—', scale: '✓', enterprise: '✓' },
+  { label: 'Webhook Integrations', basic: '—', pro: '—', scale: '✓', enterprise: '✓' },
+  { label: 'Priority Support SLA', basic: '—', pro: '—', scale: '✓', enterprise: '✓' },
+  { label: 'White-glove Onboarding', basic: '—', pro: '—', scale: '—', enterprise: '✓' },
+  { label: 'Dedicated Support', basic: '—', pro: '—', scale: '—', enterprise: '✓' },
+  { label: 'SSO & SAML', basic: '—', pro: '—', scale: '—', enterprise: '✓' },
 ];
 
 const PLAN_ICONS: Record<
@@ -70,6 +75,7 @@ const PLAN_ICONS: Record<
 > = {
   basic: Zap,
   pro: Crown,
+  scale: Layers,
   enterprise: Building2,
 };
 
@@ -107,11 +113,15 @@ export function PlanComparisonTable() {
     }
   };
 
-  const plans: PlanKey[] = ['basic', 'pro', 'enterprise'];
+  const plans: PlanKey[] = ['basic', 'pro', 'scale', 'enterprise'];
   const currentPlanIndex =
     plan === 'trial' ? -1 : plans.indexOf(plan as PlanKey);
   const recommendedPlan: PlanKey =
-    plan === 'trial' || plan === 'basic' ? 'pro' : 'enterprise';
+    plan === 'trial' || plan === 'basic'
+      ? 'pro'
+      : plan === 'pro'
+        ? 'scale'
+        : 'enterprise';
 
   return (
     <div className="space-y-6">
@@ -133,7 +143,7 @@ export function PlanComparisonTable() {
       )}
 
       {/* Plan cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {plans.map((planKey) => {
           const catalog = PLAN_CATALOG[planKey];
           const PlanIcon = PLAN_ICONS[planKey];

@@ -244,9 +244,16 @@ test.describe('Export and download integrity', () => {
     expect(csv).toContain('Ada Integrity');
     expect(csv).toContain('medium');
 
+    await page.goto(`/app/forms/${form!.id}/submissions?view=analytics`, {
+      waitUntil: 'domcontentloaded',
+    });
     await expect(
-      page.locator('text=Analytics coming soon'),
+      page.getByRole('heading', { name: /status distribution/i }),
     ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /field completion/i }),
+    ).toBeVisible();
+    await expect(page.locator('body')).toContainText('Resident Name');
     expect(failures, failures.join('\n')).toEqual([]);
 
     await context.admin

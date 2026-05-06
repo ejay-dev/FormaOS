@@ -16,6 +16,7 @@ import { Avatar } from '@/components/ui/avatar-stack';
 
 const MAX_AVATAR_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const AVATAR_UPLOADS_ENABLED = false;
 
 type ProfileEditorProps = {
   userId: string;
@@ -28,7 +29,6 @@ type ProfileEditorProps = {
   profile: {
     full_name: string | null;
     phone: string | null;
-    avatar_path: string | null;
   } | null;
   avatarUrl?: string | null;
 };
@@ -49,8 +49,8 @@ export function ProfileEditor({
   const [phone, setPhone] = useState(profile?.phone ?? '');
   const [email, setEmail] = useState(userEmail ?? '');
   const [organizationName, setOrganizationName] = useState(orgName ?? '');
-  const [currentAvatarPath, setCurrentAvatarPath] = useState(
-    profile?.avatar_path ?? null,
+  const [currentAvatarPath, setCurrentAvatarPath] = useState<string | null>(
+    null,
   );
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string | null>(
     avatarUrl ?? null,
@@ -121,7 +121,6 @@ export function ProfileEditor({
           {
             user_id: userId,
             organization_id: orgId,
-            avatar_path: null,
             full_name: fullName,
             phone,
             updated_at: new Date().toISOString(),
@@ -175,7 +174,6 @@ export function ProfileEditor({
             organization_id: orgId,
             full_name: fullName.trim() || null,
             phone: phone.trim() || null,
-            avatar_path: avatarPath,
             updated_at: new Date().toISOString(),
           },
           { onConflict: 'user_id' },
@@ -202,7 +200,7 @@ export function ProfileEditor({
         });
       }
 
-      setCurrentAvatarPath(avatarPath);
+      setCurrentAvatarPath(AVATAR_UPLOADS_ENABLED ? avatarPath : null);
       if (file) {
         await refreshAvatarUrl(avatarPath ?? null);
       }
@@ -270,29 +268,33 @@ export function ProfileEditor({
             <div className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">
               Profile Photo
             </div>
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-glass-border bg-glass-subtle px-4 py-2 text-xs font-semibold text-foreground hover:bg-glass-strong">
-              <Image className="h-4 w-4" />
-              {previewUrl ? 'Change' : 'Upload'}
-              <input
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                className="hidden"
-                onChange={(event) =>
-                  handleFileChange(event.target.files?.[0] ?? null)
-                }
-              />
-            </label>
-            <button
-              type="button"
-              onClick={handleRemoveAvatar}
-              disabled={!currentAvatarPath || removing}
-              className="w-full rounded-xl border border-glass-border bg-transparent px-4 py-2 text-[11px] font-semibold text-foreground/70 hover:bg-glass-strong disabled:opacity-50"
-            >
-              {removing ? 'Removing...' : 'Remove photo'}
-            </button>
-            <p className="text-xs text-muted-foreground/60">
-              JPG, PNG, or WebP up to 5MB.
-            </p>
+            {AVATAR_UPLOADS_ENABLED ? (
+              <>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-glass-border bg-glass-subtle px-4 py-2 text-xs font-semibold text-foreground hover:bg-glass-strong">
+                  <Image className="h-4 w-4" />
+                  {previewUrl ? 'Change' : 'Upload'}
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={(event) =>
+                      handleFileChange(event.target.files?.[0] ?? null)
+                    }
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={handleRemoveAvatar}
+                  disabled={!currentAvatarPath || removing}
+                  className="w-full rounded-xl border border-glass-border bg-transparent px-4 py-2 text-[11px] font-semibold text-foreground/70 hover:bg-glass-strong disabled:opacity-50"
+                >
+                  {removing ? 'Removing...' : 'Remove photo'}
+                </button>
+                <p className="text-xs text-muted-foreground/60">
+                  JPG, PNG, or WebP up to 5MB.
+                </p>
+              </>
+            ) : null}
           </div>
         </div>
 

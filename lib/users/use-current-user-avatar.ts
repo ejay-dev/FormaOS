@@ -26,22 +26,13 @@ export function useCurrentUserAvatar(
     (async () => {
       const { data: profile } = await supabase
         .from('user_profiles')
-        .select('full_name, avatar_path')
+        .select('full_name')
         .eq('user_id', userId)
         .maybeSingle();
 
       if (!mounted) return;
       setDisplayName(profile?.full_name ?? null);
-
-      if (profile?.avatar_path) {
-        const { data: signed } = await supabase.storage
-          .from('user-avatars')
-          .createSignedUrl(profile.avatar_path, 60 * 60 * 12);
-        if (!mounted) return;
-        setAvatarUrl(signed?.signedUrl ?? null);
-      } else {
-        setAvatarUrl(null);
-      }
+      setAvatarUrl(null);
     })();
 
     return () => {

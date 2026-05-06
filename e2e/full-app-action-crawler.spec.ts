@@ -185,8 +185,8 @@ async function gotoCrawlRoute(page: Page, route: string) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       return await page.goto(route, {
-        waitUntil: 'domcontentloaded',
-        timeout: 45_000,
+        waitUntil: 'commit',
+        timeout: 60_000,
       });
     } catch (error) {
       lastError = error;

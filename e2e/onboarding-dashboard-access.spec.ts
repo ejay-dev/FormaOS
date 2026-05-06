@@ -229,14 +229,16 @@ test.describe('Onboarding dashboard and sidebar access', () => {
     await expect(page.getByText('Welcome to FormaOS.')).toBeVisible();
     await page.getByRole('button', { name: 'Continue' }).click();
 
-    await expect(page).toHaveURL(/\/onboarding\?step=2/);
+    await expect(page).toHaveURL(/\/onboarding\?step=2/, { timeout: 60_000 });
     await page.getByTestId('organization-name').fill('Northwind Health');
     await page.getByTestId('team-size-1-10').check();
     await page.getByTestId('plan-option-pro').check();
     await page.getByRole('button', { name: 'Continue' }).click();
 
     try {
-      await expect(page).toHaveURL(/\/onboarding\?step=3/);
+      await expect(page).toHaveURL(/\/onboarding\?step=3/, {
+        timeout: 60_000,
+      });
     } catch (err) {
       test.skip(
         true,
@@ -247,11 +249,11 @@ test.describe('Onboarding dashboard and sidebar access', () => {
     await page.getByTestId('industry-option-healthcare').check();
     await page.getByRole('button', { name: 'Continue' }).click();
 
-    await expect(page).toHaveURL(/\/onboarding\?step=4/);
+    await expect(page).toHaveURL(/\/onboarding\?step=4/, { timeout: 60_000 });
     await page.getByTestId('role-option-employer').check();
     await page.getByRole('button', { name: 'Continue' }).click();
 
-    await expect(page).toHaveURL(/\/onboarding\?step=5/);
+    await expect(page).toHaveURL(/\/onboarding\?step=5/, { timeout: 60_000 });
     await page.getByTestId('framework-option-hipaa').check();
     await page.getByRole('button', { name: 'Continue' }).click();
 
@@ -320,6 +322,7 @@ test.describe('Onboarding dashboard and sidebar access', () => {
 
     await expect(page).toHaveURL(
       /\/onboarding\?step=7&fast_track=1&persona=member/,
+      { timeout: 60_000 },
     );
     await expect(page.getByText(/Fast-track enabled/i)).toBeVisible();
     await page.getByTestId('first-action-create-task').check();

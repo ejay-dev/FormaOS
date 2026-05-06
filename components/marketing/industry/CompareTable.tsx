@@ -14,6 +14,8 @@ export interface CompareTableProps {
   headline: string;
   description: string;
   rows: CompareRow[];
+  /** Override the middle column label. Defaults to "Generic GRC". */
+  col2Label?: string;
 }
 
 function CellValue({ value }: { value: string }) {
@@ -35,6 +37,7 @@ export function CompareTable({
   headline,
   description,
   rows,
+  col2Label = 'Generic GRC',
 }: CompareTableProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -83,7 +86,7 @@ export function CompareTable({
                     Spreadsheets
                   </th>
                   <th className="px-4 py-4 text-xs uppercase tracking-wider text-slate-500 font-medium text-center w-[20%]">
-                    Generic GRC
+                    {col2Label}
                   </th>
                   <th className="px-4 py-4 text-xs uppercase tracking-wider text-cyan-500/80 font-semibold text-center w-[20%]">
                     FormaOS
@@ -132,7 +135,7 @@ export function CompareTable({
                   </div>
                   <div>
                     <div className="text-[9px] uppercase tracking-wider text-slate-600 mb-1">
-                      GRC
+                      {col2Label}
                     </div>
                     <CellValue value={row.genericGrc} />
                   </div>

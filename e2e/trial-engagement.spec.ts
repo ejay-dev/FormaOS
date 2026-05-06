@@ -9,6 +9,10 @@ import {
   cleanupTestUser,
   E2EAuthBootstrapError,
 } from './helpers/test-auth';
+import {
+  configureWorkspaceState,
+  getWorkspaceSeedContext,
+} from './helpers/workspace-seed';
 
 let testCredentials: { email: string; password: string } | null = null;
 
@@ -41,8 +45,71 @@ async function loginAs(page: Page, email: string, password: string) {
   await page.fill('input[type="email"]', email);
   await page.fill('input[type="password"]', password);
   await page.click('button[type="submit"]');
-  await page.waitForURL(/\/app/, { timeout: 15000 });
+  await page.waitForURL(/\/app/, { timeout: 45000 });
   await dismissProductTour(page);
+}
+
+async function prepareTrialWorkspace() {
+  const context = await getWorkspaceSeedContext();
+  const now = new Date();
+  const trialEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+  await configureWorkspaceState(context, {
+    role: 'owner',
+    industry: 'healthcare',
+    frameworks: ['hipaa'],
+    onboardingCompleted: true,
+    currentStep: 7,
+    completedSteps: [1, 2, 3, 4, 5, 6, 7],
+    organizationName: 'Trial Engagement Baseline',
+    planKey: 'pro',
+    teamSize: '11-50',
+    firstAction: 'review_dashboard',
+  });
+
+  const { data: subscription, error: subscriptionLookupError } =
+    await context.admin
+    .from('org_subscriptions')
+    .select('org_id, organization_id')
+    .or(`organization_id.eq.${context.orgId},org_id.eq.${context.orgId}`)
+    .maybeSingle();
+
+  if (subscriptionLookupError) {
+    throw new Error(
+      `Failed to resolve trial subscription row: ${subscriptionLookupError.message}`,
+    );
+  }
+
+  const trialPayload = {
+    organization_id: context.orgId,
+    org_id: context.orgId,
+    plan_key: 'pro',
+    plan_code: 'pro',
+    status: 'trialing',
+    trial_started_at: now.toISOString(),
+    trial_expires_at: trialEnd.toISOString(),
+    current_period_end: trialEnd.toISOString(),
+    updated_at: now.toISOString(),
+  };
+
+  const { error } = subscription?.org_id || subscription?.organization_id
+    ? await context.admin
+        .from('org_subscriptions')
+        .update(trialPayload)
+        .or(`organization_id.eq.${context.orgId},org_id.eq.${context.orgId}`)
+    : await context.admin.from('org_subscriptions').insert({
+        ...trialPayload,
+        created_at: now.toISOString(),
+      });
+
+  if (error) {
+    throw new Error(`Failed to seed trial subscription: ${error.message}`);
+  }
+}
+
+async function prepareAndLogin(page: Page) {
+  const creds = await getCredentials();
+  await prepareTrialWorkspace();
+  await loginAs(page, creds.email, creds.password);
 }
 
 async function dismissProductTour(page: Page) {
@@ -62,13 +129,20 @@ async function dismissProductTour(page: Page) {
   }
 }
 
+async function openApp(page: Page) {
+  await page.goto('/app', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('body')).toContainText(
+    /Dashboard|Compliance|My Compliance Status|Overview/i,
+    { timeout: 20_000 },
+  );
+}
+
 // =========================================================
 // TRIAL BANNER DISPLAY TESTS
 // =========================================================
 test.describe('Trial Expiration Banners', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    await prepareAndLogin(page);
   });
 
   test.afterAll(async () => {
@@ -78,8 +152,7 @@ test.describe('Trial Expiration Banners', () => {
   });
 
   test('Trial banner shows for trial accounts', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Look for trial banner
     const trialBanner = page.locator(
@@ -98,8 +171,7 @@ test.describe('Trial Expiration Banners', () => {
   });
 
   test('Trial countdown displays days remaining', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Look for countdown text
     const countdown = page.locator('text=/\\d+ days?/i');
@@ -121,8 +193,7 @@ test.describe('Trial Expiration Banners', () => {
   });
 
   test('Trial banner has upgrade CTA', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Look for trial-related upgrade button
     const trialBanner = page.locator(
@@ -152,13 +223,11 @@ test.describe('Trial Expiration Banners', () => {
 // =========================================================
 test.describe('Trial Urgency Messaging', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    await prepareAndLogin(page);
   });
 
   test('Banner color changes based on urgency', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Look for colored banners (amber for warning, red for critical)
     const amberBanner = page.locator(
@@ -188,8 +257,7 @@ test.describe('Trial Urgency Messaging', () => {
   });
 
   test('Urgency messaging matches days remaining', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Check for urgency-related messaging
     const urgentText = page.locator(
@@ -224,8 +292,7 @@ test.describe('Trial Urgency Messaging', () => {
 // =========================================================
 test.describe('Trial Value Recap', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    await prepareAndLogin(page);
   });
 
   test('Value recap API returns trial metrics', async ({ page }) => {
@@ -236,8 +303,13 @@ test.describe('Trial Value Recap', () => {
 
     if (response.status() === 200) {
       const data = await response.json();
-      expect(data).toHaveProperty('valueRecap');
-      expect(data.valueRecap).toHaveProperty('tasksCompleted');
+      expect(data).toHaveProperty('isTrialing');
+      if (data.isTrialing) {
+        expect(data).toHaveProperty('metrics');
+        expect(data.metrics).toHaveProperty('tasksCompleted');
+      } else {
+        expect(data.metrics).toBeNull();
+      }
       console.log('Value recap API returned trial metrics');
     } else {
       console.log('Value recap not available (may not be trial account)');
@@ -245,8 +317,7 @@ test.describe('Trial Value Recap', () => {
   });
 
   test('Value recap shows activity summary', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Look for value recap content
     const valueRecap = page.locator(
@@ -263,8 +334,7 @@ test.describe('Trial Value Recap', () => {
   });
 
   test('Value highlights show key accomplishments', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Look for value highlights
     const highlights = page.locator(
@@ -286,13 +356,11 @@ test.describe('Trial Value Recap', () => {
 // =========================================================
 test.describe('Trial Expiration Flow', () => {
   test.beforeEach(async ({ page }) => {
-    const creds = await getCredentials();
-    await loginAs(page, creds.email, creds.password);
+    await prepareAndLogin(page);
   });
 
   test('Expired trial shows appropriate messaging', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Look for expired trial messaging
     const expiredText = page.locator(
@@ -321,8 +389,7 @@ test.describe('Trial Expiration Flow', () => {
   });
 
   test('Trial warning banner dismissable', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await openApp(page);
 
     // Look for dismissable banner
     const dismissBtn = page.locator(

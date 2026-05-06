@@ -8,7 +8,8 @@ let stripeClient: Stripe | null = null;
 // missing rather than charging against an unverified price ID.
 const DEV_FALLBACK_PRICE_IDS: Record<PlanKey, string> = {
   basic: 'price_1TOdz1AHrAKKo3OlfYxjk9WL',
-  pro: 'price_1TOe05AHrAKKo3OliCrZNnkx',
+  pro: 'price_1TU6oqAHrAKKo3OlWUhJa2ZX',
+  scale: 'price_1TU6rzAHrAKKo3Ol32xT6JW2',
   enterprise: 'price_1T9cPKAHrAKKo3OliQN78Q83',
 };
 
@@ -20,6 +21,7 @@ function configuredPriceIds(): Record<PlanKey, string | null> {
   return {
     basic: process.env.STRIPE_PRICE_FOUNDATION ?? fallback('basic'),
     pro: process.env.STRIPE_PRICE_GROWTH ?? fallback('pro'),
+    scale: process.env.STRIPE_PRICE_SCALE ?? fallback('scale'),
     enterprise: process.env.STRIPE_PRICE_ENTERPRISE ?? fallback('enterprise'),
   };
 }
@@ -41,7 +43,10 @@ export function getStripeClient(): Stripe | null {
 }
 
 export function getStripePriceId(planKey: string): string | null {
-  const priceMap = configuredPriceIds() as Record<string, string | null | undefined>;
+  const priceMap = configuredPriceIds() as Record<
+    string,
+    string | null | undefined
+  >;
 
   const priceId = priceMap[planKey];
   if (!priceId) {
@@ -67,6 +72,9 @@ export function resolvePlanKeyFromPriceId(
   }
   if (priceIds.pro && normalized === priceIds.pro) {
     return 'pro';
+  }
+  if (priceIds.scale && normalized === priceIds.scale) {
+    return 'scale';
   }
   if (priceIds.enterprise && normalized === priceIds.enterprise) {
     return 'enterprise';

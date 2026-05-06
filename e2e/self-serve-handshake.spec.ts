@@ -75,13 +75,13 @@ test.describe('Self-serve checkout handshake', () => {
     expect(intentCookie).toBeUndefined();
   });
 
-  test('signup with non-self-serve plan (pro) does not set the cookie', async ({
+  test('signup with non-self-serve plan (enterprise) does not set the cookie', async ({
     page,
     context,
   }) => {
-    // Growth (pro) is sales-led — the cookie path must not trigger even if a
-    // bad link tries ?plan=pro&intent=checkout.
-    const response = await page.goto('/auth/signup?plan=pro&intent=checkout', {
+    // Enterprise is the only plan that is NOT self-serve — the cookie path must
+    // not trigger even if a bad link tries ?plan=enterprise&intent=checkout.
+    const response = await page.goto('/auth/signup?plan=enterprise&intent=checkout', {
       waitUntil: 'domcontentloaded',
     });
     expect(response?.status()).toBeLessThan(400);
@@ -91,15 +91,51 @@ test.describe('Self-serve checkout handshake', () => {
     const intentCookie = cookies.find(
       (c) => c.name === 'formaos_checkout_intent',
     );
-    // NOTE: if pro plan is now self-serve, the cookie will be set — skip in that case
-    if (intentCookie !== undefined) {
-      test.skip(
-        true,
-        `pro plan now sets formaos_checkout_intent cookie — product changed to self-serve for Growth plan`,
-      );
-      return;
-    }
     expect(intentCookie).toBeUndefined();
+  });
+
+  test('signup with pro plan (Growth) sets formaos_checkout_intent cookie', async ({
+    page,
+    context,
+  }) => {
+    const response = await page.goto(
+      '/auth/signup?plan=pro&intent=checkout&source=pricing',
+      { waitUntil: 'domcontentloaded' },
+    );
+    expect(response?.status()).toBeLessThan(400);
+
+    await page.waitForFunction(() =>
+      document.cookie.includes('formaos_checkout_intent'),
+    );
+
+    const cookies = await context.cookies();
+    const intentCookie = cookies.find(
+      (c) => c.name === 'formaos_checkout_intent',
+    );
+    expect(intentCookie).toBeDefined();
+    expect(intentCookie?.value).toBe('pro');
+  });
+
+  test('signup with scale plan sets formaos_checkout_intent cookie', async ({
+    page,
+    context,
+  }) => {
+    const response = await page.goto(
+      '/auth/signup?plan=scale&intent=checkout&source=pricing',
+      { waitUntil: 'domcontentloaded' },
+    );
+    expect(response?.status()).toBeLessThan(400);
+
+    await page.waitForFunction(() =>
+      document.cookie.includes('formaos_checkout_intent'),
+    );
+
+    const cookies = await context.cookies();
+    const intentCookie = cookies.find(
+      (c) => c.name === 'formaos_checkout_intent',
+    );
+    expect(intentCookie).toBeDefined();
+    expect(intentCookie?.value).toBe('scale');
   });
 
   test('anonymous hit on /app redirects to auth without leaking intent cookie', async ({

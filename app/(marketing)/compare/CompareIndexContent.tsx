@@ -14,37 +14,42 @@ import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const comparisons = [
   {
+    href: '/compare/complispace',
+    name: 'Ideagen Policy Logic',
+    tagline:
+      'Enterprise GRC training + policy management vs operational compliance execution',
+  },
+  {
+    href: '/compare/riskware',
+    name: 'Riskware',
+    tagline:
+      'Risk register and audit tools vs workflow-enforced evidence operating system',
+  },
+  {
+    href: '/compare/6clicks',
+    name: '6clicks',
+    tagline:
+      'GRC framework coverage vs accountable workflow execution and evidence posture',
+  },
+  {
     href: '/compare/vanta',
     name: 'Vanta',
-    tagline: 'Compliance automation vs compliance execution OS',
+    tagline:
+      'SaaS security automation vs NDIS and healthcare compliance execution',
   },
   {
     href: '/compare/drata',
     name: 'Drata',
-    tagline: 'Continuous monitoring vs operational workflow governance',
-  },
-  {
-    href: '/compare/secureframe',
-    name: 'Secureframe',
-    tagline: 'Program setup vs defensible workflow and evidence chain',
-  },
-  {
-    href: '/compare/auditboard',
-    name: 'AuditBoard',
-    tagline: 'Audit management vs operating-system-level control execution',
-  },
-  {
-    href: '/compare/hyperproof',
-    name: 'Hyperproof',
-    tagline: 'Control management vs accountable workflow and evidence posture',
+    tagline:
+      'Continuous security monitoring vs operational workflow governance for regulated industries',
   },
 ] as const;
 
 const differentiators = [
-  'Operational accountability: tasks, owners, deadlines, and audit history',
-  'Evidence defensibility: verification workflows and chain-of-custody context',
-  'Cross-surface trust: buyer-facing assurance and posture snapshots',
-  'Built for regulated operators, not only security teams',
+  'Purpose-built for NDIS, aged care, healthcare, and childcare — not SaaS security teams',
+  'Operational accountability: tasks, owners, deadlines, and audit history in one chain',
+  'Evidence defensibility: verification workflows and chain-of-custody for regulators',
+  'Australian data residency and pre-built frameworks for AU-regulated industries',
 ] as const;
 
 const evaluationPlaybook = [
@@ -75,14 +80,14 @@ export default function CompareIndexContent() {
         badge={{ icon: <Scale className="w-4 h-4" />, text: 'Compare' }}
         headline={
           <>
-            Evaluate FormaOS Against
+            FormaOS vs the
             <br />
             <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-teal-400 bg-clip-text text-transparent">
-              Modern Compliance Tools
+              Alternatives
             </span>
           </>
         }
-        subheadline="Compare platforms by execution depth: workflow-enforced controls, accountable ownership, and defensible evidence."
+        subheadline="See how FormaOS compares to GRC tools, care software, and legacy compliance approaches — across the features that matter for NDIS, aged care, and healthcare providers."
         primaryCta={{
           href: '/contact?type=procurement&source=compare_index',
           label: 'Start Buyer Review',
@@ -93,38 +98,45 @@ export default function CompareIndexContent() {
         }}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Competitor Cards */}
       <DeferredSection minHeight={240}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <DotGrid />
-          <SectionChoreography pattern="alternating" className="grid gap-4 lg:grid-cols-3">
+          <SectionChoreography
+            pattern="alternating"
+            className="grid gap-4 lg:grid-cols-3"
+          >
             {comparisons.map((c) => (
-                <motion.div key={c.href} whileHover={{ y: -6 }}>
-                  <Link
-                    href={c.href}
-                    className="group block rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
-                  >
-                    <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                      Compare
-                    </div>
-                    <div className="mt-2 text-xl font-semibold text-white">
-                      FormaOS vs {c.name}
-                    </div>
-                    <p className="mt-2 text-sm text-slate-300">{c.tagline}</p>
-                    <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
-                      View comparison
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                  </Link>
-                </motion.div>
+              <motion.div key={c.href} whileHover={{ y: -6 }}>
+                <Link
+                  href={c.href}
+                  className="group block rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                >
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Compare
+                  </div>
+                  <div className="mt-2 text-xl font-semibold text-white">
+                    FormaOS vs {c.name}
+                  </div>
+                  <p className="mt-2 text-sm text-slate-300">{c.tagline}</p>
+                  <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+                    View comparison
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </SectionChoreography>
         </section>
       </DeferredSection>
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Differentiators */}
       <DeferredSection minHeight={280}>
@@ -159,20 +171,23 @@ export default function CompareIndexContent() {
       {/* Evaluation Playbook */}
       <DeferredSection minHeight={240}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionChoreography pattern="alternating" className="grid gap-4 lg:grid-cols-3">
+          <SectionChoreography
+            pattern="alternating"
+            className="grid gap-4 lg:grid-cols-3"
+          >
             {evaluationPlaybook.map((step) => (
-                <motion.article
-                  key={step.title}
-                  whileHover={{ y: -6 }}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
-                >
-                  <h3 className="text-sm font-semibold uppercase tracking-wider text-cyan-200">
-                    {step.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                    {step.detail}
-                  </p>
-                </motion.article>
+              <motion.article
+                key={step.title}
+                whileHover={{ y: -6 }}
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+              >
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-cyan-200">
+                  {step.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  {step.detail}
+                </p>
+              </motion.article>
             ))}
           </SectionChoreography>
         </section>

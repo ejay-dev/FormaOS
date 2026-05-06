@@ -1,7 +1,11 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
-import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 import {
   Bell,
   Shield,
@@ -285,8 +289,14 @@ export default function ChildcareComplianceContent() {
           </>
         }
         subheadline="NQF visits arrive with 48 hours notice. FormaOS keeps educator credentials, QIPs, and evidence organised - so you demonstrate quality, not scramble."
-        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('childcare_compliance') }}
-        secondaryCta={{ label: 'See Childcare Demo', href: demoHref('childcare_compliance') }}
+        primaryCta={{
+          label: PUBLIC_CTA_LABELS.compliancePlan,
+          href: compliancePlanHref('childcare_compliance'),
+        }}
+        secondaryCta={{
+          label: 'See Childcare Demo',
+          href: demoHref('childcare_compliance'),
+        }}
         trustSignals={[
           'AU-hosted by default',
           'Assessment-led onboarding',
@@ -302,7 +312,9 @@ export default function ChildcareComplianceContent() {
         socialProof="Trusted by childcare providers running multi-service operations"
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <BeforeAfterSection
         headline="The Childcare Compliance Gap"
@@ -321,11 +333,14 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <CompareTable
         headline="FormaOS vs. the old way"
         description="See how an integrated NQF compliance platform compares to the tools most services are still using."
+        col2Label="Care Management Apps"
         rows={[
           {
             feature: 'QA element-level evidence mapping',
@@ -390,7 +405,9 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <FrameworkExplorer
         headline="Every Childcare Framework. Pre-Built."
@@ -500,7 +517,9 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- How It Works ---- */}
       <VerticalTimeline
@@ -597,7 +616,9 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryFeatures
         headline="Purpose-Built for Childcare Services"
@@ -805,7 +826,9 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- See It In Action ---- */}
       <SeeItInAction
@@ -928,7 +951,9 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- Social Proof ---- */}
       <SocialProof
@@ -970,14 +995,18 @@ export default function ChildcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryCTA
         industry="Childcare"
         urgencyCallout="NQF assessment visits can arrive with 48 hours notice. Are your quality area evidence packs current?"
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryFAQ
         industry="Childcare"

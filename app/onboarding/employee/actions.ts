@@ -137,8 +137,7 @@ export async function skipEmployeeOnboarding() {
       .update({ employee_onboarded_at: now })
       .eq('user_id', user.id)
       .eq('organization_id', membership.organization_id)
-      .then(() => {}) // non-fatal
-      .catch(() => {});
+      .then(() => {}, () => {}); // non-fatal
   }
 
   await supabase.auth.updateUser({

@@ -1,10 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import {
-  acceptInvitation,
-  getPendingInvitation,
-} from '@/lib/multi-org';
+import { acceptInvitation, getPendingInvitation } from '@/lib/multi-org';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
@@ -67,7 +64,9 @@ export default async function AcceptOrganizationInvitePage({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect(`/auth/signin?redirect=/accept-organization-invite/${membershipId}`);
+    redirect(
+      `/auth/signin?redirect=/accept-organization-invite/${membershipId}`,
+    );
   }
 
   const invitation = await getPendingInvitation(membershipId);
@@ -104,7 +103,9 @@ export default async function AcceptOrganizationInvitePage({
     } = await actionSupabase.auth.getUser();
 
     if (!actionUser) {
-      redirect(`/auth/signin?redirect=/accept-organization-invite/${membershipId}`);
+      redirect(
+        `/auth/signin?redirect=/accept-organization-invite/${membershipId}`,
+      );
     }
 
     const currentInvitation = await getPendingInvitation(membershipId);
@@ -120,8 +121,11 @@ export default async function AcceptOrganizationInvitePage({
 
     // Direct member/viewer roles to the employee onboarding wizard
     const isEmployeeRole =
-      currentInvitation.role === 'member' || currentInvitation.role === 'viewer';
-    redirect(isEmployeeRole ? '/onboarding/employee' : '/app?invite_accepted=1');
+      currentInvitation.role === 'member' ||
+      currentInvitation.role === 'viewer';
+    redirect(
+      isEmployeeRole ? '/onboarding/employee' : '/app?invite_accepted=1',
+    );
   }
 
   return (
@@ -132,7 +136,10 @@ export default async function AcceptOrganizationInvitePage({
         </h1>
         <p className="mt-4 text-slate-400">
           Confirm your access to join this workspace as a{' '}
-          <span className="font-semibold text-slate-200">{invitation.role}</span>.
+          <span className="font-semibold text-slate-200">
+            {invitation.role}
+          </span>
+          .
         </p>
         {actionError ? (
           <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">

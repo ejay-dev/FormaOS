@@ -7,6 +7,7 @@ import { test, expect, type Page } from '@playwright/test';
 import {
   getTestCredentials,
   cleanupTestUser,
+  E2EAuthBootstrapError,
   isE2EAuthBootstrapError,
 } from './helpers/test-auth';
 

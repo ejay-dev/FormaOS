@@ -8,6 +8,7 @@ import {
   getTestCredentials,
   cleanupTestUser,
   createMagicLinkSession,
+  E2EAuthBootstrapError,
   isE2EAuthBootstrapError,
   setPlaywrightSession,
 } from './helpers/test-auth';

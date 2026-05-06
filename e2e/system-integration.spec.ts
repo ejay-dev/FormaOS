@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 
 import {
   authenticateWorkspacePage,
+  configureWorkspaceState,
   getWorkspaceSeedContext,
   seedIncident,
   seedTask,
@@ -20,6 +21,23 @@ import {
  * stitches multiple modules together so a regression in cross-module
  * wiring surfaces here even when the per-module deep tests still pass.
  */
+
+async function prepareCompletedWorkspace() {
+  const context = await getWorkspaceSeedContext();
+  await configureWorkspaceState(context, {
+    role: 'owner',
+    industry: 'healthcare',
+    frameworks: ['hipaa'],
+    onboardingCompleted: true,
+    currentStep: 7,
+    completedSteps: [1, 2, 3, 4, 5, 6, 7],
+    organizationName: 'System Integration Baseline',
+    planKey: 'pro',
+    teamSize: '11-50',
+    firstAction: 'review_dashboard',
+  });
+  return context;
+}
 
 test.describe('System integration', () => {
   test.beforeEach(async ({ browserName }) => {
@@ -70,7 +88,7 @@ test.describe('System integration', () => {
   test('Obligation evidence → vault → audit trail integration', async ({
     page,
   }) => {
-    const context = await getWorkspaceSeedContext();
+    const context = await prepareCompletedWorkspace();
     const obligation = await seedTask(context, {
       title: `E2E IntegObl ${randomUUID().slice(0, 8)}`,
       priority: 'medium',
@@ -145,7 +163,7 @@ test.describe('System integration', () => {
   test('Incident → attach evidence inline → resolve → audit trail', async ({
     page,
   }) => {
-    const context = await getWorkspaceSeedContext();
+    const context = await prepareCompletedWorkspace();
     const incident = await seedIncident(context, {
       severity: 'medium',
       incidentType: 'safety',
@@ -273,7 +291,7 @@ test.describe('System integration', () => {
   });
 
   test('Care plan status transition writes audit log', async ({ page }) => {
-    const context = await getWorkspaceSeedContext();
+    const context = await prepareCompletedWorkspace();
     const unique = Date.now();
     const { data: participant } = await context.admin
       .from('org_patients')

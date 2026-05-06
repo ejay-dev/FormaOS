@@ -1,7 +1,11 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
-import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 import { Shield, Scale, Landmark, Monitor, FileText, Bell } from 'lucide-react';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import {
@@ -244,8 +248,14 @@ export default function FinancialServicesContent() {
           </>
         }
         subheadline="ASIC, APRA, and AUSTRAC obligations mapped to named owners with immutable evidence. Every licence condition becomes a governed workflow."
-        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('financial_services_compliance') }}
-        secondaryCta={{ label: PUBLIC_CTA_LABELS.bookDemo, href: demoHref('financial_services_compliance') }}
+        primaryCta={{
+          label: PUBLIC_CTA_LABELS.compliancePlan,
+          href: compliancePlanHref('financial_services_compliance'),
+        }}
+        secondaryCta={{
+          label: PUBLIC_CTA_LABELS.bookDemo,
+          href: demoHref('financial_services_compliance'),
+        }}
         trustSignals={[
           'AU-hosted infrastructure',
           'Assessment-led onboarding',
@@ -271,7 +281,9 @@ export default function FinancialServicesContent() {
         socialProof="Trusted by financial services firms managing multi-regime obligations"
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- Pain Points ---- */}
       <BeforeAfterSection
@@ -294,6 +306,7 @@ export default function FinancialServicesContent() {
       <CompareTable
         headline="FormaOS vs. The Status Quo"
         description="See how purpose-built financial services compliance software compares."
+        col2Label="Legacy GRC Tools"
         rows={[
           {
             feature: 'ASIC obligation register pre-built',
@@ -353,12 +366,14 @@ export default function FinancialServicesContent() {
             feature: 'Price',
             spreadsheets: 'Hidden',
             genericGrc: '$$$+',
-            formaos: 'Foundation $297/mo',
+            formaos: 'from $297/mo',
           },
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- Framework Coverage ---- */}
       <FrameworkExplorer
@@ -481,7 +496,9 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- How It Works ---- */}
       <VerticalTimeline
@@ -570,7 +587,9 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- Features ---- */}
       <IndustryFeatures
@@ -759,7 +778,9 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- See It In Action ---- */}
       <SeeItInAction
@@ -884,7 +905,9 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- Social Proof ---- */}
       <SocialProof
@@ -921,7 +944,9 @@ export default function FinancialServicesContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- CTA ---- */}
       <IndustryCTA
@@ -929,7 +954,9 @@ export default function FinancialServicesContent() {
         urgencyCallout="ASIC surveillance reviews don't announce themselves. Can you demonstrate your obligation coverage right now?"
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* ---- FAQ ---- */}
       <IndustryFAQ

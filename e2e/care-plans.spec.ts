@@ -8,7 +8,9 @@ import {
 
 async function waitForCarePlanDetail(page: Page) {
   await expect(
-    page.locator('#main-content [data-testid="care-plan-overview"]:visible').first(),
+    page
+      .locator('#main-content [data-testid="care-plan-overview"]:visible')
+      .first(),
   ).toBeVisible({ timeout: 30_000 });
 }
 
@@ -108,8 +110,7 @@ test.describe('Care plans end-to-end', () => {
               .maybeSingle();
             const goals = Array.isArray(data?.goals) ? data.goals : [];
             return goals.some(
-              (goal: { title?: string }) =>
-                goal.title === `E2E Goal ${unique}`,
+              (goal: { title?: string }) => goal.title === `E2E Goal ${unique}`,
             );
           },
           { timeout: 15_000 },
@@ -121,7 +122,10 @@ test.describe('Care plans end-to-end', () => {
 
       // Edit the goal: rename + update description + set target date
       const goalRowForEdit = page.getByTestId('care-plan-goal').first();
-      await goalRowForEdit.getByTestId('edit-goal-details').locator('summary').click();
+      await goalRowForEdit
+        .getByTestId('edit-goal-details')
+        .locator('summary')
+        .click();
       const editGoalForm = goalRowForEdit.getByTestId('edit-goal-form');
       await expect(editGoalForm).toBeVisible();
       await editGoalForm
@@ -160,9 +164,7 @@ test.describe('Care plans end-to-end', () => {
         page.locator('p', { hasText: `E2E Goal Renamed ${unique}` }).first(),
       ).toBeVisible();
       await expect(
-        page
-          .locator('p', { hasText: 'Edited description — revised' })
-          .first(),
+        page.locator('p', { hasText: 'Edited description — revised' }).first(),
       ).toBeVisible();
 
       // Add a support nested under the goal
@@ -174,12 +176,8 @@ test.describe('Care plans end-to-end', () => {
       await supportForm
         .locator('input[name="description"]')
         .fill(`E2E Support ${unique}`);
-      await supportForm
-        .locator('input[name="assigned_to"]')
-        .fill('Staff lead');
-      await supportForm
-        .locator('input[name="frequency"]')
-        .fill('Daily');
+      await supportForm.locator('input[name="assigned_to"]').fill('Staff lead');
+      await supportForm.locator('input[name="frequency"]').fill('Daily');
       await supportForm.locator('button[type="submit"]').click();
 
       // Server action persisted — wait for DB state before reloading, since
@@ -192,9 +190,7 @@ test.describe('Care plans end-to-end', () => {
               .select('supports')
               .eq('id', planId)
               .maybeSingle();
-            const supports = Array.isArray(data?.supports)
-              ? data.supports
-              : [];
+            const supports = Array.isArray(data?.supports) ? data.supports : [];
             return supports.some(
               (support: { description?: string }) =>
                 support.description === `E2E Support ${unique}`,
@@ -214,7 +210,9 @@ test.describe('Care plans end-to-end', () => {
         .filter({ has: page.locator('input[name="goal_id"]') })
         .filter({ has: page.locator('select[name="status"]') })
         .first();
-      await goalStatusForm.locator('select[name="status"]').selectOption('achieved');
+      await goalStatusForm
+        .locator('select[name="status"]')
+        .selectOption('achieved');
       await goalStatusForm.locator('button[type="submit"]').click();
       await expect
         .poll(
@@ -228,9 +226,7 @@ test.describe('Care plans end-to-end', () => {
             const renamedGoal = goals.find(
               (goal: { title?: string }) =>
                 goal.title === `E2E Goal Renamed ${unique}`,
-            ) as
-              | { status?: string; progress_percentage?: number }
-              | undefined;
+            ) as { status?: string; progress_percentage?: number } | undefined;
             return {
               status: renamedGoal?.status ?? null,
               progress: renamedGoal?.progress_percentage ?? null,
@@ -270,7 +266,10 @@ test.describe('Care plans end-to-end', () => {
       await page.goto(`/app/participants/${participantId}`, {
         waitUntil: 'commit',
       });
-      const carePlansSection = page.getByTestId('participant-care-plans').first();
+      const carePlansSection = page
+        .getByTestId('participant-care-plans')
+        .or(page.getByTestId('patient-care-plans'))
+        .first();
       await expect(carePlansSection).toBeVisible();
       await expect(
         carePlansSection.getByText(`E2E Care Plan ${unique}`),

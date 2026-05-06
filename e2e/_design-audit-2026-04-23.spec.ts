@@ -40,6 +40,9 @@ const VIEWPORTS = [
   { name: 'mobile', width: 390, height: 844 },
 ];
 
+const MAX_SCROLL_SHOTS = 20;
+const SCROLL_SETTLE_MS = 350;
+
 async function captureScrollingPage(
   page: Page,
   slug: string,
@@ -73,9 +76,19 @@ async function captureScrollingPage(
     stops.push(Math.max(0, totalHeight - vpHeight));
   }
 
-  for (let i = 0; i < stops.length; i += 1) {
-    await page.evaluate((y) => window.scrollTo(0, y), stops[i]);
-    await page.waitForTimeout(500); // let ScrollReveal settle
+  // Keep artifact generation bounded so this audit suite doesn't time out on very tall pages.
+  const boundedStops =
+    stops.length <= MAX_SCROLL_SHOTS
+      ? stops
+      : Array.from({ length: MAX_SCROLL_SHOTS }, (_, i) => {
+          const ratio = i / Math.max(1, MAX_SCROLL_SHOTS - 1);
+          const idx = Math.round(ratio * (stops.length - 1));
+          return stops[idx];
+        });
+
+  for (let i = 0; i < boundedStops.length; i += 1) {
+    await page.evaluate((y) => window.scrollTo(0, y), boundedStops[i]);
+    await page.waitForTimeout(SCROLL_SETTLE_MS); // let ScrollReveal settle
     const file = path.join(
       OUTPUT_DIR,
       `${slug}--${vpName}--${String(i).padStart(2, '0')}.png`,

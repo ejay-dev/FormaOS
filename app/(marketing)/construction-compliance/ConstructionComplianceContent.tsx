@@ -1,7 +1,11 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
-import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 import {
   Shield,
   HardHat,
@@ -245,8 +249,14 @@ export default function ConstructionComplianceContent() {
           </>
         }
         subheadline="SafeWork inspectors arrive unannounced. FormaOS keeps SWMS current, inductions verified, and incidents tracked across every site."
-        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('construction_compliance') }}
-        secondaryCta={{ label: 'See Construction Demo', href: demoHref('construction_compliance') }}
+        primaryCta={{
+          label: PUBLIC_CTA_LABELS.compliancePlan,
+          href: compliancePlanHref('construction_compliance'),
+        }}
+        secondaryCta={{
+          label: 'See Construction Demo',
+          href: demoHref('construction_compliance'),
+        }}
         trustSignals={[
           'AU-hosted by default',
           'Assessment-led onboarding',
@@ -290,6 +300,7 @@ export default function ConstructionComplianceContent() {
       <CompareTable
         headline="FormaOS vs. the old way"
         description="See how a construction-specific WHS platform compares to the tools most builders are still using."
+        col2Label="WHS Software"
         rows={[
           {
             feature: 'SWMS version control per site',

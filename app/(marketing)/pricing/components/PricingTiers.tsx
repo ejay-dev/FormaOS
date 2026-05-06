@@ -9,7 +9,10 @@ export function PricingTiers() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <section id="pricing-table" className="relative overflow-hidden bg-slate-950 py-24">
+    <section
+      id="pricing-table"
+      className="relative overflow-hidden bg-slate-950 py-24"
+    >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.14),transparent_34%)]" />
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
         <div className="mx-auto max-w-3xl text-center">
@@ -17,16 +20,16 @@ export function PricingTiers() {
             Infrastructure Pricing
           </p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            Three buying paths, one enforced compliance system
+            Four plans, one compliance OS
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-300">
-            Pricing scales with compliance scope, organisational complexity, and
-            risk exposure. Growth is the core plan for teams that need audit
-            readiness, not just software access.
+            Start with Foundation and grow into Scale as your organisation
+            expands. All plans include self-serve checkout — no sales call
+            required.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-5 lg:grid-cols-3">
+        <div className="mt-12 grid gap-5 lg:grid-cols-4">
           {PUBLIC_PRICING_TIERS.map((tier) => (
             <article
               key={tier.id}
@@ -42,9 +45,14 @@ export function PricingTiers() {
                 </span>
               ) : null}
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08]">
-                <ShieldCheck className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+                <ShieldCheck
+                  className="h-5 w-5 text-cyan-200"
+                  aria-hidden="true"
+                />
               </div>
-              <h3 className="mt-6 text-2xl font-semibold text-white">{tier.name}</h3>
+              <h3 className="mt-6 text-2xl font-semibold text-white">
+                {tier.name}
+              </h3>
               <p className="mt-2 min-h-[2.5rem] text-sm leading-5 text-slate-300">
                 {tier.audience}
               </p>
@@ -56,12 +64,20 @@ export function PricingTiers() {
                   {tier.priceSubtext}
                 </span>
               </div>
-              <p className="mt-5 text-sm leading-6 text-slate-400">{tier.summary}</p>
+              <p className="mt-5 text-sm leading-6 text-slate-400">
+                {tier.summary}
+              </p>
 
               <ul className="mt-7 flex-1 space-y-3">
                 {tier.features.map((feature) => (
-                  <li key={feature} className="flex gap-3 text-sm leading-6 text-slate-300">
-                    <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-emerald-300" aria-hidden="true" />
+                  <li
+                    key={feature}
+                    className="flex gap-3 text-sm leading-6 text-slate-300"
+                  >
+                    <CheckCircle2
+                      className="mt-1 h-4 w-4 shrink-0 text-emerald-300"
+                      aria-hidden="true"
+                    />
                     <span>{feature}</span>
                   </li>
                 ))}

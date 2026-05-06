@@ -1,4 +1,9 @@
-export type SubscriptionTier = 'free' | 'starter' | 'pro' | 'enterprise';
+export type SubscriptionTier =
+  | 'free'
+  | 'starter'
+  | 'pro'
+  | 'scale'
+  | 'enterprise';
 
 export interface SubscriptionPlan {
   id: SubscriptionTier;
@@ -17,7 +22,8 @@ export interface SubscriptionPlan {
 }
 
 const DEFAULT_FOUNDATION_PRICE_ID = 'price_1TOdz1AHrAKKo3OlfYxjk9WL';
-const DEFAULT_GROWTH_PRICE_ID = 'price_1TOe05AHrAKKo3OliCrZNnkx';
+const DEFAULT_GROWTH_PRICE_ID = 'price_1TU6oqAHrAKKo3OlWUhJa2ZX';
+const DEFAULT_SCALE_PRICE_ID = 'price_1TU6rzAHrAKKo3Ol32xT6JW2';
 
 export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
   free: {
@@ -46,8 +52,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
     price: 297,
     interval: 'month',
     stripePriceId:
-      process.env.STRIPE_PRICE_FOUNDATION ??
-      DEFAULT_FOUNDATION_PRICE_ID,
+      process.env.STRIPE_PRICE_FOUNDATION ?? DEFAULT_FOUNDATION_PRICE_ID,
     features: [
       'Controlled starting point',
       'Basic workflow enforcement',
@@ -67,27 +72,47 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
   pro: {
     id: 'pro',
     name: 'Growth',
-    price: 1800,
+    price: 797,
     interval: 'month',
-    stripePriceId:
-      process.env.STRIPE_PRICE_GROWTH ??
-      DEFAULT_GROWTH_PRICE_ID,
+    stripePriceId: process.env.STRIPE_PRICE_GROWTH ?? DEFAULT_GROWTH_PRICE_ID,
     features: [
+      'Up to 4 compliance frameworks',
       'Full workflow enforcement',
       'Real-time audit evidence',
+      'Up to 25 users, 3 sites',
       'Multi-team usage',
-      'Multiple compliance areas',
-      'Priority support',
       'Posture reporting',
-      'Custom workflows',
-      'API access',
+      'Priority email support',
     ],
     limits: {
-      members: 100,
+      members: 25,
       tasks: -1,
-      storage: 100,
+      storage: 50,
+      certificates: 200,
+      apiCalls: 50000,
+    },
+  },
+  scale: {
+    id: 'scale',
+    name: 'Scale',
+    price: 1800,
+    interval: 'month',
+    stripePriceId: process.env.STRIPE_PRICE_SCALE ?? DEFAULT_SCALE_PRICE_ID,
+    features: [
+      'Unlimited compliance frameworks',
+      'Everything in Growth',
+      'Up to 75 users, unlimited sites',
+      'Multi-site governance dashboard',
+      'Webhook integrations',
+      'Dedicated onboarding',
+      'Priority support with SLA',
+    ],
+    limits: {
+      members: 75,
+      tasks: -1,
+      storage: 200,
       certificates: -1,
-      apiCalls: 100000,
+      apiCalls: 200000,
     },
   },
   enterprise: {

@@ -4,7 +4,7 @@ import { resolvePlanKey } from '@/lib/plans';
 export const CHECKOUT_INTENT_COOKIE = 'formaos_checkout_intent';
 export const CHECKOUT_INTENT_TTL_SECONDS = 60 * 30;
 
-const SELF_SERVE_PLANS = new Set<PlanKey>(['basic', 'pro']);
+const SELF_SERVE_PLANS = new Set<PlanKey>(['basic', 'pro', 'scale']);
 
 export function isSelfServePlan(plan: PlanKey): boolean {
   return SELF_SERVE_PLANS.has(plan);

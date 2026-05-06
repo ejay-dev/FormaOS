@@ -1,7 +1,11 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
-import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 import {
   Bell,
   Shield,
@@ -235,8 +239,14 @@ export default function HealthcareComplianceContent() {
           </>
         }
         subheadline="AHPRA registrations, NSQHS accreditation, and credential expiry across 16 health professions. FormaOS keeps audit-ready evidence continuous."
-        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('healthcare_compliance') }}
-        secondaryCta={{ label: 'See Healthcare Demo', href: demoHref('healthcare_compliance') }}
+        primaryCta={{
+          label: PUBLIC_CTA_LABELS.compliancePlan,
+          href: compliancePlanHref('healthcare_compliance'),
+        }}
+        secondaryCta={{
+          label: 'See Healthcare Demo',
+          href: demoHref('healthcare_compliance'),
+        }}
         trustSignals={[
           'AU-hosted by default',
           'Assessment-led onboarding',
@@ -262,7 +272,9 @@ export default function HealthcareComplianceContent() {
         socialProof="Trusted by healthcare providers across primary and acute care"
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <BeforeAfterSection
         headline="The Healthcare Compliance Gap"
@@ -284,6 +296,7 @@ export default function HealthcareComplianceContent() {
       <CompareTable
         headline="FormaOS vs. The Status Quo"
         description="See how purpose-built healthcare compliance software compares."
+        col2Label="Legacy Tools"
         rows={[
           {
             feature: 'NSQHS Standards pre-built',
@@ -343,12 +356,14 @@ export default function HealthcareComplianceContent() {
             feature: 'Price',
             spreadsheets: 'Hidden',
             genericGrc: '$$$+',
-            formaos: 'Foundation $297/mo',
+            formaos: 'from $297/mo',
           },
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <FrameworkExplorer
         headline="Every Healthcare Framework. Pre-Built."
@@ -478,7 +493,9 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <VerticalTimeline
         steps={[
@@ -578,7 +595,9 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryFeatures
         headline="Purpose-Built for Healthcare Organisations"
@@ -786,7 +805,9 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <SeeItInAction
         tabs={[
@@ -915,7 +936,9 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <SocialProof
         metricsBanner={[
@@ -951,14 +974,18 @@ export default function HealthcareComplianceContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryCTA
         industry="Healthcare"
         urgencyCallout="NSQHS accreditation cycles don't pause. Your evidence chain shouldn't either."
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryFAQ
         industry="Healthcare"

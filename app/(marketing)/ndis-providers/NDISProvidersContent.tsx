@@ -1,7 +1,11 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
-import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 import {
   Bell,
   Shield,
@@ -232,8 +236,14 @@ export default function NDISProvidersContent() {
           </>
         }
         subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously — defensible every day, not only during audits."
-        primaryCta={{ label: PUBLIC_CTA_LABELS.compliancePlan, href: compliancePlanHref('ndis_providers') }}
-        secondaryCta={{ label: PUBLIC_CTA_LABELS.seeDemo, href: demoHref('ndis_providers') }}
+        primaryCta={{
+          label: PUBLIC_CTA_LABELS.compliancePlan,
+          href: compliancePlanHref('ndis_providers'),
+        }}
+        secondaryCta={{
+          label: PUBLIC_CTA_LABELS.seeDemo,
+          href: demoHref('ndis_providers'),
+        }}
         trustSignals={[
           'AU-hosted by default',
           'Assessment-led onboarding',
@@ -259,7 +269,9 @@ export default function NDISProvidersContent() {
         socialProof="Trusted by NDIS providers managing 200+ participants"
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <BeforeAfterSection
         headline="The NDIS Compliance Gap"
@@ -281,6 +293,7 @@ export default function NDISProvidersContent() {
       <CompareTable
         headline="FormaOS vs. The Status Quo"
         description="See how purpose-built NDIS compliance software compares."
+        col2Label="Care Software"
         rows={[
           {
             feature: 'NDIS Practice Standards pre-built',
@@ -340,12 +353,14 @@ export default function NDISProvidersContent() {
             feature: 'Price',
             spreadsheets: 'Hidden',
             genericGrc: '$$$+',
-            formaos: 'Foundation $297/mo',
+            formaos: 'from $297/mo',
           },
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <FrameworkExplorer
         headline="Every NDIS Framework. Pre-Built."
@@ -465,7 +480,9 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <VerticalTimeline
         steps={[
@@ -569,7 +586,9 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryFeatures
         headline="Purpose-Built for NDIS Providers"
@@ -752,7 +771,9 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <SeeItInAction
         tabs={[
@@ -876,7 +897,9 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <SocialProof
         metricsBanner={[
@@ -915,14 +938,18 @@ export default function NDISProvidersContent() {
         ]}
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryCTA
         industry="NDIS"
         urgencyCallout="The NDIS Commission can visit without notice. Is your evidence chain current right now?"
       />
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       <IndustryFAQ
         industry="NDIS"

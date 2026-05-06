@@ -1,6 +1,13 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 import { authenticateWorkspacePage } from './helpers/workspace-seed';
+
+async function openDashboard(page: Page) {
+  await page.goto('/app', { waitUntil: 'commit', timeout: 60_000 });
+  await expect(
+    page.getByRole('heading', { name: /Dashboard/i }).first(),
+  ).toBeVisible({ timeout: 30_000 });
+}
 
 test.describe('Dashboard truthfulness', () => {
   test('Pulse tab does not render fabricated trend data', async ({
@@ -10,7 +17,7 @@ test.describe('Dashboard truthfulness', () => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
 
     await authenticateWorkspacePage(page);
-    await page.goto('/app', { waitUntil: 'domcontentloaded' });
+    await openDashboard(page);
 
     const pulseTab = page.getByRole('button', { name: /^pulse$/i }).first();
     if (await pulseTab.count()) {
@@ -28,7 +35,7 @@ test.describe('Dashboard truthfulness', () => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
 
     await authenticateWorkspacePage(page);
-    await page.goto('/app', { waitUntil: 'domcontentloaded' });
+    await openDashboard(page);
 
     const recordsTab = page.getByRole('button', { name: /^records$/i }).first();
     if (await recordsTab.count()) {

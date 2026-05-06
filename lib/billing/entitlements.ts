@@ -48,6 +48,24 @@ export const PLAN_ENTITLEMENTS: Record<PlanKey, PlanEntitlementDefinition> = {
       team_limit: PLAN_CATALOG.pro.limits.maxUsers as number,
     },
   },
+  scale: {
+    enabled: [
+      'audit_export',
+      'reports',
+      'framework_evaluations',
+      'certifications',
+      'team_limit',
+      'ai_assistant',
+      'soc2_certification',
+      'capa_management',
+      'custom_reports',
+      'form_analytics',
+      'workflow_automation',
+    ],
+    limits: {
+      team_limit: PLAN_CATALOG.scale.limits.maxUsers as number,
+    },
+  },
   enterprise: {
     enabled: [
       'audit_export',

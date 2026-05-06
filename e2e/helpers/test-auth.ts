@@ -612,7 +612,10 @@ export async function createPasswordSession(
 }
 
 export async function setPlaywrightSession(
-  context: { addCookies: (cookies: any[]) => Promise<void> },
+  context: {
+    addCookies: (cookies: any[]) => Promise<void>;
+    clearCookies?: () => Promise<void>;
+  },
   session: Session,
   appBaseUrl: string,
 ) {
@@ -623,6 +626,12 @@ export async function setPlaywrightSession(
   const chunks = createCookieChunks(storageKey, encoded);
   const base = new URL(appBaseUrl);
   const cookieUrl = `${base.protocol}//${base.host}`;
+
+  // A Playwright context can be reused across tests in the deep suite. Supabase
+  // auth sessions are chunked cookies, so adding a new session on top of an old
+  // one can leave stale chunks behind and silently authenticate as the previous
+  // E2E workspace. Start clean before installing the intended session.
+  await context.clearCookies?.();
 
   await context.addCookies([
     ...chunks.map((chunk) => ({
