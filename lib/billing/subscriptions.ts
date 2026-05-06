@@ -129,7 +129,9 @@ export async function ensureSubscription(
       'subscription_upsert_failed',
       {
         code: 'UPSERT_ERROR',
-        attempts: upsertErrors,
+        message: upsertErrors
+          .map((error) => `${error.label}: ${error.message}`)
+          .join(' | '),
       },
       { orgId },
     );

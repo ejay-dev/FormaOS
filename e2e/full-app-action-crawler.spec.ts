@@ -191,7 +191,11 @@ async function gotoCrawlRoute(page: Page, route: string) {
     } catch (error) {
       lastError = error;
       const message = error instanceof Error ? error.message : String(error);
-      if (!message.includes('ERR_ABORTED') || attempt === 2) {
+      const retryable =
+        message.includes('ERR_ABORTED') ||
+        message.includes('Timeout') ||
+        message.includes('timeout');
+      if (!retryable || attempt === 2) {
         throw error;
       }
       await page.waitForTimeout(500 * (attempt + 1));

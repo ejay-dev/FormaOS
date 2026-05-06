@@ -25,28 +25,35 @@ export default async function AuditExportPage({
 
   // 1. Fetch Target Personnel Data
   // We use maybeSingle() to prevent crashing if the user doesn't exist
-  const [{ data: staffMember, error }, [profile]] = await Promise.all([
+  const [memberResult, credentialResult, profileEntries] = await Promise.all([
     supabase
       .from('org_members')
-      .select(
-        `
-        *,
-        org_credentials (*)
-    `,
-      )
+      .select('*')
       .eq('organization_id', permissionCtx.orgId)
       .eq('user_id', userId)
       .maybeSingle(),
+    supabase
+      .from('org_staff_credentials')
+      .select(
+        'id, credential_type, credential_name, issue_date, expiry_date, status',
+      )
+      .eq('organization_id', permissionCtx.orgId)
+      .eq('user_id', userId)
+      .order('expiry_date', { ascending: true }),
     getAdminProfileDirectoryEntries([userId], admin),
   ]);
+  const { data: staffMember, error } = memberResult;
+  const [profile] = profileEntries;
 
   if (error || !staffMember) {
     console.error('Export Error:', error);
     return notFound();
   }
 
-  // Safe extraction of arrays
-  const credentials = staffMember.org_credentials || [];
+  if (credentialResult.error) {
+    console.error('Credential Export Error:', credentialResult.error);
+  }
+  const credentials = credentialResult.data || [];
   const { data: auditRows } = profile?.email
     ? await supabase
         .from('org_audit_logs')
@@ -113,7 +120,8 @@ export default async function AuditExportPage({
             credentials.map(
               (doc: {
                 id: string;
-                document_type?: string;
+                credential_type?: string;
+                credential_name?: string;
                 issue_date?: string;
                 expiry_date?: string;
               }) => (
@@ -123,7 +131,7 @@ export default async function AuditExportPage({
                 >
                   <div>
                     <h3 className="font-black uppercase tracking-widest text-sm text-foreground">
-                      {doc.document_type}
+                      {doc.credential_name || doc.credential_type}
                     </h3>
                     <div className="flex items-center gap-4 mt-3">
                       <p className="text-xs font-bold text-muted-foreground uppercase tracking-tight flex items-center gap-1">
