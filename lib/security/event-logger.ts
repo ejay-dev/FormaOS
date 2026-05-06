@@ -454,6 +454,28 @@ async function flushUserActivityBatch(
     metadata: sanitizeMetadata(params.metadata),
   }));
 
+  const orgIds = [...new Set(rows.map((row) => row.org_id).filter(Boolean))];
+  if (orgIds.length > 0) {
+    const { data: existingOrgs, error } = await admin
+      .from('organizations')
+      .select('id')
+      .in('id', orgIds);
+
+    if (!error) {
+      const existingOrgIds = new Set(
+        (existingOrgs ?? []).map((org) => org.id as string),
+      );
+      const validRows = rows.filter((row) => row.org_id != null && existingOrgIds.has(row.org_id));
+      if (!validRows.length) return;
+
+      await withDbTimeout(
+        admin.from('user_activity').insert(validRows),
+        'user_activity.insert',
+      );
+      return;
+    }
+  }
+
   await withDbTimeout(
     admin.from('user_activity').insert(rows),
     'user_activity.insert',
