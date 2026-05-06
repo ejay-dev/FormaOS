@@ -35,29 +35,38 @@ test.describe('Public buying motion', () => {
   }) => {
     await expectInfrastructureBuyingMotion(page, '/pricing');
 
-    // Growth: sales-led through Compliance Plan intake.
+    // Growth: self-serve via /auth/signup handshake.
     await expect(page.getByTestId('pricing-growth-cta')).toHaveText(
-      /Start Growth Plan|Get Compliance Plan/i,
+      /Start Growth/i,
     );
     await expect(page.getByTestId('pricing-growth-cta')).toHaveAttribute(
       'href',
-      /\/auth\/signup|\/contact\?type=compliance-plan/,
+      /\/auth\/signup\?plan=pro&intent=checkout&source=pricing/,
     );
 
-    // Foundation: public self-serve via /auth/signup handshake that sets the
+    // Foundation: self-serve via /auth/signup handshake that sets the
     // checkout-intent cookie and auto-redirects into Stripe Checkout after
     // org bootstrap.
     await expect(page.getByTestId('pricing-foundation-cta')).toHaveText(
-      /Start Foundation Plan/i,
+      /Start Foundation/i,
     );
     await expect(page.getByTestId('pricing-foundation-cta')).toHaveAttribute(
       'href',
       /\/auth\/signup\?plan=basic&intent=checkout&source=pricing/,
     );
 
-    // Enterprise: procurement-led, no direct checkout.
+    // Scale: self-serve via /auth/signup handshake.
+    await expect(page.getByTestId('pricing-scale-cta')).toHaveText(
+      /Start Scale/i,
+    );
+    await expect(page.getByTestId('pricing-scale-cta')).toHaveAttribute(
+      'href',
+      /\/auth\/signup\?plan=scale&intent=checkout&source=pricing/,
+    );
+
+    // Enterprise: procurement-led, never self-serve checkout.
     await expect(page.getByTestId('pricing-enterprise-cta')).toHaveText(
-      /Book Demo/i,
+      /Talk to us/i,
     );
     await expect(page.getByTestId('pricing-enterprise-cta')).toHaveAttribute(
       'href',

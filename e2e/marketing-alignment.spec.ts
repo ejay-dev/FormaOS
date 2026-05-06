@@ -31,40 +31,47 @@ test.describe('Marketing CTA Alignment', () => {
     expect(body).not.toMatch(/no credit card required/i);
   });
 
-  test('Pricing page presents three compliance tiers with correct CTAs', async ({
+  test('Pricing page presents four compliance tiers with correct CTAs', async ({
     page,
   }) => {
     await page.goto('/pricing');
 
     const foundationCta = page.getByTestId('pricing-foundation-cta');
     const growthCta = page.getByTestId('pricing-growth-cta');
+    const scaleCta = page.getByTestId('pricing-scale-cta');
     const enterpriseCta = page.getByTestId('pricing-enterprise-cta');
 
     await expect(foundationCta).toBeVisible();
     await expect(growthCta).toBeVisible();
+    await expect(scaleCta).toBeVisible();
     await expect(enterpriseCta).toBeVisible();
 
-    await expect(foundationCta).toHaveText(/Start Foundation Plan/);
-    await expect(growthCta).toHaveText(/Start Growth Plan/);
-    await expect(enterpriseCta).toHaveText(/Book Demo/);
+    await expect(foundationCta).toHaveText(/Start Foundation/);
+    await expect(growthCta).toHaveText(/Start Growth/);
+    await expect(scaleCta).toHaveText(/Start Scale/);
+    await expect(enterpriseCta).toHaveText(/Talk to us/);
 
     const foundationHref = (await foundationCta.getAttribute('href')) ?? '';
     const growthHref = (await growthCta.getAttribute('href')) ?? '';
+    const scaleHref = (await scaleCta.getAttribute('href')) ?? '';
     const enterpriseHref = (await enterpriseCta.getAttribute('href')) ?? '';
 
-    // Foundation is self-serve: signup with checkout intent → auto-redirect to
-    // Stripe Checkout post-signup. plan=basic is the internal PlanKey.
+    // Foundation, Growth, and Scale are self-serve: signup with checkout
+    // intent → auto-redirect to Stripe Checkout post-signup. plan=basic|pro|scale
+    // is the internal PlanKey.
     expect(foundationHref).toContain('/auth/signup');
     expect(foundationHref).toContain('plan=basic');
     expect(foundationHref).toContain('intent=checkout');
 
-    // Growth is self-serve: signup with checkout intent → auto-redirect to
-    // Stripe Checkout post-signup. plan=pro is the internal PlanKey.
     expect(growthHref).toContain('/auth/signup');
     expect(growthHref).toContain('plan=pro');
     expect(growthHref).toContain('intent=checkout');
 
-    // Enterprise is procurement-led — demo + security/procurement review.
+    expect(scaleHref).toContain('/auth/signup');
+    expect(scaleHref).toContain('plan=scale');
+    expect(scaleHref).toContain('intent=checkout');
+
+    // Enterprise is procurement-led — never self-serve checkout.
     expect(enterpriseHref).toContain('/contact?type=enterprise');
   });
 
@@ -76,6 +83,7 @@ test.describe('Marketing CTA Alignment', () => {
     expect(body).not.toMatch(/no credit card required/i);
     expect(body).toContain('Foundation');
     expect(body).toContain('Growth');
+    expect(body).toContain('Scale');
     expect(body).toContain('Enterprise');
   });
 

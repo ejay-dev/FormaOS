@@ -170,9 +170,7 @@ test.describe('Marketing CTA wiring', () => {
     // page (same-origin /auth/signup) — resolves to site base in prod and
     // local dev alike. We only assert the handshake query shape, not a
     // specific absolute origin.
-    const foundationCta = page
-      .getByRole('link', { name: /start foundation plan/i })
-      .first();
+    const foundationCta = page.getByTestId('pricing-foundation-cta');
     await expect(foundationCta).toBeVisible();
     const foundationHref = normalizeHref(
       await foundationCta.getAttribute('href'),
@@ -183,19 +181,23 @@ test.describe('Marketing CTA wiring', () => {
     expect(foundationHref).toContain('source=pricing');
 
     // Growth: self-serve via signup handshake, same as Foundation.
-    const growthCta = page
-      .getByRole('link', { name: /start growth plan/i })
-      .first();
+    const growthCta = page.getByTestId('pricing-growth-cta');
     await expect(growthCta).toBeVisible();
     const growthHref = normalizeHref(await growthCta.getAttribute('href'));
     expect(growthHref).toContain('/auth/signup');
     expect(growthHref).toContain('plan=pro');
     expect(growthHref).toContain('intent=checkout');
 
-    // Enterprise: procurement-led through Book Demo.
-    const enterpriseCta = page
-      .getByRole('link', { name: /book demo/i })
-      .first();
+    // Scale: self-serve via signup handshake.
+    const scaleCta = page.getByTestId('pricing-scale-cta');
+    await expect(scaleCta).toBeVisible();
+    const scaleHref = normalizeHref(await scaleCta.getAttribute('href'));
+    expect(scaleHref).toContain('/auth/signup');
+    expect(scaleHref).toContain('plan=scale');
+    expect(scaleHref).toContain('intent=checkout');
+
+    // Enterprise: procurement-led — never self-serve checkout.
+    const enterpriseCta = page.getByTestId('pricing-enterprise-cta');
     await expect(enterpriseCta).toBeVisible();
     const enterpriseHref = normalizeHref(
       await enterpriseCta.getAttribute('href'),
