@@ -101,7 +101,7 @@ const industries = [
 
 const platformArchitecture = {
   'Compliance Engine': [
-    '8 framework packs (NDIS, Aged Care, SOC 2, ISO 27001, NIST CSF, CIS, HIPAA, GDPR, PCI-DSS, AU Financial Services)',
+    '8 framework packs (SOC 2, ISO 27001, NIST CSF, CIS Controls, HIPAA, GDPR, PCI-DSS, AU Financial Services) plus NDIS and Aged Care industry roadmaps',
     'Control deduplication & mapping across frameworks',
     'Risk scoring & gap detection',
     'Real-time evaluation engine',
@@ -129,7 +129,7 @@ const platformArchitecture = {
 const capabilities = [
   'Secure evidence vault with verification workflows',
   'Automation engine: 12 triggers, 5 action types, conditional workflows',
-  '8 compliance framework packs (SOC 2, ISO 27001, NIST CSF, CIS, HIPAA, GDPR, PCI-DSS, AU Financial Services) plus NDIS Practice Standards and Aged Care Quality Standards roadmaps',
+  '8 framework packs (SOC 2, ISO 27001, NIST CSF, CIS Controls, HIPAA, GDPR, PCI-DSS, AU Financial Services) plus NDIS Practice Standards and Aged Care Quality Standards roadmaps',
   'Compliance intelligence: real-time scoring & framework health',
   'Control deduplication across multi-framework mapping',
   'Shift tracking system with staff clock-in/out and audit trails',

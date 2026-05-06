@@ -33,7 +33,7 @@ export const brand = {
   },
   /** Framework packs shipped and mapped with live controls */
   frameworks: {
-    count: 7,
+    count: 8,
     controlCount: 70,
     packs: [
       'ISO 27001',
@@ -43,6 +43,7 @@ export const brand = {
       'GDPR',
       'PCI DSS',
       'CIS Controls',
+      'AU Financial Services',
     ] as const,
   },
 } as const;

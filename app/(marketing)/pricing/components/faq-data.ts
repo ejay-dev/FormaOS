@@ -12,7 +12,7 @@ export const PRICING_FAQS = [
   {
     question: 'Do I need to talk to sales to get started?',
     answer:
-      "No. Foundation, Growth, and Scale all use self-serve checkout — sign up, verify your email, complete the 5-step onboarding wizard, and you are taken directly into Stripe Checkout. No sales call, no waiting. Enterprise is the only plan that requires a conversation, because it involves custom contracts, procurement review, security questionnaires, and invoice billing.",
+      "No. Foundation, Growth, and Scale all use self-serve checkout — sign up, verify your email, complete the guided organisation setup, and you are taken directly into Stripe Checkout. No sales call, no waiting. Enterprise is the only plan that requires a conversation, because it involves custom contracts, procurement review, security questionnaires, and invoice billing.",
   },
   {
     question: 'Can I upgrade later?',

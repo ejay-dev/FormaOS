@@ -109,7 +109,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
     audience: 'For networks, peak bodies, and government-adjacent providers',
     audienceSize: 'Unlimited everything · custom rollout',
     summary:
-      "We build it with you. Tailored compliance architecture, procurement and security review, white-glove onboarding, and a dedicated account manager. Contracts via Stripe Invoicing — no self-serve checkout.",
+      "We build it with you. Tailored compliance architecture, procurement and security review, white-glove onboarding, and a dedicated account manager. Contracted directly with our team — no self-serve checkout.",
     trustNote: 'Annual agreements · invoice billing · custom SLA',
     ctaLabel: 'Talk to us',
     ctaHref: '/contact?type=enterprise&plan=enterprise&source=pricing',
