@@ -283,7 +283,11 @@ function pickPrimaryMembership<
   return (
     memberships
       .slice()
-      .sort((a, b) => weight(b.role) - weight(a.role))
+      .sort((a, b) => {
+        const roleDiff = weight(b.role) - weight(a.role);
+        if (roleDiff !== 0) return roleDiff;
+        return (a.organization_id ?? '').localeCompare(b.organization_id ?? '');
+      })
       .at(0) ?? memberships[0]
   );
 }

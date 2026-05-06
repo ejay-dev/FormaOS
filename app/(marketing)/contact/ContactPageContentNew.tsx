@@ -635,7 +635,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 px-6 rounded-lg bg-blue-500 hover:bg-blue-400 disabled:bg-blue-500/50 text-white font-medium transition-all duration-300 flex items-center justify-center gap-2"
+                className="w-full py-4 px-6 rounded-lg bg-blue-700 hover:bg-blue-600 disabled:bg-blue-700/50 text-white font-medium transition-all duration-300 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -798,7 +798,7 @@ function ClosingCTA() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="#demo-form"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-500 hover:bg-blue-400 text-white font-medium transition-all duration-300 w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-700 hover:bg-blue-600 text-white font-medium transition-all duration-300 w-full sm:w-auto justify-center"
             >
               {copy.submitLabel}
               <ArrowRight className="w-4 h-4" />

@@ -126,6 +126,20 @@ async function cleanupUser(userId: string) {
   }
 }
 
+async function mirrorLegacyOrg(org: { id: string; name?: string | null }) {
+  const { error } = await admin!.from('orgs').upsert(
+    {
+      id: org.id,
+      name: org.name ?? `Legacy Trial Org ${org.id}`,
+      created_by: null,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'id' },
+  );
+
+  expect(error).toBeNull();
+}
+
 test.describe('Legacy Trialing Subscription - Data Integrity', () => {
   test.beforeAll(async () => {
     if (!admin) {
@@ -166,6 +180,7 @@ test.describe('Legacy Trialing Subscription - Data Integrity', () => {
         .single();
 
       if (!org) throw new Error('Failed to create organization');
+      await mirrorLegacyOrg(org);
 
       // Create membership
       await admin!.from('org_members').insert({
@@ -178,13 +193,18 @@ test.describe('Legacy Trialing Subscription - Data Integrity', () => {
       const now = new Date();
       const trialEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
-      await admin!.from('org_subscriptions').insert({
-        organization_id: org.id,
-        plan_key: 'basic',
-        status: 'trialing',
-        trial_started_at: now.toISOString(),
-        trial_expires_at: trialEnd.toISOString(),
-      });
+      const { error: subscriptionInsertError } = await admin!
+        .from('org_subscriptions')
+        .insert({
+          org_id: org.id,
+          organization_id: org.id,
+          plan_code: 'starter',
+          plan_key: 'basic',
+          status: 'trialing',
+          trial_started_at: now.toISOString(),
+          trial_expires_at: trialEnd.toISOString(),
+        });
+      expect(subscriptionInsertError).toBeNull();
 
       // Create basic entitlements
       const entitlements = [
@@ -257,6 +277,7 @@ test.describe('Legacy Trialing Subscription - Data Integrity', () => {
         .insert({ name: `Test ${Date.now()}` })
         .select()
         .single();
+      await mirrorLegacyOrg(org);
 
       await admin!.from('org_members').insert({
         organization_id: org.id,
@@ -268,13 +289,18 @@ test.describe('Legacy Trialing Subscription - Data Integrity', () => {
       const start = new Date(startTime);
       const end = new Date(startTime + 14 * 24 * 60 * 60 * 1000);
 
-      await admin!.from('org_subscriptions').insert({
-        organization_id: org.id,
-        plan_key: 'basic',
-        status: 'trialing',
-        trial_started_at: start.toISOString(),
-        trial_expires_at: end.toISOString(),
-      });
+      const { error: subscriptionInsertError } = await admin!
+        .from('org_subscriptions')
+        .insert({
+          org_id: org.id,
+          organization_id: org.id,
+          plan_code: 'starter',
+          plan_key: 'basic',
+          status: 'trialing',
+          trial_started_at: start.toISOString(),
+          trial_expires_at: end.toISOString(),
+        });
+      expect(subscriptionInsertError).toBeNull();
 
       // Verify dates
       const { data: sub } = await admin!
@@ -306,6 +332,7 @@ test.describe('Legacy Trialing Subscription - Data Integrity', () => {
         .insert({ name: `Test ${Date.now()}` })
         .select()
         .single();
+      await mirrorLegacyOrg(org);
 
       await admin!.from('org_members').insert({
         organization_id: org.id,
@@ -316,13 +343,18 @@ test.describe('Legacy Trialing Subscription - Data Integrity', () => {
       const now = new Date();
       const trialEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
-      await admin!.from('org_subscriptions').insert({
-        organization_id: org.id,
-        plan_key: 'basic',
-        status: 'trialing',
-        trial_started_at: now.toISOString(),
-        trial_expires_at: trialEnd.toISOString(),
-      });
+      const { error: subscriptionInsertError } = await admin!
+        .from('org_subscriptions')
+        .insert({
+          org_id: org.id,
+          organization_id: org.id,
+          plan_code: 'starter',
+          plan_key: 'basic',
+          status: 'trialing',
+          trial_started_at: now.toISOString(),
+          trial_expires_at: trialEnd.toISOString(),
+        });
+      expect(subscriptionInsertError).toBeNull();
 
       // Create only basic tier entitlements
       const basicFeatures = [

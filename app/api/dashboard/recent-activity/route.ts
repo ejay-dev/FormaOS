@@ -55,16 +55,14 @@ export async function GET(): Promise<NextResponse> {
     }
 
     const { data: logs, error: logsError } = await supabase
-      .from('activity_logs')
-      .select(
-        'id, user_id, action, entity_type, entity_id, entity_name, created_at',
-      )
+      .from('org_audit_logs')
+      .select('id, action, target, entity_type, entity_id, created_at')
       .eq('organization_id', orgId)
       .order('created_at', { ascending: false })
       .limit(8);
 
     if (logsError) {
-      log.error({ err: logsError }, 'failed to fetch activity_logs');
+      log.error({ err: logsError }, 'failed to fetch org_audit_logs');
       return NextResponse.json({ items: [] });
     }
 
@@ -72,64 +70,23 @@ export async function GET(): Promise<NextResponse> {
       return NextResponse.json({ items: [] });
     }
 
-    const userIds = Array.from(
-      new Set(
-        logs.map((l: { user_id: string | null }) => l.user_id).filter(Boolean),
-      ),
-    ) as string[];
-
-    let profileMap = new Map<
-      string,
-      { full_name: string | null; avatar_path: string | null }
-    >();
-
-    if (userIds.length > 0) {
-      const { data: profiles } = await supabase
-        .from('user_profiles')
-        .select('user_id, full_name, avatar_path')
-        .in('user_id', userIds);
-
-      if (profiles) {
-        profileMap = new Map(
-          (
-            profiles as Array<{
-              user_id: string;
-              full_name: string | null;
-              avatar_path: string | null;
-            }>
-          ).map((p) => [
-            p.user_id,
-            { full_name: p.full_name, avatar_path: p.avatar_path },
-          ]),
-        );
-      }
-    }
-
     const items: RecentActivityItem[] = logs.map(
       (l: {
         id: string;
-        user_id: string | null;
         action: string;
-        entity_type: string;
+        target: string;
+        entity_type: string | null;
         entity_id: string | null;
-        entity_name: string | null;
         created_at: string;
       }) => {
-        const profile = l.user_id ? profileMap.get(l.user_id) : null;
         return {
           id: l.id,
           action: l.action,
-          entityType: l.entity_type,
-          entityName: l.entity_name ?? null,
+          entityType: l.entity_type ?? 'audit',
+          entityName: l.target ?? null,
           entityId: l.entity_id ?? null,
           createdAt: l.created_at,
-          actor: l.user_id
-            ? {
-                userId: l.user_id,
-                name: profile?.full_name ?? null,
-                avatarPath: profile?.avatar_path ?? null,
-              }
-            : null,
+          actor: null,
         };
       },
     );

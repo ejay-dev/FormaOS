@@ -71,6 +71,13 @@ async function dismissProductTour(page: Page) {
   }
 }
 
+async function gotoAppRoute(page: Page, route: string) {
+  await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await expect(
+    page.getByRole('link', { name: /dashboard/i }).first(),
+  ).toBeVisible({ timeout: 15000 });
+}
+
 // =========================================================
 // FEATURE GATE DISPLAY TESTS
 // =========================================================
@@ -89,8 +96,7 @@ test.describe('Smart Upgrade Gate', () => {
   test('Feature gate shows upgrade prompt for locked features', async ({
     page,
   }) => {
-    await page.goto('/app/workflows');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/workflows');
 
     // Look for locked feature indicators
     const lockedFeature = page.locator(
@@ -109,8 +115,7 @@ test.describe('Smart Upgrade Gate', () => {
   });
 
   test('Upgrade modal shows feature-specific benefits', async ({ page }) => {
-    await page.goto('/app/workflows');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/workflows');
 
     // Look for upgrade button and click it
     const upgradeBtn = page.locator(
@@ -148,8 +153,7 @@ test.describe('Smart Upgrade Gate', () => {
   test('Plan comparison table is visible in upgrade modal', async ({
     page,
   }) => {
-    await page.goto('/app/billing');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/billing');
 
     // Look for plan comparison
     const planComparison = page.locator(
@@ -170,8 +174,7 @@ test.describe('Smart Upgrade Gate', () => {
   });
 
   test('Usage metrics are displayed in upgrade context', async ({ page }) => {
-    await page.goto('/app/billing');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/billing');
 
     // Look for usage indicators
     const usageMetrics = page.locator('text=/used|limit|remaining|of/i');
@@ -196,8 +199,7 @@ test.describe('Checkout Flow', () => {
   });
 
   test('Upgrade CTA navigates to checkout or billing', async ({ page }) => {
-    await page.goto('/app/billing');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/billing');
 
     // Find upgrade/checkout button
     const checkoutBtn = page.locator(
@@ -227,8 +229,7 @@ test.describe('Checkout Flow', () => {
   });
 
   test('Contact sales button appears for enterprise', async ({ page }) => {
-    await page.goto('/app/billing');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/billing');
 
     // Look for contact sales option
     const contactSales = page.locator(
@@ -255,8 +256,7 @@ test.describe('Feature Benefits Display', () => {
   });
 
   test('Locked feature shows specific value proposition', async ({ page }) => {
-    await page.goto('/app/workflows');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app/workflows');
 
     // Look for feature-specific benefits
     const benefits = page.locator(
@@ -273,8 +273,7 @@ test.describe('Feature Benefits Display', () => {
   });
 
   test('Approaching limit shows usage warning', async ({ page }) => {
-    await page.goto('/app');
-    await page.waitForLoadState('networkidle');
+    await gotoAppRoute(page, '/app');
 
     // Look for limit warnings
     const limitWarning = page.locator(

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { ArrowRight, Link2, Zap } from 'lucide-react';
 
 interface Mapping {
@@ -220,9 +221,12 @@ export function DeduplicationOpportunities({
                   <code className="text-red-600 dark:text-red-400">
                     {c.controlId}
                   </code>
-                  <button className="px-1.5 py-0.5 rounded bg-primary text-primary-foreground text-[10px] hover:bg-primary/90">
+                  <Link
+                    href={`/app/controls?framework=${encodeURIComponent(c.framework)}&control=${encodeURIComponent(c.controlId)}`}
+                    className="px-1.5 py-0.5 rounded bg-primary text-primary-foreground text-[10px] hover:bg-primary/90"
+                  >
                     Link
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>
