@@ -37,7 +37,7 @@ export const PRICING_FAQS = [
   {
     question: 'What compliance frameworks are included?',
     answer:
-      "All plans include the NDIS Practice Standards, WHS, and the foundational quality and risk frameworks. Growth adds frameworks like ISO 9001 / ISO 27001 essentials, Aged Care Quality Standards, and Privacy Act controls. Scale unlocks the full library — SOC 2, HIPAA, GDPR, PCI-DSS, NIST CSF, CIS, and the rest. Enterprise adds custom frameworks built to your contractual or sector-specific requirements.",
+      "All plans include the NDIS Practice Standards and Aged Care Quality Standards as industry-specific roadmaps. Foundation includes 2 frameworks of your choice from the library; Growth includes 4. Scale unlocks the full pre-built library — SOC 2, ISO 27001, NIST CSF, CIS Controls, HIPAA, GDPR, PCI-DSS, and Australian Financial Services compliance. Enterprise adds custom frameworks built to your contractual or sector-specific requirements.",
   },
   {
     question: 'How should we think about the price?',

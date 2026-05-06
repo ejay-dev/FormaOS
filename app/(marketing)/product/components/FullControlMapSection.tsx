@@ -240,7 +240,7 @@ export function FullControlMapSection() {
                   </p>
                 </div>
                 <p className="mt-1.5 text-xs text-slate-300">
-                  Full coverage across all 7 compliance frameworks.
+                  Full coverage across all 8 compliance framework packs.
                 </p>
               </div>
             </div>

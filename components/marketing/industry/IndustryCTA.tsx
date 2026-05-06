@@ -19,21 +19,27 @@ const plans = [
   {
     name: 'Foundation',
     price: '$297',
-    description: 'Controlled starting point for smaller regulated teams.',
+    description: 'Solo and micro providers moving compliance off spreadsheets.',
     highlighted: false,
   },
   {
     name: 'Growth',
-    price: 'From $1,800',
+    price: '$797',
     description:
-      'Primary plan for operational compliance teams.',
+      'Most registered NDIS, aged care, and healthcare providers.',
     highlighted: true,
+  },
+  {
+    name: 'Scale',
+    price: '$1,800',
+    description: 'Multi-site networks running compliance across many teams.',
+    highlighted: false,
   },
   {
     name: 'Enterprise',
     price: 'Custom',
     description:
-      'For regulated enterprises with complex multi-framework needs.',
+      'Networks needing SSO, procurement support, and white-glove rollout.',
     highlighted: false,
   },
 ];
@@ -73,7 +79,7 @@ export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
         </motion.div>
 
         {/* Plans */}
-        <div className="grid sm:grid-cols-3 gap-5 max-w-4xl mx-auto mb-12">
+        <div className="grid gap-5 max-w-5xl mx-auto mb-12 sm:grid-cols-2 lg:grid-cols-4">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}

@@ -22,11 +22,11 @@ export const DEFAULT_RUNTIME_OPS: RuntimeOpsConfig = {
 
 export const DEFAULT_RUNTIME_MARKETING: RuntimeMarketingConfig = {
   hero: {
-    badgeText: 'Compliance Operating System',
-    headlinePrimary: 'Compliance That Runs Itself',
-    headlineAccent: 'So Your Team Can Run the Business',
+    badgeText: 'Compliance OS for NDIS, aged care & healthcare',
+    headlinePrimary: 'Audit-ready every day,',
+    headlineAccent: 'not the week before the Commission visits.',
     subheadline:
-      'FormaOS turns regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance across every framework your team operates under.',
+      'FormaOS turns NDIS Practice Standards, Aged Care Quality Standards, and the rest of your obligations into enforced workflows — with named owners, blocked failure paths, and an immutable evidence trail that passes Commission and accreditation review the first time.',
     primaryCtaLabel: 'Get Compliance Plan',
     primaryCtaHref: '/contact?type=compliance-plan&source=home_hero',
     secondaryCtaLabel: 'Book Demo',

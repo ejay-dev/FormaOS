@@ -14,7 +14,7 @@ import { useReducedMotion } from 'framer-motion';
    FULL CONTROL MAP VISUALIZATION
    ═══════════════════════════════════════════════════════════════
    Enterprise-grade 147-node compliance control map across
-   7 frameworks, rendered on a GPU-composited <canvas>.
+   8 framework packs, rendered on a GPU-composited <canvas>.
 
    Visual layers (back → front):
     1. Multi-halo radial atmosphere

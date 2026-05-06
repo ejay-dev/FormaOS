@@ -101,8 +101,8 @@ const industries = [
 
 const platformArchitecture = {
   'Compliance Engine': [
-    '7 framework packs (70+ controls)',
-    'Control deduplication & mapping',
+    '8 framework packs (NDIS, Aged Care, SOC 2, ISO 27001, NIST CSF, CIS, HIPAA, GDPR, PCI-DSS, AU Financial Services)',
+    'Control deduplication & mapping across frameworks',
     'Risk scoring & gap detection',
     'Real-time evaluation engine',
   ],
@@ -129,7 +129,7 @@ const platformArchitecture = {
 const capabilities = [
   'Secure evidence vault with verification workflows',
   'Automation engine: 12 triggers, 5 action types, conditional workflows',
-  '7 compliance framework packs (ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST, CIS)',
+  '8 compliance framework packs (SOC 2, ISO 27001, NIST CSF, CIS, HIPAA, GDPR, PCI-DSS, AU Financial Services) plus NDIS Practice Standards and Aged Care Quality Standards roadmaps',
   'Compliance intelligence: real-time scoring & framework health',
   'Control deduplication across multi-framework mapping',
   'Shift tracking system with staff clock-in/out and audit trails',
@@ -156,7 +156,7 @@ const metrics = [
   },
   {
     icon: Target,
-    value: '7',
+    value: '8',
     label: 'Framework Packs',
     trend: 'neutral' as const,
   },
@@ -579,7 +579,7 @@ export function HomePageContent() {
                 icon: Layers,
                 title: 'Multi-Framework View',
                 description:
-                  'Track compliance across ISO 27001, SOC 2, HIPAA, NIST, and more from one dashboard',
+                  'Track compliance across NDIS, Aged Care, SOC 2, ISO 27001, NIST CSF, HIPAA, and more from one dashboard',
               },
               {
                 icon: TrendingUp,
