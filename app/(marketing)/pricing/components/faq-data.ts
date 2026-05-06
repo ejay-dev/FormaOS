@@ -1,42 +1,62 @@
 export const PRICING_FAQS = [
   {
-    question: 'Which plan is right for a typical NDIS provider?',
+    question: 'Which plan is right for an NDIS provider?',
     answer:
-      'Most NDIS and aged care providers with 10–25 staff start on Growth ($797/mo). It includes 4 frameworks, 3 locations, full workflow enforcement, and pre-built NDIS Practice Standards — everything you need to be audit-ready. Foundation ($297/mo) suits very small providers (under 10 staff, single site) just moving off spreadsheets. Scale ($1,800/mo) is for larger multi-site organisations managing complex compliance across many teams.',
+      'Most registered NDIS providers with 10–25 staff start on Growth ($797/mo). It includes 4 compliance frameworks, up to 3 sites, full workflow enforcement, pre-built NDIS Practice Standards, and worker-screening alerts — everything you need to be audit-ready for the Commission. Foundation ($297/mo) suits very small providers (sole-trader and micro-providers, single site, fewer than 10 staff) just moving off spreadsheets. Scale ($1,800/mo) is for multi-site NDIS networks running compliance across many teams.',
+  },
+  {
+    question: 'Which plan is right for multi-site aged care or disability networks?',
+    answer:
+      'Scale ($1,800/mo). It includes unlimited sites, unlimited compliance frameworks, a multi-site governance dashboard, workflow automation across teams, and SLA-backed support. If you also need SSO/SAML, directory sync, executive rollup reporting, custom frameworks, or procurement and security review packs, you need Enterprise — book a call and we will tailor the contract.',
   },
   {
     question: 'Do I need to talk to sales to get started?',
     answer:
-      "No. Foundation, Growth, and Scale all use self-serve checkout — sign up, verify your email, complete your organisation setup, and you're taken directly into Stripe Checkout. No sales call, no waiting. Enterprise is the only plan that requires a conversation due to custom contracts, procurement review, and invoice-based billing.",
+      "No. Foundation, Growth, and Scale all use self-serve checkout — sign up, verify your email, complete the 5-step onboarding wizard, and you are taken directly into Stripe Checkout. No sales call, no waiting. Enterprise is the only plan that requires a conversation, because it involves custom contracts, procurement review, security questionnaires, and invoice billing.",
+  },
+  {
+    question: 'Can I upgrade later?',
+    answer:
+      'Yes — upgrades are one click from inside FormaOS and are pro-rated automatically by Stripe. Your data, evidence trail, frameworks, and audit log are preserved when you change plans. You can move from Foundation → Growth → Scale at any time. To move to Enterprise, contact us so we can scope SSO, directory sync, custom frameworks, and any procurement requirements.',
+  },
+  {
+    question: 'Is there a free trial?',
+    answer:
+      'There is no traditional free trial on Foundation, Growth, or Scale — we use a short post-signup grace window so you can complete onboarding and configure your first framework before the first invoice runs. Enterprise evaluations include a guided product walkthrough, a security review pack, and a sandbox tenant for the procurement team.',
+  },
+  {
+    question: 'What happens at the end of the grace window?',
+    answer:
+      'Your card is charged and the subscription becomes active for the period you selected. If checkout has not completed by the end of the grace window, write access is paused but your data, evidence, and audit log remain intact — finish payment to resume. We do not delete tenant data when an account is paused.',
+  },
+  {
+    question: 'Is my data secure?',
+    answer:
+      'Yes. FormaOS is hosted on Supabase (Postgres) with row-level security per organisation, encrypted at rest and in transit, with immutable audit logging. Australian customer data stays in Australian / approved regions. We can share our security review pack — covering data handling, access controls, backup, and incident response — under NDA. Enterprise customers get a guided procurement and security walkthrough.',
+  },
+  {
+    question: 'What compliance frameworks are included?',
+    answer:
+      "All plans include the NDIS Practice Standards, WHS, and the foundational quality and risk frameworks. Growth adds frameworks like ISO 9001 / ISO 27001 essentials, Aged Care Quality Standards, and Privacy Act controls. Scale unlocks the full library — SOC 2, HIPAA, GDPR, PCI-DSS, NIST CSF, CIS, and the rest. Enterprise adds custom frameworks built to your contractual or sector-specific requirements.",
   },
   {
     question: 'How should we think about the price?',
     answer:
-      'FormaOS is priced against the operational work it removes: audit preparation, evidence chasing, missed compliance steps, and rework. For NDIS providers, a single Commission finding costs far more than a year of FormaOS — in rework, fines, and disruption. Foundation at $297/mo is designed to be a clear no-brainer for any small registered provider.',
+      'FormaOS is priced against the operational work it removes: audit preparation, evidence chasing, missed compliance steps, and rework after findings. For NDIS and aged care providers, a single Commission finding or accreditation gap costs more than a year of FormaOS — in remediation, fines, and disruption. Foundation at $297/mo is designed to be a clear no-brainer for any small registered provider.',
   },
   {
-    question: 'What do similar tools charge in the NDIS and aged care space?',
+    question: 'How does FormaOS compare to other tools we already use?',
     answer:
-      "Care management platforms like Brevity (~$65–200/mo) and CareMaster ($16–36/user/mo) handle rostering, billing, and NDIS claims — they're operations tools, not compliance systems. Enterprise GRC platforms like Ideagen Policy Logic (formerly CompliSpace) cost $15,000–50,000+/year and are designed for large organisations. FormaOS sits in the gap: purpose-built NDIS and healthcare compliance infrastructure at a price that works for providers of any size.",
-  },
-  {
-    question: 'Do we still need internal compliance staff?',
-    answer:
-      "Yes. FormaOS doesn't replace accountable people. It gives them an enforced operating system so policies, reviews, incidents, credentials, and evidence are executed consistently — instead of being remembered manually.",
+      "Care management platforms like Brevity and CareMaster handle rostering, billing, and NDIS claims — they are operations tools, not compliance systems. Enterprise GRC platforms like Ideagen Policy Logic (formerly CompliSpace) cost $15,000–50,000+/year and are built for large enterprises. FormaOS sits in the gap: purpose-built compliance infrastructure for Australian NDIS, aged care, and healthcare providers, at a price that works whether you are a sole-trader or a multi-site network.",
   },
   {
     question: 'What happens during an audit or Commission review?',
     answer:
-      'Your team can export evidence trails, workflow completion history, control status, and reviewer context directly from FormaOS. The goal is to show what happened, who approved it, when it happened, and why the evidence is trustworthy — exactly what the NDIS Commission and accreditation bodies require.',
+      'You can export evidence trails, workflow completion history, control status, approver context, and the full audit log directly from FormaOS. The goal is to show what happened, who approved it, when it happened, and why the evidence is trustworthy — exactly what the NDIS Commission, the Aged Care Quality and Safety Commission, and accreditation bodies require.',
   },
   {
-    question: 'How long does setup take?',
+    question: 'Do we still need internal compliance staff?',
     answer:
-      'Foundation can be live the same day with a focused framework setup. Growth includes onboarding support to map your workflows and configure your frameworks correctly from the start. Scale and Enterprise include dedicated onboarding sessions.',
-  },
-  {
-    question: 'Can we run a security review before purchase?',
-    answer:
-      'Yes. Buyers can review security, data handling, procurement materials, and audit-readiness artifacts at any time. Enterprise evaluations include a guided security and procurement walkthrough.',
+      "Yes. FormaOS doesn't replace accountable people. It gives them an enforced operating system so policies, reviews, incidents, credentials, and evidence are executed consistently — instead of being remembered manually. Our customers find their compliance team spends less time chasing and more time on the work that actually reduces risk.",
   },
 ] as const;

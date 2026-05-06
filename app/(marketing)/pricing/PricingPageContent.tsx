@@ -4,7 +4,13 @@ import { CheckCircle2, ClipboardCheck, Settings2, ShieldCheck } from 'lucide-rea
 import { TrustBar } from '@/components/TrustBar';
 import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { FinalCTA, FAQSection, PricingHero, PricingTiers } from './components';
+import {
+  FinalCTA,
+  FAQSection,
+  PricingComparisonTable,
+  PricingHero,
+  PricingTiers,
+} from './components';
 
 const pricingSteps = [
   {
@@ -120,6 +126,7 @@ export default function PricingPageContent() {
       <PricingHero />
       <TrustBar />
       <PricingTiers />
+      <PricingComparisonTable />
       <CostOfNonCompliance />
       <HowPricingWorks />
       <FAQSection />
