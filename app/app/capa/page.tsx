@@ -75,6 +75,23 @@ function getMemberLabel(
   return names.get(userId) ?? userId.slice(0, 8);
 }
 
+function sourceHref(item: CapaItem) {
+  if (!item.source_id) return null;
+  if (item.source_type === 'incident') return `/app/incidents/${item.source_id}`;
+  if (item.source_type === 'policy') return `/app/policies/${item.source_id}`;
+  if (item.source_type === 'obligation') {
+    return `/app/tasks?q=${encodeURIComponent(item.source_id)}`;
+  }
+  return null;
+}
+
+function sourceLabel(item: CapaItem) {
+  if (item.source_type === 'incident') return 'Incident';
+  if (item.source_type === 'policy') return 'Policy';
+  if (item.source_type === 'obligation') return 'Task';
+  return item.source_type ?? 'manual';
+}
+
 export default async function CAPAPage({
   searchParams,
 }: {
@@ -85,6 +102,44 @@ export default async function CAPAPage({
 
   const params = (await searchParams) ?? {};
   const db = createSupabaseAdminClient();
+  const { data: entitlement } = await db
+    .from('org_entitlements')
+    .select('enabled')
+    .eq('organization_id', state.organization.id)
+    .eq('feature_key', 'capa_management')
+    .maybeSingle();
+
+  if (entitlement?.enabled !== true) {
+    return (
+      <div className="flex h-full flex-col">
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">CAPA Register</h1>
+            <p className="page-description">
+              Corrective and preventive action management
+            </p>
+          </div>
+        </div>
+        <div className="page-content">
+          <section className="rounded-lg border border-cyan-400/30 bg-cyan-500/10 p-6">
+            <h2 className="text-lg font-semibold text-foreground">
+              CAPA management is not enabled
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+              CAPA creation, ownership, evidence, verification, and closure
+              require the capa_management entitlement.
+            </p>
+            <Link
+              href="/app/billing"
+              className="mt-5 inline-flex rounded-md border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+            >
+              Review Billing
+            </Link>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   let query = db
     .from('org_capa_items')
@@ -352,12 +407,9 @@ export default async function CAPAPage({
                         </span>
                       </td>
                       <td className="px-4 py-3 text-xs capitalize">
-                        {item.source_type === 'incident' && item.source_id ? (
-                          <Link
-                            href={`/app/incidents/${item.source_id}`}
-                            className="text-primary hover:underline"
-                          >
-                            Incident
+                        {sourceHref(item) ? (
+                          <Link href={sourceHref(item)!} className="text-primary hover:underline">
+                            {sourceLabel(item)}
                           </Link>
                         ) : (
                           item.source_type ?? 'manual'

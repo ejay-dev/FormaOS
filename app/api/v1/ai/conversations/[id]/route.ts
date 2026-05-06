@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 
 /**
  * =========================================================
@@ -67,6 +68,16 @@ async function authenticateAndGetConversation(request: Request, conversationId: 
 
   const orgId = membership.organization_id as string;
   const admin = createSupabaseAdminClient();
+  try {
+    await requireEntitlement(orgId, 'ai_assistant');
+  } catch {
+    return {
+      error: NextResponse.json(
+        { error: 'AI assistant requires an active AI entitlement.' },
+        { status: 403 },
+      ),
+    };
+  }
 
   // Verify conversation belongs to user and org
   const { data: conversation, error: conversationError } = await admin

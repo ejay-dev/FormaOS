@@ -9,6 +9,7 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { checkUsageLimit, trackUsage } from '@/lib/ai/usage-meter';
 import { resolvePlanKey } from '@/lib/plans';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 
 /**
  * =========================================================
@@ -69,6 +70,14 @@ export async function POST(request: Request) {
     const orgId = membership.organization_id as string;
     const role = normalizeRole(membership.role as string | null);
     const admin = createSupabaseAdminClient();
+    try {
+      await requireEntitlement(orgId, 'ai_assistant');
+    } catch {
+      return NextResponse.json(
+        { error: 'AI assistant requires an active AI entitlement.' },
+        { status: 403 },
+      );
+    }
 
     // 4a. Plan / usage gating. Resolve the org's plan once and enforce
     // monthly message + token caps before kicking off a stream we'd then

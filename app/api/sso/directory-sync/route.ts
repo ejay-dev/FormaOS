@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import {
@@ -20,6 +21,7 @@ export async function GET(request: Request) {
     }
     const orgId = new URL(request.url).searchParams.get('orgId');
     const context = await requireOrgAdminContext(orgId);
+    await requireEntitlement(context.orgId, 'directory_sync');
     const status = await getDirectorySyncStatus(context.orgId);
     return NextResponse.json({ ok: true, ...status });
   } catch (error) {
@@ -46,6 +48,7 @@ export async function POST(request: Request) {
     const context = await requireOrgAdminContext(
       (body.orgId as string | undefined) ?? null,
     );
+    await requireEntitlement(context.orgId, 'directory_sync');
     const provider = body.provider as 'azure-ad' | 'okta' | 'google-workspace';
     const config =
       body.config && typeof body.config === 'object'

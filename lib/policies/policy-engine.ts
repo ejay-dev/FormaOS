@@ -181,7 +181,7 @@ export async function getAcknowledgmentStatus(
     db
       .from('org_members')
       .select('*', { count: 'exact', head: true })
-      .eq('org_id', orgId),
+      .eq('organization_id', orgId),
   ]);
 
   return {
@@ -224,16 +224,30 @@ export async function scheduleReview(
   const nextDate = new Date();
   nextDate.setMonth(nextDate.getMonth() + monthsMap[frequency]);
 
-  const { error } = await db.from('policy_review_schedules').upsert(
-    {
-      org_id: orgId,
-      policy_id: policyId,
-      review_frequency: frequency,
-      next_review_date: nextDate.toISOString().split('T')[0],
-      reviewer_ids: reviewerIds,
-    },
-    { onConflict: 'id' },
-  );
+  const payload = {
+    org_id: orgId,
+    policy_id: policyId,
+    review_frequency: frequency,
+    next_review_date: nextDate.toISOString().split('T')[0],
+    reviewer_ids: reviewerIds,
+  };
+
+  const { data: existing, error: lookupError } = await db
+    .from('policy_review_schedules')
+    .select('id')
+    .eq('org_id', orgId)
+    .eq('policy_id', policyId)
+    .maybeSingle();
+
+  if (lookupError) throw lookupError;
+
+  const { error } = existing?.id
+    ? await db
+        .from('policy_review_schedules')
+        .update(payload)
+        .eq('id', existing.id)
+        .eq('org_id', orgId)
+    : await db.from('policy_review_schedules').insert(payload);
 
   if (error) throw error;
 }

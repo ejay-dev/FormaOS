@@ -5,6 +5,26 @@
     {
       "path": "/api/cron/compliance-check",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/scheduled-reports",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/report-exports",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/compliance-exports",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/enterprise-exports",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/security-retention",
+      "schedule": "0 3 * * *"
     }
   ],
   "functions": {

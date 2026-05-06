@@ -115,13 +115,20 @@ export function RetentionPolicies({
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <input
+        <select
           value={resourceType}
           onChange={(event) => setResourceType(event.target.value)}
           disabled={actionsDisabled}
           className="rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
-          placeholder="resource_type"
-        />
+        >
+          <option value="identity_audit">identity_audit</option>
+          <option value="notifications">notifications</option>
+          <option value="tasks">tasks</option>
+          <option value="evidence">evidence</option>
+          <option value="policies">policies</option>
+          <option value="assets">assets</option>
+          <option value="risks">risks</option>
+        </select>
         <input
           type="number"
           value={retentionDays}
@@ -161,13 +168,46 @@ export function RetentionPolicies({
           <div className="mb-3 text-sm font-semibold text-foreground">Configured Policies</div>
           <div className="space-y-3 text-sm text-foreground/70">
             {policies.map((policy) => (
-              <div key={policy.id} className="rounded-xl border border-glass-border bg-glass-subtle p-3">
-                <div className="font-semibold text-foreground">{policy.resource_type}</div>
-                <div className="text-xs text-muted-foreground">
-                  {policy.retention_days} days • {policy.action}
+              <div
+                key={policy.id}
+                className="rounded-xl border border-glass-border bg-glass-subtle p-3"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="font-semibold text-foreground">
+                      {policy.resource_type}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {policy.retention_days} days • {policy.action}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={actionsDisabled}
+                    onClick={() => {
+                      setResourceType(String(policy.resource_type));
+                      setRetentionDays(Number(policy.retention_days ?? 365));
+                      setAction(
+                        String(policy.action ?? 'archive') as
+                          | 'archive'
+                          | 'delete'
+                          | 'anonymize',
+                      );
+                      setMessage('Policy loaded for editing.');
+                      setError(null);
+                    }}
+                    className="rounded-lg border border-glass-border px-3 py-1 text-xs text-foreground/80 hover:bg-white/[0.06] disabled:opacity-50"
+                  >
+                    Edit
+                  </button>
                 </div>
               </div>
             ))}
+            {policies.length === 0 ? (
+              <p className="rounded-xl border border-dashed border-glass-border p-4 text-center text-xs text-muted-foreground">
+                No retention policies configured yet.
+              </p>
+            ) : null}
           </div>
         </div>
         <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4">
@@ -182,6 +222,11 @@ export function RetentionPolicies({
                 </div>
               </div>
             ))}
+            {executions.length === 0 ? (
+              <p className="rounded-xl border border-dashed border-glass-border p-4 text-center text-xs text-muted-foreground">
+                No retention dry-runs or executions yet.
+              </p>
+            ) : null}
           </div>
         </div>
       </div>

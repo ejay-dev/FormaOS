@@ -34,11 +34,39 @@ export default async function SecuritySettingsPage() {
     roleRequiresMFA(membership?.role ?? null);
   const enabled = security?.two_factor_enabled ?? false;
   const orgId = membership?.organization_id as string | undefined;
+  const [{ data: ssoEntitlement }, { data: directoryEntitlement }] = orgId
+    ? await Promise.all([
+        supabase
+          .from('org_entitlements')
+          .select('enabled')
+          .eq('organization_id', orgId)
+          .eq('feature_key', 'sso_saml')
+          .maybeSingle(),
+        supabase
+          .from('org_entitlements')
+          .select('enabled')
+          .eq('organization_id', orgId)
+          .eq('feature_key', 'directory_sync')
+          .maybeSingle(),
+      ])
+    : [{ data: null }, { data: null }];
   const orgSso = orgId ? await getOrgSsoConfig(orgId) : null;
   const sp = orgId ? buildServiceProviderUrls(orgId) : null;
   const directoryStatus = orgId
     ? await getDirectorySyncStatus(orgId)
     : { configs: [], runs: [] };
+  const canManageSecurity =
+    membership?.role === 'owner' || membership?.role === 'admin';
+  const ssoDisabledReason = !canManageSecurity
+    ? 'Only workspace owners and admins can manage SSO.'
+    : ssoEntitlement?.enabled !== true
+      ? 'SAML SSO requires the sso_saml Enterprise entitlement.'
+      : null;
+  const directoryDisabledReason = !canManageSecurity
+    ? 'Only workspace owners and admins can manage directory sync.'
+    : directoryEntitlement?.enabled !== true
+      ? 'Directory sync requires the directory_sync Enterprise entitlement.'
+      : null;
 
   return (
     <div className="space-y-8 pb-24 max-w-5xl animate-in fade-in duration-700">
@@ -82,6 +110,7 @@ export default async function SecuritySettingsPage() {
             acsUrl: sp.acsUrl,
             entityId: sp.metadataUrl,
           }}
+          disabledReason={ssoDisabledReason}
         />
       ) : null}
 
@@ -92,6 +121,7 @@ export default async function SecuritySettingsPage() {
           initialIntervalMinutes={orgSso?.directorySyncIntervalMinutes ?? 60}
           initialConfig={orgSso?.directorySyncConfig ?? {}}
           initialStatus={directoryStatus}
+          disabledReason={directoryDisabledReason}
         />
       ) : null}
     </div>

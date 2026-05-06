@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 
 const log = routeLog('/api/v1/ai/reindex');
 
@@ -34,6 +35,13 @@ export async function POST(request: NextRequest) {
 
     if (!['owner', 'admin'].includes(String(membership.role ?? ''))) {
       redirectUrl.searchParams.set('error', 'forbidden');
+      return NextResponse.redirect(redirectUrl, { status: 303 });
+    }
+
+    try {
+      await requireEntitlement(membership.organization_id, 'ai_assistant');
+    } catch {
+      redirectUrl.searchParams.set('error', 'entitlement');
       return NextResponse.redirect(redirectUrl, { status: 303 });
     }
 

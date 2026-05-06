@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   ShieldCheck,
   FileText,
@@ -123,8 +124,9 @@ export function ArtifactSidebar({
               const sizeKb = ((Number(file.file_size) || 0) / 1024).toFixed(0);
 
               return (
-                <div
+                <Link
                   key={file.id}
+                  href={`/app/evidence?evidenceId=${file.id}`}
                   className="group flex items-center justify-between p-3 bg-violet-400/5 rounded-xl border border-violet-400/20 hover:border-violet-400/40 hover:bg-violet-400/10 transition-all shadow-sm"
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
@@ -141,8 +143,8 @@ export function ArtifactSidebar({
                       </span>
                     </div>
                   </div>
-                  <ExternalLink className="h-3 w-3 text-violet-400 group-hover:text-violet-300 cursor-pointer shrink-0 transition-colors" />
-                </div>
+                  <ExternalLink className="h-3 w-3 text-violet-400 group-hover:text-violet-300 shrink-0 transition-colors" />
+                </Link>
               );
             })
           )}

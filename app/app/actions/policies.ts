@@ -304,6 +304,12 @@ export async function linkArtifactToPolicy(policyId: string, evidenceId: string)
 // ============================================================
 
 const APPROVAL_ROLES = new Set(["owner", "admin"]);
+const REVIEW_FREQUENCIES = new Set([
+  "quarterly",
+  "semi_annual",
+  "annual",
+  "biennial",
+]);
 
 async function getLifecycleContext(policyId: string) {
   const supabase = await createSupabaseServerClient();
@@ -566,6 +572,153 @@ export async function rejectPolicy(formData: FormData) {
 
     revalidatePath(`/app/policies/${policyId}`);
     revalidatePath(`/app/policies/${policyId}/versions`);
+    return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function acknowledgePolicyVersion(formData: FormData) {
+  try {
+    const policyId = formData.get("policyId") as string;
+    if (!policyId) throw new Error("policyId required");
+
+    const { supabase, user, membership, policy } =
+      await getLifecycleContext(policyId);
+
+    const latest = await getLatestVersion(supabase, policyId);
+    if (!latest || latest.status !== "published") {
+      throw new Error("Only the current published policy version can be acknowledged.");
+    }
+
+    const { error } = await supabase.from("policy_acknowledgments").upsert(
+      {
+        org_id: membership.organization_id,
+        policy_id: policyId,
+        policy_version_id: latest.id,
+        user_id: user.id,
+        acknowledged_at: new Date().toISOString(),
+      },
+      { onConflict: "policy_version_id,user_id" },
+    );
+
+    if (error) throw new Error(`Policy acknowledgment failed: ${error.message}`);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: (membership.role as string | null) ?? null,
+        entityType: "policy",
+        entityId: policyId,
+        actionType: "POLICY_ACKNOWLEDGED",
+        afterState: {
+          title: policy.title,
+          version_id: latest.id,
+          version_number: latest.version_number,
+        },
+        reason: "acknowledge",
+      },
+      { required: true },
+    );
+
+    await logActivity(membership.organization_id, "UPDATE_POLICY", {
+      resourceName: policy.title,
+      event: "Policy acknowledged",
+      policyId,
+      versionId: latest.id,
+    });
+
+    revalidatePath(`/app/policies/${policyId}`);
+    revalidatePath(`/app/policies/${policyId}/versions`);
+    revalidatePath("/app/policies/versions");
+    return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function schedulePolicyReview(formData: FormData) {
+  try {
+    const policyId = formData.get("policyId") as string;
+    const frequency = String(formData.get("frequency") ?? "annual");
+    const nextReviewDate = String(formData.get("nextReviewDate") ?? "");
+    if (!policyId) throw new Error("policyId required");
+    if (!REVIEW_FREQUENCIES.has(frequency)) {
+      throw new Error("Invalid review frequency.");
+    }
+    if (!nextReviewDate || Number.isNaN(Date.parse(nextReviewDate))) {
+      throw new Error("A valid next review date is required.");
+    }
+
+    const { supabase, user, membership, policy } =
+      await getLifecycleContext(policyId);
+    const role = (membership.role as string | null) ?? "";
+    if (!APPROVAL_ROLES.has(role)) {
+      throw new Error("Only owner or admin can schedule policy reviews.");
+    }
+
+    const reviewerIds = formData
+      .getAll("reviewerIds")
+      .map((value) => String(value))
+      .filter(Boolean);
+
+    const schedulePayload = {
+      org_id: membership.organization_id,
+      policy_id: policyId,
+      review_frequency: frequency,
+      next_review_date: nextReviewDate,
+      reviewer_ids: reviewerIds,
+      last_reviewed_at: null,
+    };
+
+    const { data: existing, error: existingError } = await supabase
+      .from("policy_review_schedules")
+      .select("id")
+      .eq("org_id", membership.organization_id)
+      .eq("policy_id", policyId)
+      .maybeSingle();
+
+    if (existingError) {
+      throw new Error(`Review schedule lookup failed: ${existingError.message}`);
+    }
+
+    const scheduleId = existing && "id" in existing ? String(existing.id) : null;
+    const scheduleWrite = scheduleId
+      ? supabase
+          .from("policy_review_schedules")
+          .update(schedulePayload)
+          .eq("id", scheduleId)
+          .eq("org_id", membership.organization_id)
+      : supabase.from("policy_review_schedules").insert(schedulePayload);
+
+    const { error } = await scheduleWrite;
+    if (error) throw new Error(`Review schedule failed: ${error.message}`);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: role,
+        entityType: "policy",
+        entityId: policyId,
+        actionType: "POLICY_REVIEW_SCHEDULED",
+        afterState: {
+          title: policy.title,
+          review_frequency: frequency,
+          next_review_date: nextReviewDate,
+          reviewer_count: reviewerIds.length,
+        },
+        reason: "schedule_review",
+      },
+      { required: true },
+    );
+
+    revalidatePath(`/app/policies/${policyId}`);
+    revalidatePath(`/app/policies/${policyId}/versions`);
+    revalidatePath("/app/policies/versions");
     return { success: true };
   } catch (error) {
     if (isNextInternalError(error)) throw error;

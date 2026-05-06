@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   Clock,
   FileText,
+  Link2,
   Search,
   ShieldCheck,
   UserRound,
@@ -62,6 +63,14 @@ type CapaItem = {
 type MemberOption = {
   user_id: string;
   role: string | null;
+};
+
+type CapaEvent = {
+  id: string;
+  event_type: string;
+  actor_id: string | null;
+  comment: string | null;
+  created_at: string;
 };
 
 const NEXT_STATUSES: Record<string, CapaStatus[]> = {
@@ -144,6 +153,55 @@ async function getMemberOptions(db: ReturnType<typeof createSupabaseAdminClient>
   }));
 }
 
+async function getSourceSummary(
+  db: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+  item: CapaItem,
+) {
+  if (!item.source_id || !item.source_type || item.source_type === 'manual') {
+    return null;
+  }
+
+  const config = {
+    incident: {
+      table: 'org_incidents',
+      href: `/app/incidents/${item.source_id}`,
+      label: 'Incident',
+      select: 'id, title',
+    },
+    policy: {
+      table: 'org_policies',
+      href: `/app/policies/${item.source_id}`,
+      label: 'Policy',
+      select: 'id, title',
+    },
+    obligation: {
+      table: 'org_tasks',
+      href: `/app/tasks?q=${encodeURIComponent(item.source_id)}`,
+      label: 'Task',
+      select: 'id, title',
+    },
+  }[item.source_type as 'incident' | 'policy' | 'obligation'];
+
+  if (!config) return null;
+
+  const { data } = await db
+    .from(config.table)
+    .select(config.select)
+    .eq('id', item.source_id)
+    .eq('organization_id', orgId)
+    .maybeSingle();
+
+  return {
+    href: config.href,
+    label: config.label,
+    title:
+      data && 'title' in data && typeof data.title === 'string'
+        ? data.title
+        : item.source_id.slice(0, 8),
+  };
+}
+
 export default async function CapaDetailPage({
   params,
   searchParams,
@@ -157,6 +215,36 @@ export default async function CapaDetailPage({
   const { id } = await params;
   const { error } = await searchParams;
   const db = createSupabaseAdminClient();
+  const { data: entitlement } = await db
+    .from('org_entitlements')
+    .select('enabled')
+    .eq('organization_id', state.organization.id)
+    .eq('feature_key', 'capa_management')
+    .maybeSingle();
+
+  if (entitlement?.enabled !== true) {
+    return (
+      <div className="flex h-full flex-col">
+        <div className="page-header">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/app/capa"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4" /> Back
+            </Link>
+            <div>
+              <h1 className="page-title">CAPA management is not enabled</h1>
+              <p className="page-description">
+                This CAPA requires the capa_management entitlement.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const { data, error: itemError } = await db
     .from('org_capa_items')
     .select(
@@ -200,7 +288,18 @@ export default async function CapaDetailPage({
     owner_id: (data as CapaItem).owner_id ?? (data as CapaItem).assigned_to ?? null,
   };
   const canAuthor = ['owner', 'admin'].includes(state.role);
-  const memberOptions = await getMemberOptions(db, state.organization.id);
+  const [memberOptions, sourceSummary, eventsResult] = await Promise.all([
+    getMemberOptions(db, state.organization.id),
+    getSourceSummary(db, state.organization.id, item),
+    db
+      .from('org_capa_events')
+      .select('id, event_type, actor_id, comment, created_at')
+      .eq('organization_id', state.organization.id)
+      .eq('capa_id', item.id)
+      .order('created_at', { ascending: false })
+      .limit(12),
+  ]);
+  const events = (eventsResult.data ?? []) as CapaEvent[];
   const ownerLabel =
     memberOptions.find((member) => member.userId === item.owner_id)?.label ??
     (item.owner_id ? item.owner_id.slice(0, 8) : 'Unassigned');
@@ -286,12 +385,12 @@ export default async function CapaDetailPage({
                     Source
                   </p>
                   <p className="mt-2 text-sm capitalize">
-                    {item.source_type === 'incident' && item.source_id ? (
+                    {sourceSummary ? (
                       <Link
-                        href={`/app/incidents/${item.source_id}`}
+                        href={sourceSummary.href}
                         className="text-primary hover:underline"
                       >
-                        Linked incident
+                        {sourceSummary.label}: {sourceSummary.title}
                       </Link>
                     ) : (
                       item.source_type ?? 'manual'
@@ -498,6 +597,43 @@ export default async function CapaDetailPage({
                 </button>
               </form>
             )}
+          </section>
+
+          <section className="rounded-lg border border-border bg-card p-5 text-sm">
+            <div className="flex items-center gap-2 font-semibold">
+              <Link2 className="h-4 w-4 text-muted-foreground" />
+              Source
+            </div>
+            <div className="mt-4 rounded-md border border-border bg-muted/30 px-3 py-2">
+              {sourceSummary ? (
+                <Link href={sourceSummary.href} className="text-primary hover:underline">
+                  {sourceSummary.label}: {sourceSummary.title}
+                </Link>
+              ) : (
+                <span className="text-muted-foreground">Manual CAPA</span>
+              )}
+            </div>
+          </section>
+
+          <section className="rounded-lg border border-border bg-card p-5 text-sm">
+            <div className="flex items-center gap-2 font-semibold">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              CAPA Events
+            </div>
+            <div className="mt-4 space-y-3">
+              {events.map((event) => (
+                <div key={event.id} className="rounded-md border border-border bg-muted/30 px-3 py-2">
+                  <div className="font-medium">{event.event_type.replace(/_/g, ' ')}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    {fmtDateTime(event.created_at)}
+                    {event.comment ? ` · ${event.comment}` : ''}
+                  </div>
+                </div>
+              ))}
+              {events.length === 0 ? (
+                <p className="text-xs text-muted-foreground">No CAPA events recorded yet.</p>
+              ) : null}
+            </div>
           </section>
 
           <section className="rounded-lg border border-border bg-card p-5 text-sm">

@@ -99,14 +99,24 @@ export default async function StaffCredentialDetailPage({
         }
       : null,
   };
+  const { count: evidenceCount } = await supabase
+    .from('org_evidence')
+    .select('id', { count: 'exact', head: true })
+    .eq('organization_id', orgId)
+    .eq('entity_type', 'staff_credential')
+    .eq('entity_id', credential.id);
 
   const verifyAction = async () => {
     'use server';
     await verifyStaffCredential(credential.id);
   };
+  const actorRole = String(systemState.role);
   const canVerify =
     credential.status !== 'verified' &&
-    (systemState.role === 'owner' || systemState.role === 'admin');
+    (actorRole === 'owner' ||
+      actorRole === 'admin' ||
+      actorRole === 'compliance_officer') &&
+    (evidenceCount ?? 0) > 0;
 
   return (
     <div className="space-y-6">
@@ -145,10 +155,10 @@ export default async function StaffCredentialDetailPage({
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs uppercase tracking-wider text-muted-foreground">
-            Issue Date
+            Evidence
           </p>
           <p className="mt-1 text-sm font-semibold">
-            {formatDate(credential.issue_date)}
+            {evidenceCount ?? 0} attached
           </p>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
@@ -238,8 +248,8 @@ export default async function StaffCredentialDetailPage({
             Verification locked
           </div>
           <p className="mt-1 text-xs text-amber-200">
-            Only admins and owners can verify credentials, or this record is
-            already verified.
+            Verification requires an owner, admin, or compliance officer,
+            an unverified credential, and at least one attached evidence file.
           </p>
         </section>
       )}

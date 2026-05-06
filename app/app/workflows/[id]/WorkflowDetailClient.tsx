@@ -29,6 +29,7 @@ export function WorkflowDetailClient({
   const router = useRouter();
   const [currentWorkflow, setCurrentWorkflow] = useState(workflow);
   const [activeTab, setActiveTab] = useState<Tab>('builder');
+  const [operationError, setOperationError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const metrics = useMemo(() => {
@@ -41,6 +42,7 @@ export function WorkflowDetailClient({
   }, [executions]);
 
   async function saveWorkflow(next: WorkflowDefinition) {
+    setOperationError(null);
     const response = await fetch(`/api/automation/workflows/${next.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -48,6 +50,10 @@ export function WorkflowDetailClient({
     });
 
     if (!response.ok) {
+      const payload = await response.json().catch(() => null);
+      setOperationError(
+        payload?.error ?? 'Unable to save this workflow right now.',
+      );
       return;
     }
 
@@ -58,13 +64,21 @@ export function WorkflowDetailClient({
 
   async function runWorkflow() {
     startTransition(async () => {
-      await fetch(`/api/automation/workflows/${currentWorkflow.id}`, {
+      setOperationError(null);
+      const response = await fetch(`/api/automation/workflows/${currentWorkflow.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           manualRunAt: new Date().toISOString(),
         }),
       });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        setOperationError(
+          payload?.error ?? 'Unable to run this workflow right now.',
+        );
+        return;
+      }
       router.refresh();
     });
   }
@@ -106,6 +120,12 @@ export function WorkflowDetailClient({
         <MetricCard icon={<Clock3 className="h-5 w-5 text-cyan-300" />} label="Success Rate" value={`${metrics.successRate}%`} />
         <MetricCard icon={<Settings2 className="h-5 w-5 text-cyan-300" />} label="Version" value={`v${currentWorkflow.version}`} />
       </div>
+
+      {operationError ? (
+        <div className="rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {operationError}
+        </div>
+      ) : null}
 
       <div className="flex flex-wrap gap-2">
         {[

@@ -1,13 +1,24 @@
 import { NextResponse } from 'next/server';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { getOrgSsoConfig, upsertOrgSsoConfig } from '@/lib/sso/org-sso';
 
 export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
     const orgId = new URL(request.url).searchParams.get('orgId');
     const context = await requireOrgAdminContext(orgId);
+    await requireEntitlement(context.orgId, 'sso_saml');
     const config = await getOrgSsoConfig(context.orgId);
     return NextResponse.json({ ok: true, config });
   } catch (error) {
@@ -19,9 +30,27 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   try {
+    const rl = await rateLimitApi(request);
+    if (!rl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
     const body = (await request.json()) as Record<string, unknown>;
     const context = await requireOrgAdminContext((body.orgId as string | undefined) ?? null);
+    await requireEntitlement(context.orgId, 'sso_saml');
+    if (
+      Boolean(body.directorySyncEnabled) ||
+      body.directorySyncProvider ||
+      body.directorySyncConfig
+    ) {
+      await requireEntitlement(context.orgId, 'directory_sync');
+    }
     const result = await upsertOrgSsoConfig({
       orgId: context.orgId,
       enabled: Boolean(body.enabled),

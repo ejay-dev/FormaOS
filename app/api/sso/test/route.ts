@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireEntitlement } from '@/lib/billing/entitlements';
 import { requireOrgAdminContext } from '@/lib/identity/org-access';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { logIdentityEvent } from '@/lib/identity/audit';
@@ -20,6 +21,7 @@ export async function POST(request: Request) {
     const context = await requireOrgAdminContext(
       (body.orgId as string | undefined) ?? null,
     );
+    await requireEntitlement(context.orgId, 'sso_saml');
     const config = await getOrgSsoConfig(context.orgId);
     if (!config?.enabled) {
       return NextResponse.json(

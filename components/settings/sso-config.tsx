@@ -17,6 +17,7 @@ type Props = {
     acsUrl: string;
     entityId: string;
   };
+  disabledReason?: string | null;
 };
 
 function parseDomains(value: string) {
@@ -26,7 +27,7 @@ function parseDomains(value: string) {
     .filter(Boolean);
 }
 
-export function SsoConfigPanel({ orgId, initial, sp }: Props) {
+export function SsoConfigPanel({ orgId, initial, sp, disabledReason }: Props) {
   const [isPending, startTransition] = useTransition();
   const [enabled, setEnabled] = useState(initial.enabled);
   const [enforceSso, setEnforceSso] = useState(initial.enforceSso);
@@ -36,6 +37,7 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
   const [jitDefaultRole, setJitDefaultRole] = useState(initial.jitDefaultRole);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const controlsDisabled = isPending || Boolean(disabledReason);
 
   const save = () => {
     setMessage(null);
@@ -91,10 +93,15 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
             Upload IdP metadata, enforce SSO by domain, and enable JIT provisioning.
           </p>
         </div>
+        {disabledReason ? (
+          <p className="max-w-2xl text-sm text-amber-300">
+            {disabledReason}
+          </p>
+        ) : null}
         <button
           type="button"
           onClick={testConnection}
-          disabled={isPending || !enabled}
+          disabled={controlsDisabled || !enabled}
           className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 disabled:opacity-50"
         >
           Test Connection
@@ -105,7 +112,12 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
         <div className="rounded-2xl border border-glass-border bg-slate-950/50 p-4 space-y-4">
           <label className="flex items-center justify-between text-sm text-foreground/90">
             Enable SAML SSO
-            <input type="checkbox" checked={enabled} onChange={(event) => setEnabled(event.target.checked)} />
+            <input
+              type="checkbox"
+              checked={enabled}
+              onChange={(event) => setEnabled(event.target.checked)}
+              disabled={controlsDisabled}
+            />
           </label>
           <label className="flex items-center justify-between text-sm text-foreground/90">
             Enforce SSO for allowed domains
@@ -113,7 +125,7 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
               type="checkbox"
               checked={enforceSso}
               onChange={(event) => setEnforceSso(event.target.checked)}
-              disabled={!enabled}
+              disabled={controlsDisabled || !enabled}
             />
           </label>
           <label className="flex items-center justify-between text-sm text-foreground/90">
@@ -122,7 +134,7 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
               type="checkbox"
               checked={jitEnabled}
               onChange={(event) => setJitEnabled(event.target.checked)}
-              disabled={!enabled}
+              disabled={controlsDisabled || !enabled}
             />
           </label>
           <div>
@@ -132,6 +144,7 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
             <select
               value={jitDefaultRole}
               onChange={(event) => setJitDefaultRole(event.target.value as Props['initial']['jitDefaultRole'])}
+              disabled={controlsDisabled || !enabled}
               className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
             >
               {['member', 'viewer', 'auditor', 'admin', 'owner'].map((role) => (
@@ -149,6 +162,7 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
               value={domains}
               onChange={(event) => setDomains(event.target.value)}
               rows={5}
+              disabled={controlsDisabled}
               className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
               placeholder={'example.com\nsubsidiary.example.com'}
             />
@@ -184,6 +198,7 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
               value={metadataXml}
               onChange={(event) => setMetadataXml(event.target.value)}
               rows={11}
+              disabled={controlsDisabled}
               className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 font-mono text-xs text-foreground"
               placeholder="<EntityDescriptor>...</EntityDescriptor>"
             />
@@ -199,7 +214,7 @@ export function SsoConfigPanel({ orgId, initial, sp }: Props) {
         <button
           type="button"
           onClick={save}
-          disabled={isPending}
+          disabled={controlsDisabled}
           className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 disabled:opacity-50"
         >
           Save SSO

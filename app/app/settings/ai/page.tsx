@@ -3,14 +3,30 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { Cpu, RefreshCw, ToggleLeft, Database } from 'lucide-react';
 import { AiUsageDashboard } from '@/components/ai-assistant/AiUsageDashboard';
+import { isAIConfigured } from '@/lib/ai/streaming';
 
 export const metadata = { title: 'AI Settings | FormaOS' };
 
-export default async function AiSettingsPage() {
+export default async function AiSettingsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ error?: string; reindexed?: string; reindexErrors?: string }>;
+}) {
   const state = await fetchSystemState();
   if (!state) redirect('/signin');
+  const notices = (await searchParams) ?? {};
 
   const db = await createSupabaseServerClient();
+  const { data: entitlement } = await db
+    .from('org_entitlements')
+    .select('enabled')
+    .eq('organization_id', state.organization.id)
+    .eq('feature_key', 'ai_assistant')
+    .maybeSingle();
+  const aiConfigured = isAIConfigured();
+  const aiEntitled = entitlement?.enabled === true;
+  const canManageAi = state.role === 'owner' || state.role === 'admin';
+  const reindexDisabled = !aiConfigured || !aiEntitled || !canManageAi;
 
   // Fetch index stats
   const { data: indexStats } = await db
@@ -37,6 +53,28 @@ export default async function AiSettingsPage() {
           Manage AI features, usage, and document indexing.
         </p>
       </div>
+
+      {notices.error || notices.reindexed ? (
+        <div
+          className={`rounded-lg border px-4 py-3 text-sm ${
+            notices.error
+              ? 'border-destructive/40 bg-destructive/10 text-destructive'
+              : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+          }`}
+        >
+          {notices.error
+            ? notices.error.replaceAll('_', ' ')
+            : `Reindexed ${notices.reindexed} documents with ${notices.reindexErrors ?? 0} errors.`}
+        </div>
+      ) : null}
+
+      {!aiConfigured || !aiEntitled ? (
+        <section className="rounded-lg border border-amber-400/30 bg-amber-500/10 p-4 text-sm text-amber-200">
+          {!aiConfigured
+            ? 'AI runtime is not configured. Add OPENAI_API_KEY before enabling assistant features.'
+            : 'AI assistant is disabled for this workspace plan.'}
+        </section>
+      ) : null}
 
       {/* Usage Dashboard */}
       <section className="space-y-4">
@@ -104,7 +142,8 @@ export default async function AiSettingsPage() {
         <form action="/api/v1/ai/reindex" method="POST">
           <button
             type="submit"
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            disabled={reindexDisabled}
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             <RefreshCw className="h-4 w-4" />
             Reindex All Documents
@@ -116,20 +155,20 @@ export default async function AiSettingsPage() {
       <section className="space-y-4">
         <h2 className="text-lg font-semibold">Features</h2>
         <div className="rounded-lg border border-border bg-card divide-y divide-border">
-          <FeatureToggle
+          <FeatureStatus
             label="AI Assistant"
             description="Enable the AI compliance assistant for your organization."
-            enabled={true}
+            enabled={aiConfigured && aiEntitled}
           />
-          <FeatureToggle
+          <FeatureStatus
             label="Auto Evidence Analysis"
-            description="Automatically analyze uploaded evidence for control mapping."
-            enabled={false}
+            description="Available when AI is configured and the workspace has AI access."
+            enabled={aiConfigured && aiEntitled}
           />
-          <FeatureToggle
+          <FeatureStatus
             label="AI Gap Analysis"
             description="AI-powered compliance gap identification and recommendations."
-            enabled={true}
+            enabled={aiConfigured && aiEntitled}
           />
         </div>
       </section>
@@ -157,7 +196,7 @@ function IndexStatCard({
   );
 }
 
-function FeatureToggle({
+function FeatureStatus({
   label,
   description,
   enabled,
@@ -172,17 +211,15 @@ function FeatureToggle({
         <p className="text-sm font-medium">{label}</p>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
-      <div
-        className={`relative h-6 w-11 rounded-full transition-colors ${
-          enabled ? 'bg-primary' : 'bg-muted'
+      <span
+        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+          enabled
+            ? 'bg-emerald-500/10 text-emerald-400'
+            : 'bg-muted text-muted-foreground'
         }`}
       >
-        <div
-          className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
-            enabled ? 'translate-x-5' : 'translate-x-0.5'
-          }`}
-        />
-      </div>
+        {enabled ? 'Enabled' : 'Unavailable'}
+      </span>
     </div>
   );
 }

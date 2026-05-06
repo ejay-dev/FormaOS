@@ -515,6 +515,19 @@ export async function verifyStaffCredential(id: string) {
   }
 
   const organizationId = actorMembership.organization_id;
+  const { count: evidenceCount, error: evidenceError } = await supabase
+    .from("org_evidence")
+    .select("id", { count: "exact", head: true })
+    .eq("organization_id", organizationId)
+    .eq("entity_type", "staff_credential")
+    .eq("entity_id", id);
+
+  if (evidenceError) throw new Error(evidenceError.message);
+  if ((evidenceCount ?? 0) === 0) {
+    throw new Error(
+      "Attach credential evidence before verifying this staff credential.",
+    );
+  }
 
   const verifiedAt = new Date().toISOString();
   const { error } = await supabase
@@ -544,6 +557,7 @@ export async function verifyStaffCredential(id: string) {
   );
 
   revalidatePath("/app/staff-compliance");
+  revalidatePath(`/app/staff-compliance/${id}`);
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);

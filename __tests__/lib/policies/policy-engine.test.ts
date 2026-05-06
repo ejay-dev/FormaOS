@@ -11,6 +11,7 @@ jest.mock('@/lib/supabase/server', () => {
   query.gte = jest.fn(() => query);
   query.order = jest.fn(() => query);
   query.limit = jest.fn(() => query);
+  query.maybeSingle = jest.fn(() => query);
   query.single = jest.fn(() => query);
   query.then = jest.fn((r: Function) =>
     r({ data: null, error: null, count: 0 }),
@@ -51,6 +52,7 @@ beforeEach(() => {
   query.gte.mockImplementation(() => query);
   query.order.mockImplementation(() => query);
   query.limit.mockImplementation(() => query);
+  query.maybeSingle.mockImplementation(() => query);
   query.single.mockImplementation(() => query);
   query.then.mockImplementation((r: Function) =>
     r({ data: null, error: null, count: 0 }),
@@ -216,20 +218,35 @@ describe('getPoliciesDueForReview', () => {
 });
 
 describe('scheduleReview', () => {
-  it('upserts review schedule', async () => {
+  it('creates a review schedule when none exists', async () => {
     await scheduleReview('org-1', 'pol-1', 'quarterly', ['user-1']);
-    expect(q().upsert).toHaveBeenCalledWith(
+    expect(q().insert).toHaveBeenCalledWith(
       expect.objectContaining({
         org_id: 'org-1',
         policy_id: 'pol-1',
         review_frequency: 'quarterly',
       }),
-      { onConflict: 'id' },
+    );
+  });
+
+  it('updates an existing review schedule', async () => {
+    q().maybeSingle.mockReturnValueOnce(
+      Promise.resolve({ data: { id: 'schedule-1' }, error: null }),
+    );
+
+    await scheduleReview('org-1', 'pol-1', 'annual', ['user-1']);
+
+    expect(q().update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        org_id: 'org-1',
+        policy_id: 'pol-1',
+        review_frequency: 'annual',
+      }),
     );
   });
 
   it('throws on error', async () => {
-    q().upsert.mockReturnValue(Promise.resolve({ error: { message: 'fail' } }));
+    q().insert.mockReturnValue(Promise.resolve({ error: { message: 'fail' } }));
     await expect(
       scheduleReview('org-1', 'pol-1', 'annual', []),
     ).rejects.toBeDefined();

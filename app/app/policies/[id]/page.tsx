@@ -1,10 +1,20 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
-import { ChevronLeft, Save, ShieldCheck, History } from 'lucide-react';
+import {
+  CalendarClock,
+  CheckCircle2,
+  ChevronLeft,
+  History,
+  Save,
+  ShieldCheck,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
 import {
+  acknowledgePolicyVersion,
   approvePolicy,
   rejectPolicy,
+  schedulePolicyReview,
   submitPolicyForReview,
   updatePolicy,
 } from '@/app/app/actions/policies';
@@ -80,6 +90,68 @@ export default async function PolicyDetailPage({
     latestVersion.created_by === user.id;
   const canDecide =
     isAdmin && lifecycleStatus === 'pending_approval' && !isAuthorOfPending;
+
+  const [
+    { count: acknowledgmentCount },
+    { count: memberCount },
+    { data: myAcknowledgment },
+    { data: approvalRows },
+    { data: reviewSchedule },
+    { data: reviewerRows },
+  ] = latestVersion
+    ? await Promise.all([
+        supabase
+          .from('policy_acknowledgments')
+          .select('id', { count: 'exact', head: true })
+          .eq('org_id', membership.organization_id)
+          .eq('policy_version_id', latestVersion.id),
+        supabase
+          .from('org_members')
+          .select('id', { count: 'exact', head: true })
+          .eq('organization_id', membership.organization_id),
+        supabase
+          .from('policy_acknowledgments')
+          .select('id, acknowledged_at')
+          .eq('org_id', membership.organization_id)
+          .eq('policy_version_id', latestVersion.id)
+          .eq('user_id', user.id)
+          .maybeSingle(),
+        supabase
+          .from('policy_approvals')
+          .select('id, approver_id, decision, comment, decided_at, created_at')
+          .eq('org_id', membership.organization_id)
+          .eq('policy_version_id', latestVersion.id)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('policy_review_schedules')
+          .select('id, review_frequency, next_review_date, last_reviewed_at, reviewer_ids')
+          .eq('org_id', membership.organization_id)
+          .eq('policy_id', policyId)
+          .maybeSingle(),
+        supabase
+          .from('org_members')
+          .select('user_id, role, compliance_status')
+          .eq('organization_id', membership.organization_id)
+          .eq('compliance_status', 'active')
+          .order('role', { ascending: true }),
+      ])
+    : [
+        { count: 0 },
+        { count: 0 },
+        { data: null },
+        { data: [] },
+        { data: null },
+        { data: [] },
+      ];
+
+  const totalPolicyMembers = memberCount ?? 0;
+  const acknowledgedPolicies = acknowledgmentCount ?? 0;
+  const acknowledgmentPercent =
+    totalPolicyMembers > 0
+      ? Math.round((acknowledgedPolicies / totalPolicyMembers) * 100)
+      : 0;
+  const canAcknowledge =
+    latestVersion?.status === 'published' && !myAcknowledgment;
 
   return (
     <div className="space-y-6 pb-20 animate-in fade-in duration-700">
@@ -316,6 +388,255 @@ export default async function PolicyDetailPage({
                 </>
               ) : null}
             </div>
+          </div>
+        </div>
+      ) : null}
+
+      {latestVersion ? (
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="bg-surface-1 border border-edge-2 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  Staff Acknowledgment
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Published policies collect named staff sign-off for audit
+                  evidence.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-edge-2 bg-glass-strong px-4 py-3 text-right">
+                <p className="text-xl font-black text-foreground">
+                  {acknowledgmentPercent}%
+                </p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  {acknowledgedPolicies}/{totalPolicyMembers}
+                </p>
+              </div>
+            </div>
+
+            <div className="h-2 overflow-hidden rounded-full bg-glass-strong">
+              <div
+                className="h-full rounded-full bg-emerald-500"
+                style={{ width: `${acknowledgmentPercent}%` }}
+              />
+            </div>
+
+            {myAcknowledgment ? (
+              <div className="flex items-center gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700">
+                <CheckCircle2 className="h-4 w-4" />
+                <span>
+                  You acknowledged this version on{' '}
+                  {new Date(
+                    String(myAcknowledgment.acknowledged_at),
+                  ).toLocaleDateString()}
+                  .
+                </span>
+              </div>
+            ) : canAcknowledge ? (
+              <form
+                action={async (formData) => {
+                  'use server';
+                  await acknowledgePolicyVersion(formData);
+                }}
+              >
+                <input type="hidden" name="policyId" value={policy.id} />
+                <button
+                  type="submit"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-emerald-400/40 bg-emerald-500/15 px-5 py-3 text-xs font-black uppercase tracking-widest text-emerald-700 transition-all hover:bg-emerald-500/25 motion-safe:active:scale-95"
+                >
+                  <CheckCircle2 className="h-4 w-4" />
+                  Acknowledge Current Version
+                </button>
+              </form>
+            ) : (
+              <div className="rounded-2xl border border-edge-2 bg-glass-strong px-4 py-3 text-xs font-bold text-muted-foreground">
+                Acknowledgment opens after the policy is approved and
+                published.
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                Review Decisions
+              </p>
+              {(approvalRows ?? []).length > 0 ? (
+                <div className="space-y-2">
+                  {(approvalRows ?? []).map(
+                    (approval: {
+                      id: string;
+                      approver_id: string;
+                      decision: string | null;
+                      comment: string | null;
+                      decided_at: string | null;
+                    }) => (
+                      <div
+                        key={approval.id}
+                        className="rounded-2xl border border-edge-2 bg-glass-strong px-4 py-3 text-xs"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="font-mono text-muted-foreground">
+                            {approval.approver_id.slice(0, 8)}
+                          </span>
+                          <span className="font-black uppercase tracking-widest text-foreground">
+                            {approval.decision ?? 'pending'}
+                          </span>
+                        </div>
+                        {approval.comment ? (
+                          <p className="mt-2 text-muted-foreground">
+                            {approval.comment}
+                          </p>
+                        ) : null}
+                        {approval.decided_at ? (
+                          <p className="mt-1 text-[10px] text-muted-foreground">
+                            {new Date(approval.decided_at).toLocaleString()}
+                          </p>
+                        ) : null}
+                      </div>
+                    ),
+                  )}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  No review decision has been recorded for this version yet.
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-surface-1 border border-edge-2 rounded-[2rem] p-6 sm:p-8 shadow-sm space-y-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+                  Review Schedule
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Keep policy reviews explicit so no lifecycle action ends in a
+                  dead end.
+                </p>
+              </div>
+              <CalendarClock className="h-5 w-5 text-muted-foreground" />
+            </div>
+
+            <div className="rounded-2xl border border-edge-2 bg-glass-strong px-4 py-3 text-sm">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-muted-foreground">Next review</span>
+                <span className="font-semibold text-foreground">
+                  {reviewSchedule?.next_review_date
+                    ? new Date(
+                        String(reviewSchedule.next_review_date),
+                      ).toLocaleDateString()
+                    : 'Not scheduled'}
+                </span>
+              </div>
+              <div className="mt-2 flex items-center justify-between gap-3">
+                <span className="text-muted-foreground">Cadence</span>
+                <span className="font-semibold text-foreground">
+                  {reviewSchedule?.review_frequency
+                    ? String(reviewSchedule.review_frequency).replace('_', ' ')
+                    : 'None'}
+                </span>
+              </div>
+            </div>
+
+            {isAdmin ? (
+              <form
+                action={async (formData) => {
+                  'use server';
+                  await schedulePolicyReview(formData);
+                }}
+                className="space-y-4"
+              >
+                <input type="hidden" name="policyId" value={policy.id} />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label className="space-y-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                    <span>Frequency</span>
+                    <select
+                      name="frequency"
+                      defaultValue={
+                        String(reviewSchedule?.review_frequency ?? 'annual')
+                      }
+                      className="w-full rounded-2xl border border-edge-2 bg-background px-3 py-2 text-sm font-medium normal-case tracking-normal text-foreground"
+                    >
+                      <option value="quarterly">Quarterly</option>
+                      <option value="semi_annual">Semi annual</option>
+                      <option value="annual">Annual</option>
+                      <option value="biennial">Biennial</option>
+                    </select>
+                  </label>
+                  <label className="space-y-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                    <span>Next Review</span>
+                    <input
+                      type="date"
+                      name="nextReviewDate"
+                      required
+                      defaultValue={
+                        reviewSchedule?.next_review_date
+                          ? String(reviewSchedule.next_review_date)
+                          : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                              .toISOString()
+                              .slice(0, 10)
+                      }
+                      className="w-full rounded-2xl border border-edge-2 bg-background px-3 py-2 text-sm font-medium normal-case tracking-normal text-foreground"
+                    />
+                  </label>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground">
+                    <Users className="h-3 w-3" />
+                    Reviewers
+                  </p>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {(reviewerRows ?? []).map(
+                      (reviewer: { user_id: string; role: string | null }) => {
+                        const selected = Array.isArray(
+                          reviewSchedule?.reviewer_ids,
+                        )
+                          ? reviewSchedule.reviewer_ids.includes(
+                              reviewer.user_id,
+                            )
+                          : false;
+                        return (
+                          <label
+                            key={reviewer.user_id}
+                            className="flex items-center gap-2 rounded-2xl border border-edge-2 bg-glass-strong px-3 py-2 text-xs"
+                          >
+                            <input
+                              type="checkbox"
+                              name="reviewerIds"
+                              value={reviewer.user_id}
+                              defaultChecked={selected}
+                              className="h-3.5 w-3.5"
+                            />
+                            <span className="min-w-0">
+                              <span className="block truncate font-mono">
+                                {reviewer.user_id.slice(0, 8)}
+                              </span>
+                              <span className="block text-[10px] uppercase tracking-widest text-muted-foreground">
+                                {reviewer.role ?? 'member'}
+                              </span>
+                            </span>
+                          </label>
+                        );
+                      },
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-sky-400/40 bg-sky-500/15 px-5 py-3 text-xs font-black uppercase tracking-widest text-sky-700 transition-all hover:bg-sky-500/25 motion-safe:active:scale-95"
+                >
+                  <CalendarClock className="h-4 w-4" />
+                  Save Review Schedule
+                </button>
+              </form>
+            ) : (
+              <div className="rounded-2xl border border-edge-2 bg-glass-strong px-4 py-3 text-xs font-bold text-muted-foreground">
+                Review schedules are managed by owners and admins.
+              </div>
+            )}
           </div>
         </div>
       ) : null}

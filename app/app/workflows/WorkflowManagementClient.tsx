@@ -46,6 +46,7 @@ export function WorkflowManagementClient({
   const router = useRouter();
   const [workflows, setWorkflows] = useState(initialWorkflows);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [operationError, setOperationError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const stats = useMemo(() => {
@@ -68,7 +69,10 @@ export function WorkflowManagementClient({
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create workflow');
+      const payload = await response.json().catch(() => null);
+      throw new Error(
+        payload?.error ?? 'Failed to create workflow. Check plan access and workflow schema.',
+      );
     }
 
     return (await response.json()) as WorkflowDefinition;
@@ -76,6 +80,7 @@ export function WorkflowManagementClient({
 
   async function toggleWorkflow(workflow: WorkflowDefinition) {
     startTransition(async () => {
+      setOperationError(null);
       const response = await fetch(`/api/automation/workflows/${workflow.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -86,6 +91,10 @@ export function WorkflowManagementClient({
       });
 
       if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        setOperationError(
+          payload?.error ?? 'Unable to update this workflow right now.',
+        );
         return;
       }
 
@@ -98,13 +107,21 @@ export function WorkflowManagementClient({
 
   async function runWorkflow(workflow: WorkflowDefinition) {
     startTransition(async () => {
-      await fetch(`/api/automation/workflows/${workflow.id}`, {
+      setOperationError(null);
+      const response = await fetch(`/api/automation/workflows/${workflow.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           manualRunAt: new Date().toISOString(),
         }),
       });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => null);
+        setOperationError(
+          payload?.error ?? 'Unable to run this workflow right now.',
+        );
+        return;
+      }
       router.refresh();
     });
   }
@@ -132,17 +149,27 @@ export function WorkflowManagementClient({
             className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-foreground hover:bg-white/[0.08]"
             onClick={() =>
               startTransition(async () => {
-                const workflow = await createWorkflow({
-                  name: 'Untitled Workflow',
-                  description: '',
-                  status: 'draft',
-                  enabled: false,
-                  trigger: { type: 'manual' },
-                  steps: [],
-                });
-                router.push(`/app/workflows/${workflow.id}`);
+                setOperationError(null);
+                try {
+                  const workflow = await createWorkflow({
+                    name: 'Untitled Workflow',
+                    description: '',
+                    status: 'draft',
+                    enabled: false,
+                    trigger: { type: 'manual' },
+                    steps: [],
+                  });
+                  router.push(`/app/workflows/${workflow.id}`);
+                } catch (error) {
+                  setOperationError(
+                    error instanceof Error
+                      ? error.message
+                      : 'Failed to create workflow.',
+                  );
+                }
               })
             }
+            disabled={isPending}
           >
             <Plus className="h-4 w-4" />
             Blank Workflow
@@ -174,15 +201,30 @@ export function WorkflowManagementClient({
             templates={templates}
             onUseTemplate={(template) =>
               startTransition(async () => {
-                const workflow = await createWorkflow({
-                  ...template.definition,
-                  enabled: false,
-                  status: 'draft',
-                });
-                router.push(`/app/workflows/${workflow.id}`);
+                setOperationError(null);
+                try {
+                  const workflow = await createWorkflow({
+                    ...template.definition,
+                    enabled: false,
+                    status: 'draft',
+                  });
+                  router.push(`/app/workflows/${workflow.id}`);
+                } catch (error) {
+                  setOperationError(
+                    error instanceof Error
+                      ? error.message
+                      : 'Failed to install workflow template.',
+                  );
+                }
               })
             }
           />
+        </div>
+      ) : null}
+
+      {operationError ? (
+        <div className="rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {operationError}
         </div>
       ) : null}
 

@@ -1,11 +1,11 @@
 # APP Link Integrity Report
 
-Generated: 2026-05-03T07:53:26.244Z
+Generated: 2026-05-06T05:33:58.395Z
 
 ## Summary
 
-- Total app internal links validated: 307
-- Valid links: 307
+- Total app internal links validated: 316
+- Valid links: 316
 - Broken links: 0
 - App routes discovered: 216
 
@@ -52,11 +52,14 @@ Generated: 2026-05-03T07:53:26.244Z
 | `components/dashboard/quick-actions.tsx` | `/app/audit` | YES | YES | auth | `/app/audit` |
 | `lib/navigation/industry-sidebar.ts` | `/app/audit` | YES | YES | auth | `/app/audit` |
 | `components/dashboard/command-center.tsx` | `/app/audit-trail` | YES | YES | auth | `/app/audit-trail` |
+| `app/app/capa/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/reports/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/settings/organization/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/settings/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
+| `app/app/settings/retention/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/team/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
+| `app/app/workflows/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/onboarding/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `components/billing/FeatureGate.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `components/billing/UsageLimitWarnings.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
@@ -136,6 +139,7 @@ Generated: 2026-05-03T07:53:26.244Z
 | `components/onboarding/PostOnboardingHero.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `components/onboarding/StartHereCard.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `lib/navigation/industry-sidebar.ts` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
+| `app/app/capa/[id]/page.tsx` | `/app/incidents/:param` | YES | YES | auth | `/app/incidents/:id` |
 | `app/app/incidents/[id]/page.tsx` | `/app/incidents/:param` | YES | YES | auth | `/app/incidents/:id` |
 | `app/app/incidents/[id]/investigation/page.tsx` | `/app/incidents/:param/investigation` | YES | YES | auth | `/app/incidents/:id/investigation` |
 | `app/app/incidents/page.tsx` | `/app/incidents/new` | YES | YES | auth | `/app/incidents/new` |
@@ -172,6 +176,7 @@ Generated: 2026-05-03T07:53:26.244Z
 | `components/empty-states/empty-state.tsx` | `/app/policies` | YES | YES | auth | `/app/policies` |
 | `lib/navigation/industry-sidebar.ts` | `/app/policies` | YES | YES | auth | `/app/policies` |
 | `lib/onboarding/industry-checklists.ts` | `/app/policies` | YES | YES | auth | `/app/policies` |
+| `app/app/capa/[id]/page.tsx` | `/app/policies/:param` | YES | YES | auth | `/app/policies/:id` |
 | `app/app/policies/new/page.tsx` | `/app/policies/:param` | YES | YES | auth | `/app/policies/:id` |
 | `components/empty-states/empty-state.tsx` | `/app/policies/new` | YES | YES | auth | `/app/policies/new` |
 | `components/policies/PoliciesPageHero.tsx` | `/app/policies/new` | YES | YES | auth | `/app/policies/new` |
@@ -204,6 +209,7 @@ Generated: 2026-05-03T07:53:26.244Z
 | `app/app/reports/custom/new/page.tsx` | `/app/reports/custom` | YES | YES | auth | `/app/reports/custom` |
 | `app/app/reports/page.tsx` | `/app/reports/custom` | YES | YES | auth | `/app/reports/custom` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/reports/custom` | YES | YES | auth | `/app/reports/custom` |
+| `app/app/reports/custom/[id]/page.tsx` | `/app/reports/custom/:param` | YES | YES | auth | `/app/reports/custom/:id` |
 | `app/app/reports/custom/new/page.tsx` | `/app/reports/custom/new` | YES | YES | auth | `/app/reports/custom/new` |
 | `app/app/reports/custom/page.tsx` | `/app/reports/custom/new` | YES | YES | auth | `/app/reports/custom/new` |
 | `app/app/reports/custom/page.tsx` | `/app/reports/trends` | YES | YES | auth | `/app/reports/trends` |
@@ -235,6 +241,7 @@ Generated: 2026-05-03T07:53:26.244Z
 | `components/notifications/notification-center.tsx` | `/app/settings/notifications` | YES | YES | auth | `/app/settings/notifications` |
 | `app/app/settings/organization/page.tsx` | `/app/settings/retention` | YES | YES | auth | `/app/settings/retention` |
 | `app/app/settings/page.tsx` | `/app/settings/retention` | YES | YES | auth | `/app/settings/retention` |
+| `app/app/settings/retention/page.tsx` | `/app/settings/retention` | YES | YES | auth | `/app/settings/retention` |
 | `app/app/settings/organization/page.tsx` | `/app/settings/roles` | YES | YES | auth | `/app/settings/roles` |
 | `app/app/settings/page.tsx` | `/app/settings/roles` | YES | YES | auth | `/app/settings/roles` |
 | `app/app/settings/roles/[roleId]/page.tsx` | `/app/settings/roles` | YES | YES | auth | `/app/settings/roles` |
@@ -261,6 +268,7 @@ Generated: 2026-05-03T07:53:26.244Z
 | `app/api/v1/compliance/deadlines/route.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/api/v1/dashboard/stand-up/route.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/actions/evidence.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
+| `app/app/capa/[id]/page.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/patients/[id]/page.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/staff/page.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/tasks/board/page.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
@@ -319,6 +327,7 @@ Generated: 2026-05-03T07:53:26.244Z
 | `app/app/participants/[id]/page.tsx` | `/app/visits/new` | YES | YES | auth | `/app/visits/new` |
 | `app/app/visits/page.tsx` | `/app/visits/new` | YES | YES | auth | `/app/visits/new` |
 | `app/app/executive/ExecutiveDashboardClient.tsx` | `/app/workflows` | YES | YES | auth | `/app/workflows` |
+| `app/app/workflows/[id]/page.tsx` | `/app/workflows` | YES | YES | auth | `/app/workflows` |
 | `app/app/workflows/WorkflowManagementClient.tsx` | `/app/workflows/:param` | YES | YES | auth | `/app/workflows/:id` |
 
 ## App Route Inventory

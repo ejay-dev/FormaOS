@@ -11,6 +11,7 @@ type Props = {
     configs: Array<Record<string, any>>;
     runs: Array<Record<string, any>>;
   };
+  disabledReason?: string | null;
 };
 
 export function DirectorySyncPanel({
@@ -19,6 +20,7 @@ export function DirectorySyncPanel({
   initialIntervalMinutes,
   initialConfig,
   initialStatus,
+  disabledReason,
 }: Props) {
   const [isPending, startTransition] = useTransition();
   const [provider, setProvider] = useState<Props['initialProvider']>(initialProvider);
@@ -27,6 +29,7 @@ export function DirectorySyncPanel({
   const [status, setStatus] = useState(initialStatus);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const controlsDisabled = isPending || Boolean(disabledReason);
 
   const runSync = (enabled: boolean) => {
     setMessage(null);
@@ -72,6 +75,9 @@ export function DirectorySyncPanel({
         <p className="text-sm text-muted-foreground">
           Pull users and groups from Azure AD, Okta, or Google Workspace on demand.
         </p>
+        {disabledReason ? (
+          <p className="mt-2 text-sm text-amber-300">{disabledReason}</p>
+        ) : null}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[220px_180px_1fr]">
@@ -82,6 +88,7 @@ export function DirectorySyncPanel({
           <select
             value={provider}
             onChange={(event) => setProvider(event.target.value as Props['initialProvider'])}
+            disabled={controlsDisabled}
             className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
           >
             <option value="">Select provider</option>
@@ -99,6 +106,7 @@ export function DirectorySyncPanel({
             min={15}
             value={intervalMinutes}
             onChange={(event) => setIntervalMinutes(Number(event.target.value || 60))}
+            disabled={controlsDisabled}
             className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 text-sm text-foreground"
           />
         </label>
@@ -110,6 +118,7 @@ export function DirectorySyncPanel({
             value={configText}
             onChange={(event) => setConfigText(event.target.value)}
             rows={8}
+            disabled={controlsDisabled}
             className="w-full rounded-xl border border-glass-border bg-slate-950 px-3 py-2 font-mono text-xs text-foreground"
             placeholder='{"accessToken":"...","tenantId":"..."}'
           />
@@ -120,7 +129,7 @@ export function DirectorySyncPanel({
         <button
           type="button"
           onClick={() => runSync(true)}
-          disabled={isPending || !provider}
+          disabled={controlsDisabled || !provider}
           className="rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 disabled:opacity-50"
         >
           Save + Sync Now
@@ -128,7 +137,7 @@ export function DirectorySyncPanel({
         <button
           type="button"
           onClick={() => runSync(false)}
-          disabled={isPending || !provider}
+          disabled={controlsDisabled || !provider}
           className="rounded-xl border border-glass-border bg-glass-subtle px-4 py-2 text-sm font-semibold text-foreground/90 disabled:opacity-50"
         >
           Run One-Off Sync

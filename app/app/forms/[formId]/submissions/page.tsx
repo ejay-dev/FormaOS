@@ -59,11 +59,12 @@ export default async function FormSubmissionsPage({
   searchParams,
 }: {
   params: Promise<{ formId: string }>;
-  searchParams?: Promise<{ status?: string; page?: string }>;
+  searchParams?: Promise<{ status?: string; page?: string; view?: string }>;
 }) {
   const { formId } = await params;
   const search = (await searchParams) ?? {};
   const statusFilter = (search.status ?? '').trim();
+  const activeView = search.view === 'analytics' ? 'analytics' : 'submissions';
   const page = Math.max(1, parseInt(search.page ?? '1', 10));
   const limit = 25;
 
@@ -87,6 +88,14 @@ export default async function FormSubmissionsPage({
     redirect('/app/forms');
   }
 
+  const { data: analyticsRows } = await supabase
+    .from('org_form_submissions')
+    .select('status, data, created_at')
+    .eq('form_id', formId)
+    .eq('org_id', orgId)
+    .order('created_at', { ascending: false })
+    .limit(1000);
+
   // Load submissions
   let query = supabase
     .from('org_form_submissions')
@@ -103,19 +112,44 @@ export default async function FormSubmissionsPage({
   const { data: submissions, count } = await query;
   const totalPages = Math.ceil((count ?? 0) / limit);
 
-  const stats = {
-    total: count ?? 0,
-    submitted: submissions?.filter((s) => s.status === 'submitted').length ?? 0,
-    approved: submissions?.filter((s) => s.status === 'approved').length ?? 0,
-    rejected: submissions?.filter((s) => s.status === 'rejected').length ?? 0,
-  };
-
   const fields = (form.fields ?? []) as Array<{
     id: string;
     label: string;
     type: string;
   }>;
   const displayFields = fields.slice(0, 4);
+  const allRows = analyticsRows ?? [];
+  const stats = {
+    total: allRows.length,
+    submitted: allRows.filter((s) => s.status === 'submitted').length,
+    approved: allRows.filter((s) => s.status === 'approved').length,
+    rejected: allRows.filter((s) => s.status === 'rejected').length,
+  };
+  const fieldCompletion = fields.map((field) => {
+    const answered = allRows.filter((submission) => {
+      const data = (submission.data ?? {}) as Record<string, unknown>;
+      const value = data[field.id];
+      return Array.isArray(value)
+        ? value.length > 0
+        : value !== null && value !== undefined && String(value).trim() !== '';
+    }).length;
+    return {
+      ...field,
+      answered,
+      percentage:
+        allRows.length > 0 ? Math.round((answered / allRows.length) * 100) : 0,
+    };
+  });
+  const recentVolume = Array.from({ length: 7 }).map((_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (6 - index));
+    const key = date.toISOString().slice(0, 10);
+    const countForDay = allRows.filter((submission) =>
+      String(submission.created_at ?? '').startsWith(key),
+    ).length;
+    return { key, label: date.toLocaleDateString('en-AU', { weekday: 'short' }), count: countForDay };
+  });
+  const maxDaily = Math.max(1, ...recentVolume.map((day) => day.count));
 
   return (
     <div className="space-y-6">
@@ -145,14 +179,13 @@ export default async function FormSubmissionsPage({
             <Download className="h-4 w-4" />
             Export CSV
           </Link>
-          <button
-            type="button"
-            disabled
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-muted/40 text-muted-foreground text-sm"
+          <Link
+            href={`/app/forms/${formId}/submissions?view=${activeView === 'analytics' ? 'submissions' : 'analytics'}`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors text-sm"
           >
             <BarChart3 className="h-4 w-4" />
-            Analytics coming soon
-          </button>
+            {activeView === 'analytics' ? 'Submissions' : 'Analytics'}
+          </Link>
         </div>
       </div>
 
@@ -176,35 +209,122 @@ export default async function FormSubmissionsPage({
         </div>
       </div>
 
-      {/* Status Filters */}
-      <div className="flex gap-2">
-        {['', 'submitted', 'approved', 'rejected'].map((s) => (
-          <Link
-            key={s}
-            href={`/app/forms/${formId}/submissions${s ? `?status=${s}` : ''}`}
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-              statusFilter === s
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-card border border-border hover:bg-accent'
-            }`}
-          >
-            {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All'}
-          </Link>
-        ))}
-      </div>
+      {activeView === 'analytics' ? (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <section className="rounded-xl border border-border bg-card p-5">
+            <h2 className="flex items-center gap-2 text-sm font-semibold">
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+              Status Distribution
+            </h2>
+            <div className="mt-4 space-y-3">
+              {[
+                ['Submitted', stats.submitted, 'bg-amber-400'],
+                ['Approved', stats.approved, 'bg-green-400'],
+                ['Rejected', stats.rejected, 'bg-red-400'],
+              ].map(([label, value, color]) => {
+                const pct =
+                  stats.total > 0
+                    ? Math.round((Number(value) / stats.total) * 100)
+                    : 0;
+                return (
+                  <div key={String(label)}>
+                    <div className="mb-1 flex justify-between text-xs">
+                      <span>{label}</span>
+                      <span>{value} · {pct}%</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted">
+                      <div
+                        className={`h-2 rounded-full ${color}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
 
-      {/* Submissions Table */}
-      {!submissions || submissions.length === 0 ? (
-        <div className="text-center py-16 bg-card rounded-xl border border-border">
-          <Clock className="mx-auto h-12 w-12 text-muted-foreground/40" />
-          <h3 className="mt-4 text-lg font-semibold">No submissions yet</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Submissions will appear here once respondents fill out the form.
-          </p>
+          <section className="rounded-xl border border-border bg-card p-5">
+            <h2 className="flex items-center gap-2 text-sm font-semibold">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              Last 7 Days
+            </h2>
+            <div className="mt-4 flex h-32 items-end gap-2">
+              {recentVolume.map((day) => (
+                <div key={day.key} className="flex flex-1 flex-col items-center gap-2">
+                  <div
+                    className="w-full rounded-t bg-primary/70"
+                    style={{
+                      height: `${Math.max(6, (day.count / maxDaily) * 100)}%`,
+                    }}
+                    title={`${day.count} submissions`}
+                  />
+                  <span className="text-[10px] text-muted-foreground">
+                    {day.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-border bg-card p-5 lg:col-span-2">
+            <h2 className="text-sm font-semibold">Field Completion</h2>
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {fieldCompletion.map((field) => (
+                <div key={field.id} className="rounded-lg border border-border p-3">
+                  <div className="mb-1 flex justify-between gap-3 text-xs">
+                    <span className="font-medium">{field.label}</span>
+                    <span className="text-muted-foreground">
+                      {field.answered}/{stats.total}
+                    </span>
+                  </div>
+                  <div className="h-2 rounded-full bg-muted">
+                    <div
+                      className="h-2 rounded-full bg-primary"
+                      style={{ width: `${field.percentage}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+              {fieldCompletion.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No fields configured for this form.
+                </p>
+              ) : null}
+            </div>
+          </section>
         </div>
       ) : (
-        <div className="rounded-xl border border-border overflow-hidden">
-          <table className="w-full" data-testid="submissions-table">
+        <>
+          {/* Status Filters */}
+          <div className="flex gap-2">
+            {['', 'submitted', 'approved', 'rejected'].map((s) => (
+              <Link
+                key={s}
+                href={`/app/forms/${formId}/submissions${s ? `?status=${s}` : ''}`}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  statusFilter === s
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-card border border-border hover:bg-accent'
+                }`}
+              >
+                {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All'}
+              </Link>
+            ))}
+          </div>
+
+          {/* Submissions Table */}
+          {!submissions || submissions.length === 0 ? (
+            <div className="text-center py-16 bg-card rounded-xl border border-border">
+              <Clock className="mx-auto h-12 w-12 text-muted-foreground/40" />
+              <h3 className="mt-4 text-lg font-semibold">No submissions yet</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Submissions will appear here once respondents fill out the form.
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-xl border border-border overflow-hidden">
+              <table className="w-full" data-testid="submissions-table">
             <thead>
               <tr className="bg-muted/50 text-left text-sm text-muted-foreground">
                 <th className="px-4 py-3 font-medium">Respondent</th>
@@ -263,33 +383,35 @@ export default async function FormSubmissionsPage({
                 );
               })}
             </tbody>
-          </table>
-        </div>
-      )}
+              </table>
+            </div>
+          )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2">
-          {page > 1 && (
-            <Link
-              href={`/app/forms/${formId}/submissions?page=${page - 1}${statusFilter ? `&status=${statusFilter}` : ''}`}
-              className="px-3 py-2 rounded-lg border border-border hover:bg-accent text-sm"
-            >
-              Previous
-            </Link>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2">
+              {page > 1 && (
+                <Link
+                  href={`/app/forms/${formId}/submissions?page=${page - 1}${statusFilter ? `&status=${statusFilter}` : ''}`}
+                  className="px-3 py-2 rounded-lg border border-border hover:bg-accent text-sm"
+                >
+                  Previous
+                </Link>
+              )}
+              <span className="px-3 py-2 text-sm text-muted-foreground">
+                Page {page} of {totalPages}
+              </span>
+              {page < totalPages && (
+                <Link
+                  href={`/app/forms/${formId}/submissions?page=${page + 1}${statusFilter ? `&status=${statusFilter}` : ''}`}
+                  className="px-3 py-2 rounded-lg border border-border hover:bg-accent text-sm"
+                >
+                  Next
+                </Link>
+              )}
+            </div>
           )}
-          <span className="px-3 py-2 text-sm text-muted-foreground">
-            Page {page} of {totalPages}
-          </span>
-          {page < totalPages && (
-            <Link
-              href={`/app/forms/${formId}/submissions?page=${page + 1}${statusFilter ? `&status=${statusFilter}` : ''}`}
-              className="px-3 py-2 rounded-lg border border-border hover:bg-accent text-sm"
-            >
-              Next
-            </Link>
-          )}
-        </div>
+        </>
       )}
     </div>
   );

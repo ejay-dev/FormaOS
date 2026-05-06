@@ -11,8 +11,6 @@ import {
   Plus,
   Shield,
   AlertTriangle,
-  CheckCircle,
-  Clock,
   User,
   Calendar,
   Download,
@@ -171,6 +169,24 @@ export default async function StaffCompliancePage() {
         : null,
     }),
   );
+  const credentialIds = enrichedCredentials.map((credential) => credential.id);
+  const { data: evidenceRows } = credentialIds.length
+    ? await admin
+        .from('org_evidence')
+        .select('entity_id')
+        .eq('organization_id', organization.id)
+        .eq('entity_type', 'staff_credential')
+        .in('entity_id', credentialIds)
+    : { data: [] as { entity_id?: string | null }[] };
+  const evidenceCountByCredential = new Map<string, number>();
+  for (const row of evidenceRows ?? []) {
+    const entityId = row.entity_id as string | null | undefined;
+    if (!entityId) continue;
+    evidenceCountByCredential.set(
+      entityId,
+      (evidenceCountByCredential.get(entityId) ?? 0) + 1,
+    );
+  }
   const now = new Date();
   const stats = {
     total: enrichedCredentials.length,
@@ -283,6 +299,9 @@ export default async function StaffCompliancePage() {
                       Status
                     </th>
                     <th className="text-left px-4 py-3 text-sm font-medium">
+                      Evidence
+                    </th>
+                    <th className="text-left px-4 py-3 text-sm font-medium">
                       Actions
                     </th>
                   </tr>
@@ -292,6 +311,8 @@ export default async function StaffCompliancePage() {
                     const expiryStatus = getExpiryStatus(
                       credential.expiry_date,
                     );
+                    const evidenceCount =
+                      evidenceCountByCredential.get(credential.id) ?? 0;
                     return (
                       <tr
                         key={credential.id}
@@ -344,6 +365,17 @@ export default async function StaffCompliancePage() {
                           </span>
                         </td>
                         <td className="px-4 py-3">
+                          <span
+                            className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+                              evidenceCount > 0
+                                ? 'bg-emerald-500/10 text-emerald-600'
+                                : 'bg-amber-500/10 text-amber-600'
+                            }`}
+                          >
+                            {evidenceCount} file{evidenceCount === 1 ? '' : 's'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
                           <Link
                             href={`/app/staff-compliance/${credential.id}`}
                             className="text-sm text-primary hover:underline"
@@ -357,7 +389,7 @@ export default async function StaffCompliancePage() {
                   {enrichedCredentials.length === 0 && (
                     <tr>
                       <td
-                        colSpan={7}
+                        colSpan={8}
                         className="px-4 py-12 text-center text-muted-foreground"
                       >
                         <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />

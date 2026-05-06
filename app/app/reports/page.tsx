@@ -397,7 +397,7 @@ export default async function ReportsPage() {
         ) : null}
 
         {/* Industry-specific report templates */}
-        <IndustryReportTemplates />
+        <IndustryReportTemplates disableExports={disableExports} />
 
         {/* Export section — renders with known permission state */}
         <ExportSection disableExports={disableExports} />

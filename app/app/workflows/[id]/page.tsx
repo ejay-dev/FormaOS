@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
 
+import Link from 'next/link';
+import { LockKeyhole } from 'lucide-react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   getExecutionDetailForOrg,
@@ -30,6 +32,40 @@ export default async function WorkflowDetailPage({
 
   if (!membership?.organization_id) {
     notFound();
+  }
+
+  const { data: entitlement } = await supabase
+    .from('org_entitlements')
+    .select('enabled')
+    .eq('organization_id', membership.organization_id)
+    .eq('feature_key', 'workflow_automation')
+    .maybeSingle();
+
+  if (entitlement?.enabled !== true) {
+    return (
+      <div className="space-y-6 p-6">
+        <section className="rounded-[28px] border border-cyan-400/30 bg-cyan-500/10 p-6">
+          <div className="flex items-start gap-3">
+            <LockKeyhole className="mt-0.5 h-5 w-5 text-cyan-100" />
+            <div>
+              <h1 className="text-xl font-semibold text-foreground">
+                Workflow automation is not enabled
+              </h1>
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                Builder edits, manual runs, execution history, and workflow
+                settings require the workflow_automation entitlement.
+              </p>
+              <Link
+                href="/app/workflows"
+                className="mt-5 inline-flex rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-cyan-500/20"
+              >
+                Back to Workflows
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
   }
 
   const workflowId = (await params).id;

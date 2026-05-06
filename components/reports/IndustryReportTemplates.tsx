@@ -21,6 +21,7 @@ interface ReportTemplate {
   description: string;
   icon: LucideIcon;
   color: string;
+  reportType: 'soc2' | 'iso27001' | 'ndis' | 'hipaa' | 'trust';
 }
 
 const NDIS_REPORTS: ReportTemplate[] = [
@@ -31,6 +32,7 @@ const NDIS_REPORTS: ReportTemplate[] = [
       'Evidence mapping across all NDIS Practice Standards with gap identification',
     icon: ShieldCheck,
     color: 'from-pink-500/20 to-pink-500/5 border-pink-400/20',
+    reportType: 'ndis',
   },
   {
     id: 'ndis-worker-screening',
@@ -39,6 +41,7 @@ const NDIS_REPORTS: ReportTemplate[] = [
       'Staff clearance status, expiry tracking, and non-compliant worker summary',
     icon: Users,
     color: 'from-rose-500/20 to-rose-500/5 border-rose-400/20',
+    reportType: 'ndis',
   },
   {
     id: 'ndis-sirs',
@@ -47,6 +50,7 @@ const NDIS_REPORTS: ReportTemplate[] = [
       'Reportable incidents, notification timelines, and NDIS Commission compliance',
     icon: AlertTriangle,
     color: 'from-amber-500/20 to-amber-500/5 border-amber-400/20',
+    reportType: 'ndis',
   },
 ];
 
@@ -58,6 +62,7 @@ const HEALTHCARE_REPORTS: ReportTemplate[] = [
       'National Safety and Quality Health Service Standards compliance posture',
     icon: HeartPulse,
     color: 'from-sky-500/20 to-sky-500/5 border-sky-400/20',
+    reportType: 'hipaa',
   },
   {
     id: 'healthcare-practitioner',
@@ -66,6 +71,7 @@ const HEALTHCARE_REPORTS: ReportTemplate[] = [
       'AHPRA registration, CPD hours, and professional indemnity expiry tracker',
     icon: Users,
     color: 'from-teal-500/20 to-teal-500/5 border-teal-400/20',
+    reportType: 'hipaa',
   },
   {
     id: 'healthcare-clinical-incidents',
@@ -74,6 +80,7 @@ const HEALTHCARE_REPORTS: ReportTemplate[] = [
       'Open/closed incidents with severity breakdown and regulator notification status',
     icon: AlertTriangle,
     color: 'from-rose-500/20 to-rose-500/5 border-rose-400/20',
+    reportType: 'hipaa',
   },
 ];
 
@@ -85,6 +92,7 @@ const AGED_CARE_REPORTS: ReportTemplate[] = [
       'ACQS compliance status with evidence mapping and star rating indicators',
     icon: Home,
     color: 'from-violet-500/20 to-violet-500/5 border-violet-400/20',
+    reportType: 'ndis',
   },
   {
     id: 'aged-care-care-plans',
@@ -93,6 +101,7 @@ const AGED_CARE_REPORTS: ReportTemplate[] = [
       'Plan review timeliness, overdue reviews, and resident care coverage',
     icon: ClipboardList,
     color: 'from-emerald-500/20 to-emerald-500/5 border-emerald-400/20',
+    reportType: 'ndis',
   },
   {
     id: 'aged-care-star-rating',
@@ -101,6 +110,7 @@ const AGED_CARE_REPORTS: ReportTemplate[] = [
       'Estimated quality rating breakdown with improvement recommendations',
     icon: BarChart3,
     color: 'from-amber-500/20 to-amber-500/5 border-amber-400/20',
+    reportType: 'trust',
   },
 ];
 
@@ -112,6 +122,7 @@ const CHILDCARE_REPORTS: ReportTemplate[] = [
       'National Quality Framework compliance across all 7 quality areas',
     icon: Baby,
     color: 'from-fuchsia-500/20 to-fuchsia-500/5 border-fuchsia-400/20',
+    reportType: 'trust',
   },
   {
     id: 'childcare-educator',
@@ -120,6 +131,7 @@ const CHILDCARE_REPORTS: ReportTemplate[] = [
       'WWC checks, first aid, qualifications status, and renewal timeline',
     icon: Users,
     color: 'from-orange-500/20 to-orange-500/5 border-orange-400/20',
+    reportType: 'trust',
   },
   {
     id: 'childcare-safety',
@@ -128,6 +140,7 @@ const CHILDCARE_REPORTS: ReportTemplate[] = [
       'Incident log, mandatory reporting compliance, and safety audit history',
     icon: ShieldCheck,
     color: 'from-rose-500/20 to-rose-500/5 border-rose-400/20',
+    reportType: 'trust',
   },
 ];
 
@@ -139,6 +152,7 @@ const FINANCIAL_REPORTS: ReportTemplate[] = [
       'Open breaches, self-reported incidents, and ASIC/APRA notification log',
     icon: AlertTriangle,
     color: 'from-red-500/20 to-red-500/5 border-red-400/20',
+    reportType: 'trust',
   },
   {
     id: 'financial-board-report',
@@ -147,6 +161,7 @@ const FINANCIAL_REPORTS: ReportTemplate[] = [
       'Executive summary for board reporting with RAG status across obligations',
     icon: Landmark,
     color: 'from-indigo-500/20 to-indigo-500/5 border-indigo-400/20',
+    reportType: 'trust',
   },
   {
     id: 'financial-aml-kyc',
@@ -155,6 +170,7 @@ const FINANCIAL_REPORTS: ReportTemplate[] = [
       'Anti-money laundering program compliance and customer due diligence status',
     icon: ShieldCheck,
     color: 'from-sky-500/20 to-sky-500/5 border-sky-400/20',
+    reportType: 'soc2',
   },
 ];
 
@@ -165,6 +181,7 @@ const RAG_STATUS_REPORT: ReportTemplate = {
     'Comprehensive red/amber/green status across all obligations, controls, and frameworks',
   icon: BarChart3,
   color: 'from-cyan-500/20 to-cyan-500/5 border-cyan-400/20',
+  reportType: 'trust',
 };
 
 function getIndustryReports(industry: string | null): {
@@ -187,7 +204,11 @@ function getIndustryReports(industry: string | null): {
   }
 }
 
-export function IndustryReportTemplates() {
+export function IndustryReportTemplates({
+  disableExports = false,
+}: {
+  disableExports?: boolean;
+}) {
   const organization = useAppStore((state) => state.organization);
   const industry = organization?.industry ?? null;
   const { label, templates } = getIndustryReports(industry);
@@ -207,7 +228,9 @@ export function IndustryReportTemplates() {
             {templates.map((tmpl) => (
               <div
                 key={tmpl.id}
-                className={`rounded-2xl border bg-gradient-to-br p-5 ${tmpl.color}`}
+                className={`rounded-2xl border bg-gradient-to-br p-5 ${tmpl.color} ${
+                  disableExports ? 'opacity-60' : ''
+                }`}
               >
                 <div className="flex items-start gap-3">
                   <tmpl.icon className="mt-0.5 h-5 w-5 text-foreground/70 shrink-0" />
@@ -218,6 +241,22 @@ export function IndustryReportTemplates() {
                     <p className="mt-1.5 text-xs leading-relaxed text-foreground/70">
                       {tmpl.description}
                     </p>
+                    {disableExports ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="mt-3 text-xs font-semibold text-muted-foreground"
+                      >
+                        Requires export access
+                      </button>
+                    ) : (
+                      <a
+                        href={`/api/reports/export?type=${tmpl.reportType}&format=pdf&mode=sync`}
+                        className="mt-3 inline-flex text-xs font-semibold text-primary hover:underline"
+                      >
+                        Generate
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
@@ -235,7 +274,9 @@ export function IndustryReportTemplates() {
           </span>
         </div>
         <div
-          className={`rounded-2xl border bg-gradient-to-br p-5 max-w-md ${RAG_STATUS_REPORT.color}`}
+          className={`rounded-2xl border bg-gradient-to-br p-5 max-w-md ${RAG_STATUS_REPORT.color} ${
+            disableExports ? 'opacity-60' : ''
+          }`}
         >
           <div className="flex items-start gap-3">
             <RAG_STATUS_REPORT.icon className="mt-0.5 h-5 w-5 text-foreground/70 shrink-0" />
@@ -246,6 +287,22 @@ export function IndustryReportTemplates() {
               <p className="mt-1.5 text-xs leading-relaxed text-foreground/70">
                 {RAG_STATUS_REPORT.description}
               </p>
+              {disableExports ? (
+                <button
+                  type="button"
+                  disabled
+                  className="mt-3 text-xs font-semibold text-muted-foreground"
+                >
+                  Requires export access
+                </button>
+              ) : (
+                <a
+                  href={`/api/reports/export?type=${RAG_STATUS_REPORT.reportType}&format=pdf&mode=sync`}
+                  className="mt-3 inline-flex text-xs font-semibold text-primary hover:underline"
+                >
+                  Generate
+                </a>
+              )}
             </div>
           </div>
         </div>
