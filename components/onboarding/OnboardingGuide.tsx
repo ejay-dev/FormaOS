@@ -7,18 +7,42 @@ import { Compass, X } from 'lucide-react';
 
 import { useOnboarding } from '@/lib/onboarding/onboarding-context';
 
+const SESSION_DISMISS_KEY = 'formaos:onboarding-guide-dismissed';
+
+function getSessionDismissed() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.sessionStorage.getItem(SESSION_DISMISS_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function setSessionDismissed() {
+  try {
+    window.sessionStorage.setItem(SESSION_DISMISS_KEY, 'true');
+  } catch {
+    // Local state still hides the guide for this render tree if storage is unavailable.
+  }
+}
+
 /**
  * Client-side "guidance middleware": when the user opens a page that isn't
  * part of the current onboarding step's section, surface a non-blocking
- * notification nudging them back to the next step. Dismissal is scoped to
- * the current tab session (useState) so it re-appears on a fresh login.
+ * notification nudging them back to the next step. Dismissal is scoped to the
+ * current browser tab session so route remounts do not bring the guide back.
  */
 export function OnboardingGuide() {
   const pathname = usePathname();
   const { state, isActive } = useOnboarding();
-  const [dismissedForSession, setDismissedForSession] = useState(false);
+  const [dismissedForSession, setDismissedForSession] = useState(getSessionDismissed);
 
   const nextStep = state?.nextStep ?? null;
+
+  const dismissForSession = () => {
+    setDismissedForSession(true);
+    setSessionDismissed();
+  };
 
   const onTrack = useMemo(() => {
     if (!nextStep) return true;
@@ -61,7 +85,7 @@ export function OnboardingGuide() {
           </div>
           <button
             type="button"
-            onClick={() => setDismissedForSession(true)}
+            onClick={dismissForSession}
             className="rounded-md p-1 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="Dismiss guidance for this session"
             data-testid="onboarding-guide-dismiss"
@@ -74,13 +98,13 @@ export function OnboardingGuide() {
             href={nextStep.href}
             data-testid="onboarding-guide-cta"
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-            onClick={() => setDismissedForSession(true)}
+            onClick={dismissForSession}
           >
             Take me there
           </Link>
           <button
             type="button"
-            onClick={() => setDismissedForSession(true)}
+            onClick={dismissForSession}
             className="inline-flex items-center gap-1.5 rounded-md border border-edge-2 bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/40"
             data-testid="onboarding-guide-later"
           >

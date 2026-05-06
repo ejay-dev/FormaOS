@@ -81,9 +81,12 @@ test.describe('Self-serve checkout handshake', () => {
   }) => {
     // Enterprise is the only plan that is NOT self-serve — the cookie path must
     // not trigger even if a bad link tries ?plan=enterprise&intent=checkout.
-    const response = await page.goto('/auth/signup?plan=enterprise&intent=checkout', {
-      waitUntil: 'domcontentloaded',
-    });
+    const response = await page.goto(
+      '/auth/signup?plan=enterprise&intent=checkout',
+      {
+        waitUntil: 'domcontentloaded',
+      },
+    );
     expect(response?.status()).toBeLessThan(400);
 
     await page.waitForLoadState('networkidle');

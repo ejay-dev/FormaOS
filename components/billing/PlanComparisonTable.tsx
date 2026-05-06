@@ -53,19 +53,91 @@ const FEATURE_ROWS: {
     scale: 'Unlimited',
     enterprise: 'Unlimited',
   },
-  { label: 'Compliance Engine', basic: '✓', pro: '✓', scale: '✓', enterprise: '✓' },
-  { label: 'Tasks & Evidence', basic: '✓', pro: '✓', scale: '✓', enterprise: '✓' },
+  {
+    label: 'Compliance Engine',
+    basic: '✓',
+    pro: '✓',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'Tasks & Evidence',
+    basic: '✓',
+    pro: '✓',
+    scale: '✓',
+    enterprise: '✓',
+  },
   { label: 'Audit Logs', basic: '✓', pro: '✓', scale: '✓', enterprise: '✓' },
-  { label: 'Standard Reporting', basic: '✓', pro: '✓', scale: '✓', enterprise: '✓' },
-  { label: 'Advanced Reporting', basic: '—', pro: '✓', scale: '✓', enterprise: '✓' },
-  { label: 'Governance Controls', basic: '—', pro: '✓', scale: '✓', enterprise: '✓' },
-  { label: 'Operational Dashboards', basic: '—', pro: '✓', scale: '✓', enterprise: '✓' },
-  { label: 'Workflow Automation', basic: '—', pro: '✓', scale: '✓', enterprise: '✓' },
-  { label: 'Custom Frameworks', basic: '—', pro: '—', scale: '✓', enterprise: '✓' },
-  { label: 'Webhook Integrations', basic: '—', pro: '—', scale: '✓', enterprise: '✓' },
-  { label: 'Priority Support SLA', basic: '—', pro: '—', scale: '✓', enterprise: '✓' },
-  { label: 'White-glove Onboarding', basic: '—', pro: '—', scale: '—', enterprise: '✓' },
-  { label: 'Dedicated Support', basic: '—', pro: '—', scale: '—', enterprise: '✓' },
+  {
+    label: 'Standard Reporting',
+    basic: '✓',
+    pro: '✓',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'Advanced Reporting',
+    basic: '—',
+    pro: '✓',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'Governance Controls',
+    basic: '—',
+    pro: '✓',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'Operational Dashboards',
+    basic: '—',
+    pro: '✓',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'Workflow Automation',
+    basic: '—',
+    pro: '✓',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'Custom Frameworks',
+    basic: '—',
+    pro: '—',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'Webhook Integrations',
+    basic: '—',
+    pro: '—',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'Priority Support SLA',
+    basic: '—',
+    pro: '—',
+    scale: '✓',
+    enterprise: '✓',
+  },
+  {
+    label: 'White-glove Onboarding',
+    basic: '—',
+    pro: '—',
+    scale: '—',
+    enterprise: '✓',
+  },
+  {
+    label: 'Dedicated Support',
+    basic: '—',
+    pro: '—',
+    scale: '—',
+    enterprise: '✓',
+  },
   { label: 'SSO & SAML', basic: '—', pro: '—', scale: '—', enterprise: '✓' },
 ];
 
@@ -203,9 +275,7 @@ export function PlanComparisonTable() {
                       <span className="text-3xl font-bold">
                         ${catalog.priceMonthly.toLocaleString()}
                       </span>
-                      <span className="text-sm text-muted-foreground">
-                        /mo
-                      </span>
+                      <span className="text-sm text-muted-foreground">/mo</span>
                     </>
                   )}
                 </div>

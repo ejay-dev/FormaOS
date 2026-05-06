@@ -120,17 +120,13 @@ test.describe('Healthcare & NDIS positioning', () => {
     await expect(hit).toBeVisible({ timeout: 20_000 });
   });
 
-  // Only one Industries card is expanded at a time (accordion). NDIS is
-  // collapsed by default, so its tagline is not mounted — we assert the
-  // always-visible title + subtitle below instead.
-
   test('Home Industries strip surfaces NDIS Practice Standards subtitle', async ({
     page,
   }) => {
     await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await revealHomeSections(page);
     const hit = page
-      .getByText(/NDIS Practice Standards · Quality & Safeguards Commission/i)
+      .getByText(/NDIS Practice Standards 1-8 controls pre-configured/i)
       .first();
     await expect(hit).toBeVisible({ timeout: 20_000 });
   });

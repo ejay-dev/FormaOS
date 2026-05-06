@@ -237,8 +237,10 @@ test.describe('Onboarding hardening — concurrency, idempotency, boundaries', (
 
     // Chain must resolve in a small bounded number of hops.
     expect(visited.length).toBeLessThanOrEqual(5);
-    // Final document must NOT be the wizard.
-    expect(visited[visited.length - 1]?.url).not.toMatch(/\/onboarding/);
+    // Final browser document must NOT be the wizard. RSC/client redirects can
+    // leave the original onboarding response as the final navigation response,
+    // so the authoritative signal is the page's settled URL.
+    expect(page.url()).not.toMatch(/\/onboarding/);
   });
 
   // ---------------------------------------------------------------------------
