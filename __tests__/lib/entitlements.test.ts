@@ -53,7 +53,7 @@ describe('syncEntitlementsForPlan', () => {
           organization_id: TEST_ORG_ID,
           feature_key: 'team_limit',
           enabled: true,
-          limit_value: 15,
+          limit_value: 10,
         },
       ]),
     );
@@ -105,7 +105,7 @@ describe('syncEntitlementsForPlan', () => {
           organization_id: TEST_ORG_ID,
           feature_key: 'team_limit',
           enabled: true,
-          limit_value: 75,
+          limit_value: 25,
         },
         {
           organization_id: TEST_ORG_ID,

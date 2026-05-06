@@ -21,11 +21,13 @@ test.describe('Infrastructure pricing and proof pages', () => {
       page.getByRole('heading', { name: 'Foundation' }),
     ).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Growth' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Scale' })).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Enterprise' }),
     ).toBeVisible();
     await expect(page.getByText('$297')).toBeVisible();
-    await expect(page.getByText('From $1,800')).toBeVisible();
+    await expect(page.getByText('$797')).toBeVisible();
+    await expect(page.getByText('$1,800')).toBeVisible();
     await expect(
       page.getByText('Custom', { exact: true }).first(),
     ).toBeVisible();

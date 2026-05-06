@@ -9,7 +9,8 @@
 
 const DEFAULTS = {
   basic: 'price_1TOdz1AHrAKKo3OlfYxjk9WL',
-  pro: 'price_1TOe05AHrAKKo3OliCrZNnkx',
+  pro: 'price_1TU6oqAHrAKKo3OlWUhJa2ZX',
+  scale: 'price_1TU6rzAHrAKKo3Ol32xT6JW2',
   enterprise: 'price_1T9cPKAHrAKKo3OliQN78Q83',
 };
 
@@ -86,6 +87,7 @@ describe('resolvePlanKeyFromPriceId', () => {
   beforeEach(() => {
     delete process.env.STRIPE_PRICE_FOUNDATION;
     delete process.env.STRIPE_PRICE_GROWTH;
+    delete process.env.STRIPE_PRICE_SCALE;
     delete process.env.STRIPE_PRICE_BASIC;
     delete process.env.STRIPE_PRICE_PRO;
     delete process.env.STRIPE_PRICE_ENTERPRISE;
@@ -96,6 +98,7 @@ describe('resolvePlanKeyFromPriceId', () => {
 
     expect(resolvePlanKeyFromPriceId(DEFAULTS.basic)).toBe('basic');
     expect(resolvePlanKeyFromPriceId(DEFAULTS.pro)).toBe('pro');
+    expect(resolvePlanKeyFromPriceId(DEFAULTS.scale)).toBe('scale');
     expect(resolvePlanKeyFromPriceId(DEFAULTS.enterprise)).toBe('enterprise');
   });
 

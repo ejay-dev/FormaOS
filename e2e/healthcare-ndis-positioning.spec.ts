@@ -126,7 +126,7 @@ test.describe('Healthcare & NDIS positioning', () => {
     await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await revealHomeSections(page);
     const hit = page
-      .getByText(/NDIS Practice Standards 1-8 controls pre-configured/i)
+      .getByText(/NDIS Practice Standards .* Quality & Safeguards Commission/i)
       .first();
     await expect(hit).toBeVisible({ timeout: 20_000 });
   });

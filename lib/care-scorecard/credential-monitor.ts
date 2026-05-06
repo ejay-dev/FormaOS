@@ -29,16 +29,16 @@ export async function getExpiringCredentials(
       id,
       user_id,
       credential_type,
-      name,
+      credential_name,
       credential_number,
-      expires_at,
+      expiry_date,
       status,
       document_url
     `)
     .eq('organization_id', orgId)
-    .gte('expires_at', now.toISOString())
-    .lte('expires_at', futureDate.toISOString())
-    .order('expires_at', { ascending: true });
+    .gte('expiry_date', now.toISOString().slice(0, 10))
+    .lte('expiry_date', futureDate.toISOString().slice(0, 10))
+    .order('expiry_date', { ascending: true });
 
   if (options?.credentialTypes?.length) {
     query = query.in('credential_type', options.credentialTypes);
@@ -73,9 +73,9 @@ export async function getExpiringCredentials(
     }) || []
   );
 
-  return (credentials || []).map((cred: { id: string; user_id: string; credential_type?: string; name?: string; credential_number?: string; expires_at: string; status?: string; document_url?: string }) => {
+  return (credentials || []).map((cred: { id: string; user_id: string; credential_type?: string; credential_name?: string; credential_number?: string; expiry_date: string; status?: string; document_url?: string }) => {
     const user = userMap.get(cred.user_id);
-    const expiryDate = new Date(cred.expires_at);
+    const expiryDate = new Date(cred.expiry_date);
     const daysUntilExpiry = Math.ceil(
       (expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -86,9 +86,9 @@ export async function getExpiringCredentials(
       staffName: user?.name || 'Unknown',
       staffEmail: user?.email || '',
       type: (cred.credential_type as CredentialType) || 'other',
-      name: cred.name || cred.credential_type || 'Unknown',
+      name: cred.credential_name || cred.credential_type || 'Unknown',
       credentialNumber: cred.credential_number ?? undefined,
-      expiryDate: cred.expires_at,
+      expiryDate: cred.expiry_date,
       daysUntilExpiry,
       status: daysUntilExpiry <= 30 ? 'expiring_soon' : 'verified',
       documentUrl: cred.document_url ?? undefined,
@@ -112,15 +112,15 @@ export async function getExpiredCredentials(
       id,
       user_id,
       credential_type,
-      name,
+      credential_name,
       credential_number,
-      expires_at,
+      expiry_date,
       status,
       document_url
     `)
     .eq('organization_id', orgId)
-    .lt('expires_at', now.toISOString())
-    .order('expires_at', { ascending: false })
+    .lt('expiry_date', now.toISOString().slice(0, 10))
+    .order('expiry_date', { ascending: false })
     .limit(limit);
 
   // Get user details
@@ -141,9 +141,9 @@ export async function getExpiredCredentials(
     }) || []
   );
 
-  return (credentials || []).map((cred: { id: string; user_id: string; credential_type?: string; name?: string; credential_number?: string; expires_at: string; status?: string; document_url?: string }) => {
+  return (credentials || []).map((cred: { id: string; user_id: string; credential_type?: string; credential_name?: string; credential_number?: string; expiry_date: string; status?: string; document_url?: string }) => {
     const user = userMap.get(cred.user_id);
-    const expiryDate = new Date(cred.expires_at);
+    const expiryDate = new Date(cred.expiry_date);
     const daysExpired = Math.abs(
       Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
     );
@@ -154,9 +154,9 @@ export async function getExpiredCredentials(
       staffName: user?.name || 'Unknown',
       staffEmail: user?.email || '',
       type: (cred.credential_type as CredentialType) || 'other',
-      name: cred.name || cred.credential_type || 'Unknown',
+      name: cred.credential_name || cred.credential_type || 'Unknown',
       credentialNumber: cred.credential_number ?? undefined,
-      expiryDate: cred.expires_at,
+      expiryDate: cred.expiry_date,
       daysUntilExpiry: -daysExpired,
       status: 'expired',
       documentUrl: cred.document_url ?? undefined,
@@ -241,7 +241,7 @@ export async function getCredentialSummaryByType(
 
   const { data: credentials } = await admin
     .from('org_staff_credentials')
-    .select('credential_type, status, expires_at')
+    .select('credential_type, status, expiry_date')
     .eq('organization_id', orgId);
 
   const typeLabels: Record<CredentialType, string> = {
@@ -278,7 +278,7 @@ export async function getCredentialSummaryByType(
 
     summary[type].total++;
 
-    const expiryDate = cred.expires_at ? new Date(cred.expires_at) : null;
+    const expiryDate = cred.expiry_date ? new Date(cred.expiry_date) : null;
 
     if (cred.status === 'verified') {
       summary[type].verified++;

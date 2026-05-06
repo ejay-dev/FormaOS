@@ -114,7 +114,7 @@ describe('syncEntitlementsForPlan', () => {
         expect.objectContaining({
           feature_key: 'team_limit',
           enabled: true,
-          limit_value: 15,
+          limit_value: 10,
         }),
       ]),
     );
@@ -139,9 +139,9 @@ describe('syncEntitlementsForPlan', () => {
       ]),
     );
 
-    // Team limit is 75
+    // Team limit is 25
     const teamLimit = records.find((r) => r.feature_key === 'team_limit');
-    expect(teamLimit?.limit_value).toBe(75);
+    expect(teamLimit?.limit_value).toBe(25);
   });
 
   it('upserts unlimited team_limit (null) for enterprise', async () => {

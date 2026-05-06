@@ -28,7 +28,7 @@ describe('SUBSCRIPTION_PLANS Stripe price IDs', () => {
     expect(plans.starter.stripePriceId).toBe(
       'price_1TOdz1AHrAKKo3OlfYxjk9WL',
     );
-    expect(plans.pro.stripePriceId).toBe('price_1TOe05AHrAKKo3OliCrZNnkx');
+    expect(plans.pro.stripePriceId).toBe('price_1TU6oqAHrAKKo3OlWUhJa2ZX');
   });
 
   it('uses preferred Foundation and Growth env aliases', () => {
@@ -58,6 +58,6 @@ describe('SUBSCRIPTION_PLANS Stripe price IDs', () => {
     expect(plans.starter.stripePriceId).toBe(
       'price_1TOdz1AHrAKKo3OlfYxjk9WL',
     );
-    expect(plans.pro.stripePriceId).toBe('price_1TOe05AHrAKKo3OliCrZNnkx');
+    expect(plans.pro.stripePriceId).toBe('price_1TU6oqAHrAKKo3OlWUhJa2ZX');
   });
 });

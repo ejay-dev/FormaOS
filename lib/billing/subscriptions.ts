@@ -95,34 +95,44 @@ export async function ensureSubscription(
     plan_code: toLegacyPlanCode(resolvedPlan), // Legacy column (starter vs basic)
   };
 
-  const { error: legacyError } = await admin
-    .from('org_subscriptions')
-    .upsert(legacyPayload);
+  const payloadAttempts = [
+    { label: 'legacy_full', payload: legacyPayload },
+    { label: 'legacy_org_id', payload: { ...basePayload, org_id: orgId } },
+    {
+      label: 'legacy_plan_code',
+      payload: { ...basePayload, plan_code: toLegacyPlanCode(resolvedPlan) },
+    },
+    { label: 'base', payload: basePayload },
+  ];
 
-  if (legacyError) {
-    const message = legacyError.message?.toLowerCase() ?? '';
-    const legacySchemaIssue =
-      message.includes('column "org_id" does not exist') ||
-      message.includes('column "plan_code" does not exist') ||
-      message.includes('foreign key constraint') ||
-      message.includes('plan_code_fkey');
+  let upserted = false;
+  const upsertErrors: Array<{ label: string; message: string }> = [];
 
-    if (legacySchemaIssue) {
-      const { error: fallbackError } = await admin
-        .from('org_subscriptions')
-        .upsert(basePayload);
-      if (fallbackError) {
-        billingLogger.error('subscription_upsert_failed', {
-          code: 'FALLBACK_UPSERT_ERROR',
-          message: fallbackError.message,
-        }, { orgId });
-      }
-    } else {
-      billingLogger.error('subscription_upsert_failed', {
-        code: 'UPSERT_ERROR',
-        message: legacyError.message ?? 'Unknown error',
-      }, { orgId });
+  for (const attempt of payloadAttempts) {
+    const { error } = await admin
+      .from('org_subscriptions')
+      .upsert(attempt.payload, { onConflict: 'organization_id' });
+
+    if (!error) {
+      upserted = true;
+      break;
     }
+
+    upsertErrors.push({
+      label: attempt.label,
+      message: error.message ?? 'Unknown error',
+    });
+  }
+
+  if (!upserted) {
+    billingLogger.error(
+      'subscription_upsert_failed',
+      {
+        code: 'UPSERT_ERROR',
+        attempts: upsertErrors,
+      },
+      { orgId },
+    );
   }
 
   // Sync entitlements for all plans.
