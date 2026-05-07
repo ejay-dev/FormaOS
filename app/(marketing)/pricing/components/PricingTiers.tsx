@@ -1,7 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle2,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { PUBLIC_PRICING_TIERS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
@@ -11,11 +17,9 @@ import { TopographicPattern } from '@/components/marketing/SectionBackgrounds';
 import { duration } from '@/config/motion';
 
 const BADGE_TONES = {
-  popular:
-    'border-emerald-300/40 bg-emerald-300/[0.14] text-emerald-100',
+  popular: 'border-emerald-300/40 bg-emerald-300/[0.14] text-emerald-100',
   value: 'border-cyan-300/40 bg-cyan-300/[0.14] text-cyan-100',
-  enterprise:
-    'border-violet-300/40 bg-violet-300/[0.14] text-violet-100',
+  enterprise: 'border-violet-300/40 bg-violet-300/[0.14] text-violet-100',
 } as const;
 
 export function PricingTiers() {
@@ -32,14 +36,26 @@ export function PricingTiers() {
         <TopographicPattern color="rgba(16,185,129,0.035)" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.14),transparent_40%)]" />
         <motion.div
-          animate={shouldReduceMotion ? undefined : { scale: [1, 1.15, 1], opacity: [0.08, 0.18, 0.08] }}
-          transition={shouldReduceMotion ? undefined : { duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : { scale: [1, 1.15, 1], opacity: [0.08, 0.18, 0.08] }
+          }
+          transition={
+            shouldReduceMotion
+              ? undefined
+              : { duration: 14, repeat: Infinity, ease: 'easeInOut' }
+          }
           className="absolute top-1/3 left-1/2 -translate-x-1/2 h-1/3 w-1/3 rounded-full bg-gradient-to-br from-emerald-500/15 to-cyan-500/10 blur-3xl"
         />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.35]} className="mx-auto max-w-3xl text-center mb-12">
+        <ScrollReveal
+          variant="slideUp"
+          range={[0, 0.35]}
+          className="mx-auto max-w-3xl text-center mb-12"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/20 text-emerald-400 text-sm font-medium mb-6">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
             Infrastructure pricing
@@ -58,7 +74,11 @@ export function PricingTiers() {
           </p>
         </ScrollReveal>
 
-        <SectionChoreography pattern="cascade" stagger={0.06} className="grid items-stretch gap-5 lg:grid-cols-4">
+        <SectionChoreography
+          pattern="cascade"
+          stagger={0.06}
+          className="grid items-stretch gap-5 lg:grid-cols-4"
+        >
           {PUBLIC_PRICING_TIERS.map((tier) => {
             const tone = tier.badgeTone ?? 'value';
             const badgeClass = BADGE_TONES[tone];
@@ -66,7 +86,9 @@ export function PricingTiers() {
             return (
               <motion.article
                 key={tier.id}
-                whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
+                whileHover={
+                  shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }
+                }
                 transition={{ duration: duration.fast }}
                 className={`relative flex min-h-full flex-col rounded-[2rem] border p-6 shadow-2xl cursor-default ${
                   tier.featured
@@ -160,7 +182,11 @@ export function PricingTiers() {
           })}
         </SectionChoreography>
 
-        <ScrollReveal variant="fadeUp" range={[0, 0.4]} className="mt-10 text-center">
+        <ScrollReveal
+          variant="fadeUp"
+          range={[0, 0.4]}
+          className="mt-10 text-center"
+        >
           <p className="text-xs uppercase tracking-[0.22em] text-slate-500">
             Prices in AUD · GST inclusive · Stripe-secured payments
           </p>

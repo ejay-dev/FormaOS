@@ -1,6 +1,11 @@
 'use client';
 
-import { CheckCircle2, ClipboardCheck, Settings2, ShieldCheck } from 'lucide-react';
+import {
+  CheckCircle2,
+  ClipboardCheck,
+  Settings2,
+  ShieldCheck,
+} from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { TrustBar } from '@/components/TrustBar';
 import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
@@ -73,7 +78,10 @@ function CostOfNonCompliance() {
                 <div className="px-5 py-4 text-emerald-200">With FormaOS</div>
               </div>
               {MANUAL_COMPLIANCE_COST_ANCHORS.map((item) => (
-                <div key={item.label} className="grid grid-cols-[1fr_1fr] border-b border-white/[0.06] last:border-b-0">
+                <div
+                  key={item.label}
+                  className="grid grid-cols-[1fr_1fr] border-b border-white/[0.06] last:border-b-0"
+                >
                   <div className="px-5 py-5">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       {item.label}
@@ -84,7 +92,9 @@ function CostOfNonCompliance() {
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       System enforced
                     </p>
-                    <p className="mt-2 text-sm text-emerald-200">{item.formaos}</p>
+                    <p className="mt-2 text-sm text-emerald-200">
+                      {item.formaos}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -105,15 +115,27 @@ function HowPricingWorks() {
       <div className="absolute inset-0 bg-gradient-to-b from-[#07111f] via-[#0d1424] to-[#07111f]">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(6,182,212,0.08),transparent_40%)]" />
         <motion.div
-          animate={shouldReduceMotion ? undefined : { scale: [1, 1.2, 1], opacity: [0.06, 0.14, 0.06] }}
-          transition={shouldReduceMotion ? undefined : { duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          animate={
+            shouldReduceMotion
+              ? undefined
+              : { scale: [1, 1.2, 1], opacity: [0.06, 0.14, 0.06] }
+          }
+          transition={
+            shouldReduceMotion
+              ? undefined
+              : { duration: 12, repeat: Infinity, ease: 'easeInOut' }
+          }
           className="absolute bottom-1/4 right-1/4 h-1/3 w-1/3 rounded-full bg-gradient-to-br from-cyan-500/10 to-transparent blur-3xl"
         />
       </div>
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.35]} className="mx-auto max-w-3xl text-center mb-12">
+        <ScrollReveal
+          variant="slideUp"
+          range={[0, 0.35]}
+          className="mx-auto max-w-3xl text-center mb-12"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-cyan-400 text-sm font-medium mb-6">
             <span className="w-2 h-2 rounded-full bg-cyan-400" />
             How Pricing Works
@@ -131,7 +153,11 @@ function HowPricingWorks() {
           </p>
         </ScrollReveal>
 
-        <SectionChoreography pattern="cascade" stagger={0.07} className="grid gap-4 md:grid-cols-3 mb-8">
+        <SectionChoreography
+          pattern="cascade"
+          stagger={0.07}
+          className="grid gap-4 md:grid-cols-3 mb-8"
+        >
           {pricingSteps.map((step, index) => (
             <motion.article
               key={step.title}
@@ -140,20 +166,30 @@ function HowPricingWorks() {
               className="rounded-3xl border border-white/[0.08] backdrop-blur-sm bg-white/[0.04] p-6 hover:border-white/[0.14] transition-colors duration-300"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08]">
-                <step.icon className="h-5 w-5 text-cyan-200" aria-hidden="true" />
+                <step.icon
+                  className="h-5 w-5 text-cyan-200"
+                  aria-hidden="true"
+                />
               </div>
               <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Step {index + 1}
               </p>
-              <h3 className="mt-2 text-lg font-semibold text-white">{step.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-slate-400">{step.body}</p>
+              <h3 className="mt-2 text-lg font-semibold text-white">
+                {step.title}
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-slate-400">
+                {step.body}
+              </p>
             </motion.article>
           ))}
         </SectionChoreography>
 
         <ScrollReveal variant="fadeUp" range={[0.1, 0.5]}>
           <div className="mx-auto flex max-w-3xl items-start gap-3 rounded-3xl border border-emerald-300/15 bg-emerald-300/[0.06] p-5 text-sm leading-6 text-slate-300">
-            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" aria-hidden="true" />
+            <CheckCircle2
+              className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300"
+              aria-hidden="true"
+            />
             Pricing scales based on your compliance scope and organisational
             complexity — not arbitrary feature gates.
           </div>

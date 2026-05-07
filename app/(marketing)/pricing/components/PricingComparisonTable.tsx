@@ -366,18 +366,12 @@ const COLUMNS = [
 function renderCell(value: Cell) {
   if (value === '✓') {
     return (
-      <Check
-        className="mx-auto h-4 w-4 text-emerald-300"
-        aria-hidden="true"
-      />
+      <Check className="mx-auto h-4 w-4 text-emerald-300" aria-hidden="true" />
     );
   }
   if (value === '—') {
     return (
-      <Minus
-        className="mx-auto h-4 w-4 text-slate-600"
-        aria-hidden="true"
-      />
+      <Minus className="mx-auto h-4 w-4 text-slate-600" aria-hidden="true" />
     );
   }
   return <span className="text-sm text-slate-200">{value}</span>;
@@ -393,7 +387,11 @@ export function PricingComparisonTable() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.35]} className="mx-auto max-w-3xl text-center mb-12">
+        <ScrollReveal
+          variant="slideUp"
+          range={[0, 0.35]}
+          className="mx-auto max-w-3xl text-center mb-12"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-cyan-400 text-sm font-medium mb-6">
             <span className="w-2 h-2 rounded-full bg-cyan-400" />
             Plan comparison
@@ -440,10 +438,7 @@ export function PricingComparisonTable() {
             <tbody>
               {GROUPS.map((group) => (
                 <>
-                  <tr
-                    key={`group-${group.title}`}
-                    className="bg-white/[0.04]"
-                  >
+                  <tr key={`group-${group.title}`} className="bg-white/[0.04]">
                     <td
                       colSpan={5}
                       className="px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200"
@@ -469,10 +464,7 @@ export function PricingComparisonTable() {
                         ) : null}
                       </td>
                       {COLUMNS.map((col) => (
-                        <td
-                          key={col.key}
-                          className="px-6 py-3.5 text-center"
-                        >
+                        <td key={col.key} className="px-6 py-3.5 text-center">
                           {renderCell(row[col.key])}
                         </td>
                       ))}

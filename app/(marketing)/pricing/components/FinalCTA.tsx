@@ -23,8 +23,7 @@ export function FinalCTA() {
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Stop relying on people to{' '}
-                  <span className="text-slate-500">remember</span>{' '}
-                  compliance.
+                  <span className="text-slate-500">remember</span> compliance.
                   <br />
                   <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
                     Let the system enforce it.
@@ -51,7 +50,8 @@ export function FinalCTA() {
                         section: 'final_cta',
                         location: 'final_primary',
                         ctaLabel: 'Get Your Compliance Plan',
-                        ctaHref: '/contact?type=compliance-plan&source=pricing_final',
+                        ctaHref:
+                          '/contact?type=compliance-plan&source=pricing_final',
                         variant: 'final',
                       })
                     }
@@ -82,15 +82,24 @@ export function FinalCTA() {
               <ScrollReveal variant="perspectiveUp" range={[0.1, 0.42]}>
                 <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-slate-500">
                   <span className="flex items-center gap-2 rounded-full px-3 py-1.5 bg-white/[0.04] border border-white/[0.08]">
-                    <CheckCircle className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+                    <CheckCircle
+                      className="w-4 h-4 text-emerald-400"
+                      aria-hidden="true"
+                    />
                     Assessment-led scoping
                   </span>
                   <span className="flex items-center gap-2 rounded-full px-3 py-1.5 bg-white/[0.04] border border-white/[0.08]">
-                    <CheckCircle className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+                    <CheckCircle
+                      className="w-4 h-4 text-emerald-400"
+                      aria-hidden="true"
+                    />
                     No arbitrary feature gates
                   </span>
                   <span className="flex items-center gap-2 rounded-full px-3 py-1.5 bg-white/[0.04] border border-white/[0.08]">
-                    <CheckCircle className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+                    <CheckCircle
+                      className="w-4 h-4 text-emerald-400"
+                      aria-hidden="true"
+                    />
                     Full platform access
                   </span>
                 </div>
