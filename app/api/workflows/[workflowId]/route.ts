@@ -13,6 +13,7 @@ import {
   updateWorkflow,
   deleteWorkflow,
 } from '@/lib/automation/workflow-store';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 async function getAuthContext() {
   const supabase = await createSupabaseServerClient();
@@ -65,6 +66,9 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ workflowId: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const ctx = await getAuthContext();
   if (!ctx) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -103,6 +107,9 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ workflowId: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(_request);
+  if (csrfError) return csrfError;
+
   const rl = await rateLimitApi(_request);
   if (!rl.success) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });

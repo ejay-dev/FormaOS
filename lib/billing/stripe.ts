@@ -7,10 +7,10 @@ let stripeClient: Stripe | null = null;
 // Dev/test fallbacks. In production we fail closed (return null) when env is
 // missing rather than charging against an unverified price ID.
 const DEV_FALLBACK_PRICE_IDS: Record<PlanKey, string> = {
-  basic: 'price_1TOdz1AHrAKKo3OlfYxjk9WL',
-  pro: 'price_1TU6oqAHrAKKo3OlWUhJa2ZX',
-  scale: 'price_1TU6rzAHrAKKo3Ol32xT6JW2',
-  enterprise: 'price_1T9cPKAHrAKKo3OliQN78Q83',
+  basic: 'price_test_basic_placeholder',
+  pro: 'price_test_pro_placeholder',
+  scale: 'price_test_scale_placeholder',
+  enterprise: 'price_test_enterprise_placeholder',
 };
 
 function configuredPriceIds(): Record<PlanKey, string | null> {

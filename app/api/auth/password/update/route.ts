@@ -5,7 +5,6 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   isPasswordReused,
   recordPasswordHistory,
-
 } from '@/lib/security/password-history';
 
 const log = routeLog('/api/auth/password/update');
@@ -13,13 +12,16 @@ import {
   logSecurityEvent,
   SecurityEventTypes,
 } from '@/lib/security/session-security';
-import {
-  rateLimitAuth,
-} from '@/lib/security/rate-limiter';
+import { rateLimitAuth } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
+  // CSRF protection for authenticated password changes
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   // Rate limiting: Prevent brute force password update attempts
   const { allowed, headers, error } = await rateLimitAuth(request);
   if (!allowed) {
@@ -100,7 +102,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    log.error({ err: error }, "[auth/password/update] Error:");
+    log.error({ err: error }, '[auth/password/update] Error:');
     return NextResponse.json(
       { ok: false, error: 'password_update_failed' },
       { status: 500 },

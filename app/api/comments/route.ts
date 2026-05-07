@@ -3,14 +3,22 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { createComment, getComments } from '@/lib/comments';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/comments');
 
-const VALID_ENTITIES = new Set(['task', 'certificate', 'evidence', 'organization']);
+const VALID_ENTITIES = new Set([
+  'task',
+  'certificate',
+  'evidence',
+  'organization',
+]);
 
 async function requireUserAndOrg() {
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return { error: 'Unauthorized', status: 401 as const };
 
   const { data: membership } = await supabase
@@ -28,7 +36,10 @@ export async function GET(request: Request) {
   try {
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const ctx = await requireUserAndOrg();
@@ -57,9 +68,15 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const ctx = await requireUserAndOrg();
@@ -84,7 +101,11 @@ export async function POST(request: Request) {
     }
 
     const comment = await createComment(ctx.orgId, ctx.user.id, {
-      entityType: body.entityType as 'task' | 'certificate' | 'evidence' | 'organization',
+      entityType: body.entityType as
+        | 'task'
+        | 'certificate'
+        | 'evidence'
+        | 'organization',
       entityId: body.entityId,
       content: body.content,
       parentId: body.parentId,
@@ -92,6 +113,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ comment });
   } catch (err) {
     log.error({ err }, 'failed to create comment');
-    return NextResponse.json({ error: 'Failed to create comment' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create comment' },
+      { status: 500 },
+    );
   }
 }

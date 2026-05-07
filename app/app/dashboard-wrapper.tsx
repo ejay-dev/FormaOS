@@ -18,6 +18,8 @@ interface DashboardWrapperProps {
   teamMemberCount?: number;
   expiringCertsCount?: number;
   firstSession?: FirstSessionState | null;
+  tasksAssigned?: number;
+  tasksPending?: number;
 }
 
 /**
@@ -33,6 +35,8 @@ export function DashboardWrapper({
   teamMemberCount = 0,
   expiringCertsCount = 0,
   firstSession = null,
+  tasksAssigned = 0,
+  tasksPending = 0,
 }: DashboardWrapperProps) {
   const isEmployer = isEmployerRole(userRole);
   const showStartHere = Boolean(firstSession?.isFirstSession);
@@ -84,6 +88,8 @@ export function DashboardWrapper({
         organizationName={orgName}
         userRole={userRole}
         industry={industry}
+        tasksAssigned={tasksAssigned}
+        tasksPending={tasksPending}
       />
     </UnifiedDashboardLayout>
   );

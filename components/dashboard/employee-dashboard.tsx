@@ -109,7 +109,9 @@ export function MyComplianceStatus({
           {nextAuditDate && (
             <p className="text-sm text-muted-foreground">
               Next audit:{' '}
-              <span className="font-semibold text-foreground">{nextAuditDate}</span>
+              <span className="font-semibold text-foreground">
+                {nextAuditDate}
+              </span>
             </p>
           )}
         </div>
@@ -605,8 +607,8 @@ export function EmployeeDashboard({
   industry,
   complianceScore = 0,
   nextAuditDate = '',
-  tasksAssigned = 6,
-  tasksPending = 3,
+  tasksAssigned = 0,
+  tasksPending = 0,
 }: EmployeeDashboardProps) {
   const aiSuggestions = [
     {

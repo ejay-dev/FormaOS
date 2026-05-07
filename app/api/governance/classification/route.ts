@@ -6,6 +6,7 @@ import {
   generateClassificationReport,
   upsertClassifications,
 } from '@/lib/data-governance/classification';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -28,6 +29,9 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rl = await rateLimitApi(request);
     if (!rl.success) {
       return NextResponse.json(

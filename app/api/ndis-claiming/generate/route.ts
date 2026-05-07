@@ -3,11 +3,16 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { generateLineItems } from '@/lib/care/ndis-claiming';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/ndis-claiming/generate');
 
 export async function POST(request: Request) {
   const redirectUrl = new URL('/app/ndis-claiming', request.url);
+
+  // CSRF check before any state change
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
 
   try {
     const supabase = await createSupabaseServerClient();

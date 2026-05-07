@@ -3,18 +3,27 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { setCurrentOrganization } from '@/lib/multi-org';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/organizations/switch');
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -23,7 +32,10 @@ export async function POST(request: Request) {
       organizationId?: string;
     };
     if (!body.organizationId) {
-      return NextResponse.json({ error: 'organizationId required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'organizationId required' },
+        { status: 400 },
+      );
     }
 
     await setCurrentOrganization(user.id, body.organizationId);

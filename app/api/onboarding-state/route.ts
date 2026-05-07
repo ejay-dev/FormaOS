@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 async function resolveOrgId(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
@@ -31,7 +32,10 @@ export async function GET() {
 
   const orgId = await resolveOrgId(supabase, user.id);
   if (!orgId) {
-    return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    return NextResponse.json(
+      { error: 'Organization not found' },
+      { status: 404 },
+    );
   }
 
   const { data } = await supabase
@@ -78,6 +82,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -89,7 +96,10 @@ export async function POST(request: Request) {
 
   const orgId = await resolveOrgId(supabase, user.id);
   if (!orgId) {
-    return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
+    return NextResponse.json(
+      { error: 'Organization not found' },
+      { status: 404 },
+    );
   }
 
   const payload = await request.json().catch(() => ({}));

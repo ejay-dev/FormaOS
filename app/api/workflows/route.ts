@@ -9,6 +9,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { listWorkflows, createWorkflow } from '@/lib/automation/workflow-store';
 import type { WorkflowStatus } from '@/lib/automation/workflow-types';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 async function getAuthContext() {
   const supabase = await createSupabaseServerClient();
@@ -57,6 +58,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const ctx = await getAuthContext();
   if (!ctx) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

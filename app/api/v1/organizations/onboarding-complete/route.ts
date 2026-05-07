@@ -1,11 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { provisionFrameworkControls } from '@/lib/frameworks/provisioning';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },
@@ -36,10 +41,12 @@ export async function POST() {
     }
 
     const admin = createSupabaseAdminClient();
+    const orgId = membership.organization_id as string;
+
     const { error } = await admin
       .from('organizations')
       .update({ onboarding_completed: true })
-      .eq('id', membership.organization_id);
+      .eq('id', orgId);
 
     if (error) {
       console.error('Failed to update onboarding_completed:', error);
@@ -47,6 +54,27 @@ export async function POST() {
         { error: 'Failed to update organization' },
         { status: 500 },
       );
+    }
+
+    // Provision controls for all frameworks the org selected during onboarding.
+    // This seeds org_control_evaluations so the compliance score starts at 0%
+    // (real baseline) rather than showing blank/missing data.
+    const { data: orgFrameworks } = await admin
+      .from('org_frameworks')
+      .select('framework_slug')
+      .eq('organization_id', orgId);
+
+    if (orgFrameworks && orgFrameworks.length > 0) {
+      for (const { framework_slug } of orgFrameworks) {
+        provisionFrameworkControls(orgId, framework_slug as string, {
+          force: true,
+        }).catch((err) => {
+          console.warn(
+            `[onboarding-complete] Failed to provision controls for ${framework_slug}:`,
+            err,
+          );
+        });
+      }
     }
 
     return NextResponse.json({ success: true });

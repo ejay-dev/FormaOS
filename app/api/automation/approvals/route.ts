@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 import {
   getExecution,
@@ -39,6 +40,9 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const context = await getAutomationApiContext();
     if (!context) {
       return automationUnauthorized();

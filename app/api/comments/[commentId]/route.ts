@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { updateComment, deleteComment } from '@/lib/comments';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/comments/[commentId]');
 
@@ -29,6 +30,9 @@ export async function PUT(
   { params }: { params: Promise<{ commentId: string }> },
 ) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rate = await rateLimitApi(request);
     if (!rate.success) {
       return NextResponse.json(
@@ -72,6 +76,9 @@ export async function DELETE(
   { params }: { params: Promise<{ commentId: string }> },
 ) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rate = await rateLimitApi(request);
     if (!rate.success) {
       return NextResponse.json(

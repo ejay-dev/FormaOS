@@ -2,23 +2,38 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/v1/medications/[id]/administer');
-const VALID_STATUSES = new Set(['given', 'withheld', 'refused', 'self_administered']);
+const VALID_STATUSES = new Set([
+  'given',
+  'withheld',
+  'refused',
+  'self_administered',
+]);
 
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { data: membership } = await supabase
       .from('org_members')
@@ -26,7 +41,8 @@ export async function POST(
       .eq('user_id', user.id)
       .maybeSingle();
     const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) return NextResponse.json({ error: 'No organization' }, { status: 400 });
+    if (!orgId)
+      return NextResponse.json({ error: 'No organization' }, { status: 400 });
 
     const { id: medicationId } = await params;
     const body = (await request.json().catch(() => ({}))) as {
@@ -43,9 +59,15 @@ export async function POST(
       .eq('id', medicationId)
       .eq('org_id', orgId)
       .maybeSingle();
-    if (!med) return NextResponse.json({ error: 'Medication not found' }, { status: 404 });
+    if (!med)
+      return NextResponse.json(
+        { error: 'Medication not found' },
+        { status: 404 },
+      );
 
-    const status = VALID_STATUSES.has(body.status || '') ? body.status : 'given';
+    const status = VALID_STATUSES.has(body.status || '')
+      ? body.status
+      : 'given';
 
     const { data, error } = await supabase
       .from('org_medication_administrations')

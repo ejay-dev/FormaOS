@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 import { createWorkflow, listWorkflows } from '@/lib/automation/workflow-store';
 import type { WorkflowTriggerType } from '@/lib/automation/workflow-types';
@@ -38,6 +39,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();

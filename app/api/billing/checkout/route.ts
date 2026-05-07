@@ -5,6 +5,7 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
 import { shouldOpenBillingPortalForCheckout } from '@/lib/billing/checkout-routing';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const CheckoutSchema = z.object({
   orgId: z.string().uuid().optional(),
@@ -17,14 +18,23 @@ const log = routeLog('/api/billing/checkout');
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const rawBody = await request.json().catch(() => ({}));
     const parsed = CheckoutSchema.safeParse(rawBody);
@@ -45,7 +55,8 @@ export async function POST(request: Request) {
     const userRole = (membership?.role as string | undefined) ?? '';
     const orgId = requestedOrgId || userOrgId;
 
-    if (!orgId) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    if (!orgId)
+      return NextResponse.json({ error: 'No organization' }, { status: 403 });
     if (requestedOrgId && requestedOrgId !== userOrgId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
@@ -55,7 +66,10 @@ export async function POST(request: Request) {
 
     const stripe = getStripeClient();
     const priceId = getStripePriceId(planId);
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      'http://localhost:3000';
 
     if (!stripe) {
       return NextResponse.json(
@@ -109,7 +123,9 @@ export async function POST(request: Request) {
       mode: 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
       customer: subscription?.stripe_customer_id ?? undefined,
-      customer_email: subscription?.stripe_customer_id ? undefined : user.email ?? undefined,
+      customer_email: subscription?.stripe_customer_id
+        ? undefined
+        : (user.email ?? undefined),
       client_reference_id: orgId,
       success_url: `${appUrl}/app/billing?checkout=success`,
       cancel_url: `${appUrl}/app/billing?checkout=cancelled`,
@@ -131,6 +147,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: session.url, id: session.id });
   } catch (err) {
     log.error({ err }, 'checkout error');
-    return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create checkout session' },
+      { status: 500 },
+    );
   }
 }

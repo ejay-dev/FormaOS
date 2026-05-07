@@ -14,6 +14,7 @@ import {
   getWorkflow,
 } from '@/lib/automation/workflow-store';
 import { resumeWorkflowExecution } from '@/lib/automation/workflow-executor';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 async function getAuthContext() {
   const supabase = await createSupabaseServerClient();
@@ -54,6 +55,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const ctx = await getAuthContext();
   if (!ctx) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

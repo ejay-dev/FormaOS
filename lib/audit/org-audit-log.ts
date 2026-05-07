@@ -5,6 +5,7 @@ import {
   extractMissingSupabaseColumn,
   type SupabaseErrorLike,
 } from '@/lib/supabase/schema-compat';
+import { writeAuditLog } from '@/lib/audit/audit-engine';
 
 type AuditClient = Pick<SupabaseClient<any, any, any>, 'from'>;
 
@@ -124,6 +125,28 @@ export async function insertOrgAuditLog(
   for (;;) {
     const { error } = await client.from('org_audit_logs').insert(candidateRows);
     if (!error) {
+      // Best-effort: also populate the tamper-evident hash chain in audit_log.
+      // Fire-and-forget so a hash-chain failure never blocks the main audit write.
+      for (const row of candidateRows) {
+        if (typeof row.organization_id === 'string') {
+          writeAuditLog(row.organization_id, {
+            userId: typeof row.actor_id === 'string' ? row.actor_id : undefined,
+            action: String(row.action ?? 'unknown'),
+            resourceType:
+              typeof row.entity_type === 'string'
+                ? row.entity_type
+                : 'audit_log',
+            resourceId:
+              typeof row.entity_id === 'string' ? row.entity_id : undefined,
+            details:
+              typeof row.metadata === 'object' && row.metadata !== null
+                ? (row.metadata as Record<string, unknown>)
+                : undefined,
+          }).catch(() => {
+            // Silently swallow — hash chain is secondary to the primary audit log
+          });
+        }
+      }
       return { error: null };
     }
 

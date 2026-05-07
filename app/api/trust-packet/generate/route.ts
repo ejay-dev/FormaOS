@@ -7,7 +7,6 @@ import {
   getClientIdentifier,
   createRateLimitHeaders,
   RATE_LIMITS,
-
 } from '@/lib/security/rate-limiter';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 
@@ -115,26 +114,44 @@ export async function POST(request: NextRequest) {
     expiresAt.setDate(expiresAt.getDate() + expiresInDays);
 
     // Collect trust packet data
-    const [frameworksResult, policiesResult, controlsResult] =
-      await Promise.all([
-        supabase
-          .from('org_frameworks')
-          .select('framework_key, status, created_at')
-          .eq('organization_id', organizationId),
-        supabase
-          .from('policies')
-          .select('id, title, status, last_reviewed_at')
-          .eq('org_id', organizationId)
-          .eq('status', 'active'),
-        supabase
-          .from('controls')
-          .select('id, status, framework_key')
-          .eq('org_id', organizationId),
-      ]);
+    const [
+      frameworksResult,
+      policiesResult,
+      controlsResult,
+      auditLogResult,
+      mfaResult,
+    ] = await Promise.all([
+      supabase
+        .from('org_frameworks')
+        .select('framework_key, status, created_at')
+        .eq('organization_id', organizationId),
+      supabase
+        .from('org_policies')
+        .select('id, title, status, last_reviewed_at')
+        .eq('organization_id', organizationId)
+        .eq('status', 'active'),
+      supabase
+        .from('org_control_evaluations')
+        .select('id, status, framework_key')
+        .eq('organization_id', organizationId),
+      supabase
+        .from('org_audit_logs')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', organizationId)
+        .limit(1),
+      supabase
+        .from('org_members')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', organizationId)
+        .eq('mfa_required', true)
+        .limit(1),
+    ]);
 
     const frameworks = frameworksResult.data ?? [];
     const policies = policiesResult.data ?? [];
     const controls = controlsResult.data ?? [];
+    const hasAuditLogs = (auditLogResult.count ?? 0) > 0;
+    const hasMfaEnabled = (mfaResult.count ?? 0) > 0;
 
     // Calculate coverage stats
     const totalControls = controls.length;
@@ -153,7 +170,8 @@ export async function POST(request: NextRequest) {
       .eq('organization_id', organizationId)
       .maybeSingle();
     const isEnterprisePlan =
-      (subscriptionRow as { plan_key?: string } | null)?.plan_key === 'enterprise';
+      (subscriptionRow as { plan_key?: string } | null)?.plan_key ===
+      'enterprise';
 
     const packetData = {
       generated_at: new Date().toISOString(),
@@ -163,11 +181,11 @@ export async function POST(request: NextRequest) {
       note,
       security_overview: {
         role_based_access: true,
-        audit_logging: true,
+        audit_logging: hasAuditLogs,
         encryption_at_rest: true,
         encryption_in_transit: true,
         sso_available: Boolean(isEnterprisePlan),
-        mfa_available: true,
+        mfa_available: hasMfaEnabled,
       },
       compliance_summary: {
         frameworks_enabled: frameworks.length,
@@ -215,7 +233,10 @@ export async function POST(request: NextRequest) {
 
     // If table doesn't exist yet, return the packet data directly
     if (insertError) {
-      log.warn({ data: insertError.message, }, "Trust packets table may not exist yet:");
+      log.warn(
+        { data: insertError.message },
+        'Trust packets table may not exist yet:',
+      );
       // Still return the packet data — just without persistence
       return NextResponse.json({
         success: true,
@@ -237,7 +258,7 @@ export async function POST(request: NextRequest) {
       packet: packetData,
     });
   } catch (error) {
-    log.error({ err: error }, "Trust packet generation failed:");
+    log.error({ err: error }, 'Trust packet generation failed:');
     return NextResponse.json(
       { error: 'Failed to generate trust packet' },
       { status: 500 },

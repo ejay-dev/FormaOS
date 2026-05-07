@@ -8,12 +8,16 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getWorkflow, updateWorkflow } from '@/lib/automation/workflow-store';
 import type { WorkflowStatus } from '@/lib/automation/workflow-types';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export async function POST(
   _request: NextRequest,
   { params }: { params: Promise<{ workflowId: string }> },
 ) {
   try {
+    const csrfError = validateCsrfOrigin(_request);
+    if (csrfError) return csrfError;
+
     const rl = await rateLimitApi(_request);
     if (!rl.success) {
       return NextResponse.json(

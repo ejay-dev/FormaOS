@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/v1/evidence/upload');
 const MAX_FILES = 10;
@@ -25,9 +26,15 @@ type UploadedItem = {
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const supabase = await createSupabaseServerClient();
@@ -144,10 +151,7 @@ export async function POST(request: Request) {
         .maybeSingle();
 
       if (!capa) {
-        return NextResponse.json(
-          { error: 'CAPA not found' },
-          { status: 404 },
-        );
+        return NextResponse.json({ error: 'CAPA not found' }, { status: 404 });
       }
     } else if (entityId) {
       // Unknown entity type — refuse rather than write orphan evidence
@@ -165,9 +169,7 @@ export async function POST(request: Request) {
         ? file.name.slice(file.name.lastIndexOf('.') + 1)
         : '';
       const safeExt = ext.replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
-      const objectName = safeExt
-        ? `${randomUUID()}.${safeExt}`
-        : randomUUID();
+      const objectName = safeExt ? `${randomUUID()}.${safeExt}` : randomUUID();
       const pathScope = obligationId
         ? `obligations/${obligationId}`
         : entityType && entityId
@@ -289,8 +291,9 @@ export async function POST(request: Request) {
         );
       }
 
-      const rowTitle =
-        (row as Record<string, unknown>).title as string | undefined;
+      const rowTitle = (row as Record<string, unknown>).title as
+        | string
+        | undefined;
       items.push({
         id: row.id as string,
         type: 'file',

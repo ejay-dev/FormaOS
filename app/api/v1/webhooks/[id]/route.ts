@@ -14,6 +14,7 @@ import {
   type UpdateRelayWebhookInput,
   type RelayEventType,
 } from '@/lib/integrations/webhook-relay';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/v1/webhooks/[id]');
 
@@ -118,6 +119,9 @@ export async function GET(request: Request, context: RouteContext) {
 
 export async function PATCH(request: Request, context: RouteContext) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     // 1. Rate limiting
     const rateLimitResult = await rateLimitApi(request);
     if (!rateLimitResult.success) {
@@ -266,6 +270,9 @@ export async function PATCH(request: Request, context: RouteContext) {
 
 export async function DELETE(request: Request, context: RouteContext) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     // 1. Rate limiting
     const rateLimitResult = await rateLimitApi(request);
     if (!rateLimitResult.success) {

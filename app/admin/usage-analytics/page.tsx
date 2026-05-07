@@ -6,6 +6,10 @@ import {
   TrialFunnel,
 } from '@/components/admin/usage-analytics';
 import { BarChart3, Users, AlertTriangle, TrendingUp } from 'lucide-react';
+import {
+  getChurnRiskScore,
+  getChurnSignals,
+} from '@/lib/analytics/churn-signals';
 
 export default async function UsageAnalyticsPage() {
   const state = await fetchSystemState();
@@ -45,25 +49,81 @@ export default async function UsageAnalyticsPage() {
     (o) => o.plan !== 'trial' && o.plan !== 'starter',
   );
 
-  // Trial funnel (simplified)
+  // Derive funnel from real org_usage_events data
+  const orgIds = (orgs || []).map((o) => o.id);
+  const [
+    activatedResult,
+    firstControlResult,
+    firstEvidenceResult,
+    invitedTeamResult,
+  ] =
+    orgIds.length > 0
+      ? await Promise.all([
+          db
+            .from('org_usage_events')
+            .select('org_id', { count: 'exact', head: false })
+            .in('org_id', orgIds)
+            .eq('event_type', 'onboarding_complete'),
+          db
+            .from('org_usage_events')
+            .select('org_id', { count: 'exact', head: false })
+            .in('org_id', orgIds)
+            .eq('event_type', 'first_control_added'),
+          db
+            .from('org_usage_events')
+            .select('org_id', { count: 'exact', head: false })
+            .in('org_id', orgIds)
+            .eq('event_type', 'first_evidence_uploaded'),
+          db
+            .from('org_usage_events')
+            .select('org_id', { count: 'exact', head: false })
+            .in('org_id', orgIds)
+            .eq('event_type', 'team_member_invited'),
+        ])
+      : [{ data: [] }, { data: [] }, { data: [] }, { data: [] }];
+
+  const uniqueCount = (rows: { org_id: string }[] | null) =>
+    new Set((rows ?? []).map((r) => r.org_id)).size;
+
   const funnelData = {
     signedUp: totalOrgs,
-    activated: Math.round(totalOrgs * 0.8),
-    firstControl: Math.round(totalOrgs * 0.6),
-    firstEvidence: Math.round(totalOrgs * 0.45),
-    invitedTeam: Math.round(totalOrgs * 0.3),
+    activated: uniqueCount(
+      (activatedResult as { data: { org_id: string }[] | null }).data,
+    ),
+    firstControl: uniqueCount(
+      (firstControlResult as { data: { org_id: string }[] | null }).data,
+    ),
+    firstEvidence: uniqueCount(
+      (firstEvidenceResult as { data: { org_id: string }[] | null }).data,
+    ),
+    invitedTeam: uniqueCount(
+      (invitedTeamResult as { data: { org_id: string }[] | null }).data,
+    ),
     subscribed: subscribedOrgs.length,
   };
 
-  // Build churn risk list (simplified — in production would use getChurnSignals)
-  const churnOrgs = (orgs || []).slice(0, 5).map((org) => ({
-    id: org.id,
-    name: org.name,
-    plan: org.plan || 'starter',
-    riskScore: Math.floor(Math.random() * 80),
-    signals: [] as { signal: string; severity: string; detail: string }[],
-    engagementScore: avgEngagement,
-  }));
+  // Build churn risk list using real getChurnRiskScore + getChurnSignals
+  const topOrgs = (orgs || []).slice(0, 5);
+  const churnOrgs = await Promise.all(
+    topOrgs.map(async (org) => {
+      const [riskScore, signals] = await Promise.all([
+        getChurnRiskScore(org.id),
+        getChurnSignals(org.id),
+      ]);
+      return {
+        id: org.id,
+        name: org.name,
+        plan: org.plan || 'starter',
+        riskScore,
+        signals: signals as {
+          signal: string;
+          severity: string;
+          detail: string;
+        }[],
+        engagementScore: avgEngagement,
+      };
+    }),
+  );
 
   return (
     <div className="space-y-6 p-6">

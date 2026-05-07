@@ -3,6 +3,7 @@ import { createPatient } from '@/app/app/actions/patients';
 import { normalizeRole } from '@/app/app/actions/rbac';
 import Link from 'next/link';
 import { Users, AlertTriangle, Plus } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 type PatientRow = {
   id: string;
@@ -17,7 +18,7 @@ export default async function PatientsPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) redirect('/auth/signin');
 
   const { data: membership } = await supabase
     .from('org_members')

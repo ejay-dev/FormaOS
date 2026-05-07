@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { logAdminAction } from '@/lib/admin/audit';
@@ -37,14 +38,17 @@ export async function POST(request: Request, { params }: Params) {
       now.getTime() + 14 * 24 * 60 * 60 * 1000,
     ).toISOString();
 
-    await admin.from('org_subscriptions').upsert({
-      organization_id: orgId,
-      status: 'trialing',
-      trial_started_at: now.toISOString(),
-      trial_expires_at: expiresAt,
-      current_period_end: expiresAt,
-      updated_at: now.toISOString(),
-    });
+    await admin.from('org_subscriptions').upsert(
+      {
+        organization_id: orgId,
+        status: 'trialing',
+        trial_started_at: now.toISOString(),
+        trial_expires_at: expiresAt,
+        current_period_end: expiresAt,
+        updated_at: now.toISOString(),
+      },
+      { onConflict: 'organization_id' },
+    );
 
     await logAdminAction({
       actorUserId: access.user.id,
@@ -53,6 +57,11 @@ export async function POST(request: Request, { params }: Params) {
       targetId: orgId,
       metadata: { reason },
     });
+
+    // Bust the layout-level system-state cache so the affected org's /app
+    // sees the reset trial state on next load.
+    revalidatePath('/app', 'layout');
+    revalidatePath(`/admin/orgs/${orgId}`);
 
     return NextResponse.json({ ok: true });
   } catch (error) {

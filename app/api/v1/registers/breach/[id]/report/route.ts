@@ -2,25 +2,36 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/v1/registers/breach/[id]/report');
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rate = await rateLimitApi(request);
     if (!rate.success) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const { id } = await params;
-    if (!id) return NextResponse.json({ error: 'Missing breach id' }, { status: 400 });
+    if (!id)
+      return NextResponse.json({ error: 'Missing breach id' }, { status: 400 });
 
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { data: membership } = await supabase
       .from('org_members')
@@ -28,11 +39,13 @@ export async function POST(
       .eq('user_id', user.id)
       .maybeSingle();
     const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    if (!orgId)
+      return NextResponse.json({ error: 'No organization' }, { status: 403 });
 
     const body = await request.json().catch(() => ({}));
     const breachId = (body?.breach_id as string) || id;
-    const regulation = (body?.regulation as string) || 's912D Corporations Act 2001';
+    const regulation =
+      (body?.regulation as string) || 's912D Corporations Act 2001';
     const action = (body?.action as string) || 'self-report';
 
     const { data: incident, error: fetchErr } = await supabase
@@ -58,9 +71,10 @@ export async function POST(
       .update({
         notifications_sent: notifications,
         reported_at: new Date().toISOString(),
-        status: incident.status === 'resolved' || incident.status === 'closed'
-          ? incident.status
-          : 'investigating',
+        status:
+          incident.status === 'resolved' || incident.status === 'closed'
+            ? incident.status
+            : 'investigating',
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -68,7 +82,10 @@ export async function POST(
 
     if (updateErr) {
       log.error({ err: updateErr }, 'failed to update incident');
-      return NextResponse.json({ error: 'Failed to record report' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to record report' },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json({
@@ -80,6 +97,9 @@ export async function POST(
     });
   } catch (err) {
     log.error({ err }, 'unexpected error');
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
   }
 }

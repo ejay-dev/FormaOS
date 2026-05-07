@@ -3,9 +3,13 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { generateSoc2Report } from '@/lib/soc2/report-generator';
-import { getLatestAssessment, getAssessmentHistory } from '@/lib/soc2/readiness-engine';
+import {
+  getLatestAssessment,
+  getAssessmentHistory,
+} from '@/lib/soc2/readiness-engine';
 import { getMilestones } from '@/lib/soc2/milestone-tracker';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 /**
  * =========================================================
@@ -70,7 +74,7 @@ export async function GET(request: Request) {
       .maybeSingle();
 
     const organizationName =
-      (orgRow as Record<string, unknown> | null)?.name as string ??
+      ((orgRow as Record<string, unknown> | null)?.name as string) ??
       'Unknown Organization';
 
     if (!assessment) {
@@ -78,7 +82,8 @@ export async function GET(request: Request) {
         organizationId: orgId,
         organizationName,
         report: null,
-        message: 'No SOC 2 assessment found. Run an assessment or generate a report first.',
+        message:
+          'No SOC 2 assessment found. Run an assessment or generate a report first.',
         lastUpdated: new Date().toISOString(),
       });
     }
@@ -105,6 +110,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     // 1. Rate limiting
     const rateLimitResult = await rateLimitApi(request);
     if (!rateLimitResult.success) {

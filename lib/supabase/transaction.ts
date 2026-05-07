@@ -3,45 +3,10 @@ import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { resolvePlanKey } from '@/lib/plans';
 
 /**
- * Execute multiple database operations within a transaction-like wrapper.
- * Uses Supabase's RPC to wrap operations in a PostgreSQL transaction.
- *
- * For critical operations like org creation, this ensures all-or-nothing semantics.
- */
-export async function withTransaction<T>(
-  operations: () => Promise<T>,
-): Promise<{ data: T | null; error: Error | null }> {
-  const admin = createSupabaseAdminClient();
-
-  try {
-    // Begin transaction
-    await admin.rpc('begin_transaction').throwOnError();
-
-    // Execute operations
-    const result = await operations();
-
-    // Commit transaction
-    await admin.rpc('commit_transaction').throwOnError();
-
-    return { data: result, error: null };
-  } catch (error) {
-    // Rollback on any error
-    try {
-      await admin.rpc('rollback_transaction');
-    } catch {
-      // Ignore rollback errors
-    }
-
-    return {
-      data: null,
-      error: error instanceof Error ? error : new Error(String(error)),
-    };
-  }
-}
-
-/**
- * Simpler approach: Execute operations sequentially with manual rollback on failure.
- * This doesn't use true transactions but provides cleanup on failure.
+ * Sequentially execute operations with manual cleanup on failure.
+ * Supabase does not expose begin/commit/rollback RPCs, so true
+ * Postgres transactions are not available over the REST API. The
+ * bootstrap function manages its own compensating deletes instead.
  */
 export interface OrgBootstrapResult {
   organizationId: string;

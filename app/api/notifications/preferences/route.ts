@@ -9,6 +9,7 @@ import {
 } from '@/lib/notifications/types';
 import { requireNotificationContext } from '@/lib/notifications/server';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 function createDefaultPreferences(userId: string, orgId: string) {
   return NOTIFICATION_EVENT_TYPES.flatMap((eventType) =>
@@ -56,7 +57,10 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to load preferences' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to load preferences',
+      },
       { status: 500 },
     );
   }
@@ -64,6 +68,9 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const body = (await request.json()) as {
       orgId?: string;
       quietHours?: Record<string, unknown>;
@@ -94,9 +101,11 @@ export async function PUT(request: Request) {
       return NextResponse.json({ updated: 0 });
     }
 
-    const { error } = await admin.from('notification_preferences').upsert(rows, {
-      onConflict: 'user_id,org_id,channel,event_type',
-    });
+    const { error } = await admin
+      .from('notification_preferences')
+      .upsert(rows, {
+        onConflict: 'user_id,org_id,channel,event_type',
+      });
 
     if (error) {
       throw error;
@@ -105,7 +114,10 @@ export async function PUT(request: Request) {
     return NextResponse.json({ updated: rows.length });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to save preferences' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to save preferences',
+      },
       { status: 500 },
     );
   }

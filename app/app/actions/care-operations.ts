@@ -1,24 +1,24 @@
-"use server";
+'use server';
 
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { insertOrgTaskCompat } from "@/lib/tasks/persistence";
-import { actionError, isNextInternalError } from "@/lib/actions/safe";
-import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { insertOrgTaskCompat } from '@/lib/tasks/persistence';
+import { actionError, isNextInternalError } from '@/lib/actions/safe';
+import { logAuditEvent } from '@/app/app/actions/audit-events';
 
 async function requireUserOrganization(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
-  userId: string
+  userId: string,
 ) {
   const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", userId)
+    .from('org_members')
+    .select('organization_id')
+    .eq('user_id', userId)
     .maybeSingle();
 
   if (!membership?.organization_id) {
-    throw new Error("No organization found");
+    throw new Error('No organization found');
   }
 
   return membership.organization_id as string;
@@ -30,58 +30,63 @@ async function requireUserOrganization(
 
 export async function createParticipant(formData: FormData) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
 
-  // Get user's organization
-  const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    // Get user's organization
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-  if (!membership) throw new Error("No organization found");
+    if (!membership) throw new Error('No organization found');
 
-  const participant = {
-    organization_id: membership.organization_id,
-    full_name: formData.get("full_name") as string,
-    preferred_name: formData.get("preferred_name") as string || null,
-    external_id: formData.get("external_id") as string || null,
-    date_of_birth: formData.get("date_of_birth") as string || null,
-    gender: formData.get("gender") as string || null,
-    phone: formData.get("phone") as string || null,
-    email: formData.get("email") as string || null,
-    address: formData.get("address") as string || null,
-    emergency_contact_name: formData.get("emergency_contact_name") as string || null,
-    emergency_contact_phone: formData.get("emergency_contact_phone") as string || null,
-    emergency_contact_relationship: formData.get("emergency_contact_relationship") as string || null,
-    care_status: formData.get("care_status") as string || "active",
-    risk_level: formData.get("risk_level") as string || "low",
-    emergency_flag: formData.get("emergency_flag") === "true",
-    ndis_number: formData.get("ndis_number") as string || null,
-    funding_type: formData.get("funding_type") as string || null,
-    plan_start_date: formData.get("plan_start_date") as string || null,
-    plan_end_date: formData.get("plan_end_date") as string || null,
-    primary_diagnosis: formData.get("primary_diagnosis") as string || null,
-    communication_needs: formData.get("communication_needs") as string || null,
-    cultural_considerations: formData.get("cultural_considerations") as string || null,
-    created_by: user.id,
-  };
+    const participant = {
+      organization_id: membership.organization_id,
+      full_name: formData.get('full_name') as string,
+      preferred_name: (formData.get('preferred_name') as string) || null,
+      external_id: (formData.get('external_id') as string) || null,
+      date_of_birth: (formData.get('date_of_birth') as string) || null,
+      gender: (formData.get('gender') as string) || null,
+      phone: (formData.get('phone') as string) || null,
+      email: (formData.get('email') as string) || null,
+      address: (formData.get('address') as string) || null,
+      emergency_contact_name:
+        (formData.get('emergency_contact_name') as string) || null,
+      emergency_contact_phone:
+        (formData.get('emergency_contact_phone') as string) || null,
+      emergency_contact_relationship:
+        (formData.get('emergency_contact_relationship') as string) || null,
+      care_status: (formData.get('care_status') as string) || 'active',
+      risk_level: (formData.get('risk_level') as string) || 'low',
+      emergency_flag: formData.get('emergency_flag') === 'true',
+      ndis_number: (formData.get('ndis_number') as string) || null,
+      funding_type: (formData.get('funding_type') as string) || null,
+      plan_start_date: (formData.get('plan_start_date') as string) || null,
+      plan_end_date: (formData.get('plan_end_date') as string) || null,
+      primary_diagnosis: (formData.get('primary_diagnosis') as string) || null,
+      communication_needs:
+        (formData.get('communication_needs') as string) || null,
+      cultural_considerations:
+        (formData.get('cultural_considerations') as string) || null,
+      created_by: user.id,
+    };
 
-  const { error } = await supabase
-    .from("org_patients")
-    .insert(participant)
-    .select()
-    .single();
+    const { error } = await supabase
+      .from('org_patients')
+      .insert(participant)
+      .select()
+      .single();
 
-  if (error) throw new Error(error.message);
+    if (error) throw new Error(error.message);
 
-  revalidatePath("/app/participants");
-  redirect("/app/participants");
+    revalidatePath('/app/participants');
+    redirect('/app/participants');
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -90,46 +95,50 @@ export async function createParticipant(formData: FormData) {
 
 export async function updateParticipant(id: string, formData: FormData) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
-  const organizationId = await requireUserOrganization(supabase, user.id);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
+    const organizationId = await requireUserOrganization(supabase, user.id);
 
-  const updates = {
-    full_name: formData.get("full_name") as string,
-    preferred_name: formData.get("preferred_name") as string || null,
-    external_id: formData.get("external_id") as string || null,
-    date_of_birth: formData.get("date_of_birth") as string || null,
-    gender: formData.get("gender") as string || null,
-    phone: formData.get("phone") as string || null,
-    email: formData.get("email") as string || null,
-    address: formData.get("address") as string || null,
-    emergency_contact_name: formData.get("emergency_contact_name") as string || null,
-    emergency_contact_phone: formData.get("emergency_contact_phone") as string || null,
-    emergency_contact_relationship: formData.get("emergency_contact_relationship") as string || null,
-    care_status: formData.get("care_status") as string,
-    risk_level: formData.get("risk_level") as string,
-    emergency_flag: formData.get("emergency_flag") === "true",
-    ndis_number: formData.get("ndis_number") as string || null,
-    funding_type: formData.get("funding_type") as string || null,
-    primary_diagnosis: formData.get("primary_diagnosis") as string || null,
-    communication_needs: formData.get("communication_needs") as string || null,
-    updated_by: user.id,
-  };
+    const updates = {
+      full_name: formData.get('full_name') as string,
+      preferred_name: (formData.get('preferred_name') as string) || null,
+      external_id: (formData.get('external_id') as string) || null,
+      date_of_birth: (formData.get('date_of_birth') as string) || null,
+      gender: (formData.get('gender') as string) || null,
+      phone: (formData.get('phone') as string) || null,
+      email: (formData.get('email') as string) || null,
+      address: (formData.get('address') as string) || null,
+      emergency_contact_name:
+        (formData.get('emergency_contact_name') as string) || null,
+      emergency_contact_phone:
+        (formData.get('emergency_contact_phone') as string) || null,
+      emergency_contact_relationship:
+        (formData.get('emergency_contact_relationship') as string) || null,
+      care_status: formData.get('care_status') as string,
+      risk_level: formData.get('risk_level') as string,
+      emergency_flag: formData.get('emergency_flag') === 'true',
+      ndis_number: (formData.get('ndis_number') as string) || null,
+      funding_type: (formData.get('funding_type') as string) || null,
+      primary_diagnosis: (formData.get('primary_diagnosis') as string) || null,
+      communication_needs:
+        (formData.get('communication_needs') as string) || null,
+      updated_by: user.id,
+    };
 
-  const { error } = await supabase
-    .from("org_patients")
-    .update(updates)
-    .eq("id", id)
-    .eq("organization_id", organizationId);
+    const { error } = await supabase
+      .from('org_patients')
+      .update(updates)
+      .eq('id', id)
+      .eq('organization_id', organizationId);
 
-  if (error) throw new Error(error.message);
+    if (error) throw new Error(error.message);
 
-  revalidatePath(`/app/participants/${id}`);
-  revalidatePath("/app/participants");
+    revalidatePath(`/app/participants/${id}`);
+    revalidatePath('/app/participants');
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -142,85 +151,89 @@ export async function updateParticipant(id: string, formData: FormData) {
 
 export async function createVisit(formData: FormData) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
 
-  const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-  if (!membership) throw new Error("No organization found");
+    if (!membership) throw new Error('No organization found');
 
-  const visit = {
-    organization_id: membership.organization_id,
-    client_id: formData.get("client_id") as string || null,
-    staff_id: formData.get("staff_id") as string || user.id,
-    visit_type: formData.get("visit_type") as string || "service",
-    service_category: formData.get("service_category") as string || null,
-    scheduled_start: formData.get("scheduled_start") as string,
-    scheduled_end: formData.get("scheduled_end") as string || null,
-    status: "scheduled",
-    location_type: formData.get("location_type") as string || null,
-    address: formData.get("address") as string || null,
-    notes: formData.get("notes") as string || null,
-    billable: formData.get("billable") !== "false",
-    funding_source: formData.get("funding_source") as string || null,
-    created_by: user.id,
-  };
+    const visit = {
+      organization_id: membership.organization_id,
+      client_id: (formData.get('client_id') as string) || null,
+      staff_id: (formData.get('staff_id') as string) || user.id,
+      visit_type: (formData.get('visit_type') as string) || 'service',
+      service_category: (formData.get('service_category') as string) || null,
+      scheduled_start: formData.get('scheduled_start') as string,
+      scheduled_end: (formData.get('scheduled_end') as string) || null,
+      status: 'scheduled',
+      location_type: (formData.get('location_type') as string) || null,
+      address: (formData.get('address') as string) || null,
+      notes: (formData.get('notes') as string) || null,
+      billable: formData.get('billable') !== 'false',
+      funding_source: (formData.get('funding_source') as string) || null,
+      created_by: user.id,
+    };
 
-  const { error } = await supabase
-    .from("org_visits")
-    .insert(visit)
-    .select()
-    .single();
+    const { error } = await supabase
+      .from('org_visits')
+      .insert(visit)
+      .select()
+      .single();
 
-  if (error) throw new Error(error.message);
+    if (error) throw new Error(error.message);
 
-  revalidatePath("/app/visits");
-  redirect("/app/visits");
+    revalidatePath('/app/visits');
+    redirect('/app/visits');
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
   }
 }
 
-export async function updateVisitStatus(id: string, status: string, notes?: string) {
+export async function updateVisitStatus(
+  id: string,
+  status: string,
+  notes?: string,
+) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
-  const organizationId = await requireUserOrganization(supabase, user.id);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
+    const organizationId = await requireUserOrganization(supabase, user.id);
 
-  const updates: Record<string, any> = { status };
+    const updates: Record<string, any> = { status };
 
-  if (status === "in_progress") {
-    updates.actual_start = new Date().toISOString();
-  } else if (status === "completed") {
-    updates.actual_end = new Date().toISOString();
-    if (notes) updates.outcomes = notes;
-  } else if (status === "cancelled" || status === "missed") {
-    if (notes) updates.cancellation_reason = notes;
-  }
+    if (status === 'in_progress') {
+      updates.actual_start = new Date().toISOString();
+    } else if (status === 'completed') {
+      updates.actual_end = new Date().toISOString();
+      if (notes) updates.outcomes = notes;
+    } else if (status === 'cancelled' || status === 'missed') {
+      if (notes) updates.cancellation_reason = notes;
+    }
 
-  const { error } = await supabase
-    .from("org_visits")
-    .update(updates)
-    .eq("id", id)
-    .eq("organization_id", organizationId);
+    const { error } = await supabase
+      .from('org_visits')
+      .update(updates)
+      .eq('id', id)
+      .eq('organization_id', organizationId);
 
-  if (error) throw new Error(error.message);
+    if (error) throw new Error(error.message);
 
-  revalidatePath("/app/visits");
-  revalidatePath(`/app/visits/${id}`);
+    revalidatePath('/app/visits');
+    revalidatePath(`/app/visits/${id}`);
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -233,65 +246,67 @@ export async function updateVisitStatus(id: string, status: string, notes?: stri
 
 export async function createIncident(formData: FormData) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
 
-  const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-  if (!membership) throw new Error("No organization found");
+    if (!membership) throw new Error('No organization found');
 
-  const incident = {
-    organization_id: membership.organization_id,
-    patient_id: formData.get("patient_id") as string || null,
-    reported_by: user.id,
-    incident_type: formData.get("incident_type") as string || "general",
-    severity: formData.get("severity") as string || "low",
-    status: "open",
-    description: formData.get("description") as string,
-    occurred_at: formData.get("occurred_at") as string || new Date().toISOString(),
-    location: formData.get("location") as string || null,
-    immediate_actions: formData.get("immediate_actions") as string || null,
-    follow_up_required: formData.get("follow_up_required") === "true",
-    follow_up_due_date: formData.get("follow_up_due_date") as string || null,
-  };
-
-  const { error } = await supabase
-    .from("org_incidents")
-    .insert(incident)
-    .select()
-    .single();
-
-  if (error) throw new Error(error.message);
-
-  // Create follow-up task if required
-  if (incident.follow_up_required) {
-    await insertOrgTaskCompat(supabase, {
+    const incident = {
       organization_id: membership.organization_id,
-      title: `Follow-up: Incident - ${incident.incident_type}`,
-      description: `Follow up on incident: ${incident.description?.substring(0, 100)}...`,
-      priority:
-        incident.severity === "critical"
-          ? "critical"
-          : incident.severity === "high"
-            ? "high"
-            : "medium",
-      due_date: incident.follow_up_due_date,
-      status: "pending",
-      created_by: user.id,
-      patient_id: incident.patient_id,
-    });
-  }
+      patient_id: (formData.get('patient_id') as string) || null,
+      reported_by: user.id,
+      incident_type: (formData.get('incident_type') as string) || 'general',
+      severity: (formData.get('severity') as string) || 'low',
+      status: 'open',
+      description: formData.get('description') as string,
+      occurred_at:
+        (formData.get('occurred_at') as string) || new Date().toISOString(),
+      location: (formData.get('location') as string) || null,
+      immediate_actions: (formData.get('immediate_actions') as string) || null,
+      follow_up_required: formData.get('follow_up_required') === 'true',
+      follow_up_due_date:
+        (formData.get('follow_up_due_date') as string) || null,
+    };
 
-  revalidatePath("/app/incidents");
-  redirect("/app/incidents");
+    const { error } = await supabase
+      .from('org_incidents')
+      .insert(incident)
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    // Create follow-up task if required
+    if (incident.follow_up_required) {
+      await insertOrgTaskCompat(supabase, {
+        organization_id: membership.organization_id,
+        title: `Follow-up: Incident - ${incident.incident_type}`,
+        description: `Follow up on incident: ${incident.description?.substring(0, 100)}...`,
+        priority:
+          incident.severity === 'critical'
+            ? 'critical'
+            : incident.severity === 'high'
+              ? 'high'
+              : 'medium',
+        due_date: incident.follow_up_due_date,
+        status: 'pending',
+        created_by: user.id,
+        patient_id: incident.patient_id,
+      });
+    }
+
+    revalidatePath('/app/incidents');
+    redirect('/app/incidents');
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -300,54 +315,54 @@ export async function createIncident(formData: FormData) {
 
 export async function resolveIncident(id: string, formData: FormData) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
-  const organizationId = await requireUserOrganization(supabase, user.id);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
+    const organizationId = await requireUserOrganization(supabase, user.id);
 
-  const rootCause = (formData.get("root_cause") as string) || null;
-  const preventiveMeasures =
-    (formData.get("preventive_measures") as string) || null;
-  const resolvedAt = new Date().toISOString();
+    const rootCause = (formData.get('root_cause') as string) || null;
+    const preventiveMeasures =
+      (formData.get('preventive_measures') as string) || null;
+    const resolvedAt = new Date().toISOString();
 
-  const { error } = await supabase
-    .from("org_incidents")
-    .update({
-      status: "resolved",
-      resolved_at: resolvedAt,
-      resolved_by: user.id,
-      root_cause: rootCause,
-      preventive_measures: preventiveMeasures,
-      follow_up_completed_at: resolvedAt,
-    })
-    .eq("id", id)
-    .eq("organization_id", organizationId);
-
-  if (error) throw new Error(error.message);
-
-  await logAuditEvent(
-    {
-      organizationId,
-      actorUserId: user.id,
-      actorRole: null,
-      entityType: "incident",
-      entityId: id,
-      actionType: "INCIDENT_RESOLVED",
-      afterState: {
-        status: "resolved",
+    const { error } = await supabase
+      .from('org_incidents')
+      .update({
+        status: 'resolved',
         resolved_at: resolvedAt,
-        has_root_cause: Boolean(rootCause),
-      },
-      reason: "incident_resolution",
-    },
-    { required: true },
-  );
+        resolved_by: user.id,
+        root_cause: rootCause,
+        preventive_measures: preventiveMeasures,
+        follow_up_completed_at: resolvedAt,
+      })
+      .eq('id', id)
+      .eq('organization_id', organizationId);
 
-  revalidatePath("/app/incidents");
-  revalidatePath(`/app/incidents/${id}`);
+    if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'incident',
+        entityId: id,
+        actionType: 'INCIDENT_RESOLVED',
+        afterState: {
+          status: 'resolved',
+          resolved_at: resolvedAt,
+          has_root_cause: Boolean(rootCause),
+        },
+        reason: 'incident_resolution',
+      },
+      { required: true },
+    );
+
+    revalidatePath('/app/incidents');
+    revalidatePath(`/app/incidents/${id}`);
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -359,128 +374,126 @@ export async function resolveIncident(id: string, formData: FormData) {
 // =========================================================
 
 const STAFF_CREDENTIAL_WRITE_ROLES = new Set([
-  "owner",
-  "admin",
-  "compliance_officer",
-  "manager",
+  'owner',
+  'admin',
+  'compliance_officer',
+  'manager',
 ]);
 
 const STAFF_CREDENTIAL_VERIFIER_ROLES = new Set([
-  "owner",
-  "admin",
-  "compliance_officer",
+  'owner',
+  'admin',
+  'compliance_officer',
 ]);
 
 export async function createStaffCredential(formData: FormData) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
 
-  // Fetch the actor's membership including role so we can gate who can
-  // register credentials and validate the target user belongs to the same org.
-  const { data: actorMembership } = await supabase
-    .from("org_members")
-    .select("organization_id, role")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  if (!actorMembership) throw new Error("No organization found");
-
-  const actorRole = (actorMembership.role as string | null) ?? "";
-  if (!STAFF_CREDENTIAL_WRITE_ROLES.has(actorRole)) {
-    throw new Error(
-      "Forbidden: only owner/admin/compliance/manager roles can register staff credentials.",
-    );
-  }
-
-  const targetUserIdRaw = (formData.get("user_id") as string | null) ?? "";
-  const targetUserId = targetUserIdRaw.trim() || user.id;
-
-  // Validate the target user is a member of the same organization. Without
-  // this check, any org member could register credentials against an
-  // arbitrary user_id (audit P1 #12).
-  if (targetUserId !== user.id) {
-    const { data: targetMembership } = await supabase
-      .from("org_members")
-      .select("user_id")
-      .eq("user_id", targetUserId)
-      .eq("organization_id", actorMembership.organization_id)
+    // Fetch the actor's membership including role so we can gate who can
+    // register credentials and validate the target user belongs to the same org.
+    const { data: actorMembership } = await supabase
+      .from('org_members')
+      .select('organization_id, role')
+      .eq('user_id', user.id)
       .maybeSingle();
 
-    if (!targetMembership) {
+    if (!actorMembership) throw new Error('No organization found');
+
+    const actorRole = (actorMembership.role as string | null) ?? '';
+    if (!STAFF_CREDENTIAL_WRITE_ROLES.has(actorRole)) {
       throw new Error(
-        "Target user is not a member of this organization.",
+        'Forbidden: only owner/admin/compliance/manager roles can register staff credentials.',
       );
     }
-  }
 
-  const credential = {
-    organization_id: actorMembership.organization_id,
-    user_id: targetUserId,
-    credential_type: formData.get("credential_type") as string,
-    credential_name: formData.get("credential_name") as string,
-    credential_number: formData.get("credential_number") as string || null,
-    issuing_authority: formData.get("issuing_authority") as string || null,
-    issue_date: formData.get("issue_date") as string || null,
-    expiry_date: formData.get("expiry_date") as string || null,
-    status: "pending",
-    notes: formData.get("notes") as string || null,
-    created_by: user.id,
-  };
+    const targetUserIdRaw = (formData.get('user_id') as string | null) ?? '';
+    const targetUserId = targetUserIdRaw.trim() || user.id;
 
-  const { data: insertedCredential, error } = await supabase
-    .from("org_staff_credentials")
-    .insert(credential)
-    .select("id")
-    .single();
+    // Validate the target user is a member of the same organization. Without
+    // this check, any org member could register credentials against an
+    // arbitrary user_id (audit P1 #12).
+    if (targetUserId !== user.id) {
+      const { data: targetMembership } = await supabase
+        .from('org_members')
+        .select('user_id')
+        .eq('user_id', targetUserId)
+        .eq('organization_id', actorMembership.organization_id)
+        .maybeSingle();
 
-  if (error) throw new Error(error.message);
+      if (!targetMembership) {
+        throw new Error('Target user is not a member of this organization.');
+      }
+    }
 
-  // Audit-log the registration so the trail isn't asymmetric with
-  // verifyStaffCredential (which already logs).
-  await logAuditEvent(
-    {
-      organizationId: actorMembership.organization_id,
-      actorUserId: user.id,
-      actorRole,
-      entityType: "staff_credential",
-      entityId: insertedCredential?.id ?? null,
-      actionType: "STAFF_CREDENTIAL_CREATED",
-      afterState: {
-        target_user_id: targetUserId,
-        credential_type: credential.credential_type,
-        credential_name: credential.credential_name,
-        expiry_date: credential.expiry_date,
-        status: credential.status,
-      },
-      reason: "credential_registration",
-    },
-    { required: false },
-  );
-
-  // Create reminder task if expiry date is set
-  if (credential.expiry_date) {
-    const expiryDate = new Date(credential.expiry_date);
-    const reminderDate = new Date(expiryDate);
-    reminderDate.setDate(reminderDate.getDate() - 30); // 30 days before expiry
-
-    await insertOrgTaskCompat(supabase, {
+    const credential = {
       organization_id: actorMembership.organization_id,
-      title: `Credential Expiring: ${credential.credential_name}`,
-      description: `${credential.credential_type} credential expires on ${expiryDate.toLocaleDateString()}`,
-      priority: "high",
-      due_date: reminderDate.toISOString(),
-      status: "pending",
+      user_id: targetUserId,
+      credential_type: formData.get('credential_type') as string,
+      credential_name: formData.get('credential_name') as string,
+      credential_number: (formData.get('credential_number') as string) || null,
+      issuing_authority: (formData.get('issuing_authority') as string) || null,
+      issue_date: (formData.get('issue_date') as string) || null,
+      expiry_date: (formData.get('expiry_date') as string) || null,
+      status: 'pending',
+      notes: (formData.get('notes') as string) || null,
       created_by: user.id,
-    });
-  }
+    };
 
-  revalidatePath("/app/staff-compliance");
-  redirect("/app/staff-compliance");
+    const { data: insertedCredential, error } = await supabase
+      .from('org_staff_credentials')
+      .insert(credential)
+      .select('id')
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    // Audit-log the registration so the trail isn't asymmetric with
+    // verifyStaffCredential (which already logs).
+    await logAuditEvent(
+      {
+        organizationId: actorMembership.organization_id,
+        actorUserId: user.id,
+        actorRole,
+        entityType: 'staff_credential',
+        entityId: insertedCredential?.id ?? null,
+        actionType: 'STAFF_CREDENTIAL_CREATED',
+        afterState: {
+          target_user_id: targetUserId,
+          credential_type: credential.credential_type,
+          credential_name: credential.credential_name,
+          expiry_date: credential.expiry_date,
+          status: credential.status,
+        },
+        reason: 'credential_registration',
+      },
+      { required: false },
+    );
+
+    // Create reminder task if expiry date is set
+    if (credential.expiry_date) {
+      const expiryDate = new Date(credential.expiry_date);
+      const reminderDate = new Date(expiryDate);
+      reminderDate.setDate(reminderDate.getDate() - 30); // 30 days before expiry
+
+      await insertOrgTaskCompat(supabase, {
+        organization_id: actorMembership.organization_id,
+        title: `Credential Expiring: ${credential.credential_name}`,
+        description: `${credential.credential_type} credential expires on ${expiryDate.toLocaleDateString()}`,
+        priority: 'high',
+        due_date: reminderDate.toISOString(),
+        status: 'pending',
+        created_by: user.id,
+      });
+    }
+
+    revalidatePath('/app/staff-compliance');
+    redirect('/app/staff-compliance');
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -489,75 +502,75 @@ export async function createStaffCredential(formData: FormData) {
 
 export async function verifyStaffCredential(id: string) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
 
-  // Verifier role gate. Previously any org member could flip credentials
-  // to verified, which is unacceptable for regulated workforce proof
-  // (audit P1 #12).
-  const { data: actorMembership } = await supabase
-    .from("org_members")
-    .select("organization_id, role")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    // Verifier role gate. Previously any org member could flip credentials
+    // to verified, which is unacceptable for regulated workforce proof
+    // (audit P1 #12).
+    const { data: actorMembership } = await supabase
+      .from('org_members')
+      .select('organization_id, role')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-  if (!actorMembership) throw new Error("No organization found");
+    if (!actorMembership) throw new Error('No organization found');
 
-  const actorRole = (actorMembership.role as string | null) ?? "";
-  if (!STAFF_CREDENTIAL_VERIFIER_ROLES.has(actorRole)) {
-    throw new Error(
-      "Forbidden: only owner/admin/compliance roles can verify credentials.",
+    const actorRole = (actorMembership.role as string | null) ?? '';
+    if (!STAFF_CREDENTIAL_VERIFIER_ROLES.has(actorRole)) {
+      throw new Error(
+        'Forbidden: only owner/admin/compliance roles can verify credentials.',
+      );
+    }
+
+    const organizationId = actorMembership.organization_id;
+    const { count: evidenceCount, error: evidenceError } = await supabase
+      .from('org_evidence')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', organizationId)
+      .eq('entity_type', 'staff_credential')
+      .eq('entity_id', id);
+
+    if (evidenceError) throw new Error(evidenceError.message);
+    if ((evidenceCount ?? 0) === 0) {
+      throw new Error(
+        'Attach credential evidence before verifying this staff credential.',
+      );
+    }
+
+    const verifiedAt = new Date().toISOString();
+    const { error } = await supabase
+      .from('org_staff_credentials')
+      .update({
+        status: 'verified',
+        verified_at: verifiedAt,
+        verified_by: user.id,
+      })
+      .eq('id', id)
+      .eq('organization_id', organizationId);
+
+    if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId,
+        actorUserId: user.id,
+        actorRole,
+        entityType: 'staff_credential',
+        entityId: id,
+        actionType: 'STAFF_CREDENTIAL_VERIFIED',
+        afterState: { status: 'verified', verified_at: verifiedAt },
+        reason: 'credential_verification',
+      },
+      { required: true },
     );
-  }
 
-  const organizationId = actorMembership.organization_id;
-  const { count: evidenceCount, error: evidenceError } = await supabase
-    .from("org_evidence")
-    .select("id", { count: "exact", head: true })
-    .eq("organization_id", organizationId)
-    .eq("entity_type", "staff_credential")
-    .eq("entity_id", id);
-
-  if (evidenceError) throw new Error(evidenceError.message);
-  if ((evidenceCount ?? 0) === 0) {
-    throw new Error(
-      "Attach credential evidence before verifying this staff credential.",
-    );
-  }
-
-  const verifiedAt = new Date().toISOString();
-  const { error } = await supabase
-    .from("org_staff_credentials")
-    .update({
-      status: "verified",
-      verified_at: verifiedAt,
-      verified_by: user.id,
-    })
-    .eq("id", id)
-    .eq("organization_id", organizationId);
-
-  if (error) throw new Error(error.message);
-
-  await logAuditEvent(
-    {
-      organizationId,
-      actorUserId: user.id,
-      actorRole,
-      entityType: "staff_credential",
-      entityId: id,
-      actionType: "STAFF_CREDENTIAL_VERIFIED",
-      afterState: { status: "verified", verified_at: verifiedAt },
-      reason: "credential_verification",
-    },
-    { required: true },
-  );
-
-  revalidatePath("/app/staff-compliance");
-  revalidatePath(`/app/staff-compliance/${id}`);
+    revalidatePath('/app/staff-compliance');
+    revalidatePath(`/app/staff-compliance/${id}`);
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -570,44 +583,44 @@ export async function verifyStaffCredential(id: string) {
 
 export async function createCarePlan(formData: FormData) {
   try {
-  const supabase = await createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/signin");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
 
-  const { data: membership } = await supabase
-    .from("org_members")
-    .select("organization_id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-  if (!membership) throw new Error("No organization found");
+    if (!membership) throw new Error('No organization found');
 
-  const carePlan = {
-    organization_id: membership.organization_id,
-    client_id: formData.get("client_id") as string,
-    plan_type: formData.get("plan_type") as string || "support",
-    title: formData.get("title") as string,
-    description: formData.get("description") as string || null,
-    start_date: formData.get("start_date") as string,
-    end_date: formData.get("end_date") as string || null,
-    review_date: formData.get("review_date") as string || null,
-    status: "draft",
-    created_by: user.id,
-  };
+    const carePlan = {
+      organization_id: membership.organization_id,
+      client_id: formData.get('client_id') as string,
+      plan_type: (formData.get('plan_type') as string) || 'support',
+      title: formData.get('title') as string,
+      description: (formData.get('description') as string) || null,
+      start_date: formData.get('start_date') as string,
+      end_date: (formData.get('end_date') as string) || null,
+      review_date: (formData.get('review_date') as string) || null,
+      status: 'draft',
+      created_by: user.id,
+    };
 
-  const { error } = await supabase
-    .from("org_care_plans")
-    .insert(carePlan)
-    .select()
-    .single();
+    const { error } = await supabase
+      .from('org_care_plans')
+      .insert(carePlan)
+      .select()
+      .single();
 
-  if (error) throw new Error(error.message);
+    if (error) throw new Error(error.message);
 
-  revalidatePath("/app/care-plans");
-  redirect("/app/care-plans");
+    revalidatePath('/app/care-plans');
+    redirect('/app/care-plans');
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
@@ -625,10 +638,7 @@ const CARE_PLAN_STATUSES = [
 ] as const;
 type CarePlanStatus = (typeof CARE_PLAN_STATUSES)[number];
 
-export async function updateCarePlanStatus(
-  planId: string,
-  nextStatus: string,
-) {
+export async function updateCarePlanStatus(planId: string, nextStatus: string) {
   try {
     if (!CARE_PLAN_STATUSES.includes(nextStatus as CarePlanStatus)) {
       return actionError(new Error(`Invalid status: ${nextStatus}`));
@@ -678,6 +688,65 @@ export async function updateCarePlanStatus(
 
     revalidatePath('/app/care-plans');
     revalidatePath('/app/care-plans/journey');
+    revalidatePath(`/app/care-plans/${planId}`);
+    return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
+export async function updateCarePlan(planId: string, formData: FormData) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return actionError(new Error('Not authenticated'));
+
+    const orgId = await requireUserOrganization(supabase, user.id);
+
+    const updates: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+
+    const title = formData.get('title');
+    const description = formData.get('description');
+    const startDate = formData.get('start_date');
+    const endDate = formData.get('end_date');
+    const reviewDate = formData.get('review_date');
+
+    if (typeof title === 'string' && title.trim()) updates.title = title.trim();
+    if (typeof description === 'string')
+      updates.description = description.trim();
+    if (typeof startDate === 'string' && startDate)
+      updates.start_date = startDate;
+    if (typeof endDate === 'string' && endDate) updates.end_date = endDate;
+    if (typeof reviewDate === 'string' && reviewDate)
+      updates.review_date = reviewDate;
+
+    const { error: updateErr } = await supabase
+      .from('org_care_plans')
+      .update(updates)
+      .eq('id', planId)
+      .eq('organization_id', orgId);
+
+    if (updateErr) return actionError(updateErr);
+
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'care_plan',
+        entityId: planId,
+        actionType: 'CARE_PLAN_UPDATED',
+        afterState: updates,
+      },
+      { required: false },
+    );
+
+    revalidatePath('/app/care-plans');
     revalidatePath(`/app/care-plans/${planId}`);
     return { success: true as const };
   } catch (error) {
@@ -840,8 +909,7 @@ export async function createSupport(planId: string, formData: FormData) {
     const goalId = String(formData.get('goal_id') ?? '').trim();
     if (!goalId) return actionError(new Error('Goal is required'));
     const description = String(formData.get('description') ?? '').trim();
-    if (!description)
-      return actionError(new Error('Description is required'));
+    if (!description) return actionError(new Error('Description is required'));
     const assignedTo = String(formData.get('assigned_to') ?? '').trim();
     const frequency = String(formData.get('frequency') ?? '').trim();
 

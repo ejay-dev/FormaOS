@@ -6,6 +6,7 @@ import {
   setOrgDataRegion,
   type DataRegion,
 } from '@/lib/data-residency';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -40,6 +41,9 @@ export async function GET() {
 
 // PATCH — update org's data residency region (admin only)
 export async function PATCH(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },

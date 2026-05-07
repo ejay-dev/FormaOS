@@ -14,6 +14,7 @@ import {
   type CreateRelayWebhookInput,
   type RelayEventType,
 } from '@/lib/integrations/webhook-relay';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const VALID_EVENTS = [
   'member.added',
@@ -31,7 +32,10 @@ const createWebhookSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(200, 'Name too long'),
   url: z.string().url('Invalid URL').max(2048, 'URL too long'),
   provider: z.enum(['zapier', 'make', 'custom']).default('custom'),
-  events: z.array(z.string().min(1).max(100)).min(1, 'At least one event is required').max(20),
+  events: z
+    .array(z.string().min(1).max(100))
+    .min(1, 'At least one event is required')
+    .max(20),
   enabled: z.boolean().default(true),
   retry_count: z.number().int().min(0).max(10).default(3),
   headers: z.record(z.string().max(200), z.string().max(2000)).default({}),
@@ -120,6 +124,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     // 1. Rate limiting
     const rateLimitResult = await rateLimitApi(request);
     if (!rateLimitResult.success) {
@@ -161,17 +168,26 @@ export async function POST(request: Request) {
 
     const parsed = createWebhookSchema.safeParse(rawBody);
     if (!parsed.success) {
-      return NextResponse.json(
-        formatZodError(parsed.error),
-        { status: 400 },
-      );
+      return NextResponse.json(formatZodError(parsed.error), { status: 400 });
     }
 
-    const { name, url, provider, events, enabled, retry_count, headers, description } = parsed.data;
+    const {
+      name,
+      url,
+      provider,
+      events,
+      enabled,
+      retry_count,
+      headers,
+      description,
+    } = parsed.data;
 
     if (!(await isValidWebhookUrl(url))) {
       return NextResponse.json(
-        { error: 'Invalid webhook URL. Must be HTTPS (or localhost for development).' },
+        {
+          error:
+            'Invalid webhook URL. Must be HTTPS (or localhost for development).',
+        },
         { status: 400 },
       );
     }

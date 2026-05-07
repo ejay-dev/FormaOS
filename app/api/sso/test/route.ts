@@ -5,11 +5,15 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { logIdentityEvent } from '@/lib/identity/audit';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 import { buildSpInitiatedLoginUrl } from '@/lib/sso/saml';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   try {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) return csrfError;
+
     const rl = await rateLimitApi(request);
     if (!rl.success) {
       return NextResponse.json(

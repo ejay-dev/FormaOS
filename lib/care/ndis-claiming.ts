@@ -14,7 +14,7 @@ export async function generateLineItems(
   // org_ndis_line_items uses org_id + participant_id — we map between them at insert time.
   const { data: visit } = await db
     .from('org_visits')
-    .select('*, org_patients(id, first_name, last_name)')
+    .select('*, org_patients(id, full_name)')
     .eq('id', visitId)
     .eq('organization_id', orgId)
     .single();
@@ -25,9 +25,15 @@ export async function generateLineItems(
 
   // Calculate duration in hours from actual times if available, else scheduled times.
   const startSource =
-    visit.actual_start ?? visit.scheduled_start ?? visit.actual_start_time ?? visit.start_time;
+    visit.actual_start ??
+    visit.scheduled_start ??
+    visit.actual_start_time ??
+    visit.start_time;
   const endSource =
-    visit.actual_end ?? visit.scheduled_end ?? visit.actual_end_time ?? visit.end_time;
+    visit.actual_end ??
+    visit.scheduled_end ??
+    visit.actual_end_time ??
+    visit.end_time;
   if (!startSource || !endSource) {
     throw new Error('Visit is missing start/end times — cannot generate claim');
   }
@@ -178,9 +184,11 @@ export async function exportClaimFile(
   orgId: string,
   lineItemIds: string[],
 ): Promise<string> {
+  // org_patients exposes full_name, not first_name/last_name. Only ndis_number
+  // is read downstream, so the join just needs full_name + ndis_number.
   const { data: items } = await db
     .from('org_ndis_line_items')
-    .select('*, org_patients(first_name, last_name, ndis_number)')
+    .select('*, org_patients(full_name, ndis_number)')
     .eq('org_id', orgId)
     .in('id', lineItemIds);
 

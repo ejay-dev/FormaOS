@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 import {
   deleteWorkflow,
@@ -39,6 +40,9 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
@@ -60,7 +64,10 @@ export async function PATCH(
     return NextResponse.json(workflow);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to update workflow' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to update workflow',
+      },
       { status: 400 },
     );
   }
@@ -70,6 +77,9 @@ export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(_request);
+  if (csrfError) return csrfError;
+
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
@@ -87,7 +97,10 @@ export async function DELETE(
     return NextResponse.json({ deleted: true });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to delete workflow' },
+      {
+        error:
+          error instanceof Error ? error.message : 'Failed to delete workflow',
+      },
       { status: 400 },
     );
   }
@@ -97,6 +110,9 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
+
   const context = await getAutomationApiContext();
   if (!context) {
     return automationUnauthorized();
