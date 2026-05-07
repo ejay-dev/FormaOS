@@ -136,7 +136,7 @@ export default function Soc2Content() {
         { label: 'Framework Coverage', href: '/frameworks', description: 'See all compliance frameworks FormaOS supports.' },
         { label: 'Audit Evidence Management', href: '/audit-evidence-management', description: 'How FormaOS captures and manages audit evidence.' },
         { label: 'Security Architecture', href: '/security', description: 'FormaOS enterprise security infrastructure.' },
-        { label: 'Compare: FormaOS vs Drata', href: '/compare/drata', description: 'Side-by-side comparison with Drata.' },
+        { label: 'Compare: FormaOS vs 6clicks', href: '/compare/6clicks', description: 'Side-by-side comparison with the AU-built GRC platform that also covers SOC 2.' },
         { label: 'Trust Center', href: '/trust', description: 'Review our security and compliance posture.' },
       ]}
       ctaTitle="Build continuous SOC 2 compliance"

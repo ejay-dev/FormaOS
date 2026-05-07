@@ -28,7 +28,7 @@ const navCards = [
     icon: CheckCircle2,
     title: 'Compare Platforms',
     description:
-      'Compare FormaOS against Drata, Vanta, and Secureframe - evaluate the operational execution difference for regulated industries.',
+      'Compare FormaOS against Ideagen Policy Logic, Riskware, 6clicks, and HealthMetrics — evaluate the operational execution difference for AU care, healthcare, and regulated industries.',
     linkText: 'See comparisons',
   },
   {

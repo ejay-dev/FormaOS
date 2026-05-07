@@ -69,9 +69,9 @@ const relatedLinksByIndustry: Record<
 > = {
   healthcare: [
     {
-      href: '/compare/drata',
-      label: 'Compare with Drata',
-      description: 'See how operational healthcare workflows differ from a security-program-first product.',
+      href: '/compare/healthmetrics',
+      label: 'Compare with HealthMetrics',
+      description: 'See how operational healthcare workflows differ from a clinical-indicator reporting product.',
     },
     {
       href: '/trust',
@@ -86,9 +86,9 @@ const relatedLinksByIndustry: Record<
   ],
   ndis_aged_care: [
     {
-      href: '/compare/secureframe',
-      label: 'Compare with Secureframe',
-      description: 'Contrast checklist automation with operational accountability in care delivery.',
+      href: '/compare/complispace',
+      label: 'Compare with Ideagen Policy Logic',
+      description: 'Contrast policy + training management with operational accountability in care delivery.',
     },
     {
       href: '/trust',
@@ -103,9 +103,9 @@ const relatedLinksByIndustry: Record<
   ],
   financial_services: [
     {
-      href: '/compare/hyperproof',
-      label: 'Compare with Hyperproof',
-      description: 'Evaluate accountable control execution against a control-management-first alternative.',
+      href: '/compare/6clicks',
+      label: 'Compare with 6clicks',
+      description: 'Evaluate accountable control execution against a GRC-content-first alternative.',
     },
     {
       href: '/trust',
@@ -120,9 +120,9 @@ const relatedLinksByIndustry: Record<
   ],
   government_public_sector: [
     {
-      href: '/compare/auditboard',
-      label: 'Compare with AuditBoard',
-      description: 'Review how governance execution differs from an audit-management-led platform.',
+      href: '/compare/riskware',
+      label: 'Compare with Riskware',
+      description: 'Review how governance execution differs from a risk-register-led GRC platform.',
     },
     {
       href: '/trust',
@@ -137,9 +137,9 @@ const relatedLinksByIndustry: Record<
   ],
   incident_management: [
     {
-      href: '/compare/drata',
-      label: 'Compare with Drata',
-      description: 'See why incident workflows need more than a monitoring-oriented compliance tool.',
+      href: '/compare/riskware',
+      label: 'Compare with Riskware',
+      description: 'See why incident workflows need more than a traditional risk-register product.',
     },
     {
       href: '/trust',
@@ -154,9 +154,9 @@ const relatedLinksByIndustry: Record<
   ],
   workforce_credentials: [
     {
-      href: '/compare/hyperproof',
-      label: 'Compare with Hyperproof',
-      description: 'Contrast credential governance with a broader control-management alternative.',
+      href: '/compare/complispace',
+      label: 'Compare with Ideagen Policy Logic',
+      description: 'Contrast credential governance with a policy + training management alternative.',
     },
     {
       href: '/trust',

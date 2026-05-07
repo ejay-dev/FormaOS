@@ -55,52 +55,72 @@ const relatedLinksBySource: Record<
   string,
   { href: string; label: string; description: string }[]
 > = {
-  compare_vanta: [
+  compare_complispace: [
+    {
+      href: '/use-cases/ndis-aged-care',
+      label: 'NDIS & Aged Care',
+      description:
+        'See how policy + training pairs with operational compliance accountability.',
+    },
     {
       href: '/trust',
       label: 'Trust Center',
       description:
-        'Show buyers live assurance artifacts and current review posture.',
-    },
-    {
-      href: '/security',
-      label: 'Security Overview',
-      description:
-        'Review encryption, access controls, and deployment posture in one place.',
+        'Inspect buyer-facing assurance and procurement readiness.',
     },
     {
       href: '/pricing',
       label: 'Pricing',
       description:
-        'See plan structure before moving into guided procurement.',
+        'Validate plan fit before moving into guided procurement.',
     },
   ],
-  compare_drata: [
+  compare_riskware: [
+    {
+      href: '/use-cases/government-public-sector',
+      label: 'Government & Public Sector',
+      description:
+        'Review decision trails, approvals, and export-ready governance evidence.',
+    },
+    {
+      href: '/use-cases/incident-management',
+      label: 'Incident Management',
+      description:
+        'See how risk + incident workflows execute with named ownership and evidence.',
+    },
     {
       href: '/trust',
       label: 'Trust Center',
       description:
-        'Connect evaluation to buyer-facing assurance and security review flow.',
+        'Inspect buyer-facing trust posture alongside the comparison.',
     },
+  ],
+  compare_6clicks: [
+    {
+      href: '/use-cases/financial-services',
+      label: 'Financial Services',
+      description:
+        'Evaluate accountable control execution against a GRC-content-first alternative.',
+    },
+    {
+      href: '/trust',
+      label: 'Trust Center',
+      description:
+        'Connect the comparison to live assurance and procurement materials.',
+    },
+    {
+      href: '/pricing',
+      label: 'Pricing',
+      description:
+        'Review plan structure and rollout path for AU-regulated buyers.',
+    },
+  ],
+  compare_healthmetrics: [
     {
       href: '/use-cases/healthcare',
       label: 'Healthcare Use Case',
       description:
         'See how operational controls and evidence work in regulated service delivery.',
-    },
-    {
-      href: '/pricing',
-      label: 'Pricing',
-      description:
-        'Validate buyer fit against plan depth and procurement readiness.',
-    },
-  ],
-  compare_secureframe: [
-    {
-      href: '/trust',
-      label: 'Trust Center',
-      description:
-        'Move from checklist evaluation to trust acceleration and buyer proof.',
     },
     {
       href: '/use-cases/ndis-aged-care',
@@ -109,50 +129,10 @@ const relatedLinksBySource: Record<
         'Inspect a frontline regulated workflow where accountability cannot drift.',
     },
     {
-      href: '/pricing',
-      label: 'Pricing',
-      description:
-        'Compare rollout path, procurement support, and plan coverage.',
-    },
-  ],
-  compare_auditboard: [
-    {
-      href: '/use-cases/financial-services',
-      label: 'Financial Services',
-      description:
-        'See control ownership, incidents, and assurance workflows in a regulated setting.',
-    },
-    {
-      href: '/use-cases/government-public-sector',
-      label: 'Government & Public Sector',
-      description:
-        'Review decision trails, approvals, and export-ready governance evidence.',
-    },
-    {
       href: '/trust',
       label: 'Trust Center',
       description:
-        'Inspect the buyer-facing trust and procurement path alongside the comparison.',
-    },
-  ],
-  compare_hyperproof: [
-    {
-      href: '/use-cases/financial-services',
-      label: 'Financial Services',
-      description:
-        'Evaluate accountable control execution and export-ready evidence depth.',
-    },
-    {
-      href: '/use-cases/workforce-credentials',
-      label: 'Workforce Credentials',
-      description:
-        'See how regulated operational obligations remain auditable over time.',
-    },
-    {
-      href: '/pricing',
-      label: 'Pricing',
-      description:
-        'Review plan fit and procurement path after product comparison.',
+        'Move from clinical reporting evaluation to buyer assurance and trust acceleration.',
     },
   ],
 };
@@ -180,7 +160,7 @@ export function ComparePageTemplate({
 }: ComparePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks =
-    relatedLinksBySource[source] ?? relatedLinksBySource.compare_vanta;
+    relatedLinksBySource[source] ?? relatedLinksBySource.compare_healthmetrics;
   const buyerReviewHref = getBuyerReviewHref(source);
   const complianceHref = compliancePlanHref(source);
 

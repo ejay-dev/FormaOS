@@ -34,24 +34,8 @@ const ROUTE_MEDIA: Record<
     imageSrc: '/marketing-media/compare.jpg',
     imagePosition: 'center center',
   },
-  '/compare/auditboard': {
-    imageSrc: '/marketing-media/compare-auditboard.jpg',
-    imagePosition: 'center center',
-  },
-  '/compare/drata': {
-    imageSrc: '/marketing-media/compare-drata.jpg',
-    imagePosition: 'center center',
-  },
-  '/compare/hyperproof': {
-    imageSrc: '/marketing-media/compare-hyperproof.jpg',
-    imagePosition: 'center center',
-  },
-  '/compare/secureframe': {
-    imageSrc: '/marketing-media/compare-secureframe.jpg',
-    imagePosition: 'center center',
-  },
-  '/compare/vanta': {
-    imageSrc: '/marketing-media/compare-vanta.jpg',
+  '/compare/healthmetrics': {
+    imageSrc: '/marketing-media/compare.jpg',
     imagePosition: 'center center',
   },
   '/contact': {

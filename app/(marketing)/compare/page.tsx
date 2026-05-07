@@ -3,9 +3,9 @@ import CompareIndexContent from './CompareIndexContent';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'Compare FormaOS vs Compliance Automation Tools',
+  title: 'Compare FormaOS vs AU Compliance Platforms',
   description:
-    'Compare FormaOS against Drata, Vanta, SecureFrame, and traditional compliance platforms. See how outcome-driven execution beats checkbox automation.',
+    'Compare FormaOS against Ideagen Policy Logic, Riskware, 6clicks, and HealthMetrics. See how operational compliance execution beats traditional GRC and clinical-reporting tools for NDIS, aged care, and healthcare.',
   alternates: {
     canonical: `${siteUrl}/compare`,
   },
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Compare FormaOS vs Compliance Automation Tools',
+    title: 'Compare FormaOS vs AU Compliance Platforms',
     description:
-      'See how FormaOS compares against Drata, Vanta, and Secureframe. Outcome-driven execution beats checkbox automation.',
+      'See how FormaOS compares against Ideagen Policy Logic, Riskware, 6clicks, and HealthMetrics. Operational execution beats traditional GRC for AU care.',
   },
 };
 

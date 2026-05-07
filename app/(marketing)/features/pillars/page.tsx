@@ -144,7 +144,7 @@ const PILLARS: Pillar[] = [
         detail: 'Shift-ready notes that also satisfy regulator reporting.',
       },
     ],
-    footnote: 'What Drata/Vanta don&apos;t have. Built for regulated operators.',
+    footnote: 'What general GRC tools don&apos;t have. Built for AU regulated operators.',
   },
   {
     id: 'trust',
@@ -179,16 +179,18 @@ const PILLARS: Pillar[] = [
 const COMPARISON_ROWS: Array<{
   capability: string;
   formaos: boolean | string;
-  drata: boolean | string;
-  vanta: boolean | string;
-  secureframe: boolean | string;
+  complispace: boolean | string;
+  riskware: boolean | string;
+  sixclicks: boolean | string;
 }> = [
-  { capability: 'SOC 2 / ISO 27001 automation', formaos: true, drata: true, vanta: true, secureframe: true },
-  { capability: 'NDIS Practice Standards', formaos: true, drata: false, vanta: false, secureframe: false },
-  { capability: 'Care operations (visits, plans, credentials)', formaos: true, drata: false, vanta: false, secureframe: false },
-  { capability: 'Multi-site rollup', formaos: true, drata: false, vanta: false, secureframe: 'partial' },
-  { capability: 'AU data residency by default', formaos: true, drata: false, vanta: false, secureframe: false },
-  { capability: 'Evidence chain-of-custody', formaos: true, drata: 'partial', vanta: 'partial', secureframe: 'partial' },
+  { capability: 'NDIS Practice Standards (all 8 modules)', formaos: true, complispace: 'partial', riskware: false, sixclicks: 'partial' },
+  { capability: 'Aged Care Quality Standards', formaos: true, complispace: true, riskware: false, sixclicks: 'partial' },
+  { capability: 'Healthcare frameworks (NSQHS, AHPRA, RACGP)', formaos: true, complispace: 'partial', riskware: false, sixclicks: 'partial' },
+  { capability: 'Care operations (visits, plans, credentials)', formaos: true, complispace: false, riskware: false, sixclicks: false },
+  { capability: 'Operational task workflows with named ownership', formaos: true, complispace: 'partial', riskware: 'partial', sixclicks: 'partial' },
+  { capability: 'Evidence chain-of-custody with verification', formaos: true, complispace: 'partial', riskware: 'partial', sixclicks: 'partial' },
+  { capability: 'Multi-site rollup', formaos: true, complispace: 'partial', riskware: 'partial', sixclicks: true },
+  { capability: 'AU data residency by default', formaos: true, complispace: true, riskware: true, sixclicks: true },
 ];
 
 function Cell({ value }: { value: boolean | string }) {
@@ -355,9 +357,9 @@ export default function FeaturesPillarsPage() {
                   <th className="py-3 text-center font-semibold text-cyan-300">
                     FormaOS
                   </th>
-                  <th className="py-3 text-center font-medium">Drata</th>
-                  <th className="py-3 text-center font-medium">Vanta</th>
-                  <th className="py-3 text-center font-medium">Secureframe</th>
+                  <th className="py-3 text-center font-medium">Complispace</th>
+                  <th className="py-3 text-center font-medium">Riskware</th>
+                  <th className="py-3 text-center font-medium">6clicks</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -368,13 +370,13 @@ export default function FeaturesPillarsPage() {
                       <Cell value={row.formaos} />
                     </td>
                     <td className="py-3 text-center">
-                      <Cell value={row.drata} />
+                      <Cell value={row.complispace} />
                     </td>
                     <td className="py-3 text-center">
-                      <Cell value={row.vanta} />
+                      <Cell value={row.riskware} />
                     </td>
                     <td className="py-3 text-center">
-                      <Cell value={row.secureframe} />
+                      <Cell value={row.sixclicks} />
                     </td>
                   </tr>
                 ))}

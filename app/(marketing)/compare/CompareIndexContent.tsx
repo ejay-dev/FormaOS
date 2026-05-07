@@ -32,16 +32,10 @@ const comparisons = [
       'GRC framework coverage vs accountable workflow execution and evidence posture',
   },
   {
-    href: '/compare/vanta',
-    name: 'Vanta',
+    href: '/compare/healthmetrics',
+    name: 'HealthMetrics',
     tagline:
-      'SaaS security automation vs NDIS and healthcare compliance execution',
-  },
-  {
-    href: '/compare/drata',
-    name: 'Drata',
-    tagline:
-      'Continuous security monitoring vs operational workflow governance for regulated industries',
+      'Clinical governance and quality reporting vs operational compliance with evidence chain-of-custody',
   },
 ] as const;
 

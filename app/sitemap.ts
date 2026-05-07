@@ -212,31 +212,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
     },
     {
-      url: `${siteUrl}/compare/drata`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/compare/vanta`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/compare/secureframe`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/compare/hyperproof`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/compare/auditboard`,
+      url: `${siteUrl}/compare/complispace`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.7,
@@ -254,7 +230,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${siteUrl}/compare/complispace`,
+      url: `${siteUrl}/compare/healthmetrics`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.7,

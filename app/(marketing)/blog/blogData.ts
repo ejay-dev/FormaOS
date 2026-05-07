@@ -635,15 +635,16 @@ export const blogPosts: BlogPost[] = [
             href: '/security',
           },
           {
-            label: 'FormaOS vs Vanta',
-            href: '/compare/vanta',
+            label: 'FormaOS vs Ideagen Policy Logic',
+            href: '/compare/complispace',
             description:
-              'How FormaOS differs from security-first compliance tools.',
+              'How FormaOS differs from policy + training management tools for AU care.',
           },
           {
-            label: 'FormaOS vs Drata',
-            href: '/compare/drata',
-            description: 'Operational compliance vs automated monitoring.',
+            label: 'FormaOS vs HealthMetrics',
+            href: '/compare/healthmetrics',
+            description:
+              'Operational compliance vs clinical governance and quality reporting.',
           },
         ],
       },
