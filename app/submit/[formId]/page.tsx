@@ -1,8 +1,10 @@
 import { notFound, redirect } from 'next/navigation';
+import { randomUUID } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { validateSubmission } from '@/lib/forms/submission-engine';
 import type { FormField } from '@/lib/forms/types';
+import { SubmitButton } from '@/components/ui/submit-button';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,6 +71,15 @@ async function handleSubmit(formId: string, orgId: string, formData: FormData) {
   const respondentEmail = (formData.get('respondent_email') as string) ?? null;
   const respondentName = (formData.get('respondent_name') as string) ?? null;
 
+  // Idempotency token issued when the page rendered. A double-click sends
+  // the same UUID with both POSTs; a refresh gets a new UUID. The DB
+  // backstop is a partial UNIQUE INDEX on (form_id, submission_uuid).
+  const submissionUuidRaw = (formData.get('_submission_uuid') as string | null) ?? '';
+  const submissionUuid =
+    /^[0-9a-fA-F-]{32,36}$/.test(submissionUuidRaw)
+      ? submissionUuidRaw
+      : null;
+
   // Get authenticated user id if available
   let submittedBy: string | null = null;
   if (requiresAuth) {
@@ -86,11 +97,26 @@ async function handleSubmit(formId: string, orgId: string, formData: FormData) {
     respondent_email: respondentEmail,
     respondent_name: respondentName,
     data,
-    metadata: { source: 'public_form', user_agent: null },
+    metadata: {
+      source: 'public_form',
+      user_agent: null,
+      submission_uuid: submissionUuid,
+    },
     status: 'submitted',
-  });
+    submission_uuid: submissionUuid,
+  } as Record<string, unknown>);
 
-  if (error) {
+  // Postgres unique-violation = duplicate-submit collision; treat as success
+  // so the user lands on the success page without seeing a confusing error.
+  // 23505 is the SQLSTATE for unique_violation; PostgREST surfaces it on the
+  // error code field when the partial unique index fires.
+  const isDuplicate =
+    error &&
+    typeof error === 'object' &&
+    'code' in error &&
+    (error as { code?: string }).code === '23505';
+
+  if (error && !isDuplicate) {
     redirect(`/submit/${formId}?error=server_error`);
   }
 
@@ -139,6 +165,10 @@ export default async function PublicFormPage({
 
   const submitAction = handleSubmit.bind(null, form.id, form.org_id);
   const fields = form.fields as FormField[];
+  // Single idempotency token per page render. Refresh = new token; double-
+  // click on the rendered button = same token, so the partial unique index
+  // on (form_id, submission_uuid) collapses both POSTs to one row.
+  const submissionUuid = randomUUID();
 
   if (qp.success === 'true') {
     return (
@@ -172,6 +202,7 @@ export default async function PublicFormPage({
         )}
 
         <form action={submitAction} className="space-y-5">
+          <input type="hidden" name="_submission_uuid" value={submissionUuid} />
           {fields.map((field) => (
             <div key={field.id} className="space-y-1">
               <label
@@ -233,12 +264,9 @@ export default async function PublicFormPage({
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
+          <SubmitButton size="md" loadingText="Submitting…" className="rounded-md">
             Submit
-          </button>
+          </SubmitButton>
         </form>
       </div>
     </div>

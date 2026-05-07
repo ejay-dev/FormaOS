@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 
 import { createPolicy } from '@/app/app/actions/policies';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { SubmitButton } from '@/components/ui/submit-button';
 
 const FRAMEWORK_OPTIONS = [
   'General',
@@ -132,12 +133,15 @@ export default async function NewPolicyPage() {
           >
             Cancel
           </Link>
-          <button
-            type="submit"
-            className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          <SubmitButton
+            size="md"
+            fullWidth={false}
+            showArrow={false}
+            loadingText="Creating…"
+            className="px-4 rounded-lg"
           >
             Create Policy
-          </button>
+          </SubmitButton>
         </div>
       </form>
     </div>

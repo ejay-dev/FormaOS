@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createParticipant } from '@/app/app/actions/care-operations';
+import { SubmitButton } from '@/components/ui/submit-button';
 
 function getEntityLabel(industry: string | null): string {
   switch (industry) {
@@ -400,12 +401,15 @@ export default async function NewParticipantPage() {
           >
             Cancel
           </Link>
-          <button
-            type="submit"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          <SubmitButton
+            size="md"
+            fullWidth={false}
+            showArrow={false}
+            loadingText={`Creating ${label}…`}
+            className="px-4 rounded-lg"
           >
             Create {label}
-          </button>
+          </SubmitButton>
         </div>
       </form>
     </div>

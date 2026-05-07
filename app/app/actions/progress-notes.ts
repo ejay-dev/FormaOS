@@ -19,9 +19,10 @@ async function requireRole(allowed: Set<RoleKey>) {
 export async function createProgressNote(formData: FormData) {
   try {
   const supabase = await createSupabaseServerClient();
+  // requireRole / getUserOrgMembership already returns userId, so the
+  // additional auth.getUser call we used to make here was a wasted round
+  // trip — getUserOrgMembership is now React.cache-wrapped and authoritative.
   const membership = await requireRole(NOTE_WRITE_ROLES);
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
 
   const patientId = formData.get("patientId") as string;
   const noteText = (formData.get("noteText") as string) || "";
@@ -44,7 +45,7 @@ export async function createProgressNote(formData: FormData) {
     .insert({
       organization_id: membership.orgId,
       patient_id: patientId,
-      staff_user_id: user.id,
+      staff_user_id: membership.userId,
       note_text: noteText.trim(),
       status_tag: statusTag,
     })
@@ -55,7 +56,7 @@ export async function createProgressNote(formData: FormData) {
 
   await logAuditEvent({
     organizationId: membership.orgId,
-    actorUserId: user.id,
+    actorUserId: membership.userId,
     actorRole: membership.role,
     entityType: "progress_note",
     entityId: note?.id ?? null,

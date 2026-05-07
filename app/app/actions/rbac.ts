@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type PermissionKey =
@@ -77,7 +78,12 @@ export function normalizeRole(role?: string | null): RoleKey {
   return ROLE_ALIASES[key] || "STAFF";
 }
 
-export async function getUserOrgMembership() {
+// Wrapped in React `cache()` so concurrent calls within the same request
+// (server component render + a server action invoked from it) deduplicate
+// to a single auth.getUser + org_members round trip instead of repeating
+// both queries every time. The cache lifetime is per-request, so two
+// distinct requests still re-validate independently.
+export const getUserOrgMembership = cache(async function getUserOrgMembership() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -96,7 +102,7 @@ export async function getUserOrgMembership() {
 
   const role = normalizeRole(membership.role as string | null);
   return { orgId: membership.organization_id as string, role, userId: user.id };
-}
+});
 
 export async function getEntityScopeForUser() {
   const supabase = await createSupabaseServerClient();

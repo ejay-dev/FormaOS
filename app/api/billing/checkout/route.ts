@@ -119,30 +119,35 @@ export async function POST(request: Request) {
       });
     }
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      line_items: [{ price: priceId, quantity: 1 }],
-      customer: subscription?.stripe_customer_id ?? undefined,
-      customer_email: subscription?.stripe_customer_id
-        ? undefined
-        : (user.email ?? undefined),
-      client_reference_id: orgId,
-      success_url: `${appUrl}/app/billing?checkout=success`,
-      cancel_url: `${appUrl}/app/billing?checkout=cancelled`,
-      subscription_data: {
-        trial_period_days: 0,
+    // idempotencyKey collapses double-clicks (and any Stripe SDK retry on
+    // transient network errors) into a single checkout session per (org, plan).
+    const session = await stripe.checkout.sessions.create(
+      {
+        mode: 'subscription',
+        line_items: [{ price: priceId, quantity: 1 }],
+        customer: subscription?.stripe_customer_id ?? undefined,
+        customer_email: subscription?.stripe_customer_id
+          ? undefined
+          : (user.email ?? undefined),
+        client_reference_id: orgId,
+        success_url: `${appUrl}/app/billing?checkout=success`,
+        cancel_url: `${appUrl}/app/billing?checkout=cancelled`,
+        subscription_data: {
+          trial_period_days: 0,
+          metadata: {
+            organization_id: orgId,
+            plan_key: planId,
+          },
+        },
         metadata: {
           organization_id: orgId,
           plan_key: planId,
+          price_id: priceId,
+          initiated_by: user.id,
         },
       },
-      metadata: {
-        organization_id: orgId,
-        plan_key: planId,
-        price_id: priceId,
-        initiated_by: user.id,
-      },
-    });
+      { idempotencyKey: `checkout:${orgId}:${planId}:${priceId}` },
+    );
 
     return NextResponse.json({ url: session.url, id: session.id });
   } catch (err) {

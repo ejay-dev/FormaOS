@@ -1,19 +1,35 @@
 'use client';
 
-import { useState } from 'react';
-import { Download, ExternalLink, Eye, Loader2 } from 'lucide-react';
-import { getEvidenceSignedUrl } from '@/app/app/actions/vault';
+import { useState, useTransition } from 'react';
+import {
+  Download,
+  ExternalLink,
+  Eye,
+  Loader2,
+  Trash2,
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import {
+  getEvidenceSignedUrl,
+  deleteEvidence,
+} from '@/app/app/actions/vault';
 
 interface EvidenceFileActionsProps {
   filePath: string | null;
   variant?: 'pending' | 'table';
+  evidenceId?: string;
+  canDelete?: boolean;
 }
 
 export function EvidenceFileActions({
   filePath,
   variant = 'table',
+  evidenceId,
+  canDelete = false,
 }: EvidenceFileActionsProps) {
   const [loading, setLoading] = useState(false);
+  const [isDeleting, startDelete] = useTransition();
+  const router = useRouter();
 
   async function openFile(mode: 'view' | 'download') {
     if (!filePath) return;
@@ -43,6 +59,25 @@ export function EvidenceFileActions({
     } finally {
       setLoading(false);
     }
+  }
+
+  function onDelete() {
+    if (!evidenceId) return;
+    if (
+      !window.confirm(
+        'Delete this evidence file? This removes the row and the underlying file from storage. This cannot be undone.',
+      )
+    )
+      return;
+
+    startDelete(async () => {
+      const result = await deleteEvidence(evidenceId);
+      if (result && 'error' in result) {
+        window.alert(`Could not delete: ${result.error}`);
+        return;
+      }
+      router.refresh();
+    });
   }
 
   if (variant === 'pending') {
@@ -90,6 +125,23 @@ export function EvidenceFileActions({
           <Download className="h-4 w-4" />
         )}
       </button>
+      {canDelete && evidenceId && (
+        <button
+          type="button"
+          disabled={isDeleting}
+          onClick={onDelete}
+          data-testid="evidence-delete-button"
+          className="p-2 hover:bg-rose-500/20 rounded-lg text-muted-foreground hover:text-rose-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Delete evidence"
+          aria-label="Delete evidence"
+        >
+          {isDeleting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Trash2 className="h-4 w-4" />
+          )}
+        </button>
+      )}
     </div>
   );
 }

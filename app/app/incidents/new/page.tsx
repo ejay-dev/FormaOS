@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createIncident } from '@/app/app/actions/care-operations';
+import { SubmitButton } from '@/components/ui/submit-button';
 
 export default async function NewIncidentPage() {
   const systemState = await fetchSystemState();
@@ -227,12 +228,15 @@ export default async function NewIncidentPage() {
           >
             Cancel
           </Link>
-          <button
-            type="submit"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          <SubmitButton
+            size="md"
+            fullWidth={false}
+            showArrow={false}
+            loadingText="Reporting…"
+            className="px-4 rounded-lg"
           >
             Report Incident
-          </button>
+          </SubmitButton>
         </div>
       </form>
     </div>

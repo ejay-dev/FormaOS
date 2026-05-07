@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createStaffCredential } from '@/app/app/actions/care-operations';
+import { SubmitButton } from '@/components/ui/submit-button';
 
 const CREDENTIAL_TYPES = [
   { value: 'wwcc', label: 'Working With Children Check' },
@@ -235,12 +236,15 @@ export default async function NewCredentialPage() {
           >
             Cancel
           </Link>
-          <button
-            type="submit"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          <SubmitButton
+            size="md"
+            fullWidth={false}
+            showArrow={false}
+            loadingText="Adding…"
+            className="px-4 rounded-lg"
           >
             Add Credential
-          </button>
+          </SubmitButton>
         </div>
       </form>
     </div>

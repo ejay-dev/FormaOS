@@ -16,39 +16,38 @@ export const DEFAULT_INVITATION_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
 
 export async function createInvitation(params: CreateInvitationParams) {
   const supabase = await createSupabaseServerClient();
-  
+
   const expiryMs = params.expiresInMs ?? DEFAULT_INVITATION_EXPIRY_MS;
   const expiresAt = new Date(Date.now() + expiryMs).toISOString();
+  const email = params.email.toLowerCase();
+  const now = new Date().toISOString();
 
-  // Generate secure token
-  const token = randomBytes(32).toString('hex');
-
-  // Check for existing pending invitation and revoke it
-  const { data: existing } = await supabase
+  // Revoke any existing pending invitation atomically. The previous
+  // select-then-revoke-then-insert flow had a race where two concurrent
+  // invites for the same address could both pass the existence check and
+  // both insert; the partial unique index added in 20260622_001 backstops
+  // the bad case but we revoke first to keep the UX clean.
+  const { error: revokeError } = await supabase
     .from('team_invitations')
-    .select('id')
+    .update({ status: 'revoked', revoked_at: now })
     .eq('organization_id', params.organizationId)
-    .eq('email', params.email.toLowerCase())
-    .eq('status', 'pending')
-    .maybeSingle();
+    .eq('email', email)
+    .eq('status', 'pending');
 
-  if (existing) {
-    // Revoke existing invitation
-    await supabase
-      .from('team_invitations')
-      .update({ 
-        status: 'revoked',
-        revoked_at: new Date().toISOString()
-      })
-      .eq('id', existing.id);
+  if (revokeError) {
+    console.error('[createInvitation] revoke error:', revokeError);
+    return { success: false, error: revokeError };
   }
 
-  // Create invitation with expiration
+  // Generate secure token after revoking so we never leak a token for an
+  // invite the DB rejected.
+  const token = randomBytes(32).toString('hex');
+
   const { data: invitation, error } = await supabase
     .from('team_invitations')
     .insert({
       organization_id: params.organizationId,
-      email: params.email.toLowerCase(),
+      email,
       role: params.role,
       token,
       invited_by: params.invitedBy,
@@ -63,8 +62,8 @@ export async function createInvitation(params: CreateInvitationParams) {
     return { success: false, error };
   }
 
-  return { 
-    success: true, 
+  return {
+    success: true,
     data: invitation,
     expiresAt,
   };

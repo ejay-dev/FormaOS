@@ -134,13 +134,20 @@ export async function startCheckout(
       }
 
       if (!customerId) {
-        const customer = await stripe.customers.create({
-          email: user.email ?? undefined,
-          metadata: {
-            organization_id: orgId,
-            user_id: user.id,
+        // idempotencyKey scopes the create operation per-org. A double-click
+        // (or a Stripe-retry on transient network failure) re-issues the
+        // same request and Stripe returns the original customer instead of
+        // creating a second one.
+        const customer = await stripe.customers.create(
+          {
+            email: user.email ?? undefined,
+            metadata: {
+              organization_id: orgId,
+              user_id: user.id,
+            },
           },
-        });
+          { idempotencyKey: `customer:${orgId}` },
+        );
         customerId = customer.id;
       }
 
@@ -163,29 +170,35 @@ export async function startCheckout(
         }
       }
 
-      const session = await stripe.checkout.sessions.create({
-        mode: 'subscription',
-        customer: customerId,
-        line_items: [{ price: priceId, quantity: 1 }],
-        subscription_data: {
-          // Explicit 0 keeps any Stripe Dashboard product-level trial default
-          // from silently applying to new Foundation/Growth subscriptions.
-          trial_period_days: 0,
+      // Scoped per (org, plan) so a double-click within the same plan choice
+      // returns the same checkout session URL instead of creating a second
+      // pending session. A different plan selection lands on a different key.
+      const session = await stripe.checkout.sessions.create(
+        {
+          mode: 'subscription',
+          customer: customerId,
+          line_items: [{ price: priceId, quantity: 1 }],
+          subscription_data: {
+            // Explicit 0 keeps any Stripe Dashboard product-level trial
+            // default from silently applying to new Foundation/Growth subs.
+            trial_period_days: 0,
+            metadata: {
+              organization_id: orgId,
+              plan_key: planKey,
+            },
+          },
+          automatic_tax: { enabled: true },
+          allow_promotion_codes: true,
+          success_url: `${appBase}/app`,
+          cancel_url: `${siteBase}/pricing`,
           metadata: {
             organization_id: orgId,
             plan_key: planKey,
+            price_id: priceId,
           },
         },
-        automatic_tax: { enabled: true },
-        allow_promotion_codes: true,
-        success_url: `${appBase}/app`,
-        cancel_url: `${siteBase}/pricing`,
-        metadata: {
-          organization_id: orgId,
-          plan_key: planKey,
-          price_id: priceId,
-        },
-      });
+        { idempotencyKey: `checkout:${orgId}:${planKey}:${priceId}` },
+      );
 
       const { error: upsertError } = await admin
         .from('org_subscriptions')

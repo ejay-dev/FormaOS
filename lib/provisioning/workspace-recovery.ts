@@ -209,7 +209,11 @@ export async function recoverUserWorkspace({
     });
     return {
       ok: false,
-      nextPath: '/auth/signin',
+      // Surface the failure on the signin page instead of bouncing the user
+      // back to a clean form — without this, the symptom looks like a
+      // transient OAuth issue ("first attempt fails, second works") when in
+      // reality the bootstrap silently dropped the membership row.
+      nextPath: '/auth/signin?error=workspace_recovery_failed&reason=org_members',
       organizationId: null,
       onboardingStep: 1,
       onboardingComplete: false,
@@ -240,7 +244,8 @@ export async function recoverUserWorkspace({
     missingRecords.push('organizations');
     return {
       ok: false,
-      nextPath: '/auth/signin',
+      nextPath:
+        '/auth/signin?error=workspace_recovery_failed&reason=organizations',
       organizationId,
       onboardingStep: 1,
       onboardingComplete: false,

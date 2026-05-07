@@ -8,8 +8,23 @@ let cachedClient: SupabaseClient | null = null;
 
 function resolveBrowserCookieOptions() {
   if (typeof window === 'undefined') return undefined;
-  const domain = getCookieDomain(window.location.hostname);
-  const secure = window.location.protocol === 'https:';
+  const hostname = window.location.hostname;
+  const domain = getCookieDomain(hostname);
+
+  // Force Secure for every host that isn't local. Without this, Safari ITP
+  // refuses to send the PKCE verifier cookie back across the Google OAuth
+  // round trip, which is a dominant cause of the "first attempt fails,
+  // second works" symptom. We can't trust window.location.protocol because
+  // the module-level cachedClient may be initialised in an SSR or
+  // pre-redirect context where the protocol is briefly http: even on
+  // production. Localhost development still works because we explicitly opt
+  // out below.
+  const isLocal =
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1' ||
+    hostname.endsWith('.localhost');
+
   const options: {
     domain?: string;
     path: string;
@@ -20,7 +35,7 @@ function resolveBrowserCookieOptions() {
     sameSite: 'lax',
   };
   if (domain) options.domain = domain;
-  if (secure) options.secure = true;
+  if (!isLocal) options.secure = true;
   return options;
 }
 

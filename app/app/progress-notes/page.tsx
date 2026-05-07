@@ -7,6 +7,7 @@ import { normalizeRole } from '@/app/app/actions/rbac';
 import { NotebookPen, UserCircle2, BadgeCheck } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { SubmitButton, AdminActionButton } from '@/components/ui/submit-button';
 
 type PatientRow = {
   id: string;
@@ -168,13 +169,16 @@ export default async function ProgressNotesPage() {
                 />
               </div>
               <div className="md:col-span-3">
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent/30 transition-colors"
+                <SubmitButton
+                  size="sm"
+                  fullWidth={false}
+                  showArrow={false}
+                  loadingText="Saving…"
+                  className="rounded-md border border-border px-3 text-xs"
                   disabled={(patients ?? []).length === 0}
                 >
                   Save Note
-                </button>
+                </SubmitButton>
               </div>
             </form>
             {(patients ?? []).length === 0 && (
@@ -240,12 +244,9 @@ export default async function ProgressNotesPage() {
                           }}
                         >
                           <input type="hidden" name="noteId" value={note.id} />
-                          <button
-                            type="submit"
-                            className="rounded-md border border-border px-2 py-1 text-xs font-medium hover:bg-accent/30 transition-colors"
-                          >
+                          <AdminActionButton variant="secondary">
                             Sign off
-                          </button>
+                          </AdminActionButton>
                         </form>
                       )}
                     </div>

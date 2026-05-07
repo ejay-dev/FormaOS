@@ -8,6 +8,7 @@ import {
   isMissingSupabaseTableError,
 } from '@/lib/supabase/schema-compat';
 import { createCapa } from '../actions';
+import { SubmitButton } from '@/components/ui/submit-button';
 
 export const metadata = { title: 'New CAPA | FormaOS' };
 
@@ -265,12 +266,15 @@ export default async function NewCapaPage({
               >
                 Cancel
               </Link>
-              <button
-                type="submit"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              <SubmitButton
+                size="md"
+                fullWidth={false}
+                showArrow={false}
+                loadingText="Creating…"
+                className="rounded-md px-4"
               >
                 Create CAPA
-              </button>
+              </SubmitButton>
             </div>
           </form>
         )}

@@ -116,15 +116,33 @@ export function UploadArtifactModal({
 
       setUploadProgress(95);
 
-      // 2. Register Artifact in Database via Server Action (with checksum)
+      // 2. Register Artifact in Database via Server Action (with checksum).
+      //    The action returns { success: false, error } on DB failure rather
+      //    than throwing — so the previous code that ignored the result was
+      //    showing the green "Evidence Secured" state on a row that never
+      //    persisted. Inspect the result and roll back the storage object
+      //    if the DB insert reports failure.
       const artifactTitle = title || file.name;
-      await registerVaultArtifact({
+      const result = await registerVaultArtifact({
         title: artifactTitle,
+        fileName: file.name,
         filePath: filePath,
         fileType: fileExt || 'unknown',
         fileSize: file.size,
         checksum,
       });
+
+      if (!result || result.success !== true) {
+        await supabase.storage
+          .from('evidence')
+          .remove([filePath])
+          .catch(() => {});
+        const message =
+          result && 'error' in result && result.error
+            ? String(result.error)
+            : 'Failed to register artifact';
+        throw new Error(message);
+      }
 
       clearInterval(progressInterval);
       setUploadProgress(100);
@@ -141,6 +159,10 @@ export function UploadArtifactModal({
       }, 1500);
     } catch (error: unknown) {
       clearInterval(progressInterval);
+      setUploadProgress(0);
+      setValidationError(
+        error instanceof Error ? error.message : 'Upload failed',
+      );
       reportError({
         title: 'Upload failed',
         message: error instanceof Error ? error.message : 'Unknown error',

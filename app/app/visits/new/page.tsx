@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createVisit } from '@/app/app/actions/care-operations';
+import { SubmitButton } from '@/components/ui/submit-button';
 
 export default async function NewVisitPage() {
   const systemState = await fetchSystemState();
@@ -310,12 +311,15 @@ export default async function NewVisitPage() {
           >
             Cancel
           </Link>
-          <button
-            type="submit"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+          <SubmitButton
+            size="md"
+            fullWidth={false}
+            showArrow={false}
+            loadingText="Scheduling…"
+            className="px-4 rounded-lg"
           >
             Schedule Visit
-          </button>
+          </SubmitButton>
         </div>
       </form>
     </div>

@@ -219,6 +219,13 @@ export async function GET(request: Request) {
     cookies: {
       getAll: () => cookieSnapshot,
       setAll: (cookiesToSet) => {
+        // Surface any cookie-write failure instead of silently dropping the
+        // session cookies — the previous catch-and-ignore was the canonical
+        // path for "first attempt fails, second works": a 302 was issued
+        // with no Set-Cookie header, so the next request had no session
+        // and the user got bounced to /auth/signin. Logging here lets the
+        // monitoring layer detect the failure mode and lets us return a
+        // diagnostic param if needed downstream.
         try {
           cookiesToSet.forEach(({ name, value, options }) => {
             const cookieOptions = normalizeCookieOptions(options);
@@ -228,8 +235,8 @@ export async function GET(request: Request) {
               { name, value },
             ];
           });
-        } catch {
-          // Ignore cookie write errors in auth callback
+        } catch (err) {
+          authLogger.error('callback_cookie_setall_failed', toError(err));
         }
       },
     },
@@ -373,7 +380,14 @@ export async function GET(request: Request) {
         });
         authLogger.info('founder_org_bootstrapped');
       } catch (bootstrapErr) {
+        // Don't silently land on /admin/dashboard with no org — the layout
+        // will then bounce the user with no diagnostic. Surface the failure
+        // so the next attempt sees a real error instead of looking like a
+        // transient retry success.
         authLogger.error('founder_org_bootstrap_failed', toError(bootstrapErr));
+        return redirectWithCookies(
+          `${appBase}/auth/signin?error=founder_bootstrap_failed`,
+        );
       }
     }
 

@@ -64,19 +64,32 @@ export async function POST(request: Request) {
         typeof visit.id === 'string' && !existingVisitIds.has(visit.id),
     );
 
+    // Bounded concurrency. Sequentially looping through up to 250 visits
+    // (each iteration is 2-3 Supabase round trips) was the dominant latency
+    // cost on this route. Eight in flight at a time keeps total wall-time
+    // tractable without saturating the pool. The unique index on
+    // (org_id, visit_id) added by 20260622_001_dedup_indexes.sql is the
+    // backstop against any "two concurrent generations both pass the dedupe
+    // check" race.
+    const CONCURRENCY = 8;
     let generated = 0;
     let failed = 0;
-
-    for (const visit of pendingVisits) {
-      try {
-        await generateLineItems(admin, orgId, visit.id);
-        generated++;
-      } catch (error) {
-        failed++;
-        log.warn(
-          { err: error, orgId, visitId: visit.id },
-          'ndis line item generation failed',
-        );
+    for (let i = 0; i < pendingVisits.length; i += CONCURRENCY) {
+      const chunk = pendingVisits.slice(i, i + CONCURRENCY);
+      const results = await Promise.allSettled(
+        chunk.map((visit) => generateLineItems(admin, orgId, visit.id)),
+      );
+      for (let j = 0; j < results.length; j += 1) {
+        const result = results[j];
+        if (result.status === 'fulfilled') {
+          generated += 1;
+        } else {
+          failed += 1;
+          log.warn(
+            { err: result.reason, orgId, visitId: chunk[j]?.id },
+            'ndis line item generation failed',
+          );
+        }
       }
     }
 

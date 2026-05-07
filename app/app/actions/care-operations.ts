@@ -77,11 +77,8 @@ export async function createParticipant(formData: FormData) {
       created_by: user.id,
     };
 
-    const { error } = await supabase
-      .from('org_patients')
-      .insert(participant)
-      .select()
-      .single();
+    // We do not consume the inserted row, so skip the round-trip back.
+    const { error } = await supabase.from('org_patients').insert(participant);
 
     if (error) throw new Error(error.message);
 
@@ -183,11 +180,7 @@ export async function createVisit(formData: FormData) {
       created_by: user.id,
     };
 
-    const { error } = await supabase
-      .from('org_visits')
-      .insert(visit)
-      .select()
-      .single();
+    const { error } = await supabase.from('org_visits').insert(visit);
 
     if (error) throw new Error(error.message);
 
@@ -278,11 +271,7 @@ export async function createIncident(formData: FormData) {
         (formData.get('follow_up_due_date') as string) || null,
     };
 
-    const { error } = await supabase
-      .from('org_incidents')
-      .insert(incident)
-      .select()
-      .single();
+    const { error } = await supabase.from('org_incidents').insert(incident);
 
     if (error) throw new Error(error.message);
 
@@ -611,11 +600,7 @@ export async function createCarePlan(formData: FormData) {
       created_by: user.id,
     };
 
-    const { error } = await supabase
-      .from('org_care_plans')
-      .insert(carePlan)
-      .select()
-      .single();
+    const { error } = await supabase.from('org_care_plans').insert(carePlan);
 
     if (error) throw new Error(error.message);
 

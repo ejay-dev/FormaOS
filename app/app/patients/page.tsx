@@ -4,6 +4,7 @@ import { normalizeRole } from '@/app/app/actions/rbac';
 import Link from 'next/link';
 import { Users, AlertTriangle, Plus } from 'lucide-react';
 import { redirect } from 'next/navigation';
+import { SubmitButton } from '@/components/ui/submit-button';
 
 type PatientRow = {
   id: string;
@@ -66,13 +67,16 @@ export default async function PatientsPage() {
               placeholder="New patient name"
               className="w-56 rounded-xl border border-edge-2 bg-glass-strong px-3 py-2 text-sm text-foreground outline-none"
             />
-            <button
-              type="submit"
-              className="inline-flex items-center gap-2 rounded-xl border border-edge-2 bg-glass-strong px-4 py-2 text-xs font-semibold text-foreground hover:bg-white/15"
+            <SubmitButton
+              size="sm"
+              fullWidth={false}
+              showArrow={false}
+              loadingText="Adding…"
+              className="rounded-xl border border-edge-2 bg-glass-strong px-4 text-xs"
             >
               <Plus className="h-4 w-4" />
               Add
-            </button>
+            </SubmitButton>
           </form>
         )}
       </div>
