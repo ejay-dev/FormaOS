@@ -263,6 +263,9 @@ export async function proxy(request: NextRequest) {
     const nonce = createSecureNonce();
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
+    // Stamp the path so server components (e.g. app/app/layout.tsx billing
+    // gate) can read the current route without each page wiring it up.
+    requestHeaders.set('x-pathname', request.nextUrl.pathname);
     const response = NextResponse.next({
       request: { headers: requestHeaders },
     });

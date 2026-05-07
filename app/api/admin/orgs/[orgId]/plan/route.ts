@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { resolvePlanKey } from '@/lib/plans';
@@ -57,10 +58,17 @@ export async function POST(request: Request, { params }: Params) {
         .update({ plan_key: plan, updated_at: now })
         .eq('organization_id', orgId);
     } else {
-      await ensureSubscription(orgId, plan);
+      // Admin-assigned plans bypass the self-serve checkout gate — admins
+      // grant access on behalf of the customer (typically enterprise / contracted).
+      await ensureSubscription(orgId, plan, { intent: 'active' });
     }
 
     await syncEntitlementsForPlan(orgId, plan);
+
+    // Bust the cached subscription state so the org's next /app load reflects
+    // the new plan immediately rather than waiting on the 5-min cache TTL.
+    revalidatePath('/app', 'layout');
+    revalidatePath('/app/billing');
 
     await logAdminAction({
       actorUserId: access.user.id,

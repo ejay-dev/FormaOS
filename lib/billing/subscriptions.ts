@@ -1,6 +1,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
+import { isSelfServePlan } from '@/lib/billing/checkout-intent';
 import { billingLogger } from '@/lib/observability/structured-logger';
 
 // Legacy plan_code column uses different values than plan_key
@@ -13,21 +14,43 @@ function toLegacyPlanCode(planKey: string): string {
 // Default plan if none provided - ensures no "No Plan" users
 const DEFAULT_PLAN: PlanKey = 'basic';
 
+// 14-day grace window for self-serve buyers between org bootstrap and Stripe
+// checkout completion. Matches the value written by bootstrapOrganizationAtomic
+// in lib/supabase/transaction.ts so both call paths agree.
+const PENDING_CHECKOUT_GRACE_DAYS = 14;
+
+export type EnsureSubscriptionOptions = {
+  /**
+   * 'self-serve' (default) — for self-serve plans (basic/pro/scale), create
+   * a `pending_checkout` row with a grace window that forces the user
+   * through Stripe Checkout before app access. Enterprise stays 'active'.
+   *
+   * 'active' — used by admin paths and Stripe webhook callers that have
+   * out-of-band evidence of payment / contract; bypasses the checkout gate.
+   */
+  intent?: 'self-serve' | 'active';
+};
+
 export async function ensureSubscription(
   orgId: string,
   planKey: string | null,
+  options: EnsureSubscriptionOptions = {},
 ) {
   // HARDENING: Default to 'basic' if no valid plan provided
   const resolvedPlan = resolvePlanKey(planKey) || DEFAULT_PLAN;
+  const intent = options.intent ?? 'self-serve';
 
   const admin = createSupabaseAdminClient();
   const { data: existing } = await admin
     .from('org_subscriptions')
-    .select('status, plan_key, trial_expires_at')
+    .select('status, plan_key, trial_expires_at, stripe_subscription_id')
     .eq('organization_id', orgId)
     .maybeSingle();
 
-  if (existing?.status && ['active', 'trialing'].includes(existing.status)) {
+  if (
+    existing?.status &&
+    ['active', 'trialing', 'pending_checkout'].includes(existing.status)
+  ) {
     const isExpiredTrial =
       existing.status === 'trialing' &&
       existing.trial_expires_at &&
@@ -47,6 +70,21 @@ export async function ensureSubscription(
 
   const now = new Date();
   const nowIso = now.toISOString();
+
+  // Decide the initial status. Self-serve plans must complete Stripe Checkout
+  // before getting `active`; enterprise is contracted offline so admin/webhook
+  // callers can opt into 'active' directly.
+  const requiresCheckout =
+    intent === 'self-serve' &&
+    isSelfServePlan(resolvedPlan) &&
+    !existing?.stripe_subscription_id;
+
+  const initialStatus = requiresCheckout ? 'pending_checkout' : 'active';
+  const trialExpiresAt = requiresCheckout
+    ? new Date(
+        now.getTime() + PENDING_CHECKOUT_GRACE_DAYS * 24 * 60 * 60 * 1000,
+      ).toISOString()
+    : null;
 
   // BACKFILL: Ensure legacy orgs table entry exists for org_subscriptions.org_id FK
   try {
@@ -82,10 +120,10 @@ export async function ensureSubscription(
   const basePayload = {
     organization_id: orgId,
     plan_key: resolvedPlan,
-    status: 'active',
+    status: initialStatus,
     current_period_end: null,
     trial_started_at: null,
-    trial_expires_at: null,
+    trial_expires_at: trialExpiresAt,
     updated_at: nowIso,
   };
 
@@ -108,10 +146,37 @@ export async function ensureSubscription(
   let upserted = false;
   const upsertErrors: Array<{ label: string; message: string }> = [];
 
+  // Some Supabase environments still have a `subscription_status` enum that
+  // predates the `pending_checkout` value (the enum was created out-of-band
+  // and not in repo migrations). Migration 20260507 adds the value; this
+  // fallback keeps the gate functional even before that migration runs by
+  // demoting to `past_due`, which is also rejected by requireActiveSubscription
+  // and triggers the same billing-redirect path.
+  const enumIncompatible = (message: string) =>
+    /invalid input value for enum (?:public\.)?subscription_status/i.test(
+      message,
+    );
+
   for (const attempt of payloadAttempts) {
-    const { error } = await admin
+    let payload = attempt.payload;
+    let { error } = await admin
       .from('org_subscriptions')
-      .upsert(attempt.payload, { onConflict: 'organization_id' });
+      .upsert(payload, { onConflict: 'organization_id' });
+
+    if (
+      error &&
+      payload.status === 'pending_checkout' &&
+      enumIncompatible(error.message ?? '')
+    ) {
+      billingLogger.warn('pending_checkout_enum_missing_falling_back_to_past_due', {
+        orgId,
+        attempt: attempt.label,
+      });
+      payload = { ...payload, status: 'past_due' };
+      ({ error } = await admin
+        .from('org_subscriptions')
+        .upsert(payload, { onConflict: 'organization_id' }));
+    }
 
     if (!error) {
       upserted = true;

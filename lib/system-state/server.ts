@@ -103,11 +103,13 @@ export interface SubscriptionData {
   planTier: PlanTier;
   status:
     | 'pending'
+    | 'pending_checkout'
     | 'trialing'
     | 'active'
     | 'past_due'
     | 'canceled'
-    | 'blocked';
+    | 'blocked'
+    | 'incomplete';
   trialActive: boolean;
   trialDaysRemaining: number;
   stripeCustomerId: string | null;

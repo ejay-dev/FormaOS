@@ -100,6 +100,11 @@ export default async function DashboardPage() {
     redirect(`/app/billing?autoCheckout=${encodeURIComponent(intentPlan)}`);
   }
 
+  // Defense-in-depth: the layout already gates pending_checkout, but if a user
+  // somehow reaches /app with a self-serve plan that hasn't paid yet (e.g.
+  // legacy 'active' row from before the gate was wired), force the upgrade.
+  // Real paid subscriptions always carry a stripe_subscription_id.
+
   // Fetch user's organization membership, role, and industry
   let membership: MembershipRow | null = null;
   let industry: string | null = null;
@@ -121,23 +126,30 @@ export default async function DashboardPage() {
     membership = null;
   }
 
-  // Cookie-expiry recovery: a recent signup with a membership but no active
-  // subscription is almost certainly a self-serve buyer whose checkout-intent
-  // cookie expired (30-min TTL) mid-flow. Route them to billing with a resume
-  // prompt instead of dropping them into an unprovisioned dashboard.
-  const userCreatedAt = user.created_at ? Date.parse(user.created_at) : 0;
-  const isRecentSignup =
-    userCreatedAt > 0 && userCreatedAt > Date.now() - 24 * 60 * 60 * 1000;
-  if (isRecentSignup && membership?.organization_id) {
+  // Universal billing gate: if the user's subscription requires payment,
+  // route them to billing. The dashboard is never the right place to render
+  // for a pending_checkout / past_due / canceled subscription. Admin-comped
+  // and legacy 'active' rows pass through — only the explicit unpaid statuses
+  // trigger the redirect.
+  if (membership?.organization_id) {
     const { data: sub } = await supabase
       .from('org_subscriptions')
-      .select('status')
+      .select('status, plan_key')
       .eq('organization_id', membership.organization_id)
       .maybeSingle();
     const status = sub?.status ?? null;
-    const isProvisioned = status === 'active' || status === 'trialing';
-    if (!isProvisioned) {
-      redirect('/app/billing?resumeCheckout=basic');
+    const planKey = sub?.plan_key ?? null;
+    const selfServePlan =
+      planKey === 'basic' || planKey === 'pro' || planKey === 'scale';
+
+    if (
+      status === 'pending_checkout' ||
+      status === 'past_due' ||
+      status === 'canceled' ||
+      status === 'incomplete'
+    ) {
+      const target = selfServePlan ? planKey : 'basic';
+      redirect(`/app/billing?autoCheckout=${encodeURIComponent(target)}`);
     }
   }
 

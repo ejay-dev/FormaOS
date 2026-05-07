@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getStripeClient,
@@ -44,6 +45,12 @@ export async function POST(request: Request) {
   }
 
   const admin = createSupabaseAdminClient();
+
+  // Track orgs whose subscription cache needs to be invalidated after the
+  // webhook side effects land. The /app billing gate reads this cache (5-min
+  // unstable_cache TTL); without invalidation a paid user could be stuck on
+  // /app/billing for several minutes after Stripe confirms payment.
+  const orgsToRevalidate = new Set<string>();
 
   // Idempotency state machine.
   //
@@ -206,6 +213,7 @@ export async function POST(request: Request) {
       }
 
       await syncEntitlementsForPlan(targetOrgId, planKey);
+      orgsToRevalidate.add(targetOrgId);
       return targetOrgId;
     };
 
@@ -267,6 +275,7 @@ export async function POST(request: Request) {
         }
 
         await syncEntitlementsForPlan(orgId, planKey);
+        orgsToRevalidate.add(orgId);
       }
     }
 
@@ -335,6 +344,7 @@ export async function POST(request: Request) {
           subRow.organization_id,
           'subscription_cancelled',
         );
+        orgsToRevalidate.add(subRow.organization_id);
       }
     }
 
@@ -462,6 +472,9 @@ export async function POST(request: Request) {
             'payment_recovered',
           );
         }
+        if (existingRow?.organization_id) {
+          orgsToRevalidate.add(existingRow.organization_id);
+        }
       }
     }
 
@@ -523,6 +536,7 @@ export async function POST(request: Request) {
             subRow.organization_id,
             'payment_failed',
           );
+          orgsToRevalidate.add(subRow.organization_id);
         }
       }
     }
@@ -552,6 +566,15 @@ export async function POST(request: Request) {
       { error: 'Webhook processing failed' },
       { status: 500 },
     );
+  }
+
+  // Bust the cached /app layout + /app/billing so the billing-gate read lands
+  // on fresh subscription data immediately — without this, paid users could
+  // be stuck on /app/billing for up to 5 minutes (unstable_cache TTL) after
+  // their payment is confirmed by Stripe.
+  if (orgsToRevalidate.size > 0) {
+    revalidatePath('/app', 'layout');
+    revalidatePath('/app/billing');
   }
 
   // Side effects landed — mark the event row succeeded so Stripe retries

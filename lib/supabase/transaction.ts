@@ -141,19 +141,41 @@ export async function bootstrapOrganizationAtomic(params: {
     const graceEnd = new Date();
     graceEnd.setDate(graceEnd.getDate() + 14);
 
-    const { error: subError } = await admin.from('org_subscriptions').upsert(
-      {
-        organization_id: organizationId,
-        org_id: organizationId,
-        plan_key: planKey,
-        plan_code: planKey === 'basic' ? 'starter' : planKey,
-        status: 'pending_checkout',
-        trial_started_at: null,
-        trial_expires_at: graceEnd.toISOString(),
-        updated_at: now,
-      },
-      { onConflict: 'organization_id' },
-    );
+    const buildSubPayload = (status: 'pending_checkout' | 'past_due') => ({
+      organization_id: organizationId,
+      org_id: organizationId,
+      plan_key: planKey,
+      plan_code: planKey === 'basic' ? 'starter' : planKey,
+      status,
+      trial_started_at: null,
+      trial_expires_at: graceEnd.toISOString(),
+      updated_at: now,
+    });
+
+    let { error: subError } = await admin
+      .from('org_subscriptions')
+      .upsert(buildSubPayload('pending_checkout'), {
+        onConflict: 'organization_id',
+      });
+
+    // Fallback for legacy databases that haven't run migration 20260507 yet
+    // (subscription_status enum lacking 'pending_checkout'). past_due also
+    // triggers the billing gate, so the user experience is identical.
+    if (
+      subError &&
+      /invalid input value for enum (?:public\.)?subscription_status/i.test(
+        subError.message ?? '',
+      )
+    ) {
+      console.warn(
+        '[bootstrap] pending_checkout enum missing — falling back to past_due',
+      );
+      ({ error: subError } = await admin
+        .from('org_subscriptions')
+        .upsert(buildSubPayload('past_due'), {
+          onConflict: 'organization_id',
+        }));
+    }
 
     if (subError) {
       console.warn(

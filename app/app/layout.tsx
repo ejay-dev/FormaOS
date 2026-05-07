@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 import { Sidebar } from '@/components/sidebar';
 import { TopBar } from '@/components/topbar';
 import { AppHydrator } from '@/components/app-hydrator';
@@ -104,6 +105,37 @@ export default async function AppLayout({
   // Founders may want to use the regular app (their org's dashboard).
   // Only redirect to /admin if they have NO organization at all.
   // The middleware already allows founders to access /admin, so this is safe.
+
+  /* -------------------------------------------------------
+   * Billing gate — every /app/* route except /app/billing requires a
+   * subscription that has cleared Stripe checkout. New self-serve users
+   * land here in `pending_checkout`; this gate routes them into Stripe
+   * before they can reach any feature page. Founders bypass the gate so
+   * they can still administer the platform without a subscription.
+   *
+   * 'active' users (paid, contracted enterprise, admin-comped) pass through —
+   * only explicit unpaid statuses trigger the redirect, so we don't break
+   * legacy rows that lack a stripe_subscription_id.
+   * ----------------------------------------------------- */
+  const requestPath = (await headers()).get('x-pathname') ?? '';
+  const onBillingRoute = requestPath.startsWith('/app/billing');
+  const subscription = systemState.subscription;
+  const planKey = subscription?.planKey ?? null;
+  const status = subscription?.status ?? null;
+  const isSelfServePlan =
+    planKey === 'basic' || planKey === 'pro' || planKey === 'scale';
+  const needsCheckout =
+    !systemState.isFounder &&
+    !onBillingRoute &&
+    (status === 'pending_checkout' ||
+      status === 'past_due' ||
+      status === 'canceled' ||
+      status === 'incomplete');
+
+  if (needsCheckout) {
+    const target = isSelfServePlan ? planKey : 'basic';
+    redirect(`/app/billing?autoCheckout=${encodeURIComponent(target ?? 'basic')}`);
+  }
 
   // Track whether the onboarding wizard should be shown
   const showOnboardingWizard = !systemState.organization.onboardingCompleted;

@@ -239,7 +239,13 @@ test.describe.serial('Critical Path Smoke', () => {
       .eq('organization_id', orphanUser.orgId)
       .maybeSingle();
 
-    expect(['trialing', 'active']).toContain(subscription?.status);
+    // After the self-serve checkout gate landed, new signups bootstrap with
+    // status `pending_checkout` (or `past_due` on environments still on the
+    // pre-migration enum). Either way they'd be redirected to /app/billing
+    // until Stripe confirms payment. Both are valid pre-payment states here.
+    expect(
+      ['trialing', 'active', 'pending_checkout', 'past_due'],
+    ).toContain(subscription?.status);
 
     const { data: entitlements } = await admin!
       .from('org_entitlements')
@@ -248,7 +254,9 @@ test.describe.serial('Critical Path Smoke', () => {
 
     expect((entitlements ?? []).length).toBeGreaterThan(0);
 
-    // Mark onboarding complete to validate dashboard access
+    // Mark onboarding complete AND simulate a successful Stripe webhook so
+    // the billing gate doesn't block the dashboard-access portion of this
+    // smoke test. The gate itself is exercised by e2e/billing-gate.spec.ts.
     await admin!
       .from('organizations')
       .update({
@@ -258,6 +266,14 @@ test.describe.serial('Critical Path Smoke', () => {
         frameworks: ['ISO27001'],
       })
       .eq('id', orphanUser.orgId);
+    await admin!
+      .from('org_subscriptions')
+      .update({
+        status: 'active',
+        stripe_subscription_id: `sub_e2e_smoke_${Date.now()}`,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('organization_id', orphanUser.orgId);
 
     await gotoWithRetry(page, `${appBase}/app`);
     await expect(page).not.toHaveURL(/\/auth\/signin/);
