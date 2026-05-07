@@ -12,6 +12,10 @@ import { ParticipantsEmptyState } from '@/components/empty-states';
 import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 import { buildOrSearch } from '@/lib/utils/postgrest-search';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
+import {
+  RecordCard,
+  RecordList,
+} from '@/components/mobile/record-card';
 
 const PARTICIPANTS_PAGE_SIZE = 50;
 
@@ -226,8 +230,90 @@ export default async function ParticipantsPage({
           ) : null}
         </form>
 
-        {/* Table */}
-        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        {/* Mobile cards */}
+        <div className="md:hidden">
+          {participants && participants.length > 0 ? (
+            <RecordList>
+              {participants.map((participant: Participant) => {
+                const idValue =
+                  participant.external_id || participant.ndis_number || null;
+                return (
+                  <RecordCard
+                    key={participant.id}
+                    href={`/app/participants/${participant.id}`}
+                    title={
+                      <span className="flex items-center gap-2">
+                        {participant.emergency_flag && (
+                          <span
+                            className="flex h-2 w-2 rounded-full bg-red-500"
+                            aria-label="Emergency flag"
+                          />
+                        )}
+                        {participant.full_name}
+                      </span>
+                    }
+                    subtitle={participant.preferred_name ?? undefined}
+                    status={
+                      <span
+                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          participant.care_status === 'active'
+                            ? 'bg-green-500/10 text-green-600'
+                            : participant.care_status === 'paused'
+                              ? 'bg-amber-500/10 text-amber-600'
+                              : 'bg-gray-500/10 text-gray-600'
+                        }`}
+                      >
+                        {participant.care_status}
+                      </span>
+                    }
+                    meta={[
+                      {
+                        label: 'Risk',
+                        value: (
+                          <span
+                            className={
+                              participant.risk_level === 'critical' ||
+                              participant.risk_level === 'high'
+                                ? 'text-rose-500'
+                                : participant.risk_level === 'medium'
+                                  ? 'text-amber-500'
+                                  : 'text-foreground/85'
+                            }
+                          >
+                            {participant.risk_level}
+                          </span>
+                        ),
+                      },
+                      ...(idValue
+                        ? [
+                            {
+                              label: 'ID',
+                              value: (
+                                <span className="font-mono">{idValue}</span>
+                              ),
+                            },
+                          ]
+                        : []),
+                      ...(participant.funding_source
+                        ? [
+                            {
+                              label: 'Funding',
+                              value: participant.funding_source,
+                            },
+                          ]
+                        : []),
+                    ]}
+                  />
+                );
+              })}
+            </RecordList>
+          ) : (
+            <ParticipantsEmptyState />
+          )}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="rounded-lg border border-border overflow-hidden">
             <div className="overflow-x-auto overscroll-x-contain">
               <table

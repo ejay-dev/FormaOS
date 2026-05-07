@@ -5,6 +5,10 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { hasPermission, normalizeRole } from "@/app/app/actions/rbac";
 import { PageHero, type PageHeroMetric } from "@/components/ui/page-hero";
+import {
+  RecordCard,
+  RecordList,
+} from "@/components/mobile/record-card";
 
 type EntitlementRow = {
   feature_key: string;
@@ -153,7 +157,35 @@ export default async function TeamPage() {
           <Users className="h-3.5 w-3.5" />
           Active Members ({memberRows.length})
         </h2>
-        <div className="rounded-lg border border-border overflow-hidden">
+        {/* Mobile cards */}
+        <div className="md:hidden">
+          <RecordList>
+            {memberRows.map((member) => (
+              <RecordCard
+                key={member.id}
+                title={
+                  <span className="font-mono text-xs">{member.user_id}</span>
+                }
+                status={
+                  <span className="status-pill status-pill-green">Active</span>
+                }
+                meta={[
+                  {
+                    label: 'Role',
+                    value: (
+                      <span className="status-pill status-pill-blue">
+                        {member.role || 'MEMBER'}
+                      </span>
+                    ),
+                  },
+                ]}
+              />
+            ))}
+          </RecordList>
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block rounded-lg border border-border overflow-hidden">
           <div className="overflow-x-auto overscroll-x-contain">
             <table className="min-w-[480px] w-full text-left text-sm">
                 <thead className="bg-muted/50">
@@ -203,7 +235,51 @@ export default async function TeamPage() {
             <Clock className="h-3.5 w-3.5" />
             Pending Invitations ({inviteRows.length})
           </h2>
-          <div className="rounded-lg border border-border overflow-hidden">
+          {/* Mobile cards */}
+          <div className="md:hidden">
+            <RecordList>
+              {inviteRows.map((invite) => (
+                <RecordCard
+                  key={invite.id}
+                  title={
+                    <span className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <span className="truncate">{invite.email}</span>
+                    </span>
+                  }
+                  status={
+                    <span className="status-pill status-pill-amber">
+                      {invite.role}
+                    </span>
+                  }
+                  actions={
+                    <form action={revokeInvitation}>
+                      <input
+                        type="hidden"
+                        name="invitationId"
+                        value={invite.id}
+                      />
+                      <input
+                        type="hidden"
+                        name="organizationId"
+                        value={orgId ?? ''}
+                      />
+                      <button
+                        type="submit"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors min-h-[36px]"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        Revoke
+                      </button>
+                    </form>
+                  }
+                />
+              ))}
+            </RecordList>
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden md:block rounded-lg border border-border overflow-hidden">
             <div className="overflow-x-auto overscroll-x-contain">
               <table className="min-w-[480px] w-full text-left text-sm">
                 <tbody className="divide-y divide-border">

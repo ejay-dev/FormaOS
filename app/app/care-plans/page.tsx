@@ -19,6 +19,10 @@ import {
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { CarePlansEmptyState } from '@/components/empty-states';
+import {
+  RecordCard,
+  RecordList,
+} from '@/components/mobile/record-card';
 
 export const metadata = {
   title: 'Care Plans | FormaOS',
@@ -253,8 +257,68 @@ export default async function CarePlansPage() {
         </div>
       )}
 
-      {/* Table */}
-      <div className="rounded-lg border border-border overflow-hidden overflow-x-auto overscroll-x-contain">
+      {/* Mobile cards */}
+      <div className="md:hidden">
+        {(!carePlans || carePlans.length === 0) ? (
+          <CarePlansEmptyState
+            industry={organization.industry as 'ndis' | 'healthcare' | 'aged_care' | 'childcare' | null}
+          />
+        ) : (
+          <RecordList>
+            {carePlans.map((plan: CarePlan) => {
+              const reviewStatus = getReviewStatus(plan.review_date);
+              const statusStyle =
+                STATUS_LABELS[plan.status] || STATUS_LABELS.draft;
+              const goalsCount = Array.isArray(plan.goals)
+                ? plan.goals.length
+                : 0;
+              const clientName =
+                (plan.client as { full_name?: string } | null)?.full_name ||
+                'Unassigned';
+              return (
+                <RecordCard
+                  key={plan.id}
+                  href={`/app/care-plans/${plan.id}`}
+                  title={plan.title}
+                  subtitle={clientName}
+                  status={
+                    <span
+                      className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusStyle.color}`}
+                    >
+                      {statusStyle.label}
+                    </span>
+                  }
+                  meta={[
+                    {
+                      label: 'Review',
+                      value: (
+                        <span
+                          className={
+                            reviewStatus.urgent
+                              ? 'text-amber-500 font-semibold'
+                              : ''
+                          }
+                        >
+                          {formatDate(plan.review_date)}
+                        </span>
+                      ),
+                    },
+                    { label: 'Goals', value: String(goalsCount) },
+                    {
+                      label: 'Type',
+                      value:
+                        PLAN_TYPE_LABELS[plan.plan_type] || plan.plan_type,
+                    },
+                  ]}
+                />
+              );
+            })}
+          </RecordList>
+        )}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block rounded-lg border border-border overflow-hidden overflow-x-auto overscroll-x-contain">
         <table className="min-w-[640px] w-full" data-testid="care-plans-table">
           <thead className="bg-muted/50">
             <tr>

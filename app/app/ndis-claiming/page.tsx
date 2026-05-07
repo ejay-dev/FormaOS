@@ -3,6 +3,11 @@ import Link from 'next/link';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
+  RecordCard,
+  RecordList,
+  EmptyRecordState,
+} from '@/components/mobile/record-card';
+import {
   DollarSign,
   FileCheck,
   Clock,
@@ -42,7 +47,7 @@ export default async function NdisClaimingPage({
 
   const { data: lineItems } = await db
     .from('org_ndis_line_items')
-    .select('*, org_patients(first_name, last_name)')
+    .select('*, org_patients(full_name)')
     .eq('org_id', state.organization.id)
     .order('created_at', { ascending: false })
     .limit(100);
@@ -121,7 +126,7 @@ export default async function NdisClaimingPage({
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 sm:grid-cols-5">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
         <SummaryCard
           icon={Clock}
           label="Draft"
@@ -154,8 +159,61 @@ export default async function NdisClaimingPage({
         />
       </div>
 
-      {/* Line Items Table */}
-      <div className="rounded-lg border border-border bg-card overflow-hidden">
+      {/* Line Items — mobile card list (md:hidden) */}
+      <section className="md:hidden space-y-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          Line items
+        </h2>
+        {items.length === 0 ? (
+          <EmptyRecordState
+            title="No line items yet"
+            description="Generate claims from completed visits to populate this list."
+          />
+        ) : (
+          <RecordList>
+            {items.map((item) => {
+              const patient = item.org_patients;
+              const patientName = patient?.full_name ?? '—';
+              return (
+                <RecordCard
+                  key={item.id}
+                  title={patientName}
+                  subtitle={
+                    <span className="truncate">
+                      {item.support_item_name}
+                    </span>
+                  }
+                  status={
+                    <span
+                      className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusColors[item.status]}`}
+                    >
+                      {item.status}
+                    </span>
+                  }
+                  meta={[
+                    {
+                      label: 'Total',
+                      value: `$${Number(item.total_amount).toFixed(2)}`,
+                    },
+                    { label: 'Qty', value: String(item.quantity) },
+                    {
+                      label: 'Rate',
+                      value: `$${Number(item.unit_price).toFixed(2)}`,
+                    },
+                    {
+                      label: 'Date',
+                      value: new Date(item.created_at).toLocaleDateString(),
+                    },
+                  ]}
+                />
+              );
+            })}
+          </RecordList>
+        )}
+      </section>
+
+      {/* Line Items Table — desktop only */}
+      <div className="hidden md:block rounded-lg border border-border bg-card overflow-hidden">
         <div className="border-b border-border px-4 py-3">
           <h2 className="font-semibold">Line Items</h2>
         </div>
@@ -195,9 +253,7 @@ export default async function NdisClaimingPage({
                 return (
                   <tr key={item.id} className="hover:bg-muted/30">
                     <td className="px-4 py-2.5 font-medium">
-                      {patient
-                        ? `${patient.first_name} ${patient.last_name}`
-                        : '—'}
+                      {patient?.full_name ?? '—'}
                     </td>
                     <td className="px-4 py-2.5">
                       <div className="truncate max-w-[200px]">

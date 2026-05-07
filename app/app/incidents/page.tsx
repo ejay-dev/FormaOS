@@ -17,6 +17,11 @@ import {
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
+import {
+  RecordCard,
+  RecordList,
+  EmptyRecordState,
+} from '@/components/mobile/record-card';
 
 function formatDate(date: string | null) {
   if (!date) return '-';
@@ -250,8 +255,85 @@ export default async function IncidentsPage({
           ) : null}
         </form>
 
-        {/* Table */}
-        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        {/* Mobile cards */}
+        <div className="md:hidden">
+          {filteredIncidents.length === 0 ? (
+            <EmptyRecordState
+              title="No incidents reported"
+              description="Reported incidents and follow-ups will surface here."
+            />
+          ) : (
+            <RecordList>
+              {filteredIncidents.map((incident: Incident) => {
+                const clientName =
+                  (incident.patient as { full_name?: string } | null)
+                    ?.full_name || null;
+                return (
+                  <RecordCard
+                    key={incident.id}
+                    href={`/app/incidents/${incident.id}`}
+                    title={
+                      incident.incident_type?.replace('_', ' ') || 'General'
+                    }
+                    subtitle={clientName ?? formatDate(incident.occurred_at)}
+                    status={
+                      <span
+                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${getSeverityColor(
+                          incident.severity,
+                        )}`}
+                      >
+                        {incident.severity}
+                      </span>
+                    }
+                    meta={[
+                      {
+                        label: 'Status',
+                        value: (
+                          <span
+                            className={`inline-flex items-center gap-1 ${
+                              incident.status === 'resolved'
+                                ? 'text-green-500'
+                                : 'text-amber-500'
+                            }`}
+                          >
+                            {incident.status === 'resolved' ? (
+                              <CheckCircle className="h-3 w-3" />
+                            ) : (
+                              <Clock className="h-3 w-3" />
+                            )}
+                            {incident.status}
+                          </span>
+                        ),
+                      },
+                      ...(clientName
+                        ? [{ label: 'Client', value: clientName }]
+                        : []),
+                      {
+                        label: 'When',
+                        value: formatDate(incident.occurred_at),
+                      },
+                      ...(incident.follow_up_required
+                        ? [
+                            {
+                              label: 'Follow-up',
+                              value: (
+                                <span className="text-orange-500">
+                                  {incident.follow_up_due_date || 'TBD'}
+                                </span>
+                              ),
+                            },
+                          ]
+                        : []),
+                    ]}
+                  />
+                );
+              })}
+            </RecordList>
+          )}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="rounded-lg border border-border overflow-hidden">
             <div className="overflow-x-auto overscroll-x-contain">
               <table

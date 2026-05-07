@@ -14,6 +14,11 @@ import { EvidenceFileActions } from '@/components/vault/evidence-file-actions';
 import Link from 'next/link';
 import { OnboardingBanner } from '@/components/onboarding/OnboardingBanner';
 import { VaultPageHero } from '@/components/vault/VaultPageHero';
+import {
+  RecordCard,
+  RecordList,
+  EmptyRecordState,
+} from '@/components/mobile/record-card';
 
 type ArtifactRow = {
   id: string;
@@ -253,7 +258,48 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
               <Clock className="h-3.5 w-3.5" />
               Pending Review ({pending.length})
             </h2>
-            <div className="rounded-lg border border-border overflow-hidden">
+            {/* Mobile cards */}
+            <div className="md:hidden">
+              <RecordList>
+                {pending.map((item: ArtifactRow) => (
+                  <RecordCard
+                    key={item.id}
+                    title={getFileName(item)}
+                    subtitle={`${getFileType(item)} · ${getFileSizeKB(item)} KB`}
+                    status={
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-400/10 text-amber-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                        <Clock className="h-3 w-3" />
+                        Pending
+                      </span>
+                    }
+                    meta={[
+                      {
+                        label: 'When',
+                        value: item.created_at
+                          ? new Date(item.created_at).toLocaleDateString()
+                          : '-',
+                      },
+                      {
+                        label: 'Context',
+                        value:
+                          item.task?.title ?? item.policy?.title ?? 'General',
+                      },
+                    ]}
+                    actions={
+                      <div className="flex w-full items-center justify-between gap-2">
+                        <EvidenceFileActions
+                          filePath={item.file_path ?? null}
+                          variant="pending"
+                          evidenceId={item.id}
+                          canDelete={isAuditor}
+                        />
+                      </div>
+                    }
+                  />
+                ))}
+              </RecordList>
+            </div>
+            <div className="hidden md:block rounded-lg border border-border overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="bg-muted/50 text-xs">
                   <tr>
@@ -312,6 +358,8 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                           <EvidenceFileActions
                             filePath={item.file_path ?? null}
                             variant="pending"
+                            evidenceId={item.id}
+                            canDelete={isAuditor}
                           />
                           {isAuditor && (
                             <form
@@ -359,7 +407,58 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
             Verified ({verified.length})
           </h2>
 
-          <div className="rounded-lg border border-border overflow-hidden">
+          {/* Mobile card list */}
+          <div className="md:hidden">
+            {verified.length === 0 ? (
+              <EmptyRecordState
+                title="No verified evidence yet"
+                description="Once an admin verifies an artifact, it appears here."
+              />
+            ) : (
+              <RecordList>
+                {verified.map((item: ArtifactRow) => (
+                  <RecordCard
+                    key={item.id}
+                    title={getFileName(item)}
+                    subtitle={`${getFileType(item)} · ${getFileSizeKB(item)} KB`}
+                    status={
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 text-emerald-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                        <ShieldCheck className="h-3 w-3" />
+                        Verified
+                      </span>
+                    }
+                    meta={[
+                      {
+                        label: 'When',
+                        value: item.verified_at
+                          ? new Date(item.verified_at).toLocaleDateString()
+                          : item.created_at
+                            ? new Date(item.created_at).toLocaleDateString()
+                            : 'N/A',
+                      },
+                      ...(item.quality_score != null
+                        ? [
+                            {
+                              label: 'Quality',
+                              value: `${item.quality_score}`,
+                            },
+                          ]
+                        : []),
+                    ]}
+                    actions={
+                      <EvidenceFileActions
+                        filePath={item.file_path ?? null}
+                        evidenceId={item.id}
+                        canDelete={isAuditor}
+                      />
+                    }
+                  />
+                ))}
+              </RecordList>
+            )}
+          </div>
+
+          <div className="hidden md:block rounded-lg border border-border overflow-hidden">
             {verified.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">
                 No verified evidence yet.
@@ -476,6 +575,8 @@ export default async function VaultPage({ searchParams }: VaultPageProps) {
                         <td className="px-8 py-4 text-right">
                           <EvidenceFileActions
                             filePath={item.file_path ?? null}
+                            evidenceId={item.id}
+                            canDelete={isAuditor}
                           />
                         </td>
                       </tr>

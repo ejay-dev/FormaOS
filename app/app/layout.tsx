@@ -26,6 +26,7 @@ import { OnboardingProvider } from '@/lib/onboarding/onboarding-context';
 import { OnboardingStrip } from '@/components/onboarding/OnboardingStrip';
 import { OnboardingSuccessToast } from '@/components/onboarding/OnboardingSuccessToast';
 import { OnboardingGuide } from '@/components/onboarding/OnboardingGuide';
+import { MobileBottomNav } from '@/components/mobile/bottom-nav';
 import { getFirstSessionState } from '@/lib/onboarding/first-session';
 
 const log = routeLog('app/layout');
@@ -240,7 +241,7 @@ export default async function AppLayout({
                   id="main-content"
                   className="relative flex flex-1 flex-col overflow-y-auto bg-background"
                 >
-                  <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 py-4 pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-6">
+                  <div className="mx-auto w-full max-w-[1600px] px-4 sm:px-6 py-4 pb-[calc(env(safe-area-inset-bottom)+5rem)] sm:pb-6">
                     {children}
                   </div>
                 </main>
@@ -259,6 +260,7 @@ export default async function AppLayout({
             <RuntimeDebugIndicator />
             <OnboardingSuccessToast />
             <OnboardingGuide />
+            <MobileBottomNav />
           </div>
          </OnboardingProvider>
         </AppProviders>

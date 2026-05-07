@@ -13,6 +13,10 @@ import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { Badge } from '@/components/ui/badge';
 import { SkeletonCard } from '@/components/ui/skeleton';
+import {
+  RecordCard,
+  RecordList,
+} from '@/components/mobile/record-card';
 
 const STATUS_CONFIG: Record<
   string,
@@ -105,8 +109,59 @@ async function ControlsList({ orgId }: { orgId: string }) {
         })}
       </div>
 
-      {/* Controls table */}
-      <div className="rounded-2xl border border-glass-border bg-glass-subtle overflow-hidden">
+      {/* Mobile cards */}
+      <div className="md:hidden">
+        <RecordList>
+          {controls.map((control) => {
+            const details = (control.details ?? {}) as Record<string, unknown>;
+            const controlCode =
+              (details.control_code as string) ??
+              control.control_key?.replace('control:', '') ??
+              '—';
+            const controlTitle =
+              (details.control_title as string) ?? controlCode;
+            const frameworkCode =
+              (details.framework_code as string) ?? '—';
+            const cfg =
+              STATUS_CONFIG[control.status] ?? STATUS_CONFIG.at_risk;
+            return (
+              <RecordCard
+                key={control.id}
+                title={controlCode}
+                subtitle={controlTitle !== controlCode ? controlTitle : undefined}
+                status={
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${cfg.className}`}
+                  >
+                    {cfg.label}
+                  </span>
+                }
+                meta={[
+                  { label: 'Framework', value: frameworkCode },
+                  {
+                    label: 'Score',
+                    value:
+                      control.compliance_score != null
+                        ? `${control.compliance_score}%`
+                        : '—',
+                  },
+                  {
+                    label: 'Evaluated',
+                    value: control.last_evaluated_at
+                      ? new Date(
+                          control.last_evaluated_at,
+                        ).toLocaleDateString()
+                      : 'Not evaluated',
+                  },
+                ]}
+              />
+            );
+          })}
+        </RecordList>
+      </div>
+
+      {/* Controls table — desktop */}
+      <div className="hidden md:block rounded-2xl border border-glass-border bg-glass-subtle overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-glass-border bg-glass-subtle text-muted-foreground">

@@ -21,6 +21,11 @@ import {
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
+import {
+  RecordCard,
+  RecordList,
+  EmptyRecordState,
+} from '@/components/mobile/record-card';
 
 function formatDateTime(date: string | null) {
   if (!date) return '-';
@@ -283,8 +288,79 @@ export default async function VisitsPage({
           ) : null}
         </form>
 
-        {/* Table */}
-        <div className="rounded-lg border border-border overflow-hidden">
+        {/* Mobile cards */}
+        <div className="md:hidden">
+          {filteredVisits.length === 0 ? (
+            <EmptyRecordState
+              title="No visits"
+              description={
+                hasFilters
+                  ? 'No visits match your current filters.'
+                  : 'Visits will appear here when scheduled.'
+              }
+              action={
+                hasFilters ? (
+                  <Link
+                    href="/app/visits"
+                    className="text-sm font-semibold text-primary hover:underline"
+                  >
+                    Clear filters
+                  </Link>
+                ) : null
+              }
+            />
+          ) : (
+            <RecordList>
+              {filteredVisits.map((visit: Visit) => {
+                const clientName =
+                  (visit.client as { full_name?: string } | null)?.full_name ||
+                  'Unassigned';
+                const staffName =
+                  (visit.staff as { email?: string } | null)?.email?.split(
+                    '@',
+                  )[0] || null;
+                return (
+                  <RecordCard
+                    key={visit.id}
+                    href={`/app/visits/${visit.id}`}
+                    title={clientName}
+                    subtitle={formatDateTime(visit.scheduled_start)}
+                    status={
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
+                        {getStatusIcon(visit.status)}
+                        {visit.status.replace('_', ' ')}
+                      </span>
+                    }
+                    meta={[
+                      ...(visit.visit_type
+                        ? [
+                            {
+                              label: 'Type',
+                              value: visit.visit_type.replace('_', ' '),
+                            },
+                          ]
+                        : []),
+                      ...(staffName
+                        ? [{ label: 'Staff', value: staffName }]
+                        : []),
+                      ...(visit.location_type
+                        ? [
+                            {
+                              label: 'Location',
+                              value: visit.location_type.replace('_', ' '),
+                            },
+                          ]
+                        : []),
+                    ]}
+                  />
+                );
+              })}
+            </RecordList>
+          )}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block rounded-lg border border-border overflow-hidden">
           <table className="w-full" data-testid="visits-table">
             <thead className="bg-muted/50">
               <tr>
