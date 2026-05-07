@@ -1377,33 +1377,42 @@ export async function configureWorkspaceState(
   );
 
   if (frameworks !== undefined) {
-    const { error: deleteFrameworkError } = await context.admin
-      .from('org_frameworks')
-      .delete()
-      .eq('organization_id', context.orgId);
-
-    if (deleteFrameworkError) {
-      throw new Error(
-        `Failed to reset organization frameworks: ${deleteFrameworkError.message}`,
-      );
-    }
-
+    // Parallel workers can race on the same shared E2E org. Use upsert so a
+    // concurrent insert doesn't blow up with a PK conflict, and delete only
+    // the frameworks we no longer want — never the rows we're about to write.
     if (frameworks.length > 0) {
-      const { error: insertFrameworkError } = await context.admin
+      const { error: upsertFrameworkError } = await context.admin
         .from('org_frameworks')
-        .insert(
+        .upsert(
           frameworks.map((frameworkSlug) => ({
             organization_id: context.orgId,
             framework_slug: frameworkSlug,
             enabled_at: now,
           })),
+          { onConflict: 'organization_id,framework_slug' },
         );
 
-      if (insertFrameworkError) {
+      if (upsertFrameworkError) {
         throw new Error(
-          `Failed to seed organization frameworks: ${insertFrameworkError.message}`,
+          `Failed to seed organization frameworks: ${upsertFrameworkError.message}`,
         );
       }
+    }
+
+    const { error: deleteFrameworkError } = await context.admin
+      .from('org_frameworks')
+      .delete()
+      .eq('organization_id', context.orgId)
+      .not(
+        'framework_slug',
+        'in',
+        `(${frameworks.length > 0 ? frameworks.map((s) => `"${s}"`).join(',') : '""'})`,
+      );
+
+    if (deleteFrameworkError) {
+      throw new Error(
+        `Failed to reset organization frameworks: ${deleteFrameworkError.message}`,
+      );
     }
   }
 

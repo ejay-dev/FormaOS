@@ -9,6 +9,7 @@ import {
   cleanupTestUser,
   E2EAuthBootstrapError,
 } from './helpers/test-auth';
+import { loginAs as bootstrapLogin } from './helpers/fixtures';
 import {
   configureWorkspaceState,
   getWorkspaceSeedContext,
@@ -38,14 +39,10 @@ async function getCredentials(): Promise<{ email: string; password: string }> {
 }
 
 async function loginAs(page: Page, email: string, password: string) {
-  await page.goto('/auth/signin');
-  await page.evaluate(() => {
-    localStorage.setItem('e2e_test_mode', 'true');
-  });
-  await page.fill('input[type="email"]', email);
-  await page.fill('input[type="password"]', password);
-  await page.click('button[type="submit"]');
-  await page.waitForURL(/\/app/, { timeout: 45000 });
+  // Use the shared bootstrap fixture: it installs a Supabase session via
+  // cookies + /api/auth/bootstrap, sidestepping UI-form login flakiness when
+  // the shared E2E user's state has been mutated by parallel workers.
+  await bootstrapLogin(page, email, password);
   await dismissProductTour(page);
 }
 

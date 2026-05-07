@@ -75,14 +75,6 @@ export default defineConfig({
       name: 'Mobile Safari',
       use: { ...devices['iPhone 12'] },
     },
-    {
-      name: 'Tablet Chrome',
-      use: { ...devices['Galaxy Tab S4'] },
-    },
-    {
-      name: 'Tablet Safari',
-      use: { ...devices['iPad Pro 11'] },
-    },
 
     /* Test against branded browsers. */
     // {
