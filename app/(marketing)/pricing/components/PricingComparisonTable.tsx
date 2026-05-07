@@ -17,12 +17,14 @@ type ComparisonRow = {
 
 type ComparisonGroup = {
   title: string;
+  code: string;
   rows: ComparisonRow[];
 };
 
 const GROUPS: ComparisonGroup[] = [
   {
     title: 'Core compliance',
+    code: 'CORE',
     rows: [
       {
         label: 'Compliance engine',
@@ -65,6 +67,7 @@ const GROUPS: ComparisonGroup[] = [
   },
   {
     title: 'Frameworks and controls',
+    code: 'FRAMEWORKS',
     rows: [
       {
         label: 'Compliance frameworks included',
@@ -114,6 +117,7 @@ const GROUPS: ComparisonGroup[] = [
   },
   {
     title: 'Team and sites',
+    code: 'TEAM',
     rows: [
       {
         label: 'Users included',
@@ -154,6 +158,7 @@ const GROUPS: ComparisonGroup[] = [
   },
   {
     title: 'Audit and evidence',
+    code: 'AUDIT',
     rows: [
       {
         label: 'Audit log export for Commission reviews',
@@ -188,6 +193,7 @@ const GROUPS: ComparisonGroup[] = [
   },
   {
     title: 'Reporting',
+    code: 'REPORT',
     rows: [
       {
         label: 'Framework evaluation reports',
@@ -215,6 +221,7 @@ const GROUPS: ComparisonGroup[] = [
   },
   {
     title: 'Integrations and API',
+    code: 'API',
     rows: [
       {
         label: 'Webhook integrations',
@@ -242,6 +249,7 @@ const GROUPS: ComparisonGroup[] = [
   },
   {
     title: 'Security and identity',
+    code: 'SEC',
     rows: [
       {
         label: 'SSO and SAML',
@@ -269,6 +277,7 @@ const GROUPS: ComparisonGroup[] = [
   },
   {
     title: 'Onboarding and support',
+    code: 'OPS',
     rows: [
       {
         label: 'Guided setup checklist',
@@ -323,6 +332,7 @@ const GROUPS: ComparisonGroup[] = [
   },
   {
     title: 'Procurement',
+    code: 'PROC',
     rows: [
       {
         label: 'Stripe Checkout (self-serve)',
@@ -356,25 +366,70 @@ const GROUPS: ComparisonGroup[] = [
   },
 ];
 
-const COLUMNS = [
-  { key: 'basic', label: 'Foundation', price: '$297/mo' },
-  { key: 'pro', label: 'Growth', price: '$797/mo' },
-  { key: 'scale', label: 'Scale', price: '$1,800/mo' },
-  { key: 'enterprise', label: 'Enterprise', price: 'Custom' },
-] as const;
+type Column = {
+  key: 'basic' | 'pro' | 'scale' | 'enterprise';
+  label: string;
+  code: string;
+  price: string;
+  accent: string;
+  featured?: boolean;
+};
 
-function renderCell(value: Cell) {
+const COLUMNS: readonly Column[] = [
+  {
+    key: 'basic',
+    label: 'Foundation',
+    code: 'FND',
+    price: '$297/mo',
+    accent: 'text-teal-300',
+  },
+  {
+    key: 'pro',
+    label: 'Growth',
+    code: 'GRW',
+    price: '$797/mo',
+    accent: 'text-emerald-300',
+    featured: true,
+  },
+  {
+    key: 'scale',
+    label: 'Scale',
+    code: 'SCL',
+    price: '$1,800/mo',
+    accent: 'text-cyan-300',
+  },
+  {
+    key: 'enterprise',
+    label: 'Enterprise',
+    code: 'ENT',
+    price: 'Custom',
+    accent: 'text-violet-300',
+  },
+];
+
+const TOTAL_ROWS = GROUPS.reduce((sum, g) => sum + g.rows.length, 0);
+
+function renderCell(value: Cell, featured?: boolean) {
   if (value === '✓') {
     return (
-      <Check className="mx-auto h-4 w-4 text-emerald-300" aria-hidden="true" />
+      <Check
+        className={`mx-auto h-4 w-4 ${featured ? 'text-emerald-300' : 'text-teal-300/80'}`}
+        aria-hidden="true"
+      />
     );
   }
   if (value === '—') {
     return (
-      <Minus className="mx-auto h-4 w-4 text-slate-600" aria-hidden="true" />
+      <Minus className="mx-auto h-4 w-4 text-slate-700" aria-hidden="true" />
     );
   }
-  return <span className="text-sm text-slate-200">{value}</span>;
+  return (
+    <span
+      className={`font-mono text-[12px] ${featured ? 'text-emerald-200' : 'text-slate-200'}`}
+    >
+      {value}
+    </span>
+  );
 }
 
 export function PricingComparisonTable() {
@@ -383,98 +438,185 @@ export function PricingComparisonTable() {
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0d1424] via-[#0a0f1c] to-[#0d1424]">
         <DotGrid />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(6,182,212,0.06),transparent_40%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(6,182,212,0.06),transparent_45%)]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
+        {/* Section header */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
-          className="mx-auto max-w-3xl text-center mb-12"
+          className="mb-12 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-cyan-400 text-sm font-medium mb-6">
-            <span className="w-2 h-2 rounded-full bg-cyan-400" />
-            Plan comparison
+          <div>
+            <div className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
+              <span className="h-px w-6 bg-cyan-400/60" />
+              <span className="text-cyan-300">Capability matrix</span>
+              <span className="text-slate-600">·</span>
+              <span>{GROUPS.length} categories · {TOTAL_ROWS} capabilities</span>
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
+              Every capability,{' '}
+              <span className="bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300 bg-clip-text text-transparent">
+                side by side.
+              </span>
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
+              Built for Australian NDIS, aged care, and healthcare buyers
+              comparing real procurement options. If something matters to your
+              audit and it is not listed, ask us.
+            </p>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Every feature,{' '}
-            <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-              side by side
+          <div className="hidden lg:flex flex-col items-end gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+            <span className="flex items-center gap-2">
+              <Check className="h-3 w-3 text-teal-300/80" />
+              <span>Included</span>
             </span>
-          </h2>
-          <p className="text-base leading-7 text-slate-400">
-            Built for Australian NDIS, aged care, and healthcare buyers
-            comparing real procurement options. If something matters to your
-            audit and it is not on this page, ask us.
-          </p>
+            <span className="flex items-center gap-2">
+              <Minus className="h-3 w-3 text-slate-700" />
+              <span>Not in plan</span>
+            </span>
+            <span className="flex items-center gap-2 text-emerald-300/80">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              Most popular column
+            </span>
+          </div>
         </ScrollReveal>
 
-        <div className="mt-12 hidden overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.025] lg:block">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/[0.08] bg-white/[0.03]">
-                <th
-                  scope="col"
-                  className="w-[34%] px-6 py-5 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-400"
-                >
-                  Feature
-                </th>
-                {COLUMNS.map((col) => (
+        {/* Desktop matrix wrapped in HUD frame */}
+        <ScrollReveal variant="fadeUp" range={[0, 0.4]}>
+          <div className="relative hidden overflow-hidden rounded-3xl border border-white/[0.07] bg-gradient-to-br from-[#0a1322]/85 via-[#070d1c]/80 to-[#040810]/85 shadow-2xl shadow-black/40 ring-1 ring-white/[0.03] backdrop-blur-sm lg:block">
+            {/* Edge glow lines */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-400/15 to-transparent" />
+            {/* Corner accents */}
+            <span className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-cyan-400/50" />
+            <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-emerald-400/50" />
+            <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-cyan-400/30" />
+            <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-emerald-400/30" />
+
+            {/* Frame title bar */}
+            <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-6 py-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                formaos · capability matrix · v4
+              </span>
+              <span className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300/80">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                </span>
+                live · in sync with billing
+              </span>
+            </div>
+
+            <table className="w-full">
+              <thead className="sticky top-0 z-10 backdrop-blur-md">
+                <tr className="border-b border-white/[0.06] bg-[#070d1c]/95">
                   <th
-                    key={col.key}
                     scope="col"
-                    className="px-6 py-5 text-center"
+                    className="w-[34%] px-6 py-5 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500"
                   >
-                    <div className="text-sm font-semibold text-white">
-                      {col.label}
-                    </div>
-                    <div className="mt-1 text-xs text-slate-400">
-                      {col.price}
-                    </div>
+                    Capability
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {GROUPS.map((group) => (
-                <>
-                  <tr key={`group-${group.title}`} className="bg-white/[0.04]">
-                    <td
-                      colSpan={5}
-                      className="px-6 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200"
+                  {COLUMNS.map((col) => (
+                    <th
+                      key={col.key}
+                      scope="col"
+                      className={`relative px-6 py-5 text-center ${
+                        col.featured ? 'bg-emerald-400/[0.04]' : ''
+                      }`}
                     >
-                      {group.title}
-                    </td>
-                  </tr>
-                  {group.rows.map((row, idx) => (
+                      {col.featured ? (
+                        <span className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/60 to-transparent" />
+                      ) : null}
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="text-base font-semibold text-white">
+                          {col.label}
+                        </span>
+                        <span
+                          className={`font-mono text-[10px] uppercase tracking-[0.2em] ${col.accent}`}
+                        >
+                          / {col.code}
+                        </span>
+                      </div>
+                      <div className="mt-1 font-mono text-xs text-slate-400">
+                        {col.price}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {GROUPS.map((group) => (
+                  <>
                     <tr
-                      key={`${group.title}-${row.label}`}
-                      className={
-                        idx % 2 === 0
-                          ? 'border-t border-white/[0.04]'
-                          : 'border-t border-white/[0.04] bg-white/[0.015]'
-                      }
+                      key={`group-${group.title}`}
+                      className="bg-gradient-to-r from-white/[0.04] via-white/[0.03] to-transparent"
                     >
-                      <td className="px-6 py-3.5 text-sm text-slate-200">
-                        <div>{row.label}</div>
-                        {row.hint ? (
-                          <div className="mt-0.5 text-xs text-slate-500">
-                            {row.hint}
-                          </div>
-                        ) : null}
+                      <td className="px-6 py-3.5">
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-emerald-200/80">
+                            {group.code}
+                          </span>
+                          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/80">
+                            {group.title}
+                          </span>
+                          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                            · {group.rows.length}
+                          </span>
+                        </div>
                       </td>
                       {COLUMNS.map((col) => (
-                        <td key={col.key} className="px-6 py-3.5 text-center">
-                          {renderCell(row[col.key])}
-                        </td>
+                        <td
+                          key={col.key}
+                          className={`px-6 py-3.5 ${col.featured ? 'bg-emerald-400/[0.04]' : ''}`}
+                        />
                       ))}
                     </tr>
-                  ))}
-                </>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    {group.rows.map((row, idx) => (
+                      <tr
+                        key={`${group.title}-${row.label}`}
+                        className={
+                          idx % 2 === 0
+                            ? 'border-t border-white/[0.04] hover:bg-white/[0.02]'
+                            : 'border-t border-white/[0.04] bg-white/[0.012] hover:bg-white/[0.025]'
+                        }
+                      >
+                        <td className="px-6 py-3.5 text-sm text-slate-200">
+                          <div>{row.label}</div>
+                          {row.hint ? (
+                            <div className="mt-0.5 text-xs text-slate-500">
+                              {row.hint}
+                            </div>
+                          ) : null}
+                        </td>
+                        {COLUMNS.map((col) => (
+                          <td
+                            key={col.key}
+                            className={`px-6 py-3.5 text-center ${
+                              col.featured ? 'bg-emerald-400/[0.04]' : ''
+                            }`}
+                          >
+                            {renderCell(row[col.key], col.featured)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Footer status bar */}
+            <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.015] px-6 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              <span>{TOTAL_ROWS} capabilities · {GROUPS.length} categories</span>
+              <span className="flex items-center gap-1.5 text-cyan-300/80">
+                <span className="h-1 w-1 rounded-full bg-cyan-400" />
+                schema · pricing.v4
+              </span>
+            </div>
+          </div>
+        </ScrollReveal>
 
         {/* Mobile: stacked per-group */}
         <div className="mt-10 space-y-6 lg:hidden">
@@ -483,10 +625,15 @@ export function PricingComparisonTable() {
               key={group.title}
               className="rounded-3xl border border-white/[0.08] bg-white/[0.025] p-5"
             >
-              <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200">
-                {group.title}
-              </h3>
-              <div className="mt-4 divide-y divide-white/[0.06]">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-emerald-200/80">
+                  {group.code}
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">
+                  {group.title}
+                </span>
+              </div>
+              <div className="divide-y divide-white/[0.06]">
                 {group.rows.map((row) => (
                   <div key={row.label} className="py-3">
                     <p className="text-sm font-medium text-white">
@@ -501,22 +648,28 @@ export function PricingComparisonTable() {
                       {COLUMNS.map((col) => (
                         <div
                           key={col.key}
-                          className="flex items-center justify-between rounded-xl border border-white/[0.05] bg-white/[0.02] px-3 py-2"
+                          className={`flex items-center justify-between rounded-xl border px-3 py-2 ${
+                            col.featured
+                              ? 'border-emerald-300/30 bg-emerald-400/[0.06]'
+                              : 'border-white/[0.05] bg-white/[0.02]'
+                          }`}
                         >
-                          <dt className="text-slate-400">{col.label}</dt>
+                          <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                            {col.code}
+                          </dt>
                           <dd className="ml-2">
                             {row[col.key] === '✓' ? (
                               <Check
-                                className="h-3.5 w-3.5 text-emerald-300"
+                                className={`h-3.5 w-3.5 ${col.featured ? 'text-emerald-300' : 'text-teal-300/80'}`}
                                 aria-hidden="true"
                               />
                             ) : row[col.key] === '—' ? (
                               <Minus
-                                className="h-3.5 w-3.5 text-slate-600"
+                                className="h-3.5 w-3.5 text-slate-700"
                                 aria-hidden="true"
                               />
                             ) : (
-                              <span className="text-slate-200">
+                              <span className="font-mono text-[11px] text-slate-200">
                                 {row[col.key]}
                               </span>
                             )}

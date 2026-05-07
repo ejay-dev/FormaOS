@@ -1,13 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  ArrowRight,
-  CheckCircle2,
-  ShieldCheck,
-  Sparkles,
-  Users,
-} from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { PUBLIC_PRICING_TIERS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
@@ -16,10 +10,31 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { TopographicPattern } from '@/components/marketing/SectionBackgrounds';
 import { duration } from '@/config/motion';
 
-const BADGE_TONES = {
-  popular: 'border-emerald-300/40 bg-emerald-300/[0.14] text-emerald-100',
-  value: 'border-cyan-300/40 bg-cyan-300/[0.14] text-cyan-100',
-  enterprise: 'border-violet-300/40 bg-violet-300/[0.14] text-violet-100',
+const TIER_VISUAL = {
+  foundation: {
+    code: 'FND',
+    accent: 'text-teal-300',
+    rail: 'from-teal-400/60 via-teal-400/10 to-transparent',
+    chip: 'border-teal-300/30 bg-teal-400/[0.08] text-teal-200',
+  },
+  growth: {
+    code: 'GRW',
+    accent: 'text-emerald-300',
+    rail: 'from-emerald-300/80 via-emerald-300/30 to-transparent',
+    chip: 'border-emerald-300/40 bg-emerald-300/[0.12] text-emerald-100',
+  },
+  scale: {
+    code: 'SCL',
+    accent: 'text-cyan-300',
+    rail: 'from-cyan-300/70 via-cyan-300/20 to-transparent',
+    chip: 'border-cyan-300/30 bg-cyan-400/[0.08] text-cyan-200',
+  },
+  enterprise: {
+    code: 'ENT',
+    accent: 'text-violet-300',
+    rail: 'from-violet-300/70 via-violet-300/20 to-transparent',
+    chip: 'border-violet-300/30 bg-violet-400/[0.08] text-violet-200',
+  },
 } as const;
 
 export function PricingTiers() {
@@ -33,163 +48,216 @@ export function PricingTiers() {
     >
       {/* Section backgrounds */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        <TopographicPattern color="rgba(16,185,129,0.035)" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.14),transparent_40%)]" />
-        <motion.div
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : { scale: [1, 1.15, 1], opacity: [0.08, 0.18, 0.08] }
-          }
-          transition={
-            shouldReduceMotion
-              ? undefined
-              : { duration: 14, repeat: Infinity, ease: 'easeInOut' }
-          }
-          className="absolute top-1/3 left-1/2 -translate-x-1/2 h-1/3 w-1/3 rounded-full bg-gradient-to-br from-emerald-500/15 to-cyan-500/10 blur-3xl"
-        />
+        <TopographicPattern color="rgba(20,184,166,0.04)" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(16,185,129,0.12),transparent_55%)]" />
       </div>
 
+      {/* Top + bottom hairlines */}
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/15 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent" />
+
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
+        {/* Section header */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
-          className="mx-auto max-w-3xl text-center mb-12"
+          className="mb-14 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/20 text-emerald-400 text-sm font-medium mb-6">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            Infrastructure pricing
+          <div>
+            <div className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
+              <span className="h-px w-6 bg-teal-400/60" />
+              <span className="text-teal-300">Plan catalog</span>
+              <span className="text-slate-600">·</span>
+              <span>4 tiers · 1 architecture</span>
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
+              One compliance OS,{' '}
+              <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-teal-300 bg-clip-text text-transparent">
+                four ways to deploy it.
+              </span>
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
+              Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
+              is contracted with procurement and security review. Same
+              compliance engine across every plan — only scope changes.
+            </p>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4">
-            One compliance OS,{' '}
-            <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
-              four ways to scale it
-            </span>
-          </h2>
-          <p className="text-base leading-7 text-slate-400">
-            Start on Foundation and grow into Scale as your network expands.
-            Foundation, Growth, and Scale are self-serve — no sales call
-            required. Enterprise is contracted with procurement and security
-            review.
-          </p>
+          <div className="hidden rounded-2xl border border-white/[0.06] bg-black/30 px-5 py-4 backdrop-blur-md lg:block">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              Currency
+            </p>
+            <p className="mt-1.5 font-mono text-sm text-white">AUD · GST inc.</p>
+            <div className="mt-3 h-px bg-gradient-to-r from-white/10 to-transparent" />
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              Billing
+            </p>
+            <p className="mt-1.5 font-mono text-sm text-white">Monthly · Stripe</p>
+          </div>
         </ScrollReveal>
 
+        {/* Tier grid */}
         <SectionChoreography
           pattern="cascade"
-          stagger={0.06}
+          stagger={0.07}
           className="grid items-stretch gap-5 lg:grid-cols-4"
         >
-          {PUBLIC_PRICING_TIERS.map((tier) => {
-            const tone = tier.badgeTone ?? 'value';
-            const badgeClass = BADGE_TONES[tone];
+          {PUBLIC_PRICING_TIERS.map((tier, index) => {
+            const visual = TIER_VISUAL[tier.id];
+            const number = String(index + 1).padStart(2, '0');
 
             return (
               <motion.article
                 key={tier.id}
                 whileHover={
-                  shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }
+                  shouldReduceMotion ? undefined : { y: -4 }
                 }
                 transition={{ duration: duration.fast }}
-                className={`relative flex min-h-full flex-col rounded-[2rem] border p-6 shadow-2xl cursor-default ${
+                className={`group relative flex min-h-full flex-col overflow-hidden rounded-3xl border bg-gradient-to-b shadow-2xl ${
                   tier.featured
-                    ? 'border-emerald-300/40 bg-gradient-to-b from-emerald-300/[0.1] to-emerald-300/[0.04] shadow-emerald-950/40 lg:-mt-6 lg:mb-6 lg:scale-[1.02]'
-                    : 'border-white/[0.08] bg-white/[0.045] shadow-slate-950/40 hover:border-white/[0.14] transition-colors duration-300'
+                    ? 'border-emerald-300/40 from-emerald-300/[0.07] via-emerald-300/[0.02] to-white/[0.02] shadow-emerald-950/40 lg:-mt-4 lg:mb-4 lg:scale-[1.015]'
+                    : 'border-white/[0.07] from-white/[0.045] to-white/[0.015] shadow-slate-950/50 hover:border-white/[0.14]'
                 }`}
               >
-                {tier.badge ? (
-                  <span
-                    className={`absolute right-6 top-6 inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${badgeClass}`}
-                  >
-                    {tone === 'popular' ? (
-                      <Sparkles className="h-3 w-3" aria-hidden="true" />
-                    ) : null}
-                    {tier.badge}
-                  </span>
+                {/* Vertical accent rail */}
+                <span
+                  className={`pointer-events-none absolute inset-y-6 left-0 w-px bg-gradient-to-b ${visual.rail}`}
+                />
+
+                {/* Top corner accents on featured */}
+                {tier.featured ? (
+                  <>
+                    <span className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-emerald-300/60" />
+                    <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-emerald-300/60" />
+                    <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-emerald-300/40" />
+                    <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-emerald-300/40" />
+                  </>
                 ) : null}
 
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08]">
-                  <ShieldCheck
-                    className="h-5 w-5 text-cyan-200"
-                    aria-hidden="true"
-                  />
-                </div>
-
-                <h3 className="mt-6 text-2xl font-semibold text-white">
-                  {tier.name}
-                </h3>
-                <p className="mt-2 text-sm leading-5 text-slate-300">
-                  {tier.audience}
-                </p>
-                <p className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-slate-400">
-                  <Users className="h-3.5 w-3.5" aria-hidden="true" />
-                  {tier.audienceSize}
-                </p>
-
-                <div className="mt-6 flex items-end gap-2">
-                  <span className="text-4xl font-semibold tracking-tight text-white">
-                    {tier.priceLabel}
-                  </span>
-                  <span className="pb-1 text-sm font-medium text-slate-400">
-                    {tier.priceSubtext}
-                  </span>
-                </div>
-                <p className="mt-1 text-xs text-slate-500">{tier.trustNote}</p>
-
-                <Link
-                  href={tier.ctaHref}
-                  data-testid={`pricing-${tier.id}-cta`}
-                  onClick={() =>
-                    trackCtaClick({
-                      surface: 'pricing',
-                      section: 'tiers',
-                      location: 'pricing_card',
-                      ctaLabel: tier.ctaLabel,
-                      ctaHref: tier.ctaHref,
-                      variant: tier.featured ? 'primary' : 'plan',
-                      plan: tier.id,
-                    })
-                  }
-                  className={`mt-6 inline-flex min-h-[50px] items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition ${
-                    tier.featured
-                      ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-950/40 hover:brightness-110'
-                      : 'border border-white/[0.1] bg-white/[0.06] text-white hover:bg-white/[0.1]'
-                  }`}
-                >
-                  {tier.ctaLabel}
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-
-                <p className="mt-6 text-sm leading-6 text-slate-400">
-                  {tier.summary}
-                </p>
-
-                <ul className="mt-6 flex-1 space-y-3 border-t border-white/[0.06] pt-6">
-                  {tier.features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex gap-3 text-sm leading-6 text-slate-300"
+                {/* Header strip */}
+                <div className="flex items-center justify-between border-b border-white/[0.05] bg-white/[0.02] px-6 py-3.5">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                      Tier {number}
+                    </span>
+                    <span
+                      className={`font-mono text-[10px] uppercase tracking-[0.22em] ${visual.accent}`}
                     >
-                      <CheckCircle2
-                        className="mt-1 h-4 w-4 shrink-0 text-emerald-300"
-                        aria-hidden="true"
-                      />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                      / {visual.code}
+                    </span>
+                  </div>
+                  {tier.badge ? (
+                    <span
+                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${visual.chip}`}
+                    >
+                      {tier.badge}
+                    </span>
+                  ) : null}
+                </div>
+
+                {/* Body */}
+                <div className="flex flex-1 flex-col px-6 pt-6 pb-6">
+                  <h3 className="text-2xl font-semibold tracking-tight text-white">
+                    {tier.name}
+                  </h3>
+                  <p className="mt-1.5 text-[13px] leading-snug text-slate-400">
+                    {tier.audience}
+                  </p>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                    {tier.audienceSize}
+                  </p>
+
+                  {/* Price */}
+                  <div className="mt-7 flex items-end gap-2">
+                    <span className="font-mono text-5xl font-semibold tracking-tight text-white">
+                      {tier.priceLabel}
+                    </span>
+                    <span className="pb-2 text-sm font-medium text-slate-400">
+                      {tier.priceSubtext}
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-[11px] text-slate-500">
+                    {tier.trustNote}
+                  </p>
+
+                  {/* CTA */}
+                  <Link
+                    href={tier.ctaHref}
+                    data-testid={`pricing-${tier.id}-cta`}
+                    onClick={() =>
+                      trackCtaClick({
+                        surface: 'pricing',
+                        section: 'tiers',
+                        location: 'pricing_card',
+                        ctaLabel: tier.ctaLabel,
+                        ctaHref: tier.ctaHref,
+                        variant: tier.featured ? 'primary' : 'plan',
+                        plan: tier.id,
+                      })
+                    }
+                    className={`mt-6 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
+                      tier.featured
+                        ? 'bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 text-slate-900 shadow-lg shadow-emerald-950/40 hover:brightness-110'
+                        : 'border border-white/[0.1] bg-white/[0.04] text-white hover:border-white/[0.2] hover:bg-white/[0.08]'
+                    }`}
+                  >
+                    {tier.ctaLabel}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+
+                  {/* Summary */}
+                  <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
+                    {tier.summary}
+                  </p>
+
+                  {/* Features ledger */}
+                  <div className="mt-6 border-t border-white/[0.06] pt-5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                      Includes
+                    </p>
+                    <ul className="mt-3 flex-1 space-y-2.5">
+                      {tier.features.map((feature) => (
+                        <li
+                          key={feature}
+                          className="flex gap-2.5 text-[13px] leading-snug text-slate-300"
+                        >
+                          <CheckCircle2
+                            className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
+                              tier.featured
+                                ? 'text-emerald-300'
+                                : 'text-teal-300/80'
+                            }`}
+                            aria-hidden="true"
+                          />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </motion.article>
             );
           })}
         </SectionChoreography>
 
+        {/* Footer notes */}
         <ScrollReveal
           variant="fadeUp"
           range={[0, 0.4]}
-          className="mt-10 text-center"
+          className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6"
         >
-          <p className="text-xs uppercase tracking-[0.22em] text-slate-500">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
             Prices in AUD · GST inclusive · Stripe-secured payments
           </p>
+          <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <span className="h-1 w-1 rounded-full bg-emerald-400" />
+              SSO available on Enterprise
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-1 w-1 rounded-full bg-cyan-400" />
+              Cancel anytime
+            </span>
+          </div>
         </ScrollReveal>
       </div>
     </section>

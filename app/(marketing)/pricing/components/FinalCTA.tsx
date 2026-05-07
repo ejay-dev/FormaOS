@@ -1,111 +1,231 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Building2, Rocket } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
+
+const PATHS = [
+  {
+    id: 'self-serve',
+    code: 'A',
+    icon: Rocket,
+    label: 'Self-serve',
+    title: 'Foundation, Growth, or Scale',
+    body: 'Sign up, configure your first framework, and start enforcing controls today. Stripe-secured. Cancel anytime.',
+    bullets: [
+      'Stripe Checkout',
+      'Guided onboarding · audit-ready in <14 days',
+      'Cancel or downgrade with full data portability',
+    ],
+    ctaLabel: 'Start free configuration',
+    ctaHref: '/auth/signup?source=pricing_final',
+    ctaVariant: 'primary' as const,
+    accent: 'teal',
+  },
+  {
+    id: 'enterprise',
+    code: 'B',
+    icon: Building2,
+    label: 'Enterprise',
+    title: 'Procurement-led rollout',
+    body: 'Custom contract, security review, white-glove onboarding, dedicated CSM, SSO, and tailored compliance architecture.',
+    bullets: [
+      'Procurement & security review pack',
+      'SAML SSO · directory sync · DPA · custom SLA',
+      'Audit-period support and Commission review assistance',
+    ],
+    ctaLabel: 'Talk to procurement',
+    ctaHref: '/contact?type=enterprise&plan=enterprise&source=pricing_final',
+    ctaVariant: 'secondary' as const,
+    accent: 'violet',
+  },
+];
 
 export function FinalCTA() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <section className="relative overflow-hidden py-16 sm:py-24 lg:py-32">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(45,212,191,0.16),transparent_36%)]" />
+    <section className="relative overflow-hidden py-20 sm:py-28 lg:py-32">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(45,212,191,0.12),transparent_45%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_70%,rgba(139,92,246,0.10),transparent_45%)]" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.35]}>
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-5 sm:px-8 lg:px-12 py-8 sm:py-10 text-center">
-              <ScrollReveal variant="blurIn" range={[0.02, 0.35]}>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/20 text-emerald-400 text-sm font-medium mb-6">
-                  <ShieldCheck className="w-4 h-4" aria-hidden="true" />
-                  Closing decision
-                </div>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-                  Stop relying on people to{' '}
-                  <span className="text-slate-500">remember</span> compliance.
-                  <br />
-                  <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                    Let the system enforce it.
-                  </span>
-                </h2>
-              </ScrollReveal>
-
-              <ScrollReveal variant="depthSlide" range={[0.05, 0.38]}>
-                <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-                  Get a compliance plan scoped to your framework obligations,
-                  operating complexity, and audit risk.
-                </p>
-              </ScrollReveal>
-            </div>
-
-            <div className="px-5 sm:px-8 lg:px-12 py-8 sm:py-10 text-center">
-              <ScrollReveal variant="slideUp" range={[0.08, 0.4]}>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
-                  <Link
-                    href="/contact?type=compliance-plan&source=pricing_final"
-                    onClick={() =>
-                      trackCtaClick({
-                        surface: 'pricing',
-                        section: 'final_cta',
-                        location: 'final_primary',
-                        ctaLabel: 'Get Your Compliance Plan',
-                        ctaHref:
-                          '/contact?type=compliance-plan&source=pricing_final',
-                        variant: 'final',
-                      })
-                    }
-                    className="mk-btn mk-btn-primary w-full sm:w-auto min-h-[52px] justify-center px-8 py-4 text-base"
-                  >
-                    Get Your Compliance Plan
-                    <ArrowRight className="h-5 w-5" aria-hidden="true" />
-                  </Link>
-                  <Link
-                    href="/contact?type=expert&source=pricing_final"
-                    onClick={() =>
-                      trackCtaClick({
-                        surface: 'pricing',
-                        section: 'final_cta',
-                        location: 'final_secondary',
-                        ctaLabel: 'Talk to an Expert',
-                        ctaHref: '/contact?type=expert&source=pricing_final',
-                        variant: 'final',
-                      })
-                    }
-                    className="mk-btn mk-btn-secondary w-full sm:w-auto min-h-[52px] justify-center px-8 py-4 text-base"
-                  >
-                    Talk to an Expert
-                  </Link>
-                </div>
-              </ScrollReveal>
-
-              <ScrollReveal variant="perspectiveUp" range={[0.1, 0.42]}>
-                <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-slate-500">
-                  <span className="flex items-center gap-2 rounded-full px-3 py-1.5 bg-white/[0.04] border border-white/[0.08]">
-                    <CheckCircle
-                      className="w-4 h-4 text-emerald-400"
-                      aria-hidden="true"
-                    />
-                    Assessment-led scoping
-                  </span>
-                  <span className="flex items-center gap-2 rounded-full px-3 py-1.5 bg-white/[0.04] border border-white/[0.08]">
-                    <CheckCircle
-                      className="w-4 h-4 text-emerald-400"
-                      aria-hidden="true"
-                    />
-                    No arbitrary feature gates
-                  </span>
-                  <span className="flex items-center gap-2 rounded-full px-3 py-1.5 bg-white/[0.04] border border-white/[0.08]">
-                    <CheckCircle
-                      className="w-4 h-4 text-emerald-400"
-                      aria-hidden="true"
-                    />
-                    Full platform access
-                  </span>
-                </div>
-              </ScrollReveal>
-            </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
+        {/* Header */}
+        <ScrollReveal
+          variant="slideUp"
+          range={[0, 0.35]}
+          className="mx-auto mb-12 max-w-3xl text-center"
+        >
+          <div className="mb-5 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
+            <span className="h-px w-6 bg-emerald-400/60" />
+            <span className="text-emerald-300">Closing decision</span>
+            <span className="text-slate-600">·</span>
+            <span>two procurement paths</span>
           </div>
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
+            Stop relying on people to{' '}
+            <span className="text-slate-500">remember</span> compliance.
+            <br />
+            <span className="bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-300 bg-clip-text text-transparent">
+              Let the system enforce it.
+            </span>
+          </h2>
+          <p className="mt-5 text-base leading-7 text-slate-400 sm:text-lg">
+            Choose a path that matches your buying motion. Same compliance
+            engine, same architecture — different procurement and onboarding.
+          </p>
+        </ScrollReveal>
+
+        {/* Dual-path frame */}
+        <ScrollReveal variant="depthSlide" range={[0.05, 0.4]}>
+          <div className="grid gap-5 lg:grid-cols-2">
+            {PATHS.map((path) => {
+              const Icon = path.icon;
+              const isPrimary = path.ctaVariant === 'primary';
+              const accentBorder =
+                path.accent === 'teal'
+                  ? 'border-teal-300/30'
+                  : 'border-violet-300/30';
+              const accentText =
+                path.accent === 'teal'
+                  ? 'text-teal-300'
+                  : 'text-violet-300';
+              const accentChip =
+                path.accent === 'teal'
+                  ? 'border-teal-300/30 bg-teal-400/[0.08] text-teal-200'
+                  : 'border-violet-300/30 bg-violet-400/[0.08] text-violet-200';
+              const cornerTop =
+                path.accent === 'teal'
+                  ? 'border-teal-400/60'
+                  : 'border-violet-400/60';
+              const cornerBottom =
+                path.accent === 'teal'
+                  ? 'border-teal-400/40'
+                  : 'border-violet-400/40';
+
+              return (
+                <article
+                  key={path.id}
+                  className={`relative overflow-hidden rounded-3xl border ${accentBorder} bg-gradient-to-br from-white/[0.04] to-white/[0.01] p-7 sm:p-9`}
+                >
+                  {/* Corner accents */}
+                  <span
+                    className={`pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t ${cornerTop}`}
+                  />
+                  <span
+                    className={`pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t ${cornerTop}`}
+                  />
+                  <span
+                    className={`pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l ${cornerBottom}`}
+                  />
+                  <span
+                    className={`pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r ${cornerBottom}`}
+                  />
+
+                  {/* Stage marker */}
+                  <div className="mb-6 flex items-center gap-3">
+                    <span
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl border ${accentBorder} bg-white/[0.03] font-mono text-sm ${accentText}`}
+                    >
+                      {path.code}
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                      Path / {path.id.toUpperCase()}
+                    </span>
+                    <span className="ml-auto h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                    <span
+                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${accentChip}`}
+                    >
+                      {path.label}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03]">
+                      <Icon
+                        className={`h-5 w-5 ${accentText}`}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-semibold tracking-tight text-white">
+                        {path.title}
+                      </h3>
+                      <p className="mt-2 text-[15px] leading-relaxed text-slate-400">
+                        {path.body}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Bullets */}
+                  <ul className="mt-6 space-y-2 border-t border-white/[0.06] pt-5">
+                    {path.bullets.map((b) => (
+                      <li
+                        key={b}
+                        className="flex items-start gap-2.5 text-[13px] leading-snug text-slate-300"
+                      >
+                        <span
+                          className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${
+                            path.accent === 'teal'
+                              ? 'bg-teal-400'
+                              : 'bg-violet-400'
+                          }`}
+                        />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href={path.ctaHref}
+                    onClick={() =>
+                      trackCtaClick({
+                        surface: 'pricing',
+                        section: 'final_cta',
+                        location: `final_${path.id}`,
+                        ctaLabel: path.ctaLabel,
+                        ctaHref: path.ctaHref,
+                        variant: 'final',
+                      })
+                    }
+                    className={`mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-semibold transition ${
+                      isPrimary
+                        ? 'bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-slate-900 shadow-lg shadow-emerald-950/40 hover:brightness-110'
+                        : 'border border-white/[0.1] bg-white/[0.04] text-white hover:border-white/[0.2] hover:bg-white/[0.08]'
+                    }`}
+                  >
+                    {path.ctaLabel}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </article>
+              );
+            })}
+          </div>
+        </ScrollReveal>
+
+        {/* Footer assurance row */}
+        <ScrollReveal
+          variant="fadeUp"
+          range={[0.1, 0.45]}
+          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/[0.06] pt-6 font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500"
+        >
+          <span className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Assessment-led scoping
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            No arbitrary feature gates
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
+            Full platform access
+          </span>
+          <span className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
+            Procurement-ready
+          </span>
         </ScrollReveal>
       </div>
     </section>
