@@ -259,7 +259,7 @@ test.describe('A) Marketing → App Entry', () => {
     });
 
     const ctaButton = page
-      .getByRole('link', { name: /start foundation plan/i })
+      .getByRole('link', { name: /start foundation/i })
       .first();
     await expect(ctaButton).toBeVisible({ timeout: 10000 });
 

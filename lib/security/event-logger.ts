@@ -37,19 +37,26 @@ const DEFAULT_DB_WRITE_TIMEOUT_MS = 1500;
 const DB_WRITE_TIMEOUT_MS = Number.isFinite(
   Number(process.env.SECURITY_LOG_DB_TIMEOUT_MS),
 )
-  ? Math.max(500, Math.min(5000, Number(process.env.SECURITY_LOG_DB_TIMEOUT_MS)))
+  ? Math.max(
+      500,
+      Math.min(5000, Number(process.env.SECURITY_LOG_DB_TIMEOUT_MS)),
+    )
   : DEFAULT_DB_WRITE_TIMEOUT_MS;
 const DEFAULT_FLUSH_INTERVAL_MS = 3000;
 const DEFAULT_BATCH_SIZE = 100;
 
 const flushIntervalMs = (() => {
-  const parsed = Number(process.env.SECURITY_LOG_FLUSH_MS ?? DEFAULT_FLUSH_INTERVAL_MS);
+  const parsed = Number(
+    process.env.SECURITY_LOG_FLUSH_MS ?? DEFAULT_FLUSH_INTERVAL_MS,
+  );
   if (!Number.isFinite(parsed)) return DEFAULT_FLUSH_INTERVAL_MS;
   return Math.min(5000, Math.max(2000, Math.floor(parsed)));
 })();
 
 const maxBatchSize = (() => {
-  const parsed = Number(process.env.SECURITY_LOG_BATCH_SIZE ?? DEFAULT_BATCH_SIZE);
+  const parsed = Number(
+    process.env.SECURITY_LOG_BATCH_SIZE ?? DEFAULT_BATCH_SIZE,
+  );
   if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_BATCH_SIZE;
   return Math.min(500, Math.max(10, Math.floor(parsed)));
 })();
@@ -198,10 +205,7 @@ async function runDetectionRules(
 
   if (payload.type === 'token_refresh' && payload.metadata?.sessionId) {
     results.push(
-      await detectSessionAnomaly(
-        String(payload.metadata.sessionId),
-        context,
-      ),
+      await detectSessionAnomaly(String(payload.metadata.sessionId), context),
     );
   }
 
@@ -354,7 +358,11 @@ async function flushSecurityEventsBatch(
   const insertedRows = inserted.data as Array<{ id: string }>;
   if (!insertedRows.length) return;
 
-  const updates: Array<{ id: string; severity: Severity; metadata: Record<string, unknown> }> = [];
+  const updates: Array<{
+    id: string;
+    severity: Severity;
+    metadata: Record<string, unknown>;
+  }> = [];
   const alerts: Array<{ event_id: string; notes: string }> = [];
 
   for (let index = 0; index < enrichedBatch.length; index += 1) {
@@ -465,7 +473,9 @@ async function flushUserActivityBatch(
       const existingOrgIds = new Set(
         (existingOrgs ?? []).map((org) => org.id as string),
       );
-      const validRows = rows.filter((row) => row.org_id != null && existingOrgIds.has(row.org_id));
+      const validRows = rows.filter(
+        (row) => row.org_id != null && existingOrgIds.has(row.org_id),
+      );
       if (!validRows.length) return;
 
       await withDbTimeout(
@@ -520,7 +530,9 @@ function enqueueUserActivity(payload: UserActivityPayload): void {
   triggerImmediateFlushIfNeeded();
 }
 
-export function dispatchSecurityEventEnhanced(payload: SecurityEventPayload): void {
+export function dispatchSecurityEventEnhanced(
+  payload: SecurityEventPayload,
+): void {
   try {
     enqueueSecurityEvent(payload);
   } catch {
@@ -536,9 +548,7 @@ export function dispatchUserActivity(params: UserActivityPayload): void {
   }
 }
 
-export function logSecurityEventEnhanced(
-  payload: SecurityEventPayload,
-): void {
+export function logSecurityEventEnhanced(payload: SecurityEventPayload): void {
   dispatchSecurityEventEnhanced(payload);
 }
 
