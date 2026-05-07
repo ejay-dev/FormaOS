@@ -458,17 +458,39 @@ async function saveRoleSelection(formData: FormData) {
       redirect('/onboarding?step=4&error=1');
     }
 
-    await supabase
+    const { error: roleUpdateError } = await supabase
       .from('org_members')
       .update({ role: outcome.option.role })
       .eq('organization_id', orgId)
       .eq('user_id', user.id);
 
+    if (roleUpdateError) {
+      // RLS or row-not-found: retry under service-role client. Mirror the
+      // pattern used by saveFrameworkSelection so a transient RLS denial
+      // does not silently advance the wizard with an unchanged role.
+      console.warn(
+        '[onboarding] org_members.role update failed; retrying with admin client',
+        roleUpdateError,
+      );
+      const { error: adminRoleUpdateError } = await createSupabaseAdminClient()
+        .from('org_members')
+        .update({ role: outcome.option.role })
+        .eq('organization_id', orgId)
+        .eq('user_id', user.id);
+
+      if (adminRoleUpdateError) {
+        throw adminRoleUpdateError;
+      }
+    }
+
     if (outcome.frameworksToPersist) {
-      await createSupabaseAdminClient()
+      const { error: orgFrameworksError } = await createSupabaseAdminClient()
         .from('organizations')
         .update({ frameworks: outcome.frameworksToPersist })
         .eq('id', orgId);
+      if (orgFrameworksError) {
+        throw orgFrameworksError;
+      }
     }
 
     for (const step of outcome.completedSteps) {

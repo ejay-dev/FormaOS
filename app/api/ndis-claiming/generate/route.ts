@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       admin
         .from('org_visits')
         .select('id')
-        .eq('org_id', orgId)
+        .eq('organization_id', orgId)
         .eq('status', 'completed')
         .order('created_at', { ascending: false })
         .limit(250),

@@ -277,32 +277,49 @@ async function calculateVisitMetrics(orgId: string): Promise<VisitMetrics> {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
+  // Schema: org_visits exposes scheduled_start, scheduled_end, actual_start, actual_end.
+  // There is no scheduled_at / completed_at / duration_minutes column — derive duration
+  // from actual_start/actual_end at read time.
   const { data: visits } = await admin
     .from('org_visits')
-    .select('id, status, visit_type, scheduled_at, completed_at, duration_minutes')
+    .select('id, status, visit_type, scheduled_start, actual_start, actual_end')
     .eq('organization_id', orgId)
-    .gte('scheduled_at', sevenDaysAgo.toISOString());
+    .gte('scheduled_start', sevenDaysAgo.toISOString());
 
-  const scheduled = visits?.filter((v: { status?: string }) => v.status === 'scheduled').length || 0;
-  const completed = visits?.filter((v: { status?: string }) => v.status === 'completed').length || 0;
-  const missed = visits?.filter((v: { status?: string }) => v.status === 'missed').length || 0;
-  const cancelled = visits?.filter((v: { status?: string }) => v.status === 'cancelled').length || 0;
-  const inProgress = visits?.filter((v: { status?: string }) => v.status === 'in_progress').length || 0;
+  type VisitRow = {
+    id: string;
+    status?: string;
+    visit_type?: string;
+    scheduled_start?: string;
+    actual_start?: string | null;
+    actual_end?: string | null;
+  };
+  const rows = (visits ?? []) as VisitRow[];
+
+  const scheduled = rows.filter((v) => v.status === 'scheduled').length;
+  const completed = rows.filter((v) => v.status === 'completed').length;
+  const missed = rows.filter((v) => v.status === 'missed').length;
+  const cancelled = rows.filter((v) => v.status === 'cancelled').length;
+  const inProgress = rows.filter((v) => v.status === 'in_progress').length;
 
   const totalScheduled = scheduled + completed + missed + cancelled + inProgress;
   const completionRate = totalScheduled > 0 ? Math.round((completed / totalScheduled) * 100) : 0;
 
-  // Calculate average duration
-  const completedVisits = visits?.filter((v: { status?: string; duration_minutes?: number }) => v.status === 'completed' && v.duration_minutes) || [];
+  // Average duration in minutes, derived from actual_start/actual_end on completed visits.
+  const completedVisits = rows.filter(
+    (v) => v.status === 'completed' && v.actual_start && v.actual_end,
+  );
   const averageDuration =
     completedVisits.length > 0
       ? Math.round(
-          completedVisits.reduce((sum: number, v: { duration_minutes?: number }) => sum + (v.duration_minutes || 0), 0) /
-            completedVisits.length
+          completedVisits.reduce((sum, v) => {
+            const ms = new Date(v.actual_end!).getTime() - new Date(v.actual_start!).getTime();
+            return sum + Math.max(0, ms / 60000);
+          }, 0) / completedVisits.length,
         )
       : 0;
 
-  // Weekly trend (visits per day)
+  // Weekly trend (visits per day, by scheduled_start)
   const weeklyTrend: number[] = [];
   for (let i = 6; i >= 0; i--) {
     const dayStart = new Date(now);
@@ -311,11 +328,11 @@ async function calculateVisitMetrics(orgId: string): Promise<VisitMetrics> {
     const dayEnd = new Date(dayStart);
     dayEnd.setHours(23, 59, 59, 999);
 
-    const dayVisits =
-      visits?.filter((v: { scheduled_at: string }) => {
-        const visitDate = new Date(v.scheduled_at);
-        return visitDate >= dayStart && visitDate <= dayEnd;
-      }).length || 0;
+    const dayVisits = rows.filter((v) => {
+      if (!v.scheduled_start) return false;
+      const visitDate = new Date(v.scheduled_start);
+      return visitDate >= dayStart && visitDate <= dayEnd;
+    }).length;
 
     weeklyTrend.push(dayVisits);
   }
@@ -571,14 +588,14 @@ async function calculateWorkloadMetrics(orgId: string): Promise<WorkloadMetrics>
     .eq('organization_id', orgId)
     .eq('status', 'active');
 
-  // Get scheduled visits per staff
+  // Get scheduled visits per staff (real columns: staff_id + scheduled_start)
   const { data: visits } = await admin
     .from('org_visits')
-    .select('assigned_to, id')
+    .select('staff_id, id')
     .eq('organization_id', orgId)
     .eq('status', 'scheduled')
-    .gte('scheduled_at', now.toISOString())
-    .lte('scheduled_at', sevenDaysFromNow.toISOString());
+    .gte('scheduled_start', now.toISOString())
+    .lte('scheduled_start', sevenDaysFromNow.toISOString());
 
   const distribution: WorkloadMetrics['distribution'] = [];
   let totalLoad = 0;
@@ -589,7 +606,7 @@ async function calculateWorkloadMetrics(orgId: string): Promise<WorkloadMetrics>
   for (const member of members || []) {
     const activeClients =
       patientAssignments?.filter((a: { user_id: string }) => a.user_id === member.user_id).length || 0;
-    const scheduledVisits = visits?.filter((v: { assigned_to?: string }) => v.assigned_to === member.user_id).length || 0;
+    const scheduledVisits = visits?.filter((v: { staff_id?: string }) => v.staff_id === member.user_id).length || 0;
 
     // Calculate load score (clients * 10 + visits * 5, normalized to 100)
     const loadScore = Math.min(100, activeClients * 10 + scheduledVisits * 5);

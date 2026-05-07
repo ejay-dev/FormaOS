@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { createInvitation } from '@/lib/invitations/create-invitation';
@@ -54,6 +55,70 @@ export async function POST(request: Request) {
         { error: 'No invites provided' },
         { status: 400 },
       );
+    }
+
+    // Seat-limit enforcement. Read team_limit entitlement and current
+    // members + pending invites; reject the whole batch if it would exceed
+    // the limit. Plans with no limit (limit_value = null on enabled rows,
+    // typically enterprise) bypass.
+    const admin = createSupabaseAdminClient();
+    const [
+      { data: entitlement },
+      { count: memberCount },
+      { count: pendingInviteCount },
+    ] = await Promise.all([
+      admin
+        .from('org_entitlements')
+        .select('enabled, limit_value')
+        .eq('organization_id', orgId)
+        .eq('feature_key', 'team_limit')
+        .maybeSingle(),
+      admin
+        .from('org_members')
+        .select('user_id', { count: 'exact', head: true })
+        .eq('organization_id', orgId),
+      admin
+        .from('team_invitations')
+        .select('id', { count: 'exact', head: true })
+        .eq('organization_id', orgId)
+        .eq('status', 'pending'),
+    ]);
+
+    const teamLimit =
+      entitlement?.enabled && typeof entitlement.limit_value === 'number'
+        ? entitlement.limit_value
+        : entitlement?.enabled
+          ? null
+          : 0;
+
+    if (teamLimit !== null) {
+      const used = (memberCount ?? 0) + (pendingInviteCount ?? 0);
+      const remaining = Math.max(0, teamLimit - used);
+      if (remaining <= 0) {
+        return NextResponse.json(
+          {
+            error: 'Seat limit reached',
+            message: `Your plan allows ${teamLimit} seats and you have used all of them. Upgrade or remove a member to invite more.`,
+            code: 'SEAT_LIMIT_REACHED',
+            limit: teamLimit,
+            used,
+          },
+          { status: 402 },
+        );
+      }
+      if (invites.length > remaining) {
+        return NextResponse.json(
+          {
+            error: 'Invite batch exceeds remaining seats',
+            message: `You have ${remaining} seat${remaining === 1 ? '' : 's'} left on your plan but tried to invite ${invites.length}.`,
+            code: 'SEAT_LIMIT_EXCEEDED',
+            limit: teamLimit,
+            used,
+            remaining,
+          },
+          { status: 402 },
+        );
+      }
     }
 
     const results: Array<{ email: string; ok: boolean; error?: string }> = [];

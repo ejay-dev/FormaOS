@@ -10,19 +10,29 @@ export async function generateLineItems(
   visitId: string,
 ) {
   // Fetch visit details
+  // Schema: org_visits uses organization_id (not org_id) and client_id (not participant_id).
+  // org_ndis_line_items uses org_id + participant_id — we map between them at insert time.
   const { data: visit } = await db
     .from('org_visits')
     .select('*, org_patients(id, first_name, last_name)')
     .eq('id', visitId)
-    .eq('org_id', orgId)
+    .eq('organization_id', orgId)
     .single();
 
   if (!visit) throw new Error('Visit not found');
   if (visit.status !== 'completed') throw new Error('Visit must be completed');
+  if (!visit.client_id) throw new Error('Visit has no linked participant');
 
-  // Calculate duration in hours
-  const start = new Date(visit.actual_start_time ?? visit.start_time);
-  const end = new Date(visit.actual_end_time ?? visit.end_time);
+  // Calculate duration in hours from actual times if available, else scheduled times.
+  const startSource =
+    visit.actual_start ?? visit.scheduled_start ?? visit.actual_start_time ?? visit.start_time;
+  const endSource =
+    visit.actual_end ?? visit.scheduled_end ?? visit.actual_end_time ?? visit.end_time;
+  if (!startSource || !endSource) {
+    throw new Error('Visit is missing start/end times — cannot generate claim');
+  }
+  const start = new Date(startSource);
+  const end = new Date(endSource);
   const durationHours = Math.max(
     0.25,
     (end.getTime() - start.getTime()) / (1000 * 60 * 60),
@@ -60,7 +70,9 @@ export async function generateLineItems(
     },
   };
 
-  const item = supportItemMap[visit.visit_type] ?? supportItemMap.personal_care;
+  // Visit type is the high-level category; service_category is the more specific NDIS-aligned tag.
+  const itemKey = visit.service_category ?? visit.visit_type;
+  const item = supportItemMap[itemKey] ?? supportItemMap.personal_care;
 
   // Look up price from price guide
   const { data: priceGuide } = await db
@@ -75,11 +87,13 @@ export async function generateLineItems(
   const quantity = Math.round(durationHours * 4) / 4; // round to 15min increments
   const totalAmount = unitPrice * quantity;
 
+  // Map org_visits.client_id → org_ndis_line_items.participant_id. org_visits has no
+  // care_plan_id column, so leave that null on the line item.
   const lineItem = {
     org_id: orgId,
-    participant_id: visit.participant_id,
+    participant_id: visit.client_id,
     visit_id: visitId,
-    care_plan_id: visit.care_plan_id ?? null,
+    care_plan_id: null as string | null,
     support_category: item.category,
     support_item_number: item.number,
     support_item_name: item.name,

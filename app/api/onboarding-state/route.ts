@@ -51,14 +51,23 @@ export async function GET() {
   }
 
   const now = new Date().toISOString();
-  await supabase.from('user_onboarding_state').insert({
-    user_id: user.id,
-    org_id: orgId,
-    completed: false,
-    skipped: false,
-    last_step: 0,
-    updated_at: now,
-  });
+  const { error: insertError } = await supabase
+    .from('user_onboarding_state')
+    .insert({
+      user_id: user.id,
+      org_id: orgId,
+      completed: false,
+      skipped: false,
+      last_step: 0,
+      updated_at: now,
+    });
+
+  if (insertError) {
+    return NextResponse.json(
+      { error: 'onboarding_state_init_failed', message: insertError.message },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({
     completed: false,
@@ -91,17 +100,26 @@ export async function POST(request: Request) {
 
   const now = new Date().toISOString();
 
-  await supabase.from('user_onboarding_state').upsert(
-    {
-      user_id: user.id,
-      org_id: orgId,
-      completed,
-      skipped,
-      last_step: lastStep,
-      updated_at: now,
-    },
-    { onConflict: 'user_id,org_id' },
-  );
+  const { error: upsertError } = await supabase
+    .from('user_onboarding_state')
+    .upsert(
+      {
+        user_id: user.id,
+        org_id: orgId,
+        completed,
+        skipped,
+        last_step: lastStep,
+        updated_at: now,
+      },
+      { onConflict: 'user_id,org_id' },
+    );
+
+  if (upsertError) {
+    return NextResponse.json(
+      { error: 'onboarding_state_save_failed', message: upsertError.message },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({
     completed,

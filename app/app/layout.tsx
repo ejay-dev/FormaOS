@@ -124,17 +124,25 @@ export default async function AppLayout({
   const status = subscription?.status ?? null;
   const isSelfServePlan =
     planKey === 'basic' || planKey === 'pro' || planKey === 'scale';
+  // status === 'trialing' && trialActive === false means the trial window has
+  // elapsed but no upgrade or cancellation has been recorded yet. Treat this
+  // identically to other unpaid states so feature pages cannot be reached.
+  const trialExpired = status === 'trialing' && subscription?.trialActive === false;
   const needsCheckout =
     !systemState.isFounder &&
     !onBillingRoute &&
     (status === 'pending_checkout' ||
       status === 'past_due' ||
       status === 'canceled' ||
-      status === 'incomplete');
+      status === 'incomplete' ||
+      trialExpired);
 
   if (needsCheckout) {
     const target = isSelfServePlan ? planKey : 'basic';
-    redirect(`/app/billing?autoCheckout=${encodeURIComponent(target ?? 'basic')}`);
+    const reason = trialExpired ? 'trial_expired' : 'checkout';
+    redirect(
+      `/app/billing?autoCheckout=${encodeURIComponent(target ?? 'basic')}&reason=${reason}`,
+    );
   }
 
   // Track whether the onboarding wizard should be shown

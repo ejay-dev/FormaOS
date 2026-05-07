@@ -86,13 +86,35 @@ export async function POST(request: Request) {
       role: 'owner',
     });
 
-    if (memberError) log.error({ err: memberError }, "Membership bootstrap failed:");
+    if (memberError) {
+      // Without a membership row the org is created but the user can't reach
+      // it. Failing loudly here means the wizard surfaces a recoverable error
+      // instead of advancing the user into a dead workspace.
+      log.error({ err: memberError }, 'Membership bootstrap failed');
+      return NextResponse.json(
+        { ok: false, error: 'membership_bootstrap_failed' },
+        { status: 500 },
+      );
+    }
 
-    await supabase.from('org_onboarding_status').insert({
-      organization_id: organization.id,
-      current_step: 1,
-      completed_steps: [],
-    });
+    const { error: onboardingStatusError } = await supabase
+      .from('org_onboarding_status')
+      .insert({
+        organization_id: organization.id,
+        current_step: 1,
+        completed_steps: [],
+      });
+
+    if (onboardingStatusError) {
+      log.error(
+        { err: onboardingStatusError },
+        'org_onboarding_status insert failed',
+      );
+      return NextResponse.json(
+        { ok: false, error: 'onboarding_status_init_failed' },
+        { status: 500 },
+      );
+    }
 
     await ensureSubscription(organization.id, plan);
 
