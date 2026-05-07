@@ -1,6 +1,8 @@
 'use client';
 
 import { Check, Minus } from 'lucide-react';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 
 type Cell = '✓' | '—' | string;
 
@@ -383,21 +385,31 @@ function renderCell(value: Cell) {
 
 export function PricingComparisonTable() {
   return (
-    <section className="relative overflow-hidden bg-slate-950 py-24">
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-300">
+    <section className="relative overflow-hidden py-24 sm:py-32">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0d1424] via-[#0a0f1c] to-[#0d1424]">
+        <DotGrid />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(6,182,212,0.06),transparent_40%)]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
+        <ScrollReveal variant="slideUp" range={[0, 0.35]} className="mx-auto max-w-3xl text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-cyan-400 text-sm font-medium mb-6">
+            <span className="w-2 h-2 rounded-full bg-cyan-400" />
             Plan comparison
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Every feature, side by side
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Every feature,{' '}
+            <span className="bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
+              side by side
+            </span>
           </h2>
-          <p className="mt-4 text-base leading-7 text-slate-300">
+          <p className="text-base leading-7 text-slate-400">
             Built for Australian NDIS, aged care, and healthcare buyers
             comparing real procurement options. If something matters to your
             audit and it is not on this page, ask us.
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="mt-12 hidden overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.025] lg:block">
           <table className="w-full">

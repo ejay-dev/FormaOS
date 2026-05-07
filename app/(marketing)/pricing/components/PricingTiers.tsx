@@ -2,8 +2,13 @@
 
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, Users } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { PUBLIC_PRICING_TIERS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { TopographicPattern } from '@/components/marketing/SectionBackgrounds';
+import { duration } from '@/config/motion';
 
 const BADGE_TONES = {
   popular:
@@ -15,41 +20,58 @@ const BADGE_TONES = {
 
 export function PricingTiers() {
   const { trackCtaClick } = useMarketingTelemetry();
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <section
       id="pricing-table"
-      className="relative overflow-hidden bg-slate-950 py-24"
+      className="relative overflow-hidden py-24 sm:py-32"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.14),transparent_34%)]" />
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
+      {/* Section backgrounds */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
+        <TopographicPattern color="rgba(16,185,129,0.035)" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(16,185,129,0.14),transparent_40%)]" />
+        <motion.div
+          animate={shouldReduceMotion ? undefined : { scale: [1, 1.15, 1], opacity: [0.08, 0.18, 0.08] }}
+          transition={shouldReduceMotion ? undefined : { duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 h-1/3 w-1/3 rounded-full bg-gradient-to-br from-emerald-500/15 to-cyan-500/10 blur-3xl"
+        />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
+        <ScrollReveal variant="slideUp" range={[0, 0.35]} className="mx-auto max-w-3xl text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/20 text-emerald-400 text-sm font-medium mb-6">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
             Infrastructure pricing
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-5xl">
-            One compliance OS, four ways to scale it
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-bold text-white mb-4">
+            One compliance OS,{' '}
+            <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
+              four ways to scale it
+            </span>
           </h2>
-          <p className="mt-4 text-base leading-7 text-slate-300">
+          <p className="text-base leading-7 text-slate-400">
             Start on Foundation and grow into Scale as your network expands.
             Foundation, Growth, and Scale are self-serve — no sales call
             required. Enterprise is contracted with procurement and security
             review.
           </p>
-        </div>
+        </ScrollReveal>
 
-        <div className="mt-12 grid items-stretch gap-5 lg:grid-cols-4">
+        <SectionChoreography pattern="cascade" stagger={0.06} className="grid items-stretch gap-5 lg:grid-cols-4">
           {PUBLIC_PRICING_TIERS.map((tier) => {
             const tone = tier.badgeTone ?? 'value';
             const badgeClass = BADGE_TONES[tone];
 
             return (
-              <article
+              <motion.article
                 key={tier.id}
-                className={`relative flex min-h-full flex-col rounded-[2rem] border p-6 shadow-2xl transition-transform duration-200 ${
+                whileHover={shouldReduceMotion ? undefined : { y: -6, scale: 1.01 }}
+                transition={{ duration: duration.fast }}
+                className={`relative flex min-h-full flex-col rounded-[2rem] border p-6 shadow-2xl cursor-default ${
                   tier.featured
-                    ? 'border-emerald-300/40 bg-emerald-300/[0.08] shadow-emerald-950/40 lg:-mt-6 lg:mb-6 lg:scale-[1.02]'
-                    : 'border-white/[0.08] bg-white/[0.045] shadow-slate-950/40'
+                    ? 'border-emerald-300/40 bg-gradient-to-b from-emerald-300/[0.1] to-emerald-300/[0.04] shadow-emerald-950/40 lg:-mt-6 lg:mb-6 lg:scale-[1.02]'
+                    : 'border-white/[0.08] bg-white/[0.045] shadow-slate-950/40 hover:border-white/[0.14] transition-colors duration-300'
                 }`}
               >
                 {tier.badge ? (
@@ -133,14 +155,16 @@ export function PricingTiers() {
                     </li>
                   ))}
                 </ul>
-              </article>
+              </motion.article>
             );
           })}
-        </div>
+        </SectionChoreography>
 
-        <p className="mt-10 text-center text-xs uppercase tracking-[0.22em] text-slate-500">
-          Prices in AUD · GST inclusive · Stripe-secured payments
-        </p>
+        <ScrollReveal variant="fadeUp" range={[0, 0.4]} className="mt-10 text-center">
+          <p className="text-xs uppercase tracking-[0.22em] text-slate-500">
+            Prices in AUD · GST inclusive · Stripe-secured payments
+          </p>
+        </ScrollReveal>
       </div>
     </section>
   );
