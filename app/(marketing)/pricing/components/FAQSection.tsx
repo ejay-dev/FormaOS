@@ -74,49 +74,69 @@ export function FAQSection() {
           stagger={0.05}
           className="space-y-4"
         >
-          {PRICING_FAQS.map((faq, idx) => (
-            <button
-              key={faq.question}
-              onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-              aria-expanded={openIndex === idx}
-              aria-controls={`pricing-faq-panel-${idx}`}
-              className={`w-full text-left backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl p-6 border transition-all duration-300 ${
-                openIndex === idx
-                  ? 'border-teal-400/30'
-                  : 'border-white/10 hover:border-white/20'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-white pr-4">
-                  {faq.question}
-                </h3>
-                <motion.div
-                  animate={{ rotate: openIndex === idx ? 180 : 0 }}
-                  transition={{ duration: shouldReduceMotion ? 0 : duration.fast }}
-                  className="flex-shrink-0"
-                >
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
-                </motion.div>
-              </div>
-
-              <AnimatePresence>
-                {openIndex === idx && (
-                  <motion.div
-                    id={`pricing-faq-panel-${idx}`}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: shouldReduceMotion ? 0 : duration.fast }}
-                    className="overflow-hidden"
+          {PRICING_FAQS.map((faq, idx) => {
+            const isOpen = openIndex === idx;
+            const buttonId = `pricing-faq-trigger-${idx}`;
+            const panelId = `pricing-faq-panel-${idx}`;
+            return (
+              <div
+                key={faq.question}
+                className={`backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border transition-all duration-300 ${
+                  isOpen
+                    ? 'border-teal-400/30'
+                    : 'border-white/10 hover:border-white/20'
+                }`}
+              >
+                <h3 className="m-0">
+                  <button
+                    id={buttonId}
+                    type="button"
+                    onClick={() => setOpenIndex(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                    aria-controls={panelId}
+                    className="flex w-full items-center justify-between gap-4 rounded-2xl p-6 text-left text-lg font-semibold text-white"
                   >
-                    <p className="text-gray-400 mt-4 leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
-          ))}
+                    <span className="pr-4">{faq.question}</span>
+                    <motion.span
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{
+                        duration: shouldReduceMotion ? 0 : duration.fast,
+                      }}
+                      className="flex-shrink-0"
+                      aria-hidden="true"
+                    >
+                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                    </motion.span>
+                  </button>
+                </h3>
+
+                <div
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={buttonId}
+                  hidden={!isOpen}
+                >
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{
+                          duration: shouldReduceMotion ? 0 : duration.fast,
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-gray-300 px-6 pb-6 leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            );
+          })}
         </SectionChoreography>
       </div>
     </section>

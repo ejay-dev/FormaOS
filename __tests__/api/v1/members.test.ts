@@ -43,6 +43,10 @@ jest.mock('@/lib/email/send-auth-email', () => ({
   sendAuthEmail: jest.fn(async () => ({ success: true, id: 'email-1' })),
 }));
 
+jest.mock('@/lib/security/csrf', () => ({
+  validateCsrfOrigin: jest.fn(() => null),
+}));
+
 import { GET, POST } from '@/app/api/v1/members/route';
 import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { getPagination } from '@/lib/api/v1';

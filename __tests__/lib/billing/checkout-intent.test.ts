@@ -13,8 +13,8 @@ describe('checkout-intent helpers', () => {
       expect(CHECKOUT_INTENT_COOKIE).toBe('formaos_checkout_intent');
     });
 
-    it('uses a 30-minute TTL so the cookie survives email verification', () => {
-      expect(CHECKOUT_INTENT_TTL_SECONDS).toBe(60 * 30);
+    it('uses a 24-hour TTL so the cookie survives email verification + onboarding', () => {
+      expect(CHECKOUT_INTENT_TTL_SECONDS).toBe(60 * 60 * 24);
     });
   });
 

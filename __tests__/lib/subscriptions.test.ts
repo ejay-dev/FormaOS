@@ -66,10 +66,27 @@ describe('ensureSubscription', () => {
     expect(mockUpsert).not.toHaveBeenCalled();
   });
 
-  it('creates active subscription when no existing subscription exists', async () => {
+  it('creates pending_checkout subscription for self-serve plan when none exists', async () => {
     mockMaybeSingle.mockResolvedValue({ data: null });
 
     await ensureSubscription(orgId, 'basic');
+
+    expect(mockUpsert).toHaveBeenCalled();
+    const upsertPayload = mockUpsert.mock.calls[0][0];
+    expect(upsertPayload).toMatchObject({
+      organization_id: orgId,
+      plan_key: 'basic',
+      status: 'pending_checkout',
+      trial_started_at: null,
+    });
+    expect(typeof upsertPayload.trial_expires_at).toBe('string');
+    expect(syncEntitlementsForPlan).toHaveBeenCalledWith(orgId, 'basic');
+  });
+
+  it('creates active subscription when intent is "active" (admin/webhook path)', async () => {
+    mockMaybeSingle.mockResolvedValue({ data: null });
+
+    await ensureSubscription(orgId, 'basic', { intent: 'active' });
 
     expect(mockUpsert).toHaveBeenCalled();
     const upsertPayload = mockUpsert.mock.calls[0][0];
@@ -80,7 +97,21 @@ describe('ensureSubscription', () => {
       trial_started_at: null,
       trial_expires_at: null,
     });
-    expect(syncEntitlementsForPlan).toHaveBeenCalledWith(orgId, 'basic');
+  });
+
+  it('creates active subscription for enterprise plan (not self-serve)', async () => {
+    mockMaybeSingle.mockResolvedValue({ data: null });
+
+    await ensureSubscription(orgId, 'enterprise');
+
+    expect(mockUpsert).toHaveBeenCalled();
+    const upsertPayload = mockUpsert.mock.calls[0][0];
+    expect(upsertPayload).toMatchObject({
+      organization_id: orgId,
+      plan_key: 'enterprise',
+      status: 'active',
+      trial_expires_at: null,
+    });
   });
 
   it('defaults to basic plan when planKey is null', async () => {
@@ -96,7 +127,7 @@ describe('ensureSubscription', () => {
     expect(syncEntitlementsForPlan).toHaveBeenCalledWith(orgId, 'basic');
   });
 
-  it('creates fresh active subscription when legacy trial is expired', async () => {
+  it('creates fresh pending_checkout subscription when legacy trial is expired', async () => {
     const pastDate = new Date(Date.now() - 86400000).toISOString(); // 1 day ago
     mockMaybeSingle.mockResolvedValue({
       data: {
@@ -113,10 +144,10 @@ describe('ensureSubscription', () => {
     expect(upsertPayload).toMatchObject({
       organization_id: orgId,
       plan_key: 'basic',
-      status: 'active',
+      status: 'pending_checkout',
       trial_started_at: null,
-      trial_expires_at: null,
     });
+    expect(typeof upsertPayload.trial_expires_at).toBe('string');
   });
 
   it('always calls syncEntitlementsForPlan at the end', async () => {

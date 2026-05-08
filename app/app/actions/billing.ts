@@ -179,9 +179,9 @@ export async function startCheckout(
           customer: customerId,
           line_items: [{ price: priceId, quantity: 1 }],
           subscription_data: {
-            // Explicit 0 keeps any Stripe Dashboard product-level trial
-            // default from silently applying to new Foundation/Growth subs.
-            trial_period_days: 0,
+            // To suppress Dashboard product-level trial defaults, omit
+            // trial_period_days entirely (Stripe API minimum is 1, so
+            // passing 0 throws "minimum number of trial period days is 1").
             metadata: {
               organization_id: orgId,
               plan_key: planKey,

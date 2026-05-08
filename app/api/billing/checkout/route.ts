@@ -9,7 +9,7 @@ import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const CheckoutSchema = z.object({
   orgId: z.string().uuid().optional(),
-  planId: z.enum(['basic', 'pro', 'enterprise']),
+  planId: z.enum(['basic', 'pro', 'scale', 'enterprise']),
 });
 
 const BILLING_ROLES = new Set(['owner', 'admin']);
@@ -133,7 +133,6 @@ export async function POST(request: Request) {
         success_url: `${appUrl}/app/billing?checkout=success`,
         cancel_url: `${appUrl}/app/billing?checkout=cancelled`,
         subscription_data: {
-          trial_period_days: 0,
           metadata: {
             organization_id: orgId,
             plan_key: planId,

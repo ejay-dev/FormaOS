@@ -151,18 +151,28 @@ describe('ensureSubscription', () => {
   });
 
   describe('activation logic', () => {
-    it('creates an active basic subscription without trial dates', async () => {
+    it('creates a pending_checkout basic subscription with grace window (self-serve)', async () => {
       await ensureSubscription(ORG, 'basic');
 
       const subUpsert = dbCalls.upserts.find(u => u.table === 'org_subscriptions');
       const data = subUpsert!.data as Record<string, unknown>;
-      expect(data.status).toBe('active');
+      expect(data.status).toBe('pending_checkout');
       expect(data.trial_started_at).toBeNull();
-      expect(data.trial_expires_at).toBeNull();
+      expect(typeof data.trial_expires_at).toBe('string');
     });
 
-    it('creates an active pro subscription without trial dates', async () => {
+    it('creates a pending_checkout pro subscription with grace window (self-serve)', async () => {
       await ensureSubscription(ORG, 'pro');
+
+      const subUpsert = dbCalls.upserts.find(u => u.table === 'org_subscriptions');
+      const data = subUpsert!.data as Record<string, unknown>;
+      expect(data.status).toBe('pending_checkout');
+      expect(data.trial_started_at).toBeNull();
+      expect(typeof data.trial_expires_at).toBe('string');
+    });
+
+    it('creates an active enterprise subscription without trial dates', async () => {
+      await ensureSubscription(ORG, 'enterprise');
 
       const subUpsert = dbCalls.upserts.find(u => u.table === 'org_subscriptions');
       const data = subUpsert!.data as Record<string, unknown>;
@@ -171,8 +181,8 @@ describe('ensureSubscription', () => {
       expect(data.trial_expires_at).toBeNull();
     });
 
-    it('creates an active enterprise subscription without trial dates', async () => {
-      await ensureSubscription(ORG, 'enterprise');
+    it('creates an active basic subscription when intent is "active" (admin/webhook path)', async () => {
+      await ensureSubscription(ORG, 'basic', { intent: 'active' });
 
       const subUpsert = dbCalls.upserts.find(u => u.table === 'org_subscriptions');
       const data = subUpsert!.data as Record<string, unknown>;

@@ -15,7 +15,9 @@ test.describe('Infrastructure pricing and proof pages', () => {
     expect(response?.status()).toBeLessThan(400);
 
     await expect(
-      page.getByRole('heading', { name: /Compliance that enforces itself/i }),
+      page.getByRole('heading', {
+        name: /Compliance,?\s+priced like infrastructure/i,
+      }),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Foundation', exact: true }).first(),
@@ -41,7 +43,7 @@ test.describe('Infrastructure pricing and proof pages', () => {
         .first(),
     ).toBeVisible();
     await expect(
-      page.getByText(/One failed audit can cost more than a year of FormaOS/i),
+      page.getByText(/One failed audit costs more than/i).first(),
     ).toBeVisible();
     await expectNoFreeTrialLanguage(page);
 
