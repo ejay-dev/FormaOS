@@ -55,8 +55,29 @@ export async function registerVaultArtifact(data: {
     .maybeSingle();
 
   if (error) {
-    // Roll back the orphaned storage object so the user does not end up
-    // with a file in the bucket but no metadata row pointing at it.
+    // Postgres 23505 = unique_violation. Combined with the deterministic
+    // hash-based storage path the modal now uses, a duplicate insert means
+    // a double-click hit the same payload — return success so the UI
+    // doesn't show an error for what was effectively a retry.
+    const errCode = (error as { code?: string }).code;
+    if (errCode === '23505') {
+      const { data: existing } = await supabase
+        .from('org_evidence')
+        .select('id')
+        .eq('organization_id', membership.organization_id)
+        .eq('file_path', data.filePath)
+        .maybeSingle();
+      revalidatePath('/app/vault');
+      if (data.policyId) revalidatePath(`/app/policies/${data.policyId}`);
+      return {
+        success: true as const,
+        evidenceId: existing?.id ?? null,
+        deduplicated: true as const,
+      };
+    }
+
+    // Otherwise roll back the orphaned storage object so the user does not
+    // end up with a file in the bucket but no metadata row pointing at it.
     await supabase.storage
       .from('evidence')
       .remove([data.filePath])
@@ -148,6 +169,45 @@ export async function deleteEvidence(evidenceId: string) {
   } catch (error) {
     if (isNextInternalError(error)) throw error;
     return actionError(error);
+  }
+}
+
+/**
+ * Light-weight list of the current org's policies for use as a "Link to
+ * policy" selector in the Vault upload modal. Returns id + title only.
+ * RLS-bound; no admin client.
+ */
+export async function listOrgPoliciesForLinking(): Promise<
+  | { success: true; policies: { id: string; title: string }[] }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { success: false, error: 'Unauthorized' };
+
+    const { data, error } = await supabase
+      .from('org_policies')
+      .select('id, title')
+      .order('updated_at', { ascending: false })
+      .limit(200);
+
+    if (error) return { success: false, error: error.message };
+
+    return {
+      success: true,
+      policies: ((data ?? []) as Array<{ id: string; title: string | null }>)
+        .filter((p) => Boolean(p.title))
+        .map((p) => ({ id: p.id, title: p.title as string })),
+    };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to list policies',
+    };
   }
 }
 

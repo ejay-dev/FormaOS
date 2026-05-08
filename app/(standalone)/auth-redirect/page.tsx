@@ -10,13 +10,33 @@ function AuthRedirectContent() {
   useEffect(() => {
     const code = searchParams.get("code");
     const plan = searchParams.get("plan");
-    
-    if (code) {
-      // Redirect to the proper callback route with the code
-      const appBase = (process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin).replace(/\/$/, "");
-      const planParam = plan ? `&plan=${encodeURIComponent(plan)}` : "";
-      window.location.href = `${appBase}/auth/callback?code=${encodeURIComponent(code)}${planParam}`;
-    }
+    // Forward every parameter the OAuth provider returned, not just `code`.
+    // Previously this route silently dropped `state`, which the canonical
+    // /auth/callback route validates against a cookie — so a Google OAuth
+    // client misconfigured to redirect here would always fail the state
+    // check on the canonical route. Forward `state`, `error`, and any
+    // provider-specific params so the canonical handler can decide.
+    if (!code) return;
+
+    const appBase = (
+      process.env.NEXT_PUBLIC_APP_URL ??
+      process.env.NEXT_PUBLIC_SITE_URL ??
+      window.location.origin
+    ).replace(/\/$/, "");
+
+    const params = new URLSearchParams();
+    params.set("code", code);
+    const state = searchParams.get("state");
+    if (state) params.set("state", state);
+    if (plan) params.set("plan", plan);
+    const error = searchParams.get("error");
+    if (error) params.set("error", error);
+    const errorDescription = searchParams.get("error_description");
+    if (errorDescription) params.set("error_description", errorDescription);
+    const provider = searchParams.get("provider");
+    if (provider) params.set("provider", provider);
+
+    window.location.href = `${appBase}/auth/callback?${params.toString()}`;
   }, [searchParams]);
 
   return (

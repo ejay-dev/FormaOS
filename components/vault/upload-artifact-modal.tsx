@@ -2,10 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
-import { registerVaultArtifact } from '@/app/app/actions/vault';
+import {
+  registerVaultArtifact,
+  listOrgPoliciesForLinking,
+} from '@/app/app/actions/vault';
 import {
   FileUp,
   Loader2,
+  RefreshCw,
   X,
   ShieldCheck,
   FileText,
@@ -42,6 +46,11 @@ export function UploadArtifactModal({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [success, setSuccess] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [policies, setPolicies] = useState<{ id: string; title: string }[]>(
+    [],
+  );
+  const [policyId, setPolicyId] = useState<string>('');
+  const [lastFailure, setLastFailure] = useState<string | null>(null);
   const supabase = createSupabaseClient();
   const { evidenceAdded, reportError } = useComplianceAction();
   const orgId = useAppStore((state) => state.organization?.id ?? null);
@@ -54,8 +63,26 @@ export function UploadArtifactModal({
       setSuccess(false);
       setUploadProgress(0);
       setValidationError(null);
+      setPolicyId('');
+      setLastFailure(null);
     }
   }, [isOpen]);
+
+  // Lazy-fetch policies the first time the modal opens. The list is small
+  // and rarely changes during a session, so we cache it on the component
+  // for the lifetime of the modal mount.
+  useEffect(() => {
+    if (!isOpen) return;
+    if (policies.length > 0) return;
+    let cancelled = false;
+    listOrgPoliciesForLinking().then((result) => {
+      if (cancelled) return;
+      if (result.success) setPolicies(result.policies);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen, policies.length]);
 
   if (!isOpen) return null;
 
@@ -95,7 +122,14 @@ export function UploadArtifactModal({
         throw new Error('Organization context missing');
       }
 
-      // 0. Compute SHA-256 checksum of file for chain-of-custody
+      // 0. Compute SHA-256 checksum of file for chain-of-custody.
+      //    The hash also doubles as an idempotency key — using it as the
+      //    storage filename means a retry writes to the same path, and
+      //    Storage's upsert flag turns that into an idempotent operation.
+      //    A subsequent registerVaultArtifact insert is then caught by the
+      //    UNIQUE INDEX on org_evidence(organization_id, file_path) added
+      //    in 20260622_001_dedup_indexes.sql, which the action treats as
+      //    a successful retry rather than a duplicate.
       const arrayBuffer = await file.arrayBuffer();
       const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
       const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -103,14 +137,17 @@ export function UploadArtifactModal({
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('');
 
-      // 1. Upload Binary to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${orgId}/vault/${fileName}`;
+      // 1. Upload Binary to Supabase Storage. Path is deterministic on
+      //    file content so identical re-uploads collapse to one object.
+      const fileExt = file.name.split('.').pop() || 'bin';
+      const filePath = `${orgId}/vault/${checksum}.${fileExt}`;
 
       const { error: storageError } = await supabase.storage
         .from('evidence')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          upsert: true,
+          contentType: file.type || undefined,
+        });
 
       if (storageError) throw storageError;
 
@@ -130,6 +167,7 @@ export function UploadArtifactModal({
         fileType: fileExt || 'unknown',
         fileSize: file.size,
         checksum,
+        policyId: policyId || undefined,
       });
 
       if (!result || result.success !== true) {
@@ -160,12 +198,13 @@ export function UploadArtifactModal({
     } catch (error: unknown) {
       clearInterval(progressInterval);
       setUploadProgress(0);
-      setValidationError(
-        error instanceof Error ? error.message : 'Upload failed',
-      );
+      const message =
+        error instanceof Error ? error.message : 'Upload failed';
+      setLastFailure(message);
+      setValidationError(message);
       reportError({
         title: 'Upload failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message,
       });
     } finally {
       setUploading(false);
@@ -265,6 +304,30 @@ export function UploadArtifactModal({
             />
           </div>
 
+          {policies.length > 0 && (
+            <div className="space-y-2">
+              <label
+                htmlFor="vault-link-policy"
+                className="text-xs font-bold uppercase text-muted-foreground tracking-widest ml-1"
+              >
+                Link to policy (optional)
+              </label>
+              <select
+                id="vault-link-policy"
+                value={policyId}
+                onChange={(e) => setPolicyId(e.target.value)}
+                className="w-full p-4 rounded-xl border border-glass-border bg-glass-subtle focus:border-violet-400/50 focus:ring-2 focus:ring-violet-400/20 text-sm transition-all outline-none"
+              >
+                <option value="">Not linked</option>
+                {policies.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* Upload Progress */}
           {uploading && (
             <div className="space-y-2">
@@ -286,12 +349,17 @@ export function UploadArtifactModal({
           <button
             type="submit"
             disabled={!file || uploading}
-            className="w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white p-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all disabled:opacity-50 shadow-[0_10px_30px_rgba(139,92,246,0.35)] motion-safe:active:scale-[0.98]"
+            className="w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white p-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 min-h-[44px] hover:brightness-110 transition-all disabled:opacity-50 shadow-[0_10px_30px_rgba(139,92,246,0.35)] motion-safe:active:scale-[0.98]"
           >
             {uploading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Securing Artifact...
+              </>
+            ) : lastFailure ? (
+              <>
+                <RefreshCw className="h-4 w-4" />
+                Retry upload
               </>
             ) : (
               <>
