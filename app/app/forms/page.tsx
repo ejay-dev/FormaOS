@@ -10,6 +10,10 @@ import { Plus, Search, FileText, Eye } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { buildOrSearch } from '@/lib/utils/postgrest-search';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
+import {
+  RecordCard,
+  RecordList,
+} from '@/components/mobile/record-card';
 
 const FORMS_PAGE_SIZE = 50;
 
@@ -204,7 +208,42 @@ export default async function FormsPage({
             </Link>
           </div>
         ) : (
-          <div className="rounded-xl border border-border overflow-hidden">
+          <>
+          {/* Mobile cards */}
+          <div className="md:hidden">
+            <RecordList>
+              {forms.map((form) => {
+                const subCount =
+                  (form.submission_count as { count?: number }[] | undefined)?.[0]
+                    ?.count ?? 0;
+                return (
+                  <RecordCard
+                    key={form.id}
+                    href={`/app/forms/builder/${form.id}`}
+                    title={form.title}
+                    subtitle={form.description ?? undefined}
+                    status={
+                      <span
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${getStatusBadge(
+                          form.status,
+                        )}`}
+                      >
+                        {form.status}
+                      </span>
+                    }
+                    meta={[
+                      { label: 'Submissions', value: String(subCount) },
+                      { label: 'Version', value: `v${form.version ?? 1}` },
+                      { label: 'Updated', value: formatDate(form.updated_at) },
+                    ]}
+                  />
+                );
+              })}
+            </RecordList>
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden md:block rounded-xl border border-border overflow-hidden">
             <div className="overflow-x-auto overscroll-x-contain">
               <table className="min-w-[480px] w-full" data-testid="forms-table">
                 <thead>
@@ -293,6 +332,7 @@ export default async function FormsPage({
               </table>
             </div>
           </div>
+          </>
         )}
       </div>
     </div>

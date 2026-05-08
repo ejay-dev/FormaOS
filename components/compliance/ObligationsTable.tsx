@@ -477,8 +477,109 @@ function ObligationsTableInner() {
           )}
         </div>
 
-        {/* Compact table */}
-        <div className="rounded-lg border border-glass-border bg-card overflow-hidden">
+        {/* Mobile triage cards — single record at a time, tap to open
+            evidence drawer for that obligation. */}
+        <div className="md:hidden space-y-2">
+          {filteredData.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-border bg-muted/20 p-6 text-center text-sm text-muted-foreground">
+              No obligations found. Add your first framework to get started.
+            </div>
+          ) : (
+            filteredData.slice(0, 50).map((row) => {
+              const rag = ragFromStatus(row.status);
+              const due = row.dueDate
+                ? new Date(row.dueDate).toLocaleDateString()
+                : '—';
+              return (
+                <button
+                  key={row.id}
+                  type="button"
+                  onClick={() =>
+                    setEvidenceDrawer({
+                      open: true,
+                      id: row.id,
+                      title: row.title,
+                    })
+                  }
+                  className="w-full rounded-xl border border-border bg-card px-4 py-3.5 text-left min-h-[64px] active:scale-[0.99] transition-transform"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-foreground leading-snug truncate">
+                        {row.title}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground leading-snug">
+                        <Badge variant="outline" className="text-[10px] uppercase">
+                          {row.frameworkCode}
+                        </Badge>
+                        <span className="truncate">{row.framework}</span>
+                      </div>
+                    </div>
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${ragBadgeClass(rag)}`}
+                    >
+                      {STATUS_LABELS[row.status]}
+                    </span>
+                  </div>
+                  <dl className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
+                    <div className="flex items-center gap-1.5">
+                      <dt className="uppercase tracking-wider text-muted-foreground/80">
+                        Due
+                      </dt>
+                      <dd className="text-foreground/85 font-medium">{due}</dd>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <dt className="uppercase tracking-wider text-muted-foreground/80">
+                        Evidence
+                      </dt>
+                      <dd className="text-foreground/85 font-medium inline-flex items-center gap-1">
+                        <Paperclip className="h-3 w-3" />
+                        {row.evidenceCount}
+                      </dd>
+                    </div>
+                    {row.owner && (
+                      <div className="flex items-center gap-1.5">
+                        <dt className="uppercase tracking-wider text-muted-foreground/80">
+                          Owner
+                        </dt>
+                        <dd className="text-foreground/85 font-medium truncate max-w-[140px]">
+                          {row.owner.name}
+                        </dd>
+                      </div>
+                    )}
+                    {row.riskScore && (
+                      <div className="flex items-center gap-1.5">
+                        <dt className="uppercase tracking-wider text-muted-foreground/80">
+                          Risk
+                        </dt>
+                        <dd
+                          className={`font-semibold ${
+                            row.riskScore === 'critical' || row.riskScore === 'high'
+                              ? 'text-rose-500'
+                              : row.riskScore === 'medium'
+                                ? 'text-amber-500'
+                                : 'text-foreground/85'
+                          }`}
+                        >
+                          {row.riskScore}
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+                </button>
+              );
+            })
+          )}
+          {filteredData.length > 50 && (
+            <div className="text-center text-[11px] text-muted-foreground py-2">
+              Showing 50 of {filteredData.length}. Open on a desktop to see
+              the full table with sorting and pagination.
+            </div>
+          )}
+        </div>
+
+        {/* Compact table — desktop only */}
+        <div className="hidden md:block rounded-lg border border-glass-border bg-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>

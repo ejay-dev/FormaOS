@@ -21,6 +21,11 @@ import {
   CAPA_STATUSES,
   type CapaStatus,
 } from './constants';
+import {
+  RecordCard,
+  RecordList,
+  EmptyRecordState,
+} from '@/components/mobile/record-card';
 
 export const metadata = { title: 'CAPA Register' };
 
@@ -343,7 +348,64 @@ export default async function CAPAPage({
           </form>
         )}
 
-        <div className="overflow-hidden rounded-lg border border-border">
+        {/* Mobile cards */}
+        <div className="md:hidden">
+          {capaUnavailable ? null : capaItems.length === 0 ? (
+            <EmptyRecordState
+              title="No CAPA items yet"
+              description="Corrective actions and follow-ups will appear here."
+            />
+          ) : (
+            <RecordList>
+              {capaItems.map((item) => {
+                const isOverdue =
+                  item.due_date &&
+                  new Date(item.due_date) < new Date() &&
+                  !isClosedStatus(item.status);
+                const severity = item.severity ?? 'medium';
+                return (
+                  <RecordCard
+                    key={item.id}
+                    href={`/app/capa/${item.id}`}
+                    title={item.title}
+                    subtitle={item.description ?? undefined}
+                    status={
+                      <span
+                        className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                          severityColors[severity] ?? severityColors.medium
+                        }`}
+                      >
+                        {severity}
+                      </span>
+                    }
+                    meta={[
+                      { label: 'Status', value: getStatusLabel(item.status) },
+                      {
+                        label: 'Due',
+                        value: (
+                          <span
+                            className={
+                              isOverdue ? 'font-medium text-red-500' : ''
+                            }
+                          >
+                            {fmtDate(item.due_date)}
+                          </span>
+                        ),
+                      },
+                      {
+                        label: 'Owner',
+                        value: getMemberLabel(item.owner_id, memberNames),
+                      },
+                    ]}
+                  />
+                );
+              })}
+            </RecordList>
+          )}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-hidden rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-muted/50">
               <tr>

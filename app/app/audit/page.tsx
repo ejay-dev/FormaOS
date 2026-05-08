@@ -2,6 +2,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { History, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { PageHero } from '@/components/ui/page-hero';
+import {
+  RecordCard,
+  RecordList,
+} from '@/components/mobile/record-card';
 
 /**
  * ✅ HELPER: Extract meaningful labels from the JSON details blob
@@ -123,7 +127,40 @@ export default async function AuditTrailPage() {
               <p className="text-sm">No governance actions recorded yet.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+            {/* Mobile cards */}
+            <div className="md:hidden">
+              <RecordList>
+                {auditEvents.map((log: { id: string; actor_id?: string; action?: string | null; created_at: string }) => (
+                  <RecordCard
+                    key={log.id}
+                    title={String(log.action || 'UNKNOWN').replaceAll('_', ' ')}
+                    subtitle={getResourceLabel(log)}
+                    status={
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono">
+                        {new Date(log.created_at).toLocaleDateString()}
+                      </span>
+                    }
+                    meta={[
+                      {
+                        label: 'Actor',
+                        value:
+                          log.actor_id === user.id
+                            ? 'You'
+                            : `User ${log.actor_id?.slice(0, 4) ?? '—'}`,
+                      },
+                      {
+                        label: 'Time',
+                        value: new Date(log.created_at).toLocaleTimeString(),
+                      },
+                    ]}
+                  />
+                ))}
+              </RecordList>
+            </div>
+
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-muted/50">
                   <tr>
@@ -167,6 +204,7 @@ export default async function AuditTrailPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
       </div>

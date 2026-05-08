@@ -17,6 +17,10 @@ import {
 } from 'lucide-react';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
+import {
+  RecordCard,
+  RecordList,
+} from '@/components/mobile/record-card';
 
 function formatDate(date: string | null) {
   if (!date) return '-';
@@ -270,8 +274,73 @@ export default async function StaffCompliancePage() {
           </div>
         )}
 
-        {/* Table */}
-        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        {/* Mobile cards */}
+        <div className="md:hidden">
+          <RecordList>
+            {enrichedCredentials.map((credential: Credential) => {
+              const expiryStatus = getExpiryStatus(credential.expiry_date);
+              const evidenceCount =
+                evidenceCountByCredential.get(credential.id) ?? 0;
+              const staffName =
+                (credential.staff as { displayName?: string } | null)
+                  ?.displayName || '—';
+              const credentialTitle =
+                CREDENTIAL_TYPES[
+                  credential.credential_type as keyof typeof CREDENTIAL_TYPES
+                ] || credential.credential_name;
+              return (
+                <RecordCard
+                  key={credential.id}
+                  href={`/app/staff-compliance/${credential.id}`}
+                  title={credentialTitle}
+                  subtitle={staffName}
+                  status={
+                    <span
+                      className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${expiryStatus.color}`}
+                    >
+                      {expiryStatus.label}
+                    </span>
+                  }
+                  meta={[
+                    {
+                      label: 'Expires',
+                      value: formatDate(credential.expiry_date),
+                    },
+                    ...(credential.credential_number
+                      ? [
+                          {
+                            label: 'No.',
+                            value: (
+                              <span className="font-mono">
+                                {credential.credential_number}
+                              </span>
+                            ),
+                          },
+                        ]
+                      : []),
+                    {
+                      label: 'Evidence',
+                      value: (
+                        <span
+                          className={
+                            evidenceCount > 0
+                              ? 'text-emerald-500'
+                              : 'text-amber-500'
+                          }
+                        >
+                          {evidenceCount} file{evidenceCount === 1 ? '' : 's'}
+                        </span>
+                      ),
+                    },
+                  ]}
+                />
+              );
+            })}
+          </RecordList>
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="rounded-lg border border-border overflow-hidden">
             <div className="overflow-x-auto overscroll-x-contain">
               <table

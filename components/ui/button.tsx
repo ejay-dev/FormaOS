@@ -36,13 +36,19 @@ const buttonVariants = cva(
         gradient: "bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white shadow-premium-lg hover:shadow-premium-xl hover:brightness-110",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        xl: "h-12 rounded-xl px-8 text-base font-semibold",
-        icon: "size-9",
-        "icon-sm": "size-8",
-        "icon-lg": "size-10",
+        // iOS HIG and Material Design both call for ≥44px tap targets on
+        // touch surfaces. The default desktop visual height stays at 36/40px
+        // (h-9 / h-10) but the *minimum* height is bumped on small screens
+        // via Tailwind's responsive variant. The same idea applies to the
+        // sm and icon sizes — they shrink only on md+ where the device is
+        // assumed to have a precise pointer.
+        default: "min-h-[44px] md:min-h-0 md:h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "min-h-[40px] md:min-h-0 md:h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "min-h-[44px] md:min-h-0 md:h-10 rounded-md px-6 has-[>svg]:px-4",
+        xl: "min-h-[48px] md:min-h-0 md:h-12 rounded-xl px-8 text-base font-semibold",
+        icon: "min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 md:size-9",
+        "icon-sm": "min-h-[40px] min-w-[40px] md:min-h-0 md:min-w-0 md:size-8",
+        "icon-lg": "min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 md:size-10",
       },
     },
     defaultVariants: {
