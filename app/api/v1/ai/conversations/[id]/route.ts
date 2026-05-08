@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { requireEntitlement } from '@/lib/billing/entitlements';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 /**
  * =========================================================
@@ -170,6 +171,8 @@ export async function GET(request: Request, context: RouteContext) {
 // -----------------------------------------------------------------------
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   try {
     const { id } = await context.params;
     const auth = await authenticateAndGetConversation(request, id);
@@ -247,6 +250,8 @@ export async function PATCH(request: Request, context: RouteContext) {
 // -----------------------------------------------------------------------
 
 export async function DELETE(request: Request, context: RouteContext) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   try {
     const { id } = await context.params;
     const auth = await authenticateAndGetConversation(request, id);

@@ -3,6 +3,7 @@ import {
   jsonWithContext,
 } from '@/lib/api-keys/middleware';
 import { duplicateForm } from '@/lib/forms/form-store';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -10,6 +11,8 @@ export async function POST(
   request: Request,
   { params }: { params: Promise<{ formId: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requiredScopes: ['compliance:read'],
   });

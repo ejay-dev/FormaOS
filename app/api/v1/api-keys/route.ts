@@ -1,5 +1,6 @@
 import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { createApiKey, listApiKeys } from '@/lib/api-keys/manager';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -35,6 +36,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
     requiredScopes: ['webhooks:manage'],

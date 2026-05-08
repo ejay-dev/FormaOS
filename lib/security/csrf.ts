@@ -90,6 +90,18 @@ export function validateCsrfOrigin(request: Request): NextResponse | null {
     return null;
   }
 
+  // Bearer-token authenticated requests cannot be forged by a malicious
+  // origin: the browser will not attach Authorization headers to a
+  // cross-origin request from JS unless the call site explicitly opts in
+  // via fetch options, and that flow doesn't carry the user's session
+  // cookies anyway. Skip CSRF for these so /api/v1 routes can be safely
+  // called by API-key clients (server-to-server, mobile, etc.) where no
+  // Origin/Referer is sent.
+  const authorization = request.headers.get('authorization');
+  if (authorization && /^bearer\s+\S/i.test(authorization)) {
+    return null;
+  }
+
   const origin = request.headers.get('origin');
   const referer = request.headers.get('referer');
 

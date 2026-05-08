@@ -9,6 +9,7 @@ import { logActivity } from '@/lib/audit-trail';
 import { queueWebhookDelivery } from '@/lib/webhooks/delivery-queue';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { dispatchIntegrationEvent } from '@/lib/integrations/manager';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 type RouteContext = { params: Promise<{ memberId: string }> };
 
@@ -76,6 +77,8 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
     requiredScopes: ['members:write'],
@@ -161,6 +164,8 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
     requiredScopes: ['members:write'],

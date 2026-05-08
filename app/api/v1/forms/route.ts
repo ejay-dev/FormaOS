@@ -5,6 +5,7 @@ import {
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { getStringParam } from '@/lib/api/v1-helpers';
 import { createForm, listForms } from '@/lib/forms/form-store';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -43,6 +44,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requiredScopes: ['compliance:read'],
   });

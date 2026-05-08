@@ -5,6 +5,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { validateSubmission } from '@/lib/forms/submission-engine';
 import type { FormField } from '@/lib/forms/types';
 import { SubmitButton } from '@/components/ui/submit-button';
+import {
+  checkRateLimit,
+  getClientIdentifier,
+} from '@/lib/security/rate-limiter';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,6 +17,32 @@ export const dynamic = 'force-dynamic';
 // ---------------------------------------------------------------------------
 async function handleSubmit(formId: string, orgId: string, formData: FormData) {
   'use server';
+
+  // Honeypot — a hidden field bots routinely fill. Real users never see it,
+  // so any non-empty value is treated as spam: silently 'succeed' so the
+  // bot can't probe whether the field exists, but persist nothing.
+  const honeypot = (formData.get('_company') as string | null) ?? '';
+  if (honeypot.trim()) {
+    redirect(`/submit/${formId}?success=true`);
+  }
+
+  // Per-client rate limit. 10 submissions per 5 min per IP-derived
+  // identifier — enough for legitimate "submit, fix typo, resubmit" but
+  // tight enough to defang scripted spam. Combined with the per-form
+  // submission_uuid the partial UNIQUE INDEX deduplicates double-clicks.
+  const identifier = await getClientIdentifier();
+  const rl = await checkRateLimit(
+    {
+      windowMs: 5 * 60 * 1000,
+      maxRequests: 10,
+      keyPrefix: 'rl:public-form',
+    },
+    `${formId}:${identifier}`,
+  );
+  if (!rl.success) {
+    redirect(`/submit/${formId}?error=rate_limited`);
+  }
+
   const admin = createSupabaseAdminClient();
 
   const { data: form } = await admin
@@ -203,6 +233,30 @@ export default async function PublicFormPage({
 
         <form action={submitAction} className="space-y-5">
           <input type="hidden" name="_submission_uuid" value={submissionUuid} />
+          {/* Honeypot field — visually hidden, off-screen, no label,
+              tabindex=-1, autocomplete off. Real users never fill this. */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              left: '-10000px',
+              width: '1px',
+              height: '1px',
+              overflow: 'hidden',
+            }}
+          >
+            <label htmlFor="hp-company">
+              Company (leave blank)
+              <input
+                id="hp-company"
+                name="_company"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                defaultValue=""
+              />
+            </label>
+          </div>
           {fields.map((field) => (
             <div key={field.id} className="space-y-1">
               <label

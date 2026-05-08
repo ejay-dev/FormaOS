@@ -3,6 +3,7 @@ import {
   jsonWithContext,
 } from '@/lib/api-keys/middleware';
 import { getSubmission, reviewSubmission } from '@/lib/forms/submission-engine';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -40,6 +41,8 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ formId: string; submissionId: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requiredScopes: ['compliance:read'],
   });

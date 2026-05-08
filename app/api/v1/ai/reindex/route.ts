@@ -3,10 +3,13 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { requireEntitlement } from '@/lib/billing/entitlements';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/v1/ai/reindex');
 
 export async function POST(request: NextRequest) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const redirectUrl = request.nextUrl.clone();
   redirectUrl.pathname = '/app/settings/ai';
   redirectUrl.search = '';

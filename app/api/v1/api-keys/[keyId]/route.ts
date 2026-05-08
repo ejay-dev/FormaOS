@@ -1,11 +1,14 @@
 import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { revokeApiKey, rotateApiKey, updateApiKey } from '@/lib/api-keys/manager';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 type RouteContext = { params: Promise<{ keyId: string }> };
 
 export const runtime = 'nodejs';
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
     requiredScopes: ['webhooks:manage'],
@@ -63,6 +66,8 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(request: Request, context: RouteContext) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
     requiredScopes: ['webhooks:manage'],

@@ -1,5 +1,6 @@
 import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -39,6 +40,8 @@ export async function GET(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requiredScopes: ['notifications:write'],
   });

@@ -10,6 +10,7 @@ import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { checkUsageLimit, trackUsage } from '@/lib/ai/usage-meter';
 import { resolvePlanKey } from '@/lib/plans';
 import { requireEntitlement } from '@/lib/billing/entitlements';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 /**
  * =========================================================
@@ -22,6 +23,8 @@ import { requireEntitlement } from '@/lib/billing/entitlements';
  */
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   try {
     // 1. Check if AI is configured
     if (!isAIConfigured()) {

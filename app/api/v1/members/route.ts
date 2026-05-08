@@ -8,6 +8,7 @@ import { logActivity } from '@/lib/audit-trail';
 import { queueWebhookDelivery } from '@/lib/webhooks/delivery-queue';
 import { dispatchIntegrationEvent } from '@/lib/integrations/manager';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const VALID_ROLES = new Set(['owner', 'admin', 'member', 'viewer']);
 const INVITE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
@@ -84,6 +85,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
     requiredScopes: ['members:write'],

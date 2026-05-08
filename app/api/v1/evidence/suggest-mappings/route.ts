@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 const log = routeLog('/api/v1/evidence/suggest-mappings');
 
@@ -56,6 +57,8 @@ const KEYWORD_RULES: Array<{
 ];
 
 export async function POST(request: Request) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   try {
     const rate = await rateLimitApi(request);
     if (!rate.success) {

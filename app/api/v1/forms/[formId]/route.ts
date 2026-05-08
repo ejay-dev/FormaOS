@@ -7,6 +7,7 @@ import {
   updateForm,
   archiveForm,
 } from '@/lib/forms/form-store';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 
 export const runtime = 'nodejs';
 
@@ -36,6 +37,8 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ formId: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requiredScopes: ['compliance:read'],
   });
@@ -76,6 +79,8 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ formId: string }> },
 ) {
+  const csrfError = validateCsrfOrigin(request);
+  if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requiredScopes: ['compliance:read'],
   });
