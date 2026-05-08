@@ -1,20 +1,19 @@
 # APP Link Integrity Report
 
-Generated: 2026-05-06T05:33:58.395Z
+Generated: 2026-05-08T02:27:23.454Z
 
 ## Summary
 
-- Total app internal links validated: 316
-- Valid links: 316
+- Total app internal links validated: 349
+- Valid links: 349
 - Broken links: 0
-- App routes discovered: 216
+- App routes discovered: 213
 
 ## Link Validation
 
 | Source | Target Route | Exists | Requires Auth | Requires Role | Matched Route |
 |---|---|---|---|---|---|
 | `app/(standalone)/accept-invite/[token]/page.tsx` | `/app` | YES | YES | auth | `/app` |
-| `app/(standalone)/accept-organization-invite/[membershipId]/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/admin/layout.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/audit/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/app/billing/error.tsx` | `/app` | YES | YES | auth | `/app` |
@@ -36,14 +35,18 @@ Generated: 2026-05-06T05:33:58.395Z
 | `app/auth/reset-password/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/join/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/not-found.tsx` | `/app` | YES | YES | auth | `/app` |
+| `app/onboarding/employee/actions.ts` | `/app` | YES | YES | auth | `/app` |
+| `app/onboarding/employee/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `app/onboarding/page.tsx` | `/app` | YES | YES | auth | `/app` |
 | `components/command-palette/CommandPalette.tsx` | `/app` | YES | YES | auth | `/app` |
 | `components/dashboard/employee-dashboard.tsx` | `/app` | YES | YES | auth | `/app` |
 | `components/feature-discovery/FeatureDiscoverySystem.tsx` | `/app` | YES | YES | auth | `/app` |
+| `components/mobile/bottom-nav.tsx` | `/app` | YES | YES | auth | `/app` |
 | `components/notifications/notification-center.tsx` | `/app` | YES | YES | auth | `/app` |
 | `components/notifications/notification-toast.tsx` | `/app` | YES | YES | auth | `/app` |
 | `components/onboarding/steps/CompleteStep.tsx` | `/app` | YES | YES | auth | `/app` |
 | `lib/navigation/industry-sidebar.ts` | `/app` | YES | YES | auth | `/app` |
+| `lib/onboarding/employee-journey.ts` | `/app` | YES | YES | auth | `/app` |
 | `lib/onboarding/industry-checklists.ts` | `/app` | YES | YES | auth | `/app` |
 | `components/command-palette/CommandPalette.tsx` | `/app/audit` | YES | YES | auth | `/app/audit` |
 | `components/compliance-system/compliance-lifecycle-header.tsx` | `/app/audit` | YES | YES | auth | `/app/audit` |
@@ -52,7 +55,9 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/quick-actions.tsx` | `/app/audit` | YES | YES | auth | `/app/audit` |
 | `lib/navigation/industry-sidebar.ts` | `/app/audit` | YES | YES | auth | `/app/audit` |
 | `components/dashboard/command-center.tsx` | `/app/audit-trail` | YES | YES | auth | `/app/audit-trail` |
+| `components/mobile/more-sheet.tsx` | `/app/audit-trail` | YES | YES | auth | `/app/audit-trail` |
 | `app/app/capa/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
+| `app/app/layout.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/reports/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/settings/organization/page.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
@@ -65,9 +70,11 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/billing/UsageLimitWarnings.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `components/command-palette/CommandPalette.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `components/dashboard/quick-actions.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
+| `components/mobile/more-sheet.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `components/topbar.tsx` | `/app/billing` | YES | YES | auth | `/app/billing` |
 | `app/app/capa/[id]/page.tsx` | `/app/capa` | YES | YES | auth | `/app/capa` |
 | `app/app/capa/new/page.tsx` | `/app/capa` | YES | YES | auth | `/app/capa` |
+| `components/mobile/more-sheet.tsx` | `/app/capa` | YES | YES | auth | `/app/capa` |
 | `app/app/capa/actions.ts` | `/app/capa/:param` | YES | YES | auth | `/app/capa/:id` |
 | `app/app/capa/page.tsx` | `/app/capa/new` | YES | YES | auth | `/app/capa/new` |
 | `app/app/actions/care-operations.ts` | `/app/care-plans` | YES | YES | auth | `/app/care-plans` |
@@ -99,6 +106,7 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/QuickActionTiles.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/empty-states/empty-state.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/financial/TransactionMonitoringWidget.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
+| `components/mobile/bottom-nav.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/onboarding/PostOnboardingHero.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `components/onboarding/StartHereCard.tsx` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
 | `lib/navigation/industry-sidebar.ts` | `/app/compliance` | YES | YES | auth | `/app/compliance` |
@@ -115,6 +123,7 @@ Generated: 2026-05-06T05:33:58.395Z
 | `app/app/compliance/frameworks/page.tsx` | `/app/compliance/soc2` | YES | YES | auth | `/app/compliance/soc2` |
 | `lib/navigation/industry-sidebar.ts` | `/app/compliance/soc2` | YES | YES | auth | `/app/compliance/soc2` |
 | `app/app/controls/journey/page.tsx` | `/app/controls` | YES | YES | auth | `/app/controls` |
+| `components/mobile/more-sheet.tsx` | `/app/controls` | YES | YES | auth | `/app/controls` |
 | `lib/navigation/industry-sidebar.ts` | `/app/controls` | YES | YES | auth | `/app/controls` |
 | `app/app/controls/page.tsx` | `/app/controls/journey` | YES | YES | auth | `/app/controls/journey` |
 | `app/admin/usage-analytics/page.tsx` | `/app/dashboard` | YES | YES | auth | `/app/dashboard` |
@@ -126,7 +135,9 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/quick-actions.tsx` | `/app/executive` | YES | YES | auth | `/app/executive` |
 | `lib/navigation/industry-sidebar.ts` | `/app/executive` | YES | YES | auth | `/app/executive` |
 | `app/app/forms/[formId]/submissions/page.tsx` | `/app/forms` | YES | YES | auth | `/app/forms` |
+| `components/mobile/more-sheet.tsx` | `/app/forms` | YES | YES | auth | `/app/forms` |
 | `lib/navigation/industry-sidebar.ts` | `/app/forms` | YES | YES | auth | `/app/forms` |
+| `lib/onboarding/employee-journey.ts` | `/app/forms` | YES | YES | auth | `/app/forms` |
 | `app/app/forms/page.tsx` | `/app/forms/builder/new` | YES | YES | auth | `/app/forms/builder/:id` |
 | `app/app/reports/page.tsx` | `/app/governance` | YES | YES | auth | `/app/governance` |
 | `app/app/actions/care-operations.ts` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
@@ -136,15 +147,18 @@ Generated: 2026-05-06T05:33:58.395Z
 | `app/app/incidents/page.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `app/app/registers/page.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `components/dashboard/quick-actions.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
+| `components/mobile/more-sheet.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `components/onboarding/PostOnboardingHero.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `components/onboarding/StartHereCard.tsx` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `lib/navigation/industry-sidebar.ts` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
+| `lib/onboarding/employee-journey.ts` | `/app/incidents` | YES | YES | auth | `/app/incidents` |
 | `app/app/capa/[id]/page.tsx` | `/app/incidents/:param` | YES | YES | auth | `/app/incidents/:id` |
 | `app/app/incidents/[id]/page.tsx` | `/app/incidents/:param` | YES | YES | auth | `/app/incidents/:id` |
 | `app/app/incidents/[id]/investigation/page.tsx` | `/app/incidents/:param/investigation` | YES | YES | auth | `/app/incidents/:id/investigation` |
 | `app/app/incidents/page.tsx` | `/app/incidents/new` | YES | YES | auth | `/app/incidents/new` |
 | `app/app/participants/[id]/page.tsx` | `/app/incidents/new` | YES | YES | auth | `/app/incidents/new` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/incidents/new` | YES | YES | auth | `/app/incidents/new` |
+| `components/mobile/more-sheet.tsx` | `/app/ndis-claiming` | YES | YES | auth | `/app/ndis-claiming` |
 | `components/dashboard/IndustryGuidancePanel.tsx` | `/app/onboarding-roadmap` | YES | YES | auth | `/app/onboarding-roadmap` |
 | `app/app/actions/care-operations.ts` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `app/app/participants/[id]/medications/page.tsx` | `/app/participants` | YES | YES | auth | `/app/participants` |
@@ -155,7 +169,9 @@ Generated: 2026-05-06T05:33:58.395Z
 | `app/app/registers/page.tsx` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `components/dashboard/quick-actions.tsx` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `components/empty-states/empty-state.tsx` | `/app/participants` | YES | YES | auth | `/app/participants` |
+| `components/mobile/bottom-nav.tsx` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `lib/navigation/industry-sidebar.ts` | `/app/participants` | YES | YES | auth | `/app/participants` |
+| `lib/onboarding/employee-journey.ts` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `lib/onboarding/first-session.ts` | `/app/participants` | YES | YES | auth | `/app/participants` |
 | `components/empty-states/empty-state.tsx` | `/app/participants/import` | YES | YES | auth | `/app/participants/import` |
 | `app/app/participants/import/page.tsx` | `/app/participants/new` | YES | YES | auth | `/app/participants/new` |
@@ -174,7 +190,9 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/employer-dashboard.tsx` | `/app/policies` | YES | YES | auth | `/app/policies` |
 | `components/dashboard/quick-actions.tsx` | `/app/policies` | YES | YES | auth | `/app/policies` |
 | `components/empty-states/empty-state.tsx` | `/app/policies` | YES | YES | auth | `/app/policies` |
+| `components/mobile/more-sheet.tsx` | `/app/policies` | YES | YES | auth | `/app/policies` |
 | `lib/navigation/industry-sidebar.ts` | `/app/policies` | YES | YES | auth | `/app/policies` |
+| `lib/onboarding/employee-journey.ts` | `/app/policies` | YES | YES | auth | `/app/policies` |
 | `lib/onboarding/industry-checklists.ts` | `/app/policies` | YES | YES | auth | `/app/policies` |
 | `app/app/capa/[id]/page.tsx` | `/app/policies/:param` | YES | YES | auth | `/app/policies/:id` |
 | `app/app/policies/new/page.tsx` | `/app/policies/:param` | YES | YES | auth | `/app/policies/:id` |
@@ -188,12 +206,17 @@ Generated: 2026-05-06T05:33:58.395Z
 | `app/app/patients/[id]/page.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
 | `app/app/staff/page.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
 | `components/dashboard/quick-actions.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
+| `components/mobile/more-sheet.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
+| `components/onboarding/PostOnboardingHero.tsx` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
 | `lib/navigation/industry-sidebar.ts` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
+| `lib/onboarding/employee-journey.ts` | `/app/progress-notes` | YES | YES | auth | `/app/progress-notes` |
 | `components/command-palette/CommandPalette.tsx` | `/app/registers` | YES | YES | auth | `/app/registers` |
 | `components/compliance-system/compliance-lifecycle-header.tsx` | `/app/registers` | YES | YES | auth | `/app/registers` |
 | `components/dashboard/quick-actions.tsx` | `/app/registers` | YES | YES | auth | `/app/registers` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/registers` | YES | YES | auth | `/app/registers` |
+| `components/mobile/more-sheet.tsx` | `/app/registers` | YES | YES | auth | `/app/registers` |
 | `lib/navigation/industry-sidebar.ts` | `/app/registers` | YES | YES | auth | `/app/registers` |
+| `lib/onboarding/employee-journey.ts` | `/app/registers` | YES | YES | auth | `/app/registers` |
 | `app/app/executive/ExecutiveDashboardClient.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `app/app/reports/custom/page.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `components/command-palette/CommandPalette.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
@@ -203,6 +226,7 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/employer-dashboard.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `components/dashboard/industry-widgets.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `components/dashboard/quick-actions.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
+| `components/onboarding/PostOnboardingHero.tsx` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `lib/navigation/industry-sidebar.ts` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `lib/onboarding/industry-checklists.ts` | `/app/reports` | YES | YES | auth | `/app/reports` |
 | `app/app/reports/custom/[id]/page.tsx` | `/app/reports/custom` | YES | YES | auth | `/app/reports/custom` |
@@ -222,6 +246,7 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/command-palette/CommandPalette.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `components/dashboard/quick-actions.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `components/financial/TransactionMonitoringWidget.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
+| `components/mobile/more-sheet.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `components/topbar.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `components/user-nav.tsx` | `/app/settings` | YES | YES | auth | `/app/settings` |
 | `lib/navigation/industry-sidebar.ts` | `/app/settings` | YES | YES | auth | `/app/settings` |
@@ -261,6 +286,7 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/industry-widgets.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `components/dashboard/quick-actions.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
+| `components/mobile/more-sheet.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `components/onboarding/PostOnboardingHero.tsx` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `lib/navigation/industry-sidebar.ts` | `/app/staff-compliance` | YES | YES | auth | `/app/staff-compliance` |
 | `app/app/certificates/page.tsx` | `/app/staff-compliance/new` | YES | YES | auth | `/app/staff-compliance/new` |
@@ -286,6 +312,7 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/quick-actions.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `lib/navigation/industry-sidebar.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
+| `lib/onboarding/employee-journey.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `lib/onboarding/first-session.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `lib/onboarding/industry-checklists.ts` | `/app/tasks` | YES | YES | auth | `/app/tasks` |
 | `app/app/tasks/calendar/page.tsx` | `/app/tasks/board` | YES | YES | auth | `/app/tasks/board` |
@@ -296,6 +323,8 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/employer-dashboard.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
 | `components/dashboard/quick-actions.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
 | `components/dashboard/QuickActionTiles.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
+| `components/mobile/more-sheet.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
+| `components/onboarding/PostOnboardingHero.tsx` | `/app/team` | YES | YES | auth | `/app/team` |
 | `lib/navigation/industry-sidebar.ts` | `/app/team` | YES | YES | auth | `/app/team` |
 | `lib/onboarding/industry-checklists.ts` | `/app/team` | YES | YES | auth | `/app/team` |
 | `app/app/settings/organization/page.tsx` | `/app/team/org-chart` | YES | YES | auth | `/app/team/org-chart` |
@@ -309,7 +338,9 @@ Generated: 2026-05-06T05:33:58.395Z
 | `components/dashboard/employee-dashboard.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `components/dashboard/employer-dashboard.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `components/dashboard/quick-actions.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
+| `components/mobile/bottom-nav.tsx` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `lib/navigation/industry-sidebar.ts` | `/app/vault` | YES | YES | auth | `/app/vault` |
+| `lib/onboarding/employee-journey.ts` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `lib/onboarding/first-session.ts` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `lib/onboarding/industry-checklists.ts` | `/app/vault` | YES | YES | auth | `/app/vault` |
 | `components/dashboard/attention-rail.tsx` | `/app/vault/review` | YES | YES | auth | `/app/vault/review` |
@@ -323,7 +354,9 @@ Generated: 2026-05-06T05:33:58.395Z
 | `app/app/visits/page.tsx` | `/app/visits` | YES | YES | auth | `/app/visits` |
 | `components/dashboard/quick-actions.tsx` | `/app/visits` | YES | YES | auth | `/app/visits` |
 | `components/feature-discovery/FeatureDiscoverySystem.tsx` | `/app/visits` | YES | YES | auth | `/app/visits` |
+| `components/mobile/more-sheet.tsx` | `/app/visits` | YES | YES | auth | `/app/visits` |
 | `lib/navigation/industry-sidebar.ts` | `/app/visits` | YES | YES | auth | `/app/visits` |
+| `lib/onboarding/employee-journey.ts` | `/app/visits` | YES | YES | auth | `/app/visits` |
 | `app/app/participants/[id]/page.tsx` | `/app/visits/new` | YES | YES | auth | `/app/visits/new` |
 | `app/app/visits/page.tsx` | `/app/visits/new` | YES | YES | auth | `/app/visits/new` |
 | `app/app/executive/ExecutiveDashboardClient.tsx` | `/app/workflows` | YES | YES | auth | `/app/workflows` |
@@ -480,13 +513,9 @@ Generated: 2026-05-06T05:33:58.395Z
 - `/childcare-compliance`
 - `/compare`
 - `/compare/6clicks`
-- `/compare/auditboard`
 - `/compare/complispace`
-- `/compare/drata`
-- `/compare/hyperproof`
+- `/compare/healthmetrics`
 - `/compare/riskware`
-- `/compare/secureframe`
-- `/compare/vanta`
 - `/construction-compliance`
 - `/contact`
 - `/customer-stories`
@@ -514,6 +543,7 @@ Generated: 2026-05-06T05:33:58.395Z
 - `/ndis-compliance-system`
 - `/ndis-providers`
 - `/onboarding`
+- `/onboarding/employee`
 - `/operate`
 - `/organization/:orgId/audit`
 - `/our-story`

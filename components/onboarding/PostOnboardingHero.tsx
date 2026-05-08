@@ -381,7 +381,7 @@ export function PostOnboardingHero({
           </p>
         </div>
         <Link
-          href="/app/settings/team"
+          href="/app/team"
           className="shrink-0 flex items-center gap-1.5 rounded-xl bg-violet-500/15 border border-violet-500/25 px-4 py-2 text-xs font-bold text-violet-300 transition-all hover:bg-violet-500/25 active:scale-[0.97]"
         >
           Invite
