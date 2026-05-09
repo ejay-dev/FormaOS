@@ -21,6 +21,14 @@ permissions:
 env:
   NODE_VERSION: '20'
   FORCE_COLOR: '1'
+  # PR #23 added a CHECK_ENV_SKIP_IN_CI opt-out to scripts/check-env.js
+  # specifically for workflows like this one that don't carry production
+  # Supabase secrets. Without this, `npm run build` fails at prebuild
+  # because CHECK_ENV_STRICT=1 (set in the build script itself) hard-
+  # fails on missing required keys. Vercel's own build still validates
+  # everything strictly because VERCEL_ENV=production short-circuits this
+  # opt-out.
+  CHECK_ENV_SKIP_IN_CI: '1'
   NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
   NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
   SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
