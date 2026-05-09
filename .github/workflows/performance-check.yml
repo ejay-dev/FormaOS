@@ -14,6 +14,12 @@ on:
 
 env:
   NODE_VERSION: '20'
+  # Workflow-wide opt-out for the strict env check in
+  # scripts/check-env.js — performance-check.yml runs `npm run build`
+  # in three jobs without production Supabase secrets, so the prebuild
+  # would otherwise hard-fail. Vercel builds still validate strictly
+  # because VERCEL_ENV=production short-circuits this opt-out.
+  CHECK_ENV_SKIP_IN_CI: '1'
 
 jobs:
   lighthouse_ci:

@@ -41,6 +41,12 @@ jobs:
       - name: Build application
         run: npm run build
         env:
+          # Same opt-out pattern as formaos-quality-gates.yml: this CI
+          # workflow does not carry production Supabase secrets, so the
+          # strict env check in scripts/check-env.js (CHECK_ENV_STRICT=1
+          # in prebuild) needs to skip. Vercel builds still validate
+          # strictly because VERCEL_ENV=production short-circuits this.
+          CHECK_ENV_SKIP_IN_CI: '1'
           NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
@@ -173,6 +179,12 @@ jobs:
       - name: Build application
         run: npm run build
         env:
+          # Same opt-out pattern as formaos-quality-gates.yml: this CI
+          # workflow does not carry production Supabase secrets, so the
+          # strict env check in scripts/check-env.js (CHECK_ENV_STRICT=1
+          # in prebuild) needs to skip. Vercel builds still validate
+          # strictly because VERCEL_ENV=production short-circuits this.
+          CHECK_ENV_SKIP_IN_CI: '1'
           NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
