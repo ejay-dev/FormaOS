@@ -36,13 +36,15 @@ const MARKETING_ROUTES = [
   '/prove',
   '/operate',
   '/govern',
-  // Compare
+  // Compare — page set was rebrand-renamed (vanta/drata/secureframe/etc.
+  // were never shipped on this domain; the actual /compare/* set
+  // targets riskware/healthmetrics/6clicks/complispace). The old names
+  // were causing page.waitForSelector timeouts on every CI run.
   '/compare',
-  '/compare/vanta',
-  '/compare/drata',
-  '/compare/secureframe',
-  '/compare/auditboard',
-  '/compare/hyperproof',
+  '/compare/riskware',
+  '/compare/healthmetrics',
+  '/compare/6clicks',
+  '/compare/complispace',
   // Use Cases
   '/use-cases/healthcare',
   '/use-cases/incident-management',
@@ -172,7 +174,7 @@ test('generate checklist table', async () => {
   // Tier 2 pages with hero visuals
   const tier2 = ['/about', '/blog', '/contact', '/documentation', '/frameworks', '/our-story', '/customer-stories', '/faq', '/security-review'];
   // Tier 3 pages with templated hero visuals
-  const tier3 = ['/compare', '/compare/vanta', '/compare/drata', '/compare/secureframe', '/use-cases/healthcare', '/use-cases/incident-management', '/use-cases/workforce-credentials', '/use-cases/ndis-aged-care', '/evaluate', '/prove', '/operate', '/govern'];
+  const tier3 = ['/compare', '/compare/riskware', '/compare/healthmetrics', '/compare/6clicks', '/compare/complispace', '/use-cases/healthcare', '/use-cases/incident-management', '/use-cases/workforce-credentials', '/use-cases/ndis-aged-care', '/evaluate', '/prove', '/operate', '/govern'];
   // Tier 4 compact hero with icon
   const tier4 = MARKETING_ROUTES.filter(
     (r) => !tier1.includes(r) && !tier2.includes(r) && !tier3.includes(r),
