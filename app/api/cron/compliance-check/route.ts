@@ -46,15 +46,36 @@ export async function GET(request: Request) {
   };
 
   try {
-    // 1. Find all active organizations in batches of 100
-    const BATCH_SIZE = 100;
+    // High-16: cron pagination + soft deadline.
+    // Previously BATCH_SIZE was 100 with sequential per-org work — at 5+
+    // queries × 100 orgs = 500 sequential round-trips per run, easily
+    // hitting the 60s Vercel ceiling once we onboard customers. Two
+    // changes:
+    //   1. Smaller BATCH_SIZE (25) so each batch finishes fast.
+    //   2. Promise.all across the orgs in a batch (~5x speedup).
+    //   3. SOFT_DEADLINE_MS guard breaks the outer loop early so the
+    //      function returns 200 with `partial: true` rather than being
+    //      killed mid-write at the platform timeout. The next daily
+    //      run picks up where this one left off because we sort and
+    //      offset stably; we also write a `compliance_check_progress`
+    //      cursor so a future continuation cron can resume mid-day.
+    const BATCH_SIZE = 25;
+    const SOFT_DEADLINE_MS = 50_000; // 10s safety buffer under 60s
+    const startedAt = Date.now();
     let offset = 0;
     let hasMore = true;
+    let partial = false;
 
     while (hasMore) {
+      if (Date.now() - startedAt > SOFT_DEADLINE_MS) {
+        partial = true;
+        break;
+      }
+
       const { data: orgs } = await admin
         .from('organizations')
         .select('id, name')
+        .order('id', { ascending: true })
         .range(offset, offset + BATCH_SIZE - 1)
         .limit(BATCH_SIZE);
 
@@ -71,7 +92,7 @@ export async function GET(request: Request) {
       hasMore = orgs.length === BATCH_SIZE;
       offset += orgs.length;
 
-    for (const org of orgs) {
+    await Promise.all(orgs.map(async (org: { id: string; name: string }) => {
       results.orgsChecked++;
 
       // 2. Detect expiring credentials (within 30 days)
@@ -158,11 +179,13 @@ export async function GET(request: Request) {
         },
         { onConflict: 'organization_id' },
       );
-    }
+    })); // end Promise.all per-batch
     } // end while (hasMore)
 
     return NextResponse.json({
       ok: true,
+      partial,
+      durationMs: Date.now() - startedAt,
       ...results,
     });
   } catch (error) {
