@@ -22,12 +22,12 @@ export const PRICING_FAQS = [
   {
     question: 'Is there a free trial?',
     answer:
-      'There is no traditional free trial on Foundation, Growth, or Scale — we use a short post-signup grace window so you can complete onboarding and configure your first framework before the first invoice runs. Enterprise evaluations include a guided product walkthrough, a security review pack, and a sandbox tenant for the procurement team.',
+      'No. Foundation, Growth, and Scale require Stripe Checkout immediately on signup — you pay before you can use the platform. Enterprise evaluations include a guided product walkthrough, a security review pack, and a sandbox tenant for the procurement team, arranged through sales.',
   },
   {
-    question: 'What happens at the end of the grace window?',
+    question: 'What happens if I do not complete checkout?',
     answer:
-      'Your card is charged and the subscription becomes active for the period you selected. If checkout has not completed by the end of the grace window, write access is paused but your data, evidence, and audit log remain intact — finish payment to resume. We do not delete tenant data when an account is paused.',
+      'Your account stays in a "pending checkout" state and the app routes you back to billing. You cannot reach feature pages until your card is charged and the subscription becomes active. Your data, evidence, and audit log are preserved, so you can complete payment later and resume.',
   },
   {
     question: 'Is my data secure?',
