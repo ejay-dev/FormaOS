@@ -74,10 +74,25 @@ test.describe('Accessibility coverage', () => {
     });
   }
 
+  // Authenticated route axe scans need workspace-seed env (Supabase
+  // URL + anon + service-role) to provision the test session. Without
+  // it, authenticateWorkspacePage throws E2EAuthBootstrapError. CI
+  // runs without secrets sit these specs out — public-route scans
+  // above still cover the marketing surface.
+  const HAS_WORKSPACE_SEED_ENV = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
+
   for (const route of authenticatedRoutes) {
     test(`authenticated route ${route} has no serious or critical axe violations`, async ({
       page,
     }) => {
+      test.skip(
+        !HAS_WORKSPACE_SEED_ENV,
+        'Supabase workspace-seed env not configured — set NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY to scan authenticated routes.',
+      );
       test.setTimeout(300_000);
       await authenticateWorkspacePage(page);
       await scanRoute(page, route);

@@ -39,7 +39,10 @@ jobs:
         run: npm audit --audit-level=high --omit=dev
 
       - name: Run npm audit (all packages, advisory)
-        run: npm audit --audit-level=moderate
+        # Advisory only — moderate/low CVEs in dev deps shouldn't block
+        # the merge gate. The blocking check above (high severity, prod
+        # deps only) is the actual security floor.
+        run: npm audit --audit-level=moderate || true
 
       - name: Generate audit report
         run: npm audit --json > audit-report.json || true

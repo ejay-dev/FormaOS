@@ -212,10 +212,20 @@ export function PricingHero() {
                 <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500">
                   {stat.k}
                 </dt>
+                {/*
+                  Axe a11y rule "definition-list" requires every direct
+                  child of <dl> to be <dt>/<dd>/<script>/<template>, or a
+                  <div> grouping ONLY those. The previous <p> sibling
+                  inside the wrapper div violated the rule. Folded the
+                  sub-text into the <dd> via a nested <span> so the
+                  semantic markup stays clean and the dl validates.
+                */}
                 <dd className="mt-1.5 font-mono text-2xl font-semibold text-white">
                   {stat.v}
+                  <span className="mt-0.5 block text-[11px] font-normal text-slate-500">
+                    {stat.sub}
+                  </span>
                 </dd>
-                <p className="mt-0.5 text-[11px] text-slate-500">{stat.sub}</p>
               </div>
             ))}
           </motion.dl>

@@ -82,11 +82,25 @@ function installDownloadGuards(page: Page) {
   return failures;
 }
 
+// Same skip-guard as app-action-integrity.spec.ts (PR #23): without
+// NEXT_PUBLIC_SUPABASE_URL + ANON + SERVICE_ROLE_KEY, workspace-seed
+// throws E2EAuthBootstrapError and the gate goes red. CI runs without
+// secrets just sit out this suite.
+const HAS_WORKSPACE_SEED_ENV = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
+
 test.describe('Export and download integrity', () => {
   test.describe.configure({ mode: 'serial' });
 
   test.beforeEach(async ({ browserName }) => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
+    test.skip(
+      !HAS_WORKSPACE_SEED_ENV,
+      'Supabase workspace-seed env not configured — set NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY to run this gate.',
+    );
   });
 
   test('report export links download files without placeholder template exports', async ({

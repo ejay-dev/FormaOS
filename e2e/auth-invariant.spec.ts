@@ -12,18 +12,19 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_ROLE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE;
 
-// Fail fast if required environment variables are not set
-if (!SUPABASE_URL) {
-  throw new Error(
-    'NEXT_PUBLIC_SUPABASE_URL environment variable is required for E2E tests. ' +
-      'Set it in your .env.test file or via environment.',
-  );
-}
-
-if (!SERVICE_ROLE_KEY) {
-  throw new Error(
-    'SUPABASE_SERVICE_ROLE_KEY environment variable is required for E2E tests. ' +
-      'Set it in your .env.test file or via environment.',
+// Skip the entire spec when Supabase env is absent — typically a CI run
+// without the test-Supabase secrets scoped. Locally and on Vercel the
+// envs ARE present and the spec runs as normal. Throwing at import time
+// killed the whole test process before Playwright could mark this spec
+// as skipped, which made every PR show a red E2E job even though the
+// rest of the test suite would have run fine.
+const SUPABASE_ENV_AVAILABLE = Boolean(SUPABASE_URL && SERVICE_ROLE_KEY);
+if (!SUPABASE_ENV_AVAILABLE) {
+  test.skip(
+    true,
+    'Supabase env not configured — auth-invariant spec needs ' +
+      'NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY. Set ' +
+      'them as repository secrets to run this spec in CI.',
   );
 }
 

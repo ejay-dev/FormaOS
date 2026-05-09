@@ -9,6 +9,15 @@ on:
     - cron: '0 6 * * 1' # Weekly on Monday at 6 AM UTC
   workflow_dispatch:
 
+# pull-requests: write is required for the "Comment PR with accessibility
+# results" step. Without it the comment step throws "Resource not
+# accessible by integration" and turns the whole job red even when the
+# tests passed. Issues: write is for label additions on follow-ups.
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   accessibility-audit:
     runs-on: ubuntu-latest
