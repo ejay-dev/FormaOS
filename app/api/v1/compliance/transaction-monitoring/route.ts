@@ -6,6 +6,18 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 const log = routeLog('/api/v1/compliance/transaction-monitoring');
 const DAY_MS = 86_400_000;
 
+// High-15: this endpoint surfaces "AML/CTF transaction monitoring" by
+// matching org_incidents.incident_type against a regex. Real AML/CTF
+// transaction monitoring requires integration with payment systems and
+// SMR generation against AUSTRAC obligations — not present. Until that
+// is built this surface ships with `experimental: true` and is hidden
+// from the default app sidebar.
+const EXPERIMENTAL_NOTICE = {
+  experimental: true,
+  notice:
+    'AML/CTF transaction monitoring is approximated by keyword-matching incident_type. It is not a real transaction-monitoring or SMR system. Do not use as AUSTRAC compliance evidence.',
+};
+
 export async function GET(request: Request) {
   try {
     const rate = await rateLimitApi(request);
@@ -24,7 +36,7 @@ export async function GET(request: Request) {
       .maybeSingle();
     const orgId = membership?.organization_id as string | undefined;
     if (!orgId) {
-      return NextResponse.json({ alertsTriggered: 0, lastReviewDate: null, nextReviewDue: null });
+      return NextResponse.json({ ...EXPERIMENTAL_NOTICE, alertsTriggered: 0, lastReviewDate: null, nextReviewDue: null });
     }
 
     const ninetyDaysAgo = new Date(Date.now() - 90 * DAY_MS).toISOString();
@@ -68,12 +80,16 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json({
+      ...EXPERIMENTAL_NOTICE,
       alertsTriggered: relevant.length,
       lastReviewDate,
       nextReviewDue,
     });
   } catch (err) {
     log.error({ err }, 'unexpected error');
-    return NextResponse.json({ alertsTriggered: 0, lastReviewDate: null, nextReviewDue: null });
+    return NextResponse.json(
+      { ...EXPERIMENTAL_NOTICE, alertsTriggered: 0, lastReviewDate: null, nextReviewDue: null, error: 'internal_error' },
+      { status: 500 },
+    );
   }
 }

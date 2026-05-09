@@ -5,6 +5,16 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 
 const log = routeLog('/api/v1/compliance/nqf-progress');
 
+// High-15: this endpoint matches NQF Quality Areas to org_tasks via
+// regex over task titles. That is keyword spotting, not a regulatory
+// evaluation. Until per-area evaluators exist this surface ships with
+// `experimental: true` and is hidden from the default app sidebar.
+const EXPERIMENTAL_NOTICE = {
+  experimental: true,
+  notice:
+    'NQF Quality Area progress is computed by keyword-matching task titles. It is not a regulatory NQF assessment. Do not present to ACECQA or assessors as an NQF readiness signal.',
+};
+
 const NQF_AREAS: Array<{ id: string; number: number; title: string; keywords: RegExp }> = [
   { id: '1', number: 1, title: 'Educational Program & Practice', keywords: /educational|program|practice|learning/i },
   { id: '2', number: 2, title: "Children's Health & Safety", keywords: /health|safety|nutrition|sleep|hygiene/i },
@@ -32,7 +42,7 @@ export async function GET(request: Request) {
       .eq('user_id', user.id)
       .maybeSingle();
     const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) return NextResponse.json({ areas: [] });
+    if (!orgId) return NextResponse.json({ ...EXPERIMENTAL_NOTICE, areas: [] });
 
     const { data: tasks, error } = await supabase
       .from('org_tasks')
@@ -41,7 +51,10 @@ export async function GET(request: Request) {
 
     if (error) {
       log.error({ err: error }, 'failed to load tasks');
-      return NextResponse.json({ areas: NQF_AREAS.map(a => ({ ...a, progress: 0 })) });
+      return NextResponse.json(
+        { ...EXPERIMENTAL_NOTICE, areas: NQF_AREAS.map(a => ({ id: a.id, number: a.number, title: a.title, progress: 0 })), error: 'tasks_unavailable' },
+        { status: 503 },
+      );
     }
 
     const rows = tasks ?? [];
@@ -54,9 +67,12 @@ export async function GET(request: Request) {
       return { id: a.id, number: a.number, title: a.title, progress };
     });
 
-    return NextResponse.json({ areas });
+    return NextResponse.json({ ...EXPERIMENTAL_NOTICE, areas });
   } catch (err) {
     log.error({ err }, 'unexpected error');
-    return NextResponse.json({ areas: [] });
+    return NextResponse.json(
+      { ...EXPERIMENTAL_NOTICE, areas: [], error: 'internal_error' },
+      { status: 500 },
+    );
   }
 }

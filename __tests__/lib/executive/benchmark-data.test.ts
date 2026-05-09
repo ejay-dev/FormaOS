@@ -122,45 +122,52 @@ describe('getPositionLabel', () => {
     commonGaps: [],
   };
 
+  // High-18 (PR #21): label copy was rewritten to make the
+  // "sample reference" provenance unambiguous. The values still
+  // match — just the wording changed.
   it('returns top 25% label when score >= topQuartileScore', () => {
     expect(getPositionLabel(95, saasBenchmark)).toBe(
-      'Top 25% of SaaS providers',
+      'Top 25% (sample reference) of SaaS providers',
     );
     expect(getPositionLabel(89, saasBenchmark)).toBe(
-      'Top 25% of SaaS providers',
+      'Top 25% (sample reference) of SaaS providers',
     );
   });
 
   it('returns above average label when score >= averageScore', () => {
     const label = getPositionLabel(80, saasBenchmark);
-    expect(label).toBe('Above average for SaaS (avg: 72%)');
+    expect(label).toBe('Above sample-reference average for SaaS (72%)');
   });
 
   it('returns above average at exactly average score', () => {
     const label = getPositionLabel(72, saasBenchmark);
-    expect(label).toBe('Above average for SaaS (avg: 72%)');
+    expect(label).toBe('Above sample-reference average for SaaS (72%)');
   });
 
   it('returns gap label when score < averageScore', () => {
     const label = getPositionLabel(60, saasBenchmark);
-    expect(label).toBe('12 points behind SaaS average (72%)');
+    expect(label).toBe(
+      '12 points behind sample-reference SaaS average (72%)',
+    );
   });
 
   it('handles zero score', () => {
     const label = getPositionLabel(0, saasBenchmark);
-    expect(label).toBe('72 points behind SaaS average (72%)');
+    expect(label).toBe(
+      '72 points behind sample-reference SaaS average (72%)',
+    );
   });
 
   it('works with different benchmark data', () => {
     const healthcareBenchmark = getBenchmark('Healthcare')!;
     expect(getPositionLabel(90, healthcareBenchmark)).toBe(
-      'Top 25% of Healthcare providers',
+      'Top 25% (sample reference) of Healthcare providers',
     );
     expect(getPositionLabel(70, healthcareBenchmark)).toBe(
-      'Above average for Healthcare (avg: 68%)',
+      'Above sample-reference average for Healthcare (68%)',
     );
     expect(getPositionLabel(50, healthcareBenchmark)).toBe(
-      '18 points behind Healthcare average (68%)',
+      '18 points behind sample-reference Healthcare average (68%)',
     );
   });
 });

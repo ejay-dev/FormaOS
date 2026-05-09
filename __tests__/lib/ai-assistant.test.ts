@@ -42,7 +42,7 @@ describe('AIComplianceAssistant', () => {
       );
 
       expect(result.result).toEqual(mockResult);
-      expect(result.confidence).toBe(0.85);
+      expect(result.confidence).toBeNull();
       expect(result.reasoning).toBeDefined();
     });
 
@@ -52,7 +52,7 @@ describe('AIComplianceAssistant', () => {
       const result = await assistant.analyzeDocument('doc', 'policy');
 
       expect(result.result).toEqual({ analysis: 'plain text analysis' });
-      expect(result.confidence).toBe(0.7);
+      expect(result.confidence).toBeNull();
     });
 
     it('throws when AI not configured', async () => {
@@ -91,7 +91,7 @@ describe('AIComplianceAssistant', () => {
       });
 
       expect(result.result).toEqual(mockTasks);
-      expect(result.confidence).toBe(0.8);
+      expect(result.confidence).toBeNull();
       expect(result.suggestions).toHaveLength(3);
     });
 
@@ -107,7 +107,7 @@ describe('AIComplianceAssistant', () => {
       expect(result.result).toEqual({
         recommendations: 'Some task recommendations',
       });
-      expect(result.confidence).toBe(0.6);
+      expect(result.confidence).toBeNull();
     });
   });
 
@@ -118,7 +118,7 @@ describe('AIComplianceAssistant', () => {
       const result = await assistant.query('What is the meaning?');
 
       expect(result.result).toEqual({ answer: 'The answer is 42' });
-      expect(result.confidence).toBe(0.75);
+      expect(result.confidence).toBeNull();
     });
 
     it('includes context in prompt when provided', async () => {
@@ -150,7 +150,7 @@ describe('AIComplianceAssistant', () => {
       );
 
       expect(result.result).toEqual(mockCategory);
-      expect(result.confidence).toBe(0.9);
+      expect(result.confidence).toBeNull();
     });
 
     it('handles non-JSON response with fallback', async () => {
@@ -159,7 +159,7 @@ describe('AIComplianceAssistant', () => {
       const result = await assistant.categorizeEvidence('random.txt');
 
       expect(result.result.category).toBe('Other');
-      expect(result.confidence).toBe(0.5);
+      expect(result.confidence).toBeNull();
     });
   });
 
@@ -175,7 +175,7 @@ describe('AIComplianceAssistant', () => {
       });
 
       expect(result.result).toEqual({ summary: 'Executive summary report...' });
-      expect(result.confidence).toBe(0.85);
+      expect(result.confidence).toBeNull();
       expect(result.suggestions).toHaveLength(3);
     });
   });
@@ -197,7 +197,7 @@ describe('AIComplianceAssistant', () => {
       });
 
       expect(result.result).toEqual(mockPrediction);
-      expect(result.confidence).toBe(0.75);
+      expect(result.confidence).toBeNull();
       expect(result.reasoning).toBeDefined();
     });
 
@@ -211,7 +211,7 @@ describe('AIComplianceAssistant', () => {
       });
 
       expect(result.result).toEqual({ prediction: 'Risk is moderate' });
-      expect(result.confidence).toBe(0.6);
+      expect(result.confidence).toBeNull();
     });
   });
 });

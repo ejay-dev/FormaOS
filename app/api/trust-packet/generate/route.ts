@@ -9,6 +9,8 @@ import {
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { computeTrustClaims, signTrustPacket } from '@/lib/trust/runtime-claims';
+import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 
 const log = routeLog('/api/trust-packet/generate');
 
@@ -169,9 +171,18 @@ export async function POST(request: NextRequest) {
       .select('plan_key, status')
       .eq('organization_id', organizationId)
       .maybeSingle();
-    const isEnterprisePlan =
-      (subscriptionRow as { plan_key?: string } | null)?.plan_key ===
-      'enterprise';
+    // High-19: derive trust claims from runtime config + actual SSO
+    // record, not hardcoded literals. Truth-in-advertising fix —
+    // previously every packet asserted `sso_available: planIsEnterprise`,
+    // but a plan being enterprise doesn't mean SSO is configured.
+    const ssoConfig = await getOrgSsoConfig(organizationId).catch(
+      () => null,
+    );
+    const securityOverview = computeTrustClaims({
+      hasAuditLogs,
+      hasMfaEnabled,
+      ssoConfig,
+    });
 
     const packetData = {
       generated_at: new Date().toISOString(),
@@ -179,14 +190,7 @@ export async function POST(request: NextRequest) {
       generated_by: user.id,
       recipient_email: recipientEmail,
       note,
-      security_overview: {
-        role_based_access: true,
-        audit_logging: hasAuditLogs,
-        encryption_at_rest: true,
-        encryption_in_transit: true,
-        sso_available: Boolean(isEnterprisePlan),
-        mfa_available: hasMfaEnabled,
-      },
+      security_overview: securityOverview,
       compliance_summary: {
         frameworks_enabled: frameworks.length,
         active_policies: policies.length,
@@ -220,6 +224,19 @@ export async function POST(request: NextRequest) {
       },
     };
 
+    // High-19: sign the packet so recipients can verify integrity. The
+    // signature covers the canonical JSON of packetData and is returned
+    // alongside the packet. Verify at /api/trust-packet/verify.
+    const signed = signTrustPacket(packetData);
+    const signedPacket = {
+      ...packetData,
+      signature: {
+        algorithm: signed.algorithm,
+        value: signed.signature,
+        verify_url: '/api/trust-packet/verify',
+      },
+    };
+
     // Store the trust packet
     const { error: insertError } = await supabase.from('trust_packets').insert({
       token,
@@ -227,7 +244,7 @@ export async function POST(request: NextRequest) {
       generated_by: user.id,
       recipient_email: recipientEmail,
       note,
-      packet_data: packetData,
+      packet_data: signedPacket,
       expires_at: expiresAt.toISOString(),
     });
 
@@ -240,7 +257,7 @@ export async function POST(request: NextRequest) {
       // Still return the packet data — just without persistence
       return NextResponse.json({
         success: true,
-        packet: packetData,
+        packet: signedPacket,
         shareUrl: null,
         expiresAt: expiresAt.toISOString(),
         warning:
@@ -255,7 +272,7 @@ export async function POST(request: NextRequest) {
       success: true,
       shareUrl,
       expiresAt: expiresAt.toISOString(),
-      packet: packetData,
+      packet: signedPacket,
     });
   } catch (error) {
     log.error({ err: error }, 'Trust packet generation failed:');

@@ -1,8 +1,27 @@
 /**
  * =========================================================
- * AI-Powered Compliance Assistant
+ * General-purpose Compliance Q&A
  * =========================================================
- * OpenAI integration for intelligent compliance automation
+ *
+ * High-20: this assistant is a stateless OpenAI prompt wrapper for
+ * compliance-flavored Q&A. It is NOT grounded in the user's org data —
+ * the org_context fields passed in are surface-level (industry,
+ * memberCount) and never include policies, evidence, or controls.
+ *
+ * What changed:
+ *   - Removed the `confidence: 0.85 | 0.7 | …` literals that were
+ *     presented to users as if they were real model confidences.
+ *     We do not have a calibrated grounding signal, so we no longer
+ *     emit a confidence score at all. UI surfaces should not display
+ *     one.
+ *   - Renamed the conceptual product surface from "AI Compliance
+ *     Assistant" to "General-purpose Compliance Q&A" in copy. The
+ *     class name stays for backwards compatibility with existing
+ *     imports.
+ *
+ * If/when RAG is wired up (lib/ai/vector-store.ts +
+ * lib/ai/rag-chat.ts already exist but are unused here), confidence
+ * can be re-introduced as a real cosine-similarity-derived signal.
  */
 
 import { generateAIText, isAISDKConfigured } from '@/lib/ai/sdk-client';
@@ -15,9 +34,20 @@ export interface AIComplianceRequest {
 
 export interface AIComplianceResponse {
   result: unknown;
-  confidence: number;
+  /**
+   * @deprecated High-20: removed because the value was a hardcoded
+   * literal, not a real model confidence. Field kept on the type only
+   * for transitional source-compat with consumers; it will be `null`
+   * on every response.
+   */
+  confidence?: null;
   suggestions?: string[];
   reasoning?: string;
+  /**
+   * Marker so UI consumers can distinguish a grounded answer from a
+   * generic Q&A reply. Always `false` until RAG is wired up.
+   */
+  grounded?: false;
 }
 
 /**
@@ -47,13 +77,13 @@ Provide response in JSON format with keys: requirements (array), risks (array), 
       const parsed = JSON.parse(response);
       return {
         result: parsed,
-        confidence: 0.85,
+        confidence: null, grounded: false,
         reasoning: 'Analysis based on industry compliance standards',
       };
     } catch {
       return {
         result: { analysis: response },
-        confidence: 0.7,
+        confidence: null, grounded: false,
       };
     }
   }
@@ -80,7 +110,7 @@ Provide recommendations in JSON format with array of objects containing: title, 
       const parsed = JSON.parse(response);
       return {
         result: parsed,
-        confidence: 0.8,
+        confidence: null, grounded: false,
         suggestions: [
           'Review and prioritize based on your specific compliance requirements',
           'Assign tasks to appropriate team members',
@@ -90,7 +120,7 @@ Provide recommendations in JSON format with array of objects containing: title, 
     } catch {
       return {
         result: { recommendations: response },
-        confidence: 0.6,
+        confidence: null, grounded: false,
       };
     }
   }
@@ -113,7 +143,7 @@ Provide a clear, actionable answer.`;
 
     return {
       result: { answer: response },
-      confidence: 0.75,
+      confidence: null, grounded: false,
     };
   }
 
@@ -144,12 +174,12 @@ Respond with JSON: { category: string, subcategory: string, tags: array, confide
       const parsed = JSON.parse(response);
       return {
         result: parsed,
-        confidence: parsed.confidence || 0.8,
+        confidence: null, grounded: false,
       };
     } catch {
       return {
         result: { category: 'Other', subcategory: 'Uncategorized' },
-        confidence: 0.5,
+        confidence: null, grounded: false,
       };
     }
   }
@@ -186,7 +216,7 @@ Write in professional, clear language suitable for executives.`;
 
     return {
       result: { summary: response },
-      confidence: 0.85,
+      confidence: null, grounded: false,
       suggestions: [
         "Review and customize based on your organization's specific needs",
         'Add relevant charts and visualizations',
@@ -221,14 +251,14 @@ Provide JSON response with:
       const parsed = JSON.parse(response);
       return {
         result: parsed,
-        confidence: 0.75,
+        confidence: null, grounded: false,
         reasoning:
           'Prediction based on historical data patterns and compliance best practices',
       };
     } catch {
       return {
         result: { prediction: response },
-        confidence: 0.6,
+        confidence: null, grounded: false,
       };
     }
   }
