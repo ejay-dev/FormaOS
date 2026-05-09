@@ -41,10 +41,14 @@ export async function GET(request: Request) {
       .eq('organization_id', orgId)
       .maybeSingle();
 
-    const planKey = (subscription?.plan_key as string | undefined) || 'free';
+    // Default to 'starter' (Foundation) when no plan is recorded — the 'free'
+    // tier was removed (High-9). Self-serve users land in pending_checkout on
+    // 'starter' until they complete Stripe Checkout; the layout-level gate at
+    // app/app/layout.tsx blocks /app/* access until status is 'active'.
+    const planKey = (subscription?.plan_key as string | undefined) || 'starter';
     const legacyTier = planKey === 'basic' ? 'starter' : planKey;
     const currentPlan = SUBSCRIPTION_PLANS[legacyTier as keyof typeof SUBSCRIPTION_PLANS]
-      ?? SUBSCRIPTION_PLANS.free;
+      ?? SUBSCRIPTION_PLANS.starter;
 
     const [membersCount, tasksCount, certsCount, evidenceCount] = await Promise.all([
       supabase.from('org_members').select('id', { count: 'exact', head: true }).eq('organization_id', orgId),

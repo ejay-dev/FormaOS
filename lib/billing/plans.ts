@@ -1,5 +1,4 @@
 export type SubscriptionTier =
-  | 'free'
   | 'starter'
   | 'pro'
   | 'scale'
@@ -21,38 +20,23 @@ export interface SubscriptionPlan {
   };
 }
 
-const DEFAULT_FOUNDATION_PRICE_ID = 'price_1TOdz1AHrAKKo3OlfYxjk9WL';
-const DEFAULT_GROWTH_PRICE_ID = 'price_1TU6oqAHrAKKo3OlWUhJa2ZX';
-const DEFAULT_SCALE_PRICE_ID = 'price_1TU6rzAHrAKKo3Ol32xT6JW2';
+// Price IDs are env-only. Production builds fail closed via scripts/check-env.js
+// when STRIPE_PRICE_* vars are missing. Hardcoded fallbacks were removed
+// (Blocker/High-8) — checking real Stripe price IDs into source-controlled
+// code is a secret-hygiene smell and was the root cause of "live-looking
+// fallback price ID" findings in the audit.
+function priceId(envKey: string): string | undefined {
+  const value = process.env[envKey];
+  return value && value.trim().length > 0 ? value : undefined;
+}
 
 export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
-  free: {
-    id: 'free',
-    name: 'Evaluation Access',
-    price: 0,
-    interval: 'month',
-    features: [
-      'Up to 5 team members',
-      '50 tasks per month',
-      '1GB storage',
-      '10 certificates',
-      'Basic support',
-    ],
-    limits: {
-      members: 5,
-      tasks: 50,
-      storage: 1,
-      certificates: 10,
-      apiCalls: 1000,
-    },
-  },
   starter: {
     id: 'starter',
     name: 'Foundation',
     price: 297,
     interval: 'month',
-    stripePriceId:
-      process.env.STRIPE_PRICE_FOUNDATION ?? DEFAULT_FOUNDATION_PRICE_ID,
+    stripePriceId: priceId('STRIPE_PRICE_FOUNDATION'),
     features: [
       'Controlled starting point',
       'Basic workflow enforcement',
@@ -74,7 +58,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
     name: 'Growth',
     price: 797,
     interval: 'month',
-    stripePriceId: process.env.STRIPE_PRICE_GROWTH ?? DEFAULT_GROWTH_PRICE_ID,
+    stripePriceId: priceId('STRIPE_PRICE_GROWTH'),
     features: [
       'Up to 4 compliance frameworks',
       'Full workflow enforcement',
@@ -97,7 +81,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
     name: 'Scale',
     price: 1800,
     interval: 'month',
-    stripePriceId: process.env.STRIPE_PRICE_SCALE ?? DEFAULT_SCALE_PRICE_ID,
+    stripePriceId: priceId('STRIPE_PRICE_SCALE'),
     features: [
       'Unlimited compliance frameworks',
       'Everything in Growth',
@@ -120,7 +104,7 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionTier, SubscriptionPlan> = {
     name: 'Enterprise',
     price: 0,
     interval: 'month',
-    stripePriceId: process.env.STRIPE_PRICE_ENTERPRISE,
+    stripePriceId: priceId('STRIPE_PRICE_ENTERPRISE'),
     features: [
       'Unlimited team members',
       'Unlimited tasks',

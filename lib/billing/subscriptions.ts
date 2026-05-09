@@ -14,10 +14,14 @@ function toLegacyPlanCode(planKey: string): string {
 // Default plan if none provided - ensures no "No Plan" users
 const DEFAULT_PLAN: PlanKey = 'basic';
 
-// 14-day grace window for self-serve buyers between org bootstrap and Stripe
-// checkout completion. Matches the value written by bootstrapOrganizationAtomic
-// in lib/supabase/transaction.ts so both call paths agree.
-const PENDING_CHECKOUT_GRACE_DAYS = 14;
+// 24-hour grace window for self-serve buyers between org bootstrap and Stripe
+// checkout completion. The layout-level gate at app/app/layout.tsx redirects
+// pending_checkout users to /app/billing immediately, so this window only
+// covers the brief seconds-to-minutes between bootstrap and the first server
+// action that calls requireActiveSubscription. Reduced from 14 days (which
+// implied a "free trial" that does not exist — High-9) to 1 day so the system
+// matches the marketed "pay before access" stance.
+const PENDING_CHECKOUT_GRACE_DAYS = 1;
 
 export type EnsureSubscriptionOptions = {
   /**

@@ -15,10 +15,10 @@ const PATHS = [
     body: 'Sign up, configure your first framework, and start enforcing controls today. Stripe-secured. Cancel anytime.',
     bullets: [
       'Stripe Checkout',
-      'Guided onboarding · audit-ready in <14 days',
+      'Guided onboarding · audit-ready quickly',
       'Cancel or downgrade with full data portability',
     ],
-    ctaLabel: 'Start free configuration',
+    ctaLabel: 'Start setup',
     ctaHref: '/auth/signup?source=pricing_final',
     ctaVariant: 'primary' as const,
     accent: 'teal',

@@ -121,6 +121,14 @@ export async function POST(request: Request) {
 
     // idempotencyKey collapses double-clicks (and any Stripe SDK retry on
     // transient network errors) into a single checkout session per (org, plan).
+    //
+    // automatic_tax + tax_id_collection added in High-10. FormaOS targets
+    // Australian customers and previously sent every checkout session with no
+    // tax handling, which left GST off invoices. Stripe Tax must be enabled
+    // in the Stripe dashboard for automatic_tax to take effect; if it isn't,
+    // Stripe surfaces a clear error and the order does not complete.
+    // customer_update.address: 'auto' is required when automatic_tax is on so
+    // Stripe can keep an existing customer's address in sync.
     const session = await stripe.checkout.sessions.create(
       {
         mode: 'subscription',
@@ -132,6 +140,11 @@ export async function POST(request: Request) {
         client_reference_id: orgId,
         success_url: `${appUrl}/app/billing?checkout=success`,
         cancel_url: `${appUrl}/app/billing?checkout=cancelled`,
+        automatic_tax: { enabled: true },
+        tax_id_collection: { enabled: true },
+        ...(subscription?.stripe_customer_id
+          ? { customer_update: { address: 'auto', name: 'auto' } }
+          : {}),
         subscription_data: {
           metadata: {
             organization_id: orgId,

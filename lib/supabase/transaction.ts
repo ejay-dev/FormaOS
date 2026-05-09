@@ -99,12 +99,17 @@ export async function bootstrapOrganizationAtomic(params: {
     //
     // Historical behavior set status='trialing' for 14 days, but
     // TRIAL_ELIGIBLE_PLANS is empty (commercial posture is no-trial), so
-    // a "trialing" status was misleading. We now mark the subscription as
-    // pending_checkout with a 14-day grace deadline (trial_expires_at) and
-    // allow requireActiveSubscription to honor that window for self-serve
-    // plans during the checkout-completion handoff.
+    // a "trialing" status was misleading. We mark the subscription as
+    // pending_checkout with a 1-day grace deadline (trial_expires_at) and
+    // allow requireActiveSubscription to honor that window only for the
+    // brief seconds-to-minutes between bootstrap and Stripe checkout. The
+    // layout-level gate at app/app/layout.tsx already redirects users to
+    // /app/billing immediately on every /app/* request — this short DB
+    // grace just prevents server actions from throwing during the handoff.
+    // Reduced from 14 days to 1 day in High-9 to match the marketed
+    // "pay before access" stance.
     const graceEnd = new Date();
-    graceEnd.setDate(graceEnd.getDate() + 14);
+    graceEnd.setDate(graceEnd.getDate() + 1);
 
     const buildSubPayload = (status: 'pending_checkout' | 'past_due') => ({
       organization_id: organizationId,
