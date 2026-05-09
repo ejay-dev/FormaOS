@@ -21,6 +21,13 @@ permissions:
 jobs:
   accessibility-audit:
     runs-on: ubuntu-latest
+    # Workflow-wide opt-out for the strict env check in
+    # scripts/check-env.js — `npm run build` (prebuild) AND `npm start`
+    # (prestart) both invoke it, so a per-step env was insufficient.
+    # Vercel builds still validate strictly because VERCEL_ENV=production
+    # short-circuits this opt-out.
+    env:
+      CHECK_ENV_SKIP_IN_CI: '1'
 
     steps:
       - name: Checkout code
@@ -162,6 +169,8 @@ jobs:
 
   lighthouse-accessibility:
     runs-on: ubuntu-latest
+    env:
+      CHECK_ENV_SKIP_IN_CI: '1'
 
     steps:
       - name: Checkout code

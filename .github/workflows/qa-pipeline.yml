@@ -21,6 +21,11 @@ permissions:
 env:
   NODE_VERSION: '20'
   FORCE_COLOR: 1
+  # Workflow-wide opt-out for the strict env check in
+  # scripts/check-env.js. Both `npm run build` (prebuild) and
+  # `npm run start` (prestart) invoke it. Vercel builds still validate
+  # strictly because VERCEL_ENV=production short-circuits this opt-out.
+  CHECK_ENV_SKIP_IN_CI: '1'
 
 jobs:
   lint-and-format:
