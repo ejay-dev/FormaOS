@@ -8,6 +8,9 @@ const strictValidation =
   process.env.CHECK_ENV_STRICT === '1';
 const envProfile = process.env.CHECK_ENV_PROFILE || 'development';
 const isVercelBuild = process.env.VERCEL === '1';
+const vercelEnv = process.env.VERCEL_ENV || ''; // 'production' | 'preview' | 'development'
+const isVercelPreview = isVercelBuild && vercelEnv === 'preview';
+const isVercelProduction = isVercelBuild && vercelEnv === 'production';
 const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 const isSecretManagerRuntime =
   isVercelBuild || process.env.CI === 'true' || isGitHubActions;
@@ -133,20 +136,50 @@ const exposedPublicSecrets = forbiddenPublicKeys.filter(
 );
 
 if (missingRequired.length > 0 || exposedPublicSecrets.length > 0) {
-  console.error('\nMissing required environment variables in .env.local:');
-  if (missingRequired.length > 0) {
-    console.error(missingRequired.map((key) => `- ${key}`).join('\n'));
+  // Vercel preview builds get a softer treatment: warn loudly but do not
+  // fail. Preview deploys exist for QA on PRs that don't always have access
+  // to all production secrets (e.g. branches from forks, or new envs that
+  // haven't been scoped to Preview in the Vercel UI yet). Production builds
+  // and local dev still hard-fail.
+  //
+  // Forbidden public secrets, however, are ALWAYS a hard fail — exposing a
+  // service-role key as NEXT_PUBLIC_* is never acceptable, preview or not.
+  if (
+    isVercelPreview &&
+    !isVercelProduction &&
+    missingRequired.length > 0 &&
+    exposedPublicSecrets.length === 0
+  ) {
+    console.warn(
+      '\n⚠️  Vercel Preview build is missing environment variables:',
+    );
+    console.warn(missingRequired.map((key) => `  - ${key}`).join('\n'));
+    console.warn(
+      '\n  Preview builds will continue, but the app may behave unexpectedly.',
+    );
+    console.warn(
+      '  Fix: in Vercel project settings → Environment Variables, edit each',
+    );
+    console.warn(
+      '  variable above and tick the "Preview" environment checkbox.',
+    );
+    // Fall through to placeholder/format checks below.
+  } else {
+    console.error('\nMissing required environment variables in .env.local:');
+    if (missingRequired.length > 0) {
+      console.error(missingRequired.map((key) => `- ${key}`).join('\n'));
+    }
+    if (exposedPublicSecrets.length > 0) {
+      console.error('\nForbidden public secrets detected:');
+      console.error(exposedPublicSecrets.map((key) => `- ${key}`).join('\n'));
+    }
+    console.error(
+      isSecretManagerRuntime
+        ? '\nUpdate managed environment secrets and re-run this check.'
+        : '\nUpdate .env.local and re-run npm run dev.',
+    );
+    process.exit(1);
   }
-  if (exposedPublicSecrets.length > 0) {
-    console.error('\nForbidden public secrets detected:');
-    console.error(exposedPublicSecrets.map((key) => `- ${key}`).join('\n'));
-  }
-  console.error(
-    isSecretManagerRuntime
-      ? '\nUpdate managed environment secrets and re-run this check.'
-      : '\nUpdate .env.local and re-run npm run dev.',
-  );
-  process.exit(1);
 }
 
 const isPlaceholder = (value) => {
@@ -189,7 +222,9 @@ if (supabaseUrl) {
 }
 
 if (invalidRequired.length > 0 || invalidSupabaseUrl) {
-  const logger = strictValidation ? console.error : console.warn;
+  // Same Vercel preview softening as above: warn but don't block the build.
+  const hardFail = strictValidation && !isVercelPreview;
+  const logger = hardFail ? console.error : console.warn;
 
   logger('\nInvalid placeholder environment variables detected:');
   if (invalidRequired.length > 0) {
@@ -200,7 +235,7 @@ if (invalidRequired.length > 0 || invalidSupabaseUrl) {
   }
   logger('\nReplace placeholder values with real environment values.');
 
-  if (strictValidation) {
+  if (hardFail) {
     process.exit(1);
   }
 }
