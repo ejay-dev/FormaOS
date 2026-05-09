@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import { evaluateMfaGate, MFA_CHALLENGE_PATH } from '@/lib/auth/mfa-gate';
 import { Sidebar } from '@/components/sidebar';
 import { TopBar } from '@/components/topbar';
 import { AppHydrator } from '@/components/app-hydrator';
@@ -100,6 +101,25 @@ export default async function AppLayout({
         ? '/workspace-recovery?from=app-layout-null-state'
         : recovery.nextPath,
     );
+  }
+
+  // 1b. MFA GATE — once the user has a session, every /app/* request
+  // must verify the current Supabase session has cleared the TOTP
+  // challenge. This is the server-side enforcement point; the client
+  // can bounce to the challenge from sign-in but the gate here is the
+  // authoritative check. Fail closed on error: if we can't determine
+  // MFA state, hold the user at the challenge rather than admit them.
+  let mfaShouldChallenge = false;
+  try {
+    const supabaseForMfa = await createSupabaseServerClient();
+    const mfaState = await evaluateMfaGate(supabaseForMfa);
+    mfaShouldChallenge = mfaState.required && !mfaState.passed;
+  } catch (err) {
+    log.error({ err }, 'mfa gate evaluation failed');
+    mfaShouldChallenge = true;
+  }
+  if (mfaShouldChallenge) {
+    redirect(MFA_CHALLENGE_PATH);
   }
 
   // 🔧 FIX: Don't force founders to /admin when they visit /app intentionally.
