@@ -302,10 +302,35 @@ export async function proxy(request: NextRequest) {
     }
 
     // -------------------------------
+    // CSRF Allowlist (High-12)
+    // -------------------------------
+    // Routes that legitimately accept cross-origin POSTs because they
+    // authenticate via something other than a session cookie:
+    //   - HMAC-signed webhook bodies (Stripe, Trigger.dev, internal)
+    //   - CRON_SECRET-protected cron + internal trigger endpoints
+    //   - HMAC-token-protected one-click unsubscribe
+    //   - SAML POST callback (validated by signed assertion)
+    //   - SCIM POST/PUT/DELETE (validated by Bearer; also exempted by
+    //     validateCsrfOrigin which short-circuits on Authorization: Bearer)
+    // Bearer-authenticated /api/v1/* calls are NOT listed here — they are
+    // already exempted inside validateCsrfOrigin via the Authorization
+    // header check, which keeps the allowlist short and reviewable.
+    const CSRF_EXEMPT_API_ROUTES = [
+      '/api/billing/webhook',
+      '/api/webhooks/',
+      '/api/cron/',
+      '/api/internal/trigger/',
+      '/api/unsubscribe',
+      '/api/sso/saml/acs/',
+      '/api/scim/',
+    ];
+
+    // -------------------------------
     // API Auth Backstop
     // -------------------------------
-    // Public API routes that do NOT require session cookies.
-    // Everything else under /api/* must have a valid session.
+    // Public API routes that do NOT require session cookies. Bearer-token
+    // surfaces (SCIM, /api/v1/*) are also exempted in the check below — they
+    // self-guard with their own bearer validation.
     const PUBLIC_API_ROUTES = [
       '/api/health',
       '/api/version',
@@ -315,6 +340,7 @@ export async function proxy(request: NextRequest) {
       '/api/internal/trigger/', // Trigger.dev callbacks (secured by CRON_SECRET)
       '/api/runtime/', // Next.js runtime internals
       '/api/sso/', // SSO callbacks
+      '/api/scim/', // SCIM v2 (HTTP Bearer; routes self-guard via authenticateScimRequest)
       '/api/trust-packet/', // Public vendor trust packet (rate-limited separately)
       '/api/webhooks/', // Stripe/Trigger.dev webhooks (HMAC-secured)
       '/api/billing/webhook', // Stripe billing webhook (signature-verified)
@@ -346,23 +372,100 @@ export async function proxy(request: NextRequest) {
         );
       }
 
+      // High-12: CSRF default-on at the edge. Previously CSRF was opt-in
+      // and ~30 mutating routes did not call validateCsrfOrigin, leaving
+      // them open to forged cross-origin POSTs. We now enforce it for
+      // every state-changing /api/* request unless the route is in the
+      // explicit allowlist above. Bearer-authenticated requests (API key
+      // v1) are exempted automatically inside validateCsrfOrigin.
+      const method = request.method.toUpperCase();
+      const isMutation =
+        method === 'POST' ||
+        method === 'PUT' ||
+        method === 'PATCH' ||
+        method === 'DELETE';
+      const isCsrfExempt = CSRF_EXEMPT_API_ROUTES.some(
+        (prefix) => pathname === prefix || pathname.startsWith(prefix),
+      );
+      if (isMutation && !isCsrfExempt) {
+        const { validateCsrfOrigin } = await import('@/lib/security/csrf');
+        const csrfBlock = validateCsrfOrigin(request);
+        if (csrfBlock) {
+          return finalizePassThrough(csrfBlock);
+        }
+      }
+
       const isPublicApi = PUBLIC_API_ROUTES.some(
         (prefix) => pathname === prefix || pathname.startsWith(prefix),
       );
       if (!isPublicApi) {
-        // Require a session cookie for non-public API routes
-        const hasSessionCookieForApi = request.cookies
-          .getAll()
-          .some(
-            (c) => c.name.startsWith('sb-') && c.name.includes('auth-token'),
-          );
-        if (!hasSessionCookieForApi) {
-          return finalizePassThrough(
-            NextResponse.json(
-              { error: 'Unauthorized' },
-              { status: 401, headers: { 'Cache-Control': 'no-store' } },
-            ),
-          );
+        // Bearer-token requests (API key v1, anything self-guarded) skip
+        // the session check — the route handler validates the bearer
+        // itself via authenticateV1Request / requireBearerAuth.
+        const hasBearer = request.headers
+          .get('authorization')
+          ?.toLowerCase()
+          .startsWith('bearer ');
+
+        if (!hasBearer) {
+          // High-11: real edge auth. Previously this only checked that a
+          // cookie matching `sb-*-auth-token` existed — a forged cookie
+          // satisfied that check, leaving any route that didn't itself
+          // call getUser() exposed. Now we actually validate the JWT
+          // contents via Supabase's getUser() at the edge.
+          const hasSessionCookieForApi = request.cookies
+            .getAll()
+            .some(
+              (c) =>
+                c.name.startsWith('sb-') && c.name.includes('auth-token'),
+            );
+
+          // Fast-path 401 if there's no Supabase cookie at all — saves a
+          // round-trip to Supabase for unauthenticated probes.
+          if (!hasSessionCookieForApi) {
+            return finalizePassThrough(
+              NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401, headers: { 'Cache-Control': 'no-store' } },
+              ),
+            );
+          }
+
+          // Cookie exists — verify the JWT is real. createServerClient
+          // calls auth.getUser() which validates the access token against
+          // the Supabase auth server. Adds one round-trip per
+          // authenticated /api/* call, but defends every API route uniformly
+          // even if the route handler forgets to call getUser() itself.
+          let edgeUserOk = false;
+          try {
+            const edgeSupabaseUrl = getSupabaseUrl();
+            const edgeSupabaseAnonKey = getSupabaseAnonKey();
+            const supabase = createServerClient(
+              edgeSupabaseUrl!,
+              edgeSupabaseAnonKey!,
+              {
+                cookies: {
+                  getAll: () => request.cookies.getAll(),
+                  // Read-only at the API edge — we don't refresh-rotate
+                  // here to keep the middleware fast and side-effect free.
+                  setAll: () => {},
+                },
+              },
+            );
+            const { data, error } = await supabase.auth.getUser();
+            edgeUserOk = !error && !!data?.user;
+          } catch {
+            edgeUserOk = false;
+          }
+
+          if (!edgeUserOk) {
+            return finalizePassThrough(
+              NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401, headers: { 'Cache-Control': 'no-store' } },
+              ),
+            );
+          }
         }
       }
       // API routes don't need further middleware processing (redirects, CSP, etc.)
