@@ -330,6 +330,32 @@ export async function GET(request: Request) {
 
   authLogger.info('session_established', { email: user.email });
 
+  // 1b. MFA GATE — if the account has TOTP enabled, the OAuth/Email
+  // exchange has minted a usable session that must NOT be allowed to
+  // bootstrap a workspace until the TOTP challenge clears. Bounce to
+  // the challenge page; the /app/* layout will keep enforcing on every
+  // subsequent request.
+  try {
+    const { data: securityRow } = await admin
+      .from('user_security')
+      .select('two_factor_enabled')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (securityRow?.two_factor_enabled === true) {
+      authLogger.info('mfa_gate_redirect', { userId: user.id });
+      return redirectWithCookies(`${appBase}/auth/mfa-challenge`);
+    }
+  } catch (err) {
+    authLogger.error(
+      'mfa_gate_lookup_failed',
+      { code: 'MFA_GATE_LOOKUP_FAILED', message: 'Failed to read user_security.' },
+      { errorMessage: toError(err).message },
+    );
+    // Fail closed: if we can't tell whether MFA is required, hold the
+    // user at the challenge rather than letting them in.
+    return redirectWithCookies(`${appBase}/auth/mfa-challenge`);
+  }
+
   // 2. CHECK IF USER IS A FOUNDER
   const founderCheck = isFounder(user.email, user.id);
 

@@ -135,6 +135,30 @@ function SignInContent() {
   const bootstrapAndRedirect = useCallback(async () => {
     const base = resolveAppBase();
     try {
+      // MFA gate: if the account requires a TOTP step and this session
+      // hasn't cleared it yet, hold the user at the challenge page rather
+      // than minting a usable workspace session.
+      try {
+        const mfaRes = await fetchWithTimeout(
+          '/api/auth/mfa-status',
+          { method: 'GET' },
+          10000,
+        );
+        if (mfaRes.ok) {
+          const mfaPayload = (await mfaRes.json().catch(() => null)) as {
+            requiresMfa?: boolean;
+            passed?: boolean;
+          } | null;
+          if (mfaPayload?.requiresMfa && !mfaPayload?.passed) {
+            window.location.href = `${base}/auth/mfa-challenge`;
+            return { ok: true };
+          }
+        }
+      } catch {
+        // Fall through — bootstrap will fail closed if the session is
+        // truly invalid; we never silently bypass the gate.
+      }
+
       const response = await fetchWithTimeout('/api/auth/bootstrap', {
         method: 'POST',
       });

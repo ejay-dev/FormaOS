@@ -504,6 +504,53 @@ function getStorageKey(supabaseUrl: string) {
   return `sb-${projectRef}-auth-token`;
 }
 
+/**
+ * Decode the `session_id` claim from a Supabase access token without
+ * verifying the signature — Supabase already issued and signed it.
+ * Returns null on malformed input.
+ */
+function extractSessionIdFromAccessToken(token: string): string | null {
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+  try {
+    const payload = JSON.parse(
+      Buffer.from(parts[1], 'base64url').toString('utf8'),
+    ) as { session_id?: unknown };
+    return typeof payload.session_id === 'string' ? payload.session_id : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Mark an E2E session as MFA-passed so the layout-level gate admits
+ * the test user. The MFA enforcement is real in production: tests
+ * opt in by recording the session_id of the cookies they install.
+ */
+async function markE2eSessionMfaPassed(
+  session: Session,
+  env: SupabaseEnv,
+): Promise<void> {
+  if (!session.user?.id || !session.access_token) return;
+  const sessionId = extractSessionIdFromAccessToken(session.access_token);
+  if (!sessionId) return;
+
+  const adminClient = createClient(env.url, env.serviceRoleKey, {
+    auth: { persistSession: false },
+  });
+  const nowIso = new Date().toISOString();
+  await adminClient.from('user_security').upsert(
+    {
+      user_id: session.user.id,
+      mfa_passed_session_id: sessionId,
+      mfa_passed_at: nowIso,
+      mfa_failed_attempts: 0,
+      updated_at: nowIso,
+    },
+    { onConflict: 'user_id' },
+  );
+}
+
 export async function createMagicLinkSession(email: string): Promise<Session> {
   const { url, anonKey, serviceRoleKey } = resolveSupabaseEnv();
   try {
@@ -619,7 +666,16 @@ export async function setPlaywrightSession(
   session: Session,
   appBaseUrl: string,
 ) {
-  const { url } = resolveSupabaseEnv();
+  const env = resolveSupabaseEnv();
+  const { url } = env;
+  // Test users have two_factor_enabled=true (see _createTemporaryTestUserImpl
+  // and ensureCachedTestUserProvisioned). Without recording the session as
+  // MFA-passed, every /app/* request would bounce to /auth/mfa-challenge.
+  try {
+    await markE2eSessionMfaPassed(session, env);
+  } catch (error) {
+    console.warn('[E2E] Failed to mark session MFA-passed:', error);
+  }
   const storageKey = getStorageKey(url);
   const serialized = JSON.stringify(session);
   const encoded = `base64-${toBase64Url(serialized)}`;
