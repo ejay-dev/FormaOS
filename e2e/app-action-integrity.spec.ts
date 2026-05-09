@@ -121,11 +121,25 @@ async function assertNoIntegrityFailures(failures: string[]) {
   expect(failures, failures.join('\n')).toEqual([]);
 }
 
+// Skip the entire suite when Supabase env is absent — typical CI runs
+// without test-Supabase secrets. Without this guard, getWorkspaceSeedContext
+// throws E2EAuthBootstrapError at the first beforeEach and the gate goes red
+// even though there is nothing to test.
+const HAS_WORKSPACE_SEED_ENV = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
+
 test.describe('Authenticated app action integrity', () => {
   test.describe.configure({ mode: 'serial' });
 
   test.beforeEach(async ({ browserName }) => {
     test.skip(browserName !== 'chromium', 'Runs once on chromium');
+    test.skip(
+      !HAS_WORKSPACE_SEED_ENV,
+      'Supabase workspace-seed env not configured — set NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY to run this gate.',
+    );
   });
 
   test('sidebar routes load without app 404s', async ({ page }, testInfo) => {
