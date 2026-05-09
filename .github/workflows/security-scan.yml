@@ -79,6 +79,11 @@ jobs:
   security_tests:
     name: 'Security Test Verification'
     runs-on: ubuntu-latest
+    # Job-level opt-out so both `npm run build` (prebuild) and
+    # `npm run start` (prestart) skip the strict env check that would
+    # otherwise hard-fail on missing Supabase secrets.
+    env:
+      CHECK_ENV_SKIP_IN_CI: '1'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -117,6 +122,12 @@ jobs:
 
       - name: Build application
         env:
+          # Same opt-out pattern as the other CI workflows: skip the
+          # strict env check in scripts/check-env.js when the workflow
+          # doesn't carry production Supabase secrets. Vercel builds
+          # still validate strictly because VERCEL_ENV=production
+          # short-circuits this opt-out.
+          CHECK_ENV_SKIP_IN_CI: '1'
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || secrets.SUPABASE_URL || vars.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || secrets.SUPABASE_ANON_KEY || vars.SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || vars.SUPABASE_SERVICE_ROLE_KEY || secrets.SUPABASE_SERVICE_KEY || vars.SUPABASE_SERVICE_KEY }}

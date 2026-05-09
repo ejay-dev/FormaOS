@@ -21,6 +21,11 @@ permissions:
 env:
   NODE_VERSION: '20'
   FORCE_COLOR: 1
+  # Workflow-wide opt-out for the strict env check in
+  # scripts/check-env.js. Both `npm run build` (prebuild) and
+  # `npm run start` (prestart) invoke it. Vercel builds still validate
+  # strictly because VERCEL_ENV=production short-circuits this opt-out.
+  CHECK_ENV_SKIP_IN_CI: '1'
 
 jobs:
   lint-and-format:
@@ -35,7 +40,9 @@ jobs:
 
       - run: npm ci
       - name: ESLint
-        run: npx eslint . --max-warnings 350
+        # Ceiling tightened from 350 (Blocker 4). lint-warning-ratchet.yml
+        # opens a PR to lower this when warning count drops further.
+        run: npx eslint . --max-warnings 25
       - run: npm run stylelint
       - run: npm run type-check
 
