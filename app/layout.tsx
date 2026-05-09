@@ -3,6 +3,7 @@ import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import CookieConsent from '@/components/CookieConsent';
 import NextTopLoader from 'nextjs-toploader';
+import { ObservabilityProvider } from '@/components/observability/ObservabilityProvider';
 import './globals.css';
 
 const inter = Inter({
@@ -106,6 +107,7 @@ export default function RootLayout({
     >
       <body className={inter.className}>
         <NextTopLoader color="#22d3ee" height={2} showSpinner={false} />
+        <ObservabilityProvider />
         <ThemeProvider>{children}</ThemeProvider>
         <CookieConsent />
       </body>
