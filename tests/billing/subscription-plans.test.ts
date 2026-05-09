@@ -14,46 +14,44 @@ afterEach(() => {
   jest.resetModules();
 });
 
+// High-8 (PR #19): hardcoded `price_*` fallbacks were removed from
+// lib/billing/plans.ts. Plans now resolve their stripePriceId from
+// STRIPE_PRICE_* env vars or undefined when missing — production
+// builds fail closed via scripts/check-env.js. This test pins that
+// contract so a future regression can't re-introduce the hardcoded
+// IDs.
 describe('SUBSCRIPTION_PLANS Stripe price IDs', () => {
-  it('uses current Foundation and Growth fallback price IDs', () => {
-    const plans = loadPlansWithEnv({
-      STRIPE_PRICE_FOUNDATION: undefined,
-      STRIPE_PRICE_GROWTH: undefined,
-      STRIPE_STARTER_PRICE_ID: undefined,
-      STRIPE_PRO_PRICE_ID: undefined,
-      STRIPE_PRICE_BASIC: undefined,
-      STRIPE_PRICE_PRO: undefined,
-    });
-
-    expect(plans.starter.stripePriceId).toBe('price_1TOdz1AHrAKKo3OlfYxjk9WL');
-    expect(plans.pro.stripePriceId).toBe('price_1TU6oqAHrAKKo3OlWUhJa2ZX');
+  it('returns undefined for every plan when STRIPE_PRICE_* env is unset', () => {
+    const env = { ...ORIGINAL_ENV };
+    delete env.STRIPE_PRICE_FOUNDATION;
+    delete env.STRIPE_PRICE_GROWTH;
+    delete env.STRIPE_PRICE_SCALE;
+    delete env.STRIPE_PRICE_ENTERPRISE;
+    const plans = loadPlansWithEnv(env);
+    // Override original to fully clear instead of merging.
+    expect(plans.starter.stripePriceId).toBeUndefined();
+    expect(plans.pro.stripePriceId).toBeUndefined();
+    expect(plans.scale.stripePriceId).toBeUndefined();
+    expect(plans.enterprise.stripePriceId).toBeUndefined();
   });
 
-  it('uses preferred Foundation and Growth env aliases', () => {
+  it('reads STRIPE_PRICE_FOUNDATION / GROWTH / SCALE from env', () => {
     const plans = loadPlansWithEnv({
-      STRIPE_PRICE_FOUNDATION: 'price_foundation_live',
-      STRIPE_PRICE_GROWTH: 'price_growth_live',
-      STRIPE_STARTER_PRICE_ID: 'price_starter_legacy',
-      STRIPE_PRO_PRICE_ID: 'price_pro_legacy',
-      STRIPE_PRICE_BASIC: 'price_basic_legacy',
-      STRIPE_PRICE_PRO: 'price_pro_alt_legacy',
+      STRIPE_PRICE_FOUNDATION: 'price_foundation_test',
+      STRIPE_PRICE_GROWTH: 'price_growth_test',
+      STRIPE_PRICE_SCALE: 'price_scale_test',
     });
-
-    expect(plans.starter.stripePriceId).toBe('price_foundation_live');
-    expect(plans.pro.stripePriceId).toBe('price_growth_live');
+    expect(plans.starter.stripePriceId).toBe('price_foundation_test');
+    expect(plans.pro.stripePriceId).toBe('price_growth_test');
+    expect(plans.scale.stripePriceId).toBe('price_scale_test');
   });
 
-  it('ignores stale legacy aliases for Foundation and Growth', () => {
+  it('treats whitespace-only env values as missing', () => {
     const plans = loadPlansWithEnv({
-      STRIPE_PRICE_FOUNDATION: undefined,
-      STRIPE_PRICE_GROWTH: undefined,
-      STRIPE_STARTER_PRICE_ID: 'price_starter_legacy',
-      STRIPE_PRO_PRICE_ID: 'price_pro_legacy',
-      STRIPE_PRICE_BASIC: 'price_basic_legacy',
-      STRIPE_PRICE_PRO: 'price_pro_alt_legacy',
+      STRIPE_PRICE_FOUNDATION: '   ',
+      STRIPE_PRICE_GROWTH: '',
     });
-
-    expect(plans.starter.stripePriceId).toBe('price_1TOdz1AHrAKKo3OlfYxjk9WL');
-    expect(plans.pro.stripePriceId).toBe('price_1TU6oqAHrAKKo3OlWUhJa2ZX');
+    expect(plans.starter.stripePriceId).toBeUndefined();
+    expect(plans.pro.stripePriceId).toBeUndefined();
   });
 });
