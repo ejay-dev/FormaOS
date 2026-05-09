@@ -112,6 +112,14 @@ async function provisionMfaUser() {
   // app's lib/security.ts accepts plaintext secrets as a backwards-
   // compat affordance; we use that here so the test can compute valid
   // codes without sharing the encryption key.
+  //
+  // TODO(security): the plaintext-secret affordance in lib/security.ts
+  // is itself a MEDIUM-severity finding (legacy unencrypted TOTP
+  // secrets readable as-is). When that affordance is closed (forced
+  // re-encryption migration), this test must switch to generating +
+  // encrypting the secret via the same path the application uses for
+  // new enrollments — likely by calling generate2FASecret() through
+  // the admin API rather than seeding the row directly.
   const totpSecret = speakeasy.generateSecret({
     name: `FormaOS (${email})`,
     issuer: 'FormaOS',
