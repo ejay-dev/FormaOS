@@ -15,12 +15,15 @@ const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 const isSecretManagerRuntime =
   isVercelBuild || process.env.CI === 'true' || isGitHubActions;
 
-// In GitHub Actions CI (not a Vercel build), skip all strict env checks.
-// Production secrets live in Vercel's environment — Vercel validates them
-// during its own build. CI runners don't have (and shouldn't need) those secrets.
-if (strictValidation && isGitHubActions && !isVercelBuild) {
+// CI now runs strict env validation by default (Blocker 4). The previous
+// behavior — skip whenever GITHUB_ACTIONS=true — meant production secret
+// drift was only caught at Vercel build time, after merge. To opt out for
+// a workflow that genuinely cannot have those secrets (e.g. a docs-only
+// preview), set CHECK_ENV_SKIP_IN_CI=1 explicitly.
+const skipInCi = process.env.CHECK_ENV_SKIP_IN_CI === '1';
+if (strictValidation && isGitHubActions && !isVercelBuild && skipInCi) {
   console.log(
-    'ℹ️  Skipping strict env check in GitHub Actions CI — validated by Vercel at build time.',
+    'ℹ️  Skipping strict env check in GitHub Actions CI (CHECK_ENV_SKIP_IN_CI=1).',
   );
   process.exit(0);
 }

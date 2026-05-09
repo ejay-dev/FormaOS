@@ -1,0 +1,94 @@
+name: Lint Warning Ratchet
+
+# Weekly ratchet: when actual ESLint warning count drops materially below
+# the committed `--max-warnings` ceiling, open a PR that tightens the
+# ceiling to the new floor. This makes the gate a one-way valve — easy
+# to lower, never automatically raised.
+
+on:
+  schedule:
+    - cron: '0 13 * * 1' # Mondays 13:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  ratchet:
+    name: Compute & propose new warning ceiling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Count ESLint warnings
+        id: count
+        run: |
+          set -o pipefail
+          # `npx eslint .` exits non-zero only if the warning ceiling is
+          # already exceeded; we want the count regardless. Use --format json
+          # and tally warnings ourselves.
+          npx eslint . --format json > eslint-report.json || true
+          COUNT=$(node -e "const r=require('./eslint-report.json');let n=0;for(const f of r){n+=f.warningCount}console.log(n)")
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "Current warning count: $COUNT"
+
+      - name: Read current ceiling
+        id: ceiling
+        run: |
+          # Source of truth: the deployment-gates.yml ceiling.
+          CEIL=$(grep -oE -- '--max-warnings [0-9]+' .github/workflows/deployment-gates.yml | head -n1 | grep -oE '[0-9]+')
+          echo "ceiling=$CEIL" >> "$GITHUB_OUTPUT"
+          echo "Current ceiling: $CEIL"
+
+      - name: Compute proposed ceiling
+        id: proposal
+        env:
+          COUNT: ${{ steps.count.outputs.count }}
+          CEIL: ${{ steps.ceiling.outputs.ceiling }}
+        run: |
+          # Always allow a small buffer so a single accidental warning
+          # doesn't immediately fail the next PR.
+          BUFFER=5
+          PROPOSED=$((COUNT + BUFFER))
+          if [ "$PROPOSED" -lt "$CEIL" ]; then
+            echo "should_pr=true" >> "$GITHUB_OUTPUT"
+            echo "proposed=$PROPOSED" >> "$GITHUB_OUTPUT"
+            echo "Proposing ceiling drop: $CEIL -> $PROPOSED"
+          else
+            echo "should_pr=false" >> "$GITHUB_OUTPUT"
+            echo "No tightening needed (count=$COUNT, ceiling=$CEIL)"
+          fi
+
+      - name: Update workflow files
+        if: steps.proposal.outputs.should_pr == 'true'
+        env:
+          CEIL: ${{ steps.ceiling.outputs.ceiling }}
+          PROPOSED: ${{ steps.proposal.outputs.proposed }}
+        run: |
+          sed -i "s/--max-warnings $CEIL/--max-warnings $PROPOSED/g" \
+            .github/workflows/deployment-gates.yml \
+            .github/workflows/qa-pipeline.yml
+
+      - name: Open ratchet PR
+        if: steps.proposal.outputs.should_pr == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: ci/lint-warning-ratchet
+          commit-message: 'chore(ci): tighten lint warning ceiling'
+          title: 'chore(ci): tighten lint warning ceiling to ${{ steps.proposal.outputs.proposed }}'
+          body: |
+            Automated ratchet from `lint-warning-ratchet.yml`.
+
+            Current warning count: **${{ steps.count.outputs.count }}**
+            Previous ceiling: `--max-warnings ${{ steps.ceiling.outputs.ceiling }}`
+            New ceiling: `--max-warnings ${{ steps.proposal.outputs.proposed }}` (count + 5 buffer)
+
+            This is a one-way valve: the ceiling only ever moves down.

@@ -35,7 +35,9 @@ jobs:
 
       - run: npm ci
       - name: ESLint
-        run: npx eslint . --max-warnings 350
+        # Ceiling tightened from 350 (Blocker 4). lint-warning-ratchet.yml
+        # opens a PR to lower this when warning count drops further.
+        run: npx eslint . --max-warnings 25
       - run: npm run stylelint
       - run: npm run type-check
 
