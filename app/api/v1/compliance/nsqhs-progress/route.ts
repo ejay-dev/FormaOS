@@ -5,6 +5,16 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 
 const log = routeLog('/api/v1/compliance/nsqhs-progress');
 
+// High-15: this endpoint matches NSQHS Standards to org_tasks via regex
+// over task titles. That is keyword spotting, not a regulatory NSQHS
+// assessment. Until per-standard evaluators exist this surface ships
+// with `experimental: true` and is hidden from the default app sidebar.
+const EXPERIMENTAL_NOTICE = {
+  experimental: true,
+  notice:
+    'NSQHS Standard progress is computed by keyword-matching task titles. It is not an ACSQHC accreditation evaluation. Do not present to surveyors as accreditation evidence.',
+};
+
 const NSQHS_STANDARDS: Array<{ id: string; number: number; title: string; keywords: RegExp }> = [
   { id: '1', number: 1, title: 'Clinical Governance', keywords: /governance|clinical|quality/i },
   { id: '2', number: 2, title: 'Partnering with Consumers', keywords: /consumer|patient|engagement|partnering/i },
@@ -33,7 +43,7 @@ export async function GET(request: Request) {
       .eq('user_id', user.id)
       .maybeSingle();
     const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) return NextResponse.json({ standards: [] });
+    if (!orgId) return NextResponse.json({ ...EXPERIMENTAL_NOTICE, standards: [] });
 
     const { data: tasks, error } = await supabase
       .from('org_tasks')
@@ -42,7 +52,10 @@ export async function GET(request: Request) {
 
     if (error) {
       log.error({ err: error }, 'failed to load tasks');
-      return NextResponse.json({ standards: NSQHS_STANDARDS.map(s => ({ ...s, progress: 0 })) });
+      return NextResponse.json(
+        { ...EXPERIMENTAL_NOTICE, standards: NSQHS_STANDARDS.map(s => ({ id: s.id, number: s.number, title: s.title, progress: 0 })), error: 'tasks_unavailable' },
+        { status: 503 },
+      );
     }
 
     const rows = tasks ?? [];
@@ -60,9 +73,12 @@ export async function GET(request: Request) {
       };
     });
 
-    return NextResponse.json({ standards });
+    return NextResponse.json({ ...EXPERIMENTAL_NOTICE, standards });
   } catch (err) {
     log.error({ err }, 'unexpected error');
-    return NextResponse.json({ standards: [] });
+    return NextResponse.json(
+      { ...EXPERIMENTAL_NOTICE, standards: [], error: 'internal_error' },
+      { status: 500 },
+    );
   }
 }

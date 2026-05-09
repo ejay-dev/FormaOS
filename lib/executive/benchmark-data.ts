@@ -1,4 +1,27 @@
-/** Static industry benchmark data for compliance scoring. */
+/**
+ * Sample reference values for compliance scoring (High-18).
+ *
+ * IMPORTANT: these are NOT live industry benchmarks. They are static
+ * reference values curated by the FormaOS team to give users an
+ * approximate orientation when they first onboard a framework. They are
+ * not derived from peer telemetry, customer data, or any third-party
+ * benchmarking provider, and they do not update over time.
+ *
+ * Surfaces that render this data MUST label it as "Sample reference
+ * values, not your peers" and disclose the static nature in a tooltip.
+ * The single source of truth for the disclaimer text is
+ * BENCHMARK_DISCLAIMER below — UI code should import it rather than
+ * re-write its own version.
+ *
+ * To replace with real benchmarks: integrate a benchmarking provider
+ * (or compute org-aggregated cohort statistics from anonymized
+ * org_control_evaluations) and rename this file accordingly.
+ */
+
+export const BENCHMARK_DISCLAIMER =
+  'Sample reference values curated by FormaOS, not live peer data.';
+
+export const BENCHMARK_SOURCE: 'sample_reference' = 'sample_reference';
 
 export interface BenchmarkData {
   industry: string;
@@ -8,9 +31,14 @@ export interface BenchmarkData {
   averageTimeToCompliance: number; // months
   averageEvidencePerControl: number;
   commonGaps: string[];
+  // Always BENCHMARK_SOURCE today. Stamped at module load below so call
+  // sites that destructure benchmark rows always see the source even if a
+  // future entry forgets to set it. If a real benchmarking provider is
+  // wired up later, that integration sets a different value here.
+  source?: typeof BENCHMARK_SOURCE;
 }
 
-export const BENCHMARK_DATA: BenchmarkData[] = [
+const RAW_BENCHMARK_DATA: BenchmarkData[] = [
   {
     industry: 'SaaS',
     framework: 'SOC 2',
@@ -87,6 +115,13 @@ export const BENCHMARK_DATA: BenchmarkData[] = [
   },
 ];
 
+// Stamp the source on every row at module load so call sites that
+// destructure benchmark rows (or serialize them) always see the source
+// even if a future entry forgets to set it.
+export const BENCHMARK_DATA: BenchmarkData[] = RAW_BENCHMARK_DATA.map(
+  (entry) => ({ ...entry, source: BENCHMARK_SOURCE }),
+);
+
 /** Get benchmark for a specific industry and framework. */
 export function getBenchmark(
   industry: string,
@@ -95,7 +130,7 @@ export function getBenchmark(
   const normalized = industry.toLowerCase();
   return (
     BENCHMARK_DATA.find(
-      (b) =>
+      (b: BenchmarkData) =>
         b.industry.toLowerCase() === normalized ||
         (framework && b.framework.toLowerCase() === framework.toLowerCase()),
     ) ?? null
@@ -113,11 +148,11 @@ export function getPositionLabel(
   benchmark: BenchmarkData,
 ): string {
   if (orgScore >= benchmark.topQuartileScore) {
-    return `Top 25% of ${benchmark.industry} providers`;
+    return `Top 25% (sample reference) of ${benchmark.industry} providers`;
   }
   if (orgScore >= benchmark.averageScore) {
-    return `Above average for ${benchmark.industry} (avg: ${benchmark.averageScore}%)`;
+    return `Above sample-reference average for ${benchmark.industry} (${benchmark.averageScore}%)`;
   }
   const gap = benchmark.averageScore - orgScore;
-  return `${gap} points behind ${benchmark.industry} average (${benchmark.averageScore}%)`;
+  return `${gap} points behind sample-reference ${benchmark.industry} average (${benchmark.averageScore}%)`;
 }
