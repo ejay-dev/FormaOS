@@ -65,6 +65,18 @@ function buildCacheProvider(prefix: string) {
   const redis = getRedisClient();
 
   if (!redis) {
+    // High-13: in production, an in-process Map is useless across
+    // serverless instances — request-id replay protection is silently
+    // degraded. Fail closed at boot rather than ship a fake replay
+    // store that auditors will catch in pen-tests. In development we
+    // still allow the in-memory fallback so devs without Redis can
+    // exercise the SAML happy path.
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'SAML replay protection requires Redis in production. ' +
+          'Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.',
+      );
+    }
     const mem = new Map<string, { value: string; createdAt: number }>();
     return {
       async saveAsync(key: string, value: string) {
@@ -140,7 +152,13 @@ export function createSamlClient(params: {
     wantAuthnResponseSigned: true,
     signatureAlgorithm: 'sha256',
     digestAlgorithm: 'sha256',
-    validateInResponseTo: ValidateInResponseTo.ifPresent,
+    // High-13: tightened from `ifPresent` to `always`. With `ifPresent`,
+    // an IdP response lacking the InResponseTo attribute would still be
+    // accepted, opening a downgrade vector for SP-initiated flows. The
+    // `always` setting requires the IdP to echo the request id back,
+    // which both confirms the response is in answer to a real request
+    // we sent and lets the replay-cache reject duplicates.
+    validateInResponseTo: ValidateInResponseTo.always,
     requestIdExpirationPeriodMs: 10 * 60 * 1000,
     cacheProvider: buildCacheProvider(`saml:${params.orgId}`),
     ...(privateKey

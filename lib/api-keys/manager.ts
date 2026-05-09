@@ -277,6 +277,39 @@ export async function validateApiKey(
 
   const apiKey = mapApiKey(data);
 
+  // High-14: defense-in-depth role check. The org_members triggers added
+  // in 20260623_003_api_key_owner_check.sql revoke a key when its
+  // creator is demoted or removed, but a runtime check here closes the
+  // window between the role change and the trigger committing (and
+  // protects against any path that mutates org_members outside of
+  // PostgreSQL — direct DB access, dump-restore, etc.). If the key has
+  // no recorded creator (legacy/system keys) the role gate is skipped.
+  if (apiKey.created_by) {
+    const { data: membership } = await admin
+      .from('org_members')
+      .select('role')
+      .eq('organization_id', apiKey.org_id)
+      .eq('user_id', apiKey.created_by)
+      .maybeSingle<{ role: string }>();
+    const stillAdmin =
+      membership?.role === 'owner' || membership?.role === 'admin';
+    if (!stillAdmin) {
+      // Soft-revoke so subsequent calls hit the key_hash filter and
+      // short-circuit before reaching this check.
+      await admin
+        .from('api_keys')
+        .update({ revoked_at: new Date().toISOString() })
+        .eq('id', apiKey.id)
+        .is('revoked_at', null);
+      return {
+        ok: false,
+        apiKey,
+        error: 'API key revoked: creator no longer admin',
+        status: 401,
+      };
+    }
+  }
+
   if (!hasRequiredScopes(apiKey.scopes, requiredScopes)) {
     return { ok: false, apiKey, error: 'Missing required API key scope', status: 403 };
   }
