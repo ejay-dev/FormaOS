@@ -17,6 +17,12 @@ on:
 jobs:
   visual-verification:
     runs-on: ubuntu-latest
+    # Job-level opt-out for the strict env check in
+    # scripts/check-env.js. Both `npm run build` (prebuild) and
+    # `npm start` (prestart) invoke it. Vercel builds still validate
+    # strictly because VERCEL_ENV=production short-circuits this opt-out.
+    env:
+      CHECK_ENV_SKIP_IN_CI: '1'
 
     steps:
       - name: Checkout code
