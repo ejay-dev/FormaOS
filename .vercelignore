@@ -3,9 +3,6 @@
 gitnexus
 .next
 node_modules
-# Path-anchored: only the top-level Capacitor mobile app, not e.g.
-# components/mobile/ which contains the web app's mobile UI primitives.
-/mobile
 test-results
 e2e
 tests
