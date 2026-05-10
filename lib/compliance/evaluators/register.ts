@@ -8,6 +8,9 @@ import { meta as soc2_CC7_1 } from './soc2/CC7.1';
 import { meta as soc2_CC7_2 } from './soc2/CC7.2';
 import { meta as soc2_CC7_3 } from './soc2/CC7.3';
 import { meta as soc2_CC7_4 } from './soc2/CC7.4';
+import { meta as soc2_CC8_1 } from './soc2/CC8.1';
+import { meta as soc2_CC2_1 } from './soc2/CC2.1';
+import { meta as soc2_CC3_1 } from './soc2/CC3.1';
 
 const ALL_EVALUATORS = [
   soc2_CC6_1,
@@ -19,6 +22,9 @@ const ALL_EVALUATORS = [
   soc2_CC7_2,
   soc2_CC7_3,
   soc2_CC7_4,
+  soc2_CC8_1,
+  soc2_CC2_1,
+  soc2_CC3_1,
 ];
 
 let registered = false;
