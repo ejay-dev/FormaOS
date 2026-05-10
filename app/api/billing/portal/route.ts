@@ -44,7 +44,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const BILLING_ROLES = new Set(['owner', 'admin']);
+    // Owner-only by design — see lib/roles.ts. Admin role explicitly excludes
+    // billing:view + billing:manage; the previous {owner, admin} set
+    // contradicted that documented intent.
+    const BILLING_ROLES = new Set(['owner']);
     if (!membership?.role || !BILLING_ROLES.has(membership.role)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
