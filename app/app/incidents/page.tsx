@@ -208,12 +208,16 @@ export default async function IncidentsPage({
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
-              type="text"
+              type="search"
               name="q"
               defaultValue={q}
               placeholder="Search incidents..."
               aria-label="Search incidents"
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background"
+              enterKeyHint="search"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
             />
           </div>
           <select

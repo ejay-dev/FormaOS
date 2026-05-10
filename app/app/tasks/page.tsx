@@ -289,11 +289,16 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
+              type="search"
               name="q"
               defaultValue={queryRaw}
               placeholder="Search controls..."
               aria-label="Search tasks"
               className="w-full pl-9 pr-3 h-9 text-sm rounded-md border border-border bg-background"
+              enterKeyHint="search"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
             />
           </div>
           <select

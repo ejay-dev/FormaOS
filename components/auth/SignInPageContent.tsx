@@ -654,9 +654,15 @@ function SignInContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@company.com"
-                  className="w-full rounded-lg border border-glass-border-strong bg-glass-strong px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-glass-border-strong bg-glass-strong px-4 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                   required
                   disabled={isLoading}
+                  autoComplete="email"
+                  inputMode="email"
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  enterKeyHint="next"
                 />
               </div>
 
@@ -708,9 +714,11 @@ function SignInContent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full rounded-lg border border-glass-border-strong bg-glass-strong px-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                  className="w-full rounded-lg border border-glass-border-strong bg-glass-strong px-4 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                   required={!ssoRequired}
                   disabled={isLoading}
+                  autoComplete="current-password"
+                  enterKeyHint="go"
                 />
               </div>
 

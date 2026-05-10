@@ -72,6 +72,8 @@ export default async function NewParticipantPage() {
                 type="text"
                 name="full_name"
                 required
+                autoComplete="name"
+                enterKeyHint="next"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 placeholder="Enter full name"
               />
@@ -87,6 +89,8 @@ export default async function NewParticipantPage() {
                 id="field-33"
                 type="text"
                 name="preferred_name"
+                autoComplete="nickname"
+                enterKeyHint="next"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 placeholder="Nickname or preferred name"
               />
@@ -105,6 +109,7 @@ export default async function NewParticipantPage() {
                 id="field-32"
                 type="date"
                 name="date_of_birth"
+                autoComplete="bday"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               />
             </div>
@@ -141,6 +146,9 @@ export default async function NewParticipantPage() {
                 id="field-30"
                 type="tel"
                 name="phone"
+                autoComplete="tel"
+                inputMode="tel"
+                enterKeyHint="next"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 placeholder="Phone number"
               />
@@ -156,6 +164,12 @@ export default async function NewParticipantPage() {
                 id="field-29"
                 type="email"
                 name="email"
+                autoComplete="email"
+                inputMode="email"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
+                enterKeyHint="next"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
                 placeholder="Email address"
               />
@@ -173,6 +187,7 @@ export default async function NewParticipantPage() {
               id="field-28"
               name="address"
               rows={2}
+              autoComplete="street-address"
               className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               placeholder="Full address"
             />
@@ -209,6 +224,8 @@ export default async function NewParticipantPage() {
                 id="field-26"
                 type="tel"
                 name="emergency_contact_phone"
+                inputMode="tel"
+                enterKeyHint="next"
                 className="w-full px-3 py-2 rounded-lg border border-input bg-background"
               />
             </div>

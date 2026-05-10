@@ -143,12 +143,17 @@ export default async function SearchPage({
             <div className="flex flex-1 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2">
               <Search className="h-4 w-4 text-muted-foreground" />
               <input
+              type="search"
                 name="q"
                 defaultValue={q}
                 placeholder="Search across your workspace…"
                 aria-label="Search workspace"
                 className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
-              />
+              enterKeyHint="search"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+            />
             </div>
             {type && <input type="hidden" name="type" value={type} />}
             <button
