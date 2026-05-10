@@ -60,7 +60,7 @@ export function OnboardingGuide() {
   return (
     <div
       data-testid="onboarding-guide"
-      className="pointer-events-none fixed right-6 top-24 z-[55] w-[320px]"
+      className="pointer-events-none fixed right-6 top-24 z-[55] w-[320px] hidden md:block"
       role="status"
       aria-live="polite"
     >
