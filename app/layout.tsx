@@ -55,14 +55,25 @@ export const metadata: Metadata = {
       'msvalidate.01': 'CCE491B55A86CC8370EAF532D11BA68C',
     },
   },
+  other: {
+    // Legacy Apple-prefixed name kept alongside Next.js's modern
+    // `mobile-web-app-capable` so iOS < 16.4 still treats Add-to-Home-Screen
+    // launches as standalone.
+    'apple-mobile-web-app-capable': 'yes',
+  },
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
       { url: '/icon.svg', type: 'image/svg+xml' },
     ],
-    apple: '/apple-touch-icon.png',
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
   manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: 'FormaOS',
+    statusBarStyle: 'black-translucent',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_AU',
