@@ -60,6 +60,8 @@ next-env.d.ts
 !/scripts/check-*.mjs
 !/scripts/run-*.mjs
 !/scripts/stylelint-lite.mjs
+!/scripts/verify-*.mjs
+!/scripts/verify-*.js
 .npm-cache/
 .gitnexus
 gitnexus/
