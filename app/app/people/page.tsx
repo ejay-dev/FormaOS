@@ -141,12 +141,17 @@ export default function PeoplePage() {
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
+              type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by member ID, department, or role..."
             aria-label="Search people"
             className="w-full pl-12 pr-4 py-2.5 text-sm font-medium outline-none bg-transparent"
-          />
+              enterKeyHint="search"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+            />
         </div>
 
         <select

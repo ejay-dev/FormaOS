@@ -204,10 +204,12 @@ export default function ResetPasswordPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="12+ chars, upper/lower, number, symbol"
-                    className="w-full rounded-lg border border-edge-3 bg-surface-2 pl-10 pr-10 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                    className="w-full rounded-lg border border-edge-3 bg-surface-2 pl-10 pr-10 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                     required
                     disabled={isLoading}
                     minLength={12}
+                    autoComplete="new-password"
+                    enterKeyHint="next"
                   />
                   <button
                     type="button"
@@ -238,10 +240,12 @@ export default function ResetPasswordPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm your password"
-                    className="w-full rounded-lg border border-edge-3 bg-surface-2 pl-10 pr-4 py-3 text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
+                    className="w-full rounded-lg border border-edge-3 bg-surface-2 pl-10 pr-4 py-3 text-base md:text-sm text-white placeholder-slate-400 focus:border-sky-400/50 focus:outline-none focus:ring-2 focus:ring-sky-400/20 backdrop-blur-sm"
                     required
                     disabled={isLoading}
                     minLength={12}
+                    autoComplete="new-password"
+                    enterKeyHint="go"
                   />
                 </div>
               </div>
