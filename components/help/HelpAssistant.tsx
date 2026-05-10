@@ -144,7 +144,7 @@ export function HelpAssistant() {
           aria-label="Close help assistant"
         />
       ) : null}
-      <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+1rem)] right-4 z-[80]">
+      <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5rem)] right-4 z-[80] md:bottom-[calc(env(safe-area-inset-bottom)+1rem)]">
         <button
           onClick={toggle}
           className="flex h-12 w-12 items-center justify-center rounded-full border border-glass-border bg-gradient-to-br from-cyan-400/90 to-blue-500/90 text-slate-900 shadow-lg shadow-cyan-500/30 transition-transform hover:-translate-y-0.5"

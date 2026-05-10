@@ -12,7 +12,11 @@ const CheckoutSchema = z.object({
   planId: z.enum(['basic', 'pro', 'scale', 'enterprise']),
 });
 
-const BILLING_ROLES = new Set(['owner', 'admin']);
+// Owner-only by design. lib/roles.ts ROLE_CAPABILITIES['admin'] explicitly
+// omits billing:view + billing:manage; the previous {owner, admin} set
+// contradicted that. Admins keep every other capability — org settings, team,
+// audit, compliance — but billing stays with the owner.
+const BILLING_ROLES = new Set(['owner']);
 
 const log = routeLog('/api/billing/checkout');
 
