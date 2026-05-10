@@ -199,9 +199,9 @@ END$$;
 DO $$
 BEGIN
   IF NOT EXISTS (
-    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'org_memberships' AND policyname = 'org_memberships_select'
+    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'org_members' AND policyname = 'org_members_select'
   ) THEN
-    EXECUTE $$CREATE POLICY org_memberships_select ON public.org_memberships FOR SELECT TO authenticated USING (auth.uid() IS NOT NULL);$$;
+    EXECUTE $$CREATE POLICY org_members_select ON public.org_members FOR SELECT TO authenticated USING (auth.uid() IS NOT NULL);$$;
   END IF;
 END$$;
 

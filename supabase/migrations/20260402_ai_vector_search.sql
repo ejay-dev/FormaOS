@@ -33,7 +33,7 @@ ALTER TABLE ai_document_embeddings ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "ai_embeddings_org_isolation" ON ai_document_embeddings
   FOR ALL USING (
-    org_id IN (SELECT org_id FROM organization_members WHERE user_id = auth.uid())
+    org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid())
   );
 
 -- =========================================================
@@ -60,7 +60,7 @@ ALTER TABLE ai_usage_log ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "ai_usage_org_isolation" ON ai_usage_log
   FOR ALL USING (
-    org_id IN (SELECT org_id FROM organization_members WHERE user_id = auth.uid())
+    org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid())
   );
 
 -- =========================================================
@@ -84,7 +84,7 @@ ALTER TABLE ai_index_status ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "ai_index_status_org_isolation" ON ai_index_status
   FOR ALL USING (
-    org_id IN (SELECT org_id FROM organization_members WHERE user_id = auth.uid())
+    org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid())
   );
 
 -- =========================================================

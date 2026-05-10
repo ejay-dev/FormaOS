@@ -24,7 +24,7 @@
 -- Tables losing the permissive policy here:
 --   control_evidence, control_tasks, integration_events, memberships,
 --   org_audit_log, org_certifications, org_entities, org_entity_members,
---   org_files, org_industries, org_memberships, org_registers,
+--   org_files, org_industries, org_members, org_registers,
 --   policies, registers, report_generations, tasks, webhook_deliveries
 --
 -- After this migration, downstream callers that need SELECT on these tables
@@ -60,7 +60,7 @@ DECLARE
     'org_entity_members',
     'org_files',
     'org_industries',
-    'org_memberships',
+    'org_members',
     'org_registers',
     'policies',
     'registers',
@@ -102,7 +102,7 @@ END$$;
 --     AND tablename IN (
 --       'control_evidence','control_tasks','integration_events','memberships',
 --       'org_audit_log','org_certifications','org_entities','org_entity_members',
---       'org_files','org_industries','org_memberships','org_registers',
+--       'org_files','org_industries','org_members','org_registers',
 --       'policies','registers','report_generations','tasks','webhook_deliveries'
 --     )
 --   ORDER BY tablename, policyname;
