@@ -156,7 +156,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="p-2 rounded-lg transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
+      className="inline-flex min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center p-2 rounded-lg transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
       title={`Switch to ${nextMeta.label}`}
       aria-label={`Switch to ${nextMeta.label}`}
     >

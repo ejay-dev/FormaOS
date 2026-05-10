@@ -158,7 +158,7 @@ export default async function FormSubmissionsPage({
         <div className="flex items-center gap-3">
           <Link
             href="/app/forms"
-            className="p-2 rounded-lg hover:bg-accent transition-colors"
+            className="min-h-[44px] md:min-h-0 p-2 rounded-lg hover:bg-accent transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
           </Link>
@@ -174,14 +174,14 @@ export default async function FormSubmissionsPage({
         <div className="flex gap-2">
           <Link
             href={`/api/v1/forms/${formId}/submissions/export?format=csv`}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors text-sm"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors text-sm"
           >
             <Download className="h-4 w-4" />
             Export CSV
           </Link>
           <Link
             href={`/app/forms/${formId}/submissions?view=${activeView === 'analytics' ? 'submissions' : 'analytics'}`}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors text-sm"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors text-sm"
           >
             <BarChart3 className="h-4 w-4" />
             {activeView === 'analytics' ? 'Submissions' : 'Analytics'}
@@ -393,7 +393,7 @@ export default async function FormSubmissionsPage({
               {page > 1 && (
                 <Link
                   href={`/app/forms/${formId}/submissions?page=${page - 1}${statusFilter ? `&status=${statusFilter}` : ''}`}
-                  className="px-3 py-2 rounded-lg border border-border hover:bg-accent text-sm"
+                  className="min-h-[44px] md:min-h-0 px-3 py-2 rounded-lg border border-border hover:bg-accent text-sm"
                 >
                   Previous
                 </Link>
@@ -404,7 +404,7 @@ export default async function FormSubmissionsPage({
               {page < totalPages && (
                 <Link
                   href={`/app/forms/${formId}/submissions?page=${page + 1}${statusFilter ? `&status=${statusFilter}` : ''}`}
-                  className="px-3 py-2 rounded-lg border border-border hover:bg-accent text-sm"
+                  className="min-h-[44px] md:min-h-0 px-3 py-2 rounded-lg border border-border hover:bg-accent text-sm"
                 >
                   Next
                 </Link>

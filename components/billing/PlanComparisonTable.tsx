@@ -289,7 +289,7 @@ export function PlanComparisonTable() {
                   isCustomPrice ? (
                     <a
                       href="/contact?intent=enterprise"
-                      className="w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-glass-strong text-foreground hover:bg-white/15"
+                      className="inline-flex min-h-[44px] w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-glass-strong text-foreground hover:bg-white/15"
                     >
                       <ArrowRight className="h-4 w-4" />
                       Contact sales
@@ -298,7 +298,7 @@ export function PlanComparisonTable() {
                     <button
                       onClick={() => handleUpgrade(planKey)}
                       disabled={isLoading}
-                      className={`w-full rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+                      className={`inline-flex min-h-[44px] w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
                         isRecommended
                           ? 'bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 text-slate-950 motion-safe:hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20'
                           : 'bg-glass-strong text-foreground hover:bg-white/15'

@@ -145,7 +145,7 @@ export default async function FormsPage({
         actions={
           <Link
             href="/app/forms/builder/new"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
             data-testid="create-form-btn"
           >
             <Plus className="h-3.5 w-3.5" />
@@ -177,7 +177,7 @@ export default async function FormsPage({
               <Link
                 key={s}
                 href={`/app/forms${s ? `?status=${s}` : ''}${q ? `${s ? '&' : '?'}q=${q}` : ''}`}
-                className={`h-9 px-3 rounded-md text-xs font-medium transition-colors inline-flex items-center ${
+                className={`h-9 min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 justify-center px-3 rounded-md text-xs font-medium transition-colors inline-flex items-center ${
                   statusFilter === s
                     ? 'bg-accent/50 text-foreground'
                     : 'text-muted-foreground hover:bg-accent/30'
@@ -201,7 +201,7 @@ export default async function FormsPage({
             </p>
             <Link
               href="/app/forms/builder/new"
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+              className="min-h-[44px] md:min-h-0 mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
             >
               <Plus className="h-4 w-4" />
               Create Form
@@ -310,7 +310,7 @@ export default async function FormsPage({
                             {form.status === 'published' && (
                               <Link
                                 href={`/app/forms/${form.id}/submissions`}
-                                className="p-1.5 rounded-lg hover:bg-accent transition-colors"
+                                className="min-h-[44px] md:min-h-0 p-1.5 rounded-lg hover:bg-accent transition-colors"
                                 title="View submissions"
                               >
                                 <Eye className="h-4 w-4" />
@@ -318,7 +318,7 @@ export default async function FormsPage({
                             )}
                             <Link
                               href={`/app/forms/builder/${form.id}`}
-                              className="p-1.5 rounded-lg hover:bg-accent transition-colors"
+                              className="min-h-[44px] md:min-h-0 p-1.5 rounded-lg hover:bg-accent transition-colors"
                               title="Edit form"
                             >
                               <FileText className="h-4 w-4" />

@@ -23,13 +23,13 @@ export default function ParticipantImportPage() {
         <div className="flex flex-wrap gap-3">
           <Link
             href="/app/participants/new"
-            className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             Add participant manually
           </Link>
           <Link
             href="/app/participants"
-            className="inline-flex items-center rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-muted"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center rounded-md border border-border px-4 py-2 text-sm font-medium hover:bg-muted"
           >
             Back to participants
           </Link>

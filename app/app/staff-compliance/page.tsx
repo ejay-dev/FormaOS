@@ -245,14 +245,14 @@ export default async function StaffCompliancePage() {
           <>
             <Link
               href="/api/staff-credentials/export"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50"
+              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50"
             >
               <Download className="h-3.5 w-3.5" />
               Export
             </Link>
             <Link
               href="/app/staff-compliance/new"
-              className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
               data-testid="add-credential-btn"
             >
               <Plus className="h-3.5 w-3.5" />

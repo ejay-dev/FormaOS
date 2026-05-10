@@ -135,21 +135,21 @@ export function DashboardHero({
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/app/vault"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
           >
             <Plus className="h-3.5 w-3.5" />
             Add Evidence
           </Link>
           <Link
             href="/app/tasks"
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:border-primary/50"
           >
             <ClipboardList className="h-3.5 w-3.5" />
             New Task
           </Link>
           <Link
             href="/app/reports"
-            className="inline-flex items-center gap-1.5 rounded-md px-3.5 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md px-3.5 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
           >
             <BarChart3 className="h-3.5 w-3.5" />
             Reports

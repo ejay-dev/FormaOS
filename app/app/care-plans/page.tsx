@@ -199,7 +199,7 @@ export default async function CarePlansPage() {
         <div className="flex items-center gap-2">
           <Link
             href="/app/care-plans/journey"
-            className="inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1.5 text-sm font-semibold text-primary hover:bg-primary/15 transition-colors"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1.5 text-sm font-semibold text-primary hover:bg-primary/15 transition-colors"
             data-testid="care-plans-journey-link"
           >
             <Workflow className="h-3.5 w-3.5" />
@@ -207,7 +207,7 @@ export default async function CarePlansPage() {
           </Link>
           <Link
             href="/app/care-plans/new"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
             data-testid="create-care-plan-btn"
           >
             <Plus className="h-3.5 w-3.5" />

@@ -35,13 +35,13 @@ export default function IncidentsError({
         <div className="mt-6 flex items-center justify-center gap-3">
           <button
             onClick={() => reset()}
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             Try again
           </button>
           <Link
             href="/app"
-            className="inline-flex items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
           >
             Back to app
           </Link>

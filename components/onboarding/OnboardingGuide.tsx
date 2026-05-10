@@ -86,7 +86,7 @@ export function OnboardingGuide() {
           <button
             type="button"
             onClick={dismissForSession}
-            className="rounded-md p-1 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="inline-flex min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center rounded-md p-1 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label="Dismiss guidance for this session"
             data-testid="onboarding-guide-dismiss"
           >
@@ -97,7 +97,7 @@ export function OnboardingGuide() {
           <Link
             href={nextStep.href}
             data-testid="onboarding-guide-cta"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
             onClick={dismissForSession}
           >
             Take me there
@@ -105,7 +105,7 @@ export function OnboardingGuide() {
           <button
             type="button"
             onClick={dismissForSession}
-            className="inline-flex items-center gap-1.5 rounded-md border border-edge-2 bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/40"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md border border-edge-2 bg-surface-1 px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/40"
             data-testid="onboarding-guide-later"
           >
             Remind me later

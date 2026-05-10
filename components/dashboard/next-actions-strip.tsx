@@ -178,7 +178,7 @@ function NextActionsStripInner() {
         </div>
         <Link
           href="/app/tasks"
-          className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
         >
           Browse tasks
           <ArrowRight className="h-3 w-3" />

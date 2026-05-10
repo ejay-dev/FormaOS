@@ -71,7 +71,7 @@ export default async function NewCarePlanPage({
       <div className="flex items-center gap-4">
         <Link
           href="/app/care-plans"
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
+          className="min-h-[44px] md:min-h-0 p-2 rounded-lg hover:bg-muted transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
@@ -225,7 +225,7 @@ export default async function NewCarePlanPage({
         <div className="flex gap-4 justify-end">
           <Link
             href="/app/care-plans"
-            className="px-4 py-2 rounded-lg border border-input hover:bg-muted transition-colors"
+            className="min-h-[44px] md:min-h-0 px-4 py-2 rounded-lg border border-input hover:bg-muted transition-colors"
           >
             Cancel
           </Link>

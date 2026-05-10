@@ -285,7 +285,7 @@ export default async function IncidentDetailPage({
             href={`/app/capa/new?source_type=incident&source_id=${incident.id}&title=${encodeURIComponent(
               `CAPA for ${incident.incident_type || 'incident'}`,
             )}`}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" />
             Create CAPA
@@ -338,7 +338,7 @@ export default async function IncidentDetailPage({
             </div>
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400 transition-colors"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400 transition-colors"
               data-testid="resolve-incident-submit"
             >
               <CheckCircle2 className="h-4 w-4" />

@@ -211,13 +211,13 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
                 setLoading(true);
                 void loadForm();
               }}
-              className="rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-white hover:bg-rose-400"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-white hover:bg-rose-400"
             >
               Retry
             </button>
             <button
               onClick={() => router.push('/app')}
-              className="rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
             >
               Back to dashboard
             </button>
@@ -242,12 +242,12 @@ export default function FormBuilderClient({ formId }: FormBuilderClientProps) {
           <button
             onClick={saveForm}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="flex min-h-[44px] md:min-h-0 items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
             {saving ? 'Saving...' : 'Save'}
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors">
+          <button className="flex min-h-[44px] md:min-h-0 items-center gap-2 px-4 py-2 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800 transition-colors">
             <Eye className="h-4 w-4" />
             Preview
           </button>

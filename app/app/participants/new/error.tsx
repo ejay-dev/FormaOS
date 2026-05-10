@@ -27,7 +27,7 @@ export default function ErrorPage({
         )}
         <button
           onClick={() => reset()}
-          className="mt-4 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          className="mt-4 inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
         >
           Try again
         </button>

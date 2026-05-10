@@ -35,7 +35,7 @@ export function OnboardingStrip() {
         <Link
           href={nextStep.href}
           data-testid="onboarding-strip-cta"
-          className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="ml-auto inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           Continue
           <ArrowRight className="h-3.5 w-3.5" />

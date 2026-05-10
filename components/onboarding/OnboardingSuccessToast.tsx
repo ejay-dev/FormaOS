@@ -116,7 +116,7 @@ export function OnboardingSuccessToast() {
         <button
           type="button"
           onClick={() => dismiss(visibleStepId)}
-          className="rounded-md p-1 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="inline-flex min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center rounded-md p-1 text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label="Dismiss onboarding success message"
           data-testid="onboarding-success-toast-dismiss"
         >

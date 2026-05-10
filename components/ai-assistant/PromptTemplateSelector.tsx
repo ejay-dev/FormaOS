@@ -35,7 +35,7 @@ export function PromptTemplateSelector({ selectedId, onSelect }: PromptTemplateS
               key={template.id}
               onClick={() => onSelect(isActive ? null : template.id)}
               title={template.description}
-              className={`flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`flex shrink-0 min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
                 isActive
                   ? 'border-cyan-400/40 bg-cyan-400/15 text-cyan-300'
                   : 'border-glass-border bg-glass-subtle text-muted-foreground hover:bg-glass-strong hover:text-foreground/70'
