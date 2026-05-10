@@ -337,13 +337,13 @@ export default async function InvestigationPage({
             <div className="flex items-center justify-end gap-2 pt-2">
               <Link
                 href={`/app/incidents/${incidentId}`}
-                className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted"
+                className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-md border border-border px-3 py-2 text-sm hover:bg-muted"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
               >
                 Start investigation
               </button>

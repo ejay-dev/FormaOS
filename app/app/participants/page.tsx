@@ -169,7 +169,7 @@ export default async function ParticipantsPage({
         actions={
           <Link
             href="/app/participants/new"
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-xs font-semibold text-[hsl(var(--primary-foreground))] transition-opacity hover:opacity-90"
             data-testid="add-participant-btn"
           >
             <Plus className="h-3.5 w-3.5" />
@@ -215,7 +215,7 @@ export default async function ParticipantsPage({
           </select>
           <button
             type="submit"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-accent transition-colors"
           >
             <Filter className="h-4 w-4" />
             Apply
@@ -223,7 +223,7 @@ export default async function ParticipantsPage({
           {hasFilters ? (
             <Link
               href="/app/participants"
-              className="inline-flex items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center px-4 py-2 rounded-lg border border-transparent text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Clear
             </Link>

@@ -50,7 +50,7 @@ export default async function ParticipantMedicationsPage({
       <div className="flex items-center gap-3">
         <Link
           href={`/app/participants/${participantId}`}
-          className="rounded-md p-1.5 hover:bg-muted"
+          className="min-h-[44px] md:min-h-0 rounded-md p-1.5 hover:bg-muted"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
@@ -60,7 +60,7 @@ export default async function ParticipantMedicationsPage({
             {participant.first_name} {participant.last_name}
           </p>
         </div>
-        <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+        <button className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
           <Plus className="h-4 w-4" /> Add Medication
         </button>
       </div>

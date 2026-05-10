@@ -224,7 +224,7 @@ export function AiAssistantPanel() {
             <button
               onClick={() => setShowSidebar(!showSidebar)}
               aria-label={showSidebar ? 'Hide assistant conversations' : 'Show assistant conversations'}
-              className="hidden rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors md:inline-flex"
+              className="hidden min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors md:inline-flex"
             >
               {showSidebar ? (
                 <PanelLeftClose className="h-4 w-4" />
@@ -240,7 +240,7 @@ export function AiAssistantPanel() {
           <button
             onClick={close}
             aria-label="Close assistant panel"
-            className="rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors"
+            className="inline-flex min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0 items-center justify-center rounded-lg p-1.5 text-muted-foreground hover:bg-glass-strong hover:text-foreground/90 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>

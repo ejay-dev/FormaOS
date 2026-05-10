@@ -168,14 +168,14 @@ export default async function ParticipantDetailPage({
         <div className="flex gap-2">
           <Link
             href="/app/visits/new"
-            className="inline-flex items-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-sm hover:bg-accent transition-colors"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-sm hover:bg-accent transition-colors"
           >
             <CalendarClock className="h-4 w-4" />
             Schedule Visit
           </Link>
           <Link
             href="/app/incidents/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             <AlertTriangle className="h-4 w-4" />
             Report Incident
@@ -309,7 +309,7 @@ export default async function ParticipantDetailPage({
                   <Link
                     key={visit.id}
                     href={`/app/visits/${visit.id}`}
-                    className="block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
+                    className="min-h-[44px] md:min-h-0 block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <span className="capitalize">
@@ -352,7 +352,7 @@ export default async function ParticipantDetailPage({
                   <Link
                     key={incident.id}
                     href={`/app/incidents/${incident.id}`}
-                    className="block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
+                    className="min-h-[44px] md:min-h-0 block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <span className="capitalize">
@@ -410,7 +410,7 @@ export default async function ParticipantDetailPage({
                   <Link
                     key={plan.id}
                     href={`/app/care-plans/${plan.id}`}
-                    className="block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
+                    className="min-h-[44px] md:min-h-0 block rounded-lg border border-border px-3 py-2 text-sm hover:bg-accent transition-colors"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <span className="font-medium">

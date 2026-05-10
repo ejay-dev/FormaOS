@@ -213,7 +213,7 @@ export default async function CarePlanDetailPage({
       <div className="flex items-center gap-3">
         <Link
           href="/app/care-plans"
-          className="rounded-md p-1.5 hover:bg-muted"
+          className="min-h-[44px] md:min-h-0 rounded-md p-1.5 hover:bg-muted"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
@@ -415,7 +415,7 @@ export default async function CarePlanDetailPage({
                         </select>
                         <button
                           type="submit"
-                          className="rounded-md border border-border px-2 py-1 text-xs hover:bg-muted"
+                          className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-md border border-border px-2 py-1 text-xs hover:bg-muted"
                         >
                           Update
                         </button>
@@ -428,7 +428,7 @@ export default async function CarePlanDetailPage({
                         />
                         <button
                           type="submit"
-                          className="inline-flex items-center gap-1 rounded-md border border-red-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
+                          className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md border border-red-200 px-2 py-1 text-xs text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
                           aria-label={`Delete goal ${goal.title}`}
                         >
                           <Trash2 className="h-3 w-3" /> Delete
@@ -480,7 +480,7 @@ export default async function CarePlanDetailPage({
                         </label>
                         <button
                           type="submit"
-                          className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                          className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                           data-testid="save-goal-edit"
                         >
                           Save changes
@@ -548,7 +548,7 @@ export default async function CarePlanDetailPage({
                                 </select>
                                 <button
                                   type="submit"
-                                  className="rounded-md border border-border px-2 py-0.5 text-xs hover:bg-muted"
+                                  className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-md border border-border px-2 py-0.5 text-xs hover:bg-muted"
                                 >
                                   Update
                                 </button>
@@ -561,7 +561,7 @@ export default async function CarePlanDetailPage({
                                 />
                                 <button
                                   type="submit"
-                                  className="inline-flex items-center gap-1 rounded-md border border-red-200 px-2 py-0.5 text-xs text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
+                                  className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md border border-red-200 px-2 py-0.5 text-xs text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
                                 >
                                   <Trash2 className="h-3 w-3" /> Remove
                                 </button>
@@ -602,7 +602,7 @@ export default async function CarePlanDetailPage({
                         </div>
                         <button
                           type="submit"
-                          className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                          className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                         >
                           <PlusCircle className="h-3 w-3" /> Add support
                         </button>
@@ -647,7 +647,7 @@ export default async function CarePlanDetailPage({
                 />
                 <button
                   type="submit"
-                  className="ml-auto inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                  className="ml-auto inline-flex min-h-[44px] md:min-h-0 items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                   data-testid="submit-goal"
                 >
                   <PlusCircle className="h-3.5 w-3.5" /> Add goal

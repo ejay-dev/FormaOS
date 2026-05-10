@@ -84,7 +84,7 @@ async function CarePlansJourney({ orgId }: { orgId: string }) {
           </p>
           <Link
             href="/app/care-plans/new"
-            className="mt-3 inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
+            className="min-h-[44px] md:min-h-0 mt-3 inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
           >
             <Plus className="h-3 w-3" />
             New Plan
@@ -195,14 +195,14 @@ async function CarePlansJourney({ orgId }: { orgId: string }) {
         <div className="ml-auto flex items-center gap-1.5">
           <Link
             href="/app/care-plans"
-            className="inline-flex items-center gap-1 rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1 rounded-md border border-glass-border bg-glass-subtle px-2 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-glass-strong hover:text-foreground"
           >
             <LayoutList className="h-3 w-3" />
             List
           </Link>
           <Link
             href="/app/care-plans/new"
-            className="inline-flex items-center gap-1 rounded-md bg-primary px-2 py-1 text-[11px] font-semibold text-primary-foreground hover:opacity-90"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1 rounded-md bg-primary px-2 py-1 text-[11px] font-semibold text-primary-foreground hover:opacity-90"
           >
             <Plus className="h-3 w-3" />
             New

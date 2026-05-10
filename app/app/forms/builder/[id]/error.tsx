@@ -24,13 +24,13 @@ export default function FormBuilderError({
         <div className="mt-4 flex gap-3">
           <button
             onClick={() => reset()}
-            className="rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-white hover:bg-rose-400"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-white hover:bg-rose-400"
           >
             Retry
           </button>
           <Link
             href="/app"
-            className="rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-rose-300/30 px-4 py-2 text-sm font-medium text-rose-100 hover:bg-glass-strong"
           >
             Back to dashboard
           </Link>

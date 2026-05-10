@@ -142,7 +142,7 @@ function MyActionsWidgetInner() {
         </p>
         <Link
           href="/app/tasks"
-          className="rounded-lg border border-glass-border bg-glass-subtle px-4 py-2 text-xs font-medium text-foreground hover:bg-glass-strong transition-colors"
+          className="inline-flex min-h-[44px] md:min-h-0 items-center justify-center rounded-lg border border-glass-border bg-glass-subtle px-4 py-2 text-xs font-medium text-foreground hover:bg-glass-strong transition-colors"
         >
           View All Tasks
         </Link>
@@ -202,7 +202,7 @@ export function MyActionsWidget() {
           </div>
           <Link
             href="/app/tasks"
-            className="text-xs text-muted-foreground hover:text-foreground"
+            className="inline-flex min-h-[44px] md:min-h-0 items-center px-2 text-xs text-muted-foreground hover:text-foreground"
           >
             View all
           </Link>

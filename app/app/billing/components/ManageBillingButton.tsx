@@ -25,7 +25,7 @@ export function ManageBillingButton() {
       <button
         onClick={handleManageBilling}
         disabled={isPending}
-        className="relative overflow-hidden rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-foreground transition-all hover:bg-surface-1 disabled:opacity-50 disabled:cursor-not-allowed group"
+        className="relative overflow-hidden inline-flex min-h-[44px] items-center justify-center rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-foreground transition-all hover:bg-surface-1 disabled:opacity-50 disabled:cursor-not-allowed group"
       >
         {/* Loading overlay */}
         {isPending && (
