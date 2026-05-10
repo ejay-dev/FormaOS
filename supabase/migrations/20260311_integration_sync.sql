@@ -20,7 +20,7 @@ CREATE POLICY "org_members_manage_integrations"
   FOR ALL
   USING (
     organization_id IN (
-      SELECT organization_id FROM organization_members
+      SELECT organization_id FROM org_members
       WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
     )
   );
@@ -46,7 +46,7 @@ CREATE POLICY "org_members_view_sync_log"
   FOR SELECT
   USING (
     organization_id IN (
-      SELECT organization_id FROM organization_members
+      SELECT organization_id FROM org_members
       WHERE user_id = auth.uid()
     )
   );
@@ -56,7 +56,7 @@ CREATE POLICY "org_admins_manage_sync_log"
   FOR ALL
   USING (
     organization_id IN (
-      SELECT organization_id FROM organization_members
+      SELECT organization_id FROM org_members
       WHERE user_id = auth.uid() AND role IN ('owner', 'admin')
     )
   );

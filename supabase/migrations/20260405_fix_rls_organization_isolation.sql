@@ -145,14 +145,14 @@ $$;
 -- =====================================================
 DO $$
 BEGIN
-  DROP POLICY IF EXISTS "org_memberships_select" ON public.org_memberships;
+  DROP POLICY IF EXISTS "org_members_select" ON public.org_members;
 
   IF EXISTS (
     SELECT 1 FROM information_schema.tables
-    WHERE table_schema = 'public' AND table_name = 'org_memberships'
+    WHERE table_schema = 'public' AND table_name = 'org_members'
   ) THEN
-    CREATE POLICY "org_memberships_org_isolation"
-      ON public.org_memberships
+    CREATE POLICY "org_members_org_isolation"
+      ON public.org_members
       FOR ALL
       USING (
         organization_id IN (

@@ -130,7 +130,7 @@ CREATE INDEX IF NOT EXISTS idx_medications_participant ON org_medications(partic
 CREATE INDEX IF NOT EXISTS idx_med_admin_time ON org_medication_administrations(medication_id, administered_at);
 CREATE INDEX IF NOT EXISTS idx_ndis_line_items_org ON org_ndis_line_items(org_id, status);
 CREATE INDEX IF NOT EXISTS idx_ndis_line_items_participant ON org_ndis_line_items(participant_id);
-CREATE INDEX IF NOT EXISTS idx_visits_worker_date ON org_visits(assigned_to, scheduled_date);
+CREATE INDEX IF NOT EXISTS idx_visits_worker_date ON org_visits(staff_id, scheduled_start);
 
 -- RLS
 ALTER TABLE org_care_goals ENABLE ROW LEVEL SECURITY;

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS org_investigations (
   organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
   incident_id UUID NOT NULL REFERENCES org_incidents(id) ON DELETE CASCADE,
   status TEXT NOT NULL DEFAULT 'assigned' CHECK (status IN ('assigned','in_progress','findings_ready','review','closed')),
-  lead_investigator_id UUID REFERENCES profiles(id),
+  lead_investigator_id UUID REFERENCES auth.users(id),
   team_member_ids JSONB DEFAULT '[]',
   assigned_at TIMESTAMPTZ DEFAULT now(),
   due_date DATE,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS org_investigations (
   evidence_ids JSONB DEFAULT '[]',
   interviews JSONB DEFAULT '[]',
   recommendations TEXT,
-  reviewed_by UUID REFERENCES profiles(id),
+  reviewed_by UUID REFERENCES auth.users(id),
   reviewed_at TIMESTAMPTZ,
   closed_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -31,7 +31,7 @@ CREATE INDEX idx_investigations_status ON org_investigations(status);
 
 ALTER TABLE org_investigations ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "org_investigations_org_isolation" ON org_investigations
-  USING (organization_id IN (SELECT organization_id FROM org_memberships WHERE user_id = auth.uid()));
+  USING (organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()));
 
 -- CAPA (Corrective and Preventive Action) items
 CREATE TABLE IF NOT EXISTS org_capa_items (
@@ -42,16 +42,16 @@ CREATE TABLE IF NOT EXISTS org_capa_items (
   type TEXT NOT NULL CHECK (type IN ('corrective','preventive')),
   title TEXT NOT NULL,
   description TEXT,
-  assigned_to UUID REFERENCES profiles(id),
+  assigned_to UUID REFERENCES auth.users(id),
   due_date DATE,
   status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open','in_progress','implemented','verified','closed')),
   verification_method TEXT,
-  verified_by UUID REFERENCES profiles(id),
+  verified_by UUID REFERENCES auth.users(id),
   verified_at TIMESTAMPTZ,
   effectiveness_check_date DATE,
   effectiveness_status TEXT DEFAULT 'pending' CHECK (effectiveness_status IN ('pending','effective','ineffective','needs_revision')),
   priority TEXT NOT NULL DEFAULT 'medium' CHECK (priority IN ('critical','high','medium','low')),
-  created_by UUID REFERENCES profiles(id),
+  created_by UUID REFERENCES auth.users(id),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -63,7 +63,7 @@ CREATE INDEX idx_capa_assigned ON org_capa_items(assigned_to);
 
 ALTER TABLE org_capa_items ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "org_capa_items_org_isolation" ON org_capa_items
-  USING (organization_id IN (SELECT organization_id FROM org_memberships WHERE user_id = auth.uid()));
+  USING (organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()));
 
 -- Regulatory notifications (NDIS SIRS, etc.)
 CREATE TABLE IF NOT EXISTS org_regulatory_notifications (
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS org_regulatory_notifications (
   notification_type TEXT NOT NULL CHECK (notification_type IN ('immediate','5_day','final')),
   due_date DATE NOT NULL,
   submitted_at TIMESTAMPTZ,
-  submitted_by UUID REFERENCES profiles(id),
+  submitted_by UUID REFERENCES auth.users(id),
   reference_number TEXT,
   status TEXT NOT NULL DEFAULT 'required' CHECK (status IN ('required','draft','submitted','acknowledged','overdue')),
   body_name TEXT,
@@ -88,4 +88,4 @@ CREATE INDEX idx_reg_notifications_status ON org_regulatory_notifications(status
 
 ALTER TABLE org_regulatory_notifications ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "org_regulatory_notifications_org_isolation" ON org_regulatory_notifications
-  USING (organization_id IN (SELECT organization_id FROM org_memberships WHERE user_id = auth.uid()));
+  USING (organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()));
