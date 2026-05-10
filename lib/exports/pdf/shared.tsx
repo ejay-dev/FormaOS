@@ -1,5 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
+import { registerPdfFonts } from './fonts';
+
+registerPdfFonts();
 
 export const palette = {
   ink: '#0F172A',
@@ -15,7 +18,8 @@ export const palette = {
 
 export const styles = StyleSheet.create({
   page: {
-    fontFamily: 'Helvetica',
+    fontFamily: 'Inter',
+    fontWeight: 400,
     fontSize: 10,
     color: palette.ink,
     paddingTop: 64,
@@ -52,18 +56,21 @@ export const styles = StyleSheet.create({
     color: palette.subtle,
   },
   h1: {
-    fontFamily: 'Helvetica-Bold',
+    fontFamily: 'Sora',
+    fontWeight: 700,
     fontSize: 22,
     marginBottom: 8,
   },
   h2: {
-    fontFamily: 'Helvetica-Bold',
+    fontFamily: 'Sora',
+    fontWeight: 700,
     fontSize: 14,
     marginTop: 18,
     marginBottom: 6,
   },
   h3: {
-    fontFamily: 'Helvetica-Bold',
+    fontFamily: 'Sora',
+    fontWeight: 700,
     fontSize: 11,
     marginTop: 12,
     marginBottom: 4,
@@ -107,11 +114,13 @@ export const styles = StyleSheet.create({
   tableHeaderCell: {
     paddingHorizontal: 4,
     fontSize: 9,
-    fontFamily: 'Helvetica-Bold',
+    fontFamily: 'Inter',
+    fontWeight: 600,
   },
   badge: {
     fontSize: 8,
-    fontFamily: 'Helvetica-Bold',
+    fontFamily: 'Inter',
+    fontWeight: 600,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 3,
