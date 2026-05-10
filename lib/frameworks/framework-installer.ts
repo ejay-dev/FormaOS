@@ -1,5 +1,6 @@
 import path from 'path';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { applyLegacyControlMapping } from '@/lib/compliance/legacy-control-mapping';
 import { loadFrameworkPack } from './loadFrameworkPack';
 import {
   detectComplianceControlsSchema,
@@ -11,6 +12,8 @@ const PACK_REGISTRY = [
   { slug: 'cis-controls', file: 'cis-controls.json', code: 'CIS_CONTROLS' },
   { slug: 'soc2', file: 'soc2.json', code: 'SOC2' },
   { slug: 'iso27001', file: 'iso27001.json', code: 'ISO27001' },
+  { slug: 'soc2-tsc', file: 'soc2-tsc.json', code: 'SOC2_TSC' },
+  { slug: 'iso27001-2022', file: 'iso27001-2022.json', code: 'ISO27001_2022' },
   { slug: 'gdpr', file: 'gdpr.json', code: 'GDPR' },
   { slug: 'hipaa', file: 'hipaa.json', code: 'HIPAA' },
   { slug: 'pci-dss', file: 'pci-dss.json', code: 'PCIDSS' },
@@ -145,6 +148,13 @@ export async function ensureFrameworkPacksInstalled() {
         const filePath = path.join(process.cwd(), 'framework-packs', pack.file);
         await loadFrameworkPack({ path: filePath }, { adminClient: admin });
         await syncComplianceFramework(pack.slug, admin);
+      }
+
+      const result = await applyLegacyControlMapping(admin);
+      if (!result.ok) {
+        for (const err of result.errors) {
+          console.warn('[framework-installer] legacy mapping:', err);
+        }
       }
     } catch (error) {
       console.error('[framework-installer] Failed to install packs:', error);
