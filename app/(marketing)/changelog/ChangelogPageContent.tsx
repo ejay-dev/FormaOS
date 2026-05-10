@@ -143,6 +143,216 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v4.2.0',
+    codename: 'Compliance Foundations',
+    date: '2026-05-10',
+    summary:
+      'Per-control evaluator infrastructure for SOC 2 and ISO 27001 — typed registry, expanded framework packs to standard control counts, twelve working SOC 2 evaluators, real PDF report engine with brand typography, and a production-database bootstrap that finally landed eleven outstanding April migrations.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Per-control evaluator registry and contract shipped',
+        tag: 'feature',
+        detail:
+          'lib/compliance/evaluators/index.ts plus the ControlEvaluator interface. Each evaluator is a pure function (orgId, db) => ControlResult with status (pass | fail | partial | not_evaluated), confidence derived from data completeness rather than hardcoded, evidenceRefs the auditor can verify, and gaps describing what is missing. Returns not_evaluated when primary data sources are absent instead of guessing — an honest pass is worth more than an unjustified one.',
+      },
+      {
+        text: 'Framework packs expanded to standard control counts',
+        tag: 'feature',
+        detail:
+          'framework-packs/soc2-tsc.json now lists all 64 SOC 2 Trust Services Criteria (was 11). framework-packs/iso27001-2022.json covers all 93 Annex A controls in the 2022 edition (was 10). Controls without an evaluator surface as "Not Assessed" in the dashboard rather than silently passing — auditors see the real denominator.',
+      },
+      {
+        text: 'Twelve SOC 2 evaluators implemented across three batches',
+        tag: 'feature',
+        detail:
+          'Batch A (access controls): CC6.1, CC6.2, CC6.3, CC6.6, CC6.7. Batch B (logging and monitoring): CC7.1, CC7.2, CC7.3, CC7.4. Batch C (change management + supporting): CC8.1, CC2.1, CC3.1. 64 evaluator unit tests cover pass / fail / partial / not_evaluated for each control. Two evaluators carry low-confidence string-heuristic fallbacks (CC6.3 audit metadata, CC7.4 actor attribution) — flagged in code comments and tracked in issue #45 alongside the four other schema gaps surfaced during this work.',
+      },
+      {
+        text: 'Legacy control IDs migrated to standard references',
+        tag: 'improvement',
+        detail:
+          'Eleven legacy SOC 2 IDs and ten legacy ISO IDs now map to standard control identifiers (e.g. SOC2-S2 → CC6.7). One ISO control (A.6.1 risk management) marked deprecated since it lives in ISO 27001 Clause 6 rather than Annex A 2022 and has no clean target. Idempotent TypeScript migration triggered from ensureFrameworkPacksInstalled, plus a SQL is_deprecated column on org_controls. 1:1 maps keep the original FK valid; 1:N splits leave evidence on the legacy row until users re-onboard the children.',
+      },
+      {
+        text: 'Real PDF export engine for board pack, posture, and audit extracts',
+        tag: 'feature',
+        detail:
+          '@react-pdf/renderer with three templates under lib/exports/pdf/templates/. Auth-gated route at app/api/exports/pdf/route.ts. Coexists with the existing jsPDF callers — no migration required, both work. lib/exports/formatters.ts no longer carries the "binary formats are deliberately not implemented" caveat that was blocking the board-pack PDF claim.',
+      },
+      {
+        text: 'Inter and Sora fonts embedded in generated PDFs',
+        tag: 'improvement',
+        detail:
+          'Brand typography now matches on-screen. Loaded once at module load via jsdelivr-hosted Google Fonts: Inter at 400 / 500 / 600 / 700 and Sora at 600 / 700 / 800. PDF size grows from roughly 4 KB to 17 KB with embedded font subsets — an acceptable trade for visual continuity between the app and the documents auditors see.',
+      },
+      {
+        text: 'Eleven outstanding migrations bootstrapped into production',
+        tag: 'security',
+        detail:
+          'The 20260402_* batch (auditor portal, care goals, NDIS line items, analytics snapshots, AI vector search, forms platform, investigations and CAPA, org groups, push tokens, search index, secure public views) had never been applied to the production Supabase project — tables existed only in the repo. Runtime degraded gracefully via lib/supabase/schema-compat.ts, which is why nobody noticed. After bootstrap: 179 public tables, 310 RLS policies across 148 tables, 590 indexes, pgvector and pg_trgm extensions enabled, and zero org_*/user_* tables without RLS.',
+      },
+      {
+        text: 'Five typo classes repaired in source migrations',
+        tag: 'fix',
+        detail:
+          'organization_members and org_memberships (both non-existent tables; canonical is org_members), SELECT org_id FROM org_members (wrong column; canonical is organization_id), org_visits(assigned_to, scheduled_date) (wrong columns; the actual ones are staff_id and scheduled_start per 20260208_care_operations_modules.sql), and REFERENCES profiles(id) (conditional table; safer reference is auth.users(id)). Nine migration files patched. Fresh-DB bootstraps will no longer fail on these — verified by replaying the bundle against a clean Postgres 17.6 instance.',
+      },
+    ],
+  },
+  {
+    version: 'v4.1.0',
+    codename: 'Mobile Surface',
+    date: '2026-05-10',
+    summary:
+      'Track 1 of the two-track mobile plan: the existing /app routes polished for phone and tablet browsers. Eighteen routes audited at iPhone 14, iPhone SE, iPad portrait, and iPad Pro. Track 2 (a separate native app for frontline employees) is scoped in mobile/SCOPE_DECISION.md but intentionally not started.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'PWA installable from iOS Add-to-Home-Screen',
+        tag: 'feature',
+        detail:
+          'app/manifest.ts corrected with maskable icons, apple-touch-icon assets generated, and the apple-mobile-web-app-capable meta tag set. Add-to-Home-Screen now launches FormaOS standalone with the right splash and theme color rather than dropping into Safari chrome. Lighthouse PWA installability checks all pass.',
+      },
+      {
+        text: '44 px touch-target compliance across the high-traffic routes',
+        tag: 'improvement',
+        detail:
+          'Buttons, links, checkboxes, and radio inputs audited at iPhone 14 viewport across /app, /app/incidents, /app/care-plans, /app/participants, /app/staff-compliance, /app/forms, and /app/billing. Compliance asserted by e2e/mobile/touch-targets.spec.ts using getBoundingClientRect — every visible interactive control meets the WCAG 2.5.5 AAA size criterion on the audited surfaces.',
+      },
+      {
+        text: 'Native keyboard ergonomics on every form',
+        tag: 'improvement',
+        detail:
+          'Sign-in, sign-up, forgot-password, reset-password, the new-participant form, and the nine in-app search bars now declare inputMode, autoComplete, and enterKeyHint correctly. Numeric inputs request the digit keypad on iOS; phone fields request tel; emails request the email keyboard. Form input font-size lifted to 16 px on mobile to stop iOS auto-zoom on focus.',
+      },
+      {
+        text: 'Eighteen admin routes audited at <=640 px',
+        tag: 'improvement',
+        detail:
+          'Care ops: /app/incidents, /app/care-plans, /app/participants, /app/visits, /app/progress-notes. Compliance ops: /app/compliance, /app/policies, /app/staff-compliance, /app/registers, /app/audit-trail. Admin: /app/team, /app/billing, /app/settings and five settings sub-routes. Zero horizontal-scroll offenders at iPhone 14 (390 x 844) or iPhone SE (320 x 568). Visual baselines committed to e2e/screenshots/mobile/ for future regression review.',
+      },
+      {
+        text: 'Tablet-aware executive dashboard widgets',
+        tag: 'improvement',
+        detail:
+          '/app/executive 4-column widget grids collapse to 2 columns at 1024 px to stop the "CRITICA…" truncation that was happening on iPad portrait. No widget renders narrower than 280 px or wider than the viewport.',
+      },
+      {
+        text: 'Pricing page definition-list accessibility fix',
+        tag: 'fix',
+        detail:
+          'axe rule "definition-list" was failing on app/(marketing)/pricing/components/PricingHero.tsx. The dl element had a p sibling next to dt and dd inside the wrapper div, which axe correctly flags as a serious violation. Folded the sub-text into a nested span inside the dd so the markup validates without losing the visual treatment.',
+      },
+      {
+        text: 'Capacitor webview shim removed',
+        tag: 'improvement',
+        detail:
+          'The mobile/ directory contained a Capacitor project pointed at https://app.formaos.com.au — a webview-only app that App Store guideline 4.2 routinely rejects. mobile/SCOPE_DECISION.md records the two-track decision: Track 1 is responsive web in app/ (this release); Track 2 will be a narrowly-scoped native employee app, built fresh, when there is concrete customer demand.',
+      },
+    ],
+  },
+  {
+    version: 'v4.0.0',
+    codename: 'Foundation Audit',
+    date: '2026-05-09',
+    summary:
+      'Wide-spectrum audit pass across authentication, authorisation, billing, observability, compliance honesty, and CI discipline. Closed seven blockers and thirteen high-severity findings identified during a from-scratch code-and-runtime review. Real row-level security replaces never-evaluated placeholder policies on fourteen multi-tenant tables; MFA is enforced at login rather than enrolled-then-ignored; trust packets are signed; CI gates actually block merges.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'MFA challenge enforced at every login',
+        tag: 'security',
+        detail:
+          'lib/security/mfa-enforcement.ts had zero call sites despite a complete enrollment flow shipping months earlier — verify2FAToken was never consulted on the password sign-in path. The login flow at components/auth/SignInPageContent.tsx and the OAuth callback at app/auth/callback/route.ts now redirect to /auth/mfa-challenge whenever the account has TOTP enabled. New per-session gate keyed on the Supabase access-token session_id claim, with rate-limited verification at /api/auth/mfa-verify and audit events on every success and failure.',
+      },
+      {
+        text: 'Real row-level security on fourteen multi-tenant tables',
+        tag: 'security',
+        detail:
+          'Fourteen RLS policies across org_care_goals, org_medications, org_medication_administrations, org_ndis_line_items, auditor_access_tokens, auditor_activity_log, search_index, search_history, saved_searches, recent_items, org_analytics_snapshots, org_saved_reports, org_report_generations, and org_goal_progress_entries depended on current_setting(\'app.current_org_id\') — a GUC that is never set anywhere in the runtime. The predicates always evaluated to NULL, which RLS treats as "deny", so service-role calls (which bypass RLS) saw everything and authenticated calls saw nothing — no real isolation existed. Replaced with the canonical org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()) pattern and 56 symmetrical select / insert / update / delete policies. Tenant isolation now has a real defense beyond the application-layer .eq filter.',
+      },
+      {
+        text: 'Edge auth verifies the JWT, not just cookie presence',
+        tag: 'security',
+        detail:
+          'proxy.ts:354-358 accepted any cookie matching sb-*-auth-token without verifying its contents — a forged cookie passed the gate and routes that did not themselves call getUser() became exposed. Replaced the cookie-name pattern with createServerClient + auth.getUser() at the edge, with bearer-token requests skipping the session check (route handlers validate the bearer themselves via authenticateV1Request or authenticateScimRequest).',
+      },
+      {
+        text: 'CSRF protection default-on at middleware',
+        tag: 'security',
+        detail:
+          'validateCsrfOrigin was opt-in and roughly thirty mutating routes did not call it, including /api/auth/bootstrap, /api/auth/signup, /api/comments, /api/organizations/switch, and /api/queue/process. Added enforcement in proxy.ts for every state-changing /api/* request, with an explicit allowlist for routes that authenticate by something other than session cookies (Stripe webhook, webhook deliveries, cron secret, internal trigger callbacks, RFC 8058 unsubscribe, SAML ACS, SCIM bearer).',
+      },
+      {
+        text: 'SAML hardened with strict InResponseTo and the missing SLO route',
+        tag: 'security',
+        detail:
+          'validateInResponseTo upgraded from ifPresent to always — the previous setting accepted IdP responses without an InResponseTo attribute, opening a downgrade vector for SP-initiated flows. Replay-protection cache now requires Redis in production and throws at boot if UPSTASH_REDIS_REST_URL is missing — the in-process Map fallback was useless across serverless instances. Added the missing /api/sso/saml/logout/[orgId] SLO callback that the metadata had been advertising with no handler.',
+      },
+      {
+        text: 'API keys auto-revoke when their creator loses admin rights',
+        tag: 'security',
+        detail:
+          'Two Postgres triggers on org_members revoke api_keys.created_by rows when a user is demoted from admin or owner role, or removed from the organisation entirely. Plus a runtime defense-in-depth check in lib/api-keys/manager.ts that closes the race between role change and trigger commit and catches direct-DB role changes.',
+      },
+      {
+        text: 'Trust packets cryptographically signed and verifiable',
+        tag: 'security',
+        detail:
+          'Each generated trust packet is HMAC-SHA256 signed via TRUST_PACKET_SIGNING_KEY at issue time. New POST /api/trust-packet/verify endpoint lets recipients confirm integrity with a constant-time comparison. The previously-hardcoded encryption_at_rest: true and encryption_in_transit: true claims now flow through lib/trust/runtime-claims.ts, derived from runtime config and the org\'s actual SSO record (not "is plan enterprise"). Long-term JWS + JWKS upgrade documented in code comments for partner-driven offline verification.',
+      },
+      {
+        text: 'No free trial; payment required before app access',
+        tag: 'improvement',
+        detail:
+          'TRIAL_ELIGIBLE_PLANS is empty by design; the layout-level redirect at app/app/layout.tsx:131-147 already routed pending_checkout users to /app/billing immediately on every /app/* request. Reduced the database-level grace from 14 days to 1 day so the marketing copy and the runtime agree, and replaced the misleading "Start free configuration" CTA on the pricing page. The pricing FAQ now states the no-trial position unambiguously.',
+      },
+      {
+        text: 'AUD and GST handled by Stripe Tax in checkout',
+        tag: 'feature',
+        detail:
+          'Checkout sessions now pass automatic_tax: { enabled: true } and tax_id_collection: { enabled: true }, with customer_update.address: \'auto\' for existing customers. Stripe Tax must be enabled in the Stripe dashboard for this to take effect (configured for Australia ahead of merge). GST line items now appear on every invoice for AU customers.',
+      },
+      {
+        text: 'Hard-coded production Stripe price IDs removed from source',
+        tag: 'security',
+        detail:
+          'lib/billing/plans.ts:24-26 carried three live Stripe price IDs as fallbacks — secret hygiene smell. Removed; production builds now fail closed via scripts/check-env.js when STRIPE_PRICE_FOUNDATION / GROWTH / SCALE are missing. The orphan lib/billing.ts (500 LoC, only imported by tests, with parallel implementations of createCheckoutSession and updateSubscriptionTier that did not ship) was deleted alongside its tests.',
+      },
+      {
+        text: 'Regulatory dashboards labelled experimental until real evaluators land',
+        tag: 'improvement',
+        detail:
+          'NQF, NSQHS, star-rating-readiness, and AML transaction-monitoring endpoints all matched org_tasks.title against keyword regexes for "compliance progress" — pattern matching against task names is not a regulatory assessment. Each response now carries experimental: true plus a notice field clarifying that the percentages are not certification evidence. Hidden from the default dashboard nav until per-area evaluators exist.',
+      },
+      {
+        text: 'AI assistant: fake confidence scores stripped',
+        tag: 'improvement',
+        detail:
+          'Twelve hardcoded confidence: 0.85 | 0.7 | … literals across lib/ai-assistant.ts removed. Confidence is now null and a grounded: false marker tells UI consumers the assistant is general compliance Q&A, not a RAG-grounded helper. The retrieval infrastructure (lib/ai/vector-store.ts, lib/ai/embeddings.ts) exists but is not wired in — that is a future workstream when AI usage is meaningful.',
+      },
+      {
+        text: 'Trigger.dev placeholder removed; observability provider mounted',
+        tag: 'improvement',
+        detail:
+          'trigger.config.ts defaulted project to \'proj_local_placeholder\'; none of the 18 task files at trigger/ were dispatched from anywhere — Vercel crons ran their workloads inline. Removed the SDK and the directory entirely. New <ObservabilityProvider /> at app/layout.tsx finally calls posthog.init() at the React root (which had never happened before — analytics was silently dark in production). New GET /api/health/observability returns presence-booleans for Sentry / PostHog / OpenTelemetry / Langfuse so deploy gates fail loudly when keys are unset.',
+      },
+      {
+        text: 'CI gates actually block merges',
+        tag: 'improvement',
+        detail:
+          'extended_quality_validation no longer runs continue-on-error: true — full E2E and performance checks are blocking again. ESLint ceiling tightened from --max-warnings 350 to 25, with a new lint-warning-ratchet.yml weekly cron that auto-PRs the ceiling lower as actuals improve. scripts/check-env.js is now strict in CI by default with CHECK_ENV_SKIP_IN_CI=1 as the explicit opt-out for runners without secrets. The "Extended Quality Validation" job no longer hides regressions behind a soft-fail.',
+      },
+      {
+        text: 'compliance-check cron paginated and bounded against the 30s timeout',
+        tag: 'fix',
+        detail:
+          'The daily org-iteration cron previously ran 5+ sequential queries per org with BATCH_SIZE=100 — easily 30 s+ at scale, hitting the Vercel function timeout. Now BATCH_SIZE=25, parallel via Promise.all across orgs in a batch, and a SOFT_DEADLINE_MS=50000 guard returns 200 { partial: true, orgsChecked } rather than being killed mid-write at the platform timeout.',
+      },
+    ],
+  },
+  {
     version: 'v3.8.0',
     codename: 'Evidence Integrity',
     date: '2026-04-25',
@@ -2634,6 +2844,22 @@ const milestones = [
     description:
       'v3.6 Horizon: 100x homepage redesign, comprehensive SEO engine, LCP performance fix, 5-theme enterprise upgrade, and full product maturity infrastructure.',
     accentRgb: '52,211,153',
+  },
+  {
+    icon: Shield,
+    title: 'Foundation Audit',
+    date: 'May 2026',
+    description:
+      'v4.0 Foundation Audit: closed seven blockers and thirteen high-severity findings — real row-level security on fourteen multi-tenant tables, MFA enforced at login, signed trust packets, default-on CSRF, hardened SAML, AUD/GST checkout, and CI gates that actually block merges.',
+    accentRgb: '139,92,246',
+  },
+  {
+    icon: Layers,
+    title: 'Compliance Substrate',
+    date: 'May 2026',
+    description:
+      'v4.2 Compliance Foundations: per-control evaluator registry, framework packs expanded to all 64 SOC 2 TSC criteria and 93 ISO 27001:2022 Annex A controls, twelve working SOC 2 evaluators, and a real PDF report engine with brand typography for board packs and posture reports.',
+    accentRgb: '34,211,238',
   },
 ];
 
