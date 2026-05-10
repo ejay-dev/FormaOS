@@ -21,6 +21,7 @@ jest.mock('@react-pdf/renderer', () => {
     Text: ({ children, ...props }: any) =>
       React.createElement('Text', props, children),
     StyleSheet: { create: (styles: any) => styles },
+    Font: { register: jest.fn(), registerHyphenationCallback: jest.fn() },
   };
 });
 

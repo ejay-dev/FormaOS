@@ -2,27 +2,18 @@
 // bytes to /tmp. Use this to spot-check the actual @react-pdf/renderer
 // output, since Jest's CJS environment cannot load @react-pdf/renderer
 // (pure ESM). Run with: npx tsx scripts/verify-pdf-render.mjs
+//
+// Note: imports are dynamic (rather than top-level ESM) so that tsx loads
+// @react-pdf/renderer once via the same CJS path as the .tsx templates.
+// Otherwise tsx instantiates two FontStore singletons and Font.register
+// calls don't reach the renderer-side instance.
 
 import { writeFile, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import React from 'react';
-import { renderToBuffer } from '@react-pdf/renderer';
 
 const NOW = '2026-05-10T12:00:00Z';
 const OUT_DIR = path.join(tmpdir(), 'formaos-pdf-verify');
-
-async function loadTemplates() {
-  // tsx is required to import .tsx — invoke this script via `npx tsx`.
-  const board = await import('../lib/exports/pdf/templates/board-pack.tsx');
-  const posture = await import('../lib/exports/pdf/templates/posture-report.tsx');
-  const audit = await import('../lib/exports/pdf/templates/audit-extract.tsx');
-  return {
-    BoardPackDocument: board.BoardPackDocument,
-    PostureReportDocument: posture.PostureReportDocument,
-    AuditExtractDocument: audit.AuditExtractDocument,
-  };
-}
 
 const boardPackInput = {
   kind: 'board-pack',
@@ -114,7 +105,7 @@ const auditInput = {
   })),
 };
 
-function checkPdfShape(label, buf) {
+function checkPdfShape(buf, expectedFontFamilies) {
   const head = buf.subarray(0, 8).toString('utf8');
   const tail = buf.subarray(buf.length - 8).toString('utf8');
   const text = buf.toString('latin1');
@@ -123,25 +114,30 @@ function checkPdfShape(label, buf) {
   if (!head.startsWith('%PDF-')) issues.push('missing %PDF header');
   if (!tail.includes('%%EOF')) issues.push('missing %%EOF trailer');
   if (pageCount === 0) issues.push('no pages detected');
+  for (const family of expectedFontFamilies ?? []) {
+    if (!text.includes(family)) {
+      issues.push(`expected font family "${family}" not embedded`);
+    }
+  }
   return { ok: issues.length === 0, issues, pageCount, bytes: buf.length };
 }
 
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
-  const tpl = await loadTemplates();
+  const { renderPdf } = await import('../lib/exports/pdf/renderer.tsx');
 
   const cases = [
-    { name: 'board-pack', el: React.createElement(tpl.BoardPackDocument, boardPackInput) },
-    { name: 'posture-report', el: React.createElement(tpl.PostureReportDocument, postureInput) },
-    { name: 'audit-extract', el: React.createElement(tpl.AuditExtractDocument, auditInput) },
+    { name: 'board-pack', input: boardPackInput },
+    { name: 'posture-report', input: postureInput },
+    { name: 'audit-extract', input: auditInput },
   ];
 
   let allOk = true;
   for (const c of cases) {
-    const buf = await renderToBuffer(c.el);
+    const buf = await renderPdf(c.input);
     const out = path.join(OUT_DIR, `${c.name}.pdf`);
     await writeFile(out, buf);
-    const shape = checkPdfShape(c.name, buf);
+    const shape = checkPdfShape(buf, ['Inter', 'Sora']);
     if (!shape.ok) allOk = false;
     console.log(
       `[${shape.ok ? 'OK' : 'FAIL'}] ${c.name} — ${shape.bytes} bytes, ${shape.pageCount} page(s) → ${out}` +
