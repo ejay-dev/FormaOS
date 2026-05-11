@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { MFAEnrollment } from '@/components/settings/mfa-enrollment';
+import { SetPasswordForm } from '@/components/settings/set-password-form';
 import { roleRequiresMFA } from '@/lib/security/mfa-enforcement';
 import { ShieldCheck } from 'lucide-react';
 import { SsoConfigPanel } from '@/components/settings/sso-config';
@@ -33,6 +35,25 @@ export default async function SecuritySettingsPage() {
     membership?.mfa_required ??
     roleRequiresMFA(membership?.role ?? null);
   const enabled = security?.two_factor_enabled ?? false;
+
+  // Detect whether this user has an email/password identity yet.
+  // Users provisioned by the admin onboarding script (admin.createUser)
+  // have an empty `identities` array — they need the "Set a password"
+  // copy. Existing users see "Change password" instead.
+  const adminClient = createSupabaseAdminClient();
+  let hasPassword = false;
+  try {
+    const { data: adminUser } = await adminClient.auth.admin.getUserById(
+      user.id,
+    );
+    hasPassword = Boolean(
+      adminUser?.user?.identities?.some((i) => i.provider === 'email'),
+    );
+  } catch {
+    // Best-effort; if the lookup fails, default the copy to "Set a password"
+    // (worst case the user sees the first-time copy on a change flow).
+    hasPassword = false;
+  }
   const orgId = membership?.organization_id as string | undefined;
   const [{ data: ssoEntitlement }, { data: directoryEntitlement }] = orgId
     ? await Promise.all([
@@ -91,6 +112,8 @@ export default async function SecuritySettingsPage() {
           ← Back to Settings
         </Link>
       </header>
+
+      <SetPasswordForm hasPassword={hasPassword} />
 
       <MFAEnrollment initialEnabled={enabled} required={Boolean(required)} />
 
