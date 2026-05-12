@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { InviteButton } from "@/components/team/invite-button"; // ✅ Using our new robust button
+import { RoleCell } from "@/components/team/role-cell";
 import { Users, Mail, Clock, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
@@ -92,13 +93,20 @@ export default async function TeamPage() {
     { data: members },
     { data: invites },
     { data: subscription },
-    { data: entitlements }
+    { data: entitlements },
+    { data: actorRow },
   ] = await Promise.all([
     supabase.from('org_members').select('id, user_id, role, created_at').eq('organization_id', orgId).order('created_at', { ascending: true }).limit(100),
     supabase.from('team_invitations').select('id, email, role, created_at').eq('organization_id', orgId).eq('status', 'pending').order('created_at', { ascending: false }).limit(50),
     supabase.from('org_subscriptions').select('status').eq('organization_id', orgId).maybeSingle(),
-    supabase.from('org_entitlements').select('feature_key, enabled, limit_value').eq('organization_id', orgId)
+    supabase.from('org_entitlements').select('feature_key, enabled, limit_value').eq('organization_id', orgId),
+    supabase.from('org_members').select('role').eq('organization_id', orgId).eq('user_id', user?.id ?? '').maybeSingle(),
   ]);
+
+  const actorRoleRaw = String((actorRow as { role?: string } | null)?.role ?? '').toLowerCase();
+  const actorRoleKey = normalizeRole(actorRoleRaw);
+  const canManageUsers = hasPermission(actorRoleKey, 'MANAGE_USERS');
+  const isActorOwner = actorRoleRaw === 'owner';
 
   const hasSubscription = subscription?.status === "active" || subscription?.status === "trialing";
   const entitlementRows: EntitlementRow[] = entitlements ?? [];
@@ -173,9 +181,13 @@ export default async function TeamPage() {
                   {
                     label: 'Role',
                     value: (
-                      <span className="status-pill status-pill-blue">
-                        {member.role || 'MEMBER'}
-                      </span>
+                      <RoleCell
+                        targetUserId={member.user_id ?? ''}
+                        currentRole={member.role}
+                        isActorOwner={isActorOwner}
+                        isSelf={member.user_id === user?.id}
+                        editable={canManageUsers && !!member.user_id}
+                      />
                     ),
                   },
                 ]}
@@ -211,9 +223,13 @@ export default async function TeamPage() {
                         </div>
                     </td>
                     <td className="px-4 py-3">
-                        <span className="status-pill status-pill-blue">
-                        {member.role || 'MEMBER'}
-                        </span>
+                        <RoleCell
+                          targetUserId={member.user_id ?? ''}
+                          currentRole={member.role}
+                          isActorOwner={isActorOwner}
+                          isSelf={member.user_id === user?.id}
+                          editable={canManageUsers && !!member.user_id}
+                        />
                     </td>
                     <td className="px-4 py-3">
                         <span className="status-pill status-pill-green">

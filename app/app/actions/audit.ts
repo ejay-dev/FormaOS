@@ -14,6 +14,7 @@ export type AuditAction =
   | 'DELETE_DOCUMENT'
   | 'INVITE_USER'
   | 'REMOVE_USER'
+  | 'UPDATE_USER_ROLE'
   | 'LOGIN_ATTEMPT'
   | 'EXPORT_DATA'
   | 'CREATE_TASK'
