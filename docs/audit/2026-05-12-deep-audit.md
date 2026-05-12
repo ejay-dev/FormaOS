@@ -59,7 +59,7 @@ Rejected:
 
 | # | Sev  | Finding | File:line | PR |
 |---|------|---------|-----------|----|
-| 9 | HIGH | Several v1 routes return nested-shape errors (`{error: {message: ...}}`) while the rest of v1 returns flat (`{error: "..."}`). Callers following OpenAPI will null-deref on the nested shape. | `app/api/v1/forms/route.ts:43`, `app/api/v1/forms/[formId]/route.ts:52`, `app/api/v1/analytics/trends/route.ts:71`, `app/api/v1/forms/[formId]/submissions/export/route.ts` (multiple) | — |
+| 9 | HIGH | Several v1 routes return nested-shape errors (`{error: {message: ...}}`) while the rest of v1 returns flat (`{error: "..."}`). Callers following OpenAPI will null-deref on the nested shape. **Scope larger than first cited** — the grep turned up 12 files total; all flattened in one mechanical pass. | `app/api/v1/forms/route.ts:43`, `app/api/v1/forms/[formId]/route.ts:52`, `app/api/v1/analytics/trends/route.ts:71`, `app/api/v1/forms/[formId]/submissions/export/route.ts` (multiple) + 8 more | #58 |
 | 10 | MED | `app/api/auth/clear-session/route.ts` exports both POST and GET handlers; the GET path mutates state (clears cookies). REST hygiene + CSRF concern. POST-only is correct. | `app/api/auth/clear-session/route.ts:30,123` | — |
 
 Rejected:
@@ -134,7 +134,7 @@ Verified by reading `lib/billing/entitlements.ts` and grepping every
 
 | # | Sev  | Finding | File:line | PR |
 |---|------|---------|-----------|----|
-| 14 | HIGH | Dead entitlements: `soc2_certification` (enabled for pro/scale/enterprise) and `executive_rollup` (enabled for enterprise) are written to `org_entitlements` by `syncEntitlementsForPlan` but **no application code calls `requireEntitlement` on either key**. The grep returns only the type definition, the plan-bundle list, and tests. Paying customers see no feature behind these gates. Decision needed: implement the gate, or remove the key. | `lib/billing/entitlements.ts:12,20,42,59,77,85`; no callers in `app/**` or `components/**` | — |
+| 14 | HIGH | Dead entitlements: `soc2_certification` (enabled for pro/scale/enterprise) and `executive_rollup` (enabled for enterprise) are written to `org_entitlements` by `syncEntitlementsForPlan` but **no application code calls `requireEntitlement` on either key**. The grep returns only the type definition, the plan-bundle list, and tests. Paying customers see no feature behind these gates. Decision needed: implement the gate, or remove the key. | `lib/billing/entitlements.ts:12,20,42,59,77,85`; no callers in `app/**` or `components/**` | #57 (deleted both keys per dead-entitlement policy) |
 | 15 | HIGH | `app/api/v1/forms/[formId]/analytics/route.ts:21-26`, `app/api/v1/reports/custom/_entitlement.ts:9-14`, `app/api/automation/_auth.ts:33-38` all query `org_entitlements` directly without calling `requireActiveSubscription` first. A cancelled-subscription org whose entitlement rows linger could keep using these surfaces via API key. The canonical helper `requireEntitlement` (which does call `requireActiveSubscription`) exists but isn't reused. | as cited | — |
 | 16 | MED  | `app/api/v1/members/invite/route.ts:60-92` treats a *missing* `team_limit` row as unlimited seats. A missing row almost certainly means the org was never properly entitled; the safer default is to block. | `app/api/v1/members/invite/route.ts:60-92` | — |
 | 17 | MED  | Trial soft-lock taxonomy (`lib/trial/constants.ts:59-66`) uses string IDs (`'reports'`, `'audits'`, `'vault'`, `'registers'`, `'team'`, `'automation'`) that do not match the `EntitlementKey` union. Trial gating and entitlement gating operate on different vocabularies. | `lib/trial/constants.ts:59-66` vs `lib/billing/entitlements.ts:5-20` | — |
@@ -152,7 +152,7 @@ Rejected on direct inspection:
 
 | # | Sev  | Finding | File:line | PR |
 |---|------|---------|-----------|----|
-| 19 | HIGH | Framework provisioning is deferred via `after()` while the redirect to `/app` runs immediately. A new owner reaching `/app/compliance/frameworks` in the first few seconds may see no frameworks yet. Either await the provisioning or move the step-completion mark inside `after()`. | `app/onboarding/page.tsx:552-616` | — |
+| 19 | ~~HIGH~~ MED | Framework provisioning is deferred via `after()` while the wizard advances to the next onboarding step. By the time the user reaches `/app` (step 7 → redirect), the user has spent 10–30 seconds on steps 6 and 7, and Vercel's `after()` keeps the function alive while it completes — the race is narrow. Reclassified MED on second pass because the audit's proposed fix ("await provisioning or move step-completion inside `after()`") doesn't actually close the race; the real surface is `/app/compliance/frameworks/[slug]` showing empty controls until provisioning lands. The clean fix is a "provisioning in progress" state on that page, not a change in onboarding. | `app/onboarding/page.tsx:552-616` | — |
 | 20 | MED  | `app/onboarding/employee/actions.ts:128-151` (`skipEmployeeOnboarding`) marks `employee_onboarded_at` and redirects to `/app` without populating `user_profiles.full_name`. Downstream features that assume a non-empty name fail silently. | `app/onboarding/employee/actions.ts:128-151` | — |
 | 21 | MED  | Step 5/6 of the main onboarding can be reached by manual URL (`/onboarding?step=5`) for non-provisioning roles whose journey skips those steps. No page-level guard against re-entering a skipped step. | `app/onboarding/page.tsx:1201-1238`; journey in `lib/onboarding/journey.ts:104-110` | — |
 | 22 | MED  | `completeFirstAction` reads `org_subscriptions` synchronously to decide between `/app` and `/app/billing`. If the Stripe webhook hasn't fired yet the gate misjudges, and the `/app/layout.tsx` billing gate then bounces the user — two redirects to land in the right place. | `app/onboarding/page.tsx:817-838` | — |
@@ -215,6 +215,62 @@ Going forward, merge-guard uses `[ -z "$FAILED" ]` instead of
 nothing" exit-0, which is what caused #52 to merge red in the first
 place.
 
+## 9b. Dead-entitlement removals
+
+- **2026-05-12** — deleted `soc2_certification` and `executive_rollup`
+  from `PLAN_ENTITLEMENTS`, the `EntitlementKey` union, the founder-org
+  upgrade SQL script, and the two tests asserting their presence. Per
+  the dead-entitlement audit policy: zero callers across UI, server
+  actions, route handlers, middleware, CRON, or admin tools — they
+  were no-op flags. Shipped as **#57**. Drops audit-doc finding #14
+  from "queued" to "done — keys deleted".
+
+## 9c. A→B→C data flow
+
+For each of the six critical multi-tenant flows the master prompt
+called out, read the server action / route handler / page component
+that participates. Findings recorded only where the bug is real on
+the working tree.
+
+| # | Sev  | Flow | Finding | File:line | PR |
+|---|------|------|---------|-----------|----|
+| 33 | HIGH | Role change | No application surface for changing an existing member's role. The owner's role is written once during onboarding (`app/onboarding/page.tsx:461-465`). `/app/team` displays members + roles but the page has no role-change form and there is no server action `updateMemberRole`/`changeRole` in `app/app/actions/*` or `app/app/team/*`. Either roles are mutated only through Supabase admin / direct SQL (in which case the audit log has gaps), or this is an incomplete feature. | `app/app/team/page.tsx` + missing action in `app/app/actions/` | — |
+| 34 | HIGH | Subscription state | `lib/trial/use-trial-state.ts:18-21` explicitly documents: *"Never triggers additional server calls — pure derived state."* It reads `entitlements.trialActive` + `trialDaysRemaining` from `useAppStore`, which is hydrated once on app load. When the trial expires server-side (Stripe webhook + DB update), the hook keeps reporting `trialActive: true` until the user reloads — every `FeatureGate.isFeatureLocked()` lies for the duration of the open session. | `lib/trial/use-trial-state.ts:18-50`; consumers via `useAppStore.entitlements` | — |
+| 35 | MED  | Org settings | `updateOrgName` calls `revalidatePath('/app/settings')` + `revalidatePath('/app')` — `/app/*` runs `dynamic = 'force-dynamic'` (`app/app/layout.tsx:37`) so every page re-fetches, so SSR is fine. But the client-side `useAppStore.organization.name` (Zustand) is never invalidated. Any client component reading the name from the store (sidebar/topbar/profile menu) shows the old name until the user reloads. | `app/app/settings/actions.ts:46-47` + `lib/stores/app.ts` | — |
+| 36 | MED  | Team invite | `app/app/team/page.tsx:31-75` (`revokeInvitation`) trusts `organizationId` from FormData. RLS catches the cross-org case at the DB layer, but the server action should still validate `permissionCtx.orgId === organizationId` before issuing the `UPDATE`. Defense-in-depth gap, not an active leak. | `app/app/team/page.tsx:31-75` | — |
+
+Rejected on direct inspection (data-flow agent pass produced 20
+findings; 12 of them did not survive verification — recording the
+rejections so the trail stays honest):
+
+- "Cross-org invite leak" — the route reads org_id from the actor's
+  *own* membership (`org_members` row joined to the authenticated
+  user), not from request input.
+- "Invitation acceptance skips org context" — `app/(standalone)/accept-invite/[token]/page.tsx:182`
+  explicitly rejects mismatched-email accepts with a dedicated
+  screen.
+- "Team page stale cache", "Care plans list cache", "Org settings
+  stale across SSR surfaces" — all `/app/*` runs under
+  `dynamic = 'force-dynamic'` at the layout level
+  (`app/app/layout.tsx:37`); there is no SSR cache to be stale.
+- "Stripe webhook doesn't invalidate cache" — the webhook
+  (`app/api/billing/webhook/route.ts:53,571-578`) collects
+  `orgsToRevalidate` and calls `revalidatePath('/app', 'layout')` +
+  `revalidatePath('/app/billing')` for the actual `unstable_cache`
+  TTL that gates billing. `invalidateOrgCache` exists for a
+  different namespace (`org:${id}:*`) that entitlements do not use.
+- "Zustand not re-hydrated on org switch" — speculative ("if a user
+  is added to multiple orgs in the future"). Not a current bug.
+- "Evidence API response missing org-id" — RLS is the contract;
+  defensive org-id echo in the response shape adds nothing.
+- "updateOrgName silently fails on permission mismatch" — the
+  action returns early with the explicit "Unauthorized" message;
+  not silent.
+- "syncCarePlanProgress race" + "Care plan goals concurrent writes"
+  — agent could not cite a concrete failure mode; the
+  `loadPlanForWrite` helper does scope-check; rejected pending
+  reproducible repro.
+
 ## 10. Things deliberately not in scope
 
 - Stripe-side billing reconciliation.
@@ -227,7 +283,13 @@ place.
 
 ## 11. Remaining audit dimensions
 
-Not yet checked in this pass (queued):
+Phase A is now complete: auth + forms + API + marketing + entitlements
++ onboarding + a11y/mobile + A→B→C data flow have all been walked. The
+audit currently records 36 verified findings (3 HIGH still open: #19
+[reclassified], #33, #34 — plus 13 MED and a tail of LOW). PR refs
+for shipped fixes: #50, #52, #57, #58.
 
-- **A→B→C data flow**: write on page A, read on page B, verify the
-  same record appears (cache/RLS/org-id leak surface).
+Future Phase A re-passes should focus on the surfaces where the data-
+flow walk could not confidently rule out a finding — care-plan
+concurrent writes specifically, and the Zustand-store hydration
+semantics if multi-org switching is added.
