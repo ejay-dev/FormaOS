@@ -1,23 +1,80 @@
 'use client';
 
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import * as Sentry from '@sentry/react';
+
 export default function AdminError({
   error,
   reset,
 }: {
-  error: Error;
+  error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    console.error('[AdminError]', {
+      message: error.message,
+      name: error.name,
+      digest: error.digest,
+      pathname,
+      stack: error.stack?.split('\n').slice(0, 8).join('\n'),
+      timestamp: new Date().toISOString(),
+    });
+
+    try {
+      Sentry.captureException(error, {
+        tags: { boundary: 'admin' },
+        extra: {
+          digest: error.digest,
+          pathname,
+        },
+      });
+    } catch {
+      // Ignore Sentry failures
+    }
+  }, [error, pathname]);
+
   return (
-    <div className="p-6">
-      <div className="rounded-lg border border-red-800/40 bg-red-950/30 p-5">
-        <h2 className="text-lg font-semibold text-red-200">Admin page failed</h2>
-        <p className="mt-2 text-sm text-red-100/80">{error.message}</p>
-        <button
-          onClick={reset}
-          className="mt-4 rounded-md border border-red-700/60 bg-red-900/30 px-3 py-1.5 text-sm text-red-100 hover:bg-red-900/40"
-        >
-          Retry
-        </button>
+    <div className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
+      <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-8 text-center shadow-xl">
+        <h1 className="text-xl font-semibold">Admin page failed</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The admin console hit an unexpected error. Retry, or contact
+          engineering with the error ID below.
+        </p>
+        <div className="mt-4 p-3 rounded-lg bg-muted/30 text-left text-xs space-y-1">
+          {error.digest && (
+            <p className="text-muted-foreground">
+              Error ID: <code className="font-mono">{error.digest}</code>
+            </p>
+          )}
+          {error.message && (
+            <p className="text-destructive break-words font-mono">
+              {error.message.slice(0, 300)}
+            </p>
+          )}
+          {pathname && (
+            <p className="text-muted-foreground">
+              Route: <code className="font-mono">{pathname}</code>
+            </p>
+          )}
+        </div>
+        <div className="mt-6 flex items-center justify-center gap-3">
+          <button
+            onClick={reset}
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          >
+            Retry
+          </button>
+          <a
+            href="/auth/signin"
+            className="inline-flex items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
+          >
+            Sign out &amp; retry
+          </a>
+        </div>
       </div>
     </div>
   );
