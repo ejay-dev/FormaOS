@@ -13,6 +13,15 @@ import { findAuthUserByEmail } from "@/lib/users/admin-profile-directory";
 
 const VALID_INVITE_ROLES = new Set(["admin", "member", "viewer"]);
 
+// Roles that org_members.role is allowed to hold via the role-change UI.
+// `owner` is included because demote/promote between roles needs the union;
+// the actor-permission check below enforces who can perform each transition.
+const VALID_MEMBER_ROLES = new Set(["owner", "admin", "member", "viewer"]);
+
+type UpdateRoleResult =
+  | { success: true; newRole: string }
+  | { success: false; error: string };
+
 type InviteMemberResult =
   | {
       success: true;
@@ -214,6 +223,145 @@ export async function inviteTeamMember(formData: FormData) {
   
   // Re-use the core logic above
   return await inviteMember(email, role);
+}
+
+/**
+ * ✅ UPDATE MEMBER ROLE
+ * Writes org_members.role for an existing member after the actor's
+ * permission and role-transition rules are validated.
+ *
+ * Authorisation:
+ *  - Actor must have MANAGE_USERS (owner or admin/COMPLIANCE_OFFICER).
+ *  - Only an owner can change another owner's role, or promote anyone
+ *    *to* owner. Admins cannot touch owners.
+ *  - An owner cannot demote themselves while they're the only owner in
+ *    the organisation — would lock the org out of irreversible actions.
+ *  - Self-changes other than the lone-owner case are allowed (someone
+ *    can demote themselves from admin to member, for instance).
+ */
+export async function updateMemberRole(
+  targetUserId: string,
+  newRole: string,
+): Promise<UpdateRoleResult> {
+  const normalizedNewRole = newRole.trim().toLowerCase();
+  if (!VALID_MEMBER_ROLES.has(normalizedNewRole)) {
+    return { success: false, error: "Invalid role." };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "Unauthorized" };
+
+  const permissionCtx = await requirePermission("MANAGE_USERS");
+
+  const { data: actorMembership } = await supabase
+    .from("org_members")
+    .select("organization_id, role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (
+    !actorMembership ||
+    actorMembership.organization_id !== permissionCtx.orgId
+  ) {
+    return { success: false, error: "Organization context lost." };
+  }
+
+  const actorRoleRaw = String(actorMembership.role ?? "").toLowerCase();
+  const isOwnerActor = actorRoleRaw === "owner";
+
+  const { data: targetMember } = await supabase
+    .from("org_members")
+    .select("role")
+    .eq("user_id", targetUserId)
+    .eq("organization_id", actorMembership.organization_id)
+    .maybeSingle();
+
+  if (!targetMember) {
+    return { success: false, error: "Member not found in this organization." };
+  }
+
+  const currentRoleRaw = String(targetMember.role ?? "").toLowerCase();
+  if (currentRoleRaw === normalizedNewRole) {
+    return { success: true, newRole: normalizedNewRole };
+  }
+
+  // Owner-involving transitions (target is owner, or new role is owner)
+  // require the actor to be an owner themselves.
+  const ownerTransition =
+    currentRoleRaw === "owner" || normalizedNewRole === "owner";
+  if (ownerTransition && !isOwnerActor) {
+    return {
+      success: false,
+      error: "Only an owner can change another owner's role.",
+    };
+  }
+
+  // Prevent demoting the only remaining owner.
+  if (currentRoleRaw === "owner" && normalizedNewRole !== "owner") {
+    const { count: ownerCount } = await supabase
+      .from("org_members")
+      .select("id", { count: "exact", head: true })
+      .eq("organization_id", actorMembership.organization_id)
+      .eq("role", "owner");
+    if ((ownerCount ?? 0) <= 1) {
+      return {
+        success: false,
+        error:
+          "Cannot demote the last remaining owner. Promote another member first.",
+      };
+    }
+  }
+
+  const { error: updateError } = await supabase
+    .from("org_members")
+    .update({ role: normalizedNewRole })
+    .eq("user_id", targetUserId)
+    .eq("organization_id", actorMembership.organization_id);
+
+  if (updateError) {
+    return { success: false, error: updateError.message };
+  }
+
+  await logActivity(actorMembership.organization_id, "UPDATE_USER_ROLE", {
+    resourceName: targetUserId,
+    event: "Role updated",
+    previousRole: currentRoleRaw,
+    newRole: normalizedNewRole,
+  });
+
+  await logProductActivity(
+    actorMembership.organization_id,
+    user.id,
+    "update",
+    {
+      type: "member",
+      id: targetUserId,
+      name: targetUserId,
+      path: "/app/team",
+    },
+    {
+      previousRole: currentRoleRaw,
+      newRole: normalizedNewRole,
+    },
+  );
+
+  await logAuditEvent({
+    organizationId: actorMembership.organization_id,
+    actorUserId: user.id,
+    actorRole: permissionCtx.role,
+    entityType: "user",
+    entityId: targetUserId,
+    actionType: "USER_ROLE_UPDATED",
+    beforeState: { role: currentRoleRaw },
+    afterState: { role: normalizedNewRole },
+    reason: "role_change",
+  });
+
+  revalidatePath("/app/team");
+  return { success: true, newRole: normalizedNewRole };
 }
 
 /**
