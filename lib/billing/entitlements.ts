@@ -9,15 +9,13 @@ export type EntitlementKey =
   | 'certifications'
   | 'team_limit'
   | 'ai_assistant'
-  | 'soc2_certification'
   | 'capa_management'
   | 'custom_reports'
   | 'form_analytics'
   | 'workflow_automation'
   | 'sso_saml'
   | 'directory_sync'
-  | 'retention_governance'
-  | 'executive_rollup';
+  | 'retention_governance';
 
 export type PlanEntitlementDefinition = {
   enabled: EntitlementKey[];
@@ -39,7 +37,6 @@ export const PLAN_ENTITLEMENTS: Record<PlanKey, PlanEntitlementDefinition> = {
       'certifications',
       'team_limit',
       'ai_assistant',
-      'soc2_certification',
       'capa_management',
       'custom_reports',
       'form_analytics',
@@ -56,7 +53,6 @@ export const PLAN_ENTITLEMENTS: Record<PlanKey, PlanEntitlementDefinition> = {
       'certifications',
       'team_limit',
       'ai_assistant',
-      'soc2_certification',
       'capa_management',
       'custom_reports',
       'form_analytics',
@@ -74,7 +70,6 @@ export const PLAN_ENTITLEMENTS: Record<PlanKey, PlanEntitlementDefinition> = {
       'certifications',
       'team_limit',
       'ai_assistant',
-      'soc2_certification',
       'capa_management',
       'custom_reports',
       'form_analytics',
@@ -82,7 +77,6 @@ export const PLAN_ENTITLEMENTS: Record<PlanKey, PlanEntitlementDefinition> = {
       'sso_saml',
       'directory_sync',
       'retention_governance',
-      'executive_rollup',
     ],
     limits: {
       team_limit: null, // unlimited

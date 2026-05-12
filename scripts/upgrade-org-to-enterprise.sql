@@ -102,15 +102,13 @@ begin
     ('certifications'),
     ('team_limit'),               -- limit_value=null → unlimited seats
     ('ai_assistant'),
-    ('soc2_certification'),
     ('capa_management'),
     ('custom_reports'),
     ('form_analytics'),
     ('workflow_automation'),
     ('sso_saml'),
     ('directory_sync'),
-    ('retention_governance'),
-    ('executive_rollup')
+    ('retention_governance')
   ) as t(k);
 
   raise notice 'Done. Org % is now enterprise with % entitlements active.',
