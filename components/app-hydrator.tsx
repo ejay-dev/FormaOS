@@ -3,6 +3,11 @@
 import { useEffect } from 'react';
 import { useAppStore } from '@/lib/stores/app';
 
+// Don't re-fetch entitlements more than once per this window even if the
+// user rapidly tabs the FormaOS window in and out. Tab focus is the
+// signal; this debounces noise.
+const ENTITLEMENT_REFRESH_MIN_INTERVAL_MS = 30_000;
+
 /**
  * =========================================================
  * APP HYDRATOR COMPONENT
@@ -45,6 +50,9 @@ interface AppHydratorProps {
 export function AppHydrator({ children, initialState }: AppHydratorProps) {
   const isHydrated = useAppStore((state) => state.isHydrated);
   const hydrate = useAppStore((state) => state.hydrate);
+  const refreshEntitlements = useAppStore(
+    (state) => state.refreshEntitlements,
+  );
   const setHydrating = useAppStore((state) => state.setHydrating);
   const setHydrationError = useAppStore((state) => state.setHydrationError);
 
@@ -95,6 +103,58 @@ export function AppHydrator({ children, initialState }: AppHydratorProps) {
 
     fetchAndHydrate();
   }, [isHydrated, initialState, hydrate, setHydrating, setHydrationError]);
+
+  // Refresh the entitlement/subscription slice whenever the tab regains
+  // focus. Addresses the bug where Stripe-side state (trial expiry, plan
+  // upgrade, cancellation) lands while the user has FormaOS open in a
+  // background tab — without this, FeatureGate / useTrialState keep
+  // showing the pre-event state until a full reload.
+  //
+  // Scope: refresh-only-on-visible. No polling, no work when the tab is
+  // hidden. Debounced via entitlementsRefreshedAt so rapid tab in/out
+  // doesn't fan out to a burst of /api/system-state hits.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    async function refresh() {
+      const last = useAppStore.getState().entitlementsRefreshedAt;
+      if (last && Date.now() - last < ENTITLEMENT_REFRESH_MIN_INTERVAL_MS) {
+        return;
+      }
+      try {
+        const response = await fetch('/api/system-state');
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data?.error) return;
+        refreshEntitlements({
+          organization: data.organization
+            ? {
+                plan: data.organization.plan,
+                onboardingCompleted: data.organization.onboardingCompleted,
+              }
+            : null,
+          entitlements: data.entitlements ?? null,
+        });
+      } catch (error) {
+        // Silent: the existing state is still usable; a real next-render
+        // will pick up fresh data anyway.
+        console.warn(
+          '[AppHydrator] entitlement focus-refresh failed:',
+          error instanceof Error ? error.message : 'Unknown error',
+        );
+      }
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState === 'visible') {
+        void refresh();
+      }
+    }
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () =>
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+  }, [refreshEntitlements]);
 
   // NOTE: founder status is intentionally NOT persisted to localStorage.
   // Founder gating is enforced server-side (proxy.ts admin guard,

@@ -54,6 +54,10 @@ export interface AppState {
 
   // Entitlements
   entitlements: AppEntitlements | null;
+  // Wall-clock millis when the entitlement+subscription slice was last
+  // (re)fetched from the server. Used by the focus-refresh debounce to
+  // coalesce rapid tab in/out events into a single re-fetch.
+  entitlementsRefreshedAt: number | null;
 
   // Actions
   hydrate: (state: {
@@ -61,6 +65,14 @@ export interface AppState {
     organization: AppOrganization | null;
     role: 'owner' | 'admin' | 'member' | 'staff' | 'viewer' | 'auditor' | null;
     isFounder: boolean;
+    entitlements: AppEntitlements | null;
+  }) => void;
+  // Update only the slice that can flip mid-session: entitlements plus
+  // the subscription-shaped fields on organization (plan,
+  // onboardingCompleted). Role/user identity stays put — those don't
+  // change without a re-login.
+  refreshEntitlements: (slice: {
+    organization: Pick<AppOrganization, 'plan' | 'onboardingCompleted'> | null;
     entitlements: AppEntitlements | null;
   }) => void;
   setHydrating: (isHydrating: boolean) => void;
@@ -77,7 +89,9 @@ const createInitialState = (): AppState => ({
   role: null,
   isFounder: false,
   entitlements: null,
+  entitlementsRefreshedAt: null,
   hydrate: () => {},
+  refreshEntitlements: () => {},
   setHydrating: () => {},
   setHydrationError: () => {},
   clear: () => {},
@@ -96,10 +110,26 @@ export const useAppStore = create<AppState>()(
           role: state.role,
           isFounder: state.isFounder,
           entitlements: state.entitlements,
+          entitlementsRefreshedAt: Date.now(),
           isHydrated: true,
           isHydrating: false,
           hydrationError: null,
         });
+      },
+
+      refreshEntitlements: (slice) => {
+        set((current) => ({
+          entitlements: slice.entitlements,
+          organization:
+            current.organization && slice.organization
+              ? {
+                  ...current.organization,
+                  plan: slice.organization.plan,
+                  onboardingCompleted: slice.organization.onboardingCompleted,
+                }
+              : current.organization,
+          entitlementsRefreshedAt: Date.now(),
+        }));
       },
 
       setHydrating: (isHydrating) => {
@@ -120,6 +150,7 @@ export const useAppStore = create<AppState>()(
           role: null,
           isFounder: false,
           entitlements: null,
+          entitlementsRefreshedAt: null,
         });
       },
     };
