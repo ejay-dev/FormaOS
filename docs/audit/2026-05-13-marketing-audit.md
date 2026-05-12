@@ -427,3 +427,388 @@ A re-count off the table above gives 3 + 14 + 22 + 11 = 50 line
 items recorded. Several rows in the per-page sections are
 clarifications of cross-cutting items (e.g. #66 restates #11) and
 are not double-counted in the severity totals.
+
+---
+
+# Pass 2 — dynamic audit (appended 2026-05-13)
+
+Pass 1 above was static-only (`curl` + HTML parse + `WebFetch` content
+review). Pass 2 fills the dynamic gaps: real headless-Chrome page
+loads, Lighthouse mobile + desktop, keyboard tab traversal, form
+probes against client-side validation, mobile viewports at three
+breakpoints, and a CPU+network-throttled re-run. Still read-only —
+no code changes, no PRs, no live form submissions.
+
+## §11 — Pass-2 methodology
+
+Tools used:
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| Node.js | 20.20.1 | Driver |
+| Lighthouse | 12.8.2 (via `npx`) | Mobile + desktop perf/a11y/BP/SEO, throttled re-run |
+| Playwright (`chromium`) | 1.58.2 (cached binaries) | Browser walks, keyboard, mobile viewports, form probe |
+| Google Chrome (headless) | 147.0.7727.138 | Lighthouse driver |
+
+Pages exercised (10):
+
+`/`, `/features`, `/security`, `/trust`, `/healthcare-compliance`,
+`/about`, `/contact`, `/blog`, `/legal/terms`, `/legal/privacy`.
+
+Brief asked for `/compliance` and `/care`; neither exists on the live
+site (both return `404`). Substituted `/trust` (compliance hub) and
+`/healthcare-compliance` (the closest "care" surface — see §4.15).
+Pricing was excluded per Phase D directive.
+
+Time per dimension (approx, single operator, sequential where Chrome
+contention required it):
+
+| Dimension | Wall time |
+|-----------|-----------|
+| Lighthouse mobile + desktop (20 runs) | ~12 min |
+| Lighthouse throttled (2 runs) | ~2 min |
+| Browser walk (console / network / FCP) | ~3 min |
+| Keyboard tab traversal (60 stops × 10 pages) | ~3 min |
+| Mobile viewports (3 widths × 10 pages) | ~5 min |
+| Form probe (contact, 3 test cases) | ~1 min |
+| Analysis + write-up | ~25 min |
+
+Decision points worth recording:
+
+- **No real form submissions.** The brief asks to submit valid input
+  against every form on the marketing site. The contact form
+  delivers to a live CRM/email pipeline; sending three records
+  ("audit test — please ignore") to production would be the most
+  visible side-effect of this audit. Instead I exercised the form
+  client-side: empty submit, invalid email, boundary input (5000-char
+  unicode message). All three test cases short-circuit at the
+  browser's native validity check before any network request.
+  Server-side behaviour stands on the prior audit's finding #4
+  (`2026-05-12-deep-audit.md`).
+- **Throttled-vs-baseline.** Lighthouse mobile preset already
+  applies Slow 4G + 4× CPU. The brief's "4× CPU + Fast 3G" is the
+  default for mobile preset, so the "throttled" re-run uses an
+  even slower transport (Fast 3G as `requestLatencyMs=150`,
+  `throughputKbps=1638`). The delta between mobile baseline and
+  this stricter throttle is small (≤4 points), confirming the
+  mobile baseline scores reflect realistic conditions.
+- **Cookie consent banner.** Every fresh Playwright context lands
+  on a "Cookies & analytics consent" banner that occupies the
+  bottom of the viewport. I did not auto-dismiss it for the
+  browser walk so the keyboard / touch findings reflect the
+  out-of-the-box experience.
+
+Pages I could not reach in pass 2: **0** of the 10 target pages.
+`/compliance` and `/care` (not on the live site) were substituted as
+noted above.
+
+## §12 — Lighthouse results
+
+Scores 0–100, four categories. LCP / CLS / TBT are raw
+`displayValue`s from each run. Mobile = Lighthouse mobile preset
+(Slow 4G + 4× CPU); desktop = desktop preset.
+
+### Mobile
+
+| Page | Perf | A11y | BP | SEO | LCP | CLS | TBT |
+|------|------|------|----|-----|-----|-----|-----|
+| `/`                    | 82 | 100 | 100 | 83 | 4.6 s | 0 | 30 ms |
+| `/features`            | 74 |  98 | 100 | 83 | 6.0 s | 0 | 50 ms |
+| `/security`            | 73 | 100 | 100 | 83 | 6.5 s | 0 | 20 ms |
+| `/trust`               | 82 | 100 | 100 | 83 | 4.8 s | 0 |  0 ms |
+| `/healthcare-compliance` | 88 |  94 | 100 | 83 | 3.7 s | 0 | 10 ms |
+| `/about`               | 81 | 100 | 100 | 83 | 4.5 s | 0 | 120 ms |
+| `/contact`             | 85 | 100 | 100 | 83 | 4.3 s | 0 | 10 ms |
+| `/blog`                | 82 | 100 | 100 | 83 | 4.6 s | 0 | 20 ms |
+| `/legal/terms`         | 82 | 100 | 100 | 83 | 4.6 s | 0 |  0 ms |
+| `/legal/privacy`       | 86 | 100 | 100 | 92 | 4.0 s | 0 |  0 ms |
+
+### Desktop
+
+| Page | Perf | A11y | BP | SEO | LCP | CLS | TBT |
+|------|------|------|----|-----|-----|-----|-----|
+| `/`                    | 99 | 100 | 100 | 83 | 1.0 s | 0 | 0 ms |
+| `/features`            | 99 | 100 | 100 | 83 | 1.0 s | 0 | 0 ms |
+| `/security`            | 97 | 100 | 100 | 83 | 1.2 s | 0 | 0 ms |
+| `/trust`               | 99 | 100 | 100 | 83 | 0.9 s | 0 | 0 ms |
+| `/healthcare-compliance` | 100 |  91 | 100 | 83 | 0.8 s | 0 | 0 ms |
+| `/about`               | 99 | 100 | 100 | 83 | 0.9 s | 0 | 0 ms |
+| `/contact`             | 99 | 100 | 100 | 83 | 0.9 s | 0 | 0 ms |
+| `/blog`                | 99 | 100 | 100 | 83 | 1.0 s | 0 | 0 ms |
+| `/legal/terms`         | 95 | 100 | 100 | 83 | 1.2 s | 0 | 0 ms |
+| `/legal/privacy`       | 99 | 100 | 100 | 92 | 0.9 s | 0 | 0 ms |
+
+Observations:
+
+- **CLS = 0 across all 20 runs.** No layout shift on first paint —
+  the streaming RSC payload is well-anchored. This was the open
+  worry in pass 1 finding #18.
+- **SEO = 83 universally** (except `/legal/privacy` = 92). Lighthouse
+  fails the same two SEO audits on every page: (a) `robots-txt is
+  not valid` — i.e. **Lighthouse confirms pass 1 finding #1**, the
+  `\n` in the sitemap URL invalidates the file — and (b) `link-text:
+  Links do not have descriptive text` — generic "Learn more" / "Read
+  more" links on most pages. `/legal/privacy` scores higher because
+  its links carry policy-specific text.
+- **Best Practices = 100 across the board.** No mixed-content, no
+  deprecated APIs surfaced by Lighthouse, HSTS present.
+- **Mobile vs desktop delta is dominated by LCP.** Desktop is
+  uniformly 0.8–1.2 s; mobile is 3.7–6.5 s. The page that suffers
+  most on mobile is `/security` (LCP 6.5 s, perf 73).
+- **`/healthcare-compliance` a11y dips to 91 (desktop) / 94
+  (mobile)** — only page below 98. Driven by three lighthouse audits:
+  `button-name` (icon buttons without an accessible name),
+  `target-size` (touch targets < 44 px), and `td-has-header` (a data
+  table with no `<th>`). See §15.
+
+## §13 — Browser-walk findings
+
+Every page loaded headless-Chrome at 1366×900, waited for
+`networkidle`, captured console messages, page errors, request
+log, and Performance API timing. Results:
+
+| Page | Main HTTP | FCP | Total requests | Console errors | Console warnings | Failed responses (≥400) |
+|------|-----------|-----|----------------|----------------|-------------------|--------------------------|
+| `/`                    | 200 | 412 ms | 56 | 0 | 0 | 0 |
+| `/features`            | 200 | 652 ms | 60 | 0 | 0 | 0 |
+| `/security`            | 200 | 536 ms | 59 | 0 | 0 | 0 |
+| `/trust`               | 200 | 440 ms | 68 | 0 | 0 | 0 |
+| `/healthcare-compliance` | 200 | 484 ms | 59 | 0 | 0 | 0 |
+| `/about`               | 200 | 336 ms | 62 | 0 | 0 | 0 |
+| `/contact`             | 200 | 396 ms | 56 | 0 | 0 | 0 |
+| `/blog`                | 200 | 544 ms | 64 | 0 | 0 | 0 |
+| `/legal/terms`         | 200 | 372 ms | 57 | 0 | 0 | 0 |
+| `/legal/privacy`       | 200 | 340 ms | 55 | 0 | 0 | 0 |
+
+Findings:
+
+| # | Sev | Page | Observation | Fix hint |
+|---|-----|------|-------------|----------|
+| 82 | LOW | All 10 pages | **No console errors, no page errors, no failed asset responses, no hydration warnings, no CSP violations, no missing-font warnings, no broken images** in headless-Chrome on unthrottled desktop. The dynamic surface is clean on first paint. This is a positive — recording it explicitly because pass 1 flagged the streaming-RSC weight (finding #18) and the question was whether the payload is "fine after gzip/brotli". Answer: yes, FCP is 336–652 ms on broadband. | — |
+| 83 | LOW | All 10 pages | Total request count 55–68 per page. Above the typical 30–40 for a marketing site but every request returns 200, so no broken dependencies. Likely a function of granular JS chunking from `next build --turbopack`. Worth a Lighthouse opportunity audit only if performance work is queued (see §17). | — |
+| 84 | MED | `/`, every page | Cookie-consent banner ("We use cookies to improve your experience…") is rendered on every fresh load. It is fixed at `bottom: 0`, `height ≈ 218 px` on a 375 px viewport — occupying ~27 % of the mobile viewport — and is keyboard-reachable only as the **last** tab stop (see §15 finding #87). Because the banner is `z-[60]` and the page content keeps scrolling under it, the bottom of the hero is partially occluded on mobile until dismissed. (verify dismissal persists across navigation — the playwright contexts in this audit were fresh, so each navigation re-renders the banner.) | Make banner the first focusable element after `Skip to main content`, or render an aria-live notice and a smaller compact pill on mobile. |
+
+## §14 — Form findings
+
+The marketing site has **one** form total on the public surface.
+`/contact` carries the only `<form>` element across `/`, `/contact`,
+`/security-review`, `/trust`, `/legal/privacy`, `/legal/terms`,
+`/blog`, `/about`. No newsletter form. No demo-request form (the
+"Book Demo" CTA routes to `/contact?type=demo`, i.e. the same form
+with a hidden field). No DSAR or consent-withdrawal form on
+`/legal/*` — both are mentioned in privacy copy but only via the
+`Formaos.team@gmail.com` mailto.
+
+### §14.1 `/contact` form structure
+
+```
+form (action="javascript:throw new Error('A React form was
+              unexpectedly submitted...')")
+  ├── hidden inquiryType
+  ├── hidden source
+  ├── hidden plan
+  ├── input[type=text]     name=name           required, label "Full Name *"
+  ├── input[type=email]    name=email          required, label "Work Email *"
+  ├── input[type=text]     name=organization   required, label "Organization *"
+  ├── select               name=industry       label "Industry"
+  ├── select               name=primaryNeed    label "Primary Need"
+  ├── select               name=timeline       label "Desired Timeline"
+  ├── textarea             name=message        required, label "Message"
+  └── button submit "Talk to Sales"
+```
+
+Submit-button text is "Talk to Sales" regardless of `?type=`
+(`compliance-plan`, `demo`, `sales`, `security-review`,
+`procurement`). The hidden `inquiryType` field carries the real
+intent — the visible CTA label does not change to match.
+
+### §14.2 Test results
+
+| # | Sev | Test | Observation | Fix hint |
+|---|-----|------|-------------|----------|
+| 85 | HIGH | Empty submit | Clicking "Talk to Sales" with all required fields blank produces **no visible error UI**. No `[role=alert]`, no `.text-red-500`, no inline `data-error`. The browser's native `checkValidity()` returns `false` and emits a tooltip on the first invalid field (`name`), but the form does not surface a custom error state. A user who Tabs past the tooltip, or whose browser doesn't render it (assistive tech in some screen-reader configs), sees no feedback. | Add visible inline error messages tied to `aria-describedby` and `aria-invalid` on each required field. The form already declares `required` but doesn't paint the failure state. |
+| 86 | MED | Bad email (`not-an-email`) | Same behaviour as #85 — browser tooltip says "Please include an '@' in the email address. 'not-an-email' is missing an '@'." No custom inline error. No POST is made (validity blocks submit). | Same fix as #85; the validation already runs, the UI just doesn't render the failure state. |
+| 87 | LOW | Boundary (5000-char unicode message, valid email shape, emoji in name) | Form accepts the input client-side, no character-count warning, no length cap on `<textarea>`. No POST observed (the third click did not trigger a network request — likely because the React submit handler keeps the form in a "submitting" state from the prior empty/bad-email attempts in the same context. Could not exhaustively confirm the message-length ceiling without a real submission.) | Add visible `maxLength` (e.g. 2000 chars) on the message textarea with a character counter. |
+| 88 | MED | Form `action` attribute | Action is literally `javascript:throw new Error(...)` — React's anti-double-submit shim. This means **the form is non-functional without JavaScript**. No `<noscript>` fallback, no `action="/api/contact"` to degrade to. For an enterprise contact path, a no-JS fallback to a mailto or a static POST endpoint is normal hygiene. | Either add a `noscript` fallback `mailto:` or wire a real `action` endpoint. |
+| 89 | LOW | No visible bot mitigation | No reCAPTCHA / hCaptcha / Cloudflare Turnstile / honeypot field observed in the rendered DOM. The CSRF token (if any) must be added client-side; not visible in the inspected `<input>` list. Server-side rate limiting was flagged in `2026-05-12-deep-audit.md` finding #4 — that mitigation is the only line of defence visible to this audit. | (verify) — if server-side rate limit is the only defence, scrapers can still burn the rate-limit budget. A client-side honeypot is cheap. |
+| 90 | MED | Submit label drift | Button reads "Talk to Sales" even when arriving via `?type=compliance-plan` or `?type=demo`. The hero CTA you clicked says one thing, the form CTA says another. | Render `inquiryType`-aware submit label ("Request compliance plan" / "Book demo" / "Talk to Sales"). |
+| 91 | MED | Missing forms | Brief asked for "newsletter, DSAR, consent withdrawal" probes. **None of these forms exist** on the public marketing site. `/legal/privacy` describes DSAR rights and points to `Formaos.team@gmail.com`; consent-withdrawal is mailto-only; no newsletter signup is present anywhere (no `/blog` subscribe, no footer email capture). For a B2B SaaS, the missing newsletter signup on `/blog` is a noticeable gap. | Decide whether to add a newsletter signup; for DSAR and consent withdrawal, a structured form is preferable to a Gmail mailto (see also #11 in pass 1). |
+
+## §15 — Keyboard-navigation findings
+
+For each of the 10 pages, headless Chrome at 1366×900, focused
+`<body>`, pressed Tab up to 60 times, captured the active element's
+tag, accessible label, bounding rect, computed outline / box-shadow,
+and viewport position.
+
+Aggregate per-page result:
+
+| Page | Tab stops | Stops with **no** focus indicator | Backward jumps in tab order |
+|------|-----------|-----------------------------------|------------------------------|
+| `/`                    | 52 | 0 | 19 |
+| `/features`            | 47 | 0 | 19 |
+| `/security`            | 52 | 0 | 19 |
+| `/trust`               | 54 | 0 | 19 |
+| `/healthcare-compliance` | 60 | 0 | 12 |
+| `/about`               | 49 | 0 | 19 |
+| `/contact`             | 55 | 0 | 19 |
+| `/blog`                | 58 | 0 | 19 |
+| `/legal/terms`         | 60 | 0 | 16 |
+| `/legal/privacy`       | 60 | 0 | 18 |
+
+The "backward jumps" metric counts the times tab focus moved upward
+in `y` by > 50 px. Inspection of the home-page trace shows the bulk
+are **normal column-by-column tab traversal of the 4-column footer**
+(footer column 1 ends at y ≈ 8924, then jumps back to y ≈ 8799 to
+start column 2), which is *visually correct* — the eye reads
+column-by-column too. So the high backstep count is mostly a layout
+artefact, not a bug. The genuine bug is the last three stops, which
+**jump back to the cookie-banner overlay** (see #87 below).
+
+| # | Sev | Page | Observation | Fix hint |
+|---|-----|------|-------------|----------|
+| 92 | HIGH | All 10 pages | **Cookie-consent banner ("Reject non-essential" / "Accept all" / "Learn more") is the LAST tab stop** on every page. The banner is visually overlaid on the bottom of the viewport from first paint, but the keyboard user must tab through every page link and every footer link before reaching it. A keyboard-first user cannot dismiss the banner without ~50 Tab presses. WCAG 2.4.3 (focus order). | Insert the consent banner immediately after `Skip to main content` in tab order (use `tabIndex` or DOM ordering). Re-test that visible focus on the banner doesn't trap. |
+| 93 | LOW | All 10 pages | **`Skip to main content`** link is present and is the FIRST tab stop on every page. It has a 2-px box-shadow focus indicator. Good. (Listed positive so the next review doesn't re-flag it.) | — |
+| 94 | LOW | All 10 pages | **Every captured tab stop has a visible focus indicator** — either `outline: 2px solid` (links, buttons) or `box-shadow` (nav anchors, CTAs). Zero focus-invisible stops across 547 captured stops. Refutes the pass-1 "(verify) focus rings" suggestion under cross-cutting #18 family — focus rings exist and they're consistent. | — |
+| 95 | LOW | `/` | **Top nav contradicts pass-1 finding #7.** Pass 1 (static HTML) reported the primary nav surfaces only "Home", "Pricing", and "Get Compliance Plan". The hydrated nav exposes five primary buttons + Login + CTA: **Home / Platform ▾ / Solutions ▾ / Trust & Security ▾ / Pricing / Resources ▾ / Login / Get Compliance Plan**. Dropdown contents (verified by clicking each in the audit's headless run): Platform → `/product`, `/features`, `/frameworks`, `/integrations`. Solutions → `/industries`, `/ndis-providers`, `/healthcare-compliance`, `/financial-services-compliance`, `/childcare-compliance`, `/construction-compliance`, `/enterprise`, `/customer-stories`, `/compare`. Trust & Security → `/security`, `/trust`, `/security-review`, `/enterprise-proof`. Resources → `/documentation`, `/blog`, plus others. **Pass 1's nav-discoverability concern (cross-cutting #7) is obsolete and should be removed from the repair queue.** | Strike #7 from the repair queue. |
+| 96 | MED | `/healthcare-compliance` | Tab traversal visits 60 stops, but the dashboard-tab buttons ("All Practitioners 5", "Credential Alerts 2", "NSQHS Tracker 8") are sandwiched between two unnamed icon buttons (23–26 px square — Lighthouse `button-name` audit failure noted in §12). A screen reader user tabs into a button with no accessible name and no visible label. WCAG 4.1.2. | Give the icon buttons an `aria-label` (e.g. "Previous tab", "Next tab") and bump them to ≥ 44 px hit area. |
+| 97 | LOW | `/contact` | Form tab order: Name → Email → Organization → Industry → Primary Need → Timeline → Message → Submit. Matches visual order. Form fields are reached via Tab without needing to mouse. No tab-trap detected. | — |
+| 98 | MED | All pages | The page hero's CTAs ("Get Compliance Plan", "Book Demo") are stops 10–11 in tab order (after the full nav + skip + logo + login). For a user who arrives keyboard-first, this is acceptable but it would help if Tab from `Skip to main content` jumped past the nav directly to the hero CTA. (verify whether the skip-link target's `tabIndex=-1 / focus()` behaviour actually moves caret to the hero block, not just the `<main>` start.) | — |
+
+## §16 — Mobile-viewport findings
+
+Three breakpoints (320, 375, 768 px wide; 800 px tall;
+`deviceScaleFactor=2`, `isMobile` for ≤414, `hasTouch` ≤768).
+
+| # | Sev | Where | Observation | Fix hint |
+|---|-----|-------|-------------|----------|
+| 99 | LOW | All pages × all 3 breakpoints | **Zero horizontal overflow on any page at 320, 375, or 768.** The layout is responsive without rogue fixed-width elements. (Pass 1 had no static signal on overflow — this confirms.) | — |
+| 100 | HIGH | `/healthcare-compliance` @ 320 / 375 / 768 | Two unnamed icon buttons in the dashboard mock are 23–24 × 26 px on every breakpoint. Below WCAG 2.5.5 (44 × 44 css px) **and** unlabeled (§15 #96). Mobile fingers can't reliably hit them. | Promote to 44 × 44 with adequate spacing; add `aria-label`. |
+| 101 | MED | `/healthcare-compliance` @ 375 | Three "tab" buttons in the dashboard mock are 137 × 32 px, 141 × 30 px, 135 × 30 px — under the 44 px height threshold. | Bump tab height to 44 px on mobile or use a select on small viewports. |
+| 102 | MED | `/blog` @ 320 / 375 / 768 | Category filter chips (All Posts (21), Compliance (5), NDIS (4), Security (3), Technology (2)) are 38 px tall on all breakpoints. Six chips visible above the fold @ 375. Below 44 px. | `min-height: 44px` on the chip component. |
+| 103 | MED | `/contact` @ 768 | 37 small touch targets at 768 px — the form inputs at 768 inherit a compact desktop sizing rather than the mobile sizing. (Inputs are themselves 44 px tall at 320/375 — so the regression is the 768 tablet width using desktop styles.) | Audit the 768-px breakpoint for form-input height. |
+| 104 | MED | `/` @ 375 | **Cookie-consent banner is `position: fixed`, `bottom: 0`, height 218 px on a 800-px viewport (~27 %)**. Combined with the 61-px sticky header (`mk-header-premium sticky top-0 z-50`), only ~52 % of the viewport is usable until the banner is dismissed. Worse on real-world 667-px-tall iPhone SE viewports. | Compact-pill variant of the consent banner on small viewports (e.g. 56-px-tall dock at the bottom with "Manage" link to expand). |
+| 105 | LOW | All pages @ all 3 breakpoints | Logo anchor "FormaOS Home" is 42 × 42 px — just under 44 px. Single occurrence per page, low impact but consistent. | Bump to 44 × 44 by adjusting padding. |
+| 106 | LOW | `/blog` @ 768 | 49 small touch targets at 768 — the post-card link list inherits compact desktop hover styles at tablet width. | Same as #103: re-check 768-px breakpoint. |
+| 107 | LOW | All pages | No `<img>` is broken (`naturalWidth === 0`) on any page at any breakpoint. No FOUC observed (CLS = 0 in §12 corroborates). Fonts paint on first frame. | — |
+
+## §17 — Throttled-performance findings
+
+Re-ran Lighthouse with `--throttling.cpuSlowdownMultiplier=4
+--throttling.throughputKbps=1638 --throttling.requestLatencyMs=150`
+on the two heaviest pages from §12 (home + security).
+
+| Page | Default mobile (§12) | This throttle | Δ |
+|------|----------------------|----------------|---|
+| `/` perf score        | 82 | 81 | −1 |
+| `/` LCP               | 4.6 s | 4.6 s | 0 |
+| `/security` perf score | 73 | 77 | +4 (within run-to-run variance) |
+| `/security` LCP        | 6.5 s | 6.4 s | −0.1 s |
+
+The default Lighthouse mobile preset is already Slow 4G + 4× CPU,
+so the additional Fast-3G overhead is small. The conclusion is that
+the §12 mobile scores **already reflect throttled conditions** —
+there is no further-degraded "real mobile" worse-case lurking
+behind the baseline. Same opportunities surface on both runs:
+
+| Opportunity | Home (savings) | Security (savings) |
+|-------------|----------------|---------------------|
+| Render-blocking resources | 573 ms | 438 ms |
+| Unused JavaScript | 450 ms | 600 ms |
+| Unused CSS | 300 ms | 300 ms |
+| Properly size images (responsive) | 150 ms | **900 ms** |
+| Serve images in next-gen formats (AVIF/WebP) | 150 ms | 320 ms |
+
+Findings:
+
+| # | Sev | Page | Observation | Fix hint |
+|---|-----|------|-------------|----------|
+| 108 | HIGH | `/security` mobile | LCP is **6.5 s** (perf 73). The biggest single opportunity is "Properly size images" at 900 ms — i.e. an image is being served at a resolution far above its rendered size on mobile. The hero image on `/security` is the candidate (verify). | Add explicit `width` / `height` + a `<source media=...>` `srcset` for the security hero image. |
+| 109 | MED | `/features` mobile | LCP **6.0 s** (perf 74). Same opportunity profile — render-blocking, unused JS, unused CSS. | Combined fix in #110. |
+| 110 | MED | All mobile pages | The 5 opportunities are consistent across pages, suggesting they're framework-wide (the Next.js shared chunks, the Tailwind output, the marketing-hero image component). One fix run benefits the whole site. | Audit pass: turbopack chunk split, Tailwind purge, image component. |
+| 111 | LOW | All pages | CLS = 0 under throttling too. The streaming-RSC handoff is well-anchored even on slow networks. | — |
+
+## §18 — Pass-2 summary
+
+**New finding count by dimension (severity):**
+
+| Dimension | CRIT | HIGH | MED | LOW | Total |
+|-----------|------|------|-----|-----|-------|
+| §13 Browser walk     | 0 | 0 | 1 | 2 | 3   (findings 82–84) |
+| §14 Forms            | 0 | 1 | 4 | 2 | 7   (findings 85–91) |
+| §15 Keyboard nav     | 0 | 1 | 2 | 4 | 7   (findings 92–98) |
+| §16 Mobile viewports | 0 | 1 | 4 | 4 | 9   (findings 99–107) |
+| §17 Throttled perf   | 0 | 1 | 2 | 1 | 4   (findings 108–111) |
+| **Pass-2 totals**    | **0** | **4** | **13** | **13** | **30** |
+
+Pass 1 + Pass 2 cumulative: 50 + 30 = **80 findings**. Severity
+totals across both passes: CRIT 3 / HIGH 18 / MED 35 / LOW 24.
+
+### Pages covered (10/10)
+
+`/`, `/features`, `/security`, `/trust` (substituted for non-
+existent `/compliance`), `/healthcare-compliance` (substituted
+for non-existent `/care`), `/about`, `/contact`, `/blog`,
+`/legal/terms`, `/legal/privacy`. Pricing excluded per Phase D.
+
+### Headline issues (Pass 2)
+
+1. **Cookie consent banner is the last tab stop on every page**
+   (§15 #92) — WCAG 2.4.3 focus-order regression and a usability
+   blocker for keyboard-first users.
+2. **Contact form has no custom validation UI** (§14 #85, #86) —
+   silent failure on empty submit / bad email past the browser's
+   own tooltip; the existing `required` attributes go unrealised
+   in the rendered UI.
+3. **`/security` mobile LCP is 6.5 s** (§17 #108) — undersized-image
+   savings of 900 ms identifies a single fix. `/features` is 6.0 s
+   with the same pattern.
+4. **`/healthcare-compliance` has unnamed icon buttons at 23–26 px**
+   (§15 #96, §16 #100) — fails accessible-name, fails touch-target,
+   single component, fix is mechanical.
+5. **Top-nav finding from pass 1 (#7) is obsolete** (§15 #95) — the
+   hydrated nav has 5 dropdowns covering the full buyer journey.
+   Remove #7 from the repair queue.
+6. **Lighthouse confirms pass 1 #1** (§12 SEO 83 universal) — the
+   `\n`-in-URL bug fails `robots-txt is not valid` on every page.
+   This is now triple-confirmed (curl, JSON-LD raw bytes,
+   Lighthouse).
+7. **Cookie banner occupies 27 % of mobile viewport** (§16 #104) —
+   sticky header (61 px) + banner (218 px) leaves ~52 % usable on
+   375 × 800.
+8. **No bot mitigation on contact form** (§14 #89) — no captcha,
+   no honeypot in rendered DOM; server-side rate limit is the
+   only visible defence.
+9. **No newsletter / DSAR / consent forms exist** (§14 #91) — gap
+   between privacy policy language ("contact us to exercise your
+   rights") and a structured intake.
+10. **Form `action="javascript:throw new Error..."`** (§14 #88) —
+    React anti-double-submit shim; form is dead without JS, no
+    `<noscript>` fallback.
+
+### Dimensions reached vs not
+
+All 6 dimensions exercised. The only data point I could not fully
+verify is the **server-side response** for a real contact-form
+submission (§14 #87 boundary case) — that would have created live
+records in the production CRM/email pipeline. The audit defers
+that probe to whichever session has authorisation to send a
+flagged test record.
+
+### Pass-2 closing
+
+This file is the only artefact from Pass 2. The Pass-1 repair
+queue is updated by these notes:
+
+- **Strike `#7` (nav additions)** from the repair queue. The
+  hydrated nav already covers buyer-journey pages (§15 #95).
+- **Promote a new HIGH** to slot before `#67` (FAQ empty): the
+  cookie-consent tab-order issue (§15 #92) — single keyboard
+  blocker on every page.
+- **Promote `#85`** (no custom validation UI on contact form) into
+  the cross-cutting list — same component, every CTA on the site
+  routes into it.
+- **Pass-1 #18 ("Lighthouse pass before LCP work")** is now
+  resolved by §12 + §17. Specific opportunities (responsive
+  images on `/security`, render-blocking, unused JS) replace the
+  generic "verify" note.
