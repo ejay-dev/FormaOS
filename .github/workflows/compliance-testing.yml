@@ -29,6 +29,19 @@ jobs:
     if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'gdpr' || github.event_name != 'workflow_dispatch'
     outputs:
       status: ${{ steps.check_gdpr.outputs.status }}
+    # Compliance tests boot the marketing + privacy/legal surfaces only —
+    # they do not exercise real auth or admin DB queries. Anon Supabase
+    # creds plus dummy values for the non-customer-facing keys are
+    # sufficient here. The env block must be at job-level so it applies
+    # to BOTH `npm run build` (whose prebuild check requires these) AND
+    # `npm start` (whose prestart re-runs the same check before booting).
+    env:
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co' }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'compliance-test-anon-key' }}
+      SUPABASE_SERVICE_ROLE_KEY: compliance-test-service-role-key
+      FOUNDER_EMAILS: compliance-ci@formaos.test
 
     steps:
       - name: Checkout code
@@ -48,18 +61,6 @@ jobs:
 
       - name: Build application
         run: npm run build
-        env:
-          # The prebuild check (scripts/check-env.js) gates on presence of
-          # the full required-keys set. Compliance tests boot the marketing
-          # + privacy/legal surfaces only — they do not exercise real auth
-          # or admin DB queries — so anon Supabase creds plus dummy values
-          # for the non-customer-facing keys are sufficient here.
-          NEXT_PUBLIC_APP_URL: http://localhost:3000
-          NEXT_PUBLIC_SITE_URL: http://localhost:3000
-          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co' }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'compliance-test-anon-key' }}
-          SUPABASE_SERVICE_ROLE_KEY: compliance-test-service-role-key
-          FOUNDER_EMAILS: compliance-ci@formaos.test
 
       - name: Start application
         run: |
@@ -120,6 +121,15 @@ jobs:
     if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'soc2' || github.event_name != 'workflow_dispatch'
     outputs:
       status: ${{ steps.check_soc2.outputs.status }}
+    # Same job-level env as gdpr-compliance: applies to both `npm run build`
+    # (prebuild check) and `npm start` (prestart re-runs the same check).
+    env:
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co' }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'compliance-test-anon-key' }}
+      SUPABASE_SERVICE_ROLE_KEY: compliance-test-service-role-key
+      FOUNDER_EMAILS: compliance-ci@formaos.test
 
     steps:
       - name: Checkout code
@@ -139,18 +149,6 @@ jobs:
 
       - name: Build application
         run: npm run build
-        env:
-          # The prebuild check (scripts/check-env.js) gates on presence of
-          # the full required-keys set. Compliance tests boot the marketing
-          # + privacy/legal surfaces only — they do not exercise real auth
-          # or admin DB queries — so anon Supabase creds plus dummy values
-          # for the non-customer-facing keys are sufficient here.
-          NEXT_PUBLIC_APP_URL: http://localhost:3000
-          NEXT_PUBLIC_SITE_URL: http://localhost:3000
-          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co' }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'compliance-test-anon-key' }}
-          SUPABASE_SERVICE_ROLE_KEY: compliance-test-service-role-key
-          FOUNDER_EMAILS: compliance-ci@formaos.test
 
       - name: Start application
         run: |
