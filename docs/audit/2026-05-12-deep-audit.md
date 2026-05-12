@@ -193,6 +193,28 @@ Rejected:
 - "Skip-link points to missing element" — `#main-content` exists in
   `app/app/layout.tsx`.
 
+## 9a. Retroactive verifications
+
+Discharges procedural debt from PR #52 (merged with three failing
+compliance checks due to a shell-truthiness bug in the merge guard).
+
+- **2026-05-12** — manually triggered the `Compliance Testing`
+  workflow against `main` HEAD (post-#52, post-#54, post-#55).
+  - Run [25719591886](https://github.com/ejay-dev/FormaOS/actions/runs/25719591886):
+    `gdpr-compliance` ✅, `soc2-compliance` ✅, `compliance-summary` ✅.
+  - First green run of this workflow on `main` since at least the
+    2026-05-11 schedule (which failed at the prebuild gate). #52's
+    code change is verified compliant on the now-functional suite.
+  - Two follow-on workflow bugs surfaced along the way and shipped as
+    their own PRs: #54 (build-step env gap) and #55 (start-step env
+    gap — the prestart hook runs the same `check-env` and was missing
+    the same six keys).
+
+Going forward, merge-guard uses `[ -z "$FAILED" ]` instead of
+`awk … && gh pr merge`. The latter passes through awk's "matched
+nothing" exit-0, which is what caused #52 to merge red in the first
+place.
+
 ## 10. Things deliberately not in scope
 
 - Stripe-side billing reconciliation.
