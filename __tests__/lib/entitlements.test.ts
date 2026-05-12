@@ -115,12 +115,6 @@ describe('syncEntitlementsForPlan', () => {
         },
         {
           organization_id: TEST_ORG_ID,
-          feature_key: 'soc2_certification',
-          enabled: true,
-          limit_value: null,
-        },
-        {
-          organization_id: TEST_ORG_ID,
           feature_key: 'capa_management',
           enabled: true,
           limit_value: null,
@@ -140,7 +134,7 @@ describe('syncEntitlementsForPlan', () => {
       ]),
     );
 
-    expect(records).toHaveLength(10);
+    expect(records).toHaveLength(9);
 
     for (const record of records) {
       expect(record.organization_id).toBe(TEST_ORG_ID);
@@ -193,16 +187,10 @@ describe('syncEntitlementsForPlan', () => {
           enabled: true,
           limit_value: null,
         },
-        {
-          organization_id: TEST_ORG_ID,
-          feature_key: 'executive_rollup',
-          enabled: true,
-          limit_value: null,
-        },
       ]),
     );
 
-    expect(records).toHaveLength(15);
+    expect(records).toHaveLength(13);
 
     for (const record of records) {
       expect(record.organization_id).toBe(TEST_ORG_ID);
