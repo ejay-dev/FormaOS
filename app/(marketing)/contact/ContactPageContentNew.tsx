@@ -259,6 +259,18 @@ function resolveContactIntent(searchParams: SearchParamReader): ContactIntent {
   }
 }
 
+function contactErrorMessage(code: string | null): string {
+  switch (code) {
+    case 'rate_limit':
+      return '❌ Too many submissions from this network. Please wait a few minutes before trying again.';
+    case 'invalid_email':
+      return '❌ That email address doesn’t look right. Please check it and try again.';
+    case '1':
+    default:
+      return '❌ We could not submit your message. Please check the required fields and try again, or email us directly.';
+  }
+}
+
 function defaultPrimaryNeedForIntent(intent: ContactIntent): string {
   switch (intent) {
     case 'procurement':
@@ -685,8 +697,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg"
               >
                 <p className="text-red-400 text-sm text-center">
-                  ❌ Something went wrong. Please try again or contact us
-                  directly.
+                  {contactErrorMessage(searchParams.get('error'))}
                 </p>
               </motion.div>
             )}
