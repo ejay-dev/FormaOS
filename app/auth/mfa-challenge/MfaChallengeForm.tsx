@@ -26,21 +26,57 @@ export function MfaChallengeForm() {
         body: JSON.stringify({ token: trimmed }),
       });
 
-      if (res.status === 429) {
-        setError('Too many attempts. Please wait a few minutes and try again.');
-        return;
-      }
-
       if (!res.ok) {
         const payload = (await res.json().catch(() => null)) as {
           error?: string;
         } | null;
-        if (payload?.error === 'invalid_token') {
-          setError('That code is not valid. Try again.');
-        } else if (payload?.error === 'invalid_token_format') {
-          setError('Enter a 6-digit code or a backup code.');
-        } else {
-          setError('We could not verify that code. Please try again.');
+        // Map every error code the /api/auth/mfa-verify route can emit
+        // (rate_limited, invalid_body, invalid_token_format, unauthorized,
+        // invalid_token, mfa_verify_failed) onto a user-actionable
+        // message. Falling through to a generic "could not verify" was
+        // the original bug — every distinct failure mode looked the
+        // same and the user had no way to tell network from typo from
+        // expired session.
+        switch (payload?.error) {
+          case 'rate_limited':
+            setError(
+              'Too many attempts. Please wait a few minutes and try again.',
+            );
+            break;
+          case 'invalid_token':
+            setError('That code is not valid. Try again.');
+            break;
+          case 'invalid_token_format':
+            setError('Enter a 6-digit code or a backup code.');
+            break;
+          case 'invalid_body':
+            setError(
+              'The form submission was malformed. Please refresh the page and try again.',
+            );
+            break;
+          case 'unauthorized':
+            setError(
+              'Your session expired before we could verify the code. Please sign in again.',
+            );
+            break;
+          case 'mfa_verify_failed':
+            setError(
+              'MFA service is temporarily unavailable. Please try again in a moment.',
+            );
+            break;
+          default:
+            // 429 fallback for callers that intercept before reading the
+            // body, plus genuinely unknown codes.
+            if (res.status === 429) {
+              setError(
+                'Too many attempts. Please wait a few minutes and try again.',
+              );
+            } else {
+              setError(
+                `We could not verify that code (status ${res.status}). Please try again or contact support.`,
+              );
+            }
+            break;
         }
         return;
       }
