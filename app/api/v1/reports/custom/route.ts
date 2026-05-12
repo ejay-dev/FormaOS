@@ -35,10 +35,8 @@ export async function GET(request: Request) {
   } catch (err) {
     return Response.json(
       {
-        error: {
-          message:
-            err instanceof Error ? err.message : 'Failed to list reports',
-        },
+        error:
+          err instanceof Error ? err.message : 'Failed to list reports',
       },
       { status: 500 },
     );
@@ -60,7 +58,7 @@ export async function POST(request: Request) {
 
     if (!name || typeof name !== 'string') {
       return Response.json(
-        { error: { message: 'name is required' } },
+        { error: 'name is required' },
         { status: 400 },
       );
     }
@@ -83,10 +81,8 @@ export async function POST(request: Request) {
   } catch (err) {
     return Response.json(
       {
-        error: {
-          message:
-            err instanceof Error ? err.message : 'Failed to create report',
-        },
+        error:
+          err instanceof Error ? err.message : 'Failed to create report',
       },
       { status: 500 },
     );

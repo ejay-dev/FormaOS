@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
   if (!from || !to) {
     return Response.json(
-      { error: { message: 'from and to query parameters are required' } },
+      { error: 'from and to query parameters are required' },
       { status: 400 },
     );
   }
@@ -55,11 +55,7 @@ export async function GET(request: Request) {
     return jsonWithContext(auth.context, { data: snapshots });
   } catch (err) {
     return Response.json(
-      {
-        error: {
-          message: err instanceof Error ? err.message : 'Failed to get trends',
-        },
-      },
+      { error: err instanceof Error ? err.message : 'Failed to get trends' },
       { status: 500 },
     );
   }

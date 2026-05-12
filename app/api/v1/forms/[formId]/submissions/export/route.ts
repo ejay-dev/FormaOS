@@ -54,7 +54,7 @@ export async function GET(
   if (!isUuid(formId)) {
     return jsonWithContext(
       auth.context,
-      { error: { message: 'Invalid formId' } },
+      { error: 'Invalid formId' },
       { status: 400 },
     );
   }
@@ -73,7 +73,7 @@ export async function GET(
   if (formError) {
     return jsonWithContext(
       auth.context,
-      { error: { message: 'Failed to load form for export' } },
+      { error: 'Failed to load form for export' },
       { status: 500 },
     );
   }
@@ -81,7 +81,7 @@ export async function GET(
   if (!form) {
     return jsonWithContext(
       auth.context,
-      { error: { message: 'Form not found' } },
+      { error: 'Form not found' },
       { status: 404 },
     );
   }
@@ -102,7 +102,7 @@ export async function GET(
   if (submissionsError) {
     return jsonWithContext(
       auth.context,
-      { error: { message: 'Failed to load form submissions for export' } },
+      { error: 'Failed to load form submissions for export' },
       { status: 500 },
     );
   }

@@ -33,11 +33,7 @@ export async function GET(request: Request) {
     );
   } catch (err) {
     return Response.json(
-      {
-        error: {
-          message: err instanceof Error ? err.message : 'Failed to list forms',
-        },
-      },
+      { error: err instanceof Error ? err.message : 'Failed to list forms' },
       { status: 500 },
     );
   }
@@ -60,7 +56,7 @@ export async function POST(request: Request) {
 
     if (!title || typeof title !== 'string') {
       return Response.json(
-        { error: { message: 'title is required' } },
+        { error: 'title is required' },
         { status: 400 },
       );
     }
@@ -90,11 +86,7 @@ export async function POST(request: Request) {
     return Response.json({ data: form }, { status: 201 });
   } catch (err) {
     return Response.json(
-      {
-        error: {
-          message: err instanceof Error ? err.message : 'Failed to create form',
-        },
-      },
+      { error: err instanceof Error ? err.message : 'Failed to create form' },
       { status: 500 },
     );
   }

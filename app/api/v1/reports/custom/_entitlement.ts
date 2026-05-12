@@ -17,9 +17,7 @@ export async function requireCustomReportsEntitlement(
     return jsonWithContext(
       context,
       {
-        error: {
-          message: 'Custom reports require a Growth or Enterprise entitlement',
-        },
+        error: 'Custom reports require a Growth or Enterprise entitlement',
       },
       { status: 403 },
     );

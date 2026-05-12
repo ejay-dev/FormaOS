@@ -38,10 +38,8 @@ export async function GET(request: Request) {
   } catch (err) {
     return Response.json(
       {
-        error: {
-          message:
-            err instanceof Error ? err.message : 'Failed to get AI usage',
-        },
+        error:
+          err instanceof Error ? err.message : 'Failed to get AI usage',
       },
       { status: 500 },
     );
