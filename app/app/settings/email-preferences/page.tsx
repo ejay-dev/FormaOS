@@ -187,9 +187,16 @@ export default function EmailPreferencesPage() {
 
       setMessage('Preferences saved successfully!');
       setTimeout(() => setMessage(''), 3000);
-    } catch (error: any) {
-      console.error('[EmailPreferencesPage] Error saving:', error.message);
-      setMessage('Failed to save preferences');
+    } catch (error: unknown) {
+      const detail =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Unknown error';
+      console.error('[EmailPreferencesPage] Error saving:', detail);
+      // Surface the actual reason inline. Truncated so a long Supabase
+      // PostgREST error doesn't blow out the layout, but the user gets
+      // enough signal to act (network vs validation vs RLS).
+      setMessage(`Failed to save preferences: ${detail.slice(0, 200)}`);
     } finally {
       setSaving(false);
     }
