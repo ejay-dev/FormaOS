@@ -27,7 +27,7 @@ PR column updates as fixes ship.
 
 | # | Sev  | Finding | File:line | PR |
 |---|------|---------|-----------|----|
-| 1 | HIGH | `app/admin/error.tsx` is a stub: shows raw `{error.message}` to the user, no Sentry capture, no digest, no consistent styling with `app/error.tsx` / `app/app/error.tsx`. If an admin server component throws, founders see unstyled red text with the raw exception. | `app/admin/error.tsx:1-25` | — |
+| 1 | HIGH | `app/admin/error.tsx` is a stub: shows raw `{error.message}` to the user, no Sentry capture, no digest, no consistent styling with `app/error.tsx` / `app/app/error.tsx`. If an admin server component throws, founders see unstyled red text with the raw exception. | `app/admin/error.tsx:1-25` | #52 |
 | 2 | MED  | `components/user-nav.tsx` logout calls `supabase.auth.signOut()` then `router.push("/signin")` (which then redirects to `/auth/signin`). No client-state clear (Zustand `useAppStore.clear()` exists but is not invoked). In-memory only, so a refresh resets it — defense-in-depth, not a leak. | `components/user-nav.tsx:26-31` | — |
 | 3 | MED  | Two parallel invite acceptance paths exist: `/accept-invite/[token]` (token-based, server actions) and `/accept-organization-invite/[membershipId]` (membershipId-based). Both ship to production; users from different invite emails will land on different surfaces. Verify both are intentional or consolidate. | `app/(standalone)/accept-invite/[token]/page.tsx`, `app/(standalone)/accept-organization-invite/[membershipId]/page.tsx` | — |
 
@@ -43,7 +43,7 @@ Verified-fine on direct inspection (rejected from this audit):
 
 | # | Sev  | Finding | File:line | PR |
 |---|------|---------|-----------|----|
-| 4 | HIGH | Marketing contact form: server action emits structured error codes (`rate_limit`, `invalid_email`, `1`) but UI maps them all to a single "Something went wrong" message. User cannot tell rate-limit from validation from server error. | `app/(marketing)/contact/ContactPageContentNew.tsx:681-692` vs `app/(marketing)/contact/actions.ts:29,53,58,85` | — |
+| 4 | HIGH | Marketing contact form: server action emits structured error codes (`rate_limit`, `invalid_email`, `1`) but UI maps them all to a single "Something went wrong" message. User cannot tell rate-limit from validation from server error. | `app/(marketing)/contact/ContactPageContentNew.tsx:681-692` vs `app/(marketing)/contact/actions.ts:29,53,58,85` | #50 |
 | 5 | MED  | `app/app/settings/email-preferences/page.tsx:185` does `if (error) throw error;` inside a handler — bubbles to the page-level error boundary and loses the form context. Should `setError(...)` and render an inline message. | `app/app/settings/email-preferences/page.tsx:183-194` | — |
 | 6 | MED  | `app/admin/components/add-note-form.tsx:44` calls `window.location.reload()` after a successful note insert. Destroys all client state and flashes a full reload. Should optimistic-add + toast. | `app/admin/components/add-note-form.tsx:31-50` | — |
 | 7 | MED  | MFA challenge form fallback error is "We could not verify that code. Please try again." for every failure mode (expired token, network, rate-limit). Server side has the codes; UI doesn't surface them. | `app/auth/mfa-challenge/MfaChallengeForm.tsx:43` | — |
@@ -127,12 +127,85 @@ Estimated single-PR scope: 2,300 LOC touched, ~600 net new/changed.
 - Test-count inflation: this audit deliberately documents 13 verified
   bugs across all dimensions, not 50+ from agent-pass sprawl.
 
-## 7. Remaining audit dimensions
+## 7. Entitlement gate alignment
 
-Not yet checked in this pass (queued for next session):
+Verified by reading `lib/billing/entitlements.ts` and grepping every
+`EntitlementKey` literal across the repo.
 
-- Entitlement gates between `lib/billing/entitlements.ts` and the DB.
-- Onboarding completeness — every step reachable from /onboarding.
-- Mobile viewport regressions across /app routes.
-- Keyboard navigation / focus-ring coverage in /app.
-- Data-flow A→B→C verification (write on page A, read on page B).
+| # | Sev  | Finding | File:line | PR |
+|---|------|---------|-----------|----|
+| 14 | HIGH | Dead entitlements: `soc2_certification` (enabled for pro/scale/enterprise) and `executive_rollup` (enabled for enterprise) are written to `org_entitlements` by `syncEntitlementsForPlan` but **no application code calls `requireEntitlement` on either key**. The grep returns only the type definition, the plan-bundle list, and tests. Paying customers see no feature behind these gates. Decision needed: implement the gate, or remove the key. | `lib/billing/entitlements.ts:12,20,42,59,77,85`; no callers in `app/**` or `components/**` | — |
+| 15 | HIGH | `app/api/v1/forms/[formId]/analytics/route.ts:21-26`, `app/api/v1/reports/custom/_entitlement.ts:9-14`, `app/api/automation/_auth.ts:33-38` all query `org_entitlements` directly without calling `requireActiveSubscription` first. A cancelled-subscription org whose entitlement rows linger could keep using these surfaces via API key. The canonical helper `requireEntitlement` (which does call `requireActiveSubscription`) exists but isn't reused. | as cited | — |
+| 16 | MED  | `app/api/v1/members/invite/route.ts:60-92` treats a *missing* `team_limit` row as unlimited seats. A missing row almost certainly means the org was never properly entitled; the safer default is to block. | `app/api/v1/members/invite/route.ts:60-92` | — |
+| 17 | MED  | Trial soft-lock taxonomy (`lib/trial/constants.ts:59-66`) uses string IDs (`'reports'`, `'audits'`, `'vault'`, `'registers'`, `'team'`, `'automation'`) that do not match the `EntitlementKey` union. Trial gating and entitlement gating operate on different vocabularies. | `lib/trial/constants.ts:59-66` vs `lib/billing/entitlements.ts:5-20` | — |
+| 18 | LOW  | AI-assistant routes (`/api/v1/ai/*`) gate at the API; no UI-side `FeatureGate` exists, so users navigate to AI pages and get a server error instead of a lock screen. UX-only. | `app/api/v1/ai/chat/route.ts:77` et al. | — |
+
+Rejected on direct inspection:
+- "Plan name mismatch: `Starter` vs `Foundation`" — the *key* is `basic`
+  in both `lib/plans.ts` and the migration; the *display name* is
+  "Foundation". The agent confused the column with the display.
+- "Migration 20260114 only seeds 5 pro entitlements" — irrelevant
+  because `syncEntitlementsForPlan` is the runtime source of truth and
+  upserts on every plan resolution. Migration seeds are just fixtures.
+
+## 8. Onboarding completeness
+
+| # | Sev  | Finding | File:line | PR |
+|---|------|---------|-----------|----|
+| 19 | HIGH | Framework provisioning is deferred via `after()` while the redirect to `/app` runs immediately. A new owner reaching `/app/compliance/frameworks` in the first few seconds may see no frameworks yet. Either await the provisioning or move the step-completion mark inside `after()`. | `app/onboarding/page.tsx:552-616` | — |
+| 20 | MED  | `app/onboarding/employee/actions.ts:128-151` (`skipEmployeeOnboarding`) marks `employee_onboarded_at` and redirects to `/app` without populating `user_profiles.full_name`. Downstream features that assume a non-empty name fail silently. | `app/onboarding/employee/actions.ts:128-151` | — |
+| 21 | MED  | Step 5/6 of the main onboarding can be reached by manual URL (`/onboarding?step=5`) for non-provisioning roles whose journey skips those steps. No page-level guard against re-entering a skipped step. | `app/onboarding/page.tsx:1201-1238`; journey in `lib/onboarding/journey.ts:104-110` | — |
+| 22 | MED  | `completeFirstAction` reads `org_subscriptions` synchronously to decide between `/app` and `/app/billing`. If the Stripe webhook hasn't fired yet the gate misjudges, and the `/app/layout.tsx` billing gate then bounces the user — two redirects to land in the right place. | `app/onboarding/page.tsx:817-838` | — |
+| 23 | LOW  | `completeEmployeeOnboarding` accepts a `primaryCTA` from the form and only validates that it starts with `/app/`. A user can submit `primaryCTA=/app/admin` and land on a page they can't operate (RLS will catch them downstream, but the post-onboarding hero shouldn't open a 403). | `app/onboarding/employee/actions.ts:117-121` | — |
+
+Rejected on direct inspection:
+- "`markStepComplete` loop increments `current_step` past `TOTAL_STEPS`"
+  — the loop calls `markStepComplete(orgId, step, step+1)` for
+  `[4, 5, 6]` and ends at `current_step = 7 = TOTAL_STEPS`. The agent
+  miscounted; not a bug.
+- "Invite accept loops if role changes" — `app/onboarding/employee/page.tsx:62-65`
+  already guards via `alreadyOnboarded`/`dbCompleted`. The agent
+  retracted on its own follow-up read.
+
+## 9. Mobile / responsive / accessibility
+
+Verified findings; the full agent list of 21 had several mis-attributed
+items, those are noted below.
+
+| # | Sev  | Finding | File:line | PR |
+|---|------|---------|-----------|----|
+| 24 | HIGH | `components/mobile-sidebar.tsx:98-107` declares `role="dialog" aria-modal="true"` but does not trap focus. Tab leaves the sidebar into the page underneath. | `components/mobile-sidebar.tsx:98-107` | — |
+| 25 | HIGH | `components/sidebar.tsx:393-398` renders a status RAG dot with `aria-label="Status indicator"` and color-only differentiation between red / amber / emerald. Color-blind users cannot distinguish overdue from on-track. WCAG 1.4.1. | `components/sidebar.tsx:393-398` | — |
+| 26 | HIGH | `components/ui/data-table.tsx:71` uses `<table class="w-full min-w-[560px]">` inside `overflow-x-auto`. On viewports under ~560px (most phones in portrait) every data table requires horizontal scroll; no card-layout fallback. | `components/ui/data-table.tsx:71` | — |
+| 27 | MED  | `components/profile/profile-editor.tsx:316,333,353,375` use `focus:outline-white/20` instead of the system's `focus:ring-2 focus:ring-primary/40` pattern. Focus visibility regresses on dark themes. | as cited | — |
+| 28 | MED  | `components/automation/workflow-step-config.tsx:74` textarea uses `outline-none transition focus:border-cyan-400/60` — border-only focus indicator, fails 3:1 contrast on most themes. Also reintroduces a cyan accent in /app, against the standing enterprise-aesthetic guidance. | `components/automation/workflow-step-config.tsx:74` | — |
+| 29 | MED  | `components/registers/add-certification-modal.tsx:146,172,191,206` use `focus:outline-black` with no fallback ring. Black outline disappears against the modal's dark surface. | as cited | — |
+| 30 | MED  | `components/mobile/more-sheet.tsx:95-170` opens with `aria-modal="true"` but no initial-focus management and no `inert`/`aria-hidden` on the background. | `components/mobile/more-sheet.tsx:95-170` | — |
+| 31 | MED  | Icon-only sort buttons in `components/ui/data-table.tsx:102` lack `aria-label`; screen readers announce only the column name, not the sort direction. | `components/ui/data-table.tsx:102` | — |
+| 32 | LOW  | `app/app/layout.tsx:191-196` skip-link is `z-50` but topbar is `z-40` and sidebar can sit higher in some routes — on focus the link can render *behind* fixed UI. | `app/app/layout.tsx:191-196` | — |
+
+Rejected:
+- "form-renderer.tsx inputs without labels" — the parent at line ~335
+  wraps every `FieldInput` in a `<label>`. Implicit labeling is valid;
+  not best practice but not a bug.
+- "RetentionSettings/RolesNew inputs without `htmlFor`" — same
+  implicit-label pattern. Cosmetic, not broken.
+- "Skip-link points to missing element" — `#main-content` exists in
+  `app/app/layout.tsx`.
+
+## 10. Things deliberately not in scope
+
+- Stripe-side billing reconciliation.
+- Mobile-native (Capacitor/RN) changes.
+- Pre-existing test quarantine (tracked in `BLOCKER_FOLLOWUPS.md`).
+- Tightening CSP (`unsafe-inline` removal) — separate workstream;
+  depends on #11.
+- Test-count inflation: every row above is a real bug or quality gap,
+  not "fail rate massaged into a 100-row spreadsheet".
+
+## 11. Remaining audit dimensions
+
+Not yet checked in this pass (queued):
+
+- **A→B→C data flow**: write on page A, read on page B, verify the
+  same record appears (cache/RLS/org-id leak surface).
