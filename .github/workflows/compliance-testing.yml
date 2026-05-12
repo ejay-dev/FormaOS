@@ -49,8 +49,17 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          # The prebuild check (scripts/check-env.js) gates on presence of
+          # the full required-keys set. Compliance tests boot the marketing
+          # + privacy/legal surfaces only — they do not exercise real auth
+          # or admin DB queries — so anon Supabase creds plus dummy values
+          # for the non-customer-facing keys are sufficient here.
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'compliance-test-anon-key' }}
+          SUPABASE_SERVICE_ROLE_KEY: compliance-test-service-role-key
+          FOUNDER_EMAILS: compliance-ci@formaos.test
 
       - name: Start application
         run: |
@@ -131,8 +140,17 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          # The prebuild check (scripts/check-env.js) gates on presence of
+          # the full required-keys set. Compliance tests boot the marketing
+          # + privacy/legal surfaces only — they do not exercise real auth
+          # or admin DB queries — so anon Supabase creds plus dummy values
+          # for the non-customer-facing keys are sufficient here.
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL || 'https://example.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'compliance-test-anon-key' }}
+          SUPABASE_SERVICE_ROLE_KEY: compliance-test-service-role-key
+          FOUNDER_EMAILS: compliance-ci@formaos.test
 
       - name: Start application
         run: |
