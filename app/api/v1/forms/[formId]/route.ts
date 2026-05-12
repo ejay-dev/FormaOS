@@ -27,7 +27,7 @@ export async function GET(
     return jsonWithContext(auth.context, { data: form });
   } catch {
     return Response.json(
-      { error: { message: 'Form not found' } },
+      { error: 'Form not found' },
       { status: 404 },
     );
   }
@@ -65,11 +65,7 @@ export async function PATCH(
     return jsonWithContext(auth.context, { data: form });
   } catch (err) {
     return Response.json(
-      {
-        error: {
-          message: err instanceof Error ? err.message : 'Failed to update form',
-        },
-      },
+      { error: err instanceof Error ? err.message : 'Failed to update form' },
       { status: 500 },
     );
   }
@@ -93,7 +89,7 @@ export async function DELETE(
     return jsonWithContext(auth.context, { data: form });
   } catch {
     return Response.json(
-      { error: { message: 'Form not found' } },
+      { error: 'Form not found' },
       { status: 404 },
     );
   }

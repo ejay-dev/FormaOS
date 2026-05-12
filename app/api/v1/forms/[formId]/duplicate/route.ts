@@ -31,10 +31,8 @@ export async function POST(
   } catch (err) {
     return Response.json(
       {
-        error: {
-          message:
-            err instanceof Error ? err.message : 'Failed to duplicate form',
-        },
+        error:
+          err instanceof Error ? err.message : 'Failed to duplicate form',
       },
       { status: 500 },
     );

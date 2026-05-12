@@ -27,11 +27,7 @@ export async function GET(
     return jsonWithContext(auth.context, { data: submission });
   } catch (err) {
     return Response.json(
-      {
-        error: {
-          message: err instanceof Error ? err.message : 'Submission not found',
-        },
-      },
+      { error: err instanceof Error ? err.message : 'Submission not found' },
       { status: 404 },
     );
   }
@@ -53,7 +49,7 @@ export async function PATCH(
 
   if (!body.status || !['approved', 'rejected'].includes(body.status)) {
     return Response.json(
-      { error: { message: 'status must be "approved" or "rejected"' } },
+      { error: 'status must be "approved" or "rejected"' },
       { status: 400 },
     );
   }
@@ -70,11 +66,7 @@ export async function PATCH(
     return jsonWithContext(auth.context, { data: submission });
   } catch (err) {
     return Response.json(
-      {
-        error: {
-          message: err instanceof Error ? err.message : 'Review failed',
-        },
-      },
+      { error: err instanceof Error ? err.message : 'Review failed' },
       { status: 500 },
     );
   }

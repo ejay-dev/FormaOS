@@ -29,9 +29,7 @@ export async function GET(
       return jsonWithContext(
         auth.context,
         {
-          error: {
-            message: 'Form analytics requires a Growth or Enterprise entitlement',
-          },
+          error: 'Form analytics requires a Growth or Enterprise entitlement',
         },
         { status: 403 },
       );
@@ -46,10 +44,8 @@ export async function GET(
   } catch (err) {
     return Response.json(
       {
-        error: {
-          message:
-            err instanceof Error ? err.message : 'Failed to get analytics',
-        },
+        error:
+          err instanceof Error ? err.message : 'Failed to get analytics',
       },
       { status: 500 },
     );

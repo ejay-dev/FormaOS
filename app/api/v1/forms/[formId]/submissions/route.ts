@@ -48,10 +48,8 @@ export async function GET(
   } catch (err) {
     return Response.json(
       {
-        error: {
-          message:
-            err instanceof Error ? err.message : 'Failed to list submissions',
-        },
+        error:
+          err instanceof Error ? err.message : 'Failed to list submissions',
       },
       { status: 500 },
     );
@@ -90,20 +88,14 @@ export async function POST(
     if (err instanceof FormValidationError) {
       return Response.json(
         {
-          error: {
-            message: 'Validation failed',
-            details: err.validationErrors,
-          },
+          error: 'Validation failed',
+          details: err.validationErrors,
         },
         { status: 422 },
       );
     }
     return Response.json(
-      {
-        error: {
-          message: err instanceof Error ? err.message : 'Submission failed',
-        },
-      },
+      { error: err instanceof Error ? err.message : 'Submission failed' },
       { status: 500 },
     );
   }
