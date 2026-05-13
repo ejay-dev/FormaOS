@@ -119,8 +119,14 @@ export default function RootLayout({
       <body className={inter.className}>
         <NextTopLoader color="#22d3ee" height={2} showSpinner={false} />
         <ObservabilityProvider />
-        <ThemeProvider>{children}</ThemeProvider>
+        {/* Mount CookieConsent BEFORE {children} so DOM tab order
+            places it immediately after Skip-to-main on every page.
+            Visually it stays pinned at bottom via position:fixed; the
+            DOM-vs-visual divergence is what fixes WCAG 2.4.3 — the
+            keyboard user can resolve the banner in one keystroke
+            instead of tabbing past 50 page links. */}
         <CookieConsent />
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
