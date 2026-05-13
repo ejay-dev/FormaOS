@@ -211,7 +211,7 @@ const faqCategories = [
       },
       {
         q: 'How do I get help if I have an issue?',
-        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at Formaos.team@gmail.com. Growth and Enterprise plans include higher-touch support options, and critical platform issues are prioritized under the applicable support process.',
+        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at support@formaos.com.au. Growth and Enterprise plans include higher-touch support options, and critical platform issues are prioritized under the applicable support process.',
       },
       {
         q: 'Do you provide training for our team?',

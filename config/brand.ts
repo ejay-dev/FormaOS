@@ -18,10 +18,23 @@ export const brand = {
     appleTouchIcon: '/apple-touch-icon.png',
   },
   email: {
+    // Canonical visible support address. Aligns with the JSON-LD
+    // contactPoint.email used across every marketing page; before
+    // 2026-05-13 the visible footer + several marketing pages still
+    // showed Formaos.team@gmail.com which read as a Gmail support
+    // address to enterprise vendor-assurance reviewers.
     contactEmail:
-      process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'Formaos.team@gmail.com',
+      process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@formaos.com.au',
     senderName: 'FormaOS',
-    senderEmail: process.env.RESEND_FROM_EMAIL || 'Formaos.team@gmail.com',
+    senderEmail: process.env.RESEND_FROM_EMAIL || 'support@formaos.com.au',
+  },
+  // Canonical company address. Mirrors the JSON-LD PostalAddress
+  // emitted from lib/seo.ts so visible copy and structured data can't
+  // drift again. Adelaide, SA is the registered office.
+  address: {
+    locality: 'Adelaide',
+    region: 'SA',
+    country: 'Australia',
   },
   seo: {
     defaultTitle: 'FormaOS — Compliance Operating System',

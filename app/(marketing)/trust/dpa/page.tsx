@@ -128,10 +128,10 @@ export default function DPAPage() {
               restriction of processing. Requests can be submitted via the
               platform or by contacting{' '}
               <a
-                href="mailto:Formaos.team@gmail.com"
+                href="mailto:support@formaos.com.au"
                 className="text-primary hover:underline"
               >
-                Formaos.team@gmail.com
+                support@formaos.com.au
               </a>
               .
             </p>
