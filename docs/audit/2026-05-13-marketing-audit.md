@@ -109,11 +109,11 @@ Headline issues (by impact):
 | 1 | CRIT | `sitemap.xml`, `robots.txt`, JSON-LD on every page | A `SITE_URL` (or equivalent) constant is built with a trailing newline. Raw bytes of `<loc>` are `https://www.formaos.com.au\n/about`. `robots.txt` has `Sitemap: https://www.formaos.com.au\n/sitemap.xml`. Home JSON-LD: `"url":"https://www.formaos.com.au\n","logo":"https://www.formaos.com.au\n/og-image.png"`. Confirmed via `xxd` and grep across all 85 pages. **Shipped in #67** — `.trim()` at `config/brand.ts:siteUrl/appUrl`, one fix for sitemap+robots+JSON-LD. | Locate the constant (likely env var `NEXT_PUBLIC_SITE_URL` or a template literal in `lib/seo` / `app/sitemap.ts` / `app/robots.ts`); strip trailing whitespace at consumption or trim at the source. One fix corrects sitemap, robots, and all JSON-LD simultaneously. |
 | 2 | CRIT | `/status` | "All systems operational" banner with `0%` 7-day uptime, `0` 24h uptime, `0` 7-day checks, "No recent check data available". Monitoring data isn't reaching the page. **Shipped in #68** — page deleted, sitemap entry removed, footer pulse pill removed, 307 redirect added, four trust-page references and the /legal index card all stripped. The cron + public-uptime data pipeline + DB tables were intentionally left in place per directive (used by `app/api/trust-packet/vendor`). | Either gate the green badge on real data, or surface "monitoring data unavailable" honestly. Procurement teams screenshot this. |
 | 3 | HIGH | Every page footer + every JSON-LD block | Two contradictory identities on the same 82 pages: footer mailto `Formaos.team@gmail.com` (Gmail) vs JSON-LD `contactPoint.email: support@formaos.com.au`. JSON-LD says `addressLocality: Adelaide, addressRegion: SA`; visible footer + contact page say "Sydney, Australia". **Shipped in #70** — `config/brand.ts` now holds canonical `contactEmail` + `address`; Footer reads from there; 9 other marketing files had the Gmail literal replaced with `support@formaos.com.au`. | Pick one address + one contact email; mirror across visible copy and JSON-LD. The Gmail address on the visible side is the trust-side risk — a Gmail support address for a SOC 2 / ISO-claiming platform is a red flag in vendor-assurance reviews. |
-| 4 | HIGH | `/security`, `/trust`, all industry pages | 18+ frameworks listed (SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, etc.) with no certification-status qualifier — no "certified", "in progress", "supported", or "ready" anywhere on the public surface. Enterprise buyers reading "SOC 2" assume Type II certification. | Add a single status taxonomy ("Certified" / "Audit-ready" / "Supported framework") and apply it everywhere a framework name appears in trust context. |
-| 5 | HIGH | 67 of 85 pages | Two `<h1>` elements rendered per page with different Tailwind class signatures (`text-[2.35rem] ...` and `text-[2.5rem] ...`). Most visible on `/contact` and `/blog` where both `<h1>`s carry the same text. Looks like the marketing layout's hero heading and the page-level heading both render as `h1`. A11y violation and SEO confusion. | Demote one to `h2` (probably the layout-level hero subtitle, or wrap it in a `role="banner"` block with `h1` only for the page-specific heading). |
-| 6 | HIGH | `/features` | Hero claim says "18 features across compliance, automation, security, and collaboration." Category counts immediately below sum to 5+6+4+7+3 = **25**, not 18. | Fix the hero number or the category counts; they should match. |
+| 4 | HIGH | `/security`, `/trust`, all industry pages | 18+ frameworks listed (SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, etc.) with no certification-status qualifier — no "certified", "in progress", "supported", or "ready" anywhere on the public surface. Enterprise buyers reading "SOC 2" assume Type II certification. **Shipped in #81** — user decision: allowed labels are "Framework supported" / "In development" / "Custom"; disallowed without paper: "Certified", "Audited", "Compliant", "Accredited". Fixed ProductHeroVisual, FinalSecurityCTA, SecurityArchitecture, TrustModules, /trust/dpa. Demo dashboard mocks (sandbox/playground, /construction-compliance dashboard pills, /about DemoAuditTrailCard) kept their fictional state strings — flagged in the PR body for spot-check, not modified. | Add a single status taxonomy ("Certified" / "Audit-ready" / "Supported framework") and apply it everywhere a framework name appears in trust context. |
+| 5 | HIGH | 67 of 85 pages | Two `<h1>` elements rendered per page with different Tailwind class signatures (`text-[2.35rem] ...` and `text-[2.5rem] ...`). Most visible on `/contact` and `/blog` where both `<h1>`s carry the same text. Looks like the marketing layout's hero heading and the page-level heading both render as `h1`. A11y violation and SEO confusion. **Shipped in #80** — removed the redundant `<noscript>` `<h1>` block from `ImmersiveHero` + `CompactHero`; verified `/contact` and `/trust/sla` curl outputs go from 2 h1 → 1. | Demote one to `h2` (probably the layout-level hero subtitle, or wrap it in a `role="banner"` block with `h1` only for the page-specific heading). |
+| 6 | HIGH | `/features` | Hero claim says "18 features across compliance, automation, security, and collaboration." Category counts immediately below sum to 5+6+4+7+3 = **25**, not 18. **Shipped in #79** — verified data array contains 25 features across 5 categories; aligned all three visible strings (hero subtitle, secondary section, metadata description) to 25/5. | Fix the hero number or the category counts; they should match. |
 | 7 | HIGH | Top nav (every page) | Primary nav surfaces only "Home", "Pricing", and the "Get Compliance Plan" CTA. Product, Features, Industries, Trust, Compare, Customer Stories — all the buyer-journey pages — are footer-only. First-time enterprise visitors hit a wall. | Add at least Product, Industries, and Trust to the primary nav. |
-| 8 | HIGH | `/security`, `/trust`, every industry page | "Trusted by" claims and feature claims appear without any third-party verification anchor. `/customer-stories` is honest ("Anonymized scenarios"), but the home page implies real trust. | Either name a small number of pilot customers (with permission) or remove ambiguous "trusted by" framing. |
+| 8 | HIGH | `/security`, `/trust`, every industry page | "Trusted by" claims and feature claims appear without any third-party verification anchor. `/customer-stories` is honest ("Anonymized scenarios"), but the home page implies real trust. **Shipped in #82** — user decision: replace fabricated 8-name customer-logo strip on homepage with a "Built on" tech-partner strip (Vercel, Supabase, Stripe, Sentry, Resend) and drop all `socialProof="Trusted by …"` props from the 5 industry pages. Heading copy reframed from "Trusted by regulated teams across Australia" to capability/intent framing across `TestimonialsSection`, `SecuritySection`, `our-story` body, `ndis-providers` metadata, `TrustBar` pill, and `IndustryHero` docstring (now forbids the "trusted by [customers]" pattern at the component level). | Either name a small number of pilot customers (with permission) or remove ambiguous "trusted by" framing. |
 | 9 | MED  | Whole site | SEO URL cannibalization: 3 healthcare pages (`/healthcare-compliance`, `/healthcare-compliance-platform`, `/use-cases/healthcare`), 3 NDIS pages (`/ndis-providers`, `/ndis-compliance-system`, `/use-cases/ndis-aged-care`), 2 financial pages (`/financial-services-compliance`, `/use-cases/financial-services`). All targeting overlapping search intents. Google will pick one and ignore the others, or split rank between them. | Consolidate to one canonical per industry; the others should `301` or carry a `rel="canonical"` to the primary. |
 | 10 | MED | Whole site | ~42 of 85 pages have **no `og:image`** (verified by parsing every static HTML response). Pages missing OG image include `/features`, `/enterprise`, `/integrations`, `/faq`, `/contact`, `/customer-stories`, `/documentation`, `/changelog`, `/roadmap`, all six `/use-cases/*`, all six trust subpages with the exception of `/trust/dpa`. Social previews on LinkedIn/Twitter fall back to text. | Add `opengraph-image.tsx` (or `opengraph-image.png`) to each page directory; Next.js convention will pick it up. The home, about, and blog-post directories already have one — same pattern. |
 | 11 | MED | `/contact`, footer (every page) | Visible support email is `Formaos.team@gmail.com`. For the audience FormaOS is selling to (NDIS providers, AHPRA-regulated practices, AFS licensees, SOC 2 buyers), a Gmail address on the support surface materially weakens vendor-assurance reviews. Note this is consistent with JSON-LD finding #3 but worth its own line — the visible-side change is the user-facing fix. **Shipped in #70** (rolled into the #3 fix). | Replace with `support@formaos.com.au` site-wide. DNS already supports it (Resend is in the subprocessor list, and JSON-LD already uses the address). |
@@ -121,7 +121,7 @@ Headline issues (by impact):
 | 13 | MED | Many pages | Meta description >170 characters on ~16 pages (`/`, `/pricing`, `/features`, `/compare`, `/enterprise`, `/childcare-compliance`, `/construction-compliance`, `/financial-services-compliance`, `/healthcare-compliance-platform`, `/ndis-compliance-system`, `/ndis-providers`, `/integrations`, `/roadmap`, `/what-is-a-compliance-operating-system`, plus two blog posts). Google truncates around 155–160. | Trim to ≤160 chars. |
 | 14 | MED | Many pages | Meta description **<100 characters** on `/status` (44), `/terms` (39), `/trust/data-handling` (74), `/trust/subprocessors` (71), `/trust/sla` (89), `/trust/dpa` (95), `/trust/incident-response` (84), `/trust/procurement` (82), `/evaluate` (84), `/legal` (99), `/our-story` (93), `/prove` (97). Short descriptions waste SERP real estate. | Expand to ~140–155 chars; trust pages especially deserve a real summary. |
 | 15 | MED | Whole site | The CSP allows `'unsafe-inline'` for `script-src` and `style-src`. The `2026-05-12-deep-audit.md` already flagged this (finding #11) — listing here so the marketing-side awareness is on record. No new code change implied. | Defer to existing finding. |
-| 16 | MED | Home + JSON-LD on every page | Organization JSON-LD `sameAs` lists `https://twitter.com/EjazDev` — that's the founder's personal handle, not a company handle. Treated by knowledge-graph indexers as the company's social profile. | Replace with a company handle, or drop the `sameAs` Twitter entry until one exists. |
+| 16 | MED | Home + JSON-LD on every page | Organization JSON-LD `sameAs` lists `https://twitter.com/EjazDev` — that's the founder's personal handle, not a company handle. Treated by knowledge-graph indexers as the company's social profile. **Shipped in #78** — dropped the personal handle; LinkedIn company page is the only `sameAs` until a company X handle exists. | Replace with a company handle, or drop the `sameAs` Twitter entry until one exists. |
 | 17 | LOW | All pages | `x-xss-protection: 1; mode=block` is sent in headers. The header is deprecated; modern browsers ignore it. Not harmful, just dead weight. | Drop from `next.config.ts` headers config. |
 | 18 | LOW | Home `<head>` | HTML response is **202 KB** uncompressed (`/`), `112 KB` (`/pricing`), `86 KB` (`/features`). The home weight in particular is dominated by the streaming RSC payload. Likely fine after gzip/brotli but worth a Lighthouse pass before any LCP improvement work. | (verify) Lighthouse pass before assuming this matters. |
 | 19 | LOW | Site-wide footer mailto | Two raw HTML files (`trust/subprocessors.html`, `trust/dpa.html`) contain a JSON-escaped `mailto:Formaos.team@gmail.com\"` in the streaming payload, which looks like a backslash leak. Verified — it's just JSON escaping, not user-visible. No action needed; noting so the next grep doesn't trip on it. | — |
@@ -846,6 +846,30 @@ LOW from pass 2 not yet shipped): walked in audit-file order,
 severity-first within each section. Phase D pricing redesign
 unblocks after Phase C HIGH+MED clears.
 
+## §19a — Housekeeping: Phase C HIGH batch 2 (closed)
+
+Shipped 2026-05-13 in PR order (CI green, merged):
+
+| Audit row | PR | Concern |
+|---|---|---|
+| §20b portal cleanup + #112 LOW | #77 | `/status` dead portal entry removed |
+| #16 MED | #78 | Drop personal `twitter.com/EjazDev` from JSON-LD `sameAs` |
+| #6 HIGH | #79 | `/features` claim/count alignment (18 → 25) |
+| #5 HIGH | #80 | Double `<h1>` from `<noscript>` fallback in immersive heroes |
+| #4 HIGH | #81 | Framework labels strict taxonomy (no "Certified" without paper) |
+| #8 HIGH | #82 | Replace fabricated "Trusted by" customer strip with "Built on" tech-partners |
+| §20c industry routes | #83 | Document 5 industry pages as intentional portal opt-out |
+| §20d portal images | #84 | Recompress 3 portrait JPEGs (4 landscapes left as-is — already optimal) |
+
+### Ordering self-catch
+
+#78 (MED #16) shipped before the unshipped §3 HIGHs (#4, #5, #6,
+#8). The severity-first rule was violated on that one cadence step.
+Course-corrected by re-prioritising the four HIGHs immediately and
+shipping them as #79 → #82 before resuming the MED queue. Logging
+here so the cadence rule remains "severity within section, even on
+cross-cutting" without quietly papering over the slip.
+
 ## §20 — `<MarketingRouteBackdrop>` portal sweep
 
 Triggered by the user's "pull the shared-portal thread while it's
@@ -867,50 +891,63 @@ imagePosition }`; missing entries silently render no backdrop.
 |---|------|---------|----|
 | 112 | LOW | `/status` portal entry pointed at `/marketing-media/status.jpg` after the route was unshipped in #68. The portal never rendered the backdrop in practice (the route returns a 307 to `/`), but the dead entry was confusing. Removed in this PR. The image file is kept on disk for the day `/status` comes back. | This PR |
 
-### §20c — Routes missing portal entries (10) — design call, not shipped
+### §20c — Routes missing portal entries (10) — design call, partly resolved
 
 These routes have a `page.tsx` but no `ROUTE_MEDIA` entry, so they
-render without the shared backdrop. Some may be intentional (the
-page provides its own hero). Recording so the next design pass can
-decide each case rather than have a silent inconsistency.
+render without the shared backdrop. The 5 industry money pages were
+ruled an **intentional opt-out** per user directive (their themed
+`IndustryHero` + `AnimatedHeroBg` + `InteractiveDashboard` mock
+converts better than a uniform photographic backdrop). Documented
+in-code in PR #83 so the next maintainer doesn't silently add them
+back. The remaining 5 (compare/case-studies/features sub-pages) are
+still design calls — not regressions, just gaps.
 
-| # | Sev | Route | Notes |
+| # | Sev | Route | Resolution |
 |---|------|-------|-------|
-| 113 | MED | `/healthcare-compliance` | Industry money page. Either add a portal entry or document that this page renders its own hero. |
-| 114 | MED | `/ndis-providers` | Industry money page. Same. |
-| 115 | MED | `/financial-services-compliance` | Industry money page. |
-| 116 | MED | `/childcare-compliance` | Industry money page. |
-| 117 | MED | `/construction-compliance` | Industry money page. |
-| 118 | LOW | `/compare/complispace` | Compare-page series; the index `/compare` + `/compare/healthmetrics` have entries; complispace/riskware/6clicks do not. |
-| 119 | LOW | `/compare/riskware` | Same series. |
-| 120 | LOW | `/compare/6clicks` | Same series. |
+| 113 | MED | `/healthcare-compliance` | **Resolved #83** — intentional opt-out; documented in `lib/marketing/background-media.ts` comment block. |
+| 114 | MED | `/ndis-providers` | **Resolved #83** — same. |
+| 115 | MED | `/financial-services-compliance` | **Resolved #83** — same. |
+| 116 | MED | `/childcare-compliance` | **Resolved #83** — same. |
+| 117 | MED | `/construction-compliance` | **Resolved #83** — same. |
+| 118 | LOW | `/compare/complispace` | Compare-page series; the index `/compare` + `/compare/healthmetrics` have entries; complispace/riskware/6clicks do not. Still open. |
+| 119 | LOW | `/compare/riskware` | Same series, still open. |
+| 120 | LOW | `/compare/6clicks` | Same series, still open. |
 | 121 | LOW | `/case-studies` | Page exists at `app/(marketing)/case-studies/page.tsx`; not in the sitemap or pass-1 audit scope. (verify whether the page is intentional or a placeholder.) |
 | 122 | LOW | `/features/pillars` | Sub-page; the parent `/features` has an entry. Either intentional (sub-page reuses parent backdrop) or a gap. |
 
-### §20d — Oversized portal images (>200 KB raw) — recorded, not shipped
+### §20d — Oversized portal images (>200 KB raw) — partly shipped in #84
 
 After PR #75, every portal image is served via `next/image` so
 Vercel's image optimizer transcodes to AVIF/WebP at the requested
 viewport size. The on-disk raw size still determines the
 optimisation budget — bigger sources, more processing per request,
-slower cold transcodes. Worth recompressing the top offenders;
-not shipped here because that's a content-asset change, not a code
-fix.
+slower cold transcodes.
 
-| # | Sev | Route | Size | Notes |
-|---|------|-------|------|-------|
-| 123 | LOW | `/documentation/api` | 573 KB | Single biggest portal source. |
-| 124 | LOW | `/industries` | 537 KB | |
-| 125 | LOW | `/use-cases/workforce-credentials` | 446 KB | |
-| 126 | LOW | `/trust/vendor-assurance` | 310 KB | |
-| 127 | LOW | `/security` | 303 KB | LCP candidate from #108 — fix in #75 reduces SERVED bytes via AVIF; raw source still 303 KB. |
-| 128 | LOW | `/trust/incident-response` | 220 KB | |
-| 129 | LOW | `/trust` | 213 KB | |
+PR #84 recompressed the **3 portrait sources** (1800×2700) where a
+viewport-appropriate downscale to 1280×1920 cut raw bytes
+substantially. The remaining 4 entries are landscape sources
+already at sensible dimensions — PIL re-encode at q=80 increased
+file size by 10–13%, so they were left as-is. The aspirational
+≤180 KB target proved too aggressive for already-optimized JPEGs;
+the practical win is the served-bytes path (AVIF/WebP via
+`next/image`), which PR #75 already unlocked.
 
-Recommendation when a content pass lands: target ≤180 KB for source
-JPEGs (industry-money pages can stay slightly higher if visual
-quality matters). MozJPEG at quality 78 with progressive encoding
-typically gets there without visible loss.
+| # | Sev | Route | Before | After | Status |
+|---|------|-------|------|-------|-------|
+| 123 | LOW | `/documentation/api` | 573 KB | 397 KB | **Shipped #84** — 1800×2700 → 1280×1920. |
+| 124 | LOW | `/industries` | 537 KB | 413 KB | **Shipped #84** — same. |
+| 125 | LOW | `/use-cases/workforce-credentials` | 446 KB | 302 KB | **Shipped #84** — 1800×2687 → 1286×1920. |
+| 126 | LOW | `/trust/vendor-assurance` | 310 KB | 310 KB | Not shipped — landscape source; re-encode grew file. |
+| 127 | LOW | `/security` | 303 KB | 303 KB | Not shipped — landscape source; AVIF/WebP via #75 already handles served bytes. |
+| 128 | LOW | `/trust/incident-response` | 220 KB | 220 KB | Not shipped — landscape, same. |
+| 129 | LOW | `/trust` | 213 KB | 213 KB | Not shipped — landscape, same. |
+
+Lesson recorded: the ≤180 KB rule of thumb only buys back bytes
+when the source is over-dimensioned (portrait at 1800w). Already
+correctly-dimensioned JPEGs from this batch were close to PIL's
+quality-80 floor and can't be cheaply re-encoded smaller. Future
+asset passes should check dimensions before assuming the source is
+recompressible.
 
 ### §20e — Alt text + OG alignment — verified clean
 
