@@ -120,7 +120,7 @@ export default function AuditEvidenceContent() {
       relatedLinks={[
         { label: 'ISO Compliance Software', href: '/iso-compliance-software', description: 'Automate ISO 27001 compliance with continuous evidence.' },
         { label: 'SOC 2 Automation', href: '/soc2-compliance-automation', description: 'SOC 2 Type II evidence capture and reporting.' },
-        { label: 'NDIS Compliance', href: '/ndis-compliance-system', description: 'Evidence management for NDIS providers.' },
+        { label: 'NDIS Compliance', href: '/ndis-providers', description: 'Evidence management for NDIS providers.' },
         { label: 'Security Architecture', href: '/security', description: 'How FormaOS protects evidence integrity.' },
         { label: 'Product Platform', href: '/product', description: 'Explore the full FormaOS platform.' },
         { label: 'Compare Platforms', href: '/compare', description: 'How FormaOS compares to other compliance tools.' },

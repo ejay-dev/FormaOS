@@ -100,10 +100,6 @@ const ROUTE_MEDIA: Record<
     imageSrc: '/marketing-media/govern.jpg',
     imagePosition: 'center center',
   },
-  '/healthcare-compliance-platform': {
-    imageSrc: '/marketing-media/healthcare-compliance-platform.jpg',
-    imagePosition: 'center 26%',
-  },
   '/industries': {
     imageSrc: '/marketing-media/industries.jpg',
     imagePosition: 'center 28%',
@@ -127,10 +123,6 @@ const ROUTE_MEDIA: Record<
   '/legal/terms': {
     imageSrc: '/marketing-media/legal-terms.jpg',
     imagePosition: 'center center',
-  },
-  '/ndis-compliance-system': {
-    imageSrc: '/marketing-media/ndis-compliance-system.jpg',
-    imagePosition: 'center 26%',
   },
   '/operate': {
     imageSrc: '/marketing-media/operate.jpg',
@@ -216,25 +208,13 @@ const ROUTE_MEDIA: Record<
     imageSrc: '/marketing-media/trust-vendor-assurance.jpg',
     imagePosition: 'center center',
   },
-  '/use-cases/financial-services': {
-    imageSrc: '/marketing-media/use-case-financial-services.jpg',
-    imagePosition: 'center center',
-  },
   '/use-cases/government-public-sector': {
     imageSrc: '/marketing-media/use-case-government-public-sector.jpg',
     imagePosition: 'center center',
   },
-  '/use-cases/healthcare': {
-    imageSrc: '/marketing-media/use-case-healthcare.jpg',
-    imagePosition: 'center 26%',
-  },
   '/use-cases/incident-management': {
     imageSrc: '/marketing-media/use-case-incident-management.jpg',
     imagePosition: 'center center',
-  },
-  '/use-cases/ndis-aged-care': {
-    imageSrc: '/marketing-media/use-case-ndis-aged-care.jpg',
-    imagePosition: 'center 28%',
   },
   '/use-cases/workforce-credentials': {
     imageSrc: '/marketing-media/use-case-workforce-credentials.jpg',

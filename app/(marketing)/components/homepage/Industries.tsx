@@ -176,7 +176,7 @@ const industrySolutions: IndustrySolution[] = [
         description: 'Configurable templates for RACGP, AHPRA, and NSQHS',
       },
     ],
-    cta: { text: 'Explore Healthcare Solution', href: '/use-cases/healthcare' },
+    cta: { text: 'Explore Healthcare Solution', href: '/healthcare-compliance' },
   },
   {
     icon: Users,
@@ -209,7 +209,7 @@ const industrySolutions: IndustrySolution[] = [
         description: 'Evidence bundles structured for NDIS auditor access',
       },
     ],
-    cta: { text: 'Explore NDIS Solution', href: '/use-cases/ndis-aged-care' },
+    cta: { text: 'Explore NDIS Solution', href: '/ndis-providers' },
   },
   {
     icon: TrendingUp,
@@ -244,7 +244,7 @@ const industrySolutions: IndustrySolution[] = [
     ],
     cta: {
       text: 'Explore Financial Solution',
-      href: '/use-cases/financial-services',
+      href: '/financial-services-compliance',
     },
   },
   {

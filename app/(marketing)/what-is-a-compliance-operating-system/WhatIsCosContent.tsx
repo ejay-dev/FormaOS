@@ -249,8 +249,8 @@ export default function WhatIsCosContent() {
               { label: 'FormaOS Platform', href: '/product', description: 'See the compliance operating system in action.' },
               { label: 'ISO 27001 Compliance', href: '/iso-compliance-software', description: 'How FormaOS automates ISO compliance.' },
               { label: 'SOC 2 Automation', href: '/soc2-compliance-automation', description: 'Continuous SOC 2 Type II compliance.' },
-              { label: 'NDIS Compliance', href: '/ndis-compliance-system', description: 'Purpose-built for disability service providers.' },
-              { label: 'Healthcare Compliance', href: '/healthcare-compliance-platform', description: 'Clinical governance and accreditation.' },
+              { label: 'NDIS Compliance', href: '/ndis-providers', description: 'Purpose-built for disability service providers.' },
+              { label: 'Healthcare Compliance', href: '/healthcare-compliance', description: 'Clinical governance and accreditation.' },
               { label: 'Audit Evidence', href: '/audit-evidence-management', description: 'Immutable evidence capture and management.' },
             ].map((link) => (
               <HoverLift key={link.href}>

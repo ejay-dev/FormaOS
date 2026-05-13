@@ -135,6 +135,42 @@ const nextConfig: NextConfig = {
         destination: '/healthcare-compliance',
         permanent: false,
       },
+      // URL-cannibalization consolidation (2026-05-14 marketing audit
+      // §3 #9). Three healthcare URLs, three NDIS URLs, two finance
+      // URLs all targeted overlapping search intents and each carried
+      // a self-canonical, so Google could not pick a primary. The
+      // industry money pages (/healthcare-compliance, /ndis-providers,
+      // /financial-services-compliance) win because they carry the
+      // rich IndustryHero + dashboard mock and are the buyer-facing
+      // destination. The duplicates 308 to the primary. Permanent so
+      // search engines transfer link equity; internal references in
+      // this repo were swept to point at canonicals directly so no
+      // internal navigation pays a redirect hop.
+      {
+        source: '/healthcare-compliance-platform',
+        destination: '/healthcare-compliance',
+        permanent: true,
+      },
+      {
+        source: '/use-cases/healthcare',
+        destination: '/healthcare-compliance',
+        permanent: true,
+      },
+      {
+        source: '/ndis-compliance-system',
+        destination: '/ndis-providers',
+        permanent: true,
+      },
+      {
+        source: '/use-cases/ndis-aged-care',
+        destination: '/ndis-providers',
+        permanent: true,
+      },
+      {
+        source: '/use-cases/financial-services',
+        destination: '/financial-services-compliance',
+        permanent: true,
+      },
     ];
   },
   async headers() {
