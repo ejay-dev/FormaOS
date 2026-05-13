@@ -5,6 +5,7 @@ import { Logo } from '@/components/brand/Logo';
 import { CURRENT_RELEASE_DISPLAY, CURRENT_RELEASE_TAG } from '@/config/release';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { footerLinks } from '@/config/navigation';
+import { brand } from '@/config/brand';
 import { compliancePlanHref, PUBLIC_CTA_LABELS, salesHref } from '@/lib/marketing/cta';
 import {
   Mail,
@@ -228,15 +229,15 @@ export function Footer() {
             {/* Right: contact + status */}
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
               <Link
-                href="mailto:Formaos.team@gmail.com"
+                href={`mailto:${brand.email.contactEmail}`}
                 className="inline-flex items-center gap-1.5 text-[12px] text-slate-600 hover:text-white transition-colors"
               >
                 <Mail className="h-3 w-3 shrink-0" aria-hidden="true" />
-                Formaos.team@gmail.com
+                {brand.email.contactEmail}
               </Link>
               <div className="inline-flex items-center gap-1.5 text-[12px] text-slate-600">
                 <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
-                Sydney, Australia
+                {brand.address.locality}, {brand.address.region}, {brand.address.country}
               </div>
               {/* /status badge removed 2026-05-13 — was hardcoded
                   "All systems operational" against 0% uptime data.

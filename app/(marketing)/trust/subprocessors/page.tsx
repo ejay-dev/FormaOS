@@ -89,10 +89,10 @@ export default function SubprocessorsPage() {
             new sub-processors in accordance with the applicable agreement.
             Contact{' '}
             <a
-              href="mailto:Formaos.team@gmail.com"
+              href="mailto:support@formaos.com.au"
               className="text-primary hover:underline"
             >
-              Formaos.team@gmail.com
+              support@formaos.com.au
             </a>{' '}
             to subscribe to notifications or raise objections.
           </p>

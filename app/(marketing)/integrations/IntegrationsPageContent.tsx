@@ -1216,7 +1216,7 @@ function IntegrationsCTA() {
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                   <a
-                    href="mailto:Formaos.team@gmail.com?subject=Integration%20Request"
+                    href="mailto:support@formaos.com.au?subject=Integration%20Request"
                     className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
                       border border-white/[0.12] bg-white/[0.04]
                       text-white font-semibold text-sm
