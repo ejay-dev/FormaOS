@@ -5,7 +5,7 @@ import { breadcrumbSchema, siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'Compliance Infrastructure Across Australian Regulated Industries | FormaOS',
+    'Compliance Across Australian Industries | FormaOS',
   description:
     'Pre-built compliance frameworks for NDIS, Healthcare, Financial Services, Education and Childcare, and Construction. Australian regulatory standards built in.',
   keywords: [
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     url: `${siteUrl}/industries`,
     siteName: 'FormaOS',
     title:
-      'Compliance Infrastructure Across Australian Regulated Industries | FormaOS',
+      'Compliance Across Australian Industries | FormaOS',
     description:
       'Pre-built compliance frameworks for NDIS, Healthcare, Financial Services, Education and Childcare, and Construction.',
     images: [
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'Compliance Infrastructure Across Australian Regulated Industries | FormaOS',
+      'Compliance Across Australian Industries | FormaOS',
     description:
       'Pre-built compliance frameworks for NDIS, Healthcare, Financial Services, Education and Childcare, and Construction.',
     images: [`${siteUrl}/og-image.png`],

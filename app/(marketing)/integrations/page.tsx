@@ -6,7 +6,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Integrations - FormaOS',
   description:
-    'FormaOS integrates with your existing tools - Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, Azure, and more - to embed compliance into the workflows your team already uses.',
+    'FormaOS integrates with Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, and Azure to embed compliance into the workflows your team already uses.',
   alternates: { canonical: `${siteUrl}/integrations` },
   openGraph: {
     title: 'Integrations | FormaOS',

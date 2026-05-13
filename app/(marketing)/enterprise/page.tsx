@@ -11,12 +11,12 @@ import {
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
-  title: 'FormaOS for Enterprise | Compliance Operating System',
+  title: 'FormaOS for Enterprise | Compliance OS',
   description:
-    'Enterprise compliance management with SAML 2.0 SSO, AU-hosted deployment by default, audit-ready artifacts, and dedicated security review support. Built for regulated industries.',
+    'Enterprise compliance with SAML 2.0 SSO, AU-hosted deployment, audit-ready artifacts, and dedicated security review support.',
   alternates: { canonical: `${siteUrl}/enterprise` },
   openGraph: {
-    title: 'FormaOS for Enterprise | Compliance Operating System',
+    title: 'FormaOS for Enterprise | Compliance OS',
     description:
       'Enterprise compliance management with SAML 2.0 SSO, AU-hosted deployment by default, and audit-ready procurement artifacts.',
     type: 'website',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FormaOS for Enterprise | Compliance Operating System',
+    title: 'FormaOS for Enterprise | Compliance OS',
     description:
       'Enterprise compliance management with SAML 2.0 SSO, AU-hosted deployment by default, and audit-ready procurement artifacts.',
   },

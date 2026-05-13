@@ -10,7 +10,7 @@ import {
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS vs 6clicks - Australian Compliance Platform Comparison | FormaOS',
+    'FormaOS vs 6clicks - Compliance Comparison | FormaOS',
   description:
     'FormaOS vs 6clicks: operational compliance execution with industry-specific frameworks vs AI-powered GRC with Hub & Spoke multi-entity governance.',
   alternates: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      'FormaOS vs 6clicks - Australian Compliance Platform Comparison | FormaOS',
+      'FormaOS vs 6clicks - Compliance Comparison | FormaOS',
     description:
       'FormaOS vs 6clicks: operational compliance execution with industry-specific frameworks vs AI-powered GRC with Hub & Spoke multi-entity governance.',
     type: 'website',

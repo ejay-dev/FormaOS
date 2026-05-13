@@ -41,9 +41,9 @@ export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title:
-    'Construction WHS Compliance Software - SafeWork & Site Safety | FormaOS',
+    'Construction WHS Compliance Software | FormaOS',
   description:
-    'Manage WHS Act obligations, SWMS registers, contractor inductions, and SafeWork incident notifications. Multi-site compliance for Australian construction and infrastructure.',
+    'SafeWork and site safety obligations for construction teams. Track inductions, SWMS, incidents, and evidence across projects and crews.',
   keywords: [
     'construction compliance software Australia',
     'WHS compliance software',
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteUrl}/construction-compliance` },
   openGraph: {
     title:
-      'Construction WHS Compliance Software - SafeWork & Site Safety | FormaOS',
+      'Construction WHS Compliance Software | FormaOS',
     description:
       'Manage WHS Act obligations, SWMS registers, contractor inductions, and SafeWork incident notifications for Australian construction.',
     url: `${siteUrl}/construction-compliance`,
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'Construction WHS Compliance Software - SafeWork & Site Safety | FormaOS',
+      'Construction WHS Compliance Software | FormaOS',
     description:
       'Manage WHS Act obligations, SWMS registers, contractor inductions, and SafeWork notifications for Australian construction.',
     images: [`${siteUrl}/og-image.png`],

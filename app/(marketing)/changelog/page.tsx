@@ -4,7 +4,7 @@ import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'FormaOS Changelog | Compliance Infrastructure Product Updates',
+  title: 'FormaOS Changelog - Product Updates',
   description:
     'Latest FormaOS product updates across compliance workflows, audit readiness, evidence management, onboarding, care operations, and system infrastructure.',
   keywords: [

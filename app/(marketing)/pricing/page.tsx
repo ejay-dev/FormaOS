@@ -7,9 +7,9 @@ import { breadcrumbSchema, siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'Compliance OS Pricing — Foundation, Growth, Scale & Enterprise | FormaOS',
+    'Compliance OS Pricing - Foundation to Enterprise | FormaOS',
   description:
-    'Self-serve compliance infrastructure for Australian NDIS, aged care, and healthcare providers. Foundation $297/mo, Growth $797/mo, Scale $1,800/mo, and Enterprise on tailored agreement.',
+    'Foundation, Growth, Scale and Enterprise plans for compliance teams. Transparent pricing for NDIS, healthcare, finance, childcare, and construction.',
   keywords: [
     'NDIS compliance software pricing',
     'aged care compliance platform Australia',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     url: `${siteUrl}/pricing`,
     siteName: 'FormaOS',
     title:
-      'Compliance OS Pricing — Foundation, Growth, Scale & Enterprise | FormaOS',
+      'Compliance OS Pricing - Foundation to Enterprise | FormaOS',
     description:
       'Self-serve compliance infrastructure for NDIS, aged care, and healthcare. Foundation $297/mo, Growth $797/mo, Scale $1,800/mo, Enterprise custom.',
     images: [
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'Compliance OS Pricing — Foundation, Growth, Scale & Enterprise | FormaOS',
+      'Compliance OS Pricing - Foundation to Enterprise | FormaOS',
     description:
       'NDIS and aged care compliance, priced for the work it removes. Foundation $297, Growth $797, Scale $1,800, Enterprise custom.',
     images: [`${siteUrl}/og-image.png`],

@@ -40,9 +40,9 @@ const childcareFaqSchema = faqSchema([
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
-  title: 'Childcare Compliance Software - NQF, ACECQA & Child Safety | FormaOS',
+  title: 'Childcare Compliance Software | FormaOS',
   description:
-    "Operationalise ACECQA's National Quality Framework across all 7 quality areas. Educator credential tracking, QIP builder, child safety workflows. Assessment-ready every day.",
+    'Track NQF, ACECQA, and child safety obligations. Manage policies, evidence, incidents, and staff records across services in one audit-ready platform.',
   keywords: [
     'childcare compliance software Australia',
     'NQF compliance software',
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${siteUrl}/childcare-compliance` },
   openGraph: {
     title:
-      'Childcare Compliance Software - NQF, ACECQA & Child Safety | FormaOS',
+      'Childcare Compliance Software | FormaOS',
     description:
       'Operationalise the National Quality Framework across all 7 quality areas. Educator credential tracking, QIP builder, and child safety workflows.',
     url: `${siteUrl}/childcare-compliance`,
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'Childcare Compliance Software - NQF, ACECQA & Child Safety | FormaOS',
+      'Childcare Compliance Software | FormaOS',
     description:
       'Operationalise the NQF across all 7 quality areas. Educator credentials, QIP builder, child safety workflows.',
     images: [`${siteUrl}/og-image.png`],

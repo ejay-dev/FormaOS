@@ -6,7 +6,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Platform Features - FormaOS',
   description:
-    'Every feature inside FormaOS: framework packs, compliance gate enforcement, SHA-256 evidence verification, workflow automation, risk heatmaps, cross-mapping, dashboard builder, integration marketplace, and more.',
+    '25 features across framework packs, evidence verification, workflow automation, risk heatmaps, cross-mapping, and the integration marketplace.',
   alternates: {
     canonical: `${siteUrl}/features`,
   },

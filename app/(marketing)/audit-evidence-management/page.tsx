@@ -4,7 +4,7 @@ import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'Audit Evidence Management - Immutable Evidence & Audit Trails | FormaOS',
+    'Audit Evidence Management | FormaOS',
   description:
     'Capture, organize, and export audit evidence automatically. FormaOS creates immutable audit trails tied to compliance controls, eliminating pre-audit evidence scrambles.',
   alternates: { canonical: `${siteUrl}/audit-evidence-management` },

@@ -9,12 +9,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Legal',
   description:
-    'Legal and compliance resources for FormaOS: Terms, Privacy, DPA summary, and subprocessors.',
+    'Legal and compliance resources for FormaOS: Terms of Service, Privacy Policy, Data Processing Agreement summary, and sub-processor list.',
   alternates: { canonical: `${siteUrl}/legal` },
   openGraph: {
     title: 'FormaOS | Legal',
     description:
-      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA summary, and subprocessors.',
+      'Legal and compliance resources for FormaOS: Terms of Service, Privacy Policy, Data Processing Agreement summary, and sub-processor list.',
     type: 'website',
     url: `${siteUrl}/legal`,
     locale: 'en_AU',

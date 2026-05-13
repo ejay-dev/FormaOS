@@ -10,7 +10,7 @@ import {
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS vs CompliSpace - Australian Compliance Platform Comparison | FormaOS',
+    'FormaOS vs CompliSpace - Compliance Comparison | FormaOS',
   description:
     'FormaOS vs CompliSpace: operational compliance execution across 5 regulated industries vs compliance training and policy management for education and childcare.',
   alternates: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      'FormaOS vs CompliSpace - Australian Compliance Platform Comparison | FormaOS',
+      'FormaOS vs CompliSpace - Compliance Comparison | FormaOS',
     description:
       'FormaOS vs CompliSpace: operational compliance execution across 5 regulated industries vs compliance training and policy management for education and childcare.',
     type: 'website',

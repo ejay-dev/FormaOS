@@ -6,7 +6,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Product Roadmap - FormaOS',
   description:
-    'See what we\'re building next at FormaOS. Our public roadmap covers upcoming features including multi-region data residency, additional compliance frameworks, HRIS connectors, and more.',
+    'Public roadmap for FormaOS: multi-region data residency, additional framework packs, HRIS connectors, and more shipping in the next quarters.',
   alternates: {
     canonical: `${siteUrl}/roadmap`,
   },

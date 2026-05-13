@@ -5,14 +5,14 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Evaluate Compliance',
   description:
-    'Evaluate obligations, controls, and evidence readiness before risk becomes exposure.',
+    'Evaluate obligations, controls, and evidence readiness before risk becomes exposure. Map gaps, surface owner accountability, and plan remediation.',
   alternates: {
     canonical: `${siteUrl}/evaluate`,
   },
   openGraph: {
     title: 'Evaluate Compliance | FormaOS',
     description:
-      'Evaluate obligations, controls, and evidence readiness before risk becomes exposure.',
+      'Evaluate obligations, controls, and evidence readiness before risk becomes exposure. Map gaps, surface owner accountability, and plan remediation.',
     type: 'website',
     url: `${siteUrl}/evaluate`,
     locale: 'en_AU',
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Evaluate Compliance | FormaOS',
     description:
-      'Evaluate obligations, controls, and evidence readiness before risk becomes exposure.',
+      'Evaluate obligations, controls, and evidence readiness before risk becomes exposure. Map gaps, surface owner accountability, and plan remediation.',
   },
 };
 

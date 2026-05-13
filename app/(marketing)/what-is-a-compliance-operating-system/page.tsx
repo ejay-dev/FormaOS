@@ -5,7 +5,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'What is a Compliance Operating System? | FormaOS',
   description:
-    'A compliance operating system turns regulatory obligations into governed workflows with named owners, evidence chains, and audit-ready assurance. Learn how it differs from GRC tools.',
+    'A compliance operating system unifies obligations, controls, evidence, and audit-readiness in one platform. Here is how it differs from GRC tools.',
   keywords: [
     'compliance operating system',
     'what is compliance software',

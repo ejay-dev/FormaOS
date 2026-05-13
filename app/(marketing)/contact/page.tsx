@@ -3,7 +3,7 @@ import { submitMarketingLead } from './actions';
 import ContactPageContentNew from './ContactPageContentNew';
 import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
-  title: 'Talk to Sales | Pricing, Procurement, and Enterprise Review | FormaOS',
+  title: 'Talk to Sales - Pricing and Procurement | FormaOS',
   description:
     'Talk to FormaOS about plan fit, enterprise evaluation, procurement review, and rollout for regulated teams.',
   alternates: {
