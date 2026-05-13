@@ -29,10 +29,14 @@ export function organizationSchema() {
         email: `support@${brand.domain}`,
       },
     ],
-    sameAs: [
-      'https://twitter.com/EjazDev',
-      'https://www.linkedin.com/company/formaos',
-    ],
+    // sameAs lists external profiles that Google treats as canonical
+    // company identities for knowledge-graph linking. The founder's
+    // personal Twitter handle (twitter.com/EjazDev) was previously
+    // listed here and would be interpreted by indexers as FormaOS's
+    // own social profile — wrong identity binding. Until FormaOS has
+    // a company-owned X/Twitter handle, only the LinkedIn company
+    // page is listed. Audit row #16 (2026-05-13 marketing audit).
+    sameAs: ['https://www.linkedin.com/company/formaos'],
   };
 }
 
