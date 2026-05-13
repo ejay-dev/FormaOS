@@ -198,12 +198,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
-    {
-      url: `${siteUrl}/status`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.6,
-    },
+    // /status removed 2026-05-13 — was misreporting "All systems
+    // operational" against 0% uptime; unshipped until a real status
+    // provider is wired (see chore/unship-status-page).
     // ── Compare pages ──
     {
       url: `${siteUrl}/compare`,

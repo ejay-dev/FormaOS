@@ -106,6 +106,16 @@ const nextConfig: NextConfig = {
         destination: '/admin/orgs',
         permanent: true,
       },
+      // /status was unshipped 2026-05-13 — it claimed "All systems
+      // operational" against 0% uptime data. Temporary redirect (307,
+      // Next's `permanent: false`) so search engines do not cache the
+      // mapping; the route may come back once a real status provider
+      // is wired.
+      {
+        source: '/status',
+        destination: '/',
+        permanent: false,
+      },
     ];
   },
   async headers() {
