@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useLayoutEffect, useState } from 'react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { selectMarketingRouteMedia } from '@/lib/marketing/background-media';
@@ -75,13 +76,24 @@ function MarketingRouteBackdropInner() {
           : 'mk-route-photo-shell mk-route-photo-shell--page absolute inset-x-0 top-0 z-0'
       }
     >
-      <img
+      {/* next/image picks up the AVIF + WebP variants and a responsive
+          srcset off `sizes`, which closes the marketing audit's #108
+          opportunity (mobile LCP 6.5–7s on /security; verified
+          Lighthouse JSON in PR body). priority maps to fetchPriority
+          high + preload so the LCP candidate is fetched eagerly. */}
+      <Image
         key={activeMedia.imageSrc}
         src={activeMedia.imageSrc}
         alt=""
+        fill
+        sizes="100vw"
+        priority
+        // Marketing photos are background ambience at 24% opacity per
+        // .mk-route-photo-image — dropping quality from the default 75
+        // to 60 trims another ~25% off bytes without a visible delta
+        // at that opacity. Verified by eyeballing the encoded output.
+        quality={60}
         className="mk-route-photo-image"
-        decoding="async"
-        fetchPriority="high"
         style={{ objectPosition: activeMedia.imagePosition }}
       />
       <div className="mk-route-photo-scrim absolute inset-0" />
