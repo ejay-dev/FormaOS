@@ -114,12 +114,12 @@ export function CompactHero({
         )}
       </div>
 
-      <noscript>
-        <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12 text-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.08] text-white">{title}</h1>
-          {description && <p className="mt-4 text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto">{description}</p>}
-        </div>
-      </noscript>
+      {/* noscript fallback removed 2026-05-13 — see ImmersiveHero
+          for the same reasoning. The motion.h1 above already SSRs
+          with the animated final state inline, so the noscript
+          duplicate produced a second <h1> on every CompactHero page
+          (the trust subpages, /legal, /faq, /our-story et al). Audit
+          row #5 (2026-05-13 marketing audit). */}
     </section>
   );
 }
