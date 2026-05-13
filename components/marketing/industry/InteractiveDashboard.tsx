@@ -373,33 +373,43 @@ export function InteractiveDashboard({
               </div>
 
               {/* Actions */}
+              {/* Icon buttons get min-w/h 44px hit areas + aria-label
+                  per WCAG 2.5.5 (target size) and 4.1.2 (name). The
+                  icon visual stays at h-3.5/w-3.5 inside a centered
+                  flex box so the visual density of the dashboard mock
+                  doesn't change; only the click/tap surface grows.
+                  Audit finding §15 #96 + §16 #100. */}
               <div className="flex items-center gap-1">
                 <button
                   type="button"
+                  aria-label="Search practitioners"
+                  aria-pressed={searchOpen}
                   onClick={() => {
                     setSearchOpen(!searchOpen);
                     setSearchQuery('');
                   }}
-                  className={`p-1.5 rounded-lg transition-all ${
+                  className={`min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg transition-all ${
                     searchOpen
                       ? 'bg-cyan-500/10 text-cyan-400'
                       : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                   }`}
                 >
-                  <Search className="h-3.5 w-3.5" />
+                  <Search className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>
 
                 <div className="relative">
                   <button
                     type="button"
+                    aria-label="Filter practitioners by status"
+                    aria-pressed={filterOpen || !!selectedFilter}
                     onClick={() => setFilterOpen(!filterOpen)}
-                    className={`p-1.5 rounded-lg transition-all ${
+                    className={`min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg transition-all ${
                       filterOpen || selectedFilter
                         ? 'bg-cyan-500/10 text-cyan-400'
                         : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                     }`}
                   >
-                    <Filter className="h-3.5 w-3.5" />
+                    <Filter className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                   <AnimatePresence>
                     {filterOpen && (
@@ -457,15 +467,17 @@ export function InteractiveDashboard({
                   <div className="relative">
                     <button
                       type="button"
+                      aria-label={`Notifications (${notifications.length} unread)`}
+                      aria-pressed={notifOpen}
                       onClick={() => setNotifOpen(!notifOpen)}
-                      className={`relative p-1.5 rounded-lg transition-all ${
+                      className={`relative min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg transition-all ${
                         notifOpen
                           ? 'bg-cyan-500/10 text-cyan-400'
                           : 'text-white/30 hover:text-white/50 hover:bg-white/[0.04]'
                       }`}
                     >
-                      <Bell className="h-3.5 w-3.5" />
-                      <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-[#0d1428]" />
+                      <Bell className="h-3.5 w-3.5" aria-hidden="true" />
+                      <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 ring-2 ring-[#0d1428]" />
                     </button>
                     <AnimatePresence>
                       {notifOpen && (
