@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Loader2, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useComplianceAction } from "@/components/compliance-system"
@@ -16,13 +17,14 @@ interface AddNoteFormProps {
  * Uses compliance feedback system for success/error notifications.
  */
 export function AddNoteForm({ orgId }: AddNoteFormProps) {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [note, setNote] = useState("")
   const { reportSuccess, reportError } = useComplianceAction()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    
+
     if (!note.trim()) return
 
     setLoading(true)
@@ -39,11 +41,30 @@ export function AddNoteForm({ orgId }: AddNoteFormProps) {
         throw new Error(data.error || "Failed to add note")
       }
 
-      reportSuccess({ title: "Note added", message: "Internal note saved" })
+      // Pragmatic refresh: router.refresh() re-runs the server fetch
+      // for the notes list and preserves all client state (including
+      // this toast, which window.location.reload() previously
+      // destroyed before the user could see it).
       setNote("")
-      window.location.reload()
-    } catch (error: any) {
-      reportError({ title: "Failed to add note", message: error.message || "Could not save note" })
+      reportSuccess({
+        title: "Note added",
+        message: "Internal note saved",
+        duration: 3000,
+      })
+      router.refresh()
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Could not save note"
+      // duration: 0 makes the toast sticky — the admin needs to read
+      // why the save failed; auto-dismissing the error is the bug we
+      // had with reload().
+      reportError({
+        title: "Failed to add note",
+        message,
+        duration: 0,
+      })
     } finally {
       setLoading(false)
     }

@@ -23,6 +23,10 @@ interface ActionFeedback {
   wireTo?: string;
   impactArea?: string;
   impactDelta?: number;
+  // Auto-dismiss in ms. Omit for the system default (5000). Pass 0 for
+  // a sticky toast — typically appropriate for error states the user
+  // must read and dismiss themselves.
+  duration?: number;
 }
 
 /**
@@ -42,6 +46,7 @@ export function useComplianceAction() {
       wireTo: feedback.wireTo,
       impactArea: feedback.impactArea,
       impactDelta: feedback.impactDelta,
+      duration: feedback.duration,
     });
   }, [showToast]);
 
@@ -52,6 +57,7 @@ export function useComplianceAction() {
       message: feedback.message,
       nodeType: feedback.nodeType,
       nodeAction: feedback.nodeAction,
+      duration: feedback.duration,
     });
   }, [showToast]);
 
@@ -61,6 +67,7 @@ export function useComplianceAction() {
       title: feedback.title,
       message: feedback.message,
       nodeType: feedback.nodeType,
+      duration: feedback.duration,
     });
   }, [showToast]);
 
@@ -70,6 +77,7 @@ export function useComplianceAction() {
       title: feedback.title,
       message: feedback.message,
       nodeType: feedback.nodeType,
+      duration: feedback.duration,
     });
   }, [showToast]);
 
