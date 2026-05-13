@@ -266,7 +266,6 @@ export default function NDISProvidersContent() {
           { label: 'NDIS Commission' },
           { label: 'SIRS Reportable Incidents' },
         ]}
-        socialProof="Trusted by NDIS providers managing 200+ participants"
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">

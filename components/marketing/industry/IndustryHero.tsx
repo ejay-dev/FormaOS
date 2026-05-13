@@ -25,7 +25,13 @@ export interface IndustryHeroProps {
   statsBar?: ReactNode;
   /** Optional jurisdiction/regulatory badges rendered below trust signals. */
   jurisdictionBadges?: JurisdictionBadge[];
-  /** Optional social proof counter text (e.g. "Trusted by 200+ regulated organisations"). */
+  /**
+   * Optional supporting context line. Per audit row #8 (2026-05-13),
+   * do NOT use this slot for "trusted by [customers]" framing until
+   * real signed customers consent to be named. Acceptable patterns:
+   * framework alignment ("Aligned with NDIS Practice Standards"), or
+   * platform capability ("All 8 standards modules covered").
+   */
   socialProof?: string;
 }
 

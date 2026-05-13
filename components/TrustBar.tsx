@@ -34,7 +34,7 @@ export function TrustBar({ className = '' }: { className?: string }) {
       <div className="relative mx-auto max-w-7xl px-6 py-6 lg:px-12">
         <div className={`${systemPanelCompactClass} flex flex-col gap-5 px-5 py-4 lg:flex-row lg:items-center lg:justify-between`}>
           <div className="flex flex-wrap items-center gap-2">
-            <StatusPill tone="live">Trusted surface</StatusPill>
+            <StatusPill tone="live">Frameworks supported</StatusPill>
             {proofMarks.map((mark) => (
               <span
                 key={mark}

@@ -309,7 +309,6 @@ export default function ChildcareComplianceContent() {
           { label: 'ACECQA Assessment' },
           { label: 'ECEC Sector' },
         ]}
-        socialProof="Trusted by childcare providers running multi-service operations"
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">

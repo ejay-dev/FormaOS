@@ -52,15 +52,20 @@ const TESTIMONIALS = [
   },
 ] as const;
 
-const CUSTOMER_LOGOS = [
-  'Compass Care Group',
-  'Meridian Financial',
-  'Evergreen Health',
-  'Aspire Disability',
-  'Pacific Compliance',
-  'Atlas Aged Care',
-  'Nexus Gov Services',
-  'Pinnacle Education',
+// Replaced the fabricated CUSTOMER_LOGOS list (Compass Care Group,
+// Meridian Financial, etc.) with the actual tech partners FormaOS
+// is built on — per audit row #8, user decision: no customer logos
+// on marketing until real signed customers consent to be named.
+// Picks are the five most visually recognisable from the production
+// stack (package.json + vercel.json): Vercel for hosting, Supabase
+// for DB + auth, Stripe for billing, Sentry for error tracking,
+// Resend for transactional email.
+const BUILT_ON_PARTNERS = [
+  'Vercel',
+  'Supabase',
+  'Stripe',
+  'Sentry',
+  'Resend',
 ] as const;
 
 export function TestimonialsSection() {
@@ -80,10 +85,10 @@ export function TestimonialsSection() {
         className="mx-auto mb-6 max-w-2xl text-center"
       >
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">
-          Customer Stories
+          How Teams Operate
         </p>
         <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          Trusted by regulated teams across Australia
+          How regulated teams operate with FormaOS
         </h2>
         <p className="mt-4 text-base text-slate-400">
           Compliance leaders use FormaOS to replace manual evidence collection,
@@ -176,15 +181,15 @@ export function TestimonialsSection() {
         className="mx-auto mt-16 max-w-4xl"
       >
         <p className="mb-5 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
-          Trusted by compliance teams at
+          Built on
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-          {CUSTOMER_LOGOS.map((logo) => (
+          {BUILT_ON_PARTNERS.map((partner) => (
             <span
-              key={logo}
+              key={partner}
               className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-400"
             >
-              {logo}
+              {partner}
             </span>
           ))}
         </div>

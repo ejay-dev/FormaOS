@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   title:
     'NDIS Compliance Software - Practice Standards & Audit Ready | FormaOS',
   description:
-    'Operationalise all 8 NDIS Practice Standards modules. Worker screening tracking, SIRS notifications, audit-ready evidence. Trusted by Australian NDIS registered providers.',
+    'Operationalise all 8 NDIS Practice Standards modules. Worker screening tracking, SIRS notifications, audit-ready evidence. Aligned with NDIS Practice Standards.',
   keywords: [
     'NDIS compliance software',
     'NDIS practice standards',
