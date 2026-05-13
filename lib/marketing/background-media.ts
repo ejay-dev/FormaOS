@@ -6,6 +6,20 @@ export interface MarketingRouteMedia {
 
 const DEFAULT_POSITION = 'center center';
 
+// Industry money pages intentionally opt OUT of this shared backdrop —
+// they render their own industry-themed hero (AnimatedHeroBg + the
+// InteractiveDashboard mock) which converts better than a uniform
+// photographic backdrop. Decision recorded in the 2026-05-13 marketing
+// audit §20c. Routes that opt out:
+//
+//   /healthcare-compliance
+//   /ndis-providers
+//   /financial-services-compliance
+//   /childcare-compliance
+//   /construction-compliance
+//
+// If you add an entry for any of the above, also update the audit
+// §20c row so the trail stays honest.
 const ROUTE_MEDIA: Record<
   string,
   Omit<MarketingRouteMedia, 'id'>
