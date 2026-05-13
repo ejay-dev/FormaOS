@@ -160,18 +160,21 @@ function ComplianceToast({
         </button>
       </div>
 
-      {/* Progress bar for auto-dismiss */}
-      <div className="h-1 bg-surface-1">
-        <div 
-          className={cn(
-            "h-full bg-gradient-to-r from-cyan-500 to-blue-500",
-            "animate-[shrink_5s_linear_forwards]"
-          )}
-          style={{
-            animationDuration: `${(data.duration || 5000)}ms`
-          }}
-        />
-      </div>
+      {/* Progress bar for auto-dismiss; suppressed when duration === 0
+          (sticky toast — the manual X is the only dismissal). */}
+      {data.duration !== 0 && (
+        <div className="h-1 bg-surface-1">
+          <div
+            className={cn(
+              "h-full bg-gradient-to-r from-cyan-500 to-blue-500",
+              "animate-[shrink_5s_linear_forwards]"
+            )}
+            style={{
+              animationDuration: `${(data.duration ?? 5000)}ms`
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -182,14 +185,19 @@ export function ComplianceToastProvider({ children }: { children: React.ReactNod
 
   const showToast = useCallback((data: ComplianceToastData) => {
     const id = data.id || `toast-${++idCounter.current}`;
-    const duration = data.duration || 5000;
-    
+    // duration === 0 is the explicit "no auto-dismiss" opt-out for
+    // error states the user must read and dismiss themselves. Anything
+    // else (including undefined) keeps the prior 5s default. The
+    // manual-close button remains the dismissal path either way.
+    const duration = data.duration ?? 5000;
+
     setToasts(prev => [...prev, { ...data, id }]);
 
-    // Auto-dismiss
-    setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
-    }, duration);
+    if (duration > 0) {
+      setTimeout(() => {
+        setToasts(prev => prev.filter(t => t.id !== id));
+      }, duration);
+    }
   }, []);
 
   const dismissToast = useCallback((id: string) => {
