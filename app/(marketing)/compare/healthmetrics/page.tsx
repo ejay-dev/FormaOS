@@ -10,7 +10,7 @@ import {
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS vs HealthMetrics - Healthcare & Aged Care Compliance Comparison | FormaOS',
+    'FormaOS vs HealthMetrics - Compliance Comparison | FormaOS',
   description:
     'FormaOS vs HealthMetrics: operational compliance execution with named ownership and verified evidence chains vs clinical governance and quality reporting tools.',
   alternates: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      'FormaOS vs HealthMetrics - Healthcare & Aged Care Compliance Comparison | FormaOS',
+      'FormaOS vs HealthMetrics - Compliance Comparison | FormaOS',
     description:
       'FormaOS vs HealthMetrics: operational compliance execution with named ownership and verified evidence chains vs clinical governance and quality reporting tools.',
     type: 'website',

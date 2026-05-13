@@ -10,7 +10,7 @@ import {
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS vs Riskware - Australian Compliance Platform Comparison | FormaOS',
+    'FormaOS vs Riskware - Compliance Comparison | FormaOS',
   description:
     'FormaOS vs Riskware: operational compliance workflows with industry-specific frameworks, named ownership, and evidence chains vs traditional GRC risk management.',
   alternates: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      'FormaOS vs Riskware - Australian Compliance Platform Comparison | FormaOS',
+      'FormaOS vs Riskware - Compliance Comparison | FormaOS',
     description:
       'FormaOS vs Riskware: operational compliance workflows with industry-specific frameworks, named ownership, and evidence chains vs traditional GRC risk management.',
     type: 'website',

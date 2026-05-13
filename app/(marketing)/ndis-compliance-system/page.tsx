@@ -4,9 +4,9 @@ import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'NDIS Compliance System - Practice Standards & Quality Indicators | FormaOS',
+    'NDIS Compliance System | FormaOS',
   description:
-    'Purpose-built NDIS compliance system for disability service providers. Map Practice Standards, track Quality Indicators, manage incidents, and maintain audit-ready evidence for NDIS Commission reviews.',
+    'Map Practice Standards, track Quality Indicators, manage incidents, and stay audit-ready for NDIS Commission reviews.',
   alternates: { canonical: `${siteUrl}/ndis-compliance-system` },
   openGraph: {
     title: 'NDIS Compliance System | FormaOS',

@@ -5,7 +5,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Compare FormaOS vs AU Compliance Platforms',
   description:
-    'Compare FormaOS against Ideagen Policy Logic, Riskware, 6clicks, and HealthMetrics. See how operational compliance execution beats traditional GRC and clinical-reporting tools for NDIS, aged care, and healthcare.',
+    'Compare FormaOS to HealthMetrics, CompliSpace, Riskware, and 6clicks across pricing, frameworks, evidence integrity, and audit-readiness.',
   alternates: {
     canonical: `${siteUrl}/compare`,
   },

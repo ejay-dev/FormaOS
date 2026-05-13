@@ -9,12 +9,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Procurement FAQ',
   description:
-    'Answers to common procurement and security review questions for enterprise buyers.',
+    'Procurement and security review FAQ for enterprise buyers evaluating FormaOS. Architecture, hosting, identity, encryption, and audit posture.',
   alternates: { canonical: `${siteUrl}/trust/procurement` },
   openGraph: {
     title: 'FormaOS | Procurement FAQ',
     description:
-      'Answers to common procurement and security review questions for enterprise buyers.',
+      'Procurement and security review FAQ for enterprise buyers evaluating FormaOS. Architecture, hosting, identity, encryption, and audit posture.',
     type: 'website',
     url: `${siteUrl}/trust/procurement`,
   },
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Procurement FAQ',
     description:
-      'Answers to common procurement and security review questions for enterprise buyers.',
+      'Procurement and security review FAQ for enterprise buyers evaluating FormaOS. Architecture, hosting, identity, encryption, and audit posture.',
   },
 };
 

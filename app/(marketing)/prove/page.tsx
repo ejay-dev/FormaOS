@@ -5,14 +5,14 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Prove Compliance',
   description:
-    'Generate defensible audit proof with traceable evidence, linked controls, and full-chain context.',
+    'Generate defensible audit proof with traceable evidence, linked controls, and full-chain context. Built for regulator-facing reviews.',
   alternates: {
     canonical: `${siteUrl}/prove`,
   },
   openGraph: {
     title: 'Prove Compliance | FormaOS',
     description:
-      'Generate defensible audit proof with traceable evidence, linked controls, and full-chain context.',
+      'Generate defensible audit proof with traceable evidence, linked controls, and full-chain context. Built for regulator-facing reviews.',
     type: 'website',
     url: `${siteUrl}/prove`,
     locale: 'en_AU',
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Prove Compliance | FormaOS',
     description:
-      'Generate defensible audit proof with traceable evidence, linked controls, and full-chain context.',
+      'Generate defensible audit proof with traceable evidence, linked controls, and full-chain context. Built for regulator-facing reviews.',
   },
 };
 

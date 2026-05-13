@@ -9,12 +9,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Data Handling',
   description:
-    'Data handling, retention, and deletion summary for enterprise procurement.',
+    'How FormaOS handles, retains, and deletes customer data. Designed for enterprise procurement review, vendor assurance, and DPA negotiations.',
   alternates: { canonical: `${siteUrl}/trust/data-handling` },
   openGraph: {
     title: 'FormaOS | Data Handling',
     description:
-      'Data handling, retention, and deletion summary for enterprise procurement.',
+      'How FormaOS handles, retains, and deletes customer data. Designed for enterprise procurement review, vendor assurance, and DPA negotiations.',
     type: 'website',
     url: `${siteUrl}/trust/data-handling`,
   },
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Data Handling',
     description:
-      'Data handling, retention, and deletion summary for enterprise procurement.',
+      'How FormaOS handles, retains, and deletes customer data. Designed for enterprise procurement review, vendor assurance, and DPA negotiations.',
   },
 };
 

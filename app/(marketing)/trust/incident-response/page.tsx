@@ -9,12 +9,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Incident Response',
   description:
-    'Incident response summary and communication expectations for enterprise procurement.',
+    'Incident response process, severity classification, and customer communication expectations for FormaOS enterprise procurement.',
   alternates: { canonical: `${siteUrl}/trust/incident-response` },
   openGraph: {
     title: 'FormaOS | Incident Response',
     description:
-      'Incident response summary and communication expectations for enterprise procurement.',
+      'Incident response process, severity classification, and customer communication expectations for FormaOS enterprise procurement.',
     type: 'website',
     url: `${siteUrl}/trust/incident-response`,
   },
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Incident Response',
     description:
-      'Incident response summary and communication expectations for enterprise procurement.',
+      'Incident response process, severity classification, and customer communication expectations for FormaOS enterprise procurement.',
   },
 };
 

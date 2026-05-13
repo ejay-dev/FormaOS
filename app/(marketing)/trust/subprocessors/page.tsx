@@ -10,12 +10,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Sub-processors',
   description:
-    'List of third-party sub-processors used by FormaOS for data processing.',
+    'Third-party sub-processors used by FormaOS for data processing. Required by enterprise procurement, GDPR Article 28, and the Australian Privacy Act.',
   alternates: { canonical: `${siteUrl}/trust/subprocessors` },
   openGraph: {
     title: 'FormaOS | Sub-processors',
     description:
-      'List of third-party sub-processors used by FormaOS for data processing.',
+      'Third-party sub-processors used by FormaOS for data processing. Required by enterprise procurement, GDPR Article 28, and the Australian Privacy Act.',
     type: 'website',
     url: `${siteUrl}/trust/subprocessors`,
   },
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Sub-processors',
     description:
-      'List of third-party sub-processors used by FormaOS for data processing.',
+      'Third-party sub-processors used by FormaOS for data processing. Required by enterprise procurement, GDPR Article 28, and the Australian Privacy Act.',
   },
 };
 

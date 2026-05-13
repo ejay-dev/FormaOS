@@ -4,7 +4,7 @@ import { siteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Terms",
-  description: "Terms and conditions for using FormaOS.",
+  description: 'Terms and conditions for the FormaOS compliance operating system. Framework for responsible platform usage, data integrity, and shared accountability.',
   alternates: {
     canonical: `${siteUrl}/legal/terms`,
   },

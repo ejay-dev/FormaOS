@@ -10,9 +10,9 @@ import { siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
-    'FormaOS - Compliance Operating System for Australian Regulated Industries',
+    'Compliance Operating System for Regulated Industries',
   description:
-    'FormaOS turns regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance. NDIS, Healthcare, Financial Services, Childcare, Construction.',
+    'Turn regulatory obligations into enforced workflows with named owners, immutable evidence chains, and audit-ready assurance. NDIS, healthcare, finance.',
   keywords: [
     'compliance software Australia',
     'compliance operating system',
@@ -44,24 +44,24 @@ export const metadata: Metadata = {
     url: `${siteUrl}/`,
     siteName: 'FormaOS',
     title:
-      'FormaOS - Compliance Operating System for Australian Regulated Industries',
+      'Compliance Operating System for Regulated Industries',
     description:
-      'Turn regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance across NDIS, Healthcare, Financial Services, Childcare, and Construction.',
+      'Turn regulatory obligations into enforced workflows with named owners, immutable evidence chains, and audit-ready assurance. NDIS, healthcare, finance.',
     images: [
       {
         url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: 'FormaOS - Compliance Operating System for Australian Regulated Industries',
+        alt: 'Compliance Operating System for Regulated Industries',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title:
-      'FormaOS - Compliance Operating System for Australian Regulated Industries',
+      'Compliance Operating System for Regulated Industries',
     description:
-      'Turn regulatory obligations into enforced workflows with named owners, blocked failure paths, immutable evidence chains, and audit-ready assurance. NDIS, Healthcare, Financial Services, Childcare, Construction.',
+      'Turn regulatory obligations into enforced workflows with named owners, immutable evidence chains, and audit-ready assurance. NDIS, healthcare, finance.',
     images: [`${siteUrl}/og-image.png`],
   },
 };

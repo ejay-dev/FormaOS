@@ -9,12 +9,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | SLA',
   description:
-    'Service levels, support expectations, and availability review guidance for FormaOS plans.',
+    'Service-level agreements, support expectations, and availability review guidance for FormaOS Growth, Scale, and Enterprise plans.',
   alternates: { canonical: `${siteUrl}/trust/sla` },
   openGraph: {
     title: 'FormaOS | SLA',
     description:
-      'Service levels, support expectations, and availability review guidance for FormaOS plans.',
+      'Service-level agreements, support expectations, and availability review guidance for FormaOS Growth, Scale, and Enterprise plans.',
     type: 'website',
     url: `${siteUrl}/trust/sla`,
   },
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | SLA',
     description:
-      'Service levels, support expectations, and availability review guidance for FormaOS plans.',
+      'Service-level agreements, support expectations, and availability review guidance for FormaOS Growth, Scale, and Enterprise plans.',
   },
 };
 

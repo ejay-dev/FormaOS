@@ -3,7 +3,7 @@ import IsoContent from './IsoContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
-  title: 'ISO Compliance Software - ISO 27001 Automation Platform | FormaOS',
+  title: 'ISO 27001 Compliance Automation | FormaOS',
   description:
     'Automate ISO 27001 compliance with FormaOS. Map controls to Annex A requirements, capture evidence continuously, and maintain audit-ready documentation year-round.',
   alternates: { canonical: `${siteUrl}/iso-compliance-software` },
