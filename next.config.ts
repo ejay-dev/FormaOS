@@ -116,6 +116,25 @@ const nextConfig: NextConfig = {
         destination: '/',
         permanent: false,
       },
+      // /compliance and /care surfaced as 404s in the pass-2 dynamic
+      // audit (2026-05-13 marketing audit, §11). Neither route was
+      // ever built in this repo (no git log, no directory, zero
+      // inbound refs), but buyers commonly URL-type these and may
+      // arrive from stale external mentions. Redirect to the closest
+      // working surface — /trust is the compliance hub the audit
+      // identified as the equivalent, /healthcare-compliance is the
+      // closest "care" landing per §4.15. Temporary (307) until the
+      // routes are intentionally built.
+      {
+        source: '/compliance',
+        destination: '/trust',
+        permanent: false,
+      },
+      {
+        source: '/care',
+        destination: '/healthcare-compliance',
+        permanent: false,
+      },
     ];
   },
   async headers() {
