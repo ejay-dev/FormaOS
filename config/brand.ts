@@ -27,8 +27,19 @@ export const brand = {
     defaultTitle: 'FormaOS — Compliance Operating System',
     description:
       'FormaOS is the Compliance Operating System for regulated organizations — unify governance, evidence, and audits in one platform.',
-    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.formaos.com.au',
-    appUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://app.formaos.com.au',
+    // Strip surrounding whitespace at the constant source. The deploy
+    // env historically carried a trailing `\n` that propagated into
+    // sitemap.xml, robots.txt, and JSON-LD `<loc>` / `url` / `logo`
+    // fields on every marketing page — Lighthouse SEO 83 universal,
+    // search engines drop the entries. Trimming here is one fix for
+    // all consumers; `lib/seo.ts` still strips the trailing slash on
+    // top of this for path concatenation.
+    siteUrl: (
+      process.env.NEXT_PUBLIC_SITE_URL || 'https://www.formaos.com.au'
+    ).trim(),
+    appUrl: (
+      process.env.NEXT_PUBLIC_APP_URL || 'https://app.formaos.com.au'
+    ).trim(),
     ogImage: '/og-image.png',
   },
   /** Framework packs shipped and mapped with live controls */
