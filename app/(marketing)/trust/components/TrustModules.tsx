@@ -20,7 +20,7 @@ const navCards = [
     icon: FileLock2,
     title: 'Framework Coverage',
     description:
-      'ISO 27001, SOC 2, HIPAA, GDPR, PCI DSS, NIST CSF, and more - mapped controls that become executable work with contextual evidence. NDIS and NSQHS via industry pack (roadmap).',
+      'ISO 27001, SOC 2, HIPAA, GDPR, PCI DSS, NIST CSF, and more — mapped controls that become executable work with contextual evidence. NDIS and NSQHS framework packs in development.',
     linkText: 'View coverage',
   },
   {

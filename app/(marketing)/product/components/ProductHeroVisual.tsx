@@ -175,17 +175,29 @@ function ComplianceDashboard() {
       </div>
 
       {/* Section label */}
-      <div className="text-[10px] uppercase tracking-[0.15em] text-white/25 font-medium mb-3">
-        Framework Status
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-[10px] uppercase tracking-[0.15em] text-white/25 font-medium">
+          Framework Status
+        </div>
+        {/* Caption marks this hero visual as illustrative — addresses
+            both audit row #21 (demo metrics not labelled as such) and
+            the framework-taxonomy rule against absolute claims
+            ("Certified", "Compliant") in marketing mocks. */}
+        <div className="text-[9px] uppercase tracking-[0.18em] text-white/30 font-medium">
+          Example dashboard
+        </div>
       </div>
 
-      {/* Status rows */}
+      {/* Status rows — sublabels describe the *customer's* compliance
+          state inside FormaOS, not FormaOS-the-product's certification.
+          Wording avoids "Certified" / "Compliant" / "Accredited" per the
+          framework-status taxonomy (audit row #4). */}
       <div className="space-y-2.5">
-        <StatusRow color="emerald" label="SOC 2 Type II" sublabel="All controls passing" />
-        <StatusRow color="emerald" label="ISO 27001" sublabel="Certified - next audit Q3" />
+        <StatusRow color="emerald" label="SOC 2 Type II" sublabel="Controls operating" />
+        <StatusRow color="emerald" label="ISO 27001" sublabel="On track — next review Q3" />
         <StatusRow color="amber" label="GDPR Article 30" sublabel="2 items need review" />
-        <StatusRow color="emerald" label="HIPAA Security Rule" sublabel="Fully compliant" />
-        <StatusRow color="rose" label="PCI DSS v4.0" sublabel="Action required - 1 finding" />
+        <StatusRow color="emerald" label="HIPAA Security Rule" sublabel="Controls operating" />
+        <StatusRow color="rose" label="PCI DSS v4.0" sublabel="Action required — 1 finding" />
       </div>
     </>
   );
