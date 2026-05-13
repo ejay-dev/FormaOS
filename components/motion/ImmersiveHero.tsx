@@ -435,17 +435,15 @@ export function ImmersiveHero({
         </DepthLayer>
       </DepthStage>
 
-      {/* noscript fallback for SSR/SEO */}
-      <noscript>
-        <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-6 lg:px-12 text-center flex flex-col items-center">
-          <h1 className="text-[2.5rem] sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.08] text-white">
-            {headline}
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-foreground/70 mb-8 max-w-3xl mx-auto leading-relaxed">
-            {subheadline}
-          </p>
-        </div>
-      </noscript>
+      {/* noscript fallback removed 2026-05-13: the motion.h1 above
+          already SSRs as a real <h1> with the animated final state
+          inline (style="opacity:1; transform:none"), so the noscript
+          duplicate was emitting a SECOND <h1> with the same text on
+          every page that uses ImmersiveHero. The duplicate parsed
+          as a WCAG 1.3.1 / SEO regression on every marketing page
+          (audit row #5, "67 of 85 pages"). Removing the redundant
+          noscript block leaves a single h1 in the SSR HTML and
+          non-JS browsers still see the motion.h1's inline styles. */}
     </section>
   );
 }
