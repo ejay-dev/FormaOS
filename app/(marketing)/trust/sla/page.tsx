@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { CheckCircle2, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
@@ -31,7 +31,6 @@ const tiers = [
     tier: 'Foundation',
     points: [
       'No contractual SLA by default.',
-      'Public status page and published uptime checks available.',
       'Standard email support (business hours); response time varies.',
       'Platform access to FormaOS Trust Center for buyer review.',
     ],
@@ -41,7 +40,6 @@ const tiers = [
     points: [
       'No contractual SLA by default; best-effort service model.',
       'Priority email support with faster handling than Foundation.',
-      'Public status page, incident history, and uptime reports available.',
       'Security review artifacts available via Trust Center for procurement.',
     ],
   },
@@ -92,26 +90,13 @@ export default function SlaPage() {
           ))}
         </div>
 
-        <div className="mt-12 rounded-2xl border border-border bg-card p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
-            <h3 className="text-base font-semibold text-foreground">
-              Status And Uptime Signals
-            </h3>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Live status and historical uptime checks are published on the status
-            page. Uptime signals are not a contractual SLA unless incorporated
-            into your agreement.
-          </p>
-        </div>
+        {/* "Status And Uptime Signals" block removed 2026-05-13 with
+            the /status route; will return when a real status provider
+            is wired. */}
 
         <div className="mt-12 flex flex-col sm:flex-row gap-4 text-sm">
           <Link href="/trust" className="text-primary hover:underline">
             ← Back to Trust Center
-          </Link>
-          <Link href="/status" className="text-primary hover:underline">
-            Status →
           </Link>
           <Link
             href="/security-review"

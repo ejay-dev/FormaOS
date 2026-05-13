@@ -238,13 +238,10 @@ export function Footer() {
                 <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
                 Sydney, Australia
               </div>
-              <Link
-                href="/status"
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/[0.08] border border-emerald-500/15 text-[11px] text-emerald-500 hover:text-emerald-400 transition-colors"
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                All systems operational
-              </Link>
+              {/* /status badge removed 2026-05-13 — was hardcoded
+                  "All systems operational" against 0% uptime data.
+                  Route will return when a real status provider is
+                  wired. */}
             </div>
           </div>
         </div>

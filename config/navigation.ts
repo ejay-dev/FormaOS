@@ -43,7 +43,6 @@ export const resourceLinks = [
   { href: '/blog', label: 'Blog' },
   { href: '/about', label: 'About' },
   { href: '/changelog', label: 'Changelog' },
-  { href: '/status', label: 'Status' },
   { href: '/faq', label: 'FAQ' },
 ] as const;
 
@@ -100,7 +99,6 @@ export const footerLinks = {
     { href: '/blog', label: 'Blog' },
     { href: '/trust', label: 'Trust Center' },
     { href: '/security-review', label: 'Security Review Packet' },
-    { href: '/status', label: 'Status' },
     { href: '/changelog', label: 'Changelog' },
     { href: '/faq', label: 'FAQ' },
   ],

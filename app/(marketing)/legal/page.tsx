@@ -9,12 +9,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Legal',
   description:
-    'Legal and compliance resources for FormaOS: Terms, Privacy, DPA summary, subprocessors, and status.',
+    'Legal and compliance resources for FormaOS: Terms, Privacy, DPA summary, and subprocessors.',
   alternates: { canonical: `${siteUrl}/legal` },
   openGraph: {
     title: 'FormaOS | Legal',
     description:
-      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA summary, subprocessors, and status.',
+      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA summary, and subprocessors.',
     type: 'website',
     url: `${siteUrl}/legal`,
     locale: 'en_AU',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Legal',
     description:
-      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA, subprocessors, and status.',
+      'Legal and compliance resources for FormaOS: Terms, Privacy, DPA, and subprocessors.',
   },
 };
 
@@ -53,12 +53,8 @@ const links = [
     description: 'Current subprocessor list and data-handling roles.',
     icon: Shield,
   },
-  {
-    title: 'Status',
-    href: '/status',
-    description: 'Public uptime checks and current system status.',
-    icon: Shield,
-  },
+  // /status card removed 2026-05-13; route unshipped until a real
+  // status provider is wired (chore/unship-status-page).
 ] as const;
 
 export default function LegalIndexPage() {

@@ -83,9 +83,8 @@ export default function IncidentResponsePage() {
           <Link href="/trust" className="text-primary hover:underline">
             ← Back to Trust Center
           </Link>
-          <Link href="/status" className="text-primary hover:underline">
-            Status →
-          </Link>
+          {/* Status link removed 2026-05-13 — /status route unshipped
+              until a real status provider is wired. */}
         </div>
       </div>
     </MarketingPageShell>

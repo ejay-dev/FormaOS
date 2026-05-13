@@ -65,7 +65,7 @@ const faqs = [
   {
     question: 'What is your uptime SLA?',
     answer:
-      'Enterprise agreements can include documented availability expectations, incident handling, maintenance communications, and escalation paths in the executed MSA/SOW. Foundation and Growth operate with published support expectations and public status reporting at formaos.com.au/status.',
+      'Enterprise agreements can include documented availability expectations, incident handling, maintenance communications, and escalation paths in the executed MSA/SOW. Foundation and Growth operate with published support expectations under a best-effort model.',
   },
   {
     question: 'How long does security review take?',
