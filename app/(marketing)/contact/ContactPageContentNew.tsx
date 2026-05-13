@@ -409,6 +409,71 @@ function ContactForm({ submitAction }: ContactFormProps) {
   const plan = searchParams.get('plan') ?? '';
   const source = searchParams.get('source') ?? '';
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Field-level inline errors. Each entry is the user-visible message
+  // for that field; absence of an entry means the field is currently
+  // valid. Errors are cleared per-field on change so the message
+  // doesn't linger after the user fixes it.
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  // Same email shape the server action uses (see actions.ts:10) —
+  // mirroring it client-side keeps the two checks aligned.
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function validateField(name: string, value: string): string | null {
+    const trimmed = value.trim();
+    switch (name) {
+      case 'name':
+        if (!trimmed) return 'Please enter your full name.';
+        return null;
+      case 'email':
+        if (!trimmed) return 'Please enter your work email.';
+        if (!EMAIL_REGEX.test(trimmed))
+          return 'That email address does not look right.';
+        return null;
+      case 'organization':
+        if (!trimmed) return 'Please enter your organization.';
+        return null;
+      case 'message':
+        if (!trimmed) return 'Please share a brief message.';
+        return null;
+      default:
+        return null;
+    }
+  }
+
+  function clearErrorOn(name: string) {
+    setFieldErrors((prev) => {
+      if (!prev[name]) return prev;
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
+  }
+
+  const onClientSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const errors: Record<string, string> = {};
+    for (const field of ['name', 'email', 'organization', 'message']) {
+      const value = String(formData.get(field) ?? '');
+      const message = validateField(field, value);
+      if (message) errors[field] = message;
+    }
+
+    setFieldErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      const firstInvalid = Object.keys(errors)[0];
+      const node = form.querySelector<HTMLElement>(`[name="${firstInvalid}"]`);
+      node?.focus();
+      node?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    void handleSubmit(formData);
+  };
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -439,7 +504,11 @@ function ContactForm({ submitAction }: ContactFormProps) {
         {/* Form Card */}
         <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
           <div className="p-5 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
-            <form action={handleSubmit} className="space-y-6">
+            <form
+              onSubmit={onClientSubmit}
+              className="space-y-6"
+              noValidate
+            >
               <input type="hidden" name="inquiryType" value={intent} />
               <input type="hidden" name="source" value={source} />
               <input type="hidden" name="plan" value={plan} />
@@ -483,9 +552,27 @@ function ContactForm({ submitAction }: ContactFormProps) {
                     id="name"
                     name="name"
                     required
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    aria-invalid={fieldErrors.name ? 'true' : 'false'}
+                    aria-describedby={
+                      fieldErrors.name ? 'name-error' : undefined
+                    }
+                    onChange={() => clearErrorOn('name')}
+                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                      fieldErrors.name
+                        ? 'border-rose-500/70'
+                        : 'border-white/10'
+                    }`}
                     placeholder="Your full name"
                   />
+                  {fieldErrors.name && (
+                    <p
+                      id="name-error"
+                      role="alert"
+                      className="mt-2 text-xs text-rose-400"
+                    >
+                      {fieldErrors.name}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label
@@ -500,9 +587,27 @@ function ContactForm({ submitAction }: ContactFormProps) {
                     name="email"
                     required
                     maxLength={254}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    aria-invalid={fieldErrors.email ? 'true' : 'false'}
+                    aria-describedby={
+                      fieldErrors.email ? 'email-error' : undefined
+                    }
+                    onChange={() => clearErrorOn('email')}
+                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                      fieldErrors.email
+                        ? 'border-rose-500/70'
+                        : 'border-white/10'
+                    }`}
                     placeholder="you@organization.com"
                   />
+                  {fieldErrors.email && (
+                    <p
+                      id="email-error"
+                      role="alert"
+                      className="mt-2 text-xs text-rose-400"
+                    >
+                      {fieldErrors.email}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -521,9 +626,29 @@ function ContactForm({ submitAction }: ContactFormProps) {
                     name="organization"
                     required
                     maxLength={200}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    aria-invalid={fieldErrors.organization ? 'true' : 'false'}
+                    aria-describedby={
+                      fieldErrors.organization
+                        ? 'organization-error'
+                        : undefined
+                    }
+                    onChange={() => clearErrorOn('organization')}
+                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                      fieldErrors.organization
+                        ? 'border-rose-500/70'
+                        : 'border-white/10'
+                    }`}
                     placeholder="Your organization name"
                   />
+                  {fieldErrors.organization && (
+                    <p
+                      id="organization-error"
+                      role="alert"
+                      className="mt-2 text-xs text-rose-400"
+                    >
+                      {fieldErrors.organization}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label
@@ -638,9 +763,27 @@ function ContactForm({ submitAction }: ContactFormProps) {
                   name="message"
                   rows={5}
                   required
-                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                  aria-invalid={fieldErrors.message ? 'true' : 'false'}
+                  aria-describedby={
+                    fieldErrors.message ? 'message-error' : undefined
+                  }
+                  onChange={() => clearErrorOn('message')}
+                  className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none ${
+                    fieldErrors.message
+                      ? 'border-rose-500/70'
+                      : 'border-white/10'
+                  }`}
                   placeholder="Tell us about your requirements, review stakeholders, and what you need to validate..."
                 />
+                {fieldErrors.message && (
+                  <p
+                    id="message-error"
+                    role="alert"
+                    className="mt-2 text-xs text-rose-400"
+                  >
+                    {fieldErrors.message}
+                  </p>
+                )}
               </div>
 
               {/* Submit Button */}
