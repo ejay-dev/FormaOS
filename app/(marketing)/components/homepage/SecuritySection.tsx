@@ -935,7 +935,7 @@ export const SecuritySection = memo(function SecuritySection() {
           className="mt-10"
         >
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600 mb-4 text-center">
-            Trusted by regulated teams across Australia
+            Built for regulated industries across Australia
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
             {trustedSectors.map((sector, i) => (

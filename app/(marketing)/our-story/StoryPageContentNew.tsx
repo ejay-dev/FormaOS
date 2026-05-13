@@ -902,7 +902,7 @@ function FinalCTA() {
             <div className="px-8 sm:px-12 py-10 sm:py-12">
               <div className="text-center mb-10">
                 <p className="text-lg text-gray-400 mb-6 max-w-2xl mx-auto">
-                  FormaOS is trusted by organizations that cannot afford
+                  FormaOS is built for organizations that cannot afford
                   ambiguity, inconsistency, or after-the-fact compliance.
                 </p>
 

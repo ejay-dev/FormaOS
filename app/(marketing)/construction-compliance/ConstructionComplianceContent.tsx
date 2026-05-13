@@ -269,7 +269,6 @@ export default function ConstructionComplianceContent() {
           { label: 'SafeWork Australia' },
           { label: 'SWMS Requirements' },
         ]}
-        socialProof="Trusted by construction firms operating across multiple sites"
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">

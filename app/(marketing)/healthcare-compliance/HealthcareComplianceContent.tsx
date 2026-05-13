@@ -269,7 +269,6 @@ export default function HealthcareComplianceContent() {
           { label: 'NSQHS Standards' },
           { label: 'ACSQHC Accreditation' },
         ]}
-        socialProof="Trusted by healthcare providers across primary and acute care"
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">

@@ -278,7 +278,6 @@ export default function FinancialServicesContent() {
           { label: 'APRA Prudential Standards' },
           { label: 'AUSTRAC AML/CTF' },
         ]}
-        socialProof="Trusted by financial services firms managing multi-regime obligations"
       />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
