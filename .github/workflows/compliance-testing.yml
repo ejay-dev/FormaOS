@@ -1,5 +1,16 @@
 name: Compliance Testing
 
+# Default GitHub Actions permissions are read-only. The compliance-
+# summary job posts a comment on the PR with gdpr + soc2 results;
+# without pull-requests:write that step fails with "Resource not
+# accessible by integration" and the whole summary job goes red even
+# though the underlying compliance jobs passed. issues:write is the
+# REST endpoint compatibility surface for PR comments.
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 on:
   schedule:
     - cron: '0 8 * * 1' # Weekly on Monday at 8 AM UTC
@@ -274,6 +285,14 @@ jobs:
 
       - name: Comment PR with compliance results
         if: github.event_name == 'pull_request'
+        # The workflow-level permissions block above should make this
+        # always succeed. continue-on-error is belt-and-braces: if a
+        # future PR comes from a fork (forked-PR tokens are read-only
+        # regardless of workflow permissions), the comment step would
+        # fail again. We don't want that to block the gate when both
+        # underlying compliance jobs passed — the summary is an
+        # artifact, not a contract.
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
@@ -281,7 +300,7 @@ jobs:
 
             if (fs.existsSync('summary.md')) {
               const summary = fs.readFileSync('summary.md', 'utf8');
-              
+
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
