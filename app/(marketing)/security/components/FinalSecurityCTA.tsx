@@ -81,7 +81,7 @@ export function FinalSecurityCTA() {
                       <div className="flex items-center gap-3 justify-center lg:justify-start">
                         <div className="w-2 h-2 rounded-full bg-green-400" />
                         <span className="text-sm text-gray-400">
-                          SOC 2 and ISO 27001-aligned infrastructure practices
+                          Infrastructure practices aligned with SOC 2 and ISO 27001 frameworks
                         </span>
                       </div>
                       <div className="flex items-center gap-3 justify-center lg:justify-start">
@@ -128,7 +128,7 @@ export function FinalSecurityCTA() {
                     </div>
 
                     <div className="text-xs text-gray-500">
-                      SOC 2-aligned • GDPR-ready • Enterprise security standards
+                      Aligned with SOC 2 and GDPR frameworks • Enterprise security standards
                     </div>
                   </div>
                 </ScrollReveal>

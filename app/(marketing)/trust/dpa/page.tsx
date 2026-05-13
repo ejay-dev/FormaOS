@@ -17,12 +17,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Data Processing Agreement',
   description:
-    'FormaOS Data Processing Agreement for enterprise customers. GDPR-compliant data handling terms.',
+    'FormaOS Data Processing Agreement for enterprise customers. Data handling terms aligned with GDPR and the Australian Privacy Act.',
   alternates: { canonical: `${siteUrl}/trust/dpa` },
   openGraph: {
     title: 'FormaOS | Data Processing Agreement',
     description:
-      'FormaOS Data Processing Agreement for enterprise customers. GDPR-compliant data handling terms.',
+      'FormaOS Data Processing Agreement for enterprise customers. Data handling terms aligned with GDPR and the Australian Privacy Act.',
     type: 'website',
     url: `${siteUrl}/trust/dpa`,
   },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FormaOS | Data Processing Agreement',
     description:
-      'FormaOS Data Processing Agreement for enterprise customers. GDPR-compliant data handling terms.',
+      'FormaOS Data Processing Agreement for enterprise customers. Data handling terms aligned with GDPR and the Australian Privacy Act.',
   },
 };
 
