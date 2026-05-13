@@ -1965,9 +1965,9 @@ function FeaturesHero() {
           transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
           className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          18 features across compliance, automation, security, and collaboration
-          - built for regulated teams that need provable control over every
-          obligation.
+          25 features across compliance, workflow, identity, collaboration,
+          and AI — built for regulated teams that need provable control over
+          every obligation.
         </motion.p>
 
         <motion.div
@@ -2071,7 +2071,7 @@ export default function FeaturesPageContent() {
                 </span>
               </h2>
               <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
-                18 platform features across four categories - each designed to
+                25 platform features across five categories — each designed to
                 close the gap between compliance obligations and operational
                 execution.
               </p>

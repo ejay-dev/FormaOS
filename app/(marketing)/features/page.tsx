@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Platform Features | FormaOS',
     description:
-      'Explore 23 core features across compliance operations, workflow automation, enterprise security, team collaboration, and API access.',
+      'Explore 25 core features across compliance operations, workflow automation, identity & security, collaboration, and AI & certification.',
     type: 'website',
     url: `${siteUrl}/features`,
   },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Platform Features | FormaOS',
     description:
-      'Explore 23 core features across compliance operations, workflow automation, enterprise security, team collaboration, and API access.',
+      'Explore 25 core features across compliance operations, workflow automation, identity & security, collaboration, and AI & certification.',
   },
 };
 
