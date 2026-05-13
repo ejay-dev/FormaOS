@@ -158,10 +158,10 @@ const ROUTE_MEDIA: Record<
     imageSrc: '/marketing-media/soc2-compliance-automation.jpg',
     imagePosition: 'center 32%',
   },
-  '/status': {
-    imageSrc: '/marketing-media/status.jpg',
-    imagePosition: 'center center',
-  },
+  // /status was unshipped 2026-05-13 via PR #68; portal entry removed
+  // here so the now-deleted route no longer carries a backdrop. The
+  // marketing-media/status.jpg file is left on disk for whenever
+  // /status comes back with a real status provider.
   '/terms': {
     imageSrc: '/marketing-media/terms.jpg',
     imagePosition: 'center center',

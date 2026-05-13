@@ -845,3 +845,83 @@ Remaining Phase C queue (35 MED + 24 LOW from pass 1, ~13 MED + 13
 LOW from pass 2 not yet shipped): walked in audit-file order,
 severity-first within each section. Phase D pricing redesign
 unblocks after Phase C HIGH+MED clears.
+
+## §20 — `<MarketingRouteBackdrop>` portal sweep
+
+Triggered by the user's "pull the shared-portal thread while it's
+fresh" directive after #75. The portal config at
+`lib/marketing/background-media.ts` maps `pathname → { imageSrc,
+imagePosition }`; missing entries silently render no backdrop.
+
+### §20a — Inventory
+
+- **64** filesystem routes under `app/(marketing)/**` with a
+  `page.tsx`.
+- **55** entries in `ROUTE_MEDIA` (before this PR).
+- **0** portal entries reference a missing on-disk image. All 55
+  files exist under `public/marketing-media/`.
+
+### §20b — Dead portal entry (shipped this PR)
+
+| # | Sev | Finding | PR |
+|---|------|---------|----|
+| 112 | LOW | `/status` portal entry pointed at `/marketing-media/status.jpg` after the route was unshipped in #68. The portal never rendered the backdrop in practice (the route returns a 307 to `/`), but the dead entry was confusing. Removed in this PR. The image file is kept on disk for the day `/status` comes back. | This PR |
+
+### §20c — Routes missing portal entries (10) — design call, not shipped
+
+These routes have a `page.tsx` but no `ROUTE_MEDIA` entry, so they
+render without the shared backdrop. Some may be intentional (the
+page provides its own hero). Recording so the next design pass can
+decide each case rather than have a silent inconsistency.
+
+| # | Sev | Route | Notes |
+|---|------|-------|-------|
+| 113 | MED | `/healthcare-compliance` | Industry money page. Either add a portal entry or document that this page renders its own hero. |
+| 114 | MED | `/ndis-providers` | Industry money page. Same. |
+| 115 | MED | `/financial-services-compliance` | Industry money page. |
+| 116 | MED | `/childcare-compliance` | Industry money page. |
+| 117 | MED | `/construction-compliance` | Industry money page. |
+| 118 | LOW | `/compare/complispace` | Compare-page series; the index `/compare` + `/compare/healthmetrics` have entries; complispace/riskware/6clicks do not. |
+| 119 | LOW | `/compare/riskware` | Same series. |
+| 120 | LOW | `/compare/6clicks` | Same series. |
+| 121 | LOW | `/case-studies` | Page exists at `app/(marketing)/case-studies/page.tsx`; not in the sitemap or pass-1 audit scope. (verify whether the page is intentional or a placeholder.) |
+| 122 | LOW | `/features/pillars` | Sub-page; the parent `/features` has an entry. Either intentional (sub-page reuses parent backdrop) or a gap. |
+
+### §20d — Oversized portal images (>200 KB raw) — recorded, not shipped
+
+After PR #75, every portal image is served via `next/image` so
+Vercel's image optimizer transcodes to AVIF/WebP at the requested
+viewport size. The on-disk raw size still determines the
+optimisation budget — bigger sources, more processing per request,
+slower cold transcodes. Worth recompressing the top offenders;
+not shipped here because that's a content-asset change, not a code
+fix.
+
+| # | Sev | Route | Size | Notes |
+|---|------|-------|------|-------|
+| 123 | LOW | `/documentation/api` | 573 KB | Single biggest portal source. |
+| 124 | LOW | `/industries` | 537 KB | |
+| 125 | LOW | `/use-cases/workforce-credentials` | 446 KB | |
+| 126 | LOW | `/trust/vendor-assurance` | 310 KB | |
+| 127 | LOW | `/security` | 303 KB | LCP candidate from #108 — fix in #75 reduces SERVED bytes via AVIF; raw source still 303 KB. |
+| 128 | LOW | `/trust/incident-response` | 220 KB | |
+| 129 | LOW | `/trust` | 213 KB | |
+
+Recommendation when a content pass lands: target ≤180 KB for source
+JPEGs (industry-money pages can stay slightly higher if visual
+quality matters). MozJPEG at quality 78 with progressive encoding
+typically gets there without visible loss.
+
+### §20e — Alt text + OG alignment — verified clean
+
+- **Alt text:** `<Image alt="">` on all backdrop renders, which is
+  correct — the image is decorative ambience behind text content
+  (`.mk-route-photo-image { opacity: 0.24; }`). WCAG conformant for
+  decorative imagery. No change needed.
+- **OG vs portal:** OG images come from `opengraph-image.tsx` per
+  page directory (Next.js convention) and are entirely independent
+  of the portal mapping. They serve different surfaces (social
+  previews vs page backdrop). Drift is not a concern because they
+  are not meant to be the same asset. The OG-coverage gap (cross-
+  cutting #10: ~42 of 85 pages have no `og:image`) is a separate
+  finding queued in the Phase C MED batch.
