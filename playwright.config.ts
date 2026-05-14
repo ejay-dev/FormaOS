@@ -27,7 +27,22 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Workers in CI: 2026-05-15 raised from 1 to 2.
+   *
+   * GitHub-hosted ubuntu-latest runners ship with 2 vCPUs (technically
+   * 4 logical cores on most public images), and the 806-test chromium
+   * suite at 1 worker projected to ~200 min wall time — well past the
+   * 20-min job timeout, which is why the smoke fallback was originally
+   * added (per the now-removed comment in qa-pipeline.yml).
+   *
+   * 2 workers halves wall time at the cost of double Playwright +
+   * Next dev-server memory. Empirically the runner has headroom for
+   * this. If we ever need more, the cleaner next step is sharding
+   * (parallel jobs) rather than pushing per-job worker count higher,
+   * because shared Postgres/Supabase state already cross-test
+   * pollutes at 2 workers and would get worse at 3+.
+   */
+  workers: process.env.CI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],

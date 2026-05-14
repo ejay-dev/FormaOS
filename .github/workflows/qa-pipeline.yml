@@ -173,8 +173,14 @@ jobs:
           fi
       - name: Run E2E tests (full)
         if: steps.e2e_env.outputs.available == 'true'
+        # 2026-05-15: budget raised from 20 to 30 minutes. The 806-test
+        # chromium suite at 2 workers (playwright.config.ts) projects
+        # to ~20 min wall time including auth bootstrap; 30 gives
+        # headroom for retries and slower runners without pretending
+        # to a budget that masks structural test-suite scaling
+        # problems.
         run: npx playwright test --project=chromium
-        timeout-minutes: 20
+        timeout-minutes: 30
       - name: Run E2E smoke (env-independent fallback)
         if: steps.e2e_env.outputs.available != 'true'
         # Marketing smoke + app-link integrity have their own env-skip
