@@ -110,7 +110,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
     audienceSize: 'Unlimited everything · custom rollout',
     summary:
       "We build it with you. Tailored compliance architecture, procurement and security review, white-glove onboarding, and a dedicated account manager. Contracted directly with our team — no self-serve checkout.",
-    trustNote: 'Annual agreements · invoice billing · custom SLA',
+    trustNote: 'Sandbox walkthrough · security review pack · custom SLA',
     ctaLabel: 'Talk to us',
     ctaHref: '/contact?type=enterprise&plan=enterprise&source=pricing',
     features: [

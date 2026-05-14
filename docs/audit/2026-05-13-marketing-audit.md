@@ -390,22 +390,51 @@ repair queue.
   `/pricing` itself shows no dollar amounts and routes everyone to
   `/contact`. Whatever the Phase D pricing redesign concludes,
   the gap between published-on-industry and gated-on-pricing-page
-  needs to close.
+  needs to close. **Verified in PR-3 (#TBD)** — claim was stale.
+  `curl https://www.formaos.com.au/pricing` returns all four prices
+  ($297, $797, $1,800) in the SSR HTML; the PricingTiers section is
+  a client component but App Router still server-renders the
+  initial paint, so the dollar amounts ARE in the HTML crawlers
+  read. No code change needed for D-1.
 - **D-2** — `/pricing` page title is 76 chars (over Google truncation).
+  **Shipped in #87** (meta-length pass).
 - **D-3** — `/pricing` meta description is 185 chars (truncated in SERP).
+  **Shipped in #87** (meta-length pass).
 - **D-4** — `/pricing` body has a "Pricing.v4 / liveFY26 · AUD" version
   badge — fine internally, reads as draft state to outside visitors.
-  Consider hiding this in the redesign.
+  Consider hiding this in the redesign. **Shipped in #89 + #90** —
+  the hero telemetry strip ("Pricing.v4 / live · FY26 · AUD") was
+  dropped in #89, and the comparison-table footer status
+  ("schema · pricing.v4") was dropped in #90.
 - **D-5** — `/pricing` references `#pricing-table` anchor but the
   table itself isn't visible in the static HTML response. (verify
   the anchor in browser; if it never paints, that's a hydration bug.)
+  **Fixed in PR-3** — claim was correct. `PricingTiers` is wrapped
+  in `<DeferredSection>` (IntersectionObserver mounts on scroll
+  proximity), so the `<section id="pricing-table">` inside it was
+  not in SSR HTML and the hero's "View pricing" anchor click had
+  nothing to scroll to. Fix: added a stable `<div id="pricing-table"
+  className="scroll-mt-24" />` sibling immediately before the
+  DeferredSection in `PricingPageContent.tsx`, and dropped the
+  duplicate id from the inner section.
 - **D-6** — `/pricing` CTA shape ("Plans are anchored to risk,
   framework scope, and operational complexity — not feature
   unlocks") is a strong sentence — keep it through the redesign.
+  **Preserved through #89/#90/PR-3** — string is in PricingHero.tsx
+  subhead, untouched across the redesign.
 - **D-7** — Trial language absent. No free trial, no freemium, no
   "try before you buy". For a $297/mo Foundation tier, a trial
   affordance is the default expectation in this market. Worth
-  considering as part of the redesign brief.
+  considering as part of the redesign brief. **Resolved in PR-3 —
+  no commercial change.** User chose to surface the existing
+  "cancel anytime" trustNote as the de-facto trial rather than
+  invent a new offering. The trustNote moved from a small 11px
+  line below the price to a visible bordered chip beside the CTA on
+  every tier card. Enterprise tier's trustNote rephrased from
+  "Annual agreements · invoice billing · custom SLA" to
+  "Sandbox walkthrough · security review pack · custom SLA" so
+  buyers see the evaluation path (sandbox tenant + walkthrough)
+  that already exists per the FAQ.
 
 ## Closing note
 

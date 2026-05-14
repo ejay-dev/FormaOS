@@ -277,6 +277,18 @@ export default function PricingPageContent() {
       <TrustBar />
 
       {/* Pricing tiers */}
+      {/*
+        Stable anchor target for the hero's "View pricing" link. The
+        <section id="pricing-table"> inside PricingTiers is rendered
+        client-only via DeferredSection's IntersectionObserver, so the
+        id is missing from the initial SSR HTML and the in-page
+        anchor click had nothing to scroll to until the section was
+        already on-screen (audit row D-5). This div-with-id sits in
+        the static HTML and matches the same anchor name so the
+        browser can scroll the user to the deferred section, which
+        then mounts via the observer.
+      */}
+      <div id="pricing-table" className="scroll-mt-24" />
       <DeferredSection minHeight={600}>
         <DepthSection fade>
           <PricingTiers />
