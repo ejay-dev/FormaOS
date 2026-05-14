@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Check, BookOpen } from 'lucide-react';
+import { Check, BookOpen, Info } from 'lucide-react';
 
 export interface FrameworkTab {
   id: string;
@@ -55,6 +55,7 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
           viewport={{ once: true, margin: '-30px' }}
           transition={{ duration: 0.5, delay: 0.1 }}
           className="grid lg:grid-cols-[280px_1fr] gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.015] overflow-hidden"
+          aria-describedby="framework-explorer-methodology"
         >
           {/* Tab list */}
           <div className="border-b lg:border-b-0 lg:border-r border-white/[0.06] p-3 lg:p-4 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible scrollbar-none">
@@ -144,6 +145,45 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
             )}
           </AnimatePresence>
         </motion.div>
+
+        {/* Methodology footnote — audit rows #49/#51. Buyers see
+            "300+ obligations mapped" in the hero stats bar and want
+            to know what the count actually represents. Single
+            canonical note lives here so every industry page that
+            uses FrameworkExplorer inherits a consistent definition,
+            and the per-framework "Last updated" date above tells
+            buyers when the count was last reviewed. */}
+        <motion.aside
+          id="framework-explorer-methodology"
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-30px' }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="mt-6 flex items-start gap-3 rounded-2xl border border-white/[0.05] bg-white/[0.015] px-5 py-4"
+        >
+          <Info
+            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-500"
+            aria-hidden="true"
+          />
+          <p className="text-[12px] leading-relaxed text-slate-500">
+            <span className="font-semibold text-slate-400">
+              How the obligation counts are derived.
+            </span>{' '}
+            Each row reflects a distinct legal or regulatory requirement
+            mapped to a controllable workflow with named owner and evidence.
+            Parent obligations (for example, ASIC s912A general conduct)
+            appear once; sub-paragraphs roll up into the parent unless
+            they carry independent compliance evidence. Counts are
+            reviewed against the regulator&apos;s published instrument
+            library on each pre-built framework update — the
+            &ldquo;Last updated&rdquo; date on each framework above is when
+            the list was last verified. The &ldquo;+&rdquo; reflects
+            ongoing additions as instruments are amended or new sub-
+            requirements are surfaced; the headline number is conservative.
+            Detailed obligation mapping is available on request as part
+            of the procurement review pack.
+          </p>
+        </motion.aside>
       </div>
     </section>
   );

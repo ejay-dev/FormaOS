@@ -237,14 +237,14 @@ implication of §N+2 finding D-1).
 | # | Sev | Location | Observation | Fix hint |
 |---|-----|----------|-------------|----------|
 | 48 | MED  | Two near-duplicate URLs | Same cannibalization risk as healthcare. Treat the dedicated industry page as canonical. | — |
-| 49 | LOW  | "300+ ASIC obligations mapped" | Specific number ("300+") with no methodology link. (verify it isn't drifting between this page and `/ndis-providers` which says "400+ NDIS obligations"). | Add a methodology footnote on both. |
+| 49 | LOW  | "300+ ASIC obligations mapped" | Specific number ("300+") with no methodology link. (verify it isn't drifting between this page and `/ndis-providers` which says "400+ NDIS obligations"). **Shipped in #TBD (LOW batch 3).** Single canonical methodology note added at the bottom of `FrameworkExplorer` (used by all 5 industry money pages). Explains counting unit (distinct legal/regulatory requirement mapped to a controllable workflow), parent-vs-sub-paragraph rollup rule, ties currency to the per-framework "Last updated" date already shown, and offers detailed mapping on request as part of the procurement review pack. No specific external authority is invented. | Add a methodology footnote on both. |
 
 ### §4.17 `/childcare-compliance` + `/construction-compliance`
 
 | # | Sev | Location | Observation | Fix hint |
 |---|-----|----------|-------------|----------|
 | 50 | MED  | Pricing tiers | Both pages publish Foundation $297, Growth $797 (Most Popular), Scale $1,800, Enterprise custom — while `/pricing` shows nothing. The four-tier breakdown across these pages is *consistent with itself*, just inconsistent with `/pricing`. See cross-cutting D-1. | — |
-| 51 | LOW  | "300+ pre-built obligations" (childcare) / "250+ pre-built WHS Act obligations" (construction) | Specific numbers without methodology. Buyers may push back. | — |
+| 51 | LOW  | "300+ pre-built obligations" (childcare) / "250+ pre-built WHS Act obligations" (construction) | Specific numbers without methodology. Buyers may push back. **Shipped in #TBD (LOW batch 3).** Same canonical methodology footnote as #49 — childcare and construction pages both render `FrameworkExplorer`, so they inherit the explanation that buyers see when they reach the framework detail section after the hero stats bar. | — |
 
 ### §4.18 `/use-cases/incident-management`, `/use-cases/workforce-credentials`, `/use-cases/government-public-sector`, `/use-cases/ndis-aged-care`
 
