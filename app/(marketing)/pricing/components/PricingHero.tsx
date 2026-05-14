@@ -15,10 +15,10 @@ import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { duration } from '@/config/motion';
 
 const PLAN_CONFIG_INPUTS = [
-  { label: 'Frameworks', value: '2 → ∞', accent: 'text-teal-300' },
-  { label: 'Sites', value: '1 → ∞', accent: 'text-cyan-300' },
-  { label: 'Staff', value: '10 → ∞', accent: 'text-sky-300' },
-  { label: 'Audit pressure', value: 'Low → Critical', accent: 'text-violet-300' },
+  { label: 'Frameworks', value: '2 → ∞' },
+  { label: 'Sites', value: '1 → ∞' },
+  { label: 'Staff', value: '10 → ∞' },
+  { label: 'Audit pressure', value: 'Low → Critical' },
 ];
 
 export function PricingHero() {
@@ -65,51 +65,6 @@ export function PricingHero() {
 
       <div className="relative z-10 mx-auto max-w-7xl w-full grid gap-14 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-12">
         <motion.div style={shouldAnimateIntro ? { opacity, scale, y } : {}}>
-          {/* Telemetry strip */}
-          <motion.div
-            initial={shouldAnimateIntro ? { opacity: 0, y: 12 } : false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={
-              shouldAnimateIntro
-                ? { duration: duration.slow, delay: 0.2 }
-                : { duration: 0 }
-            }
-            className="mb-8 flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-slate-500"
-          >
-            <span className="flex items-center gap-2 text-teal-300">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-60" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-teal-400" />
-              </span>
-              Pricing.v4 / live
-            </span>
-            <span className="h-px flex-1 bg-gradient-to-r from-white/20 via-white/[0.06] to-transparent" />
-            <span>FY26 · AUD</span>
-          </motion.div>
-
-          <motion.div
-            initial={shouldAnimateIntro ? { opacity: 0, y: 16 } : false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={
-              shouldAnimateIntro
-                ? { duration: duration.slow, delay: 0.28 }
-                : { duration: 0 }
-            }
-            className="mb-6 flex items-baseline gap-4"
-          >
-            <span className="font-mono text-[64px] leading-none tracking-tight text-white/[0.08] sm:text-[88px]">
-              01
-            </span>
-            <div className="flex flex-col">
-              <span className="font-mono text-[10px] uppercase tracking-[0.32em] text-teal-300/80">
-                Configure scope
-              </span>
-              <span className="text-xs text-slate-500">
-                step one of three · scope drives plan
-              </span>
-            </div>
-          </motion.div>
-
           <motion.h1
             id="pricing-hero-title"
             initial={shouldAnimateIntro ? { opacity: 0, y: 24 } : false}
@@ -123,9 +78,7 @@ export function PricingHero() {
           >
             Compliance,
             <br />
-            <span className="bg-gradient-to-r from-teal-300 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
-              priced like infrastructure.
-            </span>
+            priced like infrastructure.
           </motion.h1>
 
           <motion.p
@@ -260,12 +213,8 @@ export function PricingHero() {
                   formaos · plan configurator
                 </span>
               </div>
-              <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300/80">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                </span>
-                online
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                FY26 · AUD
               </span>
             </div>
 
@@ -285,9 +234,7 @@ export function PricingHero() {
                       <span className="text-[11px] text-slate-400">
                         {input.label}
                       </span>
-                      <span
-                        className={`font-mono text-[11px] font-medium ${input.accent}`}
-                      >
+                      <span className="font-mono text-[11px] font-medium text-slate-200">
                         {input.value}
                       </span>
                     </li>
@@ -327,28 +274,24 @@ export function PricingHero() {
                 </ul>
               </div>
 
-              {/* Output gauge */}
-              <div className="grid grid-cols-[1fr_auto] items-center gap-4 rounded-xl border border-teal-300/15 bg-gradient-to-r from-teal-500/[0.06] via-cyan-500/[0.04] to-transparent p-4">
-                <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-teal-300/80">
-                    plan readiness
-                  </p>
-                  <p className="mt-1 text-sm leading-snug text-slate-200">
-                    Tell us your frameworks and sites — we return a plan with
-                    enforced workflows and audit-ready evidence.
-                  </p>
-                </div>
-                <RadialGauge percent={94} />
+              {/* Recommended plan */}
+              <div className="rounded-xl border border-emerald-300/20 bg-emerald-300/[0.04] p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300/90">
+                  where most regulated teams land
+                </p>
+                <p className="mt-1.5 text-sm leading-snug text-slate-200">
+                  <span className="font-semibold text-white">Growth, $797/mo</span>{' '}
+                  — most registered NDIS and healthcare providers (up to 3 sites,
+                  10–25 staff) start here with NDIS Practice Standards + WHS
+                  pre-mapped.
+                </p>
               </div>
             </div>
 
             {/* Bottom telemetry bar */}
             <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.015] px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
               <span>secured · stripe / sso / dpa</span>
-              <span className="flex items-center gap-1.5 text-cyan-300/80">
-                <span className="h-1 w-1 rounded-full bg-cyan-400" />
-                aud · gst inclusive
-              </span>
+              <span>aud · gst inclusive</span>
             </div>
           </div>
         </motion.aside>
@@ -368,36 +311,3 @@ function CornerAccents() {
   );
 }
 
-function RadialGauge({ percent }: { percent: number }) {
-  const r = 22;
-  const c = 2 * Math.PI * r;
-  return (
-    <div className="relative h-14 w-14 shrink-0">
-      <svg viewBox="0 0 56 56" className="h-full w-full -rotate-90">
-        <circle
-          cx="28"
-          cy="28"
-          r={r}
-          fill="none"
-          strokeWidth="3"
-          className="stroke-white/[0.06]"
-        />
-        <circle
-          cx="28"
-          cy="28"
-          r={r}
-          fill="none"
-          strokeWidth="3"
-          strokeLinecap="round"
-          className="stroke-teal-400"
-          strokeDasharray={c}
-          strokeDashoffset={c * (1 - percent / 100)}
-          style={{ filter: 'drop-shadow(0 0 4px rgba(45,212,191,0.4))' }}
-        />
-      </svg>
-      <span className="absolute inset-0 flex items-center justify-center font-mono text-[11px] font-semibold text-white">
-        {percent}%
-      </span>
-    </div>
-  );
-}

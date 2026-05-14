@@ -13,27 +13,27 @@ import { duration } from '@/config/motion';
 const TIER_VISUAL = {
   foundation: {
     code: 'FND',
-    accent: 'text-teal-300',
-    rail: 'from-teal-400/60 via-teal-400/10 to-transparent',
-    chip: 'border-teal-300/30 bg-teal-400/[0.08] text-teal-200',
+    accent: 'text-slate-400',
+    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
+    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
   },
   growth: {
     code: 'GRW',
     accent: 'text-emerald-300',
-    rail: 'from-emerald-300/80 via-emerald-300/30 to-transparent',
+    rail: 'from-emerald-300/70 via-emerald-300/20 to-transparent',
     chip: 'border-emerald-300/40 bg-emerald-300/[0.12] text-emerald-100',
   },
   scale: {
     code: 'SCL',
-    accent: 'text-cyan-300',
-    rail: 'from-cyan-300/70 via-cyan-300/20 to-transparent',
-    chip: 'border-cyan-300/30 bg-cyan-400/[0.08] text-cyan-200',
+    accent: 'text-slate-400',
+    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
+    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
   },
   enterprise: {
     code: 'ENT',
-    accent: 'text-violet-300',
-    rail: 'from-violet-300/70 via-violet-300/20 to-transparent',
-    chip: 'border-violet-300/30 bg-violet-400/[0.08] text-violet-200',
+    accent: 'text-slate-400',
+    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
+    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
   },
 } as const;
 
@@ -65,16 +65,13 @@ export function PricingTiers() {
         >
           <div>
             <div className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
-              <span className="h-px w-6 bg-teal-400/60" />
-              <span className="text-teal-300">Plan catalog</span>
+              <span className="h-px w-6 bg-white/20" />
+              <span className="text-slate-300">Plan catalog</span>
               <span className="text-slate-600">·</span>
               <span>4 tiers · 1 architecture</span>
             </div>
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
-              One compliance OS,{' '}
-              <span className="bg-gradient-to-r from-emerald-300 via-cyan-300 to-teal-300 bg-clip-text text-transparent">
-                four ways to deploy it.
-              </span>
+              One compliance OS, four ways to deploy it.
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
               Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
@@ -122,16 +119,6 @@ export function PricingTiers() {
                 <span
                   className={`pointer-events-none absolute inset-y-6 left-0 w-px bg-gradient-to-b ${visual.rail}`}
                 />
-
-                {/* Top corner accents on featured */}
-                {tier.featured ? (
-                  <>
-                    <span className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-emerald-300/60" />
-                    <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-emerald-300/60" />
-                    <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-emerald-300/40" />
-                    <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-emerald-300/40" />
-                  </>
-                ) : null}
 
                 {/* Header strip */}
                 <div className="flex items-center justify-between border-b border-white/[0.05] bg-white/[0.02] px-6 py-3.5">
@@ -196,7 +183,7 @@ export function PricingTiers() {
                     }
                     className={`mt-6 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
                       tier.featured
-                        ? 'bg-gradient-to-r from-emerald-400 via-cyan-400 to-teal-400 text-slate-900 shadow-lg shadow-emerald-950/40 hover:brightness-110'
+                        ? 'bg-emerald-400 text-slate-900 shadow-lg shadow-emerald-950/40 hover:bg-emerald-300'
                         : 'border border-white/[0.1] bg-white/[0.04] text-white hover:border-white/[0.2] hover:bg-white/[0.08]'
                     }`}
                   >
@@ -224,7 +211,7 @@ export function PricingTiers() {
                             className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
                               tier.featured
                                 ? 'text-emerald-300'
-                                : 'text-teal-300/80'
+                                : 'text-slate-400'
                             }`}
                             aria-hidden="true"
                           />
@@ -249,14 +236,9 @@ export function PricingTiers() {
             Prices in AUD · GST inclusive · Stripe-secured payments
           </p>
           <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-            <span className="flex items-center gap-1.5">
-              <span className="h-1 w-1 rounded-full bg-emerald-400" />
-              SSO available on Enterprise
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-1 w-1 rounded-full bg-cyan-400" />
-              Cancel anytime
-            </span>
+            <span>SSO available on Enterprise</span>
+            <span className="text-slate-600">·</span>
+            <span>Cancel anytime</span>
           </div>
         </ScrollReveal>
       </div>
