@@ -7,6 +7,11 @@ export const metadata: Metadata = {
     'Expert insights on compliance management, regulatory technology, and operational excellence for regulated industries. Stay informed with the latest from FormaOS.',
   alternates: {
     canonical: `${siteUrl}/blog`,
+    types: {
+      'application/rss+xml': [
+        { url: `${siteUrl}/blog/rss.xml`, title: 'FormaOS Blog' },
+      ],
+    },
   },
   openGraph: {
     title: 'Blog & Insights | FormaOS',
