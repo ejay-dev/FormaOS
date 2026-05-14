@@ -246,7 +246,16 @@ test.describe('Authenticated app action integrity', () => {
       waitUntil: 'domcontentloaded',
     });
 
-    await expect(page.locator('h1')).toContainText(roleName);
+    // 2026-05-15: switched from `.locator('h1').toContainText()` to
+    // role-based locator. The /app shell renders the onboarding-wizard
+    // overlay h1 ("Welcome, ...") alongside the page h1 for users
+    // whose `onboarding_complete` flag is false — including the
+    // service-role-bootstrapped E2E test user. Strict-mode `locator('h1')`
+    // errored on "2 elements" before the text check ran. Role-based
+    // matching with an explicit name is precise enough to disambiguate.
+    await expect(
+      page.getByRole('heading', { level: 1, name: roleName }),
+    ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Permissions' }),
     ).toBeVisible();
@@ -357,9 +366,13 @@ test.describe('Authenticated app action integrity', () => {
       await page.goto(`/app/reports/custom/${report!.id}`, {
         waitUntil: 'domcontentloaded',
       });
-      await expect(page.locator('h1')).toContainText(
-        `Integrity Custom Report ${unique}`,
-      );
+      // Role-based locator: see note at the roles-page assertion above.
+      await expect(
+        page.getByRole('heading', {
+          level: 1,
+          name: `Integrity Custom Report ${unique}`,
+        }),
+      ).toBeVisible();
       await expect(
         page.getByTestId('custom-report-generation-disabled'),
       ).toBeDisabled();
@@ -376,7 +389,10 @@ test.describe('Authenticated app action integrity', () => {
       .getByRole('link', { name: 'View all' })
       .click();
     await page.waitForURL('**/app/progress-notes');
-    await expect(page.locator('h1')).toContainText('Progress Notes');
+    // Role-based locator: see note at the roles-page assertion above.
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Progress Notes' }),
+    ).toBeVisible();
 
     await assertNoIntegrityFailures(failures);
 
