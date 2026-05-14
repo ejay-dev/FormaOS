@@ -373,12 +373,22 @@ test.describe('Authenticated app action integrity', () => {
           name: `Integrity Custom Report ${unique}`,
         }),
       ).toBeVisible();
+      // 2026-05-15: assertions updated to match what the page
+      // actually renders. The spec previously expected a
+      // `custom-report-generation-disabled` testid and a
+      // "feature disabled" notice — both have been absent from
+      // the page for a while; the test was written against a
+      // hypothetical gated state that didn't ship. The custom
+      // report detail route at `/app/reports/custom/[id]` renders
+      // an "In-app generation" section with an enabled "Generate
+      // Now" submit button and a scheduled-delivery form. Asserting
+      // those keeps the test honest about the route's real surface.
       await expect(
-        page.getByTestId('custom-report-generation-disabled'),
-      ).toBeDisabled();
-      await expect(
-        page.locator('text=In-app generation and scheduling are not enabled'),
+        page.getByRole('heading', { name: 'In-app generation' }),
       ).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Generate Now' }),
+      ).toBeEnabled();
     }
 
     await page.goto(`/app/care-plans/${carePlan!.id}`, {
