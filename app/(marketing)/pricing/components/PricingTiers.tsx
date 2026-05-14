@@ -42,10 +42,14 @@ export function PricingTiers() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section
-      id="pricing-table"
-      className="relative overflow-hidden py-24 sm:py-32"
-    >
+    <section className="relative overflow-hidden py-24 sm:py-32">
+      {/*
+        The `id="pricing-table"` anchor that the hero's "View pricing"
+        CTA targets lives on a sibling div in PricingPageContent — see
+        the comment there. Putting it on this section directly would
+        not work because this component is rendered behind a deferred
+        IntersectionObserver and the id would not be in SSR HTML.
+      */}
       {/* Section backgrounds */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
         <TopographicPattern color="rgba(20,184,166,0.04)" />
@@ -162,9 +166,15 @@ export function PricingTiers() {
                       {tier.priceSubtext}
                     </span>
                   </div>
-                  <p className="mt-1.5 text-[11px] text-slate-500">
-                    {tier.trustNote}
-                  </p>
+                  <div className="mt-3 inline-flex max-w-full items-center gap-2 self-start rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] text-slate-300">
+                    <CheckCircle2
+                      className={`h-3 w-3 shrink-0 ${
+                        tier.featured ? 'text-emerald-300' : 'text-slate-400'
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span className="truncate">{tier.trustNote}</span>
+                  </div>
 
                   {/* CTA */}
                   <Link
