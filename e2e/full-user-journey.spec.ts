@@ -159,8 +159,8 @@ test.describe('Complete User Journey', () => {
   test('Trial user can access all industries', async ({ page }) => {
     const industries = [
       '/industries',
-      '/use-cases/healthcare',
-      '/use-cases/ndis-aged-care',
+      '/healthcare-compliance',
+      '/ndis-providers',
       '/use-cases/incident-management',
       '/use-cases/workforce-credentials',
     ];

@@ -46,11 +46,11 @@ const MARKETING_ROUTES = [
   '/compare/6clicks',
   '/compare/complispace',
   // Use Cases
-  '/use-cases/healthcare',
+  '/healthcare-compliance',
   '/use-cases/incident-management',
   '/use-cases/workforce-credentials',
-  '/use-cases/ndis-aged-care',
-  '/use-cases/financial-services',
+  '/ndis-providers',
+  '/financial-services-compliance',
   '/use-cases/government-public-sector',
   // Trust sub-pages
   '/trust/dpa',
@@ -174,7 +174,7 @@ test('generate checklist table', async () => {
   // Tier 2 pages with hero visuals
   const tier2 = ['/about', '/blog', '/contact', '/documentation', '/frameworks', '/our-story', '/customer-stories', '/faq', '/security-review'];
   // Tier 3 pages with templated hero visuals
-  const tier3 = ['/compare', '/compare/riskware', '/compare/healthmetrics', '/compare/6clicks', '/compare/complispace', '/use-cases/healthcare', '/use-cases/incident-management', '/use-cases/workforce-credentials', '/use-cases/ndis-aged-care', '/evaluate', '/prove', '/operate', '/govern'];
+  const tier3 = ['/compare', '/compare/riskware', '/compare/healthmetrics', '/compare/6clicks', '/compare/complispace', '/healthcare-compliance', '/use-cases/incident-management', '/use-cases/workforce-credentials', '/ndis-providers', '/evaluate', '/prove', '/operate', '/govern'];
   // Tier 4 compact hero with icon
   const tier4 = MARKETING_ROUTES.filter(
     (r) => !tier1.includes(r) && !tier2.includes(r) && !tier3.includes(r),

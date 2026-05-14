@@ -24,7 +24,7 @@ test.describe('Healthcare & NDIS positioning', () => {
   test('Healthcare use-case page loads with current hero copy', async ({
     page,
   }) => {
-    await page.goto(`${BASE}/use-cases/healthcare`, {
+    await page.goto(`${BASE}/healthcare-compliance`, {
       waitUntil: 'domcontentloaded',
     });
 
@@ -36,7 +36,7 @@ test.describe('Healthcare & NDIS positioning', () => {
   test('Healthcare use-case page surfaces mapped framework coverage', async ({
     page,
   }) => {
-    await page.goto(`${BASE}/use-cases/healthcare`, {
+    await page.goto(`${BASE}/healthcare-compliance`, {
       waitUntil: 'domcontentloaded',
     });
 
@@ -47,7 +47,7 @@ test.describe('Healthcare & NDIS positioning', () => {
   test('Healthcare page CTA routes to compliance plan contact flow', async ({
     page,
   }) => {
-    await page.goto(`${BASE}/use-cases/healthcare`, {
+    await page.goto(`${BASE}/healthcare-compliance`, {
       waitUntil: 'domcontentloaded',
     });
 
@@ -59,7 +59,7 @@ test.describe('Healthcare & NDIS positioning', () => {
   });
 
   test('NDIS use-case page loads with current hero copy', async ({ page }) => {
-    await page.goto(`${BASE}/use-cases/ndis-aged-care`, {
+    await page.goto(`${BASE}/ndis-providers`, {
       waitUntil: 'domcontentloaded',
     });
 
@@ -70,7 +70,7 @@ test.describe('Healthcare & NDIS positioning', () => {
   test('NDIS use-case page surfaces NDIS Practice Standards coverage', async ({
     page,
   }) => {
-    await page.goto(`${BASE}/use-cases/ndis-aged-care`, {
+    await page.goto(`${BASE}/ndis-providers`, {
       waitUntil: 'domcontentloaded',
     });
 
@@ -82,7 +82,7 @@ test.describe('Healthcare & NDIS positioning', () => {
   test('NDIS page CTA routes to compliance plan contact flow', async ({
     page,
   }) => {
-    await page.goto(`${BASE}/use-cases/ndis-aged-care`, {
+    await page.goto(`${BASE}/ndis-providers`, {
       waitUntil: 'domcontentloaded',
     });
 
@@ -142,7 +142,7 @@ test.describe('Healthcare & NDIS positioning', () => {
       .first()
       .getAttribute('href');
 
-    await page.goto(`${BASE}/use-cases/healthcare`, {
+    await page.goto(`${BASE}/healthcare-compliance`, {
       waitUntil: 'domcontentloaded',
     });
     const healthcareCtaHref = await page
@@ -150,7 +150,7 @@ test.describe('Healthcare & NDIS positioning', () => {
       .first()
       .getAttribute('href');
 
-    await page.goto(`${BASE}/use-cases/ndis-aged-care`, {
+    await page.goto(`${BASE}/ndis-providers`, {
       waitUntil: 'domcontentloaded',
     });
     const ndisCtaHref = await page

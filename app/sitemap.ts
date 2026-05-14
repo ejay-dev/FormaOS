@@ -113,18 +113,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.85,
     },
-    {
-      url: `${siteUrl}/ndis-compliance-system`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.85,
-    },
-    {
-      url: `${siteUrl}/healthcare-compliance-platform`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.85,
-    },
+    // /ndis-compliance-system + /healthcare-compliance-platform removed
+    // 2026-05-14: consolidated under /ndis-providers and
+    // /healthcare-compliance via 308 redirect (audit row #9). Sitemap
+    // omits them so Google deindexes the duplicates.
     {
       url: `${siteUrl}/audit-evidence-management`,
       lastModified: now,
@@ -258,24 +250,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.65,
     },
     // ── Use case pages ──
-    {
-      url: `${siteUrl}/use-cases/healthcare`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/use-cases/ndis-aged-care`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/use-cases/financial-services`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
+    // /use-cases/healthcare, /use-cases/ndis-aged-care, and
+    // /use-cases/financial-services removed 2026-05-14: consolidated
+    // under their industry primary via 308 redirect (audit row #9).
     {
       url: `${siteUrl}/use-cases/government-public-sector`,
       lastModified: now,

@@ -57,7 +57,7 @@ const relatedLinksBySource: Record<
 > = {
   compare_complispace: [
     {
-      href: '/use-cases/ndis-aged-care',
+      href: '/ndis-providers',
       label: 'NDIS & Aged Care',
       description:
         'See how policy + training pairs with operational compliance accountability.',
@@ -97,7 +97,7 @@ const relatedLinksBySource: Record<
   ],
   compare_6clicks: [
     {
-      href: '/use-cases/financial-services',
+      href: '/financial-services-compliance',
       label: 'Financial Services',
       description:
         'Evaluate accountable control execution against a GRC-content-first alternative.',
@@ -117,13 +117,13 @@ const relatedLinksBySource: Record<
   ],
   compare_healthmetrics: [
     {
-      href: '/use-cases/healthcare',
+      href: '/healthcare-compliance',
       label: 'Healthcare Use Case',
       description:
         'See how operational controls and evidence work in regulated service delivery.',
     },
     {
-      href: '/use-cases/ndis-aged-care',
+      href: '/ndis-providers',
       label: 'NDIS & Aged Care',
       description:
         'Inspect a frontline regulated workflow where accountability cannot drift.',
