@@ -1180,6 +1180,79 @@ function StatsSection() {
   );
 }
 
+/* ─── Feature Catalog Index ──────────────────────────────
+   Audit row #28 (LOW): /features advertises "25 features across 5
+   categories" but the detailed feature grid lives behind a
+   DeferredSection IntersectionObserver, so the individual feature
+   names never reach the initial SSR HTML. Crawlers and skim-readers
+   see only the category counts. This index renders the same data
+   server-side first paint, grouped by category, using native
+   <details> so a sighted user can collapse what they don't need
+   while keeping every feature title in the DOM for SEO. */
+
+function FeatureCatalogIndex() {
+  return (
+    <section className="mk-section relative">
+      <div className="mx-auto max-w-5xl px-6 lg:px-8">
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.015] p-5 lg:p-7">
+          <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
+            <h2 className="text-base font-semibold text-white">
+              Feature catalog —{' '}
+              <span className="text-slate-400">
+                {features.length} features across {categories.length} categories
+              </span>
+            </h2>
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              Skim · click a category to expand
+            </span>
+          </div>
+          <div className="space-y-2.5">
+            {categories.map((cat) => {
+              const meta = categoryMeta[cat];
+              const items = features.filter((f) => f.category === cat);
+              return (
+                <details
+                  key={cat}
+                  className="group rounded-xl border border-white/[0.06] bg-white/[0.015] open:bg-white/[0.025]"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm text-slate-300 transition hover:text-white">
+                    <span className="flex items-center gap-2.5">
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${meta.dotColor}`}
+                        aria-hidden="true"
+                      />
+                      <span className="font-medium">{cat}</span>
+                      <span className="text-xs text-slate-500">
+                        · {items.length} features
+                      </span>
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="text-slate-500 transition group-open:rotate-90"
+                    >
+                      ›
+                    </span>
+                  </summary>
+                  <ul className="border-t border-white/[0.04] px-4 py-3 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+                    {items.map((f) => (
+                      <li
+                        key={f.title}
+                        className="text-[13px] leading-snug text-slate-400"
+                      >
+                        {f.title}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─── Framework Coverage Grid ───────────────────────────── */
 
 const frameworks = [
@@ -2050,6 +2123,18 @@ export default function FeaturesPageContent() {
       </div>
 
       <StatsSection />
+
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+
+      {/*
+        Server-rendered feature catalog (audit #28). Lives outside
+        DeferredSection so every feature title is in the initial SSR
+        HTML — crawlers index the names, sighted users get a quick
+        skimmable list before the heavy interactive grid mounts.
+      */}
+      <FeatureCatalogIndex />
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
