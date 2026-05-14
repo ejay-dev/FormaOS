@@ -13,6 +13,7 @@ import {
   Sparkles,
   CalendarDays,
   Search,
+  Rss,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -234,6 +235,15 @@ function CategoryFilter({
               className="flex-1 bg-transparent outline-none text-sm placeholder:text-gray-500"
               type="search"
             />
+          </div>
+          <div className="mt-3 flex justify-center">
+            <a
+              href="/blog/rss.xml"
+              className="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-purple-300 transition"
+            >
+              <Rss className="w-3.5 h-3.5" aria-hidden="true" />
+              Subscribe via RSS
+            </a>
           </div>
         </ScrollReveal>
       </div>
