@@ -122,7 +122,7 @@ Headline issues (by impact):
 | 14 | MED | Many pages | Meta description **<100 characters** on `/status` (44), `/terms` (39), `/trust/data-handling` (74), `/trust/subprocessors` (71), `/trust/sla` (89), `/trust/dpa` (95), `/trust/incident-response` (84), `/trust/procurement` (82), `/evaluate` (84), `/legal` (99), `/our-story` (93), `/prove` (97). Short descriptions waste SERP real estate. | Expand to ~140–155 chars; trust pages especially deserve a real summary. |
 | 15 | MED | Whole site | The CSP allows `'unsafe-inline'` for `script-src` and `style-src`. The `2026-05-12-deep-audit.md` already flagged this (finding #11) — listing here so the marketing-side awareness is on record. No new code change implied. | Defer to existing finding. |
 | 16 | MED | Home + JSON-LD on every page | Organization JSON-LD `sameAs` lists `https://twitter.com/EjazDev` — that's the founder's personal handle, not a company handle. Treated by knowledge-graph indexers as the company's social profile. **Shipped in #78** — dropped the personal handle; LinkedIn company page is the only `sameAs` until a company X handle exists. | Replace with a company handle, or drop the `sameAs` Twitter entry until one exists. |
-| 17 | LOW | All pages | `x-xss-protection: 1; mode=block` is sent in headers. The header is deprecated; modern browsers ignore it. Not harmful, just dead weight. | Drop from `next.config.ts` headers config. |
+| 17 | LOW | All pages | `x-xss-protection: 1; mode=block` is sent in headers. The header is deprecated; modern browsers ignore it. Not harmful, just dead weight. **Shipped in #TBD (LOW batch 1)** — dropped from `next.config.ts`. Replaced with a comment that documents the why and points at CSP + Trusted Types as the current XSS defense. | Drop from `next.config.ts` headers config. |
 | 18 | LOW | Home `<head>` | HTML response is **202 KB** uncompressed (`/`), `112 KB` (`/pricing`), `86 KB` (`/features`). The home weight in particular is dominated by the streaming RSC payload. Likely fine after gzip/brotli but worth a Lighthouse pass before any LCP improvement work. | (verify) Lighthouse pass before assuming this matters. |
 | 19 | LOW | Site-wide footer mailto | Two raw HTML files (`trust/subprocessors.html`, `trust/dpa.html`) contain a JSON-escaped `mailto:Formaos.team@gmail.com\"` in the streaming payload, which looks like a backslash leak. Verified — it's just JSON escaping, not user-visible. No action needed; noting so the next grep doesn't trip on it. | — |
 
@@ -267,7 +267,7 @@ implication of §N+2 finding D-1).
 | 56 | LOW  | Index | "21 Articles" claim. Sitemap lists 21 posts. Matches. | — |
 | 57 | LOW  | Index | No RSS link surfaced. (verify in browser — Next can auto-generate `/feed.xml`.) | Consider exposing `/blog/rss.xml`. |
 | 58 | MED  | Every post (sample: `/blog/austrac-aml-ctf-compliance-guide`) | Author is "FormaOS Team" — no individual bylines. For regulatory content (AUSTRAC, AHPRA, SIRS), buyers want to see who wrote it. | Add author profile / role on at least the regulator-specific posts. |
-| 59 | LOW  | Sample post | No "Last updated" date — only published date. For evergreen regulatory content, last-updated is what readers want. | Add `dateModified` to JSON-LD article schema and a visible "Updated" line. |
+| 59 | LOW  | Sample post | No "Last updated" date — only published date. For evergreen regulatory content, last-updated is what readers want. **Shipped in #TBD (LOW batch 1)** — added optional `dateModified` field to `BlogPost` type (defaults to publish date when not revised), threaded through to `articleSchema`'s new `dateModified` JSON-LD field, and surfaced a visible "Updated <date>" line on `/blog/[slug]` when `dateModified` differs from `date`. Posts can opt in by setting `dateModified` on the data row. | Add `dateModified` to JSON-LD article schema and a visible "Updated" line. |
 | 60 | LOW  | All posts | Each post has two `<h1>` tags — same cross-cutting issue #5. | — |
 
 ### §4.21 `/about` + `/our-story`
@@ -275,7 +275,7 @@ implication of §N+2 finding D-1).
 | # | Sev | Location | Observation | Fix hint |
 |---|-----|----------|-------------|----------|
 | 61 | MED  | Both pages | Heavy duplication of intent. `/about`: "Compliance infrastructure built for accountability" — abstract. `/our-story`: "Built for Organizations Where Compliance Is Mission-Critical" + one founder quote (Ejaz Hussain, Founder & Chief Engineer). Neither has a real story, timeline, or team. The pages overlap in purpose but neither completes the job. | Merge into a single `/about` with: founding year, team size, founder section, mission. Redirect the other URL. |
-| 62 | LOW  | `/about` | No founding year visible. JSON-LD says `foundingDate: "2025"` — surface it on the visible page. | — |
+| 62 | LOW  | `/about` | No founding year visible. JSON-LD says `foundingDate: "2025"` — surface it on the visible page. **Shipped in #TBD (LOW batch 1)** — hero badge text expanded from "About FormaOS" to "About FormaOS · Founded 2025 · Sydney, Australia". Matches JSON-LD foundingDate and address. | — |
 
 ### §4.22 `/contact`
 

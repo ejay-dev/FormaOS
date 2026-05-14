@@ -26,6 +26,13 @@ export type BlogPost = {
   excerpt: string;
   author: string;
   date: string;
+  /**
+   * Last-revised date for the article. Audit row #59 wants
+   * regulatory-content readers to see how current the guidance is,
+   * not just when it was first published. Optional — falls back to
+   * `date` (the publish date) when a post has not been revised.
+   */
+  dateModified?: string;
   readTime: string;
   category: string;
   icon: LucideIcon;
