@@ -158,7 +158,7 @@ Headline issues (by impact):
 |---|-----|----------|-------------|----------|
 | 29 | HIGH | Framework grid | Lists ISO 27001, SOC 2, GDPR, NIST CSF, PCI DSS, HIPAA, CIS, ISO 9001, AHPRA, ASIC s912A, APRA CPS 230, AUSTRAC AML/CTF, NDIS Practice Standards, Aged Care Quality Standards with no certification status. See cross-cutting #4. | — |
 | 30 | MED  | Missing OG image | See cross-cutting #10. | — |
-| 31 | LOW  | "Tamper-Evident Logs" and "Chain of Custody" claims | These are strong technical claims. Worth backing with a sentence on the algorithm/anchor (hash chain? append-only log?) on this page or a one-click link to `/trust/data-handling`. (verify) | — |
+| 31 | LOW  | "Tamper-Evident Logs" and "Chain of Custody" claims | These are strong technical claims. Worth backing with a sentence on the algorithm/anchor (hash chain? append-only log?) on this page or a one-click link to `/trust/data-handling`. (verify) **Shipped in #TBD (closeout).** Inline "How tamper-evident logging + chain of custody works ↗" link added below the security pills in `SecurityHero`, pointing at `/trust/data-handling` where the model is documented. One-click out of the claim into the substantive explanation; the pills themselves stay unchanged. | — |
 
 ### §4.5 `/trust`
 
@@ -184,7 +184,7 @@ Headline issues (by impact):
 
 | # | Sev | Location | Observation | Fix hint |
 |---|-----|----------|-------------|----------|
-| 37 | LOW  | List completeness | Lists 7 subprocessors: Supabase, Vercel, Upstash, Stripe, Resend, Sentry, PostHog. No CDN named separately (Vercel covers it). PostHog region listed as "Varies (provider dependent)" — enterprise buyers will ask for the specific region. | Pin a region for PostHog or note that EU/AU is on request. |
+| 37 | LOW  | List completeness | Lists 7 subprocessors: Supabase, Vercel, Upstash, Stripe, Resend, Sentry, PostHog. No CDN named separately (Vercel covers it). PostHog region listed as "Varies (provider dependent)" — enterprise buyers will ask for the specific region. **Shipped in #TBD (closeout).** PostHog location string in `lib/trust/subprocessors.ts` changed from "Varies (provider dependent)" to "EU or US (PostHog Cloud region confirmed on request)". Honest about the actual options without baking the production region into a public list (PostHog Cloud's region is project-level and migrating regions is non-trivial). The comment in the code explains the reasoning so a future reviewer doesn't pin a region they can't change. | Pin a region for PostHog or note that EU/AU is on request. |
 | 38 | LOW  | Update date | "Last updated: February 2026" (i.e. ~3 months old as of this audit). Acceptable. | — |
 
 ### §4.9 `/trust/incident-response`, `/trust/data-handling`, `/trust/vendor-assurance`, `/trust/procurement`, `/trust/packet`
@@ -991,3 +991,92 @@ recompressible.
   are not meant to be the same asset. The OG-coverage gap (cross-
   cutting #10: ~42 of 85 pages have no `og:image`) is a separate
   finding queued in the Phase C MED batch.
+
+## §21 — Engagement closeout (2026-05-14)
+
+This section closes the multi-session marketing audit engagement.
+Phases A (audit), B (`/app` repair), C (marketing audit + repair),
+and D (pricing redesign) all reached the stop line. LOW-severity
+finishing pass also closed the actionable items; observation-only
+LOW rows (e.g. "all CTAs reach valid destinations", "footer mailto
+JSON escape is cosmetic, no action") were left as recorded
+acknowledgements without code change.
+
+### Shipped this engagement (Phase C onwards)
+
+19 PRs merged on `main`, all CI-green, all under the
+"one concern per PR" rule. Recorded in chronological order:
+
+| Phase | PR | Concern |
+|---|---|---|
+| C HIGH+CRIT batch 1 | #67 | siteUrl trailing `\n` strip (CRIT #1) |
+| C HIGH+CRIT batch 1 | #68 | `/status` unshipped + redirect (CRIT #2) |
+| C HIGH+CRIT batch 1 | #69 | `compliance-testing` workflow permission |
+| C HIGH+CRIT batch 1 | #70 | Footer + JSON-LD contact-info canonical (HIGH #3, MED #11) |
+| C HIGH+CRIT batch 1 | #71 | `/compliance`, `/care` redirects |
+| C HIGH+CRIT batch 1 | #72 | Cookie banner first tab stop (HIGH #92) |
+| C HIGH+CRIT batch 1 | #73 | Contact form inline validation (HIGH #85) |
+| C HIGH+CRIT batch 1 | #74 | InteractiveDashboard touch + aria-labels (MED #96, HIGH #100) |
+| C HIGH+CRIT batch 1 | #75 | `next/image` on MarketingRouteBackdrop, Lighthouse-verified (HIGH #108) |
+| C HIGH batch 2 | #77 | Portal sweep — dead `/status` entry (LOW #112) |
+| C MED | #78 | JSON-LD `sameAs` personal-handle drop (MED #16) |
+| C HIGH batch 2 | #79 | `/features` claim/count alignment (HIGH #6) |
+| C HIGH batch 2 | #80 | Double `<h1>` from `<noscript>` fallback (HIGH #5) |
+| C HIGH batch 2 | #81 | Framework label strict taxonomy (HIGH #4) |
+| C HIGH batch 2 | #82 | "Trusted by" → "Built on" tech-partners (HIGH #8) |
+| C MED | #83 | Industry-page portal opt-out doc (MED #113-117) |
+| C LOW | #84 | JPEG recompression (LOW #123-125) |
+| C cadence | #85 | Audit-doc Phase C batch-2 rollup |
+| C MED | #86 | OG images for 46 missing routes (MED #10) |
+| C MED | #87 | SEO meta-length pass for 36 pages (MED #12, #13, #14) |
+| C MED | #88 | URL canonicalization 308 consolidation (MED #9) |
+| D | #89 | Pricing hero + tier-card redesign (D-4) |
+| D | #90 | Pricing comparison-table + FAQ redesign (D-4 echo) |
+| D | #91 | Pricing D-1/D-4/D-5/D-7 closeouts (hydration bug + trustNote promotion) |
+| LOW batch 1 | #92 | `X-XSS-Protection` drop, blog `dateModified`, `/about` founding year (LOW #17, #59, #62) |
+| LOW batch 2 | #93 | `/blog/rss.xml` RSS 2.0 feed (LOW #57) |
+| LOW batch 3 | #94 | FrameworkExplorer methodology footnote (LOW #49, #51) |
+| LOW batch 4 | #95 | Canonical "Compliance Operating System" + SSR `FeatureCatalogIndex` (LOW #25, #28) |
+| LOW closeout | #TBD | SecurityHero "How it works" link + PostHog region honesty (LOW #31, #37) |
+
+### Stop-line rationale
+
+- **All HIGH and CRIT items** in the marketing audit are shipped.
+- **All MED items** in the marketing audit are shipped or
+  intentionally deferred with reasoning in this doc.
+- **All actionable LOW items** the audit recommended fixes for are
+  shipped. The LOW rows that remain in the table are either:
+  - **Observation-only confirmations** (#19, #23, #36, #38, #40,
+    #55, #56, #60 — items already noted as "no action needed" or
+    "Acceptable" at audit time).
+  - **(verify) entries** (#18, #24) — verifications, not repair
+    work; flagged so the next pass knows where to look.
+  - **Intentional design calls** (§20c LOW rows #118-122 for
+    the compare/case-studies/features sub-pages) — recorded as
+    open design decisions, not regressions.
+
+### Process notes for the next engagement
+
+- **Cadence rule held:** "one concern per PR, severity-first within
+  section". One slip (#78 MED shipped before §3 HIGHs) was caught
+  and course-corrected in §19a; no other ordering breaks.
+- **Severity ordering memory:** HIGH before MED within a session
+  scope, unless the HIGH touches >5 unrelated files. Held through
+  this engagement.
+- **Hydration-gap pattern:** `DeferredSection` + IntersectionObserver
+  removes content from initial SSR HTML. Found twice in this
+  engagement (D-5 pricing-table anchor, #28 feature-name SEO).
+  Pattern to remember: anything inside `DeferredSection` is invisible
+  to crawlers and to anchor links from above-the-fold. Solution
+  template: render a stable SSR anchor or static index outside the
+  wrapper.
+- **"Trusted by" vs "Built on" framing:** standing rule via the
+  `IndustryHero` docstring forbids inventing customer-trust framing
+  without signed customers. Future industry-page work should leave
+  social-proof slots empty (or use framework-alignment language)
+  until real signed customers consent to be named.
+- **Methodology-footnote pattern:** the `FrameworkExplorer`
+  methodology aside is the reusable surface for explaining
+  obligation counts. Future claims involving specific numbers
+  ("N+ controls", "M frameworks") should ride on or extend that
+  pattern rather than ship standalone footnotes per page.

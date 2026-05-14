@@ -69,7 +69,14 @@ export const TRUST_SUBPROCESSORS: TrustSubprocessor[] = [
   {
     name: 'PostHog',
     purpose: 'Product analytics (configured per environment)',
-    location: 'Varies (provider dependent)',
+    // Audit row #37 (LOW): enterprise procurement will ask which
+    // region. Be honest that EU and US PostHog Cloud are the
+    // available regions; the production deployment's region is
+    // confirmed during procurement on request rather than baked
+    // into the public sub-processor list, because PostHog Cloud's
+    // region is set at the project level and changing it would
+    // require a coordinated migration.
+    location: 'EU or US (PostHog Cloud region confirmed on request)',
     icon: Activity,
     category: 'Analytics',
   },
