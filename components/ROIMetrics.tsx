@@ -53,7 +53,8 @@ export function ROIMetrics({
           <p className="mt-4 text-base leading-7 text-slate-300">
             Pricing should reflect the work FormaOS removes: evidence chasing,
             late remediation, repeated reviews, and the operational risk that
-            appears when control work happens outside a governed system.
+            appears when control work happens outside a compliance operating
+            system.
           </p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

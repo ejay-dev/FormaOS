@@ -142,7 +142,7 @@ Headline issues (by impact):
 | # | Sev | Location | Observation | Fix hint |
 |---|-----|----------|-------------|----------|
 | 24 | LOW  | `/marketing-media/product.jpg` reference | Image is referenced in HTML but the file's alt text is not in the static markup (likely set client-side). (verify) | Confirm alt text in browser. |
-| 25 | LOW  | Section terminology | Uses "Compliance Operating System" and "Governed System" interchangeably. Slight terminology drift from `/what-is-a-compliance-operating-system` which fixes the term. | Pick one phrase per page or use a glossary. |
+| 25 | LOW  | Section terminology | Uses "Compliance Operating System" and "Governed System" interchangeably. Slight terminology drift from `/what-is-a-compliance-operating-system` which fixes the term. **Shipped in #TBD (LOW batch 4).** Canonical phrase is "Compliance Operating System". Two drift sites swept: `ProductScrollHero` headline ("a Governed System" → "a Compliance Operating System") and `ROIMetrics` body copy ("outside a governed system" → "outside a compliance operating system"). `grep -rn 'Governed System\|governed system' app/ components/` returns zero matches after the change. | Pick one phrase per page or use a glossary. |
 
 ### §4.3 `/features`
 
@@ -150,7 +150,7 @@ Headline issues (by impact):
 |---|-----|----------|-------------|----------|
 | 26 | HIGH | Hero count | "18 features" claim vs categories summing to 25. See cross-cutting #6. | — |
 | 27 | MED  | Heading hierarchy | `h1 → h3 → h4` (skips `h2`). WCAG AA violation. | Restructure to `h1 → h2 → h3`. |
-| 28 | LOW  | Category labels | Categories use generic names ("Compliance Core", "Identity & Security") but individual feature names are not enumerated — only counts. Reduces SEO surface and makes it hard for a buyer to skim. | Consider listing individual feature names; current "5 features" / "6 features" reads as marketing hand-wave. |
+| 28 | LOW  | Category labels | Categories use generic names ("Compliance Core", "Identity & Security") but individual feature names are not enumerated — only counts. Reduces SEO surface and makes it hard for a buyer to skim. **Shipped in #TBD (LOW batch 4).** Root cause was that the detailed feature grid lives behind a `DeferredSection` IntersectionObserver, so individual feature titles never made it into the initial SSR HTML (verified by `curl /features` — zero feature names returned). Fix: new `FeatureCatalogIndex` component renders all 25 feature titles grouped by category in the SSR path, using native `<details>` so sighted users can collapse what they don't need while keeping every title in the DOM for crawlers. Inserted between `StatsSection` and the deferred feature grid. | Consider listing individual feature names; current "5 features" / "6 features" reads as marketing hand-wave. |
 
 ### §4.4 `/security`
 
