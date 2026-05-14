@@ -62,7 +62,7 @@ function AboutHero() {
       visualInteractive
       badge={{
         icon: <Users className="w-4 h-4 text-violet-400" />,
-        text: 'About FormaOS',
+        text: 'About FormaOS · Founded 2025 · Sydney, Australia',
         colorClass: 'violet',
       }}
       headline={

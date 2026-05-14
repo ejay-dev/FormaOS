@@ -76,6 +76,9 @@ export default async function BlogPostPage({ params }: PageProps) {
               description: post.excerpt,
               url: `${siteUrl}/blog/${post.id}`,
               datePublished: new Date(post.date).toISOString(),
+              dateModified: post.dateModified
+                ? new Date(post.dateModified).toISOString()
+                : new Date(post.date).toISOString(),
               author: post.author,
             }),
             breadcrumbSchema([
@@ -127,6 +130,12 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <CalendarDays className="w-4 h-4" />
                 <span>{post.date}</span>
               </div>
+              {post.dateModified && post.dateModified !== post.date ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-600">·</span>
+                  <span>Updated {post.dateModified}</span>
+                </div>
+              ) : null}
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 <span>{post.readTime}</span>

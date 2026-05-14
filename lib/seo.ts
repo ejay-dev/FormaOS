@@ -171,6 +171,14 @@ export function articleSchema(opts: {
   description: string;
   url: string;
   datePublished: string;
+  /**
+   * Last-modified date. Audit row #59 (2026-05-13): evergreen
+   * regulatory blog content needs `dateModified` for readers to know
+   * how current the guidance is. Defaults to `datePublished` when
+   * the post has not been revised, which is still a meaningful
+   * signal to crawlers.
+   */
+  dateModified?: string;
   author: string;
 }) {
   return {
@@ -180,6 +188,7 @@ export function articleSchema(opts: {
     description: opts.description,
     url: opts.url,
     datePublished: opts.datePublished,
+    dateModified: opts.dateModified ?? opts.datePublished,
     author: {
       '@type': 'Organization',
       name: opts.author === 'FormaOS Team' ? 'FormaOS' : opts.author,

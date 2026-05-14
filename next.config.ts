@@ -181,7 +181,12 @@ const nextConfig: NextConfig = {
         headers: [
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          // X-XSS-Protection removed 2026-05-14 (audit row #17). The
+          // header is deprecated; modern browsers ignore it. Chrome
+          // dropped the auditor in M78, Firefox never honoured it,
+          // Safari kept the attribute but tied it to "block" only,
+          // which CSP already covers. CSP + Trusted Types are the
+          // current defence.
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
           {
             key: 'Referrer-Policy',
