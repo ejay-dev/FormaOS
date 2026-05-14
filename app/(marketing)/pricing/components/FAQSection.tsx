@@ -49,17 +49,13 @@ export function FAQSection() {
         >
           <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
-              <HelpCircle className="h-3 w-3 text-teal-300" />
+              <HelpCircle className="h-3 w-3 text-slate-400" />
               <span className="text-gray-300">FAQ</span>
             </div>
           </ScrollReveal>
 
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Frequently Asked
-            <br />
-            <span className="bg-gradient-to-r from-cyan-300 via-teal-200 to-emerald-300 bg-clip-text text-transparent">
-              Questions
-            </span>
+            Frequently Asked Questions
           </h2>
 
           <p className="text-lg text-gray-400">

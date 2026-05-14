@@ -381,7 +381,7 @@ const COLUMNS: readonly Column[] = [
     label: 'Foundation',
     code: 'FND',
     price: '$297/mo',
-    accent: 'text-teal-300',
+    accent: 'text-slate-400',
   },
   {
     key: 'pro',
@@ -396,14 +396,14 @@ const COLUMNS: readonly Column[] = [
     label: 'Scale',
     code: 'SCL',
     price: '$1,800/mo',
-    accent: 'text-cyan-300',
+    accent: 'text-slate-400',
   },
   {
     key: 'enterprise',
     label: 'Enterprise',
     code: 'ENT',
     price: 'Custom',
-    accent: 'text-violet-300',
+    accent: 'text-slate-400',
   },
 ];
 
@@ -413,7 +413,7 @@ function renderCell(value: Cell, featured?: boolean) {
   if (value === '✓') {
     return (
       <Check
-        className={`mx-auto h-4 w-4 ${featured ? 'text-emerald-300' : 'text-teal-300/80'}`}
+        className={`mx-auto h-4 w-4 ${featured ? 'text-emerald-300' : 'text-slate-400'}`}
         aria-hidden="true"
       />
     );
@@ -430,6 +430,10 @@ function renderCell(value: Cell, featured?: boolean) {
       {value}
     </span>
   );
+}
+
+function slugifyGroupCode(code: string): string {
+  return code.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 
 export function PricingComparisonTable() {
@@ -450,16 +454,13 @@ export function PricingComparisonTable() {
         >
           <div>
             <div className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
-              <span className="h-px w-6 bg-cyan-400/60" />
-              <span className="text-cyan-300">Capability matrix</span>
+              <span className="h-px w-6 bg-white/20" />
+              <span className="text-slate-300">Capability matrix</span>
               <span className="text-slate-600">·</span>
               <span>{GROUPS.length} categories · {TOTAL_ROWS} capabilities</span>
             </div>
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
-              Every capability,{' '}
-              <span className="bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300 bg-clip-text text-transparent">
-                side by side.
-              </span>
+              Every capability, side by side.
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
               Built for Australian NDIS, aged care, and healthcare buyers
@@ -469,7 +470,7 @@ export function PricingComparisonTable() {
           </div>
           <div className="hidden lg:flex flex-col items-end gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
             <span className="flex items-center gap-2">
-              <Check className="h-3 w-3 text-teal-300/80" />
+              <Check className="h-3 w-3 text-slate-400" />
               <span>Included</span>
             </span>
             <span className="flex items-center gap-2">
@@ -477,35 +478,42 @@ export function PricingComparisonTable() {
               <span>Not in plan</span>
             </span>
             <span className="flex items-center gap-2 text-emerald-300/80">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Most popular column
+              <span>Most popular column</span>
             </span>
           </div>
+        </ScrollReveal>
+
+        {/* Jump-to anchor strip (additive UX) */}
+        <ScrollReveal
+          variant="fadeUp"
+          range={[0, 0.4]}
+          className="mb-6 hidden flex-wrap items-center gap-2 lg:flex"
+        >
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+            Jump to:
+          </span>
+          {GROUPS.map((g) => (
+            <a
+              key={g.code}
+              href={`#capability-${slugifyGroupCode(g.code)}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-300 transition hover:border-white/[0.15] hover:bg-white/[0.05] hover:text-white"
+            >
+              {g.title}
+              <span className="text-slate-500">· {g.rows.length}</span>
+            </a>
+          ))}
         </ScrollReveal>
 
         {/* Desktop matrix wrapped in HUD frame */}
         <ScrollReveal variant="fadeUp" range={[0, 0.4]}>
           <div className="relative hidden overflow-hidden rounded-3xl border border-white/[0.07] bg-gradient-to-br from-[#0a1322]/85 via-[#070d1c]/80 to-[#040810]/85 shadow-2xl shadow-black/40 ring-1 ring-white/[0.03] backdrop-blur-sm lg:block">
-            {/* Edge glow lines */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-400/15 to-transparent" />
-            {/* Corner accents */}
-            <span className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-cyan-400/50" />
-            <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-emerald-400/50" />
-            <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-cyan-400/30" />
-            <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-emerald-400/30" />
-
             {/* Frame title bar */}
             <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-6 py-3">
               <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                formaos · capability matrix · v4
+                formaos · capability matrix
               </span>
-              <span className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300/80">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-50" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                </span>
-                live · in sync with billing
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                FY26 · AUD · GST inc.
               </span>
             </div>
 
@@ -551,11 +559,12 @@ export function PricingComparisonTable() {
                   <>
                     <tr
                       key={`group-${group.title}`}
-                      className="bg-gradient-to-r from-white/[0.04] via-white/[0.03] to-transparent"
+                      id={`capability-${slugifyGroupCode(group.code)}`}
+                      className="scroll-mt-24 bg-white/[0.04]"
                     >
                       <td className="px-6 py-3.5">
                         <div className="flex items-center gap-3">
-                          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-emerald-200/80">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
                             {group.code}
                           </span>
                           <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/80">
@@ -610,10 +619,7 @@ export function PricingComparisonTable() {
             {/* Footer status bar */}
             <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.015] px-6 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
               <span>{TOTAL_ROWS} capabilities · {GROUPS.length} categories</span>
-              <span className="flex items-center gap-1.5 text-cyan-300/80">
-                <span className="h-1 w-1 rounded-full bg-cyan-400" />
-                schema · pricing.v4
-              </span>
+              <span>Stripe · SSO · DPA · AU-hosted</span>
             </div>
           </div>
         </ScrollReveal>
@@ -625,8 +631,11 @@ export function PricingComparisonTable() {
               key={group.title}
               className="rounded-3xl border border-white/[0.08] bg-white/[0.025] p-5"
             >
-              <div className="mb-4 flex items-center gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-emerald-200/80">
+              <div
+                id={`capability-${slugifyGroupCode(group.code)}-mobile`}
+                className="mb-4 flex items-center gap-3 scroll-mt-24"
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
                   {group.code}
                 </span>
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">
@@ -660,7 +669,7 @@ export function PricingComparisonTable() {
                           <dd className="ml-2">
                             {row[col.key] === '✓' ? (
                               <Check
-                                className={`h-3.5 w-3.5 ${col.featured ? 'text-emerald-300' : 'text-teal-300/80'}`}
+                                className={`h-3.5 w-3.5 ${col.featured ? 'text-emerald-300' : 'text-slate-400'}`}
                                 aria-hidden="true"
                               />
                             ) : row[col.key] === '—' ? (
