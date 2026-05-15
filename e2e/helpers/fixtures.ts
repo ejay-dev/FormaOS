@@ -188,6 +188,15 @@ async function bootstrapSession(page: Page, email: string, password: string) {
         {
           headers: {
             'x-formaos-e2e': '1',
+            // 2026-05-15: include Origin so the CSRF guard
+            // (`validateCsrfOrigin` in lib/security/csrf.ts) accepts the
+            // request. APIRequestContext.post() does not add Origin
+            // automatically, so without this the call hit 403
+            // "Forbidden: missing origin" and every authenticated test
+            // fan-out cascaded. Pair with CSRF_TRUSTED_ORIGINS or
+            // NEXT_PUBLIC_APP_URL set to this same base in CI so the
+            // origin is in the trusted set.
+            Origin: appBase,
           },
           timeout: BOOTSTRAP_REQUEST_TIMEOUT_MS,
         },
