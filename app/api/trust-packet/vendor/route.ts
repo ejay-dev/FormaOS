@@ -10,9 +10,27 @@ import {
 } from '@/lib/security/rate-limiter';
 
 export const runtime = 'nodejs';
-// Cache at CDN/edge for 1 hour; uptime data changes slowly.
-// force-dynamic removed so Next.js can honour Cache-Control on the response.
-export const dynamic = 'force-static';
+// 2026-05-15: switched back from force-static to force-dynamic.
+//
+// History: was force-dynamic → bumped to force-static earlier to
+// let Next.js honour Cache-Control on the response. That worked
+// for response caching but introduced a build-time prerender that
+// fetches uptime data from Supabase via fetchPublicUptimeChecks().
+// The fetch went sporadically slow on Vercel builds (~30-40% of
+// recent deploys hit 60s × 3 retries and exited 1), blocking
+// otherwise-clean main commits from deploying — most recently
+// 731c1c5d (PR #100 merge) needed an empty re-trigger commit to
+// land.
+//
+// Switching to force-dynamic removes the build-time fetch entirely.
+// CDN caching is preserved by the `Cache-Control: public,
+// max-age=3600, stale-while-revalidate=86400` header on the response
+// below — that header is honoured by Vercel Edge regardless of the
+// dynamic setting. First request after deploy hits the route and
+// populates the edge cache; subsequent requests within an hour
+// serve from cache; stale-while-revalidate covers the next 23 hours.
+// Effective buyer experience is unchanged.
+export const dynamic = 'force-dynamic';
 
 function pct(ok: number, total: number) {
   if (total <= 0) return 0;
