@@ -174,12 +174,31 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Detect Supabase E2E env
         id: e2e_env
+        # Three outcomes, by intent:
+        #
+        #   1. Secrets present  → run the full 806-test chromium suite.
+        #   2. Secrets missing, PR is from a fork → run the smoke fallback.
+        #      Forks cannot access repo secrets by GitHub policy; smoke is
+        #      the best honest signal available.
+        #   3. Secrets missing on a home-repo push/PR → fail the job.
+        #      This is the release gate. If it cannot run, it must not
+        #      pretend to. Until 2026-05-14 this branch silently fell back
+        #      to smoke and reported success; the result was 15 consecutive
+        #      green merges on main where the 806-test suite never ran.
+        #      That is the green-tests-theater pattern. Fail fast forces
+        #      either adding the SUPABASE_SERVICE_ROLE_KEY +
+        #      NEXT_PUBLIC_SUPABASE_URL secrets, or an explicit
+        #      workflow_dispatch override.
         run: |
+          is_fork="${{ github.event.pull_request.head.repo.fork || 'false' }}"
           if [[ -n "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" && -n "${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}" ]]; then
             echo "available=true" >> "$GITHUB_OUTPUT"
-          else
+          elif [[ "$is_fork" == "true" ]]; then
             echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Skipping full E2E suite — repository lacks Supabase test secrets. Run smoke-only set instead."
+            echo "::warning::Fork PR — running smoke-only fallback (secrets unavailable on fork PRs by design)."
+          else
+            echo "::error::Full E2E suite cannot run — repository lacks Supabase test secrets. Add SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_URL to GitHub Actions → Repository secrets. This is the release gate; it must produce real signal, not a smoke fallback."
+            exit 1
           fi
       - name: Run E2E tests (full)
         if: steps.e2e_env.outputs.available == 'true'
