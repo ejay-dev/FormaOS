@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
+import { Inter, Sora, JetBrains_Mono, Fraunces } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import CookieConsent from '@/components/CookieConsent';
 import NextTopLoader from 'nextjs-toploader';
@@ -27,6 +27,16 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   preload: false,
   weight: ['400', '500', '700'],
+});
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-fraunces',
+  preload: false,
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  style: ['normal', 'italic'],
+  axes: ['opsz', 'SOFT', 'WONK'],
 });
 
 const metadataBase = (() => {
@@ -114,7 +124,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable} ${fraunces.variable}`}
     >
       <body className={inter.className}>
         <NextTopLoader color="#22d3ee" height={2} showSpinner={false} />

@@ -1,0 +1,663 @@
+/*
+  Maximalist pricing canvas.
+
+  Reference register: Pentagram client pages, 032c magazine, Wallpaper
+  feature spreads. Bold colour-blocked sections with hard edges, monumental
+  Fraunces display type, real material texture (grain on cream blocks,
+  halftone dots on bold colour blocks), duotone-treated imagery.
+
+  Scoped under `.mx-page` so nothing leaks. Neutralises the parent dark
+  marketing canvas the same way the editorial direction did, but instead
+  of returning to cream-only, every section gets to claim its own colour
+  mood. The visual rhythm of the page IS the design.
+*/
+
+.mx-page {
+  /* Tokens */
+  --mx-cream: #f3ecdc;
+  --mx-cream-2: #e8dfca;
+  --mx-bone: #ede5d1;
+  --mx-ink: #14110d;
+  --mx-ink-mid: #4a3f33;
+  --mx-ink-soft: #756656;
+  --mx-oxblood: #7d2a1c;
+  --mx-oxblood-deep: #5a1f15;
+  --mx-mustard: #d4a017;
+  --mx-mustard-deep: #ab8011;
+  --mx-forest: #1e3a2e;
+  --mx-forest-light: #2d5142;
+  --mx-midnight: #0c0a08;
+  --mx-burnt: #c84a1a;
+  --mx-paper-rule: rgba(20, 17, 13, 0.18);
+  --mx-paper-rule-strong: rgba(20, 17, 13, 0.45);
+  --mx-bold-rule: rgba(243, 236, 220, 0.18);
+
+  background: var(--mx-cream);
+  color: var(--mx-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'onum' 1;
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* Defeat parent .mk-page-bg / .mk-marketing-flow > section dark fills */
+.mx-page section,
+.mx-page .mk-section {
+  background: transparent !important;
+  background-image: none !important;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: visible;
+}
+
+/* ── Blocks ────────────────────────────────────────────────────── */
+/* A block is a full-bleed coloured panel with its own colour mood. */
+
+.mx-block {
+  position: relative;
+  width: 100%;
+  padding-top: clamp(4rem, 7vw, 8rem);
+  padding-bottom: clamp(4rem, 7vw, 8rem);
+  overflow: hidden;
+}
+
+.mx-block--tight {
+  padding-top: clamp(2.25rem, 4vw, 4rem);
+  padding-bottom: clamp(2.25rem, 4vw, 4rem);
+}
+
+.mx-block--flush-top { padding-top: 0; }
+.mx-block--flush-bottom { padding-bottom: 0; }
+
+/* Texture overlays on each block — sit above the colour but below content */
+.mx-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mx-block > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cream block — fine paper grain */
+.mx-block--cream {
+  background: var(--mx-cream);
+  color: var(--mx-ink);
+}
+.mx-block--cream::before {
+  background-image: radial-gradient(rgba(20, 17, 13, 0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: multiply;
+  opacity: 0.7;
+}
+
+.mx-block--bone {
+  background: var(--mx-bone);
+  color: var(--mx-ink);
+}
+.mx-block--bone::before {
+  background-image: radial-gradient(rgba(20, 17, 13, 0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: multiply;
+  opacity: 0.7;
+}
+
+/* Oxblood — halftone dots */
+.mx-block--oxblood {
+  background: var(--mx-oxblood);
+  color: var(--mx-cream);
+}
+.mx-block--oxblood::before {
+  background-image:
+    radial-gradient(rgba(243, 236, 220, 0.06) 1.2px, transparent 1.2px);
+  background-size: 8px 8px;
+  background-position: 0 0, 4px 4px;
+}
+
+/* Mustard */
+.mx-block--mustard {
+  background: var(--mx-mustard);
+  color: var(--mx-ink);
+}
+.mx-block--mustard::before {
+  background-image:
+    radial-gradient(rgba(20, 17, 13, 0.06) 1.2px, transparent 1.2px);
+  background-size: 8px 8px;
+}
+
+/* Forest */
+.mx-block--forest {
+  background: var(--mx-forest);
+  color: var(--mx-cream);
+}
+.mx-block--forest::before {
+  background-image:
+    radial-gradient(rgba(243, 236, 220, 0.045) 1.2px, transparent 1.2px);
+  background-size: 8px 8px;
+}
+
+/* Midnight — diagonal grain like film */
+.mx-block--midnight {
+  background: var(--mx-midnight);
+  color: var(--mx-cream);
+}
+.mx-block--midnight::before {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(243, 236, 220, 0.012) 0 2px,
+      transparent 2px 4px
+    );
+}
+
+/* Ink — solid near-black */
+.mx-block--ink {
+  background: var(--mx-ink);
+  color: var(--mx-cream);
+}
+.mx-block--ink::before {
+  background-image: radial-gradient(rgba(243, 236, 220, 0.04) 1.2px, transparent 1.2px);
+  background-size: 8px 8px;
+}
+
+/* Hard edge strip between adjacent blocks — visible thin line */
+.mx-block + .mx-block { border-top: 1px solid rgba(20, 17, 13, 0.12); }
+.mx-block--oxblood + .mx-block,
+.mx-block--midnight + .mx-block,
+.mx-block--ink + .mx-block,
+.mx-block--forest + .mx-block { border-top-color: rgba(243, 236, 220, 0.08); }
+
+/* ── Container ─────────────────────────────────────────────────── */
+.mx-container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.25rem, 4vw, 3rem);
+  padding-right: clamp(1.25rem, 4vw, 3rem);
+}
+.mx-container--narrow { max-width: 64rem; }
+.mx-container--wide { max-width: 80rem; }
+.mx-container--full { max-width: 96rem; }
+
+/* ── Typography ───────────────────────────────────────────────── */
+
+.mx-page .mx-serif {
+  font-family: var(--font-fraunces), 'Fraunces', Georgia, serif;
+  font-feature-settings: 'lnum' 1, 'kern' 1, 'liga' 1, 'dlig' 1, 'ss01' 1;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1;
+}
+
+.mx-page .mx-sans {
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+.mx-page .mx-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: 0.005em;
+}
+
+/* Monumental display — for prices and the hero "infrastructure" word */
+.mx-page .mx-monumental {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  font-feature-settings: 'lnum' 1, 'tnum' 1, 'ss01' 1, 'dlig' 1;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 1;
+}
+
+/* Display headlines */
+.mx-page .mx-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'dlig' 1, 'ss01' 1;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50, 'WONK' 0;
+}
+.mx-page .mx-display em {
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+}
+.mx-page .mx-display--xxl {
+  font-size: clamp(3.5rem, 8.5vw + 1rem, 8.5rem);
+}
+.mx-page .mx-display--xl {
+  font-size: clamp(2.5rem, 5.5vw + 0.5rem, 5rem);
+}
+.mx-page .mx-display--lg {
+  font-size: clamp(2rem, 3.5vw + 0.5rem, 3.5rem);
+}
+.mx-page .mx-display--md {
+  font-size: clamp(1.5rem, 2vw + 0.5rem, 2.25rem);
+  line-height: 1.05;
+}
+
+.mx-page .mx-outline {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px currentColor;
+  paint-order: stroke fill;
+}
+@supports (-webkit-text-stroke: 2px black) {
+  .mx-page .mx-outline--thick {
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: clamp(1.5px, 0.18vw, 3px) currentColor;
+  }
+}
+
+/* Eyebrows */
+.mx-page .mx-eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+.mx-page .mx-eyebrow-italic {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: 1rem;
+  letter-spacing: 0.005em;
+  font-variation-settings: 'opsz' 14, 'SOFT' 80, 'WONK' 1;
+}
+
+/* Vertical rail label (rotated) */
+.mx-page .mx-rail {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+/* Section number glyph (§01, §02 …) */
+.mx-page .mx-section-num {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(3.5rem, 6vw, 6.5rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  font-feature-settings: 'lnum' 1, 'ss01' 1;
+  font-variation-settings: 'opsz' 144, 'SOFT' 60, 'WONK' 1;
+}
+
+/* Body */
+.mx-page .mx-body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  font-feature-settings: 'onum' 1, 'kern' 1, 'liga' 1;
+}
+.mx-page .mx-body-serif {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.1875rem;
+  line-height: 1.4;
+  font-feature-settings: 'onum' 1, 'kern' 1, 'liga' 1;
+  font-variation-settings: 'opsz' 24, 'SOFT' 60, 'WONK' 0;
+}
+.mx-page .mx-lead {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(1.25rem, 1vw + 1rem, 1.625rem);
+  line-height: 1.3;
+  font-feature-settings: 'onum' 1, 'dlig' 1;
+  font-variation-settings: 'opsz' 48, 'SOFT' 60, 'WONK' 1;
+}
+.mx-page .mx-caption {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  opacity: 0.75;
+  font-variation-settings: 'opsz' 14, 'SOFT' 80, 'WONK' 1;
+}
+
+/* Drop cap (used in hero lede) */
+.mx-page .mx-dropcap::first-letter {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 5em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.05em 0.12em 0 0;
+  margin-right: 0.04em;
+  font-feature-settings: 'lnum' 1, 'dlig' 1, 'ss01' 1;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+}
+
+/* ── Rules ─────────────────────────────────────────────────────── */
+.mx-page .mx-rule {
+  border: 0;
+  border-top: 1px solid currentColor;
+  opacity: 0.18;
+  margin: 0;
+}
+.mx-page .mx-rule--bold {
+  border-top-width: 2px;
+  opacity: 0.55;
+}
+.mx-page .mx-rule--thick {
+  border-top-width: 6px;
+  opacity: 1;
+}
+.mx-page .mx-rule--double {
+  border: 0;
+  height: 8px;
+  border-top: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  opacity: 0.55;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────── */
+.mx-page .mx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  padding: 0.875rem 1.375rem;
+  border-radius: 0;
+  border: 1.5px solid currentColor;
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+  text-transform: none;
+}
+.mx-page .mx-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 currentColor;
+}
+.mx-page .mx-btn:active { transform: translate(0, 0); box-shadow: 0 0 0 currentColor; }
+.mx-page .mx-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.mx-page .mx-btn--solid {
+  background: var(--mx-ink);
+  color: var(--mx-cream);
+  border-color: var(--mx-ink);
+}
+.mx-page .mx-btn--solid:hover {
+  background: var(--mx-oxblood);
+  border-color: var(--mx-oxblood);
+  box-shadow: 4px 4px 0 var(--mx-ink);
+}
+
+.mx-page .mx-btn--solid-cream {
+  background: var(--mx-cream);
+  color: var(--mx-ink);
+  border-color: var(--mx-cream);
+}
+.mx-page .mx-btn--solid-cream:hover {
+  background: var(--mx-mustard);
+  border-color: var(--mx-mustard);
+  color: var(--mx-ink);
+  box-shadow: 4px 4px 0 var(--mx-cream);
+}
+
+.mx-page .mx-btn--accent {
+  background: var(--mx-oxblood);
+  color: var(--mx-cream);
+  border-color: var(--mx-oxblood);
+}
+.mx-page .mx-btn--accent:hover {
+  background: var(--mx-oxblood-deep);
+  border-color: var(--mx-oxblood-deep);
+  box-shadow: 4px 4px 0 var(--mx-ink);
+}
+
+/* ── Duotone treated imagery ──────────────────────────────────── */
+.mx-page .mx-duotone {
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+.mx-page .mx-duotone > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.08) brightness(0.92);
+}
+.mx-page .mx-duotone::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+  background: linear-gradient(180deg, var(--dt-a, var(--mx-oxblood)) 0%, var(--dt-b, var(--mx-ink)) 100%);
+  pointer-events: none;
+}
+.mx-page .mx-duotone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: screen;
+  background: linear-gradient(180deg, var(--dt-c, var(--mx-cream)) 0%, transparent 60%);
+  pointer-events: none;
+  opacity: 0.35;
+}
+.mx-page .mx-duotone--oxblood { --dt-a: var(--mx-oxblood); --dt-b: var(--mx-ink); --dt-c: var(--mx-mustard); }
+.mx-page .mx-duotone--mustard { --dt-a: var(--mx-mustard); --dt-b: var(--mx-oxblood); --dt-c: var(--mx-cream); }
+.mx-page .mx-duotone--forest  { --dt-a: var(--mx-forest); --dt-b: var(--mx-midnight); --dt-c: var(--mx-mustard); }
+.mx-page .mx-duotone--cream   { --dt-a: var(--mx-ink); --dt-b: var(--mx-oxblood); --dt-c: var(--mx-cream); }
+.mx-page .mx-duotone--midnight { --dt-a: var(--mx-midnight); --dt-b: var(--mx-oxblood-deep); --dt-c: var(--mx-mustard); }
+
+/* ── Plan-row monumental treatment ────────────────────────────── */
+.mx-plan-row {
+  position: relative;
+  border-top: 1px solid currentColor;
+  padding-top: clamp(2rem, 3vw, 3rem);
+  padding-bottom: clamp(2rem, 3vw, 3rem);
+}
+.mx-plan-row:first-child { border-top: 0; }
+
+.mx-plan-row__num {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(6rem, 14vw, 16rem);
+  line-height: 0.78;
+  letter-spacing: -0.06em;
+  font-feature-settings: 'lnum' 1, 'tnum' 1, 'ss01' 1;
+  font-variation-settings: 'opsz' 144, 'SOFT' 30, 'WONK' 1;
+  display: block;
+}
+
+/* ── Tables ────────────────────────────────────────────────────── */
+.mx-page table.mx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.mx-page table.mx-table th,
+.mx-page table.mx-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid currentColor;
+}
+.mx-page table.mx-table th,
+.mx-page table.mx-table td { border-color: var(--mx-paper-rule); }
+.mx-page .mx-block--ink table.mx-table th,
+.mx-page .mx-block--ink table.mx-table td,
+.mx-page .mx-block--forest table.mx-table th,
+.mx-page .mx-block--forest table.mx-table td,
+.mx-page .mx-block--midnight table.mx-table th,
+.mx-page .mx-block--midnight table.mx-table td,
+.mx-page .mx-block--oxblood table.mx-table th,
+.mx-page .mx-block--oxblood table.mx-table td { border-color: var(--mx-bold-rule); }
+
+.mx-page table.mx-table thead th {
+  font-family: var(--font-mono), monospace;
+  font-weight: 500;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-top: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+}
+.mx-page table.mx-table tbody tr:last-child td { border-bottom: 2px solid currentColor; }
+
+.mx-page table.mx-table tbody tr.mx-table__group td {
+  background: rgba(20, 17, 13, 0.07);
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  border-top: 2px solid currentColor;
+  font-variation-settings: 'opsz' 14, 'SOFT' 60, 'WONK' 1;
+}
+
+.mx-page table.mx-table .mx-table__num {
+  font-variant-numeric: tabular-nums lining-nums;
+  text-align: right;
+}
+.mx-page table.mx-table .mx-table__center { text-align: center; }
+.mx-page table.mx-table .mx-table__featured { background: rgba(212, 160, 23, 0.14); }
+.mx-page .mx-block--ink table.mx-table .mx-table__featured,
+.mx-page .mx-block--midnight table.mx-table .mx-table__featured {
+  background: rgba(212, 160, 23, 0.16);
+}
+
+/* ── Q&A list ──────────────────────────────────────────────────── */
+.mx-page .mx-qa { border-top: 2px solid currentColor; }
+.mx-page .mx-qa__item {
+  display: grid;
+  gap: 0.875rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid currentColor;
+  border-color: var(--mx-paper-rule);
+}
+@media (min-width: 900px) {
+  .mx-page .mx-qa__item {
+    grid-template-columns: 7rem 1fr 1.3fr;
+    column-gap: 2.5rem;
+    align-items: baseline;
+  }
+}
+.mx-page .mx-qa__num {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(2rem, 2.5vw, 3.25rem);
+  line-height: 0.9;
+  font-feature-settings: 'lnum' 1;
+  font-variation-settings: 'opsz' 144, 'SOFT' 60, 'WONK' 1;
+}
+.mx-page .mx-qa__q {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.25;
+  font-variation-settings: 'opsz' 24, 'SOFT' 60, 'WONK' 0;
+}
+.mx-page .mx-qa__a {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  font-feature-settings: 'onum' 1;
+}
+
+/* ── Stickers / tags ──────────────────────────────────────────── */
+.mx-page .mx-sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: var(--mx-mustard);
+  color: var(--mx-ink);
+  border: 1.5px solid var(--mx-ink);
+  transform: rotate(-2deg);
+}
+
+/* ── Pull quote ───────────────────────────────────────────────── */
+.mx-page .mx-pullquote {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 3vw + 0.5rem, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-feature-settings: 'onum' 1, 'dlig' 1, 'ss01' 1;
+  font-variation-settings: 'opsz' 144, 'SOFT' 80, 'WONK' 1;
+  text-wrap: balance;
+}
+.mx-page .mx-pullquote cite {
+  display: block;
+  margin-top: 1.25rem;
+  font-family: var(--font-mono), monospace;
+  font-style: normal;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* ── Bar (used inline for scope ladder visualisation) ─────────── */
+.mx-page .mx-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.mx-page .mx-bar > span {
+  width: 0.625rem;
+  height: 0.875rem;
+  background: currentColor;
+  opacity: 0.18;
+}
+.mx-page .mx-bar > span.is-on { opacity: 1; }
+
+/* ── Header tone neutralisation under maximalist canvas ───────── */
+/* Sticky marketing header is dark/glass — clash on the cream/coloured
+   maximalist page. Override per current top-block colour, fallback to
+   cream-tinted glass. Only applies on /pricing via :has(.mx-page). */
+@supports selector(:has(*)) {
+  body:has(.mx-page) .mk-header-premium {
+    background: rgba(20, 17, 13, 0.94);
+    backdrop-filter: blur(14px) saturate(120%);
+    border-bottom: 1px solid var(--mx-bold-rule);
+  }
+  body:has(.mx-page) .mk-header-premium a,
+  body:has(.mx-page) .mk-header-premium button {
+    color: var(--mx-cream);
+  }
+  body:has(.mx-page) .mk-header-premium .mk-btn-primary {
+    background: var(--mx-mustard);
+    color: var(--mx-ink);
+    border-color: var(--mx-mustard);
+    box-shadow: none;
+  }
+  body:has(.mx-page) .mk-header-premium .mk-btn-secondary {
+    background: transparent;
+    color: var(--mx-cream);
+    border-color: var(--mx-cream);
+  }
+}
