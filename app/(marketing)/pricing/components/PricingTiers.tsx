@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Layers } from 'lucide-react';
+import { ArrowRight, Building2, CheckCircle2, Layers, Users } from 'lucide-react';
 import { PUBLIC_PRICING_TIERS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import {
@@ -11,6 +11,23 @@ import {
   SystemSection,
   systemPanelClass,
 } from '@/components/marketing/SystemMarketingPrimitives';
+
+/**
+ * Scope-ladder data per tier — three quick metrics that anchor each
+ * card and create visible progression across tiers (1 → 3 → ∞ → ∞).
+ * Kept local to the component rather than added to PublicPricingTier
+ * so the page presentation layer doesn't bleed into the marketing
+ * data shape.
+ */
+const TIER_SCOPE: Record<
+  (typeof PUBLIC_PRICING_TIERS)[number]['id'],
+  { sites: string; users: string; frameworks: string }
+> = {
+  foundation: { sites: '1', users: '10', frameworks: '2' },
+  growth: { sites: '3', users: '25', frameworks: '4' },
+  scale: { sites: '∞', users: '75', frameworks: '∞' },
+  enterprise: { sites: '∞', users: '∞', frameworks: '∞' },
+};
 
 /**
  * PricingTiers — four tier cards on the canonical SystemSection background.
@@ -39,13 +56,15 @@ export function PricingTiers() {
         </p>
       </div>
 
-      <div className="grid items-stretch gap-5 lg:grid-cols-4">
-        {PUBLIC_PRICING_TIERS.map((tier) => (
+      <div className="grid items-stretch gap-5 lg:grid-cols-4 lg:items-start">
+        {PUBLIC_PRICING_TIERS.map((tier) => {
+          const scope = TIER_SCOPE[tier.id];
+          return (
           <article
             key={tier.id}
             className={`group relative flex min-h-full flex-col p-7 sm:p-8 ${systemPanelClass} ${
               tier.featured
-                ? 'border-emerald-300/40 bg-emerald-300/[0.04] hover:border-emerald-300/55'
+                ? 'border-emerald-300/45 bg-emerald-300/[0.05] shadow-[0_24px_72px_rgba(16,185,129,0.18),inset_0_1px_0_rgba(255,255,255,0.06)] hover:border-emerald-300/65 lg:-mt-3 lg:mb-3 lg:scale-[1.015]'
                 : ''
             }`}
           >
@@ -74,7 +93,45 @@ export function PricingTiers() {
             <p className="mt-2 text-sm leading-snug text-slate-300">
               {tier.audience}
             </p>
-            <p className="mt-1.5 text-xs text-slate-500">{tier.audienceSize}</p>
+
+            {/*
+              Scope ladder — three mini stat chips (sites · users ·
+              frameworks). Reads as a quick scan across the four cards
+              so the upgrade path is visible without reading any copy.
+              Featured tier gets emerald-tinted dividers.
+            */}
+            <dl
+              className={`mt-5 grid grid-cols-3 overflow-hidden rounded-xl border bg-white/[0.025] ${
+                tier.featured
+                  ? 'border-emerald-300/25 divide-emerald-300/15'
+                  : 'border-white/[0.07] divide-white/[0.05]'
+              } divide-x`}
+            >
+              {[
+                { label: 'Sites', value: scope.sites, Icon: Building2 },
+                { label: 'Users', value: scope.users, Icon: Users },
+                { label: 'Frameworks', value: scope.frameworks, Icon: Layers },
+              ].map(({ label, value, Icon }) => (
+                <div key={label} className="px-2.5 py-3 text-center">
+                  <Icon
+                    className={`mx-auto h-3.5 w-3.5 ${
+                      tier.featured ? 'text-emerald-300/80' : 'text-slate-500'
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <dd
+                    className={`mt-1 text-lg font-semibold tracking-tight ${
+                      tier.featured ? 'text-white' : 'text-white'
+                    }`}
+                  >
+                    {value}
+                  </dd>
+                  <dt className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                    {label}
+                  </dt>
+                </div>
+              ))}
+            </dl>
 
             {/* Price */}
             <div className="mt-7 flex items-baseline gap-1.5">
@@ -142,7 +199,8 @@ export function PricingTiers() {
               </ul>
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
 
       {/* Footer notes — plain row, no mono, no terminal punctuation */}

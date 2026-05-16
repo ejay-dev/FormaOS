@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Check, Minus, Table2 } from 'lucide-react';
 import {
   AccentText,
@@ -412,6 +413,51 @@ function slugifyGroupCode(code: string): string {
 }
 
 export function PricingComparisonTable() {
+  /**
+   * Sticky group-nav sidebar — observes each group's header row and
+   * highlights the corresponding sidebar item as it scrolls into view.
+   * This is the Vercel/Stripe Atlas pricing-page treatment that makes
+   * a 47-row comparison table feel scannable rather than a wall of
+   * checkmarks. IntersectionObserver runs client-side; sidebar is
+   * purely additive on lg+, mobile keeps the existing stacked layout.
+   */
+  const groupRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
+  const [activeGroup, setActiveGroup] = useState<string>(
+    GROUPS[0]?.code ?? '',
+  );
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Pick the entry closest to the top that is currently intersecting.
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) {
+          const code = visible[0].target.getAttribute('data-group-code');
+          if (code) setActiveGroup(code);
+        }
+      },
+      // Trigger when the group header row is in the top ~30% of the viewport.
+      { rootMargin: '-15% 0px -65% 0px', threshold: 0 },
+    );
+    Object.values(groupRefs.current).forEach((el) => {
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const groupAnchors = useMemo(
+    () =>
+      GROUPS.map((g) => ({
+        code: g.code,
+        title: g.title,
+        count: g.rows.length,
+        id: `capability-${slugifyGroupCode(g.code)}`,
+      })),
+    [],
+  );
+
   return (
     <SystemSection variant="cyan">
       <div className="mx-auto mb-12 max-w-3xl text-center">
@@ -429,106 +475,147 @@ export function PricingComparisonTable() {
         </p>
       </div>
 
-      {/* Jump-to anchor strip — clean pill nav, no mono */}
-      <div className="mb-6 hidden flex-wrap items-center justify-center gap-2 lg:flex">
-        <span className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
-          Jump to:
-        </span>
-        {GROUPS.map((g) => (
-          <a
-            key={g.code}
-            href={`#capability-${slugifyGroupCode(g.code)}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-white/[0.18] hover:bg-white/[0.06] hover:text-white"
+      {/* Desktop layout: sticky group-nav rail on the left + table on the right */}
+      <div className="hidden lg:grid lg:grid-cols-[220px_1fr] lg:gap-8">
+        <aside className="hidden lg:block">
+          <nav
+            aria-label="Capability groups"
+            className="sticky top-24 rounded-2xl border border-white/[0.07] bg-slate-950/50 p-3 shadow-[0_18px_56px_rgba(2,6,23,0.28)]"
           >
-            {g.title}
-          </a>
-        ))}
-      </div>
-
-      {/* Desktop matrix */}
-      <div className="hidden overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-950/50 shadow-[0_18px_56px_rgba(2,6,23,0.34)] lg:block">
-        <table className="w-full">
-          <thead className="bg-white/[0.025]">
-            <tr className="border-b border-white/[0.06]">
-              <th
-                scope="col"
-                className="w-[34%] px-6 py-5 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-400"
-              >
-                Capability
-              </th>
-              {COLUMNS.map((col) => (
-                <th
-                  key={col.key}
-                  scope="col"
-                  className={`px-6 py-5 text-center ${
-                    col.featured ? 'bg-emerald-300/[0.05]' : ''
-                  }`}
-                >
-                  <div className="flex flex-col items-center gap-1.5">
-                    <div className="flex items-center gap-2">
-                      <span className="text-base font-semibold text-white">
-                        {col.label}
+            <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Jump to
+            </p>
+            <ul className="space-y-0.5">
+              {groupAnchors.map((g) => {
+                const isActive = activeGroup === g.code;
+                return (
+                  <li key={g.code}>
+                    <a
+                      href={`#${g.id}`}
+                      aria-current={isActive ? 'true' : undefined}
+                      className={`flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm transition ${
+                        isActive
+                          ? 'border-emerald-300/30 bg-emerald-300/[0.07] text-white'
+                          : 'border-transparent text-slate-300 hover:border-white/[0.08] hover:bg-white/[0.03] hover:text-white'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span
+                          aria-hidden="true"
+                          className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+                            isActive ? 'bg-emerald-300' : 'bg-slate-600'
+                          }`}
+                        />
+                        <span className="truncate">{g.title}</span>
                       </span>
-                      {col.featured ? (
-                        <StatusPill tone="valid">Most popular</StatusPill>
-                      ) : null}
-                    </div>
-                    <div className="text-sm text-slate-300">{col.price}</div>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {GROUPS.map((group) => (
-              <>
-                <tr
-                  key={`group-${group.title}`}
-                  id={`capability-${slugifyGroupCode(group.code)}`}
-                  className="scroll-mt-24 bg-white/[0.035]"
-                >
-                  <td className="px-6 py-3" colSpan={COLUMNS.length + 1}>
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">
-                      {group.title}
-                    </span>
-                    <span className="ml-3 text-xs text-slate-500">
-                      {group.rows.length} capabilities
-                    </span>
-                  </td>
-                </tr>
-                {group.rows.map((row, idx) => (
-                  <tr
-                    key={`${group.title}-${row.label}`}
-                    className={
-                      idx % 2 === 0
-                        ? 'border-t border-white/[0.04]'
-                        : 'border-t border-white/[0.04] bg-white/[0.012]'
-                    }
-                  >
-                    <td className="px-6 py-3.5 text-sm text-slate-200">
-                      <div>{row.label}</div>
-                      {row.hint ? (
-                        <div className="mt-0.5 text-xs text-slate-500">
-                          {row.hint}
-                        </div>
-                      ) : null}
-                    </td>
-                    {COLUMNS.map((col) => (
-                      <td
-                        key={col.key}
-                        className={`px-6 py-3.5 text-center ${
-                          col.featured ? 'bg-emerald-300/[0.04]' : ''
+                      <span
+                        className={`shrink-0 text-[11px] tabular-nums ${
+                          isActive ? 'text-emerald-200/85' : 'text-slate-500'
                         }`}
                       >
-                        {renderCell(row[col.key], col.featured)}
-                      </td>
-                    ))}
-                  </tr>
+                        {g.count}
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </aside>
+
+        <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-950/50 shadow-[0_18px_56px_rgba(2,6,23,0.34)]">
+          <table className="w-full">
+            <thead className="sticky top-20 z-10 bg-slate-950/95 backdrop-blur-md">
+              <tr className="border-b border-white/[0.06]">
+                <th
+                  scope="col"
+                  className="w-[36%] px-6 py-5 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-400"
+                >
+                  Capability
+                </th>
+                {COLUMNS.map((col) => (
+                  <th
+                    key={col.key}
+                    scope="col"
+                    className={`px-6 py-5 text-center ${
+                      col.featured ? 'bg-emerald-300/[0.05]' : ''
+                    }`}
+                  >
+                    <div className="flex flex-col items-center gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-semibold text-white">
+                          {col.label}
+                        </span>
+                        {col.featured ? (
+                          <StatusPill tone="valid">Most popular</StatusPill>
+                        ) : null}
+                      </div>
+                      <div className="text-sm text-slate-300">{col.price}</div>
+                    </div>
+                  </th>
                 ))}
-              </>
-            ))}
-          </tbody>
-        </table>
+              </tr>
+            </thead>
+            <tbody>
+              {GROUPS.map((group) => (
+                <>
+                  <tr
+                    key={`group-${group.title}`}
+                    id={`capability-${slugifyGroupCode(group.code)}`}
+                    data-group-code={group.code}
+                    ref={(el) => {
+                      groupRefs.current[group.code] = el;
+                    }}
+                    className="scroll-mt-32 bg-white/[0.035]"
+                  >
+                    <td
+                      className="relative px-6 py-3.5"
+                      colSpan={COLUMNS.length + 1}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r bg-emerald-300/60"
+                      />
+                      <span className="text-sm font-semibold uppercase tracking-[0.18em] text-white/90">
+                        {group.title}
+                      </span>
+                      <span className="ml-3 text-xs text-slate-500">
+                        {group.rows.length} capabilities
+                      </span>
+                    </td>
+                  </tr>
+                  {group.rows.map((row, idx) => (
+                    <tr
+                      key={`${group.title}-${row.label}`}
+                      className={`border-t border-white/[0.04] transition-colors hover:bg-white/[0.025] ${
+                        idx % 2 === 0 ? '' : 'bg-white/[0.012]'
+                      }`}
+                    >
+                      <td className="px-6 py-3.5 text-sm text-slate-200">
+                        <div>{row.label}</div>
+                        {row.hint ? (
+                          <div className="mt-0.5 text-xs text-slate-500">
+                            {row.hint}
+                          </div>
+                        ) : null}
+                      </td>
+                      {COLUMNS.map((col) => (
+                        <td
+                          key={col.key}
+                          className={`px-6 py-3.5 text-center ${
+                            col.featured ? 'bg-emerald-300/[0.04]' : ''
+                          }`}
+                        >
+                          {renderCell(row[col.key], col.featured)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Mobile: stacked per-group */}
