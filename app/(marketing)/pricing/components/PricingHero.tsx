@@ -1,313 +1,100 @@
-'use client';
-
-import { useRef, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from 'framer-motion';
-import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
-import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
-import { duration } from '@/config/motion';
+import { SectionEyebrow } from '@/components/marketing/SystemMarketingPrimitives';
 
-const PLAN_CONFIG_INPUTS = [
-  { label: 'Frameworks', value: '2 → ∞' },
-  { label: 'Sites', value: '1 → ∞' },
-  { label: 'Staff', value: '10 → ∞' },
-  { label: 'Audit pressure', value: 'Low → Critical' },
-];
-
+/**
+ * PricingHero — server-rendered, mirrors HeroStaticShell on the home page.
+ * Photo background + soft vignette + centered single column. No HUD,
+ * no corner brackets, no particle field, no mono-eyebrow, no gradient
+ * panel. Same `mk-btn` CTAs as every other marketing page.
+ */
 export function PricingHero() {
-  const { trackCtaClick } = useMarketingTelemetry();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-  const [allowHeavyVisuals, setAllowHeavyVisuals] = useState(false);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end -15%'],
-  });
-
-  const opacity = useTransform(
-    scrollYProgress,
-    [0, 0.26, 0.82, 0.96],
-    [1, 1, 0.34, 0],
-  );
-  const scale = useTransform(
-    scrollYProgress,
-    [0, 0.26, 0.82, 0.96],
-    [1, 1, 0.97, 0.94],
-  );
-  const y = useTransform(scrollYProgress, [0, 0.82, 1], [0, 48, 110]);
-  const shouldAnimateIntro = !shouldReduceMotion && allowHeavyVisuals;
-
-  useEffect(() => {
-    const update = () => setAllowHeavyVisuals(window.innerWidth >= 1024);
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
   return (
     <section
-      ref={containerRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16"
+      className="relative isolate overflow-hidden"
+      aria-label="Pricing"
     >
-      <HeroAtmosphere
-        topColor="cyan"
-        bottomColor="emerald"
-        particleIntensity="normal"
+      {/* Photo background — fetched eagerly for fast LCP, consistent with home */}
+      <img
+        src="/marketing-media/pricing.jpg"
+        alt=""
+        aria-hidden="true"
+        fetchPriority="high"
+        decoding="async"
+        sizes="100vw"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.22]"
+        style={{ objectPosition: '50% 30%' }}
       />
+      {/* Vignette stack — same three-layer pattern as HeroStaticShell */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/10 via-slate-950/30 to-slate-950/80" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_50%_-5%,transparent_55%,rgba(3,7,18,0.7)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_0%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
 
-      <div className="relative z-10 mx-auto max-w-7xl w-full grid gap-14 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-12">
-        <motion.div style={shouldAnimateIntro ? { opacity, scale, y } : {}}>
-          <motion.h1
-            id="pricing-hero-title"
-            initial={shouldAnimateIntro ? { opacity: 0, y: 24 } : false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={
-              shouldAnimateIntro
-                ? { duration: duration.slower, delay: 0.36 }
-                : { duration: 0 }
-            }
-            className="text-[2.6rem] font-bold leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-[5.2rem]"
-          >
-            Compliance,
-            <br />
-            priced like infrastructure.
-          </motion.h1>
+      <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-16 pt-20 text-center sm:px-8 sm:pt-28 lg:px-12 lg:pt-32">
+        <div className="mb-6">
+          <SectionEyebrow icon={ShieldCheck} tone="live">
+            Plans &amp; Pricing
+          </SectionEyebrow>
+        </div>
 
-          <motion.p
-            initial={shouldAnimateIntro ? { opacity: 0, y: 16 } : false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={
-              shouldAnimateIntro
-                ? { duration: duration.slower, delay: 0.5 }
-                : { duration: 0 }
-            }
-            className="mt-7 max-w-xl text-base leading-relaxed text-slate-400 sm:text-lg"
-          >
-            FormaOS replaces manual compliance work with enforced workflows and
-            real-time audit evidence. Plans are anchored to risk, framework
-            scope, and operational complexity — not feature unlocks.
-          </motion.p>
-
-          <motion.div
-            initial={shouldAnimateIntro ? { opacity: 0, y: 12 } : false}
-            animate={{ opacity: 1, y: 0 }}
-            transition={
-              shouldAnimateIntro
-                ? { duration: duration.slower, delay: 0.62 }
-                : { duration: 0 }
-            }
-            className="mt-10 flex flex-col gap-3 sm:flex-row"
-          >
-            <Link
-              href="/contact?type=compliance-plan&source=pricing_hero"
-              onClick={() =>
-                trackCtaClick({
-                  surface: 'pricing',
-                  section: 'hero',
-                  location: 'hero_primary',
-                  ctaLabel: 'Get Your Compliance Plan',
-                  ctaHref:
-                    '/contact?type=compliance-plan&source=pricing_hero',
-                  variant: 'primary',
-                })
-              }
-              className="mk-btn mk-btn-primary min-h-[52px] justify-center px-8 py-4 text-base"
-            >
-              Get Your Compliance Plan
-              <ArrowRight className="h-5 w-5" aria-hidden="true" />
-            </Link>
-            <Link
-              href="#pricing-table"
-              onClick={() =>
-                trackCtaClick({
-                  surface: 'pricing',
-                  section: 'hero',
-                  location: 'hero_secondary',
-                  ctaLabel: 'View Pricing',
-                  ctaHref: '#pricing-table',
-                  variant: 'secondary',
-                })
-              }
-              className="mk-btn mk-btn-secondary min-h-[52px] justify-center px-8 py-4 text-base"
-            >
-              View pricing
-            </Link>
-          </motion.div>
-
-          {/* Inline anchor footnotes */}
-          <motion.dl
-            initial={shouldAnimateIntro ? { opacity: 0 } : false}
-            animate={{ opacity: 1 }}
-            transition={
-              shouldAnimateIntro
-                ? { duration: duration.slower, delay: 0.78 }
-                : { duration: 0 }
-            }
-            className="mt-12 grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm sm:max-w-xl"
-          >
-            {[
-              { k: 'Plans', v: '4', sub: 'Foundation → Enterprise' },
-              { k: 'Frameworks', v: '8', sub: 'pre-built packs' },
-              { k: 'Setup', v: '<14d', sub: 'typical go-live' },
-            ].map((stat) => (
-              <div
-                key={stat.k}
-                className="bg-[#070b14] px-4 py-4"
-              >
-                <dt className="font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500">
-                  {stat.k}
-                </dt>
-                {/*
-                  Axe a11y rule "definition-list" requires every direct
-                  child of <dl> to be <dt>/<dd>/<script>/<template>, or a
-                  <div> grouping ONLY those. The previous <p> sibling
-                  inside the wrapper div violated the rule. Folded the
-                  sub-text into the <dd> via a nested <span> so the
-                  semantic markup stays clean and the dl validates.
-                */}
-                <dd className="mt-1.5 font-mono text-2xl font-semibold text-white">
-                  {stat.v}
-                  <span className="mt-0.5 block text-[11px] font-normal text-slate-500">
-                    {stat.sub}
-                  </span>
-                </dd>
-              </div>
-            ))}
-          </motion.dl>
-        </motion.div>
-
-        {/* ─── Plan Configurator HUD ─── */}
-        <motion.aside
-          initial={shouldAnimateIntro ? { opacity: 0, x: 32 } : false}
-          animate={{ opacity: 1, x: 0 }}
-          transition={
-            shouldAnimateIntro
-              ? { duration: duration.slower, delay: 0.45 }
-              : { duration: 0 }
-          }
-          className="relative"
+        <h1
+          id="pricing-hero-title"
+          className="max-w-5xl text-[clamp(1.75rem,5vw+0.5rem,2.35rem)] font-semibold leading-[1.04] tracking-tight text-white sm:text-5xl lg:text-7xl"
         >
-          {/* Outer halo */}
-          <div className="pointer-events-none absolute -inset-6 -z-10 bg-[radial-gradient(circle_at_50%_30%,rgba(20,184,166,0.18),transparent_60%)]" />
+          Compliance,{' '}
+          <span className="text-slate-200">priced like infrastructure.</span>
+        </h1>
 
-          <div className="relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-gradient-to-br from-[#0a1322]/95 via-[#070d1c]/90 to-[#040810]/95 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04] backdrop-blur-xl">
-            {/* Corner accents */}
-            <CornerAccents />
-            {/* Edge glow lines */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/40 to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent" />
+        <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-200 sm:text-lg lg:text-xl">
+          FormaOS replaces manual compliance work with enforced workflows and
+          real-time audit evidence. Plans are anchored to risk, framework
+          scope, and operational complexity — not feature unlocks.
+        </p>
 
-            {/* Title bar */}
-            <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-5 py-3">
-              <div className="flex items-center gap-2.5">
-                <ShieldCheck className="h-3.5 w-3.5 text-teal-300" />
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-300">
-                  formaos · plan configurator
-                </span>
-              </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                FY26 · AUD
-              </span>
+        <div className="mt-8 flex w-full max-w-xl flex-col justify-center gap-3 sm:flex-row sm:gap-4">
+          <Link
+            href="#pricing-table"
+            className="mk-btn mk-btn-primary group min-h-[50px] justify-center px-8 py-4 text-base sm:text-lg"
+          >
+            <span>View pricing</span>
+            <ArrowRight
+              className="h-5 w-5 transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            />
+          </Link>
+          <Link
+            href="/contact?type=compliance-plan&source=pricing_hero"
+            className="mk-btn mk-btn-secondary min-h-[50px] justify-center px-8 py-4 text-base sm:text-lg"
+          >
+            Get a compliance plan
+          </Link>
+        </div>
+
+        {/* Headline anchors — three stats, plain enterprise card row */}
+        <dl className="mt-14 grid w-full max-w-3xl grid-cols-3 gap-3 sm:gap-4">
+          {[
+            { k: 'Plans', v: '4', sub: 'Foundation → Enterprise' },
+            { k: 'Frameworks', v: '8', sub: 'pre-built packs' },
+            { k: 'Setup', v: '<14d', sub: 'typical go-live' },
+          ].map((stat) => (
+            <div
+              key={stat.k}
+              className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-5 text-left backdrop-blur-sm sm:px-6"
+            >
+              <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                {stat.k}
+              </dt>
+              <dd className="mt-2 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                {stat.v}
+              </dd>
+              <p className="mt-1 text-xs leading-snug text-slate-400 sm:text-sm">
+                {stat.sub}
+              </p>
             </div>
-
-            {/* Body */}
-            <div className="grid gap-5 p-6">
-              {/* Inputs panel */}
-              <div className="rounded-xl border border-white/[0.05] bg-black/30 p-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                  scope inputs
-                </p>
-                <ul className="mt-3 grid grid-cols-2 gap-x-5 gap-y-2.5">
-                  {PLAN_CONFIG_INPUTS.map((input) => (
-                    <li
-                      key={input.label}
-                      className="flex items-center justify-between border-b border-dashed border-white/[0.04] pb-1.5 last:border-b-0 last:pb-0"
-                    >
-                      <span className="text-[11px] text-slate-400">
-                        {input.label}
-                      </span>
-                      <span className="font-mono text-[11px] font-medium text-slate-200">
-                        {input.value}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Audit-vs-FormaOS rail */}
-              <div className="rounded-xl border border-white/[0.05] bg-black/30 p-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                    cost ledger
-                  </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                    manual ↔ enforced
-                  </span>
-                </div>
-                <ul className="space-y-2.5">
-                  {MANUAL_COMPLIANCE_COST_ANCHORS.map((item) => (
-                    <li
-                      key={item.label}
-                      className="grid grid-cols-[5.5rem_1fr_1fr] items-center gap-3 text-[11px]"
-                    >
-                      <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">
-                        {item.label}
-                      </span>
-                      <span className="flex items-center gap-2 text-rose-200/85">
-                        <span className="h-1 w-1 shrink-0 rounded-full bg-rose-400" />
-                        {item.manual}
-                      </span>
-                      <span className="flex items-center gap-2 text-emerald-200/90">
-                        <span className="h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
-                        {item.formaos}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Recommended plan */}
-              <div className="rounded-xl border border-emerald-300/20 bg-emerald-300/[0.04] p-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300/90">
-                  where most regulated teams land
-                </p>
-                <p className="mt-1.5 text-sm leading-snug text-slate-200">
-                  <span className="font-semibold text-white">Growth, $797/mo</span>{' '}
-                  — most registered NDIS and healthcare providers (up to 3 sites,
-                  10–25 staff) start here with NDIS Practice Standards + WHS
-                  pre-mapped.
-                </p>
-              </div>
-            </div>
-
-            {/* Bottom telemetry bar */}
-            <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.015] px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              <span>secured · stripe / sso / dpa</span>
-              <span>aud · gst inclusive</span>
-            </div>
-          </div>
-        </motion.aside>
+          ))}
+        </dl>
       </div>
     </section>
   );
 }
-
-function CornerAccents() {
-  return (
-    <>
-      <span className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-teal-400/50" />
-      <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-cyan-400/50" />
-      <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-cyan-400/40" />
-      <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-emerald-400/40" />
-    </>
-  );
-}
-
