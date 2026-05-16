@@ -43,31 +43,41 @@ export function PricingTiers() {
         {PUBLIC_PRICING_TIERS.map((tier) => (
           <article
             key={tier.id}
-            className={`group relative flex min-h-full flex-col p-6 sm:p-7 ${systemPanelClass} ${
+            className={`group relative flex min-h-full flex-col p-7 sm:p-8 ${systemPanelClass} ${
               tier.featured
                 ? 'border-emerald-300/40 bg-emerald-300/[0.04] hover:border-emerald-300/55'
                 : ''
             }`}
           >
-            {/* Header: tier name + optional featured pill */}
-            <div className="flex items-start justify-between gap-3">
-              <h3 className="text-xl font-semibold tracking-tight text-white">
-                {tier.name}
-              </h3>
+            {/*
+              Pill row — reserved height (h-7) on every card so the four
+              tier cards align at the tier-name baseline regardless of
+              whether they carry a pill. Pills stay single-line via
+              whitespace-nowrap so long copy ("BEST FOR MULTI-SITE",
+              "PROCUREMENT-READY") doesn't wrap inside the pill.
+            */}
+            <div className="flex h-7 items-start">
               {tier.featured ? (
-                <StatusPill tone="valid">Most popular</StatusPill>
+                <span className="whitespace-nowrap">
+                  <StatusPill tone="valid">Most popular</StatusPill>
+                </span>
               ) : tier.badge ? (
-                <StatusPill tone="neutral">{tier.badge}</StatusPill>
+                <span className="whitespace-nowrap">
+                  <StatusPill tone="neutral">{tier.badge}</StatusPill>
+                </span>
               ) : null}
             </div>
 
+            <h3 className="mt-4 text-xl font-semibold tracking-tight text-white">
+              {tier.name}
+            </h3>
             <p className="mt-2 text-sm leading-snug text-slate-300">
               {tier.audience}
             </p>
-            <p className="mt-1 text-xs text-slate-500">{tier.audienceSize}</p>
+            <p className="mt-1.5 text-xs text-slate-500">{tier.audienceSize}</p>
 
             {/* Price */}
-            <div className="mt-6 flex items-baseline gap-1.5">
+            <div className="mt-7 flex items-baseline gap-1.5">
               <span className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
                 {tier.priceLabel}
               </span>
@@ -75,7 +85,9 @@ export function PricingTiers() {
                 {tier.priceSubtext}
               </span>
             </div>
-            <p className="mt-2 text-xs text-slate-400">{tier.trustNote}</p>
+            <p className="mt-2.5 text-xs leading-relaxed text-slate-400">
+              {tier.trustNote}
+            </p>
 
             {/* CTA */}
             <Link
@@ -92,7 +104,7 @@ export function PricingTiers() {
                   plan: tier.id,
                 })
               }
-              className={`mt-6 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
+              className={`mt-7 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
                 tier.featured
                   ? 'mk-btn mk-btn-primary'
                   : 'mk-btn mk-btn-secondary'
@@ -103,16 +115,16 @@ export function PricingTiers() {
             </Link>
 
             {/* Summary */}
-            <p className="mt-6 text-sm leading-relaxed text-slate-400">
+            <p className="mt-7 text-sm leading-relaxed text-slate-400">
               {tier.summary}
             </p>
 
             {/* Features */}
-            <div className="mt-6 border-t border-white/[0.06] pt-5">
+            <div className="mt-7 border-t border-white/[0.06] pt-6">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
                 Includes
               </p>
-              <ul className="mt-3 space-y-2.5">
+              <ul className="mt-4 space-y-3">
                 {tier.features.map((feature) => (
                   <li
                     key={feature}
