@@ -1,0 +1,554 @@
+/*
+  Editorial pricing canvas.
+
+  This file is scoped under `.editorial-page` so nothing here leaks into the
+  rest of the marketing site (which lives on the dark `mk-page-bg` canvas).
+  The wrapping <main> from app/(marketing)/layout.tsx still applies its own
+  dark gradient + `.mk-marketing-flow > section` background-image — both of
+  which we neutralise here so the cream paper canvas wins, without modifying
+  any shared marketing primitive.
+*/
+
+.editorial-page {
+  /* Tokens — kept local to the editorial canvas */
+  --ed-paper: #f4ede1;          /* warm cream, FT-ish */
+  --ed-paper-2: #ece4d4;        /* deeper band for emphasis */
+  --ed-paper-3: #e3dac6;        /* dateline / nameplate band */
+  --ed-ink: #16130e;            /* near-black warm */
+  --ed-ink-soft: #3d3830;       /* body */
+  --ed-ink-faint: #6b6459;      /* caption, marginalia */
+  --ed-rule: rgba(22, 19, 14, 0.16);
+  --ed-rule-strong: rgba(22, 19, 14, 0.55);
+  --ed-accent: #a8341e;         /* deep editorial red */
+  --ed-accent-ink: #7a2615;
+  --ed-accent-wash: rgba(168, 52, 30, 0.06);
+  --ed-featured: rgba(168, 52, 30, 0.04);
+
+  background: var(--ed-paper);
+  color: var(--ed-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'onum' 1;
+  /* Defeat parent .mk-page-bg + .mk-shell main dark gradients */
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* Wipe inherited dark backgrounds off any direct/indirect <section> within. */
+.editorial-page section,
+.editorial-page .mk-section {
+  background: transparent !important;
+  background-image: none !important;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: visible;
+}
+
+/* The marketing layout sets scroll-margin-top on every section in
+   .mk-marketing-flow. Keep that — editorial sections still need to sit
+   below the sticky nav when anchored to. */
+
+/* ── Newsprint paper texture (subtle) ─────────────────────────────── */
+.editorial-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(rgba(22, 19, 14, 0.025) 1px, transparent 1px);
+  background-size: 3px 3px;
+  background-position: 0 0;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+.editorial-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Typography ──────────────────────────────────────────────────── */
+
+.editorial-page .ed-serif {
+  font-family: var(--font-serif), 'Source Serif 4', 'Source Serif Pro',
+    Georgia, 'Times New Roman', serif;
+}
+
+.editorial-page .ed-sans {
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+.editorial-page .ed-display {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  color: var(--ed-ink);
+  font-feature-settings: 'lnum' 1, 'kern' 1, 'liga' 1, 'dlig' 1;
+  text-wrap: balance;
+}
+
+.editorial-page .ed-display--xl {
+  font-size: clamp(2.6rem, 6.5vw + 0.5rem, 5.5rem);
+}
+
+.editorial-page .ed-display--lg {
+  font-size: clamp(2.1rem, 4vw + 0.4rem, 3.5rem);
+}
+
+.editorial-page .ed-display--md {
+  font-size: clamp(1.5rem, 2.5vw + 0.4rem, 2.25rem);
+  line-height: 1.1;
+}
+
+.editorial-page .ed-eyebrow {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  color: var(--ed-accent-ink);
+  font-feature-settings: 'lnum' 1;
+}
+
+.editorial-page .ed-eyebrow-caps {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ed-ink);
+  font-feature-settings: 'lnum' 1;
+}
+
+.editorial-page .ed-body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--ed-ink-soft);
+  font-feature-settings: 'onum' 1, 'kern' 1, 'liga' 1;
+}
+
+.editorial-page .ed-body-serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  color: var(--ed-ink-soft);
+  font-feature-settings: 'onum' 1, 'kern' 1, 'liga' 1;
+}
+
+.editorial-page .ed-lead {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.125rem, 0.5vw + 1rem, 1.375rem);
+  line-height: 1.55;
+  color: var(--ed-ink);
+  font-feature-settings: 'onum' 1;
+}
+
+.editorial-page .ed-caption {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ed-ink-faint);
+}
+
+.editorial-page .ed-footnote {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ed-ink-faint);
+  letter-spacing: 0.005em;
+}
+
+.editorial-page .ed-marginalia {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ed-ink-faint);
+}
+
+/* ── Drop cap (used on the hero lead paragraph) ──────────────────── */
+.editorial-page .ed-dropcap::first-letter {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 700;
+  font-size: 4.5em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.05em 0.12em 0 0;
+  margin-right: 0.04em;
+  color: var(--ed-accent);
+}
+
+/* ── Rules ──────────────────────────────────────────────────────── */
+.editorial-page .ed-rule {
+  border: 0;
+  border-top: 1px solid var(--ed-rule);
+  margin: 0;
+}
+
+.editorial-page .ed-rule--strong {
+  border-top: 1px solid var(--ed-rule-strong);
+}
+
+.editorial-page .ed-rule--double {
+  border: 0;
+  height: 5px;
+  border-top: 1px solid var(--ed-rule-strong);
+  border-bottom: 1px solid var(--ed-rule-strong);
+  background: transparent;
+}
+
+/* ── Tables ─────────────────────────────────────────────────────── */
+.editorial-page table.ed-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+.editorial-page table.ed-table th,
+.editorial-page table.ed-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.875rem 1.125rem;
+  border-bottom: 1px solid var(--ed-rule);
+}
+
+.editorial-page table.ed-table thead th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ed-ink);
+  border-top: 1px solid var(--ed-rule-strong);
+  border-bottom: 1px solid var(--ed-rule-strong);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  background: transparent;
+}
+
+.editorial-page table.ed-table tbody tr:last-child td {
+  border-bottom: 1px solid var(--ed-rule-strong);
+}
+
+.editorial-page table.ed-table tbody tr.ed-table__group td {
+  background: var(--ed-paper-2);
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 0.875rem;
+  color: var(--ed-ink);
+  letter-spacing: 0.01em;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  border-top: 1px solid var(--ed-rule-strong);
+}
+
+.editorial-page table.ed-table .ed-table__featured {
+  background: var(--ed-featured);
+}
+
+.editorial-page table.ed-table .ed-table__num {
+  font-variant-numeric: tabular-nums lining-nums;
+  text-align: right;
+}
+
+.editorial-page table.ed-table .ed-table__center {
+  text-align: center;
+}
+
+.editorial-page table.ed-table .ed-table__plan-name {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--ed-ink);
+}
+
+.editorial-page table.ed-table .ed-table__plan-name em {
+  font-style: italic;
+  color: var(--ed-ink-faint);
+  font-weight: 400;
+}
+
+/* Subtle row hover for matrix readability */
+.editorial-page table.ed-table tbody tr:not(.ed-table__group):hover td {
+  background: rgba(22, 19, 14, 0.025);
+}
+.editorial-page table.ed-table tbody tr:not(.ed-table__group):hover td.ed-table__featured {
+  background: rgba(168, 52, 30, 0.08);
+}
+
+/* ── Pull quote ─────────────────────────────────────────────────── */
+.editorial-page .ed-pullquote {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.5rem, 2vw + 0.75rem, 2.25rem);
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+  color: var(--ed-ink);
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--ed-rule-strong);
+  border-bottom: 1px solid var(--ed-rule-strong);
+  font-feature-settings: 'onum' 1, 'dlig' 1;
+  text-wrap: balance;
+}
+
+.editorial-page .ed-pullquote__attr {
+  display: block;
+  margin-top: 0.875rem;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-style: normal;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ed-ink-faint);
+}
+
+/* ── Figure (image + caption) ───────────────────────────────────── */
+.editorial-page .ed-figure {
+  margin: 0;
+}
+
+.editorial-page .ed-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: grayscale(0.15) contrast(1.02);
+}
+
+.editorial-page .ed-figure__cap {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ed-ink-faint);
+  padding: 0.625rem 0 0;
+  border-top: 1px solid var(--ed-rule);
+  margin-top: 0.5rem;
+}
+
+.editorial-page .ed-figure__cap strong {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ed-ink);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  margin-right: 0.5em;
+}
+
+/* ── Buttons (editorial CTAs — overrides .mk-btn on this canvas) ── */
+.editorial-page .ed-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.005em;
+  padding: 0.75rem 1.25rem;
+  border-radius: 2px;
+  border: 1px solid var(--ed-ink);
+  background: var(--ed-ink);
+  color: var(--ed-paper);
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.editorial-page .ed-btn:hover {
+  background: var(--ed-accent);
+  border-color: var(--ed-accent);
+  color: var(--ed-paper);
+}
+
+.editorial-page .ed-btn:focus-visible {
+  outline: 2px solid var(--ed-accent);
+  outline-offset: 2px;
+}
+
+.editorial-page .ed-btn--ghost {
+  background: transparent;
+  color: var(--ed-ink);
+  border-color: var(--ed-ink);
+}
+
+.editorial-page .ed-btn--ghost:hover {
+  background: var(--ed-ink);
+  color: var(--ed-paper);
+}
+
+.editorial-page .ed-btn--accent {
+  background: var(--ed-accent);
+  border-color: var(--ed-accent);
+  color: var(--ed-paper);
+}
+
+.editorial-page .ed-btn--accent:hover {
+  background: var(--ed-accent-ink);
+  border-color: var(--ed-accent-ink);
+}
+
+/* ── Section numbering rail ─────────────────────────────────────── */
+.editorial-page .ed-section {
+  padding-top: clamp(3.5rem, 5vw, 5.5rem);
+  padding-bottom: clamp(3.5rem, 5vw, 5.5rem);
+}
+
+.editorial-page .ed-section--tight {
+  padding-top: clamp(2rem, 3vw, 3.5rem);
+  padding-bottom: clamp(2rem, 3vw, 3.5rem);
+}
+
+.editorial-page .ed-section__num {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding-bottom: 0.875rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--ed-rule-strong);
+}
+
+.editorial-page .ed-section__num-fig {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  color: var(--ed-accent);
+  letter-spacing: 0.04em;
+}
+
+.editorial-page .ed-section__num-label {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ed-ink);
+}
+
+/* ── Masthead nameplate ─────────────────────────────────────────── */
+.editorial-page .ed-masthead {
+  padding-top: clamp(2rem, 4vw, 3rem);
+  padding-bottom: clamp(0.5rem, 1vw, 1rem);
+  border-bottom: 1px solid var(--ed-rule-strong);
+}
+
+.editorial-page .ed-masthead__nameplate {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 1.125rem;
+  letter-spacing: 0.02em;
+  color: var(--ed-ink);
+}
+
+.editorial-page .ed-masthead__edition {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ed-ink-faint);
+}
+
+/* ── Marginalia layout helper ───────────────────────────────────── */
+.editorial-page .ed-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .editorial-page .ed-grid--with-margin {
+    grid-template-columns: 12rem 1fr;
+    column-gap: 3rem;
+  }
+}
+
+/* ── Q&A list ───────────────────────────────────────────────────── */
+.editorial-page .ed-qa {
+  border-top: 1px solid var(--ed-rule);
+}
+
+.editorial-page .ed-qa__item {
+  display: grid;
+  gap: 0.625rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--ed-rule);
+}
+
+@media (min-width: 768px) {
+  .editorial-page .ed-qa__item {
+    grid-template-columns: 9rem 1fr;
+    column-gap: 2rem;
+    align-items: baseline;
+  }
+}
+
+.editorial-page .ed-qa__q {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.35;
+  color: var(--ed-ink);
+  letter-spacing: -0.005em;
+}
+
+.editorial-page .ed-qa__q-num {
+  display: block;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.8125rem;
+  color: var(--ed-accent);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+}
+
+.editorial-page .ed-qa__a {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ed-ink-soft);
+  font-feature-settings: 'onum' 1;
+}
+
+/* ── Plan callout (Most popular ribbon-equivalent — restrained) ── */
+.editorial-page .ed-star {
+  color: var(--ed-accent);
+  font-style: italic;
+}
+
+/* ── Header tone neutralisation under editorial canvas ────────── */
+/* The marketing layout sticky header is dark-glassy. On a light canvas
+   it reads as a thick black bar. We keep it but lighten its tone via
+   :has() so editorial pages get a paper-toned header. Falls back to
+   the default dark header in browsers without :has() — acceptable
+   regression for that fraction of traffic. */
+@supports selector(:has(*)) {
+  body:has(.editorial-page) .mk-header-premium {
+    background: rgba(244, 237, 225, 0.92);
+    backdrop-filter: blur(14px) saturate(120%);
+    border-bottom: 1px solid var(--ed-rule);
+  }
+  body:has(.editorial-page) .mk-header-premium a,
+  body:has(.editorial-page) .mk-header-premium button {
+    color: var(--ed-ink);
+  }
+  body:has(.editorial-page) .mk-header-premium .mk-btn-primary {
+    background: var(--ed-ink);
+    color: var(--ed-paper);
+    border-color: var(--ed-ink);
+    box-shadow: none;
+  }
+  body:has(.editorial-page) .mk-header-premium .mk-btn-secondary {
+    background: transparent;
+    color: var(--ed-ink);
+    border-color: var(--ed-ink);
+  }
+}

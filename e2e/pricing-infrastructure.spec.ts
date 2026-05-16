@@ -64,14 +64,18 @@ test.describe('Infrastructure pricing and proof pages', () => {
       expect(href).toMatch(hrefPattern);
     }
 
+    // Editorial hero uses "Talk to procurement" (contact link) and "Read the
+    // four plans" (in-page anchor to #pricing-table) — the SaaS-template
+    // "Get Compliance Plan" / "View Pricing" labels were retired with the
+    // editorial redesign.
     const heroHref = await page
-      .getByRole('link', { name: /Get Compliance Plan/i })
+      .getByRole('link', { name: /Talk to procurement/i })
       .first()
       .getAttribute('href');
     expect(heroHref).toMatch(/\/contact\?type=compliance-plan/);
 
     await page
-      .getByRole('link', { name: /View Pricing/i })
+      .getByRole('link', { name: /Read the four plans/i })
       .first()
       .click();
     await expect(page).toHaveURL(/#pricing-table$/);
