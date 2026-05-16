@@ -29,12 +29,16 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ['400', '500', '700'],
 });
 
+// Fraunces is a variable font; when `axes` is supplied, next/font/google
+// requires `weight: 'variable'` (or omitted entirely) — explicit weight
+// arrays are mutually exclusive with `axes`. This config exposes the
+// opsz / SOFT / WONK axes used by the maximalist pricing canvas.
 const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-fraunces',
   preload: false,
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  weight: 'variable',
   style: ['normal', 'italic'],
   axes: ['opsz', 'SOFT', 'WONK'],
 });
