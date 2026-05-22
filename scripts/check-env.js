@@ -6,11 +6,18 @@ const path = require('path');
 const strictValidation =
   process.env.STRICT_ENV_VALIDATION === 'true' ||
   process.env.CHECK_ENV_STRICT === '1';
-const envProfile = process.env.CHECK_ENV_PROFILE || 'development';
 const isVercelBuild = process.env.VERCEL === '1';
 const vercelEnv = process.env.VERCEL_ENV || ''; // 'production' | 'preview' | 'development'
 const isVercelPreview = isVercelBuild && vercelEnv === 'preview';
 const isVercelProduction = isVercelBuild && vercelEnv === 'production';
+// Auto-promote to production profile on Vercel production builds so the
+// productionRequiredKeys list (CRON_SECRET, NEXT_PUBLIC_SENTRY_DSN, …) is
+// actually enforced at deploy time. Without this, prebuild only checked the
+// dev requiredKeys list and prod could ship with crons silently 500-ing and
+// Sentry no-op-ing — see audit 2026-05-22 obs-001 / api-001.
+const envProfile =
+  process.env.CHECK_ENV_PROFILE ||
+  (isVercelProduction ? 'production' : 'development');
 const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 const isSecretManagerRuntime =
   isVercelBuild || process.env.CI === 'true' || isGitHubActions;
