@@ -180,7 +180,7 @@ BEGIN
       ON public.org_registers
       FOR ALL
       USING (
-        organization_id IN (
+        org_id IN (
           SELECT organization_id
           FROM public.org_members
           WHERE user_id = auth.uid()
@@ -205,7 +205,7 @@ BEGIN
       ON public.org_module_entitlements
       FOR ALL
       USING (
-        organization_id IN (
+        org_id IN (
           SELECT organization_id
           FROM public.org_members
           WHERE user_id = auth.uid()
@@ -230,7 +230,7 @@ BEGIN
       ON public.org_industries
       FOR ALL
       USING (
-        organization_id IN (
+        org_id IN (
           SELECT organization_id
           FROM public.org_members
           WHERE user_id = auth.uid()
@@ -435,7 +435,7 @@ BEGIN
       ON public.org_audit_log
       FOR SELECT
       USING (
-        organization_id IN (
+        org_id IN (
           SELECT organization_id
           FROM public.org_members
           WHERE user_id = auth.uid()

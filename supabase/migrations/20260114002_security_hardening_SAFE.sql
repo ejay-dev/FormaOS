@@ -160,11 +160,13 @@ CREATE POLICY "invitations_self_accept"
 -- =====================================================
 -- ORG_AUDIT_LOG TABLE POLICIES
 -- =====================================================
+-- Note: org_audit_log (singular) uses org_id, not organization_id
+-- (the plural sibling org_audit_logs uses organization_id).
 CREATE POLICY "audit_log_org_isolation"
   ON public.org_audit_log
   FOR SELECT
   USING (
-    organization_id IN (
+    org_id IN (
       SELECT organization_id
       FROM public.org_members
       WHERE user_id = auth.uid()
