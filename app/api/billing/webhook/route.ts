@@ -52,6 +52,46 @@ export async function POST(request: Request) {
   // /app/billing for several minutes after Stripe confirms payment.
   const orgsToRevalidate = new Set<string>();
 
+  /**
+   * Audit v3-014 (2026-05-22): write to billing_events_audit for every
+   * state-mutating event branch. PR #119 created the table for the
+   * charge.refunded handler, but subscription cancel / dispute /
+   * payment failure / plan change events all bypassed it — incomplete
+   * audit trail for ops + customer-health pipelines.
+   *
+   * Best-effort: never throws. The unique (event_id, event_type) index
+   * makes retries idempotent. Logs and continues on failure so the
+   * webhook still 200s to Stripe.
+   */
+  async function writeBillingAudit(args: {
+    organizationId: string;
+    stripeCustomerId?: string | null;
+    stripeChargeId?: string | null;
+    amount?: number | null;
+    currency?: string | null;
+    payload?: Record<string, unknown>;
+  }) {
+    const { error: auditErr } = await admin
+      .from('billing_events_audit')
+      .insert({
+        organization_id: args.organizationId,
+        event_id: event.id,
+        event_type: event.type,
+        stripe_customer_id: args.stripeCustomerId ?? null,
+        stripe_charge_id: args.stripeChargeId ?? null,
+        amount: args.amount ?? null,
+        currency: args.currency ?? null,
+        payload: args.payload ?? {},
+        created_at: new Date().toISOString(),
+      });
+    if (auditErr && auditErr.code !== '23505' /* unique conflict, harmless retry */) {
+      log.warn(
+        { err: auditErr.message, eventId: event.id, eventType: event.type },
+        '[billing/webhook] billing_events_audit insert failed',
+      );
+    }
+  }
+
   // Idempotency state machine.
   //
   // We CANNOT short-circuit on a unique-constraint violation alone, because
@@ -356,6 +396,11 @@ export async function POST(request: Request) {
 
         await syncEntitlementsForPlan(orgId, planKey);
         orgsToRevalidate.add(orgId);
+        await writeBillingAudit({
+          organizationId: orgId,
+          stripeCustomerId: session.customer as string | null,
+          payload: { plan_key: planKey, session_id: session.id },
+        });
       }
     }
 
@@ -425,6 +470,17 @@ export async function POST(request: Request) {
           'subscription_cancelled',
         );
         orgsToRevalidate.add(subRow.organization_id);
+        await writeBillingAudit({
+          organizationId: subRow.organization_id,
+          stripeCustomerId:
+            typeof subscription.customer === 'string'
+              ? subscription.customer
+              : null,
+          payload: {
+            stripe_subscription_id: subscriptionId,
+            cancellation_reason: subscription.cancellation_details?.reason ?? null,
+          },
+        });
       }
     }
 
@@ -617,6 +673,16 @@ export async function POST(request: Request) {
             'payment_failed',
           );
           orgsToRevalidate.add(subRow.organization_id);
+          await writeBillingAudit({
+            organizationId: subRow.organization_id,
+            stripeCustomerId: customerId,
+            amount: invoice.amount_due ?? null,
+            currency: invoice.currency ?? null,
+            payload: {
+              stripe_subscription_id: subscriptionId,
+              attempt_count: invoice.attempt_count ?? null,
+            },
+          });
         }
       }
     }
@@ -642,28 +708,16 @@ export async function POST(request: Request) {
         if (subRow?.organization_id) {
           const refundedAmount = charge.amount_refunded ?? 0;
           const fullyRefunded = charge.refunded === true;
-          await admin.from('billing_events_audit').insert({
-            organization_id: subRow.organization_id,
-            event_id: event.id,
-            event_type: event.type,
-            stripe_customer_id: customerId,
-            stripe_charge_id: charge.id,
+          await writeBillingAudit({
+            organizationId: subRow.organization_id,
+            stripeCustomerId: customerId,
+            stripeChargeId: charge.id,
             amount: refundedAmount,
             currency: charge.currency ?? null,
             payload: {
               fully_refunded: fullyRefunded,
               refund_reason: charge.refunds?.data?.[0]?.reason ?? null,
             },
-            created_at: new Date().toISOString(),
-          }).then(({ error: insertErr }) => {
-            if (insertErr) {
-              // Audit row is best-effort — log and continue. The org-level
-              // status change is the load-bearing piece.
-              log.warn(
-                { err: insertErr.message, eventId: event.id },
-                '[billing/webhook] charge.refunded audit row insert failed',
-              );
-            }
           });
           orgsToRevalidate.add(subRow.organization_id);
         }
@@ -714,6 +768,21 @@ export async function POST(request: Request) {
               }
             });
           orgsToRevalidate.add(subRow.organization_id);
+          await writeBillingAudit({
+            organizationId: subRow.organization_id,
+            stripeCustomerId: customerId,
+            stripeChargeId:
+              typeof dispute.charge === 'string'
+                ? dispute.charge
+                : dispute.charge?.id ?? null,
+            amount: dispute.amount ?? null,
+            currency: dispute.currency ?? null,
+            payload: {
+              dispute_id: dispute.id,
+              reason: dispute.reason ?? null,
+              status: dispute.status ?? null,
+            },
+          });
         }
       }
     }
@@ -750,6 +819,26 @@ export async function POST(request: Request) {
               }
             });
           orgsToRevalidate.add(subRow.organization_id);
+          await writeBillingAudit({
+            organizationId: subRow.organization_id,
+            stripeCustomerId: customerId,
+            stripeChargeId:
+              typeof dispute.charge === 'string'
+                ? dispute.charge
+                : dispute.charge?.id ?? null,
+            amount: dispute.amount ?? null,
+            currency: dispute.currency ?? null,
+            payload: {
+              dispute_id: dispute.id,
+              status: dispute.status ?? null,
+              closed_outcome:
+                dispute.status === 'won'
+                  ? 'won'
+                  : dispute.status === 'lost'
+                    ? 'lost'
+                    : 'other',
+            },
+          });
         }
       }
     }

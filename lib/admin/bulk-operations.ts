@@ -46,9 +46,13 @@ export async function executeBulkOperation(
   // Calculate blast radius
   const orgIds = targets.map((t) => t.orgId);
 
+  // Audit v3-011 (2026-05-22): the canonical membership table is
+  // `org_members` (1995 rows in prod). `org_memberships` exists with 0
+  // rows — pre-fix this query reported "0 users affected" for every
+  // org's bulk-suspend dry-run.
   const { count: userCount } = await db
-    .from('org_memberships')
-    .select('id', { count: 'exact', head: true })
+    .from('org_members')
+    .select('user_id', { count: 'exact', head: true })
     .in('organization_id', orgIds);
 
   const { count: subCount } = await db

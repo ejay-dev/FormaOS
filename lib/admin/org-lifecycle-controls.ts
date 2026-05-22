@@ -97,9 +97,12 @@ export async function restoreOrg(
     })
     .eq('id', orgId);
 
-  // Notify org admins
+  // Notify org admins. Audit v3-011 (2026-05-22): the canonical table is
+  // `org_members` (1995 rows in prod). `org_memberships` exists with 0
+  // rows — pre-fix this query returned 0 admins so the restore
+  // notification was never delivered.
   const { data: orgAdmins } = await db
-    .from('org_memberships')
+    .from('org_members')
     .select('user_id')
     .eq('organization_id', orgId)
     .in('role', ['owner', 'admin']);
