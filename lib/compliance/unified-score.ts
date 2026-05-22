@@ -11,7 +11,7 @@ export async function getUnifiedComplianceScore(
 
   if (!controls?.length) return 0;
   const satisfied = controls.filter(
-    (c) => c.status === 'satisfied' || c.status === 'met',
+    (c) => c.status === 'compliant' || c.status === 'satisfied' || c.status === 'met',
   ).length;
   return Math.round((satisfied / controls.length) * 100);
 }
@@ -29,7 +29,7 @@ export async function getFrameworkScores(orgId: string) {
   for (const c of controls) {
     const fw = fwMap.get(c.framework) || { total: 0, satisfied: 0 };
     fw.total++;
-    if (c.status === 'satisfied' || c.status === 'met') fw.satisfied++;
+    if (c.status === 'compliant' || c.status === 'satisfied' || c.status === 'met') fw.satisfied++;
     fwMap.set(c.framework, fw);
   }
 
