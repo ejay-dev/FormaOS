@@ -184,11 +184,28 @@ export async function exportClaimFile(
   orgId: string,
   lineItemIds: string[],
 ): Promise<string> {
-  // org_patients exposes full_name, not first_name/last_name. Only ndis_number
-  // is read downstream, so the join just needs full_name + ndis_number.
+  // Audit care-ops-004 (2026-05-22): the original implementation populated
+  // both SupportsDeliveredFrom and SupportsDeliveredTo with
+  // `new Date(item.created_at).toISOString().slice(0,10)`. created_at is
+  // the line-item bookkeeping timestamp — for fortnightly batches it
+  // differs from the actual visit date by days/weeks. NDIA either
+  // rejects the claim outright or pays it against the wrong service
+  // period. The NDIA bulk-payment CSV format requires the actual date(s)
+  // of service delivery.
+  //
+  // Resolve from the linked visit (actual_start / actual_end, falling back
+  // to scheduled_start / scheduled_end if a visit was claim-only). Only
+  // when no visit row exists do we fall back to created_at so the export
+  // doesn't break on legacy data.
+  //
+  // org_patients exposes full_name, not first_name/last_name. Only
+  // ndis_number is read downstream, so the join just needs full_name +
+  // ndis_number.
   const { data: items } = await db
     .from('org_ndis_line_items')
-    .select('*, org_patients(full_name, ndis_number)')
+    .select(
+      '*, org_patients(full_name, ndis_number), org_visits(actual_start, actual_end, scheduled_start, scheduled_end)',
+    )
     .eq('org_id', orgId)
     .in('id', lineItemIds);
 
@@ -214,13 +231,38 @@ export async function exportClaimFile(
     'ABN',
   ];
 
+  const toIsoDate = (value: string | null | undefined): string | null => {
+    if (!value) return null;
+    const ms = Date.parse(value);
+    if (Number.isNaN(ms)) return null;
+    return new Date(ms).toISOString().slice(0, 10);
+  };
+
   const rows = items.map((item) => {
     const patient = item.org_patients;
+    const visit = (item as { org_visits?: {
+      actual_start?: string | null;
+      actual_end?: string | null;
+      scheduled_start?: string | null;
+      scheduled_end?: string | null;
+    } | null }).org_visits ?? null;
+
+    const serviceFrom =
+      toIsoDate(visit?.actual_start) ??
+      toIsoDate(visit?.scheduled_start) ??
+      toIsoDate(item.created_at) ??
+      '';
+    const serviceTo =
+      toIsoDate(visit?.actual_end) ??
+      toIsoDate(visit?.scheduled_end) ??
+      toIsoDate(item.created_at) ??
+      '';
+
     return [
       '', // RegistrationNumber - org fills in
       patient?.ndis_number ?? '',
-      new Date(item.created_at).toISOString().slice(0, 10),
-      new Date(item.created_at).toISOString().slice(0, 10),
+      serviceFrom,
+      serviceTo,
       item.support_item_number,
       item.id.slice(0, 8),
       item.quantity,
