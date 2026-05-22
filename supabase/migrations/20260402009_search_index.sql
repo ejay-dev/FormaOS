@@ -31,6 +31,7 @@ create index idx_search_index_org on search_index(org_id);
 create index idx_search_index_type on search_index(org_id, entity_type);
 
 alter table search_index enable row level security;
+DROP POLICY IF EXISTS "search_index_org" ON search_index;
 create policy "search_index_org" on search_index for all
   using (org_id = (current_setting('app.current_org_id', true))::uuid);
 
@@ -48,6 +49,7 @@ create table if not exists search_history (
 
 create index idx_search_history_user on search_history(org_id, user_id, searched_at desc);
 alter table search_history enable row level security;
+DROP POLICY IF EXISTS "search_history_org" ON search_history;
 create policy "search_history_org" on search_history for all
   using (org_id = (current_setting('app.current_org_id', true))::uuid);
 
@@ -64,6 +66,7 @@ create table if not exists saved_searches (
 
 create index idx_saved_searches_user on saved_searches(org_id, user_id);
 alter table saved_searches enable row level security;
+DROP POLICY IF EXISTS "saved_searches_org" ON saved_searches;
 create policy "saved_searches_org" on saved_searches for all
   using (org_id = (current_setting('app.current_org_id', true))::uuid);
 
@@ -80,6 +83,7 @@ create table if not exists recent_items (
 
 create index idx_recent_items_user on recent_items(org_id, user_id, accessed_at desc);
 alter table recent_items enable row level security;
+DROP POLICY IF EXISTS "recent_items_org" ON recent_items;
 create policy "recent_items_org" on recent_items for all
   using (org_id = (current_setting('app.current_org_id', true))::uuid);
 

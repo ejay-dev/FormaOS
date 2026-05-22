@@ -48,12 +48,15 @@ ALTER TABLE org_analytics_snapshots ENABLE ROW LEVEL SECURITY;
 ALTER TABLE org_saved_reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE org_report_generations ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "snapshots_org_isolation" ON org_analytics_snapshots;
 CREATE POLICY "snapshots_org_isolation" ON org_analytics_snapshots
   FOR ALL USING (org_id = (current_setting('app.current_org_id', true))::uuid);
 
+DROP POLICY IF EXISTS "saved_reports_org_isolation" ON org_saved_reports;
 CREATE POLICY "saved_reports_org_isolation" ON org_saved_reports
   FOR ALL USING (org_id = (current_setting('app.current_org_id', true))::uuid);
 
+DROP POLICY IF EXISTS "report_generations_org_isolation" ON org_report_generations;
 CREATE POLICY "report_generations_org_isolation" ON org_report_generations
   FOR ALL USING (org_id = (current_setting('app.current_org_id', true))::uuid);
 

@@ -10,6 +10,7 @@ create table if not exists public.marketing_leads (
 
 alter table public.marketing_leads enable row level security;
 
+DROP POLICY IF EXISTS "marketing_leads_insert" ON public.marketing_leads;
 create policy "marketing_leads_insert"
   on public.marketing_leads
   for insert

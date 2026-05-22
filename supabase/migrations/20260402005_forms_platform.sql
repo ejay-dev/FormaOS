@@ -32,18 +32,22 @@ create index if not exists idx_org_forms_created on public.org_forms(org_id, cre
 -- RLS
 alter table public.org_forms enable row level security;
 
+DROP POLICY IF EXISTS "org_forms_select" ON public.org_forms;
 create policy "org_forms_select" on public.org_forms for select using (
   org_id in (select organization_id from public.org_members where user_id = auth.uid())
 );
 
+DROP POLICY IF EXISTS "org_forms_insert" ON public.org_forms;
 create policy "org_forms_insert" on public.org_forms for insert with check (
   org_id in (select organization_id from public.org_members where user_id = auth.uid())
 );
 
+DROP POLICY IF EXISTS "org_forms_update" ON public.org_forms;
 create policy "org_forms_update" on public.org_forms for update using (
   org_id in (select organization_id from public.org_members where user_id = auth.uid())
 );
 
+DROP POLICY IF EXISTS "org_forms_delete" ON public.org_forms;
 create policy "org_forms_delete" on public.org_forms for delete using (
   org_id in (select organization_id from public.org_members where user_id = auth.uid())
 );
@@ -77,10 +81,12 @@ create index if not exists idx_org_form_submissions_data on public.org_form_subm
 -- RLS
 alter table public.org_form_submissions enable row level security;
 
+DROP POLICY IF EXISTS "org_form_submissions_select" ON public.org_form_submissions;
 create policy "org_form_submissions_select" on public.org_form_submissions for select using (
   org_id in (select organization_id from public.org_members where user_id = auth.uid())
 );
 
+DROP POLICY IF EXISTS "org_form_submissions_insert" ON public.org_form_submissions;
 create policy "org_form_submissions_insert" on public.org_form_submissions for insert with check (
   org_id in (select organization_id from public.org_members where user_id = auth.uid())
   or
@@ -93,6 +99,7 @@ create policy "org_form_submissions_insert" on public.org_form_submissions for i
   )
 );
 
+DROP POLICY IF EXISTS "org_form_submissions_update" ON public.org_form_submissions;
 create policy "org_form_submissions_update" on public.org_form_submissions for update using (
   org_id in (select organization_id from public.org_members where user_id = auth.uid())
 );
@@ -118,6 +125,7 @@ create index if not exists idx_org_form_templates_industry on public.org_form_te
 -- RLS: templates readable by all authenticated users
 alter table public.org_form_templates enable row level security;
 
+DROP POLICY IF EXISTS "org_form_templates_select" ON public.org_form_templates;
 create policy "org_form_templates_select" on public.org_form_templates for select using (
   auth.uid() is not null
 );

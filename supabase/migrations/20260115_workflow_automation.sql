@@ -41,6 +41,7 @@ ALTER TABLE org_workflows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE org_workflow_executions ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Users can view workflows for their organization
+DROP POLICY IF EXISTS "Users can view org workflows" ON org_workflows;
 CREATE POLICY "Users can view org workflows"
     ON org_workflows FOR SELECT
     USING (
@@ -50,6 +51,7 @@ CREATE POLICY "Users can view org workflows"
     );
 
 -- Policy: Admins can manage workflows
+DROP POLICY IF EXISTS "Admins can manage workflows" ON org_workflows;
 CREATE POLICY "Admins can manage workflows"
     ON org_workflows FOR ALL
     USING (
@@ -61,6 +63,7 @@ CREATE POLICY "Admins can manage workflows"
     );
 
 -- Policy: Users can view workflow execution logs for their org
+DROP POLICY IF EXISTS "Users can view workflow executions" ON org_workflow_executions;
 CREATE POLICY "Users can view workflow executions"
     ON org_workflow_executions FOR SELECT
     USING (

@@ -22,6 +22,7 @@ create index idx_auditor_tokens_org on auditor_access_tokens(org_id);
 create index idx_auditor_tokens_hash on auditor_access_tokens(token_hash);
 
 alter table auditor_access_tokens enable row level security;
+DROP POLICY IF EXISTS "auditor_tokens_org" ON auditor_access_tokens;
 create policy "auditor_tokens_org" on auditor_access_tokens for all
   using (org_id = (current_setting('app.current_org_id', true))::uuid);
 
@@ -45,5 +46,6 @@ create index idx_auditor_activity_org on auditor_activity_log(org_id, created_at
 create index idx_auditor_activity_token on auditor_activity_log(token_id);
 
 alter table auditor_activity_log enable row level security;
+DROP POLICY IF EXISTS "auditor_activity_org" ON auditor_activity_log;
 create policy "auditor_activity_org" on auditor_activity_log for all
   using (org_id = (current_setting('app.current_org_id', true))::uuid);

@@ -140,21 +140,27 @@ ALTER TABLE org_medication_administrations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE org_ndis_line_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE org_ndis_price_guide ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "org_care_goals_org_isolation" ON org_care_goals;
 CREATE POLICY "org_care_goals_org_isolation" ON org_care_goals
   FOR ALL USING (org_id = (current_setting('app.current_org_id', true))::uuid);
 
+DROP POLICY IF EXISTS "org_goal_progress_org_isolation" ON org_goal_progress_entries;
 CREATE POLICY "org_goal_progress_org_isolation" ON org_goal_progress_entries
   FOR ALL USING (org_id = (current_setting('app.current_org_id', true))::uuid);
 
+DROP POLICY IF EXISTS "org_medications_org_isolation" ON org_medications;
 CREATE POLICY "org_medications_org_isolation" ON org_medications
   FOR ALL USING (org_id = (current_setting('app.current_org_id', true))::uuid);
 
+DROP POLICY IF EXISTS "org_med_admin_org_isolation" ON org_medication_administrations;
 CREATE POLICY "org_med_admin_org_isolation" ON org_medication_administrations
   FOR ALL USING (org_id = (current_setting('app.current_org_id', true))::uuid);
 
+DROP POLICY IF EXISTS "org_ndis_line_items_org_isolation" ON org_ndis_line_items;
 CREATE POLICY "org_ndis_line_items_org_isolation" ON org_ndis_line_items
   FOR ALL USING (org_id = (current_setting('app.current_org_id', true))::uuid);
 
+DROP POLICY IF EXISTS "org_ndis_price_guide_read" ON org_ndis_price_guide;
 CREATE POLICY "org_ndis_price_guide_read" ON org_ndis_price_guide
   FOR SELECT USING (true);
 

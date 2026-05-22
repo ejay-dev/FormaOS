@@ -49,6 +49,7 @@ CREATE INDEX IF NOT EXISTS idx_staff_credentials_status ON public.org_staff_cred
 -- RLS for staff credentials
 ALTER TABLE public.org_staff_credentials ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "staff_credentials_org_isolation" ON public.org_staff_credentials;
 CREATE POLICY "staff_credentials_org_isolation" ON public.org_staff_credentials
     FOR ALL USING (
         organization_id IN (
@@ -113,6 +114,7 @@ CREATE INDEX IF NOT EXISTS idx_visits_status ON public.org_visits(organization_i
 -- RLS for visits
 ALTER TABLE public.org_visits ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "visits_org_isolation" ON public.org_visits;
 CREATE POLICY "visits_org_isolation" ON public.org_visits
     FOR ALL USING (
         organization_id IN (
@@ -185,6 +187,7 @@ CREATE INDEX IF NOT EXISTS idx_care_plans_review ON public.org_care_plans(review
 -- RLS for care plans
 ALTER TABLE public.org_care_plans ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "care_plans_org_isolation" ON public.org_care_plans;
 CREATE POLICY "care_plans_org_isolation" ON public.org_care_plans
     FOR ALL USING (
         organization_id IN (

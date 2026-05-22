@@ -30,6 +30,7 @@ CREATE INDEX idx_investigations_incident ON org_investigations(incident_id);
 CREATE INDEX idx_investigations_status ON org_investigations(status);
 
 ALTER TABLE org_investigations ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_investigations_org_isolation" ON org_investigations;
 CREATE POLICY "org_investigations_org_isolation" ON org_investigations
   USING (organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()));
 
@@ -62,6 +63,7 @@ CREATE INDEX idx_capa_incident ON org_capa_items(incident_id);
 CREATE INDEX idx_capa_assigned ON org_capa_items(assigned_to);
 
 ALTER TABLE org_capa_items ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_capa_items_org_isolation" ON org_capa_items;
 CREATE POLICY "org_capa_items_org_isolation" ON org_capa_items
   USING (organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()));
 
@@ -87,5 +89,6 @@ CREATE INDEX idx_reg_notifications_incident ON org_regulatory_notifications(inci
 CREATE INDEX idx_reg_notifications_status ON org_regulatory_notifications(status);
 
 ALTER TABLE org_regulatory_notifications ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_regulatory_notifications_org_isolation" ON org_regulatory_notifications;
 CREATE POLICY "org_regulatory_notifications_org_isolation" ON org_regulatory_notifications
   USING (organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()));
