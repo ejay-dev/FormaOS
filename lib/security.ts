@@ -5,7 +5,50 @@
  * Two-Factor Authentication (2FA) and Single Sign-On (SSO)
  */
 
-import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
+import {
+  randomBytes,
+  createCipheriv,
+  createDecipheriv,
+  scrypt as scryptCb,
+  timingSafeEqual,
+} from 'crypto';
+import { promisify } from 'util';
+
+const scryptAsync = promisify(scryptCb) as (
+  password: string | Buffer,
+  salt: Buffer,
+  keylen: number,
+) => Promise<Buffer>;
+
+// MFA backup-code hash format: `scrypt$<base64-salt>$<base64-hash>`.
+// Audit auth-001 (2026-05-22): backup codes were stored plaintext in
+// user_security.backup_codes; this format replaces that. salt is 16
+// random bytes; hash is 32 bytes (256 bits) of scrypt output with
+// default parameters (N=16384, r=8, p=1) — the same defaults Node's
+// built-in scrypt uses, suitable for password-class secrets.
+const BACKUP_CODE_HASH_PREFIX = 'scrypt';
+const BACKUP_CODE_SALT_BYTES = 16;
+const BACKUP_CODE_HASH_BYTES = 32;
+
+async function hashBackupCode(code: string): Promise<string> {
+  const salt = randomBytes(BACKUP_CODE_SALT_BYTES);
+  const hash = await scryptAsync(code, salt, BACKUP_CODE_HASH_BYTES);
+  return `${BACKUP_CODE_HASH_PREFIX}$${salt.toString('base64')}$${hash.toString('base64')}`;
+}
+
+async function backupCodeMatches(code: string, stored: string): Promise<boolean> {
+  const parts = stored.split('$');
+  if (parts.length !== 3 || parts[0] !== BACKUP_CODE_HASH_PREFIX) return false;
+  try {
+    const salt = Buffer.from(parts[1], 'base64');
+    const expected = Buffer.from(parts[2], 'base64');
+    const actual = await scryptAsync(code, salt, expected.length);
+    if (actual.length !== expected.length) return false;
+    return timingSafeEqual(actual, expected);
+  } catch {
+    return false;
+  }
+}
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import * as speakeasy from 'speakeasy';
@@ -117,9 +160,14 @@ export async function generate2FASecret(
   // Generate QR code
   const qrCode = await QRCode.toDataURL(secret.otpauth_url || '');
 
-  // Generate backup codes using a CSPRNG (not Math.random)
+  // Generate backup codes using a CSPRNG (not Math.random). Plaintext is
+  // returned to the user ONCE; the DB stores only scrypt hashes (audit
+  // auth-001, 2026-05-22). The legacy `backup_codes` column is cleared.
   const backupCodes = Array.from({ length: 8 }, () =>
     randomBytes(6).toString('hex').toUpperCase(),
+  );
+  const backupCodeHashes = await Promise.all(
+    backupCodes.map((code) => hashBackupCode(code)),
   );
 
   // Store secret encrypted at rest
@@ -128,7 +176,8 @@ export async function generate2FASecret(
     {
       user_id: userId,
       two_factor_secret: encryptTotpSecret(secret.base32),
-      backup_codes: backupCodes,
+      backup_codes: [] as string[],
+      backup_code_hashes: backupCodeHashes,
       two_factor_enabled: false,
       updated_at: new Date().toISOString(),
     },
@@ -200,10 +249,13 @@ export async function verify2FAToken(
 ): Promise<boolean> {
   const supabase = await createClient();
 
-  // Get secret
+  // Get secret. Audit auth-001 (2026-05-22): only check backup_code_hashes
+  // (scrypt-hashed). The plaintext `backup_codes` column is deprecated;
+  // pre-fix values were invalidated by migration 20260624_007. Users
+  // affected by the rotation must regenerate via the MFA settings page.
   const { data: security } = await supabase
     .from('user_security')
-    .select('two_factor_secret, backup_codes')
+    .select('two_factor_secret, backup_code_hashes')
     .eq('user_id', userId)
     .eq('two_factor_enabled', true)
     .maybeSingle();
@@ -212,18 +264,22 @@ export async function verify2FAToken(
     return false;
   }
 
-  // Check if it's a backup code
-  if (security.backup_codes?.includes(token)) {
-    // Remove used backup code
-    const updatedCodes = security.backup_codes.filter(
-      (code: string) => code !== token,
-    );
-    await supabase
-      .from('user_security')
-      .update({ backup_codes: updatedCodes })
-      .eq('user_id', userId);
-
-    return true;
+  // Check if it's a backup code by scrypt-comparing against each stored hash.
+  // On match, remove that specific hash so the code is single-use.
+  const storedHashes: string[] = Array.isArray(
+    (security as { backup_code_hashes?: string[] }).backup_code_hashes,
+  )
+    ? ((security as { backup_code_hashes?: string[] }).backup_code_hashes ?? [])
+    : [];
+  for (let i = 0; i < storedHashes.length; i++) {
+    if (await backupCodeMatches(token, storedHashes[i])) {
+      const remaining = storedHashes.filter((_, idx) => idx !== i);
+      await supabase
+        .from('user_security')
+        .update({ backup_code_hashes: remaining })
+        .eq('user_id', userId);
+      return true;
+    }
   }
 
   // Decrypt and verify TOTP token
