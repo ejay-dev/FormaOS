@@ -149,14 +149,17 @@ export default async function AppLayout({
   // elapsed but no upgrade or cancellation has been recorded yet. Treat this
   // identically to other unpaid states so feature pages cannot be reached.
   const trialExpired = status === 'trialing' && subscription?.trialActive === false;
+  // Allowlist of paid states. The /app layout redirects anything else
+  // (pending_checkout, past_due, canceled, incomplete, incomplete_expired,
+  // paused, unpaid, expired trialing, missing status) into the in-app billing
+  // flow. Switching to an allowlist closes the denylist gap audit billing-004
+  // flagged — the prior code silently let incomplete_expired / paused /
+  // unpaid statuses through.
+  const hasActivePaidAccess =
+    status === 'active' ||
+    (status === 'trialing' && subscription?.trialActive !== false);
   const needsCheckout =
-    !systemState.isFounder &&
-    !onBillingRoute &&
-    (status === 'pending_checkout' ||
-      status === 'past_due' ||
-      status === 'canceled' ||
-      status === 'incomplete' ||
-      trialExpired);
+    !systemState.isFounder && !onBillingRoute && !hasActivePaidAccess;
 
   if (needsCheckout) {
     const target = isSelfServePlan ? planKey : 'basic';

@@ -270,6 +270,33 @@ describe('requireActiveSubscription', () => {
       'Subscription plan invalid',
     );
   });
+
+  // Audit billing-004: the prior /app layout denylist silently allowed
+  // `incomplete_expired`, `paused`, and `unpaid` through. The shared
+  // requireActiveSubscription helper rejects them; lock that contract.
+  describe('lapsed Stripe statuses (billing-004 regression)', () => {
+    it.each([
+      'past_due',
+      'incomplete',
+      'incomplete_expired',
+      'paused',
+      'unpaid',
+    ])('rejects status=%s as inactive', async (status) => {
+      selectResults['org_subscriptions'] = {
+        data: {
+          plan_key: 'pro',
+          status,
+          current_period_end: null,
+          trial_expires_at: null,
+        },
+        error: null,
+      };
+
+      await expect(requireActiveSubscription('org-1')).rejects.toThrow(
+        'Subscription inactive',
+      );
+    });
+  });
 });
 
 describe('requireEntitlement', () => {

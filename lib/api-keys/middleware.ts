@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getClientIp } from '@/lib/ratelimit';
+import { requireActiveSubscription } from '@/lib/billing/entitlements';
 import { normalizeApiKeyScopes, type ApiKeyScope } from './scopes';
 import {
   applyRateLimitHeaders,
@@ -11,6 +12,40 @@ import {
   logApiKeyUsage,
   validateApiKey,
 } from './manager';
+
+// Status messages thrown by requireActiveSubscription; mapped to 402 responses.
+const SUBSCRIPTION_REJECT_PREFIXES = [
+  'Subscription inactive',
+  'Subscription grace period expired',
+  'Subscription plan invalid',
+  'Subscription lookup failed',
+];
+
+function paymentRequiredResponse(reason: string) {
+  return NextResponse.json(
+    {
+      error: reason,
+      code: 'subscription_inactive',
+      docs: 'https://app.formaos.com.au/app/billing',
+    },
+    { status: 402 },
+  );
+}
+
+async function enforceActiveSubscription(orgId: string) {
+  try {
+    await requireActiveSubscription(orgId);
+    return null;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Subscription inactive';
+    if (SUBSCRIPTION_REJECT_PREFIXES.some((prefix) => message.startsWith(prefix))) {
+      return paymentRequiredResponse(message);
+    }
+    // Unexpected error shape — surface as 402 too so we fail-closed; downstream
+    // observability (once obs-001 envs are set) will pick it up.
+    return paymentRequiredResponse('Subscription inactive');
+  }
+}
 
 export type V1AccessType = 'api_key' | 'session';
 
@@ -122,12 +157,21 @@ export async function authenticateV1Request(
     requiredScopes?: ApiKeyScope[];
     requireAdmin?: boolean;
     allowSessionFallback?: boolean;
+    /**
+     * Default true. When true, requireActiveSubscription gates the request
+     * — returns 402 for past_due/canceled/incomplete/incomplete_expired/
+     * paused/unpaid orgs, and for expired pending_checkout/trialing grace
+     * windows. Pass `false` only on endpoints that must work without an
+     * active subscription (org onboarding, customer-portal redirects).
+     */
+    requireActiveSubscription?: boolean;
   } = {},
 ): Promise<
   | { ok: true; context: V1AuthContext }
   | { ok: false; response: NextResponse }
 > {
   const requiredScopes = normalizeApiKeyScopes(options.requiredScopes ?? []);
+  const subscriptionRequired = options.requireActiveSubscription !== false;
   const token = getBearerToken(request);
   const supabase = await createSupabaseServerClient();
 
@@ -148,6 +192,13 @@ export async function authenticateV1Request(
       }
 
       return { ok: false, response };
+    }
+
+    if (subscriptionRequired) {
+      const blocked = await enforceActiveSubscription(validation.apiKey.org_id);
+      if (blocked) {
+        return { ok: false, response: blocked };
+      }
     }
 
     return {
@@ -224,6 +275,13 @@ export async function authenticateV1Request(
         { status: 403 },
       ),
     };
+  }
+
+  if (subscriptionRequired) {
+    const blocked = await enforceActiveSubscription(membership.orgId);
+    if (blocked) {
+      return { ok: false, response: blocked };
+    }
   }
 
   const identifier = user.id || getClientIp(request);

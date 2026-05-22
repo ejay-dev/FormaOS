@@ -3,6 +3,8 @@ import {
   buildUnsubscribeUrl,
   generateUnsubscribeToken,
 } from '@/lib/email/unsubscribe-token';
+import { getResendClient, getFromEmail } from '@/lib/email/resend-client';
+import { billingLogger } from '@/lib/observability/structured-logger';
 
 function buildUnsubscribePostUrl(baseUrl: string, userId: string): string {
   const token = generateUnsubscribeToken(userId);
@@ -24,7 +26,19 @@ interface BillingEmailContext {
   planKey?: string;
 }
 
-type AdminClient = { from: (table: string) => any };
+type AdminClient = {
+  from: (table: string) => any;
+  auth: {
+    admin: {
+      getUserById: (
+        id: string,
+      ) => Promise<{
+        data: { user: { email?: string | null } | null } | null;
+        error: { message: string } | null;
+      }>;
+    };
+  };
+};
 
 function escapeHtml(value: string) {
   return value
@@ -148,11 +162,34 @@ function buildEmailHtml(
   }
 }
 
+function htmlToPlainText(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<a [^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, '$2 ($1)')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(p|div|h[1-6]|li)>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim();
+}
+
 /**
- * Send a billing-related email to an organisation's owner/admins.
- * Queues to the email_queue table for async delivery. The queued payload
- * carries a pre-built unsubscribe URL plus RFC 8058 `List-Unsubscribe`
- * headers so the sender can attach them when dispatching.
+ * Send a billing-related email to an organisation's owner/admin.
+ *
+ * Synchronous Resend dispatch (matching sendAuthEmail). RFC 8058
+ * `List-Unsubscribe` + `List-Unsubscribe-Post` headers are attached so
+ * mail clients show a one-click unsubscribe affordance.
+ *
+ * Errors are caught and logged via billingLogger (never thrown) — Stripe
+ * webhooks must return 200 even when downstream email fails, otherwise
+ * Stripe retries pile up. Once Sentry env vars are set, these failures
+ * surface in the error tracker.
  */
 export async function sendBillingEmail(
   admin: AdminClient,
@@ -163,16 +200,59 @@ export async function sendBillingEmail(
   try {
     const subject = EMAIL_SUBJECTS[type];
 
+    // Resolve the org owner's auth.users record for the actual email address.
     const { data: member } = await admin
       .from('org_members')
-      .select('user_id')
+      .select('user_id, role')
       .eq('organization_id', orgId)
+      .order('role', { ascending: true })
       .limit(1);
 
     const ownerMember = (
-      member as unknown as Array<{ user_id: string }> | null
+      member as unknown as Array<{ user_id: string; role: string }> | null
     )?.[0];
-    if (!ownerMember) return;
+    if (!ownerMember) {
+      billingLogger.warn('billing_email_skipped_no_owner', { orgId, type });
+      return;
+    }
+
+    const { data: authUser, error: authLookupError } =
+      await admin.auth.admin.getUserById(ownerMember.user_id);
+    if (authLookupError || !authUser?.user?.email) {
+      billingLogger.warn('billing_email_skipped_no_email', {
+        orgId,
+        type,
+        userId: ownerMember.user_id,
+        error: authLookupError?.message ?? null,
+      });
+      return;
+    }
+    const recipient = authUser.user.email;
+
+    // Per-recipient opt-out: if the user has unsubscribed_all, skip transactional
+    // billing comms except for the cancelled/payment_failed/payment_action_required
+    // events that are operational (CAN-SPAM transactional category).
+    const transactional: BillingEmailType[] = [
+      'payment_failed',
+      'payment_action_required',
+      'subscription_cancelled',
+      'payment_recovered',
+    ];
+    if (!transactional.includes(type)) {
+      const { data: prefs } = await admin
+        .from('email_preferences')
+        .select('unsubscribed_all')
+        .eq('user_id', ownerMember.user_id)
+        .maybeSingle();
+      if (prefs?.unsubscribed_all) {
+        billingLogger.info('billing_email_skipped_unsubscribed', {
+          orgId,
+          type,
+          userId: ownerMember.user_id,
+        });
+        return;
+      }
+    }
 
     const appUrl = (brand.seo.appUrl || brand.seo.siteUrl).replace(/\/$/, '');
     const unsubscribeUrl = buildUnsubscribeUrl(appUrl, ownerMember.user_id);
@@ -181,26 +261,53 @@ export async function sendBillingEmail(
       ownerMember.user_id,
     );
     const html = buildEmailHtml(type, context, unsubscribeUrl);
+    const text = htmlToPlainText(html);
 
-    await admin.from('email_queue').insert({
-      to: ownerMember.user_id,
+    const resend = getResendClient();
+    if (!resend) {
+      billingLogger.error(
+        'billing_email_resend_not_configured',
+        { code: 'RESEND_NOT_CONFIGURED', message: 'RESEND_API_KEY not set' },
+        { orgId, type, recipient },
+      );
+      return;
+    }
+
+    const result = await resend.emails.send({
+      from: getFromEmail(),
+      to: recipient,
       subject,
-      template: type,
-      data: {
-        orgId,
-        type,
-        html,
-        headers: {
-          'List-Unsubscribe': `<${unsubscribeUrl}>, <${unsubscribePostUrl}>`,
-          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-        },
-        ...context,
+      html,
+      text,
+      headers: {
+        'List-Unsubscribe': `<${unsubscribeUrl}>, <${unsubscribePostUrl}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
     });
+
+    if (result.error) {
+      billingLogger.error(
+        'billing_email_send_failed',
+        { code: 'RESEND_ERROR', message: result.error.message },
+        { orgId, type, recipient },
+      );
+      return;
+    }
+
+    billingLogger.info('billing_email_sent', {
+      orgId,
+      type,
+      recipient,
+      resendId: result.data?.id ?? null,
+    });
   } catch (error) {
-    console.error(
-      `[billing-email] Failed to queue ${type} email for org ${orgId}:`,
-      error,
+    billingLogger.error(
+      'billing_email_unexpected_error',
+      {
+        code: 'BILLING_EMAIL_ERROR',
+        message: error instanceof Error ? error.message : String(error),
+      },
+      { orgId, type },
     );
   }
 }
