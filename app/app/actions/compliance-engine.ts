@@ -623,7 +623,8 @@ export async function evaluateFrameworkControls(
 
     const { data: framework, error: fwErr } = await supabase
       .from('compliance_frameworks')
-      .select('id, code, title')
+      // Schema column is `name` (audit database-017). Alias for API stability.
+      .select('id, code, title:name')
       .eq('code', frameworkCode)
       .maybeSingle();
 

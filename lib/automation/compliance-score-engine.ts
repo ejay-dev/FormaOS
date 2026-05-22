@@ -131,7 +131,8 @@ async function fetchFrameworkScores(
 ) {
   const { data: frameworks } = await supabase
     .from('compliance_frameworks')
-    .select('id, code, title');
+    // Schema column is `name` (audit database-017). Alias for API stability.
+    .select('id, code, title:name');
 
   if (!frameworks || frameworks.length === 0) return [];
 

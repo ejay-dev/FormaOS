@@ -156,7 +156,8 @@ async function getCriticalControlFailures(
   const frameworkIds = [...new Set(evaluations.map((e: { framework_id?: string }) => e.framework_id).filter(Boolean))] as string[];
   const { data: frameworks } = await admin
     .from('compliance_frameworks')
-    .select('id, code, title')
+    // Schema column is `name` (audit database-017). Alias for API stability.
+    .select('id, code, title:name')
     .in('id', frameworkIds);
 
   const frameworkMap = new Map<string, { id: string; code: string; title: string }>(
