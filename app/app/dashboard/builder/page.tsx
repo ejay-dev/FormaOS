@@ -17,15 +17,23 @@ export default async function DashboardBuilderPage() {
   // Fetch live data for each widget
   const widgetData: Record<string, Record<string, unknown>> = {};
 
-  // Compliance score
+  // Audit product-003 (2026-05-22): every widget on this page rendered 0
+  // because (a) org_controls was a missing relation (resolved by view in
+  // migration 20260624_005) and (b) org_tasks / org_evidence / org_incidents
+  // are keyed on `organization_id` not `org_id`. With the column fix and
+  // the new public.org_controls view, the widgets read real numbers.
+  const orgId = state.organization.id;
+
+  // Compliance score — public.org_controls is now a real view aliasing
+  // org_control_evaluations + framework_controls + frameworks.
   const { count: totalControls } = await db
     .from('org_controls')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', state.organization.id);
+    .eq('organization_id', orgId);
   const { count: compliantControls } = await db
     .from('org_controls')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', state.organization.id)
+    .eq('organization_id', orgId)
     .eq('status', 'compliant');
   widgetData.compliance_score = {
     score: totalControls
@@ -37,7 +45,7 @@ export default async function DashboardBuilderPage() {
   const { data: tasks } = await db
     .from('org_tasks')
     .select('status')
-    .eq('org_id', state.organization.id);
+    .eq('organization_id', orgId);
   const taskStatuses: Record<string, number> = {
     to_do: 0,
     in_progress: 0,
@@ -50,7 +58,7 @@ export default async function DashboardBuilderPage() {
   const { count: overdueCount } = await db
     .from('org_tasks')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', state.organization.id)
+    .eq('organization_id', orgId)
     .lt('due_date', new Date().toISOString())
     .neq('status', 'done');
   taskStatuses.overdue = overdueCount || 0;
@@ -63,12 +71,12 @@ export default async function DashboardBuilderPage() {
   const { count: freshEvidence } = await db
     .from('org_evidence')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', state.organization.id)
+    .eq('organization_id', orgId)
     .gte('created_at', thirtyDaysAgo.toISOString());
   const { count: totalEvidence } = await db
     .from('org_evidence')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', state.organization.id);
+    .eq('organization_id', orgId);
   widgetData.evidence_freshness = {
     count: freshEvidence || 0,
     total: totalEvidence || 0,
@@ -78,7 +86,7 @@ export default async function DashboardBuilderPage() {
   const { count: openIncidents } = await db
     .from('org_incidents')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', state.organization.id)
+    .eq('organization_id', orgId)
     .in('status', ['open', 'investigating']);
   widgetData.incidents_open = { count: openIncidents || 0 };
 
@@ -86,7 +94,7 @@ export default async function DashboardBuilderPage() {
   const { count: myTaskCount } = await db
     .from('org_tasks')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', state.organization.id)
+    .eq('organization_id', orgId)
     .eq('assigned_to', state.user.id)
     .neq('status', 'done');
   widgetData.my_tasks = { count: myTaskCount || 0 };

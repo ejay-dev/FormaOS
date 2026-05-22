@@ -18,11 +18,15 @@ export default async function ParticipantMedicationsPage({
   const { id: participantId } = await params;
   const db = await createSupabaseServerClient();
 
+  // Audit product-001 (2026-05-22): org_patients exposes `full_name`
+  // (not first_name/last_name) and `organization_id` (not `org_id`).
+  // The original query failed silently, the guard below fired, and the
+  // entire medications module was unreachable.
   const { data: participant } = await db
     .from('org_patients')
-    .select('id, first_name, last_name')
+    .select('id, full_name')
     .eq('id', participantId)
-    .eq('org_id', state.organization.id)
+    .eq('organization_id', state.organization.id)
     .single();
 
   if (!participant) redirect('/app/participants');
@@ -57,7 +61,7 @@ export default async function ParticipantMedicationsPage({
         <div className="flex-1">
           <h1 className="text-2xl font-bold">Medications</h1>
           <p className="text-sm text-muted-foreground">
-            {participant.first_name} {participant.last_name}
+            {participant.full_name}
           </p>
         </div>
         <button className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
