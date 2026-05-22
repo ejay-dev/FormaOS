@@ -157,7 +157,7 @@ describe('compliance-004 — evaluator framework', () => {
   });
 
   describe('registerAllEvaluators bootstrap', () => {
-    it('registers the legacy SOC2 evaluators plus phase-1 SOC2-TSC evaluators', () => {
+    it('registers the legacy SOC2 evaluators plus the full SOC2-TSC pack', () => {
       registerAllEvaluators();
       for (const key of REGISTERED_EVALUATOR_KEYS) {
         const [framework, code] = key.split('/');
@@ -165,17 +165,21 @@ describe('compliance-004 — evaluator framework', () => {
           hasEvaluator(framework as FrameworkSlug, code),
         ).toBe(true);
       }
-      // 9 legacy SOC2 + 10 phase-1 SOC2-TSC = 19 evaluators registered.
+      // Phase 2 lifts SOC2-TSC to 61 controls; the registry also
+      // carries the legacy `soc2` pack and downstream packs
+      // (ISO27001-2022, CIS, NIST CSF, GDPR, HIPAA, PCI-DSS).
       expect(listEvaluators().length).toBe(REGISTERED_EVALUATOR_KEYS.length);
-      expect(REGISTERED_EVALUATOR_KEYS.length).toBeGreaterThanOrEqual(19);
+      expect(REGISTERED_EVALUATOR_KEYS.length).toBeGreaterThanOrEqual(70);
       expect(REGISTERED_EVALUATOR_KEYS).toEqual(
         expect.arrayContaining([
           'soc2/CC6.1',
           'soc2/CC7.4',
+          'soc2-tsc/CC1.1',
           'soc2-tsc/CC3.2',
           'soc2-tsc/CC2.1',
           'soc2-tsc/A1.2',
           'soc2-tsc/C1.2',
+          'soc2-tsc/P8.1',
         ]),
       );
     });
@@ -192,10 +196,16 @@ describe('compliance-004 — evaluator framework', () => {
       const soc2 = listEvaluators('soc2').map((m) => m.controlCode);
       const tsc = listEvaluators('soc2-tsc').map((m) => m.controlCode);
       expect(soc2.length).toBe(9);
-      expect(tsc.length).toBe(10);
-      // No overlap between the two packs by design.
-      const intersection = soc2.filter((c) => tsc.includes(c));
-      expect(intersection).toEqual([]);
+      // SOC2-TSC pack has 61 controls (full coverage as of phase 2).
+      expect(tsc.length).toBe(61);
+      // The TSC pack reuses several legacy `soc2` codes (CC6.1-3, 6.6-7,
+      // 7.1-4) under its own framework slug. The packs share control
+      // codes by design; the (framework, code) key keeps them isolated.
+      const sharedCodes = ['CC6.1', 'CC6.2', 'CC6.3', 'CC6.6', 'CC6.7', 'CC7.1', 'CC7.2', 'CC7.3', 'CC7.4'];
+      for (const code of sharedCodes) {
+        expect(soc2).toContain(code);
+        expect(tsc).toContain(code);
+      }
     });
   });
 });
