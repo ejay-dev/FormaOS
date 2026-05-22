@@ -146,17 +146,18 @@ async function resolveMemberActivity(
   config: WidgetConfig,
 ) {
   const { data } = await db
-    .from('org_audit_log')
-    .select('actor_id, action')
-    .eq('org_id', orgId)
+    .from('org_audit_logs')
+    .select('actor_email, action')
+    .eq('organization_id', orgId)
     .gte('created_at', config.dateRange.from)
     .lte('created_at', config.dateRange.to)
     .limit(1000);
 
   const byActor: Record<string, number> = {};
   for (const entry of data ?? []) {
-    if (entry.actor_id) {
-      byActor[entry.actor_id] = (byActor[entry.actor_id] ?? 0) + 1;
+    if (entry.actor_email) {
+      byActor[entry.actor_email] =
+        (byActor[entry.actor_email] ?? 0) + 1;
     }
   }
 
