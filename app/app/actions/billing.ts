@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
 import { resolvePlanKey } from '@/lib/plans';
 import { isFounder } from '@/lib/utils/founder';
@@ -152,21 +153,20 @@ export async function startCheckout(
       }
 
       if (organization?.name) {
-        const { error: legacyOrgError } = await admin.from('orgs').upsert(
-          {
+        try {
+          await mirrorOrgToLegacyOrgs(admin, {
             id: orgId,
             name: organization.name,
-            created_by: organization.created_by ?? null,
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: 'id' },
-        );
-
-        if (legacyOrgError) {
-          billingLogger.warn('legacy_orgs_upsert_failed', {
-            orgId,
-            error: legacyOrgError.message,
+            createdBy: organization.created_by ?? null,
           });
+        } catch (legacyError) {
+          billingLogger.error(
+            'legacy_orgs_mirror_failed',
+            legacyError instanceof Error
+              ? legacyError
+              : new Error(String(legacyError)),
+            { orgId },
+          );
         }
       }
 

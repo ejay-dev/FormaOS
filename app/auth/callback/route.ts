@@ -4,6 +4,7 @@ import { createServerClient } from '@supabase/ssr';
 import type { User } from '@supabase/supabase-js';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import {
   exchangeOAuthCode,
   isPkceExchangeError,
@@ -674,17 +675,17 @@ export async function GET(request: Request) {
 
   if (!legacyOrg) {
     authLogger.info('backfilling_legacy_orgs_entry');
-    const now = new Date().toISOString();
-    await admin.from('orgs').upsert(
-      {
+    try {
+      await mirrorOrgToLegacyOrgs(admin, {
         id: membership.organization_id,
         name: organization?.name || 'Organization',
-        created_by: organization?.created_by || user.id,
-        created_at: now,
-        updated_at: now,
-      },
-      { onConflict: 'id' },
-    );
+        createdBy: organization?.created_by || user.id,
+      });
+    } catch (mirrorError) {
+      authLogger.error('legacy_orgs_mirror_failed', toError(mirrorError), {
+        orgId: membership.organization_id,
+      });
+    }
   }
 
   // HARDENING: Always ensure subscription + entitlements exist

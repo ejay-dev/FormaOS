@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
 import { isSelfServePlan } from '@/lib/billing/checkout-intent';
@@ -99,26 +100,19 @@ export async function ensureSubscription(
       .maybeSingle();
 
     if (org?.name) {
-      const { error: legacyOrgError } = await admin.from('orgs').upsert(
-        {
-          id: orgId,
-          name: org.name,
-          created_by: org.created_by ?? null,
-          created_at: nowIso,
-          updated_at: nowIso,
-        },
-        { onConflict: 'id' },
-      );
-
-      if (legacyOrgError) {
-        billingLogger.warn('legacy_orgs_upsert_failed', { orgId, error: legacyOrgError.message });
-      }
+      await mirrorOrgToLegacyOrgs(admin, {
+        id: orgId,
+        name: org.name,
+        createdBy: org.created_by ?? null,
+        nowIso,
+      });
     }
   } catch (error) {
-    billingLogger.warn('legacy_orgs_backfill_error', {
-      orgId,
-      error: error instanceof Error ? error.message : String(error),
-    });
+    billingLogger.error(
+      'legacy_orgs_mirror_failed',
+      error instanceof Error ? error : new Error(String(error)),
+      { orgId },
+    );
   }
 
   const basePayload = {

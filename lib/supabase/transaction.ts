@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from './admin';
+import { mirrorOrgToLegacyOrgs } from './mirror-legacy-orgs';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { resolvePlanKey } from '@/lib/plans';
 
@@ -49,24 +50,15 @@ export async function bootstrapOrganizationAtomic(params: {
 
     organizationId = org.id;
 
-    // 2. Create legacy org entry (for FK constraints)
-    const { error: legacyError } = await admin.from('orgs').upsert(
-      {
-        id: organizationId,
-        name: orgName,
-        created_by: userId,
-        created_at: now,
-        updated_at: now,
-      },
-      { onConflict: 'id' },
-    );
-
-    if (legacyError) {
-      console.warn(
-        '[bootstrap] Legacy orgs entry failed (non-critical):',
-        legacyError.message,
-      );
-    }
+    // 2. Mirror to legacy orgs (FK target for 8 dependent tables).
+    // v3-010: must throw so the catch block below rolls back the
+    // organizations insert. Silent warn was the source of 395-row drift.
+    await mirrorOrgToLegacyOrgs(admin, {
+      id: org.id,
+      name: orgName,
+      createdBy: userId,
+      nowIso: now,
+    });
 
     // 3. Create membership
     const { error: memberError } = await admin.from('org_members').insert({
