@@ -193,6 +193,58 @@ export async function uploadEvidence(formData: FormData) {
       throw new Error(`Database Link Failed: ${dbError.message}`);
     }
 
+    // 4b. CONTROL LINKAGE — audit compliance-003 (2026-05-22).
+    // Insert control_evidence rows for every (control_id, evidence_id)
+    // pair so coverage calculators, audit-pack exports, and the
+    // verifyEvidence path actually see this evidence as linked to
+    // controls. Two sources for controlIds:
+    //   1. Explicit `controlIds[]` form field — populated by the
+    //      upload UI when the user selects which controls this evidence
+    //      satisfies (preferred).
+    //   2. Auto-derived from the task's existing control_tasks rows —
+    //      fallback when the UI doesn't pass explicit ids, so a plain
+    //      "upload to task" flow still links to whichever controls
+    //      already point at that task.
+    const explicitControlIds = formData
+      .getAll('controlIds')
+      .filter((v): v is string => typeof v === 'string' && v.length > 0);
+
+    let resolvedControlIds = explicitControlIds;
+    if (resolvedControlIds.length === 0 && createdEvidence?.id) {
+      const { data: derivedRows } = await supabase
+        .from('control_tasks')
+        .select('control_id')
+        .eq('organization_id', task.organization_id)
+        .eq('task_id', taskId);
+      resolvedControlIds = (derivedRows ?? [])
+        .map((r) => r.control_id as string | null)
+        .filter((id): id is string => typeof id === 'string' && id.length > 0);
+    }
+
+    if (createdEvidence?.id && resolvedControlIds.length > 0) {
+      const linkPayload = resolvedControlIds.map((controlId) => ({
+        organization_id: task.organization_id,
+        control_id: controlId,
+        evidence_id: createdEvidence.id,
+        status: 'pending' as const,
+      }));
+      const { error: linkErr } = await supabase
+        .from('control_evidence')
+        .upsert(linkPayload, {
+          onConflict: 'organization_id,control_id,evidence_id',
+          ignoreDuplicates: true,
+        });
+      if (linkErr) {
+        // Linkage failure must not block the upload — the evidence row is
+        // already persisted. Log and continue; the nightly backfill job
+        // will catch missed links.
+        console.warn(
+          '[evidence/upload] control_evidence linkage failed:',
+          linkErr.message,
+        );
+      }
+    }
+
     // 5. ✅ COMPLIANCE LOGGING
     await logActivity(task.organization_id, 'UPLOAD_DOCUMENT', {
       resourceName: file.name,
