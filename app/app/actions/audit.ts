@@ -8,14 +8,17 @@
  * actual DB write to `logActivityCore` in `@/lib/audit/log-activity`.
  */
 
+// Note: `AuditAction` type is intentionally NOT re-exported here. Next.js's
+// 'use server' compiler scans this file's exports and rejects anything
+// that isn't an async function (even pure type re-exports). Consumers that
+// need the type must import it directly from `@/lib/audit/log-activity`.
+
 import { rbacLogger } from '@/lib/observability/structured-logger';
 import { getUserOrgMembership } from '@/app/app/actions/rbac';
 import {
   type AuditAction,
   logActivityCore,
 } from '@/lib/audit/log-activity';
-
-export type { AuditAction };
 
 /**
  * CENTRALIZED AUDIT LOGGER
