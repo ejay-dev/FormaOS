@@ -122,25 +122,103 @@ export async function GET(request: Request) {
       completionPercentage = 0;
     }
 
-    const obligations = rows.slice(0, 25).map((t) => ({
-      id: t.id as string,
-      title: (t.title as string) || 'Untitled',
-      framework: 'Internal',
-      frameworkCode: 'INT',
-      owner: null,
-      dueDate: (t.due_date as string) || '',
-      status:
-        t.status === 'completed'
-          ? 'completed'
-          : t.due_date && new Date(t.due_date as string).getTime() < now
-            ? 'overdue'
-            : t.due_date &&
-                new Date(t.due_date as string).getTime() <= weekFromNow
-              ? 'due_soon'
-              : 'on_track',
-      evidenceCount: 0,
-      controlKey: '',
-    }));
+    // Audit compliance-005 (2026-05-22): every obligation row was being
+    // labelled framework='Internal'/frameworkCode='INT' with
+    // evidenceCount: 0, ignoring the real framework linkage in
+    // control_tasks → framework_controls → frameworks. Tenants viewing
+    // /app/compliance saw "Internal" on every row.
+    //
+    // Resolve framework attribution + evidence count for the visible 25
+    // tasks via control_tasks join. Done as a single follow-up query
+    // keyed on the task ids we already loaded so the cost is bounded.
+    const visibleRows = rows.slice(0, 25);
+    const visibleTaskIds = visibleRows.map((t) => t.id as string);
+
+    type CtRow = {
+      task_id: string;
+      control_id: string;
+      compliance_controls?: {
+        code?: string | null;
+        framework_id?: string | null;
+        compliance_frameworks?: { slug?: string | null; name?: string | null } | null;
+      } | null;
+    };
+    type CeCountRow = { task_id: string; n: number };
+
+    const frameworkByTask = new Map<string, { framework: string; frameworkCode: string; controlKey: string }>();
+    const evidenceByTask = new Map<string, number>();
+
+    if (visibleTaskIds.length > 0) {
+      try {
+        const { data: ctRows } = await supabase
+          .from('control_tasks')
+          .select(
+            'task_id, control_id, compliance_controls(code, framework_id, compliance_frameworks(slug, name))',
+          )
+          .eq('organization_id', orgId)
+          .in('task_id', visibleTaskIds);
+        for (const row of ((ctRows ?? []) as unknown as CtRow[])) {
+          if (!frameworkByTask.has(row.task_id)) {
+            const fw = row.compliance_controls?.compliance_frameworks;
+            frameworkByTask.set(row.task_id, {
+              framework: fw?.name ?? fw?.slug ?? 'Internal',
+              frameworkCode: (fw?.slug ?? 'INT').toUpperCase(),
+              controlKey: row.compliance_controls?.code ?? '',
+            });
+          }
+        }
+
+        // Evidence counts via control_evidence ↔ control_tasks
+        const controlIds = ((ctRows ?? []) as unknown as CtRow[])
+          .map((r) => r.control_id)
+          .filter((v): v is string => typeof v === 'string' && v.length > 0);
+        if (controlIds.length > 0) {
+          const { data: ceRows } = await supabase
+            .from('control_evidence')
+            .select('control_id, status')
+            .eq('organization_id', orgId)
+            .eq('status', 'approved')
+            .in('control_id', controlIds);
+          // Map back to task via the control_tasks lookup
+          const taskByControl = new Map<string, string[]>();
+          for (const r of ((ctRows ?? []) as unknown as CtRow[])) {
+            const list = taskByControl.get(r.control_id) ?? [];
+            list.push(r.task_id);
+            taskByControl.set(r.control_id, list);
+          }
+          for (const ce of (ceRows ?? []) as Array<{ control_id: string }>) {
+            for (const taskId of taskByControl.get(ce.control_id) ?? []) {
+              evidenceByTask.set(taskId, (evidenceByTask.get(taskId) ?? 0) + 1);
+            }
+          }
+        }
+      } catch (fwErr) {
+        log.warn({ err: fwErr }, 'obligation framework lookup failed');
+      }
+    }
+
+    const obligations = visibleRows.map((t) => {
+      const fw = frameworkByTask.get(t.id as string);
+      return {
+        id: t.id as string,
+        title: (t.title as string) || 'Untitled',
+        framework: fw?.framework ?? 'Internal',
+        frameworkCode: fw?.frameworkCode ?? 'INT',
+        owner: null,
+        dueDate: (t.due_date as string) || '',
+        status:
+          t.status === 'completed'
+            ? 'completed'
+            : t.due_date && new Date(t.due_date as string).getTime() < now
+              ? 'overdue'
+              : t.due_date &&
+                  new Date(t.due_date as string).getTime() <= weekFromNow
+                ? 'due_soon'
+                : 'on_track',
+        evidenceCount: evidenceByTask.get(t.id as string) ?? 0,
+        controlKey: fw?.controlKey ?? '',
+      };
+    });
 
     const deadlines = rows
       .filter((t) => t.due_date && t.status !== 'completed')
