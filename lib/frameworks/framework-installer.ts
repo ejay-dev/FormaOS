@@ -28,6 +28,19 @@ export function getFrameworkCodeForSlug(slug: string) {
   return found?.code ?? slug.toUpperCase().replace(/[^A-Z0-9]+/g, '_');
 }
 
+/**
+ * Inverse of {@link getFrameworkCodeForSlug}. Returns the canonical
+ * pack slug (e.g. `soc2-tsc`) for a given DB framework code (e.g.
+ * `SOC2_TSC`). Used by the compliance engine to look up registered
+ * evaluators — registry keys are pack slugs, not DB codes.
+ *
+ * Audit compliance-004 (2026-05-22).
+ */
+export function getFrameworkSlugForCode(code: string): string | null {
+  const found = PACK_REGISTRY.find((pack) => pack.code === code);
+  return found?.slug ?? null;
+}
+
 export function getPackFileForSlug(slug: string) {
   const found = PACK_REGISTRY.find((pack) => pack.slug === slug);
   if (!found) return null;

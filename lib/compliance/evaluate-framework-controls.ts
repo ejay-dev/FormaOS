@@ -8,6 +8,7 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { logActivity as logProductActivity } from '@/lib/activity/feed';
 import { notify } from '@/lib/notifications/engine';
@@ -35,6 +36,37 @@ import {
   stableHash,
   upsertEvaluations,
 } from '@/lib/compliance/_engine-shared';
+import { getFrameworkSlugForCode } from '@/lib/frameworks/framework-installer';
+import { registerAllEvaluators } from '@/lib/compliance/evaluators/register';
+import { getEvaluator } from '@/lib/compliance/evaluators';
+import { runControlEvaluation } from '@/lib/compliance/evaluators/run-control';
+import type {
+  ControlResult,
+  FrameworkSlug,
+} from '@/lib/compliance/evaluators/types';
+
+/**
+ * Map an evaluator status (`pass | partial | fail | not_evaluated`)
+ * onto the engine's `ControlStatus`. `not_evaluated` returns null so
+ * callers know to retain the heuristic value — registry evaluators
+ * MUST NOT downgrade a control silently when they have nothing to
+ * say.
+ */
+function evaluatorStatusToEngineStatus(
+  result: ControlResult,
+): ControlStatus | null {
+  switch (result.status) {
+    case 'pass':
+      return 'compliant';
+    case 'partial':
+      return 'at_risk';
+    case 'fail':
+      return 'non_compliant';
+    case 'not_evaluated':
+    default:
+      return null;
+  }
+}
 
 async function refreshComplianceBlocks(
   supabase: DbClient,
@@ -242,6 +274,17 @@ export async function evaluateFrameworkControlsCore(
     let nonCompliantCount = 0;
     let notApplicableCount = 0;
 
+    // Audit compliance-004 (2026-05-22): wire registry evaluators
+    // into the heuristic pipeline. When a control has a registered
+    // evaluator for `(framework_slug, control_code)`, its DB-signal
+    // verdict overrides the evidence-count heuristic. Bootstrap
+    // happens once per process (registerAllEvaluators is idempotent).
+    registerAllEvaluators();
+    const frameworkSlug = getFrameworkSlugForCode(
+      framework.code as string,
+    ) as FrameworkSlug | null;
+    const adminClient = frameworkSlug ? createSupabaseAdminClient() : null;
+
     for (const control of controls as ControlRow[]) {
       const evidenceList = evidenceByControl.get(control.id) ?? [];
       const taskList = tasksByControl.get(control.id) ?? [];
@@ -297,6 +340,29 @@ export async function evaluateFrameworkControlsCore(
         status = 'at_risk';
       }
 
+      // Audit compliance-004: registry overlay. When an evaluator is
+      // registered for this control we trust its DB-signal verdict
+      // over the evidence-count heuristic. `not_applicable` controls
+      // are skipped (they aren't part of the org's scope) and
+      // `not_evaluated` evaluator results leave the heuristic intact.
+      let evaluatorResult: ControlResult | null = null;
+      if (
+        frameworkSlug &&
+        adminClient &&
+        status !== 'not_applicable' &&
+        getEvaluator(frameworkSlug, control.code)
+      ) {
+        evaluatorResult = await runControlEvaluation(
+          { orgId, db: adminClient },
+          frameworkSlug,
+          control.code,
+        );
+        const overlaid = evaluatorStatusToEngineStatus(evaluatorResult);
+        if (overlaid !== null) {
+          status = overlaid;
+        }
+      }
+
       if (isMandatory && status === 'non_compliant') {
         missingMandatoryCodes.push(control.code);
       }
@@ -337,6 +403,18 @@ export async function evaluateFrameworkControlsCore(
           rejected_evidence_count: rejectedEvidenceCount,
           open_task_count: openTaskCount,
           overdue_task_count: overdueTaskCount,
+          // Audit compliance-004: surface registry verdict alongside
+          // the heuristic so audits can see WHY a control flipped.
+          evaluator: evaluatorResult
+            ? {
+                framework_slug: frameworkSlug,
+                status: evaluatorResult.status,
+                reason: evaluatorResult.reason ?? null,
+                confidence: evaluatorResult.confidence,
+                gap_codes: evaluatorResult.gaps.map((g) => g.code),
+                evidence_count: evaluatorResult.evidenceRefs.length,
+              }
+            : null,
         },
       });
     }
