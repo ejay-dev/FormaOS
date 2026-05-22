@@ -75,8 +75,52 @@ export async function GET(request: Request) {
     }
 
     const total = rows.length;
-    const completionPercentage =
+    // Audit compliance-002 (2026-05-22): the dashboard hero card renders
+    // `completionPercentage` as the "Posture %" with a "Buyer-ready /
+    // Approaching / Needs attention" label. Previously this was
+    // `completed / total` of org_tasks — i.e. raw task throughput — which
+    // had zero relationship to control evaluations or framework readiness
+    // (a tenant with 100/100 tasks done but 0/249 controls satisfied
+    // displayed "Buyer-ready 100%"). Replace with the org's latest
+    // compliance_score_snapshot, aggregated across all enabled frameworks.
+    // Fall back to 0 when no snapshot exists yet — keeping it honest
+    // beats inventing a number.
+    const taskCompletionRate =
       total > 0 ? Math.round((completed / total) * 100) : 0;
+    let completionPercentage = 0;
+    try {
+      const { data: snapshots } = await supabase
+        .from('compliance_score_snapshots')
+        .select('framework_slug, compliance_score, snapshot_date')
+        .eq('organization_id', orgId)
+        .order('snapshot_date', { ascending: false })
+        .limit(50);
+      if (snapshots && snapshots.length > 0) {
+        // For each framework, take the most-recent snapshot; average across
+        // frameworks to get the org-level posture. `limit(50)` is a safety
+        // cap; a real org has a handful of frameworks.
+        const latestByFramework = new Map<string, number>();
+        for (const s of snapshots) {
+          const slug = (s.framework_slug as string) || 'unknown';
+          if (!latestByFramework.has(slug)) {
+            latestByFramework.set(
+              slug,
+              Number((s as { compliance_score?: number }).compliance_score ?? 0),
+            );
+          }
+        }
+        if (latestByFramework.size > 0) {
+          const sum = Array.from(latestByFramework.values()).reduce(
+            (acc, n) => acc + n,
+            0,
+          );
+          completionPercentage = Math.round(sum / latestByFramework.size);
+        }
+      }
+    } catch (snapErr) {
+      log.warn({ err: snapErr }, 'compliance_score_snapshots lookup failed');
+      completionPercentage = 0;
+    }
 
     const obligations = rows.slice(0, 25).map((t) => ({
       id: t.id as string,
@@ -124,7 +168,12 @@ export async function GET(request: Request) {
       overdue,
       dueSoon,
       completed,
+      // completionPercentage now reflects compliance posture (control
+      // evaluations averaged across enabled frameworks). The original
+      // task-throughput value is still exposed as `taskCompletionRate`
+      // for surfaces that genuinely want operational throughput.
       completionPercentage,
+      taskCompletionRate,
       obligations,
       deadlines,
     });
