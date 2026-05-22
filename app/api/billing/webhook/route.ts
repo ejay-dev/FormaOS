@@ -149,7 +149,7 @@ export async function POST(request: Request) {
 
       const { data: row } = await admin
         .from('org_subscriptions')
-        .select('organization_id')
+        .select('organization_id, stripe_customer_id, stripe_subscription_id')
         .eq(matchColumn, matchValue)
         .maybeSingle();
 
@@ -165,6 +165,60 @@ export async function POST(request: Request) {
 
       const targetOrgId = row?.organization_id ?? orgId;
       if (!targetOrgId || !planKey) return null;
+
+      // Audit isolation-004 (2026-05-22): when the row already binds a
+      // different Stripe customer or subscription, refuse to silently
+      // overwrite. An attacker who can stamp metadata.organization_id on
+      // a webhook-signed subscription (own Stripe account, test-mode
+      // events, replays) could rebind the victim org's billing to
+      // attacker-controlled IDs — silent entitlement / trial transfer.
+      const existingCustomer = row?.stripe_customer_id as string | null | undefined;
+      const existingSubscription = row?.stripe_subscription_id as string | null | undefined;
+      const customerDrift =
+        existingCustomer && customerId && existingCustomer !== customerId;
+      const subscriptionDrift =
+        existingSubscription &&
+        subscriptionId &&
+        existingSubscription !== subscriptionId;
+      if (customerDrift || subscriptionDrift) {
+        log.error(
+          {
+            orgId: targetOrgId,
+            existingCustomer,
+            incomingCustomer: customerId,
+            existingSubscription,
+            incomingSubscription: subscriptionId,
+            eventId: event.id,
+          },
+          '[billing/webhook] stripe identifier drift — refusing upsert',
+        );
+        // Best-effort drift record. The table may not exist in this env;
+        // when missing, the log line above is the audit trail.
+        await admin
+          .from('billing_reconciliation_log')
+          .insert({
+            organization_id: targetOrgId,
+            event_id: event.id,
+            event_type: event.type,
+            expected_customer_id: existingCustomer ?? null,
+            actual_customer_id: customerId,
+            expected_subscription_id: existingSubscription ?? null,
+            actual_subscription_id: subscriptionId,
+            reason: customerDrift ? 'customer_id_drift' : 'subscription_id_drift',
+            created_at: new Date().toISOString(),
+          })
+          .then(({ error: insertErr }) => {
+            if (insertErr) {
+              log.warn(
+                { err: insertErr.message },
+                '[billing/webhook] billing_reconciliation_log insert failed (table may not exist)',
+              );
+            }
+          });
+        // Return null so the caller treats this as a non-actionable event
+        // (status code stays 200 to Stripe so retries don't pile up).
+        return null;
+      }
 
       const currentPeriodEnd = subscription.current_period_end
         ? new Date(subscription.current_period_end * 1000).toISOString()
