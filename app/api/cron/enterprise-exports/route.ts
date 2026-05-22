@@ -54,12 +54,19 @@ async function handleEnterpriseExportsCron(request: Request) {
 
   const admin = createSupabaseAdminClient();
 
-  const { data: jobs, error } = await admin
-    .from('enterprise_export_jobs')
-    .select('id')
-    .eq('status', 'pending')
-    .order('created_at', { ascending: true })
-    .limit(batch);
+  // Audit cron-001 (2026-05-22): atomic claim via SECURITY DEFINER RPC
+  // `claim_enterprise_export_jobs` so a Vercel retry or a parallel caller
+  // (queue worker / internal-trigger endpoint) can't double-process the
+  // same pending job. Mirrors `claim_compliance_export_jobs`.
+  const workerId =
+    request.headers.get('x-vercel-id') ??
+    request.headers.get('x-formaos-worker-id') ??
+    `cron-${process.env.VERCEL_DEPLOYMENT_ID ?? 'local'}-${Date.now().toString(36)}`;
+
+  const { data: jobs, error } = await admin.rpc('claim_enterprise_export_jobs', {
+    p_limit: batch,
+    p_worker_id: workerId,
+  });
 
   if (error) {
     return NextResponse.json(
@@ -71,7 +78,7 @@ async function handleEnterpriseExportsCron(request: Request) {
   let processed = 0;
   let failed = 0;
 
-  for (const j of jobs ?? []) {
+  for (const j of (jobs ?? []) as Array<{ id: string }>) {
     processed += 1;
     const res = await processEnterpriseExportJob(j.id);
     if (!res.ok) failed += 1;
