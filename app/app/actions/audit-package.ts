@@ -79,7 +79,8 @@ export async function generateAuditPackageDataset(frameworkCode: string) {
     const frameworkRow = await safeSelect(
       supabase,
       'compliance_frameworks',
-      'id,code,title',
+      // Schema column is `name` (audit database-017). Alias for API stability.
+      'id,code,title:name',
       (q) => q.eq('code', frameworkCode).limit(1),
     );
     const framework =

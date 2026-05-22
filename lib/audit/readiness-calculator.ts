@@ -20,7 +20,10 @@ export async function calculateFrameworkReadiness(
 
   let { data: frameworks } = await admin
     .from('compliance_frameworks')
-    .select('id, code, title');
+    // Schema column is `name`; older code referenced `title` and hit prod
+    // log error "column compliance_frameworks.title does not exist" (audit
+    // database-017). Alias keeps response shape stable for consumers.
+    .select('id, code, title:name');
 
   if (!frameworks?.length) return [];
 
