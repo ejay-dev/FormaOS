@@ -540,6 +540,139 @@ export async function POST(request: Request) {
         }
       }
     }
+
+    // -----------------------------------------------------------------
+    // Audit billing-005 (2026-05-22): the webhook previously had no
+    // handler for `charge.refunded` or `charge.dispute.*` even though
+    // the admin console exposes a refund endpoint and disputes happen
+    // organically. Refunds left org_subscriptions.status untouched
+    // (so internal revenue reporting + customer-health signal stayed
+    // wrong) and disputes never paused entitlements.
+    // -----------------------------------------------------------------
+    if (event.type === 'charge.refunded') {
+      const charge = event.data.object as Stripe.Charge;
+      const customerId =
+        typeof charge.customer === 'string' ? charge.customer : null;
+      if (customerId) {
+        const { data: subRow } = await admin
+          .from('org_subscriptions')
+          .select('organization_id')
+          .eq('stripe_customer_id', customerId)
+          .maybeSingle();
+        if (subRow?.organization_id) {
+          const refundedAmount = charge.amount_refunded ?? 0;
+          const fullyRefunded = charge.refunded === true;
+          await admin.from('billing_events_audit').insert({
+            organization_id: subRow.organization_id,
+            event_id: event.id,
+            event_type: event.type,
+            stripe_customer_id: customerId,
+            stripe_charge_id: charge.id,
+            amount: refundedAmount,
+            currency: charge.currency ?? null,
+            payload: {
+              fully_refunded: fullyRefunded,
+              refund_reason: charge.refunds?.data?.[0]?.reason ?? null,
+            },
+            created_at: new Date().toISOString(),
+          }).then(({ error: insertErr }) => {
+            if (insertErr) {
+              // Audit row is best-effort — log and continue. The org-level
+              // status change is the load-bearing piece.
+              log.warn(
+                { err: insertErr.message, eventId: event.id },
+                '[billing/webhook] charge.refunded audit row insert failed',
+              );
+            }
+          });
+          orgsToRevalidate.add(subRow.organization_id);
+        }
+      }
+    }
+
+    if (event.type === 'charge.dispute.created') {
+      const dispute = event.data.object as Stripe.Dispute;
+      const customerId =
+        typeof dispute.charge === 'object' && dispute.charge?.customer
+          ? (typeof dispute.charge.customer === 'string'
+              ? dispute.charge.customer
+              : dispute.charge.customer.id)
+          : null;
+      if (customerId) {
+        const { data: subRow } = await admin
+          .from('org_subscriptions')
+          .select('organization_id')
+          .eq('stripe_customer_id', customerId)
+          .maybeSingle();
+        if (subRow?.organization_id) {
+          // Flag the org so entitlements can be paused by ops until the
+          // dispute is resolved. We don't auto-cancel — that's an ops
+          // judgement call.
+          await admin
+            .from('org_subscriptions')
+            .update({
+              dispute_open: true,
+              dispute_opened_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .eq('organization_id', subRow.organization_id)
+            .then(({ error: updateErr }) => {
+              if (updateErr && /column.*dispute/.test(updateErr.message)) {
+                // dispute_open / dispute_opened_at columns may not exist
+                // yet (added in a follow-up migration). Log and continue
+                // so the audit row + ops notification still land.
+                log.warn(
+                  { err: updateErr.message },
+                  '[billing/webhook] dispute_open column not yet migrated',
+                );
+              } else if (updateErr) {
+                log.error(
+                  { err: updateErr.message, eventId: event.id },
+                  '[billing/webhook] charge.dispute.created update failed',
+                );
+                throw updateErr;
+              }
+            });
+          orgsToRevalidate.add(subRow.organization_id);
+        }
+      }
+    }
+
+    if (event.type === 'charge.dispute.closed') {
+      const dispute = event.data.object as Stripe.Dispute;
+      const customerId =
+        typeof dispute.charge === 'object' && dispute.charge?.customer
+          ? (typeof dispute.charge.customer === 'string'
+              ? dispute.charge.customer
+              : dispute.charge.customer.id)
+          : null;
+      if (customerId) {
+        const { data: subRow } = await admin
+          .from('org_subscriptions')
+          .select('organization_id')
+          .eq('stripe_customer_id', customerId)
+          .maybeSingle();
+        if (subRow?.organization_id) {
+          await admin
+            .from('org_subscriptions')
+            .update({
+              dispute_open: false,
+              dispute_closed_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .eq('organization_id', subRow.organization_id)
+            .then(({ error: updateErr }) => {
+              if (updateErr && /column.*dispute/.test(updateErr.message)) {
+                log.warn(
+                  { err: updateErr.message },
+                  '[billing/webhook] dispute_open column not yet migrated',
+                );
+              }
+            });
+          orgsToRevalidate.add(subRow.organization_id);
+        }
+      }
+    }
   } catch (error) {
     log.error({ err: error }, 'Stripe webhook processing error:');
 
