@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rbacLogger } from '@/lib/observability/structured-logger';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { getUserOrgMembership } from '@/app/app/actions/rbac';
 
 export type AuditAction =
   | 'CREATE_ORGANIZATION'
@@ -41,6 +42,27 @@ export async function logActivity(
       console.warn(
         `[AUDIT SKIPPED] No authenticated user for action: ${action}`,
       );
+      return;
+    }
+
+    // Audit server-actions-003 (2026-05-22): the original implementation
+    // resolved the actor from session but TRUSTED the caller-supplied
+    // organizationId — so any authed user could log activity against any
+    // other tenant. Compare session-derived membership against the
+    // requested orgId before inserting.
+    let callerMembership: Awaited<ReturnType<typeof getUserOrgMembership>>;
+    try {
+      callerMembership = await getUserOrgMembership();
+    } catch (err) {
+      console.warn(`[AUDIT SKIPPED] caller has no org membership: ${action}`, err);
+      return;
+    }
+    if (callerMembership.orgId !== organizationId) {
+      rbacLogger.warn('audit_cross_org_rejected', {
+        action,
+        callerOrgId: callerMembership.orgId,
+        targetOrgId: organizationId,
+      });
       return;
     }
 

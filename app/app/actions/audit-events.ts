@@ -3,6 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { getUserOrgMembership } from '@/app/app/actions/rbac';
 
 type AuditEventInput = {
   organizationId: string;
@@ -34,6 +35,35 @@ export async function logAuditEvent(
   options: AuditEventOptions = {},
 ) {
   const required = options.required === true;
+
+  // Audit server-actions-003 (2026-05-22): this function was forgeable
+  // — any authenticated user could call it from a hostile client and
+  // inject events tagged to a victim org with a spoofed actor identity.
+  // The admin-client fallback below made the forgery RLS-proof. Gate
+  // here on the caller's session-derived org membership before any
+  // write — and only allow the admin fallback after that check passes.
+  let callerMembership: Awaited<ReturnType<typeof getUserOrgMembership>>;
+  try {
+    callerMembership = await getUserOrgMembership();
+  } catch (err) {
+    if (required) throw err;
+    console.warn('[Audit] logAuditEvent called without active session', {
+      action: payload.actionType,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return { success: false as const, error: 'Unauthorized' };
+  }
+  if (callerMembership.orgId !== payload.organizationId) {
+    const message = `Access denied: cross-organization audit write (caller org ${callerMembership.orgId} attempted to write to ${payload.organizationId})`;
+    if (required) throw new Error(message);
+    console.error('[Audit] cross-org audit write rejected', {
+      action: payload.actionType,
+      callerOrgId: callerMembership.orgId,
+      targetOrgId: payload.organizationId,
+    });
+    return { success: false as const, error: message };
+  }
+
   const supabase = await createSupabaseServerClient();
   try {
     const entityLabel = payload.entityType
