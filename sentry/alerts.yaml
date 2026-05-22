@@ -1,0 +1,249 @@
+# =============================================================================
+# FormaOS — Sentry Alert Rules (source of truth)
+# =============================================================================
+#
+# Sentry does not auto-ingest this file. It documents the alerts that SHOULD
+# exist in the Sentry dashboard. When alerts are added or changed in the
+# dashboard, update this file in the same PR so the repo stays canonical.
+#
+# SDK initialisation lives alongside:
+#   sentry.client.config.ts
+#   sentry.server.config.ts
+#   sentry.edge.config.ts
+#
+# PII scrubbing: lib/sentry/scrub-pii.ts
+# Routing: see "routing" block at the bottom of this file.
+# Owner: founder on-call (see ONCALL.md).
+#
+# Severities mirror ONCALL.md (P0–P3).
+# =============================================================================
+
+project: formaos
+environment: production
+
+defaults:
+  filters:
+    environment: production
+  conditions:
+    # Suppress alerts when a Vercel deployment is in progress; otherwise rollouts
+    # generate spurious noise as new code paths warm up.
+    deployment_in_progress: false
+
+alerts:
+
+  # ---------------------------------------------------------------------------
+  # P0 — pages the on-call founder
+  # ---------------------------------------------------------------------------
+
+  - id: billing-webhook-error-spike
+    name: "Stripe webhook error spike on /api/billing/webhook"
+    severity: P0
+    type: metric
+    conditions:
+      transaction: "/api/billing/webhook"
+      event.type: error
+      window: 5m
+      threshold: ">= 3 events"
+    rationale: |
+      The Stripe webhook is revenue-critical and idempotent. Three errors in
+      five minutes indicates a signature mismatch, idempotency-state corruption,
+      or a downstream side-effect throwing. See RUNBOOKS.md §1.
+    routes:
+      - pager
+      - slack:#incidents
+      - email:founder
+
+  - id: cross-org-audit-event
+    name: "cross_org_* audit event detected"
+    severity: P0
+    type: issue
+    conditions:
+      # rbacLogger emits domain=rbac, action prefix cross_org_* — see
+      # lib/observability/structured-logger.ts:208.
+      message: "cross_org_"
+      window: 1m
+      threshold: ">= 1 event"
+    rationale: |
+      Any cross_org_* event from rbacLogger is a multi-tenant isolation failure
+      until proven otherwise. Halt risk first, investigate second. See
+      RUNBOOKS.md §2 and §6.
+    routes:
+      - pager
+      - slack:#incidents
+      - email:founder
+
+  - id: rls-policy-violation
+    name: "Supabase RLS denial spike"
+    severity: P0
+    type: metric
+    conditions:
+      message: "new row violates row-level security policy"
+      window: 5m
+      threshold: ">= 5 events"
+    rationale: |
+      Sudden RLS denials usually mean either a migration removed a policy or
+      an attacker is probing tenant boundaries. Either way it is P0. See
+      RUNBOOKS.md §2.
+    routes:
+      - pager
+      - slack:#incidents
+
+  # ---------------------------------------------------------------------------
+  # P1 — alerts the on-call without paging
+  # ---------------------------------------------------------------------------
+
+  - id: cron-error-rate
+    name: "Cron error rate > 5% over 10 min"
+    severity: P1
+    type: metric
+    conditions:
+      transaction: "/api/cron/*"
+      event.type: error
+      window: 10m
+      threshold: "> 5% of requests"
+    rationale: |
+      Crons run reconciliation, compliance scoring, and exports. Sustained
+      failure causes silent data drift. See RUNBOOKS.md §3.
+    routes:
+      - slack:#incidents
+      - email:founder
+
+  - id: auth-failures-spike
+    name: "Auth / MFA failure spike"
+    severity: P1
+    type: issue
+    conditions:
+      message_regex: "Unauthorized|auth|session|mfa_verification_failed"
+      window: 10m
+      threshold: ">= 20 events"
+    rationale: |
+      May indicate credential stuffing, MFA brute force, or auth-infra outage.
+      See RUNBOOKS.md §4.
+    routes:
+      - slack:#incidents
+
+  - id: compliance-engine-error
+    name: "Compliance engine error spike"
+    severity: P1
+    type: issue
+    conditions:
+      message_regex: "compliance|framework|control|evaluation"
+      window: 10m
+      threshold: ">= 5 events"
+    rationale: |
+      Core product. Persistent failure here corrupts org_control_evaluations
+      and compliance_score_snapshots. See RUNBOOKS.md §7.
+    routes:
+      - slack:#engineering
+      - email:founder
+
+  - id: billing-email-crash
+    name: "sendBillingEmail crash"
+    severity: P1
+    type: issue
+    conditions:
+      stack_function: "sendBillingEmail"
+      window: 15m
+      threshold: ">= 1 event"
+    rationale: |
+      Dunning email failures silently break the billing recovery loop. See
+      RUNBOOKS.md §5.
+    routes:
+      - slack:#billing
+      - email:founder
+
+  # ---------------------------------------------------------------------------
+  # P2 — informational
+  # ---------------------------------------------------------------------------
+
+  - id: new-issue-class
+    name: "New unique error class"
+    severity: P2
+    type: issue
+    conditions:
+      first_seen: true
+      level: error
+    rationale: |
+      Surfaces newly introduced bugs immediately, even at low volume. Reviewed
+      next business day.
+    routes:
+      - slack:#engineering
+      - email:founder
+
+  - id: perf-regression
+    name: "Server transaction p95 > 3s"
+    severity: P2
+    type: metric
+    conditions:
+      transaction.op: "http.server"
+      window: 10m
+      threshold: "p95 > 3000ms"
+    rationale: |
+      Indicates a slow route or N+1 introduced in a recent deploy.
+    routes:
+      - slack:#engineering
+
+  - id: unhandled-rejection-rate
+    name: "Unhandled promise rejection spike"
+    severity: P2
+    type: issue
+    conditions:
+      mechanism: "unhandledrejection"
+      window: 15m
+      threshold: ">= 10 events"
+    rationale: |
+      Usually missing await or missing catch in async code.
+    routes:
+      - slack:#engineering
+
+  # ---------------------------------------------------------------------------
+  # P3 — operational hygiene
+  # ---------------------------------------------------------------------------
+
+  - id: sentry-quota-pressure
+    name: "Sentry quota usage > 80%"
+    severity: P3
+    type: quota
+    conditions:
+      metric: "events_consumed_pct"
+      threshold: "> 80"
+    rationale: |
+      Risk of dropping events at month-end. Either reduce tracesSampleRate
+      (currently 0.05 server, 0.10 client) or upgrade plan.
+    routes:
+      - slack:#engineering
+
+# =============================================================================
+# Routing
+# =============================================================================
+# Sentry alert "actions" are configured per-rule in the dashboard. The keys
+# below describe the intent; map them to actual integrations there.
+#
+#   pager           → Currently degrades to Sentry mobile-app push + email
+#                     (see ONCALL.md "On-Call Tooling" — TBD/Gap for true SMS).
+#                     When PagerDuty/Pushover is provisioned, swap here.
+#   slack:#<chan>   → Slack integration. Channels must exist before alert fires.
+#   email:founder   → Sentry → Settings → Members → notification email.
+# =============================================================================
+
+routing:
+  pager:
+    integration: tbd
+    fallback:
+      - sentry-mobile-push
+      - email:founder
+  slack:
+    integration: slack
+    channels:
+      "#incidents":
+        purpose: "P0/P1 — live ops"
+      "#engineering":
+        purpose: "P2/P3 — engineering backlog"
+      "#billing":
+        purpose: "Stripe / dunning"
+      "#security":
+        purpose: "Auth and isolation"
+      "#product":
+        purpose: "Onboarding / activation"
+  email:
+    founder: "from FOUNDER_EMAILS env (lib/env-validation.ts:35)"
