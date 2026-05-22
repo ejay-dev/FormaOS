@@ -18,9 +18,6 @@ begin
   if exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'org_risks') then
     execute 'alter table public.org_risks enable row level security';
   end if;
-  if exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'org_training_records') then
-    execute 'alter table public.org_training_records enable row level security';
-  end if;
   if exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = 'org_control_evaluations') then
     execute 'alter table public.org_control_evaluations enable row level security';
   end if;
@@ -358,58 +355,9 @@ using (
   )
 );
 
-drop policy if exists "org_training_records_select" on public.org_training_records;
-drop policy if exists "org_training_records_insert" on public.org_training_records;
-drop policy if exists "org_training_records_update" on public.org_training_records;
-drop policy if exists "org_training_records_delete" on public.org_training_records;
-
-create policy "org_training_records_select"
-on public.org_training_records
-for select
-using (
-  exists (
-    select 1
-    from public.org_members m
-    where m.user_id = auth.uid()
-      and m.organization_id = org_training_records.organization_id
-  )
-);
-
-create policy "org_training_records_insert"
-on public.org_training_records
-for insert
-with check (
-  exists (
-    select 1
-    from public.org_members m
-    where m.user_id = auth.uid()
-      and m.organization_id = org_training_records.organization_id
-  )
-);
-
-create policy "org_training_records_update"
-on public.org_training_records
-for update
-using (
-  exists (
-    select 1
-    from public.org_members m
-    where m.user_id = auth.uid()
-      and m.organization_id = org_training_records.organization_id
-  )
-);
-
-create policy "org_training_records_delete"
-on public.org_training_records
-for delete
-using (
-  exists (
-    select 1
-    from public.org_members m
-    where m.user_id = auth.uid()
-      and m.organization_id = org_training_records.organization_id
-  )
-);
+-- org_training_records block removed 2026-05-22 (audit v2-migration-001):
+-- the table never existed in prod and the codebase has no references to it.
+-- Keeping policies that target a missing relation broke `supabase db reset`.
 
 drop policy if exists "org_control_evaluations_select" on public.org_control_evaluations;
 drop policy if exists "org_control_evaluations_insert" on public.org_control_evaluations;
