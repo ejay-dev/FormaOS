@@ -140,29 +140,43 @@ export async function GET(request: Request) {
       compliance_controls?: {
         code?: string | null;
         framework_id?: string | null;
-        compliance_frameworks?: { slug?: string | null; name?: string | null } | null;
+        // Schema: compliance_frameworks has (id, code, name) — NO slug.
+        // Audit v2-regress-003 (2026-05-22): the v1 fix nested-selected
+        // slug from compliance_frameworks; PostgREST returned an error,
+        // the try/catch swallowed it, and the obligation framework label
+        // stayed 'Internal' — i.e. PR #116 didn't actually fix
+        // compliance-005. Pull `code` (the framework's short code) and
+        // use it both as the human-readable label fallback and as the
+        // uppercase frameworkCode.
+        compliance_frameworks?: { code?: string | null; name?: string | null } | null;
       } | null;
     };
-    type CeCountRow = { task_id: string; n: number };
+    // (CeCountRow shape kept for documentation; the actual aggregation is done
+    // inline below with a Map.)
 
     const frameworkByTask = new Map<string, { framework: string; frameworkCode: string; controlKey: string }>();
     const evidenceByTask = new Map<string, number>();
 
     if (visibleTaskIds.length > 0) {
       try {
-        const { data: ctRows } = await supabase
+        const { data: ctRows, error: ctErr } = await supabase
           .from('control_tasks')
           .select(
-            'task_id, control_id, compliance_controls(code, framework_id, compliance_frameworks(slug, name))',
+            'task_id, control_id, compliance_controls(code, framework_id, compliance_frameworks(code, name))',
           )
           .eq('organization_id', orgId)
           .in('task_id', visibleTaskIds);
+        if (ctErr) {
+          // No longer silently swallowed — log so future regressions surface
+          // in Sentry (now that obs-001 envs are live in prod).
+          log.warn({ err: ctErr.message }, 'control_tasks framework join failed');
+        }
         for (const row of ((ctRows ?? []) as unknown as CtRow[])) {
           if (!frameworkByTask.has(row.task_id)) {
             const fw = row.compliance_controls?.compliance_frameworks;
             frameworkByTask.set(row.task_id, {
-              framework: fw?.name ?? fw?.slug ?? 'Internal',
-              frameworkCode: (fw?.slug ?? 'INT').toUpperCase(),
+              framework: fw?.name ?? fw?.code ?? 'Internal',
+              frameworkCode: (fw?.code ?? 'INT').toUpperCase(),
               controlKey: row.compliance_controls?.code ?? '',
             });
           }
