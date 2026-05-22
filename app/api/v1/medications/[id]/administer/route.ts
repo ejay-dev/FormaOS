@@ -65,6 +65,41 @@ export async function POST(
         { status: 404 },
       );
 
+    // Audit isolation-005 (2026-05-22): the route previously accepted
+    // body.participant_id and body.witness_id without verifying either
+    // belongs to the caller's org. Anyone could record an administration
+    // event tagged to a victim org's participant. Verify both before
+    // accepting.
+    const participantIdToUse = body.participant_id || med.participant_id;
+    if (participantIdToUse && participantIdToUse !== med.participant_id) {
+      const { data: participant } = await supabase
+        .from('org_patients')
+        .select('id')
+        .eq('id', participantIdToUse)
+        .eq('organization_id', orgId)
+        .maybeSingle();
+      if (!participant) {
+        return NextResponse.json(
+          { error: 'participant_id does not belong to your organization' },
+          { status: 403 },
+        );
+      }
+    }
+    if (body.witness_id) {
+      const { data: witness } = await supabase
+        .from('org_members')
+        .select('user_id')
+        .eq('user_id', body.witness_id)
+        .eq('organization_id', orgId)
+        .maybeSingle();
+      if (!witness) {
+        return NextResponse.json(
+          { error: 'witness_id is not a member of your organization' },
+          { status: 403 },
+        );
+      }
+    }
+
     const status = VALID_STATUSES.has(body.status || '')
       ? body.status
       : 'given';
@@ -74,7 +109,7 @@ export async function POST(
       .insert({
         medication_id: medicationId,
         org_id: orgId,
-        participant_id: body.participant_id || med.participant_id,
+        participant_id: participantIdToUse,
         administered_by: user.id,
         administered_at: new Date().toISOString(),
         dose_given: body.dose_given || null,
