@@ -49,6 +49,7 @@ CREATE INDEX IF NOT EXISTS idx_health_scores_calculated ON public.org_health_sco
 -- RLS for health scores
 ALTER TABLE public.org_health_scores ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "health_scores_org_isolation" ON public.org_health_scores;
 CREATE POLICY "health_scores_org_isolation" ON public.org_health_scores
     FOR ALL USING (
         organization_id IN (
@@ -103,6 +104,7 @@ CREATE INDEX IF NOT EXISTS idx_deadlines_framework ON public.org_compliance_dead
 -- RLS for deadlines
 ALTER TABLE public.org_compliance_deadlines ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "deadlines_org_isolation" ON public.org_compliance_deadlines;
 CREATE POLICY "deadlines_org_isolation" ON public.org_compliance_deadlines
     FOR ALL USING (
         organization_id IN (
@@ -154,6 +156,7 @@ CREATE INDEX IF NOT EXISTS idx_trial_engagement_org ON public.org_trial_engageme
 -- RLS for trial engagement
 ALTER TABLE public.org_trial_engagement ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "trial_engagement_org_isolation" ON public.org_trial_engagement;
 CREATE POLICY "trial_engagement_org_isolation" ON public.org_trial_engagement
     FOR ALL USING (
         organization_id IN (

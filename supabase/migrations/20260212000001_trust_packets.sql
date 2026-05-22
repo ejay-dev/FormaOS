@@ -26,6 +26,7 @@ CREATE INDEX IF NOT EXISTS idx_trust_packets_expires_at ON trust_packets(expires
 ALTER TABLE trust_packets ENABLE ROW LEVEL SECURITY;
 
 -- Org members with owner/admin role can manage trust packets
+DROP POLICY IF EXISTS "Org admins can manage trust packets" ON trust_packets;
 CREATE POLICY "Org admins can manage trust packets"
   ON trust_packets
   FOR ALL
@@ -40,6 +41,7 @@ CREATE POLICY "Org admins can manage trust packets"
 
 -- Public read access for valid, non-expired, non-revoked tokens
 -- This enables the share link functionality
+DROP POLICY IF EXISTS "Valid tokens are publicly readable" ON trust_packets;
 CREATE POLICY "Valid tokens are publicly readable"
   ON trust_packets
   FOR SELECT

@@ -30,6 +30,7 @@ CREATE INDEX IF NOT EXISTS idx_org_patient_assignments_patient
 ALTER TABLE public.org_patient_assignments ENABLE ROW LEVEL SECURITY;
 
 -- Org members can view assignments within their org
+DROP POLICY IF EXISTS "org_patient_assignments_member_select" ON public.org_patient_assignments;
 CREATE POLICY "org_patient_assignments_member_select"
   ON public.org_patient_assignments
   FOR SELECT
@@ -41,6 +42,7 @@ CREATE POLICY "org_patient_assignments_member_select"
   );
 
 -- Admins and owners can manage assignments
+DROP POLICY IF EXISTS "org_patient_assignments_admin_all" ON public.org_patient_assignments;
 CREATE POLICY "org_patient_assignments_admin_all"
   ON public.org_patient_assignments
   FOR ALL
@@ -60,6 +62,7 @@ CREATE POLICY "org_patient_assignments_admin_all"
   );
 
 -- Staff can see their own assignments
+DROP POLICY IF EXISTS "org_patient_assignments_own_select" ON public.org_patient_assignments;
 CREATE POLICY "org_patient_assignments_own_select"
   ON public.org_patient_assignments
   FOR SELECT

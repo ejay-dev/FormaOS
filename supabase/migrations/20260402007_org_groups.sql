@@ -20,12 +20,14 @@ CREATE INDEX idx_org_groups_parent ON org_groups(parent_org_id);
 CREATE INDEX idx_org_group_members_group ON org_group_members(group_id);
 
 ALTER TABLE org_groups ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_groups_parent_admin" ON org_groups;
 CREATE POLICY "org_groups_parent_admin" ON org_groups
   USING (parent_org_id IN (
     SELECT organization_id FROM org_members WHERE user_id = auth.uid() AND role IN ('owner','admin')
   ));
 
 ALTER TABLE org_group_members ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "org_group_members_parent_admin" ON org_group_members;
 CREATE POLICY "org_group_members_parent_admin" ON org_group_members
   USING (group_id IN (
     SELECT id FROM org_groups WHERE parent_org_id IN (

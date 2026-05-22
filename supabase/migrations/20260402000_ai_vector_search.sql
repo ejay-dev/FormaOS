@@ -31,6 +31,7 @@ CREATE INDEX IF NOT EXISTS idx_ai_embeddings_source ON ai_document_embeddings(so
 -- RLS
 ALTER TABLE ai_document_embeddings ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "ai_embeddings_org_isolation" ON ai_document_embeddings;
 CREATE POLICY "ai_embeddings_org_isolation" ON ai_document_embeddings
   FOR ALL USING (
     org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid())
@@ -58,6 +59,7 @@ CREATE INDEX IF NOT EXISTS idx_ai_usage_user ON ai_usage_log(org_id, user_id, cr
 
 ALTER TABLE ai_usage_log ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "ai_usage_org_isolation" ON ai_usage_log;
 CREATE POLICY "ai_usage_org_isolation" ON ai_usage_log
   FOR ALL USING (
     org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid())
@@ -82,6 +84,7 @@ CREATE INDEX IF NOT EXISTS idx_ai_index_status_org ON ai_index_status(org_id, so
 
 ALTER TABLE ai_index_status ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "ai_index_status_org_isolation" ON ai_index_status;
 CREATE POLICY "ai_index_status_org_isolation" ON ai_index_status
   FOR ALL USING (
     org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid())

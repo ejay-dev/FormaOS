@@ -11,6 +11,7 @@ create table if not exists public.org_onboarding_status (
 
 alter table public.org_onboarding_status enable row level security;
 
+DROP POLICY IF EXISTS "org_onboarding_status_select" ON public.org_onboarding_status;
 create policy "org_onboarding_status_select"
   on public.org_onboarding_status
   for select
@@ -23,6 +24,7 @@ create policy "org_onboarding_status_select"
     )
   );
 
+DROP POLICY IF EXISTS "org_onboarding_status_insert" ON public.org_onboarding_status;
 create policy "org_onboarding_status_insert"
   on public.org_onboarding_status
   for insert
@@ -35,6 +37,7 @@ create policy "org_onboarding_status_insert"
     )
   );
 
+DROP POLICY IF EXISTS "org_onboarding_status_update" ON public.org_onboarding_status;
 create policy "org_onboarding_status_update"
   on public.org_onboarding_status
   for update

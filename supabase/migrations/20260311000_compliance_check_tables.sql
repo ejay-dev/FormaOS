@@ -36,9 +36,11 @@ CREATE TABLE IF NOT EXISTS org_compliance_scores (
 ALTER TABLE compliance_alerts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE org_compliance_scores ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS compliance_alerts_org ON compliance_alerts;
 CREATE POLICY compliance_alerts_org ON compliance_alerts FOR ALL
   USING (organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()));
 
+DROP POLICY IF EXISTS org_compliance_scores_org ON org_compliance_scores;
 CREATE POLICY org_compliance_scores_org ON org_compliance_scores FOR ALL
   USING (organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()));
 

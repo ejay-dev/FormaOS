@@ -41,8 +41,11 @@ ALTER TABLE scim_groups ENABLE ROW LEVEL SECURITY;
 ALTER TABLE scim_group_members ENABLE ROW LEVEL SECURITY;
 
 -- Service role can manage all SCIM tables (SCIM runs via admin client)
+DROP POLICY IF EXISTS scim_tokens_service ON scim_tokens;
 CREATE POLICY scim_tokens_service ON scim_tokens FOR ALL USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS scim_groups_service ON scim_groups;
 CREATE POLICY scim_groups_service ON scim_groups FOR ALL USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS scim_group_members_service ON scim_group_members;
 CREATE POLICY scim_group_members_service ON scim_group_members FOR ALL USING (true) WITH CHECK (true);
 
 -- Indexes

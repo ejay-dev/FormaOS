@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS push_tokens (
 CREATE INDEX idx_push_tokens_user ON push_tokens(user_id);
 
 ALTER TABLE push_tokens ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "push_tokens_own" ON push_tokens;
 CREATE POLICY "push_tokens_own" ON push_tokens
   USING (user_id = auth.uid());

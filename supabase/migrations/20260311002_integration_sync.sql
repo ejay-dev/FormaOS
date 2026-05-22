@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS integration_configs (
 
 ALTER TABLE integration_configs ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "org_members_manage_integrations" ON integration_configs;
 CREATE POLICY "org_members_manage_integrations"
   ON integration_configs
   FOR ALL
@@ -41,6 +42,7 @@ CREATE TABLE IF NOT EXISTS integration_sync_log (
 
 ALTER TABLE integration_sync_log ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "org_members_view_sync_log" ON integration_sync_log;
 CREATE POLICY "org_members_view_sync_log"
   ON integration_sync_log
   FOR SELECT
@@ -51,6 +53,7 @@ CREATE POLICY "org_members_view_sync_log"
     )
   );
 
+DROP POLICY IF EXISTS "org_admins_manage_sync_log" ON integration_sync_log;
 CREATE POLICY "org_admins_manage_sync_log"
   ON integration_sync_log
   FOR ALL

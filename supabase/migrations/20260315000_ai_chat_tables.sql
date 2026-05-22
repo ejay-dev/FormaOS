@@ -30,37 +30,44 @@ ALTER TABLE ai_chat_conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ai_chat_messages ENABLE ROW LEVEL SECURITY;
 
 -- Users can see their own conversations in their org
+DROP POLICY IF EXISTS ai_chat_conversations_select ON ai_chat_conversations;
 CREATE POLICY ai_chat_conversations_select ON ai_chat_conversations
   FOR SELECT USING (
     user_id = auth.uid() AND
     organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS ai_chat_conversations_insert ON ai_chat_conversations;
 CREATE POLICY ai_chat_conversations_insert ON ai_chat_conversations
   FOR INSERT WITH CHECK (
     user_id = auth.uid() AND
     organization_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS ai_chat_conversations_update ON ai_chat_conversations;
 CREATE POLICY ai_chat_conversations_update ON ai_chat_conversations
   FOR UPDATE USING (
     user_id = auth.uid()
   );
 
 -- Messages inherit access from conversation
+DROP POLICY IF EXISTS ai_chat_messages_select ON ai_chat_messages;
 CREATE POLICY ai_chat_messages_select ON ai_chat_messages
   FOR SELECT USING (
     conversation_id IN (SELECT id FROM ai_chat_conversations WHERE user_id = auth.uid())
   );
 
+DROP POLICY IF EXISTS ai_chat_messages_insert ON ai_chat_messages;
 CREATE POLICY ai_chat_messages_insert ON ai_chat_messages
   FOR INSERT WITH CHECK (
     conversation_id IN (SELECT id FROM ai_chat_conversations WHERE user_id = auth.uid())
   );
 
 -- Service role can always access (for API routes)
+DROP POLICY IF EXISTS ai_chat_conversations_service ON ai_chat_conversations;
 CREATE POLICY ai_chat_conversations_service ON ai_chat_conversations
   FOR ALL USING (auth.role() = 'service_role');
 
+DROP POLICY IF EXISTS ai_chat_messages_service ON ai_chat_messages;
 CREATE POLICY ai_chat_messages_service ON ai_chat_messages
   FOR ALL USING (auth.role() = 'service_role');

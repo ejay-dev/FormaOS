@@ -35,6 +35,7 @@ CREATE INDEX IF NOT EXISTS idx_team_invitations_expires_at
 ALTER TABLE public.team_invitations ENABLE ROW LEVEL SECURITY;
 
 -- Org members (owner/admin) can manage invitations for their org
+DROP POLICY IF EXISTS "team_invitations_manage_own_org" ON public.team_invitations;
 CREATE POLICY "team_invitations_manage_own_org"
   ON public.team_invitations
   FOR ALL
@@ -54,6 +55,7 @@ CREATE POLICY "team_invitations_manage_own_org"
   );
 
 -- Invited users can view their own pending invitation by email
+DROP POLICY IF EXISTS "team_invitations_view_own_by_email" ON public.team_invitations;
 CREATE POLICY "team_invitations_view_own_by_email"
   ON public.team_invitations
   FOR SELECT

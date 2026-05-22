@@ -38,6 +38,7 @@ ALTER TABLE IF EXISTS public.org_audit_events ENABLE ROW LEVEL SECURITY;
 -- =====================================================
 -- ORGANIZATIONS TABLE POLICIES
 -- =====================================================
+DROP POLICY IF EXISTS "orgs_user_isolation" ON public.organizations;
 CREATE POLICY "orgs_user_isolation"
   ON public.organizations
   FOR SELECT
@@ -53,12 +54,14 @@ CREATE POLICY "orgs_user_isolation"
 -- ORG_MEMBERS TABLE POLICIES
 -- =====================================================
 -- Users can see their own membership
+DROP POLICY IF EXISTS "members_self_access" ON public.org_members;
 CREATE POLICY "members_self_access"
   ON public.org_members
   FOR SELECT
   USING (user_id = auth.uid());
 
 -- Users can see all members in their organizations
+DROP POLICY IF EXISTS "members_org_access" ON public.org_members;
 CREATE POLICY "members_org_access"
   ON public.org_members
   FOR SELECT
@@ -71,6 +74,7 @@ CREATE POLICY "members_org_access"
   );
 
 -- Only org admins can insert members
+DROP POLICY IF EXISTS "members_admin_insert" ON public.org_members;
 CREATE POLICY "members_admin_insert"
   ON public.org_members
   FOR INSERT
@@ -83,6 +87,7 @@ CREATE POLICY "members_admin_insert"
   );
 
 -- Only org admins can update members
+DROP POLICY IF EXISTS "members_admin_update" ON public.org_members;
 CREATE POLICY "members_admin_update"
   ON public.org_members
   FOR UPDATE
@@ -95,6 +100,7 @@ CREATE POLICY "members_admin_update"
   );
 
 -- Only org admins can delete members
+DROP POLICY IF EXISTS "members_admin_delete" ON public.org_members;
 CREATE POLICY "members_admin_delete"
   ON public.org_members
   FOR DELETE
@@ -109,6 +115,7 @@ CREATE POLICY "members_admin_delete"
 -- =====================================================
 -- ORG_SUBSCRIPTIONS TABLE POLICIES
 -- =====================================================
+DROP POLICY IF EXISTS "subscriptions_org_isolation" ON public.org_subscriptions;
 CREATE POLICY "subscriptions_org_isolation"
   ON public.org_subscriptions
   FOR ALL
@@ -123,6 +130,7 @@ CREATE POLICY "subscriptions_org_isolation"
 -- =====================================================
 -- ORG_ONBOARDING_STATUS TABLE POLICIES
 -- =====================================================
+DROP POLICY IF EXISTS "onboarding_org_isolation" ON public.org_onboarding_status;
 CREATE POLICY "onboarding_org_isolation"
   ON public.org_onboarding_status
   FOR ALL
@@ -137,6 +145,7 @@ CREATE POLICY "onboarding_org_isolation"
 -- =====================================================
 -- TEAM_INVITATIONS TABLE POLICIES
 -- =====================================================
+DROP POLICY IF EXISTS "invitations_org_isolation" ON public.team_invitations;
 CREATE POLICY "invitations_org_isolation"
   ON public.team_invitations
   FOR ALL
@@ -149,6 +158,7 @@ CREATE POLICY "invitations_org_isolation"
   );
 
 -- Allow invitees to accept their own invitations
+DROP POLICY IF EXISTS "invitations_self_accept" ON public.team_invitations;
 CREATE POLICY "invitations_self_accept"
   ON public.team_invitations
   FOR UPDATE
@@ -166,6 +176,7 @@ CREATE POLICY "invitations_self_accept"
 -- =====================================================
 -- Note: org_audit_log (singular) uses org_id, not organization_id
 -- (the plural sibling org_audit_logs uses organization_id).
+DROP POLICY IF EXISTS "audit_log_org_isolation" ON public.org_audit_log;
 CREATE POLICY "audit_log_org_isolation"
   ON public.org_audit_log
   FOR SELECT
@@ -180,6 +191,7 @@ CREATE POLICY "audit_log_org_isolation"
 -- =====================================================
 -- ORG_AUDIT_EVENTS TABLE POLICIES
 -- =====================================================
+DROP POLICY IF EXISTS "audit_events_org_isolation" ON public.org_audit_events;
 CREATE POLICY "audit_events_org_isolation"
   ON public.org_audit_events
   FOR SELECT
@@ -195,6 +207,7 @@ CREATE POLICY "audit_events_org_isolation"
 -- ORG_FILES TABLE POLICIES
 -- =====================================================
 -- Note: org_files uses org_id, not organization_id.
+DROP POLICY IF EXISTS "files_org_isolation" ON public.org_files;
 CREATE POLICY "files_org_isolation"
   ON public.org_files
   FOR ALL
