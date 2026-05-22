@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
 
@@ -56,23 +57,15 @@ async function ensureLegacyOrg(
   nowIso: string,
   actions: string[],
 ) {
-  try {
-    const { error } = await admin.from('orgs').upsert(
-      {
-        id: orgId,
-        name,
-        created_by: createdBy ?? null,
-        created_at: nowIso,
-        updated_at: nowIso,
-      },
-      { onConflict: 'id' },
-    );
-    if (!error) {
-      actions.push('legacy_org_upserted');
-    }
-  } catch (error) {
-    console.error('[provisioning] legacy org upsert failed:', error);
-  }
+  // v3-010: bootstrap path — let failures surface so provisioning
+  // returns ok:false instead of silently leaving the org un-mirrored.
+  await mirrorOrgToLegacyOrgs(admin, {
+    id: orgId,
+    name,
+    createdBy: createdBy ?? null,
+    nowIso,
+  });
+  actions.push('legacy_org_upserted');
 }
 
 async function ensureOnboardingStatus(
@@ -162,14 +155,24 @@ export async function ensureOrgProvisioning(
     actions.push('plan_backfilled');
   }
 
-  await ensureLegacyOrg(
-    admin,
-    resolvedOrg.id,
-    resolvedOrg.name ?? 'Organization',
-    resolvedOrg.created_by ?? input.ownerUserId ?? null,
-    nowIso,
-    actions,
-  );
+  try {
+    await ensureLegacyOrg(
+      admin,
+      resolvedOrg.id,
+      resolvedOrg.name ?? 'Organization',
+      resolvedOrg.created_by ?? input.ownerUserId ?? null,
+      nowIso,
+      actions,
+    );
+  } catch (error) {
+    console.error('[provisioning] legacy_orgs_mirror_failed:', error);
+    return {
+      ok: false,
+      orgId: resolvedOrg.id,
+      actions,
+      error: 'legacy_orgs_mirror_failed',
+    };
+  }
   await ensureOnboardingStatus(admin, resolvedOrg.id, nowIso, actions);
 
   try {
