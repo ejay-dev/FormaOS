@@ -10,6 +10,25 @@ import { logAuditEvent } from '@/app/app/actions/audit-events';
 import { createCorrelationId } from '@/lib/security/correlation';
 import { getFrameworkCodeForSlug } from '@/lib/frameworks/framework-installer';
 import { actionError, isNextInternalError } from '@/lib/actions/safe';
+import { getUserOrgMembership } from '@/app/app/actions/rbac';
+
+/**
+ * Audit server-actions-002 (2026-05-22): the three exported compliance
+ * engine entrypoints (`evaluateFrameworkControls`, `getOrgComplianceSnapshot`,
+ * `getFrameworkCertificationReadiness`) previously trusted the
+ * caller-supplied orgId and could be invoked across tenant boundaries
+ * — leaking competitor posture or writing cross-tenant evaluation rows
+ * + notifications. Guard with session-derived membership before any work.
+ */
+async function assertCallerOwnsOrg(orgId: string) {
+  const membership = await getUserOrgMembership();
+  if (membership.orgId !== orgId) {
+    throw new Error(
+      `Access denied: cross-organization compliance request (caller=${membership.orgId}, target=${orgId})`,
+    );
+  }
+  return membership;
+}
 
 type ControlStatus =
   | 'compliant'
@@ -590,8 +609,9 @@ export async function evaluateFrameworkControls(
   frameworkCode: string,
 ) {
   try {
-    const supabase = await createSupabaseServerClient();
     if (!orgId || !frameworkCode) return null;
+    await assertCallerOwnsOrg(orgId);
+    const supabase = await createSupabaseServerClient();
     const correlationId = createCorrelationId();
     await requireEntitlement(orgId, 'framework_evaluations');
 
@@ -918,7 +938,6 @@ export async function getOrgComplianceSnapshot(
   strict: boolean = false,
 ) {
   try {
-    const supabase = await createSupabaseServerClient();
     if (!orgId) {
       return {
         overallScore: 0,
@@ -936,6 +955,8 @@ export async function getOrgComplianceSnapshot(
         },
       };
     }
+    await assertCallerOwnsOrg(orgId);
+    const supabase = await createSupabaseServerClient();
 
     const frameworks = await safeSelectFrameworks(supabase, orgId, strict);
     const controlsByFramework: Record<string, any[]> = {};
@@ -1288,6 +1309,7 @@ export async function getOrgComplianceSnapshot(
 
 export async function getFrameworkCertificationReadiness(orgId: string) {
   try {
+    await assertCallerOwnsOrg(orgId);
     const snapshot = await getOrgComplianceSnapshot(orgId);
     if ('error' in snapshot) throw new Error(snapshot.error);
     const readinessByFramework: Record<

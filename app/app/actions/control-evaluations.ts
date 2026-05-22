@@ -3,6 +3,25 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 import { actionError, isNextInternalError } from '@/lib/actions/safe';
+import { getUserOrgMembership } from '@/app/app/actions/rbac';
+
+/**
+ * Audit server-actions-001 (2026-05-22): every exported function in this
+ * 'use server' file previously trusted the caller-supplied orgId. A
+ * hostile authenticated client could call them against any tenant's
+ * orgId. This guard runs at the top of each entrypoint so the orgId
+ * argument is rejected unless the caller's own session resolves to that
+ * same org.
+ */
+async function assertCallerOwnsOrg(orgId: string) {
+  const membership = await getUserOrgMembership();
+  if (membership.orgId !== orgId) {
+    throw new Error(
+      `Access denied: cross-organization compliance request (caller=${membership.orgId}, target=${orgId})`,
+    );
+  }
+  return membership;
+}
 
 type ControlStatus = 'compliant' | 'non_compliant' | 'at_risk';
 
@@ -295,8 +314,9 @@ async function logEvaluationAudit(
 
 export async function evaluateOrgCompliance(orgId: string) {
   try {
-    const supabase = await createSupabaseServerClient();
     if (!orgId) return;
+    await assertCallerOwnsOrg(orgId);
+    const supabase = await createSupabaseServerClient();
 
     const evaluatedAt = new Date().toISOString();
     const [tasks, evidence, policies] = await Promise.all([
@@ -439,7 +459,6 @@ export async function evaluateOrgCompliance(orgId: string) {
 
 export async function fetchComplianceSummary(orgId: string) {
   try {
-    const supabase = await createSupabaseServerClient();
     if (!orgId) {
       return {
         total: 0,
@@ -449,6 +468,8 @@ export async function fetchComplianceSummary(orgId: string) {
         requiredNonCompliant: 0,
       };
     }
+    await assertCallerOwnsOrg(orgId);
+    const supabase = await createSupabaseServerClient();
 
     try {
       const { data, error } = await supabase
@@ -506,10 +527,11 @@ export async function fetchComplianceSummary(orgId: string) {
 
 export async function fetchComplianceSummaryStrict(orgId: string) {
   try {
-    const supabase = await createSupabaseServerClient();
     if (!orgId) {
       throw new Error('Organization context missing');
     }
+    await assertCallerOwnsOrg(orgId);
+    const supabase = await createSupabaseServerClient();
 
     const { data, error } = await supabase
       .from('org_control_evaluations')
