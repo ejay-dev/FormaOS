@@ -147,20 +147,32 @@ export async function POST(request: Request) {
       const matchColumn = orgId ? 'organization_id' : 'stripe_subscription_id';
       const matchValue = orgId ?? subscriptionId;
 
-      const { data: row } = await admin
+      type OrgSubRow = {
+        organization_id: string;
+        stripe_customer_id: string | null;
+        stripe_subscription_id: string | null;
+      };
+      const initial = await admin
         .from('org_subscriptions')
         .select('organization_id, stripe_customer_id, stripe_subscription_id')
         .eq(matchColumn, matchValue)
         .maybeSingle();
+      let row: OrgSubRow | null = (initial.data as OrgSubRow | null) ?? null;
 
+      // Audit v2-regress-004 (2026-05-22): the customer-fallback branch
+      // resolved an organization_id but never rebound `row`, so the drift
+      // check below ran against the original (empty) row and missed every
+      // case where the org was found via stripe_customer_id. Rebind so
+      // drift detection actually runs.
       if (!row?.organization_id && !orgId) {
         const { data: byCustomer } = await admin
           .from('org_subscriptions')
-          .select('organization_id')
+          .select('organization_id, stripe_customer_id, stripe_subscription_id')
           .eq('stripe_customer_id', customerId)
           .maybeSingle();
 
         if (!byCustomer?.organization_id) return null;
+        row = byCustomer as OrgSubRow;
       }
 
       const targetOrgId = row?.organization_id ?? orgId;
@@ -192,26 +204,40 @@ export async function POST(request: Request) {
           },
           '[billing/webhook] stripe identifier drift — refusing upsert',
         );
-        // Best-effort drift record. The table may not exist in this env;
-        // when missing, the log line above is the audit trail.
-        await admin
-          .from('billing_reconciliation_log')
-          .insert({
-            organization_id: targetOrgId,
+        // Audit v2-regress-001 (2026-05-22): the v1 fix wrote columns
+        // (event_id, event_type, expected_customer_id, …) that don't exist
+        // in the deployed billing_reconciliation_log schema. The table
+        // actually exposes (organization_id, discrepancy_type, local_value,
+        // stripe_value, notes, checked_at). Pack the per-event detail into
+        // local_value / stripe_value jsonb fields so we don't lose data.
+        const driftPayload = {
+          organization_id: targetOrgId,
+          discrepancy_type: customerDrift
+            ? 'stripe_customer_id_drift'
+            : 'stripe_subscription_id_drift',
+          local_value: {
+            stripe_customer_id: existingCustomer ?? null,
+            stripe_subscription_id: existingSubscription ?? null,
+          },
+          stripe_value: {
+            stripe_customer_id: customerId,
+            stripe_subscription_id: subscriptionId,
             event_id: event.id,
             event_type: event.type,
-            expected_customer_id: existingCustomer ?? null,
-            actual_customer_id: customerId,
-            expected_subscription_id: existingSubscription ?? null,
-            actual_subscription_id: subscriptionId,
-            reason: customerDrift ? 'customer_id_drift' : 'subscription_id_drift',
-            created_at: new Date().toISOString(),
-          })
+          },
+          notes: customerDrift
+            ? 'webhook upsert refused — customer id drift'
+            : 'webhook upsert refused — subscription id drift',
+          checked_at: new Date().toISOString(),
+        };
+        await admin
+          .from('billing_reconciliation_log')
+          .insert(driftPayload)
           .then(({ error: insertErr }) => {
             if (insertErr) {
               log.warn(
                 { err: insertErr.message },
-                '[billing/webhook] billing_reconciliation_log insert failed (table may not exist)',
+                '[billing/webhook] billing_reconciliation_log insert failed',
               );
             }
           });
