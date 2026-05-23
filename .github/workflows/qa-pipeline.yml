@@ -356,20 +356,46 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+
+      # v4-031: lighthouse-ci's startServerCommand runs `npm run build &&
+      # npm run start`. If NEXT_PUBLIC_SUPABASE_URL is missing or empty,
+      # `npm run prestart` fails (check-env strict) or the SSR boot
+      # throws on first request, Lighthouse's Chrome hits a dead port,
+      # and the job fails with CHROME_INTERSTITIAL_ERROR. That failure
+      # is environmental — not signal about the code under test. Gate
+      # the whole job on the secret being present (same pattern as
+      # Snyk above); when configured the gate IS blocking.
+      - name: Check Supabase env availability
+        id: supabase-env-check
+        env:
+          SUPA_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
+          SUPA_ANON: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
+        run: |
+          if [ -n "$SUPA_URL" ] && [ -n "$SUPA_ANON" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY not configured — skipping Lighthouse (a prod build needs them to serve /)"
+          fi
+
       - name: Build application
+        if: steps.supabase-env-check.outputs.available == 'true'
         run: npm run build
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
       # lighthouse-ci startServerCommand runs `npm run start` against the built app
-      - run: npm run test:lighthouse
+      - name: Run Lighthouse CI
+        if: steps.supabase-env-check.outputs.available == 'true'
+        run: npm run test:lighthouse
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
 
       - name: Bundle size check
+        if: steps.supabase-env-check.outputs.available == 'true'
         run: |
           npm run build
           echo "Checking bundle size..."
@@ -381,6 +407,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Lighthouse Report
+        if: steps.supabase-env-check.outputs.available == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse-report
