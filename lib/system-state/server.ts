@@ -5,6 +5,7 @@ import { unstable_cache } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
+import { getGracePeriodStatus } from '@/lib/billing/grace-period';
 import { normalizeRole, type RoleKey } from '@/app/app/actions/rbac';
 import {
   ensureOrgProvisioning,
@@ -115,6 +116,13 @@ export interface SubscriptionData {
   stripeCustomerId: string | null;
   stripeSubscriptionId: string | null;
   currentPeriodEnd: string | null;
+  // Audit 2026-05-23: surface grace-period state so the UI and the
+  // server-action write guard (lib/billing/enforce-grace-period.ts)
+  // share a single computation. `isReadOnly` is true only after the
+  // 3-day grace window has elapsed; `gracePeriodDaysRemaining` is
+  // useful for inline banners during the window.
+  isReadOnly: boolean;
+  gracePeriodDaysRemaining: number;
 }
 
 /**
@@ -150,7 +158,8 @@ async function getSubscriptionDataFresh(
       stripe_subscription_id,
       current_period_end,
       trial_started_at,
-      trial_expires_at
+      trial_expires_at,
+      payment_failed_at
     `,
     )
     .eq('organization_id', orgId)
@@ -177,6 +186,11 @@ async function getSubscriptionDataFresh(
       : 0;
   }
 
+  const grace = getGracePeriodStatus({
+    status,
+    payment_failed_at: data.payment_failed_at ?? null,
+  });
+
   return {
     planKey,
     planTier,
@@ -186,6 +200,8 @@ async function getSubscriptionDataFresh(
     stripeCustomerId: data.stripe_customer_id ?? null,
     stripeSubscriptionId: data.stripe_subscription_id ?? null,
     currentPeriodEnd: data.current_period_end ?? null,
+    isReadOnly: grace.isReadOnly,
+    gracePeriodDaysRemaining: grace.daysRemaining,
   };
 }
 

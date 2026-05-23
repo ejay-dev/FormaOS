@@ -5,6 +5,16 @@ import {
 } from '@/lib/email/unsubscribe-token';
 import { getResendClient, getFromEmail } from '@/lib/email/resend-client';
 import { billingLogger } from '@/lib/observability/structured-logger';
+import { PLAN_CATALOG, type PlanKey } from '@/lib/plans';
+
+// Audit 2026-05-23: trial-expiring template hardcoded $159/$239/$399 while
+// the catalog is $297/$797/$1800. Pull from the single source of truth.
+const TRIAL_EMAIL_PLAN_ORDER: readonly PlanKey[] = ['basic', 'pro', 'scale'];
+
+function renderTrialPriceRow(plan: PlanKey): string {
+  const config = PLAN_CATALOG[plan];
+  return `<p style="color:#e2e8f0;font-size:14px;margin:4px 0;">${escapeHtml(config.name)} — $${config.priceMonthly}/mo</p>`;
+}
 
 function buildUnsubscribePostUrl(baseUrl: string, userId: string): string {
   const token = generateUnsubscribeToken(userId);
@@ -144,9 +154,7 @@ function buildEmailHtml(
         <h1 style="color:#f1f5f9;font-size:22px;">Your trial ends in 3 days</h1>
         <p style="color:#94a3b8;font-size:15px;line-height:1.7;">Your ${appName} trial is about to expire. Upgrade now to keep all your compliance data and continue building your posture.</p>
         <div style="background:#0f172a;border:1px solid rgba(34,211,238,0.15);border-radius:10px;padding:16px 20px;margin:20px 0;">
-          <p style="color:#e2e8f0;font-size:14px;margin:4px 0;">Starter — $159/mo</p>
-          <p style="color:#e2e8f0;font-size:14px;margin:4px 0;">Professional — $239/mo</p>
-          <p style="color:#e2e8f0;font-size:14px;margin:4px 0;">Enterprise — $399/mo</p>
+          ${TRIAL_EMAIL_PLAN_ORDER.map(renderTrialPriceRow).join('\n          ')}
         </div>
         <div style="margin:24px 0;text-align:center;">
           <a href="${escapeHtml(billingUrl)}" style="display:inline-block;padding:14px 32px;background:#22d3ee;border-radius:8px;color:#0f172a;font-size:15px;font-weight:700;text-decoration:none;">Upgrade Now →</a>
