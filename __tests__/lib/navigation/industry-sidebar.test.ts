@@ -74,60 +74,72 @@ describe('navigation config arrays', () => {
 });
 
 describe('getIndustryNavigation', () => {
+  // v4-031: `getIndustryNavigation` now runs the selected nav through
+  // `withOrphanChildren()` which returns a new array (same top-level
+  // items, with sub-nav `children` augmented from
+  // ORPHAN_ROUTE_CHILDREN). `.toBe` reference equality is no longer
+  // appropriate; assert structural identity via hrefs instead, which
+  // proves "you selected the right nav" without coupling to the
+  // children augmentation.
+  function expectSameTopLevelItems(actual: NavItem[], expected: NavItem[]) {
+    expect(actual.map((i) => i.href)).toEqual(expected.map((i) => i.href));
+    expect(actual.map((i) => i.name)).toEqual(expected.map((i) => i.name));
+  }
+
   it('returns NDIS nav for ndis industry', () => {
     const result = getIndustryNavigation('ndis', 'owner');
-    expect(result.navigation).toBe(NDIS_NAV);
+    expectSameTopLevelItems(result.navigation, NDIS_NAV);
     expect(result.categories.length).toBeGreaterThan(0);
   });
 
   it('returns healthcare nav', () => {
     const result = getIndustryNavigation('healthcare', 'admin');
-    expect(result.navigation).toBe(HEALTHCARE_NAV);
+    expectSameTopLevelItems(result.navigation, HEALTHCARE_NAV);
   });
 
   it('returns aged_care nav', () => {
     const result = getIndustryNavigation('aged_care', 'owner');
-    expect(result.navigation).toBe(AGED_CARE_NAV);
+    expectSameTopLevelItems(result.navigation, AGED_CARE_NAV);
   });
 
   it('returns childcare nav', () => {
     const result = getIndustryNavigation('childcare', 'owner');
-    expect(result.navigation).toBe(CHILDCARE_NAV);
+    expectSameTopLevelItems(result.navigation, CHILDCARE_NAV);
   });
 
   it('returns community_services nav', () => {
     const result = getIndustryNavigation('community_services', 'owner');
-    expect(result.navigation).toBe(COMMUNITY_SERVICES_NAV);
+    expectSameTopLevelItems(result.navigation, COMMUNITY_SERVICES_NAV);
   });
 
   it('returns financial_services nav', () => {
     const result = getIndustryNavigation('financial_services', 'owner');
-    expect(result.navigation).toBe(FINANCIAL_SERVICES_NAV);
+    expectSameTopLevelItems(result.navigation, FINANCIAL_SERVICES_NAV);
   });
 
   it('returns saas_technology nav', () => {
     const result = getIndustryNavigation('saas_technology', 'owner');
-    expect(result.navigation).toBe(SAAS_TECHNOLOGY_NAV);
+    expectSameTopLevelItems(result.navigation, SAAS_TECHNOLOGY_NAV);
   });
 
   it('returns enterprise nav', () => {
     const result = getIndustryNavigation('enterprise', 'owner');
-    expect(result.navigation).toBe(ENTERPRISE_NAV);
+    expectSameTopLevelItems(result.navigation, ENTERPRISE_NAV);
   });
 
   it('returns default nav for unknown industry', () => {
     const result = getIndustryNavigation('unknown', 'owner');
-    expect(result.navigation).toBe(DEFAULT_ADMIN_NAV);
+    expectSameTopLevelItems(result.navigation, DEFAULT_ADMIN_NAV);
   });
 
   it('returns default nav for null industry', () => {
     const result = getIndustryNavigation(null, 'owner');
-    expect(result.navigation).toBe(DEFAULT_ADMIN_NAV);
+    expectSameTopLevelItems(result.navigation, DEFAULT_ADMIN_NAV);
   });
 
   it('returns default nav for undefined industry', () => {
     const result = getIndustryNavigation(undefined, 'owner');
-    expect(result.navigation).toBe(DEFAULT_ADMIN_NAV);
+    expectSameTopLevelItems(result.navigation, DEFAULT_ADMIN_NAV);
   });
 
   it('returns staff nav for member role', () => {

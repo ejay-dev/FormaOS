@@ -10,6 +10,7 @@ import {
   RecordCard,
   RecordList,
 } from "@/components/mobile/record-card";
+import { TeamEmptyState } from "@/components/empty-states";
 
 type EntitlementRow = {
   feature_key: string;
@@ -165,6 +166,11 @@ export default async function TeamPage() {
           <Users className="h-3.5 w-3.5" />
           Active Members ({memberRows.length})
         </h2>
+        {memberRows.length === 0 ? (
+          <div className="rounded-lg border border-border bg-card">
+            <TeamEmptyState />
+          </div>
+        ) : null}
         {/* Mobile cards */}
         <div className="md:hidden">
           <RecordList>

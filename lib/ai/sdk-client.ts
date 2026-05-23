@@ -3,6 +3,7 @@ import 'server-only';
 import { generateText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { observeServerFn } from '@/lib/observability/langfuse';
+import { isAIKillSwitchEnabled as killSwitchEnabled } from './kill-switch';
 
 interface GenerateAITextOptions {
   name: string;
@@ -21,10 +22,13 @@ const DEFAULT_MODEL = process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini';
  * pulled from a secret manager that's not fast to rotate). When
  * the switch is on, every isAIConfigured / isAISDKConfigured
  * caller returns false and downstream code short-circuits.
+ *
+ * v4-031: implementation moved to ./kill-switch (a zero-dependency
+ * module) so non-SDK callers can import without pulling the `ai`
+ * package transitively. This re-export preserves the original
+ * public API.
  */
-export function isAIKillSwitchEnabled(): boolean {
-  return process.env.AI_KILL_SWITCH === 'true';
-}
+export const isAIKillSwitchEnabled = killSwitchEnabled;
 
 export function isAISDKConfigured(): boolean {
   if (isAIKillSwitchEnabled()) return false;

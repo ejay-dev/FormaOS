@@ -12,17 +12,11 @@ import {
   planCodeForBilling,
   shouldOpenBillingPortalForCheckout,
 } from '@/lib/billing/checkout-routing';
+import { isBillingRole } from '@/lib/roles';
 
 type BillingActionResult =
   | { success: true; url: string }
   | { success: false; error: string; status?: string };
-
-// v4-025: owner-only by design — the documented intent in lib/roles.ts
-// is that admins have policy/control rights but NOT billing access.
-// The route-level checkout/portal endpoints already restrict to
-// {owner}; this server-action used to allow {owner, admin}, leading
-// to admins succeeding in the UI flow and 403-ing on the round-trip.
-const BILLING_ROLES = new Set(['owner']);
 
 function billingActionError(
   error: string,
@@ -64,7 +58,7 @@ export async function startCheckout(
     }
 
     const role = (membership.role as string | null)?.toLowerCase() ?? '';
-    if (!BILLING_ROLES.has(role)) {
+    if (!isBillingRole(role)) {
       return billingActionError(
         'Only organization owners and admins can manage billing.',
         'forbidden',
@@ -193,6 +187,13 @@ export async function startCheckout(
             },
           },
           automatic_tax: { enabled: true },
+          // v4-031: enable ABN/tax ID capture for AU + parity with the
+          // /api/billing/checkout route, so users in the UI flow can
+          // claim GST on invoices the same way the API path supports.
+          tax_id_collection: { enabled: true },
+          ...(customerId
+            ? { customer_update: { address: 'auto', name: 'auto' } }
+            : {}),
           allow_promotion_codes: true,
           success_url: `${appBase}/app`,
           cancel_url: `${siteBase}/pricing`,
@@ -272,7 +273,7 @@ export async function openCustomerPortal(): Promise<BillingActionResult> {
     }
 
     const role = (membership.role as string | null)?.toLowerCase() ?? '';
-    if (!BILLING_ROLES.has(role)) {
+    if (!isBillingRole(role)) {
       return billingActionError(
         'Only organization owners and admins can manage billing.',
         'forbidden',

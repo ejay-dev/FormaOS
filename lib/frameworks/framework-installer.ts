@@ -7,11 +7,21 @@ import {
   riskWeightFromLevel,
 } from './compliance-controls-schema';
 
+// v4-031: legacy `iso27001` pack (10 controls, 0 wired evaluators) is
+// kept as a deprecated alias of `iso27001-2022` (93 controls, full
+// evaluator coverage). Requests for the legacy slug are transparently
+// redirected; `ensureFrameworkPacksInstalled` no longer installs it.
+// `soc2` is intentionally retained in PACK_REGISTRY — it has 9 wired
+// evaluators and is the current/canonical SOC2 implementation for
+// existing orgs; `soc2-tsc` is the explicit TSC-organised variant.
+export const DEPRECATED_PACK_SLUGS: Record<string, string> = {
+  iso27001: 'iso27001-2022',
+};
+
 const PACK_REGISTRY = [
   { slug: 'nist-csf', file: 'nist-csf.json', code: 'NIST_CSF' },
   { slug: 'cis-controls', file: 'cis-controls.json', code: 'CIS_CONTROLS' },
   { slug: 'soc2', file: 'soc2.json', code: 'SOC2' },
-  { slug: 'iso27001', file: 'iso27001.json', code: 'ISO27001' },
   { slug: 'soc2-tsc', file: 'soc2-tsc.json', code: 'SOC2_TSC' },
   { slug: 'iso27001-2022', file: 'iso27001-2022.json', code: 'ISO27001_2022' },
   { slug: 'gdpr', file: 'gdpr.json', code: 'GDPR' },
@@ -186,12 +196,23 @@ export async function ensureFrameworkPacksInstalled() {
 }
 
 export async function installFrameworkPack(slug: string) {
-  const filePath = getPackFileForSlug(slug);
+  // v4-031: transparently redirect deprecated slug requests to the
+  // current pack. Existing call sites that ask for `iso27001` or
+  // `soc2` get the 2022 / TSC pack installed instead — without this
+  // they would hit the "Unknown framework pack" error below since
+  // PACK_REGISTRY no longer contains the legacy entries.
+  const resolved = DEPRECATED_PACK_SLUGS[slug] ?? slug;
+  if (resolved !== slug) {
+    console.warn(
+      `[framework-installer] legacy pack slug "${slug}" redirected to "${resolved}"`,
+    );
+  }
+  const filePath = getPackFileForSlug(resolved);
   if (!filePath) {
     throw new Error(`Unknown framework pack: ${slug}`);
   }
 
   const admin = createSupabaseAdminClient();
   await loadFrameworkPack({ path: filePath }, { adminClient: admin });
-  await syncComplianceFramework(slug, admin);
+  await syncComplianceFramework(resolved, admin);
 }

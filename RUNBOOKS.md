@@ -216,3 +216,22 @@ For severity classification and rotation, see `ONCALL.md`. For coordinated discl
 **Post-incident.**
 - Add the IdP cert expiry to the daily compliance-check cron's warning surface.
 - Document the customer-specific quirk (Okta vs Azure AD vs OneLogin) in `docs/sso/<vendor>.md` if not already present.
+
+---
+
+## 9. Provisioning a Vercel log drain (TODO — operator action)
+
+**Why this matters.** Vercel function logs roll off in 1–24 hours depending on plan. When a cron silently fails at 2 AM and we discover it at 9 AM the next day, the failure log is gone and we lose root-cause signal. A log drain ships every log line to a long-term store (Axiom, Datadog, BetterStack/Logtail) where we can grep weeks back.
+
+**This cannot be configured via `vercel.json`** — Vercel only supports log drains via the dashboard or API token. Steps:
+
+1. **Pick a provider.** Recommended in order of fit:
+   - **Axiom** — generous free tier (0.5 GB/day), Vercel-native integration, good for our volume.
+   - **BetterStack / Logtail** — solid alternative; cheap paid plans.
+   - **Datadog** — only if you're already paying for it; overkill for log-drain only.
+2. **Provider side.** Create an org, generate an ingest token (Axiom: `Settings → API tokens → Create ingest token`). Copy token + ingest URL.
+3. **Vercel side.** Dashboard → Project → Settings → Log Drains → Add. Paste URL, select `json` format, scope to `production` (or all environments). Vercel signs requests so the receiver can verify.
+4. **Verify.** Trigger a known log line (e.g. a 4xx on `/api/health?force=400`), wait ~30s, search receiver for the request id.
+5. **Document.** Add provider + token rotation date to `docs/ops/credentials-rotation.md`.
+
+**Smoke test for drift.** Once a quarter, run a manual cron with `?probe=1`, then confirm the entry appears in the log store within 5 minutes. If not: drain has detached, re-add it.

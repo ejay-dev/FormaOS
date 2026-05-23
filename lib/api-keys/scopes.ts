@@ -25,6 +25,7 @@ export const API_KEY_SCOPES = [
   'integrations:read',
   'integrations:write',
   'search:read',
+  'search:write',
   'ai:read',
 ] as const;
 
@@ -67,6 +68,7 @@ const SCOPE_IMPLICATIONS: Partial<Record<ApiKeyScope, ApiKeyScope[]>> = {
   'forms:write': ['forms:read'],
   'evidence:write': ['evidence:read'],
   'reports:write': ['reports:read'],
+  'search:write': ['search:read'],
   'members:write': ['members:read'],
   'notifications:write': ['notifications:read'],
   'integrations:write': ['integrations:read'],

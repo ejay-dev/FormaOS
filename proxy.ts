@@ -14,8 +14,22 @@ if (process.env.STRICT_ENV_VALIDATION === 'true') {
 // ---------------------------------------------------------------------------
 // Provides a baseline rate limit for ALL /api/* routes at the middleware level.
 // Individual routes may apply stricter limits via Redis-backed rate limiting.
+//
+// v4-031: documented limitation. This in-memory Map is per-edge-isolate, so
+// the effective per-IP cap is `API_RATE_MAX_REQUESTS × N(isolates)`. Accepted
+// tradeoff today:
+//   1. Vercel platform-level DDoS protection sits in front of this and
+//      catches the abusive scale.
+//   2. Per-route Redis-backed limiters (lib/security/rate-limiter.ts) cover
+//      the auth / signup / billing-webhook surfaces that actually need a
+//      strict global bucket.
+//   3. A Redis-backed edge limiter would add a per-request round-trip to
+//      Upstash on EVERY /api/* call — meaningful cold-start + p99 cost.
+// Revisit when (a) abuse traffic shows up that bypasses Vercel's WAF, or
+// (b) we have a strong reason to enforce a strict global cap (e.g. AI
+// cost containment beyond the per-route caps already in place).
 const API_RATE_WINDOW_MS = 60_000; // 1 minute
-const API_RATE_MAX_REQUESTS = 120; // 120 req/min per IP
+const API_RATE_MAX_REQUESTS = 120; // 120 req/min per IP per isolate
 const E2E_RATE_LIMIT_BYPASS_COOKIE = 'fos_e2e';
 const E2E_RATE_LIMIT_BYPASS_HEADER = 'x-formaos-e2e';
 const apiRateBuckets = new Map<
@@ -349,10 +363,24 @@ export async function proxy(request: NextRequest) {
     ];
 
     if (pathname.startsWith('/api/')) {
-      // Global API rate limit (edge-compatible, per-IP)
+      // Global API rate limit (edge-compatible, per-IP).
+      // v4-031: use the same signed-proxy preference order as
+      // `lib/ratelimit.ts#getClientIp` (Vercel → Cloudflare → x-fwd-for
+      // only when TRUST_PROXY=true). The bucket map is per-isolate, so
+      // this remains best-effort — see lib/ratelimit for the Redis-
+      // backed per-route limiter — but stops trivial header spoof.
+      const sanitize = (raw: string | null): string | null => {
+        if (!raw) return null;
+        const first = raw.split(',')[0].trim();
+        const noZone = first.includes('%') ? first.split('%')[0] : first;
+        return noZone || null;
+      };
+      const trustProxy = process.env.TRUST_PROXY === 'true';
       const clientIp =
-        request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-        request.headers.get('x-real-ip') ||
+        sanitize(request.headers.get('x-vercel-forwarded-for')) ||
+        sanitize(request.headers.get('cf-connecting-ip')) ||
+        (trustProxy ? sanitize(request.headers.get('x-forwarded-for')) : null) ||
+        (trustProxy ? sanitize(request.headers.get('x-real-ip')) : null) ||
         'unknown';
       if (
         !isLocalE2ERateLimitBypass(request) &&
@@ -832,6 +860,10 @@ export async function proxy(request: NextRequest) {
         "font-src 'self' data: https://fonts.gstatic.com",
         "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com",
         "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+        // v4-031: modern clickjacking gate. X-Frame-Options: DENY is also
+        // set above; frame-ancestors is the CSP-native replacement and
+        // is what newer browsers respect when both are present.
+        "frame-ancestors 'none'",
         "worker-src 'self' blob:",
         "object-src 'none'",
         "base-uri 'self'",

@@ -12,6 +12,7 @@ import {
   ChainIntegrityBadge,
   AuditExportPanel,
 } from '@/components/audit/audit-trail-enhanced';
+import { EmptyState } from '@/components/empty-states';
 import { Shield, Activity, Download, Hash } from 'lucide-react';
 
 export const metadata = { title: 'Audit Trail | FormaOS' };
@@ -109,7 +110,18 @@ export default async function AuditTrailPage() {
           <h2 className="text-sm font-semibold text-foreground mb-3">
             Activity Log
           </h2>
-          <AuditTrailViewer entries={entries} total={total} />
+          {entries.length === 0 ? (
+            <div className="rounded-lg border border-border bg-card">
+              <EmptyState
+                module="audit"
+                icon={Shield}
+                title="No audit entries yet"
+                description="The audit log records every mutation to compliance, care, and security data with tamper-evident hash chaining. Entries appear here as your team works."
+              />
+            </div>
+          ) : (
+            <AuditTrailViewer entries={entries} total={total} />
+          )}
         </div>
         <div>
           <h2 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">

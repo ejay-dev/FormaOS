@@ -4,13 +4,24 @@ import {
   HEALTHCARE_NAV,
   STAFF_NAV,
   getIndustryNavigation,
+  type NavItem,
 } from '@/lib/navigation/industry-sidebar';
+
+// v4-031: getIndustryNavigation now runs the selected nav through
+// withOrphanChildren() which augments parent items with sub-nav
+// `children` from the ORPHAN_ROUTE_CHILDREN map. Top-level identity
+// is unchanged (same hrefs, same testIds), so structural-by-href is
+// the right assertion. Children augmentation has its own test.
+function expectSameTopLevelItems(actual: NavItem[], expected: NavItem[]) {
+  expect(actual.map((i) => i.href)).toEqual(expected.map((i) => i.href));
+  expect(actual.map((i) => i.testId)).toEqual(expected.map((i) => i.testId));
+}
 
 describe('getIndustryNavigation', () => {
   it('returns healthcare admin navigation for employer roles', () => {
     const result = getIndustryNavigation('healthcare', 'owner');
 
-    expect(result.navigation).toEqual(HEALTHCARE_NAV);
+    expectSameTopLevelItems(result.navigation, HEALTHCARE_NAV);
     expect(result.categories).toEqual([
       'Overview',
       'Compliance',
@@ -31,7 +42,7 @@ describe('getIndustryNavigation', () => {
   it('returns enterprise navigation for admin roles in enterprise workspaces', () => {
     const result = getIndustryNavigation('enterprise', 'admin');
 
-    expect(result.navigation).toEqual(ENTERPRISE_NAV);
+    expectSameTopLevelItems(result.navigation, ENTERPRISE_NAV);
     expect(
       result.navigation.some((item) => item.testId === 'nav-executive'),
     ).toBe(true);
@@ -44,6 +55,7 @@ describe('getIndustryNavigation', () => {
     const healthcareMember = getIndustryNavigation('healthcare', 'member');
     const enterpriseViewer = getIndustryNavigation('enterprise', 'viewer');
 
+    // Staff nav is returned by-reference (no orphan augmentation).
     expect(healthcareMember.navigation).toEqual(STAFF_NAV);
     expect(healthcareMember.categories).toEqual(['Overview', 'Operations']);
     expect(
@@ -63,7 +75,7 @@ describe('getIndustryNavigation', () => {
   it('falls back to the default admin navigation for unknown industries', () => {
     const result = getIndustryNavigation('unknown-industry', 'owner');
 
-    expect(result.navigation).toEqual(DEFAULT_ADMIN_NAV);
+    expectSameTopLevelItems(result.navigation, DEFAULT_ADMIN_NAV);
     expect(
       result.navigation.some((item) => item.testId === 'nav-policies'),
     ).toBe(true);

@@ -1,307 +1,77 @@
 /**
- * k6 Performance Testing Script for FormaOS
- * Tests various performance scenarios with detailed metrics
+ * k6 Performance Testing Script for FormaOS — v4-031 rewrite.
+ *
+ * The previous version POSTed to /api/policies, /api/tasks, /api/team,
+ * /api/notifications and signed in via /api/auth/signin. None of those
+ * paths exist under that shape: mutating endpoints live under
+ * /api/v1/* and require Bearer fos_… API keys, not session cookies.
+ * The harness reported `error_rate` at 100% silently because the
+ * assertion was `[200,201].includes(status)` and never blocked the
+ * run.
+ *
+ * This rewrite exercises only public read endpoints that actually
+ * exist (parity with load-tests/public.js): marketing pages and the
+ * /api/health surface. Mutating-path load coverage belongs in
+ * load-tests/dashboard.js + load-tests/exports.js (authenticated via
+ * FORMAOS_AUTH_COOKIE), not here.
  */
 
 import http from 'k6/http';
 import { check, group, sleep } from 'k6';
-import { Counter, Rate, Trend } from 'k6/metrics';
-import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
-import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
+import { Rate, Trend } from 'k6/metrics';
 
-// Custom metrics
-const loginDuration = new Trend('login_duration');
-const dashboardLoadTime = new Trend('dashboard_load_time');
-const apiResponseTime = new Trend('api_response_time');
+const homepageDuration = new Trend('homepage_duration');
+const healthDuration = new Trend('health_duration');
 const errorRate = new Rate('error_rate');
-const successfulLogins = new Counter('successful_logins');
 
-// Test configuration
 export const options = {
   scenarios: {
-    // Spike test - sudden load increase
-    spike_test: {
-      executor: 'ramping-arrival-rate',
-      startRate: 0,
-      timeUnit: '1s',
-      preAllocatedVUs: 10,
-      maxVUs: 100,
-      stages: [
-        { target: 10, duration: '10s' }, // Ramp up to 10 rps
-        { target: 100, duration: '5s' }, // Spike to 100 rps
-        { target: 10, duration: '10s' }, // Drop back to 10 rps
-        { target: 0, duration: '5s' }, // Ramp down
-      ],
-    },
-
-    // Stress test - gradually increasing load
-    stress_test: {
+    smoke: {
       executor: 'ramping-vus',
       startVUs: 1,
       stages: [
-        { target: 10, duration: '2m' }, // Ramp up to 10 users
-        { target: 50, duration: '5m' }, // Ramp up to 50 users
-        { target: 100, duration: '5m' }, // Ramp up to 100 users
-        { target: 200, duration: '5m' }, // Ramp up to 200 users
-        { target: 0, duration: '2m' }, // Ramp down
+        { target: 5, duration: '30s' },
+        { target: 10, duration: '1m' },
+        { target: 0, duration: '15s' },
       ],
     },
-
-    // Soak test - sustained load
-    soak_test: {
-      executor: 'constant-vus',
-      vus: 20,
-      duration: '10m',
-    },
   },
-
   thresholds: {
-    http_req_duration: ['p(95)<2000'], // 95% of requests under 2s
-    http_req_failed: ['rate<0.05'], // Error rate under 5%
-    login_duration: ['p(95)<1000'], // 95% of logins under 1s
-    dashboard_load_time: ['p(95)<3000'], // 95% of dashboard loads under 3s
-    api_response_time: ['p(95)<1000'], // 95% of API calls under 1s
-    error_rate: ['rate<0.05'], // Error rate under 5%
+    http_req_duration: ['p(95)<2000'],
+    http_req_failed: ['rate<0.05'],
+    homepage_duration: ['p(95)<2000'],
+    health_duration: ['p(95)<1000'],
+    error_rate: ['rate<0.05'],
   },
 };
 
-// Test data
-const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api`;
+const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
 
-const testUsers = [
-  { email: 'loadtest1@formaos.com', password: 'TestPass123!' },
-  { email: 'loadtest2@formaos.com', password: 'TestPass123!' },
-  { email: 'loadtest3@formaos.com', password: 'TestPass123!' },
-  { email: 'loadtest4@formaos.com', password: 'TestPass123!' },
-  { email: 'loadtest5@formaos.com', password: 'TestPass123!' },
-];
+const PUBLIC_PAGES = ['/', '/pricing', '/security', '/customer-stories'];
 
-/**
- * Main test function
- */
 export default function () {
-  const user = testUsers[Math.floor(Math.random() * testUsers.length)];
-
-  group('User Journey', () => {
-    // Homepage visit
-    group('Homepage Load', () => {
-      const homepageResponse = http.get(BASE_URL);
-      check(homepageResponse, {
-        'homepage status is 200': (r) => r.status === 200,
-        'homepage loads in < 2s': (r) => r.timings.duration < 2000,
-      });
+  group('Marketing pages', () => {
+    const path = PUBLIC_PAGES[Math.floor(Math.random() * PUBLIC_PAGES.length)];
+    const res = http.get(`${BASE_URL}${path}`, {
+      tags: { type: 'marketing', path },
     });
-
-    sleep(1);
-
-    // User authentication
-    group('Authentication', () => {
-      const loginStart = Date.now();
-
-      const loginResponse = http.post(
-        `${API_URL}/auth/signin`,
-        {
-          email: user.email,
-          password: user.password,
-        },
-        {
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
-
-      const loginEnd = Date.now();
-      const loginTime = loginEnd - loginStart;
-      loginDuration.add(loginTime);
-
-      const loginSuccess = check(loginResponse, {
-        'login status is 200': (r) => r.status === 200,
-        'login has auth token': (r) => {
-          try {
-            const body = JSON.parse(r.body);
-            return body.access_token !== undefined;
-          } catch {
-            return false;
-          }
-        },
-        'login completes in < 1s': () => loginTime < 1000,
-      });
-
-      if (loginSuccess) {
-        successfulLogins.add(1);
-
-        // Extract auth token for subsequent requests
-        let authToken = '';
-        try {
-          const body = JSON.parse(loginResponse.body);
-          authToken = body.access_token;
-        } catch (_error) {
-          console.log('Failed to parse login response');
-          errorRate.add(1);
-          return;
-        }
-
-        sleep(1);
-
-        // Dashboard access
-        group('Dashboard Access', () => {
-          const dashboardStart = Date.now();
-
-          const dashboardResponse = http.get(`${BASE_URL}/app`, {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              Accept:
-                'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            },
-          });
-
-          const dashboardEnd = Date.now();
-          const dashboardTime = dashboardEnd - dashboardStart;
-          dashboardLoadTime.add(dashboardTime);
-
-          check(dashboardResponse, {
-            'dashboard status is 200': (r) => r.status === 200,
-            'dashboard loads in < 3s': () => dashboardTime < 3000,
-            'dashboard contains navigation': (r) =>
-              r.body.includes('nav') || r.body.includes('Navigation'),
-          });
-        });
-
-        sleep(2);
-
-        // API endpoints testing
-        group('API Performance', () => {
-          const apiEndpoints = [
-            '/api/policies',
-            '/api/tasks',
-            '/api/team',
-            '/api/notifications',
-          ];
-
-          apiEndpoints.forEach((endpoint) => {
-            const apiStart = Date.now();
-
-            const apiResponse = http.get(`${BASE_URL}${endpoint}`, {
-              headers: { Authorization: `Bearer ${authToken}` },
-            });
-
-            const apiEnd = Date.now();
-            const apiTime = apiEnd - apiStart;
-            apiResponseTime.add(apiTime);
-
-            const endpointName = endpoint.replace('/api/', '');
-            check(apiResponse, {
-              [`${endpointName} status is 200`]: (r) => r.status === 200,
-              [`${endpointName} responds in < 1s`]: () => apiTime < 1000,
-            });
-
-            if (apiResponse.status >= 400) {
-              errorRate.add(1);
-            }
-
-            sleep(0.5);
-          });
-        });
-
-        sleep(1);
-
-        // Data modification testing
-        group('Data Operations', () => {
-          // Create policy
-          const createPolicyResponse = http.post(
-            `${API_URL}/policies`,
-            {
-              title: `Load Test Policy ${Date.now()}`,
-              description: 'Policy created during load testing',
-              category: 'general',
-              frequency: 'monthly',
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-                'Content-Type': 'application/json',
-              },
-            },
-          );
-
-          check(createPolicyResponse, {
-            'create policy status is 200 or 201': (r) =>
-              [200, 201].includes(r.status),
-          });
-
-          sleep(1);
-
-          // Create task
-          const createTaskResponse = http.post(
-            `${API_URL}/tasks`,
-            {
-              title: `Load Test Task ${Date.now()}`,
-              description: 'Task created during load testing',
-              priority: 'medium',
-              dueDate: '2026-02-15',
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-                'Content-Type': 'application/json',
-              },
-            },
-          );
-
-          check(createTaskResponse, {
-            'create task status is 200 or 201': (r) =>
-              [200, 201].includes(r.status),
-          });
-        });
-      } else {
-        errorRate.add(1);
-        console.log(`Login failed for user: ${user.email}`);
-      }
+    homepageDuration.add(res.timings.duration);
+    const ok = check(res, {
+      'status is 200 or 304': (r) => r.status === 200 || r.status === 304,
     });
+    errorRate.add(!ok);
   });
 
   sleep(1);
-}
 
-/**
- * Generate test report
- */
-export function handleSummary(data) {
-  return {
-    'tests/load/reports/k6-performance-report.html': htmlReport(data),
-    'tests/load/reports/k6-performance-summary.txt': textSummary(data, {
-      indent: ' ',
-      enableColors: true,
-    }),
-    stdout: textSummary(data, { indent: ' ', enableColors: true }),
-  };
-}
+  group('Health endpoint', () => {
+    const res = http.get(`${BASE_URL}/api/health`, { tags: { type: 'health' } });
+    healthDuration.add(res.timings.duration);
+    const ok = check(res, {
+      'health status is 200': (r) => r.status === 200,
+    });
+    errorRate.add(!ok);
+  });
 
-/**
- * Setup function - runs once before all VUs
- */
-export function setup() {
-  console.log('🚀 Starting k6 performance tests...');
-  console.log(`Target: ${BASE_URL}`);
-  console.log(`Test users: ${testUsers.length}`);
-
-  // Verify application is running
-  const healthCheck = http.get(`${BASE_URL}/api/health`);
-  if (healthCheck.status !== 200) {
-    throw new Error(
-      'Application health check failed - ensure the app is running',
-    );
-  }
-
-  console.log('✅ Application health check passed');
-  return { timestamp: Date.now() };
-}
-
-/**
- * Teardown function - runs once after all VUs complete
- */
-export function teardown(data) {
-  const duration = (Date.now() - data.timestamp) / 1000;
-  console.log(`\n📊 Load test completed in ${duration}s`);
-  console.log('📄 Reports generated in tests/load/reports/');
+  sleep(1);
 }

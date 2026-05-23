@@ -2,32 +2,14 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { processExportJob } from '@/lib/compliance/evidence-pack-export';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
-import { timingSafeEqual } from 'crypto';
+import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
 import { getRedisConfig } from '@/lib/redis/client';
 
 const DEFAULT_LIMIT = 3;
 
 async function handleComplianceExportsCron(request: Request) {
-  const authHeader = request.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    return NextResponse.json(
-      { error: 'CRON_SECRET not configured' },
-      { status: 500 },
-    );
-  }
-
-  const token = authHeader?.replace('Bearer ', '') ?? '';
-  const tokenBuffer = Buffer.from(token, 'utf8');
-  const secretBuffer = Buffer.from(cronSecret, 'utf8');
-  const ok =
-    tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer);
-
-  if (!ok) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const authError = verifyVercelCronRequest(request);
+  if (authError) return authError;
 
   // If the Redis queue is configured, prefer the queue worker to avoid double-processing.
   const redisCfg = getRedisConfig();

@@ -40,6 +40,33 @@ export async function POST(
       relayState: typeof relayState === 'string' ? relayState : '',
     });
 
+    // v4-031: defence-in-depth IdP-init gate.
+    // @node-saml is configured with `validateInResponseTo: always` in
+    // lib/sso/saml.ts, so a true IdP-initiated assertion (one without an
+    // InResponseTo attribute matching a cached request id) already fails
+    // validation. This explicit check guards against future config drift
+    // and gives an auditable reject for any assertion that lacks a
+    // request id we issued. Operators that genuinely need IdP-init can
+    // set `directory_sync_config.allow_idp_initiated = true` per-org.
+    const profile = validated.profile as
+      | (typeof validated.profile & {
+          inResponseTo?: string | null;
+          InResponseTo?: string | null;
+        })
+      | undefined;
+    const inResponseTo =
+      profile?.inResponseTo ?? profile?.InResponseTo ?? null;
+    const allowIdpInit = Boolean(
+      (config.directorySyncConfig as { allow_idp_initiated?: boolean } | null)
+        ?.allow_idp_initiated,
+    );
+    const isIdpInitiated = !inResponseTo;
+    if (isIdpInitiated && !allowIdpInit) {
+      throw new Error(
+        'IdP-initiated SAML assertions are disabled for this organization',
+      );
+    }
+
     if (config.jitProvisioningEnabled) {
       await provisionJitUser({
         orgId,
@@ -72,7 +99,7 @@ export async function POST(
       result: 'success',
       metadata: {
         groups: validated.groups,
-        idp_initiated: true,
+        idp_initiated: isIdpInitiated,
       },
     });
 

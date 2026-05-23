@@ -70,6 +70,19 @@ jest.mock('@/lib/api-keys/scopes', () => ({
   normalizeApiKeyScopes: jest.fn((s: any[]) => s),
 }));
 
+// v4-031 fix: `authenticateV1Request` calls `requireActiveSubscription`
+// by default (commit 3347289b). The bare from-mock above returns the
+// same row shape for every table query, so org_subscriptions lookups
+// got `{ organization_id, role }` with no `status` field and threw
+// "Subscription inactive" → 402. Stub the entitlements check so these
+// tests can assert on the actual code paths (auth, scopes, rate limit,
+// E2E bypass) rather than re-validating subscription state.
+jest.mock('@/lib/billing/entitlements', () => ({
+  requireActiveSubscription: jest
+    .fn()
+    .mockResolvedValue({ planKey: 'pro', status: 'active' }),
+}));
+
 jest.mock('@/lib/api-keys/manager', () => ({
   applyRateLimitHeaders: jest.fn(),
   getSessionRateLimit: jest

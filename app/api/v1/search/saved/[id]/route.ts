@@ -7,8 +7,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    // v4-031: DELETE is a destructive op; require search:write.
     const auth = await authenticateV1Request(req, {
-      requiredScopes: ['search:read'],
+      requiredScopes: ['search:write'],
     });
     if (!auth.ok) return auth.response;
 

@@ -3,6 +3,12 @@
  * 34 uncovered branches (0% → target ~80%)
  */
 
+// v4-031: embeddings now short-circuit to zero-vector when
+// !process.env.OPENAI_API_KEY OR AI_KILL_SWITCH=true. Set a placeholder
+// key here so the mocked openai client is exercised; the kill switch
+// stays unset so embeddings runs.
+process.env.OPENAI_API_KEY = 'sk-test-placeholder';
+
 const mockEmbedCreate = jest.fn();
 jest.mock('openai', () => {
   return {

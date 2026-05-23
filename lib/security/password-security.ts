@@ -34,7 +34,16 @@ export async function checkPasswordBreached(password: string): Promise<{
     // refuse signups when HIBP is down. Default stays fail-open
     // for availability but emits a noisy warning + tracks the
     // bypass count so ops can correlate spikes.
-    const failClosed = process.env.HIBP_FAIL_CLOSED === 'true';
+    // v4-031: default fail-closed in production so a HIBP outage / DoS
+    // can't be used to land breached passwords into prod accounts.
+    // Dev/test environments stay fail-open for offline development.
+    // Operators that need fail-open in prod set HIBP_FAIL_CLOSED=false
+    // explicitly.
+    const failClosedEnv = process.env.HIBP_FAIL_CLOSED;
+    const failClosed =
+      failClosedEnv === undefined
+        ? process.env.NODE_ENV === 'production'
+        : failClosedEnv === 'true';
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 3000);
     let response: Response | null = null;

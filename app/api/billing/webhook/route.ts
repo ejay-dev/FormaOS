@@ -252,6 +252,64 @@ export async function POST(request: Request) {
         row = byCustomer as OrgSubRow;
       }
 
+      // v4-031: when metadata claims an organization_id but no row
+      // matches that org_id, cross-check by stripe_customer_id. If the
+      // customer is already bound to a DIFFERENT org, refuse the
+      // first-bind — an attacker with Stripe API/Dashboard access who
+      // can stamp metadata.organization_id on a webhook-signed event
+      // could otherwise rebind a victim's billing on a fresh
+      // checkout.session.completed delivery for an existing customer.
+      if (!row?.organization_id && orgId && customerId) {
+        const { data: byCustomer } = await admin
+          .from('org_subscriptions')
+          .select('organization_id, stripe_customer_id, stripe_subscription_id')
+          .eq('stripe_customer_id', customerId)
+          .maybeSingle();
+        if (
+          byCustomer?.organization_id &&
+          byCustomer.organization_id !== orgId
+        ) {
+          log.error(
+            {
+              metadataOrgId: orgId,
+              boundOrgId: byCustomer.organization_id,
+              customerId,
+              subscriptionId,
+              eventId: event.id,
+              eventType: event.type,
+            },
+            '[billing/webhook] metadata.organization_id mismatch vs bound customer — refusing first-bind',
+          );
+          await admin
+            .from('billing_reconciliation_log')
+            .insert({
+              organization_id: byCustomer.organization_id,
+              discrepancy_type: 'metadata_org_mismatch',
+              local_value: { bound_organization_id: byCustomer.organization_id },
+              stripe_value: {
+                metadata_organization_id: orgId,
+                stripe_customer_id: customerId,
+                stripe_subscription_id: subscriptionId,
+                event_id: event.id,
+                event_type: event.type,
+              },
+              notes:
+                'webhook first-bind refused — metadata claimed a different org than the customer is already bound to',
+              checked_at: new Date().toISOString(),
+            })
+            .then(({ error: insertErr }) => {
+              if (insertErr) {
+                log.warn(
+                  { err: insertErr.message },
+                  '[billing/webhook] billing_reconciliation_log insert failed',
+                );
+              }
+            });
+          return null;
+        }
+        // Customer not yet bound anywhere — first-bind permitted.
+      }
+
       const targetOrgId = row?.organization_id ?? orgId;
       if (!targetOrgId || !planKey) return null;
 

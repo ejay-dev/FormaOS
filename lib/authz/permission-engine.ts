@@ -62,11 +62,27 @@ export async function getEffectivePermissions(
   const baseRole = membership?.role || 'member';
   const basePerms = BASE_PERMISSIONS[baseRole] || BASE_PERMISSIONS.member;
 
-  // Check for custom role via team membership
+  // v4-031: team_members rows were previously fetched only by user_id,
+  // merging custom-role permissions from any org the user has ever joined
+  // into the active org context. Scope through team_groups.org_id (the
+  // canonical org binding) AND filter custom_roles by org_id for defence
+  // in depth against orphan team_member rows.
+  const { data: orgTeams } = await db
+    .from('team_groups')
+    .select('id')
+    .eq('org_id', orgId);
+
+  const teamIds = (orgTeams || [])
+    .map((t) => (t as { id?: string }).id)
+    .filter((id): id is string => Boolean(id));
+
+  if (teamIds.length === 0) return basePerms as PermissionMatrix;
+
   const { data: teamMemberships } = await db
     .from('team_members')
     .select('custom_role_id')
-    .eq('user_id', userId);
+    .eq('user_id', userId)
+    .in('team_id', teamIds);
 
   const customRoleIds = (teamMemberships || [])
     .map((tm) => tm.custom_role_id)
@@ -74,11 +90,12 @@ export async function getEffectivePermissions(
 
   if (customRoleIds.length === 0) return basePerms as PermissionMatrix;
 
-  // Merge custom role permissions (most permissive wins)
+  // Merge custom role permissions (most permissive wins) — scoped to org.
   const { data: customRoles } = await db
     .from('custom_roles')
     .select('permissions')
-    .in('id', customRoleIds);
+    .in('id', customRoleIds)
+    .eq('org_id', orgId);
 
   const merged = structuredClone(basePerms) as PermissionMatrix;
   for (const role of customRoles || []) {
