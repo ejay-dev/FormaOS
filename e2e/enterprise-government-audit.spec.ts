@@ -1556,9 +1556,13 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('audit trail has comprehensive coverage', async () => {
-      // Verify audit log table is accessible and can store entries
+      // v4-003: the legacy `audit_logs` table this test previously wrote
+      // to had 0 rows in prod and is being dropped. Canonical activity
+      // log is `org_audit_logs` (24,580+ rows). Schema differs — actor
+      // identifier is `actor_email`, scope columns are `entity_type` +
+      // `target`, and there is no free-form `metadata` column.
       const { error: auditError } = await admin
-        .from('audit_logs')
+        .from('org_audit_logs')
         .select('id')
         .eq('organization_id', enterpriseOrgId)
         .limit(1);
@@ -1569,17 +1573,12 @@ test.describe('Enterprise Government Audit Readiness', () => {
       }
 
       // Insert a government audit access log entry
-      await admin.from('audit_logs').insert({
+      await admin.from('org_audit_logs').insert({
         organization_id: enterpriseOrgId,
-        user_id: enterpriseUserId,
+        actor_email: `enterprise-${enterpriseUserId}@e2e.formaos.local`,
         action: 'government_audit_export_initiated',
-        resource_type: 'compliance_export',
-        metadata: {
-          audit_type: 'full_platform',
-          requesting_authority: 'Government Department of Health',
-          frameworks_included: ENTERPRISE_FRAMEWORKS,
-          data_scope: 'all_industries',
-        },
+        entity_type: 'compliance_export',
+        target: 'full_platform',
       });
     });
 
