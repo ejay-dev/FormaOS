@@ -272,8 +272,56 @@ function setLoopGuardCookie(
   });
 }
 
+// Paths that legitimately live on app.formaos.com.au. Everything else on
+// that subdomain is a marketing/SEO mirror and should 308 to www. The list
+// mirrors the app-only prefixes in robots.ts plus a few auth/API surfaces
+// that share the subdomain. Keep in sync with config.matcher below.
+const APP_HOST_ALLOWED_PREFIXES = [
+  '/app',
+  '/admin',
+  '/api',
+  '/auth',
+  '/auth-redirect',
+  '/audit-portal',
+  '/onboarding',
+  '/accept-invite',
+  '/join',
+  '/workspace-recovery',
+  '/submit',
+  '/signin',
+  '/_next',
+];
+
+function isAppHostAllowedPath(pathname: string): boolean {
+  if (pathname === '/favicon.ico') return true;
+  return APP_HOST_ALLOWED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
 export async function proxy(request: NextRequest) {
   try {
+    // -------------------------------
+    // 0. app.formaos.com.au mirror → www redirect
+    // -------------------------------
+    // The Vercel project is bound to both www and app subdomains. Without
+    // this guard, every marketing page is reachable on app.formaos.com.au
+    // as duplicate content (canonicals point to www, but it still burns
+    // crawl budget and confuses users who land on the app domain).
+    // App-only routes (/app, /admin, /auth, /api, etc.) stay on app; all
+    // marketing paths 308 to the www canonical.
+    const requestHost =
+      request.headers.get('host') ?? request.nextUrl.hostname;
+    if (
+      requestHost === 'app.formaos.com.au' &&
+      !isAppHostAllowedPath(request.nextUrl.pathname)
+    ) {
+      const target = new URL(request.nextUrl.toString());
+      target.host = 'www.formaos.com.au';
+      target.protocol = 'https:';
+      return NextResponse.redirect(target, 308);
+    }
+
     const nonce = createSecureNonce();
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-nonce', nonce);
@@ -895,5 +943,12 @@ export const config = {
     '/submit/:path*',
     '/signin/:path*',
     '/api/:path*',
+    // Catch-all on the app.formaos.com.au host so the early host-redirect
+    // at the top of proxy() can 308 marketing paths to www. Excludes the
+    // static/asset paths to avoid pointless invocations.
+    {
+      source: '/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt).*)',
+      has: [{ type: 'host', value: 'app.formaos.com.au' }],
+    },
   ],
 };
