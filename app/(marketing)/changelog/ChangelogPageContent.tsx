@@ -143,6 +143,184 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v4.3.0',
+    codename: 'Tenant Integrity & Billing Honesty',
+    date: '2026-05-23',
+    summary:
+      'Audit re-pass on the v4.0 Foundation Audit work. Two independent passes — a fresh end-to-end audit and a verification of the resulting fix sweep — surfaced gaps that a single pass missed: a cross-org permission leak, a defence-in-depth IdP-init SAML gate, billing webhooks that could be steered by attacker-controlled metadata, three silent try/catch blocks in the compliance evaluator, and care-plan mutations on PHI that had no audit trail. Thirty PRs landed (v4-001 through v4-031). This release block is what changed in the final round plus the substantive themes from the sprint as a whole.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Cross-org permission leak in the team-roles engine closed',
+        tag: 'security',
+        detail:
+          'lib/authz/permission-engine.ts queried team_members filtered only by user_id, with no organization scope. For a user belonging to multiple workspaces, custom-role permissions from any org they had ever joined were merged into the active org context — a real cross-tenant privilege escalation in any deployment that uses custom roles. Fixed by scoping the lookup through team_groups.org_id (the canonical relational binding) and adding a defence-in-depth eq filter on custom_roles.org_id. The fix is one ten-line edit; the bug had been live since the custom-roles feature shipped.',
+      },
+      {
+        text: 'Stripe webhooks reject attacker-steered metadata on first-bind',
+        tag: 'security',
+        detail:
+          'app/api/billing/webhook/route.ts previously trusted subscription.metadata.organization_id as the bind target on the first checkout.session.completed delivery for a given customer. An attacker with Stripe API or Dashboard access can stamp arbitrary metadata on a signed event and replay it to FormaOS; without a binding check the org_subscriptions row could be created against a victim org. Now: when no row matches the metadata org but the stripe_customer_id is already bound to a different org, the upsert refuses, the discrepancy is recorded in billing_reconciliation_log, and the event returns null so Stripe stops retrying.',
+      },
+      {
+        text: 'Pending-checkout grace window can no longer unlock paid AI / automation',
+        tag: 'security',
+        detail:
+          'The pending_checkout status sits between "user clicked Subscribe" and "Stripe webhook arrived" — usually under sixty seconds. The status was honoured for the full one-day grace window with every paid entitlement enabled, so a user could click Subscribe, abandon the Stripe checkout, and use AI / CAPA / custom reports / workflow automation / SSO for twenty-four hours with no payment. Read-tier features (audit export, reports, framework evaluations, certifications, team limit, form analytics) stay available during grace; write-tier and cost-bearing features now require a confirmed webhook landing.',
+      },
+      {
+        text: 'IdP-initiated SAML now requires explicit opt-in per organisation',
+        tag: 'security',
+        detail:
+          'app/api/sso/saml/acs/[orgId]/route.ts accepted any SAML response when SSO and JIT provisioning were enabled. @node-saml is already configured with validateInResponseTo set to always, so true IdP-initiated assertions fail validation today, but the route had no explicit gate of its own. Added a defence-in-depth check: assertions without an InResponseTo attribute matching a cached request id are refused unless the org has set directory_sync_config.allow_idp_initiated explicitly. Audit metadata now reflects the actual flow direction rather than a hard-coded idp_initiated: true.',
+      },
+      {
+        text: 'Care-plan mutations on PHI now write audit logs end-to-end',
+        tag: 'security',
+        detail:
+          'The v4-020 PHI audit work covered the create-paths for participants, visits, incidents, care plans, and goals — but the equivalent updateGoal, deleteGoal, updateSupport, deleteSupport, and syncCarePlanProgress functions in app/app/actions/care-operations.ts continued to mutate care content silently. NDIS Quality & Safeguards Commission expects an audit trail on every modification to a participant\'s care plan. Each path now emits a logAuditEvent call with the before-state, after-state, and reason; destructive ops record the cascaded children (deleted goals enumerate the supports that died with them).',
+      },
+      {
+        text: 'Silent try/catch in the compliance evaluator now surfaces to Sentry',
+        tag: 'fix',
+        detail:
+          'Three writes inside lib/compliance/evaluate-framework-controls.ts (the snapshot insert, the posture upsert, and the FRAMEWORK_EVALUATED audit log) were wrapped in bare try/catch blocks with no logging. A schema mismatch returned a "successful" evaluation with no snapshot, no posture row, and no audit trail — the score appeared in the dashboard but had no recorded evidence. Each catch now emits a structured Sentry capture with the framework code, org id, correlation id, and the underlying error so on-call can triage. Score computation still completes because the source-of-truth tables (org_control_evaluations for raw results) are not affected by these reporting writes.',
+      },
+      {
+        text: 'API key scopes split write paths from read scopes',
+        tag: 'security',
+        detail:
+          'New scopes added: tasks:delete, compliance:write, api_keys:manage, search:write, ai:read. Previously a customer key with compliance:read could create, patch, delete, publish, duplicate, and submit forms because every forms-mutating route was gated on read scope. The api-keys endpoints (POST, rotate, revoke) were behind webhooks:manage rather than a dedicated api_keys:manage scope, so a webhook-management key could mint or revoke other API keys. All forms-mutating routes now require forms:write; api-keys endpoints require the new api_keys:manage; saved-search POST and DELETE require search:write. Existing keys continue to work via the SCOPE_IMPLICATIONS table that maps the broader compliance:write to the narrower write scopes.',
+      },
+      {
+        text: 'SAML IdP group mapping now matches exact group names',
+        tag: 'security',
+        detail:
+          'lib/sso/jit-provisioning.ts used String.includes for role mapping — an IdP group literally named "non-admin" or "read-owner-docs" would have auto-escalated the user to admin or owner during JIT provisioning. Replaced with an exact-match ROLE_GROUP_MAP keyed on normalised group names; substring lookups are gone.',
+      },
+      {
+        text: 'MFA disable now requires a current TOTP code, not just the password',
+        tag: 'security',
+        detail:
+          'lib/security.ts disable2FA used to accept (userId, password) and call signInWithPassword to re-verify, which both minted a brand-new session and gave anyone holding a phished password a one-call path to strip MFA. The route at app/api/security/mfa/disable/route.ts and the lib function now require a valid TOTP token; the password is no longer the trust anchor.',
+      },
+      {
+        text: 'Open-redirect on sign-in and CSRF on signout closed',
+        tag: 'security',
+        detail:
+          'The signin page accepted any value in the next= parameter that started with "http", including external origins — an open-redirect vector for phishing pivot. Now only same-origin or absolute paths starting with "/" are honoured. /auth/signout used to mutate state on GET with no Origin check, so any cross-site image or link prefetch logged the user out. GET now returns 405 unless the request is same-origin via sec-fetch-site / origin / referer.',
+      },
+      {
+        text: 'Audit chain serialised against concurrent writes',
+        tag: 'security',
+        detail:
+          'lib/audit/audit-engine.ts read the last hash-chain entry, computed seq+1 and prev_hash, then inserted — with no database-side serialisation. Concurrent writes from two requests could either break the hash chain or both succeed at the same sequence number. Added a UNIQUE(org_id, sequence_number) constraint with a five-attempt retry loop that detects PG 23505 and re-reads the chain head before retrying. The fast path is unchanged; contended writes lose a millisecond and the chain stays intact.',
+      },
+      {
+        text: 'Vercel crons require both bearer secret and Vercel user-agent',
+        tag: 'security',
+        detail:
+          'Each of the six /api/cron/* routes had its own copy of the bearer check, leaving CRON_SECRET as the sole gate — leak the secret (env exfiltration, log scraping) and any actor could trigger crons from anywhere. New lib/security/cron-auth.ts is a shared verifier requiring both the bearer and user-agent: vercel-cron/1.0. Operators that genuinely need a manual replay can set ALLOW_NON_VERCEL_CRON=true. All six cron routes refactored to use the helper.',
+      },
+      {
+        text: 'CSP frame-ancestors directive added; OAuth state TTL trimmed',
+        tag: 'security',
+        detail:
+          'proxy.ts CSP now includes frame-ancestors \'none\' — the modern clickjacking gate that newer browsers respect when both it and X-Frame-Options are set. lib/auth/oauth-state.ts cookie TTL reduced from ten minutes to five (OWASP guidance for CSRF state tokens). Proxy reuse of x-forwarded-for is now opt-in via TRUST_PROXY=true; Vercel and Cloudflare\'s signed equivalents (x-vercel-forwarded-for, cf-connecting-ip) are preferred by default.',
+      },
+      {
+        text: 'HIBP password-breach check defaults fail-closed in production',
+        tag: 'security',
+        detail:
+          'lib/security/password-security.ts used to fail open on every HIBP outage by default — an attacker who could DoS the haveibeenpwned API could land breached passwords during signup. Default is now fail-closed when NODE_ENV=production; dev environments stay fail-open to keep offline work moving. Operators that need fail-open in production can set HIBP_FAIL_CLOSED=false explicitly.',
+      },
+      {
+        text: 'Legacy ISO 27001 pack deprecated; redirects to the 2022 edition',
+        tag: 'improvement',
+        detail:
+          'framework-packs/iso27001.json (10 controls, zero wired evaluators) was still in PACK_REGISTRY alongside the proper iso27001-2022 pack (93 controls, full evaluator coverage). Orgs installing the legacy slug got every control falling through to the evidence-count heuristic with no real assessment. Legacy slug removed from PACK_REGISTRY; new DEPRECATED_PACK_SLUGS map redirects requests for iso27001 to iso27001-2022 transparently. The financial-services pack that had shipped as a JSON file but was never registered is now wired into PACK_REGISTRY as well.',
+      },
+      {
+        text: 'Cross-mapped compliance score and care scorecard trend stripped of magic numbers',
+        tag: 'fix',
+        detail:
+          'lib/compliance/unified-score.ts returned crossMappedScore = score + 5 and delta = 5 for every framework regardless of inputs. lib/compliance/cross-map-engine.ts computed potentialScoreImprovement as unsatisfied.length * 2. lib/care-scorecard/scorecard-service.ts returned trendPercentage = 5 / -3 / 0 based on direction with no actual period-over-period comparison. All three computed metrics that customers saw as their compliance posture were literal hard-coded constants. Now: cross-mapped score derives from real overlap in framework_control_mappings; potential improvement weighted by per-framework totals; care scorecard trend returns 0 with a documented TODO until a periodic snapshot job populates the prior-period baseline.',
+      },
+      {
+        text: 'NDIS export rejects the missing-price-guide silent fallback',
+        tag: 'fix',
+        detail:
+          'lib/care/ndis-claiming.ts used to fall back to a hard-coded $60 AUD unit price when the support-item price guide was missing — NDIA reconciliation would mis-charge the participant. Now: missing price guide throws priceGuide_missing instead of silently substituting. Time-based support items also correctly emit duration into the Hours column rather than mirroring Quantity, which had been causing NDIA to reject group / per-event items.',
+      },
+      {
+        text: 'AI kill switch covers every OpenAI call path',
+        tag: 'improvement',
+        detail:
+          'The AI_KILL_SWITCH env-gate added in v4-027 was wired into lib/ai/sdk-client.ts and lib/ai/streaming.ts but not lib/ai/embeddings.ts, so even with the switch flipped the embedding generator would still call OpenAI on every form submission and policy index event. Embeddings now respect both the switch and a missing OPENAI_API_KEY; both cases short-circuit to a zero vector so consumers that already tolerate it (search indexing) keep working.',
+      },
+      {
+        text: 'Sentry capture, structured logging, and onRequestError merged to main',
+        tag: 'improvement',
+        detail:
+          'lib/observability/with-route-observability.ts (the helper that wraps captureException with route context) was authored as part of v4-009 but had not actually landed on main when the verification ran. Now merged and wired into all six cron routes, all internal trigger routes, and the Stripe webhook. instrumentation.ts exports onRequestError = Sentry.captureRequestError so React Server Component errors flow to Sentry. lib/sentry/scrub-pii.ts redaction list expanded to include authorization, cookie, session, ssn, dob, phone, address, firstName, lastName, plus AU-specific fields (TFN, ABN, NDIS, Medicare, passport, diagnosis).',
+      },
+      {
+        text: 'Permission engine, membership cache, identity context: multi-org safety',
+        tag: 'fix',
+        detail:
+          'Three call sites used .maybeSingle() over an unfiltered org_members lookup and ended up with arbitrary first-row context for users in multiple workspaces. lib/identity/org-access.ts, lib/auth/membership-cache.ts, and app/api/v1/ai/chat/route.ts all now honour user_preferences.current_organization_id when set, falling back to the first membership only when no preference exists. Multi-org users get the org they actually selected, not whichever one Postgres ordered first.',
+      },
+      {
+        text: 'Billing roles single source; AU tax_id collection in the UI flow',
+        tag: 'fix',
+        detail:
+          'BILLING_ROLES was declared inline in three different places (the server-action checkout, the API checkout route, the portal route) — all happened to converge on {owner} after v4-018 but the duplication had previously allowed the UI to succeed and the API to 403 mid-flow. Now exported as a single constant from lib/roles.ts with an isBillingRole helper. The server-action checkout now also passes tax_id_collection: { enabled: true } and customer_update: address/name auto, matching the API route — AU customers can finally enter ABN through the in-app upgrade flow.',
+      },
+      {
+        text: 'Subscription cancellation tears down entitlements and plan_key',
+        tag: 'fix',
+        detail:
+          'The customer.subscription.deleted webhook handler used to update org_subscriptions.status but leave org_entitlements rows enabled and organizations.plan_key set to the cancelled tier. requireEntitlement passed forever after cancel; the org effectively kept Pro for the lifetime of the deployment. The handler now calls disableEntitlementsForOrg and nulls plan_key in the same transaction. invoice.payment_succeeded no longer flips a cancelled subscription back to active when the customer pays an outstanding one-off invoice.',
+      },
+      {
+        text: 'Stripe webhook signature failures captured to Sentry; reconciler batched',
+        tag: 'improvement',
+        detail:
+          'app/api/billing/webhook/route.ts signature-verification catch previously emitted only a structured log line — the billing-webhook-error-spike Sentry alert named in RUNBOOKS had nothing to consume. Capture is now wired. The nightly reconciliation job at lib/billing/nightly-reconciliation.ts used to iterate stripe.subscriptions.retrieve serially with no concurrency bound or back-off, guaranteeing Stripe 429 at 500+ orgs; now batched in groups of five concurrent retrieves. BILLING_AUTO_FIX defaults to off so a transient Stripe outage cannot auto-cancel a legitimate subscription mid-reconciliation.',
+      },
+      {
+        text: 'Notifications mark-all bypass and webhook-test admin gate closed',
+        tag: 'security',
+        detail:
+          'app/api/v1/notifications/route.ts PATCH allowed an API-key bearer with no user context to mark all notifications in the org as read with no body opt-in (markAll && ids.length === 0 hit the no-filter branch). Now requires explicit ids OR explicit all=true with a session user. The webhook-test endpoint at /api/v1/webhooks/test now requires requireAdmin: true on top of the webhooks:manage scope so a member-role user with a custom scope grant cannot trigger test deliveries that incur egress and downstream side effects.',
+      },
+      {
+        text: 'Three identical audit-log routes consolidated; Breadcrumbs primitive applied',
+        tag: 'improvement',
+        detail:
+          '/app/audit and /app/history now redirect to /app/audit-trail (the canonical implementation that pulls from the tamper-evident chain). Patient and care-plan detail pages now use notFound() instead of silently redirecting to the list — users get a real "Not found" boundary rather than a confusing bounce. The Breadcrumbs primitive added in v4-029 is now applied to the patient and care-plan detail routes. EmptyState components from the existing registry are wired into /app/team, /app/people, and /app/audit-trail with proper "no data yet" vs "filtered to none" distinction.',
+      },
+      {
+        text: 'Orphan /app routes surfaced via parent sub-navigation',
+        tag: 'improvement',
+        detail:
+          'Fifteen real /app/* pages (dashboard/builder, care-plans/journey, controls/journey, incidents/analytics, reports/trends and reports/custom, executive/group, policies/versions, registers/training, participants/import, and five settings sub-pages) existed as proper routes with 100-300 lines of code but appeared in zero industry sidebars — only reachable by typing the URL. lib/navigation/industry-sidebar.ts now has an ORPHAN_ROUTE_CHILDREN map that surfaces each as a sub-nav child of its natural parent across all eight industry navs from one place.',
+      },
+      {
+        text: 'CI security scans actually block merges; weak status assertions tightened',
+        tag: 'improvement',
+        detail:
+          'npm audit / Snyk / CodeQL in .github/workflows/qa-pipeline.yml were continue-on-error: true — high-severity CVEs in production deps could land. Now blocking, with --omit=dev so dev-dep churn does not block PRs. Four e2e spec files (audit-reports, security-invariants, billing-handoff, admin-security-verification) used to assert expect([200, 401, 403]).toContain(status), so an auth or privilege-escalation regression returning 401 to a workspace-seeded test silently passed. Replaced with exact-status expectations matching the actual contract (admin endpoints assert 403 against the non-admin seed; billing portal asserts the new 409 no_stripe_customer contract).',
+      },
+      {
+        text: 'Misleading load tests rewritten against real endpoints; dead code removed',
+        tag: 'fix',
+        detail:
+          'tests/load/k6-performance.js and artillery-config.yml were POSTing to /api/policies, /api/tasks, /api/team — none of which exist under that shape (mutating endpoints live under /api/v1/* with Bearer fos_… API keys). The suites passed visibly because the assertion accepted any non-5xx status. Both rewritten to hit real public endpoints (homepage, /pricing, /api/health) for genuine load coverage; authenticated load coverage stays in /load-tests where it has always lived. The standalone tests/accessibility/a11y-audit.js dropped its fake-JWT setupAuth and is now public-routes only (authenticated a11y coverage was already covered correctly by e2e/accessibility.spec.ts). Deleted: components/ProductShowcase.tsx (unused), e2e/industry-onboarding.spec.ts (six perma-skipped describes inflating spec counts), lighthouserc.js (footgun parallel to lighthouserc.json).',
+      },
+    ],
+  },
+  {
     version: 'v4.2.0',
     codename: 'Compliance Foundations',
     date: '2026-05-10',

@@ -1,5 +1,77 @@
 # 📋 FormaOS Changelog
 
+## [4.3.0] - 2026-05-23
+
+### Tenant Integrity & Billing Honesty — audit re-pass
+
+> The v4.0 Foundation Audit caught the obvious holes. A second independent pass (fresh end-to-end audit, then verification of the resulting fix sweep) found the gaps a single pass missed. Thirty PRs landed (v4-001 → v4-031). This entry covers the substantive themes; the marketing changelog has the full per-change breakdown.
+
+**Security & multi-tenancy**
+
+- **Cross-org permission leak in custom-roles closed:** `lib/authz/permission-engine.ts` queried `team_members` filtered only by `user_id` — for users in multiple workspaces, custom-role permissions from any org they had ever joined merged into the active org context. Fixed by scoping through `team_groups.org_id` + a defence-in-depth `eq` on `custom_roles.org_id`.
+- **SAML IdP group mapping switched to exact match:** `lib/sso/jit-provisioning.ts` used `String.includes` — an IdP group literally named `non-admin` or `read-owner-docs` auto-escalated to admin or owner.
+- **IdP-initiated SAML now requires opt-in per org:** assertions without an `InResponseTo` cached id are refused unless `directory_sync_config.allow_idp_initiated` is set explicitly.
+- **MFA disable requires TOTP, not just password:** previously a phished password was a one-call MFA-strip path.
+- **GET /auth/signout blocked unless same-origin:** previously any cross-site `<img>` or link prefetch logged the user out.
+- **Open-redirect on signin closed:** `next=` param no longer accepts external URLs.
+- **HIBP password-breach check defaults fail-closed in production:** prior default fail-open let a HIBP-DoS land breached passwords.
+- **CSP `frame-ancestors 'none'` added; OAuth state TTL trimmed 10min → 5min (OWASP):** plus `x-forwarded-for` now opt-in via `TRUST_PROXY`, with Vercel/Cloudflare signed equivalents preferred.
+- **Audit chain serialised against concurrent writes:** `UNIQUE(org_id, sequence_number)` + 5-attempt retry on `lib/audit/audit-engine.ts`. Chain integrity stays intact under contention.
+- **API key scopes split:** new `compliance:write`, `tasks:delete`, `api_keys:manage`, `search:write`, `ai:read`. Previously a read-only key with `compliance:read` could create/patch/delete/publish/submit forms; a `webhooks:manage` key could mint or revoke other API keys. `SCOPE_IMPLICATIONS` table preserves backward compat for existing keys.
+- **Webhook test endpoint now requires admin** on top of `webhooks:manage`; notifications PATCH no longer lets an API-key bearer mark-all-as-read with no body opt-in.
+- **Vercel crons require both bearer AND `user-agent: vercel-cron`:** new `lib/security/cron-auth.ts` is a shared verifier; `ALLOW_NON_VERCEL_CRON=true` for manual replays.
+
+**Billing**
+
+- **Subscription cancellation tears down entitlements + plan_key** in the same transaction. Previously `customer.subscription.deleted` flipped status to `canceled` but left `org_entitlements` enabled — orgs kept Pro for the lifetime of the deployment.
+- **Stripe webhooks reject attacker-steered metadata on first-bind:** when no row matches the metadata org but the `stripe_customer_id` is already bound to a different org, the upsert refuses and records the discrepancy in `billing_reconciliation_log`.
+- **`invoice.payment_succeeded` cannot resurrect a cancelled subscription** by paying an outstanding one-off invoice.
+- **`pending_checkout` grace window gates write-tier features:** read-tier (audit export, reports, framework evaluations, certifications, team limit, form analytics) stays available; AI, CAPA, custom reports, workflow automation, SSO, retention all require a confirmed webhook landing.
+- **Single-source `BILLING_ROLES`** in `lib/roles.ts`; the three inline duplicates that had previously allowed UI succeed / API 403 mid-flow are gone.
+- **AU `tax_id_collection` in the server-action checkout** matches the API route — UI customers can finally enter ABN.
+- **Nightly reconciler batched** (was serial; guaranteed Stripe 429 at 500+ orgs). `BILLING_AUTO_FIX` defaults off so a transient Stripe outage cannot auto-cancel a legitimate subscription.
+- **Stripe webhook signature failures now captured to Sentry:** the `billing-webhook-error-spike` alert named in RUNBOOKS finally has something to consume.
+
+**Compliance & PHI audit**
+
+- **Care-plan PHI mutations now emit audit logs end-to-end:** v4-020 covered create-paths; this pass covers `updateGoal`, `deleteGoal`, `updateSupport`, `deleteSupport`, `syncCarePlanProgress`. NDIS Quality & Safeguards Commission requirement closed.
+- **Compliance evaluator silent `try/catch` blocks replaced with Sentry capture:** schema mismatches on snapshot insert, posture upsert, or the `FRAMEWORK_EVALUATED` audit log are no longer invisible.
+- **Cross-mapped compliance score derived from real overlap** rather than `score + 5`. Potential improvement weighted by per-framework totals. Care scorecard `trendPercentage` returns `0` with a documented TODO until a periodic snapshot job populates the prior-period baseline (was a literal `5 / -3 / 0`).
+- **NDIS export `Quantity` / `Hours` column swap fixed** for time-based support items; missing price guide now throws instead of silently substituting a `$60` AUD fallback.
+- **Legacy `iso27001` pack (10 controls, 0 wired evaluators) deprecated:** `DEPRECATED_PACK_SLUGS` redirects requests to `iso27001-2022` (93 controls, full coverage). Financial-services pack that shipped as JSON but was never registered is now wired into `PACK_REGISTRY`.
+- **AI kill switch covers every OpenAI call path:** `lib/ai/embeddings.ts` was previously bypassing the v4-027 `AI_KILL_SWITCH` env-gate.
+
+**Observability & ops**
+
+- **V4-009 Sentry capture finally on `main`:** `lib/observability/with-route-observability.ts` wraps `captureException` with route context. Wired into all six cron routes, all internal trigger routes, and the Stripe webhook.
+- **`onRequestError = Sentry.captureRequestError`** in `instrumentation.ts` so RSC errors flow to Sentry.
+- **Sentry PII scrub list expanded:** `authorization`, `cookie`, `session`, `ssn`, `dob`, `phone`, `address`, `firstName`, `lastName`, plus AU-specific (TFN, ABN, NDIS, Medicare, passport, diagnosis).
+- **13 production secrets now in `.env.example`:** `TOTP_ENCRYPTION_KEY`, `INTEGRATION_CONFIG_SECRET`, `TRUST_PACKET_SIGNING_KEY`, `EMAIL_UNSUBSCRIBE_SECRET`, `STRIPE_PRICE_SCALE`, SAML keys, VAPID, Firebase, KV, NEXTAUTH_SECRET, REDIS_URL. `CRON_SECRET` uncommented.
+- **RUNBOOKS.md §9: log-drain provisioning** — Vercel log drains cannot be set via `vercel.json`; this is the operator-facing playbook for picking a provider and wiring it.
+
+**CI & testing**
+
+- **`continue-on-error: true` dropped from npm audit / Snyk / CodeQL** in `qa-pipeline.yml`. High-severity production-dep CVEs block PRs; dev-only CVEs excluded via `--omit=dev`.
+- **Four e2e spec files tightened:** `expect([200, 401, 403]).toContain(status)` replaced with exact-status assertions matching the actual contract (admin endpoints assert `403` against the non-admin seed; billing portal asserts the new `409 no_stripe_customer` contract).
+- **Load tests rewritten against real endpoints:** `tests/load/k6-performance.js` and `artillery-config.yml` previously POSTed to `/api/policies`, `/api/tasks`, `/api/team` — endpoints that don't exist; suites passed visibly because assertions accepted any non-5xx status.
+- **Standalone a11y script no longer uses fake JWTs:** `tests/accessibility/a11y-audit.js` dropped `setupAuth` + authenticated-route list. Authenticated a11y coverage continues to live in `e2e/accessibility.spec.ts` which uses the real workspace-seed.
+- **Dead files purged:** `components/ProductShowcase.tsx` (unused), `e2e/industry-onboarding.spec.ts` (six perma-skipped describes inflating counts), `lighthouserc.js` (footgun parallel to `lighthouserc.json`).
+
+**Frontend & UX**
+
+- **Three near-identical audit-log routes consolidated:** `/app/audit` and `/app/history` redirect to `/app/audit-trail` (the canonical tamper-evident view).
+- **Patient and care-plan detail use `notFound()` instead of silent `redirect()`** — users get a real "Not found" boundary rather than a confusing bounce to the list.
+- **`Breadcrumbs` primitive applied to detail routes;** `EmptyState` registry components wired into `/app/team`, `/app/people`, `/app/audit-trail` with proper "no data yet" vs "filtered to none" distinction.
+- **15 orphan `/app/*` routes surfaced via parent sub-nav:** new `ORPHAN_ROUTE_CHILDREN` map in `lib/navigation/industry-sidebar.ts` applies across all 8 industry navs from one place. Affected: `dashboard/builder`, `care-plans/journey`, `controls/journey`, `incidents/analytics`, `reports/{trends,custom}`, `executive/group`, `policies/versions`, `registers/training`, `participants/import`, `settings/{auditor-access,email-history,executive-digest,integrations,notifications}`.
+
+**Migrations**
+
+- **`supabase/migrations/20260624009_consolidate_orgs_organizations.sql`** annotated `⚠️ ALREADY APPLIED IN PRODUCTION — DO NOT RE-RUN`. Numeric pre-conditions are snapshot-specific; future re-consolidations need a fresh audit + archive step.
+
+**Verification status:** `tsc -p tsconfig.typecheck.json --noEmit` clean. Tests not re-run on this branch — the tightened e2e status assertions will surface real contract drift on next CI run if any exists.
+
+---
+
 ## [3.7.1] - 2026-04-22
 
 ### Audit Re-Pass — Admin CSRF Hardening, Plan Copy Parity, Lint Cleanup
