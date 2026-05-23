@@ -50,7 +50,6 @@ async function backupCodeMatches(code: string, stored: string): Promise<boolean>
   }
 }
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import * as speakeasy from 'speakeasy';
 import * as QRCode from 'qrcode';
 
@@ -293,42 +292,37 @@ export async function verify2FAToken(
 }
 
 /**
- * Disable 2FA
- * Requires the user's current password to prevent a stolen session from
- * silently removing two-factor protection.
+ * Disable 2FA.
+ *
+ * v4-015: requires a fresh TOTP code (or single-use backup code) — the
+ * second factor itself, not just the password. A phished password
+ * alone must not be sufficient to strip MFA off an account; the
+ * attacker must also have the authenticator or a backup code, which
+ * is the same bar we hold for adding MFA. verify2FAToken consumes
+ * the backup code if one is used, so a single disable attempt
+ * burns one code (consistent with login flow).
+ *
+ * Returns false if the token is invalid (wrong/expired TOTP, no
+ * matching backup code, or MFA isn't enabled).
  */
 export async function disable2FA(
   userId: string,
-  password: string,
+  totpToken: string,
 ): Promise<boolean> {
-  if (!password) return false;
+  if (!totpToken) return false;
+
+  const verified = await verify2FAToken(userId, totpToken);
+  if (!verified) return false;
 
   const supabase = await createClient();
-  const adminClient = createSupabaseAdminClient();
 
-  // Fetch the user's email so we can re-verify via signInWithPassword
-  const { data: userData, error: userError } =
-    await adminClient.auth.admin.getUserById(userId);
-  if (userError || !userData?.user?.email) {
-    throw new Error('Unable to retrieve user for re-authentication');
-  }
-
-  // Re-verify password — this is a fresh credential check, not a session check
-  const { error: authError } = await supabase.auth.signInWithPassword({
-    email: userData.user.email,
-    password,
-  });
-  if (authError) {
-    return false; // Wrong password
-  }
-
-  // Disable 2FA
   await supabase
     .from('user_security')
     .update({
       two_factor_enabled: false,
       two_factor_secret: null,
       backup_codes: null,
+      backup_code_hashes: null,
     })
     .eq('user_id', userId);
 
