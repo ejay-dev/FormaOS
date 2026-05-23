@@ -11,7 +11,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
-    requiredScopes: ['webhooks:manage'],
+    requiredScopes: ['api_keys:manage'],
   });
 
   if (!auth.ok) {
@@ -36,7 +36,7 @@ export async function PATCH(request: Request, context: RouteContext) {
         typeof body.rate_limit === 'number' ? Math.round(body.rate_limit) : undefined,
     });
 
-    await logV1Access(auth.context, 200, 'webhooks:manage');
+    await logV1Access(auth.context, 200, 'api_keys:manage');
     return jsonWithContext(
       auth.context,
       createEnvelope({
@@ -61,7 +61,7 @@ export async function PATCH(request: Request, context: RouteContext) {
       typeof body?.rate_limit === 'number' ? Math.round(body.rate_limit) : undefined,
   });
 
-  await logV1Access(auth.context, 200, 'webhooks:manage');
+  await logV1Access(auth.context, 200, 'api_keys:manage');
   return jsonWithContext(auth.context, createEnvelope({ apiKey: updated }));
 }
 
@@ -70,7 +70,7 @@ export async function DELETE(request: Request, context: RouteContext) {
   if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
-    requiredScopes: ['webhooks:manage'],
+    requiredScopes: ['api_keys:manage'],
   });
 
   if (!auth.ok) {
@@ -84,7 +84,7 @@ export async function DELETE(request: Request, context: RouteContext) {
     revokedBy: auth.context.userId!,
   });
 
-  await logV1Access(auth.context, 200, 'webhooks:manage');
+  await logV1Access(auth.context, 200, 'api_keys:manage');
   return jsonWithContext(auth.context, createEnvelope({ ok: true }));
 }
 

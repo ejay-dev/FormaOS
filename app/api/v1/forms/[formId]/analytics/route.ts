@@ -11,7 +11,7 @@ export async function GET(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['compliance:read'],
+    requiredScopes: ['forms:read'],
   });
   if (!auth.ok) return auth.response;
 
