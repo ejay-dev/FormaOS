@@ -142,11 +142,15 @@ jobs:
           npm run build
           npx playwright test --reporter=list
 
-      - name: Performance baseline check
+      - name: Performance baseline check (Lighthouse)
+        # v4-028: previously echoed "Performance check would run here"
+        # — pure theatre. Now runs a real Lighthouse CI against the
+        # built app's preview URL. Score thresholds enforced via
+        # .lighthouserc.json; missing thresholds fail the job.
         run: |
-          echo "Performance check would run here"
-          echo "⚡ Simulating performance validation..."
-        continue-on-error: true
+          npm install -g @lhci/cli@0.13.x
+          npx lhci autorun --config=./lighthouserc.json --upload.target=temporary-public-storage
+        continue-on-error: false
 
   # Deployment approval gate
   deployment_approval:
@@ -210,11 +214,34 @@ jobs:
         run: npm run build
 
       - name: Deploy to Vercel
+        # v4-028: the prior implementation literally echoed
+        # "npx vercel --prod --yes" without invoking it. Production
+        # deployment is owned by Vercel's git integration (pushes to
+        # main trigger a build out-of-band). This step now either
+        # actually runs the Vercel CLI when VERCEL_TOKEN is provided
+        # (manual deploy path) or no-ops with a clear message when
+        # relying on git integration.
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          DEPLOY_ENV: ${{ github.event.inputs.environment || 'production' }}
         run: |
-          echo "🚀 Deploying to ${{ github.event.inputs.environment || 'production' }}..."
-          # Actual Vercel deployment would happen here
-          echo "npx vercel --prod --yes"
-          echo "✅ Deployment completed successfully"
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "ℹ️  VERCEL_TOKEN not set — production deployment is owned by"
+            echo "    the Vercel git integration. This job has no work to do."
+            echo "    To enable workflow-driven deploys, add VERCEL_TOKEN +"
+            echo "    VERCEL_ORG_ID + VERCEL_PROJECT_ID repository secrets."
+            exit 0
+          fi
+          echo "🚀 Deploying via Vercel CLI to $DEPLOY_ENV..."
+          npm install -g vercel@latest
+          if [ "$DEPLOY_ENV" = "production" ]; then
+            npx vercel --prod --yes --token="$VERCEL_TOKEN"
+          else
+            npx vercel --yes --token="$VERCEL_TOKEN"
+          fi
+          echo "✅ Vercel CLI deploy completed"
 
   # Post-deployment validation
   post_deployment_validation:
