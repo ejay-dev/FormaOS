@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { TrustHero } from './components';
+import { TrustSubpagesIndex } from './components/TrustSubpagesIndex';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 import { useDeviceTier } from '@/lib/device-tier';
 
@@ -155,6 +156,12 @@ export default function TrustPageContent({
       <TrustHero />
       {leadContent}
       <FrameworkTrustStrip className="mt-2 mb-2" />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      {/* SSR-rendered index of trust sub-pages. Sits outside DeferredSection
+          so it lands in the initial HTML response — crawlers and screen
+          readers reach every Trust Center document without needing to
+          hydrate the dynamic TrustModules visual below. */}
+      <TrustSubpagesIndex />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       <DeferredSection minHeight={520}>
         <TrustModules />

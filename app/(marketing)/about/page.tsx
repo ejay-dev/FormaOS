@@ -7,7 +7,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'About FormaOS - Our Mission for Regulated Industries',
   description:
-    'Why FormaOS exists: building the compliance operating system that turns regulatory obligations into structured controls, owned actions, and immutable audit evidence.',
+    'Why FormaOS exists: the compliance operating system that turns regulatory obligations into structured controls, owned actions, and immutable audit evidence.',
   alternates: {
     canonical: `${siteUrl}/about`,
   },

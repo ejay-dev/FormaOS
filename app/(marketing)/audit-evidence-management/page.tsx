@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title:
     'Audit Evidence Management | FormaOS',
   description:
-    'Capture, organize, and export audit evidence automatically. FormaOS creates immutable audit trails tied to compliance controls, eliminating pre-audit evidence scrambles.',
+    'Capture and export audit evidence automatically. FormaOS creates immutable audit trails tied to compliance controls, ending pre-audit evidence scrambles.',
   alternates: { canonical: `${siteUrl}/audit-evidence-management` },
   openGraph: {
     title: 'Audit Evidence Management | FormaOS',

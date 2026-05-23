@@ -9,6 +9,13 @@ export const PUBLIC_CTA_LABELS = {
   seeDemo: 'See Demo',
 } as const;
 
+// 2026-05-23 (SEO sprint): the `source` parameter was dropped from these
+// builders. It was generating 50+ canonicalised URL variants of /contact —
+// not an indexing problem (canonicals were correct) but real crawl-budget
+// and link-graph noise. Source attribution is now derived from
+// document.referrer on the contact page (see ContactPageContentNew).
+// Builder arguments are retained for backwards-compatibility with existing
+// callsites; they are accepted but ignored.
 type PublicCtaSource =
   | 'header_cta'
   | 'footer'
@@ -24,30 +31,30 @@ type PublicCtaSource =
   | 'resource'
   | string;
 
-export function compliancePlanHref(source: PublicCtaSource) {
-  return `/contact?type=compliance-plan&source=${encodeURIComponent(source)}`;
+export function compliancePlanHref(_source?: PublicCtaSource) {
+  return `/contact?type=compliance-plan`;
 }
 
-export function demoHref(source: PublicCtaSource) {
-  return `/contact?type=demo&source=${encodeURIComponent(source)}`;
+export function demoHref(_source?: PublicCtaSource) {
+  return `/contact?type=demo`;
 }
 
-export function salesHref(source: PublicCtaSource) {
-  return `/contact?type=sales&source=${encodeURIComponent(source)}`;
+export function salesHref(_source?: PublicCtaSource) {
+  return `/contact?type=sales`;
 }
 
-export function assessmentHref(source: PublicCtaSource) {
-  return `/contact?type=assessment&source=${encodeURIComponent(source)}`;
+export function assessmentHref(_source?: PublicCtaSource) {
+  return `/contact?type=assessment`;
 }
 
-export function buyerReviewHref(source: PublicCtaSource) {
-  return `/contact?type=procurement&source=${encodeURIComponent(source)}`;
+export function buyerReviewHref(_source?: PublicCtaSource) {
+  return `/contact?type=procurement`;
 }
 
-export function securityReviewHref(source: PublicCtaSource) {
-  return `/contact?type=security-review&source=${encodeURIComponent(source)}`;
+export function securityReviewHref(_source?: PublicCtaSource) {
+  return `/contact?type=security-review`;
 }
 
-export function trustPacketHref(source: PublicCtaSource) {
-  return `/trust/packet?source=${encodeURIComponent(source)}`;
+export function trustPacketHref(_source?: PublicCtaSource) {
+  return `/trust/packet`;
 }

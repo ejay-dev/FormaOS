@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   title:
     'Healthcare Compliance Software | FormaOS',
   description:
-    'Track AHPRA registrations, NSQHS Standards accreditation, CPD hours, and adverse events. Continuous compliance for healthcare and allied health providers in Australia.',
+    'Track AHPRA registrations, NSQHS accreditation, CPD hours, and adverse events. Continuous compliance for healthcare and allied health providers.',
   keywords: [
     'healthcare compliance software Australia',
     'AHPRA compliance tracking',

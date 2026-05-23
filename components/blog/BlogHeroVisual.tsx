@@ -234,14 +234,15 @@ export function BlogHeroVisual({
           <Icon className={`w-12 h-12 bg-gradient-to-r ${config.accentGradient} bg-clip-text text-transparent`} style={{ filter: 'drop-shadow(0 0 10px currentColor)' }} />
         </motion.div>
 
-        <motion.h1
+        <motion.div
+          aria-hidden="true"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white text-center max-w-4xl leading-tight"
         >
           {title}
-        </motion.h1>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, scaleX: 0 }}

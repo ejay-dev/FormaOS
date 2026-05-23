@@ -5,7 +5,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'ISO, SOC 2, NDIS Framework Coverage - FormaOS',
   description:
-    'Framework-mapped controls and evidence workflows for ISO 27001, SOC 2, NDIS Practice Standards, and more. Build repeatable compliance execution, not static checklists.',
+    'Framework-mapped controls and evidence workflows for ISO 27001, SOC 2, NDIS Practice Standards, and more. Repeatable execution, not checklists.',
   alternates: {
     canonical: `${siteUrl}/frameworks`,
   },

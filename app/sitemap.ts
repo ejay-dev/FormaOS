@@ -358,12 +358,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.4,
     },
-    {
-      url: `${siteUrl}/terms`,
-      lastModified: new Date('2025-06-01'),
-      changeFrequency: 'monthly',
-      priority: 0.3,
-    },
+    // /terms removed 2026-05-23: it 308s to /legal/terms (next.config redirects
+    // collapsed /privacy → /legal/privacy years ago; /terms was left behind).
+    // Sitemaps must only list canonical 200-OK URLs.
   ];
 
   const blogEntries: MetadataRoute.Sitemap = blogPosts.map((post) => ({

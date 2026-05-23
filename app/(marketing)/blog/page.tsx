@@ -4,7 +4,7 @@ import { siteUrl } from '@/lib/seo';
 export const metadata: Metadata = {
   title: 'Blog & Insights | FormaOS',
   description:
-    'Expert insights on compliance management, regulatory technology, and operational excellence for regulated industries. Stay informed with the latest from FormaOS.',
+    'Expert insights on compliance management, regulatory technology, and operational excellence for regulated industries in Australia.',
   alternates: {
     canonical: `${siteUrl}/blog`,
     types: {

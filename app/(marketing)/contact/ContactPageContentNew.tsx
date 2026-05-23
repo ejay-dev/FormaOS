@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   Mail,
@@ -407,7 +407,26 @@ function ContactForm({ submitAction }: ContactFormProps) {
   const intent = resolveContactIntent(searchParams);
   const copy = CONTACT_INTENT_COPY[intent];
   const plan = searchParams.get('plan') ?? '';
-  const source = searchParams.get('source') ?? '';
+  // Source attribution: prefer explicit ?source= for bookmarked/deep links,
+  // otherwise derive from document.referrer. The CTA builders stopped
+  // emitting ?source= in the SEO sprint (2026-05-23) to collapse 50+
+  // canonicalised /contact URL variants down to ~6.
+  const explicitSource = searchParams.get('source') ?? '';
+  const [source, setSource] = useState(explicitSource);
+  useEffect(() => {
+    if (explicitSource) return;
+    if (typeof document === 'undefined') return;
+    const referrer = document.referrer;
+    if (!referrer) return;
+    try {
+      const parsed = new URL(referrer);
+      if (parsed.host !== window.location.host) return;
+      const path = parsed.pathname.replace(/^\/+|\/+$/g, '');
+      if (path) setSource(path.replace(/\//g, '_'));
+    } catch {
+      // Ignore malformed referrer.
+    }
+  }, [explicitSource]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Field-level inline errors. Each entry is the user-visible message
   // for that field; absence of an entry means the field is currently
