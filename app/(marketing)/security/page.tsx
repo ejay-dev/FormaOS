@@ -6,7 +6,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Security & Data Protection | FormaOS',
   description:
-    'Enterprise-grade security for Australian compliance data. AU-hosted by default, SOC 2 in progress, row-level security, SAML SSO, MFA. Your data never leaves Australia.',
+    'Enterprise-grade security for Australian compliance data. AU-hosted, SOC 2 in progress, row-level security, SAML SSO, MFA, data residency assured.',
   keywords: [
     'FormaOS security',
     'compliance software security Australia',
