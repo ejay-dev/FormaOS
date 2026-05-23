@@ -119,11 +119,14 @@ describe('lib/sso/jit-provisioning', () => {
     expect(result.userId).toBe('u99');
   });
 
-  it('maps admin group to admin role', async () => {
+  // v4-016: mapping is exact-match (case-insensitive) against a
+  // fixed allowlist. Tests below cover both the accepted forms
+  // and the substring-escalation cases the audit flagged.
+  it('maps the exact "admin" group to admin role', async () => {
     (getSamlEmail as jest.Mock).mockReturnValue('admin@example.com');
     (isAllowedDomain as jest.Mock).mockReturnValue(true);
     (getSamlDisplayName as jest.Mock).mockReturnValue('Admin');
-    (getSamlGroups as jest.Mock).mockReturnValue(['Company_Admin']);
+    (getSamlGroups as jest.Mock).mockReturnValue(['Admin']);
 
     const admin = makeAdmin();
     (createSupabaseAdminClient as jest.Mock).mockReturnValue(admin);
@@ -138,11 +141,11 @@ describe('lib/sso/jit-provisioning', () => {
     expect(result.role).toBe('admin');
   });
 
-  it('maps owner group to owner role', async () => {
+  it('maps "owner" exactly (case-insensitive) to owner role', async () => {
     (getSamlEmail as jest.Mock).mockReturnValue('o@example.com');
     (isAllowedDomain as jest.Mock).mockReturnValue(true);
     (getSamlDisplayName as jest.Mock).mockReturnValue('O');
-    (getSamlGroups as jest.Mock).mockReturnValue(['team-owner']);
+    (getSamlGroups as jest.Mock).mockReturnValue(['OWNER']);
 
     const admin = makeAdmin();
     (createSupabaseAdminClient as jest.Mock).mockReturnValue(admin);
@@ -156,11 +159,11 @@ describe('lib/sso/jit-provisioning', () => {
     expect(result.role).toBe('owner');
   });
 
-  it('maps auditor group to auditor role', async () => {
+  it('maps "formaos-auditor" to auditor role', async () => {
     (getSamlEmail as jest.Mock).mockReturnValue('a@example.com');
     (isAllowedDomain as jest.Mock).mockReturnValue(true);
     (getSamlDisplayName as jest.Mock).mockReturnValue('A');
-    (getSamlGroups as jest.Mock).mockReturnValue(['Auditor_External']);
+    (getSamlGroups as jest.Mock).mockReturnValue(['formaos-auditor']);
 
     const admin = makeAdmin();
     (createSupabaseAdminClient as jest.Mock).mockReturnValue(admin);
@@ -174,7 +177,7 @@ describe('lib/sso/jit-provisioning', () => {
     expect(result.role).toBe('auditor');
   });
 
-  it('maps viewer/read group to viewer role', async () => {
+  it('maps "read-only" exactly to viewer role', async () => {
     (getSamlEmail as jest.Mock).mockReturnValue('v@example.com');
     (isAllowedDomain as jest.Mock).mockReturnValue(true);
     (getSamlDisplayName as jest.Mock).mockReturnValue('V');
@@ -190,6 +193,64 @@ describe('lib/sso/jit-provisioning', () => {
       defaultRole: 'member',
     });
     expect(result.role).toBe('viewer');
+  });
+
+  it('rejects substring escalation — "not-admin" does NOT grant admin', async () => {
+    (getSamlEmail as jest.Mock).mockReturnValue('x@example.com');
+    (isAllowedDomain as jest.Mock).mockReturnValue(true);
+    (getSamlDisplayName as jest.Mock).mockReturnValue('X');
+    (getSamlGroups as jest.Mock).mockReturnValue(['not-admin']);
+
+    const admin = makeAdmin();
+    (createSupabaseAdminClient as jest.Mock).mockReturnValue(admin);
+
+    const result = await provisionJitUser({
+      orgId: 'org1',
+      profile: {} as any,
+      allowedDomains: ['example.com'],
+      defaultRole: 'member',
+    });
+    expect(result.role).toBe('member');
+  });
+
+  it('rejects substring escalation — "read-owner-docs" does NOT grant owner', async () => {
+    (getSamlEmail as jest.Mock).mockReturnValue('y@example.com');
+    (isAllowedDomain as jest.Mock).mockReturnValue(true);
+    (getSamlDisplayName as jest.Mock).mockReturnValue('Y');
+    (getSamlGroups as jest.Mock).mockReturnValue(['read-owner-docs']);
+
+    const admin = makeAdmin();
+    (createSupabaseAdminClient as jest.Mock).mockReturnValue(admin);
+
+    const result = await provisionJitUser({
+      orgId: 'org1',
+      profile: {} as any,
+      allowedDomains: ['example.com'],
+      defaultRole: 'member',
+    });
+    expect(result.role).toBe('member');
+  });
+
+  it('highest privilege wins when multiple matching groups are present', async () => {
+    (getSamlEmail as jest.Mock).mockReturnValue('z@example.com');
+    (isAllowedDomain as jest.Mock).mockReturnValue(true);
+    (getSamlDisplayName as jest.Mock).mockReturnValue('Z');
+    (getSamlGroups as jest.Mock).mockReturnValue([
+      'viewer',
+      'admin',
+      'owner',
+    ]);
+
+    const admin = makeAdmin();
+    (createSupabaseAdminClient as jest.Mock).mockReturnValue(admin);
+
+    const result = await provisionJitUser({
+      orgId: 'org1',
+      profile: {} as any,
+      allowedDomains: ['example.com'],
+      defaultRole: 'member',
+    });
+    expect(result.role).toBe('owner');
   });
 
   it('throws on membership upsert error', async () => {
