@@ -25,6 +25,7 @@ import {
   updatePatient,
 } from '@/app/app/actions/patients';
 import { createTask } from '@/app/app/actions/tasks';
+import { logAuditEvent } from '@/app/app/actions/audit-events';
 
 type PatientRow = {
   id: string;
@@ -200,6 +201,27 @@ export default async function PatientDetailPage({
   if (!patient) {
     redirect('/app/patients');
   }
+
+  // v4-027: HIPAA §164.312(b) requires read-event audit on PHI. The
+  // patient detail page loads full demographics + DOB + diagnosis +
+  // active incident history — every render is a read of protected
+  // information. Fire-and-forget logAuditEvent so a slow audit
+  // write never blocks the page render.
+  void logAuditEvent({
+    organizationId: membership.organization_id,
+    actorUserId: user.id,
+    actorRole: roleKey,
+    entityType: 'patient',
+    entityId: patient.id,
+    actionType: 'PATIENT_VIEWED',
+    afterState: {
+      view: 'detail',
+      tasks_loaded: (tasks ?? []).length,
+      notes_loaded: (notes ?? []).length,
+      incidents_loaded: (incidents ?? []).length,
+    },
+    reason: 'phi_read',
+  }).catch(() => {});
 
   const nowIso = new Date().toISOString();
   const overdueTasks = (tasks ?? []).filter(

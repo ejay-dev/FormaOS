@@ -18,6 +18,8 @@ function createBuilder(result: any = { data: null, error: null }) {
     'gte',
     'not',
     'is',
+    'or',
+    'and',
     'order',
     'limit',
     'range',
