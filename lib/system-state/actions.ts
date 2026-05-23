@@ -9,7 +9,6 @@ import {
 } from "./server";
 import type { ModuleId, UserEntitlements, NodeState, PlanTier, UserRole } from "./types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { apiLogger } from "@/lib/observability/structured-logger";
 
@@ -145,59 +144,13 @@ export async function initiatePlanUpgrade(targetPlan: PlanTier): Promise<ActionR
   }
 }
 
-/**
- * Confirm plan upgrade after payment
- * This is typically called from the Stripe webhook, but can also
- * be called manually for trial-to-paid conversions
- */
-export async function confirmPlanUpgrade(
-  orgId: string, 
-  newPlan: PlanTier,
-  stripeData?: {
-    customerId: string;
-    subscriptionId: string;
-  }
-): Promise<ActionResult> {
-  try {
-    const admin = createSupabaseAdminClient();
-    
-    // Map PlanTier back to PlanKey for database
-    const planKeyMap: Record<PlanTier, string> = {
-      trial: "basic", // Trial converts to basic
-      basic: "basic",
-      pro: "pro",
-      enterprise: "enterprise",
-    };
-
-    // Legacy plan_code uses different values (starter vs basic)
-    const toLegacyPlanCode = (key: string) => (key === "basic" ? "starter" : key);
-
-    const now = new Date().toISOString();
-
-    // Update subscription
-    await admin.from("org_subscriptions").upsert({
-      org_id: orgId, // Legacy column
-      organization_id: orgId,
-      plan_code: toLegacyPlanCode(planKeyMap[newPlan]), // Legacy column with different values
-      plan_key: planKeyMap[newPlan],
-      status: "active",
-      stripe_customer_id: stripeData?.customerId,
-      stripe_subscription_id: stripeData?.subscriptionId,
-      trial_started_at: null, // Clear trial
-      trial_expires_at: null,
-      updated_at: now,
-    });
-
-    // Sync entitlements for the new plan
-    // This would call your existing syncEntitlementsForPlan function
-    revalidatePath("/app");
-    
-    return { success: true };
-  } catch (error) {
-    console.error("[confirmPlanUpgrade] Error:", error);
-    return { success: false, error: "Failed to confirm upgrade" };
-  }
-}
+// v4-018: confirmPlanUpgrade was an exported `"use server"` action
+// with zero auth check that flipped an org's plan_key/status to a
+// paid tier and wiped trial timestamps. The Stripe webhook never
+// called it (it uses upsertFromSubscription instead) — but the
+// action was reachable via the server-action RPC surface from any
+// authenticated client. Removed entirely; future plan-upgrade
+// flows must go through Stripe + webhook reconciliation.
 
 // =========================================================
 // ROLE CHANGE ACTIONS
