@@ -1,257 +1,219 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, Building2, CheckCircle2, Layers, Users } from 'lucide-react';
 import { PUBLIC_PRICING_TIERS } from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { TopographicPattern } from '@/components/marketing/SectionBackgrounds';
-import { duration } from '@/config/motion';
+import {
+  AccentText,
+  SectionEyebrow,
+  StatusPill,
+  SystemSection,
+  systemPanelClass,
+} from '@/components/marketing/SystemMarketingPrimitives';
 
-const TIER_VISUAL = {
-  foundation: {
-    code: 'FND',
-    accent: 'text-slate-400',
-    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
-    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
-  },
-  growth: {
-    code: 'GRW',
-    accent: 'text-emerald-300',
-    rail: 'from-emerald-300/70 via-emerald-300/20 to-transparent',
-    chip: 'border-emerald-300/40 bg-emerald-300/[0.12] text-emerald-100',
-  },
-  scale: {
-    code: 'SCL',
-    accent: 'text-slate-400',
-    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
-    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
-  },
-  enterprise: {
-    code: 'ENT',
-    accent: 'text-slate-400',
-    rail: 'from-slate-500/30 via-slate-500/10 to-transparent',
-    chip: 'border-white/[0.12] bg-white/[0.04] text-slate-300',
-  },
-} as const;
+/**
+ * Scope-ladder data per tier — three quick metrics that anchor each
+ * card and create visible progression across tiers (1 → 3 → ∞ → ∞).
+ * Kept local to the component rather than added to PublicPricingTier
+ * so the page presentation layer doesn't bleed into the marketing
+ * data shape.
+ */
+const TIER_SCOPE: Record<
+  (typeof PUBLIC_PRICING_TIERS)[number]['id'],
+  { sites: string; users: string; frameworks: string }
+> = {
+  foundation: { sites: '1', users: '10', frameworks: '2' },
+  growth: { sites: '3', users: '25', frameworks: '4' },
+  scale: { sites: '∞', users: '75', frameworks: '∞' },
+  enterprise: { sites: '∞', users: '∞', frameworks: '∞' },
+};
 
+/**
+ * PricingTiers — four tier cards on the canonical SystemSection background.
+ * No fake-terminal codes (FND/GRW/SCL/ENT), no mono-eyebrow, no per-tier
+ * gradient rails. The featured tier is signalled with a StatusPill in the
+ * standard "valid" tone — same affordance the rest of the marketing site
+ * uses for emphasis.
+ */
 export function PricingTiers() {
   const { trackCtaClick } = useMarketingTelemetry();
-  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative overflow-hidden py-24 sm:py-32">
-      {/*
-        The `id="pricing-table"` anchor that the hero's "View pricing"
-        CTA targets lives on a sibling div in PricingPageContent — see
-        the comment there. Putting it on this section directly would
-        not work because this component is rendered behind a deferred
-        IntersectionObserver and the id would not be in SSR HTML.
-      */}
-      {/* Section backgrounds */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        <TopographicPattern color="rgba(20,184,166,0.04)" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(16,185,129,0.12),transparent_55%)]" />
+    <SystemSection variant="cyan">
+      <div className="mx-auto mb-12 max-w-3xl text-center">
+        <SectionEyebrow icon={Layers} tone="live">
+          Plan catalog
+        </SectionEyebrow>
+        <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl">
+          One compliance OS,{' '}
+          <AccentText>four ways to deploy it.</AccentText>
+        </h2>
+        <p className="mt-4 text-base leading-7 text-slate-300">
+          Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
+          is contracted with procurement and security review. Same compliance
+          engine across every plan — only scope changes.
+        </p>
       </div>
 
-      {/* Top + bottom hairlines */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/15 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent" />
-
-      <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section header */}
-        <ScrollReveal
-          variant="slideUp"
-          range={[0, 0.35]}
-          className="mb-14 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end"
-        >
-          <div>
-            <div className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
-              <span className="h-px w-6 bg-white/20" />
-              <span className="text-slate-300">Plan catalog</span>
-              <span className="text-slate-600">·</span>
-              <span>4 tiers · 1 architecture</span>
+      <div className="grid items-stretch gap-5 lg:grid-cols-4 lg:items-start">
+        {PUBLIC_PRICING_TIERS.map((tier) => {
+          const scope = TIER_SCOPE[tier.id];
+          return (
+          <article
+            key={tier.id}
+            className={`group relative flex min-h-full flex-col p-7 sm:p-8 ${systemPanelClass} ${
+              tier.featured
+                ? 'border-emerald-300/45 bg-emerald-300/[0.05] shadow-[0_24px_72px_rgba(16,185,129,0.18),inset_0_1px_0_rgba(255,255,255,0.06)] hover:border-emerald-300/65 lg:-mt-3 lg:mb-3 lg:scale-[1.015]'
+                : ''
+            }`}
+          >
+            {/*
+              Pill row — reserved height (h-7) on every card so the four
+              tier cards align at the tier-name baseline regardless of
+              whether they carry a pill. Pills stay single-line via
+              whitespace-nowrap so long copy ("BEST FOR MULTI-SITE",
+              "PROCUREMENT-READY") doesn't wrap inside the pill.
+            */}
+            <div className="flex h-7 items-start">
+              {tier.featured ? (
+                <span className="whitespace-nowrap">
+                  <StatusPill tone="valid">Most popular</StatusPill>
+                </span>
+              ) : tier.badge ? (
+                <span className="whitespace-nowrap">
+                  <StatusPill tone="neutral">{tier.badge}</StatusPill>
+                </span>
+              ) : null}
             </div>
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
-              One compliance OS, four ways to deploy it.
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
-              Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
-              is contracted with procurement and security review. Same
-              compliance engine across every plan — only scope changes.
-            </p>
-          </div>
-          <div className="hidden rounded-2xl border border-white/[0.06] bg-black/30 px-5 py-4 backdrop-blur-md lg:block">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              Currency
-            </p>
-            <p className="mt-1.5 font-mono text-sm text-white">AUD · GST inc.</p>
-            <div className="mt-3 h-px bg-gradient-to-r from-white/10 to-transparent" />
-            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              Billing
-            </p>
-            <p className="mt-1.5 font-mono text-sm text-white">Monthly · Stripe</p>
-          </div>
-        </ScrollReveal>
 
-        {/* Tier grid */}
-        <SectionChoreography
-          pattern="cascade"
-          stagger={0.07}
-          className="grid items-stretch gap-5 lg:grid-cols-4"
-        >
-          {PUBLIC_PRICING_TIERS.map((tier, index) => {
-            const visual = TIER_VISUAL[tier.id];
-            const number = String(index + 1).padStart(2, '0');
+            <h3 className="mt-4 text-xl font-semibold tracking-tight text-white">
+              {tier.name}
+            </h3>
+            <p className="mt-2 text-sm leading-snug text-slate-300">
+              {tier.audience}
+            </p>
 
-            return (
-              <motion.article
-                key={tier.id}
-                whileHover={
-                  shouldReduceMotion ? undefined : { y: -4 }
-                }
-                transition={{ duration: duration.fast }}
-                className={`group relative flex min-h-full flex-col overflow-hidden rounded-3xl border bg-gradient-to-b shadow-2xl ${
-                  tier.featured
-                    ? 'border-emerald-300/40 from-emerald-300/[0.07] via-emerald-300/[0.02] to-white/[0.02] shadow-emerald-950/40 lg:-mt-4 lg:mb-4 lg:scale-[1.015]'
-                    : 'border-white/[0.07] from-white/[0.045] to-white/[0.015] shadow-slate-950/50 hover:border-white/[0.14]'
-                }`}
-              >
-                {/* Vertical accent rail */}
-                <span
-                  className={`pointer-events-none absolute inset-y-6 left-0 w-px bg-gradient-to-b ${visual.rail}`}
-                />
-
-                {/* Header strip */}
-                <div className="flex items-center justify-between border-b border-white/[0.05] bg-white/[0.02] px-6 py-3.5">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
-                      Tier {number}
-                    </span>
-                    <span
-                      className={`font-mono text-[10px] uppercase tracking-[0.22em] ${visual.accent}`}
-                    >
-                      / {visual.code}
-                    </span>
-                  </div>
-                  {tier.badge ? (
-                    <span
-                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${visual.chip}`}
-                    >
-                      {tier.badge}
-                    </span>
-                  ) : null}
+            {/*
+              Scope ladder — three mini stat chips (sites · users ·
+              frameworks). Reads as a quick scan across the four cards
+              so the upgrade path is visible without reading any copy.
+              Featured tier gets emerald-tinted dividers.
+            */}
+            <dl
+              className={`mt-5 grid grid-cols-3 overflow-hidden rounded-xl border bg-white/[0.025] ${
+                tier.featured
+                  ? 'border-emerald-300/25 divide-emerald-300/15'
+                  : 'border-white/[0.07] divide-white/[0.05]'
+              } divide-x`}
+            >
+              {[
+                { label: 'Sites', value: scope.sites, Icon: Building2 },
+                { label: 'Users', value: scope.users, Icon: Users },
+                { label: 'Frameworks', value: scope.frameworks, Icon: Layers },
+              ].map(({ label, value, Icon }) => (
+                <div key={label} className="px-2.5 py-3 text-center">
+                  <Icon
+                    className={`mx-auto h-3.5 w-3.5 ${
+                      tier.featured ? 'text-emerald-300/80' : 'text-slate-500'
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <dd
+                    className={`mt-1 text-lg font-semibold tracking-tight ${
+                      tier.featured ? 'text-white' : 'text-white'
+                    }`}
+                  >
+                    {value}
+                  </dd>
+                  <dt className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                    {label}
+                  </dt>
                 </div>
+              ))}
+            </dl>
 
-                {/* Body */}
-                <div className="flex flex-1 flex-col px-6 pt-6 pb-6">
-                  <h3 className="text-2xl font-semibold tracking-tight text-white">
-                    {tier.name}
-                  </h3>
-                  <p className="mt-1.5 text-[13px] leading-snug text-slate-400">
-                    {tier.audience}
-                  </p>
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                    {tier.audienceSize}
-                  </p>
+            {/* Price */}
+            <div className="mt-7 flex items-baseline gap-1.5">
+              <span className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+                {tier.priceLabel}
+              </span>
+              <span className="text-sm font-medium text-slate-400">
+                {tier.priceSubtext}
+              </span>
+            </div>
+            <p className="mt-2.5 text-xs leading-relaxed text-slate-400">
+              {tier.trustNote}
+            </p>
 
-                  {/* Price */}
-                  <div className="mt-7 flex items-end gap-2">
-                    <span className="font-mono text-5xl font-semibold tracking-tight text-white">
-                      {tier.priceLabel}
-                    </span>
-                    <span className="pb-2 text-sm font-medium text-slate-400">
-                      {tier.priceSubtext}
-                    </span>
-                  </div>
-                  <div className="mt-3 inline-flex max-w-full items-center gap-2 self-start rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] text-slate-300">
+            {/* CTA */}
+            <Link
+              href={tier.ctaHref}
+              data-testid={`pricing-${tier.id}-cta`}
+              onClick={() =>
+                trackCtaClick({
+                  surface: 'pricing',
+                  section: 'tiers',
+                  location: 'pricing_card',
+                  ctaLabel: tier.ctaLabel,
+                  ctaHref: tier.ctaHref,
+                  variant: tier.featured ? 'primary' : 'plan',
+                  plan: tier.id,
+                })
+              }
+              className={`mt-7 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
+                tier.featured
+                  ? 'mk-btn mk-btn-primary'
+                  : 'mk-btn mk-btn-secondary'
+              }`}
+            >
+              {tier.ctaLabel}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+
+            {/* Summary */}
+            <p className="mt-7 text-sm leading-relaxed text-slate-400">
+              {tier.summary}
+            </p>
+
+            {/* Features */}
+            <div className="mt-7 border-t border-white/[0.06] pt-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                Includes
+              </p>
+              <ul className="mt-4 space-y-3">
+                {tier.features.map((feature) => (
+                  <li
+                    key={feature}
+                    className="flex gap-2.5 text-sm leading-snug text-slate-300"
+                  >
                     <CheckCircle2
-                      className={`h-3 w-3 shrink-0 ${
+                      className={`mt-0.5 h-4 w-4 shrink-0 ${
                         tier.featured ? 'text-emerald-300' : 'text-slate-400'
                       }`}
                       aria-hidden="true"
                     />
-                    <span className="truncate">{tier.trustNote}</span>
-                  </div>
-
-                  {/* CTA */}
-                  <Link
-                    href={tier.ctaHref}
-                    data-testid={`pricing-${tier.id}-cta`}
-                    onClick={() =>
-                      trackCtaClick({
-                        surface: 'pricing',
-                        section: 'tiers',
-                        location: 'pricing_card',
-                        ctaLabel: tier.ctaLabel,
-                        ctaHref: tier.ctaHref,
-                        variant: tier.featured ? 'primary' : 'plan',
-                        plan: tier.id,
-                      })
-                    }
-                    className={`mt-6 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
-                      tier.featured
-                        ? 'bg-emerald-400 text-slate-900 shadow-lg shadow-emerald-950/40 hover:bg-emerald-300'
-                        : 'border border-white/[0.1] bg-white/[0.04] text-white hover:border-white/[0.2] hover:bg-white/[0.08]'
-                    }`}
-                  >
-                    {tier.ctaLabel}
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </Link>
-
-                  {/* Summary */}
-                  <p className="mt-6 text-[13px] leading-relaxed text-slate-400">
-                    {tier.summary}
-                  </p>
-
-                  {/* Features ledger */}
-                  <div className="mt-6 border-t border-white/[0.06] pt-5">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                      Includes
-                    </p>
-                    <ul className="mt-3 flex-1 space-y-2.5">
-                      {tier.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="flex gap-2.5 text-[13px] leading-snug text-slate-300"
-                        >
-                          <CheckCircle2
-                            className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
-                              tier.featured
-                                ? 'text-emerald-300'
-                                : 'text-slate-400'
-                            }`}
-                            aria-hidden="true"
-                          />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </motion.article>
-            );
-          })}
-        </SectionChoreography>
-
-        {/* Footer notes */}
-        <ScrollReveal
-          variant="fadeUp"
-          range={[0, 0.4]}
-          className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6"
-        >
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
-            Prices in AUD · GST inclusive · Stripe-secured payments
-          </p>
-          <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-            <span>SSO available on Enterprise</span>
-            <span className="text-slate-600">·</span>
-            <span>Cancel anytime</span>
-          </div>
-        </ScrollReveal>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+          );
+        })}
       </div>
-    </section>
+
+      {/* Footer notes — plain row, no mono, no terminal punctuation */}
+      <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6 text-xs text-slate-400">
+        <p>Prices in AUD, GST inclusive. Stripe-secured payments.</p>
+        <div className="flex items-center gap-4">
+          <span>SSO available on Enterprise</span>
+          <span aria-hidden="true" className="text-slate-600">
+            ·
+          </span>
+          <span>Cancel anytime</span>
+        </div>
+      </div>
+    </SystemSection>
   );
 }
