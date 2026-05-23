@@ -173,6 +173,27 @@ export async function getEntitlementLimit(
   return data.limit_value ?? null;
 }
 
+/**
+ * Tear down every entitlement row for an org. Used on
+ * `customer.subscription.deleted` so the org's status going to
+ * `canceled` is mirrored by every defense-in-depth check that
+ * reads `org_entitlements.enabled` directly (pages under
+ * /app/billing, /app/reports, /app/workflows, etc.) — not just
+ * the requireEntitlement() guards that also call
+ * requireActiveSubscription().
+ *
+ * Leaves rows in place (with enabled=false) so re-subscribing
+ * via syncEntitlementsForPlan re-toggles them with their stored
+ * onConflict id, instead of orphaning customer history.
+ */
+export async function disableEntitlementsForOrg(orgId: string) {
+  const admin = createSupabaseAdminClient();
+  await admin
+    .from('org_entitlements')
+    .update({ enabled: false, updated_at: new Date().toISOString() })
+    .eq('organization_id', orgId);
+}
+
 export async function syncEntitlementsForPlan(orgId: string, planKey: PlanKey) {
   const admin = createSupabaseAdminClient();
   const plan = PLAN_ENTITLEMENTS[planKey];
