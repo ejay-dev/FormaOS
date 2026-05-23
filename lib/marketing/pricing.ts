@@ -1,7 +1,14 @@
+// Audit 2026-05-23: previously hardcoded $297 / $797 / $1,800 inline.
+// Now derived from PLAN_CATALOG so any price change there is reflected
+// on the marketing pricing page automatically. Marketing-only fields
+// (badge, audience copy, ctaHref) stay here — they churn separately
+// from billing logic.
+import { PLAN_CATALOG, type PlanKey } from '@/lib/plans';
+
 export type PublicPricingTier = {
   id: 'foundation' | 'growth' | 'scale' | 'enterprise';
-  name: string;
-  priceLabel: string;
+  /** Source PlanKey in PLAN_CATALOG that owns name + price + features. */
+  planKey: PlanKey;
   priceSubtext: string;
   badge?: string;
   badgeTone?: 'popular' | 'value' | 'enterprise';
@@ -12,8 +19,23 @@ export type PublicPricingTier = {
   ctaLabel: string;
   ctaHref: string;
   featured?: boolean;
+  /** Marketing-only feature copy. Derived display name + base price come from PLAN_CATALOG. */
   features: string[];
 };
+
+function priceLabel(planKey: PlanKey): string {
+  const price = PLAN_CATALOG[planKey].priceMonthly;
+  if (price === 0) return 'Custom';
+  return `$${price.toLocaleString('en-US')}`;
+}
+
+export function priceLabelFor(tier: PublicPricingTier): string {
+  return priceLabel(tier.planKey);
+}
+
+export function nameFor(tier: PublicPricingTier): string {
+  return PLAN_CATALOG[tier.planKey].name;
+}
 
 // Buying motions:
 // - Foundation: public self-serve. CTA → /auth/signup?plan=basic&intent=checkout
@@ -24,8 +46,7 @@ export type PublicPricingTier = {
 export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
   {
     id: 'foundation',
-    name: 'Foundation',
-    priceLabel: '$297',
+    planKey: 'basic',
     priceSubtext: '/ month',
     audience: 'For solo operators and micro NDIS providers',
     audienceSize: '1 site · up to 10 staff',
@@ -47,8 +68,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
   },
   {
     id: 'growth',
-    name: 'Growth',
-    priceLabel: '$797',
+    planKey: 'pro',
     priceSubtext: '/ month',
     badge: 'Most Popular',
     badgeTone: 'popular',
@@ -75,8 +95,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
   },
   {
     id: 'scale',
-    name: 'Scale',
-    priceLabel: '$1,800',
+    planKey: 'scale',
     priceSubtext: '/ month',
     badge: 'Best for multi-site',
     badgeTone: 'value',
@@ -101,8 +120,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
   },
   {
     id: 'enterprise',
-    name: 'Enterprise',
-    priceLabel: 'Custom',
+    planKey: 'enterprise',
     priceSubtext: 'tailored agreement',
     badge: 'Procurement-ready',
     badgeTone: 'enterprise',

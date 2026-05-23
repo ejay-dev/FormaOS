@@ -125,3 +125,67 @@ export function resolvePlanKey(
 export function isTrialEligiblePlan(planKey: PlanKey): boolean {
   return TRIAL_ELIGIBLE_PLANS.includes(planKey);
 }
+
+// ---------------------------------------------------------------------
+// Audit 2026-05-23 — billing-shape helpers
+// ---------------------------------------------------------------------
+// Sprint 4b consolidation: lib/billing/plans.ts (SUBSCRIPTION_PLANS) was
+// a second catalog with a different key set ('starter|pro|scale|
+// enterprise') and a different limit dimension (members/tasks/storage/
+// certificates/apiCalls vs. user-facing sites/users/frameworks above).
+// To delete the duplicate without losing the runtime limits the billing
+// surface depends on, we move those limits + the Stripe env mapping
+// here so PLAN_CATALOG is the single source of truth and the billing
+// route reads through getBillingPlan().
+
+const BILLING_RUNTIME_LIMITS: Record<
+  PlanKey,
+  {
+    members: number;
+    tasks: number;
+    storage: number;
+    certificates: number;
+    apiCalls: number;
+  }
+> = {
+  basic: { members: 10, tasks: -1, storage: 10, certificates: 50, apiCalls: 10_000 },
+  pro: { members: 25, tasks: -1, storage: 50, certificates: 200, apiCalls: 50_000 },
+  scale: { members: 75, tasks: -1, storage: 200, certificates: -1, apiCalls: 200_000 },
+  enterprise: { members: -1, tasks: -1, storage: -1, certificates: -1, apiCalls: -1 },
+};
+
+const STRIPE_PRICE_ENV: Record<PlanKey, string> = {
+  basic: 'STRIPE_PRICE_FOUNDATION',
+  pro: 'STRIPE_PRICE_GROWTH',
+  scale: 'STRIPE_PRICE_SCALE',
+  enterprise: 'STRIPE_PRICE_ENTERPRISE',
+};
+
+export interface BillingPlan {
+  id: PlanKey;
+  name: string;
+  price: number;
+  interval: 'month';
+  stripePriceId?: string;
+  features: string[];
+  limits: (typeof BILLING_RUNTIME_LIMITS)[PlanKey];
+}
+
+export function getBillingPlan(planKey: PlanKey): BillingPlan {
+  const config = PLAN_CATALOG[planKey];
+  const envValue = process.env[STRIPE_PRICE_ENV[planKey]];
+  const stripePriceId = envValue && envValue.trim().length > 0 ? envValue.trim() : undefined;
+  return {
+    id: planKey,
+    name: config.name,
+    price: config.priceMonthly,
+    interval: 'month',
+    stripePriceId,
+    features: config.features,
+    limits: BILLING_RUNTIME_LIMITS[planKey],
+  };
+}
+
+export function getAllBillingPlans(): BillingPlan[] {
+  return (Object.keys(PLAN_CATALOG) as PlanKey[]).map(getBillingPlan);
+}

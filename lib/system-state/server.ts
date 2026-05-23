@@ -45,17 +45,10 @@ import { PLAN_FEATURES, ROLE_PERMISSIONS, MODULE_DEFINITIONS } from './types';
 export function mapPlanKeyToTier(planKey?: string | null): PlanTier {
   const resolved = resolvePlanKey(planKey ?? null);
   if (!resolved) return 'trial';
-
-  switch (resolved) {
-    case 'basic':
-      return 'basic';
-    case 'pro':
-      return 'pro';
-    case 'enterprise':
-      return 'enterprise';
-    default:
-      return 'trial';
-  }
+  // Audit 2026-05-23: previously this silently collapsed 'scale' → 'trial'
+  // (the `default` arm) — any scale-tier org would have been treated as
+  // free-trial by every gated UI. Now an identity map.
+  return resolved;
 }
 
 /**
