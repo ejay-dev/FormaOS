@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import * as Sentry from '@sentry/nextjs';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { routeLog } from '@/lib/monitoring/server-logger';
@@ -44,7 +45,20 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (error) {
+    // v4-022: previously log-only. A signature-mismatch spike is
+    // either (a) a webhook-secret rotation that left prod out of
+    // sync — silent paid-cancellation breakage — or (b) an active
+    // forgery attempt. Both deserve a Sentry alert, which the
+    // billing-webhook-error-spike rule named in RUNBOOKS already
+    // expects.
     log.error({ err: error }, 'Stripe webhook signature error:');
+    Sentry.captureException(error, {
+      tags: {
+        component: 'billing.webhook',
+        operation: 'constructEvent',
+      },
+      level: 'error',
+    });
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
