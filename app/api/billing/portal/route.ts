@@ -4,6 +4,7 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { getStripeClient } from '@/lib/billing/stripe';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 const log = routeLog('/api/billing/portal');
 
@@ -81,6 +82,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: session.url });
   } catch (err) {
     log.error({ err }, 'portal error');
+    captureRouteError('billing.portal', err, {
+      method: request.method,
+      url: request.url,
+    });
     return NextResponse.json(
       { error: 'Failed to create portal session' },
       { status: 500 },

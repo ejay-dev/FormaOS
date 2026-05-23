@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 import { SUBSCRIPTION_PLANS } from '@/lib/billing/plans';
 
 const log = routeLog('/api/billing');
@@ -79,6 +80,10 @@ export async function GET(request: Request) {
     });
   } catch (err) {
     log.error({ err }, 'unexpected error');
+    captureRouteError('billing.get', err, {
+      method: request.method,
+      url: request.url,
+    });
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

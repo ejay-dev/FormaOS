@@ -12,6 +12,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { PLAN_CATALOG, resolvePlanKey } from '@/lib/plans';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { sendBillingEmail } from '@/lib/email/billing-emails';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -844,6 +845,12 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     log.error({ err: error }, 'Stripe webhook processing error:');
+    captureRouteError('billing.webhook', error, {
+      method: 'POST',
+      url: request.url,
+      eventId: event.id,
+      eventType: event.type,
+    });
 
     // Mark this attempt failed so Stripe's retry will reclaim and re-run
     // side effects. Without this the next delivery would see status='pending'

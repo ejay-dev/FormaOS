@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyInternalTriggerRequest, jsonError } from '../_auth';
 import { processWebhookDelivery } from '@/lib/webhooks/delivery-queue';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -22,6 +23,18 @@ export async function POST(request: NextRequest) {
     return jsonError('deliveryId is required', 400);
   }
 
-  const result = await processWebhookDelivery(deliveryId);
-  return NextResponse.json(result, { status: result.ok ? 200 : 202 });
+  try {
+    const result = await processWebhookDelivery(deliveryId);
+    return NextResponse.json(result, { status: result.ok ? 200 : 202 });
+  } catch (error) {
+    captureRouteError('internal.webhook-delivery', error, {
+      method: 'POST',
+      url: request.url,
+      deliveryId,
+    });
+    return jsonError(
+      error instanceof Error ? error.message : 'Internal server error',
+      500,
+    );
+  }
 }

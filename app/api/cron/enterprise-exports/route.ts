@@ -3,6 +3,7 @@ import { timingSafeEqual } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getRedisConfig } from '@/lib/redis/client';
 import { processEnterpriseExportJob } from '@/lib/export/enterprise-export';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 const DEFAULT_LIMIT = 2;
 
@@ -97,6 +98,10 @@ export async function GET(request: Request) {
     return handleEnterpriseExportsCron(request);
   } catch (error) {
     console.error('[API] Unhandled error:', error);
+    captureRouteError('cron.enterprise-exports', error, {
+      method: 'GET',
+      url: request.url,
+    });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -109,6 +114,10 @@ export async function POST(request: Request) {
     return handleEnterpriseExportsCron(request);
   } catch (error) {
     console.error('[API] Unhandled error:', error);
+    captureRouteError('cron.enterprise-exports', error, {
+      method: 'POST',
+      url: request.url,
+    });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

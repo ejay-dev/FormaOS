@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyInternalTriggerRequest, jsonError } from '../_auth';
 import { processQueueJobs } from '@/lib/queue';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -22,7 +23,18 @@ export async function POST(request: NextRequest) {
       ? Math.min(Math.max(rawBatchSize, 1), 50)
       : undefined;
 
-  const result = await processQueueJobs(batchSize);
-
-  return NextResponse.json({ ok: true, ...result });
+  try {
+    const result = await processQueueJobs(batchSize);
+    return NextResponse.json({ ok: true, ...result });
+  } catch (error) {
+    captureRouteError('internal.queue-process', error, {
+      method: 'POST',
+      url: request.url,
+      batchSize,
+    });
+    return jsonError(
+      error instanceof Error ? error.message : 'Internal server error',
+      500,
+    );
+  }
 }

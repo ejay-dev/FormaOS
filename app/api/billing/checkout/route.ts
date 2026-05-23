@@ -6,6 +6,7 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
 import { shouldOpenBillingPortalForCheckout } from '@/lib/billing/checkout-routing';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 const CheckoutSchema = z.object({
   orgId: z.string().uuid().optional(),
@@ -168,6 +169,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: session.url, id: session.id });
   } catch (err) {
     log.error({ err }, 'checkout error');
+    captureRouteError('billing.checkout', err, {
+      method: request.method,
+      url: request.url,
+    });
     return NextResponse.json(
       { error: 'Failed to create checkout session' },
       { status: 500 },
