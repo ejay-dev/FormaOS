@@ -305,19 +305,114 @@ async function verifyAuthenticatedFormsRoundTrip(admin, anon) {
   }
 }
 
+async function deleteAndLog(admin, table, query) {
+  const { error } = await query;
+  if (error) {
+    // Audit Sprint 7a (2026-05-24): previously cleanup errors were
+    // ignored. Live DB had 95 leftover "FormaOS DB Verify" orgs
+    // because a failing delete left rows behind silently. Log so the
+    // operator can investigate without grepping prod for orphans.
+    console.warn(`[cleanupProbe] ${table} delete failed: ${error.message}`);
+  }
+}
+
 async function cleanupProbe(admin) {
   if (cleanup.formId) {
-    await admin.from('org_form_submissions').delete().eq('form_id', cleanup.formId);
-    await admin.from('org_forms').delete().eq('id', cleanup.formId);
+    await deleteAndLog(
+      admin,
+      'org_form_submissions',
+      admin.from('org_form_submissions').delete().eq('form_id', cleanup.formId),
+    );
+    await deleteAndLog(
+      admin,
+      'org_forms',
+      admin.from('org_forms').delete().eq('id', cleanup.formId),
+    );
   }
   if (cleanup.orgId) {
-    await admin.from('org_members').delete().eq('organization_id', cleanup.orgId);
-    await admin.from('organizations').delete().eq('id', cleanup.orgId);
-    await admin.from('orgs').delete().eq('id', cleanup.orgId);
+    await deleteAndLog(
+      admin,
+      'org_members',
+      admin.from('org_members').delete().eq('organization_id', cleanup.orgId),
+    );
+    await deleteAndLog(
+      admin,
+      'organizations',
+      admin.from('organizations').delete().eq('id', cleanup.orgId),
+    );
+    await deleteAndLog(
+      admin,
+      'orgs',
+      admin.from('orgs').delete().eq('id', cleanup.orgId),
+    );
   }
   if (cleanup.userId) {
-    await admin.auth.admin.deleteUser(cleanup.userId);
+    const { error } = await admin.auth.admin.deleteUser(cleanup.userId);
+    if (error) {
+      console.warn(`[cleanupProbe] auth user delete failed: ${error.message}`);
+    }
   }
+}
+
+/**
+ * Audit Sprint 7a (2026-05-24): sweep any "FormaOS DB Verify <ts>"
+ * orgs older than 1 hour. The script has been accumulating probe
+ * orgs whenever cleanupProbe silently failed (no error logging
+ * pre-this-fix). Run at the START of each invocation so a healthy
+ * env doesn't accumulate orphans even if the new error logging
+ * surfaces a future bug after-the-fact.
+ *
+ * Scoped narrowly:
+ *   - name LIKE 'FormaOS DB Verify%' so we don't touch real orgs
+ *   - created_at < now() - 1 hour so we never delete a probe that's
+ *     currently running in a parallel invocation
+ */
+async function sweepOldProbes(admin) {
+  const cutoff = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { data: orphans, error: listError } = await admin
+    .from('organizations')
+    .select('id, name, created_at')
+    .like('name', 'FormaOS DB Verify%')
+    .lt('created_at', cutoff)
+    .limit(500);
+
+  if (listError) {
+    console.warn(`[sweepOldProbes] list failed: ${listError.message}`);
+    return;
+  }
+
+  const rows = orphans ?? [];
+  if (rows.length === 0) return;
+
+  console.log(`[sweepOldProbes] removing ${rows.length} stale probe org(s)`);
+  const ids = rows.map((r) => r.id);
+
+  // Order matters — FK-respecting teardown.
+  await deleteAndLog(
+    admin,
+    'org_form_submissions',
+    admin.from('org_form_submissions').delete().in('org_id', ids),
+  );
+  await deleteAndLog(
+    admin,
+    'org_forms',
+    admin.from('org_forms').delete().in('org_id', ids),
+  );
+  await deleteAndLog(
+    admin,
+    'org_members',
+    admin.from('org_members').delete().in('organization_id', ids),
+  );
+  await deleteAndLog(
+    admin,
+    'organizations',
+    admin.from('organizations').delete().in('id', ids),
+  );
+  await deleteAndLog(
+    admin,
+    'orgs',
+    admin.from('orgs').delete().in('id', ids),
+  );
 }
 
 async function main() {
@@ -330,6 +425,11 @@ async function main() {
   }
 
   const { admin, anon } = createSupabaseClients();
+
+  // Audit Sprint 7a: clean up any stale probe orgs from prior runs
+  // before doing the current check. Bounded to "FormaOS DB Verify%"
+  // older than 1h so a parallel invocation isn't disturbed.
+  await sweepOldProbes(admin);
 
   try {
     for (const table of requiredTables) {
