@@ -248,7 +248,7 @@ async function ControlsList({ orgId }: { orgId: string }) {
 
 export default async function ControlsPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   return (
     <div className="space-y-6">

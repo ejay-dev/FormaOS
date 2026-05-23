@@ -101,7 +101,7 @@ const STATIC_APP_ROUTES = [
   '/app/billing',
   '/app/workflows',
   '/app/audit-trail',
-  '/app/audit',
+  '/app/audit-trail',
   '/app/activity',
   '/app/tasks',
   '/app/tasks/board',

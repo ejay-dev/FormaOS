@@ -11,7 +11,7 @@ function redirectTo(request: NextRequest, path: string) {
 
 export async function GET(request: NextRequest) {
   const state = await fetchSystemState();
-  if (!state) return redirectTo(request, '/signin');
+  if (!state) return redirectTo(request, '/auth/signin');
 
   const db = await createSupabaseServerClient();
   const orgId = state.organization.id;

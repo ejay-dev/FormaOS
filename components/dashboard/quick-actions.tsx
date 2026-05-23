@@ -539,7 +539,7 @@ export const DEFAULT_QUICK_ACTIONS: QuickAction[] = [
   {
     label: 'Audit Logs',
     description: 'Activity history',
-    href: '/app/audit',
+    href: '/app/audit-trail',
     icon: Shield,
     color: 'text-rose-400',
   },

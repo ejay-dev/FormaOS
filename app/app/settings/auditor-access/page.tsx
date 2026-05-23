@@ -7,7 +7,7 @@ export const metadata = { title: 'Auditor Access | Settings | FormaOS' };
 
 export default async function AuditorAccessPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const tokens = await listAuditorAccess(state.organization.id);
   const activity = await getAuditorActivity(state.organization.id);

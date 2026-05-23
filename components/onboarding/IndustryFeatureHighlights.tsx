@@ -248,7 +248,7 @@ const INDUSTRY_CONFIGS: Record<string, IndustryOnboardingConfig> = {
         title: 'Immutable Audit Trail',
         description:
           'Every action logged with before/after state. Complete traceability for auditors.',
-        route: '/app/audit',
+        route: '/app/audit-trail',
       },
     ],
     quickWins: [

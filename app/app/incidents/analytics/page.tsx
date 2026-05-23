@@ -17,7 +17,7 @@ export const metadata = { title: 'Incident Analytics' };
 
 export default async function IncidentAnalyticsPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const orgId = state.organization.id;
 

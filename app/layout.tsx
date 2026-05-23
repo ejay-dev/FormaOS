@@ -117,6 +117,19 @@ export default function RootLayout({
       className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable}`}
     >
       <body className={inter.className}>
+        {/* v4-029: actual Skip-to-main link. The prior comment
+            claimed one existed but the element was never rendered,
+            so keyboard users had no way to bypass the global nav
+            and CookieConsent on every page (WCAG 2.4.1 fail). The
+            link is visually hidden until focused, then anchors to
+            #main-content — every page-level layout (marketing/app/
+            admin) provides that target via its <main id> element. */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[200] focus:rounded-md focus:bg-white focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-900 focus:shadow-lg focus:outline focus:outline-2 focus:outline-emerald-500"
+        >
+          Skip to main content
+        </a>
         <NextTopLoader color="#22d3ee" height={2} showSpinner={false} />
         <ObservabilityProvider />
         {/* Mount CookieConsent BEFORE {children} so DOM tab order

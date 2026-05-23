@@ -620,7 +620,7 @@ const FINANCIAL_ROADMAP: IndustryRoadmap = {
           description:
             'Monitor audit activity, remediation tasks, and control changes',
           cta: 'Open Audit Log',
-          ctaHref: '/app/audit',
+          ctaHref: '/app/audit-trail',
           icon: 'BarChart',
           priority: 'medium',
           category: 'operational',
@@ -990,7 +990,7 @@ const ENTERPRISE_ROADMAP: IndustryRoadmap = {
           description:
             'Monitor audit events, control changes, and remediation tasks',
           cta: 'Open Audit Log',
-          ctaHref: '/app/audit',
+          ctaHref: '/app/audit-trail',
           icon: 'AlertTriangle',
           priority: 'high',
           category: 'operational',

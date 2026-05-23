@@ -31,7 +31,7 @@ export default async function RoleDetailPage({
   params: Promise<{ roleId: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const { roleId } = await params;
   const db = await createSupabaseServerClient();

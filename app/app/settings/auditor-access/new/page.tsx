@@ -9,7 +9,7 @@ export const metadata = { title: 'Grant Auditor Access | FormaOS' };
 async function grantAccess(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const auditorName = String(formData.get('auditor_name') ?? '').trim();
   const auditorEmail = String(formData.get('auditor_email') ?? '').trim();
@@ -52,7 +52,7 @@ export default async function NewAuditorAccessPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   const { error } = await searchParams;
 
   return (

@@ -11,7 +11,7 @@ export default async function TrendsPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const sp = await searchParams;
   const db = await createSupabaseServerClient();

@@ -25,7 +25,7 @@ export default async function NdisClaimingPage({
 }) {
   const resolvedSearchParams = (await searchParams) ?? {};
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
 

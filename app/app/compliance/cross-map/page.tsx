@@ -9,7 +9,7 @@ import { PageHero, type PageHeroMetric } from '@/components/ui/page-hero';
 
 export default async function CrossMapPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
 

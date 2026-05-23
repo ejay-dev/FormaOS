@@ -26,7 +26,7 @@ export function UserNav({ userEmail }: { userEmail: string }) {
   const handleLogout = async () => {
     const supabase = createSupabaseClient()
     await supabase.auth.signOut()
-    router.push("/signin")
+    router.push("/auth/signin")
     router.refresh()
   }
 

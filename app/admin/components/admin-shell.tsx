@@ -211,8 +211,12 @@ export function AdminShell({
           </nav>
         </aside>
 
-        {/* Main Content */}
-        <main className="flex-1 min-w-0 h-[calc(100vh-4rem)] overflow-y-auto">
+        {/* Main Content. v4-029: id="main-content" anchors the
+            global Skip-to-main link in app/layout.tsx. */}
+        <main
+          id="main-content"
+          className="flex-1 min-w-0 h-[calc(100vh-4rem)] overflow-y-auto"
+        >
           <EnterpriseTrustStrip surface="admin" />
           <div className="p-6 md:p-8 max-w-[1600px] mx-auto">{children}</div>
         </main>

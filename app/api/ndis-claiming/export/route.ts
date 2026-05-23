@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.redirect(new URL('/signin', request.url), {
+      return NextResponse.redirect(new URL('/auth/signin', request.url), {
         status: 303,
       });
     }

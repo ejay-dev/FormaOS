@@ -160,8 +160,12 @@ describe('validateCsrfOrigin', () => {
   });
 
   // --- VERCEL_URL env var ---
+  // v4-023: VERCEL_URL is only trusted on production environment
+  // (VERCEL_ENV='production'). Preview deployments must NOT be
+  // trusted against prod cookies.
 
-  it('trusts VERCEL_URL when it is set', () => {
+  it('trusts VERCEL_URL on production environment', () => {
+    process.env.VERCEL_ENV = 'production';
     process.env.VERCEL_URL = 'my-app-abc123.vercel.app';
     const result = validateCsrfOrigin(
       makeRequest('POST', 'https://app.example.com/api/data', {
@@ -169,6 +173,17 @@ describe('validateCsrfOrigin', () => {
       }),
     );
     expect(result).toBeNull();
+  });
+
+  it('does NOT trust VERCEL_URL on preview environment', () => {
+    process.env.VERCEL_ENV = 'preview';
+    process.env.VERCEL_URL = 'pr-42-preview.vercel.app';
+    const result = validateCsrfOrigin(
+      makeRequest('POST', 'https://app.example.com/api/data', {
+        origin: 'https://pr-42-preview.vercel.app',
+      }),
+    );
+    expect(result).not.toBeNull();
   });
 
   it('trusts server-configured extra origins', () => {

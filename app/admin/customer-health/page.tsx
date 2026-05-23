@@ -47,7 +47,7 @@ function statusBadge(status: string) {
 
 export default async function CustomerHealthPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   // Throws if not a founder; admin layout error boundary handles it.
   await requireFounderAccess();

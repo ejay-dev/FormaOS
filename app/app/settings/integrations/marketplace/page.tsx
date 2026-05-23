@@ -10,7 +10,7 @@ export const metadata = { title: 'Integrations Marketplace | FormaOS' };
 
 export default async function IntegrationMarketplacePage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const connected = await getOrgIntegrations(state.organization.id);
   const connectedProviders = new Set(connected.map((c) => c.provider));

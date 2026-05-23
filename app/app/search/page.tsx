@@ -67,7 +67,7 @@ export default async function SearchPage({
   searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const sp = await searchParams;
   const q = sp.q ?? '';

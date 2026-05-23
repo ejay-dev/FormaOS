@@ -11,7 +11,7 @@ export const metadata = { title: 'Organization Settings | FormaOS' };
 
 export default async function OrgSettingsPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const [branding, toggles] = await Promise.all([
     getBranding(state.organization.id),

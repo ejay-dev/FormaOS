@@ -18,7 +18,7 @@ import { test, expect } from '@playwright/test';
  */
 test.describe('Google OAuth Smoke Tests', () => {
   const authPages = [
-    { name: 'signin', path: '/signin' },
+    { name: 'signin', path: '/auth/signin' },
     { name: 'login', path: '/auth/login' },
     { name: 'signup', path: '/auth/signup' },
   ];
@@ -135,7 +135,7 @@ test.describe('Google OAuth Smoke Tests', () => {
   });
 
   test('CSP headers do not include GIS domains', async ({ page }) => {
-    const response = await page.goto('/signin', { waitUntil: 'networkidle' });
+    const response = await page.goto('/auth/signin', { waitUntil: 'networkidle' });
     const csp =
       response?.headers()['content-security-policy'] ||
       response?.headers()['content-security-policy-report-only'] ||

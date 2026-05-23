@@ -143,7 +143,7 @@ export function MobileReadinessCheckpoint({
           Evidence Review
         </Link>
         <Link
-          href="/app/audit"
+          href="/app/audit-trail"
           className="rounded-lg border border-glass-border-strong bg-glass-subtle px-3 py-1.5 text-xs font-medium text-foreground/90"
         >
           Audit Stream

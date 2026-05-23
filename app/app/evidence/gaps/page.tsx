@@ -21,7 +21,7 @@ export const metadata = { title: 'Evidence Gaps | FormaOS' };
 
 export default async function EvidenceGapsPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const [gaps, coverage, expiring, expired] = await Promise.all([
     identifyGaps(state.organization.id),
