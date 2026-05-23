@@ -56,12 +56,29 @@ export async function POST(request: Request) {
       );
     }
 
-    // 4. Get org membership
-    const { data: membership } = await supabase
+    // 4. Get org membership. v4-026: multi-org users were getting an
+    // arbitrary first org because `.maybeSingle()` on the unfiltered
+    // list returned the random row Postgres happened to scan first.
+    // Prefer user_preferences.current_organization_id so the chat
+    // operates against the org the user is actively viewing.
+    const { data: preference } = await supabase
+      .from('user_preferences')
+      .select('current_organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    const preferredOrgId =
+      (preference as { current_organization_id?: string } | null)
+        ?.current_organization_id ?? null;
+
+    let membershipQuery = supabase
       .from('org_members')
       .select('organization_id, role')
       .eq('user_id', user.id)
-      .maybeSingle();
+      .limit(1);
+    if (preferredOrgId) {
+      membershipQuery = membershipQuery.eq('organization_id', preferredOrgId);
+    }
+    const { data: membership } = await membershipQuery.maybeSingle();
 
     if (!membership?.organization_id) {
       return NextResponse.json(

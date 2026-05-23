@@ -79,19 +79,26 @@ export async function POST(request: Request) {
         { err: createUserError },
         '[api/auth/signup] createUser failed:',
       );
+      // v4-026: previously returned 409 + `email_already_registered`,
+      // enabling email enumeration. Now return a uniform success-
+      // shaped response (`ok: true, check_email`) when the account
+      // already exists so an attacker can't distinguish the two
+      // cases. Genuine creation failures (rate-limit, validation,
+      // backend) still return 5xx with their specific error.
       const isEmailTaken =
         createUserError.message?.toLowerCase().includes('already registered') ||
         createUserError.message
           ?.toLowerCase()
           .includes('already been registered');
+      if (isEmailTaken) {
+        return NextResponse.json(
+          { ok: true, check_email: true },
+          { status: 200 },
+        );
+      }
       return NextResponse.json(
-        {
-          ok: false,
-          error: isEmailTaken
-            ? 'email_already_registered'
-            : 'user_creation_failed',
-        },
-        { status: isEmailTaken ? 409 : 500 },
+        { ok: false, error: 'user_creation_failed' },
+        { status: 500 },
       );
     }
 

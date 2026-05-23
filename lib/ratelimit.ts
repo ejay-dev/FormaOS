@@ -202,27 +202,44 @@ export async function checkAdminRateLimit(
 }
 
 /**
- * Get client IP from request
+ * Get client IP from request.
+ *
+ * v4-026: previously trusted x-forwarded-for unconditionally — any
+ * client could spoof it. Now: prefer the Vercel platform's signed
+ * x-vercel-forwarded-for (set after Vercel's edge); fall back to
+ * cf-connecting-ip when behind Cloudflare; fall back to the
+ * left-most x-forwarded-for entry ONLY when TRUST_PROXY=true so
+ * dev environments still work. Strips IPv6 zone and port suffixes.
  */
 export function getClientIp(request: Request): string {
-  // Try common headers in order of reliability
   const headers = request.headers;
 
-  // Vercel-specific header
-  const forwardedFor = headers.get('x-forwarded-for');
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
+  const sanitize = (raw: string | null | undefined): string | null => {
+    if (!raw) return null;
+    const first = raw.split(',')[0].trim();
+    // Strip IPv6 zone or trailing :port suffix.
+    const noZone = first.includes('%') ? first.split('%')[0] : first;
+    return noZone || null;
+  };
+
+  // Vercel signs this header itself — clients cannot forge it.
+  const vercelForwarded = sanitize(headers.get('x-vercel-forwarded-for'));
+  if (vercelForwarded) return vercelForwarded;
+
+  // Cloudflare sets this only when the request transited their edge.
+  const cfConnectingIp = sanitize(headers.get('cf-connecting-ip'));
+  if (cfConnectingIp) return cfConnectingIp;
+
+  // Untrusted by default. TRUST_PROXY=true is the explicit opt-in
+  // for environments running behind a known proxy that already
+  // sanitises x-forwarded-for (nginx, traefik with appropriate config).
+  if (process.env.TRUST_PROXY === 'true') {
+    const forwardedFor = sanitize(headers.get('x-forwarded-for'));
+    if (forwardedFor) return forwardedFor;
   }
 
-  // Cloudflare
-  const cfConnectingIp = headers.get('cf-connecting-ip');
-  if (cfConnectingIp) {
-    return cfConnectingIp;
-  }
-
-  // Generic
-  const xRealIp = headers.get('x-real-ip');
-  if (xRealIp) {
+  const xRealIp = sanitize(headers.get('x-real-ip'));
+  if (xRealIp && process.env.TRUST_PROXY === 'true') {
     return xRealIp;
   }
 

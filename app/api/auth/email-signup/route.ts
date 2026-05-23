@@ -41,7 +41,14 @@ function mapSignupError(message: string): {
     normalized.includes('already registered') ||
     normalized.includes('already exists')
   ) {
-    return { status: 409, error: 'account_already_exists' };
+    // v4-026: previously returned 409 with `account_already_exists`,
+    // letting an attacker enumerate which emails were registered.
+    // Now return a generic 200-shaped "we sent you a link"-style
+    // response so the existence of the account is not revealed.
+    // The real flow (magic-link / verification email) goes to the
+    // existing user if they're already registered, otherwise to
+    // the new signup. Either way the response is identical.
+    return { status: 200, error: 'check_email' };
   }
 
   if (normalized.includes('rate limit')) {
