@@ -72,12 +72,19 @@ const validResponse = 'a'.repeat(100);
 
 beforeEach(() => {
   jest.clearAllMocks();
+  // v4-031: the ACS route now defensively refuses IdP-initiated
+  // assertions (those without an InResponseTo attribute matching a
+  // cached request id) unless the org has explicitly set
+  // directorySyncConfig.allow_idp_initiated. Tests that exercise the
+  // legacy IdP-init path must opt in via the config; the explicit
+  // refusal path has its own test below.
   mockGetOrgSsoConfig.mockResolvedValue({
     enabled: true,
     idpEntityId: 'https://idp.example.com',
     allowedDomains: ['example.com'],
     jitProvisioningEnabled: false,
     jitDefaultRole: 'member',
+    directorySyncConfig: { allow_idp_initiated: true },
   });
   mockValidateSamlResponse.mockResolvedValue({
     profile: { issuer: 'https://idp.example.com', email: 'user@example.com' },
@@ -140,6 +147,7 @@ describe('POST /api/sso/saml/acs/[orgId]', () => {
       allowedDomains: ['example.com'],
       jitProvisioningEnabled: true,
       jitDefaultRole: 'member',
+      directorySyncConfig: { allow_idp_initiated: true },
     });
     await POST(makeRequest(validResponse), {
       params: Promise.resolve({ orgId: 'org-1' }),
@@ -151,6 +159,60 @@ describe('POST /api/sso/saml/acs/[orgId]', () => {
         defaultRole: 'member',
       }),
     );
+  });
+
+  it('refuses IdP-initiated assertions when allow_idp_initiated is not set', async () => {
+    // v4-031: defence-in-depth gate. node-saml already rejects
+    // genuine IdP-init flows via validateInResponseTo:'always' in
+    // production, but this explicit check guards against future
+    // config drift and gives an auditable reject in this case.
+    mockGetOrgSsoConfig.mockResolvedValueOnce({
+      enabled: true,
+      idpEntityId: 'https://idp.example.com',
+      allowedDomains: ['example.com'],
+      jitProvisioningEnabled: false,
+      jitDefaultRole: 'member',
+      // No directorySyncConfig.allow_idp_initiated → must refuse.
+    });
+    const res = await POST(makeRequest(validResponse), {
+      params: Promise.resolve({ orgId: 'org-1' }),
+    });
+    expect(res.status).toBe(307);
+    expect(res.headers.get('location') ?? '').toContain('sso_failed');
+    expect(mockLogIdentityEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'sso.login',
+        result: 'failure',
+      }),
+    );
+  });
+
+  it('permits SP-initiated assertions even when allow_idp_initiated is off', async () => {
+    mockGetOrgSsoConfig.mockResolvedValueOnce({
+      enabled: true,
+      idpEntityId: 'https://idp.example.com',
+      allowedDomains: ['example.com'],
+      jitProvisioningEnabled: false,
+      jitDefaultRole: 'member',
+      // No allow_idp_initiated, but profile carries inResponseTo →
+      // genuine SP-init flow; route accepts it.
+    });
+    mockValidateSamlResponse.mockResolvedValueOnce({
+      profile: {
+        issuer: 'https://idp.example.com',
+        email: 'user@example.com',
+        inResponseTo: 'req_abc123',
+      },
+      email: 'user@example.com',
+      displayName: 'User',
+      groups: [],
+      audience: 'sp-audience',
+    });
+    const res = await POST(makeRequest(validResponse), {
+      params: Promise.resolve({ orgId: 'org-1' }),
+    });
+    expect(res.status).toBe(307);
+    expect(res.headers.get('location')).toContain('supabase.example/magic');
   });
 
   it('redirects to signin with error on validation failure', async () => {

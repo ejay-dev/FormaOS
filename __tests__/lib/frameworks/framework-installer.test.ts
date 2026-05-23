@@ -42,19 +42,28 @@ describe('lib/frameworks/framework-installer', () => {
   describe('PACK_SLUGS', () => {
     it('contains all expected slugs', () => {
       expect(PACK_SLUGS).toContain('soc2');
-      expect(PACK_SLUGS).toContain('iso27001');
+      // v4-031: legacy `iso27001` pack (10 controls, 0 wired evaluators)
+      // deprecated in favour of `iso27001-2022` (93 controls, full
+      // coverage). `installFrameworkPack('iso27001')` still works via
+      // DEPRECATED_PACK_SLUGS — see installFrameworkPack tests below.
+      expect(PACK_SLUGS).toContain('iso27001-2022');
       expect(PACK_SLUGS).toContain('gdpr');
       expect(PACK_SLUGS).toContain('hipaa');
       expect(PACK_SLUGS).toContain('pci-dss');
       expect(PACK_SLUGS).toContain('nist-csf');
       expect(PACK_SLUGS).toContain('cis-controls');
+      expect(PACK_SLUGS).toContain('financial-services-au');
+    });
+
+    it('does NOT contain deprecated legacy iso27001 slug', () => {
+      expect(PACK_SLUGS).not.toContain('iso27001');
     });
   });
 
   describe('getFrameworkCodeForSlug', () => {
     it('returns known code for known slug', () => {
       expect(getFrameworkCodeForSlug('soc2')).toBe('SOC2');
-      expect(getFrameworkCodeForSlug('iso27001')).toBe('ISO27001');
+      expect(getFrameworkCodeForSlug('iso27001-2022')).toBe('ISO27001_2022');
       expect(getFrameworkCodeForSlug('gdpr')).toBe('GDPR');
     });
 

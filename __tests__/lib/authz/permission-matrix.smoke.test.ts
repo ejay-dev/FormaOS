@@ -54,10 +54,23 @@ function setRoleMock(role: 'owner' | 'admin' | 'member' | 'viewer' | null) {
         }),
       };
     }
-    if (table === 'team_members') {
+    // v4-031: engine now resolves the org's team ids first
+    // (team_groups → team_members) so the user_id-only team_members
+    // query cannot leak custom roles across orgs. Smoke tests don't
+    // exercise custom roles, so return empty here to short-circuit.
+    if (table === 'team_groups') {
       return {
         select: () => ({
           eq: () => Promise.resolve({ data: [] }),
+        }),
+      };
+    }
+    if (table === 'team_members') {
+      return {
+        select: () => ({
+          eq: () => ({
+            in: () => Promise.resolve({ data: [] }),
+          }),
         }),
       };
     }

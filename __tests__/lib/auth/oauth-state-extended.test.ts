@@ -14,8 +14,9 @@ describe('OAuth state constants', () => {
     expect(OAUTH_STATE_COOKIE_NAME).toBe('formaos_oauth_state');
   });
 
-  it('TTL is 10 minutes', () => {
-    expect(OAUTH_STATE_TTL_SECONDS).toBe(600);
+  it('TTL is 5 minutes (OWASP CSRF token guidance)', () => {
+    // v4-031: tightened from 10min to 5min per OWASP guidance.
+    expect(OAUTH_STATE_TTL_SECONDS).toBe(300);
   });
 });
 

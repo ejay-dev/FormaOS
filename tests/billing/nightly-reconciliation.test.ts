@@ -11,6 +11,14 @@
  * - Error propagation
  */
 
+// v4-031: lib/billing/nightly-reconciliation.ts reads BILLING_AUTO_FIX
+// at MODULE LOAD into a const, then freezes that value for the
+// process lifetime. Default is now OFF in production (so a transient
+// Stripe outage cannot auto-cancel a legitimate subscription mid-run).
+// Set this BEFORE the import below; setting it in a beforeAll would
+// be too late.
+process.env.BILLING_AUTO_FIX = 'true';
+
 // ---- Mocks ----
 
 let mockSubscriptions: Array<Record<string, unknown>> = [];
@@ -89,9 +97,11 @@ jest.mock('@/lib/billing/stripe', () => ({
   },
 }));
 
-import {
-  runBillingReconciliation,
-} from '@/lib/billing/nightly-reconciliation';
+// v4-031: deferred require so the BILLING_AUTO_FIX env set at the top
+// of this file is applied BEFORE the module-load `const AUTO_FIX_ENABLED
+// = process.env.BILLING_AUTO_FIX === 'true'` captures it. ES module
+// imports hoist; CommonJS require runs in source order.
+const { runBillingReconciliation } = require('@/lib/billing/nightly-reconciliation') as typeof import('@/lib/billing/nightly-reconciliation');
 
 beforeEach(() => {
   resetMocks();

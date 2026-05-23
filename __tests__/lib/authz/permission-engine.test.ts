@@ -107,12 +107,21 @@ describe('getEffectivePermissions', () => {
   });
 
   it('merges custom role permissions (most permissive wins)', async () => {
+    // v4-031: query order now includes a `team_groups` lookup that
+    // resolves the org's team ids first (so team_members can be
+    // scoped through them rather than fetched user-wide and leaking
+    // custom roles from other orgs). The mock walks through:
+    //   1. org_members (role lookup)
+    //   2. team_groups (org's team ids) — NEW
+    //   3. team_members (filtered by team_id IN org_teams)
+    //   4. custom_roles (filtered by org_id)
     let callCount = 0;
     mockFromFn.mockImplementation(() => {
       callCount++;
-      if (callCount === 1) return chain({ role: 'member' }); // base member
-      if (callCount === 2) return chain([{ custom_role_id: 'cr-1' }]); // team membership
-      // custom_roles query
+      if (callCount === 1) return chain({ role: 'member' }); // org_members
+      if (callCount === 2) return chain([{ id: 'team-1' }]); // team_groups (org-scoped)
+      if (callCount === 3) return chain([{ custom_role_id: 'cr-1' }]); // team_members
+      // custom_roles (org-scoped) query
       return chain([
         { permissions: { tasks: { delete: true }, evidence: { admin: true } } },
       ]);
@@ -122,6 +131,26 @@ describe('getEffectivePermissions', () => {
     expect(perms.tasks.delete).toBe(true); // upgraded from member default
     expect(perms.evidence.admin).toBe(true); // custom role addition
     expect(perms.tasks.read).toBe(true); // still has member base
+  });
+
+  it('does not merge custom roles when org has no team_groups (cross-org isolation)', async () => {
+    // v4-031: the cross-org leak that this scope filter closes —
+    // without the team_groups gate, team_members rows from another
+    // org would still match by user_id and pollute the active org's
+    // permissions. With the gate, an org with zero team_groups never
+    // touches team_members at all.
+    let callCount = 0;
+    mockFromFn.mockImplementation(() => {
+      callCount++;
+      if (callCount === 1) return chain({ role: 'member' });
+      // team_groups returns empty for this org → short-circuit.
+      return chain([]);
+    });
+
+    const perms = await getEffectivePermissions('user-1', 'org-1');
+    // Stays on member baseline; no custom role leakage from other orgs.
+    expect(perms.tasks.delete).toBe(false);
+    expect(perms.evidence.admin).toBe(false);
   });
 });
 

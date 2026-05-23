@@ -4,7 +4,7 @@
  */
 
 import OpenAI from 'openai';
-import { isAIKillSwitchEnabled } from './sdk-client';
+import { isAIKillSwitchEnabled } from './kill-switch';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

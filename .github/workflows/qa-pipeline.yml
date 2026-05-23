@@ -119,20 +119,39 @@ jobs:
 
       - run: npm ci
 
-      # v4-031: blocking. npm audit / Snyk / CodeQL were `continue-on-error: true`
-      # for months, making this whole job decorative. High-severity CVEs in
-      # production dependencies should fail the merge. Dev-only CVEs are
-      # excluded via --omit=dev so dev-dependency churn doesn't block PRs.
+      # v4-031: npm audit is now blocking — it catches real prod-dep
+      # CVEs with no external dependency. --omit=dev so dev-dep churn
+      # doesn't block PRs.
       - name: Run npm audit (production deps)
         run: npm audit --audit-level=high --omit=dev
 
+      # Snyk runs only when SNYK_TOKEN is configured on the repo.
+      # Fork PRs and environments without the secret skip cleanly
+      # rather than failing on authentication errors. When the token
+      # is present, the step IS blocking — high-severity findings
+      # fail the merge.
+      - name: Check Snyk token availability
+        id: snyk-token-check
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          if [ -n "$SNYK_TOKEN" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::SNYK_TOKEN not configured — skipping Snyk scan (npm audit still blocks)"
+          fi
+
       - name: Run Snyk to check for vulnerabilities
+        if: steps.snyk-token-check.outputs.available == 'true'
         uses: snyk/actions/node@9adf32b1121593767fc3c057af55b55db032dc04 # pin to SHA
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
 
+      # CodeQL only runs on push to default branch (not PRs). The
+      # action above guards with `if: github.event_name != 'pull_request'`.
       - name: CodeQL Analysis
         if: github.event_name != 'pull_request'
         uses: github/codeql-action/init@v3
