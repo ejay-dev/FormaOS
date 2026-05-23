@@ -148,7 +148,7 @@ describe('upsertDirectorySyncConfig', () => {
 
 describe('getDirectorySyncStatus', () => {
   it('returns configs and runs', async () => {
-    const configs = [{ id: 'cfg-1', provider: 'azure-ad' }];
+    const configs = [{ id: 'cfg-1', provider: 'azure-ad', config: {} }];
     const runs = [{ id: 'run-1', status: 'completed' }];
 
     let callIdx = 0;
@@ -159,8 +159,55 @@ describe('getDirectorySyncStatus', () => {
     });
 
     const result = await getDirectorySyncStatus('org-1');
-    expect(result.configs).toEqual(configs);
+    expect(result.configs[0].id).toBe('cfg-1');
     expect(result.runs).toEqual(runs);
+  });
+
+  // v4-017: never surface raw secrets to the API/UI.
+  it('redacts accessToken-style fields from legacy plaintext config', async () => {
+    const configs = [
+      {
+        id: 'cfg-legacy',
+        provider: 'azure-ad',
+        config: {
+          tenantId: 't-1',
+          accessToken: 'super-secret-token',
+          clientSecret: 'another-secret',
+        },
+      },
+    ];
+    let callIdx = 0;
+    getClient().from.mockImplementation(() => {
+      callIdx++;
+      if (callIdx === 1) return createBuilder({ data: configs, error: null });
+      return createBuilder({ data: [], error: null });
+    });
+
+    const result = await getDirectorySyncStatus('org-1');
+    expect(result.configs[0].config).toEqual({
+      tenantId: 't-1',
+      accessToken: '***',
+      clientSecret: '***',
+    });
+  });
+
+  it('surfaces only an encrypted marker for encoded configs', async () => {
+    const configs = [
+      {
+        id: 'cfg-enc',
+        provider: 'okta',
+        config: { __encrypted: true, alg: 'aes-256-gcm', iv: 'x', tag: 'y', data: 'z' },
+      },
+    ];
+    let callIdx = 0;
+    getClient().from.mockImplementation(() => {
+      callIdx++;
+      if (callIdx === 1) return createBuilder({ data: configs, error: null });
+      return createBuilder({ data: [], error: null });
+    });
+
+    const result = await getDirectorySyncStatus('org-1');
+    expect(result.configs[0].config).toEqual({ __encrypted: true });
   });
 });
 

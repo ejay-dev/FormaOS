@@ -3,6 +3,48 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logIdentityEvent } from '@/lib/identity/audit';
 import { upsertScimGroup, syncGroupMembership } from '@/lib/scim/scim-groups';
 import type { DirectorySyncProvider } from '@/lib/sso/saml';
+import {
+  encodeIntegrationConfig,
+  decodeIntegrationConfig,
+} from '@/lib/integrations/config-crypto';
+
+// v4-017: IdP access tokens (Azure/Okta/Google admin) are bearer
+// credentials with directory-wide read on the customer's tenant.
+// They were previously stored as plaintext JSON in
+// directory_sync_configs.config — a single DB read (RLS bypass,
+// pg_dump, backup exfil) hands the attacker every customer's admin
+// directory. encodeIntegrationConfig wraps the value in an
+// aes-256-gcm envelope keyed off INTEGRATION_CONFIG_SECRET; the
+// envelope is stored as-is in JSONB, and decoded only when the
+// sync engine needs to call the provider.
+const SENSITIVE_CONFIG_KEYS = new Set([
+  'accessToken',
+  'access_token',
+  'refreshToken',
+  'refresh_token',
+  'clientSecret',
+  'client_secret',
+  'privateKey',
+  'private_key',
+  'apiKey',
+  'api_key',
+]);
+
+function redactSensitiveConfig(
+  config: Record<string, unknown> | null | undefined,
+): Record<string, unknown> {
+  if (!config || typeof config !== 'object') return {};
+  // If the value is an encrypted envelope, return a stub — the UI
+  // only needs to know that a secret is configured, not its value.
+  if ('__encrypted' in config && (config as { __encrypted?: unknown }).__encrypted === true) {
+    return { __encrypted: true };
+  }
+  const redacted: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(config)) {
+    redacted[key] = SENSITIVE_CONFIG_KEYS.has(key) ? '***' : value;
+  }
+  return redacted;
+}
 
 type DirectoryUser = {
   externalId: string;
@@ -221,7 +263,8 @@ export async function upsertDirectorySyncConfig(args: {
       provider: args.provider,
       enabled: args.enabled,
       interval_minutes: args.intervalMinutes,
-      config: args.config,
+      // v4-017: encrypt at rest. Decoded on demand by syncDirectory.
+      config: encodeIntegrationConfig(args.config),
       updated_at: new Date().toISOString(),
     },
     { onConflict: 'organization_id,provider' },
@@ -248,10 +291,44 @@ export async function getDirectorySyncStatus(orgId: string) {
       .limit(10),
   ]);
 
+  // v4-017: never return raw config to the UI/API. Either the row
+  // is already encrypted (we surface only an `__encrypted: true`
+  // marker) or it's legacy plaintext (we redact accessToken-style
+  // keys to '***'). The UI relies on the marker to render
+  // "Configured" / "Not configured" badges without showing tokens.
+  const redactedConfigs = (configs ?? []).map((row) => ({
+    ...row,
+    config: redactSensitiveConfig(
+      (row as { config?: Record<string, unknown> | null }).config,
+    ),
+  }));
+
   return {
-    configs: configs ?? [],
+    configs: redactedConfigs,
     runs: runs ?? [],
   };
+}
+
+/**
+ * Load and decrypt the active directory-sync config for an org.
+ * Used by the sync engine. Falls back to a plaintext row if a
+ * legacy unencrypted row hasn't been re-saved yet — re-saving via
+ * the settings UI rewrites it through encodeIntegrationConfig.
+ */
+export async function loadDirectorySyncConfig(
+  orgId: string,
+  provider: DirectorySyncProvider,
+): Promise<DirectorySyncConfig | null> {
+  const admin = createSupabaseAdminClient();
+  const { data, error } = await admin
+    .from('directory_sync_configs')
+    .select('config')
+    .eq('organization_id', orgId)
+    .eq('provider', provider)
+    .maybeSingle();
+
+  if (error || !data?.config) return null;
+  return decodeIntegrationConfig<DirectorySyncConfig>(data.config);
 }
 
 export async function syncDirectory(
