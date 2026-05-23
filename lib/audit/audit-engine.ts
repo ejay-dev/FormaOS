@@ -6,6 +6,16 @@ import { computeEntryHash } from './hash-utils';
 // Enhanced Audit Engine
 // ------------------------------------------------------------------
 
+// v4-005: under contention, two writers can observe the same
+// `lastEntry` snapshot and both compute the same (seq+1, prev_hash) —
+// the chain forks silently. UNIQUE(org_id, sequence_number) on
+// audit_log forces the loser's INSERT to fail with 23505; we then
+// re-read and rebuild the hash against the winner's row. Five
+// attempts is the practical ceiling: real-world per-org contention
+// peaks at two or three concurrent emitters during compliance reruns.
+const MAX_CHAIN_RETRIES = 5;
+const PG_UNIQUE_VIOLATION = '23505';
+
 export async function writeAuditLog(
   orgId: string,
   entry: {
@@ -18,61 +28,65 @@ export async function writeAuditLog(
     userAgent?: string;
   },
 ) {
-  // v4-005: chain writes are system-owned and must bypass RLS. The
+  // Chain writes are system-owned and must bypass RLS. The
   // `audit_log_org` policy only grants SELECT to authenticated org
   // members; there is no policy granting INSERT to anyone except
   // service_role. Session-scoped writes were silently failing — only
   // 2 rows ever landed in prod while org_audit_logs accumulated
   // 24,580+ activity rows. Switching to admin closes that gap.
-  //
-  // Also read the prev-hash via admin so the chain anchors to the
-  // actual last entry across the org, not just what the calling
-  // user's session can see.
   const db = createSupabaseAdminClient();
 
-  // Get the last entry's hash for chaining
-  const { data: lastEntry } = await db
-    .from('audit_log')
-    .select('entry_hash, sequence_number')
-    .eq('org_id', orgId)
-    .order('sequence_number', { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  for (let attempt = 0; attempt < MAX_CHAIN_RETRIES; attempt++) {
+    const { data: lastEntry } = await db
+      .from('audit_log')
+      .select('entry_hash, sequence_number')
+      .eq('org_id', orgId)
+      .order('sequence_number', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-  const seqNum = (lastEntry?.sequence_number || 0) + 1;
-  const prevHash = lastEntry?.entry_hash || '';
-  const id = crypto.randomUUID();
-  const createdAt = new Date().toISOString();
+    const seqNum = (lastEntry?.sequence_number || 0) + 1;
+    const prevHash = lastEntry?.entry_hash || '';
+    const id = crypto.randomUUID();
+    const createdAt = new Date().toISOString();
 
-  const entryHash = computeEntryHash({
-    id,
-    orgId,
-    userId: entry.userId,
-    action: entry.action,
-    resourceType: entry.resourceType,
-    resourceId: entry.resourceId,
-    details: entry.details || {},
-    createdAt,
-    prevHash,
-  });
+    const entryHash = computeEntryHash({
+      id,
+      orgId,
+      userId: entry.userId,
+      action: entry.action,
+      resourceType: entry.resourceType,
+      resourceId: entry.resourceId,
+      details: entry.details || {},
+      createdAt,
+      prevHash,
+    });
 
-  const { error } = await db.from('audit_log').insert({
-    id,
-    org_id: orgId,
-    user_id: entry.userId,
-    action: entry.action,
-    resource_type: entry.resourceType,
-    resource_id: entry.resourceId,
-    details: entry.details || {},
-    ip_address: entry.ipAddress,
-    user_agent: entry.userAgent,
-    created_at: createdAt,
-    entry_hash: entryHash,
-    prev_hash: prevHash,
-    sequence_number: seqNum,
-  });
+    const { error } = await db.from('audit_log').insert({
+      id,
+      org_id: orgId,
+      user_id: entry.userId,
+      action: entry.action,
+      resource_type: entry.resourceType,
+      resource_id: entry.resourceId,
+      details: entry.details || {},
+      ip_address: entry.ipAddress,
+      user_agent: entry.userAgent,
+      created_at: createdAt,
+      entry_hash: entryHash,
+      prev_hash: prevHash,
+      sequence_number: seqNum,
+    });
 
-  if (error) throw error;
+    if (!error) return;
+
+    const code = (error as { code?: string }).code;
+    if (code !== PG_UNIQUE_VIOLATION) throw error;
+  }
+
+  throw new Error(
+    `writeAuditLog: exceeded ${MAX_CHAIN_RETRIES} retries acquiring next sequence for org ${orgId}`,
+  );
 }
 
 export async function queryAuditLog(

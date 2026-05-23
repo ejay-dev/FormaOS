@@ -6,6 +6,9 @@ jest.mock('server-only', () => ({}));
 jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(),
 }));
+jest.mock('@/lib/supabase/admin', () => ({
+  createSupabaseAdminClient: jest.fn(),
+}));
 jest.mock('@/lib/audit/hash-utils', () => ({
   computeEntryHash: jest.fn(() => 'hash-abc-123'),
 }));
@@ -37,6 +40,7 @@ function createBuilder(result: any = { data: null, error: null, count: null }) {
 }
 
 const { createSupabaseServerClient } = require('@/lib/supabase/server');
+const { createSupabaseAdminClient } = require('@/lib/supabase/admin');
 
 import {
   writeAuditLog,
@@ -62,7 +66,7 @@ describe('writeAuditLog', () => {
         return createBuilder({ error: null });
       }),
     };
-    createSupabaseServerClient.mockResolvedValue(db);
+    createSupabaseAdminClient.mockReturnValue(db);
 
     await writeAuditLog('org-1', {
       userId: 'user-1',
@@ -85,7 +89,7 @@ describe('writeAuditLog', () => {
         return createBuilder({ error: null });
       }),
     };
-    createSupabaseServerClient.mockResolvedValue(db);
+    createSupabaseAdminClient.mockReturnValue(db);
 
     await writeAuditLog('org-1', {
       action: 'login',
@@ -94,16 +98,16 @@ describe('writeAuditLog', () => {
     expect(db.from).toHaveBeenCalled();
   });
 
-  it('throws on insert error', async () => {
+  it('throws on non-retry insert error', async () => {
     let callCount = 0;
     const db = {
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: null, error: null });
-        return createBuilder({ error: { message: 'fail' } });
+        return createBuilder({ error: { message: 'fail', code: 'XX000' } });
       }),
     };
-    createSupabaseServerClient.mockResolvedValue(db);
+    createSupabaseAdminClient.mockReturnValue(db);
 
     await expect(
       writeAuditLog('org-1', {
@@ -111,6 +115,49 @@ describe('writeAuditLog', () => {
         resourceType: 'test',
       }),
     ).rejects.toBeDefined();
+  });
+
+  it('retries on unique violation (race with concurrent writer) and succeeds', async () => {
+    // First attempt: read returns seq=5, insert fails with 23505.
+    // Second attempt: read returns seq=6 (the winner), insert succeeds.
+    let callCount = 0;
+    const builders = [
+      createBuilder({
+        data: { entry_hash: 'prev-1', sequence_number: 5 },
+        error: null,
+      }),
+      createBuilder({ error: { message: 'duplicate key', code: '23505' } }),
+      createBuilder({
+        data: { entry_hash: 'prev-2', sequence_number: 6 },
+        error: null,
+      }),
+      createBuilder({ error: null }),
+    ];
+    const db = {
+      from: jest.fn(() => builders[callCount++]),
+    };
+    createSupabaseAdminClient.mockReturnValue(db);
+
+    await writeAuditLog('org-1', { action: 'a', resourceType: 'r' });
+    expect(db.from).toHaveBeenCalledTimes(4);
+  });
+
+  it('gives up after exhausting retries on persistent unique violations', async () => {
+    const db = {
+      from: jest.fn(() => {
+        // Alternate read-ok, insert-fail forever.
+        return createBuilder(
+          db.from.mock.calls.length % 2 === 1
+            ? { data: { entry_hash: 'p', sequence_number: 1 }, error: null }
+            : { error: { message: 'duplicate key', code: '23505' } },
+        );
+      }),
+    };
+    createSupabaseAdminClient.mockReturnValue(db);
+
+    await expect(
+      writeAuditLog('org-1', { action: 'a', resourceType: 'r' }),
+    ).rejects.toThrow(/exceeded.*retries/);
   });
 });
 
