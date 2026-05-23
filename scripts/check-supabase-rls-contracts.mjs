@@ -150,19 +150,16 @@ async function assertLiveRlsCatalog() {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const { data, error } = await admin.rpc('exec_sql', {
-    sql: `
-      select c.relname as table_name, c.relrowsecurity as rls_enabled
-      from pg_class c
-      join pg_namespace n on n.oid = c.relnamespace
-      where n.nspname = 'public'
-        and c.relkind = 'r'
-      order by c.relname
-    `,
-  });
+  // Sprint 2 (2026-05-23): replaced the missing exec_sql(sql) RPC with the
+  // narrow _audit_rls_status() function (migration 20260624018). If the
+  // function is not present we FAIL — the previous `warn` path silently
+  // disabled the live check in every CI run for months.
+  const { data, error } = await admin.rpc('_audit_rls_status');
 
   if (error) {
-    warn(`Skipping live RLS catalog checks: ${error.message}`);
+    fail(
+      `Live RLS catalog check could not run: ${error.message}. Apply migration 20260624018_audit_sprint2_rls_status_fn.sql.`,
+    );
     return;
   }
 

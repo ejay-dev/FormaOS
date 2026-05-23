@@ -246,6 +246,132 @@ function hasGuardPattern(contents) {
   return guardPatterns.some((pattern) => contents.includes(pattern));
 }
 
+// ---------------------------------------------------------------
+// Sprint 2 (2026-05-23): four new checks. The script previously
+// audited only 4 things despite the "Security Baseline" name. These
+// are static, fast, and low-noise — they catch foot-guns the audit
+// found, not speculative future regressions.
+// ---------------------------------------------------------------
+
+function auditSecurityHeaders() {
+  const candidates = ['next.config.ts', 'next.config.js', 'next.config.mjs'];
+  const text = candidates.map(safeRead).find(Boolean) ?? '';
+  const proxyText = safeRead('proxy.ts') ?? safeRead('middleware.ts') ?? '';
+  const all = `${text}\n${proxyText}`;
+  const missing = [];
+  if (!/strict-transport-security/i.test(all)) missing.push('Strict-Transport-Security (HSTS)');
+  if (!/content-security-policy/i.test(all)) missing.push('Content-Security-Policy');
+  if (!/x-frame-options/i.test(all)) missing.push('X-Frame-Options');
+  if (!/permissions-policy/i.test(all)) missing.push('Permissions-Policy');
+
+  if (missing.length > 0) {
+    return createCheck(
+      'security_headers',
+      'Security Headers',
+      'warn',
+      `Missing header(s) from next.config + proxy/middleware: ${missing.join(', ')}.`,
+      missing,
+      'Confirm headers are emitted at the edge; if intentionally omitted document why.',
+    );
+  }
+  return createCheck(
+    'security_headers',
+    'Security Headers',
+    'pass',
+    'HSTS, CSP, X-Frame-Options, and Permissions-Policy all referenced in config/proxy.',
+  );
+}
+
+function auditAdminMfaGate() {
+  const adminLayout = safeRead('app/admin/layout.tsx') ?? '';
+  const appLayout = safeRead('app/app/layout.tsx') ?? '';
+  const adminGated = /requireMfa|mfa-gate|ensureMfa|verifyMfa/i.test(adminLayout);
+  const appGated = /requireMfa|mfa-gate|ensureMfa|verifyMfa/i.test(appLayout);
+
+  if (!adminGated && appGated) {
+    return createCheck(
+      'admin_mfa_gate',
+      'Admin MFA Gate',
+      'warn',
+      '/admin/* layout does not import an MFA gate while /app/* does — admin can be reached password-only.',
+      ['app/admin/layout.tsx'],
+      'Either gate /admin/* with the same MFA check used in /app/*, or document the carve-out explicitly.',
+    );
+  }
+  return createCheck(
+    'admin_mfa_gate',
+    'Admin MFA Gate',
+    'pass',
+    adminGated
+      ? '/admin/* layout enforces an MFA gate.'
+      : 'Neither /app nor /admin currently import an MFA gate by this signature — nothing to assert.',
+  );
+}
+
+function auditCsrfDefault() {
+  const proxyText = safeRead('proxy.ts') ?? safeRead('middleware.ts') ?? '';
+  if (!proxyText) {
+    return createCheck(
+      'csrf_default',
+      'CSRF Default-On',
+      'warn',
+      'No proxy.ts or middleware.ts found; cannot verify CSRF default.',
+    );
+  }
+  // Heuristic: presence of validateCsrfOrigin OR a CSRF token check, AND
+  // absence of an obvious always-off flag.
+  const enforced = /validateCsrfOrigin|csrfToken|csrf_check/i.test(proxyText);
+  const disabled = /csrf\s*:\s*false|disableCsrf\s*=\s*true|CSRF_DISABLED/i.test(proxyText);
+  if (!enforced || disabled) {
+    return createCheck(
+      'csrf_default',
+      'CSRF Default-On',
+      'warn',
+      `CSRF posture suspicious — enforced=${enforced}, disabled-flag=${disabled}.`,
+      [],
+      'Confirm validateCsrfOrigin (or equivalent) runs for all state-changing requests.',
+    );
+  }
+  return createCheck(
+    'csrf_default',
+    'CSRF Default-On',
+    'pass',
+    'CSRF check referenced in proxy/middleware with no obvious always-off flag.',
+  );
+}
+
+function auditOrgsSyncDriftGate() {
+  // The check-orgs-sync.mjs gate must be invoked by at least one CI workflow.
+  // It catches the v3-010 / v4-024-class drift the 2026-05-23 audit surfaced
+  // (91 rows missing from `orgs` despite "consolidate" migration).
+  const workflowDir = '.github/workflows';
+  let files = [];
+  try {
+    files = readdirSync(workflowDir).filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'));
+  } catch {
+    files = [];
+  }
+  const referenced = files.some((f) =>
+    (safeRead(join(workflowDir, f)) ?? '').includes('check-orgs-sync'),
+  );
+  if (!referenced) {
+    return createCheck(
+      'orgs_sync_gate',
+      'Orgs Sync CI Gate',
+      'warn',
+      'scripts/check-orgs-sync.mjs exists but no CI workflow references it.',
+      [],
+      'Wire `node scripts/check-orgs-sync.mjs` into qa-pipeline.yml so drift fails the build.',
+    );
+  }
+  return createCheck(
+    'orgs_sync_gate',
+    'Orgs Sync CI Gate',
+    'pass',
+    'check-orgs-sync.mjs is wired into at least one CI workflow.',
+  );
+}
+
 function auditDetailedHealthExposure() {
   const path = "app/api/health/detailed/route.ts";
   const contents = safeRead(path);
@@ -327,6 +453,10 @@ function main() {
     auditNodeRuntimeDrift(),
     auditLegacyStripeImports(),
     auditDetailedHealthExposure(),
+    auditSecurityHeaders(),
+    auditAdminMfaGate(),
+    auditCsrfDefault(),
+    auditOrgsSyncDriftGate(),
   ];
   const summary = summarize(checks);
   const report = {

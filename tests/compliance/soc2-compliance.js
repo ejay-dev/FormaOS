@@ -541,6 +541,30 @@ if (require.main === module) {
         'tests/compliance/reports/soc2-compliance-report.json',
         JSON.stringify(results, null, 2),
       );
+
+      // Sprint 2 (2026-05-23): same honest-exit pattern as gdpr-compliance.js.
+      // Previously this script silently exit 0 even when 7/13 controls failed.
+      const strict = process.env.STRICT_COMPLIANCE === 'true';
+      const envOk = results.environment?.available !== false;
+      const failed = Object.values(results.controls || {})
+        .flat()
+        .filter((t) => !t.passed).length;
+      const nonEnvViolations = (results.violations || []).filter(
+        (v) => v.category !== 'Environment',
+      ).length;
+
+      if (!envOk) {
+        if (strict) {
+          console.error('SOC2 run aborted: app unreachable in strict mode.');
+          process.exit(2);
+        }
+        return;
+      }
+
+      if (failed > 0 || nonEnvViolations > 0) process.exit(1);
     })
-    .catch(console.error);
+    .catch((err) => {
+      console.error(err);
+      process.exit(2);
+    });
 }

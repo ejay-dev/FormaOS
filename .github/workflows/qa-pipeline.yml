@@ -280,7 +280,12 @@ jobs:
         # Set repository var E2E_GATE_STRICT=true to flip this gate
         # to blocking — the dependent check step below fails the
         # workflow if the suite failed.
-        continue-on-error: true
+        # Audit Sprint 2 (2026-05-23): continue-on-error is now
+        # conditional on the strict-mode var. When E2E_GATE_STRICT=true
+        # the step itself goes red on failure (not only the sidecar
+        # gate at line 287), so the GitHub UI reflects the actual
+        # outcome instead of a misleading ✓.
+        continue-on-error: ${{ vars.E2E_GATE_STRICT != 'true' }}
         id: full_e2e
         run: npx playwright test --project=chromium
         timeout-minutes: 30
@@ -396,15 +401,18 @@ jobs:
 
       - name: Bundle size check
         if: steps.supabase-env-check.outputs.available == 'true'
+        # Audit Sprint 2 (2026-05-23): replaced the no-op `ls -la` with a
+        # real assertion (scripts/check-bundle-size.mjs). Caps are
+        # generous over current actuals; tighten over time as the
+        # team trims chunks. continue-on-error removed — silent passes
+        # were the original gap.
         run: |
           npm run build
-          echo "Checking bundle size..."
-          ls -la .next/static/chunks/ | head -10
+          node scripts/check-bundle-size.mjs
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
-        continue-on-error: true
 
       - name: Upload Lighthouse Report
         if: steps.supabase-env-check.outputs.available == 'true'
@@ -435,6 +443,15 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY || '' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
+
+      # Audit Sprint 2 (2026-05-23): orgs ↔ organizations drift gate.
+      # `scripts/check-orgs-sync.mjs` already exits 0/1 on drift; without
+      # secrets it auto-skips with exit 0 so forks don't break.
+      - name: Orgs ↔ organizations drift gate
+        run: npm run test:db:orgs-sync
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL || '' }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
 
   quality-gate:

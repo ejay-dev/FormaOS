@@ -506,6 +506,34 @@ if (require.main === module) {
         'tests/compliance/reports/gdpr-compliance-report.json',
         JSON.stringify(results, null, 2),
       );
+
+      // Sprint 2 (2026-05-23): previously this script ALWAYS exited 0
+      // even when it logged "❌ compliance issues found" — CI was
+      // silently green on every run. Honest exit codes now:
+      //   - env unreachable: exit 0 only when STRICT_COMPLIANCE!=true,
+      //     otherwise exit 2 (env failure distinct from compliance failure)
+      //   - any failed test or non-env violation: exit 1
+      const strict = process.env.STRICT_COMPLIANCE === 'true';
+      const envOk = results.environment?.available === true;
+      const failed = Object.values(results.compliance)
+        .flat()
+        .filter((t) => !t.passed).length;
+      const nonEnvViolations = (results.violations || []).filter(
+        (v) => v.category !== 'Environment',
+      ).length;
+
+      if (!envOk) {
+        if (strict) {
+          console.error('Compliance run aborted: app unreachable in strict mode.');
+          process.exit(2);
+        }
+        return; // exit 0
+      }
+
+      if (failed > 0 || nonEnvViolations > 0) process.exit(1);
     })
-    .catch(console.error);
+    .catch((err) => {
+      console.error(err);
+      process.exit(2);
+    });
 }

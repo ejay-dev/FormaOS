@@ -64,6 +64,7 @@ next-env.d.ts
 !/scripts/verify-*.js
 !/scripts/onboard-*.mjs
 !/scripts/upgrade-*.sql
+!/scripts/api-contracts-known-undocumented.json
 .npm-cache/
 .gitnexus
 gitnexus/
