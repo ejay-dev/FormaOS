@@ -76,6 +76,33 @@ jobs:
           file: ./coverage/lcov.info
           fail_ci_if_error: false
 
+  # v4-028: live-database RLS contract suite. Pre-fix this suite was
+  # gated on RUN_INTEGRATION_TESTS=1 set by zero workflows, so the
+  # 14-table tenant-isolation guard never ran in CI. Now scheduled
+  # nightly via the formaos-quality-gates workflow, and gated here
+  # behind repository secrets so unprivileged forks still pass.
+  rls-contract:
+    name: RLS Contract (live Supabase)
+    runs-on: ubuntu-latest
+    if: >-
+      vars.RUN_INTEGRATION_TESTS == '1' ||
+      github.event_name == 'schedule' ||
+      contains(github.event.pull_request.labels.*.name, 'rls-required')
+    env:
+      RUN_INTEGRATION_TESTS: '1'
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.E2E_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.E2E_SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Run RLS integration suite
+        run: npx jest __tests__/integration/rls --runInBand
+
   security-scan:
     name: Security Analysis
     runs-on: ubuntu-latest
@@ -227,9 +254,24 @@ jobs:
         # When the suite's structural bottleneck is fixed (sharding,
         # dev-server concurrency, or fixture isolation), drop this
         # flag and the full suite becomes blocking again.
+        # v4-028: keeps non-blocking by default to preserve PR
+        # velocity while the structural bottleneck (dev-server
+        # serialization, workspace-seed contention) is being fixed.
+        # Set repository var E2E_GATE_STRICT=true to flip this gate
+        # to blocking — the dependent check step below fails the
+        # workflow if the suite failed.
         continue-on-error: true
+        id: full_e2e
         run: npx playwright test --project=chromium
         timeout-minutes: 30
+      - name: Strict E2E gate (opt-in)
+        if: vars.E2E_GATE_STRICT == 'true' && steps.full_e2e.outcome == 'failure'
+        run: |
+          echo "❌ Strict E2E gate enabled and the full Playwright suite failed."
+          echo "Either fix the failing specs, quarantine them under e2e/quarantine/,"
+          echo "or unset the repository variable E2E_GATE_STRICT to revert to"
+          echo "advisory mode while the gate is being stabilised."
+          exit 1
       - name: Run E2E smoke (env-independent fallback)
         if: steps.e2e_env.outputs.available != 'true'
         # Marketing smoke + app-link integrity have their own env-skip
