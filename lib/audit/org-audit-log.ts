@@ -1,5 +1,6 @@
 import 'server-only';
 
+import * as Sentry from '@sentry/nextjs';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import {
   extractMissingSupabaseColumn,
@@ -126,10 +127,16 @@ export async function insertOrgAuditLog(
     const { error } = await client.from('org_audit_logs').insert(candidateRows);
     if (!error) {
       // Best-effort: also populate the tamper-evident hash chain in audit_log.
-      // Fire-and-forget so a hash-chain failure never blocks the main audit write.
+      // Fire-and-forget so a hash-chain failure never blocks the main audit
+      // write. v4-005: chain failures previously swallowed silently — that
+      // hid an RLS bug (audit_log only granted INSERT to service_role, and
+      // writeAuditLog was using a session-scoped client) and left the
+      // chain near-empty in prod (2 rows vs 24k activity events). Capture
+      // failures to Sentry so the next regression is loud.
       for (const row of candidateRows) {
         if (typeof row.organization_id === 'string') {
-          writeAuditLog(row.organization_id, {
+          const orgId = row.organization_id;
+          writeAuditLog(orgId, {
             userId: typeof row.actor_id === 'string' ? row.actor_id : undefined,
             action: String(row.action ?? 'unknown'),
             resourceType:
@@ -142,8 +149,18 @@ export async function insertOrgAuditLog(
               typeof row.metadata === 'object' && row.metadata !== null
                 ? (row.metadata as Record<string, unknown>)
                 : undefined,
-          }).catch(() => {
-            // Silently swallow — hash chain is secondary to the primary audit log
+          }).catch((chainError) => {
+            Sentry.captureException(chainError, {
+              tags: {
+                component: 'audit.org-audit-log',
+                operation: 'write-hash-chain',
+              },
+              extra: {
+                organizationId: orgId,
+                action: row.action,
+                entityType: row.entity_type,
+              },
+            });
           });
         }
       }
