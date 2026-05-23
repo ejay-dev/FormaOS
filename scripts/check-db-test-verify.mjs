@@ -202,6 +202,24 @@ async function verifyAuthenticatedFormsRoundTrip(admin, anon) {
 
   cleanup.orgId = org.id;
 
+  // Mirror to legacy `orgs` table (v4-001). Without this the probe org
+  // leaves a reverse-direction orphan that trips the qa:deep regression
+  // gate on the next run.
+  const { error: legacyOrgsError } = await admin.from('orgs').upsert(
+    {
+      id: cleanup.orgId,
+      name: `FormaOS DB Verify ${Date.now()}`,
+      created_by: cleanup.userId,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'id' },
+  );
+  if (legacyOrgsError) {
+    fail(`Could not mirror probe org to legacy orgs: ${legacyOrgsError.message}`);
+    return;
+  }
+
   const { error: memberError } = await admin.from('org_members').insert({
     organization_id: cleanup.orgId,
     user_id: cleanup.userId,
@@ -295,6 +313,7 @@ async function cleanupProbe(admin) {
   if (cleanup.orgId) {
     await admin.from('org_members').delete().eq('organization_id', cleanup.orgId);
     await admin.from('organizations').delete().eq('id', cleanup.orgId);
+    await admin.from('orgs').delete().eq('id', cleanup.orgId);
   }
   if (cleanup.userId) {
     await admin.auth.admin.deleteUser(cleanup.userId);
