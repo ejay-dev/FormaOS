@@ -13,7 +13,22 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 const log = routeLog('/api/demo/seed');
 
 export async function POST(request: NextRequest) {
-  // 🔐 SECURITY: Require founder access to seed demo data
+  // 🔐 v4-030: founder-only AND env-gated. A founder running this
+  // against a real prod org silently inflates compliance scores
+  // 75-90. DEMO_SEED_ENABLED=true must be set explicitly on the
+  // environment (sandbox / sales / dev) so prod stays inert even
+  // if the founder account is compromised.
+  if (process.env.DEMO_SEED_ENABLED !== 'true') {
+    return NextResponse.json(
+      {
+        error: 'demo_seed_disabled',
+        message:
+          'Demo seeding is disabled on this environment. Set DEMO_SEED_ENABLED=true to enable.',
+      },
+      { status: 403 },
+    );
+  }
+
   try {
     await requireFounderAccess();
   } catch (err) {
