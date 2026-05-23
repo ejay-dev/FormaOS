@@ -293,7 +293,7 @@ describe('resolveWidgetData', () => {
   describe('member_activity', () => {
     it('returns top 10 actors by activity count', async () => {
       const entries = Array.from({ length: 15 }, (_, i) => ({
-        actor_id: `user-${i % 12}`,
+        actor_email: `user-${i % 12}@example.com`,
         action: 'update',
       }));
 
@@ -310,12 +310,12 @@ describe('resolveWidgetData', () => {
       expect((result.data as any[]).length).toBeLessThanOrEqual(10);
     });
 
-    it('skips entries with null actor_id', async () => {
+    it('skips entries with null actor_email', async () => {
       mockDb.from = jest.fn(() =>
         createBuilder({
           data: [
-            { actor_id: null, action: 'update' },
-            { actor_id: 'user-1', action: 'update' },
+            { actor_email: null, action: 'update' },
+            { actor_email: 'user-1@example.com', action: 'update' },
           ],
           error: null,
         }),
