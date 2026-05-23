@@ -22,6 +22,8 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
   const [token, setToken] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [disableMode, setDisableMode] = useState(false);
+  const [disableCode, setDisableCode] = useState('');
 
   const startSetup = async () => {
     setError(null);
@@ -77,12 +79,25 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
   const disableMFA = async () => {
     setError(null);
     setSuccess(null);
+    // v4-015: server now requires a fresh TOTP / backup code. Show
+    // the inline prompt; submitDisableMFA() actually posts.
+    setDisableMode(true);
+  };
+
+  const submitDisableMFA = async () => {
+    setError(null);
+    setSuccess(null);
+    const code = disableCode.trim();
+    if (!code) {
+      setError('Enter your current authenticator code or a backup code.');
+      return;
+    }
     setLoading(true);
     try {
       const response = await fetch('/api/security/mfa/disable', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ totp: code }),
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -92,12 +107,20 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
       setEnabled(false);
       setQrCode(null);
       setBackupCodes([]);
+      setDisableMode(false);
+      setDisableCode('');
       setSuccess('MFA disabled.');
     } catch {
       setError('Unable to disable MFA');
     } finally {
       setLoading(false);
     }
+  };
+
+  const cancelDisableMFA = () => {
+    setDisableMode(false);
+    setDisableCode('');
+    setError(null);
   };
 
   return (
@@ -149,8 +172,8 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
             <button
               type="button"
               onClick={disableMFA}
-              disabled={loading}
-              className="text-xs font-semibold text-foreground/70 hover:text-white"
+              disabled={loading || disableMode}
+              className="text-xs font-semibold text-foreground/70 hover:text-white disabled:opacity-50"
             >
               Disable
             </button>
@@ -165,6 +188,40 @@ export function MFAEnrollment({ initialEnabled, required }: MFAEnrollmentProps) 
             </button>
           )}
         </div>
+
+        {enabled && disableMode && (
+          <div className="rounded-xl border border-rose-400/30 bg-rose-500/5 p-5 space-y-3">
+            <p className="text-xs text-rose-100/80">
+              Enter your current authenticator code (or one backup code) to
+              disable MFA. A password alone is not sufficient.
+            </p>
+            <input
+              value={disableCode}
+              onChange={(event) => setDisableCode(event.target.value)}
+              placeholder="123456"
+              autoComplete="one-time-code"
+              className="w-full rounded-lg border border-glass-border bg-glass-subtle px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-rose-400/60 focus:outline-none focus:ring-2 focus:ring-rose-400/20"
+            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={submitDisableMFA}
+                disabled={loading}
+                className="inline-flex items-center gap-2 rounded-lg bg-rose-500/90 px-4 py-2 text-xs font-semibold text-rose-950 hover:bg-rose-400 transition disabled:opacity-50"
+              >
+                Disable MFA
+              </button>
+              <button
+                type="button"
+                onClick={cancelDisableMFA}
+                disabled={loading}
+                className="text-xs font-semibold text-foreground/70 hover:text-white"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         {!enabled && qrCode && (
           <div className="grid grid-cols-1 lg:grid-cols-[200px,1fr] gap-6 rounded-xl border border-glass-border bg-glass-subtle p-6">

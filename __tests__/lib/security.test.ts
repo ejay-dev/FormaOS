@@ -255,39 +255,47 @@ describe('verify2FAToken', () => {
 });
 
 describe('disable2FA', () => {
-  it('disables 2FA with correct password', async () => {
-    getClient().auth.signInWithPassword.mockResolvedValueOnce({ error: null });
+  // v4-015: disable2FA now requires a fresh TOTP/backup code rather
+  // than a password. verify2FAToken does the work — we exercise it
+  // via the same mocked supabase client used in verify2FAToken tests
+  // above.
+  it('disables 2FA when TOTP code is valid', async () => {
+    // verify2FAToken loads user_security; mock it to return a secret
+    // and no backup hashes. speakeasy is mocked elsewhere in this
+    // file to accept any token (see top of file).
+    const security = {
+      two_factor_secret: 'enc:base32secret',
+      backup_code_hashes: [],
+    };
+    let call = 0;
+    getClient().from.mockImplementation(() => {
+      call += 1;
+      // first .from('user_security') is the SELECT in verify2FAToken;
+      // second is the UPDATE in disable2FA after verification passes.
+      if (call === 1) {
+        return createBuilder({ data: security, error: null });
+      }
+      return createBuilder({ data: null, error: null });
+    });
+
+    const result = await disable2FA('user-1', '123456');
+    expect(result).toBe(true);
+  });
+
+  it('returns false when TOTP code is invalid', async () => {
+    // No row in user_security → verify2FAToken returns false → disable
+    // refuses without touching anything.
     getClient().from.mockImplementation(() =>
       createBuilder({ data: null, error: null }),
     );
 
-    const result = await disable2FA('user-1', 'correctPass');
-    expect(result).toBe(true);
-  });
-
-  it('returns false with wrong password', async () => {
-    getClient().auth.signInWithPassword.mockResolvedValueOnce({
-      error: { message: 'Invalid login credentials' },
-    });
-
-    const result = await disable2FA('user-1', 'wrongPass');
+    const result = await disable2FA('user-1', '000000');
     expect(result).toBe(false);
   });
 
-  it('returns false when no password provided', async () => {
+  it('returns false when no token provided', async () => {
     const result = await disable2FA('user-1', '');
     expect(result).toBe(false);
-  });
-
-  it('throws when user not found in admin', async () => {
-    getAdmin().auth.admin.getUserById.mockResolvedValueOnce({
-      data: { user: null },
-      error: { message: 'Not found' },
-    });
-
-    await expect(disable2FA('user-1', 'pass')).rejects.toThrow(
-      'Unable to retrieve user',
-    );
   });
 });
 

@@ -46,12 +46,22 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json().catch(() => ({}));
-    const password = typeof body?.password === 'string' ? body.password : '';
+    // v4-015: TOTP / backup code is required (not password). A phished
+    // password must not be enough to strip MFA — the attacker must
+    // also possess the authenticator or a backup code.
+    const totpToken = typeof body?.totp === 'string' ? body.totp.trim() : '';
 
-    const disabled = await disable2FA(user.id, password);
+    if (!totpToken) {
+      return NextResponse.json(
+        { ok: false, error: 'totp_required' },
+        { status: 400 },
+      );
+    }
+
+    const disabled = await disable2FA(user.id, totpToken);
     if (!disabled) {
       return NextResponse.json(
-        { ok: false, error: 'mfa_disable_failed' },
+        { ok: false, error: 'invalid_totp' },
         { status: 400 },
       );
     }

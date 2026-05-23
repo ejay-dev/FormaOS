@@ -98,7 +98,60 @@ async function persistLogoutHeartbeat(
   }
 }
 
+/**
+ * v4-015: GET /auth/signout mutates state (revokes session, clears
+ * cookies). Without an origin/referer check, any cross-site
+ * `<img src="/auth/signout">` or link-prefetch silently logs the
+ * user out — a low-impact-but-easy CSRF. We require either:
+ *   - sec-fetch-site = same-origin / same-site / none (the modern
+ *     browser-set header, present on top-level nav + same-origin
+ *     XHR/img, absent on cross-site `<img>`)
+ *   - OR a Referer/Origin header whose origin matches the request
+ *     origin (covers older browsers without sec-fetch-site)
+ * Cross-site requests get a 405 nudging clients to POST instead.
+ */
+function isSameOriginRequest(request: Request): boolean {
+  const fetchSite = request.headers.get('sec-fetch-site');
+  if (fetchSite) {
+    return (
+      fetchSite === 'same-origin' ||
+      fetchSite === 'same-site' ||
+      fetchSite === 'none'
+    );
+  }
+
+  const requestOrigin = new URL(request.url).origin;
+  const originHeader = request.headers.get('origin');
+  if (originHeader) {
+    try {
+      return new URL(originHeader).origin === requestOrigin;
+    } catch {
+      return false;
+    }
+  }
+
+  const referer = request.headers.get('referer');
+  if (referer) {
+    try {
+      return new URL(referer).origin === requestOrigin;
+    } catch {
+      return false;
+    }
+  }
+
+  // No fetch metadata and no referer/origin — treat as untrusted
+  // (modern browsers always send sec-fetch-site).
+  return false;
+}
+
 export async function GET(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json(
+      { error: 'method_not_allowed', message: 'POST /auth/signout to log out' },
+      { status: 405, headers: { Allow: 'POST' } },
+    );
+  }
+
   const supabase = await createSupabaseServerClient();
   let user = null;
 

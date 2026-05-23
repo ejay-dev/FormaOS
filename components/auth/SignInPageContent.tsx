@@ -171,10 +171,28 @@ function SignInContent() {
         };
       }
       const payload = await response.json().catch(() => ({}));
-      const next = typeof payload?.next === 'string' ? payload.next : '/app';
-      window.location.href = next.startsWith('http')
-        ? next
-        : `${base}${next.startsWith('/') ? '' : '/'}${next}`;
+      // v4-015: only accept same-origin redirects. `next.startsWith('http')`
+      // previously sent users to any absolute URL the server returned —
+      // a misconfigured bootstrap response or a compromised intermediary
+      // becomes an open-redirect into a phishing page styled to look
+      // like FormaOS. Treat anything that isn't a path-only redirect
+      // (or an absolute URL whose origin matches `base`) as untrusted
+      // and fall back to /app.
+      const raw = typeof payload?.next === 'string' ? payload.next : '/app';
+      let target = '/app';
+      if (raw.startsWith('/') && !raw.startsWith('//')) {
+        target = `${base}${raw}`;
+      } else {
+        try {
+          const candidate = new URL(raw, base);
+          if (candidate.origin === new URL(base).origin) {
+            target = candidate.toString();
+          }
+        } catch {
+          // fall through to /app
+        }
+      }
+      window.location.href = target;
       return { ok: true };
     } catch (err) {
       console.error('[Auth] bootstrap failed:', err);
