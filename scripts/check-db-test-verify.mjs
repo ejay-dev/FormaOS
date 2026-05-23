@@ -158,12 +158,22 @@ function verifyMigrationPolicyText() {
       })
       .join('\n');
 
+    // Audit 2026-05-23 (Sprint 5b): previously pass() was logged
+    // unconditionally after the for-pattern loop, even when one or
+    // more patterns failed. CI log lines showed "PASS Migration policy
+    // text covers X" right alongside the FAIL lines for the same X.
+    // Track expectationOk so the pass log only fires when every pattern
+    // for this expectation actually matched.
+    let expectationOk = true;
     for (const pattern of expectation.patterns) {
       if (!text.includes(pattern)) {
+        expectationOk = false;
         fail(`Migration policy check missing "${pattern}" for ${expectation.table}`);
       }
     }
-    pass(`Migration policy text covers ${expectation.table}`);
+    if (expectationOk) {
+      pass(`Migration policy text covers ${expectation.table}`);
+    }
   }
 }
 
