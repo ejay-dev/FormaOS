@@ -17,7 +17,7 @@ export async function GET(
   { params }: { params: Promise<{ formId: string }> },
 ) {
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['compliance:read'],
+    requiredScopes: ['forms:read'],
   });
   if (!auth.ok) return auth.response;
 
@@ -63,7 +63,7 @@ export async function POST(
   const csrfError = validateCsrfOrigin(request);
   if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['compliance:read'],
+    requiredScopes: ['forms:write'],
   });
   if (!auth.ok) return auth.response;
 

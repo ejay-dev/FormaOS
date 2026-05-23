@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 export async function GET(request: Request) {
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
-    requiredScopes: ['webhooks:manage'],
+    requiredScopes: ['api_keys:manage'],
   });
 
   if (!auth.ok) {
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     { total: keys.length },
   );
 
-  await logV1Access(auth.context, 200, 'webhooks:manage');
+  await logV1Access(auth.context, 200, 'api_keys:manage');
   return jsonWithContext(auth.context, payload);
 }
 
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
   if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
     requireAdmin: true,
-    requiredScopes: ['webhooks:manage'],
+    requiredScopes: ['api_keys:manage'],
   });
 
   if (!auth.ok) {
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
 
   if (!name) {
     const response = jsonWithContext(auth.context, { error: 'name is required' }, { status: 400 });
-    await logV1Access(auth.context, 400, 'webhooks:manage');
+    await logV1Access(auth.context, 400, 'api_keys:manage');
     return response;
   }
 
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     createdBy: auth.context.userId!,
   });
 
-  await logV1Access(auth.context, 201, 'webhooks:manage');
+  await logV1Access(auth.context, 201, 'api_keys:manage');
   return jsonWithContext(
     auth.context,
     createEnvelope({

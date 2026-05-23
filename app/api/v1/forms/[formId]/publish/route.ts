@@ -14,7 +14,7 @@ export async function POST(
   const csrfError = validateCsrfOrigin(request);
   if (csrfError) return csrfError;
   const auth = await authenticateV1Request(request, {
-    requiredScopes: ['compliance:read'],
+    requiredScopes: ['forms:write'],
   });
   if (!auth.ok) return auth.response;
 

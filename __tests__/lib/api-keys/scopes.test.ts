@@ -92,4 +92,60 @@ describe('hasRequiredScopes', () => {
   it('returns true for empty required scopes', () => {
     expect(hasRequiredScopes(['tasks:read'], [])).toBe(true);
   });
+
+  // v4-014: scope implications keep existing keys working while the
+  // new narrower scopes (forms:*, tasks:delete, api_keys:manage) ship.
+  it('compliance:write implies forms:write', () => {
+    expect(hasRequiredScopes(['compliance:write'], ['forms:write'])).toBe(true);
+  });
+
+  it('compliance:write implies tasks:delete', () => {
+    expect(hasRequiredScopes(['compliance:write'], ['tasks:delete'])).toBe(
+      true,
+    );
+  });
+
+  it('compliance:read does NOT imply forms:write', () => {
+    expect(hasRequiredScopes(['compliance:read'], ['forms:write'])).toBe(false);
+  });
+
+  it('webhooks:manage does NOT imply api_keys:manage', () => {
+    // The whole point of the v4-014 split — api_keys:manage is a
+    // distinct security boundary from webhook endpoint management.
+    expect(hasRequiredScopes(['webhooks:manage'], ['api_keys:manage'])).toBe(
+      false,
+    );
+  });
+
+  it('tasks:write implies tasks:read but not tasks:delete', () => {
+    expect(hasRequiredScopes(['tasks:write'], ['tasks:read'])).toBe(true);
+    expect(hasRequiredScopes(['tasks:write'], ['tasks:delete'])).toBe(false);
+  });
+
+  it('forms:write implies forms:read', () => {
+    expect(hasRequiredScopes(['forms:write'], ['forms:read'])).toBe(true);
+  });
+});
+
+describe('audit-v4-014: catalog additions', () => {
+  it('exposes api_keys:manage', () => {
+    expect(isApiKeyScope('api_keys:manage')).toBe(true);
+  });
+
+  it('exposes forms:read and forms:write', () => {
+    expect(isApiKeyScope('forms:read')).toBe(true);
+    expect(isApiKeyScope('forms:write')).toBe(true);
+  });
+
+  it('exposes tasks:delete', () => {
+    expect(isApiKeyScope('tasks:delete')).toBe(true);
+  });
+
+  it('exposes compliance:write', () => {
+    expect(isApiKeyScope('compliance:write')).toBe(true);
+  });
+
+  it('exposes ai:read', () => {
+    expect(isApiKeyScope('ai:read')).toBe(true);
+  });
 });
