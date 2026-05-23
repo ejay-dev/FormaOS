@@ -3,6 +3,16 @@
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { updateMemberRole } from '@/app/app/actions/team';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 type RoleOption = 'owner' | 'admin' | 'member' | 'viewer';
 
@@ -53,6 +63,12 @@ export function RoleCell({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const menuRef = useRef<HTMLDivElement>(null);
+  // Audit 2026-05-23 (Sprint 5a): owner-involved role change now uses
+  // AlertDialog instead of window.confirm — focus trap + aria semantics
+  // + matches the rest of the app's destructive-action UX.
+  const [pendingOwnerChange, setPendingOwnerChange] = useState<RoleOption | null>(
+    null,
+  );
 
   // Reconcile local state if a server revalidation changes the prop.
   useEffect(() => {
@@ -79,21 +95,7 @@ export function RoleCell({
     );
   }
 
-  function handleChoose(next: RoleOption) {
-    setOpen(false);
-    setError(null);
-
-    if (next === role) return;
-
-    const ownerInvolved = role === 'owner' || next === 'owner';
-    if (ownerInvolved) {
-      const verb = next === 'owner' ? 'promote to owner' : 'demote from owner';
-      const ok = window.confirm(
-        `Are you sure you want to ${verb}? Owner is the highest role and these changes are not casual. The org's audit log will record the change.`,
-      );
-      if (!ok) return;
-    }
-
+  function applyRoleChange(next: RoleOption) {
     // Optimistic update, rolled back if the server action returns an error.
     const previous = role;
     setRole(next);
@@ -112,6 +114,21 @@ export function RoleCell({
         );
       }
     });
+  }
+
+  function handleChoose(next: RoleOption) {
+    setOpen(false);
+    setError(null);
+
+    if (next === role) return;
+
+    const ownerInvolved = role === 'owner' || next === 'owner';
+    if (ownerInvolved) {
+      setPendingOwnerChange(next);
+      return;
+    }
+
+    applyRoleChange(next);
   }
 
   // Owner-involving options are hidden from non-owner actors so a misclick
@@ -181,6 +198,41 @@ export function RoleCell({
           {error}
         </p>
       )}
+
+      <AlertDialog
+        open={pendingOwnerChange !== null}
+        onOpenChange={(o) => {
+          if (!o) setPendingOwnerChange(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {pendingOwnerChange === 'owner'
+                ? 'Promote to owner?'
+                : 'Demote from owner?'}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Owner is the highest role. {pendingOwnerChange === 'owner'
+                ? 'This member will gain full control of the organisation, including billing and member-removal.'
+                : 'This member will lose owner-level controls.'} The change is recorded in the organisation audit log.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingOwnerChange) {
+                  applyRoleChange(pendingOwnerChange);
+                  setPendingOwnerChange(null);
+                }
+              }}
+            >
+              {pendingOwnerChange === 'owner' ? 'Promote' : 'Demote'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
