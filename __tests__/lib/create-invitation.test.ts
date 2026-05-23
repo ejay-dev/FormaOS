@@ -7,7 +7,15 @@ import { mockSupabase } from '@/tests/helpers/mock-supabase';
 let randomBytesMock: jest.Mock;
 let mockClient: ReturnType<typeof mockSupabase>['client'];
 
+// Audit 2026-05-23: spread requireActual so the partial mock preserves
+// every other crypto export. Previously the bare partial poisoned the
+// Jest module registry — any later-loaded module that did
+// `import { scrypt, createCipheriv, ... } from 'crypto'` got `undefined`
+// for those names when scheduled into the same worker. That's what made
+// __tests__/lib/security.test.ts::generate2FASecret intermittently red
+// in CI but green locally (worker scheduling differs).
 jest.mock('crypto', () => ({
+  ...jest.requireActual('crypto'),
   randomBytes: jest.fn((size: number) => Buffer.alloc(size, 'a')),
 }));
 

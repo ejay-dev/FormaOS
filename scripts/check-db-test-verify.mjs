@@ -29,15 +29,22 @@ const requiredTables = [
 
 const requiredBuckets = ['evidence'];
 
+// Audit 2026-05-23: filenames previously used a `YYYYMMDD_NNN_*.sql`
+// underscore format; actual files on disk use `YYYYMMDDNNN_*.sql` (no
+// underscore between date and sequence). The script silently fail'd for
+// 5 of these every CI run. Renaming the migrations on disk would change
+// the recorded names in supabase_migrations.schema_migrations and risk
+// re-apply / hash mismatch on the next `db push`, so the safer fix is
+// to patch the script.
 const policyExpectations = [
   {
     table: 'org_forms',
-    files: ['20260426_001_ensure_forms_platform_schema.sql'],
+    files: ['20260426001_ensure_forms_platform_schema.sql'],
     patterns: ['alter table public.org_forms enable row level security', 'org_forms_select'],
   },
   {
     table: 'org_form_submissions',
-    files: ['20260426_001_ensure_forms_platform_schema.sql'],
+    files: ['20260426001_ensure_forms_platform_schema.sql'],
     patterns: [
       'alter table public.org_form_submissions enable row level security',
       'org_form_submissions_select',
@@ -45,7 +52,7 @@ const policyExpectations = [
   },
   {
     table: 'org_evidence',
-    files: ['20260425_fix_org_evidence_rls.sql'],
+    files: ['20260425003_fix_org_evidence_rls.sql'],
     patterns: ['CREATE POLICY "org_evidence_org_isolation"'],
   },
   {
@@ -55,7 +62,7 @@ const policyExpectations = [
   },
   {
     table: 'organization_sso',
-    files: ['20260426_002_ensure_organization_sso_schema.sql'],
+    files: ['20260426002_ensure_organization_sso_schema.sql'],
     patterns: ['alter table public.organization_sso enable row level security'],
   },
 ];

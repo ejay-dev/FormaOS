@@ -12,7 +12,10 @@ jest.mock('@/lib/supabase/admin', () => ({
 jest.mock('@/lib/audit/hash-utils', () => ({
   computeEntryHash: jest.fn(() => 'hash-abc-123'),
 }));
+// Audit 2026-05-23: spread requireActual — same module-registry-leak
+// fix as __tests__/lib/create-invitation.test.ts.
 jest.mock('crypto', () => ({
+  ...jest.requireActual('crypto'),
   randomUUID: jest.fn(() => 'uuid-mock'),
 }));
 
