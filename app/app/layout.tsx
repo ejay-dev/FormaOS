@@ -14,6 +14,7 @@ import { CommandPalette } from '@/components/command-palette/CommandPalette';
 import { HelpAssistant } from '@/components/help/HelpAssistant';
 import { AiAssistant } from '@/components/ai-assistant/AiAssistant';
 import { NotificationToast } from '@/components/notifications/notification-toast';
+import { Toaster } from '@/components/ui/toaster';
 import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
 import { SecurityTrackingBootstrap } from '@/components/security/SecurityTrackingBootstrap';
@@ -278,6 +279,11 @@ export default async function AppLayout({
               userId={systemState.user.id}
               orgId={systemState.organization.id}
             />
+            {/* Audit 2026-05-23: Sprint 4c Phase 1 — shared sonner toast
+                surface mounted once at the root. New code should reach for
+                `toast()` from `@/components/ui/toaster` instead of rolling
+                another in-house implementation. */}
+            <Toaster />
             <SecurityTrackingBootstrap />
             <FeedbackWidget />
             <RuntimeDebugIndicator />
