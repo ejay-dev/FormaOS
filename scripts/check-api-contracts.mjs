@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import SwaggerParser from '@apidevtools/swagger-parser';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const openApiPath = path.join(process.cwd(), 'openapi.json');
@@ -82,6 +82,102 @@ function pathToUrl(route) {
   return `${baseUrl}${route.replace(/\{[^}]+\}/g, 'contract-probe-id')}`;
 }
 
+// Sprint 2 (2026-05-23): the spec covered 30 paths while app/api/v1/ ships
+// 81 route handlers. Validating only what's in the spec falsely "passed"
+// while half the v1 surface was undocumented (compliance/*, analytics/*,
+// care-plans/*, evidence/upload, frameworks/activate, etc.). Walk the
+// filesystem and fail on any route handler not represented in openapi.json.
+
+const v1Root = path.join(process.cwd(), 'app', 'api', 'v1');
+
+function walkRouteHandlers(dir) {
+  const handlers = [];
+  for (const entry of readdirSync(dir)) {
+    const full = path.join(dir, entry);
+    const stats = statSync(full);
+    if (stats.isDirectory()) {
+      handlers.push(...walkRouteHandlers(full));
+    } else if (entry === 'route.ts' || entry === 'route.tsx') {
+      handlers.push(full);
+    }
+  }
+  return handlers;
+}
+
+function handlerPathToOpenApiRoute(handlerPath) {
+  // .../app/api/v1/foo/[id]/route.ts → /api/v1/foo/{id}
+  const relative = path
+    .relative(path.join(process.cwd(), 'app'), handlerPath)
+    .replace(/\\/g, '/')
+    .replace(/\/route\.tsx?$/, '');
+  return (
+    '/' +
+    relative
+      .split('/')
+      .map((segment) => segment.replace(/^\[(.+)\]$/, '{$1}'))
+      .join('/')
+  );
+}
+
+function loadKnownUndocumented() {
+  const file = path.join(
+    process.cwd(),
+    'scripts',
+    'api-contracts-known-undocumented.json',
+  );
+  try {
+    const json = JSON.parse(readFileSync(file, 'utf8'));
+    return new Set(Array.isArray(json.routes) ? json.routes : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function assertFilesystemCoverage(openapi) {
+  let handlers;
+  try {
+    handlers = walkRouteHandlers(v1Root);
+  } catch (error) {
+    warn(`Could not scan ${v1Root}: ${error.message}`);
+    return;
+  }
+
+  const specRoutes = new Set(Object.keys(openapi.paths || {}));
+  const known = loadKnownUndocumented();
+  const newUndocumented = [];
+  const documentedFromList = [];
+  const undocumentedTotal = [];
+
+  for (const handler of handlers) {
+    const route = handlerPathToOpenApiRoute(handler);
+    if (specRoutes.has(route)) continue;
+    undocumentedTotal.push(route);
+    if (!known.has(route)) newUndocumented.push(route);
+  }
+
+  for (const route of known) {
+    if (specRoutes.has(route)) documentedFromList.push(route);
+  }
+
+  // Ratchet enforcement: a new route MUST be in openapi.json. A previously-
+  // listed route that's now documented MUST be removed from the JSON so the
+  // backlog actually shrinks. Both conditions fail the gate.
+  for (const route of newUndocumented.sort()) {
+    fail(
+      `${route} is a NEW undocumented route handler. Add it to openapi.json (preferred) or, for genuine exceptions, append to scripts/api-contracts-known-undocumented.json.`,
+    );
+  }
+  for (const route of documentedFromList.sort()) {
+    fail(
+      `${route} is now in openapi.json but still listed in scripts/api-contracts-known-undocumented.json — remove it from the JSON so the backlog ratchets down.`,
+    );
+  }
+
+  pass(
+    `Filesystem coverage: ${handlers.length} v1 route handler(s), ${undocumentedTotal.length} undocumented (${known.size} grandfathered, ${newUndocumented.length} new).`,
+  );
+}
+
 async function assertLiveContracts(openapi) {
   if (!baseUrl) {
     warn('Skipping live API probes because API_CONTRACT_BASE_URL is not set');
@@ -118,6 +214,7 @@ async function assertLiveContracts(openapi) {
 const openapi = JSON.parse(readFileSync(openApiPath, 'utf8'));
 await SwaggerParser.validate(openapi);
 assertStaticContracts(openapi);
+assertFilesystemCoverage(openapi);
 await assertLiveContracts(openapi);
 
 mkdirSync(path.dirname(reportPath), { recursive: true });
