@@ -1,10 +1,23 @@
 'use client';
 
+// Audit Sprint 7c (2026-05-24): migrated from ad-hoc `fixed inset-0` modal
+// with cyan/indigo gradient header + rounded-[2rem] surface to the shared
+// Dialog primitive. Gains focus trap, ESC, aria-modal, scroll lock. Cyan
+// gradient stripped per the stored enterprise-aesthetic preference.
+
 import { useState } from 'react';
 import { addTrainingRecord } from '@/app/app/actions/registers';
-import { GraduationCap, Loader2, X, User, CheckCircle2 } from 'lucide-react';
+import { GraduationCap, Loader2, CheckCircle2 } from 'lucide-react';
 import { useComplianceAction } from '@/components/compliance-system';
 import { z } from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 const certificationSchema = z.object({
   userId: z.string().min(1, 'Please select a staff member'),
@@ -15,14 +28,6 @@ const certificationSchema = z.object({
   completionDate: z.string().min(1, 'Completion date is required'),
   expiryDate: z.string().optional(),
 });
-
-/**
- * =========================================================
- * ADD CERTIFICATION MODAL
- * Node Type: Evidence (violet) - Training certification
- * Creates a new certification record in the compliance graph
- * =========================================================
- */
 
 export function AddCertificationModal({
   isOpen,
@@ -42,8 +47,6 @@ export function AddCertificationModal({
   const [completionDate, setCompletionDate] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const { evidenceAdded, reportError } = useComplianceAction();
-
-  if (!isOpen) return null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -70,7 +73,6 @@ export function AddCertificationModal({
         expiryDate: expiryDate || undefined,
       });
 
-      // Report to compliance system
       evidenceAdded(title);
 
       setSuccess(true);
@@ -89,139 +91,118 @@ export function AddCertificationModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/70 sm:bg-gradient-to-r sm:from-blue-600 sm:via-indigo-600 sm:to-cyan-500/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-glass-strong rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto">
-        {/* Header */}
-        <div className="p-6 border-b border-glass-border flex items-center justify-between bg-glass-strong">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white flex items-center justify-center">
-              <GraduationCap className="h-4 w-4" />
-            </div>
-            <h3 className="font-black text-foreground tracking-tight">
-              Record Certification
-            </h3>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-glass-strong rounded-xl transition-colors"
-          >
-            <X className="h-4 w-4 text-muted-foreground" />
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <GraduationCap className="h-5 w-5 text-slate-400" />
+            Record certification
+          </DialogTitle>
+          <DialogDescription>
+            Add a training record to the staff register.
+          </DialogDescription>
+        </DialogHeader>
 
         {success ? (
-          <div className="p-12 text-center flex flex-col items-center animate-in zoom-in-95">
-            <div className="h-16 w-16 rounded-full bg-emerald-400/10 text-emerald-500 flex items-center justify-center mb-4 border border-emerald-400/30">
-              <CheckCircle2 className="h-8 w-8" />
+          <div className="flex flex-col items-center gap-3 py-8 text-center">
+            <CheckCircle2 className="h-10 w-10 text-emerald-400" />
+            <div>
+              <p className="font-semibold text-slate-100">Record logged</p>
+              <p className="text-sm text-slate-400">
+                Staff register has been updated.
+              </p>
             </div>
-            <h4 className="text-lg font-black text-foreground tracking-tight">
-              Record Logged
-            </h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Staff register has been updated.
-            </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-8 space-y-6">
-            {validationError && (
-              <div className="p-3 rounded-2xl border border-red-400/30 bg-red-400/10 text-xs font-bold text-red-400">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {validationError ? (
+              <div className="rounded-md border border-red-700/40 bg-red-950/40 px-3 py-2 text-sm text-red-200">
                 {validationError}
               </div>
-            )}
-            {/* Select Member */}
-            <div className="space-y-2">
-              <label
-                htmlFor="field-85"
-                className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
-              >
-                Personnel
-              </label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <select
-                  id="field-85"
-                  required
-                  value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
-                  className="w-full pl-11 pr-4 py-4 rounded-2xl border border-glass-border bg-glass-strong focus:bg-glass-strong focus:outline-black text-xs font-bold transition-all appearance-none cursor-pointer"
-                >
-                  <option value="">Select Staff Member</option>
-                  {members.map((m) => (
-                    <option key={m.user_id} value={m.user_id}>
-                      Member ID: {m.user_id.slice(0, 8)}...
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            ) : null}
 
-            {/* Title */}
-            <div className="space-y-2">
-              <label
-                htmlFor="field-84"
-                className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
+            <label className="block text-sm">
+              <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Personnel
+              </span>
+              <select
+                required
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none"
               >
-                Certification Title
-              </label>
+                <option value="">Select staff member</option>
+                {members.map((m) => (
+                  <option key={m.user_id} value={m.user_id}>
+                    Member ID: {m.user_id.slice(0, 8)}…
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="block text-sm">
+              <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Certification title
+              </span>
               <input
-                id="field-84"
                 required
                 placeholder="e.g. NDIS Worker Screening Check"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-4 rounded-2xl border border-glass-border bg-glass-strong focus:bg-glass-strong focus:outline-black text-xs font-bold transition-all"
+                className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none"
               />
-            </div>
+            </label>
 
-            {/* Dates Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label
-                  htmlFor="field-83"
-                  className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
-                >
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <label className="block text-sm">
+                <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
                   Completion
-                </label>
+                </span>
                 <input
-                  id="field-83"
                   required
                   type="date"
                   value={completionDate}
                   onChange={(e) => setCompletionDate(e.target.value)}
-                  className="w-full p-4 rounded-2xl border border-glass-border bg-glass-strong focus:bg-glass-strong focus:outline-black text-xs font-bold transition-all"
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none"
                 />
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="field-82"
-                  className="text-xs font-black uppercase text-muted-foreground tracking-widest ml-1"
-                >
-                  Expiry (Optional)
-                </label>
+              </label>
+              <label className="block text-sm">
+                <span className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Expiry (optional)
+                </span>
                 <input
-                  id="field-82"
                   type="date"
                   value={expiryDate}
                   onChange={(e) => setExpiryDate(e.target.value)}
-                  className="w-full p-4 rounded-2xl border border-glass-border bg-glass-strong focus:bg-glass-strong focus:outline-black text-xs font-bold transition-all"
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none"
                 />
-              </div>
+              </label>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white p-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 transition-all shadow-lg disabled:opacity-50"
-            >
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                'Verify & Log Record'
-              )}
-            </button>
+            <DialogFooter>
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={loading}
+                className="rounded-md border border-slate-700 px-3 py-1.5 text-sm text-slate-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="rounded-md bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-900 disabled:opacity-50"
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  'Verify & log record'
+                )}
+              </button>
+            </DialogFooter>
           </form>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

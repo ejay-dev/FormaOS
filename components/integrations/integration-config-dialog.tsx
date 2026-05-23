@@ -1,9 +1,22 @@
 'use client';
 
+// Audit Sprint 7c (2026-05-24): migrated from ad-hoc `fixed inset-0`
+// modal wrapper to the shared Dialog primitive (Sprint 4c). Gains focus
+// trap, ESC, aria-modal, scroll lock. Cyan "Integration Config" eyebrow
+// removed per the stored enterprise-aesthetic preference.
+
 import { useState, useTransition } from 'react';
-import { X, FlaskConical, Link2, PlugZap, Unplug } from 'lucide-react';
+import { FlaskConical, Link2, PlugZap, Unplug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 type IntegrationId =
   | 'slack'
@@ -147,101 +160,84 @@ export function IntegrationConfigDialog({
         ) : null}
       </div>
 
-      {open ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-3xl border border-glass-border bg-slate-950 shadow-2xl">
-            <div className="flex items-start justify-between border-b border-glass-border p-6">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-300">
-                  Integration Config
-                </p>
-                <h2 className="mt-2 text-2xl font-black text-foreground">
-                  {integrationName}
-                </h2>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Configure credentials, test health, and manage the current connection.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-full border border-glass-border p-2 text-muted-foreground transition hover:border-glass-border-strong hover:text-foreground"
-                aria-label="Close integration dialog"
-              >
-                <X className="h-4 w-4" />
-              </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{integrationName}</DialogTitle>
+            <DialogDescription>
+              Configure credentials, test health, and manage the current connection.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              {fields.map((field) => (
+                <label key={field.key} className="space-y-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {field.label}
+                  </span>
+                  <Input
+                    value={formState[field.key] ?? ''}
+                    onChange={(event) =>
+                      setFormState((current) => ({
+                        ...current,
+                        [field.key]: event.target.value,
+                      }))
+                    }
+                    placeholder={field.placeholder}
+                  />
+                </label>
+              ))}
             </div>
 
-            <div className="space-y-6 p-6">
-              <div className="grid gap-4 md:grid-cols-2">
-                {fields.map((field) => (
-                  <label key={field.key} className="space-y-2">
-                    <span className="text-xs font-black uppercase tracking-[0.18em] text-muted-foreground">
-                      {field.label}
-                    </span>
-                    <Input
-                      value={formState[field.key] ?? ''}
-                      onChange={(event) =>
-                        setFormState((current) => ({
-                          ...current,
-                          [field.key]: event.target.value,
-                        }))
-                      }
-                      placeholder={field.placeholder}
-                    />
-                  </label>
-                ))}
+            <div className="rounded-lg border border-glass-border bg-glass-subtle p-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 font-semibold text-foreground/90">
+                <Link2 className="h-4 w-4" />
+                Connection metadata
               </div>
-
-              <div className="rounded-2xl border border-glass-border bg-glass-subtle p-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2 font-semibold text-foreground/90">
-                  <Link2 className="h-4 w-4 text-cyan-300" />
-                  Connection metadata
-                </div>
-                <p className="mt-2">
-                  Provider key: <span className="font-mono text-foreground/90">{integrationId}</span>
+              <p className="mt-2">
+                Provider key: <span className="font-mono text-foreground/90">{integrationId}</span>
+              </p>
+              {connectedId ? (
+                <p className="mt-1">
+                  Connected row id:{' '}
+                  <span className="font-mono text-foreground/90">{connectedId}</span>
                 </p>
-                {connectedId ? (
-                  <p className="mt-1">
-                    Connected row id:{' '}
-                    <span className="font-mono text-foreground/90">{connectedId}</span>
-                  </p>
-                ) : null}
-              </div>
-
-              {message ? (
-                <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 px-4 py-3 text-sm text-cyan-100">
-                  {message}
-                </div>
               ) : null}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-glass-border p-6">
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setOpen(false)}>
-                  Close
-                </Button>
-                {connected ? (
-                  <Button variant="destructive" onClick={onDisconnect} loading={isPending}>
-                    <Unplug className="h-4 w-4" />
-                    Disconnect
-                  </Button>
-                ) : null}
+            {message ? (
+              <div className="rounded-lg border border-slate-700 bg-slate-800/40 px-4 py-3 text-sm text-slate-100">
+                {message}
               </div>
-              <div className="flex gap-2">
-                {connected ? (
-                  <Button variant="secondary" onClick={onTest} loading={isPending}>
-                    Test Connection
-                  </Button>
-                ) : null}
-                <Button variant="gradient" onClick={onConnect} loading={isPending}>
-                  Save Configuration
-                </Button>
-              </div>
-            </div>
+            ) : null}
           </div>
-        </div>
-      ) : null}
+
+          <DialogFooter className="sm:justify-between">
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setOpen(false)}>
+                Close
+              </Button>
+              {connected ? (
+                <Button variant="destructive" onClick={onDisconnect} loading={isPending}>
+                  <Unplug className="h-4 w-4" />
+                  Disconnect
+                </Button>
+              ) : null}
+            </div>
+            <div className="flex gap-2">
+              {connected ? (
+                <Button variant="secondary" onClick={onTest} loading={isPending}>
+                  Test Connection
+                </Button>
+              ) : null}
+              <Button variant="gradient" onClick={onConnect} loading={isPending}>
+                Save Configuration
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
