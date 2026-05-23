@@ -1051,6 +1051,14 @@ export async function cleanupTestUser(): Promise<void> {
         .from('organizations')
         .delete()
         .eq('id', createdTestUser.orgId);
+
+      // Mirror delete to legacy `orgs` table — without this, every E2E
+      // run leaks one orphan there and the v3-010 regression gate
+      // (scripts/check-orgs-sync.mjs) starts failing on the next run.
+      await adminClient
+        .from('orgs')
+        .delete()
+        .eq('id', createdTestUser.orgId);
     }
 
     // Delete user
