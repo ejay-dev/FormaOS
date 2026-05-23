@@ -28,9 +28,12 @@ export const DEFAULT_RUNTIME_MARKETING: RuntimeMarketingConfig = {
     subheadline:
       'FormaOS turns NDIS Practice Standards, Aged Care Quality Standards, and the rest of your obligations into enforced workflows — with named owners, blocked failure paths, and an immutable evidence trail that passes Commission and accreditation review the first time.',
     primaryCtaLabel: 'Get Compliance Plan',
-    primaryCtaHref: '/contact?type=compliance-plan&source=home_hero',
+    // ?source= dropped 2026-05-23 to match the CTA builder cleanup
+    // (lib/marketing/cta.ts). Source is now derived from document.referrer
+    // on the /contact page.
+    primaryCtaHref: '/contact?type=compliance-plan',
     secondaryCtaLabel: 'Book Demo',
-    secondaryCtaHref: '/contact?type=demo&source=home_hero',
+    secondaryCtaHref: '/contact?type=demo',
   },
   runtime: {
     expensiveEffectsEnabled: true,
