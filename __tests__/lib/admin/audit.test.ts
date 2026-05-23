@@ -29,13 +29,21 @@ jest.mock('@/lib/supabase/admin', () => {
   return { createSupabaseAdminClient: jest.fn(() => c), __client: c };
 });
 
+const writeAuditLogMock = jest.fn().mockResolvedValue(undefined);
+jest.mock('@/lib/audit/audit-engine', () => ({
+  writeAuditLog: (...args: unknown[]) => writeAuditLogMock(...args),
+}));
+
 function getClient() {
   return require('@/lib/supabase/admin').__client;
 }
 
 import { logAdminAction, type AdminAuditEntry } from '@/lib/admin/audit';
 
-beforeEach(() => jest.clearAllMocks());
+beforeEach(() => {
+  jest.clearAllMocks();
+  writeAuditLogMock.mockResolvedValue(undefined);
+});
 
 describe('logAdminAction', () => {
   const entry: AdminAuditEntry = {
@@ -59,5 +67,32 @@ describe('logAdminAction', () => {
   it('defaults metadata to empty object when not provided', async () => {
     await logAdminAction(entry);
     expect(getClient().from).toHaveBeenCalledTimes(2);
+  });
+
+  // Audit 2026-05-23 — orgId threading
+  it('does NOT call writeAuditLog when orgId is omitted', async () => {
+    await logAdminAction(entry);
+    expect(writeAuditLogMock).not.toHaveBeenCalled();
+  });
+
+  it('chains into the per-org hash-chain when orgId is provided', async () => {
+    await logAdminAction({ ...entry, orgId: 'org-abc' });
+    expect(writeAuditLogMock).toHaveBeenCalledTimes(1);
+    expect(writeAuditLogMock).toHaveBeenCalledWith(
+      'org-abc',
+      expect.objectContaining({
+        userId: 'user-1',
+        action: 'delete_org',
+        resourceType: 'organization',
+        resourceId: 'org-1',
+      }),
+    );
+  });
+
+  it('swallows hash-chain failures so they do not break the admin action', async () => {
+    writeAuditLogMock.mockRejectedValueOnce(new Error('chain conflict'));
+    await expect(
+      logAdminAction({ ...entry, orgId: 'org-abc' }),
+    ).resolves.toBeUndefined();
   });
 });
