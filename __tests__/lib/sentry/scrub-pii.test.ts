@@ -120,4 +120,39 @@ describe('scrubPiiFromEvent', () => {
     const result = scrubPiiFromEvent(event);
     expect(result).toBeDefined();
   });
+
+  // v4-022: extended sensitive-key list — exercise the new entries
+  // including the PHI fields the care-operations audit logs reference.
+  it.each([
+    'authorization',
+    'cookie',
+    'session',
+    'sessionId',
+    'refreshToken',
+    'accessToken',
+    'creditCard',
+    'cardNumber',
+    'cvv',
+    'ssn',
+    'tfn',
+    'abn',
+    'medicareNumber',
+    'ndisNumber',
+    'dob',
+    'dateOfBirth',
+    'phone',
+    'address',
+    'firstName',
+    'last_name',
+    'fullName',
+    'primaryDiagnosis',
+    'API_KEY',
+  ])('redacts request body key %s', (key) => {
+    const event = makeEvent({
+      request: { data: { [key]: 'sensitive-value' } },
+    });
+    const result = scrubPiiFromEvent(event);
+    const data = result.request!.data as Record<string, any>;
+    expect(data[key]).toBe('[redacted]');
+  });
 });

@@ -3,7 +3,56 @@ import type { ErrorEvent } from '@sentry/nextjs';
 const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 const AUTH_TOKEN_REGEX =
   /\b(Bearer\s+[A-Za-z0-9\-._~+/]+=*|eyJ[A-Za-z0-9\-_]+\.eyJ[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_.+/=]*)\b/g;
-const SENSITIVE_KEYS = ['password', 'token', 'secret', 'apikey', 'api_key'];
+// v4-022: previously password / token / secret / apikey only — but
+// many of FormaOS's surfaces also accept authorization headers,
+// cookies, session ids, PHI fields (dob, diagnosis), and personal
+// contact data. Names are normalised to lowercase + dashes/
+// underscores stripped (see isSensitiveKey), so add the canonical
+// form once and every camelCase / snake_case / kebab-case variant
+// matches automatically. firstName, last_name → firstname, lastname.
+const SENSITIVE_KEYS = [
+  // auth/session
+  'password',
+  'token',
+  'secret',
+  'apikey',
+  'api_key',
+  'authorization',
+  'cookie',
+  'session',
+  'sessionid',
+  'refreshtoken',
+  'accesstoken',
+  'csrf',
+  'xsrftoken',
+  // payment instruments
+  'creditcard',
+  'cardnumber',
+  'cvv',
+  'cvc',
+  'bankaccount',
+  'routingnumber',
+  // identifiers
+  'ssn',
+  'tfn',
+  'abn',
+  'medicarenumber',
+  'ndisnumber',
+  'passport',
+  'driverslicense',
+  // PHI / personal contact
+  'dob',
+  'dateofbirth',
+  'phone',
+  'phonenumber',
+  'address',
+  'firstname',
+  'lastname',
+  'fullname',
+  'preferredname',
+  'emergencycontact',
+  'primarydiagnosis',
+];
 
 function isSensitiveKey(key: string): boolean {
   return SENSITIVE_KEYS.includes(key.toLowerCase().replace(/[-_]/g, ''));
