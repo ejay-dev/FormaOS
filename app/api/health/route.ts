@@ -2,6 +2,13 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getSupabaseServiceRoleKey, getSupabaseUrl } from '@/lib/supabase/env';
 
+// v4-002: cap every Supabase call so the route returns `degraded` quickly
+// instead of hanging until Vercel's 30s function timeout and returning 504.
+// Picked 3s as a balance: ~10× normal latency for ap-southeast-1, well
+// under Vercel's serverless function budget, fast enough to keep external
+// liveness monitors honest.
+const HEALTH_CHECK_TIMEOUT_MS = 3000;
+
 export async function GET() {
   const startTime = Date.now();
   const health = {
@@ -78,7 +85,11 @@ export async function GET() {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     try {
-      const { error } = await supabase.from('organizations').select('id').limit(1);
+      const { error } = await supabase
+        .from('organizations')
+        .select('id')
+        .limit(1)
+        .abortSignal(AbortSignal.timeout(HEALTH_CHECK_TIMEOUT_MS));
 
       health.checks.database = {
         status: error ? 'error' : 'healthy',
@@ -86,33 +97,30 @@ export async function GET() {
         error: error?.message || null,
       };
     } catch (dbError: unknown) {
+      const isTimeout =
+        dbError instanceof Error &&
+        (dbError.name === 'AbortError' || dbError.name === 'TimeoutError');
       health.checks.database = {
         status: 'error',
         responseTime: Date.now() - dbStart,
-        error:
-          dbError instanceof Error
+        error: isTimeout
+          ? `Database probe exceeded ${HEALTH_CHECK_TIMEOUT_MS}ms`
+          : dbError instanceof Error
             ? dbError.message
             : 'Database connection failed',
       };
     }
 
-    // Auth service health check
-    const authStart = Date.now();
-    try {
-      const { error: authError } = await supabase.auth.getSession();
-      health.checks.auth = {
-        status: authError ? 'error' : 'healthy',
-        responseTime: Date.now() - authStart,
-        error: authError?.message || null,
-      };
-    } catch (authErr) {
-      health.checks.auth = {
-        status: 'error',
-        responseTime: Date.now() - authStart,
-        error:
-          authErr instanceof Error ? authErr.message : 'Auth service error',
-      };
-    }
+    // v4-002: `supabase.auth.getSession()` on a service-role client is a
+    // no-op (no session ever exists) AND was a sequential blocker that
+    // could keep the function alive past Vercel's 30s budget. Field kept
+    // in the response shape so external monitors parsing this JSON don't
+    // break.
+    health.checks.auth = {
+      status: 'skipped',
+      responseTime: 0,
+      error: null,
+    };
 
     // API health check (self-check)
     health.checks.api = {
@@ -121,7 +129,7 @@ export async function GET() {
       error: null,
     };
 
-    // Determine overall health status
+    // Determine overall health status. `skipped` is not a failure mode.
     const hasErrors = Object.values(health.checks).some(
       (check) => check.status === 'error',
     );
@@ -198,7 +206,12 @@ export async function HEAD() {
     }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
-    await supabase.from('organizations').select('id').limit(1).maybeSingle();
+    await supabase
+      .from('organizations')
+      .select('id')
+      .limit(1)
+      .abortSignal(AbortSignal.timeout(HEALTH_CHECK_TIMEOUT_MS))
+      .maybeSingle();
 
     return new Response(null, {
       status: 200,
