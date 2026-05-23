@@ -1,0 +1,629 @@
+/*
+  Dossier pricing canvas.
+
+  The page is staged as a stamped, watermarked commercial dossier
+  rather than as a webpage. Reference: real procurement document
+  packets, classified file folders, audit binders.
+
+  Scoped under `.ds-page` so nothing leaks. Defeats the parent
+  marketing layout's dark canvas and per-section gradients without
+  modifying any shared marketing primitive.
+*/
+
+.ds-page {
+  /* Tokens — manila paper, typewriter ink, wax red, classified navy */
+  --ds-paper: #efe6d2;
+  --ds-paper-2: #e3d9c1;
+  --ds-paper-3: #d4c8aa;
+  --ds-paper-edge: #b8ac8a;
+  --ds-ink: #1d1a14;
+  --ds-ink-mid: #4a4438;
+  --ds-ink-faint: #7a715f;
+  --ds-ink-ghost: rgba(29, 26, 20, 0.16);
+  --ds-wax: #862a1c;
+  --ds-wax-deep: #5e1c13;
+  --ds-stamp-red: #b8392b;
+  --ds-stamp-blue: #1a3a5a;
+  --ds-stamp-green: #1f5d3d;
+  --ds-highlighter: #e8c660;
+  --ds-rule: rgba(29, 26, 20, 0.22);
+  --ds-rule-strong: rgba(29, 26, 20, 0.55);
+  --ds-shadow: 0 1px 0 rgba(29, 26, 20, 0.06), 0 8px 24px rgba(29, 26, 20, 0.10);
+
+  background: var(--ds-paper);
+  color: var(--ds-ink);
+  font-family: var(--font-serif), Georgia, serif;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'onum' 1;
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+/* Defeat parent dark gradients */
+.ds-page section,
+.ds-page .mk-section {
+  background: transparent !important;
+  background-image: none !important;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: visible;
+}
+
+/* ── Paper texture base ────────────────────────────────────────── */
+.ds-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  /* Layered grain + paper fibre */
+  background-image:
+    radial-gradient(rgba(29, 26, 20, 0.025) 1px, transparent 1px),
+    radial-gradient(rgba(29, 26, 20, 0.018) 0.8px, transparent 0.8px),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 31px,
+      rgba(29, 26, 20, 0.012) 31px 32px
+    );
+  background-size: 4px 4px, 7px 7px, auto auto;
+  background-position: 0 0, 2px 2px, 0 0;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+/* Top + bottom paper-edge shadow on the whole canvas */
+.ds-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(180deg, rgba(29, 26, 20, 0.10) 0, transparent 64px),
+    linear-gradient(0deg, rgba(29, 26, 20, 0.08) 0, transparent 64px);
+}
+
+.ds-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Containers ───────────────────────────────────────────────── */
+.ds-page .ds-container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.25rem, 4vw, 3rem);
+  padding-right: clamp(1.25rem, 4vw, 3rem);
+}
+.ds-page .ds-container--narrow { max-width: 56rem; }
+.ds-page .ds-container--wide { max-width: 72rem; }
+.ds-page .ds-container--full { max-width: 84rem; }
+
+/* ── Document folio ────────────────────────────────────────────── */
+/* A folio is the dossier's sheet of paper — slightly lighter than the
+   surrounding canvas, with a soft edge shadow and a top "perforated"
+   strip + watermarked section glyph. Each section sits in its own folio. */
+.ds-folio {
+  position: relative;
+  background: linear-gradient(180deg, #f5ecd6 0%, var(--ds-paper) 30%, #ebe1c8 100%);
+  box-shadow: var(--ds-shadow);
+  margin: clamp(2rem, 4vw, 4rem) clamp(0.75rem, 2vw, 2rem);
+  padding: clamp(2.25rem, 4vw, 4rem) clamp(1rem, 2.5vw, 2.5rem) clamp(2.5rem, 5vw, 5rem);
+  border: 1px solid rgba(29, 26, 20, 0.10);
+}
+.ds-folio--tight {
+  padding-top: clamp(1.5rem, 2.5vw, 2.5rem);
+  padding-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+}
+
+/* Subtle paper-fold corner */
+.ds-folio::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 28px 28px 0;
+  border-color: transparent var(--ds-paper-edge) transparent transparent;
+  pointer-events: none;
+}
+.ds-folio::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 28px;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, rgba(29, 26, 20, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ── Document tab (file-folder tab) ───────────────────────────── */
+/* Sits at the TOP of a folio, sticking up like a folder index tab.
+   Carries a typewriter label like "§ 04 / COST IN CONTEXT". */
+.ds-tab {
+  position: absolute;
+  top: -1.625rem;
+  left: clamp(1rem, 3vw, 3rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.45rem 1rem 0.65rem;
+  background: var(--ds-paper-3);
+  border: 1px solid rgba(29, 26, 20, 0.18);
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ds-ink);
+  box-shadow: 0 -2px 6px rgba(29, 26, 20, 0.06);
+}
+.ds-tab--wax { background: var(--ds-wax); color: var(--ds-paper); border-color: var(--ds-wax-deep); }
+.ds-tab--blue { background: var(--ds-stamp-blue); color: var(--ds-paper); border-color: #0d2238; }
+
+/* ── Top-of-folio masthead row ─────────────────────────────────── */
+.ds-folio__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.875rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--ds-rule);
+}
+.ds-folio__head--strong {
+  border-bottom-width: 2px;
+  border-bottom-color: var(--ds-rule-strong);
+}
+
+/* ── Typography ───────────────────────────────────────────────── */
+.ds-page .ds-typewriter {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  letter-spacing: 0.04em;
+}
+.ds-page .ds-serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-feature-settings: 'lnum' 1, 'kern' 1, 'liga' 1;
+}
+.ds-page .ds-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: 0.005em;
+}
+
+.ds-page .ds-meta {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ds-ink-mid);
+}
+.ds-page .ds-meta-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.625rem;
+}
+.ds-page .ds-meta-line strong { color: var(--ds-ink); font-weight: 400; }
+
+.ds-page .ds-display {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.018em;
+  color: var(--ds-ink);
+  text-wrap: balance;
+  font-feature-settings: 'lnum' 1, 'kern' 1, 'liga' 1, 'dlig' 1;
+}
+.ds-page .ds-display--xl { font-size: clamp(2.5rem, 5.5vw + 0.5rem, 5rem); }
+.ds-page .ds-display--lg { font-size: clamp(1.875rem, 3vw + 0.5rem, 3rem); }
+.ds-page .ds-display--md { font-size: clamp(1.375rem, 2vw + 0.4rem, 2rem); line-height: 1.1; }
+
+.ds-page .ds-display em {
+  font-style: italic;
+  color: var(--ds-wax);
+}
+
+.ds-page .ds-body {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--ds-ink-mid);
+  font-feature-settings: 'onum' 1, 'kern' 1, 'liga' 1;
+}
+.ds-page .ds-lead {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.125rem, 0.6vw + 1rem, 1.375rem);
+  line-height: 1.4;
+  color: var(--ds-ink);
+  font-feature-settings: 'onum' 1, 'dlig' 1;
+}
+.ds-page .ds-caption {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--ds-ink-faint);
+  letter-spacing: 0.04em;
+}
+
+/* Drop cap for hero lede */
+.ds-page .ds-dropcap::first-letter {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 700;
+  font-size: 4.75em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.05em 0.12em 0 0;
+  margin-right: 0.04em;
+  color: var(--ds-wax);
+}
+
+/* ── Stamps ────────────────────────────────────────────────────── */
+/* Rotated rubber-stamp impression. Double border + textured fill. */
+.ds-stamp {
+  display: inline-block;
+  padding: 0.45rem 0.875rem;
+  border: 2.5px solid currentColor;
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 400;
+  transform: rotate(-4deg);
+  /* Distressed/weathered look — partial opacity dapple */
+  background-image:
+    radial-gradient(rgba(29, 26, 20, 0.12) 0.8px, transparent 0.8px);
+  background-size: 3px 3px;
+  background-blend-mode: multiply;
+  opacity: 0.95;
+  position: relative;
+}
+.ds-stamp--red { color: var(--ds-stamp-red); }
+.ds-stamp--blue { color: var(--ds-stamp-blue); }
+.ds-stamp--green { color: var(--ds-stamp-green); }
+.ds-stamp--ink { color: var(--ds-ink); }
+
+.ds-stamp--lg {
+  padding: 0.625rem 1.25rem;
+  font-size: 1.125rem;
+  letter-spacing: 0.22em;
+  border-width: 3.5px;
+}
+.ds-stamp--xl {
+  padding: 1rem 2rem;
+  font-size: 1.75rem;
+  letter-spacing: 0.24em;
+  border-width: 5px;
+  outline-width: 1.5px;
+  outline-offset: 5px;
+}
+.ds-stamp--right { transform: rotate(4deg); }
+.ds-stamp--flat { transform: rotate(0deg); }
+
+/* ── Watermark — huge ghost text behind content ───────────────── */
+.ds-watermark {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(8rem, 22vw, 24rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: rgba(29, 26, 20, 0.045);
+  z-index: 0;
+  white-space: nowrap;
+}
+.ds-watermark--type {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: clamp(6rem, 16vw, 18rem);
+  letter-spacing: 0;
+}
+
+/* ── Perforated rules ──────────────────────────────────────────── */
+.ds-perf {
+  border: 0;
+  border-top: 1px dashed var(--ds-rule-strong);
+  margin: 0;
+}
+.ds-perf--strong { border-top-width: 1.5px; }
+
+/* ── Wax seal ──────────────────────────────────────────────────── */
+.ds-seal {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, #a3382a 0%, var(--ds-wax) 45%, var(--ds-wax-deep) 100%);
+  color: var(--ds-paper);
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-align: center;
+  line-height: 1.1;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 -3px 8px rgba(0, 0, 0, 0.35),
+    inset 0 3px 6px rgba(255, 255, 255, 0.10),
+    0 4px 10px rgba(29, 26, 20, 0.25);
+}
+.ds-seal::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+}
+.ds-seal::after {
+  content: '';
+  position: absolute;
+  inset: -8px -2px auto -2px;
+  height: 12px;
+  background:
+    linear-gradient(180deg, var(--ds-wax) 0%, var(--ds-wax-deep) 100%);
+  clip-path: polygon(0 0, 8% 100%, 14% 0, 22% 100%, 28% 0, 36% 100%, 42% 0, 50% 100%, 58% 0, 64% 100%, 72% 0, 78% 100%, 86% 0, 92% 100%, 100% 0);
+  opacity: 0.45;
+  z-index: -1;
+}
+
+/* ── Redacted text ─────────────────────────────────────────────── */
+.ds-redacted {
+  display: inline-block;
+  background: var(--ds-ink);
+  color: var(--ds-ink);
+  padding: 0 0.35em;
+  line-height: 1.1;
+  user-select: none;
+  position: relative;
+}
+.ds-redacted::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 3px,
+      rgba(255, 255, 255, 0.03) 3px 4px
+    );
+}
+
+/* ── Tables ────────────────────────────────────────────────────── */
+.ds-page table.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-serif), Georgia, serif;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.ds-page table.ds-table th,
+.ds-page table.ds-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid var(--ds-rule);
+}
+.ds-page table.ds-table thead th {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-weight: 400;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ds-ink);
+  border-top: 2px solid var(--ds-rule-strong);
+  border-bottom: 2px solid var(--ds-rule-strong);
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+}
+.ds-page table.ds-table tbody tr:last-child td {
+  border-bottom: 2px solid var(--ds-rule-strong);
+}
+.ds-page table.ds-table tbody tr.ds-table__group td {
+  background: var(--ds-paper-3);
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-weight: 400;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ds-ink);
+  padding-top: 0.55rem;
+  padding-bottom: 0.55rem;
+  border-top: 2px solid var(--ds-rule-strong);
+}
+.ds-page table.ds-table .ds-table__num {
+  font-variant-numeric: tabular-nums lining-nums;
+  text-align: right;
+}
+.ds-page table.ds-table .ds-table__center { text-align: center; }
+.ds-page table.ds-table .ds-table__featured {
+  background: rgba(232, 198, 96, 0.18);
+}
+.ds-page table.ds-table tbody tr:not(.ds-table__group):hover td {
+  background: rgba(29, 26, 20, 0.025);
+}
+
+/* ── Buttons ───────────────────────────────────────────────────── */
+.ds-page .ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-weight: 400;
+  font-size: 0.875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.875rem 1.375rem;
+  border-radius: 0;
+  border: 2px solid var(--ds-ink);
+  background: var(--ds-paper);
+  color: var(--ds-ink);
+  text-decoration: none;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease,
+    box-shadow 140ms ease;
+}
+.ds-page .ds-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--ds-ink);
+}
+.ds-page .ds-btn:active { transform: translate(0, 0); box-shadow: 0 0 0 var(--ds-ink); }
+.ds-page .ds-btn:focus-visible {
+  outline: 2px solid var(--ds-wax);
+  outline-offset: 3px;
+}
+.ds-page .ds-btn--solid {
+  background: var(--ds-ink);
+  color: var(--ds-paper);
+}
+.ds-page .ds-btn--solid:hover {
+  background: var(--ds-wax);
+  border-color: var(--ds-wax);
+  box-shadow: 4px 4px 0 var(--ds-ink);
+}
+.ds-page .ds-btn--wax {
+  background: var(--ds-wax);
+  color: var(--ds-paper);
+  border-color: var(--ds-wax);
+}
+.ds-page .ds-btn--wax:hover {
+  background: var(--ds-wax-deep);
+  border-color: var(--ds-wax-deep);
+  box-shadow: 4px 4px 0 var(--ds-ink);
+}
+
+/* ── Plan card (folio-within-folio for tier ledger) ──────────── */
+.ds-plan {
+  position: relative;
+  padding: 1.5rem 1.5rem 1.5rem;
+  background: linear-gradient(180deg, #f8efd9 0%, #ece2c4 100%);
+  border: 1px solid var(--ds-rule);
+  box-shadow: 0 1px 0 rgba(29, 26, 20, 0.05), 0 4px 12px rgba(29, 26, 20, 0.06);
+}
+.ds-plan__id {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ds-ink-faint);
+}
+.ds-plan__price {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(2.25rem, 3.5vw + 0.5rem, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* ── Form-style field rows for the cost ledger ────────────────── */
+.ds-field {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px dashed var(--ds-rule);
+  align-items: baseline;
+}
+.ds-field__label {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ds-ink-mid);
+}
+.ds-field__value {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.0625rem;
+  color: var(--ds-ink);
+}
+
+/* ── Q&A list — interrogatories format ────────────────────────── */
+.ds-qa { border-top: 2px solid var(--ds-rule-strong); }
+.ds-qa__item {
+  display: grid;
+  gap: 0.625rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--ds-rule);
+}
+@media (min-width: 900px) {
+  .ds-qa__item {
+    grid-template-columns: 5rem 1fr 1.4fr;
+    column-gap: 2rem;
+    align-items: baseline;
+  }
+}
+.ds-qa__num {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 1.125rem;
+  letter-spacing: 0.12em;
+  color: var(--ds-wax);
+}
+.ds-qa__q {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  color: var(--ds-ink);
+}
+.ds-qa__a {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ds-ink-mid);
+  font-feature-settings: 'onum' 1;
+}
+
+/* ── Notarized signature block ─────────────────────────────────── */
+.ds-sig {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 2px solid var(--ds-rule-strong);
+}
+.ds-sig__line {
+  font-family: var(--font-typewriter), 'Special Elite', Courier, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ds-ink-mid);
+}
+
+/* ── Header tone neutralisation ────────────────────────────────── */
+/* On the dossier canvas the sticky marketing header should tone-shift
+   to manila glass so it reads as part of the dossier cover, not a
+   conflicting dark bar. Only applies on /pricing via :has(.ds-page). */
+@supports selector(:has(*)) {
+  body:has(.ds-page) .mk-header-premium {
+    background: rgba(239, 230, 210, 0.94);
+    backdrop-filter: blur(14px) saturate(120%);
+    border-bottom: 1px solid var(--ds-rule);
+  }
+  body:has(.ds-page) .mk-header-premium a,
+  body:has(.ds-page) .mk-header-premium button {
+    color: var(--ds-ink);
+  }
+  body:has(.ds-page) .mk-header-premium .mk-btn-primary {
+    background: var(--ds-wax);
+    color: var(--ds-paper);
+    border-color: var(--ds-wax);
+    box-shadow: none;
+  }
+  body:has(.ds-page) .mk-header-premium .mk-btn-secondary {
+    background: transparent;
+    color: var(--ds-ink);
+    border-color: var(--ds-ink);
+  }
+}

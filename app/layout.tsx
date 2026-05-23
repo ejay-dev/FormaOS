@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Sora, JetBrains_Mono } from 'next/font/google';
+import {
+  Inter,
+  Sora,
+  JetBrains_Mono,
+  Source_Serif_4,
+  Special_Elite,
+} from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import CookieConsent from '@/components/CookieConsent';
 import NextTopLoader from 'nextjs-toploader';
@@ -27,6 +33,28 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
   preload: false,
   weight: ['400', '500', '700'],
+});
+
+// Source Serif 4 — body/display serif on the dossier pricing canvas.
+// No `axes` here, so an explicit weight array is fine (cf. the Fraunces
+// build break — `axes` + weight-array is mutually exclusive in next/font).
+const sourceSerif = Source_Serif_4({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-serif',
+  preload: false,
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+});
+
+// Typewriter face for the dossier canvas — section labels, stamps,
+// serial numbers, redacted-document tone.
+const specialElite = Special_Elite({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-typewriter',
+  preload: false,
+  weight: '400',
 });
 
 const metadataBase = (() => {
@@ -114,7 +142,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable}`}
+      className={`${inter.variable} ${sora.variable} ${jetbrainsMono.variable} ${sourceSerif.variable} ${specialElite.variable}`}
     >
       <body className={inter.className}>
         <NextTopLoader color="#22d3ee" height={2} showSpinner={false} />
