@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import PricingPageContent from './PricingPageContent';
+import { KeyFacts } from '../components/shared/KeyFacts';
 import { PRICING_FAQS } from './components/faq-data';
 import { faqSchema, pricingSchema } from '@/lib/seo';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
@@ -84,6 +85,17 @@ export default function PricingPage() {
             pricingSchema(),
           ]),
         }}
+      />
+      <KeyFacts
+        summary="FormaOS pricing covers four plans for regulated Australian organisations — from single-site Foundation up to multi-region Enterprise — priced like infrastructure (per-seat plus framework packs)."
+        facts={[
+          { label: 'Plans', value: 'Foundation, Growth, Scale, Enterprise' },
+          { label: 'Pricing model', value: 'Per-seat monthly + framework pack add-ons. AUD pricing, GST applicable.' },
+          { label: 'Foundation', value: 'Starts at AUD $297/month — single-site, one framework focus' },
+          { label: 'Enterprise', value: 'From AUD $5,000/month — SAML SSO, AU-managed deployment, dedicated security review' },
+          { label: 'Trial', value: 'Guided assessment trial available — not a self-serve free tier (compliance setup needs scoping)' },
+          { label: 'Includes', value: 'Framework packs, evidence verification, workflow automation, audit-ready exports, integrations' },
+        ]}
       />
       <PricingPageContent />
     </>

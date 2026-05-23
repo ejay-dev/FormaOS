@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ConstructionComplianceContent from './ConstructionComplianceContent';
+import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
 
 const constructionServiceSchema = serviceSchema({
@@ -117,6 +118,17 @@ export default function ConstructionCompliancePage() {
             constructionFaqSchema,
           ]),
         }}
+      />
+      <KeyFacts
+        summary="FormaOS is a WHS compliance operating system for Australian construction principals and contractors — mapped to harmonised WHS legislation, SafeWork notification thresholds, SWMS document control, and high-risk work licence tracking."
+        facts={[
+          { label: 'Frameworks covered', value: 'Harmonised WHS Act + Regs (NSW, VIC, QLD, WA, SA, TAS, ACT, NT)' },
+          { label: 'SWMS', value: 'Safe Work Method Statement document control with version history and acknowledgement tracking' },
+          { label: 'Worker records', value: 'Inductions, high-risk work licences (HRWL), and qualification status per worker' },
+          { label: 'Incidents', value: 'Notifiable incident workflows triggered against WHS Act s35-38 thresholds' },
+          { label: 'Contractors', value: 'Contractor compliance evidence with auto-prompted document refresh' },
+          { label: 'Hosting', value: 'AU-hosted (Sydney). Worker and site data never leaves Australia.' },
+        ]}
       />
       <ConstructionComplianceContent />
     </>

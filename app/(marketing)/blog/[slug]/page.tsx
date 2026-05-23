@@ -8,6 +8,7 @@ import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { articleSchema, breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { getAuthorByName } from '@/lib/authors';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -80,6 +81,19 @@ export default async function BlogPostPage({ params }: PageProps) {
                 ? new Date(post.dateModified).toISOString()
                 : new Date(post.date).toISOString(),
               author: post.author,
+              // AEO sprint 2026-05-23: emit Person/Organization sub-entity
+              // when the byline maps to an /author/[slug] page. Strengthens
+              // E-E-A-T citation strength for AI answer engines.
+              personAuthor: (() => {
+                const a = getAuthorByName(post.author);
+                if (!a) return undefined;
+                return {
+                  name: a.name,
+                  slug: a.slug,
+                  jobTitle: a.role,
+                  sameAs: a.sameAs,
+                };
+              })(),
             }),
             breadcrumbSchema([
               { name: 'Home', path: '/' },
@@ -124,7 +138,19 @@ export default async function BlogPostPage({ params }: PageProps) {
             <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                <span>{post.author}</span>
+                {(() => {
+                  const a = getAuthorByName(post.author);
+                  return a ? (
+                    <Link
+                      href={`/author/${a.slug}`}
+                      className="hover:text-cyan-300 transition-colors"
+                    >
+                      {post.author}
+                    </Link>
+                  ) : (
+                    <span>{post.author}</span>
+                  );
+                })()}
               </div>
               <div className="flex items-center gap-2">
                 <CalendarDays className="w-4 h-4" />
@@ -205,6 +231,35 @@ export default async function BlogPostPage({ params }: PageProps) {
               </div>
             ))}
           </div>
+
+          {(() => {
+            const a = getAuthorByName(post.author);
+            if (!a) return null;
+            return (
+              <div className="mt-12 mb-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-6 sm:p-7">
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/80">
+                      Written by
+                    </p>
+                    <h2 className="mt-1 text-xl font-semibold text-white">
+                      {a.name}
+                    </h2>
+                    <p className="text-xs text-slate-400">{a.role}</p>
+                  </div>
+                  <Link
+                    href={`/author/${a.slug}`}
+                    className="text-sm font-medium text-cyan-300 hover:text-cyan-200 underline-offset-4 hover:underline"
+                  >
+                    More from this byline →
+                  </Link>
+                </div>
+                <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                  {a.bio}
+                </p>
+              </div>
+            );
+          })()}
 
           <RelatedPosts
             posts={(() => {

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import NDISProvidersContent from './NDISProvidersContent';
+import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
 
 const ndisServiceSchema = serviceSchema({
@@ -115,6 +116,19 @@ export default function NDISProvidersPage() {
             ndisFaqSchema,
           ]),
         }}
+      />
+      {/* AEO key-facts block — renders in initial SSR HTML so AI answer
+          engines and procurement scanners hit citable claims first. */}
+      <KeyFacts
+        summary="FormaOS is a compliance operating system for registered NDIS providers, mapped to all 8 Practice Standards modules with SIRS notifications, worker screening tracking, and continuous audit-readiness for the NDIS Commission."
+        facts={[
+          { label: 'Frameworks covered', value: 'All 8 NDIS Practice Standards modules, plus supplementary SDA and early childhood modules' },
+          { label: 'Worker screening', value: 'NDIS Worker Screening Check tracking per worker, alerts on expiry, jurisdiction-aware' },
+          { label: 'SIRS', value: 'Priority (24-hour) and Standard (5-business-day) reportable incident workflows built in' },
+          { label: 'Audit readiness', value: 'Continuous — unannounced audits ship with the same evidence bundle as scheduled' },
+          { label: 'Hosting', value: 'AU-hosted (Sydney). Participant data never leaves Australia.' },
+          { label: 'Built for', value: 'Registered NDIS providers under the Quality and Safeguards Commission' },
+        ]}
       />
       <NDISProvidersContent />
     </>

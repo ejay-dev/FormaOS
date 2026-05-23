@@ -1862,6 +1862,167 @@ export const blogPosts: BlogPost[] = [
       },
     ],
   },
+  {
+    id: 'australian-compliance-frameworks-side-by-side',
+    title:
+      'Australian Compliance Frameworks 2026: A Side-by-Side Reference for Multi-Framework Operators',
+    excerpt:
+      'How the seven major Australian compliance frameworks compare on structure, regulator, reporting timeframes, and audit cycle — a reference for compliance leaders running multiple obligations in parallel.',
+    author: 'Compliance Strategy',
+    date: 'May 23, 2026',
+    dateModified: 'May 23, 2026',
+    readTime: '12 min read',
+    category: 'Compliance',
+    icon: Layers,
+    sections: [
+      {
+        heading: 'Why this reference exists',
+        paragraphs: [
+          'Most regulated Australian organisations are accountable to more than one framework. A healthcare provider is bound by NSQHS Standards, AHPRA registration requirements for each clinician, and — if it touches federal funding — often the NDIS Practice Standards as well. A fintech operates under an AFS licence (Corporations Act s912A general obligations), reports to AUSTRAC for AML/CTF, and may be APRA-regulated if it deals with bank-adjacent products. A construction principal in NSW carries harmonised WHS obligations under the WHS Act and contractual safety obligations from every Tier 1 client.',
+          'Each framework describes similar work — controls, evidence, incidents, training, audits — in different language. The compliance leader running two or three of them in parallel is left translating between vocabularies just to know where they stand.',
+          'This is a side-by-side reference of the seven frameworks we see most often in buyer conversations. It is not exhaustive (state-specific layers like SafeWork NSW vs SafeWork Vic add detail), and it is not a substitute for reading the source instruments — it is the orienting picture a compliance program manager can hold in their head while reading the legislation underneath.',
+        ],
+      },
+      {
+        heading: 'NDIS Practice Standards',
+        paragraphs: [
+          'Regulator: NDIS Quality and Safeguards Commission (a federal statutory body separate from the NDIA scheme administrator). Source instrument: NDIS Practice Standards and Quality Indicators 2018 (as amended), supported by the NDIS Provider Registration and Practice Standards Rules.',
+          'Structure: eight modules. The Core Module covers Rights and Responsibilities, Governance and Operational Management, the Provision of Supports, and the Provision of Supports Environment. Five supplementary modules cover high-intensity daily personal activities, specialist behaviour support, implementing behaviour support plans, early childhood supports, and specialist disability accommodation. Each module decomposes into quality indicators with specific outcome statements.',
+        ],
+        bullets: [
+          'Audit cycle: registered providers are audited against applicable modules on a 3-year accreditation cycle, with mid-cycle surveillance and the option of unannounced visits',
+          'Key reporting: SIRS (Serious Incident Reporting Scheme) — Priority incidents within 24 hours, Standard incidents within 5 business days',
+          'Worker controls: NDIS Worker Screening Check status tracked per worker (jurisdiction-specific screening units issue clearances)',
+          'Common audit gaps: incomplete behaviour-support evidence, inconsistent SIRS notification timing, gaps in worker screening renewal tracking',
+        ],
+      },
+      {
+        heading: 'NSQHS Standards',
+        paragraphs: [
+          'Regulator: Australian Commission on Safety and Quality in Health Care (ACSQHC) sets the standards; accreditation is delivered by approved accrediting agencies under the Australian Health Service Safety and Quality Accreditation Scheme. Source instrument: National Safety and Quality Health Service (NSQHS) Standards, second edition.',
+          'Structure: eight standards. Clinical Governance and Partnering with Consumers are the two cross-cutting standards. Six clinical standards follow: Preventing and Controlling Healthcare-Associated Infection, Medication Safety, Comprehensive Care, Communicating for Safety, Blood Management, and Recognising and Responding to Acute Deterioration.',
+        ],
+        bullets: [
+          'Audit cycle: organisation-wide accreditation typically on a 3- or 4-year cycle, with annual mid-cycle assessments',
+          'Key reporting: incidents through state/territory systems, sentinel events to ACSQHC',
+          'Workforce controls: AHPRA registration verification for all relevant clinical staff; CPD tracking against AHPRA requirements per profession',
+          'Common audit gaps: medication-safety documentation, partnering-with-consumers evidence (consumer-feedback closing loops), and acute-deterioration response training records',
+        ],
+      },
+      {
+        heading: 'AHPRA registration (continuing requirements)',
+        paragraphs: [
+          'Regulator: AHPRA (Australian Health Practitioner Regulation Agency) administers registration for 16 regulated health professions through profession-specific National Boards (Medical, Nursing and Midwifery, Psychology, Physiotherapy, etc.). Source instrument: Health Practitioner Regulation National Law (the National Law) as enacted in each state.',
+          'AHPRA is not a "framework" in the sense the others are — it is a registration regime. But for any healthcare provider, AHPRA continuing professional development (CPD), professional indemnity insurance (PII), recency-of-practice, and English language requirements show up as ongoing compliance obligations that must be tracked per practitioner.',
+        ],
+        bullets: [
+          'Registration cycle: annual renewal (typically May–September depending on profession) with audit selection of declared CPD',
+          'Key reporting: notifications to AHPRA under the National Law (s140 mandatory notifications for impaired practitioners, sexual misconduct, intoxication while practising, significant departure from accepted standards)',
+          'CPD: profession-specific hour minimums; Medical Board requires 50 hours per year across categories; Nursing and Midwifery Board requires 20 hours per year',
+          'Common audit gaps: CPD evidence gaps when audited (declarations often outpace documentation), expired PII, expired First Aid certifications for relevant cohorts',
+        ],
+      },
+      {
+        heading: 'ACECQA National Quality Framework (NQF)',
+        paragraphs: [
+          'Regulator: ACECQA (Australian Children\'s Education and Care Quality Authority) sets and oversees the framework; state and territory regulatory authorities deliver Assessment and Rating visits. Source instrument: Education and Care Services National Law and National Regulations, the National Quality Standard (NQS), and the Early Years Learning Framework / My Time Our Place.',
+          'Structure: seven Quality Areas. Educational program and practice (QA1), children\'s health and safety (QA2), physical environment (QA3), staffing arrangements (QA4), relationships with children (QA5), collaborative partnerships with families and communities (QA6), and governance and leadership (QA7). Each Quality Area decomposes into Standards and Elements.',
+        ],
+        bullets: [
+          'Audit cycle: Assessment and Rating visits roughly every 3 years; high-performing services may shift to longer cycles',
+          'Key reporting: incidents and serious incidents under National Law s174; notifiable complaints; staffing breaches',
+          'Workforce controls: Working with Children Check tracked per educator; qualification status against NQF requirements (Diploma, ECT, Cert III ratios)',
+          'Common audit gaps: educator-to-child ratios at moments of staffing transition, incident-record completeness, QIP (Quality Improvement Plan) currency',
+        ],
+      },
+      {
+        heading: 'Harmonised WHS (Work Health and Safety)',
+        paragraphs: [
+          'Regulator: the WHS regulator in each jurisdiction — SafeWork NSW, WorkSafe Victoria, WorkSafe Queensland, etc. Victoria has not adopted the harmonised WHS Act and remains under the Occupational Health and Safety Act 2004 (Vic) and OHS Regulations 2017 (Vic) — the obligations are similar but not identical. Source instrument (harmonised jurisdictions): Work Health and Safety Act 2011 (Commonwealth) plus the model Work Health and Safety Regulations 2011, enacted by each jurisdiction.',
+          'WHS is not a "modular framework" like NDIS or NSQHS — it is a principal duty plus regulatory specifics. The principal duty (s19 WHS Act) is to ensure, so far as is reasonably practicable, the health and safety of workers and others affected by the business. The Regulations specify how that obligation is discharged for specific hazards (high-risk work, hazardous chemicals, construction work, working at heights).',
+        ],
+        bullets: [
+          'Audit cycle: triggered by incident notification, complaint, or proactive regulator program (no fixed cycle)',
+          'Key reporting: notifiable incidents under WHS Act s35-38 (death of a person, serious injury or illness, dangerous incident) — notifiable to the regulator immediately',
+          'Workforce controls: high-risk work licences (HRWL), inductions per Construction Work Code of Practice, SWMS for high-risk construction work',
+          'Common audit gaps: SWMS document control (versions, acknowledgements), contractor compliance evidence, notifiable-incident timing',
+        ],
+      },
+      {
+        heading: 'AFS licence (Australian Financial Services licence)',
+        paragraphs: [
+          'Regulator: ASIC (Australian Securities and Investments Commission). Source instrument: Corporations Act 2001, with the AFS licence general obligations set out in s912A.',
+          'There is no "module" structure. Section 912A imposes 11 ongoing obligations that an AFS licensee must comply with at all times — providing financial services efficiently, honestly and fairly; complying with conditions on the licence; complying with financial services laws; having adequate arrangements to manage conflicts of interest; complying with the dispute resolution requirements; maintaining competence; ensuring representatives are adequately trained; having adequate risk management systems; maintaining adequate financial resources; having a written policy on training. The Reportable Situations regime (formerly breach reporting) is a discrete obligation under Part 7.6 Division 3.',
+        ],
+        bullets: [
+          'Audit cycle: ASIC has continuous surveillance powers; financial statements lodged annually with audit',
+          'Key reporting: Reportable Situations regime — material breaches lodged with ASIC within 30 days of becoming aware (significantly tighter than the pre-2021 7-business-day regime for some classes)',
+          'Workforce controls: representative training to RG 146 (or RG 105 for credit), continuing competence tracked',
+          'Common audit gaps: training records that lag licensing changes, conflict-of-interest declarations, dispute resolution timing against AFCA targets',
+        ],
+      },
+      {
+        heading: 'AUSTRAC AML/CTF program',
+        paragraphs: [
+          'Regulator: AUSTRAC (Australian Transaction Reports and Analysis Centre). Source instrument: Anti-Money Laundering and Counter-Terrorism Financing Act 2006 and AML/CTF Rules.',
+          'A reporting entity must have a written AML/CTF Program — Part A (general program covering ML/TF risk assessment and management) and Part B (customer identification procedures) — and must comply with reporting obligations including Threshold Transaction Reports (TTRs), International Funds Transfer Instructions (IFTIs), and Suspicious Matter Reports (SMRs). The Tranche 2 amendments (commenced 31 March 2026) extend AML/CTF obligations to additional gatekeeper professions — lawyers, accountants, real estate agents, dealers in precious metals and stones — significantly expanding the reporting-entity population.',
+        ],
+        bullets: [
+          'Audit cycle: internal independent reviews of Part A on a schedule appropriate to ML/TF risk; AUSTRAC compliance assessments triggered by reporting or referral',
+          'Key reporting: SMRs within 3 business days of forming a suspicion (24 hours if related to terrorism financing); TTRs within 10 business days; IFTIs within 10 business days',
+          'Workforce controls: AML/CTF training records per relevant employee role; designated AML/CTF Compliance Officer registered with AUSTRAC',
+          'Common gaps for new Tranche 2 entities: customer due diligence procedures, ongoing customer due diligence (transaction monitoring), risk-rated customer onboarding',
+        ],
+      },
+      {
+        heading: 'Where they overlap (and where they do not)',
+        paragraphs: [
+          'For an organisation accountable to multiple frameworks, the operational overlap is larger than the regulatory language implies. Five domains repeat across nearly every framework above:',
+        ],
+        bullets: [
+          'Workforce credentialing — AHPRA registration (NSQHS, healthcare), NDIS Worker Screening (NDIS), Working with Children Check (NQF), HRWL (WHS), RG 146 (AFS), AML/CTF training records (AUSTRAC). One credential graph satisfies five obligations.',
+          'Incident reporting — NSQHS sentinel events, NDIS SIRS, NQF s174 incidents, WHS notifiable incidents, AFS Reportable Situations, AUSTRAC SMRs. The intake form differs; the underlying event capture is the same.',
+          'Training and competence — every framework requires ongoing training records with audit trail. The hour minimums and content differ; the evidence shape is identical.',
+          'Document control — policies, procedures, SWMS, AML/CTF Program documents, IT security policies. Every framework expects version-controlled, acknowledged, currently-valid documents.',
+          'Independent assessment — NDIS accreditation auditors, NSQHS accrediting agencies, ACECQA Assessment and Rating, WHS regulator audits, ASIC surveillance, AML/CTF independent reviews. Each is structured differently, but each consumes the same underlying evidence library.',
+        ],
+      },
+      {
+        heading: 'What this means for the compliance program',
+        paragraphs: [
+          'If your organisation is bound by more than one of these frameworks, the highest-leverage investment is not a per-framework tool — it is an underlying evidence library where each piece of work satisfies the relevant clauses across every framework it touches. A signed policy, a completed training record, an incident closure note, a quarterly access review: each is referenced by one or more frameworks, but the artifact itself is stored once.',
+          'That is the operating-system view of compliance: the mapping lives once, the evidence is captured once, and each framework view is a projection over the same graph. Your team stops translating between vocabularies and starts running the work.',
+        ],
+        links: [
+          {
+            label: 'See how the framework mapping graph works',
+            href: '/frameworks',
+            description:
+              'Cross-framework control mapping and evidence inheritance in FormaOS.',
+          },
+          {
+            label: 'Industries: how multi-framework organisations are configured',
+            href: '/industries',
+            description:
+              'Pre-built configurations for NDIS, healthcare, financial services, childcare, and construction operators.',
+          },
+          {
+            label: 'Compare FormaOS to GRC alternatives',
+            href: '/compare',
+            description:
+              'How the compliance OS approach differs from per-framework GRC tools.',
+          },
+        ],
+      },
+      {
+        heading: 'Source notes',
+        paragraphs: [
+          'This piece references the source instruments named in each section. Where regulatory thresholds are stated (e.g. SIRS Priority within 24 hours, AFS Reportable Situations within 30 days, AUSTRAC SMRs within 3 business days), the figures are current as of May 2026 and reflect publicly published rules. Where the Tranche 2 AML/CTF expansion is mentioned, the commencement date (31 March 2026) is the date as announced by the Government in the AML/CTF Amendment Act 2024 — readers should verify against the latest AUSTRAC commencement notices for their entity type.',
+          'For any operational decision, read the source instrument and your regulator\'s current guidance — not this article.',
+        ],
+      },
+    ],
+  },
 ];
 
 export const featuredPost =

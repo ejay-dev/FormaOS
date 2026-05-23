@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import HealthcareComplianceContent from './HealthcareComplianceContent';
+import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
 
 const healthcareServiceSchema = serviceSchema({
@@ -114,6 +115,17 @@ export default function HealthcareCompliancePage() {
             healthcareFaqSchema,
           ]),
         }}
+      />
+      <KeyFacts
+        summary="FormaOS is a compliance operating system for Australian healthcare providers — private hospitals, allied health, and clinics — mapped to AHPRA, NSQHS Standards, and clinical governance evidence requirements."
+        facts={[
+          { label: 'Frameworks covered', value: 'NSQHS Standards (all 8), AHPRA registration tracking, clinical governance evidence' },
+          { label: 'Practitioner records', value: 'AHPRA registration status and expiry tracked per clinician with CPD hour accrual' },
+          { label: 'Adverse events', value: 'Incident reporting, root-cause workflows, and audit-trail evidence for NSQHS' },
+          { label: 'Accreditation', value: 'Continuous evidence for ACSQHC accreditation cycles' },
+          { label: 'Hosting', value: 'AU-hosted (Sydney). Patient data never leaves Australia.' },
+          { label: 'Built for', value: 'Private hospitals, day surgeries, allied health practices, aged-care providers' },
+        ]}
       />
       <HealthcareComplianceContent />
     </>

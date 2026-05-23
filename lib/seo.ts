@@ -179,8 +179,45 @@ export function articleSchema(opts: {
    * signal to crawlers.
    */
   dateModified?: string;
+  /**
+   * Author name. Plain string keeps backwards compatibility with
+   * existing callsites that pass "FormaOS Team" (collapsed to the
+   * Organization). For E-E-A-T signal pass a `personAuthor` instead —
+   * AEO sprint 2026-05-23 added named author bios so AI engines have a
+   * Person to attribute citations to.
+   */
   author: string;
+  /**
+   * Named human author with bio URL. When set, emits a Person author
+   * with sameAs links instead of the Organization fallback. Drives
+   * E-E-A-T (Experience, Expertise, Authoritativeness, Trust) signals
+   * that both Google's helpful-content system and AI answer engines
+   * use as a citation strength weight.
+   */
+  personAuthor?: {
+    name: string;
+    slug: string;
+    jobTitle?: string;
+    sameAs?: string[];
+  };
 }) {
+  const author = opts.personAuthor
+    ? {
+        '@type': 'Person',
+        name: opts.personAuthor.name,
+        url: `${siteUrl}/author/${opts.personAuthor.slug}`,
+        ...(opts.personAuthor.jobTitle
+          ? { jobTitle: opts.personAuthor.jobTitle }
+          : {}),
+        ...(opts.personAuthor.sameAs?.length
+          ? { sameAs: opts.personAuthor.sameAs }
+          : {}),
+      }
+    : {
+        '@type': 'Organization',
+        name: opts.author === 'FormaOS Team' ? 'FormaOS' : opts.author,
+      };
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -189,10 +226,7 @@ export function articleSchema(opts: {
     url: opts.url,
     datePublished: opts.datePublished,
     dateModified: opts.dateModified ?? opts.datePublished,
-    author: {
-      '@type': 'Organization',
-      name: opts.author === 'FormaOS Team' ? 'FormaOS' : opts.author,
-    },
+    author,
     publisher: {
       '@type': 'Organization',
       name: 'FormaOS',
@@ -201,6 +235,64 @@ export function articleSchema(opts: {
         url: `${siteUrl}/og-image.png`,
       },
     },
+  };
+}
+
+/**
+ * HowTo schema — Google and AI answer engines treat HowTo as an
+ * authoritative step-by-step format. Use sparingly: only when the page
+ * actually walks the reader through ordered, completable steps with
+ * concrete outcomes (e.g. /security-review's 12-item walkthrough,
+ * /trust/procurement evaluation playbook).
+ */
+export function howToSchema(opts: {
+  name: string;
+  description: string;
+  url: string;
+  steps: { name: string; text: string }[];
+  totalTime?: string; // ISO 8601 duration, e.g. "PT30M"
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    ...(opts.totalTime ? { totalTime: opts.totalTime } : {}),
+    step: opts.steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
+}
+
+/**
+ * Person schema for author profile pages. AEO sprint: surfaces a Person
+ * entity that AI engines can cite by name and link back to via the
+ * author's bio page.
+ */
+export function personSchema(opts: {
+  name: string;
+  slug: string;
+  jobTitle: string;
+  bio: string;
+  sameAs?: string[];
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: opts.name,
+    url: `${siteUrl}/author/${opts.slug}`,
+    jobTitle: opts.jobTitle,
+    description: opts.bio,
+    worksFor: {
+      '@type': 'Organization',
+      name: 'FormaOS',
+      url: siteUrl,
+    },
+    ...(opts.sameAs?.length ? { sameAs: opts.sameAs } : {}),
   };
 }
 
