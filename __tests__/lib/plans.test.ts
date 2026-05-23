@@ -9,6 +9,8 @@
 
 import {
   PLAN_CATALOG,
+  getAllBillingPlans,
+  getBillingPlan,
   isPlanKey,
   resolvePlanKey,
   type PlanKey,
@@ -20,7 +22,9 @@ import {
 // -------------------------------------------------------------------------
 
 describe('PLAN_CATALOG', () => {
-  const expectedPlans: PlanKey[] = ['basic', 'pro', 'enterprise'];
+  // Audit Sprint 6a (2026-05-23): scale was missing from this list while
+  // PLAN_CATALOG.scale already existed — the assertion silently skipped it.
+  const expectedPlans: PlanKey[] = ['basic', 'pro', 'scale', 'enterprise'];
 
   it('contains all expected plan keys', () => {
     for (const plan of expectedPlans) {
@@ -131,6 +135,7 @@ describe('resolvePlanKey', () => {
   it('returns the same key for valid plan keys', () => {
     expect(resolvePlanKey('basic')).toBe('basic');
     expect(resolvePlanKey('pro')).toBe('pro');
+    expect(resolvePlanKey('scale')).toBe('scale');
     expect(resolvePlanKey('enterprise')).toBe('enterprise');
   });
 
@@ -152,6 +157,60 @@ describe('resolvePlanKey', () => {
   it('normalizes case to lowercase', () => {
     expect(resolvePlanKey('Basic')).toBe('basic');
     expect(resolvePlanKey('PRO')).toBe('pro');
+    expect(resolvePlanKey('Scale')).toBe('scale');
     expect(resolvePlanKey('Enterprise')).toBe('enterprise');
+  });
+});
+
+// -------------------------------------------------------------------------
+// getBillingPlan / getAllBillingPlans (Sprint 4b helpers, exercised by
+// app/api/billing/route.ts). Sprint 6a adds explicit scale coverage so
+// the tier-provisioning regression bites here first if it ever drifts.
+// -------------------------------------------------------------------------
+
+describe('getBillingPlan', () => {
+  it('returns Foundation shape for basic', () => {
+    const plan = getBillingPlan('basic');
+    expect(plan.id).toBe('basic');
+    expect(plan.name).toBe('Foundation');
+    expect(plan.price).toBe(297);
+    expect(plan.interval).toBe('month');
+    expect(plan.limits.members).toBe(10);
+  });
+
+  it('returns Scale shape with $1,800 monthly', () => {
+    const plan = getBillingPlan('scale');
+    expect(plan.id).toBe('scale');
+    expect(plan.name).toBe('Scale');
+    expect(plan.price).toBe(1800);
+    expect(plan.limits.members).toBe(75);
+  });
+
+  it('resolves stripePriceId from STRIPE_PRICE_SCALE env when set', () => {
+    const original = process.env.STRIPE_PRICE_SCALE;
+    process.env.STRIPE_PRICE_SCALE = 'price_scale_test_123';
+    try {
+      expect(getBillingPlan('scale').stripePriceId).toBe('price_scale_test_123');
+    } finally {
+      if (original === undefined) delete process.env.STRIPE_PRICE_SCALE;
+      else process.env.STRIPE_PRICE_SCALE = original;
+    }
+  });
+
+  it('returns undefined stripePriceId when env not set', () => {
+    const original = process.env.STRIPE_PRICE_SCALE;
+    delete process.env.STRIPE_PRICE_SCALE;
+    try {
+      expect(getBillingPlan('scale').stripePriceId).toBeUndefined();
+    } finally {
+      if (original !== undefined) process.env.STRIPE_PRICE_SCALE = original;
+    }
+  });
+});
+
+describe('getAllBillingPlans', () => {
+  it('returns every PlanKey including scale', () => {
+    const ids = getAllBillingPlans().map((p) => p.id).sort();
+    expect(ids).toEqual(['basic', 'enterprise', 'pro', 'scale']);
   });
 });
