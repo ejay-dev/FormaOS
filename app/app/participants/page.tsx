@@ -16,6 +16,7 @@ import {
   RecordCard,
   RecordList,
 } from '@/components/mobile/record-card';
+import { logAuditEvent } from '@/app/app/actions/audit-events';
 
 const PARTICIPANTS_PAGE_SIZE = 50;
 
@@ -118,6 +119,29 @@ export default async function ParticipantsPage({
   } catch (err) {
     console.error('[ParticipantsPage] Error in query:', err);
   }
+
+  // v4-027: HIPAA §164.312(b) read-event audit. The list selects DOB,
+  // diagnosis, NDIS number, contact — every render is a PHI read.
+  // Fire-and-forget so a slow audit insert never delays the page.
+  // Records the count + filters, not the actual PHI rows.
+  void logAuditEvent({
+    organizationId: orgId,
+    actorUserId: systemState.user.id,
+    actorRole: systemState.role ?? null,
+    entityType: 'patient',
+    entityId: null,
+    actionType: 'PATIENT_LIST_VIEWED',
+    afterState: {
+      view: 'list',
+      participants_loaded: participants?.length ?? 0,
+      filters: {
+        q: q || null,
+        status: statusFilter || null,
+        risk: riskFilter || null,
+      },
+    },
+    reason: 'phi_read',
+  }).catch(() => {});
 
   type Participant = NonNullable<typeof participants>[number];
   const stats = {

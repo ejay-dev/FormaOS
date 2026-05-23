@@ -14,7 +14,20 @@ interface GenerateAITextOptions {
 
 const DEFAULT_MODEL = process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini';
 
+/**
+ * v4-027: AI kill switch. Operators can disable all AI traffic
+ * platform-wide by setting AI_KILL_SWITCH=true without touching
+ * OPENAI_API_KEY (which is needed for warm restart and may be
+ * pulled from a secret manager that's not fast to rotate). When
+ * the switch is on, every isAIConfigured / isAISDKConfigured
+ * caller returns false and downstream code short-circuits.
+ */
+export function isAIKillSwitchEnabled(): boolean {
+  return process.env.AI_KILL_SWITCH === 'true';
+}
+
 export function isAISDKConfigured(): boolean {
+  if (isAIKillSwitchEnabled()) return false;
   return Boolean(process.env.OPENAI_API_KEY);
 }
 

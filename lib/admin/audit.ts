@@ -21,8 +21,16 @@ export async function logAdminAction(entry: AdminAuditEntry) {
     environment,
   };
 
-  await Promise.all([
-    admin.from("admin_audit_log").insert({
+  // v4-027: previously Promise.all — if the first insert rejected,
+  // the second's outcome was abandoned (Node treats further rejections
+  // as silent if the surrounding promise has already rejected). The
+  // admin audit trail then lost the row in the other table without
+  // surfacing the failure. Use Promise.allSettled so both writes run
+  // to completion, log every failure, and bubble up an error only if
+  // BOTH writes failed (so the caller can react but partial success
+  // still records what it can).
+  const results = await Promise.allSettled([
+    admin.from('admin_audit_log').insert({
       actor_user_id: entry.actorUserId,
       action: entry.action,
       target_type: entry.targetType,
@@ -38,4 +46,26 @@ export async function logAdminAction(entry: AdminAuditEntry) {
       metadata,
     }),
   ]);
+
+  const failures: string[] = [];
+  results.forEach((result, idx) => {
+    const tableName = idx === 0 ? 'admin_audit_log' : 'audit_log';
+    if (result.status === 'rejected') {
+      failures.push(`${tableName}: ${result.reason}`);
+    } else if ((result.value as { error?: { message?: string } })?.error) {
+      failures.push(
+        `${tableName}: ${(result.value as { error: { message?: string } }).error.message ?? 'insert failed'}`,
+      );
+    }
+  });
+
+  if (failures.length === results.length) {
+    // Both writes failed — surface to the caller so the admin action
+    // can be retried / surfaced in the UI. Partial success (1 of 2)
+    // is logged but doesn't throw.
+    throw new Error(`logAdminAction: all writes failed — ${failures.join('; ')}`);
+  }
+  if (failures.length > 0) {
+    console.warn('[admin.audit] partial write failure:', failures.join('; '));
+  }
 }

@@ -326,10 +326,18 @@ export async function validateApiKey(
     };
   }
 
+  // v4-027: previously wrote api_keys.last_used on every single
+  // validation — a chatty key (cron + dashboard polling) hit the
+  // table dozens of times per minute, dominating Supabase write IO.
+  // Throttle to once per minute per key: only update when the
+  // current last_used is older than 60 seconds. Concurrency-safe
+  // via the WHERE clause — no read-modify-write race.
+  const minutelyThreshold = new Date(Date.now() - 60 * 1000).toISOString();
   await admin
     .from('api_keys')
     .update({ last_used: new Date().toISOString() })
-    .eq('id', apiKey.id);
+    .eq('id', apiKey.id)
+    .or(`last_used.is.null,last_used.lt.${minutelyThreshold}`);
 
   return {
     ok: true,
