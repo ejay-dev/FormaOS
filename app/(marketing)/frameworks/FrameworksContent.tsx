@@ -24,31 +24,43 @@ import {
 const frameworkPacks = [
   {
     name: 'ISO 27001',
-    notes: 'Control packs aligned for security management systems.',
+    notes:
+      'Annex A controls mapped to FormaOS work items, Statement of Applicability worksheet, and risk register linked back to evidence.',
   },
   {
     name: 'SOC 2',
-    notes: 'Trust Services Criteria mapped into executable work.',
+    notes:
+      'Trust Services Criteria (Security, Availability, Confidentiality, Processing Integrity, Privacy) mapped into executable, owner-assigned work.',
   },
   {
     name: 'GDPR',
-    notes: 'Privacy obligations mapped to controls and evidence.',
+    notes:
+      'Privacy obligations including Article 28 processor terms, DPIA workflows, and data subject request handling mapped to controls and evidence.',
   },
   {
     name: 'HIPAA',
-    notes: 'Healthcare safeguards mapped for defensible operations.',
+    notes:
+      'Administrative, physical, and technical safeguards mapped into defensible operations with BAA-aware sub-processor tracking.',
   },
   {
     name: 'PCI DSS',
-    notes: 'Payment security requirements mapped to control tasks.',
+    notes:
+      'Payment security requirements (v4.0) mapped to control tasks, network segmentation evidence, and quarterly attestation workflows.',
   },
   {
     name: 'NIST',
-    notes: 'Risk and control model alignment for security programs.',
+    notes:
+      'CSF 2.0 functions mapped to control coverage; 800-53 baseline crosswalk for federal-adjacent buyers.',
   },
   {
     name: 'CIS',
-    notes: 'Baseline hardening and operational control coverage.',
+    notes:
+      'Implementation Group 1/2/3 baseline hardening mapped to operational control coverage and evidence cadence.',
+  },
+  {
+    name: 'NDIS Practice Standards',
+    notes:
+      'All eight Practice Standards modules, SIRS notifications, and unannounced audit prep workflows for registered NDIS providers.',
   },
 ] as const;
 
@@ -119,6 +131,100 @@ export default function FrameworksContent() {
           </SectionChoreography>
         </section>
       </DeferredSection>
+
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+
+      {/* Cross-mapping explainer — SSR'd, no DeferredSection gating */}
+      <section
+        aria-labelledby="frameworks-cross-mapping"
+        className="relative mx-auto max-w-5xl px-4 pb-14 sm:px-6 lg:px-8"
+      >
+        <h2
+          id="frameworks-cross-mapping"
+          className="text-3xl sm:text-4xl font-bold text-white"
+        >
+          One control surface, many frameworks
+        </h2>
+        <p className="mt-4 text-slate-300 leading-relaxed">
+          Most regulated organisations are accountable to more than one
+          framework. A healthcare provider runs NSQHS plus AHPRA registration
+          plus, in many cases, ISO 27001 for their tech stack. A fintech
+          carries an AFS licence and an APRA prudential standard and a SOC 2
+          for their banking partners. Each framework asks for the same kinds
+          of evidence — risk decisions, control execution, incident records,
+          training attestations — described in different language.
+        </p>
+        <p className="mt-4 text-slate-300 leading-relaxed">
+          FormaOS maps frameworks once. A single piece of evidence — a signed
+          policy acknowledgement, an access review export, a vendor
+          assessment — satisfies the relevant clauses across every framework
+          your organisation is bound to. When a regulator updates a standard,
+          the mapping updates centrally and the work items in flight inherit
+          the change.
+        </p>
+
+        <h3 className="mt-10 text-xl font-semibold text-white">
+          How the mapping is built
+        </h3>
+        <ul className="mt-4 space-y-3 text-slate-300 leading-relaxed">
+          <li className="pl-5 relative">
+            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <strong className="text-white">Obligation library.</strong>{' '}
+            Each framework is decomposed into atomic obligations — not the
+            top-level clause numbers, the specific operational requirements
+            underneath them. ISO 27001 alone produces around 120 atomic
+            obligations once Annex A is unpacked.
+          </li>
+          <li className="pl-5 relative">
+            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <strong className="text-white">Control catalogue.</strong>{' '}
+            Each obligation maps to one or more FormaOS controls. Controls
+            are tangible: a workflow, an access review, a policy approval
+            cycle, an evidence requirement.
+          </li>
+          <li className="pl-5 relative">
+            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <strong className="text-white">Evidence inheritance.</strong>{' '}
+            Evidence collected against a control automatically satisfies
+            every framework obligation that maps to it. A single quarterly
+            access review can land in your SOC 2, ISO 27001, and HIPAA
+            evidence bundles without manual duplication.
+          </li>
+          <li className="pl-5 relative">
+            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <strong className="text-white">Coverage telemetry.</strong>{' '}
+            Each framework displays a live readiness score derived from
+            evidence freshness, control owner activity, and outstanding
+            findings. Buyers can see the gaps before the auditor does.
+          </li>
+        </ul>
+
+        <h3 className="mt-10 text-xl font-semibold text-white">
+          What &quot;mapped&quot; means here
+        </h3>
+        <p className="mt-4 text-slate-300 leading-relaxed">
+          FormaOS does not certify your organisation. Certification is
+          performed by accredited assessors against a documented control
+          environment. What FormaOS does is make the control environment
+          continuously defensible: every control has a named owner, every
+          obligation has a path to evidence, every audit window opens with a
+          ready-to-export bundle rather than a six-week scramble. Most
+          customers see audit prep collapse from weeks to days within the
+          first cycle on platform.
+        </p>
+        <p className="mt-4 text-slate-300 leading-relaxed">
+          If you need a specific framework that is not listed in the pack
+          set above — APRA CPS 234, the AESCSF, the Essential Eight at
+          Maturity Level 2 — the obligation library is extensible.{' '}
+          <Link
+            href="/contact?type=compliance-plan"
+            className="text-cyan-300 underline-offset-4 hover:underline"
+          >
+            Talk to our team
+          </Link>{' '}
+          about your framework set during the compliance plan walkthrough.
+        </p>
+      </section>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
