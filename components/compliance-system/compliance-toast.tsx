@@ -1,30 +1,37 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, useRef } from "react";
-import { cn } from "@/lib/utils";
-import { 
-  CheckCircle2, 
-  AlertCircle, 
-  Info, 
-  X,
-  ArrowRight,
-  Zap
-} from "lucide-react";
+// Audit Sprint 7b (2026-05-24): hand-rolled portal + Context + custom
+// renderer replaced with a thin sonner shim. The public API
+// (`useComplianceToast()`, `ComplianceToastProvider`, `ComplianceToastData`)
+// is unchanged so callers don't change. Internally the Provider is now
+// a passthrough — sonner's <Toaster /> is mounted at the app root
+// (Sprint 4c, components/ui/toaster.tsx).
+//
+// What we lose: rich node-color badges (cyan/teal/violet per node type)
+// + impact-delta indicator + slide-in animation. These were off-brand
+// per the stored enterprise-aesthetic preference. The collapsed
+// title + description format is more consistent with the rest of the app.
+//
+// What we keep: the typed surface for callers (useComplianceAction
+// builds these on every node-graph event), the priority levels, and
+// the dismissToast escape hatch.
 
-/**
- * =========================================================
- * COMPLIANCE TOAST SYSTEM
- * =========================================================
- * Toast notifications that show compliance graph changes.
- * Displays: what node changed, what wires updated, compliance impact.
- */
+import React, { createContext, useCallback, useContext } from "react";
+import { toast as sonnerToast } from "@/components/ui/toaster";
 
 export interface ComplianceToastData {
   id?: string;
   type: "success" | "error" | "info" | "warning";
   title: string;
   message?: string;
-  nodeType?: "policy" | "control" | "evidence" | "audit" | "risk" | "task" | "entity";
+  nodeType?:
+    | "policy"
+    | "control"
+    | "evidence"
+    | "audit"
+    | "risk"
+    | "task"
+    | "entity";
   nodeAction?: "created" | "updated" | "linked" | "verified" | "deleted";
   wireFrom?: string;
   wireTo?: string;
@@ -43,195 +50,55 @@ const ToastContext = createContext<ToastContextType | null>(null);
 export function useComplianceToast() {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error("useComplianceToast must be used within ComplianceToastProvider");
+    throw new Error(
+      "useComplianceToast must be used within ComplianceToastProvider",
+    );
   }
   return context;
 }
 
-const NODE_COLORS: Record<string, string> = {
-  policy: "text-cyan-400",
-  control: "text-teal-400",
-  evidence: "text-violet-400",
-  audit: "text-amber-400",
-  risk: "text-rose-400",
-  task: "text-emerald-400",
-};
-
-const TYPE_CONFIG = {
-  success: {
-    icon: CheckCircle2,
-    bgClass: "bg-emerald-500/10 border-emerald-400/40",
-    iconClass: "text-emerald-400",
-  },
-  error: {
-    icon: AlertCircle,
-    bgClass: "bg-rose-500/10 border-rose-400/40",
-    iconClass: "text-rose-400",
-  },
-  info: {
-    icon: Info,
-    bgClass: "bg-sky-500/10 border-sky-400/40",
-    iconClass: "text-sky-400",
-  },
-  warning: {
-    icon: AlertCircle,
-    bgClass: "bg-amber-500/10 border-amber-400/40",
-    iconClass: "text-amber-400",
-  },
-};
-
-function ComplianceToast({ 
-  data, 
-  onDismiss 
-}: { 
-  data: ComplianceToastData; 
-  onDismiss: () => void;
-}) {
-  const config = TYPE_CONFIG[data.type];
-  const Icon = config.icon;
-
-  return (
-    <div
-      className={cn(
-        "w-80 rounded-xl border backdrop-blur-md shadow-2xl overflow-hidden",
-        "animate-in slide-in-from-right-full duration-300",
-        config.bgClass
-      )}
-    >
-      <div className="flex items-start gap-3 p-4">
-        <div className={cn(
-          "flex items-center justify-center h-8 w-8 rounded-lg shrink-0",
-          config.bgClass
-        )}>
-          <Icon className={cn("h-4 w-4", config.iconClass)} />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-semibold text-foreground">
-            {data.title}
-          </h4>
-          
-          {data.message && (
-            <p className="text-xs text-muted-foreground mt-0.5">{data.message}</p>
-          )}
-
-          {/* Node change indicator */}
-          {data.nodeType && data.nodeAction && (
-            <div className="flex items-center gap-1.5 mt-2 text-xs">
-              <span className={cn("font-semibold capitalize", NODE_COLORS[data.nodeType])}>
-                {data.nodeType}
-              </span>
-              <span className="text-muted-foreground/60">•</span>
-              <span className="text-muted-foreground">{data.nodeAction}</span>
-            </div>
-          )}
-
-          {/* Wire update indicator */}
-          {data.wireFrom && data.wireTo && (
-            <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
-              <span>{data.wireFrom}</span>
-              <ArrowRight className="h-3 w-3 text-cyan-400" />
-              <span>{data.wireTo}</span>
-            </div>
-          )}
-
-          {/* Impact indicator */}
-          {data.impactArea && (
-            <div className="flex items-center gap-1.5 mt-2">
-              <span className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold",
-                data.impactDelta && data.impactDelta > 0 
-                  ? "bg-emerald-500/20 text-emerald-300"
-                  : "bg-amber-500/20 text-amber-300"
-              )}>
-                <Zap className="h-2.5 w-2.5" />
-                {data.impactArea}
-                {data.impactDelta && ` ${data.impactDelta > 0 ? '+' : ''}${data.impactDelta}%`}
-              </span>
-            </div>
-          )}
-        </div>
-
-        <button
-          onClick={onDismiss}
-          className="p-1 rounded hover:bg-glass-strong transition-colors shrink-0"
-        >
-          <X className="h-4 w-4 text-muted-foreground" />
-        </button>
-      </div>
-
-      {/* Progress bar for auto-dismiss; suppressed when duration === 0
-          (sticky toast — the manual X is the only dismissal). */}
-      {data.duration !== 0 && (
-        <div className="h-1 bg-surface-1">
-          <div
-            className={cn(
-              "h-full bg-gradient-to-r from-cyan-500 to-blue-500",
-              "animate-[shrink_5s_linear_forwards]"
-            )}
-            style={{
-              animationDuration: `${(data.duration ?? 5000)}ms`
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
+function buildDescription(data: ComplianceToastData): string | undefined {
+  const parts: string[] = [];
+  if (data.message) parts.push(data.message);
+  if (data.nodeType && data.nodeAction) {
+    parts.push(`${data.nodeType} ${data.nodeAction}`);
+  }
+  if (data.impactArea && typeof data.impactDelta === "number") {
+    const sign = data.impactDelta > 0 ? "+" : "";
+    parts.push(`${data.impactArea}: ${sign}${data.impactDelta}`);
+  }
+  return parts.length > 0 ? parts.join(" · ") : undefined;
 }
 
-export function ComplianceToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = useState<ComplianceToastData[]>([]);
-  const idCounter = useRef(0);
-
+export function ComplianceToastProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const showToast = useCallback((data: ComplianceToastData) => {
-    const id = data.id || `toast-${++idCounter.current}`;
-    // duration === 0 is the explicit "no auto-dismiss" opt-out for
-    // error states the user must read and dismiss themselves. Anything
-    // else (including undefined) keeps the prior 5s default. The
-    // manual-close button remains the dismissal path either way.
-    const duration = data.duration ?? 5000;
-
-    setToasts(prev => [...prev, { ...data, id }]);
-
-    if (duration > 0) {
-      setTimeout(() => {
-        setToasts(prev => prev.filter(t => t.id !== id));
-      }, duration);
-    }
+    const description = buildDescription(data);
+    const variant =
+      data.type === "error"
+        ? sonnerToast.error
+        : data.type === "warning"
+          ? sonnerToast.warning
+          : data.type === "success"
+            ? sonnerToast.success
+            : sonnerToast.info;
+    variant(data.title, {
+      id: data.id,
+      description,
+      duration: data.duration,
+    });
   }, []);
 
   const dismissToast = useCallback((id: string) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
+    sonnerToast.dismiss(id);
   }, []);
 
   return (
     <ToastContext.Provider value={{ showToast, dismissToast }}>
       {children}
-
-      {/* Toast container */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
-        {toasts.map(toast => (
-          <ComplianceToast
-            key={toast.id}
-            data={toast}
-            onDismiss={() => dismissToast(toast.id!)}
-          />
-        ))}
-      </div>
     </ToastContext.Provider>
   );
 }
-
-// Add keyframe for shrink animation
-if (typeof document !== "undefined") {
-  const style = document.createElement("style");
-  style.textContent = `
-    @keyframes shrink {
-      from { width: 100%; }
-      to { width: 0%; }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-export { ComplianceToast };
