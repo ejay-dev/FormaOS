@@ -129,7 +129,14 @@ async function calculateStaffCompliance(
 
   const trend: 'up' | 'down' | 'stable' =
     (historicalLogs?.length || 0) > 5 ? 'up' : percentage >= 80 ? 'stable' : 'down';
-  const trendPercentage = trend === 'up' ? 5 : trend === 'down' ? -3 : 0;
+  // v4-021: previously fabricated a literal 5 / -3 / 0 trend
+  // percentage and rendered it to operators as a real movement.
+  // Without a scorecard-snapshot history table we cannot compute
+  // a true delta — return 0 so the UI displays the trend arrow
+  // (direction) without an invented magnitude. Add real
+  // trendPercentage once a periodic snapshot job persists prior
+  // compliance % into care_scorecard_snapshots (TODO).
+  const trendPercentage = 0;
 
   return {
     percentage,
@@ -138,7 +145,7 @@ async function calculateStaffCompliance(
     nonCompliant,
     pending,
     trend,
-    trendPercentage: Math.abs(trendPercentage),
+    trendPercentage,
   };
 }
 

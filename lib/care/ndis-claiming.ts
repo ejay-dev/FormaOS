@@ -89,7 +89,18 @@ export async function generateLineItems(
     .limit(1)
     .single();
 
-  const unitPrice = priceGuide?.price_national ?? 60.0; // fallback
+  // v4-021: previously fell back to a hardcoded $60/hr when the
+  // price guide was missing for the support item. Silently
+  // underbilling/overbilling at $60 is a compliance + revenue bug
+  // — refuse to generate the line item and surface the gap so the
+  // operator updates org_ndis_price_guide before claiming.
+  if (priceGuide?.price_national == null) {
+    throw new Error(
+      `NDIS line item refused: no price_guide row for support item ${item.number} (${item.name}). ` +
+        `Add the rate under org_ndis_price_guide before claiming for this visit.`,
+    );
+  }
+  const unitPrice = Number(priceGuide.price_national);
   const quantity = Math.round(durationHours * 4) / 4; // round to 15min increments
   const totalAmount = unitPrice * quantity;
 
@@ -258,6 +269,28 @@ export async function exportClaimFile(
       toIsoDate(item.created_at) ??
       '';
 
+    // v4-021: previously wrote item.quantity into BOTH the Quantity
+    // and Hours columns — the NDIA expects Hours to be the actual
+    // service duration (start→end in hours) and Quantity to be
+    // units of the support item. For time-based supports the two
+    // happen to coincide; for per-trip or per-item supports they
+    // diverge and the bulk-upload is rejected/mispaid. Compute
+    // Hours from the visit window when available; fall back to
+    // quantity for time-based items where the values match.
+    const startMs =
+      Date.parse(visit?.actual_start ?? '') ||
+      Date.parse(visit?.scheduled_start ?? '') ||
+      NaN;
+    const endMs =
+      Date.parse(visit?.actual_end ?? '') ||
+      Date.parse(visit?.scheduled_end ?? '') ||
+      NaN;
+    const durationHours =
+      Number.isFinite(startMs) && Number.isFinite(endMs) && endMs > startMs
+        ? Math.round(((endMs - startMs) / (1000 * 60 * 60)) * 100) / 100
+        : null;
+    const hoursColumn = durationHours ?? item.quantity;
+
     return [
       '', // RegistrationNumber - org fills in
       patient?.ndis_number ?? '',
@@ -266,7 +299,7 @@ export async function exportClaimFile(
       item.support_item_number,
       item.id.slice(0, 8),
       item.quantity,
-      item.quantity,
+      hoursColumn,
       item.unit_price,
       'P1', // GST exempt
       '',

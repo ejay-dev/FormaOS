@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getCrossMapCoverage } from '@/lib/compliance/cross-map-engine';
 
 export async function getUnifiedComplianceScore(
   orgId: string,
@@ -45,11 +46,23 @@ export async function getFrameworkScores(orgId: string) {
 }
 
 export async function getScoreImpact(orgId: string) {
-  const scores = await getFrameworkScores(orgId);
-  return scores.map((s) => ({
-    framework: s.framework,
-    isolatedScore: s.score,
-    crossMappedScore: Math.min(100, s.score + 5),
-    delta: Math.min(5, 100 - s.score),
-  }));
+  // v4-021: previously `crossMappedScore = isolated + 5` and
+  // `delta = min(5, 100 - score)` — invented numbers shown to
+  // customers as their cross-mapped posture. Now reuses the real
+  // cross-map computation in getCrossMapCoverage (which walks
+  // control_groups for transitively-satisfied controls), and
+  // derives delta as the actual difference.
+  const [scores, coverage] = await Promise.all([
+    getFrameworkScores(orgId),
+    getCrossMapCoverage(orgId),
+  ]);
+  return scores.map((s: { framework: string; score: number }) => {
+    const crossMappedScore = coverage[s.framework]?.crossMapped ?? s.score;
+    return {
+      framework: s.framework,
+      isolatedScore: s.score,
+      crossMappedScore,
+      delta: Math.max(0, crossMappedScore - s.score),
+    };
+  });
 }

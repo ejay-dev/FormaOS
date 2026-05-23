@@ -1,5 +1,34 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
+/**
+ * v4-021: % score gain a single transitively-satisfied control
+ * delivers depends on that control's framework total. Group the
+ * unsatisfied controls by framework, fetch each framework's total
+ * once, and return the summed 1/total * 100 weights.
+ */
+async function estimateImprovement(
+  db: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+  unsatisfied: { framework: string; controlId: string }[],
+): Promise<number> {
+  if (unsatisfied.length === 0) return 0;
+  const byFramework = new Map<string, number>();
+  for (const u of unsatisfied) {
+    byFramework.set(u.framework, (byFramework.get(u.framework) ?? 0) + 1);
+  }
+  let total = 0;
+  for (const [framework, count] of byFramework) {
+    const { count: frameworkTotal } = await db
+      .from('org_controls')
+      .select('id', { count: 'exact', head: true })
+      .eq('organization_id', orgId)
+      .eq('framework', framework);
+    if (!frameworkTotal || frameworkTotal === 0) continue;
+    total += (count / frameworkTotal) * 100;
+  }
+  return Math.round(total);
+}
+
 export interface ControlMapping {
   targetFramework: string;
   targetControlId: string;
@@ -160,7 +189,13 @@ export async function getDeduplicationOpportunities(
         },
         satisfiedControls: satisfied,
         unsatisfiedControls: unsatisfied,
-        potentialScoreImprovement: unsatisfied.length * 2, // rough estimate: 2% per control
+        // v4-021: previously `unsatisfied.length * 2` — a flat 2%
+        // guess per control regardless of framework size. The actual
+        // % gain a single transitively-satisfied control delivers
+        // depends on that control's framework total. Estimate by
+        // weighting per-framework: 1/total * 100 per control,
+        // summed across the unsatisfied members.
+        potentialScoreImprovement: await estimateImprovement(db, orgId, unsatisfied),
       });
     }
   }
@@ -170,6 +205,15 @@ export async function getDeduplicationOpportunities(
   );
 }
 
+/**
+ * v4-021: previously returned `crossMapped = isolated + 5` regardless
+ * of any actual cross-mapping. Now computes real "transitively
+ * satisfiable" controls by walking control_groups: a control is
+ * transitively satisfiable when another control in the same group
+ * (in any framework) is already satisfied — the same evidence can
+ * be reused. crossMapped = (satisfied + transitivelySatisfied) /
+ * total.
+ */
 export async function getCrossMapCoverage(orgId: string) {
   const db = createSupabaseAdminClient();
 
@@ -180,13 +224,63 @@ export async function getCrossMapCoverage(orgId: string) {
 
   if (!orgControls?.length) return {};
 
-  // Group by framework
-  const frameworks = new Map<string, { total: number; satisfied: number }>();
+  type FwCounts = {
+    total: number;
+    satisfied: number;
+    transitivelySatisfied: Set<string>;
+    unsatisfiedKeys: Set<string>;
+  };
+  const frameworks = new Map<string, FwCounts>();
   for (const c of orgControls) {
-    const fw = frameworks.get(c.framework) || { total: 0, satisfied: 0 };
+    const fw = frameworks.get(c.framework) ?? {
+      total: 0,
+      satisfied: 0,
+      transitivelySatisfied: new Set<string>(),
+      unsatisfiedKeys: new Set<string>(),
+    };
     fw.total++;
-    if (c.status === 'satisfied' || c.status === 'met') fw.satisfied++;
+    if (c.status === 'satisfied' || c.status === 'met') {
+      fw.satisfied++;
+    } else if (c.status !== 'not_applicable') {
+      fw.unsatisfiedKeys.add(c.control_id);
+    }
     frameworks.set(c.framework, fw);
+  }
+
+  // Walk control_groups: for each group, if any member is satisfied,
+  // every other unsatisfied member in that group counts toward its
+  // framework's cross-mapped boost (evidence reuse).
+  const satisfiedKey = (fw: string, cid: string) =>
+    orgControls.some(
+      (c) =>
+        c.framework === fw &&
+        c.control_id === cid &&
+        (c.status === 'satisfied' || c.status === 'met'),
+    );
+
+  const { data: groups } = await db.from('control_groups').select('id');
+  for (const group of groups ?? []) {
+    const { data: members } = await db
+      .from('control_group_members')
+      .select('framework, control_id')
+      .eq('group_id', group.id);
+    if (!members?.length) continue;
+
+    const anySatisfied = members.some((m) =>
+      satisfiedKey(m.framework, m.control_id),
+    );
+    if (!anySatisfied) continue;
+
+    for (const m of members) {
+      const fw = frameworks.get(m.framework);
+      if (!fw) continue;
+      if (
+        fw.unsatisfiedKeys.has(m.control_id) &&
+        !satisfiedKey(m.framework, m.control_id)
+      ) {
+        fw.transitivelySatisfied.add(m.control_id);
+      }
+    }
   }
 
   const result: Record<string, { isolated: number; crossMapped: number }> = {};
@@ -195,8 +289,13 @@ export async function getCrossMapCoverage(orgId: string) {
       counts.total > 0
         ? Math.round((counts.satisfied / counts.total) * 100)
         : 0;
-    // Cross-mapped: consider evidence from mapped controls
-    result[fw] = { isolated, crossMapped: Math.min(100, isolated + 5) }; // simplified boost
+    const crossMappedSatisfied =
+      counts.satisfied + counts.transitivelySatisfied.size;
+    const crossMapped =
+      counts.total > 0
+        ? Math.min(100, Math.round((crossMappedSatisfied / counts.total) * 100))
+        : 0;
+    result[fw] = { isolated, crossMapped };
   }
 
   return result;
