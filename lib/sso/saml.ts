@@ -255,6 +255,24 @@ export async function validateSamlResponse(args: {
     throw new Error('Missing SAML profile');
   }
 
+  // v4-023: defense-in-depth IdP allowlist. node-saml verifies the
+  // signature against the configured certificate, but if an org
+  // misconfigures multiple IdPs sharing infrastructure (or if the
+  // cert is rotated without updating idpEntityId), an assertion
+  // signed by a *different* IdP could still validate. Reject any
+  // response whose Issuer doesn't match the org's pinned
+  // idpEntityId — when one is configured.
+  const expectedIssuer = (args.ssoConfig.idpEntityId ?? '').trim();
+  if (expectedIssuer) {
+    const responseIssuer =
+      (result.profile as { issuer?: string }).issuer?.trim() ?? '';
+    if (!responseIssuer || responseIssuer !== expectedIssuer) {
+      throw new Error(
+        `SAML response Issuer (${responseIssuer || '<missing>'}) does not match the configured IdP entity ID for this org`,
+      );
+    }
+  }
+
   const email = getSamlEmail(result.profile);
   if (!email) {
     throw new Error('Missing SAML email');

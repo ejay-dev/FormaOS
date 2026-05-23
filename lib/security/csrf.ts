@@ -28,11 +28,28 @@ import { NextResponse } from 'next/server';
 function getTrustedOrigins(): Set<string> {
   const origins = new Set<string>();
 
+  // v4-023: VERCEL_URL / VERCEL_BRANCH_URL are populated on EVERY
+  // Vercel deployment — including PR previews and per-branch
+  // builds. Adding them unconditionally to the trusted-origin set
+  // meant a preview deployment's origin was accepted against prod
+  // cookies. Now we only trust the production deployment URL when
+  // we know we're on the production Vercel environment
+  // (VERCEL_ENV === 'production'), and only when no explicit
+  // NEXT_PUBLIC_APP_URL is set.
+  const vercelEnv = process.env.VERCEL_ENV;
+  const isProdVercel = vercelEnv === 'production';
+
   const envVars = [
     process.env.NEXT_PUBLIC_APP_URL,
     process.env.NEXT_PUBLIC_SITE_URL,
-    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
-    process.env.VERCEL_BRANCH_URL
+    isProdVercel && process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : undefined,
+    // Branch URL only trusted on the production environment (e.g.
+    // the canonical `main` deployment); preview branches don't
+    // qualify. VERCEL_BRANCH_URL on a preview points at the PR
+    // build — explicitly untrusted.
+    isProdVercel && process.env.VERCEL_BRANCH_URL
       ? `https://${process.env.VERCEL_BRANCH_URL}`
       : undefined,
     ...(process.env.CSRF_TRUSTED_ORIGINS ?? '')
