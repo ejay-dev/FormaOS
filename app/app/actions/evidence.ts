@@ -14,6 +14,10 @@ import {
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
 import { createCorrelationId } from '@/lib/security/correlation';
+import {
+  assertOrgCanWrite,
+  OrgReadOnlyError,
+} from '@/lib/billing/enforce-grace-period';
 
 const MAX_EVIDENCE_BYTES = 20 * 1024 * 1024;
 const ALLOWED_EVIDENCE_TYPES = new Set([
@@ -151,6 +155,24 @@ export async function uploadEvidence(formData: FormData) {
     }
     if (task.organization_id !== membership.orgId) {
       throw new Error('Organization mismatch.');
+    }
+
+    // Audit 2026-05-23: grace-period read-only gate. Past-due orgs get
+    // 3 days of full access, then writes are blocked until billing
+    // recovers (see lib/billing/enforce-grace-period.ts). Checked here
+    // (before any storage / DB write) so we don't burn upload bandwidth
+    // on a request we're about to reject.
+    try {
+      await assertOrgCanWrite(task.organization_id);
+    } catch (gateError) {
+      if (gateError instanceof OrgReadOnlyError) {
+        return actionError(
+          new Error(
+            `Organisation is in read-only mode (${gateError.daysOverdue} day(s) past grace period). Update billing to resume uploads.`,
+          ),
+        );
+      }
+      throw gateError;
     }
 
     // 3. Storage Operation
