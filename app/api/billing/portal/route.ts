@@ -67,11 +67,26 @@ export async function POST(request: Request) {
     const stripe = getStripeClient();
     const customerId = subscription?.stripe_customer_id as string | undefined;
 
-    if (!stripe || !customerId) {
-      return NextResponse.json({
-        url: `${appUrl}/app/billing`,
-        mode: 'simulated',
-      });
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'stripe_not_configured' },
+        { status: 503 },
+      );
+    }
+    if (!customerId) {
+      // v4-025: previously returned `{ url: /app/billing, mode: 'simulated' }`
+      // — the UI would redirect to the same page that surfaced the
+      // "Manage billing" button, producing an infinite loop. Surface
+      // a clear 409 instead so the client renders "complete checkout
+      // first" instead of bouncing.
+      return NextResponse.json(
+        {
+          error: 'no_stripe_customer',
+          message:
+            'This organization has no Stripe customer yet. Complete checkout to start managing billing.',
+        },
+        { status: 409 },
+      );
     }
 
     const session = await stripe.billingPortal.sessions.create({

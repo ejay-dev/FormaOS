@@ -36,7 +36,19 @@ export interface ReconciliationResult {
   duration: number;
 }
 
-const AUTO_FIX_ENABLED = process.env.BILLING_AUTO_FIX !== "false";
+// v4-025: previously defaulted to TRUE (`!== "false"`) so a transient
+// Stripe 5xx during a misconfigured cron run would silently downgrade
+// active customers via shouldAutoCancelMissingStripe. Default to FALSE;
+// operators opt in explicitly per environment by setting
+// BILLING_AUTO_FIX=true.
+const AUTO_FIX_ENABLED = process.env.BILLING_AUTO_FIX === "true";
+
+// v4-025: cap concurrent Stripe `.retrieve` calls so a 500-org tenant
+// load doesn't fan out 500 synchronous requests against Stripe and
+// hit the 100 rps account limit. 5 is conservative — Stripe's rate
+// limiter is well above this — but matches the per-account
+// recommended concurrency for crons.
+const STRIPE_CONCURRENCY = Number(process.env.BILLING_STRIPE_CONCURRENCY ?? 5);
 
 // Status values that can be auto-corrected
 const AUTO_FIX_STATUS_MAP: Record<string, string[]> = {
@@ -103,9 +115,18 @@ export async function runBillingReconciliation(): Promise<ReconciliationResult> 
 
     const subs = subscriptions || [];
 
-    // Process each subscription
-    for (const sub of subs) {
-      if (!sub.stripe_subscription_id) continue;
+    // v4-025: process in concurrency-capped chunks instead of one
+    // sub at a time. STRIPE_CONCURRENCY (default 5) bounds how
+    // many in-flight Stripe `.retrieve` calls we hold — keeps us
+    // well inside Stripe's per-account rate limits while
+    // shortening total nightly-cron runtime on large tenants.
+    const chunks: (typeof subs)[] = [];
+    for (let i = 0; i < subs.length; i += STRIPE_CONCURRENCY) {
+      chunks.push(subs.slice(i, i + STRIPE_CONCURRENCY));
+    }
+
+    const processSub = async (sub: (typeof subs)[number]) => {
+      if (!sub.stripe_subscription_id) return;
 
       try {
         // Fetch from Stripe
@@ -272,6 +293,10 @@ export async function runBillingReconciliation(): Promise<ReconciliationResult> 
           errors.push(`Error checking ${sub.organization_id}: ${err.message}`);
         }
       }
+    };
+
+    for (const chunk of chunks) {
+      await Promise.all(chunk.map(processSub));
     }
 
     billingLogger.info("reconciliation_completed", {

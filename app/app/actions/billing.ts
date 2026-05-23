@@ -17,7 +17,12 @@ type BillingActionResult =
   | { success: true; url: string }
   | { success: false; error: string; status?: string };
 
-const BILLING_ROLES = new Set(['owner', 'admin']);
+// v4-025: owner-only by design — the documented intent in lib/roles.ts
+// is that admins have policy/control rights but NOT billing access.
+// The route-level checkout/portal endpoints already restrict to
+// {owner}; this server-action used to allow {owner, admin}, leading
+// to admins succeeding in the UI flow and 403-ing on the round-trip.
+const BILLING_ROLES = new Set(['owner']);
 
 function billingActionError(
   error: string,
