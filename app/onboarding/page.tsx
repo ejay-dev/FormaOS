@@ -51,9 +51,16 @@ import { trackActivation } from '@/lib/analytics/activation-telemetry';
 export const dynamic = 'force-dynamic';
 
 const TOTAL_STEPS = 7;
+// Audit Sprint 6a (2026-05-23): Scale tier added. Was deliberately
+// excluded because the DB CHECK constraint on org_subscriptions
+// rejected 'scale'; that's fixed by migration 20260624020. Operator
+// must also set STRIPE_PRICE_SCALE in production env for checkout to
+// resolve a price ID — productionRequiredKeys in check-env.js already
+// guards this.
 const PLAN_CHOICES = [
   PLAN_CATALOG.basic,
   PLAN_CATALOG.pro,
+  PLAN_CATALOG.scale,
   PLAN_CATALOG.enterprise,
 ];
 
