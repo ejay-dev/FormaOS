@@ -18,7 +18,7 @@ export const metadata = { title: 'Audit Trail | FormaOS' };
 
 export default async function AuditTrailPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
 

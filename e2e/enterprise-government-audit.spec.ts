@@ -75,7 +75,7 @@ const ALL_APP_ROUTES = [
   '/app/compliance',
   '/app/evidence',
   '/app/policies',
-  '/app/audit',
+  '/app/audit-trail',
   '/app/workflows',
   '/app/team',
   '/app/people',
@@ -90,7 +90,7 @@ const ALL_APP_ROUTES = [
   '/app/forms',
   '/app/governance',
   '/app/activity',
-  '/app/history',
+  '/app/audit-trail',
   '/app/certificates',
   '/app/billing',
   '/app/profile',
@@ -1465,7 +1465,7 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('audit trail page loads', async ({ page }) => {
-      await page.goto('/app/audit', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/audit-trail', { waitUntil: 'domcontentloaded' });
       await waitForPageContent(page);
       await assertNoErrorState(page);
 
@@ -1480,7 +1480,7 @@ test.describe('Enterprise Government Audit Readiness', () => {
     });
 
     test('history page loads', async ({ page }) => {
-      await page.goto('/app/history', { waitUntil: 'domcontentloaded' });
+      await page.goto('/app/audit-trail', { waitUntil: 'domcontentloaded' });
       await waitForPageContent(page);
       await assertNoErrorState(page);
     });

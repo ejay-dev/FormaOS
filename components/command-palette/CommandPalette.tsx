@@ -109,7 +109,7 @@ const NAVIGATION_ITEMS: CommandItem[] = [
     id: 'nav-audit',
     label: 'Audit Trail',
     icon: History,
-    href: '/app/audit',
+    href: '/app/audit-trail',
     keywords: ['log', 'history', 'trail', 'activity'],
   },
   {

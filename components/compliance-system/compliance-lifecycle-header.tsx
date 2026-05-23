@@ -65,7 +65,7 @@ const NODES = [
     label: "Audits",
     icon: ClipboardCheck,
     color: "amber",
-    href: "/app/audit",
+    href: "/app/audit-trail",
   },
   {
     type: "risk",

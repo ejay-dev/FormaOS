@@ -53,7 +53,7 @@ const ITEMS: NavItem[] = [
     href: '/app/compliance',
     label: 'Compliance',
     Icon: Sparkles,
-    matches: ['/app/compliance', '/app/controls', '/app/audit', '/app/audit-trail'],
+    matches: ['/app/compliance', '/app/controls', '/app/audit-trail', '/app/audit-trail'],
   },
 ];
 

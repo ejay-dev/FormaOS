@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default async function TasksCalendarPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
   const { data: tasks } = await db

@@ -13,7 +13,7 @@ export default async function AiSettingsPage({
   searchParams?: Promise<{ error?: string; reindexed?: string; reindexErrors?: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   const notices = (await searchParams) ?? {};
 
   const db = await createSupabaseServerClient();

@@ -41,7 +41,7 @@ async function authedContext({ context }: { context: import('@playwright/test').
 
 test.describe('Public auth screens — keyboard hints + iOS no-zoom', () => {
   test('signin email + password expose iOS-friendly attrs', async ({ page }) => {
-    await page.goto('/signin', { waitUntil: 'domcontentloaded' });
+    await page.goto('/auth/signin', { waitUntil: 'domcontentloaded' });
 
     const email = page.locator('#email');
     await expect(email).toHaveAttribute('type', 'email');

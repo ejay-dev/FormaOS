@@ -133,7 +133,7 @@ export default async function CarePlanDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const { id } = await params;
   const db = await createSupabaseServerClient();

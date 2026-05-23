@@ -36,7 +36,7 @@ function canManageRetention(role: string | null | undefined) {
 async function createLegalHoldAction(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   await requireEntitlement(state.organization.id, 'retention_governance');
 
   if (!canManageRetention(state.role)) {
@@ -62,7 +62,7 @@ async function createLegalHoldAction(formData: FormData) {
 async function releaseLegalHoldAction(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   await requireEntitlement(state.organization.id, 'retention_governance');
 
   if (!canManageRetention(state.role)) {
@@ -115,7 +115,7 @@ export default async function RetentionPage({
   searchParams: Promise<{ hold?: string; error?: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const notices = await searchParams;
   const db = await createSupabaseServerClient();

@@ -42,56 +42,74 @@ afterAll(() => {
 // -------------------------------------------------------------------------
 
 describe('getClientIp', () => {
+  // v4-026: getClientIp now requires either a platform-signed header
+  // (x-vercel-forwarded-for, cf-connecting-ip) OR an explicit
+  // TRUST_PROXY=true opt-in for the unsigned x-forwarded-for / x-real-ip
+  // headers. Tests below cover both modes.
+  const originalTrustProxy = process.env.TRUST_PROXY;
+  afterEach(() => {
+    if (originalTrustProxy === undefined) {
+      delete process.env.TRUST_PROXY;
+    } else {
+      process.env.TRUST_PROXY = originalTrustProxy;
+    }
+  });
+
   function createRequest(headers: Record<string, string>): Request {
     return new Request('http://localhost', {
       headers: new Headers(headers),
     });
   }
 
-  it('extracts IP from x-forwarded-for header', () => {
+  it('extracts IP from x-vercel-forwarded-for (platform-signed)', () => {
     const req = createRequest({
-      'x-forwarded-for': '192.168.1.100, 10.0.0.1, 172.16.0.1',
+      'x-vercel-forwarded-for': '192.168.1.100, 10.0.0.1',
     });
     expect(getClientIp(req)).toBe('192.168.1.100');
   });
 
-  it('extracts single IP from x-forwarded-for', () => {
-    const req = createRequest({ 'x-forwarded-for': '203.0.113.50' });
-    expect(getClientIp(req)).toBe('203.0.113.50');
-  });
-
-  it('extracts IP from cf-connecting-ip header', () => {
+  it('extracts IP from cf-connecting-ip (Cloudflare-set)', () => {
     const req = createRequest({ 'cf-connecting-ip': '198.51.100.42' });
     expect(getClientIp(req)).toBe('198.51.100.42');
   });
 
-  it('extracts IP from x-real-ip header', () => {
+  it('does NOT trust x-forwarded-for without TRUST_PROXY=true', () => {
+    delete process.env.TRUST_PROXY;
+    const req = createRequest({
+      'x-forwarded-for': '203.0.113.50',
+    });
+    expect(getClientIp(req)).toBe('unknown');
+  });
+
+  it('trusts x-forwarded-for when TRUST_PROXY=true', () => {
+    process.env.TRUST_PROXY = 'true';
+    const req = createRequest({
+      'x-forwarded-for': '203.0.113.50, 10.0.0.1',
+    });
+    expect(getClientIp(req)).toBe('203.0.113.50');
+  });
+
+  it('trusts x-real-ip when TRUST_PROXY=true', () => {
+    process.env.TRUST_PROXY = 'true';
     const req = createRequest({ 'x-real-ip': '192.0.2.1' });
     expect(getClientIp(req)).toBe('192.0.2.1');
   });
 
-  it('prefers x-forwarded-for over cf-connecting-ip', () => {
+  it('prefers x-vercel-forwarded-for over cf-connecting-ip', () => {
     const req = createRequest({
-      'x-forwarded-for': '1.2.3.4',
+      'x-vercel-forwarded-for': '1.2.3.4',
       'cf-connecting-ip': '5.6.7.8',
     });
     expect(getClientIp(req)).toBe('1.2.3.4');
   });
 
-  it('prefers cf-connecting-ip over x-real-ip', () => {
-    const req = createRequest({
-      'cf-connecting-ip': '5.6.7.8',
-      'x-real-ip': '9.10.11.12',
-    });
-    expect(getClientIp(req)).toBe('5.6.7.8');
-  });
-
-  it('returns "unknown" when no IP headers present', () => {
+  it('returns "unknown" when no trusted IP headers present', () => {
     const req = createRequest({});
     expect(getClientIp(req)).toBe('unknown');
   });
 
   it('trims whitespace from forwarded IP', () => {
+    process.env.TRUST_PROXY = 'true';
     const req = createRequest({ 'x-forwarded-for': '  10.0.0.1  , 10.0.0.2' });
     expect(getClientIp(req)).toBe('10.0.0.1');
   });

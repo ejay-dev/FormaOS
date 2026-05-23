@@ -297,7 +297,7 @@ test.describe.serial('Critical Path Smoke', () => {
       '/app/tasks',
       '/app/people',
       '/app/patients',
-      '/app/audit',
+      '/app/audit-trail',
       '/app/settings/email-preferences',
       '/app/staff',
       '/app/profile',

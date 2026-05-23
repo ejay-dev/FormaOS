@@ -13,7 +13,7 @@ export default async function ParticipantMedicationsPage({
   params: Promise<{ id: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const { id: participantId } = await params;
   const db = await createSupabaseServerClient();

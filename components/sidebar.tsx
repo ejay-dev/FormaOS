@@ -59,7 +59,7 @@ function resolveContextMode(pathname: string): ContextMode {
     return { label: 'Governance', icon: FileText };
   }
   if (
-    pathname.startsWith('/app/audit') ||
+    pathname.startsWith('/app/audit-trail') ||
     pathname.startsWith('/app/reports') ||
     pathname.startsWith('/app/executive') ||
     pathname.startsWith('/app/intelligence')

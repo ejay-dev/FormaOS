@@ -582,7 +582,7 @@ export async function proxy(request: NextRequest) {
         '/accept-invite',
         '/join',
         '/submit',
-        '/signin',
+        '/auth/signin',
         '/api',
       ];
       const isAppPath = appPaths.some(

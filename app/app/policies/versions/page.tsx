@@ -8,7 +8,7 @@ export const metadata = { title: 'Policy Versions | FormaOS' };
 
 export default async function PolicyVersionsPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
 

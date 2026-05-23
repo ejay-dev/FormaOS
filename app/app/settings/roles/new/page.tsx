@@ -9,7 +9,7 @@ export const metadata = { title: 'New Role | FormaOS' };
 async function createRole(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const name = String(formData.get('name') ?? '').trim();
   const baseRole = String(formData.get('base_role') ?? 'member');
@@ -31,7 +31,7 @@ export default async function NewRolePage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   const { error } = await searchParams;
 
   return (

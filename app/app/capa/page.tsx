@@ -103,7 +103,7 @@ export default async function CAPAPage({
   searchParams?: Promise<SearchParams>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const params = (await searchParams) ?? {};
   const db = createSupabaseAdminClient();

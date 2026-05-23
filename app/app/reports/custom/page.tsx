@@ -9,7 +9,7 @@ export const metadata = { title: 'My Reports | FormaOS' };
 
 export default async function CustomReportsPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = createSupabaseAdminClient();
   const { data: entitlement } = await db

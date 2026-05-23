@@ -61,7 +61,7 @@ async function fetchCustomReportRows(
 async function generateCustomReportSnapshot(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   await requireEntitlement(state.organization.id, 'custom_reports');
 
   const reportId = String(formData.get('reportId') ?? '');
@@ -130,7 +130,7 @@ async function generateCustomReportSnapshot(formData: FormData) {
 async function scheduleCustomReportDelivery(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   await requireEntitlement(state.organization.id, 'custom_reports');
 
   const reportId = String(formData.get('reportId') ?? '');
@@ -178,7 +178,7 @@ async function scheduleCustomReportDelivery(formData: FormData) {
 async function unscheduleCustomReportDelivery(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   await requireEntitlement(state.organization.id, 'custom_reports');
 
   const reportId = String(formData.get('reportId') ?? '');
@@ -213,7 +213,7 @@ export default async function CustomReportDetailPage({
   }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const { id } = await params;
   await requireEntitlement(state.organization.id, 'custom_reports');

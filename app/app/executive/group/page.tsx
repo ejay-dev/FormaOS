@@ -9,7 +9,7 @@ export const metadata = { title: 'Group Rollup – Executive' };
 
 export default async function GroupRollupPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
 

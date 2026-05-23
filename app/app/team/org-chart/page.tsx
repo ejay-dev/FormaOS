@@ -53,7 +53,7 @@ function buildTree(
 
 export default async function OrgChartPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
 

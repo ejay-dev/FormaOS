@@ -23,7 +23,7 @@ interface PageProps {
 async function startInvestigation(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const incidentId = String(formData.get('incidentId') ?? '').trim();
   if (!incidentId) redirect('/app/incidents');
@@ -81,7 +81,7 @@ export default async function InvestigationPage({
   const { id: incidentId } = await params;
   const { error: formError } = (await searchParams) ?? {};
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
 

@@ -11,7 +11,7 @@ export const metadata = { title: 'New Custom Report | FormaOS' };
 async function createCustomReport(formData: FormData) {
   'use server';
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   try {
     await requireEntitlement(state.organization.id, 'custom_reports');
   } catch {
@@ -44,7 +44,7 @@ export default async function NewCustomReportPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
   const { error } = await searchParams;
   const db = createSupabaseAdminClient();
   const { data: entitlement } = await db

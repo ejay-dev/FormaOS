@@ -93,7 +93,8 @@ import {
   canAccessModule,
   checkPermission,
   initiatePlanUpgrade,
-  confirmPlanUpgrade,
+  // v4-018: confirmPlanUpgrade was deleted (unauthenticated
+  // server-action). Tests for it below are skipped.
   changeUserRole,
   recordModuleAccess,
   getAvailableModules,
@@ -215,22 +216,13 @@ describe('system-state/actions', () => {
   });
 
   // ── confirmPlanUpgrade ──
-  describe('confirmPlanUpgrade', () => {
-    it('confirms upgrade using admin client', async () => {
-      getAdminClient().from.mockImplementation(() =>
-        createBuilder({ data: { id: 'sub1' }, error: null }),
-      );
-      const result = await confirmPlanUpgrade('org1', 'enterprise' as any);
-      expect(result.success).toBe(true);
-      expect(getAdminClient().from).toHaveBeenCalledWith('org_subscriptions');
-    });
-
-    it('handles thrown error', async () => {
-      getAdminClient().from.mockImplementation(() => {
-        throw new Error('db fail');
-      });
-      const result = await confirmPlanUpgrade('org1', 'enterprise' as any);
-      expect(result.success).toBe(false);
+  // v4-018: confirmPlanUpgrade was deleted (unauthenticated
+  // server-action with no auth check that flipped plan_key to a
+  // paid tier). Plan upgrades now go exclusively through Stripe
+  // checkout + the webhook reconciliation path.
+  describe.skip('confirmPlanUpgrade (removed in v4-018)', () => {
+    it('placeholder — server-action removed', () => {
+      expect(true).toBe(true);
     });
   });
 

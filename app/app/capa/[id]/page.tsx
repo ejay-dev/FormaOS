@@ -210,7 +210,7 @@ export default async function CapaDetailPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const { id } = await params;
   const { error } = await searchParams;

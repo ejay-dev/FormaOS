@@ -6,7 +6,7 @@ test.describe('PWA foundations — head meta and manifest', () => {
   test('root layout exposes manifest, apple-touch-icon, and apple-web-app meta', async ({
     page,
   }) => {
-    await page.goto('/signin', { waitUntil: 'domcontentloaded' });
+    await page.goto('/auth/signin', { waitUntil: 'domcontentloaded' });
 
     const manifestHref = await page
       .locator('link[rel="manifest"]')
@@ -75,7 +75,7 @@ test.describe('PWA foundations — head meta and manifest', () => {
   test('iPhone 14 baseline screenshot — /signin gate to /app', async ({
     page,
   }) => {
-    await page.goto('/signin', { waitUntil: 'networkidle' });
+    await page.goto('/auth/signin', { waitUntil: 'networkidle' });
     await page.screenshot({
       path: 'e2e/screenshots/mobile/baseline-iphone14-signin.jpg',
       type: 'jpeg',

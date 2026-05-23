@@ -513,7 +513,7 @@ function RoleWorkflowBoard({
         {
           label: 'Read audit stream',
           detail: `Trace approvals and key ${entityLabel} events.`,
-          href: '/app/audit',
+          href: '/app/audit-trail',
           icon: Calendar,
         },
       ]

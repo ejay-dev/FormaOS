@@ -130,10 +130,13 @@ describe('validateCsrfOrigin', () => {
   });
 
   describe('Vercel URL support', () => {
-    it('trusts VERCEL_URL when set', () => {
+    // v4-023: VERCEL_URL / VERCEL_BRANCH_URL are only trusted on
+    // VERCEL_ENV='production' so preview deployments don't get
+    // implicit trust against prod cookies.
+    it('trusts VERCEL_URL when set AND VERCEL_ENV=production', () => {
+      process.env.VERCEL_ENV = 'production';
       process.env.VERCEL_URL = 'my-app-git-main.vercel.app';
 
-      // Re-import to pick up new env
       jest.resetModules();
       const {
         validateCsrfOrigin: freshValidate,
@@ -145,7 +148,23 @@ describe('validateCsrfOrigin', () => {
       expect(result).toBeNull();
     });
 
-    it('trusts VERCEL_BRANCH_URL when set', () => {
+    it('does NOT trust VERCEL_URL when VERCEL_ENV=preview', () => {
+      process.env.VERCEL_ENV = 'preview';
+      process.env.VERCEL_URL = 'pr-99-preview.vercel.app';
+
+      jest.resetModules();
+      const {
+        validateCsrfOrigin: freshValidate,
+      } = require('@/lib/security/csrf');
+
+      const result = freshValidate(
+        makeRequest('POST', { origin: 'https://pr-99-preview.vercel.app' }),
+      );
+      expect(result).not.toBeNull();
+    });
+
+    it('trusts VERCEL_BRANCH_URL when set AND VERCEL_ENV=production', () => {
+      process.env.VERCEL_ENV = 'production';
       process.env.VERCEL_BRANCH_URL = 'my-app-feature.vercel.app';
 
       jest.resetModules();

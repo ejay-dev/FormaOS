@@ -855,7 +855,7 @@ export const FINANCIAL_SERVICES_NAV: NavItem[] = [
   },
   {
     name: 'Audit Trail',
-    href: '/app/audit',
+    href: '/app/audit-trail',
     icon: History,
     category: 'Intelligence',
     testId: 'nav-audit',
@@ -972,7 +972,7 @@ export const SAAS_TECHNOLOGY_NAV: NavItem[] = [
   },
   {
     name: 'Audit Trail',
-    href: '/app/audit',
+    href: '/app/audit-trail',
     icon: History,
     category: 'Intelligence',
     testId: 'nav-audit',
@@ -1120,7 +1120,7 @@ export const ENTERPRISE_NAV: NavItem[] = [
   },
   {
     name: 'Audit Trail',
-    href: '/app/audit',
+    href: '/app/audit-trail',
     icon: History,
     category: 'Intelligence',
     testId: 'nav-audit',
@@ -1273,7 +1273,7 @@ export const DEFAULT_ADMIN_NAV: NavItem[] = [
   },
   {
     name: 'Audit Trail',
-    href: '/app/audit',
+    href: '/app/audit-trail',
     icon: History,
     category: 'Intelligence',
     testId: 'nav-audit',

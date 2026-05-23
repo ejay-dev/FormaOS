@@ -7,7 +7,7 @@ export const metadata = { title: 'Executive Digest Settings' };
 
 export default async function ExecutiveDigestSettingsPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
 

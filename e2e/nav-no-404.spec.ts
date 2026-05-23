@@ -34,7 +34,7 @@ const SIDEBAR_ROUTES = [
   '/app/tasks',
   '/app/people',
   '/app/patients',
-  '/app/audit',
+  '/app/audit-trail',
   '/app/settings/email-preferences',
 
   // Staff nav

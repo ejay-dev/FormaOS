@@ -9,7 +9,7 @@ export const metadata = { title: 'Dashboard | FormaOS' };
 
 export default async function DashboardBuilderPage() {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   const db = await createSupabaseServerClient();
   const layout = await getUserDashboard(state.organization.id, state.user.id);

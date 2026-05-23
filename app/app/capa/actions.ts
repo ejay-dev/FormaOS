@@ -64,7 +64,7 @@ function redirectWithError(path: string, message: string): never {
 
 async function getCapaActionContext(): Promise<CapaActionContext> {
   const state = await fetchSystemState();
-  if (!state) redirect('/signin');
+  if (!state) redirect('/auth/signin');
 
   if (!['owner', 'admin'].includes(state.role)) {
     redirectWithError('/app/capa', 'CAPA changes require an admin or manager role.');
