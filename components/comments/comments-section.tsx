@@ -16,6 +16,16 @@ import {
   Reply,
 } from 'lucide-react';
 import { z } from 'zod';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const commentSchema = z.object({
   content: z.string().min(1, 'Comment cannot be empty').max(5000, 'Comment must be under 5000 characters'),
@@ -62,6 +72,10 @@ export default function Comments({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
   const [loading, setLoading] = useState(true);
+  // Audit 2026-05-23: replaced window.confirm() with AlertDialog. Holding
+  // the pending-delete id in state lets the dialog open + close cleanly
+  // and keeps the focus trap / aria semantics the browser confirm lacked.
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchComments();
@@ -127,8 +141,6 @@ export default function Comments({
   };
 
   const handleDelete = async (commentId: string) => {
-    if (!confirm('Delete this comment?')) return;
-
     try {
       await fetch(`/api/comments/${commentId}`, {
         method: 'DELETE',
@@ -137,6 +149,8 @@ export default function Comments({
       await fetchComments();
     } catch (error) {
       console.error('Failed to delete comment:', error);
+    } finally {
+      setPendingDeleteId(null);
     }
   };
 
@@ -224,8 +238,9 @@ export default function Comments({
                       <Edit2 className="h-3 w-3 text-gray-500" />
                     </button>
                     <button
-                      onClick={() => handleDelete(comment.id)}
+                      onClick={() => setPendingDeleteId(comment.id)}
                       className="p-1 hover:bg-gray-200 rounded"
+                      aria-label="Delete comment"
                     >
                       <Trash2 className="h-3 w-3 text-gray-500" />
                     </button>
@@ -400,6 +415,35 @@ export default function Comments({
           comments.map((comment) => renderComment(comment))
         )}
       </div>
+
+      <AlertDialog
+        open={pendingDeleteId !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDeleteId(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this comment?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The comment will be removed for everyone. This action is
+              recorded in the audit log.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingDeleteId) {
+                  void handleDelete(pendingDeleteId);
+                }
+              }}
+            >
+              Delete comment
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
