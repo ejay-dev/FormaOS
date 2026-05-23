@@ -2208,6 +2208,217 @@
         }
       }
     },
+    "/api/v1/dashboard/stand-up": {
+      "get": {
+        "summary": "Daily stand-up summary",
+        "description": "Returns a daily stand-up bundle for the caller's organization: up to 3 highest-priority open tasks (overdue or due within 7 days), up to 2 task wins completed in the last 7 days, and the single nearest upcoming compliance deadline. Authenticated via Supabase session cookie. Note: when the user has no org membership, or any internal query fails, the endpoint returns 200 with empty arrays (`{ actions: [], wins: [], deadline: null }`) rather than an error — failures are logged server-side only. The `priority` column is sorted ascending alphabetically, so ordering is `critical < high < low < medium` rather than true severity rank.",
+        "operationId": "getDashboardStandUp",
+        "tags": ["Dashboard"],
+        "responses": {
+          "200": {
+            "description": "Stand-up payload (always 200 for authenticated users, even on internal failures)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["actions", "wins", "deadline"],
+                  "properties": {
+                    "actions": {
+                      "type": "array",
+                      "maxItems": 3,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string", "format": "uuid" },
+                          "title": { "type": "string" },
+                          "dueDate": { "type": "string", "format": "date-time", "nullable": true },
+                          "kind": { "type": "string", "enum": ["task", "incident", "renewal"] },
+                          "href": { "type": "string" }
+                        }
+                      }
+                    },
+                    "wins": {
+                      "type": "array",
+                      "maxItems": 2,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string", "format": "uuid" },
+                          "label": { "type": "string" },
+                          "completedAt": { "type": "string", "format": "date-time" }
+                        }
+                      }
+                    },
+                    "deadline": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "label": { "type": "string" },
+                        "dueDate": { "type": "string", "format": "date" },
+                        "daysAway": { "type": "integer", "minimum": 0 },
+                        "href": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/api/v1/analytics/trends": {
+      "get": {
+        "summary": "Get analytics trends and snapshots",
+        "description": "Returns time-series analytics for the organization. If `metric` is provided, returns the trend series plus a summary for that metric. Otherwise returns raw daily snapshots across all metrics. Authenticated via API key (Bearer `fos_*`) with the `reports:read` scope.",
+        "operationId": "getAnalyticsTrends",
+        "tags": ["Analytics"],
+        "security": [{ "apiKeyAuth": [] }],
+        "parameters": [
+          { "name": "metric", "in": "query", "description": "Optional metric name. If supplied, response contains `{ trend, summary }` for that metric only.", "schema": { "type": "string" } },
+          { "name": "from", "in": "query", "required": true, "description": "Inclusive start of the range (ISO 8601 date or date-time).", "schema": { "type": "string", "format": "date-time" } },
+          { "name": "to", "in": "query", "required": true, "description": "Inclusive end of the range (ISO 8601 date or date-time).", "schema": { "type": "string", "format": "date-time" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trend payload. When `metric` is set, `data` is `{ trend, summary }`; otherwise `data` is an array of snapshots.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "oneOf": [
+                        { "type": "object", "properties": { "trend": { "type": "array", "items": { "type": "object" } }, "summary": { "type": "object" } } },
+                        { "type": "array", "items": { "type": "object" } }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing required `from` or `to` query parameter", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "500": { "description": "Internal error while computing trends", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
+    "/api/v1/compliance/deadlines": {
+      "get": {
+        "summary": "Upcoming compliance deadlines",
+        "description": "Returns upcoming obligations (open `org_tasks`) and staff credential expiries within the given horizon, merged and sorted ascending by due date. Each item is tagged with a traffic-light `urgency`: `red` (overdue), `amber` (within 7 days), `green` (later). Authenticated via Supabase session cookie. Note: returns 200 with `{ deadlines: [] }` on internal failure or when the caller has no org membership. Capped at 30 task rows + 15 credential rows.",
+        "operationId": "getComplianceDeadlines",
+        "tags": ["Compliance"],
+        "parameters": [
+          { "name": "days", "in": "query", "description": "Horizon in days from today (clamped 1-365, default 30).", "schema": { "type": "integer", "default": 30, "minimum": 1, "maximum": 365 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Merged list of upcoming deadlines",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["deadlines"],
+                  "properties": {
+                    "deadlines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string", "format": "uuid" },
+                          "title": { "type": "string" },
+                          "dueDate": { "type": "string", "format": "date-time" },
+                          "type": { "type": "string", "enum": ["obligation", "certification"] },
+                          "urgency": { "type": "string", "enum": ["red", "amber", "green"] },
+                          "href": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/api/v1/tasks/my-actions": {
+      "get": {
+        "summary": "My open task actions",
+        "description": "Returns up to 25 open tasks for the caller's organization, sorted by `due_date` ascending (nulls last). Each task is classified into a derived `status`: `overdue`, `due_today`, `due_soon` (within 7 days), `in_progress`, or `pending`. Authenticated via Supabase session cookie. Note: returns 200 with `{ actions: [] }` on internal failure or when the caller has no org membership. Tasks without a `due_date` are returned with a synthetic `dueDate` set to now + 7 days.",
+        "operationId": "getMyActions",
+        "tags": ["Tasks"],
+        "responses": {
+          "200": {
+            "description": "Caller's open actions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["actions"],
+                  "properties": {
+                    "actions": {
+                      "type": "array",
+                      "maxItems": 25,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string", "format": "uuid" },
+                          "title": { "type": "string" },
+                          "dueDate": { "type": "string", "format": "date-time" },
+                          "status": { "type": "string", "enum": ["overdue", "due_today", "due_soon", "in_progress", "pending"] },
+                          "type": { "type": "string", "enum": ["task"] },
+                          "entityId": { "type": "string", "format": "uuid" },
+                          "entityHref": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/api/v1/preferences/plain-english": {
+      "get": {
+        "summary": "Read plain-English preference",
+        "description": "Returns whether the caller has the plain-English UI mode enabled. Defaults to `true` when no row exists or on internal error. Authenticated via Supabase session cookie.",
+        "operationId": "getPlainEnglishPreference",
+        "tags": ["Preferences"],
+        "responses": {
+          "200": { "description": "Current preference value", "content": { "application/json": { "schema": { "type": "object", "required": ["enabled"], "properties": { "enabled": { "type": "boolean" } } } } } },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      },
+      "patch": {
+        "summary": "Update plain-English preference",
+        "description": "Sets the caller's plain-English UI preference on `user_profiles`. Requires a valid Supabase session and a same-origin request (CSRF Origin check enforced). Body must include `enabled` as a strict boolean — any non-true value is coerced to `false`.",
+        "operationId": "updatePlainEnglishPreference",
+        "tags": ["Preferences"],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "required": ["enabled"], "properties": { "enabled": { "type": "boolean" } } } } } },
+        "responses": {
+          "200": { "description": "Updated preference value", "content": { "application/json": { "schema": { "type": "object", "required": ["enabled"], "properties": { "enabled": { "type": "boolean" } } } } } },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "CSRF Origin validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "500": { "description": "Failed to persist preference", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+        }
+      }
+    },
     "/api/v1/audit-logs": {
       "get": {
         "summary": "List audit logs",
