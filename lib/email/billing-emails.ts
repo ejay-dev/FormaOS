@@ -200,17 +200,27 @@ export async function sendBillingEmail(
   try {
     const subject = EMAIL_SUBJECTS[type];
 
-    // Resolve the org owner's auth.users record for the actual email address.
-    const { data: member } = await admin
+    // Resolve the org owner's auth.users record for the actual email
+    // address. v4-018: `.order('role', { ascending: true })` returned
+    // 'admin' before 'owner' alphabetically — so payment-failed /
+    // cancellation emails landed in an admin's inbox while the owner
+    // (the person whose card got declined and who can update billing)
+    // was kept in the dark. Pull the candidates explicitly, then pick
+    // by an owner-first precedence — falling back to admin only if
+    // there's no owner row.
+    const { data: candidates } = await admin
       .from('org_members')
       .select('user_id, role')
       .eq('organization_id', orgId)
-      .order('role', { ascending: true })
-      .limit(1);
+      .in('role', ['owner', 'admin']);
 
-    const ownerMember = (
-      member as unknown as Array<{ user_id: string; role: string }> | null
-    )?.[0];
+    const members =
+      (candidates as Array<{ user_id: string; role: string }> | null) ?? [];
+    const ownerMember =
+      members.find((row) => row.role === 'owner') ??
+      members.find((row) => row.role === 'admin') ??
+      null;
+
     if (!ownerMember) {
       billingLogger.warn('billing_email_skipped_no_owner', { orgId, type });
       return;

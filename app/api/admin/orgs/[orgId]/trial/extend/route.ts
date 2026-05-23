@@ -36,6 +36,33 @@ export async function POST(request: Request, { params }: Params) {
     });
 
     const admin = createSupabaseAdminClient();
+
+    // v4-018: refuse to overwrite a live paid sub with `trialing`.
+    // The previous upsert silently downgraded any active customer
+    // to a trial state when a founder hit "Extend trial" on the
+    // wrong row, breaking entitlements + Stripe state drift.
+    const { data: existing } = await admin
+      .from('org_subscriptions')
+      .select('status, plan_key, stripe_subscription_id')
+      .eq('organization_id', orgId)
+      .maybeSingle();
+
+    if (
+      existing &&
+      ['active', 'past_due'].includes(String(existing.status)) &&
+      existing.stripe_subscription_id
+    ) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: 'paid_subscription_cannot_be_trialed',
+          message:
+            'Org has an active paid Stripe subscription. Cancel or migrate it before extending a trial.',
+        },
+        { status: 409 },
+      );
+    }
+
     const now = new Date();
     const expiresAt = new Date(
       now.getTime() + days * 24 * 60 * 60 * 1000,
