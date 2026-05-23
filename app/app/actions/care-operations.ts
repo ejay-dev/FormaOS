@@ -77,10 +77,35 @@ export async function createParticipant(formData: FormData) {
       created_by: user.id,
     };
 
-    // We do not consume the inserted row, so skip the round-trip back.
-    const { error } = await supabase.from('org_patients').insert(participant);
+    // v4-020: need the inserted id for the audit log entityId; the
+    // round-trip is cheap and PHI mutations are auditable under
+    // HIPAA §164.312(b) / NDIS Quality & Safeguards.
+    const { data: inserted, error } = await supabase
+      .from('org_patients')
+      .insert(participant)
+      .select('id')
+      .single();
 
     if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'patient',
+        entityId: inserted?.id ?? null,
+        actionType: 'PATIENT_CREATED',
+        afterState: {
+          full_name: participant.full_name,
+          care_status: participant.care_status,
+          risk_level: participant.risk_level,
+          has_ndis_number: Boolean(participant.ndis_number),
+        },
+        reason: 'create_participant',
+      },
+      { required: true },
+    );
 
     revalidatePath('/app/participants');
     redirect('/app/participants');
@@ -134,6 +159,24 @@ export async function updateParticipant(id: string, formData: FormData) {
 
     if (error) throw new Error(error.message);
 
+    await logAuditEvent(
+      {
+        organizationId,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'patient',
+        entityId: id,
+        actionType: 'PATIENT_UPDATED',
+        afterState: {
+          care_status: updates.care_status,
+          risk_level: updates.risk_level,
+          emergency_flag: updates.emergency_flag,
+        },
+        reason: 'update_participant',
+      },
+      { required: true },
+    );
+
     revalidatePath(`/app/participants/${id}`);
     revalidatePath('/app/participants');
   } catch (error) {
@@ -180,9 +223,33 @@ export async function createVisit(formData: FormData) {
       created_by: user.id,
     };
 
-    const { error } = await supabase.from('org_visits').insert(visit);
+    const { data: insertedVisit, error } = await supabase
+      .from('org_visits')
+      .insert(visit)
+      .select('id')
+      .single();
 
     if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'visit',
+        entityId: insertedVisit?.id ?? null,
+        actionType: 'VISIT_CREATED',
+        afterState: {
+          client_id: visit.client_id,
+          staff_id: visit.staff_id,
+          visit_type: visit.visit_type,
+          scheduled_start: visit.scheduled_start,
+          billable: visit.billable,
+        },
+        reason: 'create_visit',
+      },
+      { required: true },
+    );
 
     revalidatePath('/app/visits');
     redirect('/app/visits');
@@ -224,6 +291,20 @@ export async function updateVisitStatus(
       .eq('organization_id', organizationId);
 
     if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'visit',
+        entityId: id,
+        actionType: 'VISIT_STATUS_UPDATED',
+        afterState: { status, has_notes: Boolean(notes) },
+        reason: 'update_visit_status',
+      },
+      { required: true },
+    );
 
     revalidatePath('/app/visits');
     revalidatePath(`/app/visits/${id}`);
@@ -271,9 +352,33 @@ export async function createIncident(formData: FormData) {
         (formData.get('follow_up_due_date') as string) || null,
     };
 
-    const { error } = await supabase.from('org_incidents').insert(incident);
+    const { data: insertedIncident, error } = await supabase
+      .from('org_incidents')
+      .insert(incident)
+      .select('id')
+      .single();
 
     if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'incident',
+        entityId: insertedIncident?.id ?? null,
+        actionType: 'INCIDENT_CREATED',
+        afterState: {
+          patient_id: incident.patient_id,
+          incident_type: incident.incident_type,
+          severity: incident.severity,
+          occurred_at: incident.occurred_at,
+          follow_up_required: incident.follow_up_required,
+        },
+        reason: 'create_incident',
+      },
+      { required: true },
+    );
 
     // Create follow-up task if required
     if (incident.follow_up_required) {
@@ -600,9 +705,32 @@ export async function createCarePlan(formData: FormData) {
       created_by: user.id,
     };
 
-    const { error } = await supabase.from('org_care_plans').insert(carePlan);
+    const { data: insertedPlan, error } = await supabase
+      .from('org_care_plans')
+      .insert(carePlan)
+      .select('id')
+      .single();
 
     if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'care_plan',
+        entityId: insertedPlan?.id ?? null,
+        actionType: 'CARE_PLAN_CREATED',
+        afterState: {
+          client_id: carePlan.client_id,
+          plan_type: carePlan.plan_type,
+          title: carePlan.title,
+          start_date: carePlan.start_date,
+        },
+        reason: 'create_care_plan',
+      },
+      { required: true },
+    );
 
     revalidatePath('/app/care-plans');
     redirect('/app/care-plans');
@@ -826,6 +954,28 @@ export async function createGoal(planId: string, formData: FormData) {
     });
 
     await persistPlan(supabase, planId, orgId, { goals: [...goals, goal] });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user?.id ?? null,
+        actorRole: null,
+        entityType: 'care_goal',
+        entityId: goal.id,
+        actionType: 'CARE_GOAL_CREATED',
+        afterState: {
+          plan_id: planId,
+          title: goal.title,
+          target_date: goal.target_date,
+        },
+        reason: 'create_care_goal',
+      },
+      { required: true },
+    );
+
     return { success: true as const, goalId: goal.id };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
@@ -916,6 +1066,29 @@ export async function createSupport(planId: string, formData: FormData) {
     await persistPlan(supabase, planId, orgId, {
       supports: [...supports, support],
     });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user?.id ?? null,
+        actorRole: null,
+        entityType: 'care_support',
+        entityId: support.id,
+        actionType: 'CARE_SUPPORT_CREATED',
+        afterState: {
+          plan_id: planId,
+          goal_id: goalId,
+          assigned_to: support.assigned_to,
+          frequency: support.frequency,
+        },
+        reason: 'create_care_support',
+      },
+      { required: true },
+    );
+
     return { success: true as const, supportId: support.id };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
