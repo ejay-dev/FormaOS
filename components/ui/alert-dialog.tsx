@@ -39,8 +39,10 @@ function AlertDialogOverlay({
   return (
     <AlertDialogPrimitive.Overlay
       data-slot="alert-dialog-overlay"
+      // Audit Sprint 6b: token-scaled (see app/globals.css).
+      style={{ zIndex: 'var(--z-modal-backdrop)' }}
       className={cn(
-        "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        "fixed inset-0 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         className,
       )}
       {...props}
@@ -57,8 +59,9 @@ function AlertDialogContent({
       <AlertDialogOverlay />
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
+        style={{ zIndex: 'var(--z-modal)' }}
         className={cn(
-          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-glass-border bg-slate-900 p-6 shadow-xl rounded-lg",
+          "fixed left-[50%] top-[50%] grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-glass-border bg-slate-900 p-6 shadow-xl rounded-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}

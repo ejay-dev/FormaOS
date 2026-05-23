@@ -68,7 +68,10 @@ export default function CookieConsent() {
       // Not aria-modal — we don't want to trap focus; we want the
       // banner to be the FIRST natural stop after Skip-to-main so a
       // keyboard user can dismiss it without tabbing through the page.
-      className="fixed inset-x-0 bottom-0 z-[60] px-4 pb-4 sm:px-6 sm:pb-6"
+      // Audit Sprint 6b: was z-[60] hardcoded. Use --z-overlay (90) so
+      // the banner sits above page chrome but below modals + tour + toast.
+      style={{ zIndex: 'var(--z-overlay)' }}
+      className="fixed inset-x-0 bottom-0 px-4 pb-4 sm:px-6 sm:pb-6"
     >
       <div className="mx-auto max-w-4xl rounded-2xl border border-slate-700/80 bg-slate-900/95 p-4 shadow-2xl backdrop-blur supports-[backdrop-filter]:bg-slate-900/80 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
