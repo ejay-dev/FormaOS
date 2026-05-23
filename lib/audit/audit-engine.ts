@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { computeEntryHash } from './hash-utils';
 
 // ------------------------------------------------------------------
@@ -17,7 +18,17 @@ export async function writeAuditLog(
     userAgent?: string;
   },
 ) {
-  const db = await createSupabaseServerClient();
+  // v4-005: chain writes are system-owned and must bypass RLS. The
+  // `audit_log_org` policy only grants SELECT to authenticated org
+  // members; there is no policy granting INSERT to anyone except
+  // service_role. Session-scoped writes were silently failing — only
+  // 2 rows ever landed in prod while org_audit_logs accumulated
+  // 24,580+ activity rows. Switching to admin closes that gap.
+  //
+  // Also read the prev-hash via admin so the chain anchors to the
+  // actual last entry across the org, not just what the calling
+  // user's session can see.
+  const db = createSupabaseAdminClient();
 
   // Get the last entry's hash for chaining
   const { data: lastEntry } = await db
@@ -26,7 +37,7 @@ export async function writeAuditLog(
     .eq('org_id', orgId)
     .order('sequence_number', { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   const seqNum = (lastEntry?.sequence_number || 0) + 1;
   const prevHash = lastEntry?.entry_hash || '';
