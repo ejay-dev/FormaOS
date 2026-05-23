@@ -44,7 +44,13 @@ export { ActionButton, IconActionButton, type ActionResult } from './action-butt
 export { NodeBadge, StatusBadge } from './node-badge';
 
 // Toast System
-export { ComplianceToast, ComplianceToastProvider, useComplianceToast } from './compliance-toast';
+// Audit Sprint 7b (2026-05-24): compliance-toast was reimplemented as
+// a sonner shim — the bespoke <ComplianceToast> render component is
+// gone. The Provider + hook stay (same public API). Vercel build
+// (next build) caught this re-export drift even though the local
+// `tsc -p tsconfig.typecheck.json` didn't include the barrel — see
+// post-mortem on PR #188's deploy.
+export { ComplianceToastProvider, useComplianceToast } from './compliance-toast';
 export { useComplianceAction } from './use-compliance-action';
 
 // System State Components

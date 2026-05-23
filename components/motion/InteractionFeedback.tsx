@@ -380,10 +380,12 @@ export function NodeStateTransition({
   );
 }
 
+// Audit Sprint 8b: ToastItem removed from this default-export bundle
+// when the component itself was deleted (see top of file). Vercel's
+// next-build TypeScript caught the stale entry that local tsc missed.
 export default {
   InteractiveButton,
   ProgressWire,
-  ToastItem,
   Skeleton,
   PulseDot,
   InteractiveCard,
