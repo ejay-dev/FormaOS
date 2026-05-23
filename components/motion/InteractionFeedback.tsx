@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useCallback, ReactNode } from "react";
-import { Check, Loader2, AlertCircle, X } from "lucide-react";
+import { Check, Loader2, AlertCircle } from "lucide-react";
 
 /**
  * =========================================================
@@ -208,58 +208,12 @@ export function ProgressWire({
   );
 }
 
-// Toast notification system
-type ToastType = "success" | "error" | "info" | "warning";
-
-interface Toast {
-  id: string;
-  type: ToastType;
-  message: string;
-  duration?: number;
-}
-
-interface _ToastProviderProps {
-  children: ReactNode;
-}
-
-const toastIcons = {
-  success: <Check className="h-4 w-4" />,
-  error: <AlertCircle className="h-4 w-4" />,
-  info: <AlertCircle className="h-4 w-4" />,
-  warning: <AlertCircle className="h-4 w-4" />,
-};
-
-const toastColors = {
-  success: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
-  error: "border-rose-500/30 bg-rose-500/10 text-rose-300",
-  info: "border-primary/30 bg-primary/10 text-primary",
-  warning: "border-amber-500/30 bg-amber-500/10 text-amber-300",
-};
-
-export function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }) {
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, x: 100, scale: 0.9 }}
-      animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={{ opacity: 0, x: 100, scale: 0.9 }}
-      className={`
-        flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-lg
-        shadow-premium-lg min-w-[240px] max-w-[min(400px,calc(100vw-2rem))]
-        ${toastColors[toast.type]}
-      `}
-    >
-      {toastIcons[toast.type]}
-      <span className="flex-1 text-sm font-medium">{toast.message}</span>
-      <button
-        onClick={onDismiss}
-        className="p-1 rounded-lg hover:bg-glass-strong transition-colors"
-      >
-        <X className="h-3 w-3" />
-      </button>
-    </motion.div>
-  );
-}
+// Audit Sprint 8b (2026-05-24): the ToastItem export (and its
+// Toast/ToastType/_ToastProviderProps support types) lived here as
+// rendering glue for a never-shipped toast provider. Sprint 7b
+// consolidated every actual toast surface onto sonner (components/ui/
+// toaster.tsx) — ToastItem had zero external importers. Removed to
+// stop tempting future code into hand-rolling a fifth toast renderer.
 
 // Loading skeleton with shimmer
 interface SkeletonProps {

@@ -43,7 +43,8 @@ export { NodeWireSystem, NodeWireShowcase } from './NodeWireSystem';
 export {
   InteractiveButton,
   ProgressWire,
-  ToastItem,
+  // ToastItem removed in audit sprint 8b — every actual toast surface
+  // moved to sonner via components/ui/toaster.tsx in sprint 7b.
   Skeleton,
   PulseDot,
   InteractiveCard,
