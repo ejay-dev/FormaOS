@@ -28,7 +28,20 @@
   --space-2xl: 3rem; /* 48px */
   --space-3xl: 4rem; /* 64px */
 
-  /* Z-index scale — single source of truth */
+  /* Z-index scale — single source of truth.
+   * Audit Sprint 6b (2026-05-23): the scale existed but adoption was
+   * spotty (most modal surfaces still hardcoded z-50, command palette
+   * z-50, cookie consent z-[60]). New rule: every fixed/absolute
+   * stacked element references a token here. Order is bottom → top:
+   *   - dropdown/sticky/nav: page chrome
+   *   - modal-backdrop/modal: app dialogs
+   *   - popover/tooltip: rare anchored layers
+   *   - overlay: cookie consent, generic full-bleed callouts
+   *   - tour: product-tour overlays (must sit above modals so a tour
+   *     can call out a modal)
+   *   - toast: sonner notifications must be ABOVE tour so a critical
+   *     toast that fires during a tour is still visible
+   *   - debug: dev-only indicators */
   --z-base: 1;
   --z-dropdown: 10;
   --z-sticky: 20;
@@ -39,6 +52,7 @@
   --z-tooltip: 80;
   --z-overlay: 90;
   --z-tour: 100;
+  --z-toast: 110;
   --z-debug: 120;
 
   /* Motion tokens — mirrors config/motion.ts */

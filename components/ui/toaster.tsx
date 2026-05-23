@@ -13,6 +13,11 @@
 
 import { Toaster as SonnerToaster } from "sonner";
 
+// Audit Sprint 6b (2026-05-23): toasts must sit above tour overlays
+// (--z-tour=100) so a critical toast firing during a product tour
+// is still visible. --z-toast=110 added to app/globals.css for this.
+const TOAST_OFFSET_STYLE: React.CSSProperties = { zIndex: 'var(--z-toast)' };
+
 export function Toaster() {
   return (
     <SonnerToaster
@@ -20,6 +25,7 @@ export function Toaster() {
       richColors={false}
       closeButton
       theme="dark"
+      style={TOAST_OFFSET_STYLE}
       toastOptions={{
         className: "border border-glass-border bg-slate-900 text-slate-100",
       }}

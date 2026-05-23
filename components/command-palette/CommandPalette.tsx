@@ -497,7 +497,11 @@ export function CommandPalette() {
               animate="visible"
               exit="exit"
               transition={{ duration: 0.15 }}
-              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+              // Audit Sprint 6b: token-scaled. Command palette is a
+              // top-level modal; uses the same backdrop/content tokens
+              // as the shared dialog primitive.
+              style={{ zIndex: 'var(--z-modal-backdrop)' }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
               onClick={() => setOpen(false)}
             />
 
@@ -513,7 +517,8 @@ export function CommandPalette() {
               role="dialog"
               aria-modal="true"
               aria-label="Command palette"
-              className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[15vh] sm:pt-[20vh]"
+              style={{ zIndex: 'var(--z-modal)' }}
+              className="fixed inset-0 flex items-start justify-center px-4 pt-[15vh] sm:pt-[20vh]"
             >
               <Command
                 className="w-full max-w-[640px] overflow-hidden rounded-2xl border border-glass-border bg-background/95 shadow-[0_24px_80px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl"

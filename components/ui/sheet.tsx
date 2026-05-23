@@ -28,8 +28,10 @@ function SheetOverlay({
   return (
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
+      // Audit Sprint 6b: token-scaled to match dialog/alert-dialog.
+      style={{ zIndex: 'var(--z-modal-backdrop)' }}
       className={cn(
-        "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm",
+        "fixed inset-0 bg-black/60 backdrop-blur-sm",
         className
       )}
       {...props}
@@ -50,8 +52,9 @@ function SheetContent({
       <SheetOverlay />
       <SheetPrimitive.Content
         data-slot="sheet-content"
+        style={{ zIndex: 'var(--z-modal)' }}
         className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-glass-strong shadow-xl transition ease-in-out overflow-y-auto",
+          "fixed flex flex-col gap-4 bg-glass-strong shadow-xl transition ease-in-out overflow-y-auto",
           side === "right" &&
             "inset-y-0 right-0 h-full w-[90vw] max-w-[360px] border-l border-glass-border sm:w-3/4 sm:max-w-sm",
           side === "left" &&
