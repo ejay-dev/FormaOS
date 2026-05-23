@@ -58,6 +58,26 @@ export async function PATCH(request: Request) {
     : [];
   const markAll = body?.all === true;
 
+  // v4-019: API-key context (no userId) previously skipped the
+  // user_id filter, so a `markAll` + empty `ids` would update every
+  // notification in the org for every user. Refuse the bulk-mark
+  // paths entirely when there's no user scope — API keys must
+  // supply an explicit `ids` list.
+  if (!auth.context.userId) {
+    if (markAll || ids.length === 0) {
+      await logV1Access(auth.context, 400, 'notifications:write');
+      return jsonWithContext(
+        auth.context,
+        createEnvelope({
+          error: 'ids_required_for_api_key_context',
+          message:
+            'API key requests must specify an explicit ids[] array; markAll requires a user-scoped session.',
+        }),
+        { status: 400 },
+      );
+    }
+  }
+
   let query = auth.context.db
     .from('org_notifications')
     .update({ read_at: new Date().toISOString() })
