@@ -11,18 +11,74 @@ import {
 
 type JitRole = 'owner' | 'admin' | 'member' | 'viewer' | 'auditor';
 
-function mapGroupToRole(groups: string[], fallbackRole: JitRole): JitRole {
-  const normalized = groups.map((group) => group.toLowerCase());
+// v4-016: previously matched group names via `.includes('owner')` /
+// `.includes('admin')` — so an IdP group called `not-admin`,
+// `read-owner-docs`, or `viewer-not-allowed` would auto-grant
+// elevated roles. Switch to exact-match (case-insensitive) against
+// a fixed allowlist of well-known group forms. Anything not in the
+// allowlist falls through to the configured default role.
+//
+// Accepted forms per role:
+//   owner   → "owner", "owners", "formaos-owner", "formaos-owners",
+//             "role:owner"
+//   admin   → "admin", "admins", "administrator", "administrators",
+//             "formaos-admin", "formaos-admins", "role:admin"
+//   auditor → "auditor", "auditors", "formaos-auditor",
+//             "formaos-auditors", "role:auditor"
+//   viewer  → "viewer", "viewers", "readonly", "read-only",
+//             "formaos-viewer", "formaos-viewers", "role:viewer"
+const ROLE_GROUP_MAP: Record<Exclude<JitRole, 'member'>, ReadonlySet<string>> = {
+  owner: new Set([
+    'owner',
+    'owners',
+    'formaos-owner',
+    'formaos-owners',
+    'role:owner',
+  ]),
+  admin: new Set([
+    'admin',
+    'admins',
+    'administrator',
+    'administrators',
+    'formaos-admin',
+    'formaos-admins',
+    'role:admin',
+  ]),
+  auditor: new Set([
+    'auditor',
+    'auditors',
+    'formaos-auditor',
+    'formaos-auditors',
+    'role:auditor',
+  ]),
+  viewer: new Set([
+    'viewer',
+    'viewers',
+    'readonly',
+    'read-only',
+    'formaos-viewer',
+    'formaos-viewers',
+    'role:viewer',
+  ]),
+};
 
-  if (normalized.some((group) => group.includes('owner'))) return 'owner';
-  if (normalized.some((group) => group.includes('admin'))) return 'admin';
-  if (normalized.some((group) => group.includes('auditor'))) return 'auditor';
-  if (
-    normalized.some(
-      (group) => group.includes('viewer') || group.includes('read'),
-    )
-  ) {
-    return 'viewer';
+// Role precedence: highest privilege wins, so a user in both
+// "owners" and "viewers" lands on owner. Auditor sits above viewer
+// because it implies read-everywhere + signed-attestation rights.
+const ROLE_PRECEDENCE: Exclude<JitRole, 'member'>[] = [
+  'owner',
+  'admin',
+  'auditor',
+  'viewer',
+];
+
+function mapGroupToRole(groups: string[], fallbackRole: JitRole): JitRole {
+  const normalized = new Set(groups.map((group) => group.trim().toLowerCase()));
+
+  for (const role of ROLE_PRECEDENCE) {
+    for (const candidate of ROLE_GROUP_MAP[role]) {
+      if (normalized.has(candidate)) return role;
+    }
   }
 
   return fallbackRole;
