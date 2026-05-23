@@ -13,6 +13,17 @@ import {
   getEvidenceSignedUrl,
   deleteEvidence,
 } from '@/app/app/actions/vault';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { toast } from '@/components/ui/toaster';
 
 interface EvidenceFileActionsProps {
   filePath: string | null;
@@ -30,6 +41,9 @@ export function EvidenceFileActions({
   const [loading, setLoading] = useState(false);
   const [isDeleting, startDelete] = useTransition();
   const router = useRouter();
+  // Audit 2026-05-23 (Sprint 5a): replaces window.confirm + window.alert
+  // with AlertDialog + sonner toast.
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   async function openFile(mode: 'view' | 'download') {
     if (!filePath) return;
@@ -55,25 +69,18 @@ export function EvidenceFileActions({
       window.open(signedUrl, '_blank', 'noopener,noreferrer');
     } catch (error) {
       console.error('[EvidenceFileActions] Failed to open file:', error);
-      window.alert('Unable to open this file right now.');
+      toast.error('Unable to open this file right now.');
     } finally {
       setLoading(false);
     }
   }
 
-  function onDelete() {
+  function performDelete() {
     if (!evidenceId) return;
-    if (
-      !window.confirm(
-        'Delete this evidence file? This removes the row and the underlying file from storage. This cannot be undone.',
-      )
-    )
-      return;
-
     startDelete(async () => {
       const result = await deleteEvidence(evidenceId);
       if (result && 'error' in result) {
-        window.alert(`Could not delete: ${result.error}`);
+        toast.error(`Could not delete: ${result.error}`);
         return;
       }
       router.refresh();
@@ -126,21 +133,48 @@ export function EvidenceFileActions({
         )}
       </button>
       {canDelete && evidenceId && (
-        <button
-          type="button"
-          disabled={isDeleting}
-          onClick={onDelete}
-          data-testid="evidence-delete-button"
-          className="p-2 hover:bg-rose-500/20 rounded-lg text-muted-foreground hover:text-rose-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Delete evidence"
-          aria-label="Delete evidence"
-        >
-          {isDeleting ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Trash2 className="h-4 w-4" />
-          )}
-        </button>
+        <>
+          <button
+            type="button"
+            disabled={isDeleting}
+            onClick={() => setConfirmOpen(true)}
+            data-testid="evidence-delete-button"
+            className="p-2 hover:bg-rose-500/20 rounded-lg text-muted-foreground hover:text-rose-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Delete evidence"
+            aria-label="Delete evidence"
+          >
+            {isDeleting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Trash2 className="h-4 w-4" />
+            )}
+          </button>
+          <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete this evidence file?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This removes the row and the underlying file from storage.
+                  This cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isDeleting}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    performDelete();
+                    setConfirmOpen(false);
+                  }}
+                  disabled={isDeleting}
+                >
+                  Delete evidence
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
       )}
     </div>
   );

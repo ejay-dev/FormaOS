@@ -3,6 +3,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Clock, MapPin, Monitor, ShieldCheck, XCircle } from 'lucide-react';
 import { useRealtimeSessions } from '@/lib/hooks/use-realtime-security';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 type SessionRecord = {
   id: string;
@@ -35,6 +45,13 @@ export default function ActiveSessionsPage() {
   const [sessions, setSessions] = useState<SessionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Audit 2026-05-23 (Sprint 5a): hold the pending session in state so
+  // AlertDialog can confirm before revoke. Replaces the browser confirm()
+  // that lacked focus trap / aria semantics.
+  const [pendingRevoke, setPendingRevoke] = useState<{
+    sessionId: string;
+    user: string;
+  } | null>(null);
 
   const visibleSessions = useMemo(() => sessions.slice(0, 100), [sessions]);
 
@@ -77,8 +94,6 @@ export default function ActiveSessionsPage() {
 
   const revokeSession = useCallback(
     async (sessionId: string) => {
-      if (!confirm('Revoke this session? The user will be logged out.')) return;
-
       try {
         const res = await fetch('/api/session/revoke', {
           method: 'POST',
@@ -215,7 +230,13 @@ export default function ActiveSessionsPage() {
                 </div>
 
                 <button
-                  onClick={() => void revokeSession(session.session_id)}
+                  onClick={() =>
+                    setPendingRevoke({
+                      sessionId: session.session_id,
+                      user:
+                        session.user.full_name ?? session.user.email ?? 'Unknown user',
+                    })
+                  }
                   className="inline-flex items-center gap-2 rounded-lg border border-red-700/50 bg-red-900/20 px-3 py-2 text-sm font-medium text-red-300 hover:bg-red-900/30"
                   title="Revoke Session"
                 >
@@ -237,6 +258,36 @@ export default function ActiveSessionsPage() {
           </p>
         )}
       </div>
+
+      <AlertDialog
+        open={pendingRevoke !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingRevoke(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Revoke this session?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingRevoke?.user ?? 'The user'} will be logged out
+              immediately. This is recorded in the security audit log.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingRevoke) {
+                  void revokeSession(pendingRevoke.sessionId);
+                  setPendingRevoke(null);
+                }
+              }}
+            >
+              Revoke session
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
