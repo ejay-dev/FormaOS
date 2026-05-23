@@ -5,6 +5,7 @@
  * Request handlers should enqueue and return immediately.
  */
 
+import * as Sentry from '@sentry/nextjs';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import {
   detectBruteForce,
@@ -509,6 +510,21 @@ async function flushQueues(): Promise<void> {
       ]);
     }
   } catch (error) {
+    // v4-007: failures here are otherwise invisible — the queue retries
+    // via scheduleFlush() so a persistent failure (RLS denial, table
+    // missing, DB down) silently piles events in memory without operator
+    // signal. Capture to Sentry, with the queue depth as a tag so we
+    // can see if the retry loop is keeping up.
+    Sentry.captureException(error, {
+      tags: {
+        component: 'security.event-logger',
+        operation: 'flush-queue',
+      },
+      extra: {
+        securityQueueDepth: securityEventQueue.length,
+        userActivityQueueDepth: userActivityQueue.length,
+      },
+    });
     console.warn('[Security] queued event flush failed', {
       error: error instanceof Error ? error.message : String(error),
     });
