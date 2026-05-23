@@ -60,7 +60,11 @@ export async function captureComplianceSnapshot(
 
     const snapshots = frameworks.map((fw) => ({
       organization_id: orgId,
-      framework_slug: fw.frameworkCode.toLowerCase().replace('_', '-'),
+      // v4-021: .replace('_','-') only swaps the FIRST underscore, so
+      // ISO27001_2022 → iso27001_2022 instead of iso27001-2022 and
+      // snapshots landed on the wrong slug (no row in framework
+      // catalog). replaceAll fixes the full multi-underscore case.
+      framework_slug: fw.frameworkCode.toLowerCase().replaceAll('_', '-'),
       snapshot_date: today,
       compliance_score: fw.readinessScore,
       total_controls: fw.totalControls,

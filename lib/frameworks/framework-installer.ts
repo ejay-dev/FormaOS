@@ -17,6 +17,14 @@ const PACK_REGISTRY = [
   { slug: 'gdpr', file: 'gdpr.json', code: 'GDPR' },
   { slug: 'hipaa', file: 'hipaa.json', code: 'HIPAA' },
   { slug: 'pci-dss', file: 'pci-dss.json', code: 'PCIDSS' },
+  // v4-021: framework-packs/financial-services.json shipped but
+  // was never wired into the registry — orgs couldn't install it
+  // and the marketing site advertised it as supported.
+  {
+    slug: 'financial-services-au',
+    file: 'financial-services.json',
+    code: 'FINANCIAL_SERVICES_AU',
+  },
 ];
 
 export const PACK_SLUGS = PACK_REGISTRY.map((pack) => pack.slug);

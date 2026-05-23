@@ -181,14 +181,16 @@ describe('getCrossMapCoverage', () => {
     expect(result).toEqual({});
   });
 
-  it('calculates isolated and cross-mapped scores', async () => {
+  // v4-021: previously asserted a hardcoded `+5` cross-map bump.
+  // Now asserts the real cross-map walk: with no control_groups
+  // backing the unsatisfied SOC 2 control, crossMapped == isolated.
+  it('returns isolated == crossMapped when no control_groups link unsatisfied to satisfied', async () => {
     const controls = [
       { framework: 'soc2', control_id: 'c1', status: 'satisfied' },
       { framework: 'soc2', control_id: 'c2', status: 'not_met' },
       { framework: 'iso27001', control_id: 'c3', status: 'met' },
     ];
 
-    // Need to make eq chain work correctly
     const chain: any = {
       select: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
@@ -200,10 +202,11 @@ describe('getCrossMapCoverage', () => {
     });
     fromMap['org_controls'] = chain;
 
+    // No control_groups → no transitively-satisfied controls
+    fromMap['control_groups'] = mockChain([]);
+
     const result = await getCrossMapCoverage('org-1');
-    // soc2: 1/2 = 50% isolated, 55% cross-mapped
-    expect(result['soc2']).toEqual({ isolated: 50, crossMapped: 55 });
-    // iso27001: 1/1 = 100% isolated, 100% cross-mapped (capped)
+    expect(result['soc2']).toEqual({ isolated: 50, crossMapped: 50 });
     expect(result['iso27001']).toEqual({ isolated: 100, crossMapped: 100 });
   });
 });

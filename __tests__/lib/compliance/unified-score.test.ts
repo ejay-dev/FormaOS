@@ -171,7 +171,11 @@ describe('getScoreImpact', () => {
     expect(await getScoreImpact('org-1')).toEqual([]);
   });
 
-  it('adds cross-map boost of up to 5 points', async () => {
+  // v4-021: previously asserted a hardcoded `+5` bump. Now asserts
+  // that without any control_groups linking the unsatisfied control
+  // to a satisfied one in a different framework, crossMappedScore
+  // collapses to isolated and delta is 0.
+  it('crossMappedScore equals isolated when no cross-map links exist', async () => {
     setupMockChain([
       { framework: 'soc2', status: 'satisfied' },
       { framework: 'soc2', status: 'not_met' },
@@ -180,11 +184,11 @@ describe('getScoreImpact', () => {
     const impact = await getScoreImpact('org-1');
     expect(impact).toHaveLength(1);
     expect(impact[0].isolatedScore).toBe(50);
-    expect(impact[0].crossMappedScore).toBe(55);
-    expect(impact[0].delta).toBe(5);
+    expect(impact[0].crossMappedScore).toBe(50);
+    expect(impact[0].delta).toBe(0);
   });
 
-  it('caps cross-mapped score at 100', async () => {
+  it('crossMappedScore stays at 100 when all controls satisfied', async () => {
     setupMockChain([
       { framework: 'soc2', status: 'satisfied' },
       { framework: 'soc2', status: 'met' },
@@ -193,21 +197,18 @@ describe('getScoreImpact', () => {
     const impact = await getScoreImpact('org-1');
     expect(impact[0].isolatedScore).toBe(100);
     expect(impact[0].crossMappedScore).toBe(100);
-    expect(impact[0].delta).toBe(0); // min(5, 100-100)
+    expect(impact[0].delta).toBe(0);
   });
 
-  it('caps delta at remaining headroom', async () => {
-    // 98% score → delta should be 2 (not 5)
+  it('never exceeds 100 and delta is non-negative', async () => {
     setupMockChain([
       { framework: 'fw', status: 'satisfied' },
       { framework: 'fw', status: 'satisfied' },
-      { framework: 'fw', status: 'satisfied' },
-      ...[...Array(47)].map(() => ({ framework: 'fw', status: 'satisfied' })),
       { framework: 'fw', status: 'not_met' },
     ]);
 
     const impact = await getScoreImpact('org-1');
     expect(impact[0].crossMappedScore).toBeLessThanOrEqual(100);
-    expect(impact[0].delta).toBeLessThanOrEqual(5);
+    expect(impact[0].delta).toBeGreaterThanOrEqual(0);
   });
 });
