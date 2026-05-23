@@ -3,13 +3,21 @@
  */
 
 const mockUpsert = jest.fn().mockResolvedValue({ error: null });
-const mockFrom = jest.fn().mockReturnValue({ upsert: mockUpsert });
+const mockEqAfterUpdate = jest.fn().mockResolvedValue({ error: null });
+const mockUpdate = jest.fn().mockReturnValue({ eq: mockEqAfterUpdate });
+const mockFrom = jest.fn().mockReturnValue({
+  upsert: mockUpsert,
+  update: mockUpdate,
+});
 
 jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: () => ({ from: mockFrom }),
 }));
 
-import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
+import {
+  disableEntitlementsForOrg,
+  syncEntitlementsForPlan,
+} from '@/lib/billing/entitlements';
 
 const TEST_ORG_ID = 'org_test_abc123';
 
@@ -219,5 +227,29 @@ describe('syncEntitlementsForPlan', () => {
         expect(record.organization_id).toBe(customOrgId);
       }
     }
+  });
+});
+
+describe('disableEntitlementsForOrg', () => {
+  beforeEach(() => {
+    mockFrom.mockClear();
+    mockUpdate.mockClear();
+    mockEqAfterUpdate.mockClear();
+  });
+
+  it('disables every entitlement row for the org', async () => {
+    await disableEntitlementsForOrg(TEST_ORG_ID);
+
+    expect(mockFrom).toHaveBeenCalledWith('org_entitlements');
+    expect(mockUpdate).toHaveBeenCalledTimes(1);
+
+    const [patch] = mockUpdate.mock.calls[0];
+    expect(patch.enabled).toBe(false);
+    expect(typeof patch.updated_at).toBe('string');
+
+    expect(mockEqAfterUpdate).toHaveBeenCalledWith(
+      'organization_id',
+      TEST_ORG_ID,
+    );
   });
 });

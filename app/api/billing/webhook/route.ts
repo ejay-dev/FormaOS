@@ -10,7 +10,10 @@ import {
 const log = routeLog('/api/billing/webhook');
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { PLAN_CATALOG, resolvePlanKey } from '@/lib/plans';
-import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
+import {
+  disableEntitlementsForOrg,
+  syncEntitlementsForPlan,
+} from '@/lib/billing/entitlements';
 import { sendBillingEmail } from '@/lib/email/billing-emails';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
 
@@ -463,8 +466,22 @@ export async function POST(request: Request) {
         throw cancelErr;
       }
 
-      // Send cancellation email
+      // v4-013: status='canceled' alone leaves stale entitlements
+      // (rows with enabled=true) and stale organizations.plan_key,
+      // so direct-reads of org_entitlements/plan_key from pages
+      // under /app keep displaying paid features. Disable every
+      // entitlement row and null the org plan_key so all
+      // defense-in-depth checks agree.
       if (subRow?.organization_id) {
+        await disableEntitlementsForOrg(subRow.organization_id);
+        await admin
+          .from('organizations')
+          .update({
+            plan_key: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', subRow.organization_id);
+
         await sendBillingEmail(
           admin,
           subRow.organization_id,
