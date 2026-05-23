@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { brand } from '@/config/brand';
 import { blogPosts } from '@/app/(marketing)/blog/blogData';
+import { listAuthors } from '@/lib/authors';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = brand.seo.siteUrl.replace(/\/$/, '');
@@ -370,5 +371,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...blogEntries];
+  // AEO sprint 2026-05-23: author bio pages give AI engines a stable
+  // Person/Organization entity per byline. Low priority — these are
+  // attribution pages, not primary product/marketing surfaces.
+  const authorEntries: MetadataRoute.Sitemap = listAuthors().map((a) => ({
+    url: `${siteUrl}/author/${a.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly',
+    priority: 0.3,
+  }));
+
+  return [...staticPages, ...blogEntries, ...authorEntries];
 }
