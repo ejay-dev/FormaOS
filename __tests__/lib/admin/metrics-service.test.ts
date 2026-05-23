@@ -163,21 +163,20 @@ describe('getAdminOverviewMetrics', () => {
         });
       }
       if (callIdx === 3) {
-        // plans
-        return createBuilder({
-          data: [
-            { key: 'pro', price_cents: 4900 },
-            { key: 'basic', price_cents: 1900 },
-          ],
-          error: null,
-        });
+        // Audit Sprint 7e: planPriceMap is now built from PLAN_CATALOG
+        // (lib/plans.ts), not the DB. This call slot is a no-op
+        // placeholder kept for shape parity — the data returned here
+        // is ignored.
+        return createBuilder({ data: [], error: null });
       }
       return createBuilder({ data: [], error: null, count: 0 });
     });
 
     const result = await getAdminOverviewMetrics();
     expect(result.activeByPlan.pro).toBe(1);
-    expect(result.mrrCents).toBe(4900);
+    // Sprint 7e: 1 active 'pro' org × PLAN_CATALOG.pro.priceMonthly ($797)
+    // × 100 (cents). Previously asserted the stale plans-table $49.
+    expect(result.mrrCents).toBe(79_700);
   });
 
   it('counts trialing subscriptions', async () => {
