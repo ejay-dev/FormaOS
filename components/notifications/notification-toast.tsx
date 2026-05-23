@@ -1,12 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { X } from 'lucide-react';
-import { createSupabaseClient } from '@/lib/supabase/client';
-import type { NotificationRecord } from '@/lib/notifications/types';
+// Audit Sprint 7b (2026-05-24): replaces the previous hand-rolled
+// portal + auto-dismiss timer + 3-toast queue with sonner. The Realtime
+// subscription (the *real* job of this component) stays — only the
+// rendering side moves to the shared Toaster mounted at the root.
+// Component now returns null; mount in app/app/layout.tsx is unchanged.
 
-type ToastItem = NotificationRecord & { timeoutId?: number };
+import { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { createSupabaseClient } from '@/lib/supabase/client';
+import { toast } from '@/components/ui/toaster';
+import type { NotificationRecord } from '@/lib/notifications/types';
 
 export function NotificationToast({
   userId,
@@ -19,7 +23,6 @@ export function NotificationToast({
 }) {
   const router = useRouter();
   const supabase = useMemo(() => createSupabaseClient(), []);
-  const [toasts, setToasts] = useState<ToastItem[]>([]);
 
   useEffect(() => {
     const channel = supabase
@@ -37,92 +40,33 @@ export function NotificationToast({
           if (notification.org_id !== orgId) return;
           if (!['critical', 'high'].includes(notification.priority)) return;
 
-          const timeoutId = window.setTimeout(() => {
-            setToasts((current) =>
-              current.filter((item) => item.id !== notification.id),
-            );
-          }, autoDismissMs);
+          const href =
+            typeof notification.data?.href === 'string'
+              ? notification.data.href
+              : '/app';
 
-          setToasts((current) =>
-            [{ ...notification, timeoutId }, ...current].slice(0, 3),
-          );
+          const variant =
+            notification.priority === 'critical' ? toast.error : toast.warning;
+
+          variant(notification.title, {
+            description: notification.body,
+            duration: autoDismissMs,
+            action: {
+              label: 'View',
+              onClick: () => router.push(href),
+            },
+          });
         },
       )
       .subscribe();
 
     return () => {
       void supabase.removeChannel(channel);
-      setToasts((current) => {
-        current.forEach((toast) => {
-          if (toast.timeoutId) {
-            window.clearTimeout(toast.timeoutId);
-          }
-        });
-        return [];
-      });
     };
-  }, [autoDismissMs, orgId, supabase, userId]);
+  }, [autoDismissMs, orgId, supabase, userId, router]);
 
-  if (!toasts.length) return null;
-
-  return (
-    <div className="pointer-events-none fixed right-4 top-20 z-[80] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-3">
-      {toasts.map((toast) => (
-        <div
-          key={toast.id}
-          role="button"
-          tabIndex={0}
-          onClick={() => {
-            const href =
-              typeof toast.data?.href === 'string' ? toast.data.href : '/app';
-            setToasts((current) =>
-              current.filter((item) => item.id !== toast.id),
-            );
-            router.push(href);
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              const href =
-                typeof toast.data?.href === 'string' ? toast.data.href : '/app';
-              setToasts((current) =>
-                current.filter((item) => item.id !== toast.id),
-              );
-              router.push(href);
-            }
-          }}
-          className="pointer-events-auto rounded-2xl border border-rose-400/30 bg-slate-950/95 p-4 text-left shadow-2xl shadow-black/30 transition hover:border-rose-300/50"
-        >
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 h-2.5 w-2.5 rounded-full bg-rose-400" />
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-rose-200">
-                {toast.priority} priority
-              </p>
-              <h3 className="mt-1 text-sm font-semibold text-foreground">
-                {toast.title}
-              </h3>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                {toast.body}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                setToasts((current) =>
-                  current.filter((item) => item.id !== toast.id),
-                );
-              }}
-              className="pointer-events-auto rounded-full p-1 text-muted-foreground transition hover:bg-glass-strong hover:text-foreground/90"
-              aria-label="Dismiss notification toast"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  // Rendering moved to the shared Toaster (components/ui/toaster.tsx,
+  // mounted in app/app/layout.tsx). This component is now side-effect-
+  // only; existing call sites don't change.
+  return null;
 }
