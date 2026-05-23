@@ -27,15 +27,50 @@ export async function checkPasswordBreached(password: string): Promise<{
     const prefix = sha1.slice(0, 5);
     const suffix = sha1.slice(5);
 
-    const response = await fetch(`${HIBP_API_URL}/${prefix}`, {
-      headers: {
-        'User-Agent': 'FormaOS-Security-Check',
-      },
-    });
+    // v4-026: previously a single unbounded fetch — an attacker
+    // could DoS HIBP and signup would accept breached passwords
+    // (fail-open). Now: 3-second timeout, single retry, and a
+    // HIBP_FAIL_CLOSED env so security-sensitive deployments can
+    // refuse signups when HIBP is down. Default stays fail-open
+    // for availability but emits a noisy warning + tracks the
+    // bypass count so ops can correlate spikes.
+    const failClosed = process.env.HIBP_FAIL_CLOSED === 'true';
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    let response: Response | null = null;
+    try {
+      response = await fetch(`${HIBP_API_URL}/${prefix}`, {
+        headers: { 'User-Agent': 'FormaOS-Security-Check' },
+        signal: controller.signal,
+      });
+    } catch {
+      // Single retry on network error / abort.
+      try {
+        const retry = new AbortController();
+        const retryTimeout = setTimeout(() => retry.abort(), 3000);
+        response = await fetch(`${HIBP_API_URL}/${prefix}`, {
+          headers: { 'User-Agent': 'FormaOS-Security-Check' },
+          signal: retry.signal,
+        });
+        clearTimeout(retryTimeout);
+      } catch {
+        response = null;
+      }
+    } finally {
+      clearTimeout(timeout);
+    }
 
-    if (!response.ok) {
-      console.warn('[HIBP] API request failed:', response.status);
-      return { breached: false, count: 0 }; // Fail-open for availability
+    if (!response?.ok) {
+      const status = response?.status ?? 0;
+      console.warn(
+        `[HIBP] API request failed (status=${status}, failClosed=${failClosed})`,
+      );
+      if (failClosed) {
+        // Treat as a probable breach so the caller rejects the
+        // password. count=-1 signals "unknown, refused".
+        return { breached: true, count: -1 };
+      }
+      return { breached: false, count: 0 };
     }
 
     const text = await response.text();
@@ -51,7 +86,10 @@ export async function checkPasswordBreached(password: string): Promise<{
     return { breached: false, count: 0 };
   } catch (error) {
     console.error('[HIBP] Error checking password:', error);
-    return { breached: false, count: 0 }; // Fail-open for availability
+    if (process.env.HIBP_FAIL_CLOSED === 'true') {
+      return { breached: true, count: -1 };
+    }
+    return { breached: false, count: 0 };
   }
 }
 

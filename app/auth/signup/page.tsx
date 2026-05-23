@@ -125,8 +125,25 @@ function SignUpContent() {
       : `${appBase}/auth/callback${journeyParam ? `?journey=${encodeURIComponent(journeyParam)}` : ''}`;
     const supabase = createSupabaseClient();
     try {
-      const oauthRedirect = buildGoogleOAuthRedirect(redirectTo);
-      persistOAuthStateCookie(oauthRedirect.state);
+      // v4-026: prefer the server-side httpOnly state cookie path;
+      // fall back to client-side if the init endpoint is down.
+      let oauthRedirect: { state: string; redirectTo: string };
+      try {
+        const initRes = await fetch('/api/auth/oauth/init', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ provider: 'google', redirectTo }),
+        });
+        if (initRes.ok) {
+          const { url } = (await initRes.json()) as { url: string };
+          oauthRedirect = { state: '', redirectTo: url };
+        } else {
+          throw new Error('oauth_init_failed');
+        }
+      } catch {
+        oauthRedirect = buildGoogleOAuthRedirect(redirectTo);
+        persistOAuthStateCookie(oauthRedirect.state);
+      }
       const oauthResult = (await withTimeout(
         supabase.auth.signInWithOAuth({
           provider: 'google',

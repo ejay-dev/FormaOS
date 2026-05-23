@@ -399,8 +399,31 @@ function SignInContent() {
     try {
       const base = resolveAppBase();
       const supabase = createSupabaseClient();
-      const oauthRedirect = buildGoogleOAuthRedirect(`${base}/auth/callback`);
-      persistOAuthStateCookie(oauthRedirect.state);
+      // v4-026: state cookie now set server-side as httpOnly via
+      // /api/auth/oauth/init. The client never sees the state value
+      // — it just consumes the returned URL. Falls back to the
+      // legacy client-side path only if the init endpoint is
+      // unavailable (preserves OAuth during partial outages).
+      let oauthRedirect: { state: string; redirectTo: string };
+      try {
+        const initRes = await fetch('/api/auth/oauth/init', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            provider: 'google',
+            redirectTo: `${base}/auth/callback`,
+          }),
+        });
+        if (initRes.ok) {
+          const { url } = (await initRes.json()) as { url: string };
+          oauthRedirect = { state: '', redirectTo: url };
+        } else {
+          throw new Error('oauth_init_failed');
+        }
+      } catch {
+        oauthRedirect = buildGoogleOAuthRedirect(`${base}/auth/callback`);
+        persistOAuthStateCookie(oauthRedirect.state);
+      }
       const oauthResult = (await withTimeout(
         supabase.auth.signInWithOAuth({
           provider: 'google',
