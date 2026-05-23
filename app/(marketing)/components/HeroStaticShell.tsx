@@ -14,18 +14,20 @@
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
-import { brand } from '@/config/brand';
 
 const heroCopy = DEFAULT_RUNTIME_MARKETING.hero;
-const appBase = brand.seo.appUrl.replace(/\/$/, '');
+
+// 2026-05-23 (SEO sprint): the primary CTA path used to be rewritten
+// onto `brand.seo.appUrl` (app.formaos.com.au), which sent every hero
+// click through a wasted 308 hop and exposed the app subdomain as the
+// CTA target. /contact is a marketing route — keep it relative so the
+// click stays on the canonical www host.
+const primaryExternal = /^https?:\/\//i.test(heroCopy.primaryCtaHref);
+const secondaryExternal = /^https?:\/\//i.test(heroCopy.secondaryCtaHref);
 
 export function HeroStaticShell() {
-  const primaryHref = heroCopy.primaryCtaHref.startsWith('/')
-    ? `${appBase}${heroCopy.primaryCtaHref}`
-    : heroCopy.primaryCtaHref;
-
+  const primaryHref = heroCopy.primaryCtaHref;
   const secondaryHref = heroCopy.secondaryCtaHref;
-  const secondaryExternal = /^https?:\/\//i.test(secondaryHref);
 
   return (
     <section
@@ -74,16 +76,30 @@ export function HeroStaticShell() {
 
         {/* CTAs */}
         <div className="mt-8 flex w-full max-w-xl flex-col justify-center gap-3 sm:flex-row sm:gap-4">
-          <a
-            href={primaryHref}
-            className="mk-btn mk-btn-primary group min-h-[50px] justify-center px-8 py-4 text-base sm:text-lg"
-          >
-            <span>{heroCopy.primaryCtaLabel}</span>
-            <ArrowRight
-              className="h-5 w-5 transition-transform group-hover:translate-x-1"
-              aria-hidden="true"
-            />
-          </a>
+          {primaryExternal ? (
+            <a
+              href={primaryHref}
+              className="mk-btn mk-btn-primary group min-h-[50px] justify-center px-8 py-4 text-base sm:text-lg"
+              rel="noopener noreferrer"
+            >
+              <span>{heroCopy.primaryCtaLabel}</span>
+              <ArrowRight
+                className="h-5 w-5 transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
+              />
+            </a>
+          ) : (
+            <Link
+              href={primaryHref}
+              className="mk-btn mk-btn-primary group min-h-[50px] justify-center px-8 py-4 text-base sm:text-lg"
+            >
+              <span>{heroCopy.primaryCtaLabel}</span>
+              <ArrowRight
+                className="h-5 w-5 transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
+              />
+            </Link>
+          )}
 
           {secondaryExternal ? (
             <a
