@@ -147,8 +147,16 @@ export async function POST(request: Request) {
         return NextResponse.json({ received: true, idempotent: true });
       }
 
-      // pending or failed → claim a new attempt and proceed.
-      const { error: claimErr } = await admin
+      // v4-025: only reclaim a `pending` row when the previous
+      // attempt has stalled (started_at older than the 5-minute
+      // Stripe redelivery cutoff). Otherwise two concurrent
+      // webhook deliveries would both proceed past the claim and
+      // produce duplicate side effects. Stripe will retry on its
+      // own schedule; returning 200 here just defers to that.
+      const FIVE_MINUTES_AGO = new Date(
+        Date.now() - 5 * 60 * 1000,
+      ).toISOString();
+      const { data: claimed_rows, error: claimErr } = await admin
         .from('billing_events')
         .update({
           status: 'pending',
@@ -156,7 +164,9 @@ export async function POST(request: Request) {
           started_at: startedAt,
           last_error: null,
         })
-        .eq('id', event.id);
+        .eq('id', event.id)
+        .or(`status.neq.pending,started_at.lt.${FIVE_MINUTES_AGO}`)
+        .select('id');
 
       if (claimErr) {
         log.error(
@@ -167,6 +177,15 @@ export async function POST(request: Request) {
           { error: 'Webhook claim failed' },
           { status: 500 },
         );
+      }
+
+      if (!claimed_rows?.length) {
+        // Another delivery is actively processing this event. Drop
+        // ours; Stripe will redeliver if the active one fails.
+        return NextResponse.json({
+          received: true,
+          concurrent_processing: true,
+        });
       }
 
       claimed = true;
@@ -323,6 +342,14 @@ export async function POST(request: Request) {
           cancel_at: subscription.cancel_at
             ? new Date(subscription.cancel_at * 1000).toISOString()
             : null,
+          // v4-025: cancel_at_period_end was previously dropped on
+          // the floor. Stripe sets it when a customer schedules a
+          // cancellation that takes effect at the end of the
+          // current period; without persisting it the /app/billing
+          // UI never shows "Your subscription will cancel on …"
+          // and recovery flows can't differentiate active vs
+          // already-cancelling subs.
+          cancel_at_period_end: subscription.cancel_at_period_end ?? false,
           trial_started_at:
             subscription.status === 'trialing'
               ? new Date().toISOString()
@@ -598,50 +625,70 @@ export async function POST(request: Request) {
           .match(matchCol)
           .maybeSingle();
 
-        const wasPastDue = existingRow?.status === 'past_due';
-
-        // Core update fields (always present in schema)
-        const updatePayload: Record<string, unknown> = {
-          status: 'active',
-          trial_started_at: null,
-          trial_expires_at: null,
-          updated_at: new Date().toISOString(),
-        };
-
-        // Try with payment_failed_at first, fall back without it
-        let paidErr: { message: string } | null = null;
-        const { error: fullErr } = await admin
-          .from('org_subscriptions')
-          .update({ ...updatePayload, payment_failed_at: null })
-          .match(matchCol);
-        if (fullErr && fullErr.message.includes('payment_failed_at')) {
-          // Column doesn't exist yet — update without it
-          const { error: fallbackErr } = await admin
-            .from('org_subscriptions')
-            .update(updatePayload)
-            .match(matchCol);
-          paidErr = fallbackErr;
+        // v4-025: previously set status='active' for every invoice
+        // paid event — including a one-off invoice paid against a
+        // sub that was already in status='canceled'. That
+        // resurrected dead subscriptions and re-granted access.
+        // Refuse to flip canceled/incomplete_expired back to active
+        // unless we're recovering from a recoverable failure state.
+        const RECOVERABLE_STATES = new Set([
+          'active',
+          'past_due',
+          'trialing',
+          'pending_checkout',
+          'unpaid',
+          'incomplete',
+        ]);
+        if (
+          existingRow?.status &&
+          !RECOVERABLE_STATES.has(String(existingRow.status))
+        ) {
+          log.warn(
+            {
+              orgId: existingRow.organization_id,
+              currentStatus: existingRow.status,
+              eventId: event.id,
+            },
+            '[billing/webhook] invoice.paid against non-recoverable sub — refusing to resurrect',
+          );
         } else {
-          paidErr = fullErr;
-        }
-        if (paidErr) {
-          log.error(
-            { err: paidErr.message },
-            '[billing/webhook] invoice.paid update failed:',
-          );
-          throw paidErr;
-        }
+          const wasPastDue = existingRow?.status === 'past_due';
 
-        // Send payment recovered email if previously failing
-        if (wasPastDue && existingRow?.organization_id) {
-          await sendBillingEmail(
-            admin,
-            existingRow.organization_id,
-            'payment_recovered',
-          );
-        }
-        if (existingRow?.organization_id) {
-          orgsToRevalidate.add(existingRow.organization_id);
+          // v4-025: removed the `error.message.includes('payment_failed_at')`
+          // fallback. The column has been in the deployed schema since
+          // 20260603 (payment_recovery_columns.sql); the string-match
+          // path was a residual from before that migration landed and
+          // is fragile — error message wording varies across Postgres
+          // versions and Supabase server upgrades.
+          const { error: paidErr } = await admin
+            .from('org_subscriptions')
+            .update({
+              status: 'active',
+              trial_started_at: null,
+              trial_expires_at: null,
+              payment_failed_at: null,
+              updated_at: new Date().toISOString(),
+            })
+            .match(matchCol);
+          if (paidErr) {
+            log.error(
+              { err: paidErr.message },
+              '[billing/webhook] invoice.paid update failed:',
+            );
+            throw paidErr;
+          }
+
+          // Send payment recovered email if previously failing
+          if (wasPastDue && existingRow?.organization_id) {
+            await sendBillingEmail(
+              admin,
+              existingRow.organization_id,
+              'payment_recovered',
+            );
+          }
+          if (existingRow?.organization_id) {
+            orgsToRevalidate.add(existingRow.organization_id);
+          }
         }
       }
     }
