@@ -3,7 +3,11 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { PUBLIC_PRICING_TIERS } from '@/lib/marketing/pricing';
+import {
+  PUBLIC_PRICING_TIERS,
+  nameFor,
+  priceLabelFor,
+} from '@/lib/marketing/pricing';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -148,7 +152,7 @@ export function PricingTiers() {
                 {/* Body */}
                 <div className="flex flex-1 flex-col px-6 pt-6 pb-6">
                   <h3 className="text-2xl font-semibold tracking-tight text-white">
-                    {tier.name}
+                    {nameFor(tier)}
                   </h3>
                   <p className="mt-1.5 text-[13px] leading-snug text-slate-400">
                     {tier.audience}
@@ -160,7 +164,7 @@ export function PricingTiers() {
                   {/* Price */}
                   <div className="mt-7 flex items-end gap-2">
                     <span className="font-mono text-5xl font-semibold tracking-tight text-white">
-                      {tier.priceLabel}
+                      {priceLabelFor(tier)}
                     </span>
                     <span className="pb-2 text-sm font-medium text-slate-400">
                       {tier.priceSubtext}

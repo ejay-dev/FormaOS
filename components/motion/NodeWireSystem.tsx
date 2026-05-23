@@ -27,7 +27,11 @@ import {
  * - Feature access logic
  */
 
-export type PlanTier = 'trial' | 'basic' | 'pro' | 'enterprise';
+// Audit 2026-05-23: was a 4th declaration of PlanTier (drift risk). Now
+// re-exports from the system-state source of truth so adding/removing
+// plan tiers in one place updates everything.
+import type { PlanTier as SystemPlanTier } from '@/lib/system-state/types';
+export type PlanTier = SystemPlanTier;
 export type UserRole = 'viewer' | 'member' | 'admin' | 'owner';
 export type NodeStatus =
   | 'active'
@@ -133,12 +137,13 @@ const MODULES: ModuleNode[] = [
   },
 ];
 
-// Plan hierarchy for access control
+// Plan hierarchy for access control. scale sits between pro and enterprise.
 const PLAN_HIERARCHY: Record<PlanTier, number> = {
   trial: 0,
   basic: 1,
   pro: 2,
-  enterprise: 3,
+  scale: 3,
+  enterprise: 4,
 };
 
 function getNodeStatus(

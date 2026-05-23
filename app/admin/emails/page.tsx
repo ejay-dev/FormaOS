@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { PLAN_CATALOG, type PlanKey } from '@/lib/plans';
 
 /**
  * Admin Email Preview Page
@@ -11,6 +12,11 @@ import React, { useState } from 'react';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au';
 const _BASE = APP_URL.replace(/\/$/, '');
+
+// Audit 2026-05-23: previously hardcoded Starter $159 / Professional $239
+// / Enterprise $399. Source from PLAN_CATALOG so the admin preview matches
+// reality (and the outbound emails it mirrors).
+const TRIAL_PREVIEW_PLANS: readonly PlanKey[] = ['basic', 'pro', 'scale'];
 
 // Shared email styles (mirrors the actual templates)
 const main = {
@@ -211,15 +217,14 @@ const templates: TemplateConfig[] = [
             margin: '20px 0',
           }}
         >
-          <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            Starter — $159/mo
-          </p>
-          <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            Professional — $239/mo
-          </p>
-          <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            Enterprise — $399/mo
-          </p>
+          {TRIAL_PREVIEW_PLANS.map((key) => (
+            <p
+              key={key}
+              style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}
+            >
+              {PLAN_CATALOG[key].name} — ${PLAN_CATALOG[key].priceMonthly}/mo
+            </p>
+          ))}
         </div>
         <div style={{ textAlign: 'center', margin: '24px 0' }}>
           <a

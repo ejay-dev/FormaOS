@@ -3,7 +3,11 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
-import { SUBSCRIPTION_PLANS } from '@/lib/billing/plans';
+import {
+  getAllBillingPlans,
+  getBillingPlan,
+  resolvePlanKey,
+} from '@/lib/plans';
 
 const log = routeLog('/api/billing');
 
@@ -42,14 +46,16 @@ export async function GET(request: Request) {
       .eq('organization_id', orgId)
       .maybeSingle();
 
-    // Default to 'starter' (Foundation) when no plan is recorded — the 'free'
-    // tier was removed (High-9). Self-serve users land in pending_checkout on
-    // 'starter' until they complete Stripe Checkout; the layout-level gate at
-    // app/app/layout.tsx blocks /app/* access until status is 'active'.
-    const planKey = (subscription?.plan_key as string | undefined) || 'starter';
-    const legacyTier = planKey === 'basic' ? 'starter' : planKey;
-    const currentPlan = SUBSCRIPTION_PLANS[legacyTier as keyof typeof SUBSCRIPTION_PLANS]
-      ?? SUBSCRIPTION_PLANS.starter;
+    // Default to Foundation (basic) when no plan is recorded — the 'free'
+    // tier was removed (High-9). Self-serve users land in pending_checkout
+    // on 'basic' until they complete Stripe Checkout; the layout-level
+    // gate at app/app/layout.tsx blocks /app/* access until status is
+    // 'active'.
+    // Audit Sprint 4b: route now reads from the canonical PLAN_CATALOG via
+    // getBillingPlan(). The legacy 'basic → starter' shim is gone because
+    // SUBSCRIPTION_PLANS no longer exists.
+    const planKey = resolvePlanKey(subscription?.plan_key as string | null) ?? 'basic';
+    const currentPlan = getBillingPlan(planKey);
 
     const [membersCount, tasksCount, certsCount, evidenceCount] = await Promise.all([
       supabase.from('org_members').select('id', { count: 'exact', head: true }).eq('organization_id', orgId),
@@ -73,7 +79,7 @@ export async function GET(request: Request) {
       currentPlan,
       usage,
       limits: currentPlan.limits,
-      availablePlans: Object.values(SUBSCRIPTION_PLANS),
+      availablePlans: getAllBillingPlans(),
       subscriptionStatus: subscription?.status ?? 'inactive',
       currentPeriodEnd: subscription?.current_period_end ?? null,
       cancelAt: subscription?.cancel_at ?? null,

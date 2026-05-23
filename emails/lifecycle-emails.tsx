@@ -11,8 +11,13 @@ import {
   Hr,
 } from '@react-email/components';
 import * as React from 'react';
+import { PLAN_CATALOG, type PlanKey } from '@/lib/plans';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.formaos.com.au';
+
+// Audit 2026-05-23: previously hardcoded $159/$239/$399 in the trial
+// stat box. Source from PLAN_CATALOG.
+const TRIAL_PLAN_ORDER: readonly PlanKey[] = ['basic', 'pro', 'scale'];
 const BASE = APP_URL.replace(/\/$/, '');
 
 // Shared styles
@@ -301,9 +306,11 @@ export function TrialExpiringEmail({
               Upgrade to keep everything.
             </Text>
             <Section style={statBox}>
-              <Text style={statRow}>Starter — $159/mo</Text>
-              <Text style={statRow}>Professional — $239/mo</Text>
-              <Text style={statRow}>Enterprise — $399/mo</Text>
+              {TRIAL_PLAN_ORDER.map((key) => (
+                <Text key={key} style={statRow}>
+                  {PLAN_CATALOG[key].name} — ${PLAN_CATALOG[key].priceMonthly}/mo
+                </Text>
+              ))}
             </Section>
             <Section style={{ textAlign: 'center' as const, margin: '24px 0' }}>
               <Button href={`${BASE}/app/billing`} style={cta}>

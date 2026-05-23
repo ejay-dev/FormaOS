@@ -7,7 +7,12 @@
  */
 
 // Plan tiers
-export type PlanTier = "trial" | "basic" | "pro" | "enterprise";
+// Audit 2026-05-23: was the 3rd plan catalog (trial|basic|pro|enterprise,
+// no scale). Now derives from lib/plans.PlanKey + adds the trial sentinel
+// so PlanTier === PlanKey | 'trial'. mapPlanKeyToTier in
+// system-state/server.ts (case 'scale') gets added in the same PR.
+import type { PlanKey } from "@/lib/plans";
+export type PlanTier = PlanKey | "trial";
 
 // User roles within an organization
 export type UserRole = "viewer" | "member" | "admin" | "owner";
@@ -117,11 +122,15 @@ export interface PendingOperation {
   progress: number;
 }
 
-// Plan feature matrix
+// Plan feature matrix. `scale` was added to PlanTier in the same audit
+// pass; until product confirms the feature carve-out for Scale it
+// inherits Pro's matrix plus 'registers' + 'team' to match the marketing
+// promise of multi-site governance. Adjust when product locks the spec.
 export const PLAN_FEATURES: Record<PlanTier, ModuleId[]> = {
   trial: ["controls", "evidence", "policies", "tasks", "settings"],
   basic: ["controls", "evidence", "policies", "tasks", "vault", "settings"],
   pro: ["controls", "evidence", "policies", "tasks", "vault", "audits", "reports", "team", "settings"],
+  scale: ["controls", "evidence", "policies", "tasks", "vault", "audits", "reports", "registers", "team", "settings"],
   enterprise: ["controls", "evidence", "policies", "tasks", "vault", "audits", "reports", "registers", "team", "billing", "settings", "admin"],
 };
 

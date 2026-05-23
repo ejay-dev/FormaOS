@@ -65,8 +65,18 @@ jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(async () => __server),
 }));
 
+// Audit 2026-05-23: previously this mock was identity (`(key) => key`),
+// which masked a bug in mapPlanKeyToTier — the real code now returns
+// the resolved key directly (was: `switch { default: return 'trial' }`),
+// so the mock must mirror real resolvePlanKey behaviour or 'unknown'
+// returns 'unknown' instead of falling through to the trial default.
 jest.mock('@/lib/plans', () => ({
-  resolvePlanKey: jest.fn((key: string | null) => key),
+  resolvePlanKey: jest.fn((key: string | null | undefined) => {
+    if (!key) return null;
+    const valid = ['basic', 'pro', 'scale', 'enterprise'];
+    const lower = key.toLowerCase();
+    return valid.includes(lower) ? lower : null;
+  }),
 }));
 
 jest.mock('@/app/app/actions/rbac', () => ({
@@ -100,6 +110,8 @@ describe('mapPlanKeyToTier (branches)', () => {
   it.each([
     ['basic', 'basic'],
     ['pro', 'pro'],
+    // Audit 2026-05-23: was silently → 'trial' under the prior switch default.
+    ['scale', 'scale'],
     ['enterprise', 'enterprise'],
     [null, 'trial'],
     [undefined, 'trial'],
