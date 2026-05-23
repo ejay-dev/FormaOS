@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 import { timingSafeEqual } from 'crypto';
 
 export const runtime = 'nodejs';
@@ -189,6 +190,10 @@ export async function GET(request: Request) {
       ...results,
     });
   } catch (error) {
+    captureRouteError('cron.compliance-check', error, {
+      method: request.method,
+      url: request.url,
+    });
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Unknown error',

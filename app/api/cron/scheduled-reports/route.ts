@@ -2,6 +2,7 @@ import { timingSafeEqual } from 'crypto';
 import { NextResponse } from 'next/server';
 
 import { runDueScheduledReports } from '@/lib/reports/scheduled-runner';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -46,6 +47,10 @@ export async function GET(request: Request) {
   try {
     return await handleScheduledReportsCron(request);
   } catch (error) {
+    captureRouteError('cron.scheduled-reports', error, {
+      method: 'GET',
+      url: request.url,
+    });
     return NextResponse.json(
       {
         ok: false,

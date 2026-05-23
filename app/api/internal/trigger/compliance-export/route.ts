@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyInternalTriggerRequest, jsonError } from '../_auth';
 import { processExportJob } from '@/lib/compliance/evidence-pack-export';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,10 +22,21 @@ export async function POST(request: NextRequest) {
     return jsonError('jobId is required', 400);
   }
 
-  const result = await processExportJob(jobId, {
-    workerId: 'trigger.dev',
-    maxAttempts: 3,
-  });
-
-  return NextResponse.json(result, { status: result.ok ? 200 : 500 });
+  try {
+    const result = await processExportJob(jobId, {
+      workerId: 'trigger.dev',
+      maxAttempts: 3,
+    });
+    return NextResponse.json(result, { status: result.ok ? 200 : 500 });
+  } catch (error) {
+    captureRouteError('internal.compliance-export', error, {
+      method: 'POST',
+      url: request.url,
+      jobId,
+    });
+    return jsonError(
+      error instanceof Error ? error.message : 'Internal server error',
+      500,
+    );
+  }
 }

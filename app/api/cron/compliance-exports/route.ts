@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { processExportJob } from '@/lib/compliance/evidence-pack-export';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 import { timingSafeEqual } from 'crypto';
 import { getRedisConfig } from '@/lib/redis/client';
 
@@ -83,6 +84,10 @@ export async function GET(request: Request) {
     return handleComplianceExportsCron(request);
   } catch (error) {
     console.error('[API] Unhandled error:', error);
+    captureRouteError('cron.compliance-exports', error, {
+      method: 'GET',
+      url: request.url,
+    });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -95,6 +100,10 @@ export async function POST(request: Request) {
     return handleComplianceExportsCron(request);
   } catch (error) {
     console.error('[API] Unhandled error:', error);
+    captureRouteError('cron.compliance-exports', error, {
+      method: 'POST',
+      url: request.url,
+    });
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

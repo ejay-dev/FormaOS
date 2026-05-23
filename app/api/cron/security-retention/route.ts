@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { timingSafeEqual } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { captureRouteError } from '@/lib/observability/with-route-observability';
 
 const log = routeLog('/api/cron/security-retention');
 
@@ -61,6 +62,10 @@ async function runSecurityRetention(request: Request) {
     });
   } catch (error) {
     log.error({ err: error }, "[SecurityRetentionCron] unexpected error:");
+    captureRouteError('cron.security-retention', error, {
+      method: request.method,
+      url: request.url,
+    });
     return NextResponse.json(
       { ok: false, error: 'internal_error' },
       { status: 500 },
