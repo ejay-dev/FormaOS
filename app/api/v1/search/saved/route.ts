@@ -30,8 +30,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    // v4-031: was on `search:read`. Creating a saved search is a write
+    // and should require the new `search:write` scope.
     const auth = await authenticateV1Request(req, {
-      requiredScopes: ['search:read'],
+      requiredScopes: ['search:write'],
     });
     if (!auth.ok) return auth.response;
 

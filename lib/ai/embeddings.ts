@@ -4,6 +4,7 @@
  */
 
 import OpenAI from 'openai';
+import { isAIKillSwitchEnabled } from './sdk-client';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -11,12 +12,24 @@ const EMBEDDING_MODEL = 'text-embedding-3-small';
 const MAX_CHUNK_TOKENS = 500;
 const CHUNK_OVERLAP_TOKENS = 50;
 const MAX_BATCH_SIZE = 100;
+const ZERO_EMBEDDING: number[] = new Array(1536).fill(0);
+
+function isEmbeddingDisabled(): boolean {
+  return isAIKillSwitchEnabled() || !process.env.OPENAI_API_KEY;
+}
 
 // ---- Embedding Generation ----
 
 export async function generateEmbedding(text: string): Promise<number[]> {
+  // v4-031: respect the AI kill switch + treat missing OPENAI_API_KEY as
+  // disabled instead of throwing inside the OpenAI client. Callers that
+  // already tolerate zero vectors (search indexing, no-op fallback)
+  // continue to work; new callers that need a hard signal can guard via
+  // isAIKillSwitchEnabled before calling.
+  if (isEmbeddingDisabled()) return [...ZERO_EMBEDDING];
+
   const cleaned = text.replace(/\n{3,}/g, '\n\n').trim();
-  if (!cleaned) return new Array(1536).fill(0);
+  if (!cleaned) return [...ZERO_EMBEDDING];
 
   const response = await openai.embeddings.create({
     model: EMBEDDING_MODEL,
@@ -27,6 +40,8 @@ export async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 export async function generateEmbeddings(texts: string[]): Promise<number[][]> {
+  if (isEmbeddingDisabled()) return texts.map(() => [...ZERO_EMBEDDING]);
+
   const results: number[][] = [];
 
   for (let i = 0; i < texts.length; i += MAX_BATCH_SIZE) {

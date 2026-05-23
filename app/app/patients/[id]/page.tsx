@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import {
   AlertTriangle,
@@ -12,6 +12,7 @@ import {
   NotebookPen,
   ClipboardList,
 } from 'lucide-react';
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import { normalizeRole } from '@/app/app/actions/rbac';
 import {
   createProgressNote,
@@ -125,7 +126,7 @@ export default async function PatientDetailPage({
   const canAdmin = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER'].includes(roleKey);
 
   if (!patientId) {
-    redirect('/app/patients');
+    notFound();
   }
 
   const [
@@ -199,7 +200,7 @@ export default async function PatientDetailPage({
   const evidence = evidenceData as EvidenceRow[] | null;
 
   if (!patient) {
-    redirect('/app/patients');
+    notFound();
   }
 
   // v4-027: HIPAA §164.312(b) requires read-event audit on PHI. The
@@ -243,6 +244,12 @@ export default async function PatientDetailPage({
 
   return (
     <div className="space-y-8 pb-12">
+      <Breadcrumbs
+        items={[
+          { label: 'Patients', href: '/app/patients' },
+          { label: patient.full_name },
+        ]}
+      />
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground">

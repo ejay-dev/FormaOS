@@ -97,8 +97,11 @@ test.describe('RBAC Enforcement', () => {
     }
   });
 
+  // v4-031: previously asserted `[200,403].toContain(status)`, so a
+  // privilege-escalation regression returning 200 to a non-admin/non-
+  // founder still passed. The workspace-seed login above runs as a
+  // standard member; these admin/founder endpoints must reject.
   test('Executive APIs require admin or owner role', async ({ page }) => {
-    // These APIs should return 403 for non-admin users
     const adminAPIs = [
       '/api/executive/posture',
       '/api/executive/frameworks',
@@ -107,14 +110,14 @@ test.describe('RBAC Enforcement', () => {
 
     for (const api of adminAPIs) {
       const response = await page.request.get(api);
-      // Should be 200 (if admin) or 403 (if not admin)
-      expect([200, 403]).toContain(response.status());
-      console.log(`${api}: ${response.status()}`);
+      expect(
+        response.status(),
+        `${api} should reject non-admin caller`,
+      ).toBe(403);
     }
   });
 
   test('Admin endpoints require founder access', async ({ page }) => {
-    // These should always return 403 for non-founders
     const founderAPIs = [
       '/api/admin/orgs',
       '/api/admin/support',
@@ -124,23 +127,16 @@ test.describe('RBAC Enforcement', () => {
 
     for (const api of founderAPIs) {
       const response = await page.request.get(api);
-      // Should be 403 for non-founders
-      expect([200, 403]).toContain(response.status());
-      if (response.status() === 403) {
-        console.log(`${api}: Correctly restricted to founders`);
-      } else {
-        console.log(`${api}: Accessible (user is founder)`);
-      }
+      expect(
+        response.status(),
+        `${api} should reject non-founder caller`,
+      ).toBe(403);
     }
   });
 
   test('Customer health rankings require founder access', async ({ page }) => {
     const response = await page.request.get('/api/customer-health/rankings');
-    expect([200, 403]).toContain(response.status());
-
-    if (response.status() === 403) {
-      console.log('Health rankings correctly restricted to founders');
-    }
+    expect(response.status()).toBe(403);
   });
 });
 

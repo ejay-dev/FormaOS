@@ -26,11 +26,31 @@ export const getCachedUserMembership = cache(
     } = await supabase.auth.getUser();
     if (!user) return null;
 
-    const { data, error } = await supabase
+    // v4-031: previously did `.maybeSingle()` over the unfiltered list,
+    // so multi-org users got arbitrary first-row context. Honour
+    // user_preferences.current_organization_id when set; otherwise fall
+    // back to the first membership (preserves the old behaviour for
+    // single-org users without surprising multi-org callers).
+    const { data: preference } = await supabase
+      .from('user_preferences')
+      .select('current_organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    const preferredOrgId =
+      (preference as { current_organization_id?: string } | null)
+        ?.current_organization_id ?? null;
+
+    let query = supabase
       .from('org_members')
       .select('organization_id, role')
       .eq('user_id', user.id)
-      .maybeSingle();
+      .limit(1);
+
+    if (preferredOrgId) {
+      query = query.eq('organization_id', preferredOrgId);
+    }
+
+    const { data, error } = await query.maybeSingle();
 
     if (error || !data?.organization_id) return null;
 

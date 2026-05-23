@@ -1,46 +1,17 @@
 import { NextResponse } from 'next/server';
-import { timingSafeEqual } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
+import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
 
 const log = routeLog('/api/cron/security-retention');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function isAuthorized(request: Request): boolean {
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) return false;
-
-  const token = request.headers
-    .get('authorization')
-    ?.replace(/^Bearer\s+/i, '')
-    .trim();
-
-  const tokenBuffer = Buffer.from(token ?? '', 'utf8');
-  const secretBuffer = Buffer.from(cronSecret, 'utf8');
-
-  return (
-    tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer)
-  );
-}
-
 async function runSecurityRetention(request: Request) {
-  if (!process.env.CRON_SECRET) {
-    return NextResponse.json(
-      { ok: false, error: 'cron_secret_missing' },
-      { status: 500 },
-    );
-  }
-
-  if (!isAuthorized(request)) {
-    return NextResponse.json(
-      { ok: false, error: 'unauthorized' },
-      { status: 401 },
-    );
-  }
+  const authError = verifyVercelCronRequest(request);
+  if (authError) return authError;
 
   try {
     const admin = createSupabaseAdminClient();

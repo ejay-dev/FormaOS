@@ -197,6 +197,19 @@ export function isEmployerRole(role: DatabaseRole): boolean {
 }
 
 /**
+ * Billing access is owner-only by design. Admin role explicitly excludes
+ * billing:view + billing:manage in ROLE_CAPABILITIES above. This single
+ * source removes the three inline `new Set(['owner'])` declarations that
+ * had drifted apart historically (one used to include `admin`, leading
+ * to UI succeeding then route 403-ing on the next click).
+ */
+export const BILLING_ROLES: ReadonlySet<DatabaseRole> = new Set(['owner']);
+
+export function isBillingRole(role: string | null | undefined): boolean {
+  return typeof role === 'string' && BILLING_ROLES.has(role as DatabaseRole);
+}
+
+/**
  * Helper: Check if role is employee
  */
 export function isEmployeeRole(role: DatabaseRole): boolean {

@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 import { fetchSystemState } from '@/lib/system-state/server';
@@ -27,6 +27,7 @@ import {
   updateCarePlanStatus,
   syncCarePlanProgress,
 } from '@/app/app/actions/care-operations';
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import {
   computePlanProgress,
   normalizeGoal,
@@ -147,7 +148,7 @@ export default async function CarePlanDetailPage({
     .eq('organization_id', state.organization.id)
     .maybeSingle();
 
-  if (!plan) redirect('/app/care-plans');
+  if (!plan) notFound();
 
   const { data: participant } = plan.client_id
     ? await db
@@ -209,10 +210,17 @@ export default async function CarePlanDetailPage({
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">
       <OnboardingBanner stepId="add-goal" scrollTargetId="care-plan-goals" />
+      <Breadcrumbs
+        items={[
+          { label: 'Care Plans', href: '/app/care-plans' },
+          { label: plan.title ?? 'Care Plan' },
+        ]}
+      />
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link
           href="/app/care-plans"
+          aria-label="Back to care plans"
           className="min-h-[44px] md:min-h-0 rounded-md p-1.5 hover:bg-muted"
         >
           <ArrowLeft className="h-5 w-5" />

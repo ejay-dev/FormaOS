@@ -24,7 +24,12 @@ test.describe('Billing handoff smoke', () => {
       data: { orgId: context.orgId },
     });
 
-    expect([200, 403, 429]).toContain(portalResponse.status());
+    // v4-031: was `[200,403,429]` which silently passed on 401 auth
+    // regressions. v4-025 changed the no-customer path to return 409
+    // `no_stripe_customer` instead of the infinite-loop simulated url,
+    // so the contract is: 200 (portal url) when Stripe is wired, 409
+    // when this org has no Stripe customer yet, or 429 if rate-limited.
+    expect([200, 409, 429]).toContain(portalResponse.status());
     if (portalResponse.ok()) {
       const payload = await portalResponse.json();
       expect(payload.url).toContain('/app/billing');

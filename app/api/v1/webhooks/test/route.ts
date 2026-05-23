@@ -5,8 +5,12 @@ import { sendTestWebhookEvent } from '@/lib/webhooks/delivery-queue';
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
+  // v4-031: test deliveries can be expensive (network egress, retries,
+  // downstream side-effects). Gate on requireAdmin so a non-admin holding
+  // `webhooks:manage` via a custom scope grant cannot trigger them.
   const auth = await authenticateV1Request(request, {
     requiredScopes: ['webhooks:manage'],
+    requireAdmin: true,
   });
 
   if (!auth.ok) {

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { timingSafeEqual } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getRedisConfig } from '@/lib/redis/client';
 import { processEnterpriseExportJob } from '@/lib/export/enterprise-export';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
+import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
 
 const DEFAULT_LIMIT = 2;
 
@@ -11,31 +11,9 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-function verifyCronSecret(request: Request): { ok: boolean; error?: string } {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.replace('Bearer ', '') ?? '';
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    return { ok: false, error: 'CRON_SECRET not configured' };
-  }
-
-  const tokenBuffer = Buffer.from(token, 'utf8');
-  const secretBuffer = Buffer.from(cronSecret, 'utf8');
-  const ok =
-    tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer);
-
-  if (!ok) return { ok: false, error: 'Unauthorized' };
-  return { ok: true };
-}
-
 async function handleEnterpriseExportsCron(request: Request) {
-  const auth = verifyCronSecret(request);
-  if (!auth.ok) {
-    const status = auth.error === 'CRON_SECRET not configured' ? 500 : 401;
-    return NextResponse.json({ ok: false, error: auth.error }, { status });
-  }
+  const authError = verifyVercelCronRequest(request);
+  if (authError) return authError;
 
   // If the Redis queue is configured, prefer the queue worker to avoid double-processing.
   const redisCfg = getRedisConfig();

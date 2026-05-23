@@ -1367,6 +1367,67 @@ export const STAFF_NAV: NavItem[] = [
 /**
  * Get the appropriate navigation based on industry and role
  */
+/**
+ * v4-031: orphan-route discovery map.
+ *
+ * Audit found 15 pages under /app/* that exist as real routes (most
+ * 100-300 LOC with proper data fetches) but appeared in zero industry
+ * sidebars — only reachable by typing the URL. Rather than top-level
+ * promoting them (sidebar noise) or deleting them (destructive),
+ * surface them as `children` on their natural parent nav item. Sub-
+ * nav already renders when the parent route is active.
+ *
+ * Keyed by parent `href` so this applies cleanly across all 8 industry
+ * navs without 8x duplication. New orphan routes added later should
+ * extend this map, not the per-industry nav exports.
+ */
+const ORPHAN_ROUTE_CHILDREN: Record<string, NavSubItem[]> = {
+  '/app': [{ name: 'Builder', href: '/app/dashboard/builder' }],
+  '/app/care-plans': [
+    { name: 'Plan Journey', href: '/app/care-plans/journey' },
+  ],
+  '/app/controls': [{ name: 'Journey View', href: '/app/controls/journey' }],
+  '/app/incidents': [
+    { name: 'Analytics', href: '/app/incidents/analytics' },
+  ],
+  '/app/reports': [
+    { name: 'Trends', href: '/app/reports/trends' },
+    { name: 'Custom Reports', href: '/app/reports/custom' },
+  ],
+  '/app/executive': [
+    { name: 'Group View', href: '/app/executive/group' },
+  ],
+  '/app/policies': [
+    { name: 'Version History', href: '/app/policies/versions' },
+  ],
+  '/app/registers': [
+    { name: 'Training Register', href: '/app/registers/training' },
+  ],
+  '/app/participants': [
+    { name: 'Import', href: '/app/participants/import' },
+  ],
+  '/app/settings': [
+    { name: 'Notifications', href: '/app/settings/notifications' },
+    { name: 'Integrations', href: '/app/settings/integrations' },
+    { name: 'Auditor Access', href: '/app/settings/auditor-access' },
+    { name: 'Email History', href: '/app/settings/email-history' },
+    { name: 'Executive Digest', href: '/app/settings/executive-digest' },
+  ],
+};
+
+function withOrphanChildren(navigation: NavItem[]): NavItem[] {
+  return navigation.map((item) => {
+    const extra = ORPHAN_ROUTE_CHILDREN[item.href];
+    if (!extra) return item;
+    const existingHrefs = new Set((item.children ?? []).map((c) => c.href));
+    const merged = [
+      ...(item.children ?? []),
+      ...extra.filter((c) => !existingHrefs.has(c.href)),
+    ];
+    return { ...item, children: merged };
+  });
+}
+
 export function getIndustryNavigation(
   industry: string | null | undefined,
   role: string,
@@ -1408,6 +1469,9 @@ export function getIndustryNavigation(
     default:
       navigation = DEFAULT_ADMIN_NAV;
   }
+
+  // v4-031: surface previously-orphan routes via parent sub-nav.
+  navigation = withOrphanChildren(navigation);
 
   // Extract unique categories in order
   const categories = [...new Set(navigation.map((item) => item.category))];

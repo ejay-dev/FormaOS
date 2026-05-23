@@ -17,6 +17,31 @@ export type EntitlementKey =
   | 'directory_sync'
   | 'retention_governance';
 
+/**
+ * v4-031: entitlements safe to grant during the `pending_checkout`
+ * grace window. The status sits between "user clicked Subscribe" and
+ * "Stripe webhook arrived" — usually under 60s, occasionally longer
+ * if Stripe is slow or the webhook is briefly stuck. Granting full
+ * Pro for up to PENDING_CHECKOUT_GRACE_DAYS (default 1 day) lets a
+ * user click Subscribe, abandon, and use Pro for a day with zero
+ * payment.
+ *
+ * Read/reporting entitlements are safe during grace — they don't
+ * burn variable cost (no LLM calls, no Stripe API, no export queue).
+ * AI, automation, exec/custom reports, SSO and retention all
+ * involve either real spend or contractually-billable surfaces;
+ * gate those behind a confirmed webhook landing.
+ */
+const PENDING_CHECKOUT_GRACE_ENTITLEMENTS: ReadonlySet<EntitlementKey> =
+  new Set([
+    'audit_export',
+    'reports',
+    'framework_evaluations',
+    'certifications',
+    'team_limit',
+    'form_analytics',
+  ]);
+
 export type PlanEntitlementDefinition = {
   enabled: EntitlementKey[];
   limits: Record<string, number | null>;
@@ -131,7 +156,16 @@ export async function requireEntitlement(
   orgId: string,
   featureKey: EntitlementKey,
 ) {
-  await requireActiveSubscription(orgId);
+  const { status } = await requireActiveSubscription(orgId);
+  // v4-031: pending_checkout grace gates write-tier features.
+  if (
+    status === 'pending_checkout' &&
+    !PENDING_CHECKOUT_GRACE_ENTITLEMENTS.has(featureKey)
+  ) {
+    throw new Error(
+      `Entitlement requires confirmed subscription: ${featureKey}`,
+    );
+  }
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('org_entitlements')
@@ -153,7 +187,15 @@ export async function getEntitlementLimit(
   orgId: string,
   featureKey: EntitlementKey,
 ) {
-  await requireActiveSubscription(orgId);
+  const { status } = await requireActiveSubscription(orgId);
+  if (
+    status === 'pending_checkout' &&
+    !PENDING_CHECKOUT_GRACE_ENTITLEMENTS.has(featureKey)
+  ) {
+    throw new Error(
+      `Entitlement requires confirmed subscription: ${featureKey}`,
+    );
+  }
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('org_entitlements')

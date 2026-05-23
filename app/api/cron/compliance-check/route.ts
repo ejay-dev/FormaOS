@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
-import { timingSafeEqual } from 'crypto';
+import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -15,27 +15,8 @@ export const maxDuration = 60;
  * 4. Update org compliance scores
  */
 export async function GET(request: Request) {
-  // Verify cron secret
-  const authHeader = request.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    return NextResponse.json(
-      { error: 'CRON_SECRET not configured' },
-      { status: 500 },
-    );
-  }
-
-  const token = authHeader?.replace('Bearer ', '') ?? '';
-  const tokenBuffer = Buffer.from(token, 'utf8');
-  const secretBuffer = Buffer.from(cronSecret, 'utf8');
-  const ok =
-    tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer);
-
-  if (!ok) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const authError = verifyVercelCronRequest(request);
+  if (authError) return authError;
 
   const admin = createSupabaseAdminClient();
   const results = {

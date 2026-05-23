@@ -1,6 +1,20 @@
 /**
- * Comprehensive Accessibility Audit Script
- * Tests WCAG 2.1 AA compliance using multiple tools
+ * Comprehensive Accessibility Audit Script — public-routes only.
+ *
+ * v4-031: previously this script seeded a literal `mock_token_for_a11y_testing`
+ * value into localStorage and tried to scan /app/* and /admin. Supabase
+ * SSR rejected the forged token, so every "authenticated" scan actually
+ * ran against the /auth/signin redirect — yielding green axe reports
+ * for pages the user never reached.
+ *
+ * Authenticated-route a11y coverage now lives in e2e/accessibility.spec.ts,
+ * which uses the real workspace-seed bootstrap (helpers/workspace-seed.ts)
+ * and properly gates on SUPABASE_SERVICE_ROLE_KEY. This standalone Node
+ * script keeps its public-routes value-add: cross-browser axe + keyboard
+ * scans across three viewports, which the Playwright spec doesn't do.
+ *
+ * Do NOT re-add authenticated routes here unless you also wire the real
+ * workspace-seed helper — fake JWTs silently pass.
  */
 
 const playwright = require('playwright');
@@ -17,60 +31,18 @@ const config = {
     { width: 768, height: 1024, name: 'tablet' },
     { width: 1920, height: 1080, name: 'desktop' },
   ],
+  // Public routes only — see file header. Authenticated coverage is in
+  // e2e/accessibility.spec.ts which uses the real workspace-seed helper.
   pages: [
-    { url: '/', name: 'homepage', auth: false },
-    { url: '/pricing', name: 'pricing', auth: false },
-    { url: '/product', name: 'product', auth: false },
-    { url: '/security', name: 'security', auth: false },
-    { url: '/contact', name: 'contact', auth: false },
-    { url: '/auth/signin', name: 'auth-signin', auth: false },
-    { url: '/auth/signup', name: 'auth-signup', auth: false },
-    { url: '/app', name: 'dashboard', auth: true },
-    { url: '/app/policies', name: 'policies', auth: true },
-    { url: '/app/tasks', name: 'tasks', auth: true },
-    { url: '/app/team', name: 'team', auth: true },
-    { url: '/admin', name: 'admin', auth: 'founder' },
+    { url: '/', name: 'homepage' },
+    { url: '/pricing', name: 'pricing' },
+    { url: '/product', name: 'product' },
+    { url: '/security', name: 'security' },
+    { url: '/contact', name: 'contact' },
+    { url: '/auth/signin', name: 'auth-signin' },
+    { url: '/auth/signup', name: 'auth-signup' },
   ],
 };
-
-/**
- * Setup authentication for protected pages
- */
-async function setupAuth(page, authType) {
-  if (authType === true) {
-    // Regular user authentication
-    await page.evaluate(() => {
-      localStorage.setItem(
-        'supabase.auth.token',
-        JSON.stringify({
-          access_token: 'mock_token_for_a11y_testing',
-          user: {
-            id: 'test-user-id',
-            email: 'test@formaos.com',
-            role: 'authenticated',
-          },
-        }),
-      );
-    });
-  } else if (authType === 'founder') {
-    // Founder authentication
-    await page.evaluate(() => {
-      localStorage.setItem(
-        'supabase.auth.token',
-        JSON.stringify({
-          access_token: 'mock_founder_token_for_a11y_testing',
-          user: {
-            id: 'founder-user-id',
-            email: 'ejazhussaini313@gmail.com',
-            role: 'authenticated',
-            app_metadata: { role: 'founder' },
-          },
-        }),
-      );
-      localStorage.setItem('formaos.founder_access', 'true');
-    });
-  }
-}
 
 /**
  * Legacy Pa11y compatibility shim.
@@ -100,11 +72,6 @@ async function runAxeTest(browser, url, options = {}) {
   });
 
   try {
-    // Setup authentication if needed
-    if (options.auth) {
-      await setupAuth(page, options.auth);
-    }
-
     await page.goto(url, { waitUntil: 'networkidle' });
 
     // Wait for page to be ready
@@ -159,10 +126,6 @@ async function runKeyboardNavigationTest(browser, url, options = {}) {
   });
 
   try {
-    if (options.auth) {
-      await setupAuth(page, options.auth);
-    }
-
     await page.goto(url, { waitUntil: 'networkidle' });
     await page.waitForTimeout(2000);
 
@@ -326,16 +289,8 @@ async function runAccessibilityAudit() {
           `  📱 Viewport: ${viewport.name} (${viewport.width}x${viewport.height})`,
         );
 
-        // Pa11y test
-        const pa11yResult = await runPa11yTest(fullUrl, {
-          viewport: viewport,
-          actions: pageConfig.auth
-            ? [
-                'wait for element body to be visible',
-                'evaluate script window.localStorage.setItem("supabase.auth.token", JSON.stringify({access_token: "mock_token", user: {id: "test-user", email: "test@formaos.com"}}))',
-              ]
-            : [],
-        });
+        // Pa11y test (legacy compat shim — see runPa11yTest)
+        const pa11yResult = await runPa11yTest(fullUrl, { viewport });
 
         allResults.push({
           ...pa11yResult,
@@ -347,8 +302,7 @@ async function runAccessibilityAudit() {
         // Axe-core tests for each browser
         for (const browserName of config.browsers) {
           const axeResult = await runAxeTest(browsers[browserName], fullUrl, {
-            viewport: viewport,
-            auth: pageConfig.auth,
+            viewport,
           });
 
           allResults.push({
@@ -363,10 +317,7 @@ async function runAccessibilityAudit() {
             const keyboardResult = await runKeyboardNavigationTest(
               browsers[browserName],
               fullUrl,
-              {
-                viewport: viewport,
-                auth: pageConfig.auth,
-              },
+              { viewport },
             );
 
             allResults.push({

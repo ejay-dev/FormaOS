@@ -1,5 +1,6 @@
 export const OAUTH_STATE_COOKIE_NAME = 'formaos_oauth_state';
-export const OAUTH_STATE_TTL_SECONDS = 60 * 10;
+// v4-031: OWASP guidance is ≤5 min for CSRF state tokens.
+export const OAUTH_STATE_TTL_SECONDS = 60 * 5;
 
 export function buildGoogleOAuthRedirect(redirectTo: string) {
   const state = crypto.randomUUID();

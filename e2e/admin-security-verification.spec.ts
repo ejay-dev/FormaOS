@@ -91,9 +91,10 @@ test.describe('SECURITY AUDIT: Environment Configuration', () => {
       timeout: 30000,
     });
 
-    expect(response?.status()).toBeLessThan(500);
+    // v4-031: `toBeLessThan(500)` accepted anything ≤499 including 4xx.
+    // Marketing root and /api/health should return 200 or a redirect.
+    expect([200, 301, 302, 307, 308]).toContain(response?.status() ?? 0);
 
-    // Check that sensitive routes don't expose data
     const sensitiveRoutes = ['/api/health', '/'];
 
     for (const route of sensitiveRoutes) {
@@ -101,10 +102,11 @@ test.describe('SECURITY AUDIT: Environment Configuration', () => {
         waitUntil: 'domcontentloaded',
         timeout: 60000,
       });
-
-      // Should not return server error
-      const status = resp?.status() ?? 500;
-      expect(status).toBeLessThan(500);
+      const status = resp?.status() ?? 0;
+      expect(
+        [200, 301, 302, 307, 308],
+        `${route} should return 200 or redirect`,
+      ).toContain(status);
     }
   });
 

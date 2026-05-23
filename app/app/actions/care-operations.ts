@@ -999,7 +999,8 @@ export async function updateGoal(
     const idx = goals.findIndex((g) => g.id === goalId);
     if (idx === -1) return actionError(new Error('Goal not found'));
 
-    const next = normalizeGoal({ ...goals[idx], ...patch });
+    const before = goals[idx];
+    const next = normalizeGoal({ ...before, ...patch });
 
     if (next.status === 'achieved') next.progress_percentage = 100;
     if (next.status === 'pending' && patch.progress_percentage === undefined) {
@@ -1013,6 +1014,35 @@ export async function updateGoal(
       goals: updatedGoals,
       supports,
     });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user?.id ?? null,
+        actorRole: null,
+        entityType: 'care_goal',
+        entityId: goalId,
+        actionType: 'CARE_GOAL_UPDATED',
+        beforeState: {
+          plan_id: planId,
+          title: before.title,
+          status: before.status,
+          progress_percentage: before.progress_percentage,
+        },
+        afterState: {
+          plan_id: planId,
+          title: next.title,
+          status: next.status,
+          progress_percentage: next.progress_percentage,
+        },
+        reason: 'update_care_goal',
+      },
+      { required: true },
+    );
+
     return { success: true as const };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
@@ -1023,15 +1053,43 @@ export async function updateGoal(
 export async function deleteGoal(planId: string, goalId: string) {
   try {
     const { supabase, orgId, goals, supports } = await loadPlanForWrite(planId);
+    const removed = goals.find((g) => g.id === goalId);
     const remainingGoals = goals.filter((g) => g.id !== goalId);
-    if (remainingGoals.length === goals.length) {
+    if (remainingGoals.length === goals.length || !removed) {
       return actionError(new Error('Goal not found'));
     }
     const remainingSupports = supports.filter((s) => s.goal_id !== goalId);
+    const cascadedSupports = supports
+      .filter((s) => s.goal_id === goalId)
+      .map((s) => s.id);
     await persistPlan(supabase, planId, orgId, {
       goals: remainingGoals,
       supports: remainingSupports,
     });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user?.id ?? null,
+        actorRole: null,
+        entityType: 'care_goal',
+        entityId: goalId,
+        actionType: 'CARE_GOAL_DELETED',
+        beforeState: {
+          plan_id: planId,
+          title: removed.title,
+          status: removed.status,
+          progress_percentage: removed.progress_percentage,
+          cascaded_support_ids: cascadedSupports,
+        },
+        reason: 'delete_care_goal',
+      },
+      { required: true },
+    );
+
     return { success: true as const };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
@@ -1111,11 +1169,43 @@ export async function updateSupport(
     const idx = supports.findIndex((s) => s.id === supportId);
     if (idx === -1) return actionError(new Error('Support not found'));
 
-    const next = normalizeSupport({ ...supports[idx], ...patch });
+    const before = supports[idx];
+    const next = normalizeSupport({ ...before, ...patch });
     const updated = [...supports];
     updated[idx] = next;
 
     await persistPlan(supabase, planId, orgId, { supports: updated });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user?.id ?? null,
+        actorRole: null,
+        entityType: 'care_support',
+        entityId: supportId,
+        actionType: 'CARE_SUPPORT_UPDATED',
+        beforeState: {
+          plan_id: planId,
+          goal_id: before.goal_id,
+          assigned_to: before.assigned_to,
+          frequency: before.frequency,
+          status: before.status,
+        },
+        afterState: {
+          plan_id: planId,
+          goal_id: next.goal_id,
+          assigned_to: next.assigned_to,
+          frequency: next.frequency,
+          status: next.status,
+        },
+        reason: 'update_care_support',
+      },
+      { required: true },
+    );
+
     return { success: true as const };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
@@ -1126,11 +1216,36 @@ export async function updateSupport(
 export async function deleteSupport(planId: string, supportId: string) {
   try {
     const { supabase, orgId, supports } = await loadPlanForWrite(planId);
+    const removed = supports.find((s) => s.id === supportId);
     const remaining = supports.filter((s) => s.id !== supportId);
-    if (remaining.length === supports.length) {
+    if (remaining.length === supports.length || !removed) {
       return actionError(new Error('Support not found'));
     }
     await persistPlan(supabase, planId, orgId, { supports: remaining });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user?.id ?? null,
+        actorRole: null,
+        entityType: 'care_support',
+        entityId: supportId,
+        actionType: 'CARE_SUPPORT_DELETED',
+        beforeState: {
+          plan_id: planId,
+          goal_id: removed.goal_id,
+          assigned_to: removed.assigned_to,
+          frequency: removed.frequency,
+          status: removed.status,
+        },
+        reason: 'delete_care_support',
+      },
+      { required: true },
+    );
+
     return { success: true as const };
   } catch (error) {
     if (isNextInternalError(error)) throw error;
@@ -1152,11 +1267,34 @@ export async function syncCarePlanProgress(planId: string) {
 
     if (!nextStatus) return { success: true as const };
 
+    const previousStatus = plan.status;
     await supabase
       .from('org_care_plans')
       .update({ status: nextStatus, updated_at: new Date().toISOString() })
       .eq('id', planId)
       .eq('organization_id', orgId);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    await logAuditEvent(
+      {
+        organizationId: orgId,
+        actorUserId: user?.id ?? null,
+        actorRole: null,
+        entityType: 'care_plan',
+        entityId: planId,
+        actionType: 'CARE_PLAN_STATUS_SYNCED',
+        beforeState: { status: previousStatus },
+        afterState: {
+          status: nextStatus,
+          goal_count: goals.length,
+          all_achieved: allAchieved,
+        },
+        reason: 'sync_care_plan_progress',
+      },
+      { required: true },
+    );
 
     revalidatePath(`/app/care-plans/${planId}`);
     return { success: true as const, status: nextStatus };

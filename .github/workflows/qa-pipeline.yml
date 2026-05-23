@@ -119,13 +119,15 @@ jobs:
 
       - run: npm ci
 
-      - name: Run npm audit
-        run: npm audit --audit-level=high
-        continue-on-error: true
+      # v4-031: blocking. npm audit / Snyk / CodeQL were `continue-on-error: true`
+      # for months, making this whole job decorative. High-severity CVEs in
+      # production dependencies should fail the merge. Dev-only CVEs are
+      # excluded via --omit=dev so dev-dependency churn doesn't block PRs.
+      - name: Run npm audit (production deps)
+        run: npm audit --audit-level=high --omit=dev
 
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@9adf32b1121593767fc3c057af55b55db032dc04 # pin to SHA
-        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -139,7 +141,6 @@ jobs:
       - name: CodeQL Analyze
         if: github.event_name != 'pull_request'
         uses: github/codeql-action/analyze@v3
-        continue-on-error: true
 
   accessibility-tests:
     name: Accessibility Tests

@@ -7,6 +7,7 @@
  * orgId.
  */
 
+import * as Sentry from '@sentry/nextjs';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireEntitlement } from '@/lib/billing/entitlements';
@@ -435,49 +436,89 @@ export async function evaluateFrameworkControlsCore(
       missingMandatoryCodes,
     });
 
-    try {
-      await supabase.from('org_control_evaluations').insert({
-        organization_id: orgId,
-        control_type: 'framework_snapshot',
-        control_key: `framework:${framework.code}:${evaluatedAt}`,
-        required: true,
-        status: snapshotStatus,
-        last_evaluated_at: evaluatedAt,
-        framework_id: framework.id,
-        compliance_score: score,
-        total_controls: controls.length,
-        satisfied_controls: evaluations.filter((e) => e.status === 'compliant')
-          .length,
-        missing_controls: evaluations.filter(
-          (e) => e.status === 'non_compliant',
-        ).length,
-        missing_control_codes: missingMandatoryCodes,
-        partial_control_codes: atRiskCodes,
-        evaluated_by: null,
-        snapshot_hash: stableHash(snapshotPayload),
-        evaluated_at: evaluatedAt,
-        details: {
-          framework_code: framework.code,
-          missing_mandatory_codes: missingMandatoryCodes,
-        },
-      });
-    } catch {
-      // best-effort only
+    // v4-031: previously these two writes silently swallowed any error,
+    // so a schema mismatch returned a "successful" evaluation with no
+    // snapshot and no posture row. Capture to Sentry with structured
+    // context so on-call can correlate the missing snapshot with the
+    // run that produced it. Evaluation continues — these are reporting
+    // tables, not the source of truth for control state.
+    {
+      const { error: snapshotError } = await supabase
+        .from('org_control_evaluations')
+        .insert({
+          organization_id: orgId,
+          control_type: 'framework_snapshot',
+          control_key: `framework:${framework.code}:${evaluatedAt}`,
+          required: true,
+          status: snapshotStatus,
+          last_evaluated_at: evaluatedAt,
+          framework_id: framework.id,
+          compliance_score: score,
+          total_controls: controls.length,
+          satisfied_controls: evaluations.filter(
+            (e) => e.status === 'compliant',
+          ).length,
+          missing_controls: evaluations.filter(
+            (e) => e.status === 'non_compliant',
+          ).length,
+          missing_control_codes: missingMandatoryCodes,
+          partial_control_codes: atRiskCodes,
+          evaluated_by: null,
+          snapshot_hash: stableHash(snapshotPayload),
+          evaluated_at: evaluatedAt,
+          details: {
+            framework_code: framework.code,
+            missing_mandatory_codes: missingMandatoryCodes,
+          },
+        });
+      if (snapshotError) {
+        Sentry.captureException(snapshotError, {
+          tags: {
+            module: 'compliance.evaluator',
+            operation: 'snapshot_insert',
+            framework_code: framework.code,
+          },
+          extra: {
+            orgId,
+            correlationId,
+            evaluatedAt,
+            controlCount: controls.length,
+          },
+        });
+        console.warn(
+          '[compliance.evaluator] snapshot insert failed',
+          snapshotError.message,
+        );
+      }
     }
 
-    try {
-      await supabase.from('org_compliance_status').upsert({
-        organization_id: orgId,
-        last_framework_code: framework.code,
-        last_score: score,
-        last_total_controls: controls.length,
-        last_missing_controls: nonCompliantCount,
-        last_partial_controls: atRiskCount,
-        last_evaluated_at: evaluatedAt,
-        updated_at: new Date().toISOString(),
-      });
-    } catch {
-      // ignore if table missing
+    {
+      const { error: statusError } = await supabase
+        .from('org_compliance_status')
+        .upsert({
+          organization_id: orgId,
+          last_framework_code: framework.code,
+          last_score: score,
+          last_total_controls: controls.length,
+          last_missing_controls: nonCompliantCount,
+          last_partial_controls: atRiskCount,
+          last_evaluated_at: evaluatedAt,
+          updated_at: new Date().toISOString(),
+        });
+      if (statusError) {
+        Sentry.captureException(statusError, {
+          tags: {
+            module: 'compliance.evaluator',
+            operation: 'status_upsert',
+            framework_code: framework.code,
+          },
+          extra: { orgId, correlationId, evaluatedAt },
+        });
+        console.warn(
+          '[compliance.evaluator] status upsert failed',
+          statusError.message,
+        );
+      }
     }
 
     const previousScore =
@@ -556,8 +597,23 @@ export async function evaluateFrameworkControlsCore(
         },
         reason: 'evaluation',
       });
-    } catch {
-      // best-effort logging
+    } catch (auditError) {
+      // v4-031: SOC 2 CC7.2 requires evaluation events be logged.
+      // Capture the failure but do not break the evaluation result —
+      // the score is already returned to the caller and persisted
+      // above. On-call must triage these in Sentry.
+      Sentry.captureException(auditError, {
+        tags: {
+          module: 'compliance.evaluator',
+          operation: 'audit_log',
+          framework_code: framework.code,
+        },
+        extra: { orgId, correlationId, evaluatedAt },
+      });
+      console.warn(
+        '[compliance.evaluator] FRAMEWORK_EVALUATED audit log failed',
+        auditError instanceof Error ? auditError.message : auditError,
+      );
     }
 
     return {

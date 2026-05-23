@@ -5,6 +5,7 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 import { getStripeClient } from '@/lib/billing/stripe';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
+import { isBillingRole } from '@/lib/roles';
 
 const log = routeLog('/api/billing/portal');
 
@@ -45,11 +46,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Owner-only by design — see lib/roles.ts. Admin role explicitly excludes
-    // billing:view + billing:manage; the previous {owner, admin} set
-    // contradicted that documented intent.
-    const BILLING_ROLES = new Set(['owner']);
-    if (!membership?.role || !BILLING_ROLES.has(membership.role)) {
+    if (!isBillingRole(membership?.role ?? null)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

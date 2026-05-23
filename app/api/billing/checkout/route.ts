@@ -7,17 +7,12 @@ import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
 import { shouldOpenBillingPortalForCheckout } from '@/lib/billing/checkout-routing';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
+import { isBillingRole } from '@/lib/roles';
 
 const CheckoutSchema = z.object({
   orgId: z.string().uuid().optional(),
   planId: z.enum(['basic', 'pro', 'scale', 'enterprise']),
 });
-
-// Owner-only by design. lib/roles.ts ROLE_CAPABILITIES['admin'] explicitly
-// omits billing:view + billing:manage; the previous {owner, admin} set
-// contradicted that. Admins keep every other capability — org settings, team,
-// audit, compliance — but billing stays with the owner.
-const BILLING_ROLES = new Set(['owner']);
 
 const log = routeLog('/api/billing/checkout');
 
@@ -65,7 +60,7 @@ export async function POST(request: Request) {
     if (requestedOrgId && requestedOrgId !== userOrgId) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-    if (!BILLING_ROLES.has(userRole)) {
+    if (!isBillingRole(userRole)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

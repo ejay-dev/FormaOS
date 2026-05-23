@@ -125,7 +125,10 @@ test.describe('Report Export API', () => {
       '/api/reports/export?type=soc2&format=json&mode=sync',
     );
 
-    expect([200, 401, 403]).toContain(response.status());
+    // v4-031: previously `[200,401,403].toContain` — auth regressions
+    // returned 401 and the test silently passed. The workspace-seed
+    // login above grants the auth context; 200 is the contract.
+    expect(response.status()).toBe(200);
 
     if (response.status() === 200) {
       const data = unwrapReportPayload(await response.json());
@@ -142,7 +145,10 @@ test.describe('Report Export API', () => {
       '/api/reports/export?type=iso27001&format=json&mode=sync',
     );
 
-    expect([200, 401, 403]).toContain(response.status());
+    // v4-031: previously `[200,401,403].toContain` — auth regressions
+    // returned 401 and the test silently passed. The workspace-seed
+    // login above grants the auth context; 200 is the contract.
+    expect(response.status()).toBe(200);
 
     if (response.status() === 200) {
       const data = unwrapReportPayload(await response.json());
@@ -159,7 +165,10 @@ test.describe('Report Export API', () => {
       '/api/reports/export?type=ndis&format=json&mode=sync',
     );
 
-    expect([200, 401, 403]).toContain(response.status());
+    // v4-031: previously `[200,401,403].toContain` — auth regressions
+    // returned 401 and the test silently passed. The workspace-seed
+    // login above grants the auth context; 200 is the contract.
+    expect(response.status()).toBe(200);
 
     if (response.status() === 200) {
       const data = unwrapReportPayload(await response.json());
@@ -176,7 +185,10 @@ test.describe('Report Export API', () => {
       '/api/reports/export?type=hipaa&format=json&mode=sync',
     );
 
-    expect([200, 401, 403]).toContain(response.status());
+    // v4-031: previously `[200,401,403].toContain` — auth regressions
+    // returned 401 and the test silently passed. The workspace-seed
+    // login above grants the auth context; 200 is the contract.
+    expect(response.status()).toBe(200);
 
     if (response.status() === 200) {
       const data = unwrapReportPayload(await response.json());
@@ -195,7 +207,10 @@ test.describe('Report Export API', () => {
       '/api/reports/export?type=soc2&format=pdf&mode=sync',
     );
 
-    expect([200, 401, 403]).toContain(response.status());
+    // v4-031: previously `[200,401,403].toContain` — auth regressions
+    // returned 401 and the test silently passed. The workspace-seed
+    // login above grants the auth context; 200 is the contract.
+    expect(response.status()).toBe(200);
 
     if (response.status() === 200) {
       const contentType = response.headers()['content-type'];

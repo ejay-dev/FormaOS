@@ -1,5 +1,19 @@
 -- v3-010 consolidation: orgs ↔ organizations drift.
 --
+-- ⚠️  ALREADY APPLIED IN PRODUCTION (2026-05-23). DO NOT RE-RUN.
+--
+-- v4-031 disposition note: an audit flagged the lack of a backup-table
+-- path in front of the destructive DELETEs in steps 1 and 2. That gap
+-- is moot for production (the rows are already gone — there is nothing
+-- left to back up), but a fresh `supabase db reset` against a populated
+-- environment would still wipe ~3,211 control_tasks + ~1,077 orgs rows
+-- with no archive. The numeric pre-conditions in the comment below
+-- were specific to the production snapshot at apply time — they will
+-- almost certainly not match any other environment. Treat this file
+-- as historical record; any future re-consolidation needs a fresh
+-- audit + a `CREATE TABLE … AS SELECT …` archive step before the
+-- DELETEs.
+--
 -- Audit-traced 2026-05-22 (re-verified 2026-05-23 in prod):
 --   3017 orgs rows in BOTH tables (canonical)
 --   1077 orgs-only rows: empty test fixtures, 0 FK refs across the 8

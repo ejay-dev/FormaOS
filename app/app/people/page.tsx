@@ -17,6 +17,7 @@ import {
   type PeopleOverviewMember,
 } from '@/app/app/actions/people';
 import { useAppStore } from '@/lib/stores/app';
+import { TeamEmptyState } from '@/components/empty-states';
 
 const ALL_FILTER = 'all';
 
@@ -197,14 +198,24 @@ export default function PeoplePage() {
             </p>
           </div>
         ) : filteredMembers.length === 0 ? (
-          <div className="rounded-3xl border border-edge-2 bg-surface-1 py-14 text-center">
-            <p className="text-sm font-semibold text-foreground/90">
-              No personnel match the current filters.
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Adjust search terms or filters and try again.
-            </p>
-          </div>
+          // v4-031: distinguish "no data at all" (open the invite modal)
+          // from "filtered to none" (adjust filters). Previously the
+          // empty-org case rendered the filter-adjustment copy, which
+          // is wrong + dead-ends new orgs with no affordance.
+          members.length === 0 ? (
+            <div className="rounded-lg border border-border bg-card">
+              <TeamEmptyState onInviteAction={() => setIsModalOpen(true)} />
+            </div>
+          ) : (
+            <div className="rounded-3xl border border-edge-2 bg-surface-1 py-14 text-center">
+              <p className="text-sm font-semibold text-foreground/90">
+                No personnel match the current filters.
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Adjust search terms or filters and try again.
+              </p>
+            </div>
+          )
         ) : (
           filteredMembers.map((member) => {
             const complianceStatus = (
