@@ -516,6 +516,7 @@ test.describe('E) Edge Cases', () => {
         // Cleanup
         await admin.from('org_members').delete().eq('organization_id', org.id);
         await admin.from('organizations').delete().eq('id', org.id);
+        await admin.from('orgs').delete().eq('id', org.id);
       }
 
       await admin.auth.admin.deleteUser(userId);

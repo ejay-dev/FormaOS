@@ -46,6 +46,7 @@ test.afterAll(async () => {
       await admin.from('org_subscriptions').delete().eq('organization_id', orgId);
       await admin.from('org_members').delete().eq('organization_id', orgId);
       await admin.from('organizations').delete().eq('id', orgId);
+      await admin.from('orgs').delete().eq('id', orgId);
     } catch {
       // ignore
     }

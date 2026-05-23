@@ -411,6 +411,7 @@ test.describe('Onboarding first-session flow', () => {
           .eq('organization_id', orgId);
         await admin.from('org_members').delete().eq('organization_id', orgId);
         await admin.from('organizations').delete().eq('id', orgId);
+        await admin.from('orgs').delete().eq('id', orgId);
       }
       if (userId) {
         await admin.auth.admin.deleteUser(userId);
