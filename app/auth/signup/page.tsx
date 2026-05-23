@@ -12,10 +12,6 @@ import {
 import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Star } from 'lucide-react';
 import { Logo } from '@/components/brand/Logo';
-import {
-  buildGoogleOAuthRedirect,
-  persistOAuthStateCookie,
-} from '@/lib/auth/oauth-state';
 // OAuth consent branding can be further customized via Supabase Auth custom domains.
 // See: https://supabase.com/docs/guides/auth/custom-domains
 
@@ -125,25 +121,26 @@ function SignUpContent() {
       : `${appBase}/auth/callback${journeyParam ? `?journey=${encodeURIComponent(journeyParam)}` : ''}`;
     const supabase = createSupabaseClient();
     try {
-      // v4-026: prefer the server-side httpOnly state cookie path;
-      // fall back to client-side if the init endpoint is down.
-      let oauthRedirect: { state: string; redirectTo: string };
-      try {
-        const initRes = await fetch('/api/auth/oauth/init', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ provider: 'google', redirectTo }),
-        });
-        if (initRes.ok) {
-          const { url } = (await initRes.json()) as { url: string };
-          oauthRedirect = { state: '', redirectTo: url };
-        } else {
-          throw new Error('oauth_init_failed');
-        }
-      } catch {
-        oauthRedirect = buildGoogleOAuthRedirect(redirectTo);
-        persistOAuthStateCookie(oauthRedirect.state);
+      // Audit 2026-05-23: removed the document.cookie fallback — same
+      // rationale as SignInPageContent.tsx. v4-026 hardened OAuth state
+      // to httpOnly; the silent fallback re-downgraded it whenever the
+      // init endpoint hiccupped. Fail visibly instead.
+      const initRes = await fetch('/api/auth/oauth/init', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider: 'google', redirectTo }),
+      });
+      if (!initRes.ok) {
+        const message =
+          initRes.status === 503
+            ? 'OAuth is temporarily unavailable. Please try again in a moment, or sign up with email and password.'
+            : `OAuth setup failed (${initRes.status}). Please try email sign-up or contact support.`;
+        setErrorMessage(message);
+        setIsLoading(false);
+        return;
       }
+      const { url } = (await initRes.json()) as { url: string };
+      const oauthRedirect = { state: '', redirectTo: url };
       const oauthResult = (await withTimeout(
         supabase.auth.signInWithOAuth({
           provider: 'google',
