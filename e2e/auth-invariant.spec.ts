@@ -361,16 +361,25 @@ test.describe('Auth provisioning invariant', () => {
       const orgId = org!.id as string;
       createdOrgIds.add(orgId);
 
-      await admin.from('orgs').upsert(
-        {
-          id: orgId,
-          name: `QA ${framework.slug.toUpperCase()} Org`,
-          created_by: userId,
-          created_at: now,
-          updated_at: now,
-        },
-        { onConflict: 'id' },
-      );
+      {
+        // Mirror to legacy `orgs` table — propagate errors so silent
+        // upsert failures don't leak reverse-direction orphans (v4-001).
+        const { error: legacyOrgsError } = await admin.from('orgs').upsert(
+          {
+            id: orgId,
+            name: `QA ${framework.slug.toUpperCase()} Org`,
+            created_by: userId,
+            created_at: now,
+            updated_at: now,
+          },
+          { onConflict: 'id' },
+        );
+        if (legacyOrgsError) {
+          throw new Error(
+            `legacy_orgs_mirror_failed: ${legacyOrgsError.message}`,
+          );
+        }
+      }
 
       await admin.from('org_members').insert({
         organization_id: orgId,

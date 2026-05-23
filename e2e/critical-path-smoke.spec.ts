@@ -74,6 +74,7 @@ async function cleanupOrphanUser(user: OrphanUser | null) {
       .eq('organization_id', user.orgId);
     await admin.from('org_members').delete().eq('organization_id', user.orgId);
     await admin.from('organizations').delete().eq('id', user.orgId);
+    await admin.from('orgs').delete().eq('id', user.orgId);
   }
 
   await admin.auth.admin.deleteUser(user.id);
