@@ -4,6 +4,7 @@ import { unstable_cache } from 'next/cache';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isMissingSupabaseColumnError } from '@/lib/supabase/schema-compat';
+import { PLAN_CATALOG } from '@/lib/plans';
 
 export type AdminOverviewMetrics = {
   totalOrgs: number;
@@ -61,7 +62,13 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
       .select(
         'organization_id, status, plan_key, current_period_end, trial_expires_at, payment_failures',
       ),
-    admin.from('plans').select('key, price_cents'),
+    // Audit Sprint 7e (2026-05-24): previously also fetched from the
+    // `plans` DB table — a 5th plan catalog with stale AUD/USD prices
+    // ($159 AUD / $239 AUD / $399 USD) that disagreed with the
+    // canonical PLAN_CATALOG ($297/$797/$1800 USD). MRR numbers from
+    // this service were quietly wrong. Build the price map from
+    // PLAN_CATALOG directly; drop the `plans` table in the same PR.
+    Promise.resolve({ data: [] as Array<{ key: string; price_cents: number }> }),
     admin.from('org_health_scores').select('organization_id, status'),
     admin
       .from('platform_change_approvals')
@@ -147,11 +154,15 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
       row.organization_id ? filteredOrgIds.has(row.organization_id) : false,
   );
 
-  const plans = plansResult.data ?? [];
+  // Audit Sprint 7e: planPriceMap built from PLAN_CATALOG (cents = $ * 100).
+  // Was previously read from the `plans` DB table with stale prices.
+  // Keeps the same Map<key, cents> shape so the rest of this function and
+  // the `planPrices` field in the response payload don't change.
+  void plansResult; // intentionally unused — placeholder kept for shape parity
   const planPriceMap = new Map<string, number>();
-  plans.forEach((plan: { key?: string; price_cents?: number }) => {
-    if (plan.key) planPriceMap.set(plan.key, plan.price_cents ?? 0);
-  });
+  for (const [key, config] of Object.entries(PLAN_CATALOG)) {
+    planPriceMap.set(key, Math.round(config.priceMonthly * 100));
+  }
 
   const nowMs = Date.now();
   const sevenDaysMs = nowMs + 7 * 24 * 60 * 60 * 1000;
