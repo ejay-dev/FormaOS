@@ -8,6 +8,7 @@
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { getStripeClient, resolvePlanKeyFromPriceId } from "@/lib/billing/stripe";
 import { syncEntitlementsForPlan } from "@/lib/billing/entitlements";
+import { detectEntitlementDrift } from "@/lib/billing/entitlement-drift-detector";
 import { billingLogger } from "@/lib/observability/structured-logger";
 import { resolvePlanKey } from "@/lib/plans";
 
@@ -211,6 +212,44 @@ export async function runBillingReconciliation(): Promise<ReconciliationResult> 
 
           discrepancies.push(discrepancy);
           await logReconciliationEvent(admin, sub.organization_id, discrepancy);
+        }
+
+        // Check entitlement_drift — the discrepancyType union has listed
+        // this since v4-018 but no code path in reconciliation ever
+        // emitted it. Local plan_key and Stripe plan_key can be in
+        // sync, yet the org's org_entitlements rows can be in any
+        // state: half-applied syncEntitlementsForPlan, manual SQL fix,
+        // disableEntitlementsForOrg from a now-resurrected sub.
+        //
+        // Reuse the existing detectEntitlementDrift module (already
+        // unit-tested) — passing AUTO_FIX_ENABLED gates self-healing
+        // through the same env flag as the rest of the reconciler.
+        try {
+          const drift = await detectEntitlementDrift(
+            sub.organization_id,
+            AUTO_FIX_ENABLED,
+          );
+          if (drift.hasDrift) {
+            const discrepancy: BillingDiscrepancy = {
+              orgId: sub.organization_id,
+              orgName,
+              discrepancyType: "entitlement_drift",
+              localValue: drift.actual,
+              stripeValue: drift.expected,
+              autoFixed: drift.autoFixed,
+              message: `Entitlement drift: ${drift.corrections.length} corrections (${drift.corrections
+                .map((c) => `${c.type}:${c.featureKey}`)
+                .join(", ")})`,
+            };
+            if (drift.autoFixed) autoFixed++;
+            discrepancies.push(discrepancy);
+            await logReconciliationEvent(admin, sub.organization_id, discrepancy);
+          }
+        } catch (driftErr) {
+          billingLogger.warn("entitlement_drift_check_failed", {
+            orgId: sub.organization_id,
+            error: driftErr instanceof Error ? driftErr.message : String(driftErr),
+          });
         }
 
         // Check period end match (allow 1 day tolerance)
