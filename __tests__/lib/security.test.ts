@@ -75,10 +75,6 @@ jest.mock('@/lib/supabase/admin', () => {
   return { createSupabaseAdminClient: jest.fn(() => c), __admin: c };
 });
 
-function getAdmin() {
-  return require('@/lib/supabase/admin').__admin;
-}
-
 jest.mock('speakeasy', () => ({
   generateSecret: jest.fn(() => ({
     base32: 'JBSWY3DPEHPK3PXP',

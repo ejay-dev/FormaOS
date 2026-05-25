@@ -82,10 +82,6 @@ jest.mock('@/lib/supabase/admin', () => {
   const c = { from: jest.fn(() => adminBuilder) };
   return { createSupabaseAdminClient: jest.fn(() => c), __client: c };
 });
-function getAdminClient() {
-  return require('@/lib/supabase/admin').__client;
-}
-
 // ── imports (after mocks) ────────────────────────────────
 import {
   getSystemState,

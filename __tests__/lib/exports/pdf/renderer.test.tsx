@@ -25,7 +25,7 @@ jest.mock('@react-pdf/renderer', () => {
   };
 });
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+ 
 const reactPdfMock = require('@react-pdf/renderer');
 const renderToBufferMock = reactPdfMock.renderToBuffer as jest.Mock;
 

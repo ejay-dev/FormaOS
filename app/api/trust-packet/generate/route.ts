@@ -166,11 +166,6 @@ export async function POST(request: NextRequest) {
         ? Math.round((implementedControls / totalControls) * 100)
         : 0;
 
-    const { data: subscriptionRow } = await supabase
-      .from('org_subscriptions')
-      .select('plan_key, status')
-      .eq('organization_id', organizationId)
-      .maybeSingle();
     // High-19: derive trust claims from runtime config + actual SSO
     // record, not hardcoded literals. Truth-in-advertising fix —
     // previously every packet asserted `sso_available: planIsEnterprise`,

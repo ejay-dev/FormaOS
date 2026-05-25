@@ -3372,29 +3372,24 @@ function ChangelogHero() {
           </span>
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: EASE_OUT_EXPO }}
-          className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.08] mb-6"
-        >
+        {/* Audit 2026-05-24: H1 + intro <p> were wrapped in motion.* with
+         * opacity 0 initial, which made LCP fall back to the cookie-banner
+         * text and pushed /changelog Lighthouse perf to 65 (LCP 8.0 s).
+         * Both now render eagerly with no opacity gate so LCP attaches to
+         * real hero content instead of the banner. */}
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.08] mb-6">
           Every change,
           <br />
           <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">
             shipped transparently
           </span>
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: EASE_OUT_EXPO }}
-          className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
-        >
+        <p className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
           {releases.length} releases, {totalChanges}+ changes, and{' '}
           {monthsActive} months of continuous development. See exactly what we
           shipped and when.
-        </motion.p>
+        </p>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}

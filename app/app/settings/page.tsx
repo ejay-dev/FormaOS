@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import {
-  Activity,
   AlertTriangle,
   ArrowRight,
   BellRing,
@@ -14,9 +13,7 @@ import {
   Mail,
   PlugZap,
   ShieldCheck,
-  Sparkles,
   UserCog,
-  Users,
   type LucideIcon,
 } from 'lucide-react';
 

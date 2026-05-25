@@ -47,7 +47,7 @@ describe('computeTrustClaims', () => {
     const withDisabledSso = computeTrustClaims({
       hasAuditLogs: true,
       hasMfaEnabled: false,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       ssoConfig: { enabled: false } as any,
     });
     expect(withDisabledSso.sso_provisioned).toBe(false);
@@ -55,7 +55,7 @@ describe('computeTrustClaims', () => {
     const withEnabledSso = computeTrustClaims({
       hasAuditLogs: true,
       hasMfaEnabled: false,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       ssoConfig: { enabled: true } as any,
     });
     expect(withEnabledSso.sso_provisioned).toBe(true);
