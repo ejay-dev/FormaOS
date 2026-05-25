@@ -33,9 +33,16 @@
     {
       "path": "/api/cron/audit-chain-verify",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/data-retention",
+      "schedule": "0 2 * * *"
     }
   ],
   "functions": {
+    "app/api/cron/data-retention/route.ts": {
+      "maxDuration": 300
+    },
     "app/api/billing/webhook/route.ts": {
       "maxDuration": 60
     },
