@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/care-plans/[id]/goals');
 
@@ -24,21 +25,20 @@ const VALID_STATUSES = new Set([
   'discontinued',
 ]);
 
-async function requireCtx() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { error: 'Unauthorized', status: 401 as const };
+type RouteCtx =
+  | { response: NextResponse; supabase?: undefined }
+  | {
+      response?: undefined;
+      supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
+      userId: string;
+      orgId: string;
+    };
 
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id')
-    .eq('user_id', user.id)
-    .maybeSingle();
-  const orgId = membership?.organization_id as string | undefined;
-  if (!orgId) return { error: 'No organization', status: 400 as const };
-  return { supabase, user, orgId };
+async function requireCtx(): Promise<RouteCtx> {
+  const supabase = await createSupabaseServerClient();
+  const ctx = await requireActiveOrgContext(supabase);
+  if (!ctx.ok) return { response: ctx.response };
+  return { supabase, userId: ctx.userId, orgId: ctx.orgId };
 }
 
 export async function GET(
@@ -54,8 +54,10 @@ export async function GET(
       );
     }
     const ctx = await requireCtx();
-    if ('error' in ctx)
-      return NextResponse.json({ goals: [] }, { status: ctx.status });
+    if (ctx.response)
+      return ctx.response.status === 401
+        ? ctx.response
+        : NextResponse.json({ goals: [] }, { status: ctx.response.status });
 
     const { id } = await params;
     const { data, error } = await ctx.supabase
@@ -94,8 +96,7 @@ export async function POST(
       );
     }
     const ctx = await requireCtx();
-    if ('error' in ctx)
-      return NextResponse.json({ error: ctx.error }, { status: ctx.status });
+    if (ctx.response) return ctx.response;
 
     const { id: carePlanId } = await params;
     const body = (await request.json().catch(() => ({}))) as {
@@ -142,7 +143,7 @@ export async function POST(
         measurement_method: body.measurement_method || null,
         baseline_value: body.baseline_value || null,
         target_value: body.target_value || null,
-        created_by: ctx.user.id,
+        created_by: ctx.userId,
       })
       .select()
       .single();
@@ -174,8 +175,7 @@ export async function PATCH(
       );
     }
     const ctx = await requireCtx();
-    if ('error' in ctx)
-      return NextResponse.json({ error: ctx.error }, { status: ctx.status });
+    if (ctx.response) return ctx.response;
 
     const { id: goalId } = await params;
     const body = (await request.json().catch(() => ({}))) as {

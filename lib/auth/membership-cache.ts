@@ -1,11 +1,110 @@
 import { cache } from 'react';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export type CachedMembership = {
   userId: string;
   organizationId: string;
   role: string | null;
 };
+
+/**
+ * Strict active-org resolution. Returns:
+ *  - kind:'ok' when the active org is unambiguous (single membership,
+ *    or preference matches a real membership).
+ *  - kind:'ambiguous' when the user belongs to multiple orgs and has
+ *    no valid `current_organization_id` preference. Callers MUST refuse
+ *    the request (HTTP 409) and instruct the client to pick an org.
+ *  - kind:'none' when the user has no memberships.
+ *  - kind:'unauthorized' when there is no signed-in user.
+ *
+ * The lenient `getCachedUserMembership` (above) picks the first
+ * membership for multi-org users with no preference — that hides
+ * cross-tenant write bugs. Use this strict variant in any new code
+ * (especially v1 API routes) and migrate older code as you touch it.
+ */
+export type ActiveMembershipResult =
+  | { kind: 'unauthorized' }
+  | { kind: 'none' }
+  | {
+      kind: 'ambiguous';
+      userId: string;
+      memberships: Array<{ organizationId: string; role: string | null }>;
+    }
+  | {
+      kind: 'ok';
+      userId: string;
+      organizationId: string;
+      role: string | null;
+    };
+
+export async function resolveActiveMembership(
+  supabase?: SupabaseClient,
+): Promise<ActiveMembershipResult> {
+  const db = supabase ?? (await createSupabaseServerClient());
+
+  const {
+    data: { user },
+  } = await db.auth.getUser();
+  if (!user) return { kind: 'unauthorized' };
+
+  const { data: memberships, error } = await db
+    .from('org_members')
+    .select('organization_id, role')
+    .eq('user_id', user.id);
+  if (error) {
+    // Treat read errors as "no memberships" rather than silently
+    // failing open — callers will return 4xx and ops will see the
+    // PG error in Sentry via the route handler.
+    return { kind: 'none' };
+  }
+  const rows = (memberships ?? []) as Array<{
+    organization_id: string;
+    role: string | null;
+  }>;
+  if (rows.length === 0) return { kind: 'none' };
+
+  if (rows.length === 1) {
+    return {
+      kind: 'ok',
+      userId: user.id,
+      organizationId: rows[0].organization_id,
+      role: rows[0].role,
+    };
+  }
+
+  // Multi-org. Honour user_preferences.current_organization_id but
+  // only when it's a real membership.
+  const { data: preference } = await db
+    .from('user_preferences')
+    .select('current_organization_id')
+    .eq('user_id', user.id)
+    .maybeSingle();
+  const preferred = (
+    preference as { current_organization_id?: string } | null
+  )?.current_organization_id;
+
+  if (preferred) {
+    const match = rows.find((r) => r.organization_id === preferred);
+    if (match) {
+      return {
+        kind: 'ok',
+        userId: user.id,
+        organizationId: match.organization_id,
+        role: match.role,
+      };
+    }
+  }
+
+  return {
+    kind: 'ambiguous',
+    userId: user.id,
+    memberships: rows.map((r) => ({
+      organizationId: r.organization_id,
+      role: r.role,
+    })),
+  };
+}
 
 /**
  * Fetch the current user + their primary org membership exactly once per

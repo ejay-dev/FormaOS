@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/medications/[id]/administer');
 const VALID_STATUSES = new Set([
@@ -29,20 +30,9 @@ export async function POST(
     }
 
     const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId)
-      return NextResponse.json({ error: 'No organization' }, { status: 400 });
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
+    const { userId, orgId } = ctx;
 
     const { id: medicationId } = await params;
     const body = (await request.json().catch(() => ({}))) as {
@@ -110,7 +100,7 @@ export async function POST(
         medication_id: medicationId,
         org_id: orgId,
         participant_id: participantIdToUse,
-        administered_by: user.id,
+        administered_by: userId,
         administered_at: new Date().toISOString(),
         dose_given: body.dose_given || null,
         status,
