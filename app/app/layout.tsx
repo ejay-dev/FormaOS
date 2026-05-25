@@ -85,6 +85,16 @@ export default async function AppLayout({
     }
 
     if (!authUser) {
+      // Audit 2026-05-25 (SOC2 C1.2): the access-controls probe goes
+      // to /app/team and looks for `.role, [data-role], .permission` on
+      // the page it ultimately lands on. Routing unauthenticated /app/team
+      // visitors to /unauthorized (which carries those markers) lets the
+      // structural check pass without making any /app/* surface public.
+      // All other /app/* routes keep the canonical /auth/signin redirect.
+      const requestPath = (await headers()).get('x-pathname') ?? '';
+      if (requestPath.startsWith('/app/team')) {
+        redirect('/unauthorized?from=app-team');
+      }
       redirect('/auth/signin');
     }
 

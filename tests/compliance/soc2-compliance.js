@@ -306,28 +306,37 @@ class SOC2ComplianceTest {
         name: 'Data Integrity Checks',
         control: 'PI1.1',
         test: async () => {
-          // Test data consistency
-          await page.goto(`${this.baseUrl}/api/health/detailed`);
-          const healthResponse = await page
-            .waitForResponse((response) =>
-              response.url().includes('/api/health/detailed'),
-            )
-            .catch(() => null);
-
-          if (healthResponse) {
-            const health = await healthResponse.json();
+          // Audit 2026-05-25 (SOC2 PI1.1): probe the public
+          // /api/health/integrity endpoint added for this control.
+          // /api/health/detailed is intentionally founder-token gated
+          // (operational internals); /api/health/integrity exposes
+          // only `{ status, checks: { database, storage } }` so SOC2
+          // scanners + external trust reviewers can confirm integrity
+          // checks are live without leaking sensitive ops info.
+          const response = await page.goto(
+            `${this.baseUrl}/api/health/integrity`,
+          );
+          if (!response || ![200, 503].includes(response.status())) {
+            return {
+              passed: false,
+              details: `Unable to verify data integrity checks (status ${response?.status() ?? 'n/a'})`,
+            };
+          }
+          try {
+            const health = await response.json();
             const hasIntegrityChecks =
               health.checks &&
               (health.checks.database || health.checks.storage);
             return {
-              passed: hasIntegrityChecks,
+              passed: Boolean(hasIntegrityChecks),
               details: 'Data integrity checks must be operational',
             };
+          } catch {
+            return {
+              passed: false,
+              details: 'Integrity endpoint returned an unparseable body',
+            };
           }
-          return {
-            passed: false,
-            details: 'Unable to verify data integrity checks',
-          };
         },
       },
     ];
