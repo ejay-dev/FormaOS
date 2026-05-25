@@ -524,8 +524,10 @@ test.describe('FormaOS Node & Wire Integrity Tests', () => {
         return;
       }
 
-      // Check for nav element
-      const nav = page.locator('nav');
+      // Check for nav element. The page has two <nav> elements (header +
+      // footer); strict locator mode would error on multi-match, so target
+      // the first (primary header nav).
+      const nav = page.locator('nav').first();
       await expect(nav).toBeVisible();
 
       // Check for links with proper href attributes

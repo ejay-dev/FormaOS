@@ -239,7 +239,7 @@ test.describe('Onboarding dashboard and sidebar access', () => {
       await expect(page).toHaveURL(/\/onboarding\?step=3/, {
         timeout: 60_000,
       });
-    } catch (err) {
+    } catch {
       test.skip(
         true,
         `Onboarding step 2→3 did not advance (current: ${page.url()}) — server may be slow or plan-option UI changed`,

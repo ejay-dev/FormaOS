@@ -30,11 +30,12 @@ const MARKETING = [
   '/frameworks',
   '/industries',
   '/compare',
-  '/compare/vanta',
-  '/compare/drata',
-  '/compare/secureframe',
-  '/compare/auditboard',
-  '/compare/hyperproof',
+  // 2026-05-25: only the four shipped compare pages exist; vanta/drata/
+  // secureframe/auditboard/hyperproof returned 404 in Codex's audit.
+  '/compare/6clicks',
+  '/compare/complispace',
+  '/compare/healthmetrics',
+  '/compare/riskware',
   '/documentation',
   '/faq',
   '/about',

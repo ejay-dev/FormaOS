@@ -1026,7 +1026,7 @@ test.describe('Enterprise Government Audit Readiness', () => {
           waitUntil: 'domcontentloaded',
           timeout: 30000,
         });
-      } catch (err) {
+      } catch {
         test.skip(
           true,
           `page.goto /app/dashboard timed out — Supabase/server may be slow`,

@@ -52,7 +52,7 @@ async function loginOrSkip(
   await page.click('button[type="submit"]');
   try {
     await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
-  } catch (err) {
+  } catch {
     test.skip(
       true,
       'Login redirect timed out — Supabase auth may be unavailable',
@@ -333,7 +333,7 @@ test.describe('B) In-App Core Routes & Nav', () => {
     await page.click('button[type="submit"]');
     try {
       await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
-    } catch (err) {
+    } catch {
       test.skip(
         true,
         'Login redirect timed out — Supabase auth may be unavailable',
@@ -376,7 +376,7 @@ test.describe('B) In-App Core Routes & Nav', () => {
     await page.click('button[type="submit"]');
     try {
       await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
-    } catch (err) {
+    } catch {
       test.skip(
         true,
         'Login redirect timed out — Supabase auth may be unavailable',
@@ -568,7 +568,7 @@ test.describe('V2: Existing User Login', () => {
     // Should land in app
     try {
       await page.waitForURL(/\/(app|onboarding)/, { timeout: 30000 });
-    } catch (err) {
+    } catch {
       test.skip(
         true,
         'Login redirect timed out — Supabase auth may be unavailable',

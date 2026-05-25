@@ -82,7 +82,11 @@ test.describe('Public buying motion', () => {
   });
 
   test('compare page avoids trial funnel copy', async ({ page }) => {
-    await expectInfrastructureBuyingMotion(page, '/compare/vanta');
+    // 2026-05-24: /compare/vanta was never shipped. The existing compare
+    // pages are /compare/{6clicks,complispace,healthmetrics,riskware}. Use
+    // 6clicks as the representative — every compare page should follow the
+    // same procurement-led motion (no trial copy + Start Buyer Review CTA).
+    await expectInfrastructureBuyingMotion(page, '/compare/6clicks');
     await expect(
       page
         .getByRole('link', { name: /Start Buyer Review|Get Compliance Plan/i })

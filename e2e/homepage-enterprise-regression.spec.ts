@@ -5,9 +5,6 @@ const SITE_BASE =
   process.env.PLAYWRIGHT_BASE_URL ||
   'http://localhost:3000';
 
-const byText = (value: string) =>
-  new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-
 test.describe('Homepage enterprise regression', () => {
   test('hero renders critical content immediately', async ({ page }) => {
     await page.goto(`${SITE_BASE}/`, { waitUntil: 'domcontentloaded' });

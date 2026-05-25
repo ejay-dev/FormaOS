@@ -93,7 +93,10 @@ test.describe('SECURITY AUDIT: Environment Configuration', () => {
 
     // v4-031: `toBeLessThan(500)` accepted anything ≤499 including 4xx.
     // Marketing root and /api/health should return 200 or a redirect.
-    expect([200, 301, 302, 307, 308]).toContain(response?.status() ?? 0);
+    // 2026-05-25: include 304 (Not Modified) — Codex's audit caught the
+// browser legitimately returning a conditional-GET 304 for the cached
+// root response on warm runs, which the original assertion rejected.
+expect([200, 301, 302, 304, 307, 308]).toContain(response?.status() ?? 0);
 
     const sensitiveRoutes = ['/api/health', '/'];
 
@@ -104,8 +107,8 @@ test.describe('SECURITY AUDIT: Environment Configuration', () => {
       });
       const status = resp?.status() ?? 0;
       expect(
-        [200, 301, 302, 307, 308],
-        `${route} should return 200 or redirect`,
+        [200, 301, 302, 304, 307, 308],
+        `${route} should return 200 / 304 / redirect`,
       ).toContain(status);
     }
   });

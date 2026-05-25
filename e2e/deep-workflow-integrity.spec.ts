@@ -182,7 +182,11 @@ test.describe('Deep workflow integrity', () => {
   test('Obligation evidence upload API rejects unauthorised + invalid input', async ({
     request,
   }) => {
-    // Empty body — should 401 (unauthenticated) or 400 (missing obligationId)
+    // Empty body — should 401 (unauthenticated), 400 (missing obligationId),
+    // or 403 (CSRF guard rejecting a no-Origin POST from an external client,
+    // which is also a valid security signal). 2026-05-25: added 403 after
+    // Codex's audit found CSRF was correctly intercepting before business
+    // logic could 400/401; the original assertion was too narrow.
     const noBodyRes = await request.post('/api/v1/evidence/upload', {
       multipart: {
         files: {
@@ -192,7 +196,7 @@ test.describe('Deep workflow integrity', () => {
         },
       },
     });
-    expect([400, 401]).toContain(noBodyRes.status());
+    expect([400, 401, 403]).toContain(noBodyRes.status());
 
     // Garbage obligationId — should not silently succeed
     const garbageRes = await request.post('/api/v1/evidence/upload', {
@@ -205,7 +209,7 @@ test.describe('Deep workflow integrity', () => {
         },
       },
     });
-    expect([400, 401, 404]).toContain(garbageRes.status());
+    expect([400, 401, 403, 404]).toContain(garbageRes.status());
   });
 
   test('Incident → resolve flow persists root cause + status', async ({

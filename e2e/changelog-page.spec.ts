@@ -13,8 +13,11 @@ test.describe('Marketing changelog page', () => {
       page.getByRole('heading', { name: /Every change,\s*shipped transparently/i }),
     ).toBeVisible();
 
+    // Don't hard-code the latest version — the changelog rolls forward every
+    // release. Assert that *some* release is rendered as the latest with the
+    // expected vMAJOR.MINOR.PATCH codename shape.
     await expect(
-      page.getByText(/Latest:\s*v3\.8\.0\s*Evidence Integrity/i),
+      page.getByText(/Latest:\s*v\d+\.\d+\.\d+\s+.+/i),
     ).toBeVisible();
 
     for (const theme of [

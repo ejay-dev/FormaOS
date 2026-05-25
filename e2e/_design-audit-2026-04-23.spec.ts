@@ -32,7 +32,9 @@ const ROUTES: { slug: string; path: string }[] = [
     path: '/financial-services-compliance',
   },
   { slug: 'evaluate', path: '/evaluate' },
-  { slug: 'compare-drata', path: '/compare/drata' },
+  // 2026-05-25: /compare/drata never shipped — use 6clicks as the
+  // representative competitor compare page.
+  { slug: 'compare-6clicks', path: '/compare/6clicks' },
 ];
 
 const VIEWPORTS = [

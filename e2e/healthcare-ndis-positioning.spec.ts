@@ -28,8 +28,13 @@ test.describe('Healthcare & NDIS positioning', () => {
       waitUntil: 'domcontentloaded',
     });
 
-    await expect(page.locator('h1').first()).toContainText(/healthcare/i);
-    await expect(page.getByText('Healthcare Compliance').first()).toBeVisible();
+    // 2026-05-24: page H1 evolved to "AHPRA Audits Don't Wait. Neither Should
+    // You." with industry badge "AHPRA + NSQHS Compliance". Test now matches
+    // the current shape: AHPRA in the hero + NSQHS in the industry badge.
+    await expect(page.locator('h1').first()).toContainText(/AHPRA/i);
+    await expect(
+      page.getByText(/AHPRA \+ NSQHS Compliance/i).first(),
+    ).toBeVisible();
     await expect(page.getByText(/AHPRA/i).first()).toBeVisible();
   });
 
@@ -63,8 +68,13 @@ test.describe('Healthcare & NDIS positioning', () => {
       waitUntil: 'domcontentloaded',
     });
 
-    await expect(page.locator('h1').first()).toContainText(/NDIS|aged care/i);
-    await expect(page.getByText('NDIS & Aged Care').first()).toBeVisible();
+    // 2026-05-24: page H1 evolved to "Stop Dreading Unannounced NDIS Audits"
+    // with industry badge "NDIS Commission Aligned Framework". Test now
+    // matches the current shape.
+    await expect(page.locator('h1').first()).toContainText(/NDIS/i);
+    await expect(
+      page.getByText(/NDIS Commission Aligned Framework/i).first(),
+    ).toBeVisible();
   });
 
   test('NDIS use-case page surfaces NDIS Practice Standards coverage', async ({
