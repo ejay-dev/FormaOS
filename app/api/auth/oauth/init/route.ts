@@ -62,10 +62,17 @@ export async function POST(request: Request) {
   parsed.searchParams.set('provider', provider);
   parsed.searchParams.set('state', state);
 
+  // Audit 2026-05-26 — gate `secure` off the request protocol rather
+  // than NODE_ENV. Previously, a local HTTPS dev tunnel (ngrok / cloudflared)
+  // had NODE_ENV=development → the cookie was sent over HTTPS without
+  // the Secure attribute. Keying off `request.url`'s protocol means
+  // any HTTPS context gets Secure, regardless of build mode.
+  const isHttps = new URL(request.url).protocol === 'https:';
+
   const response = NextResponse.json({ url: parsed.toString() });
   response.cookies.set(OAUTH_STATE_COOKIE_NAME, state, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: isHttps,
     sameSite: 'lax',
     path: '/',
     maxAge: OAUTH_STATE_TTL_SECONDS,

@@ -151,18 +151,51 @@ async function getLoopGuardKey(): Promise<CryptoKey | null> {
   }
 
   loopGuardKeyPromise = (async () => {
-    const secret =
-      process.env.MIDDLEWARE_REDIRECT_GUARD_SECRET ??
-      process.env.SUPABASE_SERVICE_ROLE_KEY ??
-      process.env.CRON_SECRET;
+    // Audit 2026-05-26 — separate loop-guard HMAC key from
+    // SUPABASE_SERVICE_ROLE_KEY and CRON_SECRET. Cross-purposing
+    // secrets means a leak of either reveals the other's signing key
+    // and breaks defense-in-depth. The fallback chain is kept for
+    // dev/staging where MIDDLEWARE_REDIRECT_GUARD_SECRET may not yet
+    // be set — but we DERIVE a per-purpose key from the platform
+    // secret via HKDF-ish hashing rather than reusing it raw. In
+    // production, the explicit env var is required.
+    const explicit = process.env.MIDDLEWARE_REDIRECT_GUARD_SECRET;
+    const platformFallback =
+      process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.CRON_SECRET;
 
-    if (!secret || typeof globalThis.crypto?.subtle === 'undefined') {
+    if (!explicit && process.env.NODE_ENV === 'production') {
+      // Production must set the dedicated secret. Returning null
+      // disables the HMAC loop-guard rather than weakening it by
+      // reusing platform credentials.
+      return null;
+    }
+
+    if (typeof globalThis.crypto?.subtle === 'undefined') {
+      return null;
+    }
+
+    let keyMaterial: ArrayBuffer;
+    if (explicit) {
+      keyMaterial = encoder.encode(explicit).buffer.slice(0) as ArrayBuffer;
+    } else if (platformFallback) {
+      // Derive a per-purpose key by hashing the platform secret with
+      // a domain-separation label. The derived key is bound to
+      // loop-guard usage; a leak of this key cannot be used to forge
+      // the original platform secret (one-way).
+      const labelled = encoder.encode(
+        `formaos:middleware:loop-guard:v1\n${platformFallback}`,
+      );
+      keyMaterial = (await globalThis.crypto.subtle.digest(
+        'SHA-256',
+        labelled,
+      )) as ArrayBuffer;
+    } else {
       return null;
     }
 
     return globalThis.crypto.subtle.importKey(
       'raw',
-      encoder.encode(secret),
+      keyMaterial,
       { name: 'HMAC', hash: 'SHA-256' },
       false,
       ['sign', 'verify'],
@@ -941,6 +974,12 @@ export async function proxy(request: NextRequest) {
       process.env.NODE_ENV !== 'production' &&
       (process.env.CSP_ALLOW_EVAL_SCRIPTS ?? 'false') === 'true';
 
+    // Audit 2026-05-26 — vercel.live (toolbar + comments) is useful in
+    // preview/dev but in production it allows arbitrary JS from a
+    // vendor-controlled domain. Gate it behind VERCEL_ENV !== 'production'
+    // so a future vercel.live supply-chain issue can't bypass our CSP.
+    const allowVercelLive = process.env.VERCEL_ENV !== 'production';
+
     const scriptSrc = [
       "'self'",
       `'nonce-${nonce}'`,
@@ -952,7 +991,7 @@ export async function proxy(request: NextRequest) {
       'https://*.sentry.io',
       'https://*.posthog.com',
       'https://js.stripe.com',
-      'https://vercel.live',
+      allowVercelLive ? 'https://vercel.live' : null,
       allowInlineScripts ? "'unsafe-inline'" : null,
       allowEvalScripts ? "'unsafe-eval'" : null,
     ]

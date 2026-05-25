@@ -213,14 +213,28 @@ const nextConfig: NextConfig = {
           {
             // Content Security Policy for marketing pages (static headers).
             // App routes (/app/*, /admin/*, /auth/*) get nonce-based CSP from proxy.ts.
+            //
+            // Audit 2026-05-26 — vercel.live (toolbar/comments) is gated
+            // behind `VERCEL_ENV !== 'production'` so a vendor-side issue
+            // can't bypass the prod CSP. `'unsafe-inline'` for scripts is
+            // still present because marketing pages emit JSON-LD via
+            // <script type="application/ld+json"> tags rendered through
+            // dangerouslySetInnerHTML. Migrating those to nonce-based
+            // would require adding marketing routes to the proxy.ts
+            // matcher and threading the nonce through every JSON-LD
+            // component — tracked as a separate follow-up.
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' https://*.sentry.io https://*.posthog.com https://js.stripe.com https://vercel.live",
+              `script-src 'self' 'unsafe-inline' https://*.sentry.io https://*.posthog.com https://js.stripe.com${
+                process.env.VERCEL_ENV !== 'production' ? ' https://vercel.live' : ''
+              }`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://vercel.com",
-              "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com",
+              `connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com${
+                process.env.VERCEL_ENV !== 'production' ? ' https://vercel.live wss://ws-us3.pusher.com' : ''
+              }`,
               'frame-src https://js.stripe.com https://hooks.stripe.com',
               "worker-src 'self' blob:",
               "object-src 'none'",
