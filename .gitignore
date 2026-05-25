@@ -39,6 +39,15 @@ build_output.txt
 /.claude/scheduled_tasks.lock
 /.claude/skills/*/scripts/
 
+# audit/agent run scratch (committed reports live alongside;
+# these are working-directory noise from previous agent passes)
+/audit-working*/
+/audit-2026-*/
+/AUDIT_REPORT_*_2026-05-22.md
+/AUDIT_REPORT_v3_2026-05-22.md
+/AUDIT_REPORT_v4_2026-05-23.md
+/DEEP_E2E_AUDIT_MASTER_PROMPT.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*

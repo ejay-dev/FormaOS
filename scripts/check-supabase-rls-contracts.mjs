@@ -18,6 +18,12 @@ const serviceRoleKey = clean(
 const failures = [];
 const warnings = [];
 const liveResults = [];
+// Audit 2026-05-25: the static scanner can't see RLS that's enabled via
+// DO-block / SECURITY DEFINER paths, so it false-positives on tables that
+// are actually enforced in prod. The live `_audit_rls_status()` RPC is
+// authoritative (migration 20260624018). Demote a static fail to a warn
+// when the live check confirms the table is enabled.
+let liveRlsEnabledTables = null;
 
 function clean(value) {
   return (value || '').trim().replace(/^['"]|['"]$/g, '');
@@ -127,7 +133,13 @@ function assertStaticRlsContracts(migrations) {
     const shouldEnforceRls = isTenantOrSensitiveTable(table, files, migrations);
 
     if (!rlsEnabled && shouldEnforceRls) {
-      fail(`${table} is created but no RLS enable statement was found`);
+      if (liveRlsEnabledTables && liveRlsEnabledTables.has(table)) {
+        warn(
+          `${table} has no static RLS enable statement, but the live catalog reports RLS enabled — demoting to warning`,
+        );
+      } else {
+        fail(`${table} is created but no RLS enable statement was found`);
+      }
     } else if (!rlsEnabled) {
       warn(`${table} is created without RLS; treated as shared/reference data`);
     }
@@ -163,16 +175,24 @@ async function assertLiveRlsCatalog() {
     return;
   }
 
+  liveRlsEnabledTables = new Set();
   for (const row of data || []) {
     liveResults.push(row);
-    if (!row.rls_enabled) fail(`Live table ${row.table_name} does not have RLS enabled`);
+    if (row.rls_enabled) {
+      liveRlsEnabledTables.add(row.table_name);
+    } else {
+      fail(`Live table ${row.table_name} does not have RLS enabled`);
+    }
   }
   pass(`Live RLS catalog checked ${(data || []).length} public tables`);
 }
 
 const migrations = readMigrations();
-assertStaticRlsContracts(migrations);
+// Audit 2026-05-25: run the live catalog check first so the static
+// scanner can consult it when deciding whether a missing-enable-statement
+// finding is a real gap or a false positive.
 await assertLiveRlsCatalog();
+assertStaticRlsContracts(migrations);
 
 mkdirSync(path.dirname(reportPath), { recursive: true });
 writeFileSync(

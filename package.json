@@ -81,7 +81,6 @@
     "load:app:docker": "docker run --rm -i -e BASE_URL=${BASE_URL:-https://app.formaos.com.au} -e VUS=${VUS:-3} -e DURATION=${DURATION:-45s} -e FORMAOS_AUTH_COOKIE -e AUTH_COOKIE -v \"$PWD:/work\" grafana/k6 run /work/load-tests/dashboard.js",
     "load:exports:docker": "docker run --rm -i -e BASE_URL=${BASE_URL:-https://app.formaos.com.au} -e VUS=${VUS:-2} -e DURATION=${DURATION:-45s} -e FORMAOS_AUTH_COOKIE -e AUTH_COOKIE -v \"$PWD:/work\" grafana/k6 run /work/load-tests/exports.js",
     "load:evidence:docker": "docker run --rm -i -e BASE_URL=${BASE_URL:-https://app.formaos.com.au} -e VUS=${VUS:-1} -e DURATION=${DURATION:-30s} -e FORMAOS_AUTH_COOKIE -e AUTH_COOKIE -e ALLOW_MUTATING_LOAD_TESTS -e EVIDENCE_ENTITY_ID -e EVIDENCE_ENTITY_TYPE -v \"$PWD:/work\" grafana/k6 run /work/load-tests/evidence-upload.js",
-    "email:preview:auth": "node scripts/preview-auth-emails.mjs",
     "tracetest:local": "node scripts/run-tracetest-local.mjs"
   },
   "dependencies": {
