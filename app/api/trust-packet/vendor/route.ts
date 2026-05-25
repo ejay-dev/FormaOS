@@ -319,9 +319,47 @@ export async function GET() {
     Date.now() - 30 * 24 * 60 * 60 * 1000,
   ).toISOString();
 
+  // 2026-05-25: cap the uptime fetch so this route can never hang. Codex's
+  // audit caught /api/trust-packet/vendor timing out under the
+  // api-unauthed-probe sweep when Supabase upstream was slow. The packet
+  // still ships with degraded uptime data (zero rows ⇒ "monitoring active;
+  // published health data will populate this window shortly" in the PDF
+  // copy) rather than holding the connection open indefinitely.
+  const UPTIME_FETCH_TIMEOUT_MS = 4000;
+  const withTimeout = async <T,>(
+    promise: Promise<T>,
+    fallback: T,
+    label: string,
+  ): Promise<T> => {
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    try {
+      return await Promise.race<T>([
+        promise,
+        new Promise<T>((resolve) => {
+          timeoutHandle = setTimeout(() => {
+            console.warn(
+              `[trust-packet/vendor] ${label} timed out after ${UPTIME_FETCH_TIMEOUT_MS}ms; falling back to empty dataset`,
+            );
+            resolve(fallback);
+          }, UPTIME_FETCH_TIMEOUT_MS);
+        }),
+      ]);
+    } finally {
+      if (timeoutHandle) clearTimeout(timeoutHandle);
+    }
+  };
+
   const [rows7, rows30] = await Promise.all([
-    fetchPublicUptimeChecks({ sinceIso: since7d, limit: 5000 }),
-    fetchPublicUptimeChecks({ sinceIso: since30d, limit: 20000 }),
+    withTimeout(
+      fetchPublicUptimeChecks({ sinceIso: since7d, limit: 5000 }),
+      [],
+      'fetchPublicUptimeChecks(7d)',
+    ),
+    withTimeout(
+      fetchPublicUptimeChecks({ sinceIso: since30d, limit: 20000 }),
+      [],
+      'fetchPublicUptimeChecks(30d)',
+    ),
   ]);
 
   const uptime = {
