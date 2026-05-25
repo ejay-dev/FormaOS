@@ -5,6 +5,7 @@ import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { logActivity as logProductActivity } from '@/lib/activity/feed';
+import { getStripeClient } from '@/lib/billing/stripe';
 
 // Audit 2026-05-25 (GDPR): self-serve account deletion. The endpoint is
 // guarded by CSRF + rate-limit + a body-confirmation field
@@ -12,16 +13,15 @@ import { logActivity as logProductActivity } from '@/lib/activity/feed';
 // is a hard block — the caller is told to transfer ownership first.
 //
 // Effects on success:
+//  - Cancels Stripe subscriptions for any org that will be orphaned by
+//    this deletion (the sole-member case)
 //  - Removes the user's `org_members` rows (CASCADE wipes per-user data
 //    scoped through that membership)
 //  - Deletes the `user_security` and `user_profiles` rows
 //  - Deletes the Supabase auth user (Article 17 erasure)
 //
-// Stripe customer-side cancellation is deferred: org subscriptions live
-// at the org level and remain active until the org owner closes them
-// (typical case: the org continues with the remaining members). When the
-// deletion ALSO cascades the org (sole-member case), we log the org_id +
-// stripe_customer_id so the billing reconciler can close it.
+// Multi-member orgs the user is NOT the sole member of are left alone —
+// the remaining members continue to use the org and its subscription.
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -114,8 +114,10 @@ export async function POST(request: Request) {
     );
   }
 
-  // Identify orgs that will be orphaned (sole-member) so we can audit-log
-  // their stripe_customer_id for downstream billing closure.
+  // Identify orgs that will be orphaned (sole-member) so we can cancel
+  // their Stripe subscriptions before erasing the auth user. Multi-member
+  // orgs the user is NOT the sole member of are left alone — the
+  // remaining members keep the subscription.
   const cascadedOrgIds: string[] = [];
   try {
     const { data: orgs } = await admin
@@ -137,10 +139,105 @@ export async function POST(request: Request) {
     log.warn({ err, userId: user.id }, 'orphan-org detection partial');
   }
 
+  // Cancel Stripe subscriptions for orphaned orgs. Best-effort: a Stripe
+  // failure must not block the GDPR erasure (Article 17 is time-bound), so
+  // we log + push the orgId/subId/customerId into the activity feed for
+  // the billing reconciler to reconcile out-of-band.
+  const stripe = getStripeClient();
+  const stripeCancellations: Array<{
+    orgId: string;
+    subscriptionId: string | null;
+    customerId: string | null;
+    status: 'cancelled' | 'no_subscription' | 'no_stripe_client' | 'failed';
+  }> = [];
+
+  for (const orgId of cascadedOrgIds) {
+    let subscriptionId: string | null = null;
+    let customerId: string | null = null;
+    try {
+      const { data: sub } = await admin
+        .from('org_subscriptions')
+        .select('stripe_subscription_id, stripe_customer_id')
+        .eq('organization_id', orgId)
+        .maybeSingle<{
+          stripe_subscription_id: string | null;
+          stripe_customer_id: string | null;
+        }>();
+      subscriptionId = sub?.stripe_subscription_id ?? null;
+      customerId = sub?.stripe_customer_id ?? null;
+    } catch (err) {
+      log.warn({ err, orgId }, 'pre-cancel: failed to read org_subscriptions');
+    }
+
+    if (!subscriptionId) {
+      stripeCancellations.push({
+        orgId,
+        subscriptionId,
+        customerId,
+        status: 'no_subscription',
+      });
+      continue;
+    }
+
+    if (!stripe) {
+      // Stripe credentials missing — record the gap so the reconciler can
+      // close it on next run. Production deployments fail closed here in
+      // the sense that the row state is preserved for audit, not that the
+      // user's erasure is blocked.
+      log.warn(
+        { orgId, subscriptionId },
+        'stripe-cancel: no client configured — deferring',
+      );
+      stripeCancellations.push({
+        orgId,
+        subscriptionId,
+        customerId,
+        status: 'no_stripe_client',
+      });
+      continue;
+    }
+
+    try {
+      await stripe.subscriptions.cancel(subscriptionId, {
+        invoice_now: false,
+        prorate: false,
+      });
+      try {
+        await admin
+          .from('org_subscriptions')
+          .update({
+            status: 'cancelled',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('organization_id', orgId);
+      } catch (dbErr) {
+        log.warn(
+          { dbErr, orgId, subscriptionId },
+          'stripe-cancel: cancelled in Stripe but local status update failed',
+        );
+      }
+      stripeCancellations.push({
+        orgId,
+        subscriptionId,
+        customerId,
+        status: 'cancelled',
+      });
+    } catch (err) {
+      log.error({ err, orgId, subscriptionId }, 'stripe-cancel failed');
+      stripeCancellations.push({
+        orgId,
+        subscriptionId,
+        customerId,
+        status: 'failed',
+      });
+    }
+  }
+
   // Best-effort: emit a final activity entry per cascaded org so the
   // billing reconciler has a breadcrumb. Do this BEFORE the deletion so
   // the org row + activity table still exist when we write.
   for (const orgId of cascadedOrgIds) {
+    const cancelRecord = stripeCancellations.find((r) => r.orgId === orgId);
     try {
       await logProductActivity(
         orgId,
@@ -155,6 +252,9 @@ export async function POST(request: Request) {
         {
           reason: 'gdpr_self_serve_account_deletion',
           cascaded_org: true,
+          stripe_subscription_id: cancelRecord?.subscriptionId ?? null,
+          stripe_customer_id: cancelRecord?.customerId ?? null,
+          stripe_cancellation_status: cancelRecord?.status ?? 'unknown',
         },
       );
     } catch (err) {
@@ -189,5 +289,6 @@ export async function POST(request: Request) {
   return NextResponse.json({
     ok: true,
     cascaded_orgs: cascadedOrgIds,
+    stripe_cancellations: stripeCancellations,
   });
 }

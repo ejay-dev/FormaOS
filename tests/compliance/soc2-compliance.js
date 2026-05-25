@@ -289,15 +289,16 @@ class SOC2ComplianceTest {
         name: 'Audit Trail',
         control: 'PI1.2',
         test: async () => {
-          await page.goto(`${this.baseUrl}/api/v1/audit-logs`);
-          // Check if audit logging endpoint exists
-          const response = await page
-            .waitForResponse((response) =>
-              response.url().includes('/api/v1/audit-logs'),
-            )
-            .catch(() => null);
+          // Audit 2026-05-25: use the response returned by page.goto
+          // directly. The previous waitForResponse pattern raced — the
+          // response had already been received by the time waitForResponse
+          // was called, so it timed out and left a pending promise that
+          // interrupted the next test's navigation.
+          const response = await page.goto(
+            `${this.baseUrl}/api/v1/audit-logs`,
+          );
           return {
-            passed: response && response.status() !== 404,
+            passed: Boolean(response) && response.status() !== 404,
             details: 'Audit logging must be implemented',
           };
         },
