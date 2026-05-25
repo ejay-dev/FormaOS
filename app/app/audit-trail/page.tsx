@@ -33,7 +33,7 @@ export default async function AuditTrailPage() {
   const { data: chainEntries } = await db
     .from('audit_log')
     .select(
-      'id, org_id, user_id, action, resource_type, resource_id, details, created_at, entry_hash, prev_hash',
+      'id, org_id, user_id, action, resource_type, resource_id, details, created_at, entry_hash, prev_hash, sequence_number, hash_algo',
     )
     .eq('org_id', state.organization.id)
     .order('sequence_number', { ascending: true })

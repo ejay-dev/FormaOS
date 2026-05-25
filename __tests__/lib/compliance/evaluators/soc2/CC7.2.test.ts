@@ -48,22 +48,26 @@ function buildEntry(
     details: { i },
     created_at: `2026-04-${String(i + 1).padStart(2, '0')}T00:00:00Z`,
   };
-  const hash = computeEntryHash({
-    id: base.id,
-    orgId: base.org_id,
-    userId: base.user_id,
-    action: base.action,
-    resourceType: base.resource_type,
-    resourceId: base.resource_id,
-    details: base.details,
-    createdAt: base.created_at,
-    prevHash: prevHash ?? undefined,
-  });
+  const hash = computeEntryHash(
+    {
+      id: base.id,
+      orgId: base.org_id,
+      userId: base.user_id,
+      action: base.action,
+      resourceType: base.resource_type,
+      resourceId: base.resource_id,
+      details: base.details,
+      createdAt: base.created_at,
+      prevHash: prevHash ?? undefined,
+    },
+    'v2',
+  );
   return {
     ...base,
     entry_hash: hash,
     prev_hash: prevHash,
     sequence_number: i + 1,
+    hash_algo: 'v2',
   };
 }
 

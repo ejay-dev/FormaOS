@@ -6,15 +6,22 @@ import { computeEntryHash } from './hash-utils';
 // Enhanced Audit Engine
 // ------------------------------------------------------------------
 
-// v4-005: under contention, two writers can observe the same
-// `lastEntry` snapshot and both compute the same (seq+1, prev_hash) —
-// the chain forks silently. UNIQUE(org_id, sequence_number) on
-// audit_log forces the loser's INSERT to fail with 23505; we then
-// re-read and rebuild the hash against the winner's row. Five
-// attempts is the practical ceiling: real-world per-org contention
-// peaks at two or three concurrent emitters during compliance reruns.
+// Audit 2026-05-26 — write through the audit_log_append RPC.
+//
+// Old path: app read lastEntry → computed (seq+1, prev_hash) → INSERT.
+// Under contention two writers could resolve to the same sequence and
+// the loser would hit UNIQUE(org_id, sequence_number), retry up to 5x,
+// and on retry exhaustion silently lose audit events. The RPC takes a
+// per-org advisory lock and assembles the chain inside one transaction
+// — the race is no longer reachable.
+//
+// The legacy retry path is kept as a fallback for environments where
+// the RPC migration hasn't run yet (Supabase Dashboard schema drift,
+// local dev DBs not yet caught up). The fallback throws after the
+// retry budget so events still surface as errors rather than vanish.
 const MAX_CHAIN_RETRIES = 5;
 const PG_UNIQUE_VIOLATION = '23505';
+const PG_FUNCTION_MISSING = '42883';
 
 export async function writeAuditLog(
   orgId: string,
@@ -28,14 +35,35 @@ export async function writeAuditLog(
     userAgent?: string;
   },
 ) {
-  // Chain writes are system-owned and must bypass RLS. The
-  // `audit_log_org` policy only grants SELECT to authenticated org
-  // members; there is no policy granting INSERT to anyone except
-  // service_role. Session-scoped writes were silently failing — only
-  // 2 rows ever landed in prod while org_audit_logs accumulated
-  // 24,580+ activity rows. Switching to admin closes that gap.
   const db = createSupabaseAdminClient();
+  const id = crypto.randomUUID();
+  const createdAt = new Date().toISOString();
 
+  // Preferred path: atomic RPC. Computes hash + seq + prev_hash
+  // server-side under an advisory lock; one round-trip; race-free.
+  const { error: rpcError } = await db.rpc('audit_log_append', {
+    p_id: id,
+    p_org_id: orgId,
+    p_user_id: entry.userId ?? null,
+    p_action: entry.action,
+    p_resource_type: entry.resourceType,
+    p_resource_id: entry.resourceId ?? null,
+    p_details: entry.details ?? {},
+    p_ip_address: entry.ipAddress ?? null,
+    p_user_agent: entry.userAgent ?? null,
+    p_created_at: createdAt,
+  });
+
+  if (!rpcError) return;
+
+  const rpcErrCode = (rpcError as { code?: string }).code;
+  if (rpcErrCode !== PG_FUNCTION_MISSING) {
+    // Real RPC failure (auth, integrity, etc.) — surface it.
+    throw rpcError;
+  }
+
+  // RPC not deployed yet — fall back to the legacy retry loop so the
+  // event isn't lost during migration rollout.
   for (let attempt = 0; attempt < MAX_CHAIN_RETRIES; attempt++) {
     const { data: lastEntry } = await db
       .from('audit_log')
@@ -47,20 +75,22 @@ export async function writeAuditLog(
 
     const seqNum = (lastEntry?.sequence_number || 0) + 1;
     const prevHash = lastEntry?.entry_hash || '';
-    const id = crypto.randomUUID();
-    const createdAt = new Date().toISOString();
 
-    const entryHash = computeEntryHash({
-      id,
-      orgId,
-      userId: entry.userId,
-      action: entry.action,
-      resourceType: entry.resourceType,
-      resourceId: entry.resourceId,
-      details: entry.details || {},
-      createdAt,
-      prevHash,
-    });
+    // Legacy rows use the v1 hash algorithm.
+    const entryHash = computeEntryHash(
+      {
+        id,
+        orgId,
+        userId: entry.userId,
+        action: entry.action,
+        resourceType: entry.resourceType,
+        resourceId: entry.resourceId,
+        details: entry.details || {},
+        createdAt,
+        prevHash,
+      },
+      'v1',
+    );
 
     const { error } = await db.from('audit_log').insert({
       id,

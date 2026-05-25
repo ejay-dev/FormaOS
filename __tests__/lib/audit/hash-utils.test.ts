@@ -17,18 +17,22 @@ function buildEntry(seq: number, prevHash: string, overrides: Partial<Entry> = {
     created_at: `2026-01-01T00:00:${String(seq).padStart(2, '0')}Z`,
     prev_hash: prevHash,
     sequence_number: seq,
+    hash_algo: 'v2' as const,
   };
-  const entry_hash = computeEntryHash({
-    id: base.id,
-    orgId: base.org_id,
-    userId: base.user_id,
-    action: base.action,
-    resourceType: base.resource_type,
-    resourceId: base.resource_id,
-    details: base.details,
-    createdAt: base.created_at,
-    prevHash: base.prev_hash,
-  });
+  const entry_hash = computeEntryHash(
+    {
+      id: base.id,
+      orgId: base.org_id,
+      userId: base.user_id,
+      action: base.action,
+      resourceType: base.resource_type,
+      resourceId: base.resource_id,
+      details: base.details,
+      createdAt: base.created_at,
+      prevHash: base.prev_hash,
+    },
+    'v2',
+  );
   return { ...base, entry_hash, ...overrides };
 }
 
@@ -91,17 +95,20 @@ describe('verifyChainIntegrity', () => {
     // — we want the sequence-gap detector to fire instead.
     tweaked[1] = {
       ...tweaked[1],
-      entry_hash: computeEntryHash({
-        id: tweaked[1].id,
-        orgId: tweaked[1].org_id,
-        userId: tweaked[1].user_id,
-        action: tweaked[1].action,
-        resourceType: tweaked[1].resource_type,
-        resourceId: tweaked[1].resource_id,
-        details: tweaked[1].details,
-        createdAt: tweaked[1].created_at,
-        prevHash: tweaked[1].prev_hash,
-      }),
+      entry_hash: computeEntryHash(
+        {
+          id: tweaked[1].id,
+          orgId: tweaked[1].org_id,
+          userId: tweaked[1].user_id,
+          action: tweaked[1].action,
+          resourceType: tweaked[1].resource_type,
+          resourceId: tweaked[1].resource_id,
+          details: tweaked[1].details,
+          createdAt: tweaked[1].created_at,
+          prevHash: tweaked[1].prev_hash,
+        },
+        'v2',
+      ),
     };
     // The next row's prev_hash now mismatches the mutated row's new
     // entry_hash, so we recompute that too so monotonicity is what

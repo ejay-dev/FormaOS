@@ -20,6 +20,8 @@ type ChainEntry = {
   created_at: string;
   entry_hash: string;
   prev_hash: string | null;
+  sequence_number?: number | null;
+  hash_algo?: 'v1' | 'v2' | null;
 };
 
 const evaluate: ControlEvaluator = async ({ orgId, db }) => {
@@ -28,7 +30,7 @@ const evaluate: ControlEvaluator = async ({ orgId, db }) => {
   const { data, error } = await db
     .from('audit_log')
     .select(
-      'id, org_id, user_id, action, resource_type, resource_id, details, created_at, entry_hash, prev_hash, sequence_number',
+      'id, org_id, user_id, action, resource_type, resource_id, details, created_at, entry_hash, prev_hash, sequence_number, hash_algo',
     )
     .eq('org_id', orgId)
     .order('sequence_number', { ascending: true })
@@ -63,6 +65,8 @@ const evaluate: ControlEvaluator = async ({ orgId, db }) => {
     created_at: e.created_at,
     entry_hash: e.entry_hash,
     prev_hash: e.prev_hash ?? undefined,
+    sequence_number: e.sequence_number ?? undefined,
+    hash_algo: e.hash_algo ?? undefined,
   }));
 
   const result = verifyChainIntegrity(verifiable);

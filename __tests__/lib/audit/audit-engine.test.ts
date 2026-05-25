@@ -42,6 +42,20 @@ function createBuilder(result: any = { data: null, error: null, count: null }) {
   return b;
 }
 
+// Audit 2026-05-26: writeAuditLog now prefers the audit_log_append RPC
+// and falls back to the legacy retry loop on PG 42883 (function does
+// not exist). Tests that exercise the legacy path get an `rpc` mock
+// that returns 42883 to take them down that branch; the dedicated
+// "uses the audit_log_append RPC" test verifies the RPC happy path.
+function rpcMissing(): jest.Mock {
+  return jest.fn(() =>
+    Promise.resolve({
+      data: null,
+      error: { code: '42883', message: 'function audit_log_append does not exist' },
+    }),
+  );
+}
+
 const { createSupabaseServerClient } = require('@/lib/supabase/server');
 const { createSupabaseAdminClient } = require('@/lib/supabase/admin');
 
@@ -59,6 +73,7 @@ describe('writeAuditLog', () => {
   it('inserts an audit entry with hash chain', async () => {
     let callCount = 0;
     const db = {
+      rpc: rpcMissing(),
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1)
@@ -83,9 +98,31 @@ describe('writeAuditLog', () => {
     expect(db.from).toHaveBeenCalledWith('audit_log');
   });
 
+  it('uses the audit_log_append RPC happy path when available', async () => {
+    const rpc = jest.fn(() => Promise.resolve({ data: null, error: null }));
+    const fromSpy = jest.fn(() => createBuilder({ error: null }));
+    const db = { rpc, from: fromSpy };
+    createSupabaseAdminClient.mockReturnValue(db);
+
+    await writeAuditLog('org-1', {
+      action: 'create',
+      resourceType: 'control',
+    });
+
+    // RPC was called once with the expected payload shape.
+    expect(rpc).toHaveBeenCalledWith('audit_log_append', expect.objectContaining({
+      p_org_id: 'org-1',
+      p_action: 'create',
+      p_resource_type: 'control',
+    }));
+    // Legacy retry-loop path was NOT exercised — no .from() reads.
+    expect(fromSpy).not.toHaveBeenCalled();
+  });
+
   it('starts from sequence 1 when no prior entries', async () => {
     let callCount = 0;
     const db = {
+      rpc: rpcMissing(),
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: null, error: null });
@@ -104,6 +141,7 @@ describe('writeAuditLog', () => {
   it('throws on non-retry insert error', async () => {
     let callCount = 0;
     const db = {
+      rpc: rpcMissing(),
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: null, error: null });
@@ -137,6 +175,7 @@ describe('writeAuditLog', () => {
       createBuilder({ error: null }),
     ];
     const db = {
+      rpc: rpcMissing(),
       from: jest.fn(() => builders[callCount++]),
     };
     createSupabaseAdminClient.mockReturnValue(db);
@@ -147,6 +186,7 @@ describe('writeAuditLog', () => {
 
   it('gives up after exhausting retries on persistent unique violations', async () => {
     const db = {
+      rpc: rpcMissing(),
       from: jest.fn(() => {
         // Alternate read-ok, insert-fail forever.
         return createBuilder(
