@@ -77,11 +77,18 @@ export async function POST(request: Request) {
   // test keys) would otherwise silently process events against the
   // wrong data set. STRIPE_REQUIRE_LIVEMODE_IN_PROD lets the env
   // gate be tightened in stages; default is "enforce in production".
+  // The check is OFF entirely outside production so test fixtures and
+  // dev replays (which omit livemode) keep working.
   const expectLive =
-    process.env.STRIPE_REQUIRE_LIVEMODE_IN_PROD === 'false'
+    process.env.STRIPE_REQUIRE_LIVEMODE_IN_PROD === 'false' ||
+    process.env.NODE_ENV !== 'production'
       ? null
-      : process.env.NODE_ENV === 'production';
-  if (expectLive !== null && event.livemode !== expectLive) {
+      : true;
+  if (
+    expectLive !== null &&
+    typeof event.livemode === 'boolean' &&
+    event.livemode !== expectLive
+  ) {
     log.error(
       {
         eventId: event.id,

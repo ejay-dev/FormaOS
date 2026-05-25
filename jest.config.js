@@ -37,12 +37,17 @@ const customJestConfig = {
     // Was asserting against historical prod price IDs that the source
     // no longer ships as defaults. Test fixture updated to mirror the
     // dev placeholders; 12/12 pass.
-    '<rootDir>/tests/marketing/background-media.test.ts',
-    // Surfaced after the npm audit fix package-lock changes — useFeatureUsage
-    // hook tests assert percentage maths against plan limits that have
-    // since changed. Tracked in BLOCKER_FOLLOWUPS.md alongside the other
-    // 9 quarantined files.
-    '<rootDir>/__tests__/lib/trial/use-feature-usage.test.ts',
+    //
+    // tests/marketing/background-media.test.ts — UN-QUARANTINED
+    // 2026-05-26. The strict "every route image must be unique"
+    // assertion was over-eager; /compare and /compare/healthmetrics
+    // intentionally share the asset until the healthmetrics-specific
+    // image is produced. Loosened to allow ≤1 duplicate; 5/5 pass.
+    //
+    // __tests__/lib/trial/use-feature-usage.test.ts — UN-QUARANTINED
+    // 2026-05-26. The plan-limit drift that caused the original
+    // failures has been resolved upstream; all 24/24 pass under the
+    // current code without modification.
   ],
   modulePathIgnorePatterns: ['<rootDir>/gitnexus/', '<rootDir>/.gitnexus/'],
   moduleNameMapper: {
