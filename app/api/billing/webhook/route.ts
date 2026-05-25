@@ -689,6 +689,41 @@ export async function POST(request: Request) {
       }
     }
 
+    // Audit 2026-05-26 — customer.deleted handler (Compliance L25).
+    // Without this, a deleted Stripe customer left
+    // org_subscriptions.stripe_customer_id pointing at a non-existent
+    // entity and the nightly reconciler had no path to clear it.
+    // Null out the customer id + flag the org for ops review.
+    if (event.type === 'customer.deleted') {
+      const customer = event.data.object as Stripe.Customer;
+      const { data: subRow } = await admin
+        .from('org_subscriptions')
+        .select('organization_id')
+        .eq('stripe_customer_id', customer.id)
+        .maybeSingle();
+
+      if (subRow?.organization_id) {
+        await admin
+          .from('org_subscriptions')
+          .update({
+            stripe_customer_id: null,
+            status: 'cancelled',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('organization_id', subRow.organization_id);
+        orgsToRevalidate.add(subRow.organization_id);
+        log.warn(
+          { orgId: subRow.organization_id, customerId: customer.id },
+          '[billing/webhook] customer.deleted — local stripe_customer_id cleared',
+        );
+      } else {
+        log.info(
+          { customerId: customer.id },
+          '[billing/webhook] customer.deleted for unknown customer (idempotent no-op)',
+        );
+      }
+    }
+
     if (event.type === 'invoice.payment_action_required') {
       const invoice = event.data.object as Stripe.Invoice;
       const customerId = invoice.customer as string | null;

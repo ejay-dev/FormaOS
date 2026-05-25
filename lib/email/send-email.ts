@@ -4,6 +4,10 @@ import { apiLogger } from '@/lib/observability/structured-logger';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { brand } from '@/config/brand';
 import { consoleShim } from '@/lib/monitoring/console-shim';
+import {
+  buildUnsubscribeUrl,
+  generateUnsubscribeToken,
+} from '@/lib/email/unsubscribe-token';
 
 export type EmailType = 'welcome' | 'invite' | 'alert';
 
@@ -325,11 +329,30 @@ export async function sendEmail(data: EmailData) {
       throw new Error('Resend is not configured.');
     }
 
+    // Audit 2026-05-26 — RFC 8058 one-click unsubscribe headers for
+    // welcome + alert. Invite emails are strictly transactional
+    // (one-off recipient consent) and don't need List-Unsubscribe.
+    // The headers are only attached when we have a userId — the
+    // token must bind to a user identity, not the recipient address
+    // alone, to defeat enumeration via crafted addresses.
+    const headers: Record<string, string> = {};
+    if (
+      (data.type === 'welcome' || data.type === 'alert') &&
+      data.userId
+    ) {
+      const unsubscribeGetUrl = buildUnsubscribeUrl(appBase, data.userId);
+      const token = generateUnsubscribeToken(data.userId);
+      const unsubscribePostUrl = `${appBase}/api/unsubscribe?token=${encodeURIComponent(token)}`;
+      headers['List-Unsubscribe'] = `<${unsubscribeGetUrl}>, <${unsubscribePostUrl}>`;
+      headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+    }
+
     const result = await resend.emails.send({
       from: getFromEmail(),
       to: data.to,
       subject,
       html,
+      headers,
     });
 
     if (result.error) throw new Error(result.error.message);

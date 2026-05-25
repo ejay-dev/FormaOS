@@ -202,6 +202,22 @@ export async function POST(request: Request) {
         invoice_now: false,
         prorate: false,
       });
+
+      // Audit 2026-05-26 — also delete the Stripe customer when this
+      // org is being abandoned by its last member. Leaving the
+      // customer behind kept orphan billing entities around forever
+      // and the reconciler's `customer.deleted` branch (added below)
+      // would otherwise have nothing to react to.
+      if (customerId) {
+        try {
+          await stripe.customers.del(customerId);
+        } catch (custErr) {
+          log.warn(
+            { custErr, orgId, customerId },
+            'stripe-cancel: customer delete failed (sub already cancelled)',
+          );
+        }
+      }
       try {
         await admin
           .from('org_subscriptions')
@@ -275,6 +291,26 @@ export async function POST(request: Request) {
     await admin.from('user_security').delete().eq('user_id', user.id);
     await admin.from('user_profiles').delete().eq('user_id', user.id);
     await admin.from('org_members').delete().eq('user_id', user.id);
+
+    // Audit 2026-05-26 — hard-delete orgs whose only remaining member
+    // was this user. Previously the org row stayed forever (still
+    // visible in admin lists, MRR rollups, customer-health), with
+    // status='cancelled' on org_subscriptions but no actual customer.
+    // CASCADE on organizations(id) handles org_subscriptions,
+    // org_entitlements, org_audit_log, etc.
+    if (cascadedOrgIds.length > 0) {
+      try {
+        await admin
+          .from('organizations')
+          .delete()
+          .in('id', cascadedOrgIds);
+      } catch (orgErr) {
+        log.warn(
+          { err: orgErr, cascadedOrgIds },
+          'orphan-org cleanup failed (user already deleted, run reconciler)',
+        );
+      }
+    }
 
     const { error: authDeleteErr } = await admin.auth.admin.deleteUser(user.id);
     if (authDeleteErr) throw authDeleteErr;

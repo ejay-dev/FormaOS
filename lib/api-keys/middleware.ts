@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getClientIp } from '@/lib/ratelimit';
 import { requireActiveSubscription } from '@/lib/billing/entitlements';
+import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { normalizeApiKeyScopes, type ApiKeyScope } from './scopes';
 import {
   applyRateLimitHeaders,
@@ -12,6 +13,8 @@ import {
   logApiKeyUsage,
   validateApiKey,
 } from './manager';
+
+const CSRF_SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 
 // Status messages thrown by requireActiveSubscription; mapped to 402 responses.
 const SUBSCRIPTION_REJECT_PREFIXES = [
@@ -244,6 +247,19 @@ export async function authenticateV1Request(
         { status: 401 },
       ),
     };
+  }
+
+  // Audit 2026-05-26 — when we fall through to session-cookie auth,
+  // mutating methods must pass an Origin / Referer check. Without it,
+  // a cross-origin form submission from evil.com could trigger v1
+  // POST/PATCH/DELETE routes (e.g. /api/v1/reports, /api/v1/webhooks)
+  // via the user's session cookie. API-key requests skip this branch
+  // because the bearer header isn't auto-attached cross-origin.
+  if (!CSRF_SAFE_METHODS.has(request.method.toUpperCase())) {
+    const csrfError = validateCsrfOrigin(request);
+    if (csrfError) {
+      return { ok: false, response: csrfError };
+    }
   }
 
   const membership = await getSessionMembership(supabase, user.id);
