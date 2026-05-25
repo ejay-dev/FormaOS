@@ -1,5 +1,6 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   parseIdpMetadataXml,
   type DirectorySyncProvider,
@@ -58,7 +59,7 @@ export async function getOrgSsoConfig(orgId: string): Promise<OrgSsoConfig | nul
 
   if (error) {
     if (!isMissingOrganizationSsoTable(error)) {
-      console.error('[org-sso] getOrgSsoConfig error:', error.message);
+      consoleShim.error('[org-sso] getOrgSsoConfig error:', error.message);
     }
     return null;
   }

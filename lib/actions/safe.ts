@@ -6,6 +6,7 @@
  * of the real message.  These helpers let actions RETURN error objects
  * so the client can display meaningful feedback.
  */
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -38,7 +39,7 @@ export function isNextInternalError(error: unknown): boolean {
  */
 export function actionError(error: unknown): { success: false; error: string } {
   if (typeof error === 'object' && error !== null && 'message' in error) {
-    console.error('[ServerAction]', (error as Error).message);
+    consoleShim.error('[ServerAction]', (error as Error).message);
   }
   return {
     success: false,

@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 const DEFAULT_PLAN: PlanKey = 'basic';
 
@@ -93,7 +94,7 @@ async function ensureOnboardingStatus(
       }
     }
   } catch (error) {
-    console.error('[provisioning] onboarding status check failed:', error);
+    consoleShim.error('[provisioning] onboarding status check failed:', error);
   }
 }
 
@@ -165,7 +166,7 @@ export async function ensureOrgProvisioning(
       actions,
     );
   } catch (error) {
-    console.error('[provisioning] legacy_orgs_mirror_failed:', error);
+    consoleShim.error('[provisioning] legacy_orgs_mirror_failed:', error);
     return {
       ok: false,
       orgId: resolvedOrg.id,
@@ -179,7 +180,7 @@ export async function ensureOrgProvisioning(
     await ensureSubscription(resolvedOrg.id, resolvedPlan);
     actions.push('subscription_ensured');
   } catch (error) {
-    console.error('[provisioning] ensureSubscription failed:', error);
+    consoleShim.error('[provisioning] ensureSubscription failed:', error);
   }
 
   return {
@@ -230,7 +231,7 @@ export async function ensureUserProvisioning(
         resolvedPlan = planFromMetadata ?? resolvedPlan;
       }
     } catch (err) {
-      console.error('[provisioning] auth.admin.getUserById failed:', err);
+      consoleShim.error('[provisioning] auth.admin.getUserById failed:', err);
       // Continue with defaults — org will still be created
     }
     orgName = `${userName}'s Organization`;

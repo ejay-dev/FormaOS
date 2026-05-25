@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 const PASSWORD_HISTORY_LIMIT = 5;
 
@@ -22,7 +23,7 @@ export async function isPasswordReused(
     .limit(PASSWORD_HISTORY_LIMIT);
 
   if (error) {
-    console.error('[PasswordHistory] Failed to check history:', error);
+    consoleShim.error('[PasswordHistory] Failed to check history:', error);
     return false;
   }
 
@@ -44,7 +45,7 @@ export async function recordPasswordHistory(
   });
 
   if (error) {
-    console.error('[PasswordHistory] Failed to record password:', error);
+    consoleShim.error('[PasswordHistory] Failed to record password:', error);
   }
 }
 

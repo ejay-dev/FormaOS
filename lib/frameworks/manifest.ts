@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Framework-pack integrity manifest.
@@ -110,7 +111,7 @@ export async function verifyFrameworkPackFile(
     }
     if (!devEmptyManifestWarned) {
       devEmptyManifestWarned = true;
-      console.warn(
+      consoleShim.warn(
         '[framework-packs] manifest.json is empty — skipping integrity check (dev only).',
       );
     }

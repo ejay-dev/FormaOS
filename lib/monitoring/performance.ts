@@ -2,6 +2,7 @@
  * Performance monitoring utilities for FormaOS
  * Tracks Core Web Vitals, API performance, and user interactions
  */
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 interface PerformanceMetric {
   name: string;
@@ -76,7 +77,7 @@ class PerformanceMonitor {
         });
         observer.observe({ entryTypes: [entryType] });
       } catch (error) {
-        console.warn(`Failed to observe ${entryType}:`, error);
+        consoleShim.warn(`Failed to observe ${entryType}:`, error);
       }
     }
   }
@@ -115,7 +116,7 @@ class PerformanceMonitor {
 
         observer.observe({ entryTypes: ['layout-shift'] });
       } catch (error) {
-        console.warn('Failed to observe CLS:', error);
+        consoleShim.warn('Failed to observe CLS:', error);
       }
     }
   }
@@ -232,7 +233,7 @@ class PerformanceMonitor {
 
     // Log performance issues
     if (this.isPerformanceIssue(metric)) {
-      console.warn('Performance issue detected:', metric);
+      consoleShim.warn('Performance issue detected:', metric);
     }
   }
 

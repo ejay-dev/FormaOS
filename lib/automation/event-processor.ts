@@ -8,6 +8,7 @@ import { processTrigger, type TriggerEvent } from './trigger-engine';
 import { updateComplianceScore } from './compliance-score-engine';
 import { automationLogger } from '@/lib/observability/structured-logger';
 import { insertOrgTaskCompat } from '@/lib/tasks/persistence';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type EventType =
   | 'evidence_uploaded'
@@ -66,7 +67,7 @@ export async function processEvent(
         return { triggered: false };
     }
   } catch (error) {
-    console.error(`[Event Processor] Error processing event:`, error);
+    consoleShim.error(`[Event Processor] Error processing event:`, error);
     return { triggered: false };
   }
 }

@@ -7,6 +7,7 @@
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { getFromEmail, getResendClient } from '@/lib/email/resend-client';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type EmailTemplate =
   | 'task_assignment'
@@ -446,7 +447,7 @@ export async function sendEmail(
         );
         break;
       default:
-        console.error(`Unknown email template: ${notification.template}`);
+        consoleShim.error(`Unknown email template: ${notification.template}`);
         return false;
     }
 
@@ -482,7 +483,7 @@ export async function sendEmail(
 
     return true;
   } catch (error) {
-    console.error('Failed to send email:', error);
+    consoleShim.error('Failed to send email:', error);
     await supabase.from('email_logs').insert({
       organization_id: notification.organizationId,
       recipients: notification.to,

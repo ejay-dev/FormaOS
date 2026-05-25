@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   extractMissingSupabaseColumn,
   getSupabaseErrorMessage,
@@ -120,7 +121,7 @@ export async function getOrganizationEmailLogsCompat(
     .limit(limit);
 
   if (error) {
-    console.error('[getOrganizationEmailLogs] Forensic Fetch Failed:', error.message);
+    consoleShim.error('[getOrganizationEmailLogs] Forensic Fetch Failed:', error.message);
     return [];
   }
 

@@ -4,6 +4,7 @@ export type ActiveOrg = {
 };
 
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export async function getActiveOrg(
   supabase: SupabaseClient,
@@ -22,7 +23,7 @@ export async function getActiveOrg(
     .maybeSingle();
 
   if (error) {
-    console.error('[getActiveOrg] failed:', error);
+    consoleShim.error('[getActiveOrg] failed:', error);
     return null;
   }
 

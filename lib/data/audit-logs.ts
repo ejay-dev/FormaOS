@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export async function getAuditLogs(orgId: string) {
   const supabase = await createSupabaseServerClient();
@@ -10,7 +11,7 @@ export async function getAuditLogs(orgId: string) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching audit logs:", error);
+    consoleShim.error("Error fetching audit logs:", error);
     return [];
   }
 

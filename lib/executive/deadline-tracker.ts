@@ -5,6 +5,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import type {
   ComplianceDeadline,
   DeadlineType,
@@ -62,7 +63,7 @@ export async function getDeadlines(
       return { deadlines: [], total: 0 };
     }
 
-    console.error('[DeadlineTracker] Failed to fetch deadlines:', error);
+    consoleShim.error('[DeadlineTracker] Failed to fetch deadlines:', error);
     return { deadlines: [], total: 0 };
   }
 
@@ -221,7 +222,7 @@ export async function getDeadlineSummary(
       };
     }
 
-    console.error('[DeadlineTracker] Failed to summarize deadlines:', error);
+    consoleShim.error('[DeadlineTracker] Failed to summarize deadlines:', error);
   }
 
   if (!deadlines?.length) {

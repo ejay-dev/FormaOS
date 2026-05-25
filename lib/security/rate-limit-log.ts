@@ -1,5 +1,6 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logSecurityEvent, SecurityEventTypes } from '@/lib/security/session-security';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 type RateLimitLogInput = {
   identifier: string;
@@ -28,7 +29,7 @@ async function withDbTimeout<T>(
   let timeoutId: NodeJS.Timeout | undefined;
   const timeoutPromise = new Promise<null>((resolve) => {
     timeoutId = setTimeout(() => {
-      console.warn(`[RateLimit] ${operationName} exceeded ${DB_WRITE_TIMEOUT_MS}ms; skipping write`);
+      consoleShim.warn(`[RateLimit] ${operationName} exceeded ${DB_WRITE_TIMEOUT_MS}ms; skipping write`);
       resolve(null);
     }, DB_WRITE_TIMEOUT_MS);
   });
@@ -41,7 +42,7 @@ async function withDbTimeout<T>(
       'error' in result &&
       (result as { error?: unknown }).error
     ) {
-      console.warn(`[RateLimit] ${operationName} failed`, {
+      consoleShim.warn(`[RateLimit] ${operationName} failed`, {
         error:
           (result as { error?: { message?: string } }).error?.message ??
           String((result as { error?: unknown }).error),
@@ -110,7 +111,7 @@ export function logRateLimitFailOpenWarning(
       ? `[RateLimit] ${reasonLabel}. Denying requests because this limiter is fail-closed.`
       : `[RateLimit] ${reasonLabel}. Falling back to in-memory limiter (degraded enforcement).`;
 
-  console.warn(message, {
+  consoleShim.warn(message, {
     keyPrefix: input.keyPrefix,
     userId: input.userId ?? null,
     identifier: input.identifier ?? null,

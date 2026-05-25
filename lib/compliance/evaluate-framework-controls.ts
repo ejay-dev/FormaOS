@@ -41,6 +41,7 @@ import { getFrameworkSlugForCode } from '@/lib/frameworks/framework-installer';
 import { registerAllEvaluators } from '@/lib/compliance/evaluators/register';
 import { getEvaluator } from '@/lib/compliance/evaluators';
 import { runControlEvaluation } from '@/lib/compliance/evaluators/run-control';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import type {
   ControlResult,
   FrameworkSlug,
@@ -485,7 +486,7 @@ export async function evaluateFrameworkControlsCore(
             controlCount: controls.length,
           },
         });
-        console.warn(
+        consoleShim.warn(
           '[compliance.evaluator] snapshot insert failed',
           snapshotError.message,
         );
@@ -514,7 +515,7 @@ export async function evaluateFrameworkControlsCore(
           },
           extra: { orgId, correlationId, evaluatedAt },
         });
-        console.warn(
+        consoleShim.warn(
           '[compliance.evaluator] status upsert failed',
           statusError.message,
         );
@@ -610,7 +611,7 @@ export async function evaluateFrameworkControlsCore(
         },
         extra: { orgId, correlationId, evaluatedAt },
       });
-      console.warn(
+      consoleShim.warn(
         '[compliance.evaluator] FRAMEWORK_EVALUATED audit log failed',
         auditError instanceof Error ? auditError.message : auditError,
       );

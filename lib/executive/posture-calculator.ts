@@ -6,6 +6,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { calculateFrameworkReadiness } from '@/lib/audit/readiness-calculator';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import type {
   ExecutivePosture,
   CriticalControl,
@@ -210,7 +211,7 @@ async function getUpcomingDeadlines(
       return [];
     }
 
-    console.error('[ExecutivePosture] Failed to fetch upcoming deadlines:', error);
+    consoleShim.error('[ExecutivePosture] Failed to fetch upcoming deadlines:', error);
     return [];
   }
 

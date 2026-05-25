@@ -11,6 +11,7 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 import { logActivity } from '@/lib/audit-trail';
 import crypto from 'crypto';
 import dns from 'dns/promises';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -227,7 +228,7 @@ async function isPublicHostnameResolved(hostname: string): Promise<boolean> {
 
     for (const addr of addresses) {
       if (isPrivateIp(addr)) {
-        console.warn('[WebhookRelay][SSRF] DNS resolved to private IP', {
+        consoleShim.warn('[WebhookRelay][SSRF] DNS resolved to private IP', {
           hostname,
           resolvedIp: addr,
         });
@@ -545,7 +546,7 @@ async function deliverRelay(
   // SSRF: re-validate the target URL (including DNS) before every delivery
   const urlSafe = await isValidWebhookUrl(config.url);
   if (!urlSafe) {
-    console.warn('[WebhookRelay][SSRF] Blocked delivery to unsafe URL', {
+    consoleShim.warn('[WebhookRelay][SSRF] Blocked delivery to unsafe URL', {
       webhookId: config.id,
       url: config.url,
     });
@@ -578,7 +579,7 @@ async function deliverRelay(
     .single();
 
   if (insertError || !deliveryRecord) {
-    console.error(
+    consoleShim.error(
       '[WebhookRelay] Failed to create delivery record:',
       insertError,
     );

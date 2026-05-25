@@ -6,6 +6,7 @@
  */
 
 import { healthLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export interface MonitoringMetrics {
   rbacChecks: {
@@ -179,7 +180,7 @@ export class APIHealthMonitor {
   }
 
   private alert(message: string) {
-    console.warn('[ALERT]', message);
+    consoleShim.warn('[ALERT]', message);
     // Send to Slack/PagerDuty in production
   }
 }
@@ -252,7 +253,7 @@ export class PerformanceMonitor {
   }
 
   private alert(message: string) {
-    console.warn('[ALERT]', message);
+    consoleShim.warn('[ALERT]', message);
   }
 }
 

@@ -8,6 +8,7 @@
 import { NextResponse } from 'next/server';
 import { enterpriseMonitor } from './enterprise-monitor';
 import { logStructured, type LogDomain } from './structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export interface MonitoringContext {
   domain: LogDomain;
@@ -26,7 +27,7 @@ function safeMonitorCall(label: string, fn: () => void): void {
   try {
     fn();
   } catch (error) {
-    console.error(`[monitoring] ${label} failed`, error);
+    consoleShim.error(`[monitoring] ${label} failed`, error);
   }
 }
 

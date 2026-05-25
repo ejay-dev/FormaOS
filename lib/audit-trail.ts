@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type ActivityAction =
   | 'create'
@@ -154,7 +155,7 @@ export async function getActivityLogs(
     .range(offset, offset + limit - 1);
 
   if (error) {
-    console.error('Error fetching activity logs:', error);
+    consoleShim.error('Error fetching activity logs:', error);
     return { logs: [], total: 0 };
   }
 

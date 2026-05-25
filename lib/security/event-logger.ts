@@ -7,6 +7,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   detectBruteForce,
   detectImpossibleTravel,
@@ -236,7 +237,7 @@ async function withDbTimeout<T>(
 
   const timeoutPromise = new Promise<null>((resolve) => {
     timeoutId = setTimeout(() => {
-      console.warn(
+      consoleShim.warn(
         `[Security] ${operationName} exceeded ${DB_WRITE_TIMEOUT_MS}ms; dropping batch write`,
       );
       resolve(null);
@@ -251,7 +252,7 @@ async function withDbTimeout<T>(
       'error' in result &&
       (result as { error?: unknown }).error
     ) {
-      console.warn(`[Security] ${operationName} failed`, {
+      consoleShim.warn(`[Security] ${operationName} failed`, {
         error:
           (result as { error?: { message?: string } }).error?.message ??
           String((result as { error?: unknown }).error),
@@ -525,7 +526,7 @@ async function flushQueues(): Promise<void> {
         userActivityQueueDepth: userActivityQueue.length,
       },
     });
-    console.warn('[Security] queued event flush failed', {
+    consoleShim.warn('[Security] queued event flush failed', {
       error: error instanceof Error ? error.message : String(error),
     });
   } finally {

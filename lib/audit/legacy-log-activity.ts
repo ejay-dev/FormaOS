@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Audit domain categories (for filtering, dashboards, alerts)
@@ -73,10 +74,10 @@ export async function logActivity(
     const { error } = await insertOrgAuditLog(supabase, payload);
 
     if (error) {
-      console.error("[AUDIT ERROR] Insert failed:", error.message);
+      consoleShim.error("[AUDIT ERROR] Insert failed:", error.message);
     }
   } catch (error) {
-    console.error("[AUDIT CRASH] Logger failed:", error);
+    consoleShim.error("[AUDIT CRASH] Logger failed:", error);
     // Always swallow errors: logging must never block business logic
   }
 }

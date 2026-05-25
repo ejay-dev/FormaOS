@@ -5,6 +5,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { calculateFrameworkReadiness } from '@/lib/audit/readiness-calculator'
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type ComplianceSnapshot = {
   id: string
@@ -117,7 +118,7 @@ export async function getSnapshotHistory(
     .order('snapshot_date', { ascending: true })
 
   if (error) {
-    console.error('[SnapshotService] Failed to load history:', error)
+    consoleShim.error('[SnapshotService] Failed to load history:', error)
     return []
   }
 

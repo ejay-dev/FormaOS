@@ -10,6 +10,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { billingLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type TrialAccessResult = {
   hasAccess: boolean;
@@ -49,7 +50,7 @@ export async function verifyTrialAccess(): Promise<TrialAccessResult> {
     } = await supabase.auth.getUser();
 
     if (userError || !user) {
-      console.warn('[verifyTrialAccess] User not authenticated');
+      consoleShim.warn('[verifyTrialAccess] User not authenticated');
       return {
         hasAccess: false,
         reason: 'not_authenticated',
@@ -64,7 +65,7 @@ export async function verifyTrialAccess(): Promise<TrialAccessResult> {
       .maybeSingle();
 
     if (membershipError || !membership?.organization_id) {
-      console.warn('[verifyTrialAccess] No organization membership');
+      consoleShim.warn('[verifyTrialAccess] No organization membership');
       return {
         hasAccess: false,
         reason: 'no_subscription',
@@ -79,7 +80,7 @@ export async function verifyTrialAccess(): Promise<TrialAccessResult> {
       .maybeSingle();
 
     if (subscriptionError || !subscription) {
-      console.warn('[verifyTrialAccess] No subscription found for org', {
+      consoleShim.warn('[verifyTrialAccess] No subscription found for org', {
         orgId: membership.organization_id,
         error: subscriptionError?.message,
       });
@@ -94,7 +95,7 @@ export async function verifyTrialAccess(): Promise<TrialAccessResult> {
       !subscription.status ||
       !['active', 'trialing'].includes(subscription.status)
     ) {
-      console.warn('[verifyTrialAccess] Subscription inactive', {
+      consoleShim.warn('[verifyTrialAccess] Subscription inactive', {
         orgId: membership.organization_id,
         status: subscription.status,
       });
@@ -111,7 +112,7 @@ export async function verifyTrialAccess(): Promise<TrialAccessResult> {
         : null;
 
       if (!trialExpiration) {
-        console.warn('[verifyTrialAccess] Trial missing expiration date');
+        consoleShim.warn('[verifyTrialAccess] Trial missing expiration date');
         return {
           hasAccess: false,
           reason: 'trial_expired',
@@ -120,7 +121,7 @@ export async function verifyTrialAccess(): Promise<TrialAccessResult> {
 
       const now = Date.now();
       if (now > trialExpiration) {
-        console.warn('[verifyTrialAccess] Trial expired', {
+        consoleShim.warn('[verifyTrialAccess] Trial expired', {
           expiresAt: new Date(trialExpiration).toISOString(),
           now: new Date(now).toISOString(),
         });
@@ -150,7 +151,7 @@ export async function verifyTrialAccess(): Promise<TrialAccessResult> {
       hasAccess: true,
     };
   } catch (error) {
-    console.error('[verifyTrialAccess] Unexpected error:', error);
+    consoleShim.error('[verifyTrialAccess] Unexpected error:', error);
     return {
       hasAccess: false,
       reason: 'unknown',

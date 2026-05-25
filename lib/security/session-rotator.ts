@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Session rotation result
@@ -36,7 +37,7 @@ export async function rotateSession(): Promise<SessionRotationResult> {
     const { data: rotatedSession, error: refreshError } = await supabase.auth.refreshSession();
     
     if (refreshError) {
-      console.error("[SessionRotator] Token refresh failed:", refreshError);
+      consoleShim.error("[SessionRotator] Token refresh failed:", refreshError);
       return { success: false, error: refreshError.message };
     }
     
@@ -53,7 +54,7 @@ export async function rotateSession(): Promise<SessionRotationResult> {
       },
     };
   } catch (error) {
-    console.error("[SessionRotator] Unexpected error:", error);
+    consoleShim.error("[SessionRotator] Unexpected error:", error);
     return { success: false, error: "Internal error during session rotation" };
   }
 }

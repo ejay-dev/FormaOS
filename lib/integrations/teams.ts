@@ -8,6 +8,7 @@
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from '@/lib/audit-trail';
 import { decodeIntegrationConfig } from './config-crypto';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type TeamsEventType =
   | 'task_created'
@@ -61,7 +62,7 @@ export async function sendTeamsMessage(
     });
 
     if (!response.ok) {
-      console.error(
+      consoleShim.error(
         'Teams webhook failed:',
         response.status,
         response.statusText,
@@ -71,7 +72,7 @@ export async function sendTeamsMessage(
 
     return true;
   } catch (error) {
-    console.error('Failed to send Teams message:', error);
+    consoleShim.error('Failed to send Teams message:', error);
     return false;
   }
 }

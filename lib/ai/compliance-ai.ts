@@ -16,6 +16,7 @@
 
 import type { ComplianceFramework } from '@/lib/compliance/scanner';
 import { generateAIText, isAISDKConfigured } from '@/lib/ai/sdk-client';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /** Check whether the OpenAI integration is available */
 export function isAIAvailable(): boolean {
@@ -104,14 +105,14 @@ async function callOpenAI(
   userPrompt: string,
 ): Promise<string | null> {
   if (!isAISDKConfigured()) {
-    console.warn(
+    consoleShim.warn(
       '[compliance-ai] OPENAI_API_KEY is not set. AI features will use fallback responses.',
     );
     return null;
   }
 
   if (!checkAIRateLimit()) {
-    console.warn('[compliance-ai] Rate limit reached. Skipping OpenAI call.');
+    consoleShim.warn('[compliance-ai] Rate limit reached. Skipping OpenAI call.');
     return null;
   }
 
@@ -178,7 +179,7 @@ Score criteria:
       setCache(cacheKey, result);
       return result;
     } catch {
-      console.warn('[compliance-ai] Failed to parse evidence quality response');
+      consoleShim.warn('[compliance-ai] Failed to parse evidence quality response');
     }
   }
 
@@ -313,7 +314,7 @@ The narrative should address:
       setCache(cacheKey, result);
       return result;
     } catch {
-      console.warn('[compliance-ai] Failed to parse narrative response');
+      consoleShim.warn('[compliance-ai] Failed to parse narrative response');
     }
   }
 
@@ -406,7 +407,7 @@ Map to: SOC 2, ISO 27001, HIPAA, GDPR, PCI DSS, NIST 800-53`;
       setCache(cacheKey, result);
       return result;
     } catch {
-      console.warn('[compliance-ai] Failed to parse mapping response');
+      consoleShim.warn('[compliance-ai] Failed to parse mapping response');
     }
   }
 
@@ -550,7 +551,7 @@ Consider:
       setCache(cacheKey, result);
       return result;
     } catch {
-      console.warn('[compliance-ai] Failed to parse gap prediction response');
+      consoleShim.warn('[compliance-ai] Failed to parse gap prediction response');
     }
   }
 

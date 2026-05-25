@@ -23,6 +23,7 @@
 
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
 import { randomUUID } from 'crypto';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 // Simple rate limiter implementation
 interface RateLimitResult {
@@ -46,7 +47,7 @@ function logFailOpenWarning(
   }
 
   failOpenWarningTimestamps.set(reason, now);
-  console.warn('[RateLimit][FailOpen]', {
+  consoleShim.warn('[RateLimit][FailOpen]', {
     reason,
     metadata,
     timestamp: new Date(now).toISOString(),
@@ -146,7 +147,7 @@ async function rateLimit(
       reset: now + windowMs,
     };
   } catch (error) {
-    console.error('[RateLimit] Error:', error);
+    consoleShim.error('[RateLimit] Error:', error);
     logFailOpenWarning('redis_rate_limit_error', {
       key,
       limit,

@@ -1,4 +1,5 @@
 import { Redis } from '@upstash/redis';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 type RedisConfig = {
   restUrl: string | null;
@@ -73,13 +74,13 @@ export function getRedisClient(): Redis | null {
 
   if (!restUrl || !token) {
     if (!restUrl && tcpUrl && !hasWarnedAboutProtocol) {
-      console.warn(
+      consoleShim.warn(
         '[Redis] TCP URL detected without REST credentials. Upstash REST features remain disabled.',
       );
       hasWarnedAboutProtocol = true;
     }
     if (isRedisRequiredRuntime() && !hasWarnedAboutMissingProductionRedis) {
-      console.error(
+      consoleShim.error(
         '[Redis] Upstash REST credentials are missing in a Redis-required runtime. Auth/admin rate limits fail closed; non-critical API paths use degraded in-memory limits.',
       );
       hasWarnedAboutMissingProductionRedis = true;

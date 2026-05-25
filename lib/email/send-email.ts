@@ -3,6 +3,7 @@ import { recordEmailLog } from '@/lib/email/email-log-compat';
 import { apiLogger } from '@/lib/observability/structured-logger';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { brand } from '@/config/brand';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type EmailType = 'welcome' | 'invite' | 'alert';
 
@@ -227,7 +228,7 @@ async function checkEmailPreferences(
       .maybeSingle();
 
     if (error) {
-      console.error('[checkEmailPreferences] DB Error:', error.message);
+      consoleShim.error('[checkEmailPreferences] DB Error:', error.message);
       return true; // Default to allowing if DB check fails
     }
 
@@ -245,7 +246,7 @@ async function checkEmailPreferences(
         return true;
     }
   } catch (error) {
-    console.error('[checkEmailPreferences] Unexpected Error:', error);
+    consoleShim.error('[checkEmailPreferences] Unexpected Error:', error);
     return true;
   }
 }
@@ -275,7 +276,7 @@ async function logEmail(
       userId,
     });
   } catch (error) {
-    console.error('[logEmail] Failed to record in ledger:', error);
+    consoleShim.error('[logEmail] Failed to record in ledger:', error);
   }
 }
 
@@ -348,7 +349,7 @@ export async function sendEmail(data: EmailData) {
     return { success: true, data: result.data };
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('[sendEmail] CRITICAL FAILURE:', message);
+    consoleShim.error('[sendEmail] CRITICAL FAILURE:', message);
 
     // Log failure for audit purposes
     await logEmail(

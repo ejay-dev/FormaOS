@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies, headers } from 'next/headers';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { getSupabaseAnonKey, getSupabaseUrl } from '@/lib/supabase/env';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 // REVERTED: Kept your original function name
 export async function createSupabaseServerClient() {
@@ -35,7 +36,7 @@ export async function createSupabaseServerClient() {
   })();
 
   if (!hasValidUrl || !supabaseKey) {
-    console.error('[Supabase] Missing Supabase URL or anon key.');
+    consoleShim.error('[Supabase] Missing Supabase URL or anon key.');
     return createFallbackSupabaseClient();
   }
 
@@ -70,7 +71,7 @@ export async function createSupabaseServerClient() {
       },
     });
   } catch (error) {
-    console.error('[Supabase] Failed to initialize server client:', error);
+    consoleShim.error('[Supabase] Failed to initialize server client:', error);
     return createFallbackSupabaseClient();
   }
 }

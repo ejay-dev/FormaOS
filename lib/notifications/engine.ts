@@ -6,6 +6,7 @@ import { deliverEmailNotification } from './channels/email';
 import { deliverSlackNotification } from './channels/slack';
 import { deliverTeamsNotification } from './channels/teams';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   getDefaultDigestFrequency,
   type NotificationChannelRow,
@@ -23,7 +24,7 @@ function logNotificationDeliveryFailure(
   orgId: string,
   error: unknown,
 ) {
-  console.warn('[Notifications] delivery failed', {
+  consoleShim.warn('[Notifications] delivery failed', {
     channel,
     userId,
     orgId,

@@ -7,6 +7,7 @@
 
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
 import { apiLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 // In-memory cache fallback when Redis is not available.
 // Uses LRU eviction to prevent unbounded memory growth.
@@ -107,7 +108,7 @@ async function getCache() {
       apiLogger.info('redis_cache_initialized');
       return cacheInstance;
     } catch (_error) {
-      console.warn('⚠️  Redis not available, using in-memory cache');
+      consoleShim.warn('⚠️  Redis not available, using in-memory cache');
     }
   }
 
@@ -170,7 +171,7 @@ export async function getCached<T>(
       return JSON.parse(cached) as T;
     }
   } catch (error) {
-    console.warn(`Cache get error for key ${key}:`, error);
+    consoleShim.warn(`Cache get error for key ${key}:`, error);
   }
 
   // Fetch fresh data
@@ -180,7 +181,7 @@ export async function getCached<T>(
     // Store in cache
     await cache.set(key, JSON.stringify(data), ttl);
   } catch (error) {
-    console.warn(`Cache set error for key ${key}:`, error);
+    consoleShim.warn(`Cache set error for key ${key}:`, error);
   }
 
   return data;
@@ -238,7 +239,7 @@ export async function setCache(
   try {
     await cache.set(key, JSON.stringify(value), ttl);
   } catch (error) {
-    console.warn(`Cache set error for key ${key}:`, error);
+    consoleShim.warn(`Cache set error for key ${key}:`, error);
   }
 }
 
@@ -251,7 +252,7 @@ export async function invalidateCache(key: string): Promise<void> {
   try {
     await cache.del(key);
   } catch (error) {
-    console.warn(`Cache invalidation error for key ${key}:`, error);
+    consoleShim.warn(`Cache invalidation error for key ${key}:`, error);
   }
 }
 
@@ -267,7 +268,7 @@ export async function invalidateCachePattern(pattern: string): Promise<void> {
       await Promise.all(keys.map((key: string) => cache.del(key)));
     }
   } catch (error) {
-    console.warn(`Cache pattern invalidation error for ${pattern}:`, error);
+    consoleShim.warn(`Cache pattern invalidation error for ${pattern}:`, error);
   }
 }
 
@@ -302,7 +303,7 @@ export async function warmCache(
       const data = await fetcher();
       await setCache(key, data, 600); // 10 minutes for warmed cache
     } catch (error) {
-      console.warn(`Cache warming failed for ${key}:`, error);
+      consoleShim.warn(`Cache warming failed for ${key}:`, error);
     }
   });
 

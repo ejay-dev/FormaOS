@@ -14,6 +14,7 @@
 
 import { getRedisClient } from '@/lib/redis/client';
 import { queueLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   type Job,
   type JobType,
@@ -78,7 +79,7 @@ export class QueueClient {
     const scheduledAt = options.scheduledAt ?? now;
 
     if (!redis) {
-      console.warn('[Queue] Redis not available - job will not be persisted:', id);
+      consoleShim.warn('[Queue] Redis not available - job will not be persisted:', id);
       return { success: false, jobId: id, scheduledAt: scheduledAt.toISOString() };
     }
 
@@ -111,7 +112,7 @@ export class QueueClient {
       queueLogger.info('job_enqueued', { jobId: id, type, scheduledAt: scheduledAt.toISOString() });
       return { success: true, jobId: id, scheduledAt: scheduledAt.toISOString() };
     } catch (error) {
-      console.error('[Queue] Failed to enqueue job:', error);
+      consoleShim.error('[Queue] Failed to enqueue job:', error);
       return { success: false, jobId: id, scheduledAt: scheduledAt.toISOString() };
     }
   }
@@ -176,7 +177,7 @@ export class QueueClient {
 
       return jobs;
     } catch (error) {
-      console.error('[Queue] Failed to fetch pending jobs:', error);
+      consoleShim.error('[Queue] Failed to fetch pending jobs:', error);
       return [];
     }
   }
@@ -212,7 +213,7 @@ export class QueueClient {
 
       queueLogger.info('job_completed', { jobId });
     } catch (error) {
-      console.error(`[Queue] Failed to complete job ${jobId}:`, error);
+      consoleShim.error(`[Queue] Failed to complete job ${jobId}:`, error);
     }
   }
 
@@ -272,7 +273,7 @@ export class QueueClient {
         return 'dead';
       }
     } catch (err) {
-      console.error(`[Queue] Failed to record failure for job ${jobId}:`, err);
+      consoleShim.error(`[Queue] Failed to record failure for job ${jobId}:`, err);
       return 'dead';
     }
   }
@@ -310,7 +311,7 @@ export class QueueClient {
       queueLogger.info('stale_jobs_recovered', { count: recovered });
       return recovered;
     } catch (error) {
-      console.error('[Queue] Failed to recover stale jobs:', error);
+      consoleShim.error('[Queue] Failed to recover stale jobs:', error);
       return 0;
     }
   }
@@ -328,7 +329,7 @@ export class QueueClient {
       if (!raw) return null;
       return typeof raw === 'string' ? JSON.parse(raw) : raw as unknown as Job;
     } catch (error) {
-      console.error(`[Queue] Failed to get job ${jobId}:`, error);
+      consoleShim.error(`[Queue] Failed to get job ${jobId}:`, error);
       return null;
     }
   }
@@ -367,7 +368,7 @@ export class QueueClient {
         totalFailed: Number(results[4]) || 0,
       };
     } catch (error) {
-      console.error('[Queue] Failed to get queue stats:', error);
+      consoleShim.error('[Queue] Failed to get queue stats:', error);
       return empty;
     }
   }
@@ -403,7 +404,7 @@ export class QueueClient {
 
       return jobs;
     } catch (error) {
-      console.error('[Queue] Failed to list dead jobs:', error);
+      consoleShim.error('[Queue] Failed to list dead jobs:', error);
       return [];
     }
   }
@@ -441,7 +442,7 @@ export class QueueClient {
       queueLogger.info('dead_job_requeued', { jobId });
       return true;
     } catch (error) {
-      console.error(`[Queue] Failed to retry dead job ${jobId}:`, error);
+      consoleShim.error(`[Queue] Failed to retry dead job ${jobId}:`, error);
       return false;
     }
   }
@@ -478,7 +479,7 @@ export class QueueClient {
       }
       return cleaned;
     } catch (error) {
-      console.error('[Queue] Failed to cleanup expired dead jobs:', error);
+      consoleShim.error('[Queue] Failed to cleanup expired dead jobs:', error);
       return 0;
     }
   }

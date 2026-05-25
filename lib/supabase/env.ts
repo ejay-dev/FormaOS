@@ -1,3 +1,4 @@
+import { consoleShim } from '@/lib/monitoring/console-shim';
 type EnvValue = string | undefined | null;
 
 const isPresent = (value: EnvValue) =>
@@ -24,7 +25,7 @@ function warnOnLegacyServiceRoleAliases(): void {
 
   const hasCanonical = isPresent(process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-  console.warn(
+  consoleShim.warn(
     `[Supabase env] Legacy service-role alias detected (${aliases.join(
       ', ',
     )}). Prefer SUPABASE_SERVICE_ROLE_KEY${

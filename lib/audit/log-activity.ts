@@ -11,6 +11,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rbacLogger } from '@/lib/observability/structured-logger';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type AuditAction =
   | 'CREATE_ORGANIZATION'
@@ -41,7 +42,7 @@ export async function logActivityCore(
     } = await supabase.auth.getUser();
 
     if (!user) {
-      console.warn(
+      consoleShim.warn(
         `[AUDIT SKIPPED] No authenticated user for action: ${action}`,
       );
       return;
@@ -63,11 +64,11 @@ export async function logActivityCore(
     });
 
     if (error) {
-      console.error(`[AUDIT FAILURE] DB rejected log: ${error.message}`);
+      consoleShim.error(`[AUDIT FAILURE] DB rejected log: ${error.message}`);
     } else {
       rbacLogger.info('audit_event_recorded', { action, actorId: user.id });
     }
   } catch (err) {
-    console.error(`[AUDIT CRASH] Logger failed:`, err);
+    consoleShim.error(`[AUDIT CRASH] Logger failed:`, err);
   }
 }

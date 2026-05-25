@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   isMissingSupabaseColumnError,
   isMissingSupabaseTableError,
@@ -133,7 +134,7 @@ export async function logIdentityEvent(
       created_at: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[identity/audit] failed to log identity event', error);
+    consoleShim.error('[identity/audit] failed to log identity event', error);
   }
 }
 

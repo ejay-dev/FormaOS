@@ -8,6 +8,7 @@
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { logActivity } from './audit-trail';
 import crypto from 'crypto';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type WebhookEvent =
   | 'task.created'
@@ -205,7 +206,7 @@ async function deliverWebhook(
     .single();
 
   if (insertError || !deliveryRecord) {
-    console.error('Failed to create delivery record:', insertError);
+    consoleShim.error('Failed to create delivery record:', insertError);
     return delivery as WebhookDelivery;
   }
 

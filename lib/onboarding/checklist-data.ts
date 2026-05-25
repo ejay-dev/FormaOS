@@ -3,6 +3,7 @@ import 'server-only';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import type { ChecklistCompletionCounts } from '@/lib/onboarding/industry-checklists';
 import { getSupabaseErrorMessage } from '@/lib/supabase/schema-compat';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 async function safeCount(
   label: string,
@@ -13,13 +14,13 @@ async function safeCount(
     if (error) {
       const message = getSupabaseErrorMessage(error as { message?: string | null });
       if (message) {
-        console.warn(`[onboarding] count query error (${label})`, error);
+        consoleShim.warn(`[onboarding] count query error (${label})`, error);
       }
       return 0;
     }
     return count ?? 0;
   } catch (error) {
-    console.warn(`[onboarding] count query failed (${label})`, error);
+    consoleShim.warn(`[onboarding] count query failed (${label})`, error);
     return 0;
   }
 }

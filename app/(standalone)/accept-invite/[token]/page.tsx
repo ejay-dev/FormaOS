@@ -13,7 +13,7 @@ import {
   acceptInvitation,
   validateInvitation,
 } from '@/lib/invitations/validate-invitation';
-import { logActivity } from '@/lib/logger';
+import { logActivity } from '@/lib/audit/legacy-log-activity';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';

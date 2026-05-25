@@ -11,6 +11,7 @@ import type { ModuleId, UserEntitlements, NodeState, PlanTier, UserRole } from "
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { apiLogger } from "@/lib/observability/structured-logger";
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * =========================================================
@@ -52,7 +53,7 @@ export async function getSystemState(): Promise<ActionResult<SystemStatePayload>
 
     return { success: true, data: state };
   } catch (error) {
-    console.error("[getSystemState] Error:", error);
+    consoleShim.error("[getSystemState] Error:", error);
     return { success: false, error: "Failed to fetch system state" };
   }
 }
@@ -66,7 +67,7 @@ export async function getModuleNodeState(moduleId: ModuleId): Promise<ActionResu
     const { state } = await validateModuleAccess(moduleId);
     return { success: true, data: state };
   } catch (error) {
-    console.error("[getModuleNodeState] Error:", error);
+    consoleShim.error("[getModuleNodeState] Error:", error);
     return { success: false, error: "Failed to get module state" };
   }
 }
@@ -83,7 +84,7 @@ export async function canAccessModule(moduleId: ModuleId): Promise<ActionResult<
     const result = await validateModuleAccess(moduleId);
     return { success: true, data: result };
   } catch (error) {
-    console.error("[canAccessModule] Error:", error);
+    consoleShim.error("[canAccessModule] Error:", error);
     return { success: false, error: "Failed to validate access" };
   }
 }
@@ -98,7 +99,7 @@ export async function checkPermission(
     const { allowed } = await validatePermission(permissionKey);
     return { success: true, data: allowed };
   } catch (error) {
-    console.error("[checkPermission] Error:", error);
+    consoleShim.error("[checkPermission] Error:", error);
     return { success: false, error: "Failed to check permission" };
   }
 }
@@ -139,7 +140,7 @@ export async function initiatePlanUpgrade(targetPlan: PlanTier): Promise<ActionR
       } 
     };
   } catch (error) {
-    console.error("[initiatePlanUpgrade] Error:", error);
+    consoleShim.error("[initiatePlanUpgrade] Error:", error);
     return { success: false, error: "Failed to initiate upgrade" };
   }
 }
@@ -192,14 +193,14 @@ export async function changeUserRole(
       .eq("user_id", targetUserId);
 
     if (error) {
-      console.error("[changeUserRole] DB Error:", error);
+      consoleShim.error("[changeUserRole] DB Error:", error);
       return { success: false, error: "Failed to update role" };
     }
 
     revalidatePath("/app");
     return { success: true };
   } catch (error) {
-    console.error("[changeUserRole] Error:", error);
+    consoleShim.error("[changeUserRole] Error:", error);
     return { success: false, error: "Failed to change role" };
   }
 }
@@ -231,7 +232,7 @@ export async function recordModuleAccess(moduleId: ModuleId): Promise<ActionResu
 
     return { success: true };
   } catch (error) {
-    console.error("[recordModuleAccess] Error:", error);
+    consoleShim.error("[recordModuleAccess] Error:", error);
     return { success: false, error: "Failed to record access" };
   }
 }
@@ -272,7 +273,7 @@ export async function getAvailableModules(): Promise<ActionResult<Array<{
 
     return { success: true, data: modules };
   } catch (error) {
-    console.error("[getAvailableModules] Error:", error);
+    consoleShim.error("[getAvailableModules] Error:", error);
     return { success: false, error: "Failed to get modules" };
   }
 }
@@ -308,7 +309,7 @@ export async function getSubscriptionStatus(): Promise<ActionResult<{
       },
     };
   } catch (error) {
-    console.error("[getSubscriptionStatus] Error:", error);
+    consoleShim.error("[getSubscriptionStatus] Error:", error);
     return { success: false, error: "Failed to get subscription status" };
   }
 }

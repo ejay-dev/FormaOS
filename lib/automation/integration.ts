@@ -5,6 +5,7 @@
 
 import { processEvent } from './event-processor';
 import { updateComplianceScore } from './compliance-score-engine';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Trigger automation after evidence upload
@@ -24,7 +25,7 @@ export async function onEvidenceUploaded(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error('[Automation] Error processing evidence upload:', error);
+    consoleShim.error('[Automation] Error processing evidence upload:', error);
     // Don't throw - automation failures shouldn't block main flow
   }
 }
@@ -48,7 +49,7 @@ export async function onEvidenceVerified(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error(
+    consoleShim.error(
       '[Automation] Error processing evidence verification:',
       error,
     );
@@ -74,7 +75,7 @@ export async function onControlStatusUpdated(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error(
+    consoleShim.error(
       '[Automation] Error processing control status update:',
       error,
     );
@@ -99,7 +100,7 @@ export async function onTaskCompleted(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error('[Automation] Error processing task completion:', error);
+    consoleShim.error('[Automation] Error processing task completion:', error);
   }
 }
 
@@ -121,7 +122,7 @@ export async function onTaskCreated(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error('[Automation] Error processing task creation:', error);
+    consoleShim.error('[Automation] Error processing task creation:', error);
   }
 }
 
@@ -141,7 +142,7 @@ export async function onSubscriptionActivated(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error(
+    consoleShim.error(
       '[Automation] Error processing subscription activation:',
       error,
     );
@@ -163,7 +164,7 @@ export async function onOnboardingCompleted(
       timestamp: new Date(),
     });
   } catch (error) {
-    console.error(
+    consoleShim.error(
       '[Automation] Error processing onboarding completion:',
       error,
     );
@@ -186,7 +187,7 @@ export async function onIndustryConfigured(
       triggeredAt: new Date(),
     });
   } catch (error) {
-    console.error(
+    consoleShim.error(
       '[Automation] Error processing industry configuration:',
       error,
     );
@@ -209,7 +210,7 @@ export async function onFrameworksProvisioned(
       triggeredAt: new Date(),
     });
   } catch (error) {
-    console.error(
+    consoleShim.error(
       '[Automation] Error processing frameworks provisioning:',
       error,
     );
@@ -233,7 +234,7 @@ export async function onIndustryPackApplied(
       triggeredAt: new Date(),
     });
   } catch (error) {
-    console.error(
+    consoleShim.error(
       '[Automation] Error processing industry pack application:',
       error,
     );
@@ -256,7 +257,7 @@ export async function onOnboardingMilestone(
       triggeredAt: new Date(),
     });
   } catch (error) {
-    console.error('[Automation] Error processing onboarding milestone:', error);
+    consoleShim.error('[Automation] Error processing onboarding milestone:', error);
   }
 }
 
@@ -270,7 +271,7 @@ export async function updateComplianceScoreAndCheckRisk(
   try {
     await updateComplianceScore(organizationId);
   } catch (error) {
-    console.error('[Automation] Error updating compliance score:', error);
+    consoleShim.error('[Automation] Error updating compliance score:', error);
   }
 }
 
@@ -288,7 +289,7 @@ export async function batchUpdateComplianceScores(
       await updateComplianceScore(orgId);
       succeeded++;
     } catch (error) {
-      console.error(
+      consoleShim.error(
         `[Automation] Error updating score for org ${orgId}:`,
         error,
       );

@@ -20,6 +20,7 @@
  */
 
 import { NextResponse } from 'next/server';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Trusted origins derived from environment config.
@@ -135,7 +136,7 @@ export function validateCsrfOrigin(request: Request): NextResponse | null {
   }
 
   if (!requestOrigin) {
-    console.warn('[CSRF] Blocked request with no Origin/Referer header', {
+    consoleShim.warn('[CSRF] Blocked request with no Origin/Referer header', {
       method,
       url: request.url,
     });
@@ -147,7 +148,7 @@ export function validateCsrfOrigin(request: Request): NextResponse | null {
 
   const trusted = getTrustedOrigins();
   if (!trusted.has(requestOrigin) && !isDevelopmentLoopbackOrigin(requestOrigin)) {
-    console.warn('[CSRF] Blocked request from untrusted origin', {
+    consoleShim.warn('[CSRF] Blocked request from untrusted origin', {
       requestOrigin,
       method,
       url: request.url,

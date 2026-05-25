@@ -7,6 +7,7 @@
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { decodeIntegrationConfig } from './config-crypto';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export interface SlackConfig {
   organizationId: string;
@@ -68,7 +69,7 @@ export async function sendSlackMessage(
 
     return { success: true };
   } catch (error) {
-    console.error('Slack integration error:', error);
+    consoleShim.error('Slack integration error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',

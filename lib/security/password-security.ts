@@ -7,6 +7,7 @@
  */
 
 import crypto from 'crypto';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 const HIBP_API_URL = 'https://api.pwnedpasswords.com/range';
 
@@ -71,7 +72,7 @@ export async function checkPasswordBreached(password: string): Promise<{
 
     if (!response?.ok) {
       const status = response?.status ?? 0;
-      console.warn(
+      consoleShim.warn(
         `[HIBP] API request failed (status=${status}, failClosed=${failClosed})`,
       );
       if (failClosed) {
@@ -94,7 +95,7 @@ export async function checkPasswordBreached(password: string): Promise<{
 
     return { breached: false, count: 0 };
   } catch (error) {
-    console.error('[HIBP] Error checking password:', error);
+    consoleShim.error('[HIBP] Error checking password:', error);
     if (process.env.HIBP_FAIL_CLOSED === 'true') {
       return { breached: true, count: -1 };
     }

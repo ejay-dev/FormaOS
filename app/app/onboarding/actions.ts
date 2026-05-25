@@ -3,7 +3,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { INDUSTRY_PACKS } from '@/lib/industry-packs';
-import { logActivity } from '@/lib/logger';
+import { logActivity } from '@/lib/audit/legacy-log-activity';
 import { isProvisioningRole } from '@/lib/onboarding/roles';
 import { revalidatePath } from 'next/cache';
 import { onIndustryPackApplied } from '@/lib/automation/integration';

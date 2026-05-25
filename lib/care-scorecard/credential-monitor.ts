@@ -5,6 +5,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import type { Credential, CredentialType, CareScorecardAlert } from './types';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Get all expiring credentials with detailed information
@@ -51,7 +52,7 @@ export async function getExpiringCredentials(
   const { data: credentials, error } = await query;
 
   if (error) {
-    console.error('[CredentialMonitor] Failed to fetch credentials:', error);
+    consoleShim.error('[CredentialMonitor] Failed to fetch credentials:', error);
     return [];
   }
 

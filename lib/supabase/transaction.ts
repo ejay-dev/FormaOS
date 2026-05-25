@@ -2,6 +2,7 @@ import { createSupabaseAdminClient } from './admin';
 import { mirrorOrgToLegacyOrgs } from './mirror-legacy-orgs';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { resolvePlanKey } from '@/lib/plans';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Sequentially execute operations with manual cleanup on failure.
@@ -81,7 +82,7 @@ export async function bootstrapOrganizationAtomic(params: {
       });
 
     if (onboardingError) {
-      console.warn(
+      consoleShim.warn(
         '[bootstrap] Onboarding status failed (non-critical):',
         onboardingError.message,
       );
@@ -129,7 +130,7 @@ export async function bootstrapOrganizationAtomic(params: {
         subError.message ?? '',
       )
     ) {
-      console.warn(
+      consoleShim.warn(
         '[bootstrap] pending_checkout enum missing — falling back to past_due',
       );
       ({ error: subError } = await admin
@@ -140,7 +141,7 @@ export async function bootstrapOrganizationAtomic(params: {
     }
 
     if (subError) {
-      console.warn(
+      consoleShim.warn(
         '[bootstrap] Subscription creation failed (non-critical):',
         subError.message,
       );
@@ -151,7 +152,7 @@ export async function bootstrapOrganizationAtomic(params: {
           resolvePlanKey(planKey) ?? 'basic',
         );
       } catch (entitlementError) {
-        console.warn(
+        consoleShim.warn(
           '[bootstrap] Entitlement sync failed (non-critical):',
           entitlementError instanceof Error
             ? entitlementError.message
@@ -172,7 +173,7 @@ export async function bootstrapOrganizationAtomic(params: {
   } catch (error) {
     // Cleanup on failure - delete the org if it was created
     if (organizationId) {
-      console.error('[bootstrap] Rolling back organization:', organizationId);
+      consoleShim.error('[bootstrap] Rolling back organization:', organizationId);
 
       // Delete in reverse order to respect FK constraints
       await admin

@@ -1,7 +1,7 @@
 // app/app/actions/enforcement.ts
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
-import { logActivity as logger } from '@/lib/logger';
+import { logActivity as logger } from '@/lib/audit/legacy-log-activity';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
 import { actionError, isNextInternalError } from "@/lib/actions/safe";

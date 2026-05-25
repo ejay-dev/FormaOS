@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { randomBytes } from 'crypto';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export interface CreateInvitationParams {
   organizationId: string;
@@ -35,7 +36,7 @@ export async function createInvitation(params: CreateInvitationParams) {
     .eq('status', 'pending');
 
   if (revokeError) {
-    console.error('[createInvitation] revoke error:', revokeError);
+    consoleShim.error('[createInvitation] revoke error:', revokeError);
     return { success: false, error: revokeError };
   }
 
@@ -58,7 +59,7 @@ export async function createInvitation(params: CreateInvitationParams) {
     .single();
 
   if (error) {
-    console.error('[createInvitation] Error:', error);
+    consoleShim.error('[createInvitation] Error:', error);
     return { success: false, error };
   }
 

@@ -3,6 +3,7 @@ import 'server-only';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { ensureUserProvisioning } from '@/lib/provisioning/ensure-provisioning';
 import { careOpsLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 const TOTAL_ONBOARDING_STEPS = 7;
 
@@ -177,7 +178,7 @@ export async function recoverUserWorkspace({
       }
     }
   } catch (error) {
-    console.error('[BOOTSTRAP_RECOVERY] provisioning failed', {
+    consoleShim.error('[BOOTSTRAP_RECOVERY] provisioning failed', {
       source,
       userId,
       error,
@@ -191,7 +192,7 @@ export async function recoverUserWorkspace({
     .limit(50);
 
   if ((membershipRows?.length ?? 0) > 1) {
-    console.warn('[BOOTSTRAP_RECOVERY] multiple memberships detected', {
+    consoleShim.warn('[BOOTSTRAP_RECOVERY] multiple memberships detected', {
       source,
       userId,
       count: membershipRows?.length ?? 0,
@@ -202,7 +203,7 @@ export async function recoverUserWorkspace({
 
   if (membershipError || !membershipData?.organization_id) {
     missingRecords.push('org_members');
-    console.error('[BOOTSTRAP_RECOVERY] membership missing after recovery', {
+    consoleShim.error('[BOOTSTRAP_RECOVERY] membership missing after recovery', {
       source,
       userId,
       membershipError,

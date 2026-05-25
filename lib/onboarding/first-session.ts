@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
@@ -59,7 +60,7 @@ async function fetchSeenSteps(
       .maybeSingle();
     if (error) {
       // Missing table / permissions — log once so monitoring can pick it up.
-      console.warn(
+      consoleShim.warn(
         '[onboarding-health] org_first_session_progress read failed',
         { code: error.code, message: error.message },
       );
@@ -76,7 +77,7 @@ async function fetchSeenSteps(
       ].includes(id as string),
     );
   } catch (err) {
-    console.warn('[onboarding-health] seen_steps fetch threw', err);
+    consoleShim.warn('[onboarding-health] seen_steps fetch threw', err);
     return [];
   }
 }

@@ -10,6 +10,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { DatabaseRole, Permission } from '@/lib/roles';
 import { NextResponse } from 'next/server';
 import { abilityCanPermission } from '@/lib/authz/ability';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * User context fetched from database
@@ -53,7 +54,7 @@ export async function getUserContext(): Promise<UserContext | null> {
       email: user.email || '',
     };
   } catch (error) {
-    console.error('Failed to fetch user context:', error);
+    consoleShim.error('Failed to fetch user context:', error);
     return null;
   }
 }
@@ -119,7 +120,7 @@ export async function verifyOrgAccess(
 
     return !error && !!data;
   } catch (error) {
-    console.error('Failed to verify org access:', error);
+    consoleShim.error('Failed to verify org access:', error);
     return false;
   }
 }

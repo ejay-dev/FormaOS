@@ -13,6 +13,7 @@ import {
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { createLangfuseSpanProcessor } from '@/lib/observability/langfuse';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 let sdkStartPromise: Promise<boolean> | null = null;
 
@@ -122,7 +123,7 @@ export async function registerOpenTelemetry(): Promise<boolean> {
 
   sdkStartPromise = startOpenTelemetry().catch((error) => {
     sdkStartPromise = null;
-    console.warn(
+    consoleShim.warn(
       '[observability] OpenTelemetry bootstrap failed:',
       error instanceof Error ? error.message : 'Unknown error',
     );

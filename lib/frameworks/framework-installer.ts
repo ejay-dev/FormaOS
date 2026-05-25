@@ -2,6 +2,7 @@ import path from 'path';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { applyLegacyControlMapping } from '@/lib/compliance/legacy-control-mapping';
 import { loadFrameworkPack } from './loadFrameworkPack';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   detectComplianceControlsSchema,
   riskWeightFromLevel,
@@ -184,11 +185,11 @@ export async function ensureFrameworkPacksInstalled() {
       const result = await applyLegacyControlMapping(admin);
       if (!result.ok) {
         for (const err of result.errors) {
-          console.warn('[framework-installer] legacy mapping:', err);
+          consoleShim.warn('[framework-installer] legacy mapping:', err);
         }
       }
     } catch (error) {
-      console.error('[framework-installer] Failed to install packs:', error);
+      consoleShim.error('[framework-installer] Failed to install packs:', error);
     }
   })();
 
@@ -203,7 +204,7 @@ export async function installFrameworkPack(slug: string) {
   // PACK_REGISTRY no longer contains the legacy entries.
   const resolved = DEPRECATED_PACK_SLUGS[slug] ?? slug;
   if (resolved !== slug) {
-    console.warn(
+    consoleShim.warn(
       `[framework-installer] legacy pack slug "${slug}" redirected to "${resolved}"`,
     );
   }

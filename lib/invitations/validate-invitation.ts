@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Invitation validation result
@@ -52,7 +53,7 @@ export async function validateInvitation(token: string): Promise<InvitationValid
       .maybeSingle();
     
     if (error) {
-      console.error("[InvitationValidator] Lookup error:", error);
+      consoleShim.error("[InvitationValidator] Lookup error:", error);
       return {
         valid: false,
         error: "Invalid invitation token",
@@ -115,7 +116,7 @@ export async function validateInvitation(token: string): Promise<InvitationValid
       },
     };
   } catch (error) {
-    console.error("[InvitationValidator] Unexpected error:", error);
+    consoleShim.error("[InvitationValidator] Unexpected error:", error);
     return {
       valid: false,
       error: "Failed to validate invitation",
@@ -153,7 +154,7 @@ export async function acceptInvitation(
       .eq("token", token);
     
     if (updateError) {
-      console.error("[InvitationValidator] Accept error:", updateError);
+      consoleShim.error("[InvitationValidator] Accept error:", updateError);
       return { success: false, error: "Failed to accept invitation" };
     }
 
@@ -170,13 +171,13 @@ export async function acceptInvitation(
       );
 
     if (memberError) {
-      console.error("[InvitationValidator] Member insert error:", memberError);
+      consoleShim.error("[InvitationValidator] Member insert error:", memberError);
       return { success: false, error: "Failed to add member to organization" };
     }
     
     return { success: true };
   } catch (error) {
-    console.error("[InvitationValidator] Accept unexpected error:", error);
+    consoleShim.error("[InvitationValidator] Accept unexpected error:", error);
     return { success: false, error: "Internal error accepting invitation" };
   }
 }
@@ -270,13 +271,13 @@ export async function createInvitationWithExpiry(
       .single();
     
     if (error) {
-      console.error("[InvitationValidator] Create error:", error);
+      consoleShim.error("[InvitationValidator] Create error:", error);
       return { success: false, error: error.message };
     }
     
     return { success: true, token };
   } catch (error) {
-    console.error("[InvitationValidator] Create unexpected error:", error);
+    consoleShim.error("[InvitationValidator] Create unexpected error:", error);
     return { success: false, error: "Failed to create invitation" };
   }
 }
@@ -308,7 +309,7 @@ export async function revokeInvitation(
     
     return { success: true };
   } catch (error) {
-    console.error("[InvitationValidator] Revoke error:", error);
+    consoleShim.error("[InvitationValidator] Revoke error:", error);
     return { success: false, error: "Failed to revoke invitation" };
   }
 }

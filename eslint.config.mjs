@@ -93,6 +93,30 @@ const eslintConfig = [
       'jsx-a11y/role-supports-aria-props': 'error',
       'jsx-a11y/scope': 'error',
       'jsx-a11y/tabindex-no-positive': 'warn',
+
+      // Audit 2026-05-26 — banned imports.
+      //
+      // `@/lib/logger` was misleadingly named: it inserts into
+      // `org_audit_log`, not a structured logger. Renamed to
+      // `@/lib/audit/legacy-log-activity` to make intent obvious.
+      //
+      // For *real* structured logging use `@/lib/monitoring/server-logger`
+      // (pino + PII redaction). For audit events use
+      // `@/app/app/actions/audit` (the server-action wrapper that
+      // verifies session→org match) or `@/lib/audit/log-activity` (the
+      // lib-level core).
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: '@/lib/logger',
+              message:
+                'Renamed: use @/lib/audit/legacy-log-activity (audit writer) — or for real structured logging, @/lib/monitoring/server-logger.',
+            },
+          ],
+        },
+      ],
     },
   },
   // Marketing pages and components use bespoke styling; do not gate commits on

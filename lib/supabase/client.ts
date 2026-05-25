@@ -1,6 +1,7 @@
 import { createBrowserClient } from '@supabase/ssr';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { getSupabaseAnonKey, getSupabaseUrl } from '@/lib/supabase/env';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 type SupabaseClient = ReturnType<typeof createBrowserClient>;
 
@@ -126,7 +127,7 @@ export function createSupabaseClient() {
   })();
 
   if (!hasValidUrl || !key) {
-    console.error('[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or public key.');
+    consoleShim.error('[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or public key.');
     cachedClient = createFallbackClient();
     return cachedClient;
   }
@@ -137,7 +138,7 @@ export function createSupabaseClient() {
     });
     return cachedClient;
   } catch (error) {
-    console.error('[Supabase] Failed to initialize browser client:', error);
+    consoleShim.error('[Supabase] Failed to initialize browser client:', error);
     cachedClient = createFallbackClient();
     return cachedClient;
   }

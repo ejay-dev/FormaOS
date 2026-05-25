@@ -1,5 +1,6 @@
 // lib/feature-flags.ts
 import React from 'react'
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 interface FeatureFlags {
   // QA & Testing Features
@@ -82,7 +83,7 @@ export class FeatureFlagManager {
         }
       }
     } catch (error) {
-      console.warn('Failed to parse feature flags, using defaults:', error)
+      consoleShim.warn('Failed to parse feature flags, using defaults:', error)
     }
     
     return DEFAULT_FLAGS
@@ -191,7 +192,7 @@ export function getServerSideFeatureFlags(): FeatureFlags {
       }
     }
   } catch (error) {
-    console.warn('Failed to parse server-side feature flags:', error)
+    consoleShim.warn('Failed to parse server-side feature flags:', error)
   }
 
   return {

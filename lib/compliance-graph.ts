@@ -6,6 +6,7 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { graphLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export interface GraphNode {
   id: string;
@@ -109,7 +110,7 @@ export async function initializeComplianceGraph(
       .select('id, created_at');
 
     if (policyError || !defaultPolicies) {
-      console.error(
+      consoleShim.error(
         '[compliance-graph] Failed to create initial policies:',
         policyError,
       );
@@ -197,7 +198,7 @@ export async function initializeComplianceGraph(
       wires,
     };
   } catch (error) {
-    console.error('[compliance-graph] Graph initialization failed:', error);
+    consoleShim.error('[compliance-graph] Graph initialization failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -326,7 +327,7 @@ export async function validateComplianceGraph(organizationId: string): Promise<{
       wireCount,
     };
   } catch (error) {
-    console.error('[compliance-graph] Validation failed:', error);
+    consoleShim.error('[compliance-graph] Validation failed:', error);
     return {
       isValid: false,
       issues: [
@@ -434,7 +435,7 @@ export async function repairComplianceGraph(
       repairsApplied,
     };
   } catch (error) {
-    console.error('[compliance-graph] Repair failed:', error);
+    consoleShim.error('[compliance-graph] Repair failed:', error);
     return {
       success: false,
       repairsApplied: [],

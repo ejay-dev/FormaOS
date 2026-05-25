@@ -1,6 +1,7 @@
 // FIXED: Import your specific function name
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 interface LogActivityParams {
   orgId: string;
@@ -30,7 +31,7 @@ export async function logActivity({
     } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      console.error('Audit Log Error: No authenticated user found.');
+      consoleShim.error('Audit Log Error: No authenticated user found.');
       return;
     }
 
@@ -45,9 +46,9 @@ export async function logActivity({
     });
 
     if (error) {
-      console.error('FAILED TO LOG AUDIT EVENT:', error.message);
+      consoleShim.error('FAILED TO LOG AUDIT EVENT:', error.message);
     }
   } catch (err) {
-    console.error('Unexpected Audit Log Error:', err);
+    consoleShim.error('Unexpected Audit Log Error:', err);
   }
 }

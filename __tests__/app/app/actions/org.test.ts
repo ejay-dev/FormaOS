@@ -8,7 +8,7 @@ jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: jest.fn(),
 }));
 
-jest.mock('@/lib/logger', () => ({
+jest.mock('@/lib/audit/legacy-log-activity', () => ({
   logActivity: jest.fn(),
 }));
 
@@ -33,7 +33,7 @@ jest.mock('@/lib/actions/safe', () => ({
 
 import { revalidatePath } from 'next/cache';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { logActivity } from '@/lib/logger';
+import { logActivity } from '@/lib/audit/legacy-log-activity';
 import { logActivity as logProductActivity } from '@/lib/activity/feed';
 import { getUserOrgMembership } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';

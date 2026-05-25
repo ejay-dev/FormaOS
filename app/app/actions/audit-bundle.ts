@@ -9,7 +9,7 @@ import {
   getOrgIdForUser,
   requireNoComplianceBlocks,
 } from '@/app/app/actions/enforcement';
-import { logActivity } from '@/lib/logger';
+import { logActivity } from '@/lib/audit/legacy-log-activity';
 import { requirePermission } from '@/app/app/actions/rbac';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { logAuditEvent } from '@/app/app/actions/audit-events';

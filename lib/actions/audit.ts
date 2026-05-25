@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Audit v3-013 (2026-05-22): the original implementation called
@@ -63,7 +64,7 @@ export async function logActivity({
     if ((memberships?.length ?? 0) > 0) {
       // Best-effort signal for callers to surface — kept as console
       // until Sentry routing is wired in.
-      console.warn(
+      consoleShim.warn(
         `[lib/actions/audit] logActivity called without orgId for action "${type}"; multi-org users may land audit rows in their first org. Pass orgId explicitly.`,
       );
     }

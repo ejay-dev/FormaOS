@@ -2,6 +2,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin'
 import { getServerSideFeatureFlags } from '@/lib/feature-flags'
 import { ensureFrameworkPacksInstalled } from './framework-installer'
 import type { FrameworkControlRow, FrameworkDomainRow, FrameworkRegistryRow } from './types'
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 function isFrameworkEngineEnabled() {
   const flags = getServerSideFeatureFlags()
@@ -22,7 +23,7 @@ export async function getAvailableFrameworks(): Promise<FrameworkRegistryRow[]> 
     .order('name', { ascending: true })
 
   if (error) {
-    console.error('[FrameworkRegistry] Failed to load frameworks:', error)
+    consoleShim.error('[FrameworkRegistry] Failed to load frameworks:', error)
     return []
   }
 
@@ -54,7 +55,7 @@ export async function getFrameworkDomains(frameworkSlug: string): Promise<Framew
     .order('sort_order', { ascending: true })
 
   if (error) {
-    console.error('[FrameworkRegistry] Failed to load domains:', error)
+    consoleShim.error('[FrameworkRegistry] Failed to load domains:', error)
     return []
   }
 
@@ -88,7 +89,7 @@ export async function getFrameworkControls(frameworkSlug: string): Promise<Frame
     .order('control_code', { ascending: true })
 
   if (error) {
-    console.error('[FrameworkRegistry] Failed to load controls:', error)
+    consoleShim.error('[FrameworkRegistry] Failed to load controls:', error)
     return []
   }
 

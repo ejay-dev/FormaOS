@@ -1,5 +1,6 @@
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { writeAuditLog } from "@/lib/audit/audit-engine";
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type AdminAuditEntry = {
   actorUserId: string;
@@ -80,7 +81,7 @@ export async function logAdminAction(entry: AdminAuditEntry) {
     throw new Error(`logAdminAction: all writes failed — ${failures.join('; ')}`);
   }
   if (failures.length > 0) {
-    console.warn('[admin.audit] partial write failure:', failures.join('; '));
+    consoleShim.warn('[admin.audit] partial write failure:', failures.join('; '));
   }
 
   // Audit 2026-05-23: when the caller knows which org the action targets,
@@ -99,7 +100,7 @@ export async function logAdminAction(entry: AdminAuditEntry) {
         details: metadata,
       });
     } catch (err) {
-      console.warn(
+      consoleShim.warn(
         '[admin.audit] hash-chain write failed:',
         err instanceof Error ? err.message : String(err),
       );

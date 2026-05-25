@@ -1,4 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export async function ensureOrganization(
   supabase: SupabaseClient,
@@ -12,7 +13,7 @@ export async function ensureOrganization(
     .maybeSingle();
 
   if (checkError) {
-    console.error('[ensureOrganization] Membership check failed:', checkError.message);
+    consoleShim.error('[ensureOrganization] Membership check failed:', checkError.message);
     return null;
   }
 
@@ -39,7 +40,7 @@ export async function ensureOrganization(
     .single();
 
   if (organizationError || !organization?.id) {
-    console.error('[ensureOrganization] Organization creation failed:', organizationError?.message);
+    consoleShim.error('[ensureOrganization] Organization creation failed:', organizationError?.message);
     return null;
   }
 
@@ -53,7 +54,7 @@ export async function ensureOrganization(
     });
 
   if (membershipError) {
-    console.error('[ensureOrganization] Membership creation failed:', membershipError.message);
+    consoleShim.error('[ensureOrganization] Membership creation failed:', membershipError.message);
 
     // ⚠️ Rollback: remove orphaned organization
     await supabase
@@ -77,7 +78,7 @@ export async function ensureOrganization(
           userName,
           organizationName: organization.name,
         }),
-      }).catch(err => console.error('[ensureOrganization] Welcome email failed:', err));
+      }).catch(err => consoleShim.error('[ensureOrganization] Welcome email failed:', err));
     }
   }
 

@@ -2,7 +2,7 @@
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { logActivity } from "@/lib/logger";
+import { logActivity } from "@/lib/audit/legacy-log-activity";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { actionError, isNextInternalError } from "@/lib/actions/safe";
 

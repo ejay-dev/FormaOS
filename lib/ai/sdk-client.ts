@@ -4,6 +4,7 @@ import { generateText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { observeServerFn } from '@/lib/observability/langfuse';
 import { isAIKillSwitchEnabled as killSwitchEnabled } from './kill-switch';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 interface GenerateAITextOptions {
   name: string;
@@ -63,7 +64,7 @@ export async function generateAIText(
     const result = await runObservedGeneration();
     return result.text.trim() || null;
   } catch (error) {
-    console.error(
+    consoleShim.error(
       `[ai-sdk] ${options.name} failed:`,
       error instanceof Error ? error.message : error,
     );

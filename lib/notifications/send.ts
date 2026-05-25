@@ -1,4 +1,5 @@
 import { createSupabaseClient } from '@/lib/supabase/client';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export async function sendNotification(
   userId: string,
@@ -20,6 +21,6 @@ export async function sendNotification(
   });
 
   if (error) {
-    console.error('Failed to send notification:', error);
+    consoleShim.error('Failed to send notification:', error);
   }
 }

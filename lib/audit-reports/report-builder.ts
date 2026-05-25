@@ -5,6 +5,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { calculateFrameworkReadiness } from '@/lib/audit/readiness-calculator';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import type {
   BaseReportPayload,
   Iso27001ReportPayload,
@@ -579,7 +580,7 @@ async function getPhiInventorySummary(
       encryptedInTransit: transitRes.count ?? 0,
     };
   } catch (err) {
-    console.warn('[report-builder] PHI inventory lookup failed:', err);
+    consoleShim.warn('[report-builder] PHI inventory lookup failed:', err);
     return {
       totalSystems: 0,
       systemsWithPhi: 0,

@@ -2,7 +2,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { revalidatePath } from 'next/cache';
-import { logActivity } from '@/lib/logger';
+import { logActivity } from '@/lib/audit/legacy-log-activity';
 import { logActivity as logProductActivity } from '@/lib/activity/feed';
 import { getUserOrgMembership } from '@/app/app/actions/rbac';
 import { logAuditEvent } from '@/app/app/actions/audit-events';

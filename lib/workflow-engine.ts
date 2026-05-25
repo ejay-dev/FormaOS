@@ -9,6 +9,7 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 import { logActivity } from '@/lib/activity/feed';
 import { notify } from '@/lib/notifications/engine';
 import { automationLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type TriggerType =
   | 'member_added'
@@ -120,7 +121,7 @@ export class WorkflowEngine {
           );
         }
       } catch (error) {
-        console.error(
+        consoleShim.error(
           `[workflow-engine] Failed to execute workflow ${rule.id}:`,
           error,
         );

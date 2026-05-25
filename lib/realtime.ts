@@ -9,6 +9,7 @@ import { createSupabaseClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { healthLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export interface RealtimeEvent<T = unknown> {
   type: 'INSERT' | 'UPDATE' | 'DELETE';
@@ -336,7 +337,7 @@ export async function logActivity(
   });
 
   if (error) {
-    console.error('Failed to log activity:', error);
+    consoleShim.error('Failed to log activity:', error);
   }
 }
 

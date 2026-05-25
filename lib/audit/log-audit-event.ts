@@ -12,6 +12,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type AuditEventInput = {
   organizationId: string;
@@ -81,7 +82,7 @@ export async function logAuditEventCore(
     const admin = createSupabaseAdminClient();
     const adminResult = await insertOrgAuditLog(admin, row);
     if (!adminResult.error) {
-      console.warn('[Audit] org audit log required service-role fallback', {
+      consoleShim.warn('[Audit] org audit log required service-role fallback', {
         action: payload.actionType,
         entityType: payload.entityType ?? null,
         entityId: payload.entityId ?? null,
@@ -91,7 +92,7 @@ export async function logAuditEventCore(
     }
 
     const errorMessage = toAuditWriteError(adminResult.error);
-    console.error('[Audit] org audit log write failed', {
+    consoleShim.error('[Audit] org audit log write failed', {
       action: payload.actionType,
       entityType: payload.entityType ?? null,
       entityId: payload.entityId ?? null,
@@ -105,7 +106,7 @@ export async function logAuditEventCore(
     return { success: false as const, error: errorMessage };
   } catch (error) {
     if (required) throw error;
-    console.error('[Audit] org audit log unexpected failure', {
+    consoleShim.error('[Audit] org audit log unexpected failure', {
       action: payload.actionType,
       entityType: payload.entityType ?? null,
       entityId: payload.entityId ?? null,

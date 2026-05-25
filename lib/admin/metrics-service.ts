@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { unstable_cache } from 'next/cache';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isMissingSupabaseColumnError } from '@/lib/supabase/schema-compat';
@@ -112,7 +113,7 @@ async function fetchOverviewMetricsFromDb(): Promise<AdminOverviewMetrics> {
     : orgsResult;
 
   if (normalizedOrgsResult.error || subsResult.error) {
-    console.error('[admin/metrics] DB query error', {
+    consoleShim.error('[admin/metrics] DB query error', {
       organizations: normalizedOrgsResult.error?.message,
       subscriptions: subsResult.error?.message,
     });

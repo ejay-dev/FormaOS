@@ -12,6 +12,7 @@
 
 import { getQueueClient } from './client';
 import { queueLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import type {
   ComplianceExportPayload,
   EnterpriseExportPayload,
@@ -121,7 +122,7 @@ export class QueueProcessor {
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Unknown processor error';
       result.errors.push(msg);
-      console.error('[QueueProcessor] Fatal processing error:', error);
+      consoleShim.error('[QueueProcessor] Fatal processing error:', error);
     }
 
     return result;
@@ -151,7 +152,7 @@ export class QueueProcessor {
       queueLogger.info('job_execution_completed', { jobId: job.id, durationMs: duration });
     } catch (error) {
       const duration = Date.now() - startTime;
-      console.error(
+      consoleShim.error(
         `[QueueProcessor] Job ${job.id} failed after ${duration}ms:`,
         error,
       );

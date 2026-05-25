@@ -12,6 +12,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getGeoIpProvider } from './geo-ip';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export interface DetectionContext {
   userId?: string;
@@ -66,7 +67,7 @@ export async function detectBruteForce(
   const { count, error } = await query;
 
   if (error) {
-    console.error('[Detection] Brute force check failed:', error);
+    consoleShim.error('[Detection] Brute force check failed:', error);
     return { triggered: false, severity: 'info' };
   }
 
@@ -164,7 +165,7 @@ export async function detectNewDevice(
     .eq('type', 'login_success');
 
   if (error) {
-    console.error('[Detection] New device check failed:', error);
+    consoleShim.error('[Detection] New device check failed:', error);
     return { triggered: false, severity: 'info' };
   }
 
@@ -273,7 +274,7 @@ export async function detectPrivilegeEscalation(
       .limit(1);
 
     if (error) {
-      console.error('[Detection] Org membership check failed:', error);
+      consoleShim.error('[Detection] Org membership check failed:', error);
       return { triggered: false, severity: 'info' };
     }
 
@@ -321,7 +322,7 @@ export async function detectRateLimitViolation(
     .gte('created_at', fiveMinutesAgo);
 
   if (error) {
-    console.error('[Detection] Rate limit check failed:', error);
+    consoleShim.error('[Detection] Rate limit check failed:', error);
     return { triggered: false, severity: 'info' };
   }
 

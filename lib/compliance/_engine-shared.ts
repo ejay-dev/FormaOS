@@ -10,7 +10,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
-import { logActivity as logger } from '@/lib/logger';
+import { logActivity as logger } from '@/lib/audit/legacy-log-activity';
 import { getFrameworkCodeForSlug } from '@/lib/frameworks/framework-installer';
 
 export type ControlStatus =

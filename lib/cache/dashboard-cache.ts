@@ -5,6 +5,7 @@
  */
 
 import { apiLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 interface CacheEntry<T> {
   data: T;
@@ -160,7 +161,7 @@ export async function cacheWithFallback<T>(
     return data;
   } catch (error) {
     // Log error but don't throw
-    console.error(`[Cache] Compute failed for ${key}:`, error);
+    consoleShim.error(`[Cache] Compute failed for ${key}:`, error);
 
     // Return stale data if available
     if (staleEntry) {
@@ -200,7 +201,7 @@ export async function cacheWithBackgroundRefresh<T>(
       compute().then(data => {
         setCache(key, data, ttlMs);
       }).catch(err => {
-        console.error(`[Cache] Background refresh failed for ${key}:`, err);
+        consoleShim.error(`[Cache] Background refresh failed for ${key}:`, err);
       });
     }
     return entry.data;
@@ -212,7 +213,7 @@ export async function cacheWithBackgroundRefresh<T>(
     setCache(key, data, ttlMs);
     return data;
   } catch (error) {
-    console.error(`[Cache] Compute failed for ${key}:`, error);
+    consoleShim.error(`[Cache] Compute failed for ${key}:`, error);
     return null;
   }
 }

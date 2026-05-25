@@ -1,5 +1,6 @@
 import { fetchSystemState } from './server';
 import { SystemStateProvider } from './context';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * =========================================================
@@ -61,7 +62,7 @@ export async function SystemStateHydrator({
     );
   } catch (error) {
     // Gracefully handle errors by providing empty provider
-    console.error('[SystemStateHydrator] Error fetching system state:', error);
+    consoleShim.error('[SystemStateHydrator] Error fetching system state:', error);
     return <SystemStateProvider>{children}</SystemStateProvider>;
   }
 }

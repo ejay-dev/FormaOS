@@ -19,6 +19,7 @@ import type {
   NodeState,
 } from './types';
 import { PLAN_FEATURES, ROLE_PERMISSIONS, MODULE_DEFINITIONS } from './types';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * =========================================================
@@ -388,7 +389,7 @@ export async function getMembershipData(preloadedUser?: {
 
   if (!adminMembership) {
     if (error || adminError) {
-      console.error('[getMembershipData] membership lookup failed', {
+      consoleShim.error('[getMembershipData] membership lookup failed', {
         userId: user.id,
         error: error?.message ?? null,
         adminError: adminError?.message ?? null,
@@ -397,7 +398,7 @@ export async function getMembershipData(preloadedUser?: {
     return null;
   }
 
-  console.warn('[getMembershipData] recovered membership via admin fallback', {
+  consoleShim.warn('[getMembershipData] recovered membership via admin fallback', {
     userId: user.id,
     orgId: adminMembership.orgId,
     hadRlsError: Boolean(error),
@@ -464,7 +465,7 @@ async function fetchSystemStateFresh(preloadedUser?: {
         email: user.email ?? null,
       });
     } catch (err) {
-      console.error('[fetchSystemState] ensureUserProvisioning failed:', err);
+      consoleShim.error('[fetchSystemState] ensureUserProvisioning failed:', err);
     }
     membership = await getMembershipData(user);
   }
@@ -495,7 +496,7 @@ async function fetchSystemStateFresh(preloadedUser?: {
         orgName: membership.organizationName,
       });
     } catch (err) {
-      console.error('[fetchSystemState] ensureOrgProvisioning failed:', err);
+      consoleShim.error('[fetchSystemState] ensureOrgProvisioning failed:', err);
     }
     [subscription, dbEntitlements] = await Promise.all([
       getSubscriptionDataFresh(membership.orgId),

@@ -8,6 +8,7 @@
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { dispatchSecurityEventEnhanced } from '@/lib/security/event-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export interface SessionInfo {
   userId: string;
@@ -162,7 +163,7 @@ export async function createTrackedSession(
     .single();
 
   if (error) {
-    console.error('[Session] Failed to create tracked session:', error);
+    consoleShim.error('[Session] Failed to create tracked session:', error);
     throw new Error('Failed to create session');
   }
 
@@ -199,7 +200,7 @@ export async function validateSession(
   // Check device fingerprint (soft check - log anomaly but don't block)
   if (currentFingerprint && session.device_fingerprint) {
     if (currentFingerprint !== session.device_fingerprint) {
-      console.warn('[Session] Device fingerprint mismatch', {
+      consoleShim.warn('[Session] Device fingerprint mismatch', {
         sessionId: session.id,
         userId: session.user_id,
         expectedFingerprint: session.device_fingerprint.slice(0, 8),
@@ -278,7 +279,7 @@ export async function revokeAllUserSessions(userId: string): Promise<number> {
     .limit(1000);
 
   if (error) {
-    console.error('[Session] Failed to revoke user sessions:', error);
+    consoleShim.error('[Session] Failed to revoke user sessions:', error);
     throw new Error('Failed to revoke sessions');
   }
 
@@ -308,7 +309,7 @@ export async function getUserActiveSessions(userId: string): Promise<
     .order('last_active_at', { ascending: false });
 
   if (error) {
-    console.error('[Session] Failed to get user sessions:', error);
+    consoleShim.error('[Session] Failed to get user sessions:', error);
     return [];
   }
 
@@ -350,7 +351,7 @@ export function logSecurityEvent(event: {
     let timeoutId: NodeJS.Timeout | undefined;
     const timeoutPromise = new Promise<null>((resolve) => {
       timeoutId = setTimeout(() => {
-        console.warn(
+        consoleShim.warn(
           `[Security] ${operationName} exceeded ${dbWriteTimeoutMs}ms; skipping write`,
         );
         resolve(null);
@@ -365,7 +366,7 @@ export function logSecurityEvent(event: {
         'error' in result &&
         (result as { error?: unknown }).error
       ) {
-        console.warn(`[Security] ${operationName} failed`, {
+        consoleShim.warn(`[Security] ${operationName} failed`, {
           error:
             (result as { error?: { message?: string } }).error?.message ??
             String((result as { error?: unknown }).error),

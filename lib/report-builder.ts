@@ -9,6 +9,7 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 import { logActivity } from './audit-trail';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type WidgetType =
   | 'metric'
@@ -537,7 +538,7 @@ export async function fetchWidgetData(
       // The execute_custom_query RPC function does not exist and passing
       // user-controlled SQL strings is a critical injection risk.
       // Custom queries should use predefined, parameterised views instead.
-      console.warn(
+      consoleShim.warn(
         '[report-builder] custom_query data source is disabled for security reasons',
       );
       return [];
@@ -582,7 +583,7 @@ export async function generateReport(
         );
         return [widget.id, data] as const;
       } catch (error) {
-        console.error(`Failed to fetch data for widget ${widget.id}:`, error);
+        consoleShim.error(`Failed to fetch data for widget ${widget.id}:`, error);
         return [widget.id, null] as const;
       }
     }),

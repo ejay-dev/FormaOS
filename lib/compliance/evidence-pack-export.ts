@@ -9,6 +9,7 @@ import archiver from 'archiver';
 import { getQueueClient } from '@/lib/queue';
 import { triggerTaskIfConfigured } from '@/lib/trigger/client';
 import { exportLogger } from '@/lib/observability/structured-logger';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 
 export type ExportManifest = {
   exportId: string;
@@ -303,7 +304,7 @@ export async function processExportJob(
     exportLogger.info('compliance_export_job_completed', { jobId, workerId });
     return { ok: true, fileUrl };
   } catch (error) {
-    console.error(`[processExportJob] Job ${jobId} failed:`, error);
+    consoleShim.error(`[processExportJob] Job ${jobId} failed:`, error);
     const message =
       error instanceof Error ? error.message : 'Export processing failed';
 

@@ -9,6 +9,7 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 import { getCached, invalidateCache } from './cache';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { createInvitation } from '@/lib/invitations/create-invitation';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   findAuthUserByEmail,
   getAdminProfileDirectoryEntries,
@@ -102,7 +103,7 @@ export async function getUserOrganizations(
         .order('joined_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching user organizations:', error);
+        consoleShim.error('Error fetching user organizations:', error);
         return [];
       }
 
