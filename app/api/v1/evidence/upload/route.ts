@@ -6,6 +6,8 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { validateUploadedFile } from '@/lib/evidence/validate-upload';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/evidence/upload');
 const MAX_FILES = 10;
@@ -41,19 +43,15 @@ export async function POST(request: Request) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
+    // Belt-and-braces — requireActiveOrgContext already returns 401
+    // when there's no user, but TypeScript can't see through that, and
+    // we need user.email for the audit feed below.
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id, role')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) {
-      return NextResponse.json({ error: 'No organization' }, { status: 400 });
-    }
+    const { orgId, role } = ctx;
 
     const formData = await request.formData();
     const obligationId =
@@ -178,10 +176,27 @@ export async function POST(request: Request) {
       const filePath = `${orgId}/${pathScope}/${objectName}`;
 
       const buffer = Buffer.from(await file.arrayBuffer());
+
+      // MIME allow-list + magic-byte sniff. Prior code stored
+      // `file.type` (client-controlled) directly — an attacker could
+      // upload text/html or image/svg+xml and trigger stored XSS when
+      // the file was later previewed via signed URL.
+      const mimeCheck = validateUploadedFile(file.type, buffer);
+      if (!mimeCheck.ok) {
+        // Roll back anything written earlier in this batch.
+        for (const path of uploadedPaths) {
+          await supabase.storage.from(STORAGE_BUCKET).remove([path]);
+        }
+        return NextResponse.json(
+          { error: `${file.name}: ${mimeCheck.reason}` },
+          { status: 415 },
+        );
+      }
+
       const { error: storageError } = await supabase.storage
         .from(STORAGE_BUCKET)
         .upload(filePath, buffer, {
-          contentType: file.type || 'application/octet-stream',
+          contentType: mimeCheck.contentType,
           upsert: false,
         });
 
@@ -211,7 +226,7 @@ export async function POST(request: Request) {
         title: file.name,
         file_name: file.name,
         file_path: filePath,
-        file_type: file.type || safeExt || 'unknown',
+        file_type: mimeCheck.contentType,
         file_size: file.size,
         uploaded_by: user.id,
         verification_status: 'pending',
@@ -312,7 +327,7 @@ export async function POST(request: Request) {
         {
           organizationId: orgId,
           actorUserId: user.id,
-          actorRole: (membership?.role as string | null) ?? null,
+          actorRole: role,
           entityType: 'evidence',
           entityId: row.id as string,
           actionType: 'EVIDENCE_UPLOADED',
@@ -337,7 +352,7 @@ export async function POST(request: Request) {
           {
             organizationId: orgId,
             actorUserId: user.id,
-            actorRole: (membership?.role as string | null) ?? null,
+            actorRole: role,
             entityType,
             entityId,
             actionType:
