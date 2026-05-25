@@ -10,8 +10,12 @@ Sentry.init({
   // Performance monitoring
   tracesSampleRate: 0.1, // 10% of transactions
 
-  // Session replay for debugging
-  replaysSessionSampleRate: 0.1,
+  // Session replay for debugging.
+  // Audit 2026-05-26 — dropped from 0.1 to 0.02 (2% baseline sampling)
+  // because 10% of every session was burning replay quota on healthy
+  // traffic. On-error replays still capture at 1.0 so debugging
+  // surfaces remain intact.
+  replaysSessionSampleRate: 0.02,
   replaysOnErrorSampleRate: 1.0,
 
   // Integrations

@@ -50,7 +50,12 @@ async function backupCodeMatches(code: string, stored: string): Promise<boolean>
   }
 }
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import * as speakeasy from 'speakeasy';
+import * as OTPAuth from 'otpauth';
+// Audit 2026-05-26 — `speakeasy` flagged by our own auditor as
+// unmaintained (last release 2017). Replaced with `otpauth` which is
+// the actively-maintained TOTP/HOTP library used by Authelia, Bitwarden,
+// and others. API surface differs: see the three migrated call sites
+// below.
 import * as QRCode from 'qrcode';
 
 // ---------------------------------------------------------------------------
@@ -149,15 +154,21 @@ export async function generate2FASecret(
   userId: string,
   email: string,
 ): Promise<TwoFactorSecret> {
-  // Generate secret
-  const secret = speakeasy.generateSecret({
-    name: `FormaOS (${email})`,
+  // Generate a base32 secret (RFC 4226 §5.4 recommends ≥ 128 bits; we
+  // use 256 here to match the prior `length: 32` setting which was 32
+  // bytes / 256 bits of entropy in speakeasy's API).
+  const secret = new OTPAuth.Secret({ size: 32 });
+  const totp = new OTPAuth.TOTP({
     issuer: 'FormaOS',
-    length: 32,
+    label: email,
+    algorithm: 'SHA1',
+    digits: 6,
+    period: 30,
+    secret,
   });
 
   // Generate QR code
-  const qrCode = await QRCode.toDataURL(secret.otpauth_url || '');
+  const qrCode = await QRCode.toDataURL(totp.toString());
 
   // Generate backup codes using a CSPRNG (not Math.random). Plaintext is
   // returned to the user ONCE; the DB stores only scrypt hashes (audit
@@ -175,6 +186,8 @@ export async function generate2FASecret(
     {
       user_id: userId,
       two_factor_secret: encryptTotpSecret(secret.base32),
+      // otpauth's `secret.base32` matches speakeasy's. Stored values
+      // remain interchangeable across the migration.
       backup_codes: [] as string[],
       backup_code_hashes: backupCodeHashes,
       two_factor_enabled: false,
@@ -215,13 +228,18 @@ export async function enable2FA(
   // Decrypt secret before verifying
   const rawSecret = decryptTotpSecret(security.two_factor_secret);
 
-  // Verify token (window: 1 = ±30s, per NIST recommendation)
-  const verified = speakeasy.totp.verify({
-    secret: rawSecret,
-    encoding: 'base32',
-    token,
-    window: 1,
+  // Verify token (window: 1 = ±30s, per NIST recommendation).
+  // otpauth's `validate({ window })` accepts the same semantics as
+  // speakeasy's `window` option — both count steps either side of now.
+  const totp = new OTPAuth.TOTP({
+    issuer: 'FormaOS',
+    algorithm: 'SHA1',
+    digits: 6,
+    period: 30,
+    secret: OTPAuth.Secret.fromBase32(rawSecret),
   });
+  const delta = totp.validate({ token, window: 1 });
+  const verified = delta !== null;
 
   if (!verified) {
     return false;
@@ -283,12 +301,14 @@ export async function verify2FAToken(
 
   // Decrypt and verify TOTP token
   const rawSecret = decryptTotpSecret(security.two_factor_secret);
-  return speakeasy.totp.verify({
-    secret: rawSecret,
-    encoding: 'base32',
-    token,
-    window: 1,
+  const totp = new OTPAuth.TOTP({
+    issuer: 'FormaOS',
+    algorithm: 'SHA1',
+    digits: 6,
+    period: 30,
+    secret: OTPAuth.Secret.fromBase32(rawSecret),
   });
+  return totp.validate({ token, window: 1 }) !== null;
 }
 
 /**

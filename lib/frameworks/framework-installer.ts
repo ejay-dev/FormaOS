@@ -164,7 +164,13 @@ export async function syncComplianceFramework(
           }),
         );
 
-  await admin.from('compliance_controls').upsert(rows, {
+  // Schema-tolerant insert — the table shape differs between
+  // post-2026-03 deployments (`domain` / `risk_weight` / etc.) and the
+  // legacy shape (`category` / `risk_level` / etc.). The runtime probe
+  // `detectComplianceControlsSchema` resolves which to emit, but
+  // TypeScript can only widen the union. Cast the heterogeneous array
+  // through unknown so the supabase-js generic accepts it.
+  await admin.from('compliance_controls').upsert(rows as unknown as never[], {
     onConflict: 'framework_id,code',
   });
 }

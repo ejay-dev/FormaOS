@@ -63,7 +63,7 @@ export async function upsertFrameworkPlaybook(payload: {
           review_cadence_days: c.reviewCadenceDays ?? null,
         };
       })
-      .filter(Boolean);
+      .filter((row): row is NonNullable<typeof row> => row !== null);
 
     if (rows.length) {
       await supabase.from("compliance_playbook_controls").upsert(rows, {

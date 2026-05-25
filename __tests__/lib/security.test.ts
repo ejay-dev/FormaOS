@@ -75,15 +75,28 @@ jest.mock('@/lib/supabase/admin', () => {
   return { createSupabaseAdminClient: jest.fn(() => c), __admin: c };
 });
 
-jest.mock('speakeasy', () => ({
-  generateSecret: jest.fn(() => ({
-    base32: 'JBSWY3DPEHPK3PXP',
-    otpauth_url: 'otpauth://totp/FormaOS?secret=JBSWY3DPEHPK3PXP',
-  })),
-  totp: {
-    verify: jest.fn(() => true),
-  },
-}));
+jest.mock('otpauth', () => {
+  // Mirror only the surface lib/security.ts touches.
+  class Secret {
+    base32 = 'JBSWY3DPEHPK3PXP';
+    static fromBase32() {
+      return new Secret();
+    }
+  }
+  class TOTP {
+    secret: Secret;
+    constructor(opts: { secret?: Secret } = {}) {
+      this.secret = opts.secret ?? new Secret();
+    }
+    toString() {
+      return 'otpauth://totp/FormaOS:test@example.com?secret=JBSWY3DPEHPK3PXP&issuer=FormaOS';
+    }
+    validate() {
+      return 0; // non-null delta → "valid"
+    }
+  }
+  return { Secret, TOTP };
+});
 
 jest.mock('qrcode', () => ({
   toDataURL: jest.fn().mockResolvedValue('data:image/png;base64,fake'),
@@ -187,8 +200,11 @@ describe('enable2FA', () => {
   });
 
   it('returns false when token is invalid', async () => {
-    const speakeasy = require('speakeasy');
-    speakeasy.totp.verify.mockReturnValueOnce(false);
+    // Audit 2026-05-26 — migrated from speakeasy to otpauth. Override
+    // the mock so this single call sees a `null` delta (= invalid).
+    const otpauth = require('otpauth');
+    const originalValidate = otpauth.TOTP.prototype.validate;
+    otpauth.TOTP.prototype.validate = jest.fn().mockReturnValueOnce(null);
 
     getClient().from.mockImplementation(() =>
       createBuilder({
@@ -197,8 +213,12 @@ describe('enable2FA', () => {
       }),
     );
 
-    const result = await enable2FA('user-1', 'wrong');
-    expect(result).toBe(false);
+    try {
+      const result = await enable2FA('user-1', 'wrong');
+      expect(result).toBe(false);
+    } finally {
+      otpauth.TOTP.prototype.validate = originalValidate;
+    }
   });
 
   it('throws when no secret found', async () => {

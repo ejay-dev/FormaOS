@@ -42,7 +42,8 @@ jobs:
         run: npm run build
 
       - name: Install Lighthouse CI
-        run: npm install -g @lhci/cli@0.12.x
+        # Audit 2026-05-26 — keep in sync with package.json `test:lighthouse`.
+        run: npm install -g @lhci/cli@0.15.1
 
       - name: Run Lighthouse CI
         run: lhci autorun

@@ -334,17 +334,26 @@ export async function sendEmail(data: EmailData) {
     // (one-off recipient consent) and don't need List-Unsubscribe.
     // The headers are only attached when we have a userId — the
     // token must bind to a user identity, not the recipient address
-    // alone, to defeat enumeration via crafted addresses.
+    // alone, to defeat enumeration via crafted addresses. If
+    // generateUnsubscribeToken throws (signing secret missing in this
+    // environment), the email still sends — the unsubscribe header is
+    // a nice-to-have, not a blocker.
     const headers: Record<string, string> = {};
     if (
       (data.type === 'welcome' || data.type === 'alert') &&
       data.userId
     ) {
-      const unsubscribeGetUrl = buildUnsubscribeUrl(appBase, data.userId);
-      const token = generateUnsubscribeToken(data.userId);
-      const unsubscribePostUrl = `${appBase}/api/unsubscribe?token=${encodeURIComponent(token)}`;
-      headers['List-Unsubscribe'] = `<${unsubscribeGetUrl}>, <${unsubscribePostUrl}>`;
-      headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+      try {
+        const unsubscribeGetUrl = buildUnsubscribeUrl(appBase, data.userId);
+        const token = generateUnsubscribeToken(data.userId);
+        const unsubscribePostUrl = `${appBase}/api/unsubscribe?token=${encodeURIComponent(token)}`;
+        headers['List-Unsubscribe'] = `<${unsubscribeGetUrl}>, <${unsubscribePostUrl}>`;
+        headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+      } catch (tokErr) {
+        apiLogger.warn('unsubscribe_header_skipped', {
+          reason: tokErr instanceof Error ? tokErr.message : String(tokErr),
+        });
+      }
     }
 
     const result = await resend.emails.send({
