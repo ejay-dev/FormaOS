@@ -45,21 +45,68 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (error) {
-    // v4-022: previously log-only. A signature-mismatch spike is
-    // either (a) a webhook-secret rotation that left prod out of
-    // sync — silent paid-cancellation breakage — or (b) an active
-    // forgery attempt. Both deserve a Sentry alert, which the
-    // billing-webhook-error-spike rule named in RUNBOOKS already
-    // expects.
+    // v4-022 + audit 2026-05-26: signature-mismatch is either a
+    // webhook-secret rotation that left prod out of sync (silent
+    // paid-cancellation breakage) or an active forgery attempt. Both
+    // deserve a Sentry alert. Use captureMessage so the signal isn't
+    // grouped under the generic Stripe-error fingerprint. Tags carry
+    // enough metadata for ops to triage a rotation incident from
+    // Sentry alone without needing the raw body.
     log.error({ err: error }, 'Stripe webhook signature error:');
-    Sentry.captureException(error, {
+    Sentry.captureMessage('stripe_webhook_signature_failure', {
+      level: 'error',
       tags: {
         component: 'billing.webhook',
         operation: 'constructEvent',
+        vercel_env: process.env.VERCEL_ENV ?? 'unknown',
       },
-      level: 'error',
+      extra: {
+        rawBodyLength: rawBody.length,
+        signaturePresent: Boolean(signature),
+        errorMessage:
+          error instanceof Error ? error.message : 'unknown error',
+      },
     });
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+  }
+
+  // Audit 2026-05-26 — livemode validation. A staging environment
+  // misconfigured with production Stripe keys (or production with
+  // test keys) would otherwise silently process events against the
+  // wrong data set. STRIPE_REQUIRE_LIVEMODE_IN_PROD lets the env
+  // gate be tightened in stages; default is "enforce in production".
+  const expectLive =
+    process.env.STRIPE_REQUIRE_LIVEMODE_IN_PROD === 'false'
+      ? null
+      : process.env.NODE_ENV === 'production';
+  if (expectLive !== null && event.livemode !== expectLive) {
+    log.error(
+      {
+        eventId: event.id,
+        eventType: event.type,
+        eventLivemode: event.livemode,
+        expected: expectLive,
+        nodeEnv: process.env.NODE_ENV,
+      },
+      'Stripe webhook livemode mismatch — refusing to process',
+    );
+    Sentry.captureMessage('stripe_webhook_livemode_mismatch', {
+      level: 'fatal',
+      tags: {
+        component: 'billing.webhook',
+        operation: 'livemode_check',
+        event_type: event.type,
+        event_livemode: String(event.livemode),
+      },
+      extra: { eventId: event.id, expected: expectLive },
+    });
+    // Return 200 so Stripe stops retrying — the event is rejected by
+    // policy, not by transient failure. 2xx with no side effects is
+    // the documented pattern for "this event doesn't apply to me".
+    return NextResponse.json(
+      { ok: false, refused: 'livemode_mismatch' },
+      { status: 200 },
+    );
   }
 
   const admin = createSupabaseAdminClient();
