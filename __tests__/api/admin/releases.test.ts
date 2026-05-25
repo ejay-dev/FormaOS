@@ -51,6 +51,16 @@ jest.mock('@/lib/security/csrf', () => ({
   validateCsrfOrigin: jest.fn(() => null),
 }));
 
+// Audit 2026-05-26 — admin/releases GET now rate-limits per admin user.
+jest.mock('@/lib/security/rate-limiter', () => ({
+  rateLimitApi: jest.fn(async () => ({
+    success: true,
+    limit: 100,
+    remaining: 99,
+    resetAt: Date.now() + 60_000,
+  })),
+}));
+
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { parseAdminMutationPayload } from '@/app/api/admin/_helpers';
@@ -111,7 +121,8 @@ describe('GET /api/admin/releases', () => {
       from: () => builder,
     });
 
-    const res = await GET();
+    // Audit 2026-05-26 — GET now takes a Request for rate-limit context.
+    const res = await GET(new Request('http://localhost/api/admin/releases'));
     const body = await res.json();
     expect(body.releases.length).toBe(1);
   });
@@ -122,7 +133,8 @@ describe('GET /api/admin/releases', () => {
       from: () => builder,
     });
 
-    const res = await GET();
+    // Audit 2026-05-26 — GET now takes a Request for rate-limit context.
+    const res = await GET(new Request('http://localhost/api/admin/releases'));
     const body = await res.json();
     expect(body.releases).toEqual([]);
   });

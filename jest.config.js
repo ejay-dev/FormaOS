@@ -33,7 +33,10 @@ const customJestConfig = {
     '<rootDir>/__tests__/lib/care/ndis-claiming.test.ts',
     '<rootDir>/__tests__/api/v1/webhooks-id.test.ts',
     '<rootDir>/__tests__/api/trust-packet/generate.test.ts',
-    '<rootDir>/tests/billing/stripe-client.test.ts',
+    // tests/billing/stripe-client.test.ts — UN-QUARANTINED 2026-05-26.
+    // Was asserting against historical prod price IDs that the source
+    // no longer ships as defaults. Test fixture updated to mirror the
+    // dev placeholders; 12/12 pass.
     '<rootDir>/tests/marketing/background-media.test.ts',
     // Surfaced after the npm audit fix package-lock changes — useFeatureUsage
     // hook tests assert percentage maths against plan limits that have

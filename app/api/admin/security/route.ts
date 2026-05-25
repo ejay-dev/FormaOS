@@ -2,6 +2,7 @@ import { requireAdminAccess } from '@/app/app/admin/access';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import {
   handleAdminError,
   ADMIN_CACHE_HEADERS,
@@ -15,9 +16,16 @@ const log = routeLog('/api/admin/security');
  * Returns recent audit log entries, categorized by severity.
  * No mock data — all from live DB.
  */
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    await requireAdminAccess({ permission: 'security:view' });
+    const { user } = await requireAdminAccess({ permission: 'security:view' });
+    const rate = await rateLimitApi(request, user.id);
+    if (!rate.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
     const admin = createSupabaseAdminClient();
 
     /* ── Recent audit events (last 7 days, limit 50) ──── */

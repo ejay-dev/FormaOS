@@ -43,7 +43,7 @@ export async function logActivity(
   options?: {
     domain?: AuditDomain;
     severity?: AuditSeverity;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }
 ) {
   try {

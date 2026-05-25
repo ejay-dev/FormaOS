@@ -33,7 +33,7 @@ export type AuditAction =
 export async function logActivityCore(
   organizationId: string,
   action: AuditAction,
-  details: Record<string, any>,
+  details: Record<string, unknown>,
 ) {
   try {
     const supabase = await createSupabaseServerClient();
@@ -48,18 +48,23 @@ export async function logActivityCore(
       return;
     }
 
+    // Audit 2026-05-26 — `details` is now `Record<string, unknown>` so
+    // callers can't push arbitrary `any`-typed values into the audit
+    // chain. The smart target-labeling below reads three optional
+    // string fields; narrow at the use site rather than at the call.
+    const targetCandidate =
+      (details.resourceName as string | undefined) ??
+      (details.documentName as string | undefined) ??
+      (details.email as string | undefined) ??
+      'System';
+
     // Insert into the ledger
     const { error } = await insertOrgAuditLog(supabase, {
       organization_id: organizationId,
       actor_id: user.id,
       actor_email: user.email ?? null,
       action: action,
-      // Smart resource labeling based on details
-      target:
-        details.resourceName ||
-        details.documentName ||
-        details.email ||
-        'System',
+      target: targetCandidate,
       details,
     });
 

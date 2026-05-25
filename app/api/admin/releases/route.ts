@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import {
   extractAdminReason,
   handleAdminError,
@@ -18,9 +19,16 @@ import { validateCsrfOrigin } from '@/lib/security/csrf';
 /**
  * GET /api/admin/releases — List all product releases
  */
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    await requireAdminAccess({ permission: 'releases:view' });
+    const { user } = await requireAdminAccess({ permission: 'releases:view' });
+    const rate = await rateLimitApi(request, user.id);
+    if (!rate.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
+    }
     const admin = createSupabaseAdminClient();
 
     const { data, error } = await admin

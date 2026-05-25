@@ -7,11 +7,15 @@
  * - getStripeClient: singleton creation, missing key handling
  */
 
+// Audit 2026-05-26 — DEFAULTS rewritten to mirror the source's
+// DEV_FALLBACK_PRICE_IDS map (lib/billing/stripe.ts). Previously these
+// were the prod price IDs which the source no longer ships as
+// defaults — production must supply STRIPE_PRICE_* env vars.
 const DEFAULTS = {
-  basic: 'price_1TOdz1AHrAKKo3OlfYxjk9WL',
-  pro: 'price_1TU6oqAHrAKKo3OlWUhJa2ZX',
-  scale: 'price_1TU6rzAHrAKKo3Ol32xT6JW2',
-  enterprise: 'price_1T9cPKAHrAKKo3OliQN78Q83',
+  basic: 'price_test_basic_placeholder',
+  pro: 'price_test_pro_placeholder',
+  scale: 'price_test_scale_placeholder',
+  enterprise: 'price_test_enterprise_placeholder',
 };
 
 // Must mock stripe before importing
