@@ -45,8 +45,13 @@ test.afterAll(async () => {
     try {
       await admin.from('org_subscriptions').delete().eq('organization_id', orgId);
       await admin.from('org_members').delete().eq('organization_id', orgId);
+      // `organizations` is canonical; the DB trigger
+      // `trg_mirror_organizations_delete_to_orgs` (migration 20260624029)
+      // removes the matching `orgs` row automatically. Deleting `orgs`
+      // explicitly would race the trigger and previously produced drift
+      // when organizations.delete failed silently (Supabase .delete()
+      // returns {error} rather than throwing).
       await admin.from('organizations').delete().eq('id', orgId);
-      await admin.from('orgs').delete().eq('id', orgId);
     } catch {
       // ignore
     }
