@@ -50,7 +50,8 @@ export default function DashboardError({
               Error ID: <code className="font-mono">{error.digest}</code>
             </p>
           )}
-          {error.message && (
+          {/* Audit 2026-05-26 — error.message only in non-production. */}
+          {error.message && process.env.NODE_ENV !== 'production' && (
             <p className="text-destructive break-words font-mono">
               {error.message.slice(0, 300)}
             </p>

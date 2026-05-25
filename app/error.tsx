@@ -46,14 +46,18 @@ export default function GlobalError({
           The system hit an unexpected error. Please try again, or contact
           support if it persists.
         </p>
-        {/* Always show error digest + message for debugging */}
+        {/* Audit 2026-05-26 — never expose error.message in production.
+            Raw error strings can leak stack traces, DB names, internal
+            paths. Sentry already has the full payload. Users get the
+            digest as a support reference; dev mode keeps the message
+            for debugging. */}
         <div className="mt-4 p-3 rounded-lg bg-muted/30 text-left text-xs space-y-1">
           {error.digest && (
             <p className="text-muted-foreground">
               Error ID: <code className="font-mono">{error.digest}</code>
             </p>
           )}
-          {error.message && (
+          {error.message && process.env.NODE_ENV !== 'production' && (
             <p className="text-destructive break-words font-mono">
               {error.message.slice(0, 300)}
             </p>

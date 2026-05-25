@@ -5,9 +5,16 @@ export function Card({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
+  // Audit 2026-05-26 — base focus-visible ring on Card so any
+  // tabIndex-active or anchor-wrapped Card surfaces a visible focus
+  // cue. Tailwind composes with route-level overrides as before.
   return (
     <div
-      className={cn('card card-hover flex flex-col gap-6 p-6', className)}
+      className={cn(
+        'card card-hover flex flex-col gap-6 p-6',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+        className,
+      )}
       {...props}
     />
   );

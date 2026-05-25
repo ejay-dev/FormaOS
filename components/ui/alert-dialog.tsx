@@ -61,7 +61,7 @@ function AlertDialogContent({
         data-slot="alert-dialog-content"
         style={{ zIndex: 'var(--z-modal)' }}
         className={cn(
-          "fixed left-[50%] top-[50%] grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-glass-border bg-slate-900 p-6 shadow-xl rounded-lg",
+          "fixed left-[50%] top-[50%] grid w-full max-w-md translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-popover text-popover-foreground p-6 shadow-xl rounded-lg",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           className,
         )}
@@ -108,7 +108,7 @@ function AlertDialogTitle({
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
       className={cn(
-        "text-lg font-semibold leading-none tracking-tight text-slate-50",
+        "text-lg font-semibold leading-none tracking-tight text-card-foreground",
         className,
       )}
       {...props}
@@ -123,7 +123,7 @@ function AlertDialogDescription({
   return (
     <AlertDialogPrimitive.Description
       data-slot="alert-dialog-description"
-      className={cn("text-sm text-slate-400", className)}
+      className={cn("text-sm text-muted-foreground", className)}
       {...props}
     />
   );

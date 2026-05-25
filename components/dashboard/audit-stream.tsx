@@ -68,13 +68,20 @@ export function DashboardAuditStream({ orgId }: { orgId: string }) {
     <div className="bg-glass-strong border border-glass-border rounded-2xl shadow-sm overflow-hidden flex flex-col h-full min-h-[280px] sm:min-h-[400px]">
       <div className="p-4 border-b border-glass-border flex items-center justify-between bg-glass-strong">
         <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-          <Activity className="h-4 w-4 text-green-500" />
-          Live Audit Stream
+          <Activity className="h-4 w-4 text-muted-foreground" />
+          Audit Stream
         </h3>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Live</span>
-          <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-        </div>
+        {/* Audit 2026-05-26 — "Live" badge with pulsing green dot removed
+            per enterprise-aesthetic preference. The component still
+            updates in realtime via the Supabase channel below; presence
+            of fresh rows is the truthful indicator, not a decorative
+            badge. Last-updated timestamps render inline next to each row. */}
+        {logs.length > 0 && (
+          <span className="text-xs text-muted-foreground">
+            Updated{' '}
+            {formatDistanceToNow(new Date(logs[0].created_at), { addSuffix: true })}
+          </span>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">

@@ -24,10 +24,10 @@ export function Toaster() {
       position="bottom-right"
       richColors={false}
       closeButton
-      theme="dark"
+      theme="system"
       style={TOAST_OFFSET_STYLE}
       toastOptions={{
-        className: "border border-glass-border bg-slate-900 text-slate-100",
+        className: "border border-border bg-popover text-popover-foreground",
       }}
     />
   );
