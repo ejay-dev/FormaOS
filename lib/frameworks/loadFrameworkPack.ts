@@ -2,6 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import { parse as parseYaml } from 'yaml'
 import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { verifyFrameworkPackFile, FRAMEWORK_PACKS_DIR } from './manifest'
 import type { FrameworkPack, LoadFrameworkPackResult } from './types'
 
 type FrameworkPackInput = FrameworkPack | { path: string } | string
@@ -56,11 +57,26 @@ function parsePackContent(contents: string, filename?: string): FrameworkPack {
   return normalizePack(parseYaml(trimmed))
 }
 
+/**
+ * Read the file's contents — going through manifest verification when
+ * the path lives inside framework-packs/. Files outside that directory
+ * (e.g. a developer-provided pack passed by absolute path) are not
+ * integrity-checked, since the manifest covers shipped packs only.
+ */
+async function readPackFileChecked(filePath: string): Promise<string> {
+  const absolute = path.resolve(filePath)
+  const inFrameworkPacks = absolute.startsWith(FRAMEWORK_PACKS_DIR + path.sep)
+  if (!inFrameworkPacks) {
+    return fs.readFile(absolute, 'utf8')
+  }
+  return verifyFrameworkPackFile(absolute)
+}
+
 async function resolvePack(input: FrameworkPackInput): Promise<FrameworkPack> {
   if (typeof input === 'string') {
     const possiblePath = input.trim()
     if (await fileExists(possiblePath)) {
-      const contents = await fs.readFile(possiblePath, 'utf8')
+      const contents = await readPackFileChecked(possiblePath)
       return parsePackContent(contents, possiblePath)
     }
     return parsePackContent(possiblePath)
@@ -68,7 +84,7 @@ async function resolvePack(input: FrameworkPackInput): Promise<FrameworkPack> {
 
   if (typeof input === 'object' && 'path' in input && input.path) {
     const filePath = input.path
-    const contents = await fs.readFile(filePath, 'utf8')
+    const contents = await readPackFileChecked(filePath)
     return parsePackContent(contents, filePath)
   }
 
