@@ -14,6 +14,12 @@ const SESSION_CACHE_PATH = path.join(
   'e2e-session-cache.json',
 );
 
+// (Cookie-consent storageState is now written at playwright.config.ts
+// load time so it exists before contexts spawn; see CONSENT_STATE_PATH
+// there. The audit-2026-05-25 version that wrote it from this file lived
+// in test-results/ which Playwright cleans before each run, so every
+// context failed to load on first invocation.)
+
 /**
  * Playwright global setup — runs once before all tests.
  *
