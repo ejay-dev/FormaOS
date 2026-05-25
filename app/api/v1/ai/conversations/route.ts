@@ -5,6 +5,7 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 /**
  * =========================================================
@@ -45,21 +46,11 @@ export async function GET(request: Request) {
       );
     }
 
-    // 3. Get org membership
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (!membership?.organization_id) {
-      return NextResponse.json(
-        { error: 'Organization context not found' },
-        { status: 403 },
-      );
-    }
-
-    const orgId = membership.organization_id as string;
+    // 3. Resolve active org (audit 2026-05-26: strict — 409 for
+    //    multi-org users without preference).
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
+    const { orgId } = ctx;
     try {
       await requireEntitlement(orgId, 'ai_assistant');
     } catch {
@@ -150,21 +141,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Get org membership
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (!membership?.organization_id) {
-      return NextResponse.json(
-        { error: 'Organization context not found' },
-        { status: 403 },
-      );
-    }
-
-    const orgId = membership.organization_id as string;
+    // 3. Resolve active org (audit 2026-05-26: strict — 409 for
+    //    multi-org users without preference).
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
+    const { orgId } = ctx;
     try {
       await requireEntitlement(orgId, 'ai_assistant');
     } catch {

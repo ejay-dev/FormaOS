@@ -5,6 +5,7 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 /**
  * =========================================================
@@ -51,23 +52,13 @@ async function authenticateAndGetConversation(request: Request, conversationId: 
     };
   }
 
-  // Get org membership
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
-  if (!membership?.organization_id) {
-    return {
-      error: NextResponse.json(
-        { error: 'Organization context not found' },
-        { status: 403 },
-      ),
-    };
+  // Resolve active org (audit 2026-05-26: strict — 409 for multi-org
+  // users without a current_organization_id preference).
+  const ctx = await requireActiveOrgContext(supabase);
+  if (!ctx.ok) {
+    return { error: ctx.response };
   }
-
-  const orgId = membership.organization_id as string;
+  const { orgId } = ctx;
   const admin = createSupabaseAdminClient();
   try {
     await requireEntitlement(orgId, 'ai_assistant');

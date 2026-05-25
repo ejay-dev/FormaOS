@@ -11,6 +11,7 @@ import { checkUsageLimit, trackUsage } from '@/lib/ai/usage-meter';
 import { resolvePlanKey } from '@/lib/plans';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 /**
  * =========================================================
@@ -43,52 +44,26 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Authentication
+    // 3. Authentication + active-org resolution. Audit 2026-05-26:
+    // previously picked an arbitrary first org for multi-org users
+    // without a `user_preferences.current_organization_id` preference;
+    // requireActiveOrgContext returns 409 + memberships list in that
+    // case so the client can prompt a switch via
+    // POST /api/v1/account/active-organization.
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
     if (!user) {
       return NextResponse.json(
         { error: 'Unauthorized - Bearer token required' },
         { status: 401 },
       );
     }
-
-    // 4. Get org membership. v4-026: multi-org users were getting an
-    // arbitrary first org because `.maybeSingle()` on the unfiltered
-    // list returned the random row Postgres happened to scan first.
-    // Prefer user_preferences.current_organization_id so the chat
-    // operates against the org the user is actively viewing.
-    const { data: preference } = await supabase
-      .from('user_preferences')
-      .select('current_organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const preferredOrgId =
-      (preference as { current_organization_id?: string } | null)
-        ?.current_organization_id ?? null;
-
-    let membershipQuery = supabase
-      .from('org_members')
-      .select('organization_id, role')
-      .eq('user_id', user.id)
-      .limit(1);
-    if (preferredOrgId) {
-      membershipQuery = membershipQuery.eq('organization_id', preferredOrgId);
-    }
-    const { data: membership } = await membershipQuery.maybeSingle();
-
-    if (!membership?.organization_id) {
-      return NextResponse.json(
-        { error: 'Organization context not found' },
-        { status: 403 },
-      );
-    }
-
-    const orgId = membership.organization_id as string;
-    const role = normalizeRole(membership.role as string | null);
+    const { orgId } = ctx;
+    const role = normalizeRole(ctx.role);
     const admin = createSupabaseAdminClient();
     try {
       await requireEntitlement(orgId, 'ai_assistant');

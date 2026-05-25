@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { provisionFrameworkControls } from '@/lib/frameworks/provisioning';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 export const runtime = 'nodejs';
 
@@ -12,36 +13,16 @@ export async function POST(request: Request) {
     if (csrfError) return csrfError;
 
     const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Get org membership
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id, role')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (!membership?.organization_id) {
-      return NextResponse.json(
-        { error: 'Organization not found' },
-        { status: 404 },
-      );
-    }
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
 
     // Only owners and admins can complete onboarding
-    const role = membership.role as string;
-    if (role !== 'owner' && role !== 'admin') {
+    if (ctx.role !== 'owner' && ctx.role !== 'admin') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     const admin = createSupabaseAdminClient();
-    const orgId = membership.organization_id as string;
+    const { orgId } = ctx;
 
     const { error } = await admin
       .from('organizations')

@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { createInvitation } from '@/lib/invitations/create-invitation';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/members/invite');
 const VALID_ROLES = new Set(['owner', 'admin', 'member', 'viewer']);
@@ -23,19 +24,13 @@ export async function POST(request: Request) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user)
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const { orgId, role: inviterRole } = ctx;
 
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id, role')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId)
-      return NextResponse.json({ error: 'No organization' }, { status: 400 });
-
-    const inviterRole = (membership?.role as string | undefined) ?? '';
     const canInvite = inviterRole === 'owner' || inviterRole === 'admin';
     if (!canInvite) {
       return NextResponse.json(

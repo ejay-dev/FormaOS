@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/evidence/suggest-mappings');
 
@@ -84,13 +85,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ suggestions: [] });
     }
 
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) return NextResponse.json({ suggestions: [] });
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) {
+      if (ctx.response.status === 401 || ctx.response.status === 409) {
+        return ctx.response;
+      }
+      return NextResponse.json({ suggestions: [] });
+    }
+    const { orgId } = ctx;
 
     const codes = matches.map((m) => m.controlCode);
     const { data: controls } = await supabase

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 /**
  * GET /api/v1/audit-trail — Activity feed for a single entity.
@@ -84,13 +85,14 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) return NextResponse.json({ entries: [] });
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) {
+      if (ctx.response.status === 401 || ctx.response.status === 409) {
+        return ctx.response;
+      }
+      return NextResponse.json({ entries: [] });
+    }
+    const { orgId } = ctx;
 
     const { searchParams } = new URL(request.url);
     const entityId = searchParams.get('entityId');

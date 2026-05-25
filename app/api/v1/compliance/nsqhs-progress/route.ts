@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/compliance/nsqhs-progress');
 
@@ -37,13 +38,14 @@ export async function GET(request: Request) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) return NextResponse.json({ ...EXPERIMENTAL_NOTICE, standards: [] });
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) {
+      if (ctx.response.status === 401 || ctx.response.status === 409) {
+        return ctx.response;
+      }
+      return NextResponse.json({ ...EXPERIMENTAL_NOTICE, standards: [] });
+    }
+    const { orgId } = ctx;
 
     const { data: tasks, error } = await supabase
       .from('org_tasks')

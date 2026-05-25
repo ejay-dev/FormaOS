@@ -7,30 +7,17 @@ import {
   type DataRegion,
 } from '@/lib/data-residency';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 export const runtime = 'nodejs';
 
 // GET — return org's current region + all available regions
 export async function GET() {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const ctx = await requireActiveOrgContext(supabase);
+  if (!ctx.ok) return ctx.response;
 
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id, role')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
-  if (!membership) {
-    return NextResponse.json({ error: 'No organization' }, { status: 403 });
-  }
-
-  const currentRegion = await getOrgDataRegion(membership.organization_id);
+  const currentRegion = await getOrgDataRegion(ctx.orgId);
   const availableRegions = getAvailableRegions();
 
   return NextResponse.json({
@@ -45,20 +32,10 @@ export async function PATCH(request: Request) {
   if (csrfError) return csrfError;
 
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const ctx = await requireActiveOrgContext(supabase);
+  if (!ctx.ok) return ctx.response;
 
-  const { data: membership } = await supabase
-    .from('org_members')
-    .select('organization_id, role')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
-  if (!membership || !['owner', 'admin'].includes(membership.role as string)) {
+  if (!ctx.role || !['owner', 'admin'].includes(ctx.role)) {
     return NextResponse.json(
       { error: 'Admin access required' },
       { status: 403 },
@@ -89,10 +66,7 @@ export async function PATCH(request: Request) {
   }
 
   const validRegion = region as DataRegion;
-  const result = await setOrgDataRegion(
-    membership.organization_id,
-    validRegion,
-  );
+  const result = await setOrgDataRegion(ctx.orgId, validRegion);
 
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });

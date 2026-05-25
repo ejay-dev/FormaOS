@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { resolveActiveMembership } from '@/lib/auth/membership-cache';
 
 const log = routeLog('/api/v1/ai/reindex');
 
@@ -25,24 +26,32 @@ export async function POST(request: NextRequest) {
       return NextResponse.redirect(redirectUrl, { status: 303 });
     }
 
-    const { data: membership, error: membershipError } = await supabase
-      .from('org_members')
-      .select('organization_id, role')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (membershipError || !membership?.organization_id) {
+    // Audit 2026-05-26: strict active-org resolution. This route
+    // redirects on failure (form-submit UX), so we map the resolver
+    // states back to redirect error params instead of using the
+    // NextResponse-returning helper.
+    const membership = await resolveActiveMembership(supabase);
+    if (membership.kind === 'unauthorized') {
+      redirectUrl.searchParams.set('error', 'auth');
+      return NextResponse.redirect(redirectUrl, { status: 303 });
+    }
+    if (membership.kind === 'none') {
       redirectUrl.searchParams.set('error', 'membership');
       return NextResponse.redirect(redirectUrl, { status: 303 });
     }
+    if (membership.kind === 'ambiguous') {
+      redirectUrl.searchParams.set('error', 'active_org_required');
+      return NextResponse.redirect(redirectUrl, { status: 303 });
+    }
+    const { organizationId: orgId, role } = membership;
 
-    if (!['owner', 'admin'].includes(String(membership.role ?? ''))) {
+    if (!['owner', 'admin'].includes(String(role ?? ''))) {
       redirectUrl.searchParams.set('error', 'forbidden');
       return NextResponse.redirect(redirectUrl, { status: 303 });
     }
 
     try {
-      await requireEntitlement(membership.organization_id, 'ai_assistant');
+      await requireEntitlement(orgId, 'ai_assistant');
     } catch {
       redirectUrl.searchParams.set('error', 'entitlement');
       return NextResponse.redirect(redirectUrl, { status: 303 });
@@ -50,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     const admin = createSupabaseAdminClient();
     const { fullReindex } = await import('@/lib/ai/indexing-pipeline');
-    const result = await fullReindex(admin, membership.organization_id);
+    const result = await fullReindex(admin, orgId);
 
     redirectUrl.searchParams.set('reindexed', String(result.indexed));
     redirectUrl.searchParams.set('reindexErrors', String(result.errors));

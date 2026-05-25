@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/dashboard/stand-up');
 const DAY_MS = 86_400_000;
@@ -46,16 +47,14 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId) {
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) {
+      if (ctx.response.status === 401 || ctx.response.status === 409) {
+        return ctx.response;
+      }
       return NextResponse.json({ actions: [], wins: [], deadline: null });
     }
+    const { orgId } = ctx;
 
     const now = new Date();
     const sevenDaysFromNow = new Date(now.getTime() + 7 * DAY_MS);

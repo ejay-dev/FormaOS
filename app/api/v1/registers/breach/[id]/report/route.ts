@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/registers/breach/[id]/report');
 
@@ -30,17 +31,12 @@ export async function POST(
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user)
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId)
-      return NextResponse.json({ error: 'No organization' }, { status: 403 });
+    }
+    const { orgId } = ctx;
 
     const body = await request.json().catch(() => ({}));
     const breachId = (body?.breach_id as string) || id;
