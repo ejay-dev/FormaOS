@@ -65,13 +65,14 @@ export default function CookieConsent() {
       role="dialog"
       aria-live="polite"
       aria-labelledby="cookie-consent-title"
+      data-testid="cookie-consent"
+      className="cookie-banner consent-banner fixed inset-x-0 bottom-0 px-4 pb-4 sm:px-6 sm:pb-6"
       // Not aria-modal — we don't want to trap focus; we want the
       // banner to be the FIRST natural stop after Skip-to-main so a
       // keyboard user can dismiss it without tabbing through the page.
       // Audit Sprint 6b: was z-[60] hardcoded. Use --z-overlay (90) so
       // the banner sits above page chrome but below modals + tour + toast.
       style={{ zIndex: 'var(--z-overlay)' }}
-      className="fixed inset-x-0 bottom-0 px-4 pb-4 sm:px-6 sm:pb-6"
     >
       <div className="mx-auto max-w-4xl rounded-2xl border border-slate-700/80 bg-slate-900/95 p-4 shadow-2xl backdrop-blur supports-[backdrop-filter]:bg-slate-900/80 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -95,14 +96,16 @@ export default function CookieConsent() {
               ref={rejectButtonRef}
               type="button"
               onClick={() => decide('rejected')}
-              className="rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-slate-500 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+              data-testid="cookie-consent-reject"
+              className="consent-option cookie-option rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-100 transition hover:border-slate-500 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               Reject non-essential
             </button>
             <button
               type="button"
               onClick={() => decide('accepted')}
-              className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-2 focus:ring-offset-slate-900"
+              data-testid="cookie-consent-accept"
+              className="consent-option cookie-option rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               Accept all
             </button>

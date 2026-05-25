@@ -323,6 +323,19 @@ function PrivacyContent() {
             accountability, and data integrity are essential. We are committed
             to protecting your personal and organizational information.
           </p>
+          <p className="mt-4">
+            <strong className="text-white">data controller:</strong> FormaOS
+            Pty Ltd is the data controller responsible for personal information
+            processed through the FormaOS platform. For privacy enquiries,
+            contact{' '}
+            <a
+              href="mailto:privacy@formaos.com.au"
+              className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2"
+            >
+              privacy@formaos.com.au
+            </a>
+            .
+          </p>
         </PrivacySection>
 
         <PrivacySection
@@ -385,12 +398,29 @@ function PrivacyContent() {
           icon={FileText}
           delay={0.15}
         >
-          <p>We process data based on:</p>
+          <p>
+            Under the GDPR and equivalent regimes, the legal basis (also
+            referred to as lawful basis) for processing your personal data is
+            one of the following:
+          </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Contractual necessity (providing the service)</li>
-            <li>Legal obligations</li>
-            <li>Legitimate business interests</li>
-            <li>Your explicit consent (where required)</li>
+            <li>
+              <strong className="text-white">Contractual necessity</strong> —
+              providing the service you signed up for
+            </li>
+            <li>
+              <strong className="text-white">Legal obligations</strong> —
+              regulatory record-keeping and audit trails
+            </li>
+            <li>
+              <strong className="text-white">Legitimate interest</strong> —
+              securing the platform, preventing abuse, and improving the
+              product without undue impact on your privacy
+            </li>
+            <li>
+              <strong className="text-white">Explicit consent</strong> — where
+              required (e.g. analytics cookies, marketing communications)
+            </li>
           </ul>
         </PrivacySection>
 

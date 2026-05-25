@@ -105,6 +105,7 @@ function SignUpContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -227,6 +228,7 @@ function SignUpContent() {
             email,
             password,
             plan: plan?.key ?? null,
+            marketing_consent: marketingConsent,
           }),
         }),
         SESSION_TIMEOUT_MS,
@@ -454,6 +456,26 @@ function SignUpContent() {
                   autoComplete="new-password"
                   enterKeyHint="go"
                 />
+              </div>
+
+              <div className="marketing-consent flex items-start gap-3 rounded-lg border border-edge-2 bg-surface-2/50 p-3">
+                <input
+                  id="marketing-consent"
+                  name="marketing_optin"
+                  type="checkbox"
+                  checked={marketingConsent}
+                  onChange={(e) => setMarketingConsent(e.target.checked)}
+                  disabled={isLoading}
+                  className="mt-0.5 h-4 w-4 rounded border-slate-500 bg-slate-800 text-cyan-400 focus:ring-2 focus:ring-cyan-400"
+                />
+                <label
+                  htmlFor="marketing-consent"
+                  className="text-xs leading-relaxed text-slate-300"
+                >
+                  Send me FormaOS product updates and compliance insights via
+                  email. Optional — you can unsubscribe at any time. This is
+                  separate from essential account communications.
+                </label>
               </div>
 
               <button
