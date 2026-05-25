@@ -50,6 +50,7 @@
     "test:api-contracts": "node scripts/check-api-contracts.mjs",
     "test:db": "node scripts/test-db-integrity.js",
     "test:db:rls": "node scripts/check-supabase-rls-contracts.mjs",
+    "test:db:rls-guc-guard": "node scripts/check-rls-current-setting.mjs",
     "test:db:orgs-sync": "node scripts/check-orgs-sync.mjs",
     "db:test:reset": "supabase db reset && npm run db:test:verify",
     "db:test:verify": "node scripts/check-db-test-verify.mjs",

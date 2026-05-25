@@ -16,7 +16,18 @@ export async function POST(req: NextRequest) {
   const authHeader = req.headers.get('authorization');
   const cronSecret = process.env.CRON_SECRET;
 
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  // Fail-closed: a missing CRON_SECRET must NEVER make this endpoint
+  // unauthenticated. Previously this used `if (cronSecret && ...)` —
+  // a misconfig dropped auth entirely and let anyone trigger IndexNow
+  // submissions on FormaOS's behalf (search-engine deindex risk).
+  if (!cronSecret) {
+    return NextResponse.json(
+      { error: 'IndexNow is not configured' },
+      { status: 503 },
+    );
+  }
+
+  if (authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
