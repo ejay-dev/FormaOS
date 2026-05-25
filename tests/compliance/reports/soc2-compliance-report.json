@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-05-25T11:11:16.460Z",
+  "timestamp": "2026-05-25T11:16:57.802Z",
   "controls": {
     "security": [
       {
@@ -50,7 +50,7 @@
         "name": "Performance Monitoring",
         "control": "A1.2",
         "passed": true,
-        "details": "Page load time: 17ms (should be < 5000ms)"
+        "details": "Page load time: 14ms (should be < 5000ms)"
       },
       {
         "name": "Backup and Recovery Indicators",
@@ -71,6 +71,12 @@
         "control": "PI1.2",
         "passed": true,
         "details": "Audit logging must be implemented"
+      },
+      {
+        "name": "Data Integrity Checks",
+        "control": "PI1.1",
+        "passed": true,
+        "details": "Data integrity checks must be operational"
       }
     ],
     "confidentiality": [
@@ -95,14 +101,7 @@
     ],
     "privacy": []
   },
-  "violations": [
-    {
-      "category": "Processing Integrity",
-      "control": "PI1.1",
-      "test": "Data Integrity Checks",
-      "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"http://localhost:3000/api/health/integrity\", waiting until \"domcontentloaded\"\n"
-    }
-  ],
+  "violations": [],
   "recommendations": [
     "1 control tests failed. Address these for SOC2 compliance.",
     "Security controls need attention. Implement proper authentication and authorization."
@@ -113,10 +112,10 @@
     "error": null
   },
   "summary": {
-    "totalControls": 14,
-    "passedControls": 13,
+    "totalControls": 15,
+    "passedControls": 14,
     "failedControls": 1,
-    "violations": 1,
+    "violations": 0,
     "environmentStatus": "available"
   }
 }

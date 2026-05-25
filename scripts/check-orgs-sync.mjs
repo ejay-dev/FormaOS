@@ -52,13 +52,18 @@ function pass(msg) {
 }
 
 async function fetchOrgIds(table) {
+  // Audit 2026-05-25: explicit `.order('id')` lets PostgREST use the
+  // primary-key index for the offset+limit window instead of a full
+  // scan. Page size dropped to 500 so each request stays well under the
+  // Supabase Edge statement-timeout even during bursty API latency.
   const ids = new Set();
-  const PAGE = 1000;
+  const PAGE = 500;
   let from = 0;
   while (true) {
     const { data, error } = await admin
       .from(table)
       .select('id')
+      .order('id', { ascending: true })
       .range(from, from + PAGE - 1);
     if (error) {
       throw new Error(`Failed to read ${table}: ${error.message}`);
