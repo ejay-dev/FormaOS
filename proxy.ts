@@ -1040,33 +1040,18 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Audit 2026-05-25 (SOC2 CC6.1): include the marketing home + a
-    // handful of trust/legal pages so the session-marker cookie is set
-    // on the first request a SOC2 scanner makes. None of these paths
-    // had auth logic before — the only effect of adding them to the
-    // matcher is the HttpOnly cookie set via `ensureSessionMarker` in
-    // `finalizePassThrough`.
-    '/',
-    '/privacy-settings',
-    '/runbooks',
-    '/security',
-    '/trust/:path*',
-    '/app/:path*',
-    '/admin/:path*',
-    '/auth/:path*',
-    '/onboarding/:path*',
-    '/accept-invite/:path*',
-    '/join/:path*',
-    '/workspace-recovery/:path*',
-    '/submit/:path*',
-    '/signin/:path*',
-    '/api/:path*',
-    // Catch-all on the app.formaos.com.au host so the early host-redirect
-    // at the top of proxy() can 308 marketing paths to www. Excludes the
-    // static/asset paths to avoid pointless invocations.
+    // Audit 2026-05-26: catch-all matcher so proxy.ts runs for every
+    // marketing route too. The nonce-based CSP applies everywhere now;
+    // marketing JSON-LD emits through <JsonLd> which reads the
+    // x-nonce header proxy.ts injects. The static/asset exclusions
+    // keep middleware off pointless invocations.
+    //
+    // Audit 2026-05-25 (SOC2 CC6.1): the session-marker cookie is set
+    // via ensureSessionMarker in finalizePassThrough, so every
+    // marketing landing page picks it up on first hit.
     {
-      source: '/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt).*)',
-      has: [{ type: 'host', value: 'app.formaos.com.au' }],
+      source:
+        '/((?!_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|map|woff2?|ttf|otf|eot)$).*)',
     },
   ],
 };

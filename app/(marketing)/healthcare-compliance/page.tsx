@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import HealthcareComplianceContent from './HealthcareComplianceContent';
 import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 const healthcareServiceSchema = serviceSchema({
   name: 'Healthcare Compliance Management Software',
@@ -102,10 +103,7 @@ export const metadata: Metadata = {
 export default function HealthcareCompliancePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Industries', path: '/industries' },
@@ -113,9 +111,7 @@ export default function HealthcareCompliancePage() {
             ]),
             healthcareServiceSchema,
             healthcareFaqSchema,
-          ]),
-        }}
-      />
+          ]} />
       <KeyFacts
         summary="FormaOS is a compliance operating system for Australian healthcare providers — private hospitals, allied health, and clinics — mapped to AHPRA, NSQHS Standards, and clinical governance evidence requirements."
         facts={[

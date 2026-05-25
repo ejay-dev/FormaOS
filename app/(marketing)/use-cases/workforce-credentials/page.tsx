@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import WorkforceContent from './WorkforceContent';
+import { JsonLd } from '@/components/JsonLd';
 import {
   siteUrl,
   breadcrumbSchema,
@@ -29,10 +30,7 @@ export const metadata: Metadata = {
 export default function WorkforceUseCasePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Use Cases', path: '/use-cases/workforce-credentials' },
@@ -42,9 +40,7 @@ export default function WorkforceUseCasePage() {
               },
             ]),
             softwareApplicationSchema(),
-          ]),
-        }}
-      />
+          ]} />
       <WorkforceContent />
     </>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import SecurityReviewContent from './SecurityReviewContent';
 import { breadcrumbSchema, howToSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Security Review Packet',
@@ -95,12 +96,7 @@ const BREADCRUMB = breadcrumbSchema([
 export default function SecurityReviewPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([SECURITY_REVIEW_HOWTO, BREADCRUMB]),
-        }}
-      />
+      <JsonLd data={[SECURITY_REVIEW_HOWTO, BREADCRUMB]} />
       <SecurityReviewContent />
     </>
   );

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import FinancialServicesContent from './FinancialServicesContent';
 import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 const financialServiceSchema = serviceSchema({
   name: 'Financial Services Compliance Management Software',
@@ -101,10 +102,7 @@ export const metadata: Metadata = {
 export default function FinancialServicesCompliancePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Industries', path: '/industries' },
@@ -115,9 +113,7 @@ export default function FinancialServicesCompliancePage() {
             ]),
             financialServiceSchema,
             financialFaqSchema,
-          ]),
-        }}
-      />
+          ]} />
       <KeyFacts
         summary="FormaOS is a compliance operating system for AFS licensees and Australian Credit Licence holders — mapped to ASIC, APRA, and AUSTRAC obligations with breach register, AML/CTF program, and licence-conduct evidence built in."
         facts={[

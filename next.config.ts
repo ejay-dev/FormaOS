@@ -211,18 +211,22 @@ const nextConfig: NextConfig = {
               'camera=(), microphone=(), geolocation=(), interest-cohort=()',
           },
           {
-            // Content Security Policy for marketing pages (static headers).
-            // App routes (/app/*, /admin/*, /auth/*) get nonce-based CSP from proxy.ts.
+            // Content Security Policy — dormant fallback.
             //
-            // Audit 2026-05-26 — vercel.live (toolbar/comments) is gated
-            // behind `VERCEL_ENV !== 'production'` so a vendor-side issue
-            // can't bypass the prod CSP. `'unsafe-inline'` for scripts is
-            // still present because marketing pages emit JSON-LD via
-            // <script type="application/ld+json"> tags rendered through
-            // dangerouslySetInnerHTML. Migrating those to nonce-based
-            // would require adding marketing routes to the proxy.ts
-            // matcher and threading the nonce through every JSON-LD
-            // component — tracked as a separate follow-up.
+            // proxy.ts now runs for every non-static-asset route (its
+            // matcher is a catch-all). The middleware sets a strict
+            // nonce-based CSP via `response.headers.set('Content-
+            // Security-Policy', ...)` which overrides this static
+            // header on every response. This block remains as a
+            // belt-and-braces fallback for the (unlikely) case where
+            // middleware fails to run — the nonce-less marketing CSP
+            // below still keeps `script-src` to known origins.
+            //
+            // `'unsafe-inline'` is preserved here ONLY for the fallback
+            // path because headers() doesn't have request context and
+            // can't generate a nonce. In the normal request path
+            // proxy.ts's nonce-based CSP applies and JSON-LD scripts
+            // emitted via <JsonLd> carry the nonce attribute.
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",

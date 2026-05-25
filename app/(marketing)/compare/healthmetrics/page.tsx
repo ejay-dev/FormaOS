@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
+import { JsonLd } from '@/components/JsonLd';
 import {
   siteUrl,
   breadcrumbSchema,
@@ -172,10 +173,7 @@ const procurementChecks = [
 export default function CompareHealthMetricsPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Compare', path: '/compare' },
@@ -185,9 +183,7 @@ export default function CompareHealthMetricsPage() {
               },
             ]),
             softwareApplicationSchema(),
-          ]),
-        }}
-      />
+          ]} />
       <ComparePageTemplate
         competitor="HealthMetrics"
         heroDescription="HealthMetrics is a long-standing Australian clinical governance and quality-reporting platform for healthcare and aged care. FormaOS takes a different approach — built to run compliance as operational workflows with named ownership, verified evidence chains, and pre-built frameworks across the full regulated-care surface (NDIS, aged care, healthcare, allied health, childcare, WHS)."

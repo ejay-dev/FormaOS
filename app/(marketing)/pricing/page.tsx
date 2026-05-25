@@ -4,6 +4,7 @@ import { KeyFacts } from '../components/shared/KeyFacts';
 import { PRICING_FAQS } from './components/faq-data';
 import { faqSchema, pricingSchema } from '@/lib/seo';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -68,10 +69,7 @@ export const metadata: Metadata = {
 export default function PricingPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             faqSchema(
               PRICING_FAQS.map((faq) => ({
                 question: faq.question,
@@ -83,9 +81,7 @@ export default function PricingPage() {
               { name: 'Pricing', path: '/pricing' },
             ]),
             pricingSchema(),
-          ]),
-        }}
-      />
+          ]} />
       <KeyFacts
         summary="FormaOS pricing covers four plans for regulated Australian organisations — from single-site Foundation up to multi-region Enterprise — priced like infrastructure (per-seat plus framework packs)."
         facts={[

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import ChildcareComplianceContent from './ChildcareComplianceContent';
 import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 const childcareServiceSchema = serviceSchema({
   name: 'Childcare Compliance Management Software',
@@ -100,10 +101,7 @@ export const metadata: Metadata = {
 export default function ChildcareCompliancePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Industries', path: '/industries' },
@@ -111,9 +109,7 @@ export default function ChildcareCompliancePage() {
             ]),
             childcareServiceSchema,
             childcareFaqSchema,
-          ]),
-        }}
-      />
+          ]} />
       <KeyFacts
         summary="FormaOS is a compliance operating system for childcare and early learning services under the National Quality Framework — mapped to ACECQA Quality Standards, NQF compliance, educator credentials, and QIP cycles."
         facts={[

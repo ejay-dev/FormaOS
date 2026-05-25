@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import NDISProvidersContent from './NDISProvidersContent';
 import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 const ndisServiceSchema = serviceSchema({
   name: 'NDIS Compliance Management Software',
@@ -103,10 +104,7 @@ export const metadata: Metadata = {
 export default function NDISProvidersPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Industries', path: '/industries' },
@@ -114,9 +112,7 @@ export default function NDISProvidersPage() {
             ]),
             ndisServiceSchema,
             ndisFaqSchema,
-          ]),
-        }}
-      />
+          ]} />
       {/* AEO key-facts block — renders in initial SSR HTML so AI answer
           engines and procurement scanners hit citable claims first. */}
       <KeyFacts

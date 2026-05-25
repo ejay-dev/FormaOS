@@ -6,6 +6,7 @@ import { breadcrumbSchema, personSchema, siteUrl } from '@/lib/seo';
 import { getAuthorBySlug, listAuthors } from '@/lib/authors';
 import { blogPosts } from '../../blog/blogData';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
+import { JsonLd } from '@/components/JsonLd';
 
 export const dynamic = 'force-static';
 
@@ -99,10 +100,7 @@ export default async function AuthorPage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
-      />
+      <JsonLd data={schemas} />
       <MarketingPageShell>
         <section className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pt-24 pb-12">
           <Link

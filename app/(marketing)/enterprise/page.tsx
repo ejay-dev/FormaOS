@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import EnterprisePageContent from './EnterprisePageContent';
+import { JsonLd } from '@/components/JsonLd';
 import {
   breadcrumbSchema,
-  jsonLdScript,
   organizationSchema,
   siteUrl,
   softwareApplicationSchema,
@@ -33,18 +33,15 @@ export const metadata: Metadata = {
 export default function EnterprisePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: jsonLdScript([
-            breadcrumbSchema([
-              { name: 'Home', path: '/' },
-              { name: 'Enterprise', path: '/enterprise' },
-            ]),
-            organizationSchema(),
-            softwareApplicationSchema(),
+      <JsonLd
+        data={[
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Enterprise', path: '/enterprise' },
           ]),
-        }}
+          organizationSchema(),
+          softwareApplicationSchema(),
+        ]}
       />
       <EnterprisePageContent />
     </>

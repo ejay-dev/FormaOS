@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import IncidentContent from './IncidentContent';
+import { JsonLd } from '@/components/JsonLd';
 import {
   siteUrl,
   breadcrumbSchema,
@@ -29,10 +30,7 @@ export const metadata: Metadata = {
 export default function IncidentManagementPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Use Cases', path: '/use-cases/incident-management' },
@@ -42,9 +40,7 @@ export default function IncidentManagementPage() {
               },
             ]),
             softwareApplicationSchema(),
-          ]),
-        }}
-      />
+          ]} />
       <IncidentContent />
     </>
   );

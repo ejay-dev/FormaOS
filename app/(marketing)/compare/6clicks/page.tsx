@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
+import { JsonLd } from '@/components/JsonLd';
 import {
   siteUrl,
   breadcrumbSchema,
@@ -173,19 +174,14 @@ const procurementChecks = [
 export default function Compare6clicksPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Compare', path: '/compare' },
               { name: 'FormaOS vs 6clicks', path: '/compare/6clicks' },
             ]),
             softwareApplicationSchema(),
-          ]),
-        }}
-      />
+          ]} />
       <ComparePageTemplate
         competitor="6clicks"
         heroDescription="6clicks is an Australian GRC platform with AI-powered risk assessments and a Hub & Spoke model for multi-entity governance. FormaOS takes a different approach - built to execute compliance as operational workflows with pre-built frameworks for AU-regulated industries, named ownership, and evidence verification chains."

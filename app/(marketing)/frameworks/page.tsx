@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import FrameworksContent from './FrameworksContent';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'ISO, SOC 2, NDIS Framework Coverage - FormaOS',
@@ -27,17 +28,10 @@ export const metadata: Metadata = {
 export default function FrameworksPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbSchema([
+      <JsonLd data={breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Frameworks', path: '/frameworks' },
-            ]),
-          ),
-        }}
-      />
+            ])} />
       <FrameworksContent />
     </>
   );

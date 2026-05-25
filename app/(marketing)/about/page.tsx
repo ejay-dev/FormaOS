@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import AboutPageContent from './AboutPageContent';
+import { JsonLd } from '@/components/JsonLd';
 import { breadcrumbSchema,
   siteUrl} from '@/lib/seo';
 
@@ -29,17 +30,10 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbSchema([
+      <JsonLd data={breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'About', path: '/about' },
-            ])
-          ),
-        }}
-      />
+            ])} />
       <AboutPageContent />
     </>
   );

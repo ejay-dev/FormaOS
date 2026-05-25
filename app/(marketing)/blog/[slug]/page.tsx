@@ -9,6 +9,7 @@ import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
 import { articleSchema, breadcrumbSchema, siteUrl } from '@/lib/seo';
 import { getAuthorByName } from '@/lib/authors';
+import { JsonLd } from '@/components/JsonLd';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -68,10 +69,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <MarketingPageShell>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             articleSchema({
               title: post.title,
               description: post.excerpt,
@@ -100,9 +98,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               { name: 'Blog', path: '/blog' },
               { name: post.title, path: `/blog/${post.id}` },
             ]),
-          ]),
-        }}
-      />
+          ]} />
       <div className="relative z-10">
         <section className="mk-hero relative overflow-hidden">
           <HeroAtmosphere

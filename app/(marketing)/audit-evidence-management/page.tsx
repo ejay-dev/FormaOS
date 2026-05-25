@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import AuditEvidenceContent from './AuditEvidenceContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title:
@@ -49,10 +50,7 @@ const pageFaq = [
 export default function AuditEvidenceManagementPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             faqSchema(pageFaq),
             breadcrumbSchema([
               { name: 'Home', path: '/' },
@@ -61,9 +59,7 @@ export default function AuditEvidenceManagementPage() {
                 path: '/audit-evidence-management',
               },
             ]),
-          ]),
-        }}
-      />
+          ]} />
       <AuditEvidenceContent />
     </>
   );

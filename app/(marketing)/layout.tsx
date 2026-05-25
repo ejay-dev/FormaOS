@@ -15,6 +15,7 @@ import { organizationSchema, softwareApplicationSchema } from '@/lib/seo';
 import MarketingBackgroundLayer from '@/components/motion/MarketingBackgroundLayer';
 import MarketingRouteBackdrop from '@/components/motion/MarketingRouteBackdrop';
 import { PageTransition } from '@/components/motion/PageTransition';
+import { JsonLd } from '@/components/JsonLd';
 
 // Force static rendering for all marketing pages
 export const dynamic = 'force-static';
@@ -101,15 +102,10 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               </div>
             </div>
           </main>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify([
+          <JsonLd data={[
                 organizationSchema(),
                 softwareApplicationSchema(),
-              ]),
-            }}
-          />
+              ]} />
 
           {/* Premium animated footer */}
           <Footer />

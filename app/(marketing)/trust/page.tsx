@@ -3,6 +3,7 @@ import TrustPageContent from './TrustPageContent';
 import { TrustProofStaticShell } from './TrustProofStaticShell';
 import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -55,17 +56,10 @@ export const metadata: Metadata = {
 export default function TrustCenterPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbSchema([
+      <JsonLd data={breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Trust Center', path: '/trust' },
-            ]),
-          ),
-        }}
-      />
+            ])} />
       <KeyFacts
         title="Trust Center at a glance"
         summary="The FormaOS Trust Center publishes every artifact a procurement or security review team typically requests — DPA, SLA, sub-processor list, incident response policy, data-handling document, vendor assurance plan, and the bundled vendor trust packet."

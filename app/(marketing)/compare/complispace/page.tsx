@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
+import { JsonLd } from '@/components/JsonLd';
 import {
   siteUrl,
   breadcrumbSchema,
@@ -173,19 +174,14 @@ const procurementChecks = [
 export default function CompareCompliSpacePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Compare', path: '/compare' },
               { name: 'FormaOS vs CompliSpace', path: '/compare/complispace' },
             ]),
             softwareApplicationSchema(),
-          ]),
-        }}
-      />
+          ]} />
       <ComparePageTemplate
         competitor="CompliSpace"
         heroDescription="CompliSpace is an Australian compliance platform with deep expertise in education and childcare sector training and policy management. FormaOS takes a different approach - built to execute compliance as operational workflows across five regulated industries, with named ownership, evidence verification chains, and audit-ready posture dashboards."

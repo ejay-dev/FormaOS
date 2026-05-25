@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import SecurityPageContent from './SecurityPageContent';
 import { faqSchema, breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -84,18 +85,13 @@ const securityFaqItems = [
 export default function SecurityPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             faqSchema(securityFaqItems),
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Security', path: '/security' },
             ]),
-          ]),
-        }}
-      />
+          ]} />
       <SecurityPageContent />
     </>
   );

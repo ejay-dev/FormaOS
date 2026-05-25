@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import IndustriesPageContent from './IndustriesPageContentNew';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -64,17 +65,10 @@ export const metadata: Metadata = {
 export default function IndustriesPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbSchema([
+      <JsonLd data={breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Industries', path: '/industries' },
-            ]),
-          ),
-        }}
-      />
+            ])} />
       <IndustriesPageContent />
     </>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import ChangelogPageContent from './ChangelogPageContent';
 import { siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -49,11 +50,7 @@ export default function ChangelogPage() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
+      <JsonLd data={structuredData} />
       <ChangelogPageContent />
     </>
   );

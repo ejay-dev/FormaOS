@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import CompareIndexContent from './CompareIndexContent';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Compare FormaOS vs AU Compliance Platforms',
@@ -27,17 +28,10 @@ export const metadata: Metadata = {
 export default function CompareIndexPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbSchema([
+      <JsonLd data={breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Compare', path: '/compare' },
-            ]),
-          ),
-        }}
-      />
+            ])} />
       <CompareIndexContent />
     </>
   );

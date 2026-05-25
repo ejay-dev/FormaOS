@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import WhatIsCosContent from './WhatIsCosContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'What is a Compliance Operating System? | FormaOS',
@@ -83,10 +84,7 @@ const pageFaq = [
 export default function WhatIsComplianceOSPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             faqSchema(pageFaq),
             breadcrumbSchema([
               { name: 'Home', path: '/' },
@@ -95,9 +93,7 @@ export default function WhatIsComplianceOSPage() {
                 path: '/what-is-a-compliance-operating-system',
               },
             ]),
-          ]),
-        }}
-      />
+          ]} />
       <WhatIsCosContent />
     </>
   );

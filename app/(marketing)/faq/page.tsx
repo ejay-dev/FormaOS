@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import FAQPageContent from './FAQPageContent';
 import { faqSchema, breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions - FormaOS Compliance Platform',
@@ -70,18 +71,13 @@ const faqItems = [
 export default function FAQPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             faqSchema(faqItems),
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'FAQ', path: '/faq' },
             ]),
-          ]),
-        }}
-      />
+          ]} />
       <FAQPageContent />
     </>
   );

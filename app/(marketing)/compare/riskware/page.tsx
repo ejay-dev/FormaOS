@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ComparePageTemplate } from '../components/ComparePageTemplate';
 import { brand } from '@/config/brand';
+import { JsonLd } from '@/components/JsonLd';
 import {
   siteUrl,
   breadcrumbSchema,
@@ -172,19 +173,14 @@ const procurementChecks = [
 export default function CompareRiskwarePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Compare', path: '/compare' },
               { name: 'FormaOS vs Riskware', path: '/compare/riskware' },
             ]),
             softwareApplicationSchema(),
-          ]),
-        }}
-      />
+          ]} />
       <ComparePageTemplate
         competitor="Riskware"
         heroDescription="Riskware is a mature Australian GRC platform with strong risk management and internal audit capabilities. FormaOS takes a different approach - built to run compliance as operational workflows with industry-specific frameworks, named ownership, and evidence verification chains across every regulated sector."

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import IsoContent from './IsoContent';
 import { breadcrumbSchema, faqSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'ISO 27001 Compliance Automation | FormaOS',
@@ -48,10 +49,7 @@ const pageFaq = [
 export default function IsoComplianceSoftwarePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             faqSchema(pageFaq),
             breadcrumbSchema([
               { name: 'Home', path: '/' },
@@ -60,9 +58,7 @@ export default function IsoComplianceSoftwarePage() {
                 path: '/iso-compliance-software',
               },
             ]),
-          ]),
-        }}
-      />
+          ]} />
       <IsoContent />
     </>
   );

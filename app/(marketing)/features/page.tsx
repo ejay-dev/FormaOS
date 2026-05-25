@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import FeaturesPageContent from './FeaturesPageContent';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
@@ -28,17 +29,10 @@ export const metadata: Metadata = {
 export default function FeaturesPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbSchema([
+      <JsonLd data={breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Features', path: '/features' },
-            ]),
-          ),
-        }}
-      />
+            ])} />
       <FeaturesPageContent />
     </>
   );

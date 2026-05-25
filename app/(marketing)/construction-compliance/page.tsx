@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import ConstructionComplianceContent from './ConstructionComplianceContent';
 import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 const constructionServiceSchema = serviceSchema({
   name: 'Construction WHS Compliance Management Software',
@@ -102,10 +103,7 @@ export const metadata: Metadata = {
 export default function ConstructionCompliancePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify([
+      <JsonLd data={[
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Industries', path: '/industries' },
@@ -116,9 +114,7 @@ export default function ConstructionCompliancePage() {
             ]),
             constructionServiceSchema,
             constructionFaqSchema,
-          ]),
-        }}
-      />
+          ]} />
       <KeyFacts
         summary="FormaOS is a WHS compliance operating system for Australian construction principals and contractors — mapped to harmonised WHS legislation, SafeWork notification thresholds, SWMS document control, and high-risk work licence tracking."
         facts={[
