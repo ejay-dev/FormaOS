@@ -215,12 +215,9 @@ describe('system-state/actions', () => {
   // v4-018: confirmPlanUpgrade was deleted (unauthenticated
   // server-action with no auth check that flipped plan_key to a
   // paid tier). Plan upgrades now go exclusively through Stripe
-  // checkout + the webhook reconciliation path.
-  describe.skip('confirmPlanUpgrade (removed in v4-018)', () => {
-    it('placeholder — server-action removed', () => {
-      expect(true).toBe(true);
-    });
-  });
+  // checkout + the webhook reconciliation path. The describe.skip
+  // block is kept as a historical breadcrumb; no placeholder
+  // assertion is needed.
 
   // ── changeUserRole ──
   describe('changeUserRole', () => {

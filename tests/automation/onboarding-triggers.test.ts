@@ -402,22 +402,22 @@ describe('Automation Integration Functions', () => {
     jest.clearAllMocks();
   });
 
+  // Audit 2026-05-26 — "function should not throw" assertions converted
+  // to `resolves.not.toThrow()` which actually asserts the promise
+  // settles without rejection. The previous `expect(true).toBe(true)`
+  // would pass even if the function threw and the test runner skipped
+  // the body.
+
   describe('onIndustryConfigured', () => {
-    it('should call processTrigger with correct event', async () => {
+    it('does not throw when configuring industry', async () => {
       const { onIndustryConfigured } =
         await import('@/lib/automation/integration');
-
-      await onIndustryConfigured(mockOrgId, 'ndis');
-
-      // Function should not throw
-      expect(true).toBe(true);
+      await expect(onIndustryConfigured(mockOrgId, 'ndis')).resolves.not.toThrow();
     });
 
-    it('should handle errors gracefully', async () => {
+    it('handles errors gracefully', async () => {
       const { onIndustryConfigured } =
         await import('@/lib/automation/integration');
-
-      // Should not throw even if automation fails
       await expect(
         onIndustryConfigured(mockOrgId, 'invalid'),
       ).resolves.not.toThrow();
@@ -425,39 +425,32 @@ describe('Automation Integration Functions', () => {
   });
 
   describe('onFrameworksProvisioned', () => {
-    it('should call processTrigger with frameworks array', async () => {
+    it('does not throw with a frameworks array', async () => {
       const { onFrameworksProvisioned } =
         await import('@/lib/automation/integration');
-
-      const frameworks = ['iso_27001', 'soc2'];
-      await onFrameworksProvisioned(mockOrgId, frameworks);
-
-      // Function should not throw
-      expect(true).toBe(true);
+      await expect(
+        onFrameworksProvisioned(mockOrgId, ['iso_27001', 'soc2']),
+      ).resolves.not.toThrow();
     });
   });
 
   describe('onIndustryPackApplied', () => {
-    it('should call processTrigger with industry and pack name', async () => {
+    it('does not throw with industry + pack name', async () => {
       const { onIndustryPackApplied } =
         await import('@/lib/automation/integration');
-
-      await onIndustryPackApplied(mockOrgId, 'ndis', 'NDIS Compliance Pack');
-
-      // Function should not throw
-      expect(true).toBe(true);
+      await expect(
+        onIndustryPackApplied(mockOrgId, 'ndis', 'NDIS Compliance Pack'),
+      ).resolves.not.toThrow();
     });
   });
 
   describe('onOnboardingMilestone', () => {
-    it('should call processTrigger with milestone name', async () => {
+    it('does not throw with a milestone name', async () => {
       const { onOnboardingMilestone } =
         await import('@/lib/automation/integration');
-
-      await onOnboardingMilestone(mockOrgId, 'industry_selected');
-
-      // Function should not throw
-      expect(true).toBe(true);
+      await expect(
+        onOnboardingMilestone(mockOrgId, 'industry_selected'),
+      ).resolves.not.toThrow();
     });
   });
 });

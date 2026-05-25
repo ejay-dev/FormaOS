@@ -125,66 +125,30 @@ describe('Onboarding Checklist API - Integration', () => {
 });
 
 describe('Checklist API Endpoint - HTTP', () => {
-  // Note: These tests would require Next.js API route testing setup
-  // Using jest-fetch-mock or similar
+  // Audit 2026-05-26 — placeholders converted from `expect(true).toBe(true)`
+  // to `test.todo` so Jest reports them as pending in the test summary
+  // rather than as "passing tests with no coverage". The underlying work
+  // still belongs in this file but the misleading green badge is gone.
 
   describe('GET /api/onboarding/checklist', () => {
-    it('should return 200 with valid session', async () => {
-      // TODO: Implement with API route testing setup
-      // Would test actual HTTP request/response
-      expect(true).toBe(true);
-    });
-
-    it('should return all count fields in response', async () => {
-      // TODO: Implement with API route testing setup
-      expect(true).toBe(true);
-    });
-
-    it('should return 401 without authentication', async () => {
-      // TODO: Implement with API route testing setup
-      // Would test RLS enforcement
-      expect(true).toBe(true);
-    });
-
-    it('should return 404 for missing org', async () => {
-      // TODO: Implement with API route testing setup
-      expect(true).toBe(true);
-    });
+    test.todo('should return 200 with valid session');
+    test.todo('should return all count fields in response');
+    test.todo('should return 401 without authentication');
+    test.todo('should return 404 for missing org');
   });
 });
 
 describe('RLS Policy Validation', () => {
-  // These tests validate Row Level Security is properly enforced
-
   describe('Cross-org access prevention', () => {
-    it('should not return counts from other organizations', async () => {
-      // TODO: Implement with multiple test orgs
-      // Would verify user from org A cannot see org B's data
-      expect(true).toBe(true);
-    });
-
-    it('should enforce RLS on all queried tables', async () => {
-      // Validate RLS on: tasks, evidence, org_members, org_frameworks, etc.
-      expect(true).toBe(true);
-    });
+    test.todo('should not return counts from other organizations');
+    test.todo('should enforce RLS on all queried tables');
   });
 
   describe('Role-based access', () => {
-    it('should allow owner to access all counts', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should allow admin to access all counts', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should allow member to access counts (read-only)', async () => {
-      expect(true).toBe(true);
-    });
-
-    it('should allow viewer to access counts (read-only)', async () => {
-      expect(true).toBe(true);
-    });
+    test.todo('should allow owner to access all counts');
+    test.todo('should allow admin to access all counts');
+    test.todo('should allow member to access counts (read-only)');
+    test.todo('should allow viewer to access counts (read-only)');
   });
 });
 

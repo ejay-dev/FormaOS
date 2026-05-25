@@ -130,13 +130,11 @@ test.describe('Report Export API', () => {
     // login above grants the auth context; 200 is the contract.
     expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(data).toHaveProperty('frameworkCode');
-      expect(data).toHaveProperty('readinessScore');
-      expect(data).toHaveProperty('controlSummary');
-      console.log('SOC2 report export returned valid data');
-    }
+    const data = unwrapReportPayload(await response.json());
+    expect(data).toHaveProperty('frameworkCode');
+    expect(data).toHaveProperty('readinessScore');
+    expect(data).toHaveProperty('controlSummary');
+    console.log('SOC2 report export returned valid data');
   });
 
   test('ISO27001 report export returns data', async ({ page }) => {
@@ -150,13 +148,11 @@ test.describe('Report Export API', () => {
     // login above grants the auth context; 200 is the contract.
     expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(data).toHaveProperty('frameworkCode', 'ISO27001');
-      expect(data).toHaveProperty('statementOfApplicability');
-      expect(data).toHaveProperty('riskAssessmentSummary');
-      console.log('ISO27001 report export returned valid data');
-    }
+    const data = unwrapReportPayload(await response.json());
+    expect(data).toHaveProperty('frameworkCode', 'ISO27001');
+    expect(data).toHaveProperty('statementOfApplicability');
+    expect(data).toHaveProperty('riskAssessmentSummary');
+    console.log('ISO27001 report export returned valid data');
   });
 
   test('NDIS report export returns data', async ({ page }) => {
@@ -170,13 +166,11 @@ test.describe('Report Export API', () => {
     // login above grants the auth context; 200 is the contract.
     expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(data).toHaveProperty('frameworkCode', 'NDIS');
-      expect(data).toHaveProperty('practiceStandards');
-      expect(data).toHaveProperty('participantSafetyMetrics');
-      console.log('NDIS report export returned valid data');
-    }
+    const data = unwrapReportPayload(await response.json());
+    expect(data).toHaveProperty('frameworkCode', 'NDIS');
+    expect(data).toHaveProperty('practiceStandards');
+    expect(data).toHaveProperty('participantSafetyMetrics');
+    console.log('NDIS report export returned valid data');
   });
 
   test('HIPAA report export returns data', async ({ page }) => {
@@ -190,13 +184,11 @@ test.describe('Report Export API', () => {
     // login above grants the auth context; 200 is the contract.
     expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(data).toHaveProperty('frameworkCode', 'HIPAA');
-      expect(data).toHaveProperty('privacyRuleCompliance');
-      expect(data).toHaveProperty('securityRuleCompliance');
-      console.log('HIPAA report export returned valid data');
-    }
+    const data = unwrapReportPayload(await response.json());
+    expect(data).toHaveProperty('frameworkCode', 'HIPAA');
+    expect(data).toHaveProperty('privacyRuleCompliance');
+    expect(data).toHaveProperty('securityRuleCompliance');
+    console.log('HIPAA report export returned valid data');
   });
 
   test('PDF export triggers download', async ({ page }) => {
@@ -212,11 +204,9 @@ test.describe('Report Export API', () => {
     // login above grants the auth context; 200 is the contract.
     expect(response.status()).toBe(200);
 
-    if (response.status() === 200) {
-      const contentType = response.headers()['content-type'];
-      expect(contentType).toContain('application/pdf');
-      console.log('PDF export returns correct content type');
-    }
+    const contentType = response.headers()['content-type'];
+    expect(contentType).toContain('application/pdf');
+    console.log('PDF export returns correct content type');
   });
 });
 
@@ -235,12 +225,10 @@ test.describe('Report Content', () => {
       '/api/reports/export?type=soc2&format=json&mode=sync',
     );
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(data).toHaveProperty('organizationName');
-      expect(data.organizationName.length).toBeGreaterThan(0);
-      console.log(`Report for organization: ${data.organizationName}`);
-    }
+    const data = unwrapReportPayload(await response.json());
+    expect(data).toHaveProperty('organizationName');
+    expect(data.organizationName.length).toBeGreaterThan(0);
+    console.log(`Report for organization: ${data.organizationName}`);
   });
 
   test('Report includes control summary', async ({ page }) => {
@@ -249,17 +237,15 @@ test.describe('Report Content', () => {
       '/api/reports/export?type=soc2&format=json&mode=sync',
     );
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      const summary = data.controlSummary;
+    const data = unwrapReportPayload(await response.json());
+    const summary = data.controlSummary;
 
-      expect(summary).toHaveProperty('total');
-      expect(summary).toHaveProperty('satisfied');
-      expect(summary).toHaveProperty('missing');
-      expect(summary).toHaveProperty('partial');
+    expect(summary).toHaveProperty('total');
+    expect(summary).toHaveProperty('satisfied');
+    expect(summary).toHaveProperty('missing');
+    expect(summary).toHaveProperty('partial');
 
-      console.log('Control summary:', summary);
-    }
+    console.log('Control summary:', summary);
   });
 
   test('Report includes evidence summary', async ({ page }) => {
@@ -268,16 +254,14 @@ test.describe('Report Content', () => {
       '/api/reports/export?type=soc2&format=json&mode=sync',
     );
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      const evidence = data.evidenceSummary;
+    const data = unwrapReportPayload(await response.json());
+    const evidence = data.evidenceSummary;
 
-      expect(evidence).toHaveProperty('total');
-      expect(evidence).toHaveProperty('verified');
-      expect(evidence).toHaveProperty('pending');
+    expect(evidence).toHaveProperty('total');
+    expect(evidence).toHaveProperty('verified');
+    expect(evidence).toHaveProperty('pending');
 
-      console.log('Evidence summary:', evidence);
-    }
+    console.log('Evidence summary:', evidence);
   });
 
   test('Report includes gaps', async ({ page }) => {
@@ -286,16 +270,14 @@ test.describe('Report Content', () => {
       '/api/reports/export?type=soc2&format=json&mode=sync',
     );
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(data).toHaveProperty('gaps');
-      expect(data.gaps).toHaveProperty('criticalGaps');
-      expect(Array.isArray(data.gaps.criticalGaps)).toBe(true);
+    const data = unwrapReportPayload(await response.json());
+    expect(data).toHaveProperty('gaps');
+    expect(data.gaps).toHaveProperty('criticalGaps');
+    expect(Array.isArray(data.gaps.criticalGaps)).toBe(true);
 
-      console.log(
-        `Report identifies ${data.gaps.criticalGaps.length} critical gaps`,
-      );
-    }
+    console.log(
+      `Report identifies ${data.gaps.criticalGaps.length} critical gaps`,
+    );
   });
 });
 
@@ -314,17 +296,15 @@ test.describe('Framework-Specific Reports', () => {
       '/api/reports/export?type=iso27001&format=json&mode=sync',
     );
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(Array.isArray(data.statementOfApplicability)).toBe(true);
+    const data = unwrapReportPayload(await response.json());
+    expect(Array.isArray(data.statementOfApplicability)).toBe(true);
 
-      if (data.statementOfApplicability.length > 0) {
-        const entry = data.statementOfApplicability[0];
-        expect(entry).toHaveProperty('clauseNumber');
-        expect(entry).toHaveProperty('controlName');
-        expect(entry).toHaveProperty('implementationStatus');
-        console.log('ISO27001 Statement of Applicability included');
-      }
+    if (data.statementOfApplicability.length > 0) {
+      const entry = data.statementOfApplicability[0];
+      expect(entry).toHaveProperty('clauseNumber');
+      expect(entry).toHaveProperty('controlName');
+      expect(entry).toHaveProperty('implementationStatus');
+      console.log('ISO27001 Statement of Applicability included');
     }
   });
 
@@ -334,16 +314,14 @@ test.describe('Framework-Specific Reports', () => {
       '/api/reports/export?type=ndis&format=json&mode=sync',
     );
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(Array.isArray(data.practiceStandards)).toBe(true);
+    const data = unwrapReportPayload(await response.json());
+    expect(Array.isArray(data.practiceStandards)).toBe(true);
 
-      if (data.practiceStandards.length > 0) {
-        const standard = data.practiceStandards[0];
-        expect(standard).toHaveProperty('standardCode');
-        expect(standard).toHaveProperty('complianceStatus');
-        console.log('NDIS practice standards included');
-      }
+    if (data.practiceStandards.length > 0) {
+      const standard = data.practiceStandards[0];
+      expect(standard).toHaveProperty('standardCode');
+      expect(standard).toHaveProperty('complianceStatus');
+      console.log('NDIS practice standards included');
     }
   });
 
@@ -353,22 +331,20 @@ test.describe('Framework-Specific Reports', () => {
       '/api/reports/export?type=hipaa&format=json&mode=sync',
     );
 
-    if (response.status() === 200) {
-      const data = unwrapReportPayload(await response.json());
-      expect(data.privacyRuleCompliance).toHaveProperty(
-        'ruleName',
-        'Privacy Rule',
-      );
-      expect(data.securityRuleCompliance).toHaveProperty(
-        'ruleName',
-        'Security Rule',
-      );
-      expect(data.breachNotificationCompliance).toHaveProperty(
-        'ruleName',
-        'Breach Notification',
-      );
-      console.log('HIPAA rule compliance included');
-    }
+    const data = unwrapReportPayload(await response.json());
+    expect(data.privacyRuleCompliance).toHaveProperty(
+      'ruleName',
+      'Privacy Rule',
+    );
+    expect(data.securityRuleCompliance).toHaveProperty(
+      'ruleName',
+      'Security Rule',
+    );
+    expect(data.breachNotificationCompliance).toHaveProperty(
+      'ruleName',
+      'Breach Notification',
+    );
+    console.log('HIPAA rule compliance included');
   });
 });
 

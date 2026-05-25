@@ -560,20 +560,25 @@ describe('syncDirectory', () => {
       createBuilder({ data: null, error: null }),
     );
 
-    // Depending on implementation: either throws or skips the user
-    // The function should handle errors and continue or throw
+    // Audit 2026-05-26 — was `try { … } catch { expect(true).toBe(true) }`
+    // which let both branches pass without asserting *which* path the
+    // implementation actually took. Now we assert exactly one of:
+    //   - the call rejects (error-handling path), OR
+    //   - the call resolves with createdUsers === 0 (skip-and-continue path).
+    // The test fails if neither holds (silent pass-through).
+    let createdUsers: number | undefined;
+    let threw = false;
     try {
       const result = await syncDirectory(
         'org-1',
         'azure-ad' as any,
         azureConfig,
       );
-      // If it doesn't throw, createdUsers should be 0
-      expect(result.summary.createdUsers).toBe(0);
+      createdUsers = result.summary.createdUsers;
     } catch {
-      // If it throws, the error handling path is covered
-      expect(true).toBe(true);
+      threw = true;
     }
+    expect(threw || createdUsers === 0).toBe(true);
   });
 
   /* ---------------------------------------------------------------- */
