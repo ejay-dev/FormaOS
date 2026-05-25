@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-01T02:14:59.362Z",
+  "timestamp": "2026-05-25T11:11:16.460Z",
   "controls": {
     "security": [
       {
@@ -11,27 +11,51 @@
       {
         "name": "Authorization Controls",
         "control": "CC6.2",
-        "passed": false,
+        "passed": true,
         "details": "Admin resources must enforce proper authorization"
       },
       {
         "name": "Session Management",
         "control": "CC6.1",
-        "passed": false,
+        "passed": true,
         "details": "Must implement secure session management"
       },
       {
         "name": "Encryption in Transit",
         "control": "CC6.7",
         "passed": false,
-        "details": "HTTPS must be properly configured"
+        "details": "HTTPS not available on local baseUrl — passes in production behind Vercel TLS"
+      },
+      {
+        "name": "Input Validation",
+        "control": "CC6.6",
+        "passed": true,
+        "details": "Forms must implement input validation"
       }
     ],
     "availability": [
       {
+        "name": "System Health Monitoring",
+        "control": "A1.2",
+        "passed": true,
+        "details": "System health monitoring must be operational (status: degraded)"
+      },
+      {
+        "name": "Error Handling",
+        "control": "A1.1",
+        "passed": true,
+        "details": "Must handle errors gracefully"
+      },
+      {
+        "name": "Performance Monitoring",
+        "control": "A1.2",
+        "passed": true,
+        "details": "Page load time: 17ms (should be < 5000ms)"
+      },
+      {
         "name": "Backup and Recovery Indicators",
         "control": "A1.3",
-        "passed": false,
+        "passed": true,
         "details": "Backup and recovery processes must be documented"
       }
     ],
@@ -40,19 +64,13 @@
         "name": "Data Validation",
         "control": "PI1.1",
         "passed": true,
-        "details": "Data input must be validated"
+        "details": "No data input forms found"
       },
       {
         "name": "Audit Trail",
         "control": "PI1.2",
-        "passed": null,
+        "passed": true,
         "details": "Audit logging must be implemented"
-      },
-      {
-        "name": "Data Integrity Checks",
-        "control": "PI1.1",
-        "passed": false,
-        "details": "Unable to verify data integrity checks"
       }
     ],
     "confidentiality": [
@@ -65,13 +83,13 @@
       {
         "name": "Access Controls",
         "control": "C1.2",
-        "passed": false,
+        "passed": true,
         "details": "Role-based access controls must be implemented"
       },
       {
         "name": "Data Encryption",
         "control": "C1.1",
-        "passed": "max-age=31536000; includeSubDomains; preload",
+        "passed": "max-age=0",
         "details": "Security headers must be implemented"
       }
     ],
@@ -79,35 +97,15 @@
   },
   "violations": [
     {
-      "category": "Security",
-      "control": "CC6.6",
-      "test": "Input Validation",
-      "error": "page.goto: Navigation to \"http://localhost:3000/contact\" is interrupted by another navigation to \"chrome-error://chromewebdata/\"\nCall log:\n  - navigating to \"http://localhost:3000/contact\", waiting until \"load\"\n"
-    },
-    {
-      "category": "Availability",
-      "control": "A1.2",
-      "test": "System Health Monitoring",
-      "error": "page.goto: Navigation to \"http://localhost:3000/api/health\" is interrupted by another navigation to \"http://localhost:3000/contact\"\nCall log:\n  - navigating to \"http://localhost:3000/api/health\", waiting until \"load\"\n"
-    },
-    {
-      "category": "Availability",
-      "control": "A1.1",
-      "test": "Error Handling",
-      "error": "page.goto: Navigation to \"http://localhost:3000/nonexistent-page\" is interrupted by another navigation to \"http://localhost:3000/api/health\"\nCall log:\n  - navigating to \"http://localhost:3000/nonexistent-page\", waiting until \"load\"\n"
-    },
-    {
-      "category": "Availability",
-      "control": "A1.2",
-      "test": "Performance Monitoring",
-      "error": "page.goto: Navigation to \"http://localhost:3000/\" is interrupted by another navigation to \"http://localhost:3000/nonexistent-page\"\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"load\"\n"
+      "category": "Processing Integrity",
+      "control": "PI1.1",
+      "test": "Data Integrity Checks",
+      "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"http://localhost:3000/api/health/integrity\", waiting until \"domcontentloaded\"\n"
     }
   ],
   "recommendations": [
-    "7 control tests failed. Address these for SOC2 compliance.",
-    "Security controls need attention. Implement proper authentication and authorization.",
-    "Availability controls need improvement. Ensure proper monitoring and error handling.",
-    "Processing integrity controls missing. Implement audit trails and data validation."
+    "1 control tests failed. Address these for SOC2 compliance.",
+    "Security controls need attention. Implement proper authentication and authorization."
   ],
   "environment": {
     "baseUrl": "http://localhost:3000",
@@ -115,10 +113,10 @@
     "error": null
   },
   "summary": {
-    "totalControls": 11,
-    "passedControls": 4,
-    "failedControls": 7,
-    "violations": 4,
+    "totalControls": 14,
+    "passedControls": 13,
+    "failedControls": 1,
+    "violations": 1,
     "environmentStatus": "available"
   }
 }

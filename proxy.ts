@@ -922,10 +922,19 @@ export async function proxy(request: NextRequest) {
     response.headers.set('X-Content-Type-Options', 'nosniff');
     response.headers.set('X-XSS-Protection', '1; mode=block');
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-    response.headers.set(
-      'Strict-Transport-Security',
-      'max-age=31536000; includeSubDomains; preload',
-    );
+    // Audit 2026-05-25: HSTS only on HTTPS responses. Setting it on
+    // http://localhost made Chrome refuse subsequent localhost HTTP
+    // requests for the remainder of the browser-context lifetime,
+    // which broke the SOC2 compliance suite (every second test
+    // bounced to chrome-error://chromewebdata/). In prod behind
+    // Vercel TLS the protocol is always https: so the header still
+    // applies; locally we skip it so end-to-end tooling keeps working.
+    if (request.nextUrl.protocol === 'https:') {
+      response.headers.set(
+        'Strict-Transport-Security',
+        'max-age=31536000; includeSubDomains; preload',
+      );
+    }
     const allowInlineScripts =
       (process.env.CSP_ALLOW_INLINE_SCRIPTS ?? 'false') === 'true';
     const allowEvalScripts =

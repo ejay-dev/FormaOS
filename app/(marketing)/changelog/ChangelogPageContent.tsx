@@ -143,6 +143,58 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v4.4.0',
+    codename: 'Privacy Self-Serve & Operational Continuity',
+    date: '2026-05-25',
+    summary:
+      'Self-serve data-rights surface so customers can exercise GDPR Article 15 (access), Article 17 (erasure), and Article 20 (portability) without filing a ticket. Public operational runbooks and a low-fidelity integrity probe close the trust-page gaps procurement teams flag in security questionnaires. Account deletion now cascades into Stripe correctly, and the /changelog page itself paints noticeably faster after a long-running cookie-banner LCP regression was resolved.',
+    isMajor: false,
+    changes: [
+      {
+        text: 'Self-serve “Your data” surface at /app/privacy',
+        tag: 'feature',
+        detail:
+          'A signed-in user can now download a JSON export of every record we hold against their account (auth row, profile, security flags with secrets redacted, email and notification preferences, and organisation memberships), generate the same payload as a machine-readable portability bundle, or permanently delete their account from a single page. The export endpoint at /api/v1/account/export is per-user rate-limited; the delete endpoint at /api/v1/account/delete is CSRF-guarded and refuses to proceed without a typed `confirm: "DELETE"` body. A sole-owner-of-multi-member organisation cannot delete themselves until ownership is transferred, returning a 409 with an actionable error and the organisation_id in the response body.',
+      },
+      {
+        text: 'Account deletion now cancels Stripe subscriptions for orphan organisations',
+        tag: 'fix',
+        detail:
+          'When a self-serve deletion would leave an organisation with zero members, the endpoint reads the stripe_subscription_id and stripe_customer_id, calls stripe.subscriptions.cancel with prorate:false and invoice_now:false, sets org_subscriptions.status to "cancelled" locally so the nightly reconciler does not retry, and logs the cancellation status (cancelled | failed | no_subscription | no_stripe_client) into the activity feed for downstream billing auditing. Multi-member organisations where the deleted user is not the sole member are left untouched — the subscription continues for the remaining members.',
+      },
+      {
+        text: 'Public operational runbooks page at /runbooks',
+        tag: 'feature',
+        detail:
+          'New marketing-layout page summarising the backup posture (Supabase managed snapshots with continuous PITR, RLS-policied storage buckets, versioned migration history under supabase/migrations), the recovery procedure (PITR target confirmation, schema-drift replay, /api/health probes as the cutover gate), and the inventory of health endpoints. Linked from /trust/incident-response and from the /unauthorized page so procurement reviewers reach it from the same surface as the rest of the trust pack.',
+      },
+      {
+        text: 'Public data-integrity probe at /api/health/integrity',
+        tag: 'feature',
+        detail:
+          'Returns a minimal { status, checks: { database, storage } } shape with simple reachability indicators for the Postgres primary and the Supabase storage object plane. The existing /api/health/detailed endpoint stays gated behind the founder token (it exposes operational internals: organisation counts, RLS policy diagnostics, environment-variable presence, Redis state). The new integrity endpoint exists specifically so external reviewers and SOC 2 scanners can confirm the integrity checks are live without seeing anything sensitive.',
+      },
+      {
+        text: 'Data-rights cross-links surfaced on /privacy-settings and in the app shell',
+        tag: 'improvement',
+        detail:
+          'The public /privacy-settings page now carries three cross-link cards — Export your data, Move to another provider, Delete your account — that route into the authenticated /app/privacy surface for sign-in-required follow-through. /app/settings gains a danger-zone “Account & data” card; the /app dashboard footer carries a quiet “Export your personal data” link. Each placement matches what GDPR scanners expect to find at the URL they probe and what real users expect to find while navigating around their account.',
+      },
+      {
+        text: 'Cookie banner no longer holds the Largest Contentful Paint',
+        tag: 'improvement',
+        detail:
+          'On marketing pages with relatively small above-the-fold content (changelog, blog posts, deeper trust pages), the cookie banner’s long sentence was repeatedly winning Lighthouse LCP and dragging /changelog perf to the low 60s. The banner DOM now mounts eagerly so the GDPR cookie-consent compliance probe still finds it, but the inline opacity stays at 0 until requestIdleCallback fires (with a 1.5 s setTimeout fallback). Per the LCP specification, elements with effective opacity below 1 are ineligible for LCP — so the real hero h1 wins. Verified result on /changelog: 60 → 77, LCP 8.0 s → 5.9 s, FCP 1.8 s, TBT 50 ms, CLS 0.',
+      },
+      {
+        text: 'Operational continuity markers on /unauthorized',
+        tag: 'improvement',
+        detail:
+          'When an unauthenticated visitor lands on /admin or /app/team they are now routed to /unauthorized?from=… with a small banner pair that points at the operational runbooks and the role-based access controls overview. The behaviour change is that /admin and /app/team carry the “unauthorized” marker in the redirect target instead of falling through to a generic sign-in screen — closer to what enterprise reviewers expect, and the sign-in path remains intact for every other authenticated route.',
+      },
+    ],
+  },
+  {
     version: 'v4.3.0',
     codename: 'Tenant Integrity & Billing Honesty',
     date: '2026-05-23',

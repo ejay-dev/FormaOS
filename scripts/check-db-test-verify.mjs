@@ -357,11 +357,12 @@ async function cleanupProbe(admin) {
       'organizations',
       admin.from('organizations').delete().eq('id', cleanup.orgId),
     );
-    await deleteAndLog(
-      admin,
-      'orgs',
-      admin.from('orgs').delete().eq('id', cleanup.orgId),
-    );
+    // Audit 2026-05-25: the AFTER DELETE trigger
+    // `trg_mirror_organizations_delete_to_orgs` (migration 20260624029)
+    // removes the matching `orgs` row automatically. Calling
+    // `from('orgs').delete()` explicitly after `from('organizations')`
+    // raced and left `organizations` stranded when the parent delete
+    // failed silently (Supabase returns {error} rather than throwing).
   }
   if (cleanup.userId) {
     const { error } = await admin.auth.admin.deleteUser(cleanup.userId);
@@ -425,11 +426,8 @@ async function sweepOldProbes(admin) {
     'organizations',
     admin.from('organizations').delete().in('id', ids),
   );
-  await deleteAndLog(
-    admin,
-    'orgs',
-    admin.from('orgs').delete().in('id', ids),
-  );
+  // Audit 2026-05-25: orgs mirror is cleared by the DELETE trigger
+  // (migration 20260624029) — explicit cleanup would race.
 }
 
 async function main() {

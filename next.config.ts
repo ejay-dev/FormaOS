@@ -193,8 +193,17 @@ const nextConfig: NextConfig = {
             value: 'strict-origin-when-cross-origin',
           },
           {
+            // Audit 2026-05-25: HSTS only on Vercel deployments (always
+            // HTTPS via the platform's TLS termination). On local prod
+            // builds (npm run start over http://localhost) the header
+            // poisons the browser HSTS cache and forces Chrome to
+            // refuse subsequent http://localhost requests with
+            // chrome-error://chromewebdata/, which used to break the
+            // SOC2 + a11y compliance suites mid-run.
             key: 'Strict-Transport-Security',
-            value: 'max-age=31536000; includeSubDomains; preload',
+            value: process.env.VERCEL
+              ? 'max-age=31536000; includeSubDomains; preload'
+              : 'max-age=0',
           },
           {
             key: 'Permissions-Policy',
