@@ -4,6 +4,16 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { provisionFrameworkControls } from '@/lib/frameworks/provisioning';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+
+// Roles allowed to activate a compliance framework for the org.
+// Viewer / member can browse but not provision — provisioning seeds
+// controls and changes the org's posture, so it's owner/admin gated.
+const FRAMEWORK_ACTIVATE_ROLES: ReadonlySet<string> = new Set([
+  'owner',
+  'admin',
+  'compliance_admin',
+]);
 
 const log = routeLog('/api/v1/frameworks/activate');
 
@@ -21,20 +31,20 @@ export async function POST(request: Request) {
     }
 
     const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const ctx = await requireActiveOrgContext(supabase);
+    if (!ctx.ok) return ctx.response;
+    const { orgId, role } = ctx;
 
-    const { data: membership } = await supabase
-      .from('org_members')
-      .select('organization_id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    const orgId = membership?.organization_id as string | undefined;
-    if (!orgId)
-      return NextResponse.json({ error: 'No organization' }, { status: 400 });
+    if (!role || !FRAMEWORK_ACTIVATE_ROLES.has(role)) {
+      return NextResponse.json(
+        {
+          error: 'forbidden',
+          message:
+            'Activating a compliance framework requires an owner or admin role.',
+        },
+        { status: 403 },
+      );
+    }
 
     const body = (await request.json().catch(() => ({}))) as {
       frameworkSlug?: string;

@@ -1,38 +1,15 @@
 import { NextResponse } from 'next/server';
-import { timingSafeEqual } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
 import { appendPublicUptimeCheck } from '@/lib/status/public-uptime';
+import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function verifyCronSecret(request: Request): { ok: boolean; error?: string } {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.replace('Bearer ', '') ?? '';
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    return { ok: false, error: 'CRON_SECRET not configured' };
-  }
-
-  const tokenBuffer = Buffer.from(token, 'utf8');
-  const secretBuffer = Buffer.from(cronSecret, 'utf8');
-
-  const valid =
-    tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer);
-
-  if (!valid) return { ok: false, error: 'Unauthorized' };
-  return { ok: true };
-}
-
 async function handleStatusCron(request: Request) {
-  const auth = verifyCronSecret(request);
-  if (!auth.ok) {
-    const status = auth.error === 'CRON_SECRET not configured' ? 500 : 401;
-    return NextResponse.json({ ok: false, error: auth.error }, { status });
-  }
+  const authError = verifyVercelCronRequest(request);
+  if (authError) return authError;
 
   const admin = createSupabaseAdminClient();
 

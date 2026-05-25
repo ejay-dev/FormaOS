@@ -10,9 +10,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { timingSafeEqual } from 'crypto';
 import { processQueueJobs, getQueueClient } from '@/lib/queue';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
 
 const log = routeLog('/api/queue/process');
 
@@ -21,46 +21,12 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // 1 minute (jobs should be individually short)
 
 // ---------------------------------------------------------------------------
-// Auth helper (reuses same CRON_SECRET pattern as automation cron)
-// ---------------------------------------------------------------------------
-
-function verifyCronSecret(request: NextRequest): { valid: boolean; error?: string } {
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.replace('Bearer ', '');
-
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    return { valid: false, error: 'CRON_SECRET not configured' };
-  }
-
-  const tokenBuffer = Buffer.from(token ?? '', 'utf8');
-  const secretBuffer = Buffer.from(cronSecret, 'utf8');
-  const isValid =
-    tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer);
-
-  if (!isValid) {
-    return { valid: false, error: 'Invalid cron secret' };
-  }
-
-  return { valid: true };
-}
-
-// ---------------------------------------------------------------------------
 // POST /api/queue/process
 // ---------------------------------------------------------------------------
 
 export async function POST(request: NextRequest) {
-  const auth = verifyCronSecret(request);
-  if (!auth.valid) {
-    log.error({}, `[Queue API] ${auth.error}`);
-    const status = auth.error === 'CRON_SECRET not configured' ? 500 : 401;
-    return NextResponse.json(
-      { error: auth.error === 'CRON_SECRET not configured' ? 'Queue not configured' : 'Unauthorized' },
-      { status },
-    );
-  }
+  const authError = verifyVercelCronRequest(request);
+  if (authError) return authError;
 
   // Optional batch size from request body
   let batchSize: number | undefined;
@@ -105,10 +71,8 @@ export async function POST(request: NextRequest) {
 // ---------------------------------------------------------------------------
 
 export async function GET(request: NextRequest) {
-  const auth = verifyCronSecret(request);
-  if (!auth.valid) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const authError = verifyVercelCronRequest(request);
+  if (authError) return authError;
 
   const url = new URL(request.url);
 

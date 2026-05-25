@@ -100,6 +100,16 @@ const RATE_LIMITS = {
     maxRequests: 20, // Allow 20 activity logs per minute
     keyPrefix: 'rl:activity',
   } as RateLimitConfig,
+
+  // Per-email reset request bucket. The AUTH bucket above limits by IP
+  // (10 / 15 min); this stops an attacker rotating IPs to flood a
+  // target mailbox or measure account existence via timing.
+  PASSWORD_RESET_PER_EMAIL: {
+    windowMs: 60 * 60 * 1000, // 1 hour
+    maxRequests: 3,
+    keyPrefix: 'rl:reset-email',
+    failClosed: false,
+  } as RateLimitConfig,
 } as const;
 
 // ---------------------------------------------------------------------------

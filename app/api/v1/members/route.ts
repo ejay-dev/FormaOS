@@ -41,9 +41,16 @@ export async function GET(request: Request) {
   const role = searchParams.get('role');
   const status = searchParams.get('status');
 
+  // Column allowlist — never SELECT * on org_members. mfa_required,
+  // compliance_status, department, employee_onboarded_at, etc. are
+  // internal columns that older v1 callers should not start relying
+  // on by accident.
+  const MEMBER_PUBLIC_COLUMNS =
+    'id, organization_id, user_id, role, created_at, start_date';
+
   let memberQuery = auth.context.db
     .from('org_members')
-    .select('*', { count: 'exact' })
+    .select(MEMBER_PUBLIC_COLUMNS, { count: 'exact' })
     .eq('organization_id', auth.context.orgId)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);

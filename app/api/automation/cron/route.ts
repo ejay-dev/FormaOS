@@ -6,10 +6,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { timingSafeEqual } from 'crypto';
 import { runScheduledAutomation } from '@/lib/automation/scheduled-processor';
 import { processQueueJobs } from '@/lib/queue';
 import { routeLog } from '@/lib/monitoring/server-logger';
+import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
 
 const log = routeLog('/api/automation/cron');
 
@@ -25,34 +25,8 @@ export const maxDuration = 300; // 5 minutes for enterprise plans
  *   Authorization: Bearer <CRON_SECRET>
  */
 export async function POST(request: NextRequest) {
-  // Verify cron secret
-  const authHeader = request.headers.get('authorization');
-  const token = authHeader?.replace('Bearer ', '');
-
-  const cronSecret = process.env.CRON_SECRET;
-
-  if (!cronSecret) {
-    log.error({}, "[Cron] CRON_SECRET not configured");
-    return NextResponse.json(
-      { error: 'Cron not configured' },
-      { status: 500 }
-    );
-  }
-
-  // Use constant-time comparison to prevent timing attacks
-  const tokenBuffer = Buffer.from(token ?? '', 'utf8');
-  const secretBuffer = Buffer.from(cronSecret, 'utf8');
-  const isValid =
-    tokenBuffer.length === secretBuffer.length &&
-    timingSafeEqual(tokenBuffer, secretBuffer);
-
-  if (!isValid) {
-    log.error({}, "[Cron] Invalid cron secret");
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
-  }
+  const authError = verifyVercelCronRequest(request);
+  if (authError) return authError;
 
   log.info({}, "[Cron] Starting scheduled automation...");
 

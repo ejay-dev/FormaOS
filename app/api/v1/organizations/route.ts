@@ -19,11 +19,18 @@ export async function GET(request: Request) {
       return auth.response;
     }
 
+    // Column allowlist — never SELECT * on the organizations table.
+    // Hidden columns (is_active, created_by, plan_selected_at,
+    // onboarding_completed_at, industry_code, *_at activation marks)
+    // are internal state and not part of the public v1 contract.
+    const ORG_PUBLIC_COLUMNS =
+      'id, name, industry, plan_key, created_at, data_residency_region';
+
     const [organization, memberCount, frameworkCount, apiKeyCount] =
       await Promise.all([
         auth.context.db
           .from('organizations')
-          .select('*')
+          .select(ORG_PUBLIC_COLUMNS)
           .eq('id', auth.context.orgId)
           .maybeSingle(),
         countRows('org_members', (query) =>

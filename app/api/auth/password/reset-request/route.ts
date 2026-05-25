@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { emailSchema } from '@/lib/security/api-validation';
-import { rateLimitAuth } from '@/lib/security/rate-limiter';
+import {
+  rateLimitAuth,
+  checkRateLimit,
+  createRateLimitHeaders,
+  RATE_LIMITS,
+} from '@/lib/security/rate-limiter';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { buildHostedAuthConfirmLink } from '@/lib/auth/hosted-auth-link';
 import { routeLog } from '@/lib/monitoring/server-logger';
@@ -46,6 +51,32 @@ export async function POST(request: Request) {
     }
 
     const email = parsed.data.email;
+
+    // Per-email throttle. The IP-keyed rateLimitAuth() above stops an
+    // attacker on one host hammering reset requests, but an attacker
+    // rotating IPs can flood any target mailbox. Cap each *email* at
+    // 3 reset requests per hour. Return the same generic 200 body so
+    // existence-via-throttle timing oracle is still defeated.
+    const normalizedEmail = email.toLowerCase().trim();
+    const perEmail = await checkRateLimit(
+      RATE_LIMITS.PASSWORD_RESET_PER_EMAIL,
+      `email:${normalizedEmail}`,
+    );
+    if (!perEmail.success) {
+      log.warn(
+        { email: normalizedEmail, resetAt: perEmail.resetAt },
+        'per-email reset throttle hit',
+      );
+      return NextResponse.json(
+        {
+          ok: true,
+          message:
+            'If an account exists for this email, a reset link will be sent.',
+        },
+        { headers: { ...headers, ...createRateLimitHeaders(perEmail) } },
+      );
+    }
+
     const appBase = getAppBase();
     const redirectTo = `${appBase}/auth/reset-password`;
     const admin = createSupabaseAdminClient();
