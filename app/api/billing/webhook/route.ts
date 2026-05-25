@@ -6,6 +6,8 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getStripeClient,
   resolvePlanKeyFromPriceId,
+  subscriptionPeriodEnd,
+  invoiceSubscriptionId,
 } from '@/lib/billing/stripe';
 
 const log = routeLog('/api/billing/webhook');
@@ -428,8 +430,9 @@ export async function POST(request: Request) {
         return null;
       }
 
-      const currentPeriodEnd = subscription.current_period_end
-        ? new Date(subscription.current_period_end * 1000).toISOString()
+      const periodEndUnix = subscriptionPeriodEnd(subscription);
+      const currentPeriodEnd = periodEndUnix
+        ? new Date(periodEndUnix * 1000).toISOString()
         : null;
       const trialExpiresAt =
         subscription.status === 'trialing' ? currentPeriodEnd : null;
@@ -502,8 +505,9 @@ export async function POST(request: Request) {
           await stripe.subscriptions.retrieve(subscriptionId);
         status = subscription.status;
         priceId = subscription.items.data[0]?.price?.id ?? priceId;
-        currentPeriodEnd = subscription.current_period_end
-          ? new Date(subscription.current_period_end * 1000).toISOString()
+        const periodEndUnix = subscriptionPeriodEnd(subscription);
+        currentPeriodEnd = periodEndUnix
+          ? new Date(periodEndUnix * 1000).toISOString()
           : null;
       }
 
@@ -750,7 +754,7 @@ export async function POST(request: Request) {
       event.type === 'invoice.payment_succeeded'
     ) {
       const invoice = event.data.object as Stripe.Invoice;
-      const subscriptionId = invoice.subscription as string | null;
+      const subscriptionId = invoiceSubscriptionId(invoice);
       const customerId = invoice.customer as string | null;
 
       if (subscriptionId || customerId) {
@@ -835,7 +839,7 @@ export async function POST(request: Request) {
 
     if (event.type === 'invoice.payment_failed') {
       const invoice = event.data.object as Stripe.Invoice;
-      const subscriptionId = invoice.subscription as string | null;
+      const subscriptionId = invoiceSubscriptionId(invoice);
       const customerId = invoice.customer as string | null;
 
       if (subscriptionId || customerId) {

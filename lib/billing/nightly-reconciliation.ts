@@ -6,7 +6,11 @@
  */
 
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { getStripeClient, resolvePlanKeyFromPriceId } from "@/lib/billing/stripe";
+import {
+  getStripeClient,
+  resolvePlanKeyFromPriceId,
+  subscriptionPeriodEnd,
+} from "@/lib/billing/stripe";
 import { syncEntitlementsForPlan } from "@/lib/billing/entitlements";
 import { detectEntitlementDrift } from "@/lib/billing/entitlement-drift-detector";
 import { billingLogger } from "@/lib/observability/structured-logger";
@@ -253,8 +257,9 @@ export async function runBillingReconciliation(): Promise<ReconciliationResult> 
         }
 
         // Check period end match (allow 1 day tolerance)
-        if (stripeSub.current_period_end) {
-          const stripeEndMs = stripeSub.current_period_end * 1000;
+        const periodEndUnix = subscriptionPeriodEnd(stripeSub);
+        if (periodEndUnix) {
+          const stripeEndMs = periodEndUnix * 1000;
           const localEndMs = sub.current_period_end
             ? new Date(sub.current_period_end).getTime()
             : 0;

@@ -95,6 +95,15 @@ jest.mock('@/lib/billing/stripe', () => ({
     if (priceId === 'price_enterprise') return 'enterprise';
     return null;
   },
+  // Audit 2026-05-26 — Stripe SDK 22 moved current_period_end onto
+  // subscription items. The helpers read items.data[0].current_period_end;
+  // the mocks below populate that field accordingly.
+  subscriptionPeriodEnd: (sub: any) =>
+    sub?.items?.data?.[0]?.current_period_end ?? null,
+  invoiceSubscriptionId: (invoice: any) =>
+    invoice?.parent?.subscription_details?.subscription ??
+    invoice?.subscription ??
+    null,
 }));
 
 // v4-031: deferred require so the BILLING_AUTO_FIX env set at the top
@@ -159,8 +168,7 @@ describe('runBillingReconciliation', () => {
 
       mockStripeClient!.subscriptions.retrieve.mockResolvedValue({
         status: 'active',
-        items: { data: [{ price: { id: 'price_pro' } }] },
-        current_period_end: null,
+        items: { data: [{ price: { id: 'price_pro' }, current_period_end: null }] },
       });
 
       const result = await runBillingReconciliation();
@@ -186,8 +194,7 @@ describe('runBillingReconciliation', () => {
 
       mockStripeClient!.subscriptions.retrieve.mockResolvedValue({
         status: 'active',
-        items: { data: [{ price: { id: 'price_pro' } }] },
-        current_period_end: null,
+        items: { data: [{ price: { id: 'price_pro' }, current_period_end: null }] },
       });
 
       const result = await runBillingReconciliation();
@@ -220,8 +227,7 @@ describe('runBillingReconciliation', () => {
 
       mockStripeClient!.subscriptions.retrieve.mockResolvedValue({
         status: 'active',
-        items: { data: [{ price: { id: 'price_pro' } }] },
-        current_period_end: null,
+        items: { data: [{ price: { id: 'price_pro' }, current_period_end: null }] },
       });
 
       const result = await runBillingReconciliation();
@@ -257,8 +263,7 @@ describe('runBillingReconciliation', () => {
 
       mockStripeClient!.subscriptions.retrieve.mockResolvedValue({
         status: 'active',
-        items: { data: [{ price: { id: 'price_pro' } }] },
-        current_period_end: Math.floor(stripeEnd.getTime() / 1000),
+        items: { data: [{ price: { id: 'price_pro' }, current_period_end: Math.floor(stripeEnd.getTime() / 1000) }] },
       });
 
       const result = await runBillingReconciliation();
@@ -288,8 +293,7 @@ describe('runBillingReconciliation', () => {
 
       mockStripeClient!.subscriptions.retrieve.mockResolvedValue({
         status: 'active',
-        items: { data: [{ price: { id: 'price_pro' } }] },
-        current_period_end: Math.floor(stripeEnd.getTime() / 1000),
+        items: { data: [{ price: { id: 'price_pro' }, current_period_end: Math.floor(stripeEnd.getTime() / 1000) }] },
       });
 
       const result = await runBillingReconciliation();
@@ -397,8 +401,7 @@ describe('runBillingReconciliation', () => {
 
       mockStripeClient!.subscriptions.retrieve.mockResolvedValue({
         status: 'active',
-        items: { data: [{ price: { id: 'price_pro' } }] },
-        current_period_end: Math.floor(Date.now() / 1000),
+        items: { data: [{ price: { id: 'price_pro' }, current_period_end: Math.floor(Date.now() / 1000) }] },
       });
 
       const result = await runBillingReconciliation();

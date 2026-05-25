@@ -4,7 +4,11 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { resolvePlanKey } from "@/lib/plans";
 import { syncEntitlementsForPlan } from "@/lib/billing/entitlements";
 import { ensureSubscription } from "@/lib/billing/subscriptions";
-import { getStripeClient, resolvePlanKeyFromPriceId } from "@/lib/billing/stripe";
+import {
+  getStripeClient,
+  resolvePlanKeyFromPriceId,
+  subscriptionPeriodEnd,
+} from "@/lib/billing/stripe";
 import { requireFounderAccess } from "@/app/app/admin/access";
 
 export async function updateOrgPlan(formData: FormData) {
@@ -148,8 +152,9 @@ export async function resyncStripeSubscription(formData: FormData) {
   const stripeStatus = stripeSub.status === "canceled" ? "cancelled" : stripeSub.status;
   const priceId = stripeSub.items.data[0]?.price?.id ?? null;
   const planKey = resolvePlanKeyFromPriceId(priceId);
-  const currentPeriodEnd = stripeSub.current_period_end
-    ? new Date(stripeSub.current_period_end * 1000).toISOString()
+  const periodEndUnix = subscriptionPeriodEnd(stripeSub);
+  const currentPeriodEnd = periodEndUnix
+    ? new Date(periodEndUnix * 1000).toISOString()
     : null;
 
   const updatePayload: Record<string, string | null> = {

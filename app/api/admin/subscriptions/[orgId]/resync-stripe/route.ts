@@ -5,6 +5,7 @@ import { logAdminAction } from '@/lib/admin/audit';
 import {
   getStripeClient,
   resolvePlanKeyFromPriceId,
+  subscriptionPeriodEnd,
 } from '@/lib/billing/stripe';
 import {
   extractAdminReason,
@@ -61,8 +62,9 @@ export async function POST(request: Request, { params }: Params) {
     );
     const priceId = stripeSub.items.data[0]?.price?.id ?? null;
     const planKey = resolvePlanKeyFromPriceId(priceId);
-    const currentPeriodEnd = stripeSub.current_period_end
-      ? new Date(stripeSub.current_period_end * 1000).toISOString()
+    const periodEndUnix = subscriptionPeriodEnd(stripeSub);
+    const currentPeriodEnd = periodEndUnix
+      ? new Date(periodEndUnix * 1000).toISOString()
       : null;
     const trialExpiresAt =
       stripeSub.status === 'trialing' ? currentPeriodEnd : null;
