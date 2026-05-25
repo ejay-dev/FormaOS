@@ -19,7 +19,7 @@ function statusClass(status: string) {
     case 'review':
       return 'border-amber-500/25 bg-amber-500/10 text-amber-300';
     case 'archived':
-      return 'border-slate-500/25 bg-slate-500/10 text-slate-300';
+      return 'border-slate-500/25 bg-muted/10 text-muted-foreground';
     default:
       return 'border-sky-500/25 bg-sky-500/10 text-sky-300';
   }

@@ -80,10 +80,10 @@ export function AttestationsClient({ currentUserId, controls }: Props) {
   return (
     <div className="space-y-6 p-6">
       <header className="space-y-1">
-        <h1 className="text-2xl font-semibold text-slate-50">
+        <h1 className="text-2xl font-semibold text-card-foreground">
           Manual attestations
         </h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Controls whose evaluator requires a human sign-off. Attach evidence,
           someone else reviews, the chain records both halves.
         </p>
@@ -103,12 +103,12 @@ export function AttestationsClient({ currentUserId, controls }: Props) {
             onClick={() => setTab(key)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               tab === key
-                ? 'border-slate-100 text-slate-100'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-slate-100 text-card-foreground'
+                : 'border-transparent text-muted-foreground hover:text-card-foreground'
             }`}
           >
             {label}{' '}
-            <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-slate-800 px-1.5 text-xs text-slate-300">
+            <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-muted px-1.5 text-xs text-muted-foreground">
               {count}
             </span>
           </button>
@@ -182,10 +182,10 @@ function EmptyState({ bucket }: { bucket: Bucket }) {
   }[bucket];
   const Icon = copy.icon;
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-8 text-center">
-      <Icon className="mx-auto mb-3 h-10 w-10 text-slate-600" />
-      <p className="text-sm font-medium text-slate-200">{copy.title}</p>
-      <p className="mt-1 text-xs text-slate-400">{copy.body}</p>
+    <div className="rounded-lg border border-slate-800 bg-card/40 p-8 text-center">
+      <Icon className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
+      <p className="text-sm font-medium text-card-foreground">{copy.title}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{copy.body}</p>
     </div>
   );
 }
@@ -207,18 +207,18 @@ function ControlCard({
   const isOwnClaim = att?.status === 'claimed' && att.claimedBy === currentUserId;
 
   return (
-    <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
+    <div className="rounded-lg border border-slate-800 bg-card/50 p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 space-y-1">
           <div className="flex items-center gap-2">
-            <span className="rounded bg-slate-800 px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-slate-300">
+            <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
               {control.frameworkName ?? control.frameworkId.slice(0, 8)}
             </span>
-            <span className="font-mono text-sm text-slate-100">
+            <span className="font-mono text-sm text-card-foreground">
               {control.controlKey}
             </span>
           </div>
-          <p className="text-sm text-slate-300">{control.message}</p>
+          <p className="text-sm text-muted-foreground">{control.message}</p>
           {att ? (
             <AttestationStatusLine attestation={att} />
           ) : null}
@@ -228,7 +228,7 @@ function ControlCard({
           {showClaim ? (
             <button
               onClick={onClaim}
-              className="rounded-md bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-900 hover:bg-white"
+              className="rounded-md bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-white"
             >
               Claim attestation
             </button>
@@ -242,7 +242,7 @@ function ControlCard({
             </button>
           ) : null}
           {isOwnClaim ? (
-            <span className="rounded-md border border-slate-700 px-3 py-1.5 text-xs text-slate-400">
+            <span className="rounded-md border border-slate-700 px-3 py-1.5 text-xs text-muted-foreground">
               Awaiting another reviewer
             </span>
           ) : null}
@@ -255,7 +255,7 @@ function ControlCard({
 function AttestationStatusLine({ attestation }: { attestation: AttestationRow }) {
   if (attestation.status === 'claimed') {
     return (
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-muted-foreground">
         Claimed {new Date(attestation.claimedAt).toLocaleDateString()}.
         Awaiting review.
       </p>
@@ -322,25 +322,25 @@ function ClaimDialog({
         </DialogHeader>
         <div className="space-y-3">
           <label className="block text-sm">
-            <span className="text-slate-300">Evidence ID</span>
+            <span className="text-muted-foreground">Evidence ID</span>
             <input
               type="text"
               value={evidenceId}
               onChange={(e) => setEvidenceId(e.target.value)}
               placeholder="Paste an evidence row id from /app/vault"
-              className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none"
+              className="mt-1 w-full rounded-md border border-slate-700 bg-background px-3 py-2 text-sm text-card-foreground focus:border-slate-500 focus:outline-none"
             />
-            <span className="mt-1 block text-xs text-slate-500">
+            <span className="mt-1 block text-xs text-muted-foreground">
               Required. Browse the vault to find the evidence row id.
             </span>
           </label>
           <label className="block text-sm">
-            <span className="text-slate-300">Notes (optional)</span>
+            <span className="text-muted-foreground">Notes (optional)</span>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none"
+              className="mt-1 w-full rounded-md border border-slate-700 bg-background px-3 py-2 text-sm text-card-foreground focus:border-slate-500 focus:outline-none"
               placeholder="Anything the reviewer needs to know."
             />
           </label>
@@ -349,14 +349,14 @@ function ClaimDialog({
           <button
             onClick={onClose}
             disabled={pending}
-            className="rounded-md border border-slate-700 px-3 py-1.5 text-sm text-slate-200"
+            className="rounded-md border border-slate-700 px-3 py-1.5 text-sm text-card-foreground"
           >
             Cancel
           </button>
           <button
             onClick={submit}
             disabled={!valid || pending}
-            className="rounded-md bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-900 disabled:opacity-50"
+            className="rounded-md bg-card px-3 py-1.5 text-sm font-semibold text-foreground disabled:opacity-50"
           >
             {pending ? 'Claiming…' : 'Claim'}
           </button>
@@ -408,18 +408,18 @@ function ReviewDialog({
         </DialogHeader>
         <dl className="space-y-2 text-sm">
           <div>
-            <dt className="text-xs text-slate-500">Evidence row id</dt>
-            <dd className="font-mono text-slate-200">{attestation.evidenceId}</dd>
+            <dt className="text-xs text-muted-foreground">Evidence row id</dt>
+            <dd className="font-mono text-card-foreground">{attestation.evidenceId}</dd>
           </div>
           {attestation.notes ? (
             <div>
-              <dt className="text-xs text-slate-500">Claimer notes</dt>
-              <dd className="text-slate-200 whitespace-pre-wrap">{attestation.notes}</dd>
+              <dt className="text-xs text-muted-foreground">Claimer notes</dt>
+              <dd className="text-card-foreground whitespace-pre-wrap">{attestation.notes}</dd>
             </div>
           ) : null}
           <div>
-            <dt className="text-xs text-slate-500">Claimed</dt>
-            <dd className="text-slate-200">
+            <dt className="text-xs text-muted-foreground">Claimed</dt>
+            <dd className="text-card-foreground">
               {new Date(attestation.claimedAt).toLocaleString()}
             </dd>
           </div>
@@ -442,7 +442,7 @@ function ReviewDialog({
           <button
             onClick={onClose}
             disabled={pending}
-            className="rounded-md border border-slate-700 px-3 py-1.5 text-sm text-slate-200"
+            className="rounded-md border border-slate-700 px-3 py-1.5 text-sm text-card-foreground"
           >
             Close
           </button>
@@ -504,7 +504,7 @@ function RejectDialog({
           onChange={(e) => setReason(e.target.value)}
           rows={3}
           required
-          className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none"
+          className="w-full rounded-md border border-slate-700 bg-background px-3 py-2 text-sm text-card-foreground focus:border-slate-500 focus:outline-none"
           placeholder="Why is this attestation insufficient?"
         />
         <AlertDialogFooter>

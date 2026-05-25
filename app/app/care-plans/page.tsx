@@ -108,7 +108,7 @@ function getClientLabel(industry: string | null): string {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  draft: { label: 'Draft', color: 'text-muted-foreground/40 bg-slate-500/10' },
+  draft: { label: 'Draft', color: 'text-muted-foreground/40 bg-muted/10' },
   active: { label: 'Active', color: 'text-green-600 bg-green-500/10' },
   under_review: {
     label: 'Under Review',

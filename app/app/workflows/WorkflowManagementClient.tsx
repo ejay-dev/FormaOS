@@ -186,7 +186,7 @@ export function WorkflowManagementClient({
       </div>
 
       {showTemplates ? (
-        <div className="space-y-4 rounded-[28px] border border-edge-2 bg-slate-950/70 p-5">
+        <div className="space-y-4 rounded-[28px] border border-edge-2 bg-background/70 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
@@ -236,7 +236,7 @@ export function WorkflowManagementClient({
           return (
             <div
               key={workflow.id}
-              className="rounded-[28px] border border-edge-2 bg-slate-950/70 p-5"
+              className="rounded-[28px] border border-edge-2 bg-background/70 p-5"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
@@ -249,7 +249,7 @@ export function WorkflowManagementClient({
                       className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${
                         workflow.enabled
                           ? 'bg-emerald-500/15 text-emerald-200'
-                          : 'bg-slate-500/15 text-foreground/70'
+                          : 'bg-muted/15 text-foreground/70'
                       }`}
                     >
                       {workflow.enabled ? 'Enabled' : 'Disabled'}
@@ -306,7 +306,7 @@ export function WorkflowManagementClient({
       </div>
 
       {workflows.length === 0 ? (
-        <div className="rounded-[28px] border border-dashed border-edge-2 bg-slate-950/50 p-8 text-center">
+        <div className="rounded-[28px] border border-dashed border-edge-2 bg-background/50 p-8 text-center">
           <CheckCircle2 className="mx-auto h-10 w-10 text-cyan-300" />
           <h3 className="mt-4 text-lg font-semibold text-foreground">No workflows configured</h3>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -320,7 +320,7 @@ export function WorkflowManagementClient({
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[28px] border border-edge-2 bg-slate-950/70 p-5">
+    <div className="rounded-[28px] border border-edge-2 bg-background/70 p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
       <p className="mt-3 text-3xl font-semibold text-foreground">{value}</p>
     </div>

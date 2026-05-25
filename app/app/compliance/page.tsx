@@ -19,20 +19,20 @@ export default function ComplianceIndexPage() {
        */}
       <Link
         href="/app/compliance/attestations"
-        className="mx-4 mb-4 flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 transition-colors hover:border-slate-700 hover:bg-slate-900 sm:mx-0"
+        className="mx-4 mb-4 flex items-center justify-between rounded-lg border border-slate-800 bg-card/60 px-4 py-3 transition-colors hover:border-slate-700 hover:bg-card sm:mx-0"
       >
         <div className="flex items-center gap-3">
-          <ClipboardCheck className="h-5 w-5 text-slate-400" />
+          <ClipboardCheck className="h-5 w-5 text-muted-foreground" />
           <div>
-            <p className="text-sm font-medium text-slate-100">
+            <p className="text-sm font-medium text-card-foreground">
               Manual attestations
             </p>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-muted-foreground">
               Controls whose evaluator requires a human sign-off.
             </p>
           </div>
         </div>
-        <ArrowRight className="h-4 w-4 text-slate-500" />
+        <ArrowRight className="h-4 w-4 text-muted-foreground" />
       </Link>
 
       <div className="flex-1 overflow-auto -mx-4 px-4 sm:mx-0 sm:px-0">

@@ -234,7 +234,7 @@ export default async function StaffCredentialDetailPage({
           <form action={verifyAction} className="mt-4">
             <button
               type="submit"
-              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400 transition-colors"
+              className="inline-flex min-h-[44px] md:min-h-0 items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-foreground hover:bg-emerald-400 transition-colors"
             >
               <BadgeCheck className="h-4 w-4" />
               Mark Verified

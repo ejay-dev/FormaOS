@@ -89,7 +89,7 @@ export function WorkflowDetailClient({
 
   return (
     <div className="space-y-6 pb-24">
-      <div className="flex flex-wrap items-start justify-between gap-4 rounded-[32px] border border-edge-2 bg-slate-950/70 p-8">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-[32px] border border-edge-2 bg-background/70 p-8">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Workflow Detail
@@ -139,7 +139,7 @@ export function WorkflowDetailClient({
             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
               activeTab === tab
                 ? 'bg-cyan-500/15 text-cyan-100'
-                : 'bg-slate-950/70 text-foreground/70 hover:bg-white/[0.06]'
+                : 'bg-background/70 text-foreground/70 hover:bg-white/[0.06]'
             }`}
             onClick={() => setActiveTab(tab as Tab)}
           >
@@ -163,7 +163,7 @@ export function WorkflowDetailClient({
             execution={latestExecution}
             onRerun={runWorkflow}
           />
-          <div className="rounded-[28px] border border-edge-2 bg-slate-950/70 p-5">
+          <div className="rounded-[28px] border border-edge-2 bg-background/70 p-5">
             <h2 className="text-lg font-semibold text-foreground">Execution History</h2>
             <div className="mt-4 space-y-3">
               {executions.map((execution) => (
@@ -182,11 +182,11 @@ export function WorkflowDetailClient({
       ) : null}
 
       {activeTab === 'settings' ? (
-        <div className="rounded-[28px] border border-edge-2 bg-slate-950/70 p-6">
+        <div className="rounded-[28px] border border-edge-2 bg-background/70 p-6">
           <div className="grid gap-4 md:grid-cols-2">
             <SettingField label="Name">
               <input
-                className="w-full rounded-xl border border-edge-2 bg-slate-950/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
+                className="w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
                 value={currentWorkflow.name}
                 onChange={(event) =>
                   setCurrentWorkflow((current) => ({
@@ -198,7 +198,7 @@ export function WorkflowDetailClient({
             </SettingField>
             <SettingField label="Trigger Type">
               <input
-                className="w-full rounded-xl border border-edge-2 bg-slate-950/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
+                className="w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
                 value={currentWorkflow.trigger.type}
                 onChange={(event) =>
                   setCurrentWorkflow((current) => ({
@@ -238,7 +238,7 @@ export function WorkflowDetailClient({
               Description
             </p>
             <textarea
-              className="mt-3 min-h-28 w-full rounded-xl border border-edge-2 bg-slate-950/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
+              className="mt-3 min-h-28 w-full rounded-xl border border-edge-2 bg-background/80 px-3 py-2 text-sm text-foreground outline-none transition focus:border-cyan-400/60"
               value={currentWorkflow.description}
               onChange={(event) =>
                 setCurrentWorkflow((current) => ({
@@ -273,7 +273,7 @@ function MetricCard({
   value: string;
 }) {
   return (
-    <div className="rounded-[28px] border border-edge-2 bg-slate-950/70 p-5">
+    <div className="rounded-[28px] border border-edge-2 bg-background/70 p-5">
       <div className="flex items-center gap-3">
         {icon}
         <div>
