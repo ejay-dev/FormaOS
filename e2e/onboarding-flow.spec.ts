@@ -113,7 +113,7 @@ test.describe('Onboarding first-session flow', () => {
       const session = await createMagicLinkSession(email);
       await setPlaywrightSession(page.context(), session, APP_BASE);
       await page.request.post(`${APP_BASE}/api/auth/bootstrap`, {
-        headers: { 'x-formaos-e2e': '1' },
+        headers: { 'x-formaos-e2e': '1', Origin: APP_BASE },
       });
 
       // 5. Dashboard should render Start here at 0/5.

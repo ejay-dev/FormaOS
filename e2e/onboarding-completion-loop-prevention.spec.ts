@@ -151,7 +151,7 @@ test.describe('Onboarding completion loop prevention (regression)', () => {
     const { appBase } = await authenticateWorkspacePage(page);
 
     const response = await page.request.post(`${appBase}/api/auth/bootstrap`, {
-      headers: { 'x-formaos-e2e': '1' },
+      headers: { 'x-formaos-e2e': '1', Origin: appBase },
     });
     expect(response.ok()).toBeTruthy();
     const body = (await response.json()) as { next?: string; ok?: boolean };
@@ -273,7 +273,7 @@ test.describe('Onboarding completion loop prevention (regression)', () => {
 
     const { appBase } = await authenticateWorkspacePage(page);
     const response = await page.request.post(`${appBase}/api/auth/bootstrap`, {
-      headers: { 'x-formaos-e2e': '1' },
+      headers: { 'x-formaos-e2e': '1', Origin: appBase },
     });
     const body = (await response.json()) as { next?: string };
     expect(body.next).toMatch(/\/onboarding\?step=5/);
@@ -312,7 +312,7 @@ test.describe('Onboarding completion loop prevention (regression)', () => {
 
     const { appBase } = await authenticateWorkspacePage(page);
     await page.request.post(`${appBase}/api/auth/bootstrap`, {
-      headers: { 'x-formaos-e2e': '1' },
+      headers: { 'x-formaos-e2e': '1', Origin: appBase },
     });
 
     const orgAfter = await readOrgRow(context);

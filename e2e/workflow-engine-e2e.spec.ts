@@ -7,7 +7,9 @@ async function bootstrapApiSession(page: Page, email: string) {
   const appBase = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
   const session = await createMagicLinkSession(email);
   await setPlaywrightSession(page.context(), session, appBase);
-  await page.request.post(`${appBase}/api/auth/bootstrap`);
+  await page.request.post(`${appBase}/api/auth/bootstrap`, {
+    headers: { 'x-formaos-e2e': '1', Origin: appBase },
+  });
 }
 
 test.describe('Workflow engine', () => {

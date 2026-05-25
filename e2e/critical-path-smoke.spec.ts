@@ -98,6 +98,7 @@ async function signInWithMagicLink(
   await setPlaywrightSession(page.context(), session, appBase);
   const bootstrapResponse = await page.request.post(
     `${appBase}/api/auth/bootstrap`,
+    { headers: { origin: appBase } },
   );
   if (!bootstrapResponse.ok()) {
     throw new Error(`Bootstrap failed: ${bootstrapResponse.status()}`);

@@ -179,7 +179,13 @@ test('password-only sign-in for an MFA-enabled user lands on the challenge, not 
 
   await page.getByLabel(/email/i).fill(user.email);
   await page.getByLabel(/password/i).fill(PASSWORD);
-  await page.getByRole('button', { name: /sign in|continue|log in/i }).click();
+  // Submit the email/password form specifically — the page also shows a
+  // "Continue with Google" button that would otherwise match a generic
+  // /sign in|continue/i selector and start the OAuth flow.
+  await page
+    .locator('form')
+    .getByRole('button', { name: /access formaos|signing in/i })
+    .click();
 
   // The gate must redirect to the challenge page within a reasonable window.
   await expect
@@ -205,7 +211,13 @@ test('a wrong TOTP keeps the user on the challenge', async ({
   await page.goto(`${APP_URL}/auth/signin`);
   await page.getByLabel(/email/i).fill(user.email);
   await page.getByLabel(/password/i).fill(PASSWORD);
-  await page.getByRole('button', { name: /sign in|continue|log in/i }).click();
+  // Submit the email/password form specifically — the page also shows a
+  // "Continue with Google" button that would otherwise match a generic
+  // /sign in|continue/i selector and start the OAuth flow.
+  await page
+    .locator('form')
+    .getByRole('button', { name: /access formaos|signing in/i })
+    .click();
 
   await expect
     .poll(() => new URL(page.url()).pathname, {
@@ -234,7 +246,13 @@ test('a correct TOTP clears the gate and lands on /app', async ({
   await page.goto(`${APP_URL}/auth/signin`);
   await page.getByLabel(/email/i).fill(user.email);
   await page.getByLabel(/password/i).fill(PASSWORD);
-  await page.getByRole('button', { name: /sign in|continue|log in/i }).click();
+  // Submit the email/password form specifically — the page also shows a
+  // "Continue with Google" button that would otherwise match a generic
+  // /sign in|continue/i selector and start the OAuth flow.
+  await page
+    .locator('form')
+    .getByRole('button', { name: /access formaos|signing in/i })
+    .click();
 
   await expect
     .poll(() => new URL(page.url()).pathname, {

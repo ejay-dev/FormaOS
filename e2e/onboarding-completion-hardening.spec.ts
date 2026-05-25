@@ -97,7 +97,7 @@ async function readOrg(context: WorkspaceSeedContext) {
 
 async function postBootstrap(page: Page, appBase: string) {
   return page.request.post(`${appBase}/api/auth/bootstrap`, {
-    headers: { 'x-formaos-e2e': '1' },
+    headers: { 'x-formaos-e2e': '1', Origin: appBase },
   });
 }
 
@@ -251,11 +251,12 @@ test.describe('Onboarding hardening — concurrency, idempotency, boundaries', (
     baseURL,
   }) => {
     test.skip(Boolean(bootstrapSkipReason), bootstrapSkipReason ?? undefined);
+    const origin = baseURL ?? 'http://localhost:3000';
     const anonCtx = await playwright.request.newContext({
-      baseURL: baseURL ?? 'http://localhost:3000',
+      baseURL: origin,
     });
     const r = await anonCtx.post('/api/auth/bootstrap', {
-      headers: { 'x-formaos-e2e': '1' },
+      headers: { 'x-formaos-e2e': '1', origin },
     });
     expect(r.status()).toBe(401);
     const body = (await r.json()) as BootstrapBody;

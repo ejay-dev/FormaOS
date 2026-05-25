@@ -434,6 +434,7 @@ export async function authenticateWorkspacePage(page: Page, email?: string) {
         {
           headers: {
             'x-formaos-e2e': '1',
+            Origin: appBase,
           },
           timeout: 45_000,
         },
