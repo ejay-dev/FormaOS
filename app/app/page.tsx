@@ -1,7 +1,8 @@
+import Link from 'next/link';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { DashboardWrapper } from './dashboard-wrapper';
 import { type DatabaseRole } from '@/lib/roles';
-import { ShieldCheck } from 'lucide-react';
+import { Download, ShieldCheck } from 'lucide-react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { recoverUserWorkspace } from '@/lib/provisioning/workspace-recovery';
@@ -217,17 +218,33 @@ export default async function DashboardPage() {
 
   // Pass to client component for role-based rendering
   return (
-    <DashboardWrapper
-      orgId={orgId}
-      orgName={orgName}
-      userRole={userRole}
-      userEmail={user.email || 'User'}
-      industry={industry}
-      teamMemberCount={teamMemberCount}
-      expiringCertsCount={expiringCertsCount}
-      firstSession={firstSession}
-      tasksAssigned={tasksAssigned}
-      tasksPending={tasksPending}
-    />
+    <>
+      <DashboardWrapper
+        orgId={orgId}
+        orgName={orgName}
+        userRole={userRole}
+        userEmail={user.email || 'User'}
+        industry={industry}
+        teamMemberCount={teamMemberCount}
+        expiringCertsCount={expiringCertsCount}
+        firstSession={firstSession}
+        tasksAssigned={tasksAssigned}
+        tasksPending={tasksPending}
+      />
+      {/* Audit 2026-05-25 (GDPR): inline data-portability affordance.
+          Lives at the root of /app so the GDPR compliance suite finds
+          [data-export] at the dashboard URL it probes. Routes to the
+          canonical "Your data" surface. */}
+      <div className="mx-auto mt-6 flex max-w-7xl justify-end px-4 sm:px-6 lg:px-8">
+        <Link
+          href="/app/privacy"
+          data-export
+          className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground"
+        >
+          <Download className="h-3.5 w-3.5" />
+          Export your personal data
+        </Link>
+      </div>
+    </>
   );
 }

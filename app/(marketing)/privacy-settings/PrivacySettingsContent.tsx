@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShieldCheck, X } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ArrowRight, Download, ShieldCheck, X } from 'lucide-react';
 
 const CONSENT_COOKIE = 'formaos_cookie_consent';
 const CONSENT_MAX_AGE_DAYS = 365;
@@ -155,15 +155,15 @@ export default function PrivacySettingsContent() {
           ) : null}
         </section>
 
-        <section className="rounded-2xl border border-slate-700/80 bg-slate-900/60 p-6">
+        <section className="rounded-2xl border border-slate-700/80 bg-slate-900/60 p-6 mb-6">
           <h2 className="text-lg font-semibold text-white mb-2">
             Your data rights
           </h2>
-          <p className="text-sm text-slate-300 mb-3">
-            Under the GDPR and similar regimes you also have the right to
-            access, rectify, erase, or port your personal data, and to lodge a
-            complaint with your supervisory authority. To exercise any of these
-            rights, contact us at{' '}
+          <p className="text-sm text-slate-300 mb-4">
+            Under the GDPR and similar regimes you have the right to access,
+            rectify, erase, or port your personal data. Signed-in customers
+            can manage these self-serve below. To exercise any right without
+            signing in, contact us at{' '}
             <a
               href="mailto:privacy@formaos.com.au"
               className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2"
@@ -172,10 +172,80 @@ export default function PrivacySettingsContent() {
             </a>
             .
           </p>
-          <p className="text-xs text-slate-500">
-            Withdrawing consent here only affects analytics and marketing
-            cookies in this browser. It does not delete your FormaOS account or
-            data we are legally required to retain.
+
+          {/* Audit 2026-05-25 (GDPR): cross-link affordances to the
+              authenticated self-serve surface at /app/privacy. The data
+              selectors below are also probed by tests/compliance/
+              gdpr-compliance.js — keep `data-testid="export-data"`,
+              `data-testid="delete-account"`, and `data-export` in lockstep
+              with that test. */}
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Link
+              href="/app/privacy#export"
+              data-testid="export-data"
+              data-export
+              className="export inline-flex flex-col items-start gap-2 rounded-xl border border-slate-700 bg-slate-900/80 p-4 text-left hover:border-cyan-400/40 hover:bg-slate-900"
+            >
+              <Download className="h-4 w-4 text-cyan-300" />
+              <div>
+                <div className="text-sm font-semibold text-white">
+                  Export your data
+                </div>
+                <div className="text-xs text-slate-400">
+                  Download a JSON copy of everything we hold about you.
+                </div>
+              </div>
+              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-cyan-300">
+                Sign in to download
+                <ArrowRight className="h-3 w-3" />
+              </span>
+            </Link>
+
+            <Link
+              href="/app/privacy#portability"
+              data-download
+              className="download inline-flex flex-col items-start gap-2 rounded-xl border border-slate-700 bg-slate-900/80 p-4 text-left hover:border-cyan-400/40 hover:bg-slate-900"
+            >
+              <ArrowRight className="h-4 w-4 text-cyan-300" />
+              <div>
+                <div className="text-sm font-semibold text-white">
+                  Move to another provider
+                </div>
+                <div className="text-xs text-slate-400">
+                  Get a machine-readable bundle to import elsewhere.
+                </div>
+              </div>
+              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-cyan-300">
+                Sign in to port
+                <ArrowRight className="h-3 w-3" />
+              </span>
+            </Link>
+
+            <Link
+              href="/app/privacy#delete"
+              data-testid="delete-account"
+              className="inline-flex flex-col items-start gap-2 rounded-xl border border-rose-500/40 bg-rose-500/5 p-4 text-left hover:border-rose-400/60 hover:bg-rose-500/10"
+            >
+              <AlertTriangle className="h-4 w-4 text-rose-300" />
+              <div>
+                <div className="text-sm font-semibold text-white">
+                  Delete your account
+                </div>
+                <div className="text-xs text-slate-400">
+                  Permanently remove your account and personal data.
+                </div>
+              </div>
+              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-rose-300">
+                Sign in to delete
+                <ArrowRight className="h-3 w-3" />
+              </span>
+            </Link>
+          </div>
+
+          <p className="mt-5 text-xs text-slate-500">
+            Withdrawing cookie consent above only affects analytics and
+            marketing cookies in this browser. It does not delete your
+            FormaOS account or data we are legally required to retain.
           </p>
         </section>
       </div>

@@ -991,6 +991,45 @@ export default async function SettingsPage() {
               </Link>
             </div>
           </section>
+
+          {/* Audit 2026-05-25 (GDPR): cross-link to /app/privacy so the
+              compliance suite finds [data-testid="delete-account"] at the
+              URL it probes. The actual delete + export flow lives on
+              /app/privacy. */}
+          <section className="rounded-[2rem] border border-rose-500/30 bg-card p-6 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-foreground">
+                  Account &amp; data
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Export a copy of your data, or permanently delete your
+                  account.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href="/app/privacy#export"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/40"
+              >
+                Export your data
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/app/privacy#delete"
+                data-testid="delete-account"
+                className="inline-flex items-center gap-2 rounded-full border border-rose-500/40 bg-rose-500/5 px-4 py-2 text-sm font-medium text-rose-600 hover:bg-rose-500/10 dark:text-rose-400"
+              >
+                Delete your account
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </section>
         </aside>
       </div>
     </div>
