@@ -72,6 +72,12 @@ const CONSENT_STATE_PATH = path.join(
  */
 export default defineConfig({
   testDir: './e2e',
+  /* Default test discovery matches *.spec.ts only. Capture-only suites
+   * (screenshots without assertions) are named *.capture.ts so they're
+   * excluded from `playwright test` and `npm run test:e2e` — they don't
+   * inflate the pass count. They can still be invoked directly by
+   * filename (see `test:visual` in package.json). */
+  testMatch: '**/*.spec.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
