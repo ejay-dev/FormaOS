@@ -26,13 +26,32 @@ const customJestConfig = {
     // turn CI red. Do that work in a focused PR titled
     // "fix(test): un-quarantine <file>".
     // ---------------------------------------------------------------
-    '<rootDir>/__tests__/lib/workspace-recovery.test.ts',
     '<rootDir>/__tests__/lib/care-scorecard/scorecard-service.test.ts',
     '<rootDir>/tests/billing/webhook.test.ts',
     '<rootDir>/__tests__/lib/billing/webhook-hardening.test.ts',
-    '<rootDir>/__tests__/lib/care/ndis-claiming.test.ts',
     '<rootDir>/__tests__/api/v1/webhooks-id.test.ts',
-    '<rootDir>/__tests__/api/trust-packet/generate.test.ts',
+    // __tests__/lib/workspace-recovery.test.ts — UN-QUARANTINED 2026-05-26.
+    // recoverUserWorkspace started adding a diagnostic `?error=...&
+    // reason=<table>` query string to the /auth/signin redirect; three
+    // tests still asserted on bare `/auth/signin`. Loosened to
+    // startsWith('/auth/signin') so query-shape changes don't break
+    // the assertion. 47/47 pass.
+    //
+    // __tests__/lib/care/ndis-claiming.test.ts — UN-QUARANTINED 2026-05-26.
+    // Two fixture issues: `participant_id` was renamed to `client_id`
+    // on the visit row (source uses client_id), and the price-guide
+    // mock returned data:null for every test (source now refuses
+    // claims with no price_guide row). Updated 6 fixtures to provide
+    // a valid price_national; 18/18 pass.
+    //
+    // __tests__/api/trust-packet/generate.test.ts — UN-QUARANTINED 2026-05-26.
+    // Source moved from `policies`/`controls` table names to
+    // `org_policies`/`org_control_evaluations`; the
+    // security_overview.sso_available field was renamed to
+    // sso_provisioned (truth-in-advertising: now reads actual SAML
+    // config, not just plan tier). Test fixture keys + one assertion
+    // updated; 14/14 pass.
+    //
     // tests/billing/stripe-client.test.ts — UN-QUARANTINED 2026-05-26.
     // Was asserting against historical prod price IDs that the source
     // no longer ships as defaults. Test fixture updated to mirror the

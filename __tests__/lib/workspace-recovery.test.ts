@@ -325,13 +325,18 @@ describe('recoverUserWorkspace', () => {
   const orgId = 'org-111';
   const userId = 'user-222';
 
+  // Audit 2026-05-26 — recoverUserWorkspace now adds a diagnostic
+  // `?error=workspace_recovery_failed&reason=<table>` query string
+  // to the /auth/signin redirect so ops can grep which lookup
+  // failed. Assert via startsWith so future query-shape changes
+  // don't break the test.
   it('returns /auth/signin when membership is missing', async () => {
     setupChain({
       org_members: { data: [], error: null },
     });
     const result = await recoverUserWorkspace({ userId, source: 'test' });
     expect(result.ok).toBe(false);
-    expect(result.nextPath).toBe('/auth/signin');
+    expect(result.nextPath?.startsWith('/auth/signin')).toBe(true);
     expect(result.missingRecords).toContain('org_members');
   });
 
@@ -341,7 +346,7 @@ describe('recoverUserWorkspace', () => {
     });
     const result = await recoverUserWorkspace({ userId, source: 'test' });
     expect(result.ok).toBe(false);
-    expect(result.nextPath).toBe('/auth/signin');
+    expect(result.nextPath?.startsWith('/auth/signin')).toBe(true);
   });
 
   it('returns /auth/signin when organization is missing', async () => {
@@ -358,7 +363,7 @@ describe('recoverUserWorkspace', () => {
     });
     const result = await recoverUserWorkspace({ userId, source: 'test' });
     expect(result.ok).toBe(false);
-    expect(result.nextPath).toBe('/auth/signin');
+    expect(result.nextPath?.startsWith('/auth/signin')).toBe(true);
     expect(result.missingRecords).toContain('organizations');
   });
 

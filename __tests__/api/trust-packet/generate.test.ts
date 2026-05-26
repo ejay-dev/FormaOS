@@ -254,7 +254,7 @@ describe('POST /api/trust-packet/generate', () => {
       data: { plan_key: 'pro', status: 'active' },
       error: null,
     });
-    builderResults.controls = createBuilder({
+    builderResults.org_control_evaluations = createBuilder({
       data: [
         { id: 'c1', status: 'implemented', framework_key: 'soc2' },
         { id: 'c2', status: 'not_started', framework_key: 'soc2' },
@@ -264,12 +264,12 @@ describe('POST /api/trust-packet/generate', () => {
     const res = await POST(makeRequest());
     expect(res.status).toBe(200);
     const json = await res.json();
-    expect(json.packet.security_overview.sso_available).toBe(false);
+    expect(json.packet.security_overview.sso_provisioned).toBe(false);
     expect(json.packet.compliance_summary.coverage_percent).toBe(50);
   });
 
   it('handles zero controls', async () => {
-    builderResults.controls = createBuilder({ data: [], error: null });
+    builderResults.org_control_evaluations = createBuilder({ data: [], error: null });
     const res = await POST(makeRequest());
     expect(res.status).toBe(200);
     const json = await res.json();
@@ -279,7 +279,7 @@ describe('POST /api/trust-packet/generate', () => {
   it('counts recently reviewed policies', async () => {
     const thirtyOneDaysAgo = new Date();
     thirtyOneDaysAgo.setDate(thirtyOneDaysAgo.getDate() - 31);
-    builderResults.policies = createBuilder({
+    builderResults.org_policies = createBuilder({
       data: [
         {
           id: 'p1',

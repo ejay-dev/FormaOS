@@ -42,7 +42,7 @@ describe('generateLineItems', () => {
       end_time: end,
       actual_start_time: null,
       actual_end_time: null,
-      participant_id: 'p1',
+      client_id: 'p1',
       care_plan_id: 'cp1',
       org_patients: { id: 'p1', first_name: 'John', last_name: 'Doe' },
     };
@@ -72,7 +72,7 @@ describe('generateLineItems', () => {
       end_time: now.toISOString(),
       actual_start_time: new Date(now.getTime() - 1 * 3600000).toISOString(),
       actual_end_time: now.toISOString(),
-      participant_id: 'p1',
+      client_id: 'p1',
       care_plan_id: null,
     };
 
@@ -81,7 +81,7 @@ describe('generateLineItems', () => {
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: visit, error: null });
-        if (callCount === 2) return createBuilder({ data: null, error: null }); // no price guide
+        if (callCount === 2) return createBuilder({ data: { price_national: 65.0 }, error: null }); // no price guide
         return createBuilder({ data: { id: 'li2' }, error: null });
       }),
     };
@@ -119,7 +119,7 @@ describe('generateLineItems', () => {
       end_time: now.toISOString(),
       actual_start_time: null,
       actual_end_time: null,
-      participant_id: 'p1',
+      client_id: 'p1',
       care_plan_id: null,
     };
     let callCount = 0;
@@ -127,7 +127,7 @@ describe('generateLineItems', () => {
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: visit, error: null });
-        if (callCount === 2) return createBuilder({ data: null, error: null });
+        if (callCount === 2) return createBuilder({ data: { price_national: 65.0 }, error: null });
         return createBuilder({ data: { id: 'li3' }, error: null });
       }),
     };
@@ -145,7 +145,7 @@ describe('generateLineItems', () => {
       end_time: now.toISOString(),
       actual_start_time: null,
       actual_end_time: null,
-      participant_id: 'p1',
+      client_id: 'p1',
       care_plan_id: null,
     };
     let callCount = 0;
@@ -153,7 +153,7 @@ describe('generateLineItems', () => {
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: visit, error: null });
-        if (callCount === 2) return createBuilder({ data: null, error: null });
+        if (callCount === 2) return createBuilder({ data: { price_national: 65.0 }, error: null });
         return createBuilder({ data: { id: 'li4' }, error: null });
       }),
     };
@@ -171,7 +171,7 @@ describe('generateLineItems', () => {
       end_time: now.toISOString(),
       actual_start_time: null,
       actual_end_time: null,
-      participant_id: 'p1',
+      client_id: 'p1',
       care_plan_id: null,
     };
     let callCount = 0;
@@ -179,7 +179,7 @@ describe('generateLineItems', () => {
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: visit, error: null });
-        if (callCount === 2) return createBuilder({ data: null, error: null });
+        if (callCount === 2) return createBuilder({ data: { price_national: 65.0 }, error: null });
         return createBuilder({ data: { id: 'li5' }, error: null });
       }),
     };
@@ -197,7 +197,7 @@ describe('generateLineItems', () => {
       end_time: now.toISOString(),
       actual_start_time: null,
       actual_end_time: null,
-      participant_id: 'p1',
+      client_id: 'p1',
       care_plan_id: null,
     };
     let callCount = 0;
@@ -205,7 +205,7 @@ describe('generateLineItems', () => {
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: visit, error: null });
-        if (callCount === 2) return createBuilder({ data: null, error: null });
+        if (callCount === 2) return createBuilder({ data: { price_national: 65.0 }, error: null });
         return createBuilder({ data: { id: 'li6' }, error: null });
       }),
     };
@@ -223,7 +223,7 @@ describe('generateLineItems', () => {
       end_time: now.toISOString(),
       actual_start_time: null,
       actual_end_time: null,
-      participant_id: 'p1',
+      client_id: 'p1',
       care_plan_id: null,
     };
     let callCount = 0;
@@ -231,7 +231,7 @@ describe('generateLineItems', () => {
       from: jest.fn(() => {
         callCount++;
         if (callCount === 1) return createBuilder({ data: visit, error: null });
-        if (callCount === 2) return createBuilder({ data: null, error: null });
+        if (callCount === 2) return createBuilder({ data: { price_national: 65.0 }, error: null });
         return createBuilder({ data: null, error: { message: 'insert fail' } });
       }),
     };
