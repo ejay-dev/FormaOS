@@ -15,14 +15,15 @@ import {
 import { mockSupabase } from '@/tests/helpers';
 
 const supabase = mockSupabase();
-const logActivity = jest.fn();
+const logAuditEventCore = jest.fn();
 
 jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(async () => supabase.client),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: (...args: unknown[]) => logActivity(...args),
+// M2 (2026-05-26): report-builder migrated to hash-chained writer.
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: (...args: unknown[]) => logAuditEventCore(...args),
 }));
 
 const widget = {
@@ -42,7 +43,7 @@ const widget = {
 describe('report-builder', () => {
   beforeEach(() => {
     supabase.reset();
-    logActivity.mockReset();
+    logAuditEventCore.mockReset();
     jest.spyOn(console, 'warn').mockImplementation(() => {});
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -81,14 +82,13 @@ describe('report-builder', () => {
     });
 
     expect(template.id).toBe('template-1');
-    expect(logActivity).toHaveBeenCalledWith(
-      'org-1',
-      'user-1',
-      'create',
-      'report',
+    expect(logAuditEventCore).toHaveBeenCalledWith(
       expect.objectContaining({
+        organizationId: 'org-1',
+        actorUserId: 'user-1',
+        actionType: 'REPORT_TEMPLATE_CREATED',
+        entityType: 'report_template',
         entityId: 'template-1',
-        entityName: 'Board Pack',
       }),
     );
   });

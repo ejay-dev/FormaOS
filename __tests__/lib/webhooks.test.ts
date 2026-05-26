@@ -16,21 +16,22 @@ import { createMockWebhook } from '@/tests/factories';
 import { mockSupabase } from '@/tests/helpers';
 
 const supabase = mockSupabase();
-const logActivity = jest.fn();
+const logAuditEventCore = jest.fn();
 const fetchMock = global.fetch as jest.Mock;
 
 jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(async () => supabase.client),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: (...args: unknown[]) => logActivity(...args),
+// M2 (2026-05-26): webhooks.ts migrated to hash-chained writer.
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: (...args: unknown[]) => logAuditEventCore(...args),
 }));
 
 describe('webhooks', () => {
   beforeEach(() => {
     supabase.reset();
-    logActivity.mockReset();
+    logAuditEventCore.mockReset();
     fetchMock.mockReset();
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -72,14 +73,12 @@ describe('webhooks', () => {
 
     expect(webhook.id).toBe('wh-1');
     expect(webhook.secret).toHaveLength(64);
-    expect(logActivity).toHaveBeenCalledWith(
-      'org-a',
-      '',
-      'create',
-      'organization',
+    expect(logAuditEventCore).toHaveBeenCalledWith(
       expect.objectContaining({
+        organizationId: 'org-a',
+        actionType: 'WEBHOOK_CREATED',
+        entityType: 'webhook',
         entityId: 'wh-1',
-        entityName: 'Primary',
       }),
     );
   });

@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from './audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import crypto from 'crypto';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 
@@ -100,17 +100,19 @@ export async function createWebhook(
     throw new Error(`Failed to create webhook: ${error.message}`);
   }
 
-  await logActivity(
+  // M2 (2026-05-26): migrated to hash-chained writer. System action.
+  await logAuditEventCore({
     organizationId,
-    '', // System action
-    'create',
-    'organization',
-    {
-      entityId: data.id,
-      entityName: config.name,
-      details: { events: config.events },
+    actorUserId: null,
+    actorRole: 'system',
+    actionType: 'WEBHOOK_CREATED',
+    entityType: 'webhook',
+    entityId: data.id,
+    afterState: {
+      name: config.name,
+      events: config.events,
     },
-  );
+  });
 
   return data;
 }

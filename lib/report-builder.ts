@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from './audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { consoleShim } from '@/lib/monitoring/console-shim';
@@ -340,17 +340,19 @@ export async function createReportTemplate(
     throw new Error(`Failed to create report template: ${error.message}`);
   }
 
-  await logActivity(
-    template.organization_id,
-    template.created_by,
-    'create',
-    'report',
-    {
-      entityId: data.id,
-      entityName: template.name,
-      details: { widgets_count: template.widgets.length },
+  // M2 (2026-05-26): migrated to hash-chained writer.
+  await logAuditEventCore({
+    organizationId: template.organization_id,
+    actorUserId: template.created_by,
+    actorRole: null,
+    actionType: 'REPORT_TEMPLATE_CREATED',
+    entityType: 'report_template',
+    entityId: data.id,
+    afterState: {
+      name: template.name,
+      widgets_count: template.widgets.length,
     },
-  );
+  });
 
   return data;
 }

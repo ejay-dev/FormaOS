@@ -12,15 +12,16 @@ import {
 import { mockSupabase } from '@/tests/helpers';
 
 const supabase = mockSupabase();
-const logActivity = jest.fn();
+const logAuditEventCore = jest.fn();
 const sendNotification = jest.fn();
 
 jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(async () => supabase.client),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: (...args: unknown[]) => logActivity(...args),
+// M2 (2026-05-26): file-versioning migrated to hash-chained writer.
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: (...args: unknown[]) => logAuditEventCore(...args),
 }));
 
 jest.mock('@/lib/notifications/send', () => ({
@@ -30,7 +31,7 @@ jest.mock('@/lib/notifications/send', () => ({
 describe('file-versioning', () => {
   beforeEach(() => {
     supabase.reset();
-    logActivity.mockReset();
+    logAuditEventCore.mockReset();
     sendNotification.mockReset();
   });
 
@@ -69,14 +70,13 @@ describe('file-versioning', () => {
           (operation.values as Record<string, unknown>).version_number === 1,
       ),
     ).toBe(true);
-    expect(logActivity).toHaveBeenCalledWith(
-      'org-1',
-      'user-1',
-      'create',
-      'evidence',
+    expect(logAuditEventCore).toHaveBeenCalledWith(
       expect.objectContaining({
+        organizationId: 'org-1',
+        actorUserId: 'user-1',
+        actionType: 'FILE_VERSION_CREATED',
+        entityType: 'evidence',
         entityId: 'file-1',
-        entityName: 'policy.pdf',
       }),
     );
   });

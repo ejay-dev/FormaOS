@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from './audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { sendNotification } from '@/lib/notifications/send';
 
 export interface FileVersion {
@@ -101,10 +101,20 @@ export async function createFile(
     throw new Error(`Failed to create file version: ${versionError.message}`);
   }
 
-  await logActivity(organizationId, file.uploadedBy, 'create', 'evidence', {
+  // M2 (2026-05-26): migrated to hash-chained writer.
+  await logAuditEventCore({
+    organizationId,
+    actorUserId: file.uploadedBy,
+    actorRole: null,
+    actionType: 'FILE_VERSION_CREATED',
+    entityType: 'evidence',
     entityId: fileMetadata.id,
-    entityName: file.name,
-    details: { entity_type: entityType, entity_id: entityId, version: 1 },
+    afterState: {
+      filename: file.name,
+      target_entity_type: entityType,
+      target_entity_id: entityId,
+      version: 1,
+    },
   });
 
   return fileMetadata;
@@ -172,20 +182,19 @@ export async function uploadNewVersion(
     })
     .eq('id', fileId);
 
-  await logActivity(
-    fileMetadata.organization_id,
-    userId,
-    'update',
-    'evidence',
-    {
-      entityId: fileId,
-      entityName: file.name,
-      details: {
-        version: newVersionNumber,
-        change_summary: changeSummary,
-      },
+  await logAuditEventCore({
+    organizationId: fileMetadata.organization_id,
+    actorUserId: userId,
+    actorRole: null,
+    actionType: 'FILE_VERSION_UPDATED',
+    entityType: 'evidence',
+    entityId: fileId,
+    afterState: {
+      filename: file.name,
+      version: newVersionNumber,
+      change_summary: changeSummary,
     },
-  );
+  });
 
   // Notify relevant users
   await sendNotification(
@@ -301,21 +310,20 @@ export async function restoreVersion(
     })
     .eq('id', fileId);
 
-  await logActivity(
-    fileMetadata.organization_id,
-    userId,
-    'update',
-    'evidence',
-    {
-      entityId: fileId,
-      entityName: versionToRestore.file_name,
-      details: {
-        restored_version: versionNumber,
-        new_version: newVersionNumber,
-        reason,
-      },
+  await logAuditEventCore({
+    organizationId: fileMetadata.organization_id,
+    actorUserId: userId,
+    actorRole: null,
+    actionType: 'FILE_VERSION_RESTORED',
+    entityType: 'evidence',
+    entityId: fileId,
+    afterState: {
+      filename: versionToRestore.file_name,
+      restored_version: versionNumber,
+      new_version: newVersionNumber,
+      reason,
     },
-  );
+  });
 
   return newVersion;
 }
