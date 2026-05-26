@@ -3,7 +3,7 @@
  * Calculates the value a user has received during their trial
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 export interface TrialValueMetrics {
   orgId: string;
@@ -37,7 +37,7 @@ export async function calculateTrialValue(
   trialStartDate: Date,
   trialEndDate: Date
 ): Promise<TrialValueMetrics> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
 
   // Calculate days
@@ -64,42 +64,35 @@ export async function calculateTrialValue(
     admin
       .from('org_audit_logs')
       .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
       .eq('action', 'user.login')
       .gte('created_at', trialStartDate.toISOString()),
     // Tasks completed
     admin
       .from('org_tasks')
       .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
       .eq('status', 'completed')
       .gte('completed_at', trialStartDate.toISOString()),
     // Evidence uploaded
     admin
       .from('org_evidence')
       .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
       .gte('created_at', trialStartDate.toISOString()),
     // Team members added
     admin
       .from('org_members')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
+      .select('*', { count: 'exact', head: true }),
     // Frameworks enabled
     admin
       .from('org_frameworks')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
+      .select('*', { count: 'exact', head: true }),
     // Workflows created
     admin
       .from('org_workflows')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
+      .select('*', { count: 'exact', head: true }),
     // Compliance snapshots for improvement
     admin
       .from('org_compliance_snapshots')
       .select('compliance_score, captured_at')
-      .eq('organization_id', orgId)
       .order('captured_at', { ascending: true })
       .limit(30),
   ]);

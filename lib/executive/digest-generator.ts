@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 type Period = 'weekly' | 'monthly';
 
@@ -27,7 +27,7 @@ export async function generateExecutiveDigest(
   orgId: string,
   period: Period,
 ): Promise<DigestContent> {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   const { data: org } = await db
     .from('organizations')
@@ -49,19 +49,17 @@ export async function generateExecutiveDigest(
   // Current compliance score
   const { data: controls } = await db
     .from('org_controls')
-    .select('status')
-    .eq('organization_id', orgId);
+    .select('status');
 
   const total = controls?.length ?? 0;
   const satisfied =
-    controls?.filter((c) => c.status === 'satisfied').length ?? 0;
+    controls?.filter((c: any) => c.status === 'satisfied').length ?? 0;
   const complianceScore = total > 0 ? Math.round((satisfied / total) * 100) : 0;
 
   // Overdue tasks
   const { count: overdueTasks } = await db
     .from('org_tasks')
     .select('id', { count: 'exact', head: true })
-    .eq('organization_id', orgId)
     .lt('due_date', now.toISOString())
     .in('status', ['todo', 'in_progress']);
 
@@ -69,13 +67,11 @@ export async function generateExecutiveDigest(
   const { count: incidentCount } = await db
     .from('org_incidents')
     .select('id', { count: 'exact', head: true })
-    .eq('organization_id', orgId)
     .gte('created_at', from);
 
   const { count: prevIncidentCount } = await db
     .from('org_incidents')
     .select('id', { count: 'exact', head: true })
-    .eq('organization_id', orgId)
     .gte('created_at', prevFrom)
     .lt('created_at', from);
 
@@ -83,12 +79,11 @@ export async function generateExecutiveDigest(
   const { data: riskControls } = await db
     .from('org_controls')
     .select('title, priority')
-    .eq('organization_id', orgId)
     .neq('status', 'satisfied')
     .in('priority', ['critical', 'high'])
     .limit(3);
 
-  const topRisks = (riskControls ?? []).map((c) => ({
+  const topRisks = (riskControls ?? []).map((c: any) => ({
     title: c.title,
     severity: c.priority,
   }));
@@ -100,13 +95,12 @@ export async function generateExecutiveDigest(
   const { data: deadlineTasks } = await db
     .from('org_tasks')
     .select('title, due_date')
-    .eq('organization_id', orgId)
     .gte('due_date', now.toISOString())
     .lte('due_date', twoWeeksOut)
     .order('due_date')
     .limit(5);
 
-  const upcomingDeadlines = (deadlineTasks ?? []).map((t) => ({
+  const upcomingDeadlines = (deadlineTasks ?? []).map((t: any) => ({
     title: t.title,
     dueDate: t.due_date,
   }));
@@ -115,13 +109,12 @@ export async function generateExecutiveDigest(
   const { data: recentlySatisfied } = await db
     .from('org_controls')
     .select('title')
-    .eq('organization_id', orgId)
     .eq('status', 'satisfied')
     .gte('updated_at', from)
     .limit(3);
 
   const topWins = (recentlySatisfied ?? []).map(
-    (c) => `Control satisfied: ${c.title}`,
+    (c: any) => `Control satisfied: ${c.title}`,
   );
 
   // Recommendations

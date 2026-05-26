@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import soc2Pack from '@/framework-packs/soc2.json';
 import type { Soc2ReadinessResult, Soc2ControlResult, Soc2DomainScore } from './types';
 
@@ -50,7 +50,7 @@ const DOMAIN_WEIGHTS: Record<string, number> = {
 export async function calculateSoc2Readiness(
   orgId: string,
 ): Promise<Soc2ReadinessResult> {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const controls = soc2Pack.controls as Soc2PackControl[];
   const domains = soc2Pack.domains as Soc2PackDomain[];
 
@@ -59,7 +59,6 @@ export async function calculateSoc2Readiness(
   const { data: evaluations } = await supabase
     .from('org_control_evaluations')
     .select('control_key, compliance_score, status')
-    .eq('organization_id', orgId)
     .eq('control_type', 'framework')
     .in('control_key', controlKeys);
 
@@ -75,8 +74,9 @@ export async function calculateSoc2Readiness(
     );
   }
 
-  // 2. Load evidence counts per control via compliance_controls join
-  const { data: controlRows } = await supabase
+  // 2. Load evidence counts per control via compliance_controls join.
+  // compliance_controls is a global catalog (not tenant-scoped) — use raw admin.
+  const { data: controlRows } = await supabase.unsafeAdmin()
     .from('compliance_controls')
     .select('id, code')
     .in('code', controlKeys);
@@ -93,7 +93,6 @@ export async function calculateSoc2Readiness(
     const { data: evidenceRows } = await supabase
       .from('control_evidence')
       .select('control_id')
-      .eq('organization_id', orgId)
       .in('control_id', controlIds);
 
     const countByControlId = new Map<string, number>();
@@ -115,7 +114,6 @@ export async function calculateSoc2Readiness(
     const { data: taskLinks } = await supabase
       .from('control_tasks')
       .select('control_id, task_id')
-      .eq('organization_id', orgId)
       .in('control_id', controlIds);
 
     const taskIds = Array.from(
@@ -131,7 +129,6 @@ export async function calculateSoc2Readiness(
       const { data: tasks } = await supabase
         .from('org_tasks')
         .select('id, status')
-        .eq('organization_id', orgId)
         .in('id', taskIds);
 
       for (const t of (tasks ?? []) as Record<string, unknown>[]) {
@@ -269,12 +266,11 @@ export async function calculateSoc2Readiness(
 export async function getLatestAssessment(
   orgId: string,
 ): Promise<Soc2ReadinessResult | null> {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
   const { data } = await supabase
     .from('soc2_readiness_assessments')
     .select('*')
-    .eq('organization_id', orgId)
     .order('assessed_at', { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -298,12 +294,11 @@ export async function getAssessmentHistory(
   orgId: string,
   limit: number = 10,
 ): Promise<{ date: string; score: number }[]> {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
   const { data } = await supabase
     .from('soc2_readiness_assessments')
     .select('assessed_at, overall_score')
-    .eq('organization_id', orgId)
     .order('assessed_at', { ascending: false })
     .limit(limit);
 

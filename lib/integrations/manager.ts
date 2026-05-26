@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { logActivity } from '@/lib/audit-trail';
 import { createJiraIssue, syncTaskStatusToJira } from './jira';
 import { createLinearIssue, syncTaskStatusToLinear } from './linear';
@@ -111,11 +112,10 @@ export function listAvailableIntegrations(): IntegrationCatalogItem[] {
 }
 
 async function getProviderConfigRow(orgId: string, provider: string) {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const { data } = await admin
     .from('integration_configs')
     .select('*')
-    .eq('organization_id', orgId)
     .eq('provider', provider)
     .maybeSingle();
 
@@ -123,11 +123,10 @@ async function getProviderConfigRow(orgId: string, provider: string) {
 }
 
 export async function listConnectedIntegrations(orgId: string) {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const { data } = await admin
     .from('integration_configs')
     .select('*')
-    .eq('organization_id', orgId)
     .order('provider', { ascending: true });
 
   return (data ?? []).map((row: Record<string, unknown>) => ({
@@ -142,13 +141,12 @@ export async function listConnectedIntegrations(orgId: string) {
 }
 
 export async function getIntegrationStatus(orgId: string) {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const [connected, syncLog] = await Promise.all([
     listConnectedIntegrations(orgId),
     admin
       .from('integration_sync_log')
       .select('provider, synced_at')
-      .eq('organization_id', orgId)
       .order('synced_at', { ascending: false })
       .limit(100),
   ]);
@@ -291,19 +289,17 @@ export async function getIntegrationEventHistory(
   integrationId: string,
   limit = 50,
 ) {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const [events, syncLog] = await Promise.all([
     admin
       .from('integration_events')
       .select('*')
-      .eq('organization_id', orgId)
       .eq('provider', integrationId)
       .order('created_at', { ascending: false })
       .limit(limit),
     admin
       .from('integration_sync_log')
       .select('*')
-      .eq('organization_id', orgId)
       .eq('provider', integrationId)
       .order('synced_at', { ascending: false })
       .limit(limit),

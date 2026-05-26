@@ -3,7 +3,7 @@ import 'server-only';
 import { cache } from 'react';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 export type FirstSessionStepId =
   | 'create-care-plan'
@@ -49,14 +49,13 @@ async function safeCount(
 }
 
 async function fetchSeenSteps(
-  admin: ReturnType<typeof createSupabaseAdminClient>,
+  admin: ReturnType<typeof createSupabaseOrgClient>,
   orgId: string,
 ): Promise<FirstSessionStepId[]> {
   try {
     const { data, error } = await admin
       .from('org_first_session_progress')
       .select('seen_steps')
-      .eq('organization_id', orgId)
       .maybeSingle();
     if (error) {
       // Missing table / permissions — log once so monitoring can pick it up.
@@ -67,7 +66,7 @@ async function fetchSeenSteps(
       return [];
     }
     const raw = Array.isArray(data?.seen_steps) ? data.seen_steps : [];
-    return raw.filter((id): id is FirstSessionStepId =>
+    return raw.filter((id: unknown): id is FirstSessionStepId =>
       [
         'create-care-plan',
         'add-goal',
@@ -83,14 +82,13 @@ async function fetchSeenSteps(
 }
 
 async function firstCarePlanWithGoalsId(
-  admin: ReturnType<typeof createSupabaseAdminClient>,
+  admin: ReturnType<typeof createSupabaseOrgClient>,
   orgId: string,
 ): Promise<{ planId: string | null; hasGoals: boolean }> {
   try {
     const { data } = await admin
       .from('org_care_plans')
       .select('id, goals')
-      .eq('organization_id', orgId)
       .order('created_at', { ascending: true })
       .limit(1)
       .maybeSingle();
@@ -107,7 +105,7 @@ export const getFirstSessionState = cache(_getFirstSessionState);
 async function _getFirstSessionState(
   orgId: string,
 ): Promise<FirstSessionState> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   const [
     carePlans,
@@ -121,33 +119,28 @@ async function _getFirstSessionState(
     safeCount(
       admin
         .from('org_care_plans')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       admin
         .from('org_tasks')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       admin
         .from('org_evidence')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       admin
         .from('org_incidents')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     firstCarePlanWithGoalsId(admin, orgId),
     safeCount(
       admin
         .from('org_progress_notes')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     fetchSeenSteps(admin, orgId),
   ]);
@@ -205,7 +198,7 @@ async function _getFirstSessionState(
     },
   ];
 
-  const completed = steps.filter((s) => s.done).length;
+  const completed = steps.filter((s: any) => s.done).length;
   const total = steps.length;
   const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
 
@@ -214,13 +207,13 @@ async function _getFirstSessionState(
   // should drop the hero even if some steps remain.
   const isFirstSession = completed < total && incidents === 0;
 
-  const nextStep = steps.find((s) => !s.done) ?? null;
+  const nextStep = steps.find((s: any) => !s.done) ?? null;
 
   // Steps that are done but haven't had their success toast acknowledged yet.
   // The toast component will mark them seen server-side after displaying.
   const freshlyCompletedSteps = steps
-    .filter((s) => s.done && !seenSteps.includes(s.id))
-    .map((s) => s.id);
+    .filter((s: any) => s.done && !seenSteps.includes(s.id))
+    .map((s: any) => s.id);
 
   return {
     isFirstSession,

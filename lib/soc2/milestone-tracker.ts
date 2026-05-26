@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import type { Soc2Milestone, Soc2ReadinessResult } from './types';
 
 // ---------------------------------------------------------------------------
@@ -23,7 +23,7 @@ const DEFAULT_MILESTONES = [
 // ---------------------------------------------------------------------------
 
 export async function ensureMilestones(orgId: string): Promise<void> {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
   const rows = DEFAULT_MILESTONES.map((m) => ({
     organization_id: orgId,
@@ -47,14 +47,13 @@ export async function evaluateMilestones(
   orgId: string,
   readinessResult: Soc2ReadinessResult,
 ): Promise<void> {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const now = new Date().toISOString();
 
   // Load current milestones
   const { data: milestones } = await supabase
     .from('soc2_milestones')
-    .select('*')
-    .eq('organization_id', orgId);
+    .select('*');
 
   const milestoneMap = new Map<string, Record<string, unknown>>();
   for (const m of (milestones ?? []) as Record<string, unknown>[]) {
@@ -69,7 +68,6 @@ export async function evaluateMilestones(
     await supabase
       .from('soc2_milestones')
       .update({ status: 'completed', completed_at: now })
-      .eq('organization_id', orgId)
       .eq('milestone_key', key);
   };
 
@@ -81,7 +79,6 @@ export async function evaluateMilestones(
     await supabase
       .from('soc2_milestones')
       .update({ status: 'in_progress' })
-      .eq('organization_id', orgId)
       .eq('milestone_key', key);
   };
 
@@ -93,7 +90,6 @@ export async function evaluateMilestones(
   const { data: securityPolicies } = await supabase
     .from('org_policies')
     .select('id')
-    .eq('organization_id', orgId)
     .ilike('title', '%security%')
     .limit(1);
 
@@ -138,7 +134,6 @@ export async function evaluateMilestones(
   const { data: criticalActions } = await supabase
     .from('soc2_remediation_actions')
     .select('id, status')
-    .eq('organization_id', orgId)
     .eq('priority', 'critical');
 
   const allCriticalDone = ((criticalActions ?? []) as Record<string, unknown>[]).every(
@@ -171,12 +166,11 @@ export async function evaluateMilestones(
 // ---------------------------------------------------------------------------
 
 export async function getMilestones(orgId: string): Promise<Soc2Milestone[]> {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
   const { data } = await supabase
     .from('soc2_milestones')
     .select('*')
-    .eq('organization_id', orgId)
     .order('sort_order', { ascending: true });
 
   return ((data ?? []) as Record<string, unknown>[]).map((row) => ({

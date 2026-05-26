@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 export async function trackUsageEvent(
   orgId: string,
@@ -7,7 +7,7 @@ export async function trackUsageEvent(
   eventName: string,
   metadata?: Record<string, unknown>,
 ) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   await db.from('org_usage_events').insert({
     org_id: orgId,
     user_id: userId,
@@ -23,11 +23,10 @@ export async function getUsageSummary(
   startDate: string,
   endDate: string,
 ) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const { data } = await db
     .from('org_usage_summaries')
     .select('*')
-    .eq('org_id', orgId)
     .eq('period_type', periodType)
     .gte('period_start', startDate)
     .lte('period_end', endDate)
@@ -37,7 +36,7 @@ export async function getUsageSummary(
 }
 
 export async function computeEngagementScore(orgId: string): Promise<number> {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -45,16 +44,14 @@ export async function computeEngagementScore(orgId: string): Promise<number> {
   const { data: dailyUsers } = await db
     .from('org_usage_events')
     .select('user_id')
-    .eq('org_id', orgId)
     .gte('created_at', new Date(Date.now() - 86400000).toISOString());
-  const dailyActive = new Set((dailyUsers || []).map((e) => e.user_id)).size;
+  const dailyActive = new Set((dailyUsers || []).map((e: any) => e.user_id)).size;
 
   const { data: monthlyUsers } = await db
     .from('org_usage_events')
     .select('user_id')
-    .eq('org_id', orgId)
     .gte('created_at', thirtyDaysAgo.toISOString());
-  const monthlyActive = new Set((monthlyUsers || []).map((e) => e.user_id))
+  const monthlyActive = new Set((monthlyUsers || []).map((e: any) => e.user_id))
     .size;
 
   const dauMauRatio =
@@ -64,9 +61,8 @@ export async function computeEngagementScore(orgId: string): Promise<number> {
   const { data: features } = await db
     .from('org_usage_events')
     .select('event_type')
-    .eq('org_id', orgId)
     .gte('created_at', thirtyDaysAgo.toISOString());
-  const uniqueFeatures = new Set((features || []).map((e) => e.event_type))
+  const uniqueFeatures = new Set((features || []).map((e: any) => e.event_type))
     .size;
   const featureBreadth = Math.min(100, (uniqueFeatures / 10) * 100); // 10 features = 100%
 
@@ -74,10 +70,9 @@ export async function computeEngagementScore(orgId: string): Promise<number> {
   const { data: sessions } = await db
     .from('org_usage_events')
     .select('created_at')
-    .eq('org_id', orgId)
     .gte('created_at', thirtyDaysAgo.toISOString());
   const sessionDays = new Set(
-    (sessions || []).map((e) => new Date(e.created_at).toDateString()),
+    (sessions || []).map((e: any) => new Date(e.created_at).toDateString()),
   ).size;
   const sessionFrequency = Math.min(100, (sessionDays / 30) * 100);
 
@@ -85,7 +80,6 @@ export async function computeEngagementScore(orgId: string): Promise<number> {
   const { count } = await db
     .from('org_usage_events')
     .select('*', { count: 'exact', head: true })
-    .eq('org_id', orgId)
     .in('event_type', ['feature_use'])
     .gte('created_at', thirtyDaysAgo.toISOString());
   const creationRate = Math.min(100, ((count || 0) / 100) * 100);
@@ -99,7 +93,7 @@ export async function computeEngagementScore(orgId: string): Promise<number> {
 }
 
 export async function getFeatureAdoption(orgId: string) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -119,14 +113,13 @@ export async function getFeatureAdoption(orgId: string) {
   const { data: events } = await db
     .from('org_usage_events')
     .select('event_type')
-    .eq('org_id', orgId)
     .gte('created_at', thirtyDaysAgo.toISOString());
 
-  const used = new Set((events || []).map((e) => e.event_type));
+  const used = new Set((events || []).map((e: any) => e.event_type));
 
-  return ALL_FEATURES.map((f) => ({
+  return ALL_FEATURES.map((f: any) => ({
     feature: f,
     adopted: used.has(f),
-    usageCount: (events || []).filter((e) => e.event_type === f).length,
+    usageCount: (events || []).filter((e: any) => e.event_type === f).length,
   }));
 }

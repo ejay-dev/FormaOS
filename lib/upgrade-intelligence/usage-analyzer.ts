@@ -3,7 +3,7 @@
  * Analyzes user/org usage patterns to inform upgrade messaging
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 export interface UsageMetrics {
   teamMembers: number;
@@ -73,7 +73,7 @@ export async function analyzeUsage(
   orgId: string,
   currentPlan: 'trial' | 'basic' | 'pro' | 'enterprise' = 'trial'
 ): Promise<UsageMetrics> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -89,35 +89,28 @@ export async function analyzeUsage(
   ] = await Promise.all([
     admin
       .from('org_members')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
+      .select('*', { count: 'exact', head: true }),
     admin
       .from('org_evidence')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
+      .select('*', { count: 'exact', head: true }),
     admin
       .from('org_frameworks')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
+      .select('*', { count: 'exact', head: true }),
     admin
       .from('org_workflows')
-      .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
+      .select('*', { count: 'exact', head: true }),
     admin
       .from('org_tasks')
       .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
       .eq('status', 'completed'),
     admin
       .from('org_audit_logs')
       .select('*', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
       .eq('action', 'user.login')
       .gte('created_at', thirtyDaysAgo.toISOString()),
     admin
       .from('org_audit_logs')
       .select('action')
-      .eq('organization_id', orgId)
       .gte('created_at', thirtyDaysAgo.toISOString())
       .limit(200),
   ]);

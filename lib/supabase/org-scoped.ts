@@ -150,6 +150,15 @@ const TENANT_TABLE_SCOPES = {
   org_onboarding_status: { column: 'organization_id' },
   org_forms: { column: 'org_id' },
   org_participants: { column: 'organization_id' }, // table may be missing in some envs (verified prod 2026-05-26)
+  compliance_score_snapshots: { column: 'organization_id' },
+  integration_configs: { column: 'organization_id' },
+  integration_events: { column: 'organization_id' },
+  integration_sync_log: { column: 'org_id' },
+  org_report_generations: { column: 'org_id' },
+  org_usage_summaries: { column: 'org_id' },
+  soc2_readiness_assessments: { column: 'organization_id' }, // table may be missing in some envs (verified prod 2026-05-26)
+  soc2_milestones: { column: 'organization_id' }, // table may be missing in some envs
+  soc2_remediation_actions: { column: 'organization_id' }, // table may be missing in some envs
 
   // Legacy / drift tenant tables — column = 'org_id'
   memberships: { column: 'organization_id' },

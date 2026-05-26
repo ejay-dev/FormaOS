@@ -3,7 +3,7 @@
  * Captures daily snapshots for historical tracking
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin'
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped'
 import { calculateFrameworkReadiness } from '@/lib/audit/readiness-calculator'
 import { consoleShim } from '@/lib/monitoring/console-shim';
 
@@ -30,7 +30,7 @@ export async function captureComplianceSnapshot(
   frameworkSlug?: string
 ): Promise<{ ok: boolean; snapshots?: number; error?: string }> {
   try {
-    const admin = createSupabaseAdminClient()
+    const admin = createSupabaseOrgClient(orgId)
     const today = new Date().toISOString().split('T')[0]
 
     // Get framework readiness scores
@@ -47,12 +47,10 @@ export async function captureComplianceSnapshot(
     const { data: evidenceCounts } = await admin
       .from('org_evidence')
       .select('id')
-      .eq('organization_id', orgId)
 
     const { data: tasks } = await admin
       .from('org_tasks')
       .select('status')
-      .eq('organization_id', orgId)
 
     const totalTasks = tasks?.length || 0
     const completedTasks =
@@ -105,14 +103,13 @@ export async function getSnapshotHistory(
   frameworkSlug: string,
   days: number = 30
 ): Promise<ComplianceSnapshot[]> {
-  const admin = createSupabaseAdminClient()
+  const admin = createSupabaseOrgClient(orgId)
   const since = new Date()
   since.setDate(since.getDate() - days)
 
   const { data, error } = await admin
     .from('compliance_score_snapshots')
     .select('*')
-    .eq('organization_id', orgId)
     .eq('framework_slug', frameworkSlug)
     .gte('snapshot_date', since.toISOString().split('T')[0])
     .order('snapshot_date', { ascending: true })
@@ -137,12 +134,11 @@ export async function detectScoreRegression(
   previousScore: number
   drop: number
 } | null> {
-  const admin = createSupabaseAdminClient()
+  const admin = createSupabaseOrgClient(orgId)
 
   const { data: recent } = await admin
     .from('compliance_score_snapshots')
     .select('compliance_score, snapshot_date')
-    .eq('organization_id', orgId)
     .eq('framework_slug', frameworkSlug)
     .order('snapshot_date', { ascending: false })
     .limit(2)
@@ -172,13 +168,12 @@ export async function getImprovementSinceLastAudit(
   frameworkSlug: string,
   lastAuditDate: string
 ): Promise<{ improvement: number; current: number; baseline: number }> {
-  const admin = createSupabaseAdminClient()
+  const admin = createSupabaseOrgClient(orgId)
 
   // Get score closest to audit date
   const { data: baseline } = await admin
     .from('compliance_score_snapshots')
     .select('compliance_score')
-    .eq('organization_id', orgId)
     .eq('framework_slug', frameworkSlug)
     .lte('snapshot_date', lastAuditDate)
     .order('snapshot_date', { ascending: false })
@@ -189,7 +184,6 @@ export async function getImprovementSinceLastAudit(
   const { data: current } = await admin
     .from('compliance_score_snapshots')
     .select('compliance_score')
-    .eq('organization_id', orgId)
     .eq('framework_slug', frameworkSlug)
     .order('snapshot_date', { ascending: false })
     .limit(1)

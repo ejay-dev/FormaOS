@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 interface BoardPackOptions {
   dateRange: { from: string; to: string };
@@ -30,7 +30,7 @@ export async function generateBoardPack(
   generatedAt: string;
   orgName: string;
 }> {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   // Org info
   const { data: org } = await db
@@ -45,12 +45,11 @@ export async function generateBoardPack(
   // 1. Executive Summary
   const { data: controls } = await db
     .from('org_controls')
-    .select('id, status, priority, framework_id')
-    .eq('organization_id', orgId);
+    .select('id, status, priority, framework_id');
 
   const totalControls = controls?.length ?? 0;
   const satisfiedControls =
-    controls?.filter((c) => c.status === 'satisfied').length ?? 0;
+    controls?.filter((c: any) => c.status === 'satisfied').length ?? 0;
   const complianceScore =
     totalControls > 0
       ? Math.round((satisfiedControls / totalControls) * 100)
@@ -58,13 +57,11 @@ export async function generateBoardPack(
 
   const { count: evidenceCount } = await db
     .from('org_evidence')
-    .select('id', { count: 'exact', head: true })
-    .eq('organization_id', orgId);
+    .select('id', { count: 'exact', head: true });
 
   const { count: openTasks } = await db
     .from('org_tasks')
     .select('id', { count: 'exact', head: true })
-    .eq('organization_id', orgId)
     .in('status', ['todo', 'in_progress']);
 
   sections.push({
@@ -112,7 +109,7 @@ export async function generateBoardPack(
   // 3. Risk Register — top 10 critical/high priority unsatisfied controls
   const topRisks = (controls ?? [])
     .filter(
-      (c) =>
+      (c: any) =>
         c.status !== 'satisfied' &&
         ['critical', 'high'].includes(c.priority ?? ''),
     )
@@ -128,7 +125,6 @@ export async function generateBoardPack(
   const { data: gapControls } = await db
     .from('org_controls')
     .select('id, title, status, priority')
-    .eq('organization_id', orgId)
     .neq('status', 'satisfied')
     .order('priority');
 
@@ -150,14 +146,13 @@ export async function generateBoardPack(
   const { data: incidents } = await db
     .from('org_incidents')
     .select('id, status, severity, created_at')
-    .eq('organization_id', orgId)
     .gte('created_at', options.dateRange.from)
     .lte('created_at', options.dateRange.to);
 
   const incidentData = {
     total: incidents?.length ?? 0,
-    resolved: incidents?.filter((i) => i.status === 'resolved').length ?? 0,
-    open: incidents?.filter((i) => i.status !== 'resolved').length ?? 0,
+    resolved: incidents?.filter((i: any) => i.status === 'resolved').length ?? 0,
+    open: incidents?.filter((i: any) => i.status !== 'resolved').length ?? 0,
     bySeverity: {} as Record<string, number>,
   };
   for (const inc of incidents ?? []) {
@@ -174,11 +169,10 @@ export async function generateBoardPack(
   // 7. Remediation Tracker
   const { data: tasks } = await db
     .from('org_tasks')
-    .select('id, status, due_date')
-    .eq('organization_id', orgId);
+    .select('id, status, due_date');
 
   const overdueTasks = (tasks ?? []).filter(
-    (t) =>
+    (t: any) =>
       t.due_date &&
       new Date(t.due_date) < new Date() &&
       t.status !== 'completed',
@@ -189,7 +183,7 @@ export async function generateBoardPack(
     type: 'remediation',
     data: {
       total: tasks?.length ?? 0,
-      completed: tasks?.filter((t) => t.status === 'completed').length ?? 0,
+      completed: tasks?.filter((t: any) => t.status === 'completed').length ?? 0,
       overdue: overdueTasks.length,
     },
   });
