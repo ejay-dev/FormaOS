@@ -5,8 +5,6 @@
  */
 
 jest.mock('server-only', () => ({}));
-jest.mock('@/lib/audit-trail', () => ({ logActivity: jest.fn() }));
-
 function createBuilder(result: any = { data: null, error: null }) {
   const b: Record<string, any> = {};
   [

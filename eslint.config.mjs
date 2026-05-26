@@ -126,6 +126,15 @@ const eslintConfig = [
               message:
                 'Renamed: use @/lib/audit/legacy-log-activity (audit writer) — or for real structured logging, @/lib/monitoring/server-logger.',
             },
+            {
+              // P0-2 (2026-05-26): the non-hash-chained audit writer was
+              // deleted after the last caller migrated to
+              // @/lib/audit/log-audit-event. Block resurrection here so a
+              // new caller can't bring it back via grep + git restore.
+              name: '@/lib/audit-trail',
+              message:
+                'Removed: use @/lib/audit/log-audit-event (hash-chained writer) via the @/app/app/actions/audit server-action wrapper.',
+            },
           ],
         },
       ],
@@ -156,6 +165,17 @@ const eslintConfig = [
     ],
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
+  // P0-10 (2026-05-26) — ban Math.random in security-sensitive directories.
+  // crypto.randomUUID / randomInt / randomBytes have proper unpredictability
+  // and are cheap enough that there is no reason to prefer Math.random
+  // anywhere a value influences auth, rate limits, session markers, or
+  // sampling decisions inside security flows.
+  {
+    files: ['lib/security/**/*.{ts,tsx}', 'lib/api-keys/**/*.{ts,tsx}'],
+    rules: {
+      'formaos/no-math-random': 'error',
     },
   },
 ];

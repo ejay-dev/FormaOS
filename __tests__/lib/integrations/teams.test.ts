@@ -54,10 +54,6 @@ function getClient() {
   return require('@/lib/supabase/server').__client;
 }
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn().mockResolvedValue(undefined),
-}));
-
 jest.mock('@/lib/integrations/config-crypto', () => ({
   decodeIntegrationConfig: jest.fn((c: any) => c ?? {}),
 }));

@@ -25,10 +25,6 @@ jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn(),
-}));
-
 function createBuilder(result: any = { data: null, error: null }) {
   const b: Record<string, any> = {};
   [

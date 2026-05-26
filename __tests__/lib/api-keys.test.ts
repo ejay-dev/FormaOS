@@ -14,10 +14,6 @@ jest.mock('@/lib/ratelimit', () => ({
   getClientIp: jest.fn(() => '127.0.0.1'),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn(),
-}));
-
 import {
   generateRawApiKey,
   hashApiKey,

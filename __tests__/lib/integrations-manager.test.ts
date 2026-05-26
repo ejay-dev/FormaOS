@@ -2,10 +2,6 @@ jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: jest.fn(),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn(),
-}));
-
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import {
   connectIntegration,

@@ -41,9 +41,6 @@ jest.mock('@/lib/supabase/server', () => {
     __client: c,
   };
 });
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn(),
-}));
 jest.mock('dns/promises', () => ({
   resolve4: jest.fn(),
   resolve6: jest.fn(),

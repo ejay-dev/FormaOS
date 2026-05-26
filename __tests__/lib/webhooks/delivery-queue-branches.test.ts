@@ -6,9 +6,6 @@ jest.mock('server-only', () => ({}));
 jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: jest.fn(),
 }));
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn(),
-}));
 jest.mock('@/lib/trigger/client', () => ({
   triggerTaskIfConfigured: jest.fn(() => false),
 }));

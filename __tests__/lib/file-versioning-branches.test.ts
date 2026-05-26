@@ -49,10 +49,6 @@ jest.mock('@/lib/supabase/server', () => ({
   })),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn(),
-}));
-
 jest.mock('@/lib/notifications/send', () => ({
   sendNotification: jest.fn(),
 }));
