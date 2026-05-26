@@ -1,10 +1,10 @@
 import 'server-only';
 
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import { UndiciInstrumentation } from '@opentelemetry/instrumentation-undici';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import {
   ATTR_SERVICE_NAME,
@@ -87,21 +87,24 @@ async function startOpenTelemetry(): Promise<boolean> {
   });
   provider.register();
 
+  // Audit 2026-05-26 (M5): replaced `getNodeAutoInstrumentations()` with
+  // an explicit minimal list. `auto-instrumentations-node` transitively
+  // pulled `@opentelemetry/sdk-node` plus 8 OTLP gRPC/proto exporters
+  // (~250MB on disk) that this code never imported — it only uses the
+  // HTTP exporter. The explicit list covers FormaOS's I/O surface:
+  //
+  //   * HttpInstrumentation     — outgoing Node http/https
+  //   * UndiciInstrumentation   — Next.js native fetch / undici
+  //
+  // Supabase, Stripe, PostHog, Sentry, Upstash Redis are all HTTPS-based
+  // and get traced through the two above. Storage drivers we don't use
+  // (pg, mysql, mongodb, ioredis, cassandra, etc.) are intentionally
+  // not loaded.
   registerInstrumentations({
     tracerProvider: provider,
     instrumentations: [
       new HttpInstrumentation(),
-      getNodeAutoInstrumentations({
-        '@opentelemetry/instrumentation-dns': {
-          enabled: false,
-        },
-        '@opentelemetry/instrumentation-fs': {
-          enabled: false,
-        },
-        '@opentelemetry/instrumentation-winston': {
-          enabled: false,
-        },
-      }),
+      new UndiciInstrumentation(),
     ],
   });
 
