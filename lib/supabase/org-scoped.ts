@@ -155,6 +155,7 @@ const TENANT_TABLE_SCOPES = {
   org_forms: { column: 'org_id' },
   org_participants: { column: 'organization_id' }, // table may be missing in some envs (verified prod 2026-05-26)
   compliance_score_snapshots: { column: 'organization_id' },
+  org_compliance_deadlines: { column: 'organization_id' },
   integration_configs: { column: 'organization_id' },
   integration_events: { column: 'organization_id' },
   integration_sync_log: { column: 'org_id' },

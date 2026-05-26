@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 // Audit Sprint 6c (2026-05-23): data layer for the manual-attestation
 // workflow. Pairs with:
@@ -79,15 +80,15 @@ function toAttestationRow(raw: Record<string, unknown>): AttestationRow {
 export async function listControlsNeedingAttestation(
   orgId: string,
 ): Promise<ControlNeedingAttestation[]> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
   // 1. Manual-attestation-required signals from the evaluator output.
   // Per-control rows live alongside per-framework snapshot rows in this
   // table — we want the per-control ones (control_key IS NOT NULL).
-  const { data: evalRows, error: evalError } = await admin
+  // .eq('organization_id', orgId) appended automatically.
+  const { data: evalRows, error: evalError } = await supabase
     .from('org_control_evaluations')
     .select('framework_id, control_key, details')
-    .eq('organization_id', orgId)
     .eq('status', 'not_evaluated')
     .not('control_key', 'is', null);
 
@@ -97,7 +98,7 @@ export async function listControlsNeedingAttestation(
     );
   }
 
-  const candidates = (evalRows ?? []).filter((row) => {
+  const candidates = ((evalRows ?? []) as Array<Record<string, unknown>>).filter((row) => {
     const details = (row as { details?: { gaps?: Array<{ code?: string }> } })
       .details;
     return details?.gaps?.some((g) => g?.code === MANUAL_GAP_CODE) === true;
@@ -105,7 +106,9 @@ export async function listControlsNeedingAttestation(
 
   if (candidates.length === 0) return [];
 
-  // 2. Framework names for display.
+  // 2. Framework names for display. `compliance_frameworks` is a global
+  // catalog (not org-scoped) — drop to the underlying admin client.
+  const admin = supabase.unsafeAdmin();
   const frameworkIds = Array.from(
     new Set(candidates.map((c) => String((c as { framework_id: string }).framework_id))),
   );
@@ -115,15 +118,17 @@ export async function listControlsNeedingAttestation(
     .in('id', frameworkIds);
 
   const frameworkNameById = new Map(
-    (frameworks ?? []).map((f) => [String(f.id), f.name as string | null]),
+    ((frameworks ?? []) as Array<{ id: string; name: string | null }>).map(
+      (f) => [String(f.id), f.name],
+    ),
   );
 
   // 3. Latest attestation per (framework, control) — ordered DESC by
   // claimed_at so the first row per group is the current one.
-  const { data: attestations, error: attError } = await admin
+  // .eq('organization_id', orgId) appended automatically.
+  const { data: attestations, error: attError } = await supabase
     .from('org_control_attestations')
     .select('*')
-    .eq('organization_id', orgId)
     .order('claimed_at', { ascending: false });
 
   if (attError) {
@@ -174,11 +179,11 @@ export interface ClaimAttestationInput {
 export async function insertAttestationClaim(
   input: ClaimAttestationInput,
 ): Promise<AttestationRow> {
-  const admin = createSupabaseAdminClient();
-  const { data, error } = await admin
+  const supabase = createSupabaseOrgClient(input.orgId);
+  // organization_id is stamped automatically by the org-scoped client.
+  const { data, error } = await supabase
     .from('org_control_attestations')
     .insert({
-      organization_id: input.orgId,
       framework_id: input.frameworkId,
       control_key: input.controlKey,
       status: 'claimed',

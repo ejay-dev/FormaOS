@@ -3,7 +3,7 @@
  * Manages and queries upcoming compliance deadlines
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 import type {
@@ -27,13 +27,14 @@ export async function getDeadlines(
     offset?: number;
   }
 ): Promise<{ deadlines: ComplianceDeadline[]; total: number }> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const now = new Date();
 
-  let query = admin
+  // .eq('organization_id', orgId) appended automatically by the
+  // org-scoped client.
+  let query = supabase
     .from('org_compliance_deadlines')
     .select('*', { count: 'exact' })
-    .eq('organization_id', orgId)
     .order('due_date', { ascending: true });
 
   if (options?.frameworkSlug) {
@@ -134,12 +135,12 @@ export async function createDeadline(
     type: DeadlineType;
   }
 ): Promise<{ ok: boolean; id?: string; error?: string }> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { data, error } = await admin
+  // organization_id is stamped automatically by the org-scoped client.
+  const { data, error } = await supabase
     .from('org_compliance_deadlines')
     .insert({
-      organization_id: orgId,
       title: deadline.title,
       description: deadline.description,
       framework_slug: deadline.frameworkSlug,
@@ -166,13 +167,13 @@ export async function updateDeadlineStatus(
   deadlineId: string,
   status: DeadlineStatus
 ): Promise<{ ok: boolean; error?: string }> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { error } = await admin
+  // .eq('organization_id', orgId) appended automatically.
+  const { error } = await supabase
     .from('org_compliance_deadlines')
     .update({ status })
-    .eq('id', deadlineId)
-    .eq('organization_id', orgId);
+    .eq('id', deadlineId);
 
   if (error) {
     return { ok: false, error: error.message };
@@ -193,15 +194,14 @@ export async function getDeadlineSummary(
   upcoming: number;
   byType: Record<DeadlineType, number>;
 }> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const now = new Date();
   const sevenDaysFromNow = new Date();
   sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
 
-  const { data: deadlines, error } = await admin
+  const { data: deadlines, error } = await supabase
     .from('org_compliance_deadlines')
     .select('due_date, deadline_type, status')
-    .eq('organization_id', orgId)
     .not('status', 'in', '("completed","cancelled")');
 
   if (error) {
@@ -254,7 +254,10 @@ export async function getDeadlineSummary(
     other: 0,
   };
 
-  for (const d of deadlines) {
+  for (const d of deadlines as Array<{
+    due_date: string;
+    deadline_type: string | null;
+  }>) {
     const dueDate = new Date(d.due_date);
 
     if (dueDate < now) {
