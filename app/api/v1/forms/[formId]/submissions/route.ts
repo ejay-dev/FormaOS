@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import {
   authenticateV1Request,
   jsonWithContext,
@@ -9,6 +10,24 @@ import {
 } from '@/lib/forms/submission-engine';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import {
+  emailSchema,
+  formatZodError,
+  validateBody,
+} from '@/lib/security/api-validation';
+
+// The submission `data` payload is intentionally a free-form object —
+// the form's own schema (stored in org_forms.fields) governs its
+// shape and `submitForm` enforces field-level rules via
+// FormValidationError. This route only validates the outer envelope:
+// data must be an object, respondent fields are bounded strings,
+// metadata is a typed record.
+const createSubmissionSchema = z.object({
+  data: z.record(z.string(), z.unknown()).optional().default({}),
+  respondent_email: emailSchema.optional(),
+  respondent_name: z.string().trim().max(200).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
 
 export const runtime = 'nodejs';
 
@@ -68,7 +87,11 @@ export async function POST(
   if (!auth.ok) return auth.response;
 
   const { formId } = await params;
-  const body = await request.json();
+  const validation = await validateBody(request, createSubmissionSchema);
+  if (!validation.success) {
+    return Response.json(formatZodError(validation.error), { status: 400 });
+  }
+  const body = validation.data;
 
   try {
     const submission = await submitForm(
@@ -76,7 +99,7 @@ export async function POST(
       formId,
       auth.context.orgId,
       {
-        data: body.data ?? {},
+        data: body.data,
         respondentEmail: body.respondent_email,
         respondentName: body.respondent_name,
         submittedBy: auth.context.userId ?? '',

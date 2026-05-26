@@ -3,8 +3,12 @@ jest.mock('server-only', () => ({}));
 jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: jest.fn(),
 }));
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn().mockResolvedValue(undefined),
+// M2 (2026-05-26): lib/integrations/manager.ts migrated to canonical
+// hash-chained writer. Mock the new path so unit tests don't open a
+// Next.js request scope (logAuditEventCore would otherwise call
+// createSupabaseServerClient → cookies()).
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: jest.fn().mockResolvedValue({ success: true }),
 }));
 jest.mock('@/lib/integrations/jira', () => ({
   createJiraIssue: jest.fn().mockResolvedValue(undefined),
@@ -31,7 +35,7 @@ jest.mock('@/lib/integrations/config-crypto', () => ({
 }));
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { createJiraIssue, syncTaskStatusToJira } from '@/lib/integrations/jira';
 import {
   createLinearIssue,
@@ -301,7 +305,14 @@ describe('integrations/manager', () => {
       });
 
       expect(result.id).toBe('new-1');
-      expect(logActivity).toHaveBeenCalled();
+      expect(logAuditEventCore).toHaveBeenCalledWith(
+        expect.objectContaining({
+          organizationId: 'org-1',
+          actorUserId: 'u1',
+          actionType: 'INTEGRATION_CONNECTED',
+          entityType: 'integration',
+        }),
+      );
     });
 
     it('connects jira with all required fields', async () => {
@@ -446,7 +457,15 @@ describe('integrations/manager', () => {
         actorUserId: 'u1',
       });
 
-      expect(logActivity).toHaveBeenCalled();
+      expect(logAuditEventCore).toHaveBeenCalledWith(
+        expect.objectContaining({
+          organizationId: 'org-1',
+          actorUserId: 'u1',
+          actionType: 'INTEGRATION_DISCONNECTED',
+          entityType: 'integration',
+          entityId: 'i1',
+        }),
+      );
     });
 
     it('throws on delete error', async () => {

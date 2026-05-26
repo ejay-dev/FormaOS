@@ -1,11 +1,19 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
 
 const log = routeLog('/api/v1/registers/breach/[id]/report');
+
+const breachReportSchema = z.object({
+  breach_id: z.string().trim().min(1).max(128).optional(),
+  regulation: z.string().trim().min(1).max(200).optional(),
+  action: z.string().trim().min(1).max(64).optional(),
+});
 
 export async function POST(
   request: Request,
@@ -38,11 +46,16 @@ export async function POST(
     }
     const { orgId } = ctx;
 
-    const body = await request.json().catch(() => ({}));
-    const breachId = (body?.breach_id as string) || id;
-    const regulation =
-      (body?.regulation as string) || 's912D Corporations Act 2001';
-    const action = (body?.action as string) || 'self-report';
+    const validation = await validateBody(request, breachReportSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
+    }
+    const body = validation.data;
+    const breachId = body.breach_id ?? id;
+    const regulation = body.regulation ?? 's912D Corporations Act 2001';
+    const action = body.action ?? 'self-report';
 
     const { data: incident, error: fetchErr } = await supabase
       .from('org_incidents')

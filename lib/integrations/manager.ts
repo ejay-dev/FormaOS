@@ -2,7 +2,7 @@ import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { createJiraIssue, syncTaskStatusToJira } from './jira';
 import { createLinearIssue, syncTaskStatusToLinear } from './linear';
 import {
@@ -211,10 +211,17 @@ export async function connectIntegration(args: {
     throw new Error(`Failed to connect integration: ${error?.message ?? 'unknown error'}`);
   }
 
-  await logActivity(args.orgId, args.actorUserId, 'create', 'organization', {
+  // M2 (2026-05-26): migrated to hash-chained writer. Integration
+  // connect/disconnect events belong in the tamper-evident chain
+  // because they grant outbound write access (Slack, Jira, etc.).
+  await logAuditEventCore({
+    organizationId: args.orgId,
+    actorUserId: args.actorUserId,
+    actorRole: null,
+    actionType: 'INTEGRATION_CONNECTED',
+    entityType: 'integration',
     entityId: data.id,
-    entityName: args.type,
-    details: { type: 'integration', provider: args.type },
+    afterState: { provider: args.type },
   });
 
   return {
@@ -250,10 +257,14 @@ export async function disconnectIntegration(args: {
     throw new Error(`Failed to disconnect integration: ${error.message}`);
   }
 
-  await logActivity(args.orgId, args.actorUserId, 'delete', 'organization', {
+  await logAuditEventCore({
+    organizationId: args.orgId,
+    actorUserId: args.actorUserId,
+    actorRole: null,
+    actionType: 'INTEGRATION_DISCONNECTED',
+    entityType: 'integration',
     entityId: args.integrationId,
-    entityName: existing.provider,
-    details: { type: 'integration' },
+    afterState: { provider: existing.provider },
   });
 }
 

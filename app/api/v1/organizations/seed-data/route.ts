@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { generateSeedData } from '@/lib/seed/seed-data';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const seedDataSchema = z.object({
+  industry: z.string().trim().min(1).max(64).default('other'),
+});
 
 export const runtime = 'nodejs';
 
@@ -26,20 +32,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const body = await request.json();
-    const industry =
-      typeof body.industry === 'string' ? body.industry : 'other';
+    const validation = await validateBody(request, seedDataSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
+    }
+    const { industry } = validation.data;
     const { orgId } = ctx;
 
-    const admin = createSupabaseAdminClient();
+    const orgScoped = createSupabaseOrgClient(orgId);
 
-    // Check if org already has real (non-demo) obligations
-    const { count: realCount } = await admin
+    // Check if org already has real (non-demo) obligations.
+    // .eq('organization_id', orgId) appended automatically.
+    const { count: realCount } = await orgScoped
       .from('org_tasks')
       .select('id', { count: 'exact', head: true })
-      .eq('organization_id', orgId)
       .neq('title', '');
-    // If we had is_demo column, we'd filter. For now check count.
     if (realCount && realCount > 5) {
       return NextResponse.json(
         { error: 'Organization already has data. Seed data skipped.' },
@@ -49,10 +58,9 @@ export async function POST(request: NextRequest) {
 
     const seed = generateSeedData(industry);
 
-    // Seed tasks
+    // Seed tasks (organization_id stamped automatically).
     if (seed.tasks.length > 0) {
       const tasks = seed.tasks.map((t) => ({
-        organization_id: orgId,
         title: t.title,
         description: `[DEMO] ${t.title}`,
         status: t.status,
@@ -60,13 +68,12 @@ export async function POST(request: NextRequest) {
         assigned_to: user.id,
         is_demo: true,
       }));
-      await admin.from('org_tasks').insert(tasks);
+      await orgScoped.from('org_tasks').insert(tasks);
     }
 
-    // Seed policies
+    // Seed policies (organization_id stamped automatically).
     if (seed.policies.length > 0) {
       const policies = seed.policies.map((p) => ({
-        organization_id: orgId,
         title: p.title,
         content: `[DEMO] ${p.title} content`,
         status: p.status,
@@ -74,14 +81,14 @@ export async function POST(request: NextRequest) {
         author: 'Demo System',
         is_demo: true,
       }));
-      await admin.from('org_policies').insert(policies);
+      await orgScoped.from('org_policies').insert(policies);
     }
 
-    // Mark org as having demo data active
-    await admin
+    // Mark org as having demo data active (organizations self-table
+    // keyed by id; wrapper appends .eq('id', orgId) from the registry).
+    await orgScoped
       .from('organizations')
-      .update({ demo_data_active: true })
-      .eq('id', orgId);
+      .update({ demo_data_active: true });
 
     return NextResponse.json({
       success: true,
@@ -113,28 +120,25 @@ export async function DELETE() {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const admin = createSupabaseAdminClient();
     const { orgId } = ctx;
+    const orgScoped = createSupabaseOrgClient(orgId);
 
-    // Delete all demo records
+    // Delete all demo records (org filter appended automatically).
     await Promise.all([
-      admin
+      orgScoped
         .from('org_tasks')
         .delete()
-        .eq('organization_id', orgId)
         .eq('is_demo', true),
-      admin
+      orgScoped
         .from('org_policies')
         .delete()
-        .eq('organization_id', orgId)
         .eq('is_demo', true),
     ]);
 
-    // Mark demo data as inactive
-    await admin
+    // Mark demo data as inactive.
+    await orgScoped
       .from('organizations')
-      .update({ demo_data_active: false })
-      .eq('id', orgId);
+      .update({ demo_data_active: false });
 
     return NextResponse.json({ success: true });
   } catch (error) {
