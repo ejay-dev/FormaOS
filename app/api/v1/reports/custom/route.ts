@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import {
   authenticateV1Request,
   jsonWithContext,
@@ -5,6 +6,13 @@ import {
 } from '@/lib/api-keys/middleware';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { requireCustomReportsEntitlement } from './_entitlement';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const createCustomReportSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  description: z.string().trim().max(2000).optional(),
+  config: z.record(z.string(), z.unknown()).optional().default({}),
+});
 
 export const runtime = 'nodejs';
 
@@ -52,24 +60,20 @@ export async function POST(request: Request) {
   const entitlementError = await requireCustomReportsEntitlement(auth.context);
   if (entitlementError) return entitlementError;
 
+  const validation = await validateBody(request, createCustomReportSchema);
+  if (!validation.success) {
+    return Response.json(formatZodError(validation.error), { status: 400 });
+  }
+  const { name, description, config } = validation.data;
+
   try {
-    const body = await request.json();
-    const { name, description, config } = body as Record<string, unknown>;
-
-    if (!name || typeof name !== 'string') {
-      return Response.json(
-        { error: 'name is required' },
-        { status: 400 },
-      );
-    }
-
     const { data, error } = await auth.context.db
       .from('org_saved_reports')
       .insert({
         org_id: auth.context.orgId,
         name,
         description: description ?? null,
-        config: config ?? {},
+        config,
         created_by: auth.context.userId ?? '',
       })
       .select()

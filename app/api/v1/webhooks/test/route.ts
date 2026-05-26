@@ -1,6 +1,16 @@
+import { z } from 'zod';
 import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { getActorId } from '@/lib/api/v1-helpers';
 import { sendTestWebhookEvent } from '@/lib/webhooks/delivery-queue';
+import {
+  formatZodError,
+  uuidSchema,
+  validateBody,
+} from '@/lib/security/api-validation';
+
+const testWebhookSchema = z.object({
+  webhookId: uuidSchema,
+});
 
 export const runtime = 'nodejs';
 
@@ -17,17 +27,17 @@ export async function POST(request: Request) {
     return auth.response;
   }
 
-  const body = (await request.json().catch(() => null)) as
-    | { webhookId?: unknown }
-    | null;
-  const webhookId =
-    typeof body?.webhookId === 'string' ? body.webhookId.trim() : '';
-
-  if (!webhookId) {
-    const response = jsonWithContext(auth.context, { error: 'webhookId is required' }, { status: 400 });
+  const validation = await validateBody(request, testWebhookSchema);
+  if (!validation.success) {
+    const response = jsonWithContext(
+      auth.context,
+      formatZodError(validation.error),
+      { status: 400 },
+    );
     await logV1Access(auth.context, 400, 'webhooks:manage');
     return response;
   }
+  const { webhookId } = validation.data;
 
   const queued = await sendTestWebhookEvent({
     orgId: auth.context.orgId,

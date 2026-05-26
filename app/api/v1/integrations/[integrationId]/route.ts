@@ -1,17 +1,25 @@
+import { z } from 'zod';
 import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { connectIntegration, disconnectIntegration, testIntegration, type IntegrationType } from '@/lib/integrations/manager';
 import { getActorId } from '@/lib/api/v1-helpers';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
 
 type RouteContext = { params: Promise<{ integrationId: IntegrationType }> };
+
+const integrationActionSchema = z.object({
+  action: z.enum(['connect', 'test']).optional().default('connect'),
+  config: z.record(z.string(), z.unknown()).optional().default({}),
+});
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request, context: RouteContext) {
   const { integrationId } = await context.params;
-  const body = (await request.json().catch(() => null)) as
-    | { action?: unknown; config?: unknown }
-    | null;
-  const action = typeof body?.action === 'string' ? body.action : 'connect';
+  const validation = await validateBody(request, integrationActionSchema);
+  if (!validation.success) {
+    return Response.json(formatZodError(validation.error), { status: 400 });
+  }
+  const { action, config } = validation.data;
 
   if (action === 'test') {
     const auth = await authenticateV1Request(request, {
@@ -35,11 +43,6 @@ export async function POST(request: Request, context: RouteContext) {
   if (!auth.ok) {
     return auth.response;
   }
-
-  const config =
-    body?.config && typeof body.config === 'object' && !Array.isArray(body.config)
-      ? (body.config as Record<string, unknown>)
-      : {};
 
   const result = await connectIntegration({
     orgId: auth.context.orgId,

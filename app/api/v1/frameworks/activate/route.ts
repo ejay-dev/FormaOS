@@ -1,10 +1,22 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { provisionFrameworkControls } from '@/lib/frameworks/provisioning';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const activateFrameworkSchema = z.object({
+  frameworkSlug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(64)
+    .regex(/^[a-z0-9_-]+$/, 'frameworkSlug must be lowercase alphanumeric'),
+  industry: z.string().trim().max(64).optional(),
+});
 
 // Roles allowed to activate a compliance framework for the org.
 // Viewer / member can browse but not provision — provisioning seeds
@@ -46,16 +58,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = (await request.json().catch(() => ({}))) as {
-      frameworkSlug?: string;
-      industry?: string;
-    };
-    if (!body.frameworkSlug) {
-      return NextResponse.json(
-        { error: 'frameworkSlug required' },
-        { status: 400 },
-      );
+    const validation = await validateBody(request, activateFrameworkSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
     }
+    const body = validation.data;
 
     const now = new Date().toISOString();
     const { error } = await supabase.from('org_frameworks').upsert(
