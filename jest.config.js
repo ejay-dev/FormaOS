@@ -26,10 +26,21 @@ const customJestConfig = {
     // turn CI red. Do that work in a focused PR titled
     // "fix(test): un-quarantine <file>".
     // ---------------------------------------------------------------
-    '<rootDir>/__tests__/lib/care-scorecard/scorecard-service.test.ts',
     '<rootDir>/tests/billing/webhook.test.ts',
     '<rootDir>/__tests__/lib/billing/webhook-hardening.test.ts',
     '<rootDir>/__tests__/api/v1/webhooks-id.test.ts',
+    // __tests__/lib/care-scorecard/scorecard-service.test.ts — UN-QUARANTINED 2026-05-26.
+    // Three drift issues fixed:
+    //   * trendPercentage asserted on old fake values (5 and -3) but
+    //     the source now hard-zeros it per audit v4-021 (no snapshot
+    //     history yet).
+    //   * Visit schema renamed: scheduled_at/completed_at/duration_minutes
+    //     → scheduled_start/actual_start/actual_end. Test fixture
+    //     rewritten to provide actual_start/actual_end timestamps that
+    //     derive the expected average duration.
+    //   * Workload distribution: source filters visits by `staff_id`,
+    //     fixture used `assigned_to`. Renamed. 13/13 pass.
+    //
     // __tests__/lib/workspace-recovery.test.ts — UN-QUARANTINED 2026-05-26.
     // recoverUserWorkspace started adding a diagnostic `?error=...&
     // reason=<table>` query string to the /auth/signin redirect; three

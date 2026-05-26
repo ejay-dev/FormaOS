@@ -145,7 +145,10 @@ describe('care-scorecard/scorecard-service', () => {
 
       const r = await generateCareScorecard('org-1', 'ndis');
       expect(r.staffCompliance.trend).toBe('up');
-      expect(r.staffCompliance.trendPercentage).toBe(5);
+      // Audit v4-021: trendPercentage is hard-zero until a snapshot
+      // history table backs a real delta. The direction is still
+      // honest (up/down/stable based on audit-log volume).
+      expect(r.staffCompliance.trendPercentage).toBe(0);
     });
 
     it('calculates trend as "down" when low percentage', async () => {
@@ -175,7 +178,8 @@ describe('care-scorecard/scorecard-service', () => {
 
       const r = await generateCareScorecard('org-1', 'ndis');
       expect(r.staffCompliance.trend).toBe('down');
-      expect(r.staffCompliance.trendPercentage).toBe(3);
+      // Audit v4-021: trendPercentage is hard-zero (see note above).
+      expect(r.staffCompliance.trendPercentage).toBe(0);
     });
 
     it('calculates credential metrics with expiring credentials', async () => {
@@ -273,9 +277,21 @@ describe('care-scorecard/scorecard-service', () => {
     });
 
     it('calculates visit metrics', async () => {
+      // Audit 2026-05-26 — org_visits schema renamed from
+      // scheduled_at/completed_at/duration_minutes to
+      // scheduled_start/actual_start/actual_end. The scorecard now
+      // derives duration from (actual_end - actual_start).
       const now = new Date();
       const today = now.toISOString();
       const twoDaysAgo = new Date(now.getTime() - 2 * 86400000).toISOString();
+      // For a 45-minute average across two completed visits, set
+      // v1 = 60 min and v2 = 30 min.
+      const v1Start = today;
+      const v1End = new Date(now.getTime() + 60 * 60 * 1000).toISOString();
+      const v2Start = twoDaysAgo;
+      const v2End = new Date(
+        new Date(twoDaysAgo).getTime() + 30 * 60 * 1000,
+      ).toISOString();
 
       makeAdmin({
         org_members: { data: [], error: null },
@@ -287,49 +303,49 @@ describe('care-scorecard/scorecard-service', () => {
               id: 'v1',
               status: 'completed',
               visit_type: 'home',
-              scheduled_at: today,
-              completed_at: today,
-              duration_minutes: 60,
+              scheduled_start: v1Start,
+              actual_start: v1Start,
+              actual_end: v1End,
             },
             {
               id: 'v2',
               status: 'completed',
               visit_type: 'clinic',
-              scheduled_at: twoDaysAgo,
-              completed_at: twoDaysAgo,
-              duration_minutes: 30,
+              scheduled_start: v2Start,
+              actual_start: v2Start,
+              actual_end: v2End,
             },
             {
               id: 'v3',
               status: 'scheduled',
               visit_type: 'home',
-              scheduled_at: today,
-              completed_at: null,
-              duration_minutes: null,
+              scheduled_start: today,
+              actual_start: null,
+              actual_end: null,
             },
             {
               id: 'v4',
               status: 'missed',
               visit_type: 'home',
-              scheduled_at: twoDaysAgo,
-              completed_at: null,
-              duration_minutes: null,
+              scheduled_start: twoDaysAgo,
+              actual_start: null,
+              actual_end: null,
             },
             {
               id: 'v5',
               status: 'cancelled',
               visit_type: null,
-              scheduled_at: twoDaysAgo,
-              completed_at: null,
-              duration_minutes: null,
+              scheduled_start: twoDaysAgo,
+              actual_start: null,
+              actual_end: null,
             },
             {
               id: 'v6',
               status: 'in_progress',
               visit_type: 'home',
-              scheduled_at: today,
-              completed_at: null,
-              duration_minutes: null,
+              scheduled_start: today,
+              actual_start: null,
+              actual_end: null,
             },
           ],
           error: null,
@@ -533,23 +549,23 @@ describe('care-scorecard/scorecard-service', () => {
         org_audit_logs: { data: [], error: null },
         org_visits: {
           data: [
-            { assigned_to: 'u1', id: 'v1' },
-            { assigned_to: 'u1', id: 'v2' },
-            { assigned_to: 'u1', id: 'v3' },
-            { assigned_to: 'u1', id: 'v4' },
-            { assigned_to: 'u1', id: 'v5' },
-            { assigned_to: 'u1', id: 'v6' },
-            { assigned_to: 'u1', id: 'v7' },
-            { assigned_to: 'u1', id: 'v8' },
-            { assigned_to: 'u1', id: 'v9' },
-            { assigned_to: 'u1', id: 'v10' },
-            { assigned_to: 'u1', id: 'v11' },
-            { assigned_to: 'u1', id: 'v12' },
-            { assigned_to: 'u1', id: 'v13' },
-            { assigned_to: 'u1', id: 'v14' },
-            { assigned_to: 'u1', id: 'v15' },
-            { assigned_to: 'u1', id: 'v16' },
-            { assigned_to: 'u1', id: 'v17' },
+            { staff_id: 'u1', id: 'v1' },
+            { staff_id: 'u1', id: 'v2' },
+            { staff_id: 'u1', id: 'v3' },
+            { staff_id: 'u1', id: 'v4' },
+            { staff_id: 'u1', id: 'v5' },
+            { staff_id: 'u1', id: 'v6' },
+            { staff_id: 'u1', id: 'v7' },
+            { staff_id: 'u1', id: 'v8' },
+            { staff_id: 'u1', id: 'v9' },
+            { staff_id: 'u1', id: 'v10' },
+            { staff_id: 'u1', id: 'v11' },
+            { staff_id: 'u1', id: 'v12' },
+            { staff_id: 'u1', id: 'v13' },
+            { staff_id: 'u1', id: 'v14' },
+            { staff_id: 'u1', id: 'v15' },
+            { staff_id: 'u1', id: 'v16' },
+            { staff_id: 'u1', id: 'v17' },
           ],
           error: null,
         },
@@ -656,13 +672,13 @@ describe('care-scorecard/scorecard-service', () => {
         org_audit_logs: { data: [], error: null },
         org_visits: {
           data: [
-            { assigned_to: 'u1', id: 'v1' },
-            { assigned_to: 'u1', id: 'v2' },
-            { assigned_to: 'u1', id: 'v3' },
-            { assigned_to: 'u1', id: 'v4' },
-            { assigned_to: 'u1', id: 'v5' },
-            { assigned_to: 'u1', id: 'v6' },
-            { assigned_to: 'u1', id: 'v7' },
+            { staff_id: 'u1', id: 'v1' },
+            { staff_id: 'u1', id: 'v2' },
+            { staff_id: 'u1', id: 'v3' },
+            { staff_id: 'u1', id: 'v4' },
+            { staff_id: 'u1', id: 'v5' },
+            { staff_id: 'u1', id: 'v6' },
+            { staff_id: 'u1', id: 'v7' },
           ],
           error: null,
         },
