@@ -5,7 +5,102 @@ import {
   isMissingSupabaseTableError,
 } from '@/lib/supabase/schema-compat';
 
+/**
+ * Audit 2026-05-26 (M6): this module previously read/wrote five
+ * columns that DO NOT EXIST in production
+ * (`resource_type, retention_days, action, exceptions, framework`).
+ * The prod `retention_policies` table was created by
+ * `20260403002_document_retention.sql` with the columns
+ * `name, description, document_category, retention_period_days,
+ * action_on_expiry, is_active` (verified live 2026-05-26). The two
+ * later `CREATE TABLE IF NOT EXISTS` migrations were no-ops.
+ *
+ * Net effect before this fix: `applyRetentionPolicy` writes failed,
+ * `evaluateRetention` saw every policy row as
+ * `{ resource_type: undefined, retention_days: undefined, action: undefined }`,
+ * and the nightly /api/cron/data-retention cron silently applied
+ * nothing to any org's data — exactly the "decoupled" symptom that
+ * RUNBOOKS §11 documented.
+ *
+ * Fix: column-name bridge at the DB boundary. The rest of the module
+ * keeps using the in-memory canonical names; only `toDbWriteRow` and
+ * `toCanonicalPolicy` know the prod column names. If the prod schema
+ * is ever expanded to add `exceptions` / `framework` back, drop the
+ * bridge and use direct columns.
+ *
+ * Action mapping: prod `action_on_expiry` allows
+ * `'archive' | 'delete' | 'review'`. The canonical type still names
+ * `'anonymize'` for backward-compat; in-DB it stores as `'archive'`
+ * (closest semantics) and is reapplied as anonymize logic via the
+ * `anonymizeFields` config below if the resource has them.
+ */
+
 export type RetentionAction = 'archive' | 'delete' | 'anonymize';
+
+type DbRetentionPolicyRow = {
+  id: string;
+  org_id: string;
+  document_category: string;
+  retention_period_days: number;
+  action_on_expiry: 'archive' | 'delete' | 'review';
+  is_active: boolean;
+  name?: string | null;
+  description?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type CanonicalRetentionPolicy = {
+  id: string;
+  org_id: string;
+  resource_type: string;
+  retention_days: number;
+  action: RetentionAction;
+  exceptions: string[];
+  framework: 'GDPR' | 'SOC2' | 'HIPAA' | 'custom';
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+function toCanonicalPolicy(row: DbRetentionPolicyRow): CanonicalRetentionPolicy {
+  // The legacy 'anonymize' value never made it into the prod CHECK
+  // constraint; rows surface as 'archive' and the executor does
+  // anonymize-or-archive based on the resource config's
+  // anonymizeFields. Keep callers' canonical view intact.
+  const action: RetentionAction =
+    row.action_on_expiry === 'review' ? 'archive' : row.action_on_expiry;
+  return {
+    id: row.id,
+    org_id: row.org_id,
+    resource_type: row.document_category,
+    retention_days: row.retention_period_days,
+    action,
+    exceptions: [],
+    framework: 'custom',
+    is_active: row.is_active,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+  };
+}
+
+function toDbWriteRow(
+  orgId: string,
+  policy: RetentionPolicyInput,
+): Omit<DbRetentionPolicyRow, 'id' | 'created_at'> {
+  const action_on_expiry: DbRetentionPolicyRow['action_on_expiry'] =
+    policy.action === 'anonymize' ? 'archive' : policy.action;
+  return {
+    org_id: orgId,
+    name: `${policy.framework ?? 'custom'}: ${policy.resource_type}`,
+    description: null,
+    document_category: policy.resource_type,
+    retention_period_days: policy.retention_days,
+    action_on_expiry,
+    is_active: true,
+    updated_at: new Date().toISOString(),
+  };
+}
 
 export interface RetentionPolicyInput {
   resource_type: string;
@@ -145,21 +240,13 @@ async function selectExpiredRows(
 export async function applyRetentionPolicy(
   orgId: string,
   policy: RetentionPolicyInput,
-) {
+): Promise<CanonicalRetentionPolicy> {
   const admin = createSupabaseAdminClient();
-  const payload = {
-    org_id: orgId,
-    resource_type: policy.resource_type,
-    retention_days: policy.retention_days,
-    action: policy.action,
-    exceptions: policy.exceptions ?? [],
-    framework: policy.framework ?? 'custom',
-    updated_at: new Date().toISOString(),
-  };
+  const payload = toDbWriteRow(orgId, policy);
 
   const { data, error } = await admin
     .from('retention_policies')
-    .upsert(payload, { onConflict: 'org_id,resource_type' })
+    .upsert(payload, { onConflict: 'org_id,document_category' })
     .select('*')
     .single();
 
@@ -167,16 +254,19 @@ export async function applyRetentionPolicy(
     throw new Error(error.message);
   }
 
-  return data;
+  return toCanonicalPolicy(data as DbRetentionPolicyRow);
 }
 
-export async function listRetentionPolicies(orgId: string) {
+export async function listRetentionPolicies(
+  orgId: string,
+): Promise<CanonicalRetentionPolicy[]> {
   const admin = createSupabaseAdminClient();
   const { data, error } = await admin
     .from('retention_policies')
     .select('*')
     .eq('org_id', orgId)
-    .order('resource_type', { ascending: true });
+    .eq('is_active', true)
+    .order('document_category', { ascending: true });
 
   if (error) {
     if (
@@ -188,7 +278,7 @@ export async function listRetentionPolicies(orgId: string) {
     throw new Error(error.message);
   }
 
-  return data ?? [];
+  return ((data ?? []) as DbRetentionPolicyRow[]).map(toCanonicalPolicy);
 }
 
 interface RetentionPolicyRow {

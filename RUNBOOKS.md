@@ -275,41 +275,50 @@ deliberate hardening sprint, not as a side-quest.
 
 ---
 
-## 11. Retention policy UI is decoupled from the executor (known issue)
+## 11. Retention policy schema bridge (M6 — partially fixed 2026-05-26)
 
-**Status as of 2026-05-26: documented gap, no production impact today.**
+**Original diagnosis (incomplete).** Earlier audit notes said the
+retention policy UI was "decoupled from the executor." The truth was
+more specific: `lib/data-governance/retention.ts` was reading and
+writing five columns
+(`resource_type, retention_days, action, exceptions, framework`)
+that DO NOT EXIST in the production `retention_policies` table —
+the prod schema (from `20260403002_document_retention.sql`) has
+`document_category, retention_period_days, action_on_expiry,
+is_active, name, description`. Two later `CREATE TABLE IF NOT
+EXISTS` migrations attempted to define the legacy columns but were
+no-ops because the table already existed.
 
-**The reality.** There are two retention code paths and they don't talk:
+**Symptoms before the fix:**
+- POST `/api/governance/retention` errored on every policy save
+  (Postgres rejected unknown columns).
+- The nightly `/api/cron/data-retention` cron iterated active orgs
+  successfully but every policy row deserialised as
+  `{ resource_type: undefined, retention_days: undefined, action: undefined }`
+  → `getResourceConfig(undefined)` threw and the per-org loop
+  continued to the next, applying nothing to anyone.
 
-- [`lib/data-governance/retention.ts`](lib/data-governance/retention.ts) defines
-  hard-coded `RESOURCE_CONFIGS` (`tasks`, `evidence`, `policies`,
-  `assets`, etc.) and runs nightly via
-  [`app/api/cron/data-retention/route.ts`](app/api/cron/data-retention/route.ts).
-  This is what actually retires data.
-- [`lib/retention/retention-engine.ts`](lib/retention/retention-engine.ts)
-  and the [`/app/settings/retention`](app/app/settings/retention/page.tsx)
-  page let admins CRUD rows in `retention_policies` and manage legal
-  holds. **The cron does NOT read this table.** Whatever an admin saves
-  in the UI has no effect on actually-applied retention.
+**Fix shipped (M6 partial).** Added a schema bridge in
+[`lib/data-governance/retention.ts`](lib/data-governance/retention.ts):
+`toDbWriteRow` and `toCanonicalPolicy` translate at the DB boundary,
+so the rest of the module continues to use the canonical
+`resource_type / retention_days / action` field names. `'anonymize'`
+(canonical) maps to `'archive'` in DB (closest match to the
+`action_on_expiry` CHECK constraint of `archive | delete | review`);
+the executor still applies the `anonymizeFields` step when the
+resource config defines one.
 
-**Net effect.** The user-facing retention UI is cosmetic. Generic
-retention does run (so we don't grow data forever), but the
-fine-grained per-category policies admins think they configure are
-not enforced.
-
-**What we tell customers.** Don't pitch the per-policy retention
-controls as a primary feature for an evaluation; the generic baseline
-is what's running. SOC2/ISO retention attestations should reference
-the `RESOURCE_CONFIGS` defaults, not customer-specific overrides.
-
-**To close this gap:**
-1. Decide the source of truth: `RESOURCE_CONFIGS` (code) or
-   `retention_policies` (DB).
-2. If DB: rewrite `executeRetention` to enumerate active policies per
-   org and per resource, layering the policy's `retention_period_days`
-   over the default. Honor legal holds via `isUnderLegalHold`.
-3. If code: hide the policy-edit UI under a "coming soon" flag until
-   step 2 is built.
+**Remaining work (deferred):**
+- The `exceptions` and `framework` fields don't have DB storage. A
+  future migration can add them; until then those fields are
+  ephemeral (only honored within a single cron run, not persisted).
+- Legacy `lib/retention/retention-engine.ts.createRetentionPolicy`
+  is now confirmed orphan code — nothing imports it. Safe to delete
+  in a follow-up. The legal-hold helpers in that file ARE used and
+  must stay.
+- Add an integration test that round-trips `applyRetentionPolicy` →
+  `listRetentionPolicies` → `executeRetention(dryRun)` against a
+  test database, so the schema drift can't silently recur.
 
 ---
 

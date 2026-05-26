@@ -73,10 +73,16 @@ describe('applyRetentionPolicy', () => {
     getClient().from.mockImplementation(() =>
       createBuilder({
         data: {
+          id: 'pol-new',
           org_id: 'org-1',
-          resource_type: 'tasks',
-          retention_days: 365,
-          action: 'archive',
+          document_category: 'tasks',
+          retention_period_days: 365,
+          action_on_expiry: 'archive',
+          is_active: true,
+          name: 'custom: tasks',
+          description: null,
+          created_at: '2026-01-01T00:00:00Z',
+          updated_at: '2026-01-01T00:00:00Z',
         },
         error: null,
       }),
@@ -110,10 +116,16 @@ describe('listRetentionPolicies', () => {
       createBuilder({
         data: [
           {
+            id: 'pol-1',
             org_id: 'org-1',
-            resource_type: 'tasks',
-            retention_days: 365,
-            action: 'archive',
+            document_category: 'tasks',
+            retention_period_days: 365,
+            action_on_expiry: 'archive',
+            is_active: true,
+            name: 'custom: tasks',
+            description: null,
+            created_at: '2026-01-01T00:00:00Z',
+            updated_at: '2026-01-01T00:00:00Z',
           },
         ],
         error: null,
@@ -141,11 +153,16 @@ describe('evaluateRetention', () => {
         return createBuilder({
           data: [
             {
+              id: 'pol-2',
               org_id: 'org-1',
-              resource_type: 'tasks',
-              retention_days: 30,
-              action: 'archive',
-              exceptions: [],
+              document_category: 'tasks',
+              retention_period_days: 30,
+              action_on_expiry: 'archive',
+              is_active: true,
+              name: 'custom: tasks',
+              description: null,
+              created_at: '2026-01-01T00:00:00Z',
+              updated_at: '2026-01-01T00:00:00Z',
             },
           ],
           error: null,
@@ -172,11 +189,16 @@ describe('executeRetention', () => {
         return createBuilder({
           data: [
             {
+              id: 'pol-tasks',
               org_id: 'org-1',
-              resource_type: 'tasks',
-              retention_days: 30,
-              action: 'archive',
-              exceptions: [],
+              document_category: 'tasks',
+              retention_period_days: 30,
+              action_on_expiry: 'archive',
+              is_active: true,
+              name: 'custom: tasks',
+              description: null,
+              created_at: '2026-01-01T00:00:00Z',
+              updated_at: '2026-01-01T00:00:00Z',
             },
           ],
           error: null,
@@ -196,11 +218,16 @@ describe('executeRetention', () => {
         return createBuilder({
           data: [
             {
+              id: 'pol-tasks',
               org_id: 'org-1',
-              resource_type: 'tasks',
-              retention_days: 30,
-              action: 'archive',
-              exceptions: [],
+              document_category: 'tasks',
+              retention_period_days: 30,
+              action_on_expiry: 'archive',
+              is_active: true,
+              name: 'custom: tasks',
+              description: null,
+              created_at: '2026-01-01T00:00:00Z',
+              updated_at: '2026-01-01T00:00:00Z',
             },
           ],
           error: null,
@@ -221,11 +248,16 @@ describe('executeRetention', () => {
         return createBuilder({
           data: [
             {
+              id: 'pol-notif',
               org_id: 'org-1',
-              resource_type: 'notifications',
-              retention_days: 30,
-              action: 'delete',
-              exceptions: [],
+              document_category: 'notifications',
+              retention_period_days: 30,
+              action_on_expiry: 'delete',
+              is_active: true,
+              name: 'custom: notifications',
+              description: null,
+              created_at: '2026-01-01T00:00:00Z',
+              updated_at: '2026-01-01T00:00:00Z',
             },
           ],
           error: null,
@@ -245,11 +277,20 @@ describe('executeRetention', () => {
         return createBuilder({
           data: [
             {
+              id: 'pol-evi',
               org_id: 'org-1',
-              resource_type: 'evidence',
-              retention_days: 30,
-              action: 'anonymize',
-              exceptions: [],
+              // 'anonymize' isn't a valid DB enum value
+              // (action_on_expiry CHECK is archive|delete|review);
+              // store as 'archive' and let the resource config's
+              // anonymizeFields drive the anonymize action at runtime.
+              document_category: 'evidence',
+              retention_period_days: 30,
+              action_on_expiry: 'archive',
+              is_active: true,
+              name: 'custom: evidence',
+              description: null,
+              created_at: '2026-01-01T00:00:00Z',
+              updated_at: '2026-01-01T00:00:00Z',
             },
           ],
           error: null,
