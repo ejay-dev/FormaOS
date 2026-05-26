@@ -440,6 +440,11 @@ export async function proxy(request: NextRequest) {
       '/api/unsubscribe',
       '/api/sso/saml/acs/',
       '/api/scim/',
+      // H2 step 1 (2026-05-26): browsers POST CSP violation reports
+      // without an Origin header (no JS, no cookies). The endpoint
+      // ignores payload semantics anyway — it forwards to Sentry as a
+      // structured log event with heavy sampling.
+      '/api/csp-report',
     ];
 
     // -------------------------------
@@ -1023,6 +1028,39 @@ export async function proxy(request: NextRequest) {
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",
+      ].join('; '),
+    );
+
+    // Audit 2026-05-26 (H2 step 1): Report-Only sibling CSP. Tightens
+    // style-src to nonce-based (the enforcing CSP above still allows
+    // 'unsafe-inline' so nothing breaks). Browsers send violation
+    // reports to /api/csp-report but do NOT block the resource. The
+    // collected data drives the eventual flip of the enforcing CSP
+    // once violations drop to zero (see RUNBOOKS §12).
+    const styleSrcReportOnly = [
+      "'self'",
+      `'nonce-${nonce}'`,
+      'https://fonts.googleapis.com',
+    ].join(' ');
+    response.headers.set(
+      'Content-Security-Policy-Report-Only',
+      [
+        "default-src 'self'",
+        `script-src ${scriptSrc}`,
+        "script-src-attr 'none'",
+        `style-src ${styleSrcReportOnly}`,
+        "img-src 'self' data: blob: https:",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com",
+        "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+        "frame-ancestors 'none'",
+        "worker-src 'self' blob:",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        // Legacy directive — wider browser support than the modern
+        // `report-to`. Send both for coverage.
+        'report-uri /api/csp-report',
       ].join('; '),
     );
 
