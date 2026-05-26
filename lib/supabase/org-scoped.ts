@@ -135,6 +135,7 @@ const TENANT_TABLE_SCOPES = {
   org_dnp_imports: { column: 'organization_id' },
   org_ndis_claims: { column: 'organization_id' },
   search_index: { column: 'org_id' },
+  recent_items: { column: 'org_id' },
   task_recurrence: { column: 'org_id' },
   identity_audit_log: { column: 'organization_id' },
   identity_audit_events: { column: 'org_id' },

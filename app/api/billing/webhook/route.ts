@@ -972,31 +972,25 @@ export async function POST(request: Request) {
           // Flag the org so entitlements can be paused by ops until the
           // dispute is resolved. We don't auto-cancel — that's an ops
           // judgement call.
-          await admin
+          // dispute_open / dispute_opened_at / dispute_closed_at were
+          // added by migration 20260624008_audit_v2_regression_fixes
+          // (applied to prod 2026-05-26). The defensive column-missing
+          // fallback that used to wrap this update has been removed.
+          const { error: updateErr } = await admin
             .from('org_subscriptions')
             .update({
               dispute_open: true,
               dispute_opened_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
             })
-            .eq('organization_id', subRow.organization_id)
-            .then(({ error: updateErr }) => {
-              if (updateErr && /column.*dispute/.test(updateErr.message)) {
-                // dispute_open / dispute_opened_at columns may not exist
-                // yet (added in a follow-up migration). Log and continue
-                // so the audit row + ops notification still land.
-                log.warn(
-                  { err: updateErr.message },
-                  '[billing/webhook] dispute_open column not yet migrated',
-                );
-              } else if (updateErr) {
-                log.error(
-                  { err: updateErr.message, eventId: event.id },
-                  '[billing/webhook] charge.dispute.created update failed',
-                );
-                throw updateErr;
-              }
-            });
+            .eq('organization_id', subRow.organization_id);
+          if (updateErr) {
+            log.error(
+              { err: updateErr.message, eventId: event.id },
+              '[billing/webhook] charge.dispute.created update failed',
+            );
+            throw updateErr;
+          }
           orgsToRevalidate.add(subRow.organization_id);
           await writeBillingAudit({
             organizationId: subRow.organization_id,
@@ -1032,22 +1026,23 @@ export async function POST(request: Request) {
           .eq('stripe_customer_id', customerId)
           .maybeSingle();
         if (subRow?.organization_id) {
-          await admin
+          // See note on charge.dispute.created above — fallback removed
+          // now that migration 20260624008 is applied.
+          const { error: updateErr } = await admin
             .from('org_subscriptions')
             .update({
               dispute_open: false,
               dispute_closed_at: new Date().toISOString(),
               updated_at: new Date().toISOString(),
             })
-            .eq('organization_id', subRow.organization_id)
-            .then(({ error: updateErr }) => {
-              if (updateErr && /column.*dispute/.test(updateErr.message)) {
-                log.warn(
-                  { err: updateErr.message },
-                  '[billing/webhook] dispute_open column not yet migrated',
-                );
-              }
-            });
+            .eq('organization_id', subRow.organization_id);
+          if (updateErr) {
+            log.error(
+              { err: updateErr.message, eventId: event.id },
+              '[billing/webhook] charge.dispute.closed update failed',
+            );
+            throw updateErr;
+          }
           orgsToRevalidate.add(subRow.organization_id);
           await writeBillingAudit({
             organizationId: subRow.organization_id,

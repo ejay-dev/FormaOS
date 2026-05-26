@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 const MAX_RECENT_PER_USER = 50;
 
@@ -13,20 +13,20 @@ export async function trackAccess(
   entityId: string,
   entityTitle: string,
 ) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  // Upsert: if same entity was recently accessed, just update timestamp
-  const { data: existing } = await db
+  // Upsert: if same entity was recently accessed, just update timestamp.
+  // .eq('org_id', orgId) is appended automatically by the org-scoped client.
+  const { data: existing } = await supabase
     .from('recent_items')
     .select('id')
-    .eq('org_id', orgId)
     .eq('user_id', userId)
     .eq('entity_type', entityType)
     .eq('entity_id', entityId)
     .maybeSingle();
 
   if (existing) {
-    await db
+    await supabase
       .from('recent_items')
       .update({
         accessed_at: new Date().toISOString(),
@@ -34,8 +34,8 @@ export async function trackAccess(
       })
       .eq('id', existing.id);
   } else {
-    await db.from('recent_items').insert({
-      org_id: orgId,
+    // org_id is stamped automatically by the org-scoped client.
+    await supabase.from('recent_items').insert({
       user_id: userId,
       entity_type: entityType,
       entity_id: entityId,
@@ -43,16 +43,15 @@ export async function trackAccess(
     });
 
     // Prune excess entries
-    const { data: all } = await db
+    const { data: all } = await supabase
       .from('recent_items')
       .select('id')
-      .eq('org_id', orgId)
       .eq('user_id', userId)
       .order('accessed_at', { ascending: false });
 
     if (all && all.length > MAX_RECENT_PER_USER) {
-      const toDelete = all.slice(MAX_RECENT_PER_USER).map((r) => r.id);
-      await db.from('recent_items').delete().in('id', toDelete);
+      const toDelete = all.slice(MAX_RECENT_PER_USER).map((r: { id: string }) => r.id);
+      await supabase.from('recent_items').delete().in('id', toDelete);
     }
   }
 }
@@ -65,12 +64,11 @@ export async function getRecentItems(
   userId: string,
   limit = 20,
 ) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { data } = await db
+  const { data } = await supabase
     .from('recent_items')
     .select('entity_type, entity_id, entity_title, accessed_at')
-    .eq('org_id', orgId)
     .eq('user_id', userId)
     .order('accessed_at', { ascending: false })
     .limit(limit);
@@ -86,16 +84,15 @@ export async function getFrequentItems(
   userId: string,
   limit = 10,
 ) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const thirtyDaysAgo = new Date(
     Date.now() - 30 * 24 * 60 * 60 * 1000,
   ).toISOString();
 
   // Count access frequency by entity
-  const { data } = await db
+  const { data } = await supabase
     .from('recent_items')
     .select('entity_type, entity_id, entity_title')
-    .eq('org_id', orgId)
     .eq('user_id', userId)
     .gte('accessed_at', thirtyDaysAgo);
 
@@ -105,7 +102,7 @@ export async function getFrequentItems(
     string,
     { type: string; id: string; title: string; count: number }
   > = {};
-  for (const item of data) {
+  for (const item of data as Array<{ entity_type: string; entity_id: string; entity_title: string }>) {
     const key = `${item.entity_type}:${item.entity_id}`;
     if (!counts[key]) {
       counts[key] = {
