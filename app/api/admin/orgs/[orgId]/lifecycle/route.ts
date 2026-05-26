@@ -73,6 +73,9 @@ export async function POST(request: Request, { params }: Params) {
     });
 
     const admin = createSupabaseAdminClient();
+    let retireOutcome: Awaited<
+      ReturnType<typeof retireOrganizationLifecycle>
+    > | null = null;
     if (requestedStatus === 'suspended') {
       await suspendOrganizationLifecycle({
         admin,
@@ -81,7 +84,7 @@ export async function POST(request: Request, { params }: Params) {
         reason,
       });
     } else if (requestedStatus === 'retired') {
-      await retireOrganizationLifecycle({
+      retireOutcome = await retireOrganizationLifecycle({
         admin,
         orgId,
         actorUserId: access.user.id,
@@ -104,10 +107,31 @@ export async function POST(request: Request, { params }: Params) {
       metadata: {
         lifecycle_status: requestedStatus,
         reason,
+        // P0-9 (2026-05-26): when retiring, capture the export job id +
+        // scheduled purge moment so the audit record alone tells ops
+        // "this org's data is exported (bundle X) and will be eligible
+        // for hard delete on date Y".
+        ...(retireOutcome
+          ? {
+              retire_export_job_id: retireOutcome.exportJobId,
+              retire_purge_at: retireOutcome.purgeAt,
+              retire_export_error: retireOutcome.exportError,
+            }
+          : {}),
       },
     });
 
-    return NextResponse.json({ ok: true, lifecycle_status: requestedStatus });
+    return NextResponse.json({
+      ok: true,
+      lifecycle_status: requestedStatus,
+      ...(retireOutcome
+        ? {
+            retire_purge_at: retireOutcome.purgeAt,
+            retire_export_job_id: retireOutcome.exportJobId,
+            retire_export_error: retireOutcome.exportError,
+          }
+        : {}),
+    });
   } catch (error) {
     return handleAdminError(error, '/api/admin/orgs/[orgId]/lifecycle');
   }

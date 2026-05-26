@@ -1,6 +1,19 @@
 import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { exportLogger } from '@/lib/observability/structured-logger';
+
+// P0-9 (2026-05-26): retire grace window before retired org data is
+// eligible for hard deletion. Read once per process. Default 90 days
+// gives ops a window to either restore the org (regret), satisfy any
+// outstanding compliance retention, or run the deliberate purge.
+function getRetireGraceDays(): number {
+  const raw = process.env.ORG_RETIRE_GRACE_DAYS;
+  if (!raw) return 90;
+  const parsed = Number.parseInt(raw, 10);
+  if (Number.isNaN(parsed) || parsed < 0) return 90;
+  return parsed;
+}
 
 type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
 
@@ -126,8 +139,63 @@ export async function retireOrganizationLifecycle(args: {
   orgId: string;
   actorUserId: string;
   reason: string;
-}) {
-  const nowIso = new Date().toISOString();
+}): Promise<{
+  retiredAt: string;
+  purgeAt: string;
+  exportJobId: string | null;
+  exportError: string | null;
+}> {
+  const now = new Date();
+  const nowIso = now.toISOString();
+  const graceDays = getRetireGraceDays();
+  const purgeAt = new Date(now.getTime() + graceDays * 24 * 60 * 60 * 1000);
+  const purgeIso = purgeAt.toISOString();
+
+  // P0-9 (2026-05-26): trigger a full enterprise export before the
+  // billing/access lock so the org's data is captured in a downloadable
+  // bundle. Best-effort — a failure here logs + audits but does not
+  // block the retirement. The job id is persisted on the organizations
+  // row so ops can later join to enterprise_export_jobs to get the
+  // bundle URL.
+  let exportJobId: string | null = null;
+  let exportError: string | null = null;
+  try {
+    // Lazy import: the enterprise-export module pulls in lib/queue which
+    // initialises Redis at module load. Keep that cost off the import
+    // graph for callers that never retire (every server-rendered page).
+    const { createEnterpriseExportJob } = await import(
+      '@/lib/export/enterprise-export'
+    );
+    const result = await createEnterpriseExportJob(
+      args.orgId,
+      args.actorUserId,
+      {
+        includeCompliance: true,
+        includeEvidence: true,
+        includeAuditLogs: true,
+        includeCareOps: true,
+        includeTeam: true,
+        bundleType: 'audit_ready_bundle',
+        includeReportPdfs: true,
+      },
+    );
+    if (result.ok && result.jobId) {
+      exportJobId = result.jobId;
+    } else {
+      exportError = result.error ?? 'unknown_export_failure';
+      exportLogger.warn('org_retire_export_enqueue_failed', {
+        orgId: args.orgId,
+        error: exportError,
+      });
+    }
+  } catch (err) {
+    exportError = err instanceof Error ? err.message : String(err);
+    exportLogger.error(
+      'org_retire_export_enqueue_threw',
+      err instanceof Error ? err : new Error(String(err)),
+      { orgId: args.orgId },
+    );
+  }
 
   await args.admin
     .from('organizations')
@@ -139,10 +207,19 @@ export async function retireOrganizationLifecycle(args: {
       retired_by: args.actorUserId,
       restored_at: null,
       restored_by: null,
+      retire_export_job_id: exportJobId,
+      retire_purge_at: purgeIso,
     })
     .eq('id', args.orgId);
 
   await lockOrganizationAccess(args.admin, args.orgId);
+
+  return {
+    retiredAt: nowIso,
+    purgeAt: purgeIso,
+    exportJobId,
+    exportError,
+  };
 }
 
 export async function restoreOrganizationLifecycle(args: {
