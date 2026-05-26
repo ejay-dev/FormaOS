@@ -82,6 +82,10 @@ export const OPTIONAL_VALIDATED_VARS = [
   'LANGFUSE_SECRET_KEY',
   'LANGFUSE_BASE_URL',
   'LANGFUSE_TRACING_ENVIRONMENT',
+  // H1 (2026-05-26): on-call paging integration key. Optional —
+  // lib/observability/paging.ts no-ops cleanly when absent. Set in
+  // production to unblock P0 wake-up paging beyond Sentry email.
+  'PAGERDUTY_ROUTING_KEY',
 ] as const;
 
 const PUBLIC_SECRET_ENV_VARS = [

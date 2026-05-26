@@ -183,6 +183,28 @@ alerts:
     routes:
       - slack:#engineering
 
+  - id: csp-violation-burst
+    name: "CSP violation burst (Report-Only) — H2 rollout"
+    severity: P2
+    type: issue
+    conditions:
+      message: "csp_violation"
+      window: 1h
+      count: "> 200"
+    rationale: |
+      Audit 2026-05-26 (H2 step 1) — Report-Only CSP catches every
+      inline-style that would break under the future nonce-enforcing
+      header. We expect violations during the observation period; this
+      alert only fires when the rate is high enough to suggest a new
+      regression (e.g. a Tailwind dev artifact leaking to prod, or a
+      third-party widget injecting raw styles). Triage via:
+        node scripts/summarize-csp-violations.mjs
+      Once weekly counts trend to zero, run that script for one final
+      audit, then flip style-src on the enforcing CSP in proxy.ts to
+      drop 'unsafe-inline' and remove the Report-Only sibling header.
+    routes:
+      - slack:#engineering
+
   - id: unhandled-rejection-rate
     name: "Unhandled promise rejection spike"
     severity: P2
@@ -219,16 +241,28 @@ alerts:
 # Sentry alert "actions" are configured per-rule in the dashboard. The keys
 # below describe the intent; map them to actual integrations there.
 #
-#   pager           → Currently degrades to Sentry mobile-app push + email
-#                     (see ONCALL.md "On-Call Tooling" — TBD/Gap for true SMS).
-#                     When PagerDuty/Pushover is provisioned, swap here.
+#   pager           → PagerDuty Events API v2 via lib/observability/paging.ts.
+#                     Activates when PAGERDUTY_ROUTING_KEY env var is set;
+#                     otherwise degrades to Sentry mobile-app push + email
+#                     (see ONCALL.md "On-Call Tooling"). The application code
+#                     path invokes `pageOnCall` directly at the P0 detection
+#                     site (e.g. app/api/billing/webhook/route.ts on signature
+#                     failure) — Sentry rule "actions" can additionally fan
+#                     out via the Sentry-side PagerDuty integration for any
+#                     event the code path doesn't already page on.
 #   slack:#<chan>   → Slack integration. Channels must exist before alert fires.
 #   email:founder   → Sentry → Settings → Members → notification email.
 # =============================================================================
 
 routing:
   pager:
-    integration: tbd
+    # H1 (2026-05-26): code path is live in lib/observability/paging.ts.
+    # Operator action remaining: set PAGERDUTY_ROUTING_KEY in Vercel prod
+    # env vars + wire the Sentry-side PagerDuty integration on the
+    # service so any P0-tagged alert ALSO triggers PD beyond what code
+    # paths explicitly call.
+    integration: pagerduty-events-api-v2
+    code_module: lib/observability/paging.ts
     fallback:
       - sentry-mobile-push
       - email:founder

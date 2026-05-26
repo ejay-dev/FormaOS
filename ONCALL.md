@@ -49,7 +49,7 @@ P0 and P1 always produce a postmortem (see template below). P2 produces a postmo
 | Payments                 | Stripe Dashboard (live mode)                                    |
 | Cron orchestration       | Vercel → Crons tab (config in `vercel.json`)                    |
 | Synthetic checks         | **TBD** — `docs/monitoring/synthetic-checks.md` lists candidates (Checkly / Better Stack), nothing provisioned yet. **Gap.** |
-| Paging                   | **TBD** — no PagerDuty / Pushover / SMS integration is wired up today. Currently relies on Sentry → email + push from the Sentry mobile app. **Gap — needs SMS for true P0 wake-up.** |
+| Paging                   | **Code-ready, account setup pending** — `lib/observability/paging.ts` exposes `pageOnCall()` using PagerDuty Events API v2. The first P0 site (Stripe webhook signature failure in `/api/billing/webhook`) calls it on every signature mismatch. **Operator action remaining**: create the PagerDuty service + integration, then set `PAGERDUTY_ROUTING_KEY` in Vercel production env vars. Until then, calls fall through to a structured warn-log and the Sentry mobile-app push fallback. |
 | Chat                     | Slack workspace (channels referenced in `sentry/alerts.yaml`). **TBD — channels need to be created if they do not exist.** |
 | Status page              | **TBD** — no public status page exists. Customers learn of outages via email or in-app banner. **Gap.** |
 

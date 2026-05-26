@@ -19,6 +19,7 @@ import {
 } from '@/lib/billing/entitlements';
 import { sendBillingEmail } from '@/lib/email/billing-emails';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
+import { pageOnCall } from '@/lib/observability/paging';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -64,6 +65,23 @@ export async function POST(request: Request) {
       },
       extra: {
         rawBodyLength: rawBody.length,
+        signaturePresent: Boolean(signature),
+        errorMessage:
+          error instanceof Error ? error.message : 'unknown error',
+      },
+    });
+    // H1 (2026-05-26): P0 page — signature failure either means our
+    // webhook secret rotated out of sync (active customers' billing
+    // events silently dropping) or someone is forging Stripe traffic.
+    // Both are wake-the-founder-tier events. `pageOnCall` no-ops if
+    // PAGERDUTY_ROUTING_KEY isn't set, so this stays safe in dev.
+    void pageOnCall({
+      severity: 'error',
+      summary: 'Stripe webhook signature failure',
+      component: 'billing.webhook',
+      dedupKey: `billing.webhook.signature:${process.env.VERCEL_ENV ?? 'unknown'}`,
+      context: {
+        vercelEnv: process.env.VERCEL_ENV ?? 'unknown',
         signaturePresent: Boolean(signature),
         errorMessage:
           error instanceof Error ? error.message : 'unknown error',
