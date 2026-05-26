@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { PLAN_CATALOG, PlanKey, resolvePlanKey } from '@/lib/plans';
 
 export type EntitlementKey =
@@ -229,19 +229,18 @@ export async function getEntitlementLimit(
  * onConflict id, instead of orphaning customer history.
  */
 export async function disableEntitlementsForOrg(orgId: string) {
-  const admin = createSupabaseAdminClient();
-  await admin
+  const supabase = createSupabaseOrgClient(orgId);
+  await supabase
     .from('org_entitlements')
-    .update({ enabled: false, updated_at: new Date().toISOString() })
-    .eq('organization_id', orgId);
+    .update({ enabled: false, updated_at: new Date().toISOString() });
 }
 
 export async function syncEntitlementsForPlan(orgId: string, planKey: PlanKey) {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const plan = PLAN_ENTITLEMENTS[planKey];
 
+  // The wrapper stamps organization_id on every record automatically.
   const enabledRecords = plan.enabled.map((featureKey) => ({
-    organization_id: orgId,
     feature_key: featureKey,
     enabled: true,
     limit_value: plan.limits[featureKey] ?? null,
@@ -252,7 +251,6 @@ export async function syncEntitlementsForPlan(orgId: string, planKey: PlanKey) {
       ([featureKey]) => !plan.enabled.includes(featureKey as EntitlementKey),
     )
     .map(([featureKey, limit]) => ({
-      organization_id: orgId,
       feature_key: featureKey,
       enabled: true,
       limit_value: limit,
@@ -261,7 +259,7 @@ export async function syncEntitlementsForPlan(orgId: string, planKey: PlanKey) {
   const records = [...enabledRecords, ...limitRecords];
   if (records.length === 0) return;
 
-  await admin.from('org_entitlements').upsert(records, {
+  await supabase.from('org_entitlements').upsert(records, {
     onConflict: 'organization_id,feature_key',
   });
 }

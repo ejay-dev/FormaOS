@@ -53,6 +53,33 @@ Use this matrix before merging changes.
   - route assumptions match column names
   - lifecycle/audit/status semantics stay consistent
   - new columns have safe defaults where needed
+- **Before applying a new migration to production**:
+  - Confirm `supabase migration list --linked` shows the previous migration recorded.
+    If history is broken (only 19 of 217 files recorded as of audit 2026-05-26),
+    run `docs/operations/migration-history-repair.md` FIRST. The repair is read-only
+    on prod; production data is not affected.
+  - For tenant-table DDL: verify on a dev branch (`supabase branch create`) and
+    confirm `mcp__claude_ai_Supabase__get_advisors` reports no new RLS / search-path
+    warnings before merging.
+
+## Tenant Data Access (lib/ + app/api/)
+
+- New code that reads or writes tenant tables MUST use `createSupabaseOrgClient(orgId)`
+  from `@/lib/supabase/org-scoped` rather than `createSupabaseAdminClient()` +
+  `.eq('organization_id', orgId)`. The wrapper makes the org filter structural so a
+  missed `.eq()` cannot leak rows across tenants once FORCE RLS is enabled.
+- If admin-client access is intentional (cron, cross-tenant scan, security
+  detection that legitimately spans orgs), suppress the warning inline with:
+    ```
+    // eslint-disable-next-line formaos/no-admin-client-with-org-filter
+    // Reason: <one-line justification>
+    const admin = createSupabaseAdminClient();
+    ```
+- When you add a new tenant table, register it in `TENANT_TABLE_SCOPES`
+  in `lib/supabase/org-scoped.ts` along with its `organization_id` /
+  `org_id` column name. The wrapper will throw at runtime if a caller
+  touches an unregistered table — this is intentional and forces an
+  explicit decision rather than silent admin-fall-through.
 
 ## Onboarding / Activation
 

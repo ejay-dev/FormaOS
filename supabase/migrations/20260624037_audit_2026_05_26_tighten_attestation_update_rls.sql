@@ -1,6 +1,15 @@
 -- Audit 2026-05-26 — tighten the org_control_attestations UPDATE
 -- policy.
 --
+-- STATUS: SKIPPED on 2026-05-26 deploy. The `org_control_attestations`
+-- table does not exist in the current production environment (verified
+-- via information_schema.tables lookup pre-apply). The compliance-
+-- attestations surface was likely scoped down or renamed between when
+-- this migration was drafted and when it was applied. Re-evaluate
+-- whether this migration is still relevant before the next attestation
+-- workstream — if the table is reintroduced under a different name,
+-- this migration should be rewritten to target it.
+--
 -- Background (Compliance M16): the existing
 -- `org_control_attestations_org_update` policy only verifies that the
 -- caller is a member of the org. Inside a single org, any member can

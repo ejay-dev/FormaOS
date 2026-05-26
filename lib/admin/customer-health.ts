@@ -4,7 +4,7 @@ import {
   calculateActivationScore,
   getActivationStatus,
 } from '@/lib/analytics/activation-telemetry';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { isMissingSupabaseColumnError } from '@/lib/supabase/schema-compat';
 
 type RiskLevel = 'low' | 'watch' | 'high';
@@ -65,11 +65,10 @@ function getTrialDaysRemaining(trialEnd: string | null | undefined) {
 export async function getAdminOrgHealthSnapshot(
   orgId: string,
 ): Promise<AdminOrgHealthSnapshot> {
-  const admin = createSupabaseAdminClient();
-  const organizationQuery = admin
+  const supabase = createSupabaseOrgClient(orgId);
+  const organizationQuery = supabase
     .from('organizations')
     .select('id, created_at, frameworks, onboarding_completed, lifecycle_status')
-    .eq('id', orgId)
     .maybeSingle();
 
   const [
@@ -84,44 +83,36 @@ export async function getAdminOrgHealthSnapshot(
     { count: complianceExportCount },
   ] = await Promise.all([
     organizationQuery,
-    admin
+    supabase
       .from('org_subscriptions')
       .select(
         'status, trial_expires_at, current_period_end, payment_failures, grace_period_end',
       )
-      .eq('organization_id', orgId)
       .maybeSingle(),
-    admin
+    supabase
       .from('org_health_scores')
       .select(
         'score, status, alerts, recommended_actions, last_login_at, calculated_at',
       )
-      .eq('organization_id', orgId)
       .maybeSingle(),
-    admin
+    supabase
       .from('org_members')
-      .select('id', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
-    admin
+      .select('id', { count: 'exact', head: true }),
+    supabase
       .from('org_evidence')
-      .select('id', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
-    admin
+      .select('id', { count: 'exact', head: true }),
+    supabase
       .from('org_policies')
-      .select('id', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
-    admin
+      .select('id', { count: 'exact', head: true }),
+    supabase
       .from('org_control_evaluations')
-      .select('id', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
-    admin
+      .select('id', { count: 'exact', head: true }),
+    supabase
       .from('report_export_jobs')
-      .select('id', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
-    admin
+      .select('id', { count: 'exact', head: true }),
+    supabase
       .from('compliance_export_jobs')
-      .select('id', { count: 'exact', head: true })
-      .eq('organization_id', orgId),
+      .select('id', { count: 'exact', head: true }),
   ]);
 
   const organization = (
@@ -131,10 +122,9 @@ export async function getAdminOrgHealthSnapshot(
       'lifecycle_status',
     )
       ? (
-          await admin
+          await supabase
             .from('organizations')
             .select('id, created_at, frameworks, onboarding_completed')
-            .eq('id', orgId)
             .maybeSingle()
         ).data
       : organizationResult.data

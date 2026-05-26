@@ -1,6 +1,17 @@
 -- Audit 2026-05-26 — split platform-level security events away from
 -- the per-org security_audit_log table.
 --
+-- APPLY NOTE: this file's backfill assumed `security_audit_log.details`
+-- and `security_audit_log.severity` columns. Production has `metadata`
+-- (not `details`) and no `severity` column. The version actually
+-- applied on 2026-05-26 (recorded as version 20260526040649 with name
+-- `audit_2026_05_26_platform_security_audit_log_v2`) skipped the
+-- backfill entirely — verified pre-apply that 0 sentinel-tagged rows
+-- existed in security_audit_log, so nothing to migrate. Schema setup
+-- and sentinel-org cleanup ran as below. Keep this file for the
+-- intent; if a re-apply against a different environment is ever
+-- needed, adapt the column names first.
+--
 -- Background (Database H7): migration 20260624016 made
 -- security_audit_log.organization_id NOT NULL and parked all pre-login
 -- failed-signin rows under a synthetic "__platform_sentinel__" org

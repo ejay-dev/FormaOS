@@ -65,6 +65,18 @@ const eslintConfig = [
       // Design system enforcement
       'formaos/no-hardcoded-colors': 'warn',
 
+      // Tenant isolation: this rule warns when admin client + org filter
+      // pattern is detected (Audit 2026-05-26). Disabled in the default
+      // config because there are ~512 historical occurrences across
+      // un-migrated files; turning it on would blow past the
+      // --max-warnings 25 CI ceiling.
+      //
+      // Run on-demand via `npm run lint:tenant-isolation` to see the
+      // migration punch list. As more files are migrated to
+      // createSupabaseOrgClient, the count drops; once below 25 we can
+      // flip this rule back to 'warn' in the default config.
+      'formaos/no-admin-client-with-org-filter': 'off',
+
       // Accessibility rules (WCAG 2.2 AA)
       'jsx-a11y/alt-text': 'warn',
       'jsx-a11y/anchor-has-content': 'warn',

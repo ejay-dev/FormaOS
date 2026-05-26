@@ -1,15 +1,14 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 /**
  * Calculate evidence coverage as a percentage of controls with adequate evidence.
  */
 export async function calculateCoverage(orgId: string, frameworkId?: string) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   let controlQuery = db
     .from('org_controls')
     .select('id', { count: 'exact', head: true })
-    .eq('organization_id', orgId);
 
   if (frameworkId) {
     controlQuery = controlQuery.eq('framework_id', frameworkId);
@@ -21,12 +20,11 @@ export async function calculateCoverage(orgId: string, frameworkId?: string) {
   const { data: controlsWithEvidence } = await db
     .from('org_evidence')
     .select('control_id')
-    .eq('organization_id', orgId)
     .in('freshness_status', ['current', 'expiring_soon'])
     .not('control_id', 'is', null);
 
   const uniqueControls = new Set(
-    (controlsWithEvidence ?? []).map((e) => e.control_id),
+    (controlsWithEvidence ?? []).map((e: { control_id: string | null }) => e.control_id),
   );
   const total = totalControls ?? 0;
 
@@ -52,12 +50,11 @@ export async function identifyGaps(
   orgId: string,
   frameworkId?: string,
 ): Promise<Gap[]> {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   let query = db
     .from('org_controls')
     .select('id, code, title, priority')
-    .eq('organization_id', orgId);
 
   if (frameworkId) {
     query = query.eq('framework_id', frameworkId);
@@ -70,7 +67,6 @@ export async function identifyGaps(
   const { data: evidence } = await db
     .from('org_evidence')
     .select('control_id, freshness_status')
-    .eq('organization_id', orgId)
     .not('control_id', 'is', null);
 
   const evidenceByControl = new Map<string, string[]>();

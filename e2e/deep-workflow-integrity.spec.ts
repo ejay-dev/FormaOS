@@ -322,60 +322,63 @@ test.describe('Deep workflow integrity', () => {
         page.locator('[data-testid="care-plan-title"]'),
       ).toBeVisible();
 
-      // Add a goal — we already have admin access to the DB, so we
-      // bypass the flaky add-goal form and seed the goal directly. The
-      // assertion below proves the *render path* picks up the goal.
-      const goalIdSeed = randomUUID();
-      const { data: planSeed } = await context.admin
-        .from('org_care_plans')
-        .select('goals')
-        .eq('id', planId)
-        .maybeSingle();
-      const seededGoals = Array.isArray(planSeed?.goals)
-        ? (planSeed!.goals as Array<Record<string, unknown>>)
-        : [];
-      seededGoals.push({
-        id: goalIdSeed,
-        title: 'E2E goal',
-        description: null,
-        status: 'pending',
-        target_date: null,
-        progress_percentage: 0,
-        created_at: new Date().toISOString(),
-      });
-      await context.admin
-        .from('org_care_plans')
-        .update({ goals: seededGoals })
-        .eq('id', planId)
-        .eq('organization_id', context.orgId);
+      // Add a goal via the real form — care-plans.spec.ts already proves
+      // this works reliably with poll-based DB verification (rather than
+      // a fixed sleep). Mirroring that pattern here so we test the *full*
+      // path (form submit → server action → revalidation → render),
+      // not just the render half.
+      const addGoalForm = page.locator('[data-testid="add-goal-form"]');
+      await addGoalForm
+        .locator('input[name="title"]')
+        .fill(`E2E goal ${unique}`);
+      await addGoalForm.locator('[data-testid="submit-goal"]').click();
+
+      // Wait for the goal to land in the DB before asserting the render —
+      // parallel workers can otherwise race the mutation.
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_care_plans')
+              .select('goals')
+              .eq('id', planId)
+              .maybeSingle();
+            const goals = Array.isArray(data?.goals) ? data.goals : [];
+            return goals.length;
+          },
+          { timeout: 15_000 },
+        )
+        .toBeGreaterThan(0);
       await page.reload();
       await expect(page.locator('[data-testid="care-plan-goal"]')).toHaveCount(
         1,
         { timeout: 15_000 },
       );
 
-      // Mark achieved — flip the goal status straight in the DB so the
-      // assertion below tests the *render path* (computePlanProgress)
-      // rather than fighting the UI form submission, which is flaky in
-      // headless Chromium because of the help-assistant overlay.
-      const { data: planRow } = await context.admin
-        .from('org_care_plans')
-        .select('goals')
-        .eq('id', planId)
-        .maybeSingle();
-      const goalsArr = Array.isArray(planRow?.goals)
-        ? (planRow!.goals as Array<Record<string, unknown>>)
-        : [];
-      goalsArr[0] = {
-        ...goalsArr[0],
-        status: 'achieved',
-        progress_percentage: 100,
-      };
-      await context.admin
-        .from('org_care_plans')
-        .update({ goals: goalsArr })
-        .eq('id', planId)
-        .eq('organization_id', context.orgId);
+      // Mark achieved via the per-goal status form — also a real form
+      // submit, so we exercise updateGoalStatusAction + syncCarePlanProgress
+      // end-to-end.
+      const goalRow = page.locator('[data-testid="care-plan-goal"]').first();
+      await goalRow.locator('select[name="status"]').selectOption('achieved');
+      await goalRow.locator('form button[type="submit"]', { hasText: /update/i }).first().click();
+
+      // Wait for the DB to reflect the status change before reloading.
+      await expect
+        .poll(
+          async () => {
+            const { data } = await context.admin
+              .from('org_care_plans')
+              .select('goals')
+              .eq('id', planId)
+              .maybeSingle();
+            const goals = Array.isArray(data?.goals)
+              ? (data!.goals as Array<{ status?: string }>)
+              : [];
+            return goals[0]?.status;
+          },
+          { timeout: 15_000 },
+        )
+        .toBe('achieved');
 
       // Reload — progress should now read 100%
       await page.reload();

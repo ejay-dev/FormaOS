@@ -1,5 +1,11 @@
 -- Audit 2026-05-26 — deterministic tiebreak in public.org_controls view.
 --
+-- STATUS: SKIPPED on 2026-05-26 deploy. The org_controls_view view does
+-- not exist in production (verified via information_schema.views — there
+-- is a base `org_controls` table but no `org_controls_view`). The view
+-- referenced by this migration was either never deployed or was renamed.
+-- Re-evaluate when the view is reintroduced under whatever name lands.
+--
 -- Background (Database M1): the `latest_evidence_id` subquery in
 -- 20260624005's view orders by `ce.created_at DESC LIMIT 1`. Two
 -- evidence rows inserted in the same `now()` tick (which happens

@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { isOrgReadOnly } from '@/lib/billing/grace-period';
 
 /**
@@ -35,11 +35,10 @@ export class OrgReadOnlyError extends Error {
 }
 
 export async function assertOrgCanWrite(orgId: string): Promise<void> {
-  const admin = createSupabaseAdminClient();
-  const { data } = await admin
+  const supabase = createSupabaseOrgClient(orgId);
+  const { data } = await supabase
     .from('org_subscriptions')
     .select('status, payment_failed_at')
-    .eq('organization_id', orgId)
     .maybeSingle();
 
   if (!data) return; // No subscription row → no enforcement (e.g. trial)

@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 type FreshnessStatus = 'current' | 'expiring_soon' | 'expired' | 'needs_review';
 
@@ -34,7 +34,7 @@ export function calculateFreshness(evidence: {
  * Get evidence expiring within N days.
  */
 export async function getExpiringEvidence(orgId: string, withinDays = 30) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const futureDate = new Date(Date.now() + withinDays * 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10);
@@ -42,7 +42,6 @@ export async function getExpiringEvidence(orgId: string, withinDays = 30) {
   const { data } = await db
     .from('org_evidence')
     .select('id, title, valid_until, freshness_status')
-    .eq('organization_id', orgId)
     .not('valid_until', 'is', null)
     .lte('valid_until', futureDate)
     .gte('valid_until', new Date().toISOString().slice(0, 10))
@@ -55,12 +54,11 @@ export async function getExpiringEvidence(orgId: string, withinDays = 30) {
  * Get all expired evidence.
  */
 export async function getExpiredEvidence(orgId: string) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   const { data } = await db
     .from('org_evidence')
     .select('id, title, valid_until, freshness_status')
-    .eq('organization_id', orgId)
     .eq('freshness_status', 'expired')
     .order('valid_until', { ascending: true });
 
@@ -71,12 +69,11 @@ export async function getExpiredEvidence(orgId: string) {
  * Get evidence that is past its review cycle without a recent review.
  */
 export async function getStaleEvidence(orgId: string) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   const { data } = await db
     .from('org_evidence')
     .select('id, title, review_cycle_days, last_reviewed_at, freshness_status')
-    .eq('organization_id', orgId)
     .eq('freshness_status', 'needs_review')
     .order('last_reviewed_at', { ascending: true });
 
@@ -91,12 +88,11 @@ export async function setReviewCycle(
   evidenceId: string,
   cycleDays: number,
 ) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const { error } = await db
     .from('org_evidence')
     .update({ review_cycle_days: cycleDays })
     .eq('id', evidenceId)
-    .eq('organization_id', orgId);
 
   if (error) throw new Error(`Failed to set review cycle: ${error.message}`);
 }
@@ -109,7 +105,7 @@ export async function markAsReviewed(
   evidenceId: string,
   reviewedBy: string,
 ) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const { error } = await db
     .from('org_evidence')
     .update({
@@ -118,7 +114,6 @@ export async function markAsReviewed(
       freshness_status: 'current',
     })
     .eq('id', evidenceId)
-    .eq('organization_id', orgId);
 
   if (error) throw new Error(`Failed to mark as reviewed: ${error.message}`);
 }

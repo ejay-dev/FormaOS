@@ -1,4 +1,12 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
+
+// Audit 2026-05-26: functions in this file that take an `orgId` parameter
+// use the org-scoped client (createSupabaseOrgClient). Functions keyed only
+// by `taskId` (updateTask, addDependency, removeDependency) remain on the
+// raw admin client; they rely on RLS or caller verification to keep tenant
+// isolation. If FORCE RLS isn't enabled on org_tasks, those functions can
+// touch cross-tenant rows. Flagged for follow-up.
 
 interface CreateTaskInput {
   title: string;
@@ -11,11 +19,10 @@ interface CreateTaskInput {
 }
 
 export async function createTask(orgId: string, data: CreateTaskInput) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const { data: task, error } = await db
     .from('org_tasks')
     .insert({
-      organization_id: orgId,
       title: data.title,
       description: data.description || null,
       assignee_id: data.assignee_id || null,
@@ -100,8 +107,13 @@ export async function removeDependency(taskId: string, dependsOnId: string) {
 }
 
 export async function getBlockedTasks(orgId: string) {
-  const db = createSupabaseAdminClient();
-  const { data: deps } = await db
+  // task_dependencies is keyed by task_id (not org_id), so it's read
+  // through the raw admin client; the cross-tenant safety comes from the
+  // intersect with org_tasks below.
+  const admin = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
+
+  const { data: deps } = await admin
     .from('task_dependencies')
     .select('task_id, depends_on_task_id, dependency_type')
     .eq('dependency_type', 'blocks');
@@ -113,11 +125,10 @@ export async function getBlockedTasks(orgId: string) {
   const { data: depTasks } = await db
     .from('org_tasks')
     .select('id, status')
-    .in('id', depTaskIds)
-    .eq('organization_id', orgId);
+    .in('id', depTaskIds);
 
   const incompleteDeps = new Set(
-    (depTasks || []).filter((t) => t.status !== 'done').map((t) => t.id),
+    (depTasks ?? []).filter((t: { status: string }) => t.status !== 'done').map((t: { id: string }) => t.id),
   );
 
   const blockedTaskIds = deps
@@ -129,8 +140,7 @@ export async function getBlockedTasks(orgId: string) {
   const { data: blocked } = await db
     .from('org_tasks')
     .select('*')
-    .in('id', [...new Set(blockedTaskIds)])
-    .eq('organization_id', orgId);
+    .in('id', [...new Set(blockedTaskIds)]);
 
   return blocked || [];
 }
@@ -139,19 +149,19 @@ export async function getTasksByBoard(
   orgId: string,
   filters?: { assigneeId?: string; priority?: string },
 ) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   let query = db
     .from('org_tasks')
     .select('*')
-    .eq('organization_id', orgId)
     .order('created_at', { ascending: false });
 
   if (filters?.assigneeId) query = query.eq('assignee_id', filters.assigneeId);
   if (filters?.priority) query = query.eq('priority', filters.priority);
 
   const { data: tasks } = await query;
+  type TaskRow = { id: string; status: string };
 
-  const columns: Record<string, typeof tasks> = {
+  const columns: Record<string, TaskRow[]> = {
     todo: [],
     in_progress: [],
     in_review: [],
@@ -159,14 +169,14 @@ export async function getTasksByBoard(
     blocked: [],
   };
 
-  for (const task of tasks || []) {
+  for (const task of (tasks as TaskRow[] | null) ?? []) {
     const col = columns[task.status] || columns.todo;
     col!.push(task);
   }
 
   // Mark blocked tasks
   const blocked = await getBlockedTasks(orgId);
-  const blockedIds = new Set(blocked.map((t) => t.id));
+  const blockedIds = new Set((blocked as Array<{ id: string }>).map((t) => t.id));
   for (const [status, statusTasks] of Object.entries(columns)) {
     if (status === 'blocked') continue;
     const toMove = statusTasks!.filter(

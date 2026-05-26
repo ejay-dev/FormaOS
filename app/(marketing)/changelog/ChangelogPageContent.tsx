@@ -1054,7 +1054,7 @@ const releases: ChangelogRelease[] = [
         text: 'Enterprise audit report generated with 10-phase analysis',
         tag: 'enterprise',
         detail:
-          'Comprehensive enterprise audit covering static analysis, build, database/schema integrity, security, performance, test coverage, API integrity, accessibility, dependencies, and configuration. Report saved as ENTERPRISE_AUDIT_REPORT.md with full remediation roadmap.',
+          'Comprehensive enterprise audit covering static analysis, build, database/schema integrity, security, performance, test coverage, API integrity, accessibility, dependencies, and configuration. Findings reviewed and tracked internally; remediation rolled into subsequent release notes.',
       },
     ],
   },

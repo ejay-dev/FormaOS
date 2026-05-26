@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 export type GapDetectionResult = {
   missingEvidence: Array<{
@@ -20,12 +21,12 @@ const REQUIRED_MAPPING_TARGETS = ['nist-csf', 'cis-controls'];
 export async function detectComplianceGaps(
   orgId: string,
 ): Promise<GapDetectionResult> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseAdminClient(); // global tables (frameworks, control_mappings)
+  const db = createSupabaseOrgClient(orgId); // tenant tables
 
-  const { data: evaluations } = await admin
+  const { data: evaluations } = await db
     .from('org_control_evaluations')
     .select('control_key, status, details')
-    .eq('organization_id', orgId)
     .eq('control_type', 'framework_control');
 
   const controlIds: string[] = [];
@@ -63,10 +64,9 @@ export async function detectComplianceGaps(
     approved: number;
   }>;
 
-  const { data: taskLinks } = await admin
+  const { data: taskLinks } = await db
     .from('control_tasks')
     .select('control_id')
-    .eq('organization_id', orgId)
     .in('control_id', controlIds);
 
   const taskControlIds = new Set(

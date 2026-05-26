@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 /**
  * Suggest control mappings based on file name and content keywords.
@@ -16,12 +16,11 @@ export async function suggestControlMappings(
     reason: string;
   }>
 > {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   const { data: controls } = await db
     .from('org_controls')
     .select('id, code, title, description')
-    .eq('organization_id', orgId);
 
   if (!controls || controls.length === 0) return [];
 
@@ -99,7 +98,6 @@ export async function suggestControlMappings(
   const { data: historical } = await db
     .from('org_evidence')
     .select('control_id, title')
-    .eq('organization_id', orgId)
     .not('control_id', 'is', null)
     .ilike('title', `%${fileName.replace(/\.[^.]+$/, '')}%`)
     .limit(5);
@@ -109,7 +107,7 @@ export async function suggestControlMappings(
       h.control_id &&
       !suggestions.find((s) => s.controlId === h.control_id)
     ) {
-      const control = controls.find((c) => c.id === h.control_id);
+      const control = controls.find((c: { id: string }) => c.id === h.control_id);
       if (control) {
         suggestions.push({
           controlId: control.id,

@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 interface RecurrencePattern {
   title: string;
@@ -22,11 +23,10 @@ export async function createRecurrence(
   orgId: string,
   pattern: RecurrencePattern,
 ) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const { data, error } = await db
     .from('task_recurrence')
     .insert({
-      org_id: orgId,
       title: pattern.title,
       description: pattern.description || null,
       frequency: pattern.frequency,
@@ -56,14 +56,13 @@ export async function resumeRecurrence(id: string) {
 }
 
 export async function getUpcomingRecurrences(orgId: string, days: number = 14) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() + days);
 
   const { data } = await db
     .from('task_recurrence')
     .select('*')
-    .eq('org_id', orgId)
     .eq('active', true)
     .lte('next_due', cutoff.toISOString())
     .order('next_due', { ascending: true });

@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
@@ -45,11 +45,11 @@ export async function ensureSubscription(
   const resolvedPlan = resolvePlanKey(planKey) || DEFAULT_PLAN;
   const intent = options.intent ?? 'self-serve';
 
-  const admin = createSupabaseAdminClient();
-  const { data: existing } = await admin
+  const supabase = createSupabaseOrgClient(orgId);
+  const admin = supabase.unsafeAdmin(); // mirror-legacy-orgs needs raw client
+  const { data: existing } = await supabase
     .from('org_subscriptions')
     .select('status, plan_key, trial_expires_at, stripe_subscription_id')
-    .eq('organization_id', orgId)
     .maybeSingle();
 
   if (
@@ -93,10 +93,9 @@ export async function ensureSubscription(
 
   // BACKFILL: Ensure legacy orgs table entry exists for org_subscriptions.org_id FK
   try {
-    const { data: org } = await admin
+    const { data: org } = await supabase
       .from('organizations')
       .select('name, created_by')
-      .eq('id', orgId)
       .maybeSingle();
 
     if (org?.name) {
@@ -157,7 +156,7 @@ export async function ensureSubscription(
 
   for (const attempt of payloadAttempts) {
     let payload = attempt.payload;
-    let { error } = await admin
+    let { error } = await supabase
       .from('org_subscriptions')
       .upsert(payload, { onConflict: 'organization_id' });
 
@@ -171,7 +170,7 @@ export async function ensureSubscription(
         attempt: attempt.label,
       });
       payload = { ...payload, status: 'past_due' };
-      ({ error } = await admin
+      ({ error } = await supabase
         .from('org_subscriptions')
         .upsert(payload, { onConflict: 'organization_id' }));
     }

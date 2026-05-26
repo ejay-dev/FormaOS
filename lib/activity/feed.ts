@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import type { ActivityFeedRecord } from '@/lib/notifications/types';
 import {
   isMissingSupabaseTableError,
@@ -77,13 +78,12 @@ export async function logActivity(
   resource: ActivityResourceInput,
   metadata: Record<string, unknown> = {},
 ) {
-  const admin = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const actor = await resolveActor(actorId);
 
-  const { data, error } = await admin
+  const { data, error } = await db
     .from('activity_feed')
     .insert({
-      org_id: orgId,
       actor_id: actorId,
       actor_email: actor.actor_email,
       actor_name: actor.actor_name,
@@ -112,16 +112,15 @@ export async function logActivity(
 }
 
 export async function getActivityFeed(orgId: string, options: ActivityFeedQuery = {}) {
-  const admin = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const limit = Math.min(Math.max(options.limit ?? 25, 1), 100);
   const cursor = decodeCursor(options.cursor);
 
-  let query = admin
+  let query = db
     .from('activity_feed')
     .select(
       'id, org_id, actor_id, actor_email, actor_name, action, resource_type, resource_id, resource_name, metadata, created_at',
     )
-    .eq('org_id', orgId)
     .order('created_at', { ascending: false })
     .order('id', { ascending: false })
     .limit(limit + 1);
@@ -171,13 +170,12 @@ export async function getResourceActivity(
   resourceType: string,
   resourceId: string,
 ) {
-  const admin = createSupabaseAdminClient();
-  const { data, error } = await admin
+  const db = createSupabaseOrgClient(orgId);
+  const { data, error } = await db
     .from('activity_feed')
     .select(
       'id, org_id, actor_id, actor_email, actor_name, action, resource_type, resource_id, resource_name, metadata, created_at',
     )
-    .eq('org_id', orgId)
     .eq('resource_type', resourceType)
     .eq('resource_id', resourceId)
     .order('created_at', { ascending: false })
@@ -194,13 +192,12 @@ export async function getResourceActivity(
 }
 
 export async function getUserActivity(orgId: string, userId: string) {
-  const admin = createSupabaseAdminClient();
-  const { data, error } = await admin
+  const db = createSupabaseOrgClient(orgId);
+  const { data, error } = await db
     .from('activity_feed')
     .select(
       'id, org_id, actor_id, actor_email, actor_name, action, resource_type, resource_id, resource_name, metadata, created_at',
     )
-    .eq('org_id', orgId)
     .eq('actor_id', userId)
     .order('created_at', { ascending: false })
     .limit(100);

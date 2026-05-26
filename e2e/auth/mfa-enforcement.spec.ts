@@ -10,8 +10,31 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { randomBytes } from 'crypto';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import * as speakeasy from 'speakeasy';
+import * as OTPAuth from 'otpauth';
+
+// Base32 alphabet (RFC 4648). Used to generate the TOTP secret that the
+// `lib/security.ts` plaintext-affordance accepts as-is.
+const BASE32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function generateBase32Secret(byteLength = 20): string {
+  const buf = randomBytes(byteLength);
+  let bits = 0;
+  let value = 0;
+  let out = '';
+  for (const byte of buf) {
+    value = (value << 8) | byte;
+    bits += 8;
+    while (bits >= 5) {
+      out += BASE32_ALPHABET[(value >>> (bits - 5)) & 31];
+      bits -= 5;
+    }
+  }
+  if (bits > 0) {
+    out += BASE32_ALPHABET[(value << (5 - bits)) & 31];
+  }
+  return out;
+}
 
 const APP_URL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000';
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -146,29 +169,33 @@ async function provisionMfaUser() {
   // encrypting the secret via the same path the application uses for
   // new enrollments — likely by calling generate2FASecret() through
   // the admin API rather than seeding the row directly.
-  const totpSecret = speakeasy.generateSecret({
-    name: `FormaOS (${email})`,
-    issuer: 'FormaOS',
-    length: 32,
-  });
+  const totpBase32 = generateBase32Secret(20);
 
   await admin.from('user_security').upsert(
     {
       user_id: created.user.id,
       two_factor_enabled: true,
       two_factor_enabled_at: new Date().toISOString(),
-      two_factor_secret: totpSecret.base32,
+      two_factor_secret: totpBase32,
       backup_codes: [],
       updated_at: new Date().toISOString(),
     },
     { onConflict: 'user_id' },
   );
 
-  return { userId: created.user.id, email, totpBase32: totpSecret.base32 };
+  return { userId: created.user.id, email, totpBase32 };
 }
 
 function totp(secretBase32: string): string {
-  return speakeasy.totp({ secret: secretBase32, encoding: 'base32' });
+  const t = new OTPAuth.TOTP({
+    issuer: 'FormaOS',
+    label: 'mfa-e2e',
+    algorithm: 'SHA1',
+    digits: 6,
+    period: 30,
+    secret: OTPAuth.Secret.fromBase32(secretBase32),
+  });
+  return t.generate();
 }
 
 test('password-only sign-in for an MFA-enabled user lands on the challenge, not /app', async ({

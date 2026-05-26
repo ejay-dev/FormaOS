@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
@@ -95,17 +96,17 @@ export async function logIdentityEvent(
   input: IdentityAuditEventInput,
 ): Promise<void> {
   try {
-    const admin = createSupabaseAdminClient();
+    const admin = createSupabaseAdminClient(); // still needed for insertOrgAuditLog below
+    const db = createSupabaseOrgClient(input.orgId);
     const metadata = sanitizeMetadata(input.metadata);
 
-    await admin.from('identity_audit_events').insert({
+    await db.from('identity_audit_events').insert({
       event_type: input.eventType,
       actor_type: input.actorType,
       actor_id: input.actorId ?? null,
       actor_label: input.actorLabel ?? null,
       target_user_id: input.targetUserId ?? null,
       target_user_email: input.targetUserEmail ?? null,
-      org_id: input.orgId,
       ip_address: input.ipAddress ?? null,
       user_agent: input.userAgent ?? null,
       result: input.result,
@@ -142,14 +143,13 @@ export async function queryIdentityEvents(filters: IdentityAuditFilters): Promis
   events: IdentityAuditEventRecord[];
   total: number;
 }> {
-  const admin = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(filters.orgId);
   const limit = Math.min(200, Math.max(1, filters.limit ?? 50));
   const offset = Math.max(0, filters.offset ?? 0);
 
-  let query = admin
+  let query = db
     .from('identity_audit_events')
-    .select('*', { count: 'exact' })
-    .eq('org_id', filters.orgId);
+    .select('*', { count: 'exact' });
 
   if (filters.eventTypes?.length) {
     query = query.in('event_type', filters.eventTypes);

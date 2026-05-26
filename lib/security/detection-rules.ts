@@ -37,6 +37,16 @@ export interface DetectionResult {
 // 1. BRUTE FORCE DETECTION
 // ============================================================================
 
+// Audit 2026-05-26: this file intentionally uses the raw admin client
+// across all detection rules. Brute-force, impossible-travel, rate-limit,
+// and most other detections scan `security_events` cross-tenant (by IP or
+// user_id, never bounded to a single org). Forcing org-scoping here would
+// blind the detectors to the very attacks they exist to catch. The single
+// org-bounded query (detectPrivilegeEscalation's membership check) is
+// itself a guard verifying the claimed orgId — wrapping it in the
+// org-scoped client would beg the question.
+/* eslint-disable formaos/no-admin-client-with-org-filter */
+
 /**
  * Detect brute force login attempts
  * Rule: 5+ failed logins from same IP within 15 minutes = HIGH

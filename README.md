@@ -82,13 +82,16 @@ npm run check:admin-nav
 
 ## Current Gaps Worth Knowing
 
-- Root project docs are still catching up to the codebase breadth.
-- There are multiple parallel operating surfaces: product app, marketing site, admin console, control-plane, and async jobs.
+- Multiple parallel operating surfaces: product app, marketing site, admin console, control-plane, and async jobs.
 - Reliability depends heavily on strong validation around billing, onboarding, provisioning, and admin actions.
 
 See also:
 
-- `TODO.md`
-- `FORMAOS_CODEBASE_AUDIT_2026_03_05.md`
-- `FORMAOS_MASTER_PROMPTS.md`
-- `FORMAOS_MASTER_PROMPT_RUN_2026_03_14.md`
+- `CHANGELOG.md` — release notes
+- `SECURITY.md` — vulnerability disclosure
+- `RUNBOOKS.md` — incident playbooks
+- `ONCALL.md` — on-call rotation and paging
+- `ENGINEERING_CHANGE_MATRIX.md` — required checks per surface
+- `RELEASE_DISCIPLINE_CHECKLIST.md` — pre-ship checklist
+- `ADMIN_OPERATING_POLICY.md` — admin access model
+- `PLATFORM_CONTROL_CONTRACTS.md` — platform control stream definitions

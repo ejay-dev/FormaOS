@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseOrgClient } from "@/lib/supabase/org-scoped";
 import {
   PLAN_ENTITLEMENTS,
   syncEntitlementsForPlan,
@@ -46,14 +47,13 @@ export async function detectEntitlementDrift(
   orgId: string,
   autoFix: boolean = true
 ): Promise<DriftDetectionResult> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const corrections: EntitlementCorrection[] = [];
 
   // Get current subscription
-  const { data: subscription, error: subError } = await admin
+  const { data: subscription, error: subError } = await supabase
     .from("org_subscriptions")
     .select("plan_key, status")
-    .eq("organization_id", orgId)
     .maybeSingle();
 
   if (subError || !subscription) {
@@ -80,10 +80,9 @@ export async function detectEntitlementDrift(
   const expected = PLAN_ENTITLEMENTS[planKey];
 
   // Get current entitlements
-  const { data: currentEntitlements, error: entError } = await admin
+  const { data: currentEntitlements, error: entError } = await supabase
     .from("org_entitlements")
-    .select("feature_key, enabled, limit_value")
-    .eq("organization_id", orgId);
+    .select("feature_key, enabled, limit_value");
 
   if (entError) {
     billingLogger.error("drift_detection_failed", {

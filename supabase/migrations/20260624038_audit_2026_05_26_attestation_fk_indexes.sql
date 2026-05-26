@@ -1,5 +1,9 @@
 -- Audit 2026-05-26 — index foreign keys on org_control_attestations.
 --
+-- STATUS: SKIPPED on 2026-05-26 deploy. The target table does not exist
+-- in production (verified via information_schema). Re-evaluate alongside
+-- migration 037 if/when org_control_attestations is reintroduced.
+--
 -- Background (Database M2): the table from migration 20260624021 has
 -- FKs on `framework_id`, `claimed_by`, `reviewed_by`, and `evidence_id`
 -- but none of them are indexed. `framework_id` is part of the

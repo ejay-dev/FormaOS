@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { createHash } from 'crypto';
 
 type DuplicateResult = {
@@ -14,12 +14,11 @@ export async function checkDuplicate(
   orgId: string,
   fileHash: string,
 ): Promise<DuplicateResult> {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   const { data } = await db
     .from('org_evidence')
     .select('id, title, created_at')
-    .eq('organization_id', orgId)
     .eq('file_hash', fileHash)
     .maybeSingle();
 
@@ -44,7 +43,7 @@ export async function findSimilar(
   orgId: string,
   fileName: string,
 ): Promise<Array<{ id: string; title: string; similarity: number }>> {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   // Strip extension and normalize
   const baseName = fileName
@@ -59,7 +58,6 @@ export async function findSimilar(
   const { data } = await db
     .from('org_evidence')
     .select('id, title')
-    .eq('organization_id', orgId)
     .limit(100);
 
   if (!data || data.length === 0) return [];

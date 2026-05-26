@@ -3,7 +3,7 @@
  * Tracks credential expiry and generates alerts
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import type { Credential, CredentialType, CareScorecardAlert } from './types';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 
@@ -18,7 +18,7 @@ export async function getExpiringCredentials(
     limit?: number;
   }
 ): Promise<Credential[]> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
   const daysAhead = options?.daysAhead || 90;
   const futureDate = new Date();
@@ -36,7 +36,6 @@ export async function getExpiringCredentials(
       status,
       document_url
     `)
-    .eq('organization_id', orgId)
     .gte('expiry_date', now.toISOString().slice(0, 10))
     .lte('expiry_date', futureDate.toISOString().slice(0, 10))
     .order('expiry_date', { ascending: true });
@@ -61,7 +60,6 @@ export async function getExpiringCredentials(
   const { data: members } = await admin
     .from('org_members')
     .select('user_id, profiles:profiles!inner(full_name, email)')
-    .eq('organization_id', orgId)
     .in('user_id', userIds);
 
   const userMap = new Map<string, { name: string; email: string }>(
@@ -104,7 +102,7 @@ export async function getExpiredCredentials(
   orgId: string,
   limit = 50
 ): Promise<Credential[]> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
 
   const { data: credentials } = await admin
@@ -119,7 +117,6 @@ export async function getExpiredCredentials(
       status,
       document_url
     `)
-    .eq('organization_id', orgId)
     .lt('expiry_date', now.toISOString().slice(0, 10))
     .order('expiry_date', { ascending: false })
     .limit(limit);
@@ -129,7 +126,6 @@ export async function getExpiredCredentials(
   const { data: members } = await admin
     .from('org_members')
     .select('user_id, profiles:profiles!inner(full_name, email)')
-    .eq('organization_id', orgId)
     .in('user_id', userIds);
 
   const userMap = new Map<string, { name: string; email: string }>(
@@ -235,7 +231,7 @@ export async function getCredentialSummaryByType(
     expiringSoon: number;
   }>
 > {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
   const thirtyDays = new Date();
   thirtyDays.setDate(thirtyDays.getDate() + 30);
@@ -243,7 +239,6 @@ export async function getCredentialSummaryByType(
   const { data: credentials } = await admin
     .from('org_staff_credentials')
     .select('credential_type, status, expiry_date')
-    .eq('organization_id', orgId);
 
   const typeLabels: Record<CredentialType, string> = {
     wwcc: 'Working With Children Check',
