@@ -50,8 +50,10 @@ jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: jest.fn(() => mockAdminClient),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn().mockResolvedValue(undefined),
+// M2 (2026-05-26): lib/webhooks/delivery-queue.ts migrated to
+// canonical hash-chained writer. Mock the new path.
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: jest.fn().mockResolvedValue({ success: true }),
 }));
 
 const mockTriggerTask = jest.fn().mockResolvedValue(false);

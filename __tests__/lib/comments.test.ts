@@ -41,8 +41,11 @@ function getClient() {
   return require('@/lib/supabase/server').__client;
 }
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn().mockResolvedValue(undefined),
+// M2 (2026-05-26): lib/comments.ts migrated to canonical hash-
+// chained writer. The old @/lib/audit-trail import is gone; mock
+// the new path so unit tests don't open a Next.js request scope.
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: jest.fn().mockResolvedValue({ success: true }),
 }));
 jest.mock('@/lib/realtime', () => ({
   sendNotification: jest.fn().mockResolvedValue(undefined),
@@ -60,7 +63,7 @@ import {
   getMentionedComments,
   searchComments,
 } from '@/lib/comments';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 
 describe('createComment', () => {
   beforeEach(() => {
@@ -207,12 +210,14 @@ describe('deleteComment', () => {
       return createBuilder({ error: null });
     });
     await deleteComment('c1', 'u1', 'org-1');
-    expect(logActivity).toHaveBeenCalledWith(
-      'org-1',
-      'u1',
-      'delete',
-      'task',
-      expect.any(Object),
+    expect(logAuditEventCore).toHaveBeenCalledWith(
+      expect.objectContaining({
+        organizationId: 'org-1',
+        actorUserId: 'u1',
+        actionType: 'COMMENT_DELETED',
+        entityType: 'comment',
+        entityId: 'c1',
+      }),
     );
   });
 });

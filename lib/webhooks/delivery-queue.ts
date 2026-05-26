@@ -2,7 +2,7 @@ import 'server-only';
 
 import crypto from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { triggerTaskIfConfigured } from '@/lib/trigger/client';
 import type { WebhookConfig, WebhookDelivery, WebhookEvent, WebhookPayload } from '@/lib/webhooks';
 import { validateWebhookUrl } from '@/lib/security/url-validator';
@@ -449,11 +449,18 @@ export async function sendTestWebhookEvent(args: {
     requestedBy: args.actorId,
   }, undefined, { webhookIds: [args.webhookId] });
 
-  await logActivity(args.orgId, args.actorId, 'update', 'organization', {
+  // M2 (2026-05-26): migrated to hash-chained writer. Webhook test
+  // deliveries belong in the tamper-evident chain because they're
+  // observable in the audit log + can be replayed by ops.
+  await logAuditEventCore({
+    organizationId: args.orgId,
+    actorUserId: args.actorId,
+    actorRole: null,
+    actionType: 'WEBHOOK_TEST_QUEUED',
+    entityType: 'webhook',
     entityId: args.webhookId,
-    entityName: webhook.name,
-    details: {
-      type: 'webhook_test',
+    afterState: {
+      webhook_name: webhook.name,
       queued: queued.queued,
     },
   });

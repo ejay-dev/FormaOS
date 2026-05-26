@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { sendNotification } from '@/lib/notifications/send';
 
 export interface Comment {
@@ -91,14 +91,21 @@ export async function createComment(
     ),
   );
 
-  // Log activity (using 'task' as closest entity type since comment isn't in ActivityEntity enum)
-  await logActivity(organizationId, userId, 'create', 'task', {
+  // M2 (2026-05-26): migrated from lib/audit-trail (non-chained
+  // activity_logs) to lib/audit/log-audit-event (hash-chained
+  // org_audit_log). Drops the legacy 'task' entity-type hack — the
+  // canonical writer takes the real entity_type string.
+  await logAuditEventCore({
+    organizationId,
+    actorUserId: userId,
+    actorRole: null,
+    actionType: 'COMMENT_CREATED',
+    entityType: 'comment',
     entityId: comment.id,
-    entityName: `Comment on ${data.entityType}`,
-    details: {
-      entityType: data.entityType,
-      entityId: data.entityId,
-      mentions: mentionedUserIds.length,
+    afterState: {
+      target_entity_type: data.entityType,
+      target_entity_id: data.entityId,
+      mention_count: mentionedUserIds.length,
     },
   });
 
@@ -298,8 +305,12 @@ export async function deleteComment(
     throw new Error(`Failed to delete comment: ${error.message}`);
   }
 
-  // Log activity
-  await logActivity(existing.organization_id, userId, 'delete', 'task', {
+  await logAuditEventCore({
+    organizationId: existing.organization_id,
+    actorUserId: userId,
+    actorRole: null,
+    actionType: 'COMMENT_DELETED',
+    entityType: 'comment',
     entityId: commentId,
   });
 }
