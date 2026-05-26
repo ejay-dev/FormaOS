@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { sendNotification } from '@/lib/notifications/send';
 
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
@@ -591,22 +591,20 @@ export async function performRiskAnalysis(
     created_at: new Date().toISOString(),
   });
 
-  // Log activity
-  await logActivity(
+  // M2 (2026-05-26): migrated to hash-chained writer. System action.
+  await logAuditEventCore({
     organizationId,
-    '', // System action
-    'view',
-    'report',
-    {
-      entityId: organizationId,
-      entityName: 'Risk Analysis',
-      details: {
-        riskScore: overallRiskScore,
-        riskLevel,
-        totalRisks: allRisks.length,
-      },
+    actorUserId: null,
+    actorRole: 'system',
+    actionType: 'AI_RISK_ANALYSIS_RUN',
+    entityType: 'risk_analysis',
+    entityId: organizationId,
+    afterState: {
+      riskScore: overallRiskScore,
+      riskLevel,
+      totalRisks: allRisks.length,
     },
-  );
+  });
 
   // Send notification for high/critical risk
   if (riskLevel === 'high' || riskLevel === 'critical') {

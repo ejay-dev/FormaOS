@@ -32,7 +32,10 @@ jest.mock('@/lib/supabase/admin', () => ({
   createSupabaseAdminClient: jest.fn(),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({ logActivity: jest.fn() }));
+// M2 (2026-05-26): members routes migrated to hash-chained writer.
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: jest.fn().mockResolvedValue({ success: true }),
+}));
 jest.mock('@/lib/webhooks/delivery-queue', () => ({
   queueWebhookDelivery: jest.fn(),
 }));

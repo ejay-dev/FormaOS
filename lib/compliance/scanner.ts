@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { sendNotification } from '@/lib/notifications/send';
 
 export type ComplianceFramework =
@@ -527,23 +527,21 @@ export async function performComplianceScan(
     recommendations,
   });
 
-  // Log activity
-  await logActivity(
+  // M2 (2026-05-26): migrated to hash-chained writer. System action.
+  await logAuditEventCore({
     organizationId,
-    '', // System action
-    'create',
-    'report',
-    {
-      entityId: scanId,
-      entityName: `${framework.toUpperCase()} Compliance Scan`,
-      details: {
-        framework,
-        complianceScore,
-        nonCompliant,
-        findings: allFindings.length,
-      },
+    actorUserId: null,
+    actorRole: 'system',
+    actionType: 'COMPLIANCE_SCAN_RUN',
+    entityType: 'compliance_scan',
+    entityId: scanId,
+    afterState: {
+      framework,
+      complianceScore,
+      nonCompliant,
+      findingsCount: allFindings.length,
     },
-  );
+  });
 
   // Send notification if compliance score is low
   if (complianceScore < 70) {

@@ -5,7 +5,7 @@ import {
   logV1Access,
 } from '@/lib/api-keys/middleware';
 import { getActorId } from '@/lib/api/v1-helpers';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { queueWebhookDelivery } from '@/lib/webhooks/delivery-queue';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { dispatchIntegrationEvent } from '@/lib/integrations/manager';
@@ -140,9 +140,17 @@ export async function PATCH(request: Request, context: RouteContext) {
     return response;
   }
 
-  await logActivity(auth.context.orgId, actorId, 'update', 'member', {
+  // M2 (2026-05-26): migrated to hash-chained writer. Member role
+  // changes are security-sensitive (privilege escalation surface) —
+  // they belong in the tamper-evident chain.
+  await logAuditEventCore({
+    organizationId: auth.context.orgId,
+    actorUserId: actorId,
+    actorRole: null,
+    actionType: 'MEMBER_ROLE_UPDATED',
+    entityType: 'member',
     entityId: memberId,
-    details: { role, kind: target.kind },
+    afterState: { role, kind: target.kind },
   });
 
   await queueWebhookDelivery(
@@ -206,9 +214,14 @@ export async function DELETE(request: Request, context: RouteContext) {
       .eq('organization_id', auth.context.orgId);
   }
 
-  await logActivity(auth.context.orgId, actorId, 'delete', 'member', {
+  await logAuditEventCore({
+    organizationId: auth.context.orgId,
+    actorUserId: actorId,
+    actorRole: null,
+    actionType: 'MEMBER_REMOVED',
+    entityType: 'member',
     entityId: memberId,
-    details: { kind: target.kind },
+    afterState: { kind: target.kind },
   });
 
   await Promise.allSettled([

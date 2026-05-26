@@ -3,15 +3,17 @@
 jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(),
 }));
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn().mockResolvedValue(undefined),
+// M2 (2026-05-26): risk-analyzer migrated from @/lib/audit-trail to
+// hash-chained @/lib/audit/log-audit-event.
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: jest.fn().mockResolvedValue({ success: true }),
 }));
 jest.mock('@/lib/notifications/send', () => ({
   sendNotification: jest.fn().mockResolvedValue(undefined),
 }));
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { sendNotification } from '@/lib/realtime';
 import {
   performRiskAnalysis,
@@ -499,7 +501,13 @@ describe('ai/risk-analyzer', () => {
       });
 
       await performRiskAnalysis('org-1');
-      expect(logActivity).toHaveBeenCalled();
+      expect(logAuditEventCore).toHaveBeenCalledWith(
+        expect.objectContaining({
+          organizationId: 'org-1',
+          actionType: 'AI_RISK_ANALYSIS_RUN',
+          entityType: 'risk_analysis',
+        }),
+      );
     });
 
     it('generates AI insights for certificate risks', async () => {

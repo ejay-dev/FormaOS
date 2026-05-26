@@ -5,7 +5,7 @@ import { createEnvelope } from '@/lib/api-keys/middleware';
 import { getActorId, createInvitationToken } from '@/lib/api/v1-helpers';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { queueWebhookDelivery } from '@/lib/webhooks/delivery-queue';
 import { dispatchIntegrationEvent } from '@/lib/integrations/manager';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
@@ -188,10 +188,21 @@ export async function POST(request: Request) {
           error: emailResult.error ?? 'invite_delivery_failed',
         };
 
-  await logActivity(auth.context.orgId, actorId, 'invite', 'member', {
+  // M2 (2026-05-26): migrated to hash-chained writer. Member invites
+  // are tracked in the tamper-evident chain alongside MEMBER_REMOVED
+  // and MEMBER_ROLE_UPDATED.
+  await logAuditEventCore({
+    organizationId: auth.context.orgId,
+    actorUserId: actorId,
+    actorRole: null,
+    actionType: 'MEMBER_INVITED',
+    entityType: 'team_invitation',
     entityId: invitation.id,
-    entityName: email,
-    details: { role, type: 'team_invitation', delivery: delivery.status },
+    afterState: {
+      email,
+      role,
+      delivery_status: delivery.status,
+    },
   });
 
   await Promise.allSettled([

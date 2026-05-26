@@ -6,7 +6,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { decodeIntegrationConfig } from './config-crypto';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 
@@ -568,10 +568,19 @@ export async function saveTeamsConfig(
     });
   }
 
-  await logActivity(organizationId, '', 'create', 'report', {
+  // M2 (2026-05-26): migrated to hash-chained writer. System action
+  // (no actor user); actorUserId: null is the documented shape.
+  await logAuditEventCore({
+    organizationId,
+    actorUserId: null,
+    actorRole: 'system',
+    actionType: 'TEAMS_INTEGRATION_CONFIGURED',
+    entityType: 'integration',
     entityId: organizationId,
-    entityName: 'Microsoft Teams',
-    details: { events: config.enabledEvents },
+    afterState: {
+      provider: 'teams',
+      events: config.enabledEvents,
+    },
   });
 }
 

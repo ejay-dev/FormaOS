@@ -8,7 +8,7 @@
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import crypto from 'crypto';
 import dns from 'dns/promises';
 import { consoleShim } from '@/lib/monitoring/console-shim';
@@ -330,21 +330,22 @@ export async function createRelayWebhook(
     throw new Error(`Failed to create relay webhook: ${error.message}`);
   }
 
-  await logActivity(
+  // M2 (2026-05-26): migrated to hash-chained writer. System action;
+  // actorUserId: null is the documented shape for non-user-triggered
+  // events.
+  await logAuditEventCore({
     organizationId,
-    '', // system action
-    'create',
-    'organization',
-    {
-      entityId: data.id,
-      entityName: input.name,
-      details: {
-        events: input.events,
-        provider: input.provider ?? 'custom',
-        type: 'webhook_relay',
-      },
+    actorUserId: null,
+    actorRole: 'system',
+    actionType: 'WEBHOOK_RELAY_CREATED',
+    entityType: 'webhook_relay',
+    entityId: data.id,
+    afterState: {
+      name: input.name,
+      events: input.events,
+      provider: input.provider ?? 'custom',
     },
-  );
+  });
 
   return mapRowToConfig(data);
 }
