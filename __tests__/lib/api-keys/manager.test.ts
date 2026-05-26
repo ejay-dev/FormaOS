@@ -53,8 +53,12 @@ jest.mock('@/lib/ratelimit', () => ({
   addRateLimitHeaders: jest.fn((res) => res),
 }));
 
-jest.mock('@/lib/audit-trail', () => ({
-  logActivity: jest.fn().mockResolvedValue(undefined),
+// M2 (2026-05-26): api-keys/manager.ts migrated from
+// @/lib/audit-trail (non-chained activity_logs) to
+// @/lib/audit/log-audit-event (hash-chained org_audit_log). Mock the
+// new path so unit tests don't try to open a Next.js request scope.
+jest.mock('@/lib/audit/log-audit-event', () => ({
+  logAuditEventCore: jest.fn().mockResolvedValue({ success: true }),
 }));
 
 jest.mock('@/lib/api-keys/scopes', () => ({

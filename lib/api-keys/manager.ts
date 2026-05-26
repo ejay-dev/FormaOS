@@ -5,7 +5,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
 import { addRateLimitHeaders, checkApiRateLimit } from '@/lib/ratelimit';
-import { logActivity } from '@/lib/audit-trail';
+import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import type { ApiKey, ApiKeyUsageLog, ApiKeyValidationResult } from './types';
 import {
   hasRequiredScopes,
@@ -130,10 +130,18 @@ export async function createApiKey(args: {
     throw new Error(`Failed to create API key: ${error?.message ?? 'unknown error'}`);
   }
 
-  await logActivity(args.orgId, args.createdBy, 'create', 'auth', {
+  // M2 (2026-05-26): migrated from lib/audit-trail (non-chained
+  // activity_logs) to lib/audit/log-audit-event (hash-chained
+  // org_audit_log via insertOrgAuditLog). API-key lifecycle events
+  // are security-sensitive — they belong in the tamper-evident chain.
+  await logAuditEventCore({
+    organizationId: args.orgId,
+    actorUserId: args.createdBy,
+    actorRole: null,
+    actionType: 'CREATE_API_KEY',
+    entityType: 'api_key',
     entityId: data.id,
-    entityName: args.name,
-    details: { type: 'api_key', scopes, prefix },
+    afterState: { name: args.name, scopes, prefix },
   });
 
   return { apiKey: mapApiKey(data), plaintextKey: key };
@@ -205,9 +213,13 @@ export async function revokeApiKey(args: {
   }
 
   if (args.revokedBy) {
-    await logActivity(args.orgId, args.revokedBy, 'delete', 'auth', {
+    await logAuditEventCore({
+      organizationId: args.orgId,
+      actorUserId: args.revokedBy,
+      actorRole: null,
+      actionType: 'REVOKE_API_KEY',
+      entityType: 'api_key',
       entityId: args.keyId,
-      details: { type: 'api_key' },
     });
   }
 }
@@ -247,9 +259,14 @@ export async function rotateApiKey(args: {
     throw new Error(`Failed to rotate API key: ${error?.message ?? 'not found'}`);
   }
 
-  await logActivity(args.orgId, args.rotatedBy, 'update', 'auth', {
+  await logAuditEventCore({
+    organizationId: args.orgId,
+    actorUserId: args.rotatedBy,
+    actorRole: null,
+    actionType: 'ROTATE_API_KEY',
+    entityType: 'api_key',
     entityId: args.keyId,
-    details: { type: 'api_key_rotation', prefix },
+    afterState: { prefix },
   });
 
   return { apiKey: mapApiKey(data), plaintextKey: key };
