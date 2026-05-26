@@ -11,6 +11,11 @@ const mockConstructEvent =
 const mockSubscriptionsRetrieve =
   jest.fn<() => Promise<Partial<Stripe.Subscription>>>();
 
+// Stripe SDK 22 moved Subscription.current_period_end onto items and
+// removed Invoice.subscription. The webhook route now calls helpers
+// `subscriptionPeriodEnd` / `invoiceSubscriptionId`; expose compat
+// implementations that read both the legacy top-level fixture shapes
+// and the new nested locations.
 jest.mock('@/lib/billing/stripe', () => ({
   getStripeClient: () => ({
     webhooks: { constructEvent: mockConstructEvent },
@@ -22,6 +27,26 @@ jest.mock('@/lib/billing/stripe', () => ({
     if (priceId === 'price_enterprise') return 'enterprise';
     return null;
   },
+  subscriptionPeriodEnd: (sub: any) =>
+    sub?.current_period_end ??
+    sub?.items?.data?.[0]?.current_period_end ??
+    null,
+  subscriptionPeriodStart: (sub: any) =>
+    sub?.current_period_start ??
+    sub?.items?.data?.[0]?.current_period_start ??
+    null,
+  invoiceSubscriptionId: (inv: any) =>
+    inv?.subscription ??
+    inv?.parent?.subscription_details?.subscription ??
+    null,
+}));
+
+// Audit 2026-05-26 — Next.js revalidatePath requires a static-generation
+// store at runtime that jest tests don't have. Mock so the webhook can
+// call without throwing "Invariant: static generation store missing".
+jest.mock('next/cache', () => ({
+  revalidatePath: jest.fn(),
+  revalidateTag: jest.fn(),
 }));
 
 jest.mock('@/lib/plans', () => ({

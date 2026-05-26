@@ -113,10 +113,20 @@ import { GET, PATCH, DELETE } from '@/app/api/v1/webhooks/[id]/route';
 // ── helpers ─────────────────────────────────────────────
 function makeRequest(method: string, body?: any, query?: string) {
   const url = `http://localhost:3000/api/v1/webhooks/wh1${query ? `?${query}` : ''}`;
-  const opts: RequestInit = { method };
+  // CSRF middleware (lib/security/csrf.ts) blocks unsafe methods without
+  // Origin/Referer. Always include Origin matching the request host so
+  // PATCH/DELETE flow past the CSRF check; GET is exempt but the header
+  // is harmless.
+  const opts: RequestInit = {
+    method,
+    headers: { Origin: 'http://localhost:3000' },
+  };
   if (body) {
     opts.body = JSON.stringify(body);
-    opts.headers = { 'Content-Type': 'application/json' };
+    opts.headers = {
+      ...(opts.headers as Record<string, string>),
+      'Content-Type': 'application/json',
+    };
   }
   return new Request(url, opts);
 }

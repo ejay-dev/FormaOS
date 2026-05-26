@@ -17,18 +17,36 @@ const customJestConfig = {
     '<rootDir>/.gitnexus/',
     '<rootDir>/tests/cta.spec.ts',
     // ---------------------------------------------------------------
-    // Quarantine: pre-existing test breakage on main (40 failing
-    // assertions across the 9 files below). Gate-blocking PRs cannot
-    // turn green until these are either fixed or skipped — see
-    // BLOCKER_FOLLOWUPS.md for the per-file diagnosis.
-    //
-    // Removing an entry here without first making the file green will
-    // turn CI red. Do that work in a focused PR titled
-    // "fix(test): un-quarantine <file>".
+    // Test quarantine — all entries cleared 2026-05-26. The block of
+    // historical un-quarantine notes below documents what was fixed
+    // and stays as a reference for future quarantine work. Add a new
+    // entry above this line ONLY when you cannot fix the underlying
+    // breakage in the same PR; quarantining without justification
+    // turns CI green at the cost of real coverage.
     // ---------------------------------------------------------------
-    '<rootDir>/tests/billing/webhook.test.ts',
-    '<rootDir>/__tests__/lib/billing/webhook-hardening.test.ts',
-    '<rootDir>/__tests__/api/v1/webhooks-id.test.ts',
+    // __tests__/api/v1/webhooks-id.test.ts — UN-QUARANTINED 2026-05-26.
+    // CSRF middleware (lib/security/csrf.ts) now blocks unsafe methods
+    // without an Origin/Referer header; PATCH and DELETE tests were
+    // constructing bare Requests so every assertion came back as 500.
+    // Updated makeRequest() to attach a matching Origin header. 23/23
+    // pass.
+    //
+    // tests/billing/webhook.test.ts — UN-QUARANTINED 2026-05-26.
+    // Same drift as webhook-hardening: next/cache stub + Stripe-22
+    // helper-compat additions to the @/lib/billing/stripe mock so
+    // existing fixtures (top-level current_period_end / subscription)
+    // still flow through. 23/23 pass.
+    //
+    // __tests__/lib/billing/webhook-hardening.test.ts — UN-QUARANTINED 2026-05-26.
+    // Two drift issues fixed in the test file (source was already correct):
+    //   * next/cache revalidatePath threw "Invariant: static generation
+    //     store missing" — added jest.mock('next/cache') stub.
+    //   * Stripe SDK 22 moved Subscription.current_period_end onto items
+    //     and removed Invoice.subscription; the webhook route now calls
+    //     helpers `subscriptionPeriodEnd` / `invoiceSubscriptionId`.
+    //     Test mock extended to expose those helpers reading both the
+    //     legacy top-level fixture shapes AND the new nested locations
+    //     so existing fixtures continue to flow through. 21/21 pass.
     // __tests__/lib/care-scorecard/scorecard-service.test.ts — UN-QUARANTINED 2026-05-26.
     // Three drift issues fixed:
     //   * trendPercentage asserted on old fake values (5 and -3) but
