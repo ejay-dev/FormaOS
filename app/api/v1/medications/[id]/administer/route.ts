@@ -112,7 +112,10 @@ export async function POST(
 
     if (error) {
       log.error({ err: error }, 'failed to record administration');
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to record administration' },
+        { status: 500 },
+      );
     }
     return NextResponse.json({ administration: data });
   } catch (err) {

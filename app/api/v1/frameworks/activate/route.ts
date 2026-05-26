@@ -72,7 +72,10 @@ export async function POST(request: Request) {
         { err: error, slug: body.frameworkSlug },
         'failed to activate framework',
       );
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to activate framework' },
+        { status: 500 },
+      );
     }
 
     // Seed framework controls into org_control_evaluations so the compliance

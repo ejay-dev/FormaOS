@@ -2,6 +2,7 @@ import 'server-only';
 
 import crypto from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { getRedisClient, getRedisConfig } from '@/lib/redis/client';
 import { addRateLimitHeaders, checkApiRateLimit } from '@/lib/ratelimit';
 import { logActivity } from '@/lib/audit-trail';
@@ -106,15 +107,15 @@ export async function createApiKey(args: {
   rateLimit?: number;
   createdBy: string;
 }): Promise<{ apiKey: ApiKey; plaintextKey: string }> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(args.orgId);
   const { key, prefix } = generateRawApiKey();
   const keyHash = hashApiKey(key);
   const scopes = normalizeApiKeyScopes(args.scopes);
 
-  const { data, error } = await admin
+  // org_id is stamped automatically by the org-scoped client.
+  const { data, error } = await supabase
     .from('api_keys')
     .insert({
-      org_id: args.orgId,
       name: args.name,
       key_hash: keyHash,
       prefix,
@@ -139,11 +140,11 @@ export async function createApiKey(args: {
 }
 
 export async function listApiKeys(orgId: string): Promise<ApiKey[]> {
-  const admin = createSupabaseAdminClient();
-  const { data, error } = await admin
+  const supabase = createSupabaseOrgClient(orgId);
+  // .eq('org_id', orgId) appended by the org-scoped client.
+  const { data, error } = await supabase
     .from('api_keys')
     .select('*')
-    .eq('org_id', orgId)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -158,7 +159,7 @@ export async function updateApiKey(
   orgId: string,
   updates: { name?: string; scopes?: string[]; rateLimit?: number },
 ): Promise<ApiKey> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const payload: Record<string, unknown> = {
     updated_at: new Date().toISOString(),
   };
@@ -169,11 +170,11 @@ export async function updateApiKey(
   }
   if (updates.rateLimit !== undefined) payload.rate_limit = updates.rateLimit;
 
-  const { data, error } = await admin
+  // .eq('org_id', orgId) appended by the org-scoped client.
+  const { data, error } = await supabase
     .from('api_keys')
     .update(payload)
     .eq('id', keyId)
-    .eq('org_id', orgId)
     .select('*')
     .single();
 
@@ -189,15 +190,15 @@ export async function revokeApiKey(args: {
   orgId: string;
   revokedBy?: string;
 }): Promise<void> {
-  const admin = createSupabaseAdminClient();
-  const { error } = await admin
+  const supabase = createSupabaseOrgClient(args.orgId);
+  // .eq('org_id', args.orgId) appended by the org-scoped client.
+  const { error } = await supabase
     .from('api_keys')
     .update({
       revoked_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
-    .eq('id', args.keyId)
-    .eq('org_id', args.orgId);
+    .eq('id', args.keyId);
 
   if (error) {
     throw new Error(`Failed to revoke API key: ${error.message}`);
@@ -219,7 +220,7 @@ export async function rotateApiKey(args: {
   rateLimit?: number;
   name?: string;
 }): Promise<{ apiKey: ApiKey; plaintextKey: string }> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(args.orgId);
   const { key, prefix } = generateRawApiKey();
   const keyHash = hashApiKey(key);
   const payload: Record<string, unknown> = {
@@ -234,11 +235,11 @@ export async function rotateApiKey(args: {
   if (args.rateLimit !== undefined) payload.rate_limit = args.rateLimit;
   if (args.name !== undefined) payload.name = args.name;
 
-  const { data, error } = await admin
+  // .eq('org_id', args.orgId) appended by the org-scoped client.
+  const { data, error } = await supabase
     .from('api_keys')
     .update(payload)
     .eq('id', args.keyId)
-    .eq('org_id', args.orgId)
     .select('*')
     .single();
 
@@ -262,6 +263,14 @@ export async function validateApiKey(
     return { ok: false, error: 'Invalid API key format', status: 401 };
   }
 
+  // Intentional admin client: this function discovers the org from the
+  // key (via key_hash lookup) — the caller does not know which org the
+  // key belongs to. createSupabaseOrgClient cannot be used until after
+  // the key row has been fetched, so the initial lookup, the
+  // org_members role check, the soft-revoke on demotion, and the
+  // last_used touch all stay on the admin client. The post-lookup
+  // operations are then naturally scoped by `apiKey.id` / `apiKey.org_id`
+  // filters from the just-read row.
   const admin = createSupabaseAdminClient();
   const keyHash = hashApiKey(rawKey);
   const { data, error } = await admin
@@ -357,12 +366,12 @@ export async function logApiKeyUsage(args: {
   ipAddress?: string | null;
   userAgent?: string | null;
 }): Promise<ApiKeyUsageLog | null> {
-  const admin = createSupabaseAdminClient();
-  const { data, error } = await admin
+  const supabase = createSupabaseOrgClient(args.orgId);
+  // org_id is stamped automatically by the org-scoped client.
+  const { data, error } = await supabase
     .from('api_key_usage_log')
     .insert({
       api_key_id: args.apiKeyId,
-      org_id: args.orgId,
       scope: args.scope ?? null,
       method: args.method,
       path: args.path,

@@ -22,8 +22,13 @@ export async function DELETE(
       .eq('org_id', auth.context.orgId)
       .eq('user_id', auth.context.userId);
 
-    if (error)
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      console.error('[V1 API] saved_searches delete failed:', error);
+      return NextResponse.json(
+        { error: 'Failed to delete saved search' },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json({ deleted: true });
   } catch (error) {

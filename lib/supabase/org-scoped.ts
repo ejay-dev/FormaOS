@@ -107,8 +107,10 @@ const TENANT_TABLE_SCOPES = {
   org_activity: { column: 'organization_id' },
   activity_events: { column: 'organization_id' },
   activity_feed: { column: 'org_id' },
-  api_keys: { column: 'organization_id' },
-  api_key_usage_log: { column: 'organization_id' },
+  // api_keys + api_key_usage_log use `org_id` (verified against
+  // supabase/migrations/20260624004_schema_drift_resolution.sql).
+  api_keys: { column: 'org_id' },
+  api_key_usage_log: { column: 'org_id' },
   org_invitations: { column: 'organization_id' },
   org_user_roles: { column: 'organization_id' },
   org_settings: { column: 'organization_id' },

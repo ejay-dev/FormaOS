@@ -150,7 +150,10 @@ export async function POST(
 
     if (error) {
       log.error({ err: error }, 'failed to insert goal');
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to create goal' },
+        { status: 500 },
+      );
     }
     return NextResponse.json({ goal: data });
   } catch (err) {
@@ -213,7 +216,10 @@ export async function PATCH(
 
     if (error) {
       log.error({ err: error }, 'failed to update goal');
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to update goal' },
+        { status: 500 },
+      );
     }
     if (!data)
       return NextResponse.json({ error: 'Goal not found' }, { status: 404 });
