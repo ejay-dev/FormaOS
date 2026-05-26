@@ -23,6 +23,7 @@ build_output.txt
 /.next/
 /out/
 /.trigger/
+.next_dev_pid
 
 # production
 /build

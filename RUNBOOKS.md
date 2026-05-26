@@ -235,3 +235,45 @@ For severity classification and rotation, see `ONCALL.md`. For coordinated discl
 5. **Document.** Add provider + token rotation date to `docs/ops/credentials-rotation.md`.
 
 **Smoke test for drift.** Once a quarter, run a manual cron with `?probe=1`, then confirm the entry appears in the log store within 5 minutes. If not: drain has detached, re-add it.
+
+---
+
+## 10. Data residency — known cosmetic gap (operator awareness)
+
+**Status as of 2026-05-26: claim is on the roadmap, infrastructure is not yet provisioned.**
+
+**The reality today.** [`lib/data-residency.ts`](lib/data-residency.ts) defines
+`getRegionConfig(region)` for `au` / `us` / `eu`, and the schema stores
+`organizations.data_residency_region`. However, both `SUPABASE_US_URL`
+and `SUPABASE_EU_URL` env vars are unset in production, so the helper
+returns `NEXT_PUBLIC_SUPABASE_URL` (the AU instance) regardless of the
+selected region. The only consumer,
+[`lib/data-governance/residency-enforcement.ts`](lib/data-governance/residency-enforcement.ts),
+treats the result as a `routeHint` for labelling — it does **not**
+construct a per-region client.
+
+**Net effect.** A US or EU-flagged org still has its rows live in the
+AU primary. The Supabase-managed encryption and RLS apply equally,
+but the *geographic* commitment is not enforced.
+
+**What we tell customers.** Marketing copy mentions multi-region
+support as part of the enterprise tier. Until US/EU instances are
+provisioned, **do not promise active data-residency to a specific
+customer** — frame it as "on the roadmap; you'll be migrated when
+the regional pod is live, currently AU-resident."
+
+**Detection.** If you see an incident ticket alleging incorrect
+residency, the answer is: confirmed expected behaviour until we
+provision the second instance. Open a feature ticket, not a
+sev-incident.
+
+**To close this gap (when ready):**
+1. Provision a separate Supabase project per target region.
+2. Set `SUPABASE_US_URL` / `SUPABASE_US_SERVICE_ROLE_KEY` (and EU
+   equivalents) in Vercel production env.
+3. Update [`lib/supabase/server.ts`](lib/supabase/server.ts) and
+   [`lib/supabase/admin.ts`](lib/supabase/admin.ts) to consult the
+   caller's `data_residency_region` via `getRegionConfig()` and build
+   the right client.
+4. Plan a one-way migration job per opted-in org.
+5. Remove this runbook section.
