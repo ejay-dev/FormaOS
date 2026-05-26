@@ -238,6 +238,81 @@ For severity classification and rotation, see `ONCALL.md`. For coordinated discl
 
 ---
 
+## 12. CSP `style-src 'unsafe-inline'` — deferred hardening
+
+**Status as of 2026-05-26: known weakness, not actively exploited.**
+
+**The reality.** [`proxy.ts:1001-1005`](proxy.ts#L1001) and
+[`next.config.ts:236`](next.config.ts#L236) both ship `style-src` as
+`'self' 'unsafe-inline' https://fonts.googleapis.com`. The CSP nonce
+machinery (`createSecureNonce` + `x-nonce` header + `'nonce-${nonce}'`
+in `script-src`) is fully wired for scripts but NOT for styles. An
+XSS payload that bypasses DOMPurify can still inject a `<style>` tag
+to exfiltrate via background-image URLs.
+
+**Why we haven't fixed it.** Switching `style-src` from `'unsafe-inline'`
+to a nonce immediately blocks every existing inline style. Modern
+browsers ignore `'unsafe-inline'` once a nonce is present, so the
+removal isn't a no-op — it's a hard cut. The codebase uses several
+inline-style sources (Radix UI primitives for positioning, Sentry
+overlays, animation libraries, the PostHog widget) plus Tailwind
+JIT in dev.
+
+**To close this gap properly:**
+1. Add a `Content-Security-Policy-Report-Only` sibling header with
+   `style-src 'self' 'nonce-${nonce}' https://fonts.googleapis.com`
+   and a `report-to` directive pointing at a `/api/csp-report` endpoint.
+2. Wire the report endpoint to forward CSP violations to Sentry as
+   structured events (low cardinality — sample heavily).
+3. Run for at least one week across all environments. Triage the
+   violation set: add nonces to surfaces we own, allowlist hashes
+   for third-party widgets we depend on.
+4. Once violations drop to zero, flip `style-src` on the enforcing
+   header from `'unsafe-inline'` to nonce-based.
+
+Estimate: 1–2 weeks calendar, ~3 days engineering. Schedule as a
+deliberate hardening sprint, not as a side-quest.
+
+---
+
+## 11. Retention policy UI is decoupled from the executor (known issue)
+
+**Status as of 2026-05-26: documented gap, no production impact today.**
+
+**The reality.** There are two retention code paths and they don't talk:
+
+- [`lib/data-governance/retention.ts`](lib/data-governance/retention.ts) defines
+  hard-coded `RESOURCE_CONFIGS` (`tasks`, `evidence`, `policies`,
+  `assets`, etc.) and runs nightly via
+  [`app/api/cron/data-retention/route.ts`](app/api/cron/data-retention/route.ts).
+  This is what actually retires data.
+- [`lib/retention/retention-engine.ts`](lib/retention/retention-engine.ts)
+  and the [`/app/settings/retention`](app/app/settings/retention/page.tsx)
+  page let admins CRUD rows in `retention_policies` and manage legal
+  holds. **The cron does NOT read this table.** Whatever an admin saves
+  in the UI has no effect on actually-applied retention.
+
+**Net effect.** The user-facing retention UI is cosmetic. Generic
+retention does run (so we don't grow data forever), but the
+fine-grained per-category policies admins think they configure are
+not enforced.
+
+**What we tell customers.** Don't pitch the per-policy retention
+controls as a primary feature for an evaluation; the generic baseline
+is what's running. SOC2/ISO retention attestations should reference
+the `RESOURCE_CONFIGS` defaults, not customer-specific overrides.
+
+**To close this gap:**
+1. Decide the source of truth: `RESOURCE_CONFIGS` (code) or
+   `retention_policies` (DB).
+2. If DB: rewrite `executeRetention` to enumerate active policies per
+   org and per resource, layering the policy's `retention_period_days`
+   over the default. Honor legal holds via `isUnderLegalHold`.
+3. If code: hide the policy-edit UI under a "coming soon" flag until
+   step 2 is built.
+
+---
+
 ## 10. Data residency — known cosmetic gap (operator awareness)
 
 **Status as of 2026-05-26: claim is on the roadmap, infrastructure is not yet provisioned.**
