@@ -1,4 +1,20 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
+
+/**
+ * Audit 2026-05-26 (M6 follow-up): this file used to reference a
+ * non-existent `org_api_keys` table — the canonical table is
+ * `api_keys`. Verified live against Care OS prod via
+ * `information_schema.tables`. The mistyped name silently no-op'd
+ * the API-key revoke step on org suspension and retirement, so
+ * keys kept working after a founder pressed "Suspend." Fixed
+ * inline; also migrated the per-org reads / writes to
+ * createSupabaseOrgClient so future structural tenancy checks
+ * cover this file.
+ *
+ * admin_audit_log stays on the raw admin client — it's a
+ * platform-admin table, not org-scoped.
+ */
 
 type SuspendOptions = {
   reason: string;
@@ -14,12 +30,12 @@ export async function suspendOrg(
   adminId: string,
   options: SuspendOptions,
 ) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
+  const admin = supabase.unsafeAdmin();
 
-  const { data: org } = await db
+  const { data: org } = await supabase
     .from('organizations')
     .select('lifecycle_status, name')
-    .eq('id', orgId)
     .single();
 
   if (!org) throw new Error('Organization not found');
@@ -34,24 +50,22 @@ export async function suspendOrg(
       ).toISOString()
     : null;
 
-  await db
+  await supabase
     .from('organizations')
     .update({
       lifecycle_status: 'suspended',
       suspended_at: new Date().toISOString(),
       suspension_reason: options.reason,
       auto_restore_at: autoRestoreAt,
-    })
-    .eq('id', orgId);
+    });
 
-  // Revoke active API keys
-  await db
-    .from('org_api_keys')
+  // Revoke active API keys (table is `api_keys`, not `org_api_keys`).
+  await supabase
+    .from('api_keys')
     .update({ revoked_at: new Date().toISOString() })
-    .eq('organization_id', orgId)
     .is('revoked_at', null);
 
-  await db.from('admin_audit_log').insert({
+  await admin.from('admin_audit_log').insert({
     admin_id: adminId,
     action: 'org_suspended',
     resource_type: 'organization',
@@ -75,41 +89,38 @@ export async function restoreOrg(
   adminId: string,
   reason: string,
 ) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
+  const admin = supabase.unsafeAdmin();
 
-  const { data: org } = await db
+  const { data: org } = await supabase
     .from('organizations')
     .select('lifecycle_status')
-    .eq('id', orgId)
     .single();
 
   if (!org) throw new Error('Organization not found');
   if (org.lifecycle_status !== 'suspended')
     throw new Error('Can only restore suspended organizations');
 
-  await db
+  await supabase
     .from('organizations')
     .update({
       lifecycle_status: 'active',
       suspended_at: null,
       suspension_reason: null,
       auto_restore_at: null,
-    })
-    .eq('id', orgId);
+    });
 
   // Notify org admins. Audit v3-011 (2026-05-22): the canonical table is
   // `org_members` (1995 rows in prod). `org_memberships` exists with 0
   // rows — pre-fix this query returned 0 admins so the restore
   // notification was never delivered.
-  const { data: orgAdmins } = await db
+  const { data: orgAdmins } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', orgId)
     .in('role', ['owner', 'admin']);
 
-  for (const a of orgAdmins ?? []) {
-    await db.from('org_notifications').insert({
-      organization_id: orgId,
+  for (const a of (orgAdmins ?? []) as Array<{ user_id: string }>) {
+    await supabase.from('org_notifications').insert({
       user_id: a.user_id,
       type: 'org_restored',
       title: 'Organization Restored',
@@ -117,7 +128,7 @@ export async function restoreOrg(
     });
   }
 
-  await db.from('admin_audit_log').insert({
+  await admin.from('admin_audit_log').insert({
     admin_id: adminId,
     action: 'org_restored',
     resource_type: 'organization',
@@ -136,34 +147,32 @@ export async function retireOrg(
   adminId: string,
   reason: string,
 ) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
+  const admin = supabase.unsafeAdmin();
 
-  const { data: org } = await db
+  const { data: org } = await supabase
     .from('organizations')
     .select('lifecycle_status')
-    .eq('id', orgId)
     .single();
 
   if (!org) throw new Error('Organization not found');
   if (org.lifecycle_status === 'retired')
     throw new Error('Organization is already retired');
 
-  await db
+  await supabase
     .from('organizations')
     .update({
       lifecycle_status: 'retired',
       retired_at: new Date().toISOString(),
       retirement_reason: reason,
-    })
-    .eq('id', orgId);
+    });
 
-  await db
-    .from('org_api_keys')
+  await supabase
+    .from('api_keys')
     .update({ revoked_at: new Date().toISOString() })
-    .eq('organization_id', orgId)
     .is('revoked_at', null);
 
-  await db.from('admin_audit_log').insert({
+  await admin.from('admin_audit_log').insert({
     admin_id: adminId,
     action: 'org_retired',
     resource_type: 'organization',
@@ -176,6 +185,10 @@ export async function retireOrg(
 
 /**
  * Get org lifecycle event history from admin audit log.
+ *
+ * admin_audit_log is keyed by (resource_id, resource_type) rather
+ * than an org column, so this stays on the raw admin client. The
+ * caller's authz check (founder access) gates the operation.
  */
 export async function getOrgLifecycleHistory(orgId: string) {
   const db = createSupabaseAdminClient();
