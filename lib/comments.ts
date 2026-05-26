@@ -9,6 +9,37 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { sendNotification } from '@/lib/notifications/send';
 
+// Confirms the (entityType, entityId) actually exists in the requesting org.
+// Without this check, a user can post or read comments addressed at another
+// org's entity id — the comment row itself stays in the user's org, but the
+// foreign id is a confirmation oracle for cross-tenant existence.
+async function entityBelongsToOrg(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  entityType: Comment['entity_type'],
+  entityId: string,
+  organizationId: string,
+): Promise<boolean> {
+  if (entityType === 'organization') {
+    return entityId === organizationId;
+  }
+  const table =
+    entityType === 'task'
+      ? 'org_tasks'
+      : entityType === 'evidence'
+        ? 'org_evidence'
+        : entityType === 'certificate'
+          ? 'org_certifications'
+          : null;
+  if (!table) return false;
+  const { data } = await supabase
+    .from(table)
+    .select('organization_id')
+    .eq('id', entityId)
+    .eq('organization_id', organizationId)
+    .maybeSingle();
+  return Boolean(data);
+}
+
 export interface Comment {
   id: string;
   entity_type: 'task' | 'certificate' | 'evidence' | 'organization';
@@ -51,6 +82,17 @@ export async function createComment(
   },
 ): Promise<Comment> {
   const supabase = await createClient();
+
+  if (
+    !(await entityBelongsToOrg(
+      supabase,
+      data.entityType,
+      data.entityId,
+      organizationId,
+    ))
+  ) {
+    throw new Error('Entity not found');
+  }
 
   // Extract mentions from content (@username or @email)
   const mentions = extractMentions(data.content);
@@ -127,6 +169,12 @@ export async function getComments(
   entityId: string,
 ): Promise<Comment[]> {
   const supabase = await createClient();
+
+  if (
+    !(await entityBelongsToOrg(supabase, entityType, entityId, organizationId))
+  ) {
+    return [];
+  }
 
   const { data, error } = await supabase
     .from('comments')

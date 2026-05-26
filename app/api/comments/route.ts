@@ -100,17 +100,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
     }
 
-    const comment = await createComment(ctx.orgId, ctx.user.id, {
-      entityType: body.entityType as
-        | 'task'
-        | 'certificate'
-        | 'evidence'
-        | 'organization',
-      entityId: body.entityId,
-      content: body.content,
-      parentId: body.parentId,
-    });
-    return NextResponse.json({ comment });
+    try {
+      const comment = await createComment(ctx.orgId, ctx.user.id, {
+        entityType: body.entityType as
+          | 'task'
+          | 'certificate'
+          | 'evidence'
+          | 'organization',
+        entityId: body.entityId,
+        content: body.content,
+        parentId: body.parentId,
+      });
+      return NextResponse.json({ comment });
+    } catch (err) {
+      if (err instanceof Error && err.message === 'Entity not found') {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      }
+      throw err;
+    }
   } catch (err) {
     log.error({ err }, 'failed to create comment');
     return NextResponse.json(

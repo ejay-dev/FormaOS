@@ -96,6 +96,13 @@ describe('createComment', () => {
     getClient().from.mockImplementation((table: string) => {
       if (table === 'team_members')
         return createBuilder({ data: [], error: null });
+      // P0-3: entity-ownership check must pass so we exercise the insert
+      // error path rather than the IDOR-deny path.
+      if (table === 'org_tasks')
+        return createBuilder({
+          data: { organization_id: 'org-1' },
+          error: null,
+        });
       return createBuilder({ data: null, error: { message: 'insert failed' } });
     });
     await expect(
@@ -105,6 +112,23 @@ describe('createComment', () => {
         content: 'test',
       }),
     ).rejects.toThrow('Failed to create comment');
+  });
+
+  it('refuses to create when entity belongs to a different org', async () => {
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'team_members')
+        return createBuilder({ data: [], error: null });
+      if (table === 'org_tasks')
+        return createBuilder({ data: null, error: null });
+      return createBuilder({ data: { id: 'c1' }, error: null });
+    });
+    await expect(
+      createComment('org-1', 'u1', {
+        entityType: 'task',
+        entityId: 'cross-org-task',
+        content: 'test',
+      }),
+    ).rejects.toThrow('Entity not found');
   });
 });
 
@@ -129,16 +153,42 @@ describe('getComments', () => {
       profiles: { full_name: 'Alice' },
       comment_reactions: [],
     };
-    let callCount = 0;
-    getClient().from.mockImplementation(() => {
-      callCount++;
-      if (callCount === 1)
-        return createBuilder({ data: [comment], error: null });
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'org_tasks')
+        return createBuilder({
+          data: { organization_id: 'org-1' },
+          error: null,
+        });
+      if (table === 'comments') {
+        // First call: top-level comments select. Subsequent: replies per row.
+        const builder = createBuilder({ data: [comment], error: null });
+        let isFirst = true;
+        const originalThen = builder.then;
+        builder.then = (resolve: (v: any) => void) => {
+          if (isFirst) {
+            isFirst = false;
+            return originalThen(resolve);
+          }
+          return resolve({ data: [], error: null });
+        };
+        return builder;
+      }
       return createBuilder({ data: [], error: null });
     });
     const result = await getComments('org-1', 'task', 'task-1');
     expect(result).toHaveLength(1);
     expect(result[0].user).toEqual({ full_name: 'Alice' });
+  });
+
+  it('returns empty when entity belongs to a different org', async () => {
+    getClient().from.mockImplementation((table: string) => {
+      if (table === 'org_tasks')
+        return createBuilder({ data: null, error: null });
+      // Should never be reached, but be safe.
+      return createBuilder({ data: [], error: null });
+    });
+    const result = await getComments('org-1', 'task', 'cross-org-task');
+    expect(result).toEqual([]);
   });
 });
 
