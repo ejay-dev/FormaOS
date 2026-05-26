@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 interface ChurnSignal {
   signal: string;
@@ -22,7 +22,7 @@ export async function getChurnRiskScore(orgId: string): Promise<number> {
 }
 
 export async function getChurnSignals(orgId: string): Promise<ChurnSignal[]> {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
   const signals: ChurnSignal[] = [];
 
   // Login decline check
@@ -124,7 +124,7 @@ export async function getChurnSignals(orgId: string): Promise<ChurnSignal[]> {
 }
 
 export async function getTrialHealthScore(orgId: string) {
-  const db = createSupabaseAdminClient();
+  const db = createSupabaseOrgClient(orgId);
 
   const { data: org } = await db
     .from('organizations')
@@ -141,18 +141,15 @@ export async function getTrialHealthScore(orgId: string) {
   // Check milestones
   const { count: controls } = await db
     .from('org_controls')
-    .select('*', { count: 'exact', head: true })
-    .eq('organization_id', orgId);
+    .select('*', { count: 'exact', head: true });
 
   const { count: evidence } = await db
     .from('org_evidence')
-    .select('*', { count: 'exact', head: true })
-    .eq('organization_id', orgId);
+    .select('*', { count: 'exact', head: true });
 
   const { count: members } = await db
     .from('org_members')
-    .select('*', { count: 'exact', head: true })
-    .eq('organization_id', orgId);
+    .select('*', { count: 'exact', head: true });
 
   const milestones = {
     created_control: (controls || 0) > 0,

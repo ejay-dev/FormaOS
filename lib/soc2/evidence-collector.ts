@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import type { AutomatedCheckResult } from './types';
 
 // ---------------------------------------------------------------------------
@@ -12,8 +12,8 @@ type CheckDefinition = {
   controlCode: string;
   category: string;
   run: (
-    supabase: ReturnType<typeof createSupabaseAdminClient>,
-    orgId: string,
+    supabase: ReturnType<typeof createSupabaseOrgClient>,
+    _orgId: string,
   ) => Promise<{ passed: boolean; detail: string }>;
 };
 
@@ -23,11 +23,10 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Security policies exist',
     controlCode: 'SOC2-S1',
     category: 'Security',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%security%')
         .limit(1);
 
@@ -46,19 +45,17 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'MFA and access review evidence',
     controlCode: 'SOC2-S2',
     category: 'Security',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       // Check for MFA-related evidence or policies
       const { data: mfaEvidence } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%mfa%')
         .limit(1);
 
       const { data: accessReview } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%access review%')
         .limit(1);
 
@@ -84,18 +81,16 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Security monitoring evidence',
     controlCode: 'SOC2-S3',
     category: 'Security',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data: siemEvidence } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%siem%')
         .limit(1);
 
       const { data: monitoringEvidence } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%monitoring%')
         .limit(1);
 
@@ -114,18 +109,16 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Availability and SLA policies',
     controlCode: 'SOC2-A1',
     category: 'Availability',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data: availPolicy } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%availability%')
         .limit(1);
 
       const { data: slaPolicy } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%sla%')
         .limit(1);
 
@@ -144,18 +137,16 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Backup and recovery evidence',
     controlCode: 'SOC2-A2',
     category: 'Availability',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data: backupEvidence } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%backup%')
         .limit(1);
 
       const { data: recoveryEvidence } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%recovery%')
         .limit(1);
 
@@ -174,18 +165,16 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Data classification policy',
     controlCode: 'SOC2-C1',
     category: 'Confidentiality',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data: classPolicy } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%classification%')
         .limit(1);
 
       const { data: dataPolicy } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%data handling%')
         .limit(1);
 
@@ -204,18 +193,16 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Encryption policy',
     controlCode: 'SOC2-C2',
     category: 'Confidentiality',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data: encPolicy } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%encryption%')
         .limit(1);
 
       const { data: keyEvidence } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%key rotation%')
         .limit(1);
 
@@ -234,11 +221,10 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Change management policy',
     controlCode: 'SOC2-PI1',
     category: 'Processing Integrity',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%change management%')
         .limit(1);
 
@@ -257,11 +243,10 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Data quality reports',
     controlCode: 'SOC2-PI2',
     category: 'Processing Integrity',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%data quality%')
         .limit(1);
 
@@ -280,11 +265,10 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Privacy policy',
     controlCode: 'SOC2-P1',
     category: 'Privacy',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%privacy%')
         .limit(1);
 
@@ -303,18 +287,16 @@ const CHECKS: CheckDefinition[] = [
     checkName: 'Retention schedule',
     controlCode: 'SOC2-P2',
     category: 'Privacy',
-    run: async (supabase, orgId) => {
+    run: async (supabase, _orgId) => {
       const { data: retentionPolicy } = await supabase
         .from('org_policies')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%retention%')
         .limit(1);
 
       const { data: retentionEvidence } = await supabase
         .from('org_evidence')
         .select('id')
-        .eq('organization_id', orgId)
         .ilike('title', '%retention%')
         .limit(1);
 
@@ -334,14 +316,14 @@ const CHECKS: CheckDefinition[] = [
 // ---------------------------------------------------------------------------
 
 export async function runAutomatedChecks(
-  orgId: string,
+  _orgId: string,
 ): Promise<AutomatedCheckResult[]> {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(_orgId);
   const results: AutomatedCheckResult[] = [];
 
   for (const check of CHECKS) {
     try {
-      const { passed, detail } = await check.run(supabase, orgId);
+      const { passed, detail } = await check.run(supabase, _orgId);
       results.push({
         checkName: check.checkName,
         controlCode: check.controlCode,

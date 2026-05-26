@@ -6,6 +6,7 @@
  */
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { canStartExport, trackExportStart, trackExportEnd } from './throttle';
 import { generateSignedDownloadUrl } from '@/lib/security/export-tokens';
 import { exportLogger } from '@/lib/observability/structured-logger';
@@ -434,6 +435,8 @@ async function updateJobStatus(
   progress: number,
   extra?: Record<string, unknown>,
 ): Promise<void> {
+  // Keyed by jobId only (no orgId in scope) — admin client is correct here;
+  // the cross-tenant lookup is intentional (the job lookup itself enforces tenancy).
   const admin = createSupabaseAdminClient();
 
   // Try enterprise table first
@@ -454,7 +457,7 @@ async function updateJobStatus(
 async function getComplianceData(
   orgId: string,
 ): Promise<Record<string, unknown>> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   const safe = async <T>(fn: () => PromiseLike<T>): Promise<T | null> => {
     try {
@@ -469,7 +472,6 @@ async function getComplianceData(
       admin
         .from('org_control_evaluations')
         .select('*')
-        .eq('organization_id', orgId)
         .order('created_at', { ascending: false })
         .limit(500),
     ),
@@ -477,7 +479,6 @@ async function getComplianceData(
       admin
         .from('compliance_score_snapshots')
         .select('*')
-        .eq('organization_id', orgId)
         .order('created_at', { ascending: false })
         .limit(120),
     ),
@@ -492,15 +493,14 @@ async function getComplianceData(
 async function getEvidenceMetadata(
   orgId: string,
 ): Promise<Record<string, unknown>> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   // Return metadata only, not actual files
   const { data } = await admin
     .from('org_evidence')
     .select(
       'id, title, evidence_type, verification_status, uploaded_at, file_name, metadata',
-    )
-    .eq('organization_id', orgId);
+    );
 
   return {
     evidence: (data || []).map(
@@ -517,7 +517,7 @@ async function getAuditLogs(
   orgId: string,
   sinceIso: string | null,
 ): Promise<Record<string, unknown>> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   const safeQuery = async (table: string, select: string) => {
     try {
@@ -560,7 +560,7 @@ async function getCareOpsData(
   orgId: string,
   sinceIso: string | null,
 ): Promise<Record<string, unknown>> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   // This may return empty if care ops tables don't exist for this org
   const results: Record<string, unknown> = {};
@@ -568,8 +568,7 @@ async function getCareOpsData(
   try {
     let q = admin
       .from('org_patients')
-      .select('id, full_name, status, created_at, updated_at')
-      .eq('organization_id', orgId);
+      .select('id, full_name, status, created_at, updated_at');
     if (sinceIso) q = q.gte('created_at', sinceIso);
     const { data: patients } = await q;
     results.patients = patients || [];
@@ -581,10 +580,9 @@ async function getCareOpsData(
     // org_visits may not exist; keep best-effort.
     const { data: visits } = await admin
       .from('org_visits')
-      .select('id, patient_id, status, scheduled_at, completed_at, created_at')
-      .eq('organization_id', orgId);
+      .select('id, patient_id, status, scheduled_at, completed_at, created_at');
     const filtered = sinceIso
-      ? (visits ?? []).filter((v) => v.created_at && v.created_at >= sinceIso)
+      ? (visits ?? []).filter((v: { created_at?: string }) => v.created_at && v.created_at >= sinceIso)
       : (visits ?? []);
     results.visits = filtered;
   } catch {
@@ -596,8 +594,7 @@ async function getCareOpsData(
       .from('org_incidents')
       .select(
         'id, incident_type, status, severity, created_at, resolved_at, is_reportable',
-      )
-      .eq('organization_id', orgId);
+      );
     if (sinceIso) q = q.gte('created_at', sinceIso);
     const { data: incidents } = await q;
     results.incidents = incidents || [];
@@ -609,12 +606,11 @@ async function getCareOpsData(
 }
 
 async function getTeamData(orgId: string): Promise<Record<string, unknown>> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   const { data: members } = await admin
     .from('org_members')
-    .select('id, role, invited_at, joined_at, user_id')
-    .eq('organization_id', orgId);
+    .select('id, role, invited_at, joined_at, user_id');
 
   const userIds = (members || [])
     .map((m: { user_id: string }) => m.user_id)
@@ -623,7 +619,8 @@ async function getTeamData(orgId: string): Promise<Record<string, unknown>> {
   // Best-effort enrichment via profiles (if present).
   if (userIds.length > 0) {
     try {
-      const profiles = await getAdminProfileDirectoryEntries(userIds, admin);
+      // profiles table is global (not org-scoped) — pass through the underlying admin client.
+      const profiles = await getAdminProfileDirectoryEntries(userIds, admin.unsafeAdmin());
 
       return {
         members: (members || []).map((m: { user_id: string }) => {

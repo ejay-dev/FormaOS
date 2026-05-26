@@ -3,7 +3,7 @@
  * Calculates care industry metrics for NDIS/Healthcare/Aged Care organizations
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import type {
   CareScorecard,
   CareIndustry,
@@ -60,13 +60,12 @@ export async function generateCareScorecard(
 async function calculateStaffCompliance(
   orgId: string
 ): Promise<StaffComplianceMetrics> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   // Get all staff members
   const { data: members } = await admin
     .from('org_members')
-    .select('id, user_id')
-    .eq('organization_id', orgId);
+    .select('id, user_id');
 
   const totalStaff = members?.length || 0;
   if (totalStaff === 0) {
@@ -84,8 +83,7 @@ async function calculateStaffCompliance(
   // Get compliance status for each staff member
   const { data: credentials } = await admin
     .from('org_staff_credentials')
-    .select('user_id, status, expires_at')
-    .eq('organization_id', orgId);
+    .select('user_id, status, expires_at');
 
   const now = new Date();
   const userStatusMap = new Map<string, 'compliant' | 'non_compliant' | 'pending'>();
@@ -123,7 +121,6 @@ async function calculateStaffCompliance(
   const { data: historicalLogs } = await admin
     .from('org_audit_logs')
     .select('metadata')
-    .eq('organization_id', orgId)
     .eq('action', 'credential.verified')
     .gte('created_at', thirtyDaysAgo.toISOString());
 
@@ -153,7 +150,7 @@ async function calculateStaffCompliance(
  * Calculate credential metrics
  */
 async function calculateCredentialMetrics(orgId: string): Promise<CredentialMetrics> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
   const thirtyDays = new Date();
   thirtyDays.setDate(thirtyDays.getDate() + 30);
@@ -173,15 +170,13 @@ async function calculateCredentialMetrics(orgId: string): Promise<CredentialMetr
       expires_at,
       status,
       document_url
-    `)
-    .eq('organization_id', orgId);
+    `);
 
   // Get user details
   const userIds = [...new Set(credentials?.map((c: { user_id: string }) => c.user_id) || [])];
   const { data: members } = await admin
     .from('org_members')
     .select('user_id, profiles:profiles!inner(full_name, email)')
-    .eq('organization_id', orgId)
     .in('user_id', userIds);
 
   const userMap = new Map<string, { name: string; email: string }>(
@@ -279,7 +274,7 @@ async function calculateCredentialMetrics(orgId: string): Promise<CredentialMetr
  * Calculate visit metrics
  */
 async function calculateVisitMetrics(orgId: string): Promise<VisitMetrics> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -290,7 +285,6 @@ async function calculateVisitMetrics(orgId: string): Promise<VisitMetrics> {
   const { data: visits } = await admin
     .from('org_visits')
     .select('id, status, visit_type, scheduled_start, actual_start, actual_end')
-    .eq('organization_id', orgId)
     .gte('scheduled_start', sevenDaysAgo.toISOString());
 
   type VisitRow = {
@@ -373,7 +367,7 @@ async function calculateVisitMetrics(orgId: string): Promise<VisitMetrics> {
  * Calculate care plan metrics
  */
 async function calculateCarePlanMetrics(orgId: string): Promise<CarePlanMetrics> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
   const sevenDays = new Date();
   sevenDays.setDate(sevenDays.getDate() + 7);
@@ -390,8 +384,7 @@ async function calculateCarePlanMetrics(orgId: string): Promise<CarePlanMetrics>
       plan_type,
       review_date,
       goals
-    `)
-    .eq('organization_id', orgId);
+    `);
 
   // Get patient details
   const patientIds = [...new Set(carePlans?.map((p: { patient_id: string }) => p.patient_id) || [])];
@@ -466,7 +459,7 @@ async function calculateCarePlanMetrics(orgId: string): Promise<CarePlanMetrics>
  * Calculate incident metrics
  */
 async function calculateIncidentMetrics(orgId: string): Promise<IncidentMetrics> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -475,8 +468,7 @@ async function calculateIncidentMetrics(orgId: string): Promise<IncidentMetrics>
 
   const { data: incidents } = await admin
     .from('org_incidents')
-    .select('id, status, severity, incident_type, created_at, resolved_at, follow_up_date')
-    .eq('organization_id', orgId);
+    .select('id, status, severity, incident_type, created_at, resolved_at, follow_up_date');
 
   const openCount = incidents?.filter((i: { status?: string }) => i.status === 'open').length || 0;
   const resolvedThisWeek =
@@ -577,7 +569,7 @@ async function calculateIncidentMetrics(orgId: string): Promise<IncidentMetrics>
  * Calculate workload metrics
  */
 async function calculateWorkloadMetrics(orgId: string): Promise<WorkloadMetrics> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
   const now = new Date();
   const sevenDaysFromNow = new Date();
   sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
@@ -585,21 +577,18 @@ async function calculateWorkloadMetrics(orgId: string): Promise<WorkloadMetrics>
   // Get staff members
   const { data: members } = await admin
     .from('org_members')
-    .select('user_id, role, profiles:profiles!inner(full_name, email)')
-    .eq('organization_id', orgId);
+    .select('user_id, role, profiles:profiles!inner(full_name, email)');
 
   // Get active clients per staff
   const { data: patientAssignments } = await admin
     .from('org_patient_assignments')
     .select('user_id, patient_id')
-    .eq('organization_id', orgId)
     .eq('status', 'active');
 
   // Get scheduled visits per staff (real columns: staff_id + scheduled_start)
   const { data: visits } = await admin
     .from('org_visits')
     .select('staff_id, id')
-    .eq('organization_id', orgId)
     .eq('status', 'scheduled')
     .gte('scheduled_start', now.toISOString())
     .lte('scheduled_start', sevenDaysFromNow.toISOString());

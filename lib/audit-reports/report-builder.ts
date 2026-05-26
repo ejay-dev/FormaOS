@@ -3,7 +3,7 @@
  * Builds report payloads for various compliance frameworks
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { calculateFrameworkReadiness } from '@/lib/audit/readiness-calculator';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 import type {
@@ -57,7 +57,7 @@ export async function buildReport(
 async function buildTrustPacketReport(
   orgId: string,
 ): Promise<BaseReportPayload> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   const { data: org } = await admin
     .from('organizations')
@@ -87,7 +87,6 @@ async function buildTrustPacketReport(
   const { data: evidence } = await admin
     .from('org_evidence')
     .select('verification_status')
-    .eq('organization_id', orgId);
 
   const evidenceSummary = {
     total: evidence?.length || 0,
@@ -112,7 +111,6 @@ async function buildTrustPacketReport(
   const { data: tasks } = await admin
     .from('org_tasks')
     .select('status, due_date')
-    .eq('organization_id', orgId);
 
   const taskSummary = {
     total: tasks?.length || 0,
@@ -154,7 +152,7 @@ async function buildBaseReport(
   frameworkCode: string,
   frameworkName: string,
 ): Promise<BaseReportPayload> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   // Get organization details
   const { data: org } = await admin
@@ -173,7 +171,6 @@ async function buildBaseReport(
   const { data: evidence } = await admin
     .from('org_evidence')
     .select('verification_status')
-    .eq('organization_id', orgId);
 
   const evidenceSummary = {
     total: evidence?.length || 0,
@@ -199,7 +196,6 @@ async function buildBaseReport(
   const { data: tasks } = await admin
     .from('org_tasks')
     .select('status, due_date')
-    .eq('organization_id', orgId);
 
   const taskSummary = {
     total: tasks?.length || 0,
@@ -246,7 +242,7 @@ async function buildIso27001Report(
   orgId: string,
 ): Promise<Iso27001ReportPayload> {
   const baseReport = await buildBaseReport(orgId, 'ISO27001', 'ISO 27001:2022');
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   // Get control evaluations for SoA
   const { data: evaluations } = await admin
@@ -259,7 +255,6 @@ async function buildIso27001Report(
       compliance_controls!inner(code, title)
     `,
     )
-    .eq('organization_id', orgId)
     .eq('control_type', 'control_snapshot');
 
   // Build SoA entries
@@ -288,7 +283,6 @@ async function buildIso27001Report(
   const { data: risks } = await admin
     .from('org_risk_register')
     .select('severity, status')
-    .eq('organization_id', orgId);
 
   const riskAssessmentSummary = {
     totalRisks: risks?.length || 0,
@@ -325,7 +319,7 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
     'NDIS',
     'NDIS Practice Standards',
   );
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   // Get NDIS practice standards evaluations
   const { data: evaluations } = await admin
@@ -339,7 +333,6 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
       compliance_controls!inner(code, title, category)
     `,
     )
-    .eq('organization_id', orgId)
     .eq('control_type', 'control_snapshot');
 
   const practiceStandards: NdisPracticeStandard[] = (evaluations || []).map(
@@ -367,7 +360,6 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
   const { data: incidents } = await admin
     .from('org_incidents')
     .select('status, severity, resolved_at, is_reportable, created_at')
-    .eq('organization_id', orgId);
 
   // Calculate actual average resolution time (in days)
   const resolvedIncidents =
@@ -411,12 +403,10 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
   const { count: totalStaff } = await admin
     .from('org_members')
     .select('*', { count: 'exact', head: true })
-    .eq('organization_id', orgId);
 
   const { data: credentials } = await admin
     .from('org_staff_credentials')
     .select('status, expires_at')
-    .eq('organization_id', orgId);
 
   const now = new Date();
   const thirtyDaysFromNow = new Date();
@@ -467,7 +457,7 @@ async function buildNdisReport(orgId: string): Promise<NdisReportPayload> {
  */
 async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
   const baseReport = await buildBaseReport(orgId, 'HIPAA', 'HIPAA Compliance');
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   // Get control evaluations grouped by category
   const { data: evaluations } = await admin
@@ -479,7 +469,6 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
       compliance_controls!inner(category)
     `,
     )
-    .eq('organization_id', orgId)
     .eq('control_type', 'control_snapshot');
 
   // Calculate rule compliance
@@ -542,29 +531,25 @@ async function buildHipaaReport(orgId: string): Promise<HipaaReportPayload> {
 
 async function getPhiInventorySummary(
   orgId: string,
-  admin: ReturnType<typeof createSupabaseAdminClient>,
+  admin: ReturnType<typeof createSupabaseOrgClient>,
 ): Promise<HipaaReportPayload['phiInventorySummary']> {
   try {
     const [totalRes, phiRes, restRes, transitRes] = await Promise.all([
       admin
         .from('org_assets')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
       admin
         .from('org_assets')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId)
         .eq('contains_phi', true),
       admin
         .from('org_assets')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId)
         .eq('contains_phi', true)
         .eq('encrypted_at_rest', true),
       admin
         .from('org_assets')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId)
         .eq('contains_phi', true)
         .eq('encrypted_in_transit', true),
     ]);
@@ -595,7 +580,7 @@ async function getPhiInventorySummary(
  */
 async function getCriticalGaps(
   orgId: string,
-  admin: ReturnType<typeof createSupabaseAdminClient>,
+  admin: ReturnType<typeof createSupabaseOrgClient>,
   _frameworkCode: string,
 ): Promise<CriticalGap[]> {
   const { data: evaluations } = await admin
@@ -608,7 +593,6 @@ async function getCriticalGaps(
       compliance_controls!inner(code, title)
     `,
     )
-    .eq('organization_id', orgId)
     .eq('control_type', 'control_snapshot')
     .lt('compliance_score', 50)
     .order('compliance_score', { ascending: true })

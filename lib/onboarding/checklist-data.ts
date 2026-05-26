@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import type { ChecklistCompletionCounts } from '@/lib/onboarding/industry-checklists';
 import { getSupabaseErrorMessage } from '@/lib/supabase/schema-compat';
 import { consoleShim } from '@/lib/monitoring/console-shim';
@@ -28,7 +28,7 @@ async function safeCount(
 export async function getChecklistCountsForOrg(
   orgId: string,
 ): Promise<ChecklistCompletionCounts> {
-  const admin = createSupabaseAdminClient();
+  const admin = createSupabaseOrgClient(orgId);
 
   const [
     tasks,
@@ -51,109 +51,94 @@ export async function getChecklistCountsForOrg(
       'org_tasks',
       admin
         .from('org_tasks')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_tasks_completed',
       admin
         .from('org_tasks')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId)
         .eq('status', 'completed'),
     ),
     safeCount(
       'org_evidence',
       admin
         .from('org_evidence')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_evidence_verified',
       admin
         .from('org_evidence')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId)
         .eq('verification_status', 'verified'),
     ),
     safeCount(
       'org_members',
       admin
         .from('org_members')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_control_evaluations',
       admin
         .from('org_control_evaluations')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'reports',
       admin
         .from('reports')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_frameworks',
       admin
         .from('org_frameworks')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_policies',
       admin
         .from('org_policies')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_incidents',
       admin
         .from('org_incidents')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_incidents_closed',
       admin
         .from('org_incidents')
         .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId)
         .eq('status', 'closed'),
     ),
     safeCount(
       'org_registers',
       admin
         .from('org_registers')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_assets',
       admin
         .from('org_assets')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_workflows',
       admin
         .from('org_workflows')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
     safeCount(
       'org_patients',
       admin
         .from('org_patients')
-        .select('id', { count: 'exact', head: true })
-        .eq('organization_id', orgId),
+        .select('id', { count: 'exact', head: true }),
     ),
   ]);
 

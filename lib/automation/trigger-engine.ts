@@ -3,7 +3,7 @@
  * Automated task and workflow generation triggered by compliance events
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { updateComplianceScore } from './compliance-score-engine';
 import { automationLogger } from '@/lib/observability/structured-logger';
 import { insertOrgTaskCompat } from '@/lib/tasks/persistence';
@@ -126,7 +126,7 @@ async function handleEvidenceExpiry(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const evidenceId = event.metadata?.evidenceId;
 
   if (!evidenceId) {
@@ -181,7 +181,6 @@ async function handleEvidenceExpiry(
   const { data: members } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', event.organizationId)
     .in('role', ['owner', 'admin', 'compliance_officer']);
 
   // Create notifications
@@ -207,7 +206,7 @@ async function handlePolicyReviewDue(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const policyId = event.metadata?.policyId;
 
   if (!policyId) {
@@ -262,7 +261,6 @@ async function handlePolicyReviewDue(
   const { data: members } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', event.organizationId)
     .in('role', ['owner', 'admin', 'compliance_officer']);
 
   if (members) {
@@ -287,7 +285,7 @@ async function handleControlIssue(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const controlId = event.metadata?.controlId;
   const status = event.metadata?.status;
 
@@ -296,8 +294,10 @@ async function handleControlIssue(
     return;
   }
 
-  // Get control details
-  const { data: control } = await supabase
+  // compliance_controls is a global catalog (not tenant-scoped). Use the
+  // raw admin client for this lookup; tenant isolation comes from the
+  // surrounding org-scoped writes that follow.
+  const { data: control } = await supabase.unsafeAdmin()
     .from('compliance_controls')
     .select('*')
     .eq('id', controlId)
@@ -342,7 +342,6 @@ async function handleControlIssue(
   const { data: members } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', event.organizationId)
     .in('role', roles);
 
   if (members) {
@@ -368,7 +367,7 @@ async function handleOrgOnboarding(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
 
   // Get organization details for industry-specific setup
   const { data: org } = await supabase
@@ -436,7 +435,6 @@ async function handleOrgOnboarding(
   const { data: owner } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', event.organizationId)
     .eq('role', 'owner')
     .maybeSingle();
 
@@ -467,7 +465,7 @@ async function handleOnboardingMilestone(
   event: TriggerEvent,
   _result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const milestone = event.metadata?.milestone || 'unknown';
 
   automationLogger.info('onboarding_milestone_reached', {
@@ -481,8 +479,7 @@ async function handleOnboardingMilestone(
     .update({
       last_milestone: milestone,
       last_milestone_at: new Date().toISOString(),
-    })
-    .eq('organization_id', event.organizationId);
+    });
 }
 
 /**
@@ -493,7 +490,7 @@ async function handleIndustryConfigured(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const industry = event.metadata?.industry;
 
   automationLogger.info('industry_configured', {
@@ -523,7 +520,7 @@ async function handleFrameworksProvisioned(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const frameworks = event.metadata?.frameworks || [];
 
   automationLogger.info('frameworks_provisioned', {
@@ -555,7 +552,6 @@ async function handleFrameworksProvisioned(
   const { data: owner } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', event.organizationId)
     .eq('role', 'owner')
     .maybeSingle();
 
@@ -580,7 +576,7 @@ async function handleIndustryPackApplied(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const industry = event.metadata?.industry;
   const packName = event.metadata?.packName;
 
@@ -598,7 +594,6 @@ async function handleIndustryPackApplied(
   const { data: owner } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', event.organizationId)
     .eq('role', 'owner')
     .maybeSingle();
 
@@ -622,7 +617,7 @@ async function handleRiskScoreChange(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const { previousRisk, newRisk, score } = event.metadata || {};
 
   if (!previousRisk || !newRisk) {
@@ -663,7 +658,6 @@ async function handleRiskScoreChange(
   const { data: members } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', event.organizationId)
     .in('role', ['owner', 'admin']);
 
   if (members) {
@@ -688,7 +682,7 @@ async function handleTaskOverdue(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const taskId = event.metadata?.taskId;
 
   if (!taskId) {
@@ -739,7 +733,6 @@ async function handleTaskOverdue(
     const { data: members } = await supabase
       .from('org_members')
       .select('user_id')
-      .eq('organization_id', event.organizationId)
       .in('role', roles);
 
     if (members) {
@@ -765,7 +758,7 @@ async function handleCertificationExpiring(
   event: TriggerEvent,
   result: AutomationResult,
 ) {
-  const supabase = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(event.organizationId);
   const certificationId = event.metadata?.certificationId;
   const daysUntilExpiry = event.metadata?.daysUntilExpiry || 30;
 
@@ -813,7 +806,6 @@ async function handleCertificationExpiring(
   const { data: members } = await supabase
     .from('org_members')
     .select('user_id')
-    .eq('organization_id', event.organizationId)
     .in('role', ['owner', 'admin', 'compliance_officer']);
 
   if (members) {

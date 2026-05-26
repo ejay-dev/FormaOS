@@ -3,7 +3,7 @@
  * Ensures FormaOS maintains its compliance graph architecture throughout auth/onboarding
  */
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { graphLogger } from '@/lib/observability/structured-logger';
 import { consoleShim } from '@/lib/monitoring/console-shim';
@@ -49,7 +49,7 @@ export async function initializeComplianceGraph(
   wires?: GraphWire[];
 }> {
   try {
-    const admin = createSupabaseAdminClient();
+    const admin = createSupabaseOrgClient(organizationId);
     const now = new Date().toISOString();
 
     graphLogger.info('graph_initializing', { organizationId });
@@ -66,7 +66,6 @@ export async function initializeComplianceGraph(
     const { data: membershipData } = await admin
       .from('org_members')
       .select('id, role')
-      .eq('organization_id', organizationId)
       .eq('user_id', userId)
       .maybeSingle();
 
@@ -252,8 +251,7 @@ export async function validateComplianceGraph(organizationId: string): Promise<{
     // Check role nodes (via org_members)
     const { data: members } = await supabase
       .from('org_members')
-      .select('id, role')
-      .eq('organization_id', organizationId);
+      .select('id, role');
 
     nodeCount.role = members?.length || 0;
     if (nodeCount.role === 0) {
@@ -266,16 +264,14 @@ export async function validateComplianceGraph(organizationId: string): Promise<{
     // Check policy nodes
     const { data: policies } = await supabase
       .from('org_policies')
-      .select('id')
-      .eq('organization_id', organizationId);
+      .select('id');
 
     nodeCount.policy = policies?.length || 0;
 
     // Check task nodes
     const { data: tasks } = await supabase
       .from('org_tasks')
-      .select('id, policy_id')
-      .eq('organization_id', organizationId);
+      .select('id, policy_id');
 
     nodeCount.task = tasks?.length || 0;
 
@@ -287,8 +283,7 @@ export async function validateComplianceGraph(organizationId: string): Promise<{
     // Check evidence nodes
     const { data: evidence } = await supabase
       .from('org_evidence')
-      .select('id, task_id')
-      .eq('organization_id', organizationId);
+      .select('id, task_id');
 
     nodeCount.evidence = evidence?.length || 0;
 
@@ -300,16 +295,14 @@ export async function validateComplianceGraph(organizationId: string): Promise<{
     // Check audit nodes
     const { data: audits } = await supabase
       .from('org_audit_events')
-      .select('id')
-      .eq('organization_id', organizationId);
+      .select('id');
 
     nodeCount.audit = audits?.length || 0;
 
     // Check entity nodes
     const { data: entities } = await supabase
       .from('org_entities')
-      .select('id')
-      .eq('organization_id', organizationId);
+      .select('id');
 
     nodeCount.entity = entities?.length || 0;
 
@@ -367,14 +360,13 @@ export async function repairComplianceGraph(
   error?: string;
 }> {
   try {
-    const admin = createSupabaseAdminClient();
+    const admin = createSupabaseOrgClient(organizationId);
     const repairsApplied: string[] = [];
 
     // 1. Fix orphaned tasks (tasks without policy references)
     const { data: orphanedTasks } = await admin
       .from('org_tasks')
       .select('id, title')
-      .eq('organization_id', organizationId)
       .is('policy_id', null);
 
     if (orphanedTasks && orphanedTasks.length > 0) {
@@ -382,7 +374,6 @@ export async function repairComplianceGraph(
       const { data: firstPolicy } = await admin
         .from('org_policies')
         .select('id')
-        .eq('organization_id', organizationId)
         .limit(1)
         .maybeSingle();
 
@@ -390,7 +381,6 @@ export async function repairComplianceGraph(
         await admin
           .from('org_tasks')
           .update({ policy_id: firstPolicy.id })
-          .eq('organization_id', organizationId)
           .is('policy_id', null);
 
         repairsApplied.push(`Fixed ${orphanedTasks.length} orphaned tasks`);
@@ -401,14 +391,12 @@ export async function repairComplianceGraph(
     const { data: membersWithoutRole } = await admin
       .from('org_members')
       .select('id, user_id')
-      .eq('organization_id', organizationId)
       .is('role', null);
 
     if (membersWithoutRole && membersWithoutRole.length > 0) {
       await admin
         .from('org_members')
         .update({ role: 'member' })
-        .eq('organization_id', organizationId)
         .is('role', null);
 
       repairsApplied.push(

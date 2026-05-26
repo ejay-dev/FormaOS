@@ -141,6 +141,15 @@ const TENANT_TABLE_SCOPES = {
   detection_rules: { column: 'organization_id' },
   upgrade_intelligence_usage: { column: 'organization_id' },
   intelligence_gaps: { column: 'organization_id' },
+  org_risk_register: { column: 'organization_id' }, // referenced in audit-reports/report-builder; table may be missing in some environments
+  org_frameworks: { column: 'organization_id' },
+  reports: { column: 'organization_id' },
+  org_usage_events: { column: 'org_id' },
+  org_patient_assignments: { column: 'organization_id' },
+  org_visits: { column: 'organization_id' },
+  org_onboarding_status: { column: 'organization_id' },
+  org_forms: { column: 'org_id' },
+  org_participants: { column: 'organization_id' }, // table may be missing in some envs (verified prod 2026-05-26)
 
   // Legacy / drift tenant tables — column = 'org_id'
   memberships: { column: 'organization_id' },
