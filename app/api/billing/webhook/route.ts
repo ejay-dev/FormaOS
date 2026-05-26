@@ -517,69 +517,52 @@ export async function POST(request: Request) {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
-      const orgId = session.metadata?.organization_id;
-      const planKey = resolvePlanKey(session.metadata?.plan_key ?? null);
+      const sessionOrgId = session.metadata?.organization_id ?? null;
+      const sessionPlanKey = resolvePlanKey(session.metadata?.plan_key ?? null);
       const subscriptionId = session.subscription as string | null;
-      const customerId = session.customer as string | null;
-      let priceId = session.metadata?.price_id ?? null;
-      let status = 'active';
-      let currentPeriodEnd: string | null = null;
 
-      if (subscriptionId) {
-        const subscription =
-          await stripe.subscriptions.retrieve(subscriptionId);
-        status = subscription.status;
-        priceId = subscription.items.data[0]?.price?.id ?? priceId;
-        const periodEndUnix = subscriptionPeriodEnd(subscription);
-        currentPeriodEnd = periodEndUnix
-          ? new Date(periodEndUnix * 1000).toISOString()
-          : null;
-      }
-
-      if (orgId && planKey) {
-        const trialExpiresAt = status === 'trialing' ? currentPeriodEnd : null;
-        const { error: checkoutSubErr } = await admin
-          .from('org_subscriptions')
-          .upsert({
-            organization_id: orgId,
-            plan_key: planKey,
-            status,
-            stripe_customer_id: customerId,
-            stripe_subscription_id: subscriptionId,
-            price_id: priceId,
-            current_period_end: currentPeriodEnd,
-            trial_started_at:
-              status === 'trialing' ? new Date().toISOString() : null,
-            trial_expires_at: trialExpiresAt,
-            updated_at: new Date().toISOString(),
+      // P0-4 (2026-05-26): route checkout.session.completed through
+      // upsertFromSubscription so the first-bind + customer-drift +
+      // subscription-drift guards used by customer.subscription.* apply
+      // here too. Without this, a replayed or forged checkout session
+      // referencing an existing Stripe customer could silently rebind
+      // that customer to a different org via session.metadata.
+      if (!subscriptionId) {
+        log.warn(
+          {
+            sessionId: session.id,
+            orgId: sessionOrgId,
+            customerId: session.customer,
+            eventId: event.id,
+          },
+          '[billing/webhook] checkout.session.completed without subscription id — skipping (subscription mode is required)',
+        );
+      } else {
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const upsertedOrgId = await upsertFromSubscription(subscription);
+        if (upsertedOrgId) {
+          await writeBillingAudit({
+            organizationId: upsertedOrgId,
+            stripeCustomerId: session.customer as string | null,
+            payload: {
+              plan_key:
+                sessionPlanKey ??
+                resolvePlanKey(subscription.metadata?.plan_key ?? null),
+              session_id: session.id,
+            },
           });
-        if (checkoutSubErr) {
-          log.error(
-            { err: checkoutSubErr.message },
-            '[billing/webhook] checkout org_subscriptions upsert failed:',
+        } else {
+          // upsertFromSubscription wrote a billing_reconciliation_log row.
+          log.warn(
+            {
+              sessionId: session.id,
+              metadataOrgId: sessionOrgId,
+              subscriptionId,
+              eventId: event.id,
+            },
+            '[billing/webhook] checkout upsert refused by drift / first-bind guard',
           );
-          throw checkoutSubErr;
         }
-
-        const { error: checkoutOrgErr } = await admin
-          .from('organizations')
-          .update({ plan_key: planKey })
-          .eq('id', orgId);
-        if (checkoutOrgErr) {
-          log.error(
-            { err: checkoutOrgErr.message },
-            '[billing/webhook] checkout organizations plan_key update failed:',
-          );
-          throw checkoutOrgErr;
-        }
-
-        await syncEntitlementsForPlan(orgId, planKey);
-        orgsToRevalidate.add(orgId);
-        await writeBillingAudit({
-          organizationId: orgId,
-          stripeCustomerId: session.customer as string | null,
-          payload: { plan_key: planKey, session_id: session.id },
-        });
       }
     }
 
@@ -674,6 +657,94 @@ export async function POST(request: Request) {
             cancellation_reason: subscription.cancellation_details?.reason ?? null,
           },
         });
+      }
+    }
+
+    // P1-D (2026-05-26): Stripe Smart Retries can pause a subscription
+    // after consecutive payment failures. Without this branch, the local
+    // status stays 'active' (or 'past_due') and entitlement gates make
+    // the wrong call. Mirror the paused state and write a billing-audit
+    // signal so ops can see why access dropped.
+    if (event.type === 'customer.subscription.paused') {
+      const subscription = event.data.object as Stripe.Subscription;
+      const subscriptionId = subscription.id;
+      const customerId =
+        typeof subscription.customer === 'string' ? subscription.customer : null;
+
+      const { data: subRow } = await admin
+        .from('org_subscriptions')
+        .select('organization_id')
+        .eq('stripe_subscription_id', subscriptionId)
+        .maybeSingle();
+
+      const { error: pauseErr } = await admin
+        .from('org_subscriptions')
+        .update({
+          status: 'paused',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('stripe_subscription_id', subscriptionId);
+      if (pauseErr) {
+        log.error(
+          { err: pauseErr.message },
+          '[billing/webhook] customer.subscription.paused update failed:',
+        );
+        throw pauseErr;
+      }
+
+      if (subRow?.organization_id) {
+        orgsToRevalidate.add(subRow.organization_id);
+        await writeBillingAudit({
+          organizationId: subRow.organization_id,
+          stripeCustomerId: customerId,
+          payload: {
+            stripe_subscription_id: subscriptionId,
+            pause_collection_behavior:
+              subscription.pause_collection?.behavior ?? null,
+            pause_resumes_at: subscription.pause_collection?.resumes_at ?? null,
+          },
+        });
+      }
+    }
+
+    // P1-D (2026-05-26): a Stripe operator (or our own retry-invoice
+    // admin action) can void an open invoice. Persist a billing-audit
+    // signal so the admin console + reconciliation can see the void.
+    // status of the org subscription is unchanged here — voiding doesn't
+    // imply cancel; that comes via customer.subscription.deleted.
+    if (event.type === 'invoice.voided') {
+      const invoice = event.data.object as Stripe.Invoice;
+      const subscriptionId = invoiceSubscriptionId(invoice);
+      const customerId =
+        typeof invoice.customer === 'string' ? invoice.customer : null;
+
+      const matchCol = subscriptionId
+        ? { stripe_subscription_id: subscriptionId }
+        : customerId
+          ? { stripe_customer_id: customerId }
+          : null;
+
+      if (matchCol) {
+        const { data: subRow } = await admin
+          .from('org_subscriptions')
+          .select('organization_id')
+          .match(matchCol)
+          .maybeSingle();
+
+        if (subRow?.organization_id) {
+          orgsToRevalidate.add(subRow.organization_id);
+          await writeBillingAudit({
+            organizationId: subRow.organization_id,
+            stripeCustomerId: customerId,
+            amount: invoice.amount_due ?? null,
+            currency: invoice.currency ?? null,
+            payload: {
+              stripe_subscription_id: subscriptionId,
+              stripe_invoice_id: invoice.id ?? null,
+              void_reason: 'invoice.voided',
+            },
+          });
+        }
       }
     }
 

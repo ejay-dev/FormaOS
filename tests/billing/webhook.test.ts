@@ -352,11 +352,9 @@ describe('POST /api/billing/webhook', () => {
         customer: CUST_ID,
       };
 
-      mockSubscriptionsRetrieve.mockResolvedValue({
-        status: 'active',
-        items: { data: [{ price: { id: 'price_pro' } }] },
-        current_period_end: Math.floor(Date.now() / 1000) + 86400 * 30,
-      } as unknown as Stripe.Subscription);
+      mockSubscriptionsRetrieve.mockResolvedValue(
+        subscriptionObject() as unknown as Stripe.Subscription,
+      );
 
       const event = stripeEvent('checkout.session.completed', session);
       mockConstructEvent.mockReturnValue(event);
@@ -405,11 +403,14 @@ describe('POST /api/billing/webhook', () => {
         customer: CUST_ID,
       };
 
-      mockSubscriptionsRetrieve.mockResolvedValue({
-        status: 'trialing',
-        items: { data: [{ price: { id: 'price_basic' } }] },
-        current_period_end: futureTs,
-      } as unknown as Stripe.Subscription);
+      mockSubscriptionsRetrieve.mockResolvedValue(
+        subscriptionObject({
+          status: 'trialing',
+          current_period_end: futureTs,
+          items: { data: [{ price: { id: 'price_basic' } }] },
+          metadata: { organization_id: ORG_ID, plan_key: 'basic' },
+        }) as unknown as Stripe.Subscription,
+      );
 
       const event = stripeEvent('checkout.session.completed', session);
       mockConstructEvent.mockReturnValue(event);
