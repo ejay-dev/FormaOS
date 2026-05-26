@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import {
   authenticateV1Request,
   jsonWithContext,
@@ -8,6 +9,26 @@ import {
   archiveForm,
 } from '@/lib/forms/form-store';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const updateFormSchema = z
+  .object({
+    title: z.string().trim().min(1).max(200).optional(),
+    description: z.string().trim().max(2000).optional(),
+    slug: z
+      .string()
+      .trim()
+      .min(1)
+      .max(64)
+      .regex(/^[a-z0-9-]+$/, 'slug must be lowercase alphanumeric with dashes')
+      .optional(),
+    fields: z.array(z.record(z.string(), z.unknown())).max(200).optional(),
+    settings: z.record(z.string(), z.unknown()).optional(),
+  })
+  .refine(
+    (data) => Object.values(data).some((v) => v !== undefined),
+    'At least one field must be provided',
+  );
 
 export const runtime = 'nodejs';
 
@@ -45,23 +66,18 @@ export async function PATCH(
   if (!auth.ok) return auth.response;
 
   const { formId } = await params;
-  const body = await request.json();
+  const validation = await validateBody(request, updateFormSchema);
+  if (!validation.success) {
+    return Response.json(formatZodError(validation.error), { status: 400 });
+  }
 
   try {
-    const { title, description, slug, fields, settings } = body as Record<
-      string,
-      unknown
-    >;
-    const form = await updateForm(auth.context.db, formId, auth.context.orgId, {
-      title: typeof title === 'string' ? title : undefined,
-      description: typeof description === 'string' ? description : undefined,
-      slug: typeof slug === 'string' ? slug : undefined,
-      fields: Array.isArray(fields) ? fields : undefined,
-      settings:
-        settings && typeof settings === 'object'
-          ? (settings as Record<string, unknown>)
-          : undefined,
-    });
+    const form = await updateForm(
+      auth.context.db,
+      formId,
+      auth.context.orgId,
+      validation.data,
+    );
     return jsonWithContext(auth.context, { data: form });
   } catch (err) {
     return Response.json(

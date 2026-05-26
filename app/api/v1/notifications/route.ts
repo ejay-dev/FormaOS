@@ -1,6 +1,13 @@
+import { z } from 'zod';
 import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const markReadSchema = z.object({
+  ids: z.array(z.string().uuid()).max(500).optional().default([]),
+  all: z.boolean().optional().default(false),
+});
 
 export const runtime = 'nodejs';
 
@@ -50,13 +57,16 @@ export async function PATCH(request: Request) {
     return auth.response;
   }
 
-  const body = (await request.json().catch(() => null)) as
-    | { ids?: unknown; all?: unknown }
-    | null;
-  const ids = Array.isArray(body?.ids)
-    ? body.ids.filter((value): value is string => typeof value === 'string')
-    : [];
-  const markAll = body?.all === true;
+  const validation = await validateBody(request, markReadSchema);
+  if (!validation.success) {
+    await logV1Access(auth.context, 400, 'notifications:write');
+    return jsonWithContext(
+      auth.context,
+      formatZodError(validation.error),
+      { status: 400 },
+    );
+  }
+  const { ids, all: markAll } = validation.data;
 
   // v4-019: API-key context (no userId) previously skipped the
   // user_id filter, so a `markAll` + empty `ids` would update every
