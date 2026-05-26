@@ -137,6 +137,7 @@ const TENANT_TABLE_SCOPES = {
   search_index: { column: 'org_id' },
   recent_items: { column: 'org_id' },
   search_history: { column: 'org_id' },
+  org_saved_reports: { column: 'org_id' },
   task_recurrence: { column: 'org_id' },
   identity_audit_log: { column: 'organization_id' },
   identity_audit_events: { column: 'org_id' },

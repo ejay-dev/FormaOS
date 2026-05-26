@@ -1,7 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { authenticateV1Request } from '@/lib/api-keys/middleware';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { requireCustomReportsEntitlement } from '../_entitlement';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const updateCustomReportSchema = z
+  .object({
+    name: z.string().trim().min(1).max(200).optional(),
+    description: z.string().trim().max(2000).optional(),
+    config: z.record(z.string(), z.unknown()).optional(),
+    schedule: z.record(z.string(), z.unknown()).nullable().optional(),
+  })
+  .refine(
+    (data) => Object.values(data).some((v) => v !== undefined),
+    'At least one field must be provided',
+  );
 
 export async function GET(
   req: NextRequest,
@@ -16,12 +30,12 @@ export async function GET(
     if (entitlementError) return entitlementError;
 
     const { reportId } = await params;
-    const db = createSupabaseAdminClient();
-    const { data, error } = await db
+    const supabase = createSupabaseOrgClient(auth.context.orgId);
+    // .eq('org_id', orgId) appended automatically by the org-scoped client.
+    const { data, error } = await supabase
       .from('org_saved_reports')
       .select('*')
       .eq('id', reportId)
-      .eq('org_id', auth.context.orgId)
       .single();
 
     if (error || !data)
@@ -50,22 +64,27 @@ export async function PATCH(
     if (entitlementError) return entitlementError;
 
     const { reportId } = await params;
-    const body = await req.json();
-    const db = createSupabaseAdminClient();
+    const validation = await validateBody(req, updateCustomReportSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
+    }
+    const body = validation.data;
 
-    const { data, error } = await db
+    const supabase = createSupabaseOrgClient(auth.context.orgId);
+    const { data, error } = await supabase
       .from('org_saved_reports')
       .update({
-        ...(body.name && { name: body.name }),
+        ...(body.name !== undefined && { name: body.name }),
         ...(body.description !== undefined && {
           description: body.description,
         }),
-        ...(body.config && { config: body.config }),
+        ...(body.config !== undefined && { config: body.config }),
         ...(body.schedule !== undefined && { schedule: body.schedule }),
         updated_at: new Date().toISOString(),
       })
       .eq('id', reportId)
-      .eq('org_id', auth.context.orgId)
       .select()
       .single();
 
@@ -98,13 +117,11 @@ export async function DELETE(
     if (entitlementError) return entitlementError;
 
     const { reportId } = await params;
-    const db = createSupabaseAdminClient();
-
-    const { error } = await db
+    const supabase = createSupabaseOrgClient(auth.context.orgId);
+    const { error } = await supabase
       .from('org_saved_reports')
       .delete()
-      .eq('id', reportId)
-      .eq('org_id', auth.context.orgId);
+      .eq('id', reportId);
 
     if (error)
       return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
