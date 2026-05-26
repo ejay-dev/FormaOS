@@ -1,17 +1,27 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import {
+  formatZodError,
+  uuidSchema,
+  validateBody,
+} from '@/lib/security/api-validation';
 
 const log = routeLog('/api/v1/medications/[id]/administer');
-const VALID_STATUSES = new Set([
-  'given',
-  'withheld',
-  'refused',
-  'self_administered',
-]);
+
+const administerSchema = z.object({
+  participant_id: uuidSchema.optional(),
+  dose_given: z.string().trim().max(200).optional(),
+  status: z
+    .enum(['given', 'withheld', 'refused', 'self_administered'])
+    .default('given'),
+  notes: z.string().trim().max(2000).optional(),
+  witness_id: uuidSchema.optional(),
+});
 
 export async function POST(
   request: Request,
@@ -35,13 +45,13 @@ export async function POST(
     const { userId, orgId } = ctx;
 
     const { id: medicationId } = await params;
-    const body = (await request.json().catch(() => ({}))) as {
-      participant_id?: string;
-      dose_given?: string;
-      status?: string;
-      notes?: string;
-      witness_id?: string;
-    };
+    const validation = await validateBody(request, administerSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
+    }
+    const body = validation.data;
 
     const { data: med } = await supabase
       .from('org_medications')
@@ -90,10 +100,6 @@ export async function POST(
       }
     }
 
-    const status = VALID_STATUSES.has(body.status || '')
-      ? body.status
-      : 'given';
-
     const { data, error } = await supabase
       .from('org_medication_administrations')
       .insert({
@@ -102,10 +108,10 @@ export async function POST(
         participant_id: participantIdToUse,
         administered_by: userId,
         administered_at: new Date().toISOString(),
-        dose_given: body.dose_given || null,
-        status,
-        notes: body.notes || null,
-        witness_id: body.witness_id || null,
+        dose_given: body.dose_given ?? null,
+        status: body.status,
+        notes: body.notes ?? null,
+        witness_id: body.witness_id ?? null,
       })
       .select()
       .single();

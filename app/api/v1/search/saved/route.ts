@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const createSavedSearchSchema = z.object({
+  name: z.string().trim().min(1).max(200),
+  query: z.string().trim().min(1).max(2000),
+  filters: z.record(z.string(), z.unknown()).optional().default({}),
+});
 
 export async function GET(req: NextRequest) {
   try {
@@ -37,13 +45,13 @@ export async function POST(req: NextRequest) {
     });
     if (!auth.ok) return auth.response;
 
-    const body = await req.json();
-    if (!body.name || !body.query) {
-      return NextResponse.json(
-        { error: 'name and query required' },
-        { status: 400 },
-      );
+    const validation = await validateBody(req, createSavedSearchSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
     }
+    const body = validation.data;
 
     const db = createSupabaseAdminClient();
     const { data, error } = await db
@@ -53,7 +61,7 @@ export async function POST(req: NextRequest) {
         user_id: auth.context.userId,
         name: body.name,
         query: body.query,
-        filters: body.filters ?? {},
+        filters: body.filters,
       })
       .select()
       .single();

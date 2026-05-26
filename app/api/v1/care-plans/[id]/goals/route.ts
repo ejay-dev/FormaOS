@@ -1,29 +1,49 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
 
 const log = routeLog('/api/v1/care-plans/[id]/goals');
 
-const VALID_CATEGORIES = new Set([
-  'daily_living',
-  'social',
-  'health',
-  'employment',
-  'education',
-  'community',
-  'independence',
-  'safety',
-]);
-const VALID_STATUSES = new Set([
-  'not_started',
-  'in_progress',
-  'achieved',
-  'partially_achieved',
-  'discontinued',
-]);
+const createGoalSchema = z.object({
+  goal_text: z.string().trim().min(1, 'goal_text required').max(2000),
+  category: z
+    .enum([
+      'daily_living',
+      'social',
+      'health',
+      'employment',
+      'education',
+      'community',
+      'independence',
+      'safety',
+    ])
+    .default('independence'),
+  target_date: z.string().trim().max(40).optional(),
+  measurement_method: z.string().trim().max(500).optional(),
+  baseline_value: z.string().trim().max(500).optional(),
+  target_value: z.string().trim().max(500).optional(),
+});
+
+const updateGoalSchema = z.object({
+  status: z
+    .enum([
+      'not_started',
+      'in_progress',
+      'achieved',
+      'partially_achieved',
+      'discontinued',
+    ])
+    .optional(),
+  progress_percentage: z.number().min(0).max(100).optional(),
+  current_value: z.string().trim().max(500).optional(),
+  goal_text: z.string().trim().min(1).max(2000).optional(),
+  target_date: z.string().trim().max(40).optional(),
+});
 
 type RouteCtx =
   | { response: NextResponse; supabase?: undefined }
@@ -99,24 +119,13 @@ export async function POST(
     if (ctx.response) return ctx.response;
 
     const { id: carePlanId } = await params;
-    const body = (await request.json().catch(() => ({}))) as {
-      goal_text?: string;
-      category?: string;
-      target_date?: string;
-      measurement_method?: string;
-      baseline_value?: string;
-      target_value?: string;
-    };
-
-    if (!body.goal_text?.trim()) {
-      return NextResponse.json(
-        { error: 'goal_text required' },
-        { status: 400 },
-      );
+    const validation = await validateBody(request, createGoalSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
     }
-    const category = VALID_CATEGORIES.has(body.category || '')
-      ? body.category
-      : 'independence';
+    const body = validation.data;
 
     // org_care_plans.client_id holds the participant FK (legacy column name).
     const { data: plan } = await ctx.supabase
@@ -137,12 +146,12 @@ export async function POST(
         org_id: ctx.orgId,
         care_plan_id: carePlanId,
         participant_id: plan.client_id ?? null,
-        goal_text: body.goal_text.trim(),
-        category,
-        target_date: body.target_date || null,
-        measurement_method: body.measurement_method || null,
-        baseline_value: body.baseline_value || null,
-        target_value: body.target_value || null,
+        goal_text: body.goal_text,
+        category: body.category,
+        target_date: body.target_date ?? null,
+        measurement_method: body.measurement_method ?? null,
+        baseline_value: body.baseline_value ?? null,
+        target_value: body.target_value ?? null,
         created_by: ctx.userId,
       })
       .select()
@@ -181,28 +190,23 @@ export async function PATCH(
     if (ctx.response) return ctx.response;
 
     const { id: goalId } = await params;
-    const body = (await request.json().catch(() => ({}))) as {
-      status?: string;
-      progress_percentage?: number;
-      current_value?: string;
-      goal_text?: string;
-      target_date?: string;
-    };
+    const validation = await validateBody(request, updateGoalSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
+    }
+    const body = validation.data;
 
     const updates: Record<string, unknown> = {
       updated_at: new Date().toISOString(),
     };
-    if (body.status && VALID_STATUSES.has(body.status))
-      updates.status = body.status;
-    if (typeof body.progress_percentage === 'number') {
-      updates.progress_percentage = Math.min(
-        100,
-        Math.max(0, body.progress_percentage),
-      );
-    }
+    if (body.status) updates.status = body.status;
+    if (body.progress_percentage !== undefined)
+      updates.progress_percentage = body.progress_percentage;
     if (body.current_value !== undefined)
       updates.current_value = body.current_value;
-    if (body.goal_text?.trim()) updates.goal_text = body.goal_text.trim();
+    if (body.goal_text) updates.goal_text = body.goal_text;
     if (body.target_date !== undefined)
       updates.target_date = body.target_date || null;
 
