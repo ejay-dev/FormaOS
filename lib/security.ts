@@ -282,7 +282,9 @@ export async function verify2FAToken(
   }
 
   // Check if it's a backup code by scrypt-comparing against each stored hash.
-  // On match, remove that specific hash so the code is single-use.
+  // P1-A (2026-05-26): on match, consume the specific hash via a server-side
+  // RPC that performs the removal as a single atomic UPDATE with a WHERE
+  // guard, so two concurrent verifies of the same code can't both succeed.
   const storedHashes: string[] = Array.isArray(
     (security as { backup_code_hashes?: string[] }).backup_code_hashes,
   )
@@ -290,12 +292,16 @@ export async function verify2FAToken(
     : [];
   for (let i = 0; i < storedHashes.length; i++) {
     if (await backupCodeMatches(token, storedHashes[i])) {
-      const remaining = storedHashes.filter((_, idx) => idx !== i);
-      await supabase
-        .from('user_security')
-        .update({ backup_code_hashes: remaining })
-        .eq('user_id', userId);
-      return true;
+      const { data: consumed, error: rpcError } = await supabase.rpc(
+        'consume_backup_code_hash',
+        { p_user_id: userId, p_hash: storedHashes[i] },
+      );
+      if (rpcError) {
+        return false;
+      }
+      // RPC returns true only when this caller observed the removal; if
+      // it returns false, a concurrent verify already consumed this code.
+      return Boolean(consumed);
     }
   }
 

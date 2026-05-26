@@ -268,6 +268,58 @@ describe('verify2FAToken', () => {
     const result = await verify2FAToken('user-1', '123456');
     expect(result).toBe(false);
   });
+
+  // P1-A (2026-05-26): atomic backup-code consumption via RPC.
+  it('consumes a matching backup code via consume_backup_code_hash RPC', async () => {
+    const realBackupCode = 'ABCDEF12';
+    const { randomBytes, scryptSync } = require('crypto') as typeof import('crypto');
+    const salt = randomBytes(16);
+    const hash = scryptSync(realBackupCode, salt, 32);
+    const storedHash = `scrypt$${salt.toString('base64')}$${hash.toString('base64')}`;
+
+    const client = getClient();
+    client.from.mockImplementation(() =>
+      createBuilder({
+        data: {
+          two_factor_secret: 'JBSWY3DPEHPK3PXP',
+          backup_code_hashes: [storedHash],
+        },
+        error: null,
+      }),
+    );
+    client.rpc = jest.fn().mockResolvedValue({ data: true, error: null });
+
+    const result = await verify2FAToken('user-1', realBackupCode);
+    expect(result).toBe(true);
+    expect(client.rpc).toHaveBeenCalledWith('consume_backup_code_hash', {
+      p_user_id: 'user-1',
+      p_hash: storedHash,
+    });
+  });
+
+  it('rejects backup code when the RPC reports a concurrent consume', async () => {
+    const realBackupCode = 'ABCDEF12';
+    const { randomBytes, scryptSync } = require('crypto') as typeof import('crypto');
+    const salt = randomBytes(16);
+    const hash = scryptSync(realBackupCode, salt, 32);
+    const storedHash = `scrypt$${salt.toString('base64')}$${hash.toString('base64')}`;
+
+    const client = getClient();
+    client.from.mockImplementation(() =>
+      createBuilder({
+        data: {
+          two_factor_secret: 'JBSWY3DPEHPK3PXP',
+          backup_code_hashes: [storedHash],
+        },
+        error: null,
+      }),
+    );
+    // RPC returns false: this caller lost the race.
+    client.rpc = jest.fn().mockResolvedValue({ data: false, error: null });
+
+    const result = await verify2FAToken('user-1', realBackupCode);
+    expect(result).toBe(false);
+  });
 });
 
 describe('disable2FA', () => {
