@@ -1,13 +1,18 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import {
   getAvailableRegions,
   getOrgDataRegion,
   setOrgDataRegion,
-  type DataRegion,
 } from '@/lib/data-residency';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const updateResidencySchema = z.object({
+  region: z.enum(['au', 'us', 'eu']),
+});
 
 export const runtime = 'nodejs';
 
@@ -42,30 +47,13 @@ export async function PATCH(request: Request) {
     );
   }
 
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  const validation = await validateBody(request, updateResidencySchema);
+  if (!validation.success) {
+    return NextResponse.json(formatZodError(validation.error), {
+      status: 400,
+    });
   }
-
-  const VALID_REGIONS: DataRegion[] = ['au', 'us', 'eu'];
-  const region = (body as Record<string, unknown>)?.region;
-
-  if (
-    !region ||
-    typeof region !== 'string' ||
-    !VALID_REGIONS.includes(region as DataRegion)
-  ) {
-    return NextResponse.json(
-      {
-        error: `region is required and must be one of: ${VALID_REGIONS.join(', ')}`,
-      },
-      { status: 400 },
-    );
-  }
-
-  const validRegion = region as DataRegion;
+  const validRegion = validation.data.region;
   const result = await setOrgDataRegion(ctx.orgId, validRegion);
 
   if (!result.ok) {

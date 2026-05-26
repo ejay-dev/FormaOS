@@ -1,11 +1,15 @@
+import { z } from 'zod';
 import { authenticateV1Request, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { createEnvelope } from '@/lib/api-keys/middleware';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { getActorId } from '@/lib/api/v1-helpers';
 import { createReportExportJob } from '@/lib/reports/export-jobs';
-import type { ReportType } from '@/lib/audit-reports/types';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
 
-const VALID_REPORT_TYPES: ReportType[] = ['soc2', 'iso27001', 'ndis', 'hipaa', 'trust'];
+const createReportSchema = z.object({
+  reportType: z.enum(['soc2', 'iso27001', 'ndis', 'hipaa', 'trust']),
+  format: z.enum(['json', 'pdf']).default('pdf'),
+});
 
 export const runtime = 'nodejs';
 
@@ -43,18 +47,17 @@ export async function POST(request: Request) {
     return auth.response;
   }
 
-  const body = (await request.json().catch(() => null)) as
-    | { reportType?: unknown; format?: unknown }
-    | null;
-  const reportType = typeof body?.reportType === 'string' ? (body.reportType as ReportType) : null;
-  const format =
-    body?.format === 'json' || body?.format === 'pdf' ? body.format : 'pdf';
-
-  if (!reportType || !VALID_REPORT_TYPES.includes(reportType)) {
-    const response = jsonWithContext(auth.context, { error: 'Invalid report type' }, { status: 400 });
+  const validation = await validateBody(request, createReportSchema);
+  if (!validation.success) {
+    const response = jsonWithContext(
+      auth.context,
+      formatZodError(validation.error),
+      { status: 400 },
+    );
     await logV1Access(auth.context, 400, 'reports:write');
     return response;
   }
+  const { reportType, format } = validation.data;
 
   const result = await createReportExportJob({
     organizationId: auth.context.orgId,

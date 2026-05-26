@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import {
   authenticateV1Request,
   jsonWithContext,
@@ -6,6 +7,21 @@ import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { getStringParam } from '@/lib/api/v1-helpers';
 import { createForm, listForms } from '@/lib/forms/form-store';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const createFormSchema = z.object({
+  title: z.string().trim().min(1, 'title is required').max(200),
+  description: z.string().trim().max(2000).optional(),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(64)
+    .regex(/^[a-z0-9-]+$/, 'slug must be lowercase alphanumeric with dashes')
+    .optional(),
+  fields: z.array(z.record(z.string(), z.unknown())).max(200).optional(),
+  settings: z.record(z.string(), z.unknown()).optional(),
+});
 
 export const runtime = 'nodejs';
 
@@ -47,39 +63,28 @@ export async function POST(request: Request) {
   });
   if (!auth.ok) return auth.response;
 
+  const validation = await validateBody(request, createFormSchema);
+  if (!validation.success) {
+    return Response.json(formatZodError(validation.error), { status: 400 });
+  }
+  const { title, description, slug, fields, settings } = validation.data;
+
   try {
-    const body = await request.json();
-    const { title, description, slug, fields, settings } = body as Record<
-      string,
-      unknown
-    >;
-
-    if (!title || typeof title !== 'string') {
-      return Response.json(
-        { error: 'title is required' },
-        { status: 400 },
-      );
-    }
-
     const form = await createForm(
       auth.context.db,
       auth.context.orgId,
       auth.context.userId ?? '',
       {
         title,
-        description: typeof description === 'string' ? description : undefined,
+        description,
         slug:
-          typeof slug === 'string'
-            ? slug
-            : title
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .slice(0, 64),
-        fields: Array.isArray(fields) ? fields : undefined,
-        settings:
-          settings && typeof settings === 'object'
-            ? (settings as Record<string, unknown>)
-            : undefined,
+          slug ??
+          title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .slice(0, 64),
+        fields,
+        settings,
       },
     );
 
