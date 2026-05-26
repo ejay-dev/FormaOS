@@ -1,4 +1,3 @@
-import { consoleShim } from '@/lib/monitoring/console-shim';
 type EnvValue = string | undefined | null;
 
 const isPresent = (value: EnvValue) =>
@@ -25,7 +24,11 @@ function warnOnLegacyServiceRoleAliases(): void {
 
   const hasCanonical = isPresent(process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-  consoleShim.warn(
+  // Imported by proxy.ts (edge runtime) — consoleShim pulls in pino +
+  // 'server-only' and breaks the middleware bundle. Plain console.warn
+  // is intentional here.
+  // eslint-disable-next-line no-console
+  console.warn(
     `[Supabase env] Legacy service-role alias detected (${aliases.join(
       ', ',
     )}). Prefer SUPABASE_SERVICE_ROLE_KEY${

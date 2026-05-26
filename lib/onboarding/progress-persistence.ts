@@ -7,7 +7,6 @@
  */
 
 import type { ChecklistCompletionCounts } from './industry-checklists';
-import { consoleShim } from '@/lib/monitoring/console-shim';
 
 const STORAGE_KEY = 'formaos_onboarding_progress';
 const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
@@ -41,7 +40,10 @@ export function getCachedProgress(
 
     return data.counts;
   } catch (error) {
-    consoleShim.warn('[progress-persistence] Failed to read cache:', error);
+    // Client-only module (localStorage) — consoleShim pulls in pino +
+    // 'server-only' and breaks the build.
+    // eslint-disable-next-line no-console
+    console.warn('[progress-persistence] Failed to read cache:', error);
     return null;
   }
 }
@@ -63,7 +65,8 @@ export function setCachedProgress(
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
-    consoleShim.warn('[progress-persistence] Failed to save cache:', error);
+    // eslint-disable-next-line no-console
+    console.warn('[progress-persistence] Failed to save cache:', error);
   }
 }
 
@@ -76,7 +79,8 @@ export function clearCachedProgress(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
   } catch (error) {
-    consoleShim.warn('[progress-persistence] Failed to clear cache:', error);
+    // eslint-disable-next-line no-console
+    console.warn('[progress-persistence] Failed to clear cache:', error);
   }
 }
 

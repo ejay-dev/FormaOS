@@ -13,7 +13,6 @@ import {
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { createLangfuseSpanProcessor } from '@/lib/observability/langfuse';
-import { consoleShim } from '@/lib/monitoring/console-shim';
 
 let sdkStartPromise: Promise<boolean> | null = null;
 
@@ -123,7 +122,12 @@ export async function registerOpenTelemetry(): Promise<boolean> {
 
   sdkStartPromise = startOpenTelemetry().catch((error) => {
     sdkStartPromise = null;
-    consoleShim.warn(
+    // Imported from instrumentation.ts (runs in both edge + Node runtimes).
+    // consoleShim → server-logger → pino has 'server-only' which Turbopack
+    // refuses to bundle for the edge variant; raw console.warn is the
+    // safe path here.
+    // eslint-disable-next-line no-console
+    console.warn(
       '[observability] OpenTelemetry bootstrap failed:',
       error instanceof Error ? error.message : 'Unknown error',
     );

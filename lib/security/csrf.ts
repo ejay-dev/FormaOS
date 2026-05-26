@@ -20,7 +20,6 @@
  */
 
 import { NextResponse } from 'next/server';
-import { consoleShim } from '@/lib/monitoring/console-shim';
 
 /**
  * Trusted origins derived from environment config.
@@ -136,7 +135,11 @@ export function validateCsrfOrigin(request: Request): NextResponse | null {
   }
 
   if (!requestOrigin) {
-    consoleShim.warn('[CSRF] Blocked request with no Origin/Referer header', {
+    // Called from proxy.ts middleware (edge runtime). consoleShim pulls
+    // in pino + 'server-only' which Turbopack refuses to bundle for
+    // edge — plain console.warn is the safe path.
+    // eslint-disable-next-line no-console
+    console.warn('[CSRF] Blocked request with no Origin/Referer header', {
       method,
       url: request.url,
     });
@@ -148,7 +151,8 @@ export function validateCsrfOrigin(request: Request): NextResponse | null {
 
   const trusted = getTrustedOrigins();
   if (!trusted.has(requestOrigin) && !isDevelopmentLoopbackOrigin(requestOrigin)) {
-    consoleShim.warn('[CSRF] Blocked request from untrusted origin', {
+    // eslint-disable-next-line no-console
+    console.warn('[CSRF] Blocked request from untrusted origin', {
       requestOrigin,
       method,
       url: request.url,
