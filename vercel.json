@@ -31,6 +31,10 @@
       "schedule": "0 4 * * *"
     },
     {
+      "path": "/api/cron/enforce-grace-period",
+      "schedule": "30 4 * * *"
+    },
+    {
       "path": "/api/cron/audit-chain-verify",
       "schedule": "0 5 * * *"
     },

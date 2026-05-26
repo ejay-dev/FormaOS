@@ -11,10 +11,10 @@ import {
   type AttestationRow,
   type ControlNeedingAttestation,
 } from '@/lib/compliance/attestations';
-// TODO(audit-sprint-1): import { assertOrgCanWrite, OrgReadOnlyError } from
-// '@/lib/billing/enforce-grace-period' once PR #162 merges, and wrap each
-// mutator with await assertOrgCanWrite(membership.orgId). The helper
-// lives there, not on this branch.
+import {
+  assertOrgCanWrite,
+  OrgReadOnlyError,
+} from '@/lib/billing/enforce-grace-period';
 
 // Audit Sprint 6c (2026-05-23): server actions for the manual-attestation
 // workflow. Each mutator:
@@ -49,6 +49,19 @@ export async function claimAttestation(input: {
 }) {
   const membership = await getUserOrgMembership();
   if (!membership) return actionError(new Error('Unauthorized'));
+
+  try {
+    await assertOrgCanWrite(membership.orgId);
+  } catch (gateError) {
+    if (gateError instanceof OrgReadOnlyError) {
+      return actionError(
+        new Error(
+          `Organisation is in read-only mode (${gateError.daysOverdue} day(s) past grace period). Update billing to resume attestations.`,
+        ),
+      );
+    }
+    throw gateError;
+  }
 
   try {
     const row = await insertAttestationClaim({
@@ -96,6 +109,19 @@ export async function reviewAttestation(input: {
 }) {
   const membership = await getUserOrgMembership();
   if (!membership) return actionError(new Error('Unauthorized'));
+
+  try {
+    await assertOrgCanWrite(membership.orgId);
+  } catch (gateError) {
+    if (gateError instanceof OrgReadOnlyError) {
+      return actionError(
+        new Error(
+          `Organisation is in read-only mode (${gateError.daysOverdue} day(s) past grace period). Update billing to resume attestations.`,
+        ),
+      );
+    }
+    throw gateError;
+  }
 
   try {
     const row = await updateAttestationReview({
