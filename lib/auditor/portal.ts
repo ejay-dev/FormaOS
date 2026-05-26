@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { randomBytes, createHash } from 'crypto';
 
 type AuditorConfig = {
@@ -28,11 +29,11 @@ export async function createAuditorAccess(
     Date.now() + config.expiresInDays * 24 * 60 * 60 * 1000,
   );
 
-  const db = createSupabaseAdminClient();
-  const { data, error } = await db
+  const supabase = createSupabaseOrgClient(orgId);
+  // org_id is stamped automatically by the org-scoped client.
+  const { data, error } = await supabase
     .from('auditor_access_tokens')
     .insert({
-      org_id: orgId,
       auditor_name: config.auditorName,
       auditor_email: config.auditorEmail,
       auditor_company: config.auditorCompany ?? null,
@@ -54,18 +55,22 @@ export async function createAuditorAccess(
  * Revoke an auditor access token.
  */
 export async function revokeAuditorAccess(tokenId: string, orgId: string) {
-  const db = createSupabaseAdminClient();
-  const { error } = await db
+  const supabase = createSupabaseOrgClient(orgId);
+  // .eq('org_id', orgId) appended automatically.
+  const { error } = await supabase
     .from('auditor_access_tokens')
     .update({ revoked_at: new Date().toISOString() })
-    .eq('id', tokenId)
-    .eq('org_id', orgId);
+    .eq('id', tokenId);
 
   if (error) throw new Error(`Failed to revoke: ${error.message}`);
 }
 
 /**
  * Validate an auditor token. Returns the token record if valid, null otherwise.
+ *
+ * Intentional admin client: the caller has only the raw token, not an
+ * org id. The lookup by token_hash IS the org discovery step. Same
+ * pattern as validateApiKey in lib/api-keys/manager.ts.
  */
 export async function validateAuditorToken(token: string) {
   const tokenHash = createHash('sha256').update(token).digest('hex');
@@ -93,20 +98,38 @@ export async function validateAuditorToken(token: string) {
   return data;
 }
 
+type AuditorAccessRow = {
+  id: string;
+  auditor_name: string;
+  auditor_email: string;
+  auditor_company: string | null;
+  scopes: Record<string, unknown>;
+  expires_at: string;
+  last_accessed_at: string | null;
+  access_count: number | null;
+  created_at: string;
+  revoked_at: string | null;
+};
+
+type AuditorAccessSummary = AuditorAccessRow & {
+  status: 'revoked' | 'expired' | 'active';
+};
+
 /**
  * List all auditor access tokens for an org (active and expired).
  */
-export async function listAuditorAccess(orgId: string) {
-  const db = createSupabaseAdminClient();
-  const { data } = await db
+export async function listAuditorAccess(
+  orgId: string,
+): Promise<AuditorAccessSummary[]> {
+  const supabase = createSupabaseOrgClient(orgId);
+  const { data } = await supabase
     .from('auditor_access_tokens')
     .select(
       'id, auditor_name, auditor_email, auditor_company, scopes, expires_at, last_accessed_at, access_count, created_at, revoked_at',
     )
-    .eq('org_id', orgId)
     .order('created_at', { ascending: false });
 
-  return (data ?? []).map((t) => ({
+  return ((data ?? []) as AuditorAccessRow[]).map((t) => ({
     ...t,
     status: t.revoked_at
       ? 'revoked'
@@ -116,15 +139,29 @@ export async function listAuditorAccess(orgId: string) {
   }));
 }
 
+type AuditorActivityRow = {
+  id: string;
+  token_id: string;
+  org_id: string;
+  action: string;
+  resource_type: string | null;
+  resource_id: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+};
+
 /**
  * Get the activity log for an auditor.
  */
-export async function getAuditorActivity(orgId: string, tokenId?: string) {
-  const db = createSupabaseAdminClient();
-  let query = db
+export async function getAuditorActivity(
+  orgId: string,
+  tokenId?: string,
+): Promise<AuditorActivityRow[]> {
+  const supabase = createSupabaseOrgClient(orgId);
+  let query = supabase
     .from('auditor_activity_log')
     .select('*')
-    .eq('org_id', orgId)
     .order('created_at', { ascending: false })
     .limit(200);
 
@@ -133,7 +170,7 @@ export async function getAuditorActivity(orgId: string, tokenId?: string) {
   }
 
   const { data } = await query;
-  return data ?? [];
+  return (data ?? []) as AuditorActivityRow[];
 }
 
 /**
@@ -148,10 +185,10 @@ export async function logAuditorActivity(
   ipAddress?: string,
   userAgent?: string,
 ) {
-  const db = createSupabaseAdminClient();
-  await db.from('auditor_activity_log').insert({
+  const supabase = createSupabaseOrgClient(orgId);
+  // org_id is stamped automatically by the org-scoped client.
+  await supabase.from('auditor_activity_log').insert({
     token_id: tokenId,
-    org_id: orgId,
     action,
     resource_type: resourceType,
     resource_id: resourceId,

@@ -141,6 +141,7 @@ const TENANT_TABLE_SCOPES = {
   identity_audit_log: { column: 'organization_id' },
   identity_audit_events: { column: 'org_id' },
   auditor_activity_log: { column: 'org_id' },
+  auditor_access_tokens: { column: 'org_id' },
   org_analytics_snapshots: { column: 'org_id' },
   detection_rules: { column: 'organization_id' },
   upgrade_intelligence_usage: { column: 'organization_id' },
