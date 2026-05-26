@@ -1,15 +1,16 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 type DateRange = { from: string; to: string };
 type Granularity = 'day' | 'week' | 'month';
 
 export async function getIncidentStats(orgId: string, dateRange: DateRange) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { data: incidents } = await db
+  // .eq('organization_id', orgId) appended automatically by the
+  // org-scoped client.
+  const { data: incidents } = await supabase
     .from('org_incidents')
     .select('id, type, severity, status, created_at, resolved_at')
-    .eq('organization_id', orgId)
     .gte('created_at', dateRange.from)
     .lte('created_at', dateRange.to);
 
@@ -20,7 +21,11 @@ export async function getIncidentStats(orgId: string, dateRange: DateRange) {
   const bySeverity: Record<string, number> = {};
   const byStatus: Record<string, number> = {};
 
-  for (const inc of incidents) {
+  for (const inc of incidents as Array<{
+    type: string;
+    severity: string;
+    status: string;
+  }>) {
     byType[inc.type] = (byType[inc.type] ?? 0) + 1;
     bySeverity[inc.severity] = (bySeverity[inc.severity] ?? 0) + 1;
     byStatus[inc.status] = (byStatus[inc.status] ?? 0) + 1;
@@ -34,12 +39,11 @@ export async function getIncidentTrend(
   dateRange: DateRange,
   granularity: Granularity,
 ) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { data: incidents } = await db
+  const { data: incidents } = await supabase
     .from('org_incidents')
     .select('id, created_at')
-    .eq('organization_id', orgId)
     .gte('created_at', dateRange.from)
     .lte('created_at', dateRange.to)
     .order('created_at');
@@ -48,7 +52,7 @@ export async function getIncidentTrend(
 
   const buckets: Record<string, number> = {};
 
-  for (const inc of incidents) {
+  for (const inc of incidents as Array<{ created_at: string }>) {
     const d = new Date(inc.created_at);
     let key: string;
     if (granularity === 'day') {
@@ -69,12 +73,11 @@ export async function getIncidentTrend(
 }
 
 export async function getMTTR(orgId: string, dateRange: DateRange) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { data: incidents } = await db
+  const { data: incidents } = await supabase
     .from('org_incidents')
     .select('severity, created_at, resolved_at')
-    .eq('organization_id', orgId)
     .eq('status', 'resolved')
     .not('resolved_at', 'is', null)
     .gte('created_at', dateRange.from)
@@ -84,7 +87,11 @@ export async function getMTTR(orgId: string, dateRange: DateRange) {
 
   const bySeverity: Record<string, number[]> = {};
 
-  for (const inc of incidents) {
+  for (const inc of incidents as Array<{
+    severity: string;
+    created_at: string;
+    resolved_at: string;
+  }>) {
     const created = new Date(inc.created_at).getTime();
     const resolved = new Date(inc.resolved_at).getTime();
     const hours = (resolved - created) / (1000 * 60 * 60);
@@ -101,12 +108,11 @@ export async function getMTTR(orgId: string, dateRange: DateRange) {
 }
 
 export async function detectPatterns(orgId: string, dateRange: DateRange) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { data: incidents } = await db
+  const { data: incidents } = await supabase
     .from('org_incidents')
     .select('type, location, participant_id')
-    .eq('organization_id', orgId)
     .gte('created_at', dateRange.from)
     .lte('created_at', dateRange.to);
 
@@ -117,7 +123,10 @@ export async function detectPatterns(orgId: string, dateRange: DateRange) {
     string,
     { type: string; location: string | null; count: number }
   > = {};
-  for (const inc of incidents) {
+  for (const inc of incidents as Array<{
+    type: string;
+    location: string | null;
+  }>) {
     const key = `${inc.type}::${inc.location ?? 'unknown'}`;
     if (!patterns[key])
       patterns[key] = { type: inc.type, location: inc.location, count: 0 };
@@ -131,12 +140,11 @@ export async function detectPatterns(orgId: string, dateRange: DateRange) {
 }
 
 export async function getIncidentHeatmap(orgId: string, dateRange: DateRange) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { data: incidents } = await db
+  const { data: incidents } = await supabase
     .from('org_incidents')
     .select('created_at')
-    .eq('organization_id', orgId)
     .gte('created_at', dateRange.from)
     .lte('created_at', dateRange.to);
 
@@ -144,7 +152,7 @@ export async function getIncidentHeatmap(orgId: string, dateRange: DateRange) {
 
   // day-of-week × hour grid
   const grid: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
-  for (const inc of incidents) {
+  for (const inc of incidents as Array<{ created_at: string }>) {
     const d = new Date(inc.created_at);
     grid[d.getDay()][d.getHours()]++;
   }
