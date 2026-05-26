@@ -2,7 +2,36 @@
  * =========================================================
  * Audit Trail & Activity Logging System
  * =========================================================
- * Comprehensive activity tracking with searchable history
+ * Comprehensive activity tracking with searchable history.
+ *
+ * Audit 2026-05-26 (M2): this file is one of THREE audit-writing
+ * paths still in the tree. Of the three, the canonical modern path
+ * is:
+ *
+ *   app/app/actions/audit (server-action wrapper — verifies
+ *   session→org match)
+ *     ↓
+ *   lib/audit/log-activity.ts (lib-level core)
+ *     ↓
+ *   lib/audit/org-audit-log.ts (insertOrgAuditLog — the actual
+ *   writer; emits to `org_audit_log` with hash-chain via
+ *   lib/audit/hash-utils.ts)
+ *
+ * The other two paths are:
+ *   - lib/audit/legacy-log-activity.ts (8 importers; renamed from
+ *     the original `@/lib/logger` to make legacy intent obvious;
+ *     `no-restricted-imports` enforces the rename)
+ *   - **this file** (lib/audit-trail.ts, 10 importers)
+ *
+ * Only the canonical path writes hash-chained entries that pass
+ * `verifyChainIntegrity`. Entries written here land in
+ * `org_activity_log`, NOT in `org_audit_log`, so they don't
+ * participate in tamper-evident chain verification.
+ *
+ * DO NOT add new callers to this module. New audit events should
+ * use the server-action wrapper above. Migration of existing
+ * callers is tracked separately; this comment is the audit signal
+ * for grep-discoverable awareness.
  */
 
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';

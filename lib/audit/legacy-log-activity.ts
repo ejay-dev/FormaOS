@@ -1,3 +1,20 @@
+/**
+ * Audit 2026-05-26 (M2): this is the LEGACY direct audit-writing
+ * path. It was renamed from `@/lib/logger` (the original mislead-
+ * ingly-named module) to make the legacy intent obvious. The
+ * `no-restricted-imports` ESLint rule in eslint.config.mjs blocks
+ * the old import path so new code lands on the canonical surface:
+ *
+ *   app/app/actions/audit (server-action wrapper)
+ *     → lib/audit/log-activity.ts (core)
+ *       → lib/audit/org-audit-log.ts (writer; hash-chained)
+ *
+ * Existing callers of this file write to the same underlying
+ * `insertOrgAuditLog`, but bypass the session→org check that the
+ * server-action wrapper enforces. Do NOT add new callers; migrate
+ * existing ones opportunistically.
+ */
+
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { insertOrgAuditLog } from '@/lib/audit/org-audit-log';
 import { consoleShim } from '@/lib/monitoring/console-shim';
