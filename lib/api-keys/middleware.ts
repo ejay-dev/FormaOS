@@ -6,6 +6,10 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getClientIp } from '@/lib/ratelimit';
 import { requireActiveSubscription } from '@/lib/billing/entitlements';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import {
+  assertSessionNotRevoked,
+  SessionRevokedError,
+} from '@/lib/auth/session-revocation';
 import { normalizeApiKeyScopes, type ApiKeyScope } from './scopes';
 import {
   applyRateLimitHeaders,
@@ -260,9 +264,11 @@ export async function authenticateV1Request(
     };
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [{ data: userData }, { data: sessionData }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getSession(),
+  ]);
+  const user = userData?.user;
 
   if (!user) {
     return {
@@ -272,6 +278,29 @@ export async function authenticateV1Request(
         { status: 401 },
       ),
     };
+  }
+
+  // P0-13 (2026-05-26): reject session-cookie auth on the v1 surface
+  // when the user's session-revocation watermark is newer than the
+  // JWT's iat. A demoted admin or kicked org member must not be able
+  // to keep using v1 APIs through their existing token; the rejection
+  // forces a Supabase refresh which re-reads role/membership state.
+  try {
+    await assertSessionNotRevoked(
+      user.id,
+      sessionData?.session?.access_token,
+    );
+  } catch (err) {
+    if (err instanceof SessionRevokedError) {
+      return {
+        ok: false,
+        response: NextResponse.json(
+          { error: 'Session revoked — please sign in again' },
+          { status: 401 },
+        ),
+      };
+    }
+    throw err;
   }
 
   // Audit 2026-05-26 — when we fall through to session-cookie auth,

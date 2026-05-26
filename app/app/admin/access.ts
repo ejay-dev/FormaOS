@@ -9,6 +9,10 @@ import {
   type PlatformAdminPermission,
   type PlatformAdminRole,
 } from '@/lib/admin/rbac';
+import {
+  assertSessionNotRevoked,
+  SessionRevokedError,
+} from '@/lib/auth/session-revocation';
 
 function parseEnvList(value?: string | null) {
   return new Set(
@@ -31,13 +35,32 @@ export type PlatformAdminAccessContext = {
 
 async function getAuthenticatedUser() {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const [{ data: userData }, { data: sessionData }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getSession(),
+  ]);
 
+  const user = userData?.user;
   if (!user) {
     console.error('[requireFounderAccess] ❌ No user found');
     throw new Error('Unauthorized');
+  }
+
+  // P0-13 (2026-05-26): reject any JWT issued before the user's
+  // session-revocation watermark. Forces a Supabase refresh, which
+  // re-reads role + membership state from the DB — that's what makes
+  // role downgrades / org-membership removals take effect immediately
+  // instead of waiting on the ~1h refresh cycle.
+  try {
+    await assertSessionNotRevoked(
+      user.id,
+      sessionData?.session?.access_token,
+    );
+  } catch (err) {
+    if (err instanceof SessionRevokedError) {
+      throw new Error('Unauthorized');
+    }
+    throw err;
   }
 
   return user;

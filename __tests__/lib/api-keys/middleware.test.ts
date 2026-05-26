@@ -42,13 +42,26 @@ function createBuilder(result = { data: null, error: null } as any) {
 jest.mock('@/lib/supabase/server', () => {
   const c: Record<string, any> = {
     from: jest.fn(() => createBuilder()),
-    auth: { getUser: jest.fn().mockResolvedValue({ data: { user: null } }) },
+    auth: {
+      getUser: jest.fn().mockResolvedValue({ data: { user: null } }),
+      // P0-13: middleware now also reads auth.getSession to extract the
+      // access-token iat. Tests don't care about the value; just return
+      // a non-throwing shape.
+      getSession: jest.fn().mockResolvedValue({ data: { session: null } }),
+    },
   };
   return {
     createSupabaseServerClient: jest.fn().mockResolvedValue(c),
     __client: c,
   };
 });
+
+// P0-13: stub the revocation helper so middleware tests don't need to
+// mock the user_session_revocations table query.
+jest.mock('@/lib/auth/session-revocation', () => ({
+  assertSessionNotRevoked: jest.fn().mockResolvedValue(undefined),
+  SessionRevokedError: class SessionRevokedError extends Error {},
+}));
 
 jest.mock('@/lib/supabase/admin', () => {
   const c: Record<string, any> = { from: jest.fn(() => createBuilder()) };
