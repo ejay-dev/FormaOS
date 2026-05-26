@@ -41,10 +41,17 @@
     {
       "path": "/api/cron/data-retention",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/process-user-purges",
+      "schedule": "0 * * * *"
     }
   ],
   "functions": {
     "app/api/cron/data-retention/route.ts": {
+      "maxDuration": 300
+    },
+    "app/api/cron/process-user-purges/route.ts": {
       "maxDuration": 300
     },
     "app/api/billing/webhook/route.ts": {
