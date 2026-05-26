@@ -35,7 +35,12 @@ BEGIN
 END;
 $$;
 
+-- Supabase grants EXECUTE on every public function to anon + authenticated
+-- by default, and REVOKE FROM PUBLIC does NOT touch those explicit role
+-- grants. Revoke them by name so this RPC is callable only by service_role.
 REVOKE ALL ON FUNCTION public.consume_backup_code_hash(uuid, text) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.consume_backup_code_hash(uuid, text) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.consume_backup_code_hash(uuid, text) FROM authenticated;
 GRANT EXECUTE ON FUNCTION public.consume_backup_code_hash(uuid, text) TO service_role;
 
 COMMENT ON FUNCTION public.consume_backup_code_hash(uuid, text) IS
