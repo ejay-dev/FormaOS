@@ -29,7 +29,7 @@ import process from 'node:process';
 
 // Baseline as of 2026-05-26 lint run. Lower this number when you land
 // a batch of migrations or justifications and the count goes down.
-const BASELINE = 306;
+const BASELINE = 295;
 
 const RULE = 'formaos/no-admin-client-with-org-filter';
 

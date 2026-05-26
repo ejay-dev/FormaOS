@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 type SearchOptions = {
   entityTypes?: string[];
@@ -27,12 +27,13 @@ export async function search(
   query: string,
   options: SearchOptions = {},
 ): Promise<{ results: SearchResult[]; total: number }> {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const limit = Math.min(options.limit ?? 20, 100);
   const offset = options.offset ?? 0;
 
-  // Try full-text search first
-  const { data: ftsResults, error } = await db.rpc('search_entities', {
+  // RPC takes the org id as an explicit parameter — it's invoked
+  // server-side and intentionally scoped via p_org_id.
+  const { data: ftsResults, error } = await supabase.rpc('search_entities', {
     p_org_id: orgId,
     p_query: query,
     p_entity_types: options.entityTypes ?? null,
@@ -56,15 +57,23 @@ export async function search(
     return { results, total: results.length };
   }
 
-  // Fallback: trigram similarity search for fuzzy matching
-  const { data: trigramResults } = await db
+  // Fallback: trigram similarity search for fuzzy matching.
+  // .eq('org_id', orgId) appended automatically by the wrapper.
+  const { data: trigramResults } = await supabase
     .from('search_index')
     .select('entity_type, entity_id, title, body, metadata')
-    .eq('org_id', orgId)
     .ilike('title', `%${query}%`)
     .limit(limit);
 
-  const fuzzyResults = (trigramResults ?? []).map((r) => ({
+  const fuzzyResults = (
+    (trigramResults ?? []) as Array<{
+      entity_type: string;
+      entity_id: string;
+      title: string;
+      body?: string;
+      metadata: unknown;
+    }>
+  ).map((r) => ({
     entity_type: r.entity_type,
     entity_id: r.entity_id,
     title: r.title,
@@ -84,33 +93,31 @@ export async function suggest(
   prefix: string,
   userId?: string,
 ): Promise<string[]> {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
   const suggestions: string[] = [];
 
   // Recent searches from this user
   if (userId) {
-    const { data: recent } = await db
+    const { data: recent } = await supabase
       .from('search_history')
       .select('query')
-      .eq('org_id', orgId)
       .eq('user_id', userId)
       .ilike('query', `${prefix}%`)
       .order('searched_at', { ascending: false })
       .limit(5);
-    for (const r of recent ?? []) {
+    for (const r of (recent ?? []) as Array<{ query: string }>) {
       if (!suggestions.includes(r.query)) suggestions.push(r.query);
     }
   }
 
   // Entity title matches
-  const { data: titles } = await db
+  const { data: titles } = await supabase
     .from('search_index')
     .select('title')
-    .eq('org_id', orgId)
     .ilike('title', `${prefix}%`)
     .limit(10);
 
-  for (const t of titles ?? []) {
+  for (const t of (titles ?? []) as Array<{ title: string }>) {
     if (!suggestions.includes(t.title)) suggestions.push(t.title);
   }
 
@@ -126,9 +133,9 @@ export async function trackSearch(
   query: string,
   resultCount: number,
 ) {
-  const db = createSupabaseAdminClient();
-  await db.from('search_history').insert({
-    org_id: orgId,
+  const supabase = createSupabaseOrgClient(orgId);
+  // org_id is stamped automatically by the org-scoped client.
+  await supabase.from('search_history').insert({
     user_id: userId,
     query,
     result_count: resultCount,
@@ -144,9 +151,9 @@ export async function trackClick(
   entityType: string,
   entityId: string,
 ) {
-  const db = createSupabaseAdminClient();
-  await db.from('search_history').insert({
-    org_id: orgId,
+  const supabase = createSupabaseOrgClient(orgId);
+  // org_id is stamped automatically by the org-scoped client.
+  await supabase.from('search_history').insert({
     user_id: userId,
     query: `[click] ${entityType}:${entityId}`,
     result_count: 1,
@@ -159,17 +166,20 @@ export async function trackClick(
  * Get search analytics: popular queries, zero-result queries, click-through.
  */
 export async function getSearchAnalytics(orgId: string) {
-  const db = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  const { data: allSearches } = await db
+  const { data: allSearches } = await supabase
     .from('search_history')
     .select('query, result_count, clicked_result_id')
-    .eq('org_id', orgId)
     .not('query', 'like', '[click]%')
     .order('searched_at', { ascending: false })
     .limit(1000);
 
-  const searches = allSearches ?? [];
+  const searches = (allSearches ?? []) as Array<{
+    query: string;
+    result_count: number | null;
+    clicked_result_id: string | null;
+  }>;
   const queryCounts: Record<string, number> = {};
   let zeroResults = 0;
   let clickedCount = 0;

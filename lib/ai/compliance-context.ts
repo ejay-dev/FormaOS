@@ -1,54 +1,50 @@
 import 'server-only';
 
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 
 /**
  * Build a system prompt enriched with organisation-specific compliance data.
  * Keeps total context under ~800 tokens to leave room for conversation history.
  */
 export async function buildComplianceContext(orgId: string): Promise<string> {
-  const admin = createSupabaseAdminClient();
+  const supabase = createSupabaseOrgClient(orgId);
 
-  // Run all queries in parallel for speed
+  // Org filter is appended automatically from TENANT_TABLE_SCOPES — no
+  // explicit `.eq('organization_id', orgId)` (or `.eq('id', orgId)` for
+  // the `organizations` self-table) needed.
   const [orgResult, evaluationsResult, policiesResult, evidenceResult, frameworksResult, soc2Result] =
     await Promise.all([
       // 1. Organization name and industry
-      admin
+      supabase
         .from('organizations')
         .select('name, industry')
-        .eq('id', orgId)
         .maybeSingle(),
 
       // 2. Control evaluations for compliance metrics
-      admin
+      supabase
         .from('org_control_evaluations')
-        .select('status')
-        .eq('organization_id', orgId),
+        .select('status'),
 
       // 3. Policy names and statuses
-      admin
+      supabase
         .from('org_policies')
-        .select('title, status')
-        .eq('organization_id', orgId),
+        .select('title, status'),
 
       // 4. Evidence by status
-      admin
+      supabase
         .from('org_evidence')
-        .select('status')
-        .eq('organization_id', orgId),
+        .select('status'),
 
       // 5. Enabled frameworks
-      admin
+      supabase
         .from('org_frameworks')
         .select('framework_key, enabled')
-        .eq('organization_id', orgId)
         .eq('enabled', true),
 
       // 6. Latest SOC 2 readiness score
-      admin
+      supabase
         .from('soc2_readiness_assessments')
         .select('overall_score')
-        .eq('organization_id', orgId)
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
