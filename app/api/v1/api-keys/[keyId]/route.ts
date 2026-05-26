@@ -1,8 +1,17 @@
+import { z } from 'zod';
 import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { revokeApiKey, rotateApiKey, updateApiKey } from '@/lib/api-keys/manager';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
 
 type RouteContext = { params: Promise<{ keyId: string }> };
+
+const updateApiKeySchema = z.object({
+  name: z.string().trim().min(1).max(100).optional(),
+  scopes: z.array(z.string().trim().min(1).max(64)).max(50).optional(),
+  rate_limit: z.number().int().min(30).max(10_000).optional(),
+  rotate: z.boolean().optional(),
+});
 
 export const runtime = 'nodejs';
 
@@ -19,21 +28,26 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const { keyId } = await context.params;
-  const body = (await request.json().catch(() => null)) as
-    | { name?: unknown; scopes?: unknown; rate_limit?: unknown; rotate?: unknown }
-    | null;
+  const validation = await validateBody(request, updateApiKeySchema);
+  if (!validation.success) {
+    const response = jsonWithContext(
+      auth.context,
+      formatZodError(validation.error),
+      { status: 400 },
+    );
+    await logV1Access(auth.context, 400, 'api_keys:manage');
+    return response;
+  }
+  const body = validation.data;
 
-  if (body?.rotate === true) {
+  if (body.rotate === true) {
     const rotated = await rotateApiKey({
       keyId,
       orgId: auth.context.orgId,
       rotatedBy: auth.context.userId!,
-      name: typeof body.name === 'string' ? body.name : undefined,
-      scopes: Array.isArray(body.scopes)
-        ? body.scopes.filter((value): value is string => typeof value === 'string')
-        : undefined,
-      rateLimit:
-        typeof body.rate_limit === 'number' ? Math.round(body.rate_limit) : undefined,
+      name: body.name,
+      scopes: body.scopes,
+      rateLimit: body.rate_limit,
     });
 
     await logV1Access(auth.context, 200, 'api_keys:manage');
@@ -53,12 +67,9 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   const updated = await updateApiKey(keyId, auth.context.orgId, {
-    name: typeof body?.name === 'string' ? body.name.trim() : undefined,
-    scopes: Array.isArray(body?.scopes)
-      ? body!.scopes.filter((value): value is string => typeof value === 'string')
-      : undefined,
-    rateLimit:
-      typeof body?.rate_limit === 'number' ? Math.round(body.rate_limit) : undefined,
+    name: body.name,
+    scopes: body.scopes,
+    rateLimit: body.rate_limit,
   });
 
   await logV1Access(auth.context, 200, 'api_keys:manage');

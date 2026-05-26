@@ -193,8 +193,12 @@ describe('v1/members route', () => {
       }),
     );
     expect(res.status).toBe(400);
-    const body = await res.json();
-    expect(body.error).toContain('email');
+    const body = (await res.json()) as {
+      errors?: Array<{ path: string; message: string }>;
+    };
+    // C2 batch 5 (2026-05-26): see note on the role test below for the
+    // envelope shape change.
+    expect(body.errors?.some((e) => e.path === 'email')).toBe(true);
   });
 
   it('POST rejects invalid email (no @)', async () => {
@@ -221,8 +225,14 @@ describe('v1/members route', () => {
       }),
     );
     expect(res.status).toBe(400);
-    const body = await res.json();
-    expect(body.error).toContain('role');
+    const body = (await res.json()) as {
+      errors?: Array<{ path: string; message: string }>;
+    };
+    // C2 batch 5 (2026-05-26): Zod validation now returns the standard
+    // formatZodError envelope `{ message, errors: [{ path, message }] }`
+    // instead of a bare `error: string`. The role rejection lands at
+    // `errors[0].path === 'role'`.
+    expect(body.errors?.some((e) => e.path === 'role')).toBe(true);
   });
 
   it('POST creates invitation successfully', async () => {

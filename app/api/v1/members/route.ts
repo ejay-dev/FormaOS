@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import { z } from 'zod';
 import { authenticateV1Request, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { createEnvelope } from '@/lib/api-keys/middleware';
 import { getActorId, createInvitationToken } from '@/lib/api/v1-helpers';
@@ -9,8 +10,19 @@ import { queueWebhookDelivery } from '@/lib/webhooks/delivery-queue';
 import { dispatchIntegrationEvent } from '@/lib/integrations/manager';
 import { sendAuthEmail } from '@/lib/email/send-auth-email';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import {
+  emailSchema,
+  formatZodError,
+  validateBody,
+} from '@/lib/security/api-validation';
 
-const VALID_ROLES = new Set(['owner', 'admin', 'member', 'viewer']);
+const inviteMemberSchema = z.object({
+  email: emailSchema,
+  role: z
+    .enum(['owner', 'admin', 'member', 'viewer'])
+    .default('member'),
+});
+
 const INVITE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000;
 const DEFAULT_INVITE_BASE = 'https://app.formaos.com.au';
 
@@ -103,23 +115,17 @@ export async function POST(request: Request) {
     return auth.response;
   }
 
-  const body = (await request.json().catch(() => null)) as
-    | { email?: unknown; role?: unknown }
-    | null;
-  const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
-  const role = typeof body?.role === 'string' ? body.role.trim().toLowerCase() : 'member';
-
-  if (!email || !email.includes('@')) {
-    const response = jsonWithContext(auth.context, { error: 'Valid email is required' }, { status: 400 });
+  const validation = await validateBody(request, inviteMemberSchema);
+  if (!validation.success) {
+    const response = jsonWithContext(
+      auth.context,
+      formatZodError(validation.error),
+      { status: 400 },
+    );
     await logV1Access(auth.context, 400, 'members:write');
     return response;
   }
-
-  if (!VALID_ROLES.has(role)) {
-    const response = jsonWithContext(auth.context, { error: 'Invalid role' }, { status: 400 });
-    await logV1Access(auth.context, 400, 'members:write');
-    return response;
-  }
+  const { email, role } = validation.data;
 
   const admin = createSupabaseAdminClient();
   const token = createInvitationToken();
