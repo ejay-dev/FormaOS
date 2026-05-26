@@ -125,11 +125,32 @@ async function getSessionMembership(
   supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>,
   userId: string,
 ) {
-  const modern = await supabase
+  // P0-5 (2026-05-26): for multi-org users this previously did an
+  // unfiltered `.maybeSingle()`, so the "active" org was whichever
+  // row Postgres returned first — undefined order. Honour
+  // user_preferences.current_organization_id (matches the canonical
+  // resolveActiveMembership / getCachedUserMembership behaviour);
+  // when no preference is set, pick the earliest membership so the
+  // selection is stable across calls.
+  const { data: preference } = await supabase
+    .from('user_preferences')
+    .select('current_organization_id')
+    .eq('user_id', userId)
+    .maybeSingle();
+  const preferredOrgId =
+    (preference as { current_organization_id?: string } | null)
+      ?.current_organization_id ?? null;
+
+  let modernQuery = supabase
     .from('org_members')
     .select('organization_id, role')
     .eq('user_id', userId)
-    .maybeSingle();
+    .order('created_at', { ascending: true })
+    .limit(1);
+  if (preferredOrgId) {
+    modernQuery = modernQuery.eq('organization_id', preferredOrgId);
+  }
+  const modern = await modernQuery.maybeSingle();
 
   if (!modern.error && modern.data?.organization_id) {
     return {
@@ -138,6 +159,10 @@ async function getSessionMembership(
     };
   }
 
+  // The legacy team_members fallback selects columns that don't exist in
+  // the current migrations schema, so it returns an error and quietly
+  // falls through to null for most users — kept defensively for any prod
+  // installation where team_members carries an extended schema.
   const legacy = await supabase
     .from('team_members')
     .select('organization_id, role')
