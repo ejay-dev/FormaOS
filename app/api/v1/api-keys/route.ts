@@ -1,6 +1,14 @@
+import { z } from 'zod';
 import { authenticateV1Request, createEnvelope, jsonWithContext, logV1Access } from '@/lib/api-keys/middleware';
 import { createApiKey, listApiKeys } from '@/lib/api-keys/manager';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
+
+const createApiKeySchema = z.object({
+  name: z.string().trim().min(1, 'name is required').max(100),
+  scopes: z.array(z.string().trim().min(1).max(64)).max(50).optional().default([]),
+  rate_limit: z.number().int().min(30).max(10_000).optional(),
+});
 
 export const runtime = 'nodejs';
 
@@ -47,24 +55,17 @@ export async function POST(request: Request) {
     return auth.response;
   }
 
-  const body = (await request.json().catch(() => null)) as
-    | { name?: unknown; scopes?: unknown; rate_limit?: unknown }
-    | null;
-
-  const name = typeof body?.name === 'string' ? body.name.trim() : '';
-  const scopes = Array.isArray(body?.scopes)
-    ? body!.scopes.filter((value): value is string => typeof value === 'string')
-    : [];
-  const rateLimit =
-    typeof body?.rate_limit === 'number' && Number.isFinite(body.rate_limit)
-      ? Math.max(30, Math.min(10_000, Math.round(body.rate_limit)))
-      : undefined;
-
-  if (!name) {
-    const response = jsonWithContext(auth.context, { error: 'name is required' }, { status: 400 });
+  const validation = await validateBody(request, createApiKeySchema);
+  if (!validation.success) {
+    const response = jsonWithContext(
+      auth.context,
+      formatZodError(validation.error),
+      { status: 400 },
+    );
     await logV1Access(auth.context, 400, 'api_keys:manage');
     return response;
   }
+  const { name, scopes, rate_limit: rateLimit } = validation.data;
 
   const created = await createApiKey({
     orgId: auth.context.orgId,

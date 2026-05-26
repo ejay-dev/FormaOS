@@ -1,13 +1,32 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { createInvitation } from '@/lib/invitations/create-invitation';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import {
+  emailSchema,
+  formatZodError,
+  validateBody,
+} from '@/lib/security/api-validation';
 
 const log = routeLog('/api/v1/members/invite');
-const VALID_ROLES = new Set(['owner', 'admin', 'member', 'viewer']);
+
+const inviteRequestSchema = z.object({
+  invites: z
+    .array(
+      z.object({
+        email: emailSchema,
+        role: z
+          .enum(['owner', 'admin', 'member', 'viewer'])
+          .default('member'),
+      }),
+    )
+    .min(1, 'No invites provided')
+    .max(10, 'Maximum 10 invites per request'),
+});
 type InviteRole = 'owner' | 'admin' | 'member' | 'viewer';
 
 export async function POST(request: Request) {
@@ -39,18 +58,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = (await request.json().catch(() => ({}))) as {
-      invites?: Array<{ email?: string; role?: string }>;
-    };
-    const invites = Array.isArray(body.invites)
-      ? body.invites.slice(0, 10)
-      : [];
-    if (invites.length === 0) {
-      return NextResponse.json(
-        { error: 'No invites provided' },
-        { status: 400 },
-      );
+    const validation = await validateBody(request, inviteRequestSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
     }
+    const { invites } = validation.data;
 
     // Seat-limit enforcement. Read team_limit entitlement and current
     // members + pending invites; reject the whole batch if it would exceed
@@ -118,10 +132,9 @@ export async function POST(request: Request) {
 
     const results: Array<{ email: string; ok: boolean; error?: string }> = [];
     for (const inv of invites) {
-      const email = (inv.email || '').trim().toLowerCase();
-      const role = VALID_ROLES.has(inv.role || '')
-        ? (inv.role as InviteRole)
-        : 'member';
+      // emailSchema already lowercased + trimmed; role already enum-coerced.
+      const email = inv.email;
+      const role: InviteRole = inv.role;
       // Only owners can grant owner role
       if (role === 'owner' && inviterRole !== 'owner') {
         results.push({
@@ -129,10 +142,6 @@ export async function POST(request: Request) {
           ok: false,
           error: 'Only owners can invite other owners',
         });
-        continue;
-      }
-      if (!email) {
-        results.push({ email, ok: false, error: 'Missing email' });
         continue;
       }
       try {

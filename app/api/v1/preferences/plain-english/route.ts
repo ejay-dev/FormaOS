@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
 
 const log = routeLog('/api/v1/preferences/plain-english');
+
+const plainEnglishSchema = z.object({
+  enabled: z.boolean(),
+});
 
 export async function GET(request: Request) {
   try {
@@ -60,8 +66,13 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const enabled = body.enabled === true;
+    const validation = await validateBody(request, plainEnglishSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
+    }
+    const { enabled } = validation.data;
 
     const { error } = await supabase
       .from('user_profiles')

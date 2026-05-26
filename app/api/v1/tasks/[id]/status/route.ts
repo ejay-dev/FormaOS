@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath, revalidateTag } from 'next/cache';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { formatZodError, validateBody } from '@/lib/security/api-validation';
 
 const log = routeLog('/api/v1/tasks/[id]/status');
 
@@ -16,6 +18,17 @@ const UI_TO_DB_STATUS: Record<string, string> = {
   pending: 'pending',
   completed: 'completed',
 };
+
+const updateStatusSchema = z.object({
+  status: z.enum([
+    'overdue',
+    'due_today',
+    'due_soon',
+    'in_progress',
+    'pending',
+    'completed',
+  ]),
+});
 
 export async function PATCH(
   request: Request,
@@ -34,12 +47,13 @@ export async function PATCH(
     }
 
     const { id } = await context.params;
-    const body = await request.json().catch(() => ({}));
-    const incoming = String(body?.status || '');
-    const dbStatus = UI_TO_DB_STATUS[incoming];
-    if (!dbStatus) {
-      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    const validation = await validateBody(request, updateStatusSchema);
+    if (!validation.success) {
+      return NextResponse.json(formatZodError(validation.error), {
+        status: 400,
+      });
     }
+    const dbStatus = UI_TO_DB_STATUS[validation.data.status];
 
     const supabase = await createSupabaseServerClient();
     const {
