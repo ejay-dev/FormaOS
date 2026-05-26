@@ -1,3 +1,12 @@
+// Tenant isolation note: this module manages "org groups" — an enterprise
+// holding feature where one parent org legitimately sees and manages many
+// child orgs. The admin-client + `organization_id` filter pattern targets
+// the *member* org id (a child of the group), not the caller's home org,
+// so `createSupabaseOrgClient(callerOrgId)` would stamp the wrong filter.
+// Callers are gated upstream by the executive/group-admin authorization
+// check; the cross-tenant access is intentional and audited under the
+// tenant-isolation ratchet (scripts/check-tenant-isolation-ratchet.mjs).
+
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 /** Create an org group (enterprise holding). */

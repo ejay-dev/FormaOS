@@ -3,6 +3,20 @@
  * Nightly Billing Reconciliation
  * =========================================================
  * Compares local subscription state with Stripe to detect and fix discrepancies
+ *
+ * Tenant isolation note: this module is intentionally cross-tenant. It runs
+ * as a nightly cron, iterates every org's `org_subscriptions` row, and
+ * compares each against Stripe. The admin-client pattern is required;
+ * `createSupabaseOrgClient(orgId)` would defeat the scan by scoping each
+ * query back to a single tenant. The org filter on writes
+ * (`eq('organization_id', sub.organization_id)`) is enforced from the
+ * current iteration's row, not from caller input.
+ *
+ * Tracked under the tenant-isolation ratchet
+ * (scripts/check-tenant-isolation-ratchet.mjs); flips to the on-demand
+ * `npm run lint:tenant-isolation` punch list rather than a per-call
+ * disable directive (the rule is OFF in the default config, so
+ * `eslint-disable` here would trigger an "unused directive" warning).
  */
 
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
