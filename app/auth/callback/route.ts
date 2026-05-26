@@ -13,6 +13,7 @@ import {
   type MembershipRow,
 } from '@/lib/auth/callback';
 import { bootstrapOrganizationAtomic } from '@/lib/supabase/transaction';
+import { clearLockout as clearAccountLockout } from '@/lib/security/account-lockout';
 import { resolvePlanKey } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { isFounder } from '@/lib/utils/founder';
@@ -330,6 +331,13 @@ export async function GET(request: Request) {
   }
 
   authLogger.info('session_established', { email: user.email });
+
+  // Audit 2026-05-26 (H3): successful login clears any per-email
+  // failed-login counter the H3 lockout module accumulated. No-op
+  // when Redis isn't configured.
+  if (user.email) {
+    void clearAccountLockout(user.email);
+  }
 
   // 1b. MFA GATE — if the account has TOTP enabled, the OAuth/Email
   // exchange has minted a usable session that must NOT be allowed to

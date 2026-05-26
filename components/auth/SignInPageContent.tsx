@@ -485,6 +485,41 @@ function SignInContent() {
       return;
     }
 
+    // Audit 2026-05-26 (H3): per-email lockout check. After 5 failed
+    // logins in 15 minutes, the account is locked for 15 minutes
+    // regardless of source IP. The IP-keyed rate limiter still applies
+    // separately. This pre-check saves a round-trip against Supabase
+    // Auth for accounts in lockout.
+    try {
+      const lockoutRes = await fetch('/api/auth/check-lockout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (lockoutRes.ok) {
+        const lockoutData = (await lockoutRes.json()) as {
+          locked?: boolean;
+          retryAfterSeconds?: number;
+        };
+        if (lockoutData.locked) {
+          const minutes = Math.max(
+            1,
+            Math.ceil((lockoutData.retryAfterSeconds ?? 900) / 60),
+          );
+          setErrorMessage(
+            `This account is temporarily locked after too many failed sign-in attempts. Try again in ${minutes} minute${minutes === 1 ? '' : 's'}, or reset your password.`,
+          );
+          void logLoginFailure('account_locked', 'email');
+          setIsLoading(false);
+          return;
+        }
+      }
+    } catch {
+      // Network or 5xx on the lockout pre-check — proceed with the
+      // signin attempt. We never want a buggy lockout check to be the
+      // reason a legitimate user can't log in.
+    }
+
     const supabase = createSupabaseClient();
     try {
       const passwordResult = (await withTimeout(

@@ -7,6 +7,7 @@ import {
 
 } from '@/lib/security/session-security';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { recordLoginFailure } from '@/lib/security/account-lockout';
 
 const log = routeLog('/api/security/log');
 import { extractClientIP } from '@/lib/security/session-security';
@@ -84,6 +85,14 @@ export async function POST(request: Request) {
       userAgent,
       metadata: metadata ?? {},
     });
+
+    // Audit 2026-05-26 (H3): increment the per-email lockout counter
+    // when a password login fails. lib/security/account-lockout.ts
+    // tolerates a missing Redis client and a missing email field, so
+    // this stays a no-op in environments that haven't configured it.
+    if (eventType === SecurityEventTypes.LOGIN_FAILURE && metadata.email) {
+      void recordLoginFailure(metadata.email);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {
