@@ -1,33 +1,32 @@
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { getCrossMapCoverage } from '@/lib/compliance/cross-map-engine';
 
 export async function getUnifiedComplianceScore(
   orgId: string,
 ): Promise<number> {
-  const db = createSupabaseAdminClient();
-  const { data: controls } = await db
+  const supabase = createSupabaseOrgClient(orgId);
+  // .eq('organization_id', orgId) appended automatically.
+  const { data: controls } = await supabase
     .from('org_controls')
-    .select('status')
-    .eq('organization_id', orgId);
+    .select('status');
 
   if (!controls?.length) return 0;
-  const satisfied = controls.filter(
+  const satisfied = (controls as Array<{ status: string }>).filter(
     (c) => c.status === 'compliant' || c.status === 'satisfied' || c.status === 'met',
   ).length;
   return Math.round((satisfied / controls.length) * 100);
 }
 
 export async function getFrameworkScores(orgId: string) {
-  const db = createSupabaseAdminClient();
-  const { data: controls } = await db
+  const supabase = createSupabaseOrgClient(orgId);
+  const { data: controls } = await supabase
     .from('org_controls')
-    .select('framework, status')
-    .eq('organization_id', orgId);
+    .select('framework, status');
 
   if (!controls?.length) return [];
 
   const fwMap = new Map<string, { total: number; satisfied: number }>();
-  for (const c of controls) {
+  for (const c of controls as Array<{ framework: string; status: string }>) {
     const fw = fwMap.get(c.framework) || { total: 0, satisfied: 0 };
     fw.total++;
     if (c.status === 'compliant' || c.status === 'satisfied' || c.status === 'met') fw.satisfied++;
