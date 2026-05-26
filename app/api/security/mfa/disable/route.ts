@@ -45,6 +45,23 @@ export async function POST(request: Request) {
       );
     }
 
+    // P1-C (2026-05-26): disable2FA calls verify2FAToken under the hood,
+    // so it shares the same per-user brute-force surface as the verify
+    // route. Apply the per-user MFA budget here as well — without it, an
+    // attacker rotating IPs can spray TOTP codes against this endpoint
+    // and burn through a target's backup codes without ever tripping the
+    // per-IP AUTH bucket.
+    const perUserRl = await checkRateLimit(
+      RATE_LIMITS.MFA_VERIFY_PER_USER,
+      `user:${user.id}`,
+    );
+    if (!perUserRl.success) {
+      return NextResponse.json(
+        { ok: false, error: 'rate_limited' },
+        { status: 429, headers: createRateLimitHeaders(perUserRl) },
+      );
+    }
+
     const body = await request.json().catch(() => ({}));
     // v4-015: TOTP / backup code is required (not password). A phished
     // password must not be enough to strip MFA — the attacker must

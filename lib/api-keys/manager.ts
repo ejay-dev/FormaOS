@@ -68,7 +68,13 @@ async function checkApiKeyRateLimit(
           return { success: false, remaining: 0, resetAt };
         }
 
-        await redis.zadd(redisKey, { score: now, member: `${now}-${Math.random()}` });
+        await redis.zadd(redisKey, {
+          score: now,
+          // P0-10 (2026-05-26): use crypto.randomUUID instead of
+          // Math.random — unique enough that two zadds in the same ms
+          // never collide, no predictability surface.
+          member: `${now}-${crypto.randomUUID()}`,
+        });
         await redis.expire(redisKey, Math.ceil(windowMs / 1000));
         return {
           success: true,

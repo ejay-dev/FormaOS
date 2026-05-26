@@ -11,6 +11,7 @@
  * is used as a degraded but functional fallback.
  */
 
+import crypto from 'crypto';
 import { headers } from 'next/headers';
 import {
   logRateLimitEvent,
@@ -18,6 +19,14 @@ import {
 } from '@/lib/security/rate-limit-log';
 import { extractClientIP } from '@/lib/security/session-security';
 import { getRedisClient } from '@/lib/redis/client';
+
+// P0-10 (2026-05-26): cryptographic sampling helper used for
+// probabilistic actions in security paths. Math.random is banned
+// across lib/security/** and lib/api-keys/** via the
+// formaos/no-math-random ESLint rule (see lib/eslint/).
+function cryptoSample(): number {
+  return crypto.randomInt(0, 0x10000) / 0x10000;
+}
 
 interface RateLimitConfig {
   windowMs: number;
@@ -99,6 +108,18 @@ const RATE_LIMITS = {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 20, // Allow 20 activity logs per minute
     keyPrefix: 'rl:activity',
+  } as RateLimitConfig,
+
+  // P1-B (2026-05-26): per-user MFA verify bucket. AUTH limits by IP, but a
+  // slow distributed attacker rotating IPs can still spray TOTP codes at a
+  // single account. This narrower budget (10 / 15 min per user) closes that
+  // hole. Fail-closed because MFA bypass is the security risk it exists to
+  // prevent.
+  MFA_VERIFY_PER_USER: {
+    windowMs: 15 * 60 * 1000,
+    maxRequests: 10,
+    keyPrefix: 'rl:mfa-verify-user',
+    failClosed: true,
   } as RateLimitConfig,
 
   // Per-email reset request bucket. The AUTH bucket above limits by IP
@@ -295,8 +316,9 @@ function checkRateLimitMemory(
   const now = Date.now();
   const existing = memoryStore.get(key);
 
-  // Probabilistic cleanup to avoid unbounded growth
-  if (Math.random() < 0.05) {
+  // Probabilistic cleanup to avoid unbounded growth — cryptoSample
+  // keeps the sampling rate out of reach of timing inference.
+  if (cryptoSample() < 0.05) {
     cleanExpiredEntries();
   }
 

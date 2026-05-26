@@ -77,6 +77,29 @@ export async function POST(request: Request) {
       );
     }
 
+    // P1-B (2026-05-26): a distributed attacker rotating source IPs can
+    // spray TOTP codes against a single user without ever tripping the
+    // per-IP AUTH bucket. Apply a stricter per-user budget once we have
+    // the resolved user id.
+    const perUserRl = await checkRateLimit(
+      RATE_LIMITS.MFA_VERIFY_PER_USER,
+      `user:${userId}`,
+    );
+    if (!perUserRl.success) {
+      await logMfaAudit({
+        userId,
+        event: 'mfa_failure',
+        method: 'password',
+        ipAddress,
+        userAgent,
+        reason: 'rate_limited_per_user',
+      });
+      return NextResponse.json(
+        { ok: false, error: 'rate_limited' },
+        { status: 429, headers: createRateLimitHeaders(perUserRl) },
+      );
+    }
+
     const verified = await verify2FAToken(userId, token);
     if (!verified) {
       await recordMfaFailure(supabase, userId);
