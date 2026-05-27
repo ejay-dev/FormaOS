@@ -58,6 +58,8 @@
     "test:db:ledger-alignment": "node scripts/check-migration-ledger-alignment.mjs",
     "test:db:secdef-grants": "node scripts/check-security-definer-grants.mjs",
     "test:db:restore-recency": "node scripts/check-restore-test-recency.mjs",
+    "test:security:leaked-secrets": "node scripts/check-leaked-secrets.mjs",
+    "ops:verify-pagerduty": "node scripts/verify-pagerduty-routing.mjs",
     "db:ledger:snapshot": "node scripts/snapshot-migration-ledger.mjs",
     "db:backfill:evidence-file-hash": "node scripts/backfill-evidence-file-hash.mjs",
     "framework-packs:rehash": "node scripts/build-framework-packs-manifest.mjs",

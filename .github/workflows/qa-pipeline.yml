@@ -139,6 +139,13 @@ jobs:
         if: steps.rls-secrets-check.outputs.available == 'true'
         run: npm run test:db:secdef-grants
 
+      - name: Run leaked-secrets scan (Audit 2026-05-27)
+        run: npm run test:security:leaked-secrets
+
+      - name: Run restore-test recency check (Audit 2026-05-27)
+        if: steps.rls-secrets-check.outputs.available == 'true'
+        run: npm run test:db:restore-recency
+
   security-scan:
     name: Security Analysis
     runs-on: ubuntu-latest
