@@ -1,0 +1,994 @@
+{
+  "takenAt": "2026-05-27T03:15:15.833Z",
+  "source": "rpc:list_migration_ledger",
+  "rows": [
+    {
+      "version": "20250101",
+      "name": "000_base_schema"
+    },
+    {
+      "version": "20250308",
+      "name": "create_org_control_evaluations"
+    },
+    {
+      "version": "20250309",
+      "name": "phase4_framework_intelligence"
+    },
+    {
+      "version": "20250310",
+      "name": "phase7_11_enterprise_controls"
+    },
+    {
+      "version": "20250311",
+      "name": "phase7_audit_rls"
+    },
+    {
+      "version": "20250311000001",
+      "name": "baseline_api_alert_config"
+    },
+    {
+      "version": "20250311000002",
+      "name": "baseline_app_modules"
+    },
+    {
+      "version": "20250311000003",
+      "name": "baseline_billing_plans"
+    },
+    {
+      "version": "20250311000004",
+      "name": "baseline_care_industries"
+    },
+    {
+      "version": "20250311000005",
+      "name": "baseline_care_policy_templates"
+    },
+    {
+      "version": "20250311000006",
+      "name": "baseline_care_register_templates"
+    },
+    {
+      "version": "20250311000007",
+      "name": "baseline_care_service_types"
+    },
+    {
+      "version": "20250311000008",
+      "name": "baseline_care_task_templates"
+    },
+    {
+      "version": "20250311000009",
+      "name": "baseline_compliance_scans"
+    },
+    {
+      "version": "20250311000010",
+      "name": "baseline_email_preferences"
+    },
+    {
+      "version": "20250311000011",
+      "name": "baseline_file_metadata"
+    },
+    {
+      "version": "20250311000012",
+      "name": "baseline_file_versions"
+    },
+    {
+      "version": "20250311000013",
+      "name": "baseline_form_responses"
+    },
+    {
+      "version": "20250311000014",
+      "name": "baseline_integration_events"
+    },
+    {
+      "version": "20250311000015",
+      "name": "baseline_memberships"
+    },
+    {
+      "version": "20250311000016",
+      "name": "baseline_org_compliance_status"
+    },
+    {
+      "version": "20250311000017",
+      "name": "baseline_org_files"
+    },
+    {
+      "version": "20250311000018",
+      "name": "baseline_org_industries"
+    },
+    {
+      "version": "20250311000019",
+      "name": "baseline_org_module_entitlements"
+    },
+    {
+      "version": "20250311000020",
+      "name": "baseline_org_registers"
+    },
+    {
+      "version": "20250311000021",
+      "name": "baseline_policies"
+    },
+    {
+      "version": "20250311000022",
+      "name": "baseline_registers"
+    },
+    {
+      "version": "20250311000023",
+      "name": "baseline_report_generations"
+    },
+    {
+      "version": "20250311000024",
+      "name": "baseline_report_templates"
+    },
+    {
+      "version": "20250311000025",
+      "name": "baseline_risk_analyses"
+    },
+    {
+      "version": "20250311000026",
+      "name": "baseline_scheduled_tasks"
+    },
+    {
+      "version": "20250311000027",
+      "name": "baseline_tasks"
+    },
+    {
+      "version": "20250311000028",
+      "name": "baseline_webhook_configs"
+    },
+    {
+      "version": "20250312",
+      "name": "phase7_core_rls"
+    },
+    {
+      "version": "20250313",
+      "name": "marketing_leads"
+    },
+    {
+      "version": "20250314",
+      "name": "org_onboarding_fields"
+    },
+    {
+      "version": "20250315",
+      "name": "invitation_expiration"
+    },
+    {
+      "version": "20250316",
+      "name": "org_onboarding_status"
+    },
+    {
+      "version": "20250317",
+      "name": "billing_core"
+    },
+    {
+      "version": "20250318000",
+      "name": "audit_bundles_bucket"
+    },
+    {
+      "version": "20250318001",
+      "name": "fix_trial_columns"
+    },
+    {
+      "version": "20250319000",
+      "name": "cleanup_founder_account"
+    },
+    {
+      "version": "20250319001",
+      "name": "production_hardening"
+    },
+    {
+      "version": "20250320",
+      "name": "patients_progress_notes"
+    },
+    {
+      "version": "20250321",
+      "name": "update_plan_pricing"
+    },
+    {
+      "version": "20250322",
+      "name": "add_price_id_to_org_subscriptions"
+    },
+    {
+      "version": "20250323000",
+      "name": "user_avatars_bucket"
+    },
+    {
+      "version": "20250323001",
+      "name": "user_profiles"
+    },
+    {
+      "version": "20260111000",
+      "name": "create_email_prefs_safe"
+    },
+    {
+      "version": "20260111001",
+      "name": "create_notification_prefs_safe"
+    },
+    {
+      "version": "20260113000",
+      "name": "baseline_team_invitations"
+    },
+    {
+      "version": "20260113001",
+      "name": "baseline_org_audit_log"
+    },
+    {
+      "version": "20260114000",
+      "name": "fix_founder_account"
+    },
+    {
+      "version": "20260114001",
+      "name": "security_hardening"
+    },
+    {
+      "version": "20260114002",
+      "name": "security_hardening_SAFE"
+    },
+    {
+      "version": "20260115",
+      "name": "workflow_automation"
+    },
+    {
+      "version": "20260121001",
+      "name": "baseline_webhook_deliveries"
+    },
+    {
+      "version": "20260122000",
+      "name": "add_default_rls_policies"
+    },
+    {
+      "version": "20260122001",
+      "name": "fix_supabase_warnings"
+    },
+    {
+      "version": "20260204000",
+      "name": "backfill_user_profiles"
+    },
+    {
+      "version": "20260204001",
+      "name": "fix_team_invitation_select"
+    },
+    {
+      "version": "20260206000",
+      "name": "automation_enhancements"
+    },
+    {
+      "version": "20260206001",
+      "name": "customer_success_metrics"
+    },
+    {
+      "version": "20260206002",
+      "name": "inapp_onboarding_help"
+    },
+    {
+      "version": "20260207",
+      "name": "enterprise_hardening"
+    },
+    {
+      "version": "20260208000",
+      "name": "care_operations_modules"
+    },
+    {
+      "version": "20260208001",
+      "name": "enterprise_upgrade"
+    },
+    {
+      "version": "20260209000",
+      "name": "add_theme_preference"
+    },
+    {
+      "version": "20260209001",
+      "name": "compliance_export_queue"
+    },
+    {
+      "version": "20260209002",
+      "name": "compliance_exports_bucket"
+    },
+    {
+      "version": "20260209003",
+      "name": "fix_enterprise_export_rls"
+    },
+    {
+      "version": "20260209004",
+      "name": "org_assets_phi_fields"
+    },
+    {
+      "version": "20260209005",
+      "name": "report_exports_bucket"
+    },
+    {
+      "version": "20260209006",
+      "name": "report_exports_queue"
+    },
+    {
+      "version": "20260211",
+      "name": "bootstrap_user_recovery_rpc"
+    },
+    {
+      "version": "20260212000001",
+      "name": "trust_packets"
+    },
+    {
+      "version": "20260212223000",
+      "name": "enterprise_sso_and_status"
+    },
+    {
+      "version": "20260212235500",
+      "name": "enterprise_export_storage"
+    },
+    {
+      "version": "20260212235800",
+      "name": "enterprise_export_admin_access"
+    },
+    {
+      "version": "20260213",
+      "name": "product_releases"
+    },
+    {
+      "version": "20260213001",
+      "name": "baseline_comment_reactions"
+    },
+    {
+      "version": "20260213002",
+      "name": "baseline_compliance_export_jobs"
+    },
+    {
+      "version": "20260213003",
+      "name": "baseline_compliance_score_snapshots"
+    },
+    {
+      "version": "20260213004",
+      "name": "baseline_dashboard_layouts"
+    },
+    {
+      "version": "20260213005",
+      "name": "baseline_framework_control_mappings"
+    },
+    {
+      "version": "20260213006",
+      "name": "baseline_integration_configs"
+    },
+    {
+      "version": "20260213007",
+      "name": "baseline_user_sessions"
+    },
+    {
+      "version": "20260214000",
+      "name": "fix_all_supabase_warnings"
+    },
+    {
+      "version": "20260214001",
+      "name": "security_monitoring"
+    },
+    {
+      "version": "20260214002",
+      "name": "security_monitoring_realtime"
+    },
+    {
+      "version": "20260221",
+      "name": "admin_control_plane"
+    },
+    {
+      "version": "20260301",
+      "name": "admin_console"
+    },
+    {
+      "version": "20260301001",
+      "name": "baseline_org_frameworks"
+    },
+    {
+      "version": "20260302000",
+      "name": "rename_org_frameworks_org_id"
+    },
+    {
+      "version": "20260302001",
+      "name": "unified_audit_view"
+    },
+    {
+      "version": "20260311000",
+      "name": "compliance_check_tables"
+    },
+    {
+      "version": "20260311001",
+      "name": "evidence_checksum"
+    },
+    {
+      "version": "20260311002",
+      "name": "integration_sync"
+    },
+    {
+      "version": "20260311003",
+      "name": "scim_provisioning"
+    },
+    {
+      "version": "20260314000",
+      "name": "admin_operating_model"
+    },
+    {
+      "version": "20260314001",
+      "name": "org_lifecycle_controls"
+    },
+    {
+      "version": "20260315000",
+      "name": "ai_chat_tables"
+    },
+    {
+      "version": "20260315001",
+      "name": "api_keys"
+    },
+    {
+      "version": "20260315002",
+      "name": "data_governance"
+    },
+    {
+      "version": "20260315003",
+      "name": "notifications"
+    },
+    {
+      "version": "20260315004",
+      "name": "soc2_readiness"
+    },
+    {
+      "version": "20260315005",
+      "name": "webhook_deliveries"
+    },
+    {
+      "version": "20260315006",
+      "name": "workflow_engine_v2"
+    },
+    {
+      "version": "20260401",
+      "name": "safe_rls_policies"
+    },
+    {
+      "version": "20260402000",
+      "name": "ai_vector_search"
+    },
+    {
+      "version": "20260402001",
+      "name": "analytics_snapshots"
+    },
+    {
+      "version": "20260402002",
+      "name": "auditor_portal"
+    },
+    {
+      "version": "20260402003",
+      "name": "care_goals"
+    },
+    {
+      "version": "20260402004",
+      "name": "evidence_freshness"
+    },
+    {
+      "version": "20260402005",
+      "name": "forms_platform"
+    },
+    {
+      "version": "20260402006",
+      "name": "investigations_capa"
+    },
+    {
+      "version": "20260402007",
+      "name": "org_groups"
+    },
+    {
+      "version": "20260402008",
+      "name": "push_tokens"
+    },
+    {
+      "version": "20260402009",
+      "name": "search_index"
+    },
+    {
+      "version": "20260402010",
+      "name": "secure_public_views"
+    },
+    {
+      "version": "20260403000",
+      "name": "audit_trail_enhanced"
+    },
+    {
+      "version": "20260403001",
+      "name": "dashboard_builder"
+    },
+    {
+      "version": "20260403002",
+      "name": "document_retention"
+    },
+    {
+      "version": "20260403003",
+      "name": "framework_cross_mapping"
+    },
+    {
+      "version": "20260403004",
+      "name": "integration_marketplace"
+    },
+    {
+      "version": "20260403005",
+      "name": "org_settings_hub"
+    },
+    {
+      "version": "20260403006",
+      "name": "permissions_matrix"
+    },
+    {
+      "version": "20260403007",
+      "name": "policy_lifecycle"
+    },
+    {
+      "version": "20260403008",
+      "name": "task_management"
+    },
+    {
+      "version": "20260403009",
+      "name": "usage_analytics"
+    },
+    {
+      "version": "20260405",
+      "name": "fix_rls_organization_isolation"
+    },
+    {
+      "version": "20260406",
+      "name": "performance_indexes"
+    },
+    {
+      "version": "20260407",
+      "name": "framework_engine_foundation"
+    },
+    {
+      "version": "20260408",
+      "name": "framework_engine_phase2"
+    },
+    {
+      "version": "20260409",
+      "name": "compliance_snapshots"
+    },
+    {
+      "version": "20260410",
+      "name": "control_deduplication"
+    },
+    {
+      "version": "20260412",
+      "name": "add_payment_failed_at"
+    },
+    {
+      "version": "20260425000",
+      "name": "evidence_entity_polymorphism"
+    },
+    {
+      "version": "20260425001",
+      "name": "evidence_workflow_integrity"
+    },
+    {
+      "version": "20260425002",
+      "name": "first_session_progress"
+    },
+    {
+      "version": "20260425003",
+      "name": "fix_org_evidence_rls"
+    },
+    {
+      "version": "20260426001",
+      "name": "ensure_forms_platform_schema"
+    },
+    {
+      "version": "20260426002",
+      "name": "ensure_organization_sso_schema"
+    },
+    {
+      "version": "20260427001",
+      "name": "ensure_action_integrity_tables"
+    },
+    {
+      "version": "20260430001",
+      "name": "billing_events_state_machine"
+    },
+    {
+      "version": "20260430002",
+      "name": "org_control_evaluations_rls"
+    },
+    {
+      "version": "20260430003",
+      "name": "drop_permissive_default_select_policies"
+    },
+    {
+      "version": "20260430004",
+      "name": "forms_settings_key_alignment"
+    },
+    {
+      "version": "20260430005",
+      "name": "scim_and_api_key_rls_hardening"
+    },
+    {
+      "version": "20260430006",
+      "name": "audit_log_entity_typed_columns"
+    },
+    {
+      "version": "20260430007",
+      "name": "policy_lifecycle_repair"
+    },
+    {
+      "version": "20260501001",
+      "name": "status_check_constraints"
+    },
+    {
+      "version": "20260501002",
+      "name": "report_export_storage_path"
+    },
+    {
+      "version": "20260501003",
+      "name": "care_plan_goals_jsonb_to_relational_backfill"
+    },
+    {
+      "version": "20260507",
+      "name": "subscription_status_pending_checkout"
+    },
+    {
+      "version": "20260510",
+      "name": "001_legacy_control_codes_migration"
+    },
+    {
+      "version": "20260526040212",
+      "name": "audit_2026_05_26_fix_api_key_usage_log_rls_column"
+    },
+    {
+      "version": "20260526040238",
+      "name": "audit_2026_05_26_user_preferences_table"
+    },
+    {
+      "version": "20260526040301",
+      "name": "audit_2026_05_26_force_rls_tenant_tables"
+    },
+    {
+      "version": "20260526040324",
+      "name": "audit_2026_05_26_lock_security_definer_search_paths"
+    },
+    {
+      "version": "20260526040451",
+      "name": "audit_2026_05_26_restore_with_check_on_for_all_policies"
+    },
+    {
+      "version": "20260526040533",
+      "name": "audit_2026_05_26_audit_log_append_rpc"
+    },
+    {
+      "version": "20260526040649",
+      "name": "audit_2026_05_26_platform_security_audit_log_v2"
+    },
+    {
+      "version": "20260526040758",
+      "name": "audit_2026_05_26_audit_log_covering_index"
+    },
+    {
+      "version": "20260526040821",
+      "name": "audit_2026_05_26_snapshot_version_after_update"
+    },
+    {
+      "version": "20260526040844",
+      "name": "audit_2026_05_26_dependent_table_fk_to_organizations"
+    },
+    {
+      "version": "20260526040901",
+      "name": "audit_2026_05_26_fk_index_audit"
+    },
+    {
+      "version": "20260526143924",
+      "name": "audit_2026_05_26_audit_tables_immutable_rls"
+    },
+    {
+      "version": "20260526143949",
+      "name": "audit_2026_05_26_consume_backup_code_hash_rpc"
+    },
+    {
+      "version": "20260526144013",
+      "name": "audit_2026_05_26_tasks_and_compliance_status_fks"
+    },
+    {
+      "version": "20260526144029",
+      "name": "audit_2026_05_26_user_session_revocations"
+    },
+    {
+      "version": "20260526144045",
+      "name": "audit_2026_05_26_org_retire_purge_schedule"
+    },
+    {
+      "version": "20260526144149",
+      "name": "audit_2026_05_26_consume_backup_code_hash_rpc_lockdown"
+    },
+    {
+      "version": "20260526152948",
+      "name": "audit_2026_05_26_user_purge_jobs"
+    },
+    {
+      "version": "20260527013107",
+      "name": "audit_2026_05_27_purged_subject_redactions"
+    },
+    {
+      "version": "20260527014159",
+      "name": "audit_2026_05_27_phase_b_drop_orgs"
+    },
+    {
+      "version": "20260527020804",
+      "name": "audit_2026_05_27_org_evidence_file_hash"
+    },
+    {
+      "version": "20260601",
+      "name": "security_hardening_v2"
+    },
+    {
+      "version": "20260602",
+      "name": "fix_missing_rls"
+    },
+    {
+      "version": "20260610",
+      "name": "update_theme_preference_values"
+    },
+    {
+      "version": "20260611",
+      "name": "org_retirement_audit_fields"
+    },
+    {
+      "version": "20260612",
+      "name": "add_plan_code_to_org_subscriptions"
+    },
+    {
+      "version": "20260613",
+      "name": "tasks_context_fields"
+    },
+    {
+      "version": "20260614",
+      "name": "demo_seed_data"
+    },
+    {
+      "version": "20260615",
+      "name": "add_plain_english_mode"
+    },
+    {
+      "version": "20260616",
+      "name": "org_subscriptions_plan_key_check"
+    },
+    {
+      "version": "20260617",
+      "name": "fix_care_plans_rls_update"
+    },
+    {
+      "version": "20260618",
+      "name": "capa_lifecycle_workflow"
+    },
+    {
+      "version": "20260619001",
+      "name": "webhook_delivery_rls"
+    },
+    {
+      "version": "20260620001",
+      "name": "create_team_invitations"
+    },
+    {
+      "version": "20260620002",
+      "name": "create_org_patient_assignments"
+    },
+    {
+      "version": "20260621001",
+      "name": "fix_scim_rls"
+    },
+    {
+      "version": "20260622001",
+      "name": "dedup_indexes"
+    },
+    {
+      "version": "20260622002",
+      "name": "form_submission_idempotency"
+    },
+    {
+      "version": "20260623001",
+      "name": "mfa_session_gate"
+    },
+    {
+      "version": "20260623002",
+      "name": "fix_org_guc_rls"
+    },
+    {
+      "version": "20260623003",
+      "name": "api_key_owner_check"
+    },
+    {
+      "version": "20260624001",
+      "name": "fix_rls_drift_restore_restrictive_policies"
+    },
+    {
+      "version": "20260624002",
+      "name": "care_ops_compliance_gaps"
+    },
+    {
+      "version": "20260624003",
+      "name": "claim_enterprise_export_jobs"
+    },
+    {
+      "version": "20260624004",
+      "name": "schema_drift_resolution"
+    },
+    {
+      "version": "20260624005",
+      "name": "org_controls_view"
+    },
+    {
+      "version": "20260624006",
+      "name": "backfill_control_evidence"
+    },
+    {
+      "version": "20260624007",
+      "name": "mfa_backup_code_hashes"
+    },
+    {
+      "version": "20260624008",
+      "name": "audit_v2_regression_fixes"
+    },
+    {
+      "version": "20260624009",
+      "name": "consolidate_orgs_organizations"
+    },
+    {
+      "version": "20260624010",
+      "name": "v4_010_rls_tenant_tables"
+    },
+    {
+      "version": "20260624011",
+      "name": "v4_006_org_id_fk_constraints"
+    },
+    {
+      "version": "20260624012",
+      "name": "v4_003_drop_dead_audit_tables"
+    },
+    {
+      "version": "20260624013",
+      "name": "v4_005_audit_chain_serialization"
+    },
+    {
+      "version": "20260624014",
+      "name": "v4_012_sql_security_trio"
+    },
+    {
+      "version": "20260624015",
+      "name": "v4_023_sql_security_quartet"
+    },
+    {
+      "version": "20260624016",
+      "name": "v4_024_db_schema_fixes"
+    },
+    {
+      "version": "20260624017",
+      "name": "audit_sprint1_data_integrity"
+    },
+    {
+      "version": "20260624018",
+      "name": "audit_sprint2_rls_status_fn"
+    },
+    {
+      "version": "20260624019",
+      "name": "audit_sprint5b_plan_key_backfill"
+    },
+    {
+      "version": "20260624020",
+      "name": "audit_sprint6a_scale_tier_check"
+    },
+    {
+      "version": "20260624021",
+      "name": "audit_sprint6c_control_attestations"
+    },
+    {
+      "version": "20260624022",
+      "name": "audit_sprint7e_drop_plans_table"
+    },
+    {
+      "version": "20260624023",
+      "name": "audit_2026_05_24_missing_rls_policies"
+    },
+    {
+      "version": "20260624024",
+      "name": "audit_2026_05_24_rls_enable_statements"
+    },
+    {
+      "version": "20260624025",
+      "name": "audit_2026_05_25_mirror_organizations_to_orgs_trigger"
+    },
+    {
+      "version": "20260624026",
+      "name": "audit_2026_05_25_backfill_orgs_from_organizations"
+    },
+    {
+      "version": "20260624027",
+      "name": "audit_2026_05_25_clean_orgs_only_orphans"
+    },
+    {
+      "version": "20260624028",
+      "name": "audit_2026_05_25_enable_rls_on_orgs_sync_archive"
+    },
+    {
+      "version": "20260624029",
+      "name": "audit_2026_05_25_orgs_sync_delete_symmetry"
+    },
+    {
+      "version": "20260624030",
+      "name": "audit_2026_05_26_fix_api_key_usage_log_rls_column"
+    },
+    {
+      "version": "20260624031",
+      "name": "audit_2026_05_26_user_preferences_table"
+    },
+    {
+      "version": "20260624032",
+      "name": "audit_2026_05_26_force_rls_tenant_tables"
+    },
+    {
+      "version": "20260624033",
+      "name": "audit_2026_05_26_lock_security_definer_search_paths"
+    },
+    {
+      "version": "20260624034",
+      "name": "audit_2026_05_26_restore_with_check_on_for_all_policies"
+    },
+    {
+      "version": "20260624035",
+      "name": "audit_2026_05_26_audit_log_append_rpc"
+    },
+    {
+      "version": "20260624039",
+      "name": "audit_2026_05_26_audit_log_covering_index"
+    },
+    {
+      "version": "20260624040",
+      "name": "audit_2026_05_26_snapshot_version_after_update"
+    },
+    {
+      "version": "20260624042",
+      "name": "audit_2026_05_26_dependent_table_fk_to_organizations"
+    },
+    {
+      "version": "20260624043",
+      "name": "audit_2026_05_26_fk_index_audit"
+    },
+    {
+      "version": "20260624044",
+      "name": "audit_2026_05_26_audit_tables_immutable_rls"
+    },
+    {
+      "version": "20260624045",
+      "name": "audit_2026_05_26_consume_backup_code_hash_rpc"
+    },
+    {
+      "version": "20260624046",
+      "name": "audit_2026_05_26_tasks_and_compliance_status_fks"
+    },
+    {
+      "version": "20260624047",
+      "name": "audit_2026_05_26_user_session_revocations"
+    },
+    {
+      "version": "20260624048",
+      "name": "audit_2026_05_26_org_retire_purge_schedule"
+    },
+    {
+      "version": "20260624049",
+      "name": "audit_2026_05_26_user_purge_jobs"
+    },
+    {
+      "version": "20260624050",
+      "name": "audit_2026_05_27_purged_subject_redactions"
+    },
+    {
+      "version": "20260624051",
+      "name": "audit_2026_05_27_phase_b_drop_orgs"
+    },
+    {
+      "version": "20260624052",
+      "name": "audit_2026_05_27_org_evidence_file_hash"
+    },
+    {
+      "version": "20260624053",
+      "name": "audit_2026_05_26_consume_backup_code_hash_rpc_lockdown"
+    },
+    {
+      "version": "20260624054",
+      "name": "audit_2026_05_27_list_migration_ledger_rpc"
+    }
+  ]
+}

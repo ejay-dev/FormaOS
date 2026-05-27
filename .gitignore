@@ -80,6 +80,7 @@ next-env.d.ts
 !/scripts/upgrade-*.sql
 !/scripts/api-contracts-known-undocumented.json
 !/scripts/summarize-*.mjs
+!/scripts/snapshot-*.mjs
 .npm-cache/
 .gitnexus
 gitnexus/
