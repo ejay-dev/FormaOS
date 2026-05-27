@@ -283,26 +283,9 @@ async function ensureCachedTestUserProvisioned(
       })
       .eq('id', orgId);
 
-    {
-      // Mirror to legacy `orgs` table — error must propagate, not warn-
-      // and-continue, or qa:deep's check-orgs-sync.mjs fails on the next
-      // run (v3-010 / v4-001).
-      const { error: legacyOrgsError } = await adminClient.from('orgs').upsert(
-        {
-          id: orgId,
-          name: `E2E Test Org ${user.email.split('@')[0]}`,
-          created_by: user.id,
-          created_at: nowIso,
-          updated_at: nowIso,
-        },
-        { onConflict: 'id' },
-      );
-      if (legacyOrgsError) {
-        throw new Error(
-          `legacy_orgs_mirror_failed: ${legacyOrgsError.message}`,
-        );
-      }
-    }
+    // Legacy `public.orgs` mirror used to live here. Dropped by
+    // migration 20260624051 (commit 6126ab21). organizations(id) is
+    // now the only source of truth.
 
     await adminClient.from('org_frameworks').upsert(
       {
@@ -864,33 +847,13 @@ async function _createTemporaryTestUserImpl(): Promise<TestUser> {
       );
     }
 
-    const nowIso = new Date().toISOString();
-    // Mirror to legacy `orgs` table. Previously this was a try/catch
-    // console.warn, but Supabase upserts return `{error}` rather than
-    // throwing, so the warn never fired and the silent failure leaked
-    // organizations-only orphans (v4-001 reverse direction). Propagate.
-    const { error: legacyOrgsError } = await adminClient.from('orgs').upsert(
-      {
-        id: orgData.id,
-        name: `E2E Test Org ${testId}`,
-        created_by: userData.user.id,
-        created_at: nowIso,
-        updated_at: nowIso,
-      },
-      { onConflict: 'id' },
-    );
-    if (legacyOrgsError) {
-      // Best-effort cleanup of the just-created organizations row before
-      // surfacing the error, so the failure doesn't itself leak drift.
-      await adminClient
-        .from('organizations')
-        .delete()
-        .eq('id', orgData.id);
-      await adminClient.auth.admin.deleteUser(userData.user.id);
-      throw new Error(
-        `Failed to mirror test org to legacy orgs: ${legacyOrgsError.message}`,
-      );
-    }
+    // Legacy `public.orgs` mirror used to live here. Migration
+    // 20260624051 (commit 6126ab21, "R2 Phase B — drop orgs table +
+    // mirror triggers") dropped the table after repointing every
+    // dependent FK to organizations(id). The mirror upsert now throws
+    // "Could not find the table 'public.orgs' in the schema cache" so
+    // it's been removed. organizations(id) is now the only source of
+    // truth.
 
     // Add user as org owner
     let memberError: { message: string } | null = null;
