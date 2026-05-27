@@ -6,6 +6,7 @@ import {
   getChainTopForOrg,
   recordAnchor,
 } from '@/lib/audit/external-anchor';
+import { captureAuditAnchorEvent } from '@/lib/analytics/posthog-server';
 
 const log = routeLog('/api/cron/audit-chain-anchor');
 
@@ -128,11 +129,20 @@ export async function GET(request: Request) {
         results.push({ orgId, status: 'skipped', reason: 'feature_flag_off' });
       } else {
         results.push({ orgId, status: 'anchored', rekorUuid: anchor.rekorEntryUuid });
+        await captureAuditAnchorEvent('audit.anchor.recorded', orgId, {
+          provider: 'sigstore-rekor',
+          topSequenceNumber: top.topSequenceNumber,
+          rekorEntryUuid: anchor.rekorEntryUuid,
+        }).catch(() => {});
       }
     } catch (err) {
       const reason = err instanceof Error ? err.message : 'unknown';
       log.warn({ err: reason, orgId }, 'anchor submission failed');
       results.push({ orgId, status: 'failed', reason });
+      await captureAuditAnchorEvent('audit.anchor.failed', orgId, {
+        provider: 'sigstore-rekor',
+        reason,
+      }).catch(() => {});
     }
   }
 

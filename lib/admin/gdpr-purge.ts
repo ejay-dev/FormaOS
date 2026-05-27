@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { revokeAllSessions } from '@/lib/auth/session-revocation';
 import { recordSubjectForRedaction } from '@/lib/audit/redact-purged-subjects';
 import { authLogger } from '@/lib/observability/structured-logger';
+import { captureUserPurgeEvent } from '@/lib/analytics/posthog-server';
 
 // Audit 2026-05-26 — P0-8: GDPR Right-to-Erasure implementation.
 //
@@ -430,6 +431,21 @@ export async function processUserPurge(jobId: string): Promise<{
         .length,
     });
   }
+
+  // Audit 2026-05-27: emit PostHog signal so the activation/churn funnel
+  // sees the right shape. distinct_id is the user UUID — no PII.
+  await captureUserPurgeEvent(
+    finalStatus === 'completed'
+      ? 'user.purge.completed'
+      : 'user.purge.failed',
+    userId,
+    {
+      tableCount: Object.keys(tableCounts).length,
+      refuseReason: authDeleteError,
+    },
+  ).catch(() => {
+    // PostHog capture is best-effort; never let it mask the purge result.
+  });
 
   return { status: finalStatus, tableCounts };
 }

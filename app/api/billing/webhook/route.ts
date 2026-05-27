@@ -20,6 +20,7 @@ import {
 import { sendBillingEmail } from '@/lib/email/billing-emails';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
 import { pageOnCall } from '@/lib/observability/paging';
+import { captureStripeEvent } from '@/lib/analytics/posthog-server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -567,11 +568,23 @@ export async function POST(request: Request) {
     }
 
     if (event.type === 'customer.subscription.created') {
-      const orgId = await upsertFromSubscription(
-        event.data.object as Stripe.Subscription,
-      );
+      const subscription = event.data.object as Stripe.Subscription;
+      const orgId = await upsertFromSubscription(subscription);
       if (orgId) {
         await sendBillingEmail(admin, orgId, 'subscription_created');
+        const planKey = resolvePlanKeyFromPriceId(
+          subscription.items.data[0]?.price?.id ?? null,
+        );
+        await captureStripeEvent('billing.subscription.created', {
+          orgId,
+          planKey,
+          status: subscription.status,
+          priceCents: subscription.items.data[0]?.price?.unit_amount ?? null,
+          currency: subscription.items.data[0]?.price?.currency ?? null,
+          trialEnd: subscription.trial_end
+            ? new Date(subscription.trial_end * 1000).toISOString()
+            : null,
+        });
       }
     }
 
@@ -581,6 +594,16 @@ export async function POST(request: Request) {
         event.data as { previous_attributes?: Record<string, unknown> }
       ).previous_attributes;
       await upsertFromSubscription(subscription);
+      const updatedOrgId = subscription.metadata?.organization_id ?? null;
+      if (updatedOrgId) {
+        await captureStripeEvent('billing.subscription.updated', {
+          orgId: updatedOrgId,
+          planKey: resolvePlanKeyFromPriceId(subscription.items.data[0]?.price?.id ?? null),
+          status: subscription.status,
+          priceCents: subscription.items.data[0]?.price?.unit_amount ?? null,
+          currency: subscription.items.data[0]?.price?.currency ?? null,
+        });
+      }
 
       // Determine if upgrade or downgrade
       const orgId = subscription.metadata?.organization_id ?? null;
@@ -656,6 +679,10 @@ export async function POST(request: Request) {
             stripe_subscription_id: subscriptionId,
             cancellation_reason: subscription.cancellation_details?.reason ?? null,
           },
+        });
+        await captureStripeEvent('billing.subscription.canceled', {
+          orgId: subRow.organization_id,
+          status: 'canceled',
         });
       }
     }
