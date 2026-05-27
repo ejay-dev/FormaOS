@@ -84,6 +84,7 @@ next-env.d.ts
 !/scripts/backfill-*.mjs
 !/scripts/.security-definer-rpc-allowlist.json
 !/scripts/record-*.mjs
+!/scripts/rotate-*.mjs
 .npm-cache/
 .gitnexus
 gitnexus/
