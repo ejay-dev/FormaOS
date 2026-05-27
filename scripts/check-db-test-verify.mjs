@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import './_node20-ws-shim.mjs';
 import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
 import fs from 'node:fs';
