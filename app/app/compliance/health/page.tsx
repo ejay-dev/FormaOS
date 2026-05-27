@@ -6,6 +6,7 @@ import { PageHero } from '@/components/ui/page-hero';
 import { SkeletonCard } from '@/components/ui/skeleton';
 import { getCurrentOrgId } from '@/lib/frameworks/org-frameworks';
 import { getOrgHealthAggregate } from '@/lib/compliance/health/fetch';
+import { getOrgHealthTrend, type HealthTrendPoint } from '@/lib/compliance/health/trend';
 import type {
   FrameworkHealth,
   OutstandingControl,
@@ -46,7 +47,10 @@ const RISK_PILL: Record<OutstandingControl['risk_level'], string> = {
 };
 
 async function HealthBody({ orgId }: { orgId: string }) {
-  const aggregate = await getOrgHealthAggregate(orgId);
+  const [aggregate, trend] = await Promise.all([
+    getOrgHealthAggregate(orgId),
+    getOrgHealthTrend(orgId, 12),
+  ]);
   const band = scoreBand(aggregate.overall.score);
   const { overall, frameworks, outstanding } = aggregate;
 
@@ -98,6 +102,8 @@ async function HealthBody({ orgId }: { orgId: string }) {
           <StatusTile label="Fail" value={overall.status_counts.fail} tone="danger" />
           <StatusTile label="Manual" value={overall.status_counts.not_evaluated} tone="neutral" />
         </div>
+
+        <TrendChart trend={trend} />
       </section>
 
       <section
@@ -180,6 +186,60 @@ async function HealthBody({ orgId }: { orgId: string }) {
           </ol>
         )}
       </section>
+    </div>
+  );
+}
+
+function TrendChart({ trend }: { trend: HealthTrendPoint[] }) {
+  if (trend.length === 0) {
+    return (
+      <div className="mt-5 rounded-lg border border-dashed border-glass-border p-4 text-xs text-muted-foreground" data-testid="health-trend-empty">
+        Trend chart will populate after the first weekly snapshot
+        (/api/cron/compliance-health-snapshot runs Monday at 07:00 UTC).
+      </div>
+    );
+  }
+
+  // Sparkline geometry: width 480 × height 60, padding 4px top/bottom.
+  const width = 480;
+  const height = 60;
+  const padding = 4;
+  const usableHeight = height - padding * 2;
+
+  const xs = trend.map((_, i) => (i * (width - padding * 2)) / Math.max(1, trend.length - 1) + padding);
+  const ys = trend.map((p) => padding + (1 - Math.max(0, Math.min(1, p.overall_score))) * usableHeight);
+
+  const path = xs
+    .map((x, i) => `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${ys[i].toFixed(1)}`)
+    .join(' ');
+
+  const lastPoint = trend[trend.length - 1];
+  const firstPoint = trend[0];
+  const delta = lastPoint.overall_score - firstPoint.overall_score;
+
+  return (
+    <div className="mt-5 rounded-lg border border-glass-border bg-glass-subtle p-4" data-testid="health-trend-chart">
+      <div className="flex items-center justify-between text-xs">
+        <p className="font-medium uppercase tracking-wider text-muted-foreground">
+          {trend.length}-week trend
+        </p>
+        <p className={`font-semibold ${delta >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+          {delta >= 0 ? '+' : ''}
+          {formatPercent(delta)}
+        </p>
+      </div>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="mt-2 w-full"
+        preserveAspectRatio="none"
+        role="img"
+        aria-label={`Compliance score trend, ${trend.length} weeks`}
+      >
+        <path d={path} fill="none" stroke="currentColor" strokeWidth="2" className="text-primary" />
+        {xs.map((x, i) => (
+          <circle key={i} cx={x} cy={ys[i]} r={2} className="fill-primary" />
+        ))}
+      </svg>
     </div>
   );
 }

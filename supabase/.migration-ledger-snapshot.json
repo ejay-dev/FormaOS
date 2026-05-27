@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T12:13:04.882Z",
+  "takenAt": "2026-05-27T12:44:06.610Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1045,6 +1045,10 @@
     {
       "version": "20260624068",
       "name": "audit_2026_05_27_dormant_user_view_lockdown"
+    },
+    {
+      "version": "20260624069",
+      "name": "audit_2026_05_27_compliance_health_snapshots"
     }
   ]
 }
