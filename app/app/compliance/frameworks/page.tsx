@@ -4,15 +4,69 @@ import { ShieldCheck, Layers, CheckCircle2, ArrowRight } from 'lucide-react';
 import {
   getCurrentOrgId,
   getOrgFrameworkOverview,
+  getFrameworkEvaluationTallies,
+  type FrameworkEvaluationTally,
 } from '@/lib/frameworks/org-frameworks';
 import { getControlMappingSummary } from '@/lib/frameworks/mappings';
 import { SkeletonCard, SkeletonTable } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { PageHero } from '@/components/ui/page-hero';
 
+function formatTallyTimestamp(value: string | null): string {
+  if (!value) return 'not yet evaluated';
+  return new Date(value).toLocaleDateString('en-AU', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+function EvaluationTally({ tally }: { tally: FrameworkEvaluationTally }) {
+  const segments: Array<{
+    key: keyof Pick<FrameworkEvaluationTally, 'pass' | 'partial' | 'fail' | 'not_evaluated'>;
+    label: string;
+    color: string;
+  }> = [
+    { key: 'pass', label: 'Pass', color: 'bg-emerald-500/15 text-emerald-700 border-emerald-500/30' },
+    { key: 'partial', label: 'Partial', color: 'bg-amber-500/15 text-amber-700 border-amber-500/30' },
+    { key: 'fail', label: 'Fail', color: 'bg-red-500/15 text-red-700 border-red-500/30' },
+    { key: 'not_evaluated', label: 'Manual', color: 'bg-slate-500/15 text-slate-700 border-slate-500/30' },
+  ];
+
+  return (
+    <div className="mt-4 rounded-lg border border-glass-border bg-glass-subtle p-3" data-testid="framework-evaluation-tally">
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span className="font-medium uppercase tracking-wider">Per-control status</span>
+        <span>{formatTallyTimestamp(tally.lastEvaluatedAt)}</span>
+      </div>
+      <div className="mt-2 grid grid-cols-4 gap-1.5">
+        {segments.map((segment) => {
+          const value = tally[segment.key];
+          return (
+            <div
+              key={segment.key}
+              className={`rounded-md border px-2 py-1.5 text-center ${segment.color}`}
+              data-testid={`framework-tally-${segment.key}`}
+            >
+              <div className="text-lg font-semibold leading-none">{value}</div>
+              <div className="mt-0.5 text-[10px] uppercase tracking-wide opacity-80">{segment.label}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /** Streamed: Framework grid (requires org framework data) */
 async function FrameworkGrid({ orgId }: { orgId: string }) {
   const frameworks = await getOrgFrameworkOverview(orgId);
+  const tallyMap = await getFrameworkEvaluationTallies(
+    orgId,
+    frameworks
+      .map((fw) => fw.id)
+      .filter((id): id is string => typeof id === 'string'),
+  );
 
   if (frameworks.length === 0) {
     return (
@@ -77,6 +131,15 @@ async function FrameworkGrid({ orgId }: { orgId: string }) {
               ))
             )}
           </div>
+
+          {framework.id && tallyMap.get(framework.id) ? (
+            <EvaluationTally tally={tallyMap.get(framework.id)!} />
+          ) : (
+            <div className="mt-4 rounded-lg border border-dashed border-glass-border p-3 text-xs text-muted-foreground">
+              No per-control evaluations recorded yet. Trigger an evaluation
+              from /app/controls or wait for the nightly job.
+            </div>
+          )}
         </div>
       ))}
     </div>

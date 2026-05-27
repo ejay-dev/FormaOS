@@ -107,6 +107,7 @@ export async function getOrgFrameworkOverview(orgId: string) {
   const frameworkIds = (frameworks ?? []).map((fw: FrameworkRow) => fw.id);
   if (!frameworkIds.length) {
     return enabledSlugs.map((slug: string) => ({
+      id: null as string | null,
       slug,
       name: slug.toUpperCase(),
       description: null,
@@ -190,6 +191,100 @@ export async function getOrgFrameworkOverview(orgId: string) {
         )?.enabled_at as string) ?? null,
     };
   });
+}
+
+export type FrameworkEvaluationTally = {
+  pass: number;
+  partial: number;
+  fail: number;
+  not_evaluated: number;
+  total: number;
+  /** evaluator-bound rows whose status is anything other than the four above */
+  other: number;
+  /** Most-recent last_evaluated_at across per-control rows; null if none yet. */
+  lastEvaluatedAt: string | null;
+};
+
+/**
+ * Per-framework pass/partial/fail/not_evaluated tally for the dashboard.
+ * Reads per-control rows from public.org_control_evaluations and groups by
+ * framework_id. Framework-level aggregate rows (the older row shape that
+ * stores compliance_score on a single row per framework) are ignored — those
+ * are identified by total_controls IS NOT NULL.
+ *
+ * Returns a map keyed by framework_id. Frameworks with zero per-control
+ * rows are omitted; callers should treat absence as "no evaluations yet".
+ */
+export async function getFrameworkEvaluationTallies(
+  orgId: string,
+  frameworkIds: string[],
+): Promise<Map<string, FrameworkEvaluationTally>> {
+  const out = new Map<string, FrameworkEvaluationTally>();
+  if (!frameworkIds.length) return out;
+
+  const admin = createSupabaseAdminClient();
+  const { data, error } = await admin
+    .from('org_control_evaluations')
+    .select('framework_id, status, last_evaluated_at, total_controls')
+    .eq('organization_id', orgId)
+    .in('framework_id', frameworkIds);
+  if (error || !data) return out;
+
+  type Row = {
+    framework_id: string | null;
+    status: string | null;
+    last_evaluated_at: string | null;
+    total_controls: number | null;
+  };
+
+  for (const row of data as Row[]) {
+    if (!row.framework_id) continue;
+    // Skip framework-level aggregate rows — they have total_controls set
+    // and don't represent a single control's outcome.
+    if (row.total_controls != null) continue;
+
+    let entry = out.get(row.framework_id);
+    if (!entry) {
+      entry = {
+        pass: 0,
+        partial: 0,
+        fail: 0,
+        not_evaluated: 0,
+        other: 0,
+        total: 0,
+        lastEvaluatedAt: null,
+      };
+      out.set(row.framework_id, entry);
+    }
+    entry.total += 1;
+    switch (row.status) {
+      case 'pass':
+        entry.pass += 1;
+        break;
+      case 'partial':
+        entry.partial += 1;
+        break;
+      case 'fail':
+        entry.fail += 1;
+        break;
+      case 'not_evaluated':
+      case null:
+        entry.not_evaluated += 1;
+        break;
+      default:
+        entry.other += 1;
+    }
+    if (row.last_evaluated_at) {
+      if (
+        !entry.lastEvaluatedAt ||
+        row.last_evaluated_at > entry.lastEvaluatedAt
+      ) {
+        entry.lastEvaluatedAt = row.last_evaluated_at;
+      }
+    }
+  }
+
+  return out;
 }
 
 export async function getCurrentOrgId() {
