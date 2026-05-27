@@ -4,6 +4,8 @@ import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { buildOrSearch } from '@/lib/utils/postgrest-search';
 import { loadRedactor } from '@/lib/audit/redact-purged-subjects';
+import { buildMerkleTree } from '@/lib/audit/merkle';
+import { formatCreatedAtV2 } from '@/lib/audit/hash-utils';
 
 const log = routeLog('/api/audit/export');
 
@@ -48,11 +50,21 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    const format = (url.searchParams.get('format') || 'csv').toLowerCase();
+    if (format !== 'csv' && format !== 'json') {
+      return NextResponse.json(
+        { error: 'format must be csv or json' },
+        { status: 400 },
+      );
+    }
+
     let query = supabase
       .from('audit_log')
-      .select('id, action, resource_type, resource_id, details, created_at, user_id, ip_address')
+      .select(
+        'id, action, resource_type, resource_id, details, created_at, user_id, ip_address, entry_hash, entry_mac, prev_hash, sequence_number, hash_algo',
+      )
       .eq('org_id', orgId)
-      .order('created_at', { ascending: false })
+      .order('sequence_number', { ascending: true, nullsFirst: false })
       .limit(10_000);
 
     if (actions.length > 0) query = query.in('action', actions);
@@ -75,9 +87,77 @@ export async function GET(request: Request) {
     // R1 (Audit 2026-05-27): redact subject PII for any user who was
     // GDPR-purged. At-rest audit_log rows are immutable (P0-1 RLS);
     // redaction happens here on the way out so the chain stays whole
-    // while the CSV that leaves the system is erasure-compliant.
+    // while the export that leaves the system is erasure-compliant.
     const redactor = await loadRedactor();
+    const redactedRows = (data ?? []).map((row) =>
+      redactor.redactRow(row as Record<string, unknown>),
+    );
 
+    if (format === 'json') {
+      // R4 (Audit 2026-05-27): bundle the rows with a Merkle inclusion
+      // tree so an external auditor can verify a single event without
+      // seeing the others. The leaf payload is the same v2 canonical
+      // JSON used by the hash chain — verifiers reuse the same hashing
+      // primitive across hash-chain and Merkle-proof checks.
+      const leaves = redactedRows.map((row) => {
+        const canonical = JSON.stringify({
+          id: row.id,
+          org_id: orgId,
+          user_id: (row.user_id as string | null) ?? null,
+          action: row.action,
+          resource_type: row.resource_type,
+          resource_id: (row.resource_id as string | null) ?? null,
+          details: (row.details as Record<string, unknown> | null) ?? {},
+          created_at: formatCreatedAtV2(row.created_at as string),
+          prev_hash: (row.prev_hash as string | null) || '',
+        });
+        return { id: row.id as string, payload: canonical };
+      });
+      const tree = buildMerkleTree(leaves);
+
+      const today = new Date().toISOString().split('T')[0];
+      return NextResponse.json(
+        {
+          manifest: {
+            generated_at: new Date().toISOString(),
+            org_id: orgId,
+            tree_size: tree.treeSize,
+            algorithm: tree.algorithm,
+            schema_version: '2026-05-27-r4',
+          },
+          merkle: {
+            algorithm: tree.algorithm,
+            tree_size: tree.treeSize,
+            root: tree.root,
+            empty_tree: tree.emptyTree,
+            proofs: tree.proofs,
+          },
+          entries: redactedRows.map((row, idx) => ({
+            id: row.id,
+            sequence_number: row.sequence_number,
+            created_at: row.created_at,
+            action: row.action,
+            resource_type: row.resource_type,
+            resource_id: row.resource_id,
+            user_id: row.user_id,
+            ip_address: row.ip_address,
+            details: row.details,
+            entry_hash: row.entry_hash,
+            entry_mac: row.entry_mac,
+            prev_hash: row.prev_hash,
+            hash_algo: row.hash_algo,
+            leaf_hash: tree.leafHashes[idx],
+          })),
+        },
+        {
+          headers: {
+            'Content-Disposition': `attachment; filename="audit-log-${today}.json"`,
+          },
+        },
+      );
+    }
+
+    // CSV path (default — unchanged for backwards compat)
     const header = [
       'id',
       'created_at',
@@ -89,21 +169,20 @@ export async function GET(request: Request) {
       'details',
     ];
 
-    const rows = (data ?? []).map((row) => {
-      const redacted = redactor.redactRow(row as Record<string, unknown>);
-      return [
-        redacted.id,
-        redacted.created_at,
-        redacted.action,
-        redacted.resource_type,
-        redacted.resource_id,
-        redacted.user_id,
-        redacted.ip_address,
-        redacted.details,
+    const rows = redactedRows.map((row) =>
+      [
+        row.id,
+        row.created_at,
+        row.action,
+        row.resource_type,
+        row.resource_id,
+        row.user_id,
+        row.ip_address,
+        row.details,
       ]
         .map(escapeCsv)
-        .join(',');
-    });
+        .join(','),
+    );
 
     const csv = [header.join(','), ...rows].join('\n');
 
