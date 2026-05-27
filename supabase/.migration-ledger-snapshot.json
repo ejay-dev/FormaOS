@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T11:44:22.002Z",
+  "takenAt": "2026-05-27T12:13:04.882Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1041,6 +1041,10 @@
     {
       "version": "20260624067",
       "name": "audit_2026_05_27_r10_phase_3_ndis_schema"
+    },
+    {
+      "version": "20260624068",
+      "name": "audit_2026_05_27_dormant_user_view_lockdown"
     }
   ]
 }
