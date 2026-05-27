@@ -141,6 +141,13 @@ export const NDIS_NAV: NavItem[] = [
     testId: 'nav-progress-notes',
   },
   {
+    name: 'Behaviour Support',
+    href: '/app/behaviour-support-plans',
+    icon: FileText,
+    category: 'Care Operations',
+    testId: 'nav-behaviour-support-plans',
+  },
+  {
     name: 'Incidents',
     href: '/app/incidents',
     icon: AlertTriangle,

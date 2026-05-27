@@ -2,15 +2,24 @@
   "_comment": "Audit 2026-05-27: SECURITY DEFINER functions in public that are intentionally callable by anon and/or authenticated. New functions are blocked by scripts/check-security-definer-grants.mjs unless added here.",
   "_history": {
     "2026-05-27 initial": "Seeded with 19 pre-existing entries to acknowledge current state without blocking deploys.",
-    "2026-05-27 hygiene batch (migration 20260624066)": "Removed 5 trigger handlers (_fos_revoke_api_keys_*, _touch_user_preferences_*, org_care_plans_snapshot_version, ensure_user_profile_from_org_member) after explicit REVOKE FROM anon, authenticated, PUBLIC. They no longer leak."
+    "2026-05-27 hygiene batch (migration 20260624066)": "Removed 5 trigger handlers (_fos_revoke_api_keys_*, _touch_user_preferences_*, org_care_plans_snapshot_version, ensure_user_profile_from_org_member) after explicit REVOKE FROM anon, authenticated, PUBLIC. They no longer leak.",
+    "2026-05-27 Tier 3.3 trim batch (migration 20260624070)": "Locked down 6 functions. Cron-only (cleanup_old_security_data, claim_compliance_export_jobs, claim_enterprise_export_jobs, claim_report_export_jobs) → REVOKE anon + authenticated; removed from allowlist. Session-required (update_session_heartbeat, log_email_send) → REVOKE anon, kept authenticated; remain in allowlist but no longer anon-callable. Allowlist 14 → 10."
+  },
+  "_cleanup_notes": {
+    "accept_invite": "anon callable by design — invitee may not be signed in when they hit the email link.",
+    "bootstrap_org_from_library": "TODO: audit caller path (likely onboarding bootstrap; authenticated should suffice).",
+    "create_invite": "authenticated callable from team management UI; anon path should be removable in a follow-up.",
+    "create_org": "called during onboarding post-signup; anon path should be removable in a follow-up.",
+    "create_security_alert": "TODO: audit. No grep hits for direct callers — may be admin-UI only.",
+    "current_user_admin_org_ids": "RLS helper used in policy bodies; authenticated needed.",
+    "current_user_org_ids": "RLS helper used in policy bodies; authenticated needed.",
+    "log_email_send": "Tier 3.3: anon revoked; authenticated retained (server-action context calls this via supabase server client).",
+    "search_embeddings": "TODO: rag-chat module currently has zero production callers (only test imports). anon path is removable; future-proofing keeps authenticated for now.",
+    "update_session_heartbeat": "Tier 3.3: anon revoked; authenticated retained (app/auth/signout calls this from an active session)."
   },
   "allowed": [
     "accept_invite",
     "bootstrap_org_from_library",
-    "claim_compliance_export_jobs",
-    "claim_enterprise_export_jobs",
-    "claim_report_export_jobs",
-    "cleanup_old_security_data",
     "create_invite",
     "create_org",
     "create_security_alert",

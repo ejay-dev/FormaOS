@@ -134,6 +134,15 @@ const TENANT_TABLE_SCOPES = {
   saved_searches: { column: 'organization_id' },
   org_dnp_imports: { column: 'organization_id' },
   org_ndis_claims: { column: 'organization_id' },
+  // org_progress_notes was used via the org client by lib/onboarding/
+  // first-session.ts long before it was registered here. The wrapper
+  // threw "table not registered as a tenant table" once the e2e auth
+  // flow finally reached /app under PR #192. Registered in audit
+  // 2026-05-27 follow-up.
+  org_progress_notes: { column: 'organization_id' },
+  // R10 Phase 3 (audit 2026-05-27): BSP CRUD + weekly health snapshot.
+  org_behaviour_support_plans: { column: 'organization_id' },
+  org_compliance_health_snapshots: { column: 'organization_id' },
   search_index: { column: 'org_id' },
   recent_items: { column: 'org_id' },
   search_history: { column: 'org_id' },

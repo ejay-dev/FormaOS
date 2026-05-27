@@ -4,6 +4,7 @@
  * Verifies Supabase connection and basic functionality
  */
 
+require('./_node20-ws-shim.cjs');
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

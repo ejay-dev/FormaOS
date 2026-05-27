@@ -4,6 +4,88 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { requirePermission } from "@/app/app/actions/rbac";
 import { logAuditEvent } from "@/app/app/actions/audit-events";
+import { actionError, isNextInternalError } from "@/lib/actions/safe";
+
+const REGISTER_RISK_LEVELS = new Set(["low", "medium", "high", "critical"]);
+
+function slugifyRegisterCode(input: string): string {
+  return (
+    input
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .slice(0, 64) || `register_${Date.now()}`
+  );
+}
+
+/**
+ * Create a typed register entry on org_registers. Used by the new-register
+ * sheet on /app/registers. The `type` field is required so NDIS evaluators
+ * have something to look for (predicates skip rows with NULL type).
+ */
+export async function createRegisterEntry(formData: FormData) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Unauthorized");
+    const permissionCtx = await requirePermission("EDIT_CONTROLS");
+
+    const name = String(formData.get("name") ?? "").trim();
+    const type = String(formData.get("type") ?? "").trim();
+    if (!name) throw new Error("Register name is required.");
+    if (!type) throw new Error("Register type is required.");
+
+    const description = (formData.get("description") as string | null)?.trim() || null;
+    const category = (formData.get("category") as string | null)?.trim() || null;
+    const riskLevel = String(formData.get("risk_level") ?? "low");
+    if (!REGISTER_RISK_LEVELS.has(riskLevel)) {
+      throw new Error("Invalid risk_level.");
+    }
+
+    const explicitCode = String(formData.get("code") ?? "").trim();
+    const code = explicitCode ? slugifyRegisterCode(explicitCode) : slugifyRegisterCode(name);
+
+    const { data: inserted, error } = await supabase
+      .from("org_registers")
+      .insert({
+        org_id: permissionCtx.orgId,
+        code,
+        name,
+        type,
+        description,
+        category,
+        risk_level: riskLevel,
+        fields: [],
+        is_active: true,
+      })
+      .select("id")
+      .single();
+    if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId: permissionCtx.orgId,
+        actorUserId: user.id,
+        actorRole: permissionCtx.role,
+        entityType: "register",
+        entityId: inserted?.id ?? null,
+        actionType: "REGISTER_CREATED",
+        afterState: { name, type, code, riskLevel },
+        reason: "create_register_entry",
+      },
+      { required: true },
+    );
+
+    revalidatePath("/app/registers");
+    return { success: true };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
 
 export async function createAsset(formData: FormData) {
   const supabase = await createSupabaseServerClient();

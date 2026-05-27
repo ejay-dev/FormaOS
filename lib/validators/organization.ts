@@ -86,18 +86,43 @@ export const TEAM_SIZE_OPTIONS = [
 ] as const;
 
 /**
- * Framework options
+ * Framework options.
+ *
+ * Some frameworks are industry-gated — they only appear in the onboarding
+ * picker when the org's industry matches. NDIS is the canonical example:
+ * the framework pack is irrelevant for SaaS / Financial Services orgs and
+ * clutters their picker. (Audit 2026-05-27 Tier 4.1 decision.)
  */
 export const FRAMEWORK_OPTIONS = [
-  { id: "ndis", label: "NDIS Practice Standards" },
+  { id: "ndis", label: "NDIS Practice Standards", industries: ["ndis"] as readonly string[] },
   { id: "hipaa", label: "HIPAA-style healthcare controls" },
   { id: "soc2", label: "SOC 2" },
   { id: "iso27001", label: "ISO 27001" },
   { id: "gdpr", label: "GDPR" },
   { id: "pci-dss", label: "PCI DSS" },
-  { id: "aged_care", label: "Aged Care Quality Standards" },
+  { id: "aged_care", label: "Aged Care Quality Standards", industries: ["aged_care"] as readonly string[] },
   { id: "custom", label: "Custom / internal framework" },
 ] as const;
+
+export type FrameworkOption = {
+  readonly id: string;
+  readonly label: string;
+  readonly industries?: readonly string[];
+};
+
+/**
+ * Filter FRAMEWORK_OPTIONS down to the subset visible for an org's
+ * industry. Frameworks without an `industries` field are universal.
+ */
+export function frameworkOptionsForIndustry(
+  industry: string | null | undefined,
+): readonly FrameworkOption[] {
+  const all: readonly FrameworkOption[] = FRAMEWORK_OPTIONS;
+  if (!industry) return all;
+  return all.filter(
+    (option) => !option.industries || option.industries.includes(industry),
+  );
+}
 
 /**
  * Plan options
@@ -139,21 +164,29 @@ export function validatePlan(plan: string): { valid: boolean; error?: string } {
 }
 
 /**
- * Validate framework selections
+ * Validate framework selections.
+ *
+ * Optionally industry-aware: when an industry is provided, the validator
+ * rejects industry-gated frameworks the org isn't entitled to (e.g. a
+ * SaaS org trying to bypass the onboarding UI to select NDIS).
  */
-export function validateFrameworks(frameworks: string[]): { valid: boolean; error?: string } {
+export function validateFrameworks(
+  frameworks: string[],
+  industry?: string | null,
+): { valid: boolean; error?: string } {
   if (frameworks.length === 0) {
     return { valid: false, error: "Please select at least one framework" };
   }
-  
+
+  const allowed = industry ? frameworkOptionsForIndustry(industry) : FRAMEWORK_OPTIONS;
   const invalidFrameworks = frameworks.filter(
-    (framework) => !FRAMEWORK_OPTIONS.some((option) => option.id === framework)
+    (framework) => !allowed.some((option) => option.id === framework),
   );
-  
+
   if (invalidFrameworks.length > 0) {
     return { valid: false, error: "Invalid framework selection" };
   }
-  
+
   return { valid: true };
 }
 

@@ -57,6 +57,14 @@
     {
       "path": "/api/cron/dormant-users-report",
       "schedule": "0 6 1 * *"
+    },
+    {
+      "path": "/api/cron/compliance-health-snapshot",
+      "schedule": "0 7 * * 1"
+    },
+    {
+      "path": "/api/cron/process-dormant-user-purges",
+      "schedule": "0 8 * * 1"
     }
   ],
   "functions": {
@@ -70,6 +78,12 @@
       "maxDuration": 300
     },
     "app/api/cron/audit-chain-anchor/route.ts": {
+      "maxDuration": 300
+    },
+    "app/api/cron/compliance-health-snapshot/route.ts": {
+      "maxDuration": 300
+    },
+    "app/api/cron/process-dormant-user-purges/route.ts": {
       "maxDuration": 300
     },
     "app/api/billing/webhook/route.ts": {

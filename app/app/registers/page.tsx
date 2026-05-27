@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { createSupabaseClient } from '@/lib/supabase/client';
 import { CreateAssetSheet } from '@/components/registers/create-asset-sheet';
+import { CreateRegisterEntrySheet } from '@/components/registers/create-register-entry-sheet';
 import { DeleteButton } from '@/components/delete-button';
 import { exportRegistersToPDF } from '@/lib/utils/export-helper';
 import { useAppStore } from '@/lib/stores/app';
@@ -169,9 +170,12 @@ export default function RegistersPage() {
                 <Download className="h-3.5 w-3.5" />
                 Export
               </button>
+              <CreateRegisterEntrySheet onCreated={fetchRegisters} />
               <CreateAssetSheet />
             </>
-          ) : undefined
+          ) : (
+            <CreateRegisterEntrySheet onCreated={fetchRegisters} />
+          )
         }
       />
 

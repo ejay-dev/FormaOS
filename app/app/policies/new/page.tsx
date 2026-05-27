@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { createPolicy } from '@/app/app/actions/policies';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { SubmitButton } from '@/components/ui/submit-button';
+import { NDIS_CATEGORIES } from '@/lib/compliance/ndis/categories';
 
 const FRAMEWORK_OPTIONS = [
   'General',
@@ -93,6 +94,33 @@ export default async function NewPolicyPage() {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div>
+            <label
+              className="mb-1 block text-sm font-medium"
+              htmlFor="ndis_category"
+            >
+              NDIS Practice Standard category
+            </label>
+            <select
+              id="ndis_category"
+              name="ndis_category"
+              defaultValue="none"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2"
+            >
+              <option value="none">— Not NDIS-tagged —</option>
+              {NDIS_CATEGORIES.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Tagging this policy lets the NDIS compliance evaluator score it against the
+              matching Practice Standard. Untagged policies remain in scope for general
+              frameworks (ISO, SOC 2, etc.) but won&apos;t satisfy NDIS predicates.
+            </p>
           </div>
 
           <div>

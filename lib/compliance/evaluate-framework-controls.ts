@@ -42,6 +42,10 @@ import { registerAllEvaluators } from '@/lib/compliance/evaluators/register';
 import { getEvaluator } from '@/lib/compliance/evaluators';
 import { runControlEvaluation } from '@/lib/compliance/evaluators/run-control';
 import { consoleShim } from '@/lib/monitoring/console-shim';
+import {
+  autoCreateCapaFromFailures,
+  type FailingControl,
+} from '@/lib/compliance/capa/auto-create';
 import type {
   ControlResult,
   FrameworkSlug,
@@ -269,6 +273,11 @@ export async function evaluateFrameworkControlsCore(
     const evaluations: EvaluationRow[] = [];
     const missingMandatoryCodes: string[] = [];
     const atRiskCodes: string[] = [];
+    // Tier 2.A: collected for auto-CAPA. Populated only when the
+    // registry evaluator returns status='fail' AND the engine status
+    // settled to non_compliant — so partial-band findings don't open
+    // CAPAs they shouldn't.
+    const failingControls: FailingControl[] = [];
     let totalWeight = 0;
     let weightedScore = 0;
     let compliantCount = 0;
@@ -363,6 +372,20 @@ export async function evaluateFrameworkControlsCore(
         if (overlaid !== null) {
           status = overlaid;
         }
+        // Tier 2.A: track evaluator-driven failures for CAPA creation.
+        // Only when the evaluator itself says 'fail' — we don't open a
+        // CAPA just because the heuristic settled on non_compliant
+        // (those usually mean "evidence missing" which the existing
+        // task / evidence workflows already handle).
+        if (evaluatorResult.status === 'fail') {
+          failingControls.push({
+            controlId: control.id,
+            controlCode: control.code,
+            controlTitle: control.title ?? null,
+            frameworkSlug,
+            result: evaluatorResult,
+          });
+        }
       }
 
       if (isMandatory && status === 'non_compliant') {
@@ -423,6 +446,24 @@ export async function evaluateFrameworkControlsCore(
 
     await upsertEvaluations(supabase, evaluations);
     await logEvaluationAudit(supabase, orgId, evaluations);
+
+    // Tier 2.A: open CAPAs for evaluator-fail rows. Best-effort —
+    // failures don't block the evaluation response. autoCreate uses
+    // the admin client because RLS on org_capa_items requires an
+    // authenticated context that this server-side path doesn't always
+    // have (cron-triggered evaluations).
+    if (failingControls.length > 0 && adminClient) {
+      try {
+        await autoCreateCapaFromFailures(adminClient, {
+          orgId,
+          failures: failingControls,
+          createdBy: null,
+        });
+      } catch {
+        // already logged in autoCreateCapaFromFailures; swallow to
+        // protect the evaluation response.
+      }
+    }
 
     const score =
       totalWeight > 0 ? Math.round((weightedScore / totalWeight) * 100) : 0;
