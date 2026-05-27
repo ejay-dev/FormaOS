@@ -66,16 +66,15 @@ describe('NDIS-1.1 — Person-centred supports', () => {
     expect(result.gaps[0].code).toBe('manual_attestation_required');
   });
 
-  it('returns pass when ≥90% care plans reviewed within 180 days', async () => {
+  it('returns pass when ≥95% care plans reviewed within 12 months (Phase 3 threshold)', async () => {
     const recent = new Date(Date.now() - 30 * 86_400_000).toISOString();
-    const stale = new Date(Date.now() - 365 * 86_400_000).toISOString();
     const db = mockDb({
       org_care_plans: {
         result: {
           data: Array.from({ length: 10 }, (_, i) => ({
             id: `plan-${i}`,
             status: 'active',
-            updated_at: i < 9 ? recent : stale, // 9 of 10 fresh = 90%
+            updated_at: recent, // 10/10 fresh = 100% (above 95% pass threshold)
           })),
           error: null,
         },
@@ -83,6 +82,25 @@ describe('NDIS-1.1 — Person-centred supports', () => {
     });
     const result = await evaluatePersonCentredSupports({ orgId: ORG_ID, db: db as never }, NOW);
     expect(result.status).toBe('pass');
+  });
+
+  it('returns partial when 70% ≤ ratio < 95% (Phase 3 partial band)', async () => {
+    const recent = new Date(Date.now() - 30 * 86_400_000).toISOString();
+    const stale = new Date(Date.now() - 400 * 86_400_000).toISOString();
+    const db = mockDb({
+      org_care_plans: {
+        result: {
+          data: Array.from({ length: 10 }, (_, i) => ({
+            id: `plan-${i}`,
+            status: 'active',
+            updated_at: i < 9 ? recent : stale, // 9/10 fresh = 90% → partial band
+          })),
+          error: null,
+        },
+      },
+    });
+    const result = await evaluatePersonCentredSupports({ orgId: ORG_ID, db: db as never }, NOW);
+    expect(result.status).toBe('partial');
   });
 
   it('returns fail when <70% care plans are fresh (Phase 3: 12mo threshold per NDIS standard)', async () => {
