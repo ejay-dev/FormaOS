@@ -7,6 +7,7 @@ import { routeLog } from '@/lib/monitoring/server-logger';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { validateUploadedFile } from '@/lib/evidence/validate-upload';
+import { computeFileSha256 } from '@/lib/evidence/verify-file-hash';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 
 const log = routeLog('/api/v1/evidence/upload');
@@ -213,6 +214,13 @@ export async function POST(request: Request) {
       }
       uploadedPaths.push(filePath);
 
+      // R9 (Audit 2026-05-27): SHA-256 of the as-uploaded bytes,
+      // captured at the trust boundary before storage and before any
+      // server-side post-processing. lib/evidence/verify-file-hash.ts
+      // re-downloads + re-hashes on demand to detect storage-side
+      // tampering (bucket compromise, accidental overwrite, etc.).
+      const fileHash = computeFileSha256(buffer);
+
       // Schema-tolerant insert. The deep-workflow migration adds
       // title/file_type/file_size/verification_status; the polymorphism
       // migration drops task_id NOT NULL and adds entity_type. If the
@@ -228,6 +236,7 @@ export async function POST(request: Request) {
         file_path: filePath,
         file_type: mimeCheck.contentType,
         file_size: file.size,
+        file_hash: fileHash,
         uploaded_by: user.id,
         verification_status: 'pending',
       };
