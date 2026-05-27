@@ -15,6 +15,7 @@ import {
   submitVersionForReview,
   upsertDraftVersion,
 } from "@/lib/policies/lifecycle";
+import { coerceNdisCategory } from "@/lib/compliance/ndis/categories";
 
 export async function createPolicy(formData: FormData) {
   try {
@@ -38,6 +39,7 @@ export async function createPolicy(formData: FormData) {
   const description = formData.get("description") as string;
   const content = formData.get("content") as string;
   const framework = (formData.get("framework") as string) || "General";
+  const ndisCategory = coerceNdisCategory(formData.get("ndis_category"));
 
   const { data: policy, error } = await supabase
     .from("org_policies")
@@ -47,6 +49,7 @@ export async function createPolicy(formData: FormData) {
       description,
       content,
       framework_tag: framework,
+      ndis_category: ndisCategory,
       status: "draft",
       created_by: user.id,
     })
@@ -75,6 +78,7 @@ export async function createPolicy(formData: FormData) {
     resourceName: title,
     event: "Governance policy initialized",
     framework,
+    ndisCategory,
     status: "draft",
     policyId: policy.id,
   });
@@ -101,7 +105,7 @@ export async function createPolicy(formData: FormData) {
       entityType: "policy",
       entityId: policy.id,
       actionType: "POLICY_CREATED",
-      afterState: { title, status: "draft", framework },
+      afterState: { title, status: "draft", framework, ndisCategory },
       reason: "create",
     },
     { required: true },
@@ -126,6 +130,10 @@ export async function updatePolicy(formData: FormData) {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const status = formData.get("status") as string;
+  const hasNdisCategoryField = formData.has("ndis_category");
+  const ndisCategory = hasNdisCategoryField
+    ? coerceNdisCategory(formData.get("ndis_category"))
+    : null;
 
   const { data: oldPolicy } = await supabase
     .from("org_policies")
@@ -160,15 +168,22 @@ export async function updatePolicy(formData: FormData) {
     }
   }
 
+  const updatePayload: Record<string, unknown> = {
+    title,
+    content,
+    status,
+    last_updated_at: new Date().toISOString(),
+    last_updated_by: user.id,
+  };
+  // Only touch ndis_category when the form actually rendered the field
+  // — avoids overwriting an existing tag from edit surfaces that don't expose it.
+  if (hasNdisCategoryField) {
+    updatePayload.ndis_category = ndisCategory;
+  }
+
   const { error } = await supabase
     .from("org_policies")
-    .update({
-      title,
-      content,
-      status,
-      last_updated_at: new Date().toISOString(),
-      last_updated_by: user.id,
-    })
+    .update(updatePayload)
     .eq("id", policyId)
     .eq("organization_id", oldPolicy.organization_id);
 
@@ -218,7 +233,11 @@ export async function updatePolicy(formData: FormData) {
       entityId: policyId,
       actionType: "POLICY_UPDATED",
       beforeState: { title: oldPolicy.title },
-      afterState: { title, status },
+      afterState: {
+        title,
+        status,
+        ...(hasNdisCategoryField ? { ndisCategory } : {}),
+      },
       reason: "update",
     },
     { required: true },

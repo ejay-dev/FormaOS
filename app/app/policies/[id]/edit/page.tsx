@@ -4,6 +4,7 @@ import { ArrowLeft, Lock, Save } from 'lucide-react';
 import { updatePolicy } from '@/app/app/actions/policies';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { fetchSystemState } from '@/lib/system-state/server';
+import { NDIS_CATEGORIES } from '@/lib/compliance/ndis/categories';
 
 const LOCKED_STATUSES = new Set(['published', 'pending_approval', 'approved']);
 
@@ -20,7 +21,7 @@ export default async function EditPolicyPage({
 
   const { data: policy } = await db
     .from('org_policies')
-    .select('id, title, content, status, version, created_at, updated_at')
+    .select('id, title, content, status, version, ndis_category, created_at, updated_at')
     .eq('id', policyId)
     .eq('organization_id', state.organization.id)
     .maybeSingle();
@@ -114,6 +115,34 @@ export default async function EditPolicyPage({
             <option value="published">Published</option>
             <option value="archived">Archived</option>
           </select>
+        </div>
+
+        <div>
+          <label
+            htmlFor="ndis_category"
+            className="mb-1 block text-sm font-medium"
+          >
+            NDIS Practice Standard category
+          </label>
+          <select
+            id="ndis_category"
+            name="ndis_category"
+            defaultValue={policy.ndis_category ?? 'none'}
+            disabled={!canEdit}
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <option value="none">— Not NDIS-tagged —</option>
+            {NDIS_CATEGORIES.map((category) => (
+              <option key={category.value} value={category.value}>
+                {category.label}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Setting a category lets the NDIS compliance evaluator score this policy
+            against the matching Practice Standard. Leave untagged to keep it out
+            of NDIS scope.
+          </p>
         </div>
 
         <div>
