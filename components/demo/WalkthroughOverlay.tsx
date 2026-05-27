@@ -170,7 +170,7 @@ export function WalkthroughOverlay() {
         {/* Spotlight cutout for highlighted element */}
         {highlightedElement && (
           <div
-            className="absolute border-4 border-purple-500 rounded-xl shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] pointer-events-auto animate-pulse-glow"
+            className="absolute border-4 border-purple-500 rounded-xl shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] pointer-events-auto"
             style={{
               top: highlightedElement.getBoundingClientRect().top + window.scrollY - 8,
               left: highlightedElement.getBoundingClientRect().left + window.scrollX - 8,

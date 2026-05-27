@@ -220,7 +220,9 @@ export function DangerZone({
 
   return (
     <div className="rounded-lg border-2 border-red-300 dark:border-red-700 p-4 space-y-4">
-      <h3 className="text-sm font-semibold text-red-600">Danger Zone</h3>
+      <h3 className="text-sm font-semibold text-red-600 dark:text-red-400">
+        Danger Zone
+      </h3>
 
       <div className="flex items-center justify-between">
         <div>
