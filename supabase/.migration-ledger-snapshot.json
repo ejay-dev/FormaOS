@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T12:59:23.076Z",
+  "takenAt": "2026-05-27T13:27:29.286Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1053,6 +1053,10 @@
     {
       "version": "20260624070",
       "name": "audit_2026_05_27_secdef_allowlist_trim_batch"
+    },
+    {
+      "version": "20260624071",
+      "name": "audit_2026_05_27_move_vector_pgtrgm_to_extensions"
     }
   ]
 }
