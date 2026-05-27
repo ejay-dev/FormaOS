@@ -44,7 +44,7 @@ verification numbers a senior SaaS auditor will want to see.
 | `bdcb69ef` | **R10 Phase 1** — NDIS framework + 8 manual-attestation Core Module controls. |
 | `58f7c232` | **R10 Phase 2** — 25-control coverage with 11 real predicates against the FormaOS schema. 14 remain manual pending Phase 3 schema work. |
 
-### Operational hardening (this latest session)
+### Operational hardening
 
 | Commit | Item |
 |---|---|
@@ -57,6 +57,22 @@ verification numbers a senior SaaS auditor will want to see.
 | `18492340` | Leaked-secrets CI scanner + PagerDuty verification script. |
 | `df44a643` | Updated `ENGINEERING_CHANGE_MATRIX.md` + `SECURITY.md`. |
 
+### Final clean-up batch
+
+| Commit | Item |
+|---|---|
+| `369e58f9` | Backfilled drifted `audit_chain_anchors` table (caught during operator-handover smoke). |
+| `9af0fc96` | Supabase advisor hygiene — 5 trigger handlers locked + open `api_key_usage_log` INSERT policy dropped + 11 functions get fixed `search_path`. WARN count drops ~17. |
+| `1ef17eeb` | Wrapping-key rotation scripts (AUDIT_CHAIN_HMAC_KEY + TOTP_ENCRYPTION_KEY + INTEGRATION_CONFIG_KEY). |
+| `848fde0a` | `jest.setup.js` `global.fetch` stomp now conditional on `RUN_INTEGRATION_TESTS` — integration RLS suites are runnable locally again. |
+
+### Deliberately NOT shipped
+
+- **`lib/` console-pollution sweep** — audited; the 48 console calls in `lib/` are all defensible (logger implementations themselves, edge/bootstrap layers where pino isn't bundled, client-side `.tsx` where pino is server-only, observability fallback paths, intentional fail-open warnings). No fixable items without a separate "structured client logger" workstream.
+- **NDIS Phase 3** — requires NDIS-audit practitioner sign-off. Phase 2 ships 25 controls with 11 real predicates; Phase 3 backlog documented in `docs/compliance/ndis-framework-status.md`.
+- **R4 Option B (persistent per-org Merkle tree)** — ADR'd as "ship when continuity matters". Current per-export tree (Option A) is the active shipment.
+- **Moving `vector` + `pg_trgm` out of `public` schema** — Supabase advisor WARN, but risky given the number of call sites that may reference these by qualified name. Deferred pending an audit of every search/embedding call site.
+
 ---
 
 ## Verification numbers (as of close of cycle)
@@ -66,10 +82,10 @@ verification numbers a senior SaaS auditor will want to see.
 | `npm run type-check` | exit 0 |
 | `npx jest __tests__/ --testPathIgnorePatterns='integration/rls'` | 353 suites / 5169 tests / 0 failures |
 | `npm run test:db:ledger-alignment` | ✓ aligned (3 documented-skip files; 1 v1/v2 drift entry — all benign) |
-| `npm run test:db:secdef-grants` | ✓ no drift (19 entries in allowlist; new SECDEF functions locked down) |
-| `npm run test:security:leaked-secrets` | ✓ no Stripe-live/AWS/Google/Supabase-service-role keys in 3317 tracked files |
+| `npm run test:db:secdef-grants` | ✓ no drift (14 entries in allowlist down from 19 — 5 trigger handlers cleaned up by `9af0fc96`) |
+| `npm run test:security:leaked-secrets` | ✓ no Stripe-live/AWS/Google/Supabase-service-role keys in tracked files |
 | `npm run test:db:restore-recency` | ⚠ first-run state (warn-only until first DR drill recorded) |
-| Supabase security advisor | 0 ERROR, 59 WARN (3 of which were closed this cycle by `75d9c38f`). Remaining WARNs are pre-existing default-grant drift documented in `scripts/.security-definer-rpc-allowlist.json` `_cleanup_notes`. |
+| Supabase security advisor | 0 ERROR; WARN count dropped from ~59 to ~42 by `9af0fc96` + `cedf18aa`. Remaining are: pre-existing leakedpassword-protection (Supabase Auth dashboard toggle — your action), `vector`/`pg_trgm` in public schema (deferred), and the 14 intentionally-anon-callable RPCs in the SECDEF allowlist. |
 
 ---
 
