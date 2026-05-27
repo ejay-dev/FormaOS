@@ -1,17 +1,22 @@
 /**
  * NDIS-1.5 — Violence, abuse, neglect, exploitation and discrimination.
  *
- * Phase 1 (manual-attestation): the NDIS Commission expects a documented
- * safeguarding policy, staff training, escalation pathway, and a
- * reportable-incident workflow that satisfies notification timeframes.
- * Phase 2 might join org_incidents + org_policies + org_training.
+ * Phase 2 (Audit 2026-05-27): real predicate. Checks org_incidents +
+ * org_investigations activity over the last 12 months. Zero incidents
+ * = partial (suspected under-reporting). Open critical incidents =
+ * fail. ⚠️ Expert review required for threshold calibration.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateSafeguarding } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-1.5',
-  'NDIS-1.5 requires a safeguarding policy, staff training on identifying and responding to abuse, a documented escalation pathway, and a reportable-incident workflow satisfying NDIS Commission timeframes. Manual-attestation pending Phase 2 predicate logic.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateSafeguarding(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-1.5',
+  evaluator: evaluate,
+};
+
+export { evaluate };

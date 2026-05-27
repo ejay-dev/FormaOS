@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T06:53:28.339Z",
+  "takenAt": "2026-05-27T07:14:18.674Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1005,6 +1005,10 @@
     {
       "version": "20260624058",
       "name": "audit_2026_05_27_r3_keyed_hmac_audit_chain"
+    },
+    {
+      "version": "20260624059",
+      "name": "audit_2026_05_27_r10_phase_2_ndis_controls"
     }
   ]
 }

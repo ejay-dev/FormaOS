@@ -1,18 +1,22 @@
 /**
  * NDIS-2.6 — Incident management.
  *
- * Phase 1 (manual-attestation): documented incident-management system,
- * reportable-incident workflow that satisfies NDIS Commission notification
- * timeframes, incident register reviewed at least quarterly. Phase 2
- * could check org_incidents cadence + reportable_incidents filing
- * timeliness.
+ * Phase 2 (Audit 2026-05-27): real predicate. Checks org_incidents
+ * activity + org_regulatory_notifications submission completeness.
+ * Unsubmitted regulatory notifications = fail (NDIS Commission
+ * notification timeframes are statutory). ⚠️ Expert review required.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateIncidentManagement } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-2.6',
-  'NDIS-2.6 requires a documented incident-management system, a reportable-incident workflow satisfying NDIS Commission notification timeframes, and an incident register reviewed at least quarterly. Manual-attestation pending Phase 2 timeliness checks against org_incidents.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateIncidentManagement(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-2.6',
+  evaluator: evaluate,
+};
+
+export { evaluate };

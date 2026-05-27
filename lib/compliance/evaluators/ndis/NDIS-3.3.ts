@@ -1,16 +1,24 @@
 /**
  * NDIS-3.3 — Service agreements with participants.
  *
- * Phase 1 (manual-attestation): signed service agreement covering
- * supports, fees, withdrawal rights, complaints process; reviewed when
- * supports change. Phase 2 might join participants × signed_documents.
+ * Phase 2 (Audit 2026-05-27): partial-signal predicate. Counts signed/
+ * reviewed form submissions in the last 12 months as a proxy for service
+ * agreements. Status defaults to `partial` because the FormaOS form
+ * taxonomy doesn't yet distinguish service-agreement submissions from
+ * other forms. ⚠️ A follow-up should add a service_agreement form_type
+ * so this predicate can flip to a confident `pass`.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateServiceAgreements } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-3.3',
-  'NDIS-3.3 requires a signed service agreement covering supports, fees, withdrawal rights, and complaints process — reviewed when supports change. Manual-attestation pending Phase 2 join against participants × signed_documents.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateServiceAgreements(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-3.3',
+  evaluator: evaluate,
+};
+
+export { evaluate };

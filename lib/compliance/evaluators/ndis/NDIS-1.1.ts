@@ -1,19 +1,26 @@
 /**
  * NDIS-1.1 — Person-centred supports.
  *
- * Phase 1 (manual-attestation): an NDIS auditor verifies the provider
- * documents person-centred planning processes, captures participant
- * goals/preferences, and reviews plans at least every six months. The
- * FormaOS schema models care plans but has no signal for "respects
- * culture, diversity, values and beliefs" — Phase 2 might infer from
- * participant-profile field completion + plan review cadence.
+ * Phase 2 (Audit 2026-05-27): real predicate against org_care_plans.
+ * Pass when ≥90% of care plans were reviewed within 180 days; partial
+ * 50–89%; fail below 50%. ⚠️ Thresholds are engineering best-guesses —
+ * expert review required before customers rely on the verdict for
+ * certification.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type {
+  ControlEvaluator,
+  ControlEvaluatorMeta,
+} from '../types';
+import { evaluatePersonCentredSupports } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-1.1',
-  'NDIS-1.1 requires evidence that each participant accesses supports respecting their culture, diversity, values and beliefs. Phase 1 of the FormaOS NDIS pack is manual-attestation: a compliance officer must attest that person-centred planning processes are documented and reviewed at least every six months.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluatePersonCentredSupports(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-1.1',
+  evaluator: evaluate,
+};
+
+export { evaluate };

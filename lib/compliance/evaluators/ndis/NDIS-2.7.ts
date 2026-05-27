@@ -1,17 +1,21 @@
 /**
  * NDIS-2.7 — Human resource management.
  *
- * Phase 1 (manual-attestation): NDIS Worker Screening Check current for
- * every relevant worker, role-specific competency evidence, supervision
- * records. Phase 2 could check staff/credentials freshness — FormaOS
- * has lib/care-scorecard/credential-monitor for adjacent signal.
+ * Phase 2 (Audit 2026-05-27): real predicate against at_risk_credentials.
+ * Zero flagged credentials = pass. Any expired credential = fail
+ * (statutory under NDIS Worker Screening). ⚠️ Expert review required.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateHrManagement } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-2.7',
-  'NDIS-2.7 requires NDIS Worker Screening Check current for every relevant worker, role-specific competency evidence, and supervision records. Manual-attestation pending Phase 2 predicate against the staff/credential tables.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateHrManagement(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-2.7',
+  evaluator: evaluate,
+};
+
+export { evaluate };

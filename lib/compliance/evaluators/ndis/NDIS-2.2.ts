@@ -1,16 +1,21 @@
 /**
  * NDIS-2.2 — Risk management.
  *
- * Phase 1 (manual-attestation): documented risk register reviewed at
- * least quarterly, treatment plans for residual risks, escalation
- * thresholds. Phase 2 could check org_risks.last_reviewed_at cadence.
+ * Phase 2 (Audit 2026-05-27): real predicate against org_risks. Pass
+ * when ≥80% of risks reviewed within 90 days; partial 40–79%; fail
+ * below 40% or empty register. ⚠️ Expert review required.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateRiskManagement } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-2.2',
-  'NDIS-2.2 requires a risk register reviewed at least quarterly, with treatment plans for residual risks and documented escalation thresholds. Manual-attestation pending Phase 2 cadence checks against org_risks.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateRiskManagement(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-2.2',
+  evaluator: evaluate,
+};
+
+export { evaluate };

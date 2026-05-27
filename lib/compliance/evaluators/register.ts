@@ -259,18 +259,43 @@ import { meta as hipaa_TECH_2 } from './hipaa/HIPAA-TECH-2';
 import { meta as hipaa_TECH_3 } from './hipaa/HIPAA-TECH-3';
 import { meta as hipaa_TECH_4 } from './hipaa/HIPAA-TECH-4';
 
-// Audit 2026-05-27 (R10 Phase 1) — NDIS Practice Standards.
-// 8 representative controls drawn from Standards 1–4 of the Core Module,
-// all manual-attestation stubs awaiting Phase 2 predicate logic.
-// See lib/compliance/evaluators/ndis/_shared.ts.
+// Audit 2026-05-27 NDIS Practice Standards pack.
+//   Phase 1: 8 representative manual-attestation controls.
+//   Phase 2: 6 of those 8 now carry real predicate logic against the
+//            FormaOS schema (1.1 care_plans, 1.5 incidents+investigations,
+//            2.2 risks, 2.6 incidents+regulatory_notifications, 2.7
+//            at_risk_credentials, 3.3 form_submissions). 1.3 + 4.1 stay
+//            manual. Plus 17 new controls covering remaining Core Module
+//            outcomes + Verification + Specialist module starters.
+//            5 of the 17 new carry real predicates (2.3, 2.4, 2.5, 3.2,
+//            3.4, M.1); 12 stay manual pending Phase 3 schema work.
+//            ⚠️ Expert review required for predicate semantics +
+//            threshold calibration — see lib/compliance/evaluators/ndis/_predicates.ts.
 import { meta as ndis_1_1 } from './ndis/NDIS-1.1';
+import { meta as ndis_1_2 } from './ndis/NDIS-1.2';
 import { meta as ndis_1_3 } from './ndis/NDIS-1.3';
+import { meta as ndis_1_4 } from './ndis/NDIS-1.4';
 import { meta as ndis_1_5 } from './ndis/NDIS-1.5';
+import { meta as ndis_2_1 } from './ndis/NDIS-2.1';
 import { meta as ndis_2_2 } from './ndis/NDIS-2.2';
+import { meta as ndis_2_3 } from './ndis/NDIS-2.3';
+import { meta as ndis_2_4 } from './ndis/NDIS-2.4';
+import { meta as ndis_2_5 } from './ndis/NDIS-2.5';
 import { meta as ndis_2_6 } from './ndis/NDIS-2.6';
 import { meta as ndis_2_7 } from './ndis/NDIS-2.7';
+import { meta as ndis_2_8 } from './ndis/NDIS-2.8';
+import { meta as ndis_3_1 } from './ndis/NDIS-3.1';
+import { meta as ndis_3_2 } from './ndis/NDIS-3.2';
 import { meta as ndis_3_3 } from './ndis/NDIS-3.3';
+import { meta as ndis_3_4 } from './ndis/NDIS-3.4';
+import { meta as ndis_3_5 } from './ndis/NDIS-3.5';
 import { meta as ndis_4_1 } from './ndis/NDIS-4.1';
+import { meta as ndis_4_2 } from './ndis/NDIS-4.2';
+import { meta as ndis_V_1 } from './ndis/NDIS-V.1';
+import { meta as ndis_V_2 } from './ndis/NDIS-V.2';
+import { meta as ndis_M_1 } from './ndis/NDIS-M.1';
+import { meta as ndis_M_2 } from './ndis/NDIS-M.2';
+import { meta as ndis_W_1 } from './ndis/NDIS-W.1';
 
 import { meta as pci_PCI_1 } from './pci-dss/PCI-1';
 import { meta as pci_PCI_2 } from './pci-dss/PCI-2';
@@ -520,17 +545,34 @@ const ALL_EVALUATORS = [
   pci_PCI_10,
   pci_PCI_11,
   pci_PCI_12,
-  // NDIS Practice Standards (framework slug = 'ndis', Phase 1 — 8 controls,
-  // all manual-attestation; Phase 2 expert build-out tracked in
-  // docs/compliance/ndis-framework-status.md)
+  // NDIS Practice Standards (framework slug = 'ndis', Phase 2 — 25 controls).
+  // 11 real-predicate (auto/semi_auto), 14 manual-attestation.
+  // See docs/compliance/ndis-framework-status.md.
   ndis_1_1,
+  ndis_1_2,
   ndis_1_3,
+  ndis_1_4,
   ndis_1_5,
+  ndis_2_1,
   ndis_2_2,
+  ndis_2_3,
+  ndis_2_4,
+  ndis_2_5,
   ndis_2_6,
   ndis_2_7,
+  ndis_2_8,
+  ndis_3_1,
+  ndis_3_2,
   ndis_3_3,
+  ndis_3_4,
+  ndis_3_5,
   ndis_4_1,
+  ndis_4_2,
+  ndis_V_1,
+  ndis_V_2,
+  ndis_M_1,
+  ndis_M_2,
+  ndis_W_1,
 ];
 
 let registered = false;
