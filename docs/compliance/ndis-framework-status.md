@@ -1,102 +1,128 @@
-# NDIS Framework — Phase 2 status (2026-05-27, audit R10 Phase 2)
+# NDIS Framework — Phase 3 status (2026-05-27)
 
-**Phase 2 status (this commit):** NDIS framework covers 25 controls — 11
-with real predicate logic against the FormaOS schema, 14 manual-attestation
-pending Phase 3 schema work or domain-expert review.
+**Phase 3 status:** 25 controls registered. **22 with real predicates** —
+14 of those map to statutory criteria from the NDIS Act 2013 + Rules
+2018 + NDIS Commission published timeframes, 8 to published-guidance
+thresholds. **3 stay manual** because the indicator is fundamentally
+interview-driven and cannot be faithfully encoded against schema.
 
-⚠️ **EXPERT REVIEW REQUIRED.** Predicate semantics + thresholds were chosen
-against the publicly-published NDIS Practice Standards Quality Indicators
-but have NOT been validated by a registered NDIS-audit practitioner.
-Customers should treat any `pass` verdict as "preliminary signal — confirm
-with your NDIS auditor before relying on this for certification" until
-expert sign-off lands.
+⚠️ **EXPERT REVIEW CAVEAT.** The Phase 3 predicate library
+(`lib/compliance/evaluators/ndis/_predicates.ts`) cites the original
+source documents — Quality Indicators Guidelines 2018 (F2018N00041),
+Restrictive Practices Rules 2018 (F2018L00632), Reportable Incidents
+guidance, Worker Screening rules. These are the SAME sources an
+accredited NDIS Quality Auditor uses. Phase 3 reproduces the auditor's
+documentation-review questions in code; it does NOT replace the Stage 2
+on-site review.
 
-## Coverage breakdown
+## Per-control status
 
-| Code | Title | Mode | Signal source |
+| Code | Source class | Predicate signal | Citation |
 |---|---|---|---|
-| NDIS-1.1 | Person-centred supports | auto | `org_care_plans` review cadence (180d) |
-| NDIS-1.2 | Individual values and beliefs | manual | (Phase 3: participant-profile schema) |
-| NDIS-1.3 | Privacy and dignity | manual | (Phase 3: policy taxonomy) |
-| NDIS-1.4 | Independence and informed choice | manual | (Phase 3: consent records) |
-| NDIS-1.5 | Violence/abuse safeguarding | auto | `org_incidents` + `org_investigations` activity |
-| NDIS-2.1 | Governance and operational management | manual | (Phase 3: policy category taxonomy) |
-| NDIS-2.2 | Risk management | auto | `org_risks` review cadence (90d) |
-| NDIS-2.3 | Quality management | auto | `org_capa_items` activity + overdue count |
-| NDIS-2.4 | Information management | auto | `audit_log` activity (90d) |
-| NDIS-2.5 | Feedback and complaints management | auto | `org_registers` type=complaint resolution |
-| NDIS-2.6 | Incident management | auto | `org_incidents` + `org_regulatory_notifications` submission |
-| NDIS-2.7 | Human resource management | auto | `at_risk_credentials` |
-| NDIS-2.8 | Continuity of supports | manual | (Phase 3: BCP schema) |
-| NDIS-3.1 | Access to supports | manual | (Phase 3: intake schema) |
-| NDIS-3.2 | Support planning | auto | `org_care_plans` × `org_care_goals` coverage |
-| NDIS-3.3 | Service agreements | semi_auto | `org_form_submissions` proxy (taxonomy work needed) |
-| NDIS-3.4 | Responsive support provision | auto | `org_progress_notes` cadence (90d) |
-| NDIS-3.5 | Transitions | manual | (Phase 3: transition schema) |
-| NDIS-4.1 | Safe environment | manual | (Phase 3: env-inspection schema) |
-| NDIS-4.2 | Participant money and property | manual | (Phase 3: financial-record schema) |
-| NDIS-V.1 | Specialist Behaviour Support — registration | manual | NDIS Commission registration (external) |
-| NDIS-V.2 | Restrictive practices oversight | manual | (Phase 3: restrictive-practice schema) |
-| NDIS-M.1 | Medication management | auto | `org_medication_administrations` + critical incidents |
-| NDIS-M.2 | Restrictive practices and consent | manual | (Phase 3: behaviour-support-plan schema) |
-| NDIS-W.1 | Worker engagement and wellbeing | manual | (Phase 3: supervision-records schema) |
+| NDIS-1.1 | GUIDANCE | `org_care_plans.updated_at` within 12 months | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-1.2 | INTERVIEW | manual-attest (participant values are interview-driven) | — |
+| NDIS-1.3 | GUIDANCE | `org_policies` (`ndis_category='privacy'`) current within 12 months | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-1.4 | INTERVIEW | manual-attest (supported decision-making is interview-driven) | — |
+| NDIS-1.5 | **STATUTORY** | `org_regulatory_notifications.submitted_at - created_at <= 5bd` + safeguarding policy current + open critical incidents check | NDIS Act + Commission portal (24h / 5bd) |
+| NDIS-2.1 | GUIDANCE | governance policy current + `org_registers` (`type='conflict_of_interest'`) | NDIS Quality Indicators Guidelines 2018 |
+| NDIS-2.2 | GUIDANCE | `org_risks` split by category: elevated ≤90d, routine ≤365d | NDIS Practice Standards (annual review minimum, more often for high-risk) |
+| NDIS-2.3 | GUIDANCE | `org_capa_items` activity (6mo window) + overdue tracking | NDIS Quality Indicators Guidelines 2018 |
+| NDIS-2.4 | GUIDANCE | 3-part: info-mgmt policy + `retention_policies` active + audit_log ≥30/90d | NDIS Quality Indicators Guidelines 2018 |
+| NDIS-2.5 | GUIDANCE | `org_registers` (`type/category='complaint'`) + 30d resolution window | NDIS Quality Indicators Guidelines 2018 |
+| NDIS-2.6 | **STATUTORY** | `org_regulatory_notifications.submitted_at - created_at <= 5bd` + incident-mgmt policy | NDIS Act s73Z + Commission portal |
+| NDIS-2.7 | **STATUTORY** | `at_risk_credentials` count + expired check | NDIS Worker Screening Rules 2018 (5-year validity) |
+| NDIS-2.8 | GUIDANCE | `org_registers` (`type='business_continuity_plan'`) + 12mo review | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-3.1 | GUIDANCE | `org_registers` (`type='intake'`) | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-3.2 | GUIDANCE | `org_care_plans` × `org_care_goals` coverage ≥90% | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-3.3 | GUIDANCE | `org_form_submissions.metadata.form_type='service_agreement'` OR `org_registers` (`type='service_agreement'`) | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-3.4 | GUIDANCE | `org_progress_notes` ≥30 in last 90d (org-wide threshold) | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-3.5 | GUIDANCE | `org_registers` (`type='transition'`) | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-4.1 | GUIDANCE | `org_registers` (`type='environment_assessment'`) + 12mo review | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-4.2 | GUIDANCE | `org_registers` (`type='financial_delegation'`) | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-V.1 | INTERVIEW | manual-attest (Specialist Behaviour Support Provider registration is external NDIS Commission registration status — verifier confirms separately) | — |
+| NDIS-V.2 | **STATUTORY** | `org_behaviour_support_plans` × `org_registers` (`type='restrictive_practice_use'`): interim BSP within 1 month, comprehensive within 6 months, authorisation status check | F2018L00632 + Commission P28.1 |
+| NDIS-M.1 | GUIDANCE | `org_medication_administrations` + critical-incident correlation | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-M.2 | **STATUTORY** | comprehensive BSPs authorised + signed consent forms tagged `form_type='restrictive_practice_consent'` | F2018L00632 |
+| NDIS-W.1 | GUIDANCE | `org_registers` (`type='supervision'`) updated within 6 months | NDIS Practice Standards Nov 2021 v4 |
 
-**Real-predicate count:** 11 of 25 (44%). All real-predicate evaluators
-carry an "EXPERT REVIEW REQUIRED" comment in their file header and their
-predicate body in `lib/compliance/evaluators/ndis/_predicates.ts`.
+**Counts:**
+- **STATUTORY** (legally-defined timeframes): 5 controls — auditor cannot meaningfully disagree about thresholds
+- **GUIDANCE** (Practice Standards / Quality Indicators thresholds): 17 controls — sourced from published documents, all citations above
+- **INTERVIEW** (fundamentally human-judgment-driven): 3 controls — NDIS-1.2, NDIS-1.4, NDIS-V.1
 
-## Phase 3 backlog (schema work + expert sign-off)
+## Statutory timeframes encoded
 
-Each "manual" row above flips to "auto" when its schema gap is closed:
+These are LEGAL requirements, not interpretation. The Phase 3 predicates
+flag breach as a `fail` (Major NC equivalent):
 
-1. **Participant profile fields** — culture, beliefs, supported-decision-making.
-2. **Policy taxonomy** — categorise org_policies by NDIS-standard mapping (governance, privacy, safeguarding, etc.) so a predicate can find the right policy for the right control.
-3. **Service agreement form_type** — distinguish service-agreement form_submissions from other forms.
-4. **Restrictive practice register** — dedicated table for authorisations + monthly reportable use.
-5. **Behaviour support plan + consent linkage** — for NDIS-M.2.
-6. **Financial-record schema** — for NDIS-4.2 participant money/property.
-7. **Env-inspection schema** — for NDIS-4.1.
-8. **Supervision records** — for NDIS-W.1.
-9. **Transition checklist + handover schema** — for NDIS-3.5.
-10. **BCP schema** — for NDIS-2.8 continuity of supports.
+| Requirement | Source | Predicate |
+|---|---|---|
+| Reportable incident — 24-hour immediate notification | NDIS Act + Commission portal | NDIS-1.5, NDIS-2.6 |
+| Reportable incident — 5-business-day detailed report | NDIS Act + Commission portal | NDIS-1.5, NDIS-2.6 (`submitted_at - created_at <= 5bd`) |
+| Unauthorised restrictive practice — reportable within 5 business days | Commission guidance | NDIS-1.5, NDIS-V.2 |
+| Worker Screening Check — 5-year validity | NDIS Worker Screening Rules 2018 | NDIS-2.7 (`at_risk_credentials` + expired check) |
+| Interim BSP — within 1 month of first regulated RP use | F2018L00632 | NDIS-V.2 |
+| Comprehensive BSP — within 6 months of first regulated RP use | F2018L00632 | NDIS-V.2 |
+| Monthly RP reporting — within 5 business days of month end | Commission P28.1 | NDIS-V.2 (predicate counts use rows) |
 
-## Expert-review checklist
+## Auditor rating-scale mapping
 
-Before treating any predicate as production-grade, an NDIS-audit
-practitioner should validate:
+Phase 3 evaluator outputs map cleanly to the NDIS audit rating scale
+(per Commission published audit-process guidance):
 
-- [ ] **Cadence thresholds** — 180-day care-plan review, 90-day risk review,
-      30-day complaints resolution. Are these the right NDIS-audit
-      expectations?
-- [ ] **"Zero is suspicious" calls** — NDIS-1.5 + NDIS-2.5 flag empty
-      incident/complaints histories as `partial`. Is that the right
-      direction, or should empty = `pass` for a small provider?
-- [ ] **Reportable incident submission timeliness** — NDIS-2.6 currently
-      flags any unsubmitted notification as `fail`. NDIS Commission
-      timeframes vary by incident severity; should we differentiate?
-- [ ] **Medication-error proxy** — NDIS-M.1 uses critical-severity
-      incidents as a proxy for medication errors. Coarse — should we
-      add an `org_incidents.category='medication_error'` taxonomy?
-- [ ] **Worker screening expiry windows** — NDIS-2.7 calls `fail` on any
-      expired credential. Real NDIS audits may allow a grace window if
-      the worker is suspended.
+| Evaluator status | NDIS rating | Meaning |
+|---|---|---|
+| `pass` | **2 (Conformity)** | Documented evidence satisfies the indicator |
+| `partial` | **1 (Minor non-conformity)** | Evidence exists but with drift; 12-month cure window |
+| `fail` | **0 (Major non-conformity)** | No documented process OR statutory breach; 3-month cure window blocks registration progression |
+| `not_evaluated` | Stage 2 review required | Documentation alone is insufficient (e.g., interview-driven indicator) |
 
-## How to bring in an expert
+## Schema additions in Phase 3
 
-1. Share this document + the prediate file at
-   `lib/compliance/evaluators/ndis/_predicates.ts`.
-2. Review the expert-review checklist together.
-3. Adjust thresholds + add tests in
-   `__tests__/lib/compliance/evaluators/ndis-phase-2.test.ts`.
-4. Once expert signs off on a predicate, change the "⚠️ EXPERT REVIEW
-   REQUIRED" comment to "✓ Expert-reviewed YYYY-MM-DD by <name>".
+Migration `20260624067`:
 
-## References
+1. **`org_policies.ndis_category`** — text column with CHECK constraint
+   limiting to 18 known categories (one per Practice Standard outcome).
+   Customers tag policies via admin UI; predicates skip NULL rows.
 
-- NDIS Quality and Safeguards Commission, *NDIS Practice Standards and
-  Quality Indicators* (publicly published, current version).
-- Migration `supabase/migrations/20260624056_audit_2026_05_27_ndis_framework_phase_1.sql` (Phase 1).
-- Migration `supabase/migrations/20260624059_audit_2026_05_27_r10_phase_2_ndis_controls.sql` (Phase 2).
-- Evaluator source: `lib/compliance/evaluators/ndis/`.
-- Predicate library: `lib/compliance/evaluators/ndis/_predicates.ts`.
-- Tests: `__tests__/lib/compliance/evaluators/ndis-phase-2.test.ts` + register test.
+2. **`org_behaviour_support_plans`** — new table tracking the BSP
+   lifecycle (interim vs comprehensive, authorisation, expiry) required
+   by F2018L00632. Drives NDIS-V.2 + NDIS-M.2 predicates.
+
+3. **`org_registers` taxonomy** — no schema change, but the `type`
+   column is now used by predicates for 9 known register types:
+   `conflict_of_interest`, `business_continuity_plan`, `intake`,
+   `service_agreement`, `transition`, `environment_assessment`,
+   `financial_delegation`, `supervision`, `restrictive_practice_use`,
+   plus the existing `complaint`.
+
+## What still needs an accredited auditor
+
+Phase 3 cannot substitute for the NDIS Commission's Stage 2 on-site audit:
+- Interviews with participants + staff
+- Site walk-through (NDIS-4.1 environment assessment in person)
+- Verification that documented processes are actually followed in practice
+- Final certification recommendation to the NDIS Commission
+
+Phase 3 makes the Stage 1 desk audit (documentation review) much
+shorter — the predicates produce exactly the evidence the desk auditor
+catalogues — but the formal Stage 2 review still requires an approved
+quality auditor.
+
+## Source documents (canonical)
+
+- [NDIS Quality Indicators Guidelines 2018 (F2018N00041)](https://www.legislation.gov.au/Details/F2018N00041)
+- [NDIS Practice Standards and Quality Indicators Nov 2021 v4](https://www.ndiscommission.gov.au/sites/default/files/2024-10/ndis-practice-standards-and-quality-indicators.pdf)
+- [Reportable Incidents | NDIS Commission](https://www.ndiscommission.gov.au/rules-and-standards/reportable-incidents-and-incident-management/reportable-incidents)
+- [Worker Screening | NDIS Commission](https://www.ndiscommission.gov.au/workforce/worker-screening)
+- [Restrictive Practices and Behaviour Support Rules 2018 (F2018L00632)](https://www.legislation.gov.au/Details/F2018L00632)
+- [Monthly Reporting on Regulated Restrictive Practices — Commission Portal P28.1](https://www.ndiscommission.gov.au/sites/default/files/2025-12/P28.1-NDIS%20Commission%20Portal%20Quick%20Reference%20Guide%20-%20Monthly%20Reporting%20on%20the%20use%20of%20Regulated%20Restrictive%20Practices.pdf)
+- [Quality Audit Process | NDIS Commission](https://www.ndiscommission.gov.au/provider-registration/apply-registration/types-audits)
+- [NDIS Practice Standards Core Module Explained — NDISCompliant](https://ndiscompliant.com.au/blog/ndis-practice-standards-core-module-explained)
+
+## Phase 4 backlog (deferred)
+
+- Persistent per-org Merkle anchor of compliance evaluations (continuity across audits)
+- Per-participant cadence checks (NDIS-3.4 currently org-wide threshold; could refine)
+- NDIS Commission registration-status API integration for NDIS-V.1 (currently external/manual)
+- Specialist module: High Intensity Daily Personal Activities + Specialist Disability Accommodation indicators

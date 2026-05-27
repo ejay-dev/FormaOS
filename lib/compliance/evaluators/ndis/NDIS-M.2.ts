@@ -1,16 +1,21 @@
 /**
  * NDIS-M.2 — Restrictive practices and consent.
  *
- * Phase 2 (Audit 2026-05-27): manual-attestation. Same schema gap as
- * NDIS-V.2 — needs a behaviour-support-plan + consent linkage that
- * FormaOS doesn't model yet.
+ * Phase 3: real predicate joining org_behaviour_support_plans
+ * (comprehensive plans + authorisation status) with org_form_submissions
+ * tagged metadata.form_type='restrictive_practice_consent'.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateRestrictivePracticesConsent } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-M.2',
-  'NDIS-M.2 requires authorised behaviour support plans + consent records. Manual-attestation pending Phase 3 schema work.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateRestrictivePracticesConsent(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-M.2',
+  evaluator: evaluate,
+};
+
+export { evaluate };

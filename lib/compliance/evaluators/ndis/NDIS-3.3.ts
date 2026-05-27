@@ -1,12 +1,7 @@
 /**
- * NDIS-3.3 — Service agreements with participants.
- *
- * Phase 2 (Audit 2026-05-27): partial-signal predicate. Counts signed/
- * reviewed form submissions in the last 12 months as a proxy for service
- * agreements. Status defaults to `partial` because the FormaOS form
- * taxonomy doesn't yet distinguish service-agreement submissions from
- * other forms. ⚠️ A follow-up should add a service_agreement form_type
- * so this predicate can flip to a confident `pass`.
+ * NDIS-3.3 — Service agreements.
+ * Phase 3: real predicate. Checks org_form_submissions tagged
+ * metadata.form_type='service_agreement' OR org_registers type='service_agreement'.
  */
 
 import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';

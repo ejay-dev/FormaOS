@@ -1,17 +1,20 @@
 /**
  * NDIS-1.3 — Privacy and dignity.
- *
- * Phase 1 (manual-attestation): privacy policy + staff training on
- * confidentiality + information-handling procedures aligned with the
- * Australian Privacy Principles. FormaOS has policy + training tables;
- * Phase 2 could check policy.cadence + recent staff-training completions.
+ * Phase 3 (Audit 2026-05-27): real predicate against org_policies where
+ * ndis_category='privacy' AND status='published' AND updated within 12 months
+ * (annual review is the published-guidance norm for compliance policies).
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluatePrivacyAndDignity } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-1.3',
-  'NDIS-1.3 requires a privacy policy, staff training on confidentiality, and information-handling procedures aligned with the Australian Privacy Principles. Phase 1 of the FormaOS NDIS pack is manual-attestation pending Phase 2 predicate logic against the org_policies + org_training tables.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluatePrivacyAndDignity(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-1.3',
+  evaluator: evaluate,
+};
+
+export { evaluate };

@@ -85,8 +85,10 @@ describe('NDIS-1.1 — Person-centred supports', () => {
     expect(result.status).toBe('pass');
   });
 
-  it('returns fail when <50% care plans are fresh', async () => {
-    const stale = new Date(Date.now() - 365 * 86_400_000).toISOString();
+  it('returns fail when <70% care plans are fresh (Phase 3: 12mo threshold per NDIS standard)', async () => {
+    // Stale = >12 months old (Phase 3 statutory threshold per NDIS Practice
+    // Standards Nov 2021 v4). Fresh = within 12 months.
+    const stale = new Date(Date.now() - 400 * 86_400_000).toISOString();
     const fresh = new Date(Date.now() - 30 * 86_400_000).toISOString();
     const db = mockDb({
       org_care_plans: {
@@ -135,35 +137,10 @@ describe('NDIS-2.2 — Risk management', () => {
   });
 });
 
-describe('NDIS-2.4 — Information management', () => {
-  it('returns fail when no audit_log activity in last 90 days', async () => {
-    const db = {
-      from: (_table: string) => ({
-        select: () => ({
-          eq: () => ({
-            gte: () => Promise.resolve({ count: 0, error: null }),
-          }),
-        }),
-      }),
-    } as never;
-    const result = await evaluateInformationManagement({ orgId: ORG_ID, db }, NOW);
-    expect(result.status).toBe('fail');
-    expect(result.gaps[0].code).toBe('no_audit_activity');
-  });
-
-  it('returns pass when ≥30 audit_log rows in last 90 days', async () => {
-    const db = {
-      from: (_table: string) => ({
-        select: () => ({
-          eq: () => ({
-            gte: () => Promise.resolve({ count: 100, error: null }),
-          }),
-        }),
-      }),
-    } as never;
-    const result = await evaluateInformationManagement({ orgId: ORG_ID, db }, NOW);
-    expect(result.status).toBe('pass');
-  });
+describe('NDIS-2.4 — Information management (Phase 3 3-part check)', () => {
+  // Phase 3 changed evaluateInformationManagement to read 3 sources:
+  // org_policies (ndis_category='information_management'), retention_policies,
+  // and audit_log count. Tests moved to ndis-phase-3.test.ts.
 });
 
 describe('NDIS-2.5 — Complaints management', () => {

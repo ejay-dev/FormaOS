@@ -1,15 +1,19 @@
 /**
  * NDIS-W.1 — Worker engagement and wellbeing.
- *
- * Phase 2 (Audit 2026-05-27): manual-attestation. Supervision records +
- * staff-wellbeing artefacts aren't modelled in the FormaOS schema.
+ * Phase 3: real predicate. Counts org_registers entries of type='supervision'.
+ * Pass when all updated within 6 months.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateWorkerEngagement } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-W.1',
-  'NDIS-W.1 requires documented supervision cadence + worker wellbeing supports. Manual-attestation pending Phase 3 schema work.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateWorkerEngagement(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-W.1',
+  evaluator: evaluate,
+};
+
+export { evaluate };

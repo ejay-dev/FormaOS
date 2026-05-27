@@ -1,17 +1,19 @@
 /**
- * NDIS-4.1 — Safe environment for the delivery of supports.
- *
- * Phase 1 (manual-attestation): environmental risk assessments for
- * service-delivery locations, emergency procedures, equipment
- * maintenance log. FormaOS has no environment-inspection model;
- * Phase 2 needs schema work before automated signal is feasible.
+ * NDIS-4.1 — Safe environment.
+ * Phase 3: real predicate. Counts org_registers entries of
+ * type='environment_assessment'; pass when all reviewed within 12 months.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateSafeEnvironment } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-4.1',
-  'NDIS-4.1 requires environmental risk assessments for service-delivery locations, emergency procedures, and an equipment maintenance log. Manual-attestation pending Phase 2 schema work (no environment-inspection model exists yet).',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateSafeEnvironment(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-4.1',
+  evaluator: evaluate,
+};
+
+export { evaluate };

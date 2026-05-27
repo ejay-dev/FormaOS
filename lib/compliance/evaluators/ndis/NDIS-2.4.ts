@@ -1,9 +1,8 @@
 /**
  * NDIS-2.4 — Information management.
- *
- * Phase 2 (Audit 2026-05-27): real predicate against audit_log activity.
- * Pass when ≥30 audit_log rows in the last 90 days; partial for fewer;
- * fail for zero. ⚠️ Expert review required for threshold calibration.
+ * Phase 3: 3-part check — (1) information-mgmt policy current,
+ * (2) retention_policies row active, (3) audit_log activity ≥30 rows
+ * in 90 days. All 3 → pass; ≥1 → partial; 0 → fail.
  */
 
 import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';

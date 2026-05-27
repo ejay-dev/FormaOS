@@ -1,15 +1,19 @@
 /**
  * NDIS-2.8 — Continuity of supports.
- *
- * Phase 2 (Audit 2026-05-27): manual-attestation. Business-continuity
- * plans + backup arrangements aren't modelled in the FormaOS schema.
+ * Phase 3: real predicate. Checks org_registers (type='business_continuity_plan')
+ * for at least one entry; pass when reviewed within 12 months.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateContinuityOfSupports } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-2.8',
-  'NDIS-2.8 requires a business continuity plan + documented backup arrangements. Manual-attestation pending Phase 3 schema work.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateContinuityOfSupports(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-2.8',
+  evaluator: evaluate,
+};
+
+export { evaluate };

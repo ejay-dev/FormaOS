@@ -1,16 +1,18 @@
 /**
  * NDIS-3.5 — Transitions to or from a provider.
- *
- * Phase 2 (Audit 2026-05-27): manual-attestation. Transition checklists
- * + warm-handover records aren't a distinct artefact in the FormaOS
- * schema yet.
+ * Phase 3: real predicate. Counts org_registers entries of type='transition'.
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateTransitions } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-3.5',
-  'NDIS-3.5 requires documented transition checklists + warm-handover records. Manual-attestation pending Phase 3 schema work.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateTransitions(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-3.5',
+  evaluator: evaluate,
+};
+
+export { evaluate };

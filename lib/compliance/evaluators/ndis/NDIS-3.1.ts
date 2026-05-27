@@ -1,15 +1,19 @@
 /**
  * NDIS-3.1 — Access to supports.
- *
- * Phase 2 (Audit 2026-05-27): manual-attestation. Intake-process
- * documentation isn't a distinct artefact in the FormaOS schema yet.
+ * Phase 3: real predicate. Counts org_registers entries of type='intake'.
+ * Returns manual when none on file (Stage 2 confirms eligibility process).
  */
 
-import { makeManualEvaluator } from './_shared';
+import type { ControlEvaluator, ControlEvaluatorMeta } from '../types';
+import { evaluateAccessToSupports } from './_predicates';
 
-const { meta, evaluator: evaluate } = makeManualEvaluator(
-  'NDIS-3.1',
-  'NDIS-3.1 requires a documented intake process + eligibility criteria. Manual-attestation pending Phase 3 schema work.',
-);
+const evaluate: ControlEvaluator = async (ctx) =>
+  evaluateAccessToSupports(ctx, new Date().toISOString());
 
-export { meta, evaluate };
+export const meta: ControlEvaluatorMeta = {
+  framework: 'ndis',
+  controlCode: 'NDIS-3.1',
+  evaluator: evaluate,
+};
+
+export { evaluate };
