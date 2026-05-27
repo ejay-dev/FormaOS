@@ -850,10 +850,9 @@ async function _createTemporaryTestUserImpl(): Promise<TestUser> {
     // Legacy `public.orgs` mirror used to live here. Migration
     // 20260624051 (commit 6126ab21, "R2 Phase B — drop orgs table +
     // mirror triggers") dropped the table after repointing every
-    // dependent FK to organizations(id). The mirror upsert now throws
-    // "Could not find the table 'public.orgs' in the schema cache" so
-    // it's been removed. organizations(id) is now the only source of
-    // truth.
+    // dependent FK to organizations(id). organizations(id) is now the
+    // only source of truth.
+    const nowIso = new Date().toISOString();
 
     // Add user as org owner
     let memberError: { message: string } | null = null;
