@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T06:45:25.629Z",
+  "takenAt": "2026-05-27T06:53:28.339Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1001,6 +1001,10 @@
     {
       "version": "20260624057",
       "name": "audit_2026_05_27_audit_log_append_schema_fixup"
+    },
+    {
+      "version": "20260624058",
+      "name": "audit_2026_05_27_r3_keyed_hmac_audit_chain"
     }
   ]
 }

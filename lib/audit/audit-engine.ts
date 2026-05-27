@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { computeEntryHash } from './hash-utils';
+import { ensureChainSecret } from './chain-secret-manager';
 
 // ------------------------------------------------------------------
 // Enhanced Audit Engine
@@ -39,7 +40,43 @@ export async function writeAuditLog(
   const id = crypto.randomUUID();
   const createdAt = new Date().toISOString();
 
-  // Preferred path: atomic RPC. Computes hash + seq + prev_hash
+  // R3 (Audit 2026-05-27): opt-in v3-hmac path. AUDIT_CHAIN_V3_ENABLED=true
+  // routes through audit_log_append_v3 with a per-org HMAC key. Falls
+  // through to v2 on resolver failure so a misconfigured env doesn't
+  // drop audit events.
+  if ((process.env.AUDIT_CHAIN_V3_ENABLED ?? '').toLowerCase() === 'true') {
+    try {
+      const key = await ensureChainSecret(orgId);
+      const { error: v3Error } = await db.rpc('audit_log_append_v3', {
+        p_id: id,
+        p_org_id: orgId,
+        p_user_id: entry.userId ?? null,
+        p_action: entry.action,
+        p_resource_type: entry.resourceType,
+        p_resource_id: entry.resourceId ?? null,
+        p_details: entry.details ?? {},
+        p_ip_address: entry.ipAddress ?? null,
+        p_user_agent: entry.userAgent ?? null,
+        p_created_at: createdAt,
+        // PostgREST encodes Buffer as base64-prefixed bytea.
+        p_hmac_key: `\\x${key.toString('hex')}`,
+      });
+      if (!v3Error) return;
+      // If the v3 RPC is missing on this DB (e.g., older branch), drop
+      // through to the v2 path rather than losing the event.
+      const code = (v3Error as { code?: string }).code;
+      if (code !== PG_FUNCTION_MISSING) throw v3Error;
+    } catch (err) {
+      // Key-resolver failure or transient: log + fall through. Anything
+      // worse than this will surface from the v2 RPC below.
+      console.warn(
+        '[writeAuditLog] v3 path failed, falling back to v2:',
+        err instanceof Error ? err.message : err,
+      );
+    }
+  }
+
+  // Default path: atomic v2 RPC. Computes hash + seq + prev_hash
   // server-side under an advisory lock; one round-trip; race-free.
   const { error: rpcError } = await db.rpc('audit_log_append', {
     p_id: id,
