@@ -220,23 +220,11 @@ async function verifyAuthenticatedFormsRoundTrip(admin, anon) {
 
   cleanup.orgId = org.id;
 
-  // Mirror to legacy `orgs` table (v4-001). Without this the probe org
-  // leaves a reverse-direction orphan that trips the qa:deep regression
-  // gate on the next run.
-  const { error: legacyOrgsError } = await admin.from('orgs').upsert(
-    {
-      id: cleanup.orgId,
-      name: `FormaOS DB Verify ${Date.now()}`,
-      created_by: cleanup.userId,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: 'id' },
-  );
-  if (legacyOrgsError) {
-    fail(`Could not mirror probe org to legacy orgs: ${legacyOrgsError.message}`);
-    return;
-  }
+  // The legacy public.orgs table was dropped by migration 20260624051
+  // (commit 6126ab21, "R2 Phase B — drop orgs table + mirror triggers").
+  // Every dependent FK now points at organizations(id), so the historical
+  // mirror call that lived here is no longer needed — it was failing CI
+  // with `Could not find the table 'public.orgs' in the schema cache`.
 
   const { error: memberError } = await admin.from('org_members').insert({
     organization_id: cleanup.orgId,
