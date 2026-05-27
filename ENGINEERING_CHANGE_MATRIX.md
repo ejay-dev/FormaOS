@@ -49,18 +49,28 @@ Use this matrix before merging changes.
 - Areas: `supabase/migrations`
 - Minimum checks:
   - `npx tsc -p tsconfig.json --noEmit`
+  - `npm run test:db:ledger-alignment` (R6 — fails if FS files drift from the recorded ledger snapshot)
+  - `npm run test:db:secdef-grants` (Audit 2026-05-27 — fails if a new SECURITY DEFINER function leaks anon/auth EXECUTE; allowlist in `scripts/.security-definer-rpc-allowlist.json`)
 - Also verify:
   - route assumptions match column names
   - lifecycle/audit/status semantics stay consistent
   - new columns have safe defaults where needed
+  - For SECURITY DEFINER functions: `REVOKE EXECUTE ... FROM PUBLIC, anon, authenticated;`
+    explicitly — Supabase auto-grants to anon + authenticated on CREATE FUNCTION
+    via default privileges; a `REVOKE FROM PUBLIC` alone does NOT remove the
+    explicit anon/auth grants. See `supabase/migrations/20260624060_*` for the canonical pattern.
 - **Before applying a new migration to production**:
-  - Confirm `supabase migration list --linked` shows the previous migration recorded.
-    If history is broken (only 19 of 217 files recorded as of audit 2026-05-26),
-    run `docs/operations/migration-history-repair.md` FIRST. The repair is read-only
-    on prod; production data is not affected.
+  - The historical "19/217 ledger gap" is repaired as of 2026-05-27 (R6). For any
+    new migration, apply via `mcp__claude_ai_Supabase__execute_sql` and explicitly
+    INSERT the ledger row under the FS-prefix version. See
+    `docs/operations/migration-history-repair.md` for the pattern + idempotent
+    insert recipe.
   - For tenant-table DDL: verify on a dev branch (`supabase branch create`) and
     confirm `mcp__claude_ai_Supabase__get_advisors` reports no new RLS / search-path
     warnings before merging.
+  - For schema additions that touch existing tables: rerun
+    `npm run db:ledger:snapshot` after apply so the alignment check has the
+    latest baseline.
 
 ## Tenant Data Access (lib/ + app/api/)
 
@@ -90,3 +100,30 @@ Use this matrix before merging changes.
   - step progression
   - fallback/error behavior
   - activation metrics remain consistent
+
+## Audit Chain (lib/audit/)
+
+- Areas: `lib/audit`, `app/api/audit/*`, `app/api/cron/audit-chain-anchor`
+- Minimum checks:
+  - `npx jest __tests__/lib/audit`
+  - `npm run test:db:secdef-grants`
+- Also verify:
+  - any new SECURITY DEFINER function REVOKEs anon + authenticated explicitly
+  - `entry_hash` + `entry_mac` columns NOT mutated post-write (RESTRICTIVE policies)
+  - canonical JSON payload in `hash-utils.ts` matches Postgres `_audit_log_compute_hash_v2` byte-for-byte
+  - new audit-emitting paths use `writeAuditLog()` (v2 default, v3-hmac under
+    `AUDIT_CHAIN_V3_ENABLED=true`), never raw `INSERT INTO audit_log`
+
+## Operations / Runbooks
+
+- Areas: `docs/operations`, `docs/audit`, `docs/adr`
+- Minimum checks:
+  - `npm run test:db:ledger-alignment`
+  - `npm run test:db:restore-recency` (passes warn-only until first DR drill recorded)
+  - `npm run test:security:leaked-secrets`
+- Cadence:
+  - Monthly PITR restore drill — `docs/operations/pitr-restore-runbook.md`.
+    Record via `scripts/verify-restore.mjs` against a restored branch.
+  - Per secret-rotation event — `docs/operations/secret-rotation-runbook.md`.
+    Record via `scripts/record-secret-rotation.mjs`.
+  - Monthly dormant-user review — read latest `dormant_user_reviews` row.
