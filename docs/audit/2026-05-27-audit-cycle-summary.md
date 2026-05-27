@@ -1,6 +1,67 @@
 # Audit cycle 2026-05-27 — final summary
 
-**Status:** Complete. 23 commits ahead of `origin/main`. No push performed.
+**Status:** Complete + extended.
+- Initial 23 commits: shipped to `origin/main` at `9199f5d1`.
+- Follow-up: 2 regression fixes on local `main` (not pushed) + 13 commits on
+  feature branch `feat/audit-2026-05-27-ndis-ui-surface` (not pushed).
+
+## Follow-up cycle (2026-05-27 evening) — additions on top of the original 23
+
+### Regression fixes (on local `main`, ahead of `origin/main` by 2 commits)
+
+| Commit | Item |
+|---|---|
+| `ddaa37bc` | NDIS-1.1 jest test alignment to Phase 3 ≥95% pass threshold (commit `9199f5d1` tightened the predicate but didn't update the Phase 2 test). |
+| `7931fcfb` | `dormant_user_candidates` view lockdown — closed 2 Supabase advisor ERRORs (`auth_users_exposed` + `security_definer_view`) introduced by commit `0f8dc7bb`. Migration `20260624068`: `security_invoker=true` + REVOKE ALL anon/auth + GRANT service_role. |
+
+### Feature branch `feat/audit-2026-05-27-ndis-ui-surface` (not pushed)
+
+Tier 1 — NDIS Phase 3 admin UI surface (5 commits):
+| Commit | Item |
+|---|---|
+| `284fec90` | NDIS-category dropdown on policy editor (new + edit) backed by `lib/compliance/ndis/categories.ts` (18 enum values matching the CHECK constraint). |
+| `f9655a7b` | Behaviour Support Plan CRUD pages (`/app/behaviour-support-plans` list/new/[id]/edit) + actions + NDIS sidebar entry. |
+| `80592fab` | Typed register-entry sheet on `/app/registers` covering the 10 NDIS-aware `org_registers.type` values + "Other" escape hatch. |
+| `4b547f0b` | Per-control pass/partial/fail/manual tally on each framework card, derived from `org_control_evaluations`. |
+| `3d7282aa` | Chromium-only Playwright smoke spec covering the policy dropdown + the BSP create flow. |
+
+Tier 2.C — Unified compliance health dashboard (3 commits):
+| Commit | Item |
+|---|---|
+| `1bc6d1c0` | `lib/compliance/health/aggregate.ts` — pure-function rollup (overall weighted score / per-framework breakdown / top-10 outstanding by urgency_score). 13 jest tests. |
+| `b73b7a1f` | `/app/compliance/health` page wiring the aggregate to a UI (band pill / status tiles / per-framework cards / outstanding list). |
+| `738ce628` | Weekly snapshot table `org_compliance_health_snapshots` (migration `20260624069`) + `/api/cron/compliance-health-snapshot` (Mon 07:00 UTC) + SVG sparkline. |
+
+Tier 3 hygiene (2 commits):
+| Commit | Item |
+|---|---|
+| `a240c144` | NDIS-3.4 per-participant cadence refinement — pass requires every active participant to have ≥1 note/30d AND org-wide ≥30/90d. Fail at >50% silent. Graceful fallback for non-care orgs. 6 jest cases. |
+| `d6678a08` | SECDEF allowlist trim batch — migration `20260624070` revokes anon+auth on 4 cron-only fns and anon on 2 session-required fns. Allowlist 14 → 10 with `_cleanup_notes` on every remaining entry. |
+
+Tier 2.A — CAPA auto-creation (1 commit):
+| Commit | Item |
+|---|---|
+| `821381e7` | When the registry evaluator returns `status='fail'`, auto-INSERT an `org_capa_items` row with severity from the first gap, deduped by `(source_type='compliance_evaluator', source_id=framework_control.id)`. Hooked into `evaluate-framework-controls.ts` after the upsert. 11 jest tests on the pure dedupe+payload logic. |
+
+Tier 2.B — Public /verify page (1 commit):
+| Commit | Item |
+|---|---|
+| `fb6adc42` | Customer-facing `/verify` page — paste an audit-export bundle to recompute Merkle root + per-entry proofs, or paste a Rekor entry UUID + hash to verify the Sigstore signature. All client-side via SubtleCrypto; only network call is the public Rekor lookup. 14 jest tests including a real ECDSA P-256 round-trip via the DER → raw signature converter. |
+
+### Verification at close of follow-up cycle
+
+| Check | Result |
+|---|---|
+| `npm run type-check` | exit 0 |
+| `npx jest __tests__/ --testPathIgnorePatterns='integration/rls'` | 357 suites / 5238 tests / 0 failures |
+| `npm run test:db:ledger-alignment` | ✓ aligned (240/244 + 1 benign drift + 3 documented-skip + 1 new from this cycle = 244) |
+| `npm run test:db:secdef-grants` | ✓ no drift |
+| `npm run test:security:leaked-secrets` | ✓ no findings (3343+ files) |
+| Supabase security advisor | 0 ERROR; WARN count reduced further by Tier 3.3 batch (4 cron-only fns no longer surface) + Tier 0.1 (2 new ERRORs introduced + immediately closed by regression-fix #2). |
+
+### Original cycle summary follows
+
+---
 
 This document is the bridge for the next reviewer (human or agent).
 Read this first if you're auditing the FormaOS codebase after
