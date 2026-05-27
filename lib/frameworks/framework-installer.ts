@@ -36,6 +36,9 @@ const PACK_REGISTRY = [
     file: 'financial-services.json',
     code: 'FINANCIAL_SERVICES_AU',
   },
+  // Audit 2026-05-27 (R10 Phase 1): NDIS Practice Standards Core Module —
+  // 8 manual-attestation controls. Phase 2 requires NDIS-domain expert.
+  { slug: 'ndis', file: 'ndis.json', code: 'NDIS' },
 ];
 
 export const PACK_SLUGS = PACK_REGISTRY.map((pack) => pack.slug);

@@ -1,0 +1,105 @@
+{
+  "framework": {
+    "name": "NDIS Practice Standards (Core Module)",
+    "slug": "ndis",
+    "version": "2024",
+    "description": "NDIS Quality and Safeguards Commission Practice Standards — Core Module. Phase 1 covers 8 representative controls drawn from Standards 1–4 with manual-attestation evaluators. Phase 2 (TODO) requires an NDIS-domain expert to write predicate logic and expand to the full Core + Verification Module indicator set.",
+    "is_active": true
+  },
+  "domains": [
+    { "name": "Rights of Participants and Responsibilities of Providers", "description": "Standard 1 of the NDIS Practice Standards Core Module.", "sort_order": 1, "key": "std-1" },
+    { "name": "Provider Governance and Operational Management", "description": "Standard 2.", "sort_order": 2, "key": "std-2" },
+    { "name": "Provision of Supports", "description": "Standard 3.", "sort_order": 3, "key": "std-3" },
+    { "name": "Provision of Supports Environment", "description": "Standard 4.", "sort_order": 4, "key": "std-4" }
+  ],
+  "controls": [
+    {
+      "control_code": "NDIS-1.1",
+      "title": "Person-centred supports",
+      "summary_description": "Each participant accesses supports that respect their culture, diversity, values and beliefs.",
+      "implementation_guidance": "Document person-centred planning processes; capture participant goals and preferences; review at least every 6 months.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Rights of Participants and Responsibilities of Providers",
+      "suggested_evidence_types": ["policy_document", "participant_plan", "staff_training_record"],
+      "suggested_automation_triggers": ["care_plan_updated", "staff_training_completed"]
+    },
+    {
+      "control_code": "NDIS-1.3",
+      "title": "Privacy and dignity",
+      "summary_description": "Each participant accesses supports that respect and protect their dignity and right to privacy.",
+      "implementation_guidance": "Privacy policy; staff training on confidentiality; documented information-handling procedures aligned with the Australian Privacy Principles.",
+      "default_risk_level": "high",
+      "review_frequency_days": 365,
+      "domain": "Rights of Participants and Responsibilities of Providers",
+      "suggested_evidence_types": ["privacy_policy", "staff_training_record", "attestation"],
+      "suggested_automation_triggers": ["policy_published", "staff_training_completed"]
+    },
+    {
+      "control_code": "NDIS-1.5",
+      "title": "Violence, abuse, neglect, exploitation and discrimination",
+      "summary_description": "Each participant accesses supports free from violence, abuse, neglect, exploitation or discrimination.",
+      "implementation_guidance": "Safeguarding policy; staff training on identifying and responding to abuse; documented escalation pathway; reportable incident workflow.",
+      "default_risk_level": "critical",
+      "review_frequency_days": 180,
+      "domain": "Rights of Participants and Responsibilities of Providers",
+      "suggested_evidence_types": ["policy_document", "staff_training_record", "incident_register"],
+      "suggested_automation_triggers": ["incident_reported", "staff_training_completed"]
+    },
+    {
+      "control_code": "NDIS-2.2",
+      "title": "Risk management",
+      "summary_description": "Risks to participants, workers and the provider are identified and managed.",
+      "implementation_guidance": "Risk register reviewed at least quarterly; treatment plans for residual risks; documented escalation thresholds.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 90,
+      "domain": "Provider Governance and Operational Management",
+      "suggested_evidence_types": ["risk_register", "risk_assessment", "attestation"],
+      "suggested_automation_triggers": ["risk_register_reviewed"]
+    },
+    {
+      "control_code": "NDIS-2.6",
+      "title": "Incident management",
+      "summary_description": "Each participant is safeguarded by the provider's incident-management system.",
+      "implementation_guidance": "Documented incident-management system; reportable incident workflow that satisfies NDIS Commission notification timeframes; incident register reviewed at least quarterly.",
+      "default_risk_level": "critical",
+      "review_frequency_days": 90,
+      "domain": "Provider Governance and Operational Management",
+      "suggested_evidence_types": ["policy_document", "incident_register", "reportable_incident_log"],
+      "suggested_automation_triggers": ["incident_reported", "reportable_incident_filed"]
+    },
+    {
+      "control_code": "NDIS-2.7",
+      "title": "Human resource management",
+      "summary_description": "Workers are competent, hold relevant qualifications, and have the expertise and experience to provide person-centred support.",
+      "implementation_guidance": "NDIS Worker Screening Check current for every relevant worker; role-specific competency evidence; supervision records.",
+      "default_risk_level": "high",
+      "review_frequency_days": 90,
+      "domain": "Provider Governance and Operational Management",
+      "suggested_evidence_types": ["worker_screening_check", "qualification_certificate", "supervision_record"],
+      "suggested_automation_triggers": ["worker_screening_renewed", "qualification_expiry_approaching"]
+    },
+    {
+      "control_code": "NDIS-3.3",
+      "title": "Service agreements with participants",
+      "summary_description": "Each participant has a clear understanding of the supports they have chosen and how they will be provided.",
+      "implementation_guidance": "Signed service agreement covering supports, fees, withdrawal rights, complaints process; reviewed when supports change.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Provision of Supports",
+      "suggested_evidence_types": ["service_agreement", "signed_consent"],
+      "suggested_automation_triggers": ["service_agreement_signed"]
+    },
+    {
+      "control_code": "NDIS-4.1",
+      "title": "Safe environment for the delivery of supports",
+      "summary_description": "Each participant accesses supports in a safe and fit for purpose environment.",
+      "implementation_guidance": "Environmental risk assessments for service-delivery locations; emergency procedures; equipment maintenance log.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Provision of Supports Environment",
+      "suggested_evidence_types": ["risk_assessment", "maintenance_log", "attestation"],
+      "suggested_automation_triggers": ["site_inspection_completed"]
+    }
+  ]
+}

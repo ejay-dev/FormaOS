@@ -259,6 +259,19 @@ import { meta as hipaa_TECH_2 } from './hipaa/HIPAA-TECH-2';
 import { meta as hipaa_TECH_3 } from './hipaa/HIPAA-TECH-3';
 import { meta as hipaa_TECH_4 } from './hipaa/HIPAA-TECH-4';
 
+// Audit 2026-05-27 (R10 Phase 1) — NDIS Practice Standards.
+// 8 representative controls drawn from Standards 1–4 of the Core Module,
+// all manual-attestation stubs awaiting Phase 2 predicate logic.
+// See lib/compliance/evaluators/ndis/_shared.ts.
+import { meta as ndis_1_1 } from './ndis/NDIS-1.1';
+import { meta as ndis_1_3 } from './ndis/NDIS-1.3';
+import { meta as ndis_1_5 } from './ndis/NDIS-1.5';
+import { meta as ndis_2_2 } from './ndis/NDIS-2.2';
+import { meta as ndis_2_6 } from './ndis/NDIS-2.6';
+import { meta as ndis_2_7 } from './ndis/NDIS-2.7';
+import { meta as ndis_3_3 } from './ndis/NDIS-3.3';
+import { meta as ndis_4_1 } from './ndis/NDIS-4.1';
+
 import { meta as pci_PCI_1 } from './pci-dss/PCI-1';
 import { meta as pci_PCI_2 } from './pci-dss/PCI-2';
 import { meta as pci_PCI_3 } from './pci-dss/PCI-3';
@@ -507,6 +520,17 @@ const ALL_EVALUATORS = [
   pci_PCI_10,
   pci_PCI_11,
   pci_PCI_12,
+  // NDIS Practice Standards (framework slug = 'ndis', Phase 1 — 8 controls,
+  // all manual-attestation; Phase 2 expert build-out tracked in
+  // docs/compliance/ndis-framework-status.md)
+  ndis_1_1,
+  ndis_1_3,
+  ndis_1_5,
+  ndis_2_2,
+  ndis_2_6,
+  ndis_2_7,
+  ndis_3_3,
+  ndis_4_1,
 ];
 
 let registered = false;

@@ -44,4 +44,20 @@ describe('register.ts — evaluator bootstrap', () => {
     expect(REGISTERED_EVALUATOR_KEYS).toContain('soc2/CC6.1');
     expect(REGISTERED_EVALUATOR_KEYS).toContain('soc2/CC6.7');
   });
+
+  it('R10 Phase 1 — registers all 8 NDIS Core Module controls', () => {
+    const ndisKeys = [
+      'ndis/NDIS-1.1',
+      'ndis/NDIS-1.3',
+      'ndis/NDIS-1.5',
+      'ndis/NDIS-2.2',
+      'ndis/NDIS-2.6',
+      'ndis/NDIS-2.7',
+      'ndis/NDIS-3.3',
+      'ndis/NDIS-4.1',
+    ];
+    for (const key of ndisKeys) {
+      expect(REGISTERED_EVALUATOR_KEYS).toContain(key);
+    }
+  });
 });

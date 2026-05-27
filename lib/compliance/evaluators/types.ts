@@ -53,7 +53,8 @@ export type FrameworkSlug =
   | 'gdpr'
   | 'pci-dss'
   | 'nist-csf'
-  | 'cis-controls';
+  | 'cis-controls'
+  | 'ndis';
 
 export type ControlEvaluatorMeta = {
   framework: FrameworkSlug;
