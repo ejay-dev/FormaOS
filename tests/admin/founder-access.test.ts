@@ -1,5 +1,13 @@
 /** @jest-environment node */
 
+// P0-13 (Audit 2026-05-26): requireAdminAccess + requireFounderAccess
+// now run assertSessionNotRevoked. Stub the helper here so these tests
+// keep their narrow scope — the watermark behaviour has its own tests.
+jest.mock('@/lib/auth/session-revocation', () => ({
+  assertSessionNotRevoked: jest.fn().mockResolvedValue(undefined),
+  SessionRevokedError: class SessionRevokedError extends Error {},
+}));
+
 jest.mock('@/lib/supabase/server', () => ({
   createSupabaseServerClient: jest.fn(),
 }));
@@ -16,6 +24,13 @@ describe('requireFounderAccess', () => {
     createClientMock.mockResolvedValue({
       auth: {
         getUser: mockGetUser,
+        // P0-13 (Audit 2026-05-26): getAuthenticatedUser also reads
+        // auth.getSession to extract the access-token iat for
+        // session-revocation enforcement. Tests don't care about the
+        // value — provide a non-throwing default.
+        getSession: jest
+          .fn()
+          .mockResolvedValue({ data: { session: null } }),
       },
     } as any);
   });

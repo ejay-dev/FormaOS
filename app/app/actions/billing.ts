@@ -2,7 +2,6 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import { getStripeClient, getStripePriceId } from '@/lib/billing/stripe';
 import { resolvePlanKey } from '@/lib/plans';
 import { isFounder } from '@/lib/utils/founder';
@@ -151,23 +150,8 @@ export async function startCheckout(
         customerId = customer.id;
       }
 
-      if (organization?.name) {
-        try {
-          await mirrorOrgToLegacyOrgs(admin, {
-            id: orgId,
-            name: organization.name,
-            createdBy: organization.created_by ?? null,
-          });
-        } catch (legacyError) {
-          billingLogger.error(
-            'legacy_orgs_mirror_failed',
-            legacyError instanceof Error
-              ? legacyError
-              : new Error(String(legacyError)),
-            { orgId },
-          );
-        }
-      }
+      // R2 (Audit 2026-05-27): legacy `orgs` mirror removed —
+      // org_subscriptions.org_id now references organizations(id).
 
       // Scoped per (org, plan) so a double-click within the same plan choice
       // returns the same checkout session URL instead of creating a second

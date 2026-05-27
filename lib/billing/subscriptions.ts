@@ -1,5 +1,4 @@
 import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
-import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import { syncEntitlementsForPlan } from '@/lib/billing/entitlements';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
 import { isSelfServePlan } from '@/lib/billing/checkout-intent';
@@ -46,7 +45,6 @@ export async function ensureSubscription(
   const intent = options.intent ?? 'self-serve';
 
   const supabase = createSupabaseOrgClient(orgId);
-  const admin = supabase.unsafeAdmin(); // mirror-legacy-orgs needs raw client
   const { data: existing } = await supabase
     .from('org_subscriptions')
     .select('status, plan_key, trial_expires_at, stripe_subscription_id')
@@ -91,28 +89,9 @@ export async function ensureSubscription(
       ).toISOString()
     : null;
 
-  // BACKFILL: Ensure legacy orgs table entry exists for org_subscriptions.org_id FK
-  try {
-    const { data: org } = await supabase
-      .from('organizations')
-      .select('name, created_by')
-      .maybeSingle();
-
-    if (org?.name) {
-      await mirrorOrgToLegacyOrgs(admin, {
-        id: orgId,
-        name: org.name,
-        createdBy: org.created_by ?? null,
-        nowIso,
-      });
-    }
-  } catch (error) {
-    billingLogger.error(
-      'legacy_orgs_mirror_failed',
-      error instanceof Error ? error : new Error(String(error)),
-      { orgId },
-    );
-  }
+  // R2 (Audit 2026-05-27): legacy `orgs` table dropped, the
+  // org_subscriptions.org_id FK now references organizations(id).
+  // No backfill required.
 
   const basePayload = {
     organization_id: orgId,

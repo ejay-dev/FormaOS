@@ -1,7 +1,6 @@
 import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import { resolvePlanKey, type PlanKey } from '@/lib/plans';
 import { consoleShim } from '@/lib/monitoring/console-shim';
@@ -51,22 +50,17 @@ function pickPrimaryMembership<
 }
 
 async function ensureLegacyOrg(
-  admin: ReturnType<typeof createSupabaseAdminClient>,
-  orgId: string,
-  name: string,
-  createdBy: string | null,
-  nowIso: string,
-  actions: string[],
+  _admin: ReturnType<typeof createSupabaseAdminClient>,
+  _orgId: string,
+  _name: string,
+  _createdBy: string | null,
+  _nowIso: string,
+  _actions: string[],
 ) {
-  // v3-010: bootstrap path — let failures surface so provisioning
-  // returns ok:false instead of silently leaving the org un-mirrored.
-  await mirrorOrgToLegacyOrgs(admin, {
-    id: orgId,
-    name,
-    createdBy: createdBy ?? null,
-    nowIso,
-  });
-  actions.push('legacy_org_upserted');
+  // R2 (Audit 2026-05-27): legacy `orgs` table dropped. Retained as a
+  // no-op so callers keep their call site / try-catch shape; remove
+  // entirely on next pass through this file.
+  return;
 }
 
 async function ensureOnboardingStatus(

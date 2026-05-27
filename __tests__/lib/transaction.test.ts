@@ -135,8 +135,8 @@ describe('bootstrapOrganizationAtomic', () => {
 
     // Verify organizations table was called
     expect(mockFrom).toHaveBeenCalledWith('organizations');
-    // Verify legacy orgs table was called
-    expect(mockFrom).toHaveBeenCalledWith('orgs');
+    // R2 (Audit 2026-05-27): legacy `orgs` mirror removed; no `.from('orgs')` call expected.
+    expect(mockFrom).not.toHaveBeenCalledWith('orgs');
     // Verify membership was created
     expect(mockFrom).toHaveBeenCalledWith('org_members');
     // Verify onboarding status was created
@@ -185,11 +185,11 @@ describe('bootstrapOrganizationAtomic', () => {
       })
       .map((call: any) => call[0]);
 
-    // Should attempt to clean up org_onboarding_status, org_subscriptions, org_members, orgs, organizations
+    // R2: rollback no longer touches the dropped `orgs` table.
     expect(mockFrom).toHaveBeenCalledWith('org_onboarding_status');
     expect(mockFrom).toHaveBeenCalledWith('org_subscriptions');
     expect(mockFrom).toHaveBeenCalledWith('org_members');
-    expect(mockFrom).toHaveBeenCalledWith('orgs');
+    expect(mockFrom).not.toHaveBeenCalledWith('orgs');
     expect(mockFrom).toHaveBeenCalledWith('organizations');
 
     // Verify delete was called with the correct org id

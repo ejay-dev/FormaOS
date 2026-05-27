@@ -4,7 +4,6 @@ import { createServerClient } from '@supabase/ssr';
 import type { User } from '@supabase/supabase-js';
 import { getCookieDomain } from '@/lib/supabase/cookie-domain';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { mirrorOrgToLegacyOrgs } from '@/lib/supabase/mirror-legacy-orgs';
 import {
   exchangeOAuthCode,
   isPkceExchangeError,
@@ -674,27 +673,9 @@ export async function GET(request: Request) {
       .eq('id', membership.organization_id);
   }
 
-  // BACKFILL: Ensure legacy orgs table entry exists (for org_subscriptions.org_id FK)
-  const { data: legacyOrg } = await admin
-    .from('orgs')
-    .select('id')
-    .eq('id', membership.organization_id)
-    .maybeSingle();
-
-  if (!legacyOrg) {
-    authLogger.info('backfilling_legacy_orgs_entry');
-    try {
-      await mirrorOrgToLegacyOrgs(admin, {
-        id: membership.organization_id,
-        name: organization?.name || 'Organization',
-        createdBy: organization?.created_by || user.id,
-      });
-    } catch (mirrorError) {
-      authLogger.error('legacy_orgs_mirror_failed', toError(mirrorError), {
-        orgId: membership.organization_id,
-      });
-    }
-  }
+  // R2 (Audit 2026-05-27): legacy `orgs` table and its backfill block
+  // removed. org_subscriptions.org_id now references organizations(id)
+  // directly so no per-auth-callback mirror is necessary.
 
   // HARDENING: Always ensure subscription + entitlements exist
   try {

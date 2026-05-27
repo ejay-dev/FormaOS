@@ -248,22 +248,7 @@ describe('ensureSubscription', () => {
     });
   });
 
-  describe('legacy org backfill', () => {
-    it('upserts into orgs table when organization exists', async () => {
-      // First select is org_subscriptions (no existing), second is organizations
-      selectOverrides['org_subscriptions.select'] = { data: null, error: null };
-
-      // Override organizations lookup
-      selectOverrides['organizations.select'] = {
-        data: { name: 'Test Org', created_by: 'user-1' },
-        error: null,
-      };
-
-      await ensureSubscription(ORG, 'basic');
-
-      const orgsUpsert = dbCalls.upserts.find(u => u.table === 'orgs');
-      expect(orgsUpsert).toBeDefined();
-      expect((orgsUpsert!.data as Record<string, unknown>).name).toBe('Test Org');
-    });
-  });
+  // R2 (Audit 2026-05-27): legacy `orgs` table dropped + the
+  // ensureSubscription backfill removed. The previous "upserts into
+  // orgs table" test is gone because that path doesn't exist anymore.
 });
