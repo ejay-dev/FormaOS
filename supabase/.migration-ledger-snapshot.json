@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T13:27:29.286Z",
+  "takenAt": "2026-05-27T13:37:47.485Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1057,6 +1057,10 @@
     {
       "version": "20260624071",
       "name": "audit_2026_05_27_move_vector_pgtrgm_to_extensions"
+    },
+    {
+      "version": "20260624072",
+      "name": "audit_2026_05_27_dormant_user_purge_holds"
     }
   ]
 }
