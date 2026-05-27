@@ -57,6 +57,7 @@
     "test:db:orgs-sync": "node scripts/check-orgs-sync.mjs",
     "test:db:ledger-alignment": "node scripts/check-migration-ledger-alignment.mjs",
     "test:db:secdef-grants": "node scripts/check-security-definer-grants.mjs",
+    "test:db:restore-recency": "node scripts/check-restore-test-recency.mjs",
     "db:ledger:snapshot": "node scripts/snapshot-migration-ledger.mjs",
     "db:backfill:evidence-file-hash": "node scripts/backfill-evidence-file-hash.mjs",
     "framework-packs:rehash": "node scripts/build-framework-packs-manifest.mjs",
