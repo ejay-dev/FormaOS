@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T09:29:52.162Z",
+  "takenAt": "2026-05-27T10:03:11.936Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1033,6 +1033,10 @@
     {
       "version": "20260624065",
       "name": "audit_2026_05_27_audit_chain_anchors_drift_fix"
+    },
+    {
+      "version": "20260624066",
+      "name": "audit_2026_05_27_supabase_advisor_hygiene_batch"
     }
   ]
 }

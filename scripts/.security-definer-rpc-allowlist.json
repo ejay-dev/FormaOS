@@ -1,16 +1,10 @@
 {
-  "_comment": "Audit 2026-05-27: SECURITY DEFINER functions in public that are intentionally callable by anon and/or authenticated. New functions are blocked by scripts/check-security-definer-grants.mjs unless added here. Underscore-prefixed entries are trigger handlers that don't strictly need RPC exposure — flagged in the cleanup-notes block below for a future hardening cycle.",
-  "_cleanup_notes": {
-    "_fos_revoke_api_keys_for_demoted_admin": "Trigger handler; should be REVOKEd from anon/authenticated.",
-    "_fos_revoke_api_keys_for_removed_member": "Trigger handler; should be REVOKEd from anon/authenticated.",
-    "_touch_user_preferences_updated_at": "Trigger handler; should be REVOKEd from anon/authenticated.",
-    "org_care_plans_snapshot_version": "Trigger handler.",
-    "ensure_user_profile_from_org_member": "Trigger handler."
+  "_comment": "Audit 2026-05-27: SECURITY DEFINER functions in public that are intentionally callable by anon and/or authenticated. New functions are blocked by scripts/check-security-definer-grants.mjs unless added here.",
+  "_history": {
+    "2026-05-27 initial": "Seeded with 19 pre-existing entries to acknowledge current state without blocking deploys.",
+    "2026-05-27 hygiene batch (migration 20260624066)": "Removed 5 trigger handlers (_fos_revoke_api_keys_*, _touch_user_preferences_*, org_care_plans_snapshot_version, ensure_user_profile_from_org_member) after explicit REVOKE FROM anon, authenticated, PUBLIC. They no longer leak."
   },
   "allowed": [
-    "_fos_revoke_api_keys_for_demoted_admin",
-    "_fos_revoke_api_keys_for_removed_member",
-    "_touch_user_preferences_updated_at",
     "accept_invite",
     "bootstrap_org_from_library",
     "claim_compliance_export_jobs",
@@ -22,9 +16,7 @@
     "create_security_alert",
     "current_user_admin_org_ids",
     "current_user_org_ids",
-    "ensure_user_profile_from_org_member",
     "log_email_send",
-    "org_care_plans_snapshot_version",
     "search_embeddings",
     "update_session_heartbeat"
   ]
