@@ -2,6 +2,7 @@ import 'server-only';
 
 import crypto from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { withSpan } from '@/lib/observability/with-span';
 
 // R3/R4 follow-up (Audit 2026-05-27) — external anchor for the audit
 // hash chain via Sigstore Rekor.
@@ -124,6 +125,22 @@ async function submitToRekor(
   publicKeyPem: string,
   signal?: AbortSignal,
 ): Promise<{ uuid: string; viewUrl: string }> {
+  return withSpan(
+    'audit.anchor.rekor.submit',
+    {
+      'audit.anchor.provider': 'sigstore-rekor',
+      'audit.anchor.top_hash_prefix': topEntryHash.slice(0, 12),
+    },
+    async () => submitToRekorInner(topEntryHash, signatureBase64, publicKeyPem, signal),
+  );
+}
+
+async function submitToRekorInner(
+  topEntryHash: string,
+  signatureBase64: string,
+  publicKeyPem: string,
+  signal?: AbortSignal,
+): Promise<{ uuid: string; viewUrl: string }> {
   const body = {
     kind: 'hashedrekord',
     apiVersion: '0.0.1',
@@ -180,6 +197,21 @@ async function submitToRekor(
  * branching.
  */
 export async function recordAnchor(
+  submission: AnchorSubmission,
+  options: { signal?: AbortSignal; provider?: 'sigstore-rekor' | 'internal-test' } = {},
+): Promise<AnchorResult | null> {
+  return withSpan(
+    'audit.anchor.record',
+    {
+      'audit.anchor.provider': options.provider ?? 'sigstore-rekor',
+      'audit.anchor.org_id': submission.orgId,
+      'audit.anchor.top_seq': submission.topSequenceNumber,
+    },
+    async () => recordAnchorInner(submission, options),
+  );
+}
+
+async function recordAnchorInner(
   submission: AnchorSubmission,
   options: { signal?: AbortSignal; provider?: 'sigstore-rekor' | 'internal-test' } = {},
 ): Promise<AnchorResult | null> {

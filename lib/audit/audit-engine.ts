@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { computeEntryHash } from './hash-utils';
 import { ensureChainSecret } from './chain-secret-manager';
+import { withSpan } from '@/lib/observability/with-span';
 
 // ------------------------------------------------------------------
 // Enhanced Audit Engine
@@ -25,6 +26,31 @@ const PG_UNIQUE_VIOLATION = '23505';
 const PG_FUNCTION_MISSING = '42883';
 
 export async function writeAuditLog(
+  orgId: string,
+  entry: {
+    userId?: string;
+    action: string;
+    resourceType: string;
+    resourceId?: string;
+    details?: Record<string, unknown>;
+    ipAddress?: string;
+    userAgent?: string;
+  },
+) {
+  return withSpan(
+    'audit.write',
+    {
+      'audit.org_id': orgId,
+      'audit.action': entry.action,
+      'audit.resource_type': entry.resourceType,
+      'audit.v3_enabled':
+        (process.env.AUDIT_CHAIN_V3_ENABLED ?? '').toLowerCase() === 'true',
+    },
+    async () => writeAuditLogInner(orgId, entry),
+  );
+}
+
+async function writeAuditLogInner(
   orgId: string,
   entry: {
     userId?: string;
