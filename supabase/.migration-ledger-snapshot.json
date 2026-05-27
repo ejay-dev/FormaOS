@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T03:56:32.734Z",
+  "takenAt": "2026-05-27T06:45:25.629Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -997,6 +997,10 @@
     {
       "version": "20260624056",
       "name": "audit_2026_05_27_ndis_framework_phase_1"
+    },
+    {
+      "version": "20260624057",
+      "name": "audit_2026_05_27_audit_log_append_schema_fixup"
     }
   ]
 }
