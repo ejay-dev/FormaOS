@@ -6,6 +6,7 @@ import {
   extractAdminReason,
   handleAdminError,
   parseAdminMutationPayload,
+  requireAdminChangeControl,
 } from '@/app/api/admin/_helpers';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { checkAdminRateLimit, getClientIp } from '@/lib/ratelimit';
@@ -56,7 +57,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'targets_required' }, { status: 400 });
     }
 
-    const reason = extractAdminReason(body, request) ?? (dryRun ? 'dry_run' : 'bulk_operation');
+    const reason = !dryRun
+      ? await requireAdminChangeControl({
+          context: access,
+          action: `bulk_${operation}`,
+          targetType: 'bulk_operation',
+          targetId: `${targets.length}_orgs`,
+          reason: extractAdminReason(body, request),
+          requireApproval: operation === 'suspend_orgs',
+        })
+      : (extractAdminReason(body, request) || 'dry_run');
     const admin = createSupabaseAdminClient();
     const orgIds = targets.map((t) => t.orgId).filter(Boolean);
 
