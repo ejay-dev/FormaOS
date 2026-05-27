@@ -57,6 +57,7 @@
     "test:db:orgs-sync": "node scripts/check-orgs-sync.mjs",
     "test:db:ledger-alignment": "node scripts/check-migration-ledger-alignment.mjs",
     "db:ledger:snapshot": "node scripts/snapshot-migration-ledger.mjs",
+    "db:backfill:evidence-file-hash": "node scripts/backfill-evidence-file-hash.mjs",
     "framework-packs:rehash": "node scripts/build-framework-packs-manifest.mjs",
     "check:framework-packs": "node scripts/check-framework-packs-integrity.mjs",
     "db:test:reset": "supabase db reset && npm run db:test:verify",

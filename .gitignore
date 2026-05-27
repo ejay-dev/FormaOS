@@ -81,6 +81,7 @@ next-env.d.ts
 !/scripts/api-contracts-known-undocumented.json
 !/scripts/summarize-*.mjs
 !/scripts/snapshot-*.mjs
+!/scripts/backfill-*.mjs
 .npm-cache/
 .gitnexus
 gitnexus/
