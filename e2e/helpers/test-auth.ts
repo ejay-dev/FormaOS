@@ -3,6 +3,22 @@
  * Provides self-contained auth for Playwright tests
  */
 
+// Audit 2026-05-27: WebSocket polyfill for Node 20 — same shape as
+// scripts/_node20-ws-shim.mjs, inlined here because Playwright transpiles
+// .ts files but doesn't follow .mjs side-effect imports reliably across
+// workers. supabase-js eagerly initialises a RealtimeClient that needs
+// globalThis.WebSocket (present in Node 22+, absent in Node 20).
+import { createRequire as __formaosCreateRequire } from 'node:module';
+if (typeof globalThis.WebSocket === 'undefined') {
+  try {
+    (globalThis as { WebSocket?: unknown }).WebSocket = __formaosCreateRequire(
+      import.meta.url,
+    )('ws');
+  } catch {
+    // ws unresolvable — leave undefined so supabase-js produces a clear error.
+  }
+}
+
 import fs from 'fs';
 import path from 'path';
 import { createClient, type Session } from '@supabase/supabase-js';
