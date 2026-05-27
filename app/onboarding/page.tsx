@@ -12,6 +12,7 @@ import { resolvePlanKey, PLAN_CATALOG } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import {
   FRAMEWORK_OPTIONS,
+  frameworkOptionsForIndustry,
   INDUSTRY_OPTIONS,
   TEAM_SIZE_OPTIONS,
   parseInviteEmails,
@@ -513,14 +514,18 @@ async function saveRoleSelection(formData: FormData) {
 async function saveFrameworkSelection(formData: FormData) {
   'use server';
   try {
-    const { supabase, orgId, canProvision, user } = await getOrgContext();
+    const { supabase, orgId, canProvision, user, orgRecord } = await getOrgContext();
     const admin = createSupabaseAdminClient();
     const frameworks = formData
       .getAll('frameworks')
       .map((item) => item.toString())
       .filter(Boolean);
 
-    const validation = validateFrameworks(frameworks);
+    // Audit 2026-05-27 Tier 4.1 — industry-gate framework selection so a
+    // SaaS / Financial Services org can't bypass the picker UI to select
+    // a framework intended for a different industry.
+    const orgIndustry = (orgRecord as { industry?: string | null } | null)?.industry ?? null;
+    const validation = validateFrameworks(frameworks, orgIndustry);
     if (!validation.valid) {
       redirect('/onboarding?step=5&error=1');
     }
@@ -1216,7 +1221,9 @@ export default async function OnboardingPage({
                     Compliance frameworks (select at least one)
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
-                    {FRAMEWORK_OPTIONS.map((framework) => {
+                    {frameworkOptionsForIndustry(
+                      (orgRecord as { industry?: string | null } | null)?.industry ?? null,
+                    ).map((framework) => {
                       const checked = Array.isArray(orgRecord?.frameworks)
                         ? orgRecord?.frameworks.includes(framework.id)
                         : false;
