@@ -104,8 +104,15 @@ global.IntersectionObserver = jest.fn().mockImplementation(() => ({
   disconnect: jest.fn(),
 }));
 
-// Mock fetch for API tests
-global.fetch = jest.fn();
+// Mock fetch for API tests — but ONLY when not running integration suites
+// that need real network access (cross-org RLS isolation, real Supabase
+// JWT round-trips, Rekor anchor verifier, etc.). Integration suites set
+// RUN_INTEGRATION_TESTS=1 and the global stomp is skipped so the real
+// fetch survives. Audit 2026-05-27: this used to be an unconditional
+// stomp that crashed every integration test locally — fixed.
+if (process.env.RUN_INTEGRATION_TESTS !== '1') {
+  global.fetch = jest.fn();
+}
 
 // Mock framer-motion to avoid animation issues in tests
 jest.mock('framer-motion', () => {
