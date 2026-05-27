@@ -76,20 +76,24 @@ jobs:
           file: ./coverage/lcov.info
           fail_ci_if_error: false
 
-  # v4-028: live-database RLS contract suite. Pre-fix this suite was
-  # gated on RUN_INTEGRATION_TESTS=1 set by zero workflows, so the
-  # 14-table tenant-isolation guard never ran in CI. Now scheduled
-  # nightly via the formaos-quality-gates workflow, and gated here
-  # behind repository secrets so unprivileged forks still pass.
+  # R7 (Audit 2026-05-27): live-database RLS contract suite is now a
+  # PR gate, not a nightly-only check. Previously gated behind
+  # RUN_INTEGRATION_TESTS=1 (set by zero workflows) plus a manual
+  # 'rls-required' PR label — meaning a migration that opened a
+  # tenant-isolation hole shipped through PR review and the only
+  # detection was the next nightly run at 4am.
+  #
+  # Job now runs on every PR + push. Fork PRs (no secrets) skip
+  # cleanly at the secret-availability check instead of failing,
+  # matching the security-scan / Snyk pattern below. When secrets
+  # ARE present (home-repo PRs) the job is BLOCKING — both the jest
+  # integration suite AND the static+live script must pass.
   rls-contract:
     name: RLS Contract (live Supabase)
     runs-on: ubuntu-latest
-    if: >-
-      vars.RUN_INTEGRATION_TESTS == '1' ||
-      github.event_name == 'schedule' ||
-      contains(github.event.pull_request.labels.*.name, 'rls-required')
+    # No `if:` gate at job level — let it always start so the
+    # secret-availability step controls skip behaviour.
     env:
-      RUN_INTEGRATION_TESTS: '1'
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.E2E_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.E2E_SUPABASE_ANON_KEY }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.E2E_SUPABASE_SERVICE_ROLE_KEY }}
@@ -100,8 +104,33 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       - run: npm ci
-      - name: Run RLS integration suite
+
+      - name: Check Supabase secrets availability
+        id: rls-secrets-check
+        env:
+          E2E_URL: ${{ secrets.E2E_SUPABASE_URL }}
+          E2E_SVC: ${{ secrets.E2E_SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -n "$E2E_URL" ] && [ -n "$E2E_SVC" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::E2E Supabase secrets not configured — RLS contract is skipped on this run (fork PR or unconfigured repo). The check runs blocking on the home repo."
+          fi
+
+      - name: Run RLS integration suite (jest)
+        if: steps.rls-secrets-check.outputs.available == 'true'
+        env:
+          RUN_INTEGRATION_TESTS: '1'
         run: npx jest __tests__/integration/rls --runInBand
+
+      - name: Run static + live RLS contract script
+        if: steps.rls-secrets-check.outputs.available == 'true'
+        run: npm run test:db:rls
+
+      - name: Run orgs-removal invariant gate (R2 / Phase B)
+        if: steps.rls-secrets-check.outputs.available == 'true'
+        run: npm run test:db:orgs-sync
 
   security-scan:
     name: Security Analysis

@@ -16,24 +16,9 @@
 //
 //   node scripts/check-tasks-org-fk-orphans.mjs
 
-import { createRequire } from 'module';
+import './_node20-ws-shim.mjs';
 import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
-
-// Supabase JS eagerly instantiates RealtimeClient which needs a global
-// WebSocket. Node 20 (the project's engines.node) doesn't ship one, so
-// require it here as `ws` (a transitive dep of supabase-js) before any
-// createClient call. Node 22+ already has native WebSocket and ignores
-// this assignment.
-const localRequire = createRequire(import.meta.url);
-if (typeof globalThis.WebSocket === 'undefined') {
-  try {
-    globalThis.WebSocket = localRequire('ws');
-  } catch {
-    // No-op: if `ws` isn't resolvable, createClient below will throw a
-    // clearer error than we can.
-  }
-}
 
 config({ path: '.env.local' });
 

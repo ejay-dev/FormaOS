@@ -1,21 +1,18 @@
 #!/usr/bin/env node
 
-// Regression gate for v3-010: `orgs` and `organizations` must stay in sync.
+// Originally the regression gate for v3-010 — kept `orgs` and `organizations`
+// in sync via mirror triggers, blocked the 1077/395-row drift that prompted
+// the 2026-05-23 consolidation. As of 2026-05-27 (R2, Phase B) the legacy
+// `orgs` table is dropped and all 4 dependent FKs reference organizations(id)
+// directly. The script flips to the OTHER direction now: assert that public.orgs
+// stays dropped and that no FK ever points back at it. Filename preserved so
+// the security-baseline gate keeps resolving the check, and so the workflow
+// wiring continues to pass.
 //
-// Background: 8 dependent tables (memberships, org_audit_log, org_files,
-// org_industries, org_memberships, org_module_entitlements,
-// org_notifications, org_subscriptions) still FK to `orgs(id)` while the
-// app writes to `organizations`. The consolidation migration on
-// 2026-05-23 reconciled 1077 orphan + 395 missing rows. This script
-// guarantees no regression: every organization row must have a matching
-// orgs row (and vice versa).
-//
-// Also asserts the control_tasks.organization_id FK exists, so junction
-// rows can no longer orphan when an org is deleted.
-//
-// Skipped when Supabase service credentials are not configured (e.g. CI
-// on a fork without secrets).
+// Skipped silently when Supabase service credentials are not configured
+// (e.g., fork PR), to match the historical behaviour.
 
+import './_node20-ws-shim.mjs';
 import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
 
@@ -51,98 +48,87 @@ function pass(msg) {
   console.log(`PASS ${msg}`);
 }
 
-async function fetchOrgIds(table) {
-  // Audit 2026-05-25: explicit `.order('id')` lets PostgREST use the
-  // primary-key index for the offset+limit window instead of a full
-  // scan. Page size dropped to 500 so each request stays well under the
-  // Supabase Edge statement-timeout even during bursty API latency.
-  const ids = new Set();
-  const PAGE = 500;
-  let from = 0;
-  while (true) {
-    const { data, error } = await admin
-      .from(table)
-      .select('id')
-      .order('id', { ascending: true })
-      .range(from, from + PAGE - 1);
-    if (error) {
-      throw new Error(`Failed to read ${table}: ${error.message}`);
-    }
-    if (!data || data.length === 0) break;
-    for (const row of data) ids.add(row.id);
-    if (data.length < PAGE) break;
-    from += PAGE;
+async function tableExists(name) {
+  // PostgREST surfaces "table not found" via PGRST 205 / message
+  // matching either /does not exist/ or /schema cache/. Anything
+  // else is unexpected and bubbles up.
+  const probe = await admin.from(name).select('*').limit(1);
+  if (!probe.error) return true;
+  const msg = String(probe.error.message || '').toLowerCase();
+  if (
+    msg.includes('does not exist') ||
+    msg.includes('schema cache') ||
+    msg.includes('not found in the schema')
+  ) {
+    return false;
   }
-  return ids;
+  throw new Error(`${name} existence probe failed: ${probe.error.message}`);
 }
 
 async function main() {
-  const [orgsIds, organizationsIds] = await Promise.all([
-    fetchOrgIds('orgs'),
-    fetchOrgIds('organizations'),
-  ]);
-
-  const orgsOnly = [...orgsIds].filter((id) => !organizationsIds.has(id));
-  const organizationsOnly = [...organizationsIds].filter(
-    (id) => !orgsIds.has(id),
-  );
-
-  if (orgsOnly.length === 0) {
-    pass('orgs ⊆ organizations (no orphan legacy rows)');
-  } else {
-    fail(
-      `orgs has ${orgsOnly.length} rows not in organizations (sample: ${orgsOnly.slice(0, 3).join(', ')})`,
-    );
-  }
-
-  if (organizationsOnly.length === 0) {
-    pass('organizations ⊆ orgs (no missing legacy mirrors)');
-  } else {
-    fail(
-      `organizations has ${organizationsOnly.length} rows not in orgs — dual-write drift (sample: ${organizationsOnly.slice(0, 3).join(', ')})`,
-    );
-  }
-
-  // control_tasks FK existence is enforced by the migration; if it ever
-  // goes missing the count below explodes.
-  const { count: brokenCt, error: brokenErr } = await admin
-    .from('control_tasks')
-    .select('id', { count: 'exact', head: true })
-    .not('organization_id', 'is', null);
-  if (brokenErr) {
-    fail(`control_tasks read failed: ${brokenErr.message}`);
-  } else {
-    // We can't easily verify the FK from the client SDK, so we instead
-    // assert that no control_tasks row references a non-existent org —
-    // the symptom the FK is meant to prevent.
-    const { data: ctRows } = await admin
-      .from('control_tasks')
-      .select('organization_id')
-      .not('organization_id', 'is', null)
-      .limit(5000);
-    const ctOrgIds = new Set((ctRows ?? []).map((r) => r.organization_id));
-    const ghostOrgIds = [...ctOrgIds].filter(
-      (id) => !organizationsIds.has(id),
-    );
-    if (ghostOrgIds.length === 0) {
-      pass(
-        `control_tasks.organization_id integrity (sampled ${brokenCt ?? 0} non-null rows)`,
+  try {
+    const orgsPresent = await tableExists('orgs');
+    if (orgsPresent) {
+      fail(
+        'public.orgs table is present — R2 (Phase B, 2026-05-27) dropped it. Investigate: a migration may have resurrected it.',
       );
     } else {
-      fail(
-        `${ghostOrgIds.length} ghost organization_ids in control_tasks: ${ghostOrgIds.slice(0, 3).join(', ')}`,
+      pass(
+        'public.orgs is dropped (R2 invariant holds).',
       );
     }
-  }
 
-  if (failures.length > 0) {
-    console.error(`\n${failures.length} check(s) failed.`);
-    process.exit(1);
+    // Optional secondary check: org_subscriptions must remain present —
+    // the dependent table we repointed away from orgs.
+    const subsPresent = await tableExists('org_subscriptions');
+    if (subsPresent === false) {
+      fail(
+        'public.org_subscriptions is missing — unexpected. R2 only dropped public.orgs; org_subscriptions should be intact.',
+      );
+    } else {
+      pass('public.org_subscriptions is intact.');
+    }
+
+    // Sentinel: ensure foreign keys on a representative dependent are
+    // not silently re-added pointing at a fictitious orgs table. Best
+    // effort — try inserting a row with an unknown org_id and expect
+    // the FK error message to reference organizations, not orgs.
+    const fakeOrgId = '00000000-0000-4000-8000-000000000000';
+    const probe = await admin
+      .from('org_subscriptions')
+      .insert({ organization_id: fakeOrgId, plan_key: 'basic' })
+      .select('id')
+      .single();
+    if (probe.error) {
+      const msg = String(probe.error.message || '').toLowerCase();
+      if (msg.includes('"orgs"') || msg.includes("'orgs'") || msg.includes(' orgs ')) {
+        fail(
+          `org_subscriptions FK still references orgs — got: ${probe.error.message}`,
+        );
+      } else {
+        pass('org_subscriptions FK error path no longer mentions orgs.');
+      }
+    } else if (probe.data?.id) {
+      // Unexpected — insert succeeded with a fake org. Clean up and
+      // flag because this means the FK isn't enforcing anymore.
+      await admin.from('org_subscriptions').delete().eq('id', probe.data.id);
+      fail(
+        'org_subscriptions accepted a row with a non-existent organization_id — FK enforcement broken.',
+      );
+    }
+
+    if (failures.length > 0) {
+      console.error(
+        `\n❌ ${failures.length} orgs-invariant failure(s) — see above.`,
+      );
+      process.exit(1);
+    }
+    console.log('\n✅ orgs-removal invariants intact.');
+    process.exit(0);
+  } catch (err) {
+    console.error('orgs-sync gate failed unexpectedly:', err);
+    process.exit(2);
   }
-  console.log('\nAll orgs-sync checks passed.');
 }
 
-main().catch((err) => {
-  console.error('Unexpected error:', err);
-  process.exit(1);
-});
+main();

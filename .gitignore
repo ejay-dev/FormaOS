@@ -74,6 +74,8 @@ next-env.d.ts
 !/scripts/stylelint-lite.mjs
 !/scripts/verify-*.mjs
 !/scripts/verify-*.js
+# Underscore-prefixed shared helpers (eg _node20-ws-shim.mjs) — tracked.
+!/scripts/_*.mjs
 !/scripts/onboard-*.mjs
 !/scripts/upgrade-*.sql
 !/scripts/api-contracts-known-undocumented.json
