@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T07:54:51.718Z",
+  "takenAt": "2026-05-27T08:02:12.763Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1017,6 +1017,10 @@
     {
       "version": "20260624061",
       "name": "audit_2026_05_27_list_security_definer_anon_grants_rpc"
+    },
+    {
+      "version": "20260624062",
+      "name": "audit_2026_05_27_secret_rotations_ledger"
     }
   ]
 }
