@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T08:02:12.763Z",
+  "takenAt": "2026-05-27T08:05:13.395Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1021,6 +1021,10 @@
     {
       "version": "20260624062",
       "name": "audit_2026_05_27_secret_rotations_ledger"
+    },
+    {
+      "version": "20260624063",
+      "name": "audit_2026_05_27_dormant_user_review"
     }
   ]
 }
