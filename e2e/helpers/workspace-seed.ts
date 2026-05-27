@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 import { test, type Page } from '@playwright/test';
 
@@ -783,12 +783,18 @@ export async function seedEvidence(
     );
   }
 
+  // Audit 2026-05-27 commit 7fd40ffa ratcheted org_evidence.file_hash
+  // to NOT NULL. Compute a real SHA-256 of the uploaded content so the
+  // seeded row carries the same integrity invariant as a production row.
+  const fileHash = createHash('sha256').update(content, 'utf8').digest('hex');
+
   const row = {
     organization_id: context.orgId,
     task_id: input.taskId ?? null,
     title: input.title ?? input.fileName,
     file_name: input.fileName,
     file_path: filePath,
+    file_hash: fileHash,
     uploaded_by: input.uploadedBy,
     verification_status: input.verificationStatus ?? 'pending',
     created_at: new Date().toISOString(),
