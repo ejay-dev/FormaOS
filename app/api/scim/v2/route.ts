@@ -9,6 +9,9 @@ import {
   getServiceProviderConfig,
 } from '@/lib/scim/scim-schemas';
 import { authenticateScimRequest, scimError } from '@/lib/scim/scim-auth';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/scim/v2');
 
 export const runtime = 'nodejs';
 
@@ -63,7 +66,7 @@ export async function GET(request: Request) {
       headers: getScimContentHeaders(auth.context.headers),
     });
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
@@ -113,7 +116,7 @@ export async function POST(request: Request) {
       }),
     });
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],

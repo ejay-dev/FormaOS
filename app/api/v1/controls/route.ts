@@ -6,6 +6,9 @@ import {
 } from '@/lib/api-keys/middleware';
 import { getPagination, paginatedEnvelope } from '@/lib/api/v1';
 import { buildIlikePattern, getStringParam } from '@/lib/api/v1-helpers';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/controls');
 
 export const runtime = 'nodejs';
 
@@ -104,7 +107,7 @@ export async function GET(request: Request) {
       paginatedEnvelope(data, { offset, limit, total: count ?? data.length }),
     );
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

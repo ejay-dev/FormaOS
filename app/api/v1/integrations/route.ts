@@ -10,6 +10,9 @@ import {
   listAvailableIntegrations,
   listConnectedIntegrations,
 } from '@/lib/integrations/manager';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/integrations');
 
 export const runtime = 'nodejs';
 
@@ -47,7 +50,7 @@ export async function GET(request: Request) {
       }),
     );
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

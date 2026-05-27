@@ -12,6 +12,9 @@ import { resolvePlanKey } from '@/lib/plans';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/ai/chat');
 
 /**
  * =========================================================
@@ -110,7 +113,7 @@ export async function POST(request: Request) {
         );
       }
     } catch (usageErr) {
-      console.warn('[API v1 /ai/chat] usage limit check failed:', usageErr);
+      log.warn({ data: usageErr }, '[API v1 /ai/chat] usage limit check failed:');
       // Fail-open on infrastructure errors (no usage table yet, etc.) but
       // surface a warning header so callers can detect the degraded mode.
     }
@@ -269,7 +272,7 @@ export async function POST(request: Request) {
             );
           }
         } catch (usageErr) {
-          console.warn('[API v1 /ai/chat] trackUsage failed:', usageErr);
+          log.warn({ data: usageErr }, '[API v1 /ai/chat] trackUsage failed:');
         }
 
         if (!persistenceAvailable || !conversationId) {
@@ -325,7 +328,7 @@ export async function POST(request: Request) {
     }
     return response;
   } catch (error: unknown) {
-    console.error('[API v1 /ai/chat] Unexpected error:', error);
+    log.error({ err: error }, '[API v1 /ai/chat] Unexpected error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

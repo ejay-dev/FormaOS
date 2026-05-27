@@ -9,6 +9,9 @@ import {
   getIntegrationEventHistory,
   type IntegrationType,
 } from '@/lib/integrations/manager';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/integrations/[integrationId]/events');
 
 type RouteContext = { params: Promise<{ integrationId: IntegrationType }> };
 
@@ -39,7 +42,7 @@ export async function GET(request: Request, context: RouteContext) {
     await logV1Access(auth.context, 200, 'integrations:read');
     return jsonWithContext(auth.context, createEnvelope(history));
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

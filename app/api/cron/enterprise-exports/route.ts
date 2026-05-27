@@ -4,6 +4,9 @@ import { getRedisConfig } from '@/lib/redis/client';
 import { processEnterpriseExportJob } from '@/lib/export/enterprise-export';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
 import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/cron/enterprise-exports');
 
 const DEFAULT_LIMIT = 2;
 
@@ -75,7 +78,7 @@ export async function GET(request: Request) {
   try {
     return handleEnterpriseExportsCron(request);
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     captureRouteError('cron.enterprise-exports', error, {
       method: 'GET',
       url: request.url,
@@ -91,7 +94,7 @@ export async function POST(request: Request) {
   try {
     return handleEnterpriseExportsCron(request);
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     captureRouteError('cron.enterprise-exports', error, {
       method: 'POST',
       url: request.url,

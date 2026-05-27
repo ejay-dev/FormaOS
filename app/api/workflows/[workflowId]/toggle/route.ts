@@ -9,6 +9,9 @@ import { getWorkflow, updateWorkflow } from '@/lib/automation/workflow-store';
 import type { WorkflowStatus } from '@/lib/automation/workflow-types';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/workflows/[workflowId]/toggle');
 
 export async function POST(
   _request: NextRequest,
@@ -66,7 +69,7 @@ export async function POST(
 
     return NextResponse.json({ status: updated.status });
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

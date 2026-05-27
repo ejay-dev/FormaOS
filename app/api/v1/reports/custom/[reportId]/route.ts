@@ -4,6 +4,9 @@ import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import { requireCustomReportsEntitlement } from '../_entitlement';
 import { formatZodError, validateBody } from '@/lib/security/api-validation';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/reports/custom/[reportId]');
 
 const updateCustomReportSchema = z
   .object({
@@ -43,7 +46,7 @@ export async function GET(
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -96,7 +99,7 @@ export async function PATCH(
 
     return NextResponse.json(data);
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -128,7 +131,7 @@ export async function DELETE(
 
     return NextResponse.json({ deleted: true });
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

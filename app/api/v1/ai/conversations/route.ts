@@ -6,6 +6,9 @@ import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/ai/conversations');
 
 /**
  * =========================================================
@@ -90,7 +93,7 @@ export async function GET(request: Request) {
           persistenceAvailable: false,
         });
       }
-      console.error('[API v1 /ai/conversations] Query error:', error);
+      log.error({ err: error }, '[API v1 /ai/conversations] Query error:');
       return NextResponse.json(
         { error: 'Failed to fetch conversations' },
         { status: 500 },
@@ -103,7 +106,7 @@ export async function GET(request: Request) {
       persistenceAvailable: true,
     });
   } catch (error: unknown) {
-    console.error('[API v1 /ai/conversations] Unexpected error:', error);
+    log.error({ err: error }, '[API v1 /ai/conversations] Unexpected error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -185,7 +188,7 @@ export async function POST(request: Request) {
           { status: 503 },
         );
       }
-      console.error('[API v1 /ai/conversations] Insert error:', error);
+      log.error({ err: error }, '[API v1 /ai/conversations] Insert error:');
       return NextResponse.json(
         { error: 'Failed to create conversation' },
         { status: 500 },
@@ -194,7 +197,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(conversation, { status: 201 });
   } catch (error: unknown) {
-    console.error('[API v1 /ai/conversations] Unexpected error:', error);
+    log.error({ err: error }, '[API v1 /ai/conversations] Unexpected error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

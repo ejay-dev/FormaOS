@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getScimContentHeaders } from '@/lib/scim/scim-server';
 import { getServiceProviderConfig } from '@/lib/scim/scim-schemas';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/scim/v2/ServiceProviderConfig');
 
 export const runtime = 'nodejs';
 
@@ -12,7 +15,7 @@ export async function GET(request: Request) {
       headers: getScimContentHeaders(),
     });
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],

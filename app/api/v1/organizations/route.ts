@@ -6,6 +6,9 @@ import {
 } from '@/lib/api-keys/middleware';
 import { createEnvelope } from '@/lib/api-keys/middleware';
 import { countRows } from '@/lib/api/v1-helpers';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/organizations');
 
 export const runtime = 'nodejs';
 
@@ -56,7 +59,7 @@ export async function GET(request: Request) {
     await logV1Access(auth.context, 200, 'organizations:read');
     return jsonWithContext(auth.context, payload);
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

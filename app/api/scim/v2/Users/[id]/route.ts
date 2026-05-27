@@ -10,6 +10,9 @@ import {
   authenticateScimRequest,
   scimError,
 } from '@/lib/scim/scim-auth';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/scim/v2/Users/[id]');
 
 export const runtime = 'nodejs';
 
@@ -59,7 +62,7 @@ export async function GET(
       }),
     });
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
@@ -144,7 +147,7 @@ export async function PUT(
     const { id } = await params;
     return handleMutation(request, id, 'scim.user.update');
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
@@ -164,7 +167,7 @@ export async function PATCH(
     const { id } = await params;
     return handleMutation(request, id, 'scim.user.update');
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
@@ -184,7 +187,7 @@ export async function DELETE(
     const { id } = await params;
     return handleMutation(request, id, 'scim.user.delete');
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],

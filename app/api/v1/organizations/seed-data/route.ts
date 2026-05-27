@@ -6,6 +6,9 @@ import { generateSeedData } from '@/lib/seed/seed-data';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
 import { formatZodError, validateBody } from '@/lib/security/api-validation';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/organizations/seed-data');
 
 const seedDataSchema = z.object({
   industry: z.string().trim().min(1).max(64).default('other'),
@@ -102,7 +105,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Seed data error:', error);
+    log.error({ err: error }, 'Seed data error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -142,7 +145,7 @@ export async function DELETE() {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Clear demo data error:', error);
+    log.error({ err: error }, 'Clear demo data error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

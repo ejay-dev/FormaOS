@@ -10,6 +10,9 @@ import {
   authenticateScimRequest,
   scimError,
 } from '@/lib/scim/scim-auth';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/scim/v2/Groups/[groupId]');
 
 export const runtime = 'nodejs';
 
@@ -59,7 +62,7 @@ export async function GET(
       }),
     });
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
@@ -151,7 +154,7 @@ export async function PUT(
     const { groupId } = await params;
     return handleMutation(request, groupId, 'scim.group.update');
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
@@ -171,7 +174,7 @@ export async function PATCH(
     const { groupId } = await params;
     return handleMutation(request, groupId, 'scim.group.update');
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],
@@ -191,7 +194,7 @@ export async function DELETE(
     const { groupId } = await params;
     return handleMutation(request, groupId, 'scim.group.delete');
   } catch (error) {
-    console.error('[SCIM] Unhandled error:', error);
+    log.error({ err: error }, '[SCIM] Unhandled error:');
     return NextResponse.json(
       {
         schemas: ['urn:ietf:params:scim:api:messages:2.0:Error'],

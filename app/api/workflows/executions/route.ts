@@ -8,6 +8,9 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { listExecutions } from '@/lib/automation/workflow-store';
 import type { WorkflowExecutionStatus } from '@/lib/automation/workflow-types';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/workflows/executions');
 
 export async function GET(request: NextRequest) {
   try {
@@ -55,7 +58,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

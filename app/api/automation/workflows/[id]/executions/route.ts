@@ -7,6 +7,9 @@ import {
   automationUnauthorized,
   getAutomationApiContext,
 } from '../../../_auth';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/automation/workflows/[id]/executions');
 
 export async function GET(
   request: NextRequest,
@@ -35,7 +38,7 @@ export async function GET(
 
     return NextResponse.json({ executions });
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

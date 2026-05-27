@@ -8,6 +8,9 @@ import {
   createRateLimitHeaders,
   RATE_LIMITS,
 } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/trust-packet/vendor');
 
 export const runtime = 'nodejs';
 // 2026-05-15: switched back from force-static to force-dynamic.
@@ -337,8 +340,9 @@ export async function GET() {
         promise,
         new Promise<T>((resolve) => {
           timeoutHandle = setTimeout(() => {
-            console.warn(
-              `[trust-packet/vendor] ${label} timed out after ${UPTIME_FETCH_TIMEOUT_MS}ms; falling back to empty dataset`,
+            log.warn(
+              { label, timeoutMs: UPTIME_FETCH_TIMEOUT_MS },
+              '[trust-packet/vendor] uptime fetch timed out; falling back to empty dataset',
             );
             resolve(fallback);
           }, UPTIME_FETCH_TIMEOUT_MS);

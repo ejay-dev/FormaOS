@@ -3,6 +3,9 @@ import { unstable_cache } from 'next/cache';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getChecklistCountsForOrg } from '@/lib/onboarding/checklist-data';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/onboarding/checklist');
 
 const getCachedCounts = (orgId: string) =>
   unstable_cache(
@@ -45,7 +48,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(counts);
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

@@ -4,6 +4,9 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { provisionFrameworkControls } from '@/lib/frameworks/provisioning';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/organizations/onboarding-complete');
 
 export const runtime = 'nodejs';
 
@@ -30,7 +33,7 @@ export async function POST(request: Request) {
       .eq('id', orgId);
 
     if (error) {
-      console.error('Failed to update onboarding_completed:', error);
+      log.error({ err: error }, 'Failed to update onboarding_completed:');
       return NextResponse.json(
         { error: 'Failed to update organization' },
         { status: 500 },
@@ -50,9 +53,9 @@ export async function POST(request: Request) {
         provisionFrameworkControls(orgId, framework_slug as string, {
           force: true,
         }).catch((err) => {
-          console.warn(
-            `[onboarding-complete] Failed to provision controls for ${framework_slug}:`,
-            err,
+          log.warn(
+            { err, framework_slug },
+            '[onboarding-complete] Failed to provision controls',
           );
         });
       }
@@ -60,7 +63,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Onboarding complete error:', error);
+    log.error({ err: error }, 'Onboarding complete error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

@@ -5,6 +5,9 @@ import {
   getClientIdentifier,
   createRateLimitHeaders,
 } from '@/lib/security/rate-limiter';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/sso/discover');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -64,7 +67,7 @@ export async function GET(request: Request) {
       { headers: createRateLimitHeaders(rateLimitResult) },
     );
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

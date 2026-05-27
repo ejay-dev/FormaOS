@@ -16,6 +16,9 @@ import {
   canManageAutomation,
   getAutomationApiContext,
 } from '../_auth';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/automation/approvals');
 
 export async function GET() {
   try {
@@ -30,7 +33,7 @@ export async function GET() {
     const approvals = await getPendingApprovals(context.orgId);
     return NextResponse.json({ approvals });
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -92,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

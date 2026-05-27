@@ -6,6 +6,9 @@ import {
   logV1Access,
 } from '@/lib/api-keys/middleware';
 import { buildIlikePattern } from '@/lib/api/v1-helpers';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/search');
 
 export const runtime = 'nodejs';
 
@@ -70,7 +73,7 @@ export async function GET(request: Request) {
       }),
     );
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

@@ -6,6 +6,9 @@ import { isMissingSupabaseTableError } from '@/lib/supabase/schema-compat';
 import { requireEntitlement } from '@/lib/billing/entitlements';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { requireActiveOrgContext } from '@/lib/api/require-active-org';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/ai/conversations/[id]');
 
 /**
  * =========================================================
@@ -149,7 +152,7 @@ export async function GET(request: Request, context: RouteContext) {
       persistenceAvailable: true,
     });
   } catch (error: unknown) {
-    console.error('[API v1 /ai/conversations/:id] GET error:', error);
+    log.error({ err: error }, '[API v1 /ai/conversations/:id] GET error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -219,7 +222,7 @@ export async function PATCH(request: Request, context: RouteContext) {
           { status: 404 },
         );
       }
-      console.error('[API v1 /ai/conversations/:id] PATCH error:', error);
+      log.error({ err: error }, '[API v1 /ai/conversations/:id] PATCH error:');
       return NextResponse.json(
         { error: 'Failed to update conversation' },
         { status: 500 },
@@ -228,7 +231,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 
     return NextResponse.json(updated);
   } catch (error: unknown) {
-    console.error('[API v1 /ai/conversations/:id] PATCH error:', error);
+    log.error({ err: error }, '[API v1 /ai/conversations/:id] PATCH error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -266,7 +269,7 @@ export async function DELETE(request: Request, context: RouteContext) {
           { status: 200 },
         );
       }
-      console.error('[API v1 /ai/conversations/:id] DELETE error:', error);
+      log.error({ err: error }, '[API v1 /ai/conversations/:id] DELETE error:');
       return NextResponse.json(
         { error: 'Failed to delete conversation' },
         { status: 500 },
@@ -278,7 +281,7 @@ export async function DELETE(request: Request, context: RouteContext) {
       id,
     });
   } catch (error: unknown) {
-    console.error('[API v1 /ai/conversations/:id] DELETE error:', error);
+    log.error({ err: error }, '[API v1 /ai/conversations/:id] DELETE error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

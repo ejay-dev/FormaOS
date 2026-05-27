@@ -5,6 +5,9 @@ import {
   jsonWithContext,
   logV1Access,
 } from '@/lib/api-keys/middleware';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/reports/[reportId]');
 
 type RouteContext = { params: Promise<{ reportId: string }> };
 
@@ -53,7 +56,7 @@ export async function GET(request: Request, context: RouteContext) {
     await logV1Access(auth.context, 200, 'reports:read');
     return jsonWithContext(auth.context, createEnvelope(report));
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

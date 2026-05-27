@@ -3,6 +3,9 @@ import { z } from 'zod';
 import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { formatZodError, validateBody } from '@/lib/security/api-validation';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/search/saved');
 
 const createSavedSearchSchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -28,7 +31,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ savedSearches: data ?? [] });
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -67,7 +70,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) {
-      console.error('[V1 API] saved_searches insert failed:', error);
+      log.error({ err: error }, '[V1 API] saved_searches insert failed:');
       return NextResponse.json(
         { error: 'Failed to save search' },
         { status: 500 },
@@ -76,7 +79,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

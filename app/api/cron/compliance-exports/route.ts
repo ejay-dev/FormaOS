@@ -4,6 +4,9 @@ import { processExportJob } from '@/lib/compliance/evidence-pack-export';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
 import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
 import { getRedisConfig } from '@/lib/redis/client';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/cron/compliance-exports');
 
 const DEFAULT_LIMIT = 3;
 
@@ -65,7 +68,7 @@ export async function GET(request: Request) {
   try {
     return handleComplianceExportsCron(request);
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     captureRouteError('cron.compliance-exports', error, {
       method: 'GET',
       url: request.url,
@@ -81,7 +84,7 @@ export async function POST(request: Request) {
   try {
     return handleComplianceExportsCron(request);
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     captureRouteError('cron.compliance-exports', error, {
       method: 'POST',
       url: request.url,

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/search/saved/[id]');
 
 export async function DELETE(
   req: NextRequest,
@@ -23,7 +26,7 @@ export async function DELETE(
       .eq('user_id', auth.context.userId);
 
     if (error) {
-      console.error('[V1 API] saved_searches delete failed:', error);
+      log.error({ err: error }, '[V1 API] saved_searches delete failed:');
       return NextResponse.json(
         { error: 'Failed to delete saved search' },
         { status: 500 },
@@ -32,7 +35,7 @@ export async function DELETE(
 
     return NextResponse.json({ deleted: true });
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authenticateV1Request } from '@/lib/api-keys/middleware';
 import { search, trackSearch } from '@/lib/search/search-engine';
 import { getStringParam } from '@/lib/api/v1-helpers';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/search/unified');
 
 export async function GET(req: NextRequest) {
   try {
@@ -37,7 +40,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ results, total, limit, offset });
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

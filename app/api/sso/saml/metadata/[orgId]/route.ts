@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getOrgSsoConfig } from '@/lib/sso/org-sso';
 import { generateSpMetadataXml } from '@/lib/sso/saml';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/sso/saml/metadata/[orgId]');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -30,7 +33,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('[API] Unhandled error:', error);
+    log.error({ err: error }, '[API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },

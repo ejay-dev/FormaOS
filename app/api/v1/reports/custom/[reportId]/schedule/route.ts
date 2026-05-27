@@ -9,6 +9,9 @@ import {
   formatZodError,
   validateBody,
 } from '@/lib/security/api-validation';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/reports/custom/[reportId]/schedule');
 
 const scheduleReportSchema = z.object({
   frequency: z.enum(['daily', 'weekly', 'monthly']),
@@ -57,7 +60,7 @@ export async function POST(
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
@@ -84,7 +87,7 @@ export async function DELETE(
 
     return NextResponse.json({ unscheduled: true });
   } catch (error) {
-    console.error('[V1 API] Unhandled error:', error);
+    log.error({ err: error }, '[V1 API] Unhandled error:');
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 },
