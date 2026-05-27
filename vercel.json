@@ -45,6 +45,10 @@
     {
       "path": "/api/cron/process-user-purges",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/process-org-purges",
+      "schedule": "15 4 * * *"
     }
   ],
   "functions": {
@@ -52,6 +56,9 @@
       "maxDuration": 300
     },
     "app/api/cron/process-user-purges/route.ts": {
+      "maxDuration": 300
+    },
+    "app/api/cron/process-org-purges/route.ts": {
       "maxDuration": 300
     },
     "app/api/billing/webhook/route.ts": {
