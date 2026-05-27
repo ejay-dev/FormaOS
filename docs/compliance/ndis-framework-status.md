@@ -35,7 +35,7 @@ on-site review.
 | NDIS-3.1 | GUIDANCE | `org_registers` (`type='intake'`) | NDIS Practice Standards Nov 2021 v4 |
 | NDIS-3.2 | GUIDANCE | `org_care_plans` × `org_care_goals` coverage ≥90% | NDIS Practice Standards Nov 2021 v4 |
 | NDIS-3.3 | GUIDANCE | `org_form_submissions.metadata.form_type='service_agreement'` OR `org_registers` (`type='service_agreement'`) | NDIS Practice Standards Nov 2021 v4 |
-| NDIS-3.4 | GUIDANCE | `org_progress_notes` ≥30 in last 90d (org-wide threshold) | NDIS Practice Standards Nov 2021 v4 |
+| NDIS-3.4 | GUIDANCE | `org_progress_notes` ≥30 in last 90d **plus** per-participant 30d cadence over `org_patients.care_status='active'` (audit 2026-05-27 Tier 3.5 refinement) | NDIS Practice Standards Nov 2021 v4 |
 | NDIS-3.5 | GUIDANCE | `org_registers` (`type='transition'`) | NDIS Practice Standards Nov 2021 v4 |
 | NDIS-4.1 | GUIDANCE | `org_registers` (`type='environment_assessment'`) + 12mo review | NDIS Practice Standards Nov 2021 v4 |
 | NDIS-4.2 | GUIDANCE | `org_registers` (`type='financial_delegation'`) | NDIS Practice Standards Nov 2021 v4 |
@@ -123,6 +123,6 @@ quality auditor.
 ## Phase 4 backlog (deferred)
 
 - Persistent per-org Merkle anchor of compliance evaluations (continuity across audits)
-- Per-participant cadence checks (NDIS-3.4 currently org-wide threshold; could refine)
+- ~~Per-participant cadence checks (NDIS-3.4 currently org-wide threshold; could refine)~~ — **landed audit 2026-05-27 Tier 3.5**.
 - NDIS Commission registration-status API integration for NDIS-V.1 (currently external/manual)
 - Specialist module: High Intensity Daily Personal Activities + Specialist Disability Accommodation indicators

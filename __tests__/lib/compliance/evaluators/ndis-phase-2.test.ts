@@ -190,33 +190,170 @@ describe('NDIS-2.5 — Complaints management', () => {
   });
 });
 
-describe('NDIS-3.4 — Responsive support provision', () => {
-  it('returns fail when zero progress notes in 90 days', async () => {
-    const db = {
-      from: (_table: string) => ({
-        select: () => ({
-          eq: () => ({
-            gte: () => Promise.resolve({ count: 0, error: null }),
-          }),
-        }),
-      }),
+describe('NDIS-3.4 — Responsive support provision (Phase 3 per-participant)', () => {
+  // The predicate makes up to three sequential queries:
+  //   1. org_progress_notes count (90d)            → head: true
+  //   2. org_patients filtered to care_status=active
+  //   3. org_progress_notes detail rows (30d)
+  // ndis34Db() routes each by table + by whether the chain is a count
+  // query (head:true) vs. a data fetch.
+  function ndis34Db(opts: {
+    orgWideCount: number;
+    activeParticipants: Array<{ id: string; full_name: string | null }>;
+    notedPatientIds: Set<string>;
+    participantsError?: { message: string } | null;
+  }) {
+    return {
+      from: (table: string) => {
+        if (table === 'org_progress_notes') {
+          const baseChain: Record<string, unknown> = {};
+          // head:true count chain
+          baseChain.select = jest.fn((_cols: string, options?: { count?: string; head?: boolean }) => {
+            if (options?.head) {
+              return {
+                eq: () => ({
+                  gte: () =>
+                    Promise.resolve({ count: opts.orgWideCount, error: null }),
+                }),
+              };
+            }
+            // recent-notes data chain (no head)
+            return {
+              eq: () => ({
+                gte: () =>
+                  Promise.resolve({
+                    data: Array.from(opts.notedPatientIds).map((pid) => ({
+                      id: `n-${pid}`,
+                      patient_id: pid,
+                    })),
+                    error: null,
+                  }),
+              }),
+            };
+          });
+          return baseChain;
+        }
+        if (table === 'org_patients') {
+          return {
+            select: () => ({
+              eq: () => ({
+                eq: () =>
+                  Promise.resolve({
+                    data: opts.participantsError ? null : opts.activeParticipants,
+                    error: opts.participantsError ?? null,
+                  }),
+              }),
+            }),
+          };
+        }
+        throw new Error(`ndis34Db: unexpected table ${table}`);
+      },
     } as never;
+  }
+
+  it('returns fail when zero progress notes in 90 days', async () => {
+    const db = ndis34Db({
+      orgWideCount: 0,
+      activeParticipants: [],
+      notedPatientIds: new Set(),
+    });
     const result = await evaluateResponsiveSupport({ orgId: ORG_ID, db }, NOW);
     expect(result.status).toBe('fail');
+    expect(result.gaps[0].code).toBe('no_progress_notes');
   });
 
-  it('returns pass when ≥30 progress notes in 90 days', async () => {
-    const db = {
-      from: (_table: string) => ({
-        select: () => ({
-          eq: () => ({
-            gte: () => Promise.resolve({ count: 30, error: null }),
-          }),
+  it('returns pass when every active participant has ≥1 note in 30d AND ≥30/90d org-wide', async () => {
+    const participants = Array.from({ length: 5 }, (_, i) => ({
+      id: `p-${i}`,
+      full_name: `Participant ${i}`,
+    }));
+    const result = await evaluateResponsiveSupport(
+      {
+        orgId: ORG_ID,
+        db: ndis34Db({
+          orgWideCount: 40,
+          activeParticipants: participants,
+          notedPatientIds: new Set(participants.map((p) => p.id)),
         }),
-      }),
-    } as never;
-    const result = await evaluateResponsiveSupport({ orgId: ORG_ID, db }, NOW);
+      },
+      NOW,
+    );
     expect(result.status).toBe('pass');
+    expect(result.gaps).toHaveLength(0);
+  });
+
+  it('returns partial when one participant is silent (silentRatio ≤ 50%)', async () => {
+    const participants = Array.from({ length: 5 }, (_, i) => ({
+      id: `p-${i}`,
+      full_name: `Participant ${i}`,
+    }));
+    const result = await evaluateResponsiveSupport(
+      {
+        orgId: ORG_ID,
+        db: ndis34Db({
+          orgWideCount: 40,
+          activeParticipants: participants,
+          notedPatientIds: new Set(['p-0', 'p-1', 'p-2', 'p-3']), // p-4 silent
+        }),
+      },
+      NOW,
+    );
+    expect(result.status).toBe('partial');
+    expect(result.gaps[0].code).toBe('silent_participants_30d');
+    expect(result.gaps[0].severity).toBe('medium');
+  });
+
+  it('returns fail when >50% of active participants are silent', async () => {
+    const participants = Array.from({ length: 4 }, (_, i) => ({
+      id: `p-${i}`,
+      full_name: `Participant ${i}`,
+    }));
+    const result = await evaluateResponsiveSupport(
+      {
+        orgId: ORG_ID,
+        db: ndis34Db({
+          orgWideCount: 40,
+          activeParticipants: participants,
+          notedPatientIds: new Set(['p-0']), // 3/4 = 75% silent → high severity + fail
+        }),
+      },
+      NOW,
+    );
+    expect(result.status).toBe('fail');
+    expect(result.gaps[0].severity).toBe('high');
+  });
+
+  it('falls back to org-wide threshold when org_patients lookup errors (non-care orgs)', async () => {
+    const result = await evaluateResponsiveSupport(
+      {
+        orgId: ORG_ID,
+        db: ndis34Db({
+          orgWideCount: 30,
+          activeParticipants: [],
+          notedPatientIds: new Set(),
+          participantsError: { message: 'permission denied for table org_patients' },
+        }),
+      },
+      NOW,
+    );
+    expect(result.status).toBe('pass'); // 30 ≥ 30 → pass
+    expect(result.reason).toContain('participant table unavailable');
+  });
+
+  it('falls back to org-wide threshold when zero active participants on file', async () => {
+    const result = await evaluateResponsiveSupport(
+      {
+        orgId: ORG_ID,
+        db: ndis34Db({
+          orgWideCount: 12,
+          activeParticipants: [],
+          notedPatientIds: new Set(),
+        }),
+      },
+      NOW,
+    );
+    expect(result.status).toBe('partial'); // 12 < 30 → partial via fallback
+    expect(result.reason).toContain('0 active participants on file');
   });
 });
 

@@ -885,35 +885,168 @@ export async function evaluateServiceAgreements(
   };
 }
 
+/**
+ * NDIS-3.4 — Responsive support provision.
+ *
+ * NDIS auditors look at per-participant cadence — every participant
+ * receiving active support should have at least one progress note per
+ * fortnight (industry norm). The org-wide ≥30/90d threshold catches
+ * the obvious "no activity at all" case but lets a high-volume program
+ * mask under-served participants.
+ *
+ * Phase-3 refinement (audit 2026-05-27 Tier 3.5): pull active
+ * participants (org_patients.care_status='active'), count notes per
+ * participant in the last 30 days, and:
+ *   * pass: every active participant has ≥1 note in 30d AND org-wide
+ *     ≥30 in 90d.
+ *   * partial: some active participants have zero notes, OR org-wide
+ *     count is < 30/90d.
+ *   * fail: > 50% of active participants are silent for 30+ days, OR
+ *     zero notes org-wide.
+ *
+ * Orgs without org_patients rows fall back to the legacy org-wide
+ * threshold (so non-care customers using progress_notes for other
+ * purposes don't fail this control).
+ */
 export async function evaluateResponsiveSupport(
   ctx: ControlEvaluatorContext,
   evaluatedAt: string,
 ): Promise<ControlResult> {
-  const { count, error } = await ctx.db
+  const ninetyDaysAgo = new Date(Date.now() - 90 * DAY_MS).toISOString();
+  const thirtyDaysAgo = new Date(Date.now() - 30 * DAY_MS).toISOString();
+
+  const { count: orgWideCount, error: countError } = await ctx.db
     .from('org_progress_notes')
     .select('id', { count: 'exact', head: true })
     .eq('organization_id', ctx.orgId)
-    .gte('created_at', new Date(Date.now() - 90 * DAY_MS).toISOString());
-  if (error) return na(evaluatedAt, 'NDIS-3.4', 'progress_notes_unavailable', error.message);
-  const total = count ?? 0;
-  if (total === 0) {
+    .gte('created_at', ninetyDaysAgo);
+  if (countError) {
+    return na(evaluatedAt, 'NDIS-3.4', 'progress_notes_unavailable', countError.message);
+  }
+  const orgWide = orgWideCount ?? 0;
+
+  if (orgWide === 0) {
     return {
       controlCode: 'NDIS-3.4',
       status: 'fail',
       evidenceRefs: [],
-      gaps: [{ code: 'no_progress_notes', message: 'No progress notes in 90 days.', severity: 'high' }],
+      gaps: [
+        {
+          code: 'no_progress_notes',
+          message: 'No progress notes in 90 days.',
+          severity: 'high',
+        },
+      ],
       confidence: 0.8,
       reason: '0 progress notes/90d.',
       evaluatedAt,
     };
   }
+
+  const { data: participants, error: pErr } = await ctx.db
+    .from('org_patients')
+    .select('id, full_name, care_status')
+    .eq('organization_id', ctx.orgId)
+    .eq('care_status', 'active');
+  if (pErr) {
+    // Fall back to legacy org-wide threshold when the participant
+    // table isn't accessible (non-care orgs).
+    return {
+      controlCode: 'NDIS-3.4',
+      status: orgWide >= 30 ? 'pass' : 'partial',
+      evidenceRefs: [
+        { source: 'org_progress_notes', ref: `count=${orgWide}`, capturedAt: evaluatedAt },
+      ],
+      gaps: [],
+      confidence: 0.5,
+      reason: `${orgWide} progress notes/90d (org-wide fallback; participant table unavailable).`,
+      evaluatedAt,
+    };
+  }
+
+  const activeParticipants = (participants ?? []) as Array<{
+    id: string;
+    full_name: string | null;
+  }>;
+
+  if (activeParticipants.length === 0) {
+    // No active participants — fall back to legacy threshold. Don't
+    // penalise an org for under-serving a population it doesn't have.
+    return {
+      controlCode: 'NDIS-3.4',
+      status: orgWide >= 30 ? 'pass' : 'partial',
+      evidenceRefs: [
+        { source: 'org_progress_notes', ref: `count=${orgWide}`, capturedAt: evaluatedAt },
+      ],
+      gaps: [],
+      confidence: 0.5,
+      reason: `${orgWide} progress notes/90d; 0 active participants on file.`,
+      evaluatedAt,
+    };
+  }
+
+  // Pull the 30-day notes once and bucket by patient_id. This avoids
+  // N+1 over a potentially large participant list.
+  const { data: recentNotes, error: nErr } = await ctx.db
+    .from('org_progress_notes')
+    .select('id, patient_id')
+    .eq('organization_id', ctx.orgId)
+    .gte('created_at', thirtyDaysAgo);
+  if (nErr) {
+    return na(evaluatedAt, 'NDIS-3.4', 'progress_notes_recent_unavailable', nErr.message);
+  }
+  const notedPatientIds = new Set<string>(
+    ((recentNotes ?? []) as Array<{ patient_id: string | null }>)
+      .map((n) => n.patient_id)
+      .filter((id): id is string => !!id),
+  );
+  const silentParticipants = activeParticipants.filter((p) => !notedPatientIds.has(p.id));
+  const silentRatio = silentParticipants.length / activeParticipants.length;
+
+  const gaps: ControlGap[] = [];
+  if (silentParticipants.length > 0) {
+    const names = silentParticipants
+      .slice(0, 5)
+      .map((p) => p.full_name ?? p.id)
+      .join(', ');
+    const suffix =
+      silentParticipants.length > 5 ? ` + ${silentParticipants.length - 5} more` : '';
+    gaps.push({
+      code: 'silent_participants_30d',
+      message: `${silentParticipants.length} of ${activeParticipants.length} active participants have no progress notes in 30 days: ${names}${suffix}.`,
+      severity: silentRatio > 0.5 ? 'high' : 'medium',
+    });
+  }
+  if (orgWide < 30) {
+    gaps.push({
+      code: 'low_org_wide_volume',
+      message: `Org-wide volume only ${orgWide} notes/90d — typical NDIS provider records ≥30.`,
+      severity: 'medium',
+    });
+  }
+
+  let status: ControlResult['status'];
+  if (silentRatio > 0.5 || orgWide === 0) {
+    status = 'fail';
+  } else if (silentParticipants.length === 0 && orgWide >= 30) {
+    status = 'pass';
+  } else {
+    status = 'partial';
+  }
+
   return {
     controlCode: 'NDIS-3.4',
-    status: total >= 30 ? 'pass' : 'partial',
-    evidenceRefs: [{ source: 'org_progress_notes', ref: `count=${total}`, capturedAt: evaluatedAt }],
-    gaps: [],
-    confidence: 0.6,
-    reason: `${total} progress notes/90d.`,
+    status,
+    evidenceRefs: [
+      { source: 'org_progress_notes', ref: `count=${orgWide}`, capturedAt: evaluatedAt },
+      ...activeParticipants.slice(0, EVIDENCE_CAP).map((p) => ({
+        source: 'org_patients' as const,
+        ref: p.id,
+      })),
+    ],
+    gaps,
+    confidence: 0.7,
+    reason: `${activeParticipants.length - silentParticipants.length}/${activeParticipants.length} active participants noted in last 30d; ${orgWide} notes org-wide/90d.`,
     evaluatedAt,
   };
 }
