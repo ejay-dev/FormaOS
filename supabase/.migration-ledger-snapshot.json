@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T07:14:18.674Z",
+  "takenAt": "2026-05-27T07:54:51.718Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1009,6 +1009,14 @@
     {
       "version": "20260624059",
       "name": "audit_2026_05_27_r10_phase_2_ndis_controls"
+    },
+    {
+      "version": "20260624060",
+      "name": "audit_2026_05_27_lockdown_secdef_rpc_grants"
+    },
+    {
+      "version": "20260624061",
+      "name": "audit_2026_05_27_list_security_definer_anon_grants_rpc"
     }
   ]
 }

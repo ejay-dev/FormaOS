@@ -56,6 +56,7 @@
     "test:db:rls-guc-guard": "node scripts/check-rls-current-setting.mjs",
     "test:db:orgs-sync": "node scripts/check-orgs-sync.mjs",
     "test:db:ledger-alignment": "node scripts/check-migration-ledger-alignment.mjs",
+    "test:db:secdef-grants": "node scripts/check-security-definer-grants.mjs",
     "db:ledger:snapshot": "node scripts/snapshot-migration-ledger.mjs",
     "db:backfill:evidence-file-hash": "node scripts/backfill-evidence-file-hash.mjs",
     "framework-packs:rehash": "node scripts/build-framework-packs-manifest.mjs",

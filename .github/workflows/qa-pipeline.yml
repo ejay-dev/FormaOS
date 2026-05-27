@@ -135,6 +135,10 @@ jobs:
       - name: Run migration-ledger alignment check (R6)
         run: npm run test:db:ledger-alignment
 
+      - name: Run SECURITY DEFINER grants drift check (Audit 2026-05-27)
+        if: steps.rls-secrets-check.outputs.available == 'true'
+        run: npm run test:db:secdef-grants
+
   security-scan:
     name: Security Analysis
     runs-on: ubuntu-latest
