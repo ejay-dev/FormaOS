@@ -87,6 +87,16 @@ function compileMatchers(subjects: PurgedSubjectRow[]): CompiledMatchers {
   const nameLiterals: string[] = [];
 
   for (const subject of subjects) {
+    // Defensive — schema requires user_id NOT NULL, but mocks /
+    // backfills may pass malformed rows. Skip silently rather than
+    // crash the export pipeline.
+    if (
+      !subject ||
+      typeof subject.user_id !== 'string' ||
+      subject.user_id.length === 0
+    ) {
+      continue;
+    }
     uuidSet.add(subject.user_id.toLowerCase());
 
     if (subject.email && subject.email.trim().length > 0) {
