@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T08:26:24.704Z",
+  "takenAt": "2026-05-27T09:29:52.162Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1029,6 +1029,10 @@
     {
       "version": "20260624064",
       "name": "audit_2026_05_27_restore_test_runs"
+    },
+    {
+      "version": "20260624065",
+      "name": "audit_2026_05_27_audit_chain_anchors_drift_fix"
     }
   ]
 }
