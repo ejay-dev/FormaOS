@@ -2,6 +2,7 @@ import 'server-only';
 
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { revokeAllSessions } from '@/lib/auth/session-revocation';
+import { recordSubjectForRedaction } from '@/lib/audit/redact-purged-subjects';
 import { authLogger } from '@/lib/observability/structured-logger';
 
 // Audit 2026-05-26 — P0-8: GDPR Right-to-Erasure implementation.
@@ -26,12 +27,83 @@ import { authLogger } from '@/lib/observability/structured-logger';
 // hash chain that customers' auditors trust.
 
 type AdminClient = ReturnType<typeof createSupabaseAdminClient>;
-type TableAction = 'delete' | 'anonymize' | 'skipped';
+type TableAction = 'delete' | 'anonymize' | 'skipped' | 'capture';
 type TableOutcome = {
   action: TableAction;
   rows: number;
   error?: string;
 };
+
+// R1 (Audit 2026-05-27): capture the subject's identifiers BEFORE
+// the cascade so the export pipeline can later redact them from
+// retained audit rows. Best-effort — if capture fails, the purge
+// still proceeds; we'd rather miss a redaction than block a GDPR
+// erasure request. The miss surfaces in tableCounts so ops can
+// retry capture manually if needed.
+async function captureSubjectForRedaction(
+  admin: AdminClient,
+  userId: string,
+  jobId: string,
+): Promise<TableOutcome> {
+  try {
+    const { data: userRes, error: userErr } = await admin.auth.admin.getUserById(
+      userId,
+    );
+    if (userErr) {
+      return { action: 'capture', rows: 0, error: userErr.message };
+    }
+    const subjectEmail = userRes?.user?.email ?? null;
+    const metadataName =
+      ((userRes?.user?.user_metadata ?? {}) as { full_name?: unknown })
+        .full_name;
+    let subjectFullName: string | null =
+      typeof metadataName === 'string' ? metadataName : null;
+
+    // Many deployments store the canonical display name in profiles
+    // rather than user_metadata — pull it as a fallback and as
+    // additional coverage for the redactor.
+    const extraIdentifiers: string[] = [];
+    try {
+      const { data: profileRow } = await admin
+        .from('profiles')
+        .select('full_name, email')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (profileRow) {
+        const profileName = (profileRow as { full_name?: unknown }).full_name;
+        if (typeof profileName === 'string' && profileName.length > 0) {
+          if (!subjectFullName) subjectFullName = profileName;
+          else if (profileName !== subjectFullName) extraIdentifiers.push(profileName);
+        }
+        const profileEmail = (profileRow as { email?: unknown }).email;
+        if (
+          typeof profileEmail === 'string' &&
+          profileEmail.length > 0 &&
+          profileEmail.toLowerCase() !== (subjectEmail ?? '').toLowerCase()
+        ) {
+          extraIdentifiers.push(profileEmail);
+        }
+      }
+    } catch {
+      // profiles table missing or shape drift — non-fatal.
+    }
+
+    await recordSubjectForRedaction({
+      userId,
+      email: subjectEmail,
+      fullName: subjectFullName,
+      extraIdentifiers,
+      purgeJobId: jobId,
+    });
+    return { action: 'capture', rows: 1 };
+  } catch (err) {
+    return {
+      action: 'capture',
+      rows: 0,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
 
 const DELETE_TABLES: string[] = [
   'user_security',
@@ -268,6 +340,18 @@ export async function processUserPurge(jobId: string): Promise<{
   const userId = job.user_id as string;
   const tableCounts: Record<string, TableOutcome> = {};
   let hadError = false;
+
+  // R1 (Audit 2026-05-27): capture identifiers BEFORE the cascade so
+  // the export-time redactor can scrub the subject's PII from
+  // retained audit rows. Must run first — auth.admin.deleteUser
+  // erases the email/full_name and we can't recover them after.
+  const captureOutcome = await captureSubjectForRedaction(
+    admin,
+    userId,
+    jobId,
+  );
+  tableCounts['purged_subject_redactions'] = captureOutcome;
+  if (captureOutcome.error) hadError = true;
 
   for (const table of DELETE_TABLES) {
     const outcome = await deleteRowsByUserId(admin, table, userId);

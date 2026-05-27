@@ -7,6 +7,7 @@ import {
   isMissingSupabaseColumnError,
   isMissingSupabaseTableError,
 } from '@/lib/supabase/schema-compat';
+import { loadRedactor } from '@/lib/audit/redact-purged-subjects';
 
 export type IdentityEventType =
   | 'scim.user.create'
@@ -280,11 +281,26 @@ export async function exportIdentityEvents(
     offset: 0,
   });
 
+  // R1 (Audit 2026-05-27): identity_audit_events rows contain
+  // target_user_email + target_user_id + metadata jsonb. Each is a
+  // redaction surface for purged subjects. Apply the redactor on the
+  // way out — at-rest data stays whole so the immutability invariant
+  // around identity audit (forensic value) survives.
+  const redactor = await loadRedactor();
+  const redactedEvents =
+    redactor.size === 0
+      ? events
+      : (events.map((event) =>
+          redactor.redactRow(
+            event as unknown as Record<string, unknown>,
+          ) as unknown as IdentityAuditEventRecord,
+        ) as IdentityAuditEventRecord[]);
+
   if (format === 'csv') {
     return {
       mimeType: 'text/csv; charset=utf-8',
       filename: `identity-audit-${filters.orgId}.csv`,
-      body: toCsv(events),
+      body: toCsv(redactedEvents),
     };
   }
 
@@ -292,13 +308,13 @@ export async function exportIdentityEvents(
     return {
       mimeType: 'application/pdf',
       filename: `identity-audit-${filters.orgId}.pdf`,
-      body: toPdf(events),
+      body: toPdf(redactedEvents),
     };
   }
 
   return {
     mimeType: 'application/json; charset=utf-8',
     filename: `identity-audit-${filters.orgId}.json`,
-    body: JSON.stringify(events, null, 2),
+    body: JSON.stringify(redactedEvents, null, 2),
   };
 }

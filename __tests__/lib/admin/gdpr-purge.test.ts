@@ -48,16 +48,41 @@ jest.mock('@/lib/supabase/admin', () => {
     data: { user: null },
     error: null,
   }));
+  const getUserById = jest.fn(async (_id: string) => ({
+    data: {
+      user: {
+        id: _id,
+        email: 'subject@example.com',
+        user_metadata: { full_name: 'Subject Name' },
+      },
+    },
+    error: null,
+  }));
   const c: Record<string, any> = {
     from: jest.fn(() => builder()),
-    auth: { admin: { deleteUser } },
+    auth: { admin: { deleteUser, getUserById } },
   };
   return {
     createSupabaseAdminClient: jest.fn(() => c),
     __admin: c,
     __deleteUser: deleteUser,
+    __getUserById: getUserById,
   };
 });
+
+// R1: stub the redaction recorder so the GDPR tests don't need a
+// real purged_subject_redactions table.
+jest.mock('@/lib/audit/redact-purged-subjects', () => ({
+  recordSubjectForRedaction: jest.fn().mockResolvedValue(undefined),
+  loadRedactor: jest.fn().mockResolvedValue({
+    size: 0,
+    redactRow: <T>(row: T) => row,
+    redactString: (s: string) => s,
+    redactValue: <V>(v: V) => v,
+  }),
+  REDACTION_MARKER: '[redacted-by-erasure-request]',
+  buildRedactorFromRows: jest.fn(),
+}));
 
 jest.mock('@/lib/auth/session-revocation', () => ({
   revokeAllSessions: jest.fn().mockResolvedValue(new Date()),
@@ -241,6 +266,46 @@ describe('processUserPurge', () => {
 
     const result = await processUserPurge('job-1');
     expect(result.status).toBe('failed');
+  });
+
+  // R1 (Audit 2026-05-27): the capture step is the only window in
+  // which we can read the subject's email + full_name; once
+  // auth.admin.deleteUser runs the data is gone forever. This test
+  // pins the ordering so a refactor doesn't accidentally swap them.
+  it('captures subject identifiers BEFORE auth.users delete', async () => {
+    const callOrder: string[] = [];
+    const recordSubject = require('@/lib/audit/redact-purged-subjects')
+      .recordSubjectForRedaction as jest.Mock;
+    recordSubject.mockImplementation(async () => {
+      callOrder.push('record-subject');
+    });
+    getDeleteUserMock().mockImplementation(async () => {
+      callOrder.push('auth-delete');
+      return { data: { user: null }, error: null };
+    });
+    getAdmin().from.mockImplementation((table: string) => {
+      if (table === 'user_purge_jobs') {
+        return builder({
+          data: { id: 'job-1', user_id: 'user-1', status: 'pending' },
+          error: null,
+        });
+      }
+      return builder({ data: null, error: null, count: 0 });
+    });
+
+    await processUserPurge('job-1');
+
+    expect(callOrder.indexOf('record-subject')).toBeGreaterThanOrEqual(0);
+    expect(callOrder.indexOf('record-subject')).toBeLessThan(
+      callOrder.indexOf('auth-delete'),
+    );
+    expect(recordSubject).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-1',
+        email: 'subject@example.com',
+        fullName: 'Subject Name',
+      }),
+    );
   });
 
   it('refuses to claim a job not in pending status', async () => {

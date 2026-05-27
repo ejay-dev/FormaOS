@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import { buildOrSearch } from '@/lib/utils/postgrest-search';
+import { loadRedactor } from '@/lib/audit/redact-purged-subjects';
 
 const log = routeLog('/api/audit/export');
 
@@ -71,6 +72,12 @@ export async function GET(request: Request) {
       return new NextResponse('Failed to export', { status: 500 });
     }
 
+    // R1 (Audit 2026-05-27): redact subject PII for any user who was
+    // GDPR-purged. At-rest audit_log rows are immutable (P0-1 RLS);
+    // redaction happens here on the way out so the chain stays whole
+    // while the CSV that leaves the system is erasure-compliant.
+    const redactor = await loadRedactor();
+
     const header = [
       'id',
       'created_at',
@@ -82,20 +89,21 @@ export async function GET(request: Request) {
       'details',
     ];
 
-    const rows = (data ?? []).map((row) =>
-      [
-        row.id,
-        row.created_at,
-        row.action,
-        row.resource_type,
-        row.resource_id,
-        row.user_id,
-        row.ip_address,
-        row.details,
+    const rows = (data ?? []).map((row) => {
+      const redacted = redactor.redactRow(row as Record<string, unknown>);
+      return [
+        redacted.id,
+        redacted.created_at,
+        redacted.action,
+        redacted.resource_type,
+        redacted.resource_id,
+        redacted.user_id,
+        redacted.ip_address,
+        redacted.details,
       ]
         .map(escapeCsv)
-        .join(',')
-    );
+        .join(',');
+    });
 
     const csv = [header.join(','), ...rows].join('\n');
 

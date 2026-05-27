@@ -17,6 +17,7 @@ import type { ReportType } from '@/lib/audit-reports/types';
 import { getQueueClient } from '@/lib/queue';
 import { triggerTaskIfConfigured } from '@/lib/trigger/client';
 import { getAdminProfileDirectoryEntries } from '@/lib/users/admin-profile-directory';
+import { loadRedactor } from '@/lib/audit/redact-purged-subjects';
 
 export interface EnterpriseExportOptions {
   includeCompliance: boolean;
@@ -528,6 +529,23 @@ async function getAuditLogs(
     }
   };
 
+  // R1 (Audit 2026-05-27): redact subject PII for any GDPR-purged
+  // users before the audit data enters the export bundle. The
+  // at-rest audit_log/org_audit_logs rows are immutable (P0-1 RLS),
+  // so this is the GDPR-defensible boundary.
+  const redactor = await loadRedactor();
+  const filterAndRedact = <T extends { created_at?: string }>(
+    rows: T[] | null | undefined,
+  ): T[] => {
+    const base = (rows ?? []).filter((e) =>
+      sinceIso ? Boolean(e.created_at && e.created_at >= sinceIso) : true,
+    );
+    if (redactor.size === 0) return base;
+    return base.map((row) =>
+      redactor.redactRow(row as unknown as Record<string, unknown>),
+    ) as T[];
+  };
+
   // Use unified audit view (combines org_audit_logs, org_audit_events, security_audit_log)
   const { data: unified } = await safeQuery(
     'unified_org_audit_log',
@@ -535,11 +553,11 @@ async function getAuditLogs(
   );
 
   if (unified && unified.length > 0) {
-    const rows = unified as unknown as Array<{ created_at?: string }>;
-    const filtered = sinceIso
-      ? rows.filter((e) => e.created_at && e.created_at >= sinceIso)
-      : rows;
-    return { auditEvents: filtered };
+    return {
+      auditEvents: filterAndRedact(
+        unified as unknown as Array<{ created_at?: string }>,
+      ),
+    };
   }
 
   // Fallback to direct table query if unified view doesn't exist yet
@@ -548,12 +566,11 @@ async function getAuditLogs(
     'id, action, actor_email, target, entity_id, created_at',
   );
 
-  const logRows = (logs ?? []) as unknown as Array<{ created_at?: string }>;
-  const filtered = sinceIso
-    ? logRows.filter((e) => e.created_at && e.created_at >= sinceIso)
-    : logRows;
-
-  return { auditLogs: filtered };
+  return {
+    auditLogs: filterAndRedact(
+      (logs ?? []) as unknown as Array<{ created_at?: string }>,
+    ),
+  };
 }
 
 async function getCareOpsData(
