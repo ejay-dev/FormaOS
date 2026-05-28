@@ -62,7 +62,7 @@ function HealthcareDashboardVisual() {
           id: 'p1',
           status: 'green',
           cells: {
-            practitioner: 'Dr Sarah Mitchell',
+            practitioner: 'Dr Imogen Bennett',
             profession: 'Medical Practitioner',
             status: 'Current',
             cpd: '42 / 50 hrs',
@@ -100,7 +100,7 @@ function HealthcareDashboardVisual() {
           id: 'p3',
           status: 'amber',
           cells: {
-            practitioner: 'Dr Priya Sharma',
+            practitioner: 'Dr Anjali Reddy',
             profession: 'Dentist',
             status: 'Expiring',
             cpd: '12 / 60 hrs',
@@ -119,7 +119,7 @@ function HealthcareDashboardVisual() {
           id: 'p4',
           status: 'red',
           cells: {
-            practitioner: 'Michael O’Brien',
+            practitioner: 'Liam O’Brien',
             profession: 'Physiotherapist',
             status: 'Expired',
             cpd: '5 / 20 hrs',
@@ -159,12 +159,12 @@ function HealthcareDashboardVisual() {
       ]}
       notifications={[
         {
-          message: 'Dr Priya Sharma - AHPRA registration expiring in 43 days',
+          message: 'Dr Anjali Reddy - AHPRA registration expiring in 43 days',
           time: '1 hour ago',
           type: 'alert',
         },
         {
-          message: 'Michael O’Brien - registration expired, practice suspended',
+          message: 'Liam O’Brien - registration expired, practice suspended',
           time: '2 days ago',
           type: 'alert',
         },

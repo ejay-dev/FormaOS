@@ -19,12 +19,16 @@ const PRACTITIONER_COLUMNS = [
   { key: 'status', label: 'Status' },
 ];
 
+// Illustrative sample rows. Names changed 2026-05-28 to avoid first-name
+// collisions with the fake testimonial personas killed in PR #193
+// (Sarah Mitchell, Priya M., Michael D.). AHPRA registration formats are
+// real-looking but synthetic.
 const PRACTITIONER_ROWS = [
-  { id: 'p1', status: 'green' as const, cells: { name: 'Dr Sarah Mitchell', profession: 'General Practitioner', ahpra: 'MED0001842390', cpd: '48/50', status: 'Current' } },
-  { id: 'p2', status: 'green' as const, cells: { name: 'James Nguyen', profession: 'Registered Nurse', ahpra: 'NUR0003912847', cpd: '32/30', status: 'Current' } },
-  { id: 'p3', status: 'amber' as const, cells: { name: 'Dr Priya Sharma', profession: 'Psychiatrist', ahpra: 'MED0002391045', cpd: '22/50', status: 'Expiring' } },
+  { id: 'p1', status: 'green' as const, cells: { name: 'Dr Olivia Bennett', profession: 'General Practitioner', ahpra: 'MED0001842390', cpd: '48/50', status: 'Current' } },
+  { id: 'p2', status: 'green' as const, cells: { name: 'Aiden Nguyen', profession: 'Registered Nurse', ahpra: 'NUR0003912847', cpd: '32/30', status: 'Current' } },
+  { id: 'p3', status: 'amber' as const, cells: { name: 'Dr Anjali Reddy', profession: 'Psychiatrist', ahpra: 'MED0002391045', cpd: '22/50', status: 'Expiring' } },
   { id: 'p4', status: 'green' as const, cells: { name: 'Emily Watson', profession: 'Physiotherapist', ahpra: 'PHY0001293847', cpd: '28/30', status: 'Current' } },
-  { id: 'p5', status: 'red' as const, cells: { name: 'Dr Michael Chen', profession: 'Dentist', ahpra: 'DEN0003847291', cpd: '12/50', status: 'Expired' } },
+  { id: 'p5', status: 'red' as const, cells: { name: 'Dr Theo Sullivan', profession: 'Dentist', ahpra: 'DEN0003847291', cpd: '12/50', status: 'Expired' } },
 ];
 
 export function HealthcareMockContent() {

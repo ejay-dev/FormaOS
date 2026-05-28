@@ -33,7 +33,7 @@ const steps = [
     label: 'Approve',
     icon: CheckCircle,
     title: 'Reviewed & Approved',
-    detail: 'Approved by Sarah Chen',
+    detail: 'Approved by Min Park',
     meta: 'Chain of custody recorded',
     color: 'text-emerald-400',
     bg: 'bg-emerald-500/15',

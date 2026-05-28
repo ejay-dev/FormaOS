@@ -567,7 +567,7 @@ export default function ChildcareComplianceContent() {
                     status: 'green',
                   },
                   {
-                    k: 'Priya Sharma - First Aid',
+                    k: 'Anjali Reddy - First Aid',
                     v: 'Expiring May 2026',
                     status: 'amber',
                   },
@@ -643,7 +643,7 @@ export default function ChildcareComplianceContent() {
                     status: 'green',
                   },
                   {
-                    k: 'Priya Sharma - First Aid',
+                    k: 'Anjali Reddy - First Aid',
                     v: 'Expiring May 2026',
                     status: 'amber',
                   },
@@ -920,7 +920,7 @@ export default function ChildcareComplianceContent() {
                   },
                   {
                     time: '7 days',
-                    label: 'Priya Sharma - First Aid expiring 15 May',
+                    label: 'Anjali Reddy - First Aid expiring 15 May',
                     status: 'active',
                   },
                   {

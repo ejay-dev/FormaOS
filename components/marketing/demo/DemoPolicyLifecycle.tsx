@@ -33,7 +33,7 @@ const defaultSteps: LifecycleStep[] = [
     icon: PenLine,
     title: 'Policy Drafted',
     detail: 'Clinical Governance Policy v3.2',
-    meta: 'Author: Dr Sarah Chen • Created 14 Jan 2026',
+    meta: 'Author: Dr Min Park • Created 14 Jan 2026',
     color: 'text-muted-foreground',
     bg: 'bg-slate-500/15',
     border: 'border-slate-500/20',

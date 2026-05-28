@@ -26,7 +26,7 @@ const defaultCredentials: Credential[] = [
   {
     id: '1',
     name: 'AHPRA Registration',
-    holder: 'Dr Sarah Chen',
+    holder: 'Dr Min Park',
     status: 'active',
     expiryDate: '15 Nov 2026',
     daysRemaining: 276,
@@ -62,7 +62,7 @@ const defaultCredentials: Credential[] = [
   {
     id: '5',
     name: 'CPR Certification',
-    holder: 'Dr Sarah Chen',
+    holder: 'Dr Min Park',
     status: 'expiring',
     expiryDate: '14 Apr 2026',
     daysRemaining: 61,

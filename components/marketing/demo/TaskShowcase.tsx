@@ -25,7 +25,7 @@ const lifecycle = [
     id: 'assign',
     label: 'Assigned',
     icon: UserPlus,
-    title: 'Assigned to Sarah Chen',
+    title: 'Assigned to Min Park',
     task: 'Review Access Control Policy',
     detail: 'Compliance Officer • Auto-assigned by role matching',
     meta: 'Email notification sent',
@@ -201,7 +201,7 @@ export default function TaskShowcase() {
                                 <div className="h-4 w-4 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
                                   <span className="text-[6px] font-bold text-white">SC</span>
                                 </div>
-                                <span className="text-[10px] text-muted-foreground">Sarah Chen</span>
+                                <span className="text-[10px] text-muted-foreground">Min Park</span>
                               </motion.div>
                             )}
                           </div>

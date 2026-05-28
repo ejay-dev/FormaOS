@@ -19,12 +19,17 @@ const OBLIGATION_COLUMNS = [
   { key: 'status', label: 'Status' },
 ];
 
+// 2026-05-28: switched owner column from first-initial+surname
+// (J. Santos / M. Wong / L. Kumar / R. Park / D. Chen — the exact
+// pattern the design audit flagged as "looks fake") to a role label.
+// A real practitioner register lists the role accountable for the
+// obligation; the human's name lives behind it in the workspace.
 const OBLIGATION_ROWS = [
-  { id: 'o1', status: 'red' as const, cells: { obligation: 'AML/CTF Program Review', framework: 'AUSTRAC', owner: 'J. Santos', due: '01 Apr 2026', status: 'Overdue' } },
-  { id: 'o2', status: 'amber' as const, cells: { obligation: 'CPS 230 Operational Risk', framework: 'APRA', owner: 'M. Wong', due: '18 Apr 2026', status: 'Due Soon' } },
-  { id: 'o3', status: 'green' as const, cells: { obligation: 'Breach Register Update', framework: 'ASIC s912A', owner: 'L. Kumar', due: '30 Jun 2026', status: 'On Track' } },
-  { id: 'o4', status: 'green' as const, cells: { obligation: 'Annual Compliance Plan', framework: 'ASIC', owner: 'R. Park', due: '15 Jul 2026', status: 'On Track' } },
-  { id: 'o5', status: 'amber' as const, cells: { obligation: 'Client Money Reconciliation', framework: 'ASIC', owner: 'D. Chen', due: '22 Apr 2026', status: 'Due Soon' } },
+  { id: 'o1', status: 'red' as const, cells: { obligation: 'AML/CTF Program Review', framework: 'AUSTRAC', owner: 'AML/CTF Officer', due: '01 Apr 2026', status: 'Overdue' } },
+  { id: 'o2', status: 'amber' as const, cells: { obligation: 'CPS 230 Operational Risk', framework: 'APRA', owner: 'Risk Manager', due: '18 Apr 2026', status: 'Due Soon' } },
+  { id: 'o3', status: 'green' as const, cells: { obligation: 'Breach Register Update', framework: 'ASIC s912A', owner: 'Compliance Lead', due: '30 Jun 2026', status: 'On Track' } },
+  { id: 'o4', status: 'green' as const, cells: { obligation: 'Annual Compliance Plan', framework: 'ASIC', owner: 'GRC Director', due: '15 Jul 2026', status: 'On Track' } },
+  { id: 'o5', status: 'amber' as const, cells: { obligation: 'Client Money Reconciliation', framework: 'ASIC', owner: 'Finance Controller', due: '22 Apr 2026', status: 'Due Soon' } },
 ];
 
 export function FinancialMockContent() {
