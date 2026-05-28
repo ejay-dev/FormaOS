@@ -195,8 +195,11 @@ export const FrameworkTrustStrip = memo(function FrameworkTrustStrip({
               }}
             />
             <span className="font-medium tracking-wide">
-              <span className="text-white font-bold">18+</span> compliance
-              frameworks built in
+              <span className="text-white font-bold">8</span> framework packs
+              shipping today
+              <span className="ml-1 text-slate-600">
+                · AU regulatory coverage in templates &amp; policy library
+              </span>
             </span>
             <span
               className="h-px w-8 sm:w-12"

@@ -154,10 +154,10 @@ const industrySolutions: IndustrySolution[] = [
     accent: 'rose',
     frameworks: ['RACGP', 'AHPRA', 'NSQHS', 'HIPAA'],
     stats: [
-      { icon: Layers, value: '47', label: 'Controls mapped' },
-      { icon: Clock, value: '< 2 days', label: 'Audit prep time' },
-      { icon: Eye, value: '100%', label: 'Event coverage' },
-      { icon: BadgeCheck, value: '4', label: 'Accreditations' },
+      { icon: Layers, value: '10', label: 'HIPAA Safeguards' },
+      { icon: Clock, value: 'Hash-chained', label: 'Audit log' },
+      { icon: Eye, value: 'AU-hosted', label: 'Default region' },
+      { icon: BadgeCheck, value: '90/60/30d', label: 'Credential alerts' },
     ],
     capabilities: [
       {
@@ -187,10 +187,10 @@ const industrySolutions: IndustrySolution[] = [
     accent: 'violet',
     frameworks: ['NDIS Practice Standards', 'Q&S Commission'],
     stats: [
-      { icon: Shield, value: '100%', label: 'Safeguard coverage' },
-      { icon: Clock, value: '24 hr', label: 'Incident notify' },
-      { icon: Layers, value: '38', label: 'Controls mapped' },
-      { icon: BadgeCheck, value: '2', label: 'Audit packs' },
+      { icon: Layers, value: '25', label: 'Practice Standards evaluators' },
+      { icon: Clock, value: '24h / 5bd', label: 'SIRS clock encoded' },
+      { icon: Shield, value: '5-year', label: 'Worker screening track' },
+      { icon: BadgeCheck, value: 'P28.1', label: 'Q&S portal aligned' },
     ],
     capabilities: [
       {
@@ -220,10 +220,10 @@ const industrySolutions: IndustrySolution[] = [
     accent: 'amber',
     frameworks: ['SOC 2', 'ISO 27001', 'PCI-DSS', 'APRA CPS 230'],
     stats: [
-      { icon: Layers, value: '4', label: 'Framework packs' },
-      { icon: Clock, value: '< 2 days', label: 'Audit prep' },
-      { icon: Zap, value: '85%', label: 'Faster collection' },
-      { icon: Lock, value: '100%', label: 'Vendor tracked' },
+      { icon: Layers, value: '61', label: 'SOC 2 TSC controls' },
+      { icon: Layers, value: '93', label: 'ISO 27001 controls' },
+      { icon: Zap, value: 'APRA CPS', label: '230 + 234 templates' },
+      { icon: Lock, value: 'Daily', label: 'Sigstore anchor' },
     ],
     capabilities: [
       {
@@ -256,10 +256,10 @@ const industrySolutions: IndustrySolution[] = [
     accent: 'cyan',
     frameworks: ['TEQSA', 'ASQA', 'RTO Standards', 'VRQA'],
     stats: [
-      { icon: Layers, value: '52', label: 'Standards mapped' },
-      { icon: Clock, value: 'Instant', label: 'Evidence retrieval' },
-      { icon: BadgeCheck, value: '3', label: 'Registrations' },
-      { icon: FileText, value: '100%', label: 'Staff credentials' },
+      { icon: Layers, value: 'TEQSA', label: '+ ASQA templates' },
+      { icon: FileText, value: 'Credential', label: 'expiry alerts' },
+      { icon: BadgeCheck, value: 'Multi-site', label: 'org hierarchy' },
+      { icon: Clock, value: 'Hash-chained', label: 'audit log' },
     ],
     capabilities: [
       {
@@ -289,10 +289,10 @@ const industrySolutions: IndustrySolution[] = [
     accent: 'indigo',
     frameworks: ['ISM', 'PSPF', 'Essential Eight', 'FOI Act'],
     stats: [
-      { icon: Layers, value: '8', label: 'Mitigation strategies' },
-      { icon: Shield, value: '100%', label: 'Decision audit' },
-      { icon: Lock, value: 'Granular', label: 'Access control' },
-      { icon: FileText, value: 'Full', label: 'FOI readiness' },
+      { icon: Layers, value: '8', label: 'Essential Eight mitigations' },
+      { icon: Shield, value: 'Append-only', label: 'RLS audit log' },
+      { icon: Lock, value: 'RBAC', label: '+ row-level isolation' },
+      { icon: FileText, value: 'PSPF', label: 'classification model' },
     ],
     capabilities: [
       {
@@ -738,7 +738,7 @@ export const Industries = memo(function Industries() {
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/[0.08] border border-amber-400/20 text-amber-400 text-xs sm:text-sm font-medium">
               <span className="relative flex h-1.5 w-1.5">
                 {!noMotion && (
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-60" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-60" />
                 )}
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
               </span>

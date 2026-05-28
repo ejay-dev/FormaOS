@@ -190,9 +190,7 @@ export function HeroSection() {
         >
           <span>{heroCopy.headlinePrimary}</span>
           <br />
-          <span className="bg-gradient-to-r from-cyan-300 via-violet-300 to-emerald-300 bg-clip-text text-transparent">
-            {heroCopy.headlineAccent}
-          </span>
+          <span className="text-cyan-200">{heroCopy.headlineAccent}</span>
         </motion.h1>
 
         <motion.p

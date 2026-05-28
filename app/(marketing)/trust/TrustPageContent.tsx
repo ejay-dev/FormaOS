@@ -7,6 +7,7 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { TrustHero } from './components';
 import { TrustSubpagesIndex } from './components/TrustSubpagesIndex';
+import { AuditChainProof } from './components/AuditChainProof';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 import { useDeviceTier } from '@/lib/device-tier';
 
@@ -28,30 +29,39 @@ const QuestionnaireAccelerator = dynamic(
   { ssr: false, loading: () => null },
 );
 
-/** Page-level decorative compliance wire paths that draw on scroll */
+/** Page-level decorative compliance wire paths that draw on scroll.
+ *  Wrapped so the `useScroll` hook only runs after mount — otherwise
+ *  framer-motion throws "Target ref is defined but not hydrated" on
+ *  the first render (the ref hasn't attached yet), the error boundary
+ *  catches it, and the page renders "Something went wrong" instead of
+ *  the actual content. (Verified 2026-05-28 against Playwright.) */
 function TrustWirePaths() {
   const [mounted, setMounted] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const tierConfig = useDeviceTier();
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end end'],
-  });
 
   const shouldRenderWires =
     !prefersReducedMotion && tierConfig.tier === 'high' && !tierConfig.isTouch;
-
-  const wire1 = useTransform(scrollYProgress, [0, 0.4], [0, 1]);
-  const wire2 = useTransform(scrollYProgress, [0.15, 0.6], [0, 1]);
-  const wire3 = useTransform(scrollYProgress, [0.3, 0.8], [0, 1]);
-  const wire4 = useTransform(scrollYProgress, [0.5, 1], [0, 1]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted || !shouldRenderWires) return null;
+  return <TrustWirePathsInner />;
+}
+
+function TrustWirePathsInner() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end'],
+  });
+
+  const wire1 = useTransform(scrollYProgress, [0, 0.4], [0, 1]);
+  const wire2 = useTransform(scrollYProgress, [0.15, 0.6], [0, 1]);
+  const wire3 = useTransform(scrollYProgress, [0.3, 0.8], [0, 1]);
+  const wire4 = useTransform(scrollYProgress, [0.5, 1], [0, 1]);
 
   return (
     <div
@@ -156,6 +166,13 @@ export default function TrustPageContent({
       <TrustHero />
       {leadContent}
       <FrameworkTrustStrip className="mt-2 mb-2" />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      {/* SSR-rendered cryptographic audit-chain proof. Backs up the
+          homepage AuditChainSection's claim chain; must land in the
+          initial HTML response so crawlers and answer engines can index
+          the Merkle + Sigstore Rekor + RLS claims (lib/audit/merkle.ts,
+          lib/audit/external-anchor.ts, audit-chain-anchor cron). */}
+      <AuditChainProof />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       {/* SSR-rendered index of trust sub-pages. Sits outside DeferredSection
           so it lands in the initial HTML response — crawlers and screen

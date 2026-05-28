@@ -51,6 +51,11 @@ const navCards = [
 
 const assuranceModules = [
   {
+    title: 'Cryptographic audit chain',
+    detail:
+      "Each org's audit log is HMAC-chained row-by-row and the chain top is submitted daily at 05:30 UTC to Sigstore Rekor — the Linux Foundation transparency log used for signed open-source releases. Append-only is enforced by Postgres RLS, not application code. An auditor can verify the timestamp of any event without trusting us.",
+  },
+  {
     title: 'Live compliance posture',
     detail:
       'Share real-time framework-level posture snapshots - control coverage, drift alerts, and evidence readiness - with auditors and enterprise buyers.',

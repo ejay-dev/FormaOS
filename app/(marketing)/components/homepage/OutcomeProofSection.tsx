@@ -14,60 +14,56 @@ import {
   CalendarCheck,
 } from 'lucide-react';
 
-// TimerReset, ShieldCheck used in outcomeStats; TrendingUp/Down used in scenarios
-
+// Mechanic-grounded scenarios. The "after" column names a real artifact
+// (table, cron, statutory timeline) so the section reads like a product
+// brief, not a customer-success deck.
 const proofScenarios = [
   {
     title: 'Audit preparation',
     before:
-      'Evidence scattered across email threads, shared drives, and spreadsheets. Teams scramble for days before each audit.',
+      'Evidence scattered across email threads, shared drives, and spreadsheets. Days lost reconstructing trails.',
     after:
-      'Framework-mapped evidence bundles exported in minutes. Every control linked to its owner, workflow, and proof.',
-    impact: '87% faster audit prep',
-    metric: { before: '2+ weeks', after: '< 3 hours', improvement: '87%' },
+      'On-demand ZIP export: framework summary, evidence references with SHA-256 hashes, automation log, score history, chain top anchored to Sigstore Rekor.',
+    impact: 'Auditor bundle on demand',
+    metric: {
+      before: 'Reconstructed',
+      after: 'Hash-chained',
+      improvement: 'Verifiable',
+    },
   },
   {
     title: 'Incident response',
     before:
-      'Ownership unclear. Escalation inconsistent. Regulator asks for an evidence trail — nothing complete exists.',
+      'Email threads, ad-hoc severity tagging, statutory timelines tracked by memory.',
     after:
-      'Structured triage with named owners, timestamped actions, and a complete trail from detection to resolution.',
-    impact: '24hr incident-to-report',
-    metric: { before: '5–7 days', after: '< 24 hrs', improvement: '80%' },
+      'org_incidents writes carry severity classification, named owner, and the NDIS SIRS 24h-immediate / 5-business-day-detailed clock encoded in the predicate.',
+    impact: 'SIRS clock automated',
+    metric: {
+      before: 'By memory',
+      after: 'In schema',
+      improvement: '24h / 5bd',
+    },
   },
   {
-    title: 'Compliance visibility',
+    title: 'Compliance posture',
     before:
-      'Manual status reconciliation. Board gets a stale quarterly snapshot. Gaps discovered too late.',
+      'Manual status reconciliation. Board gets a stale quarterly snapshot. Drift surfaces too late.',
     after:
-      'Live compliance score with framework coverage, control drift alerts, and board-ready posture view updated continuously.',
-    impact: 'Real-time board confidence',
-    metric: { before: 'Quarterly', after: 'Real-time', improvement: '100%' },
+      'Nightly cron at 06:00 UTC iterates orgs in batches, writes to org_control_evaluations; /app/compliance/health renders the live posture with a 4-week sparkline.',
+    impact: '06:00 UTC nightly',
+    metric: { before: 'Quarterly', after: 'Nightly', improvement: 'Cron-driven' },
   },
 ] as const;
 
+// Numbers below match lib/compliance/evaluators/register.ts and the
+// cron schedule in vercel.json. Any reader can count the imports and
+// the cron entries and arrive at the same totals.
 const outcomeStats = [
-  { value: '87%', label: 'Faster audit preparation', icon: TimerReset },
-  {
-    value: '100%',
-    label: 'Controls with named owners',
-    icon: ShieldCheck,
-  },
-  {
-    value: '9',
-    label: 'Frameworks supported out of the box',
-    icon: GitBranch,
-  },
-  {
-    value: '< 3hrs',
-    label: 'Average evidence pack export time',
-    icon: TrendingUp,
-  },
-  {
-    value: '24/7',
-    label: 'Continuous compliance monitoring',
-    icon: CalendarCheck,
-  },
+  { value: '8', label: 'Framework packs', icon: GitBranch },
+  { value: '252', label: 'Controls mapped', icon: ShieldCheck },
+  { value: '~85', label: 'Auto-evaluated daily', icon: TimerReset },
+  { value: '~167', label: 'Manual attestations', icon: TrendingUp },
+  { value: '9', label: 'Production crons', icon: CalendarCheck },
 ] as const;
 
 export function OutcomeProofSection() {
@@ -87,16 +83,16 @@ export function OutcomeProofSection() {
         >
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-teal-400/30 bg-teal-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-teal-200">
             <BarChart3 className="h-3.5 w-3.5" />
-            Outcome Proof
+            What ships, what runs
           </div>
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Measurable outcomes, not just features
+            Operational mechanics, not customer claims
           </h2>
           <p className="mt-4 text-sm leading-relaxed text-slate-300 sm:text-base">
-            Compliance teams using FormaOS reduce audit prep from weeks to
-            hours, close incident reports in under 24 hours, and give their
-            boards real-time posture visibility instead of stale quarterly
-            snapshots.
+            Every number below comes from the framework registry checked into
+            the codebase or the cron schedule running in production. The
+            scenarios name the actual table, predicate, or statutory clock
+            doing the work — not a generic &ldquo;automated workflow.&rdquo;
           </p>
         </ScrollReveal>
 
