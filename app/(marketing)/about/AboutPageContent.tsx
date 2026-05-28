@@ -62,7 +62,7 @@ function AboutHero() {
       visualInteractive
       badge={{
         icon: <Users className="w-4 h-4 text-violet-400" />,
-        text: 'About FormaOS · Founded 2025 · Sydney, Australia',
+        text: 'About FormaOS · Founded 2025 · Adelaide, Australia',
         colorClass: 'violet',
       }}
       headline={
@@ -178,12 +178,13 @@ export default function AboutPageContent() {
 
             <ScrollReveal variant="slideUp" range={[0.05, 0.35]}>
               <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 sm:p-8 lg:p-10">
-                <div className="grid gap-8 lg:grid-cols-[280px_1fr] lg:gap-10 lg:items-start">
-                  {/* Founder photo. Real binary lives at
-                      /public/team/founder.jpg — until that's uploaded
-                      the <img>'s onError hides itself and reveals the
-                      "EH" initials placeholder behind it. */}
-                  <div className="relative mx-auto aspect-[7/10] w-full max-w-[280px] lg:mx-0">
+                <div className="grid gap-8 lg:grid-cols-[240px_1fr] lg:gap-10 lg:items-start">
+                  {/* Founder photo. Source is 499×1023 (≈1:2 portrait);
+                      frame uses aspect-[1/2] + object-top so the face
+                      stays anchored at the top instead of getting cropped
+                      by a default centre-crop. <img> falls back to the
+                      "EH" initials tile if the binary 404s. */}
+                  <div className="relative mx-auto aspect-[1/2] w-full max-w-[240px] lg:mx-0">
                     <div
                       aria-hidden
                       className="absolute inset-0 flex items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500/10 to-violet-500/10 border border-white/[0.08]"
@@ -198,7 +199,7 @@ export default function AboutPageContent() {
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
                       }}
-                      className="relative h-full w-full rounded-2xl border border-white/[0.08] object-cover"
+                      className="relative h-full w-full rounded-2xl border border-white/[0.08] object-cover object-top"
                     />
                   </div>
 
@@ -211,7 +212,7 @@ export default function AboutPageContent() {
                         Founder &amp; Chief Engineer
                       </p>
                       <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                        Sydney · Building FormaOS since 2022
+                        Adelaide · Building FormaOS since 2022
                       </p>
                     </div>
 

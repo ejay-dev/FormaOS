@@ -10,7 +10,7 @@ export default function Image() {
     eyebrow: 'Company',
     headline: 'Our Story',
       subhead: 'Why FormaOS exists and how we are building a compliance operating system for regulated teams.',
-    badges: ['Australia', 'Sydney HQ'],
+    badges: ['Australia', 'Adelaide HQ'],
     accent: 'violet',
   });
 }

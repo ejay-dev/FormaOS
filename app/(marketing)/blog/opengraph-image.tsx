@@ -10,7 +10,7 @@ export default function Image() {
     eyebrow: 'Company',
     headline: 'Blog & Insights',
       subhead: 'Expert insights on compliance management, regulatory technology, and operational excellence for regulated industries. Stay…',
-    badges: ['Australia', 'Sydney HQ'],
+    badges: ['Australia', 'Adelaide HQ'],
     accent: 'violet',
   });
 }

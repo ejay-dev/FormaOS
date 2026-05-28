@@ -10,7 +10,7 @@ export default function Image() {
     eyebrow: 'Company',
     headline: 'Customer Stories - Compliance Operations in Practice',
       subhead: 'See how regulated operators use FormaOS to govern controls, evidence, and audit readiness in healthcare, NDIS, aged care, and…',
-    badges: ['Australia', 'Sydney HQ'],
+    badges: ['Australia', 'Adelaide HQ'],
     accent: 'violet',
   });
 }

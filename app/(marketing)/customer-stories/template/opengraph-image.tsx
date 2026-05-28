@@ -10,7 +10,7 @@ export default function Image() {
     eyebrow: 'Company',
     headline: 'Case Study Template',
       subhead: 'Buyer-grade case study template for regulated operators: before/after, mechanism, measurable metrics, and timeframe.',
-    badges: ['Australia', 'Sydney HQ'],
+    badges: ['Australia', 'Adelaide HQ'],
     accent: 'violet',
   });
 }

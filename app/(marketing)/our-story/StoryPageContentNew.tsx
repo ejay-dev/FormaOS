@@ -179,7 +179,7 @@ function FounderQuote() {
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
-                  className="relative h-16 w-16 rounded-full border border-white/[0.1] object-cover"
+                  className="relative h-16 w-16 rounded-full border border-white/[0.1] object-cover object-top"
                 />
               </div>
               <div>
