@@ -178,7 +178,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Surface compliance status in PR checks and auto-collect code review evidence for security controls.',
     category: 'Developer Tools',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'GH',
     color: '#24292E',
     features: [
@@ -195,7 +195,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Add compliance quality gates to CI/CD pipelines and track merge request approval evidence.',
     category: 'Developer Tools',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'GL',
     color: '#FC6D26',
     features: [
@@ -212,7 +212,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Auto-collect AWS Config evaluations as compliance evidence and monitor CloudTrail for security events.',
     category: 'Cloud Infrastructure',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'AW',
     color: '#FF9900',
     features: [
@@ -229,7 +229,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Pull Azure Policy compliance data and map Azure security controls to compliance frameworks.',
     category: 'Cloud Infrastructure',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'AZ',
     color: '#0078D4',
     features: [
@@ -246,7 +246,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Ingest GCP security findings and asset inventory data for infrastructure compliance evidence.',
     category: 'Cloud Infrastructure',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'GC',
     color: '#4285F4',
     features: [
@@ -263,7 +263,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Automate user access reviews by pulling Okta group memberships and application assignments.',
     category: 'Identity & Access',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'OK',
     color: '#007DC1',
     features: [
@@ -297,7 +297,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Build custom compliance workflows: auto-create tasks when findings emerge, sync data to spreadsheets, or trigger alerts.',
     category: 'Automation',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'ZP',
     color: '#FF4A00',
     features: [
@@ -325,13 +325,30 @@ const integrations: Integration[] = [
     ],
   },
   {
+    name: 'Custom Webhook',
+    description:
+      'HMAC-SHA256 signed outbound webhooks for any third-party tool that accepts HTTPS callbacks.',
+    complianceUseCase:
+      'Route compliance events (task overdue, evidence approved, control drift, incident created) to any HTTPS endpoint with cryptographically signed payloads, configurable retry policies, and delivery logging.',
+    category: 'Automation',
+    status: 'live',
+    initials: 'WH',
+    color: '#22D3EE',
+    features: [
+      'HMAC-SHA256 signed payloads',
+      'Configurable retry with backoff',
+      'Delivery log + replay',
+      'Auto-disable on persistent failure',
+    ],
+  },
+  {
     name: 'PagerDuty',
     description:
       'Route compliance alerts through PagerDuty incident management with escalation policies.',
     complianceUseCase:
       'Automatically escalate critical compliance findings through PagerDuty on-call schedules.',
     category: 'Monitoring',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'PD',
     color: '#06AC38',
     features: [
@@ -348,7 +365,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Auto-update control ownership when employees join, change roles, or depart the organization.',
     category: 'HR & People',
-    status: 'beta',
+    status: 'coming-soon',
     initials: 'BH',
     color: '#73C41D',
     features: [
@@ -365,7 +382,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Sync organizational hierarchy and training completion records for personnel compliance controls.',
     category: 'HR & People',
-    status: 'beta',
+    status: 'coming-soon',
     initials: 'WD',
     color: '#005CB9',
     features: [
@@ -382,7 +399,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Use Datadog monitoring data as evidence for uptime SLAs and infrastructure availability controls.',
     category: 'Monitoring',
-    status: 'beta',
+    status: 'coming-soon',
     initials: 'DD',
     color: '#632CA6',
     features: [
@@ -399,7 +416,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Aggregate security events from Splunk as evidence for monitoring and incident response controls.',
     category: 'Security',
-    status: 'beta',
+    status: 'coming-soon',
     initials: 'SP',
     color: '#FF375F',
     features: [
@@ -416,7 +433,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Auto-collect Qualys vulnerability reports as evidence for vulnerability management controls.',
     category: 'Security',
-    status: 'beta',
+    status: 'coming-soon',
     initials: 'QL',
     color: '#ED2024',
     features: [
@@ -433,7 +450,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Link Confluence policy documents directly to controls with automatic version monitoring.',
     category: 'Document Management',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'CF',
     color: '#172B4D',
     features: [
@@ -450,7 +467,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Map Notion databases to controls and auto-sync document changes for compliance tracking.',
     category: 'Document Management',
-    status: 'beta',
+    status: 'coming-soon',
     initials: 'NT',
     color: '#000000',
     features: [
@@ -467,7 +484,7 @@ const integrations: Integration[] = [
     complianceUseCase:
       'Map remediation tasks to Linear issues and track compliance work alongside product development.',
     category: 'Project Management',
-    status: 'live',
+    status: 'coming-soon',
     initials: 'LN',
     color: '#5E6AD2',
     features: [

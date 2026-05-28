@@ -195,11 +195,11 @@ const enterpriseFeatures: EnterpriseFeature[] = [
     description:
       'Metadata-based SAML 2.0 configuration with major identity providers.',
     longDescription:
-      'SAML 2.0 integration supports major identity providers including Okta, Microsoft Entra ID, and Google Workspace. MFA enforcement and session policies can be applied for higher-assurance deployments, with identity-lifecycle requirements reviewed during procurement.',
+      'SAML 2.0 integration ships pre-wired with Microsoft Entra ID and Google Workspace; additional standards-compliant IdPs (Okta, OneLogin, etc.) are supported on request and reviewed during procurement. MFA enforcement and session policies can be applied for higher-assurance deployments.',
     highlights: [
-      'Okta',
       'Entra ID',
       'Google Workspace',
+      'SAML 2.0 (other IdPs on request)',
       'MFA',
       'Session policies',
     ],

@@ -40,7 +40,7 @@ const sections = [
     icon: Fingerprint,
     title: 'Identity, auth, and SSO',
     points: [
-      'Google OAuth on all plans; SAML 2.0 SSO for Okta, Azure AD, Google Workspace on Enterprise plan',
+      'Google OAuth on all plans; SAML 2.0 SSO ships pre-wired for Microsoft Entra ID (Azure AD) and Google Workspace on Enterprise. SAML 2.0 is standards-compliant, so additional IdPs (Okta, OneLogin, etc.) are supported on request during procurement rather than listed as pre-built connectors.',
       'MFA policy enforcement with configurable session duration and idle timeout controls',
       'Enterprise identity reviews cover lifecycle-management requirements, including joiner/mover/leaver workflows and provisioning expectations',
       'Role-based access control with granular permissions: admin, compliance lead, reviewer, auditor, read-only',
