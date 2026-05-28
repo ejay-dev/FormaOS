@@ -218,33 +218,40 @@ export default function AboutPageContent() {
 
                     <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
                       <p>
-                        FormaOS didn&apos;t start as a product idea. It started
-                        as frustration. After years building technology for
-                        regulated organizations — healthcare networks, NDIS
-                        providers, financial services firms — the same pattern
-                        emerged everywhere: compliance teams managing critical
-                        obligations in spreadsheets, shared drives, and email
-                        threads. Evidence scattered. Ownership unclear. Audit
-                        preparation consuming weeks that should have been hours.
+                        Before FormaOS I was building software for organisations
+                        that had to answer to regulators &mdash; hospitals,
+                        NDIS providers, finance firms running on the
+                        three-letter regulators that put real people out of work
+                        when things slip. The pattern wasn&apos;t a missing
+                        feature. It was a missing system. Evidence lived on
+                        shared drives. Control ownership lived in somebody&apos;s
+                        head. Three nights before every audit, somebody would
+                        stay late stitching a defensible story out of email
+                        threads. The day after the auditor left, the system
+                        relapsed to whatever it had been before.
                       </p>
                       <p>
-                        The tools available solved storage — not execution.
-                        They could hold documents, but they couldn&apos;t
-                        enforce accountability. They could generate reports, but
-                        they couldn&apos;t prove who owned what, when it was
-                        verified, or whether the work actually happened. When
-                        regulators arrived, teams scrambled to reconstruct
-                        timelines that should have been captured automatically.
+                        I started writing FormaOS in 2022. Not as a &ldquo;compliance
+                        platform&rdquo; &mdash; those exist and they are storage
+                        with marketing. As infrastructure. Controls map to
+                        obligations. Obligations dispatch tasks to a named
+                        owner with a deadline. Completed tasks write evidence to
+                        a hash-chained audit log. The top of that chain anchors
+                        daily, at 05:30 UTC, to Sigstore Rekor &mdash; the same
+                        append-only transparency log the Linux Foundation runs
+                        for signed open-source releases. Append-only is enforced
+                        by Postgres RLS, not by application code. Even a
+                        platform admin with service-role credentials cannot
+                        mutate a row.
                       </p>
                       <p>
-                        FormaOS was built to close that gap. Not as another
-                        document repository or checklist tool, but as a
-                        compliance operating system — infrastructure that
-                        connects obligations to controls, controls to owners,
-                        owners to evidence, and evidence to defensible audit
-                        trails. The system regulators expect, built the way
-                        engineers think about systems: structured, traceable,
-                        and continuously operational.
+                        I ship from Adelaide. The registry today is 252 controls
+                        across 8 framework packs &mdash; SOC 2 TSC, ISO 27001,
+                        NIST CSF, CIS, HIPAA, GDPR, PCI DSS, NDIS Practice
+                        Standards &mdash; with about 85 auto-evaluated nightly
+                        against your live data and 167 surfaced as human
+                        attestations. We don&apos;t hide which is which. The
+                        roadmap is short because the standard is high.
                       </p>
                     </div>
                   </div>

@@ -139,10 +139,12 @@ function FounderQuote() {
               transition={{ delay: 0.3, duration: duration.slower }}
               className="relative text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight mb-8"
             >
-              We didn&apos;t build FormaOS to manage compliance.
+              I built FormaOS for the version of myself that spent three
+              nights before every audit
               <br />
               <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                We built it to make accountability unavoidable.
+                reconstructing what should have been captured the moment it
+                happened.
               </span>
             </motion.blockquote>
 
@@ -179,7 +181,7 @@ function FounderQuote() {
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
-                  className="relative h-16 w-16 rounded-full border border-white/[0.1] object-cover object-top"
+                  className="relative h-16 w-16 rounded-full border border-white/[0.1] object-cover object-[center_25%]"
                 />
               </div>
               <div>
