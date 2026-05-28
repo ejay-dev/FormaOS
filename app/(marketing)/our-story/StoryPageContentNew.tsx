@@ -139,10 +139,11 @@ function FounderQuote() {
               transition={{ delay: 0.3, duration: duration.slower }}
               className="relative text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight mb-8"
             >
-              An auditor shouldn&apos;t have to trust the vendor.
+              The audit log signs itself.
               <br />
               <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                With FormaOS they verify the proof.
+                FormaOS anchors it daily to a public transparency tree so a
+                regulator can verify any event without trusting me.
               </span>
             </motion.blockquote>
 

@@ -62,7 +62,7 @@ function AboutHero() {
       visualInteractive
       badge={{
         icon: <Users className="w-4 h-4 text-violet-400" />,
-        text: 'About FormaOS · Founded 2025 · Adelaide, Australia',
+        text: 'About FormaOS · Building since 2022 · Adelaide, Australia',
         colorClass: 'violet',
       }}
       headline={
@@ -80,33 +80,6 @@ function AboutHero() {
     />
   );
 }
-
-const milestones = [
-  {
-    year: '2022',
-    title: 'Problem identified',
-    detail:
-      'After years working inside regulated organizations, the founding team recognized a structural gap: compliance tools stored documents, but none enforced execution. The concept for a compliance operating system was born.',
-  },
-  {
-    year: '2023',
-    title: 'First regulated deployment',
-    detail:
-      'FormaOS deployed with its first NDIS provider - 400+ staff across multiple states. The platform proved that compliance could run as operational workflow with named ownership and defensible evidence.',
-  },
-  {
-    year: '2024',
-    title: 'Healthcare and multi-framework expansion',
-    detail:
-      'AHPRA credential tracking, NSQHS Standards mapping, and ISO 27001 frameworks went live. Multi-entity support and SAML 2.0 SSO launched for enterprise identity governance.',
-  },
-  {
-    year: '2025',
-    title: 'Enterprise-grade infrastructure',
-    detail:
-      'AU-hosted deployment by default, APRA CPS 234 framework support, SAML 2.0 SSO, and a more mature enterprise review pack covering DPA, vendor assurance materials, SLA review, and security documentation.',
-  },
-] as const;
 
 const values = [
   {
@@ -219,37 +192,39 @@ export default function AboutPageContent() {
                     <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
                       <p>
                         FormaOS is my first project in compliance
-                        infrastructure. I started writing it in 2022 from
-                        Adelaide because the tools that exist for regulated
-                        teams all looked the same to me: document repositories
-                        with marketing on top. None of them treated audit
-                        evidence as something a regulator could verify
-                        cryptographically, without taking the vendor&apos;s
-                        word for anything.
+                        infrastructure. I&apos;ve been writing it from
+                        Adelaide since 2022, fitting it around freelance work
+                        &mdash; websites and web apps for whoever was paying
+                        that month. FormaOS was always the bigger thing, the
+                        one I actually cared about. I just needed the
+                        freelance to fund the runway.
                       </p>
                       <p>
-                        So FormaOS treats compliance as a system that runs,
-                        not a folder that fills up. Every control maps to an
-                        obligation. Every obligation dispatches a task to a
-                        named owner with a deadline. Every completed task
-                        writes evidence to a hash-chained audit log. The top
-                        of that chain anchors daily at 05:30 UTC to Sigstore
-                        Rekor &mdash; the append-only transparency log the
-                        Linux Foundation runs for signed open-source releases
-                        &mdash; so an auditor verifies a timestamp without
-                        having to trust me. Append-only is enforced by
-                        Postgres RLS at the database layer, not in application
-                        code.
+                        Compliance picked me as much as I picked it.
+                        Australian regulators have spent the past decade
+                        tightening expectations on NDIS providers, aged-care
+                        operators, healthcare networks, and AFS licensees.
+                        The software answering that pressure has, almost
+                        without exception, stayed at the level of a document
+                        repository with a workflow tab on top. I kept looking
+                        at it and thinking the actual problem was an
+                        engineering one. There was no executable layer
+                        connecting an obligation to a control to a task to a
+                        piece of evidence to an auditor who could verify any
+                        of it. Nobody was building that. So I started.
                       </p>
                       <p>
-                        Today the registry runs 252 controls across 8
-                        framework packs: SOC 2 TSC, ISO 27001, NIST CSF, CIS,
-                        HIPAA, GDPR, PCI DSS, and NDIS Practice Standards.
-                        About 85 of those auto-evaluate nightly against your
+                        Today FormaOS runs 252 controls across 8 framework
+                        packs. About 85 auto-evaluate nightly against your
                         live data; the other 167 are surfaced as human
-                        attestations and labelled as such &mdash; we don&apos;t
-                        hide which is which. Small team. AU-hosted. The
-                        roadmap is short on purpose.
+                        attestations and labelled as such. The audit log is
+                        hash-chained at the database layer, with append-only
+                        enforced by Postgres RLS &mdash; not application code
+                        &mdash; and the chain top anchors daily at 05:30 UTC
+                        to Sigstore Rekor, the same transparency log the
+                        Linux Foundation uses for signed open-source releases.
+                        It&apos;s bootstrapped, sole-engineered, AU-hosted.
+                        The roadmap is short on purpose.
                       </p>
                     </div>
                   </div>
@@ -264,68 +239,11 @@ export default function AboutPageContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      {/* Company Timeline */}
-      <DeferredSection minHeight={280}>
-        <section className="mk-section relative">
-          <div className="mx-auto max-w-5xl px-6 lg:px-8">
-            <ScrollReveal
-              variant="depthScale"
-              range={[0, 0.3]}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                Company Timeline
-              </h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">
-                From identifying the compliance execution gap to deploying
-                enterprise infrastructure across regulated sectors.
-              </p>
-            </ScrollReveal>
-
-            <SectionChoreography
-              pattern="cascade"
-              stagger={0.06}
-              className="relative"
-            >
-              {/* Vertical timeline line */}
-              <div className="absolute left-6 sm:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-teal-400/30 via-teal-400/10 to-transparent" />
-
-              <div className="space-y-8">
-                {milestones.map((milestone, i) => (
-                  <div
-                    key={milestone.year}
-                    className={`relative flex items-start gap-6 ${i % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}
-                  >
-                    {/* Timeline dot */}
-                    <div className="absolute left-6 sm:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-teal-400 border-2 border-[#0a0f1c] z-10" />
-
-                    {/* Content card */}
-                    <div
-                      className={`ml-8 sm:ml-0 sm:w-[calc(50%-2rem)] ${i % 2 === 0 ? '' : 'sm:ml-auto'}`}
-                    >
-                      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4 sm:p-6 hover:border-teal-400/15 hover:bg-white/[0.06] transition-all duration-200">
-                        <div className="text-xs font-bold uppercase tracking-wider text-teal-400 mb-2">
-                          {milestone.year}
-                        </div>
-                        <h3 className="text-base font-semibold text-white mb-2">
-                          {milestone.title}
-                        </h3>
-                        <p className="text-sm text-slate-400 leading-relaxed">
-                          {milestone.detail}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </SectionChoreography>
-          </div>
-        </section>
-      </DeferredSection>
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
+      {/* Timeline section removed 2026-05-28 — the previous milestone
+          array claimed customer deployments and framework launches
+          that hadn't actually shipped. Pulled the whole section
+          rather than fabricate a four-year history. /about flows hero
+          → founder card → values → mission now. */}
 
       {/* Mission & Purpose */}
       <DeferredSection minHeight={240}>
