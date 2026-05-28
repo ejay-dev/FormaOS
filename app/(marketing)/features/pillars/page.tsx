@@ -62,7 +62,7 @@ const PILLARS: Pillar[] = [
         detail: 'Bring your own obligations — map controls, owners, evidence.',
       },
     ],
-    footnote: '9 framework packs included. Cross-map once, satisfy many.',
+    footnote: '8 framework packs included. Cross-map once, satisfy many.',
   },
   {
     id: 'evidence',

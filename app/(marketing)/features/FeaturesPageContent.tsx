@@ -79,11 +79,11 @@ interface PlatformFeature {
 const features: PlatformFeature[] = [
   {
     icon: Layers,
-    title: '7 Pre-Built Framework Packs',
+    title: '8 Pre-Built Framework Packs',
     description:
-      'ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, and CIS Controls - each with mapped controls, evidence requirements, and audit-ready reporting.',
+      'SOC 2 TSC, ISO 27001:2022, NIST CSF 2.0, CIS v8, HIPAA, GDPR, PCI DSS 4.0, and NDIS Practice Standards — each with mapped controls and evaluator coverage in lib/compliance/evaluators/register.ts.',
     longDescription:
-      'Each Framework Pack ships with pre-mapped controls, evidence templates, test procedures, and automated gap analysis. Controls are mapped cross-framework so evidence collected for ISO 27001 automatically satisfies overlapping SOC 2 requirements. Framework Packs receive quarterly updates as standards evolve, and custom framework support is available for regulated industries with unique requirements.',
+      'Each Framework Pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. 252 total controls across the 8 packs — ~85 auto-evaluated nightly against your live data, ~167 require human attestation. Controls are mapped cross-framework (40+ seeded mappings) so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.',
     category: 'Compliance Core',
     highlight: 'Most popular',
     capabilities: [
@@ -352,50 +352,50 @@ const features: PlatformFeature[] = [
   },
   {
     icon: Bot,
-    title: 'AI Compliance Assistant',
+    title: 'Compliance Q&A assistant',
     description:
-      'Context-aware AI chat that understands your compliance posture. Draft policies, get evidence guidance, run gap analysis, and receive actionable steps.',
+      'General-purpose AI Q&A for compliance questions, policy drafting, and prompt-template workflows. Surface-level org context only — not grounded in your live policies, evidence, or controls.',
     longDescription:
-      'The AI Compliance Assistant is powered by your live organization data - controls, evidence, frameworks, and compliance scores. Ask questions about your compliance posture, get evidence collection guidance, draft policies from templates, and run AI-powered gap analysis. Five built-in prompt templates cover the most common compliance workflows, and full conversation history lets you pick up where you left off.',
+      'A stateless AI Q&A wrapper trained for compliance vocabulary. Useful for "how is GDPR Article 32 typically implemented?" or "draft a vendor risk policy starter" — not for "what does my current control evidence show?" Surface-level org context (industry, team size) is passed in; live policies, controls, and evidence are NOT used as grounding. Real retrieval-augmented chat against your evidence vault is on the roadmap but not shipping today.',
     category: 'AI & Certification',
-    highlight: 'New in v2.2',
+    highlight: 'General-purpose · not RAG',
     capabilities: [
-      'Context-aware streaming chat',
-      'Policy drafting from templates',
-      'AI-powered gap analysis',
-      'Conversation history & recall',
+      'Streaming Q&A chat',
+      'Policy drafting prompt templates',
+      'Conversation history',
+      'No org-data grounding (yet)',
     ],
   },
   {
     icon: ShieldCheck,
-    title: 'SOC 2 Self-Certification Engine',
+    title: 'SOC 2 readiness + report generator',
     description:
-      'Automated readiness scoring with weighted domain analysis, evidence collection across 11 controls, gap remediation, and one-click certification reports.',
+      '61 SOC 2 Trust Service Criteria controls mapped, automated evaluators for ~28 of them, milestone tracking through audit readiness, and a downloadable report.',
     longDescription:
-      'The SOC 2 Self-Certification Engine evaluates your readiness across all five Trust Service Criteria domains with weighted scoring (Security 30%, Availability 20%, Confidentiality 20%, Processing Integrity 15%, Privacy 15%). Automated evidence checks run across 11 controls, a gap analyzer generates prioritized remediation actions, and milestone tracking guides you from framework enablement to report generation. One-click certification reports package everything auditors need.',
+      'SOC 2 Type II readiness across all 61 Trust Service Criteria (CC, A, C, PI, P) per lib/compliance/evaluators/register.ts. ~28 controls auto-evaluate nightly via the compliance-check cron at 06:00 UTC (MFA coverage, audit-log freshness, policy cadence, etc.); the remaining ~33 require human attestation. Milestone tracker at /app/compliance/soc2 guides framework enablement → evidence collection → readiness report. Score weights are not fixed marketing percentages — they reflect the actual count of passing vs. failing evaluators in each TSC category.',
     category: 'AI & Certification',
-    highlight: 'New in v2.2',
+    highlight: 'Shipping',
     capabilities: [
-      'Weighted domain readiness scoring',
-      'Automated evidence checks (11 controls)',
-      'Prioritized gap remediation',
-      'One-click certification reports',
+      '61 SOC 2 TSC controls mapped',
+      '~28 auto-evaluated nightly',
+      'Milestone tracker for readiness',
+      'Downloadable readiness report',
     ],
   },
   {
     icon: Network,
     title: 'Framework Cross-Mapping',
     description:
-      'Map controls across frameworks with confidence scoring. 31 pre-loaded cross-mappings between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
+      'Map controls across frameworks with strength scoring. 40+ pre-loaded cross-mappings seeded between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
     longDescription:
-      'Framework Cross-Mapping visualises and manages the relationships between controls across different compliance frameworks. Each mapping carries a confidence score (exact, strong, partial, weak) so teams can assess overlap quality. 31 pre-loaded cross-mappings accelerate multi-framework compliance programs. The interactive mapping explorer shows bi-directional relationships and helps eliminate duplicate evidence collection efforts.',
+      'Framework Cross-Mapping manages the relationships between controls across compliance frameworks. Each mapping carries a strength label — exact, partial, or related — so teams can judge overlap quality. 40+ cross-mappings are seeded by migration 20260403003 covering ISO 27001, SOC 2, HIPAA, and NIST CSF, and the engine walks both forward and reverse relationships so a satisfied control on one framework can cascade credit to its mapped peers on others.',
     category: 'Compliance Core',
-    highlight: 'New in v3.1',
+    highlight: 'Shipping',
     capabilities: [
-      'Confidence-scored control mappings',
-      '31 pre-loaded cross-framework maps',
-      'Interactive mapping explorer',
-      'Bi-directional relationship visualisation',
+      'Strength-labelled mappings (exact / partial / related)',
+      '40+ pre-loaded cross-framework maps',
+      'Bi-directional relationship walk',
+      'De-duplicated evidence credit',
     ],
   },
   {
