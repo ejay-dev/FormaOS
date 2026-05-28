@@ -168,6 +168,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      // Added 2026-05-28 — was orphaned from sitemap despite live page +
+      // existing metadata + internal links from /trust dropdown. GSC
+      // reported only 33/45 indexed; sitemap omission was contributing.
+      url: `${siteUrl}/case-studies`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${siteUrl}/changelog`,
       lastModified: now,
       changeFrequency: 'weekly',
@@ -326,6 +335,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.55,
+    },
+    {
+      // Added 2026-05-28 — operational runbooks page was orphaned from
+      // the sitemap. Procurement-relevant content; mid-tier priority.
+      url: `${siteUrl}/runbooks`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
     {
       url: `${siteUrl}/security-review/faq`,
