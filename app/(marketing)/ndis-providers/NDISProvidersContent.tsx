@@ -62,7 +62,7 @@ function NDISDashboardVisual() {
           id: 'w1',
           status: 'green',
           cells: {
-            worker: 'Sarah Chen',
+            worker: 'Min Park',
             role: 'Support Worker',
             status: 'Valid',
             expiry: '14 Mar 2027',
@@ -81,7 +81,7 @@ function NDISDashboardVisual() {
           id: 'w2',
           status: 'amber',
           cells: {
-            worker: 'James Patel',
+            worker: 'Aaron Hassan',
             role: 'Team Leader',
             status: 'Expiring',
             expiry: '22 Apr 2026',
@@ -119,7 +119,7 @@ function NDISDashboardVisual() {
           id: 'w4',
           status: 'red',
           cells: {
-            worker: 'David Kim',
+            worker: 'Marcus Tan',
             role: 'Behaviour Practitioner',
             status: 'Expired',
             expiry: '01 Feb 2026',
@@ -156,17 +156,17 @@ function NDISDashboardVisual() {
       ]}
       notifications={[
         {
-          message: 'James Patel screening expires in 13 days',
+          message: 'Aaron Hassan screening expires in 13 days',
           time: '2 hours ago',
           type: 'alert',
         },
         {
-          message: 'David Kim screening expired - renewal pending',
+          message: 'Marcus Tan screening expired - renewal pending',
           time: '1 day ago',
           type: 'alert',
         },
         {
-          message: 'Sarah Chen screening verified successfully',
+          message: 'Min Park screening verified successfully',
           time: '3 days ago',
           type: 'success',
         },
@@ -608,12 +608,12 @@ export default function NDISProvidersContent() {
                 label="Worker Screening Status"
                 rows={[
                   {
-                    k: 'Sarah Chen - NSW',
+                    k: 'Min Park - NSW',
                     v: 'Valid to Mar 2027',
                     status: 'green',
                   },
                   {
-                    k: 'James Patel - VIC',
+                    k: 'Aaron Hassan - VIC',
                     v: 'Expiring Apr 2026',
                     status: 'amber',
                   },
@@ -622,7 +622,7 @@ export default function NDISProvidersContent() {
                     v: 'Valid to Sep 2027',
                     status: 'green',
                   },
-                  { k: 'David Kim - SA', v: 'Expired Feb 2026', status: 'red' },
+                  { k: 'Marcus Tan - SA', v: 'Expired Feb 2026', status: 'red' },
                 ]}
               />
             ),

@@ -626,7 +626,7 @@ export default function AboutPageContent() {
                 entries={[
                   {
                     action: 'Audit packet exported',
-                    user: 'Sarah Chen',
+                    user: 'Min Park',
                     target: 'SOC 2 Type II - Q4 2025',
                     time: '09:47',
                     type: 'compliance',

@@ -4,7 +4,7 @@ import { Search, Bell, Settings, Sun } from 'lucide-react';
 import { demoOrg, demoUsers } from './demo-data';
 
 export default function DemoTopBar() {
-  const currentUser = demoUsers[0]; // Sarah Chen
+  const currentUser = demoUsers[0]; // Min Park
 
   return (
     <div className="flex-shrink-0">

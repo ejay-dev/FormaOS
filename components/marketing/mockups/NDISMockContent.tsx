@@ -19,11 +19,14 @@ const WORKER_COLUMNS = [
   { key: 'status', label: 'Status' },
 ];
 
+// Names changed 2026-05-28 to avoid first-name collisions with the
+// fake testimonial personas killed in PR #193 (Sarah*, James*, David K.,
+// S. Patel).
 const WORKER_ROWS = [
-  { id: 'w1', status: 'green' as const, cells: { name: 'Sarah Chen', ndisCheck: 'Worker Screening', expiry: '14 Mar 2027', daysLeft: '342', status: 'Current' } },
-  { id: 'w2', status: 'green' as const, cells: { name: 'James Patel', ndisCheck: 'Worker Screening', expiry: '08 Nov 2026', daysLeft: '213', status: 'Current' } },
+  { id: 'w1', status: 'green' as const, cells: { name: 'Min Park', ndisCheck: 'Worker Screening', expiry: '14 Mar 2027', daysLeft: '342', status: 'Current' } },
+  { id: 'w2', status: 'green' as const, cells: { name: 'Aaron Hassan', ndisCheck: 'Worker Screening', expiry: '08 Nov 2026', daysLeft: '213', status: 'Current' } },
   { id: 'w3', status: 'amber' as const, cells: { name: 'Maria Lopez', ndisCheck: 'Worker Screening', expiry: '22 May 2026', daysLeft: '42', status: 'Expiring' } },
-  { id: 'w4', status: 'red' as const, cells: { name: 'David Kim', ndisCheck: 'Worker Screening', expiry: '01 Mar 2026', daysLeft: '-40', status: 'Expired' } },
+  { id: 'w4', status: 'red' as const, cells: { name: 'Marcus Tan', ndisCheck: 'Worker Screening', expiry: '01 Mar 2026', daysLeft: '-40', status: 'Expired' } },
 ];
 
 export function NDISMockContent() {

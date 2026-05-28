@@ -44,7 +44,7 @@ const defaultSteps: ChainStep[] = [
     icon: Shield,
     title: 'Control Activated',
     detail: 'Review access rights quarterly',
-    meta: 'Owner: Sarah Chen • Frequency: Quarterly',
+    meta: 'Owner: Min Park • Frequency: Quarterly',
     color: 'text-emerald-400',
     bg: 'bg-emerald-500/15',
     border: 'border-emerald-500/20',

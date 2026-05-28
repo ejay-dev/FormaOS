@@ -548,7 +548,7 @@ export default function FinancialServicesContent() {
                   },
                   {
                     k: 'AML/CTF - SMR log',
-                    v: 'Sarah Chen - AML',
+                    v: 'Min Park - AML',
                     status: 'amber',
                   },
                   {

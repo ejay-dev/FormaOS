@@ -19,7 +19,7 @@ const OBLIGATION_ROWS = [
     cells: {
       obligation: 'NDIS Practice Standards Review',
       framework: 'NDIS',
-      owner: 'S. Chen',
+      owner: 'NDIS Quality Lead',
       due: '01 Apr 2026',
       status: 'Overdue',
     },
@@ -30,7 +30,7 @@ const OBLIGATION_ROWS = [
     cells: {
       obligation: 'CPS 230 Risk Assessment',
       framework: 'APRA',
-      owner: 'M. Wong',
+      owner: 'Risk Manager',
       due: '18 Apr 2026',
       status: 'Due Soon',
     },
@@ -41,7 +41,7 @@ const OBLIGATION_ROWS = [
     cells: {
       obligation: 'AHPRA Registration Audit',
       framework: 'AHPRA',
-      owner: 'Dr Mitchell',
+      owner: 'Clinical Governance Lead',
       due: '30 Jun 2026',
       status: 'On Track',
     },
@@ -52,7 +52,7 @@ const OBLIGATION_ROWS = [
     cells: {
       obligation: 'NQF Quality Improvement',
       framework: 'ACECQA',
-      owner: 'L. Kumar',
+      owner: 'Service Director',
       due: '15 Jul 2026',
       status: 'On Track',
     },
@@ -63,7 +63,7 @@ const OBLIGATION_ROWS = [
     cells: {
       obligation: 'WHS Act Compliance Check',
       framework: 'SafeWork',
-      owner: 'R. Park',
+      owner: 'WHS Officer',
       due: '22 Apr 2026',
       status: 'Due Soon',
     },
@@ -74,7 +74,7 @@ const OBLIGATION_ROWS = [
     cells: {
       obligation: 'AML/CTF Annual Report',
       framework: 'AUSTRAC',
-      owner: 'D. Chen',
+      owner: 'AML/CTF Officer',
       due: '30 Sep 2026',
       status: 'On Track',
     },

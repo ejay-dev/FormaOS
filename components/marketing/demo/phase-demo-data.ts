@@ -73,9 +73,9 @@ export const structureFrameworks = [
 ];
 
 export const structureControlMappings = [
-  { control: 'A.5.1 Information Security Policy', framework: 'ISO 27001', owner: 'Sarah Chen', status: 'mapped' as const },
+  { control: 'A.5.1 Information Security Policy', framework: 'ISO 27001', owner: 'Min Park', status: 'mapped' as const },
   { control: 'CC6.1 Logical Access Controls', framework: 'SOC 2', owner: 'Marcus Rivera', status: 'mapped' as const },
-  { control: '164.312(a) Access Control', framework: 'HIPAA', owner: 'Priya Sharma', status: 'mapping' as const },
+  { control: '164.312(a) Access Control', framework: 'HIPAA', owner: 'Anjali Reddy', status: 'mapping' as const },
   { control: 'A.12.4 Logging & Monitoring', framework: 'ISO 27001', owner: 'David Okonkwo', status: 'pending' as const },
 ];
 
@@ -96,9 +96,9 @@ export const operationalizeWorkflowTriggers = [
 ];
 
 export const operationalizeTaskAssignments = [
-  { id: 'ot1', title: 'Review Access Control Policy', assignee: 'Sarah Chen', framework: 'ISO 27001', priority: 'high' as const },
+  { id: 'ot1', title: 'Review Access Control Policy', assignee: 'Min Park', framework: 'ISO 27001', priority: 'high' as const },
   { id: 'ot2', title: 'Upload penetration test results', assignee: 'Marcus Rivera', framework: 'SOC 2', priority: 'high' as const },
-  { id: 'ot3', title: 'Update patient data handling', assignee: 'Priya Sharma', framework: 'HIPAA', priority: 'medium' as const },
+  { id: 'ot3', title: 'Update patient data handling', assignee: 'Anjali Reddy', framework: 'HIPAA', priority: 'medium' as const },
 ];
 
 export const operationalizeEvidenceUpload = {
@@ -127,7 +127,7 @@ export const validateRiskIndicators = [
 
 export const validateAuditEntries: DemoAuditEntry[] = [
   { id: 'va1', action: 'Control verified', user: 'System', target: 'A.5.1 Info Security Policy', timestamp: '11 Feb 09:14', type: 'compliance' },
-  { id: 'va2', action: 'Evidence validated', user: 'Sarah Chen', target: 'Penetration Test Results Q1', timestamp: '10 Feb 16:42', type: 'evidence' },
+  { id: 'va2', action: 'Evidence validated', user: 'Min Park', target: 'Penetration Test Results Q1', timestamp: '10 Feb 16:42', type: 'evidence' },
   { id: 'va3', action: 'Deviation detected', user: 'System', target: 'A.12.4 Logging & Monitoring', timestamp: '10 Feb 14:20', type: 'compliance' },
   { id: 'va4', action: 'Risk assessment updated', user: 'David Okonkwo', target: 'HIPAA Risk Register', timestamp: '10 Feb 11:30', type: 'compliance' },
   { id: 'va5', action: 'Score updated', user: 'System', target: 'ISO 27001 - 89%', timestamp: '10 Feb 09:00', type: 'compliance' },

@@ -168,9 +168,9 @@ const org: TenantOrg = {
 };
 
 const users: TenantUser[] = [
-  { id: 'u1', name: 'Sarah Chen', email: 'sarah.chen@formaos-health.com.au', role: 'Compliance Officer', avatar: 'SC', department: 'Compliance', isActive: true },
+  { id: 'u1', name: 'Min Park', email: 'sarah.chen@formaos-health.com.au', role: 'Compliance Officer', avatar: 'SC', department: 'Compliance', isActive: true },
   { id: 'u2', name: 'Marcus Rivera', email: 'marcus.r@formaos-health.com.au', role: 'IT Security Lead', avatar: 'MR', department: 'IT Security', isActive: true },
-  { id: 'u3', name: 'Priya Sharma', email: 'priya.s@formaos-health.com.au', role: 'Clinical Governance', avatar: 'PS', department: 'Clinical', isActive: true },
+  { id: 'u3', name: 'Anjali Reddy', email: 'anjali.r@formaos-health.com.au', role: 'Clinical Governance', avatar: 'AR', department: 'Clinical', isActive: true },
   { id: 'u4', name: 'James Liu', email: 'james.liu@formaos-health.com.au', role: 'Operations Manager', avatar: 'JL', department: 'Operations', isActive: true },
   { id: 'u5', name: 'Emma Wilson', email: 'emma.w@formaos-health.com.au', role: 'Quality Assurance', avatar: 'EW', department: 'Quality', isActive: true },
   { id: 'u6', name: 'David Okonkwo', email: 'david.o@formaos-health.com.au', role: 'Risk Analyst', avatar: 'DO', department: 'Risk', isActive: true },
@@ -238,7 +238,7 @@ const auditLog: TenantAuditEntry[] = [
   { id: 'a3', action: 'Task completed', userId: 'u2', targetType: 'task', targetId: 't2', targetName: 'Upload penetration test results', timestamp: '10 Feb 16:38', metadata: {} },
   { id: 'a4', action: 'User invited', userId: 'u1', targetType: 'user', targetId: 'u5', targetName: 'emma.w@formaos-health.com.au', timestamp: '10 Feb 11:20', metadata: { role: 'Quality Assurance' } },
   { id: 'a5', action: 'Evidence approved', userId: 'u1', targetType: 'evidence', targetId: 'e1', targetName: 'SOC 2 Type II Report', timestamp: '09 Feb 14:55', metadata: {} },
-  { id: 'a6', action: 'Task assigned', userId: 'u1', targetType: 'task', targetId: 't1', targetName: 'Review Access Control Policy', timestamp: '09 Feb 10:30', metadata: { assignee: 'Sarah Chen' } },
+  { id: 'a6', action: 'Task assigned', userId: 'u1', targetType: 'task', targetId: 't1', targetName: 'Review Access Control Policy', timestamp: '09 Feb 10:30', metadata: { assignee: 'Min Park' } },
   { id: 'a7', action: 'Compliance score updated', userId: 'system', targetType: 'framework', targetId: 'fw1', targetName: 'ISO 27001 - 91%', timestamp: '08 Feb 23:00', metadata: { previous: '89%', current: '91%' } },
   { id: 'a8', action: 'Policy submitted for review', userId: 'u2', targetType: 'policy', targetId: 'p2', targetName: 'Access Control Policy', timestamp: '08 Feb 15:12', metadata: { version: '2.8' } },
   { id: 'a9', action: 'Task overdue', userId: 'system', targetType: 'task', targetId: 't3', targetName: 'Update incident response playbook', timestamp: '08 Feb 09:00', metadata: { daysOverdue: '1' } },

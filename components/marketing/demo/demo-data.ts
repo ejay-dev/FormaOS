@@ -74,9 +74,9 @@ export const demoOrg = {
 // -----------------------------------------------------------------------------
 
 export const demoUsers: DemoUser[] = [
-  { name: 'Sarah Chen', role: 'Compliance Officer', avatar: 'SC', email: 'sarah.chen@formaos-health.com.au' },
+  { name: 'Min Park', role: 'Compliance Officer', avatar: 'SC', email: 'sarah.chen@formaos-health.com.au' },
   { name: 'Marcus Rivera', role: 'IT Security Lead', avatar: 'MR', email: 'marcus.r@formaos-health.com.au' },
-  { name: 'Priya Sharma', role: 'Clinical Governance', avatar: 'PS', email: 'priya.s@formaos-health.com.au' },
+  { name: 'Anjali Reddy', role: 'Clinical Governance', avatar: 'AR', email: 'anjali.r@formaos-health.com.au' },
   { name: 'James Liu', role: 'Operations Manager', avatar: 'JL', email: 'james.liu@formaos-health.com.au' },
   { name: 'Emma Wilson', role: 'Quality Assurance', avatar: 'EW', email: 'emma.w@formaos-health.com.au' },
   { name: 'David Okonkwo', role: 'Risk Analyst', avatar: 'DO', email: 'david.o@formaos-health.com.au' },
@@ -87,15 +87,15 @@ export const demoUsers: DemoUser[] = [
 // -----------------------------------------------------------------------------
 
 export const demoTasks: DemoTask[] = [
-  { id: 't1', title: 'Review Access Control Policy', assignee: 'Sarah Chen', status: 'in-progress', due: '15 Feb 2026', priority: 'high', framework: 'ISO 27001' },
+  { id: 't1', title: 'Review Access Control Policy', assignee: 'Min Park', status: 'in-progress', due: '15 Feb 2026', priority: 'high', framework: 'ISO 27001' },
   { id: 't2', title: 'Upload penetration test results', assignee: 'Marcus Rivera', status: 'completed', due: '10 Feb 2026', priority: 'high', framework: 'SOC 2' },
   { id: 't3', title: 'Update incident response playbook', assignee: 'David Okonkwo', status: 'overdue', due: '08 Feb 2026', priority: 'high', framework: 'ISO 27001' },
   { id: 't4', title: 'Conduct quarterly risk assessment', assignee: 'David Okonkwo', status: 'in-progress', due: '20 Feb 2026', priority: 'medium', framework: 'ISO 27001' },
   { id: 't5', title: 'Review vendor security questionnaires', assignee: 'Marcus Rivera', status: 'pending', due: '25 Feb 2026', priority: 'medium', framework: 'SOC 2' },
-  { id: 't6', title: 'Update patient data handling procedures', assignee: 'Priya Sharma', status: 'completed', due: '05 Feb 2026', priority: 'high', framework: 'HIPAA' },
+  { id: 't6', title: 'Update patient data handling procedures', assignee: 'Anjali Reddy', status: 'completed', due: '05 Feb 2026', priority: 'high', framework: 'HIPAA' },
   { id: 't7', title: 'Schedule staff security training', assignee: 'James Liu', status: 'pending', due: '28 Feb 2026', priority: 'low', framework: 'ISO 27001' },
   { id: 't8', title: 'Verify backup recovery procedures', assignee: 'Marcus Rivera', status: 'completed', due: '03 Feb 2026', priority: 'medium', framework: 'SOC 2' },
-  { id: 't9', title: 'Audit clinical records access logs', assignee: 'Priya Sharma', status: 'in-progress', due: '18 Feb 2026', priority: 'high', framework: 'HIPAA' },
+  { id: 't9', title: 'Audit clinical records access logs', assignee: 'Anjali Reddy', status: 'in-progress', due: '18 Feb 2026', priority: 'high', framework: 'HIPAA' },
   { id: 't10', title: 'Update business continuity plan', assignee: 'James Liu', status: 'pending', due: '01 Mar 2026', priority: 'medium', framework: 'ISO 27001' },
   { id: 't11', title: 'Review firewall rule changes', assignee: 'Marcus Rivera', status: 'overdue', due: '07 Feb 2026', priority: 'high', framework: 'SOC 2' },
   { id: 't12', title: 'Complete HIPAA training certification', assignee: 'Emma Wilson', status: 'completed', due: '01 Feb 2026', priority: 'medium', framework: 'HIPAA' },
@@ -106,15 +106,15 @@ export const demoTasks: DemoTask[] = [
 // -----------------------------------------------------------------------------
 
 export const demoPolicies: DemoPolicy[] = [
-  { id: 'p1', name: 'Information Security Policy', owner: 'Sarah Chen', status: 'active', lastReview: '10 Jan 2026', nextReview: '10 Jul 2026', framework: 'ISO 27001' },
+  { id: 'p1', name: 'Information Security Policy', owner: 'Min Park', status: 'active', lastReview: '10 Jan 2026', nextReview: '10 Jul 2026', framework: 'ISO 27001' },
   { id: 'p2', name: 'Access Control Policy', owner: 'Marcus Rivera', status: 'review', lastReview: '15 Nov 2025', nextReview: '15 Feb 2026', framework: 'ISO 27001' },
-  { id: 'p3', name: 'Data Retention Policy', owner: 'Sarah Chen', status: 'active', lastReview: '01 Dec 2025', nextReview: '01 Jun 2026', framework: 'SOC 2' },
+  { id: 'p3', name: 'Data Retention Policy', owner: 'Min Park', status: 'active', lastReview: '01 Dec 2025', nextReview: '01 Jun 2026', framework: 'SOC 2' },
   { id: 'p4', name: 'Incident Response Policy', owner: 'David Okonkwo', status: 'active', lastReview: '20 Jan 2026', nextReview: '20 Jul 2026', framework: 'ISO 27001' },
-  { id: 'p5', name: 'Patient Privacy Policy', owner: 'Priya Sharma', status: 'active', lastReview: '05 Jan 2026', nextReview: '05 Jul 2026', framework: 'HIPAA' },
+  { id: 'p5', name: 'Patient Privacy Policy', owner: 'Anjali Reddy', status: 'active', lastReview: '05 Jan 2026', nextReview: '05 Jul 2026', framework: 'HIPAA' },
   { id: 'p6', name: 'Acceptable Use Policy', owner: 'James Liu', status: 'draft', lastReview: ' - ', nextReview: '01 Mar 2026', framework: 'ISO 27001' },
   { id: 'p7', name: 'Vendor Management Policy', owner: 'Marcus Rivera', status: 'active', lastReview: '12 Dec 2025', nextReview: '12 Jun 2026', framework: 'SOC 2' },
   { id: 'p8', name: 'Change Management Policy', owner: 'James Liu', status: 'active', lastReview: '08 Jan 2026', nextReview: '08 Jul 2026', framework: 'ISO 27001' },
-  { id: 'p9', name: 'PHI Handling Procedures', owner: 'Priya Sharma', status: 'review', lastReview: '01 Oct 2025', nextReview: '01 Feb 2026', framework: 'HIPAA' },
+  { id: 'p9', name: 'PHI Handling Procedures', owner: 'Anjali Reddy', status: 'review', lastReview: '01 Oct 2025', nextReview: '01 Feb 2026', framework: 'HIPAA' },
   { id: 'p10', name: 'Business Continuity Policy', owner: 'David Okonkwo', status: 'expired', lastReview: '15 Jul 2025', nextReview: '15 Jan 2026', framework: 'ISO 27001' },
 ];
 
@@ -127,10 +127,10 @@ export const demoEvidence: DemoEvidence[] = [
   { id: 'e2', name: 'Penetration Test Results Q1', category: 'Security Assessments', uploadedBy: 'Marcus Rivera', date: '10 Feb 2026', status: 'approved', size: '1.8 MB' },
   { id: 'e3', name: 'Staff Training Completion Records', category: 'Training', uploadedBy: 'James Liu', date: '05 Feb 2026', status: 'approved', size: '890 KB' },
   { id: 'e4', name: 'HIPAA Risk Assessment 2026', category: 'Risk Management', uploadedBy: 'David Okonkwo', date: '01 Feb 2026', status: 'pending', size: '3.1 MB' },
-  { id: 'e5', name: 'Access Review Audit Log', category: 'Access Control', uploadedBy: 'Sarah Chen', date: '28 Jan 2026', status: 'approved', size: '456 KB' },
+  { id: 'e5', name: 'Access Review Audit Log', category: 'Access Control', uploadedBy: 'Min Park', date: '28 Jan 2026', status: 'approved', size: '456 KB' },
   { id: 'e6', name: 'Incident Response Drill Report', category: 'Security Assessments', uploadedBy: 'David Okonkwo', date: '22 Jan 2026', status: 'approved', size: '1.2 MB' },
   { id: 'e7', name: 'Vendor Security Questionnaire - AWS', category: 'Vendor Management', uploadedBy: 'Marcus Rivera', date: '15 Jan 2026', status: 'pending', size: '780 KB' },
-  { id: 'e8', name: 'Clinical Data Backup Verification', category: 'Operations', uploadedBy: 'Priya Sharma', date: '12 Jan 2026', status: 'approved', size: '340 KB' },
+  { id: 'e8', name: 'Clinical Data Backup Verification', category: 'Operations', uploadedBy: 'Anjali Reddy', date: '12 Jan 2026', status: 'approved', size: '340 KB' },
 ];
 
 // -----------------------------------------------------------------------------
@@ -138,18 +138,18 @@ export const demoEvidence: DemoEvidence[] = [
 // -----------------------------------------------------------------------------
 
 export const demoAuditLog: DemoAuditEntry[] = [
-  { id: 'a1', action: 'Policy approved', user: 'Sarah Chen', target: 'Information Security Policy', timestamp: '11 Feb 09:14', type: 'policy' },
+  { id: 'a1', action: 'Policy approved', user: 'Min Park', target: 'Information Security Policy', timestamp: '11 Feb 09:14', type: 'policy' },
   { id: 'a2', action: 'Evidence uploaded', user: 'Marcus Rivera', target: 'Penetration Test Results Q1', timestamp: '10 Feb 16:42', type: 'evidence' },
   { id: 'a3', action: 'Task completed', user: 'Marcus Rivera', target: 'Upload penetration test results', timestamp: '10 Feb 16:38', type: 'task' },
-  { id: 'a4', action: 'User invited', user: 'Sarah Chen', target: 'emma.w@formaos-health.com.au', timestamp: '10 Feb 11:20', type: 'user' },
-  { id: 'a5', action: 'Evidence approved', user: 'Sarah Chen', target: 'SOC 2 Type II Report', timestamp: '09 Feb 14:55', type: 'evidence' },
-  { id: 'a6', action: 'Task assigned', user: 'Sarah Chen', target: 'Review Access Control Policy', timestamp: '09 Feb 10:30', type: 'task' },
+  { id: 'a4', action: 'User invited', user: 'Min Park', target: 'emma.w@formaos-health.com.au', timestamp: '10 Feb 11:20', type: 'user' },
+  { id: 'a5', action: 'Evidence approved', user: 'Min Park', target: 'SOC 2 Type II Report', timestamp: '09 Feb 14:55', type: 'evidence' },
+  { id: 'a6', action: 'Task assigned', user: 'Min Park', target: 'Review Access Control Policy', timestamp: '09 Feb 10:30', type: 'task' },
   { id: 'a7', action: 'Compliance score updated', user: 'System', target: 'ISO 27001 - 91%', timestamp: '08 Feb 23:00', type: 'compliance' },
   { id: 'a8', action: 'Policy submitted for review', user: 'Marcus Rivera', target: 'Access Control Policy', timestamp: '08 Feb 15:12', type: 'policy' },
   { id: 'a9', action: 'Task overdue', user: 'System', target: 'Update incident response playbook', timestamp: '08 Feb 09:00', type: 'task' },
   { id: 'a10', action: 'Evidence uploaded', user: 'James Liu', target: 'Staff Training Completion Records', timestamp: '05 Feb 13:28', type: 'evidence' },
-  { id: 'a11', action: 'Task completed', user: 'Priya Sharma', target: 'Update patient data handling procedures', timestamp: '05 Feb 11:45', type: 'task' },
-  { id: 'a12', action: 'Policy approved', user: 'Sarah Chen', target: 'Incident Response Policy', timestamp: '04 Feb 16:30', type: 'policy' },
+  { id: 'a11', action: 'Task completed', user: 'Anjali Reddy', target: 'Update patient data handling procedures', timestamp: '05 Feb 11:45', type: 'task' },
+  { id: 'a12', action: 'Policy approved', user: 'Min Park', target: 'Incident Response Policy', timestamp: '04 Feb 16:30', type: 'policy' },
   { id: 'a13', action: 'Risk assessment started', user: 'David Okonkwo', target: 'HIPAA Risk Assessment 2026', timestamp: '03 Feb 09:15', type: 'compliance' },
   { id: 'a14', action: 'Backup verification passed', user: 'System', target: 'Clinical Data Backup', timestamp: '02 Feb 03:00', type: 'system' },
   { id: 'a15', action: 'Task completed', user: 'Emma Wilson', target: 'Complete HIPAA training certification', timestamp: '01 Feb 14:20', type: 'task' },
