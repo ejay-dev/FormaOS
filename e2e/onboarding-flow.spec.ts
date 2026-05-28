@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import { expect, test } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 
@@ -361,11 +362,17 @@ test.describe('Onboarding first-session flow', () => {
         .select('id')
         .single();
       const taskId = (taskRow as { id: string } | null)?.id;
+      // file_hash is NOT NULL since commit 7fd40ffa (audit 2026-05-27).
+      const evidenceContent = `e2e-onboarding evidence ${unique}`;
+      const evidenceHash = createHash('sha256')
+        .update(evidenceContent, 'utf8')
+        .digest('hex');
       await admin.from('org_evidence').insert({
         organization_id: orgId,
         task_id: taskId,
         file_name: 'e2e-evidence.pdf',
         file_path: `evidence/e2e-${unique}.pdf`,
+        file_hash: evidenceHash,
       });
 
       await page.goto('/app', { waitUntil: 'domcontentloaded' });
@@ -411,7 +418,8 @@ test.describe('Onboarding first-session flow', () => {
           .eq('organization_id', orgId);
         await admin.from('org_members').delete().eq('organization_id', orgId);
         await admin.from('organizations').delete().eq('id', orgId);
-        await admin.from('orgs').delete().eq('id', orgId);
+        // public.orgs dropped by migration 20260624051 (R2 Phase B); the
+        // legacy mirror delete used to live here.
       }
       if (userId) {
         await admin.auth.admin.deleteUser(userId);

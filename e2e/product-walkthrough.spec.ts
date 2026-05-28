@@ -98,7 +98,7 @@ test.afterAll(async () => {
         .delete()
         .eq('organization_id', orgId);
       await admin.from('org_members').delete().eq('organization_id', orgId);
-      await admin.from('orgs').delete().eq('id', orgId);
+      // public.orgs dropped by migration 20260624051 (R2 Phase B).
       await admin.from('organizations').delete().eq('id', orgId);
     }
   }
@@ -180,17 +180,9 @@ async function createQAUser(
 
   const orgId = org.id;
 
-  // Create legacy orgs entry
-  await admin.from('orgs').upsert(
-    {
-      id: orgId,
-      name: fallbackName,
-      created_by: userId,
-      created_at: now,
-      updated_at: now,
-    },
-    { onConflict: 'id' },
-  );
+  // Legacy public.orgs mirror removed: migration 20260624051 (R2 Phase B,
+  // commit 6126ab21) dropped the table after repointing every dependent
+  // FK to organizations(id).
 
   // Create membership
   await admin.from('org_members').insert({
@@ -516,7 +508,7 @@ test.describe('E) Edge Cases', () => {
         // Cleanup
         await admin.from('org_members').delete().eq('organization_id', org.id);
         await admin.from('organizations').delete().eq('id', org.id);
-        await admin.from('orgs').delete().eq('id', org.id);
+        // public.orgs dropped by migration 20260624051 (R2 Phase B).
       }
 
       await admin.auth.admin.deleteUser(userId);

@@ -126,18 +126,12 @@ async function cleanupUser(userId: string) {
   }
 }
 
-async function mirrorLegacyOrg(org: { id: string; name?: string | null }) {
-  const { error } = await admin!.from('orgs').upsert(
-    {
-      id: org.id,
-      name: org.name ?? `Legacy Trial Org ${org.id}`,
-      created_by: null,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: 'id' },
-  );
-
-  expect(error).toBeNull();
+async function mirrorLegacyOrg(_org: { id: string; name?: string | null }) {
+  // No-op since migration 20260624051 (R2 Phase B, commit 6126ab21)
+  // dropped public.orgs after repointing every dependent FK to
+  // organizations(id). Kept as a function so the call sites compile
+  // without churn; safe to inline-delete once the next round of e2e
+  // refactors runs.
 }
 
 test.describe('Legacy Trialing Subscription - Data Integrity', () => {
