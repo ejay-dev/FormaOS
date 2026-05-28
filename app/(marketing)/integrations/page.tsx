@@ -6,12 +6,12 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Integrations - FormaOS',
   description:
-    'FormaOS integrates with Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, and Azure to embed compliance into the workflows your team already uses.',
+    'FormaOS ships with 6 live integrations today (Jira, Slack, Microsoft Teams, Microsoft Entra ID, Google Workspace, custom webhooks) and an extensible engine for the rest.',
   alternates: { canonical: `${siteUrl}/integrations` },
   openGraph: {
     title: 'Integrations | FormaOS',
     description:
-      'Connect FormaOS with Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, Azure, and more.',
+      '6 live integrations (Jira, Slack, Microsoft Teams, Microsoft Entra ID, Google Workspace, custom webhooks) plus a roadmap of additional connectors.',
     type: 'website',
     url: `${siteUrl}/integrations`,
   },
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Integrations | FormaOS',
     description:
-      'Connect FormaOS with Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, Azure, and more.',
+      '6 live integrations (Jira, Slack, Microsoft Teams, Microsoft Entra ID, Google Workspace, custom webhooks) plus a roadmap of additional connectors.',
   },
 };
 
