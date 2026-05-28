@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Quote, ShieldCheck } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -15,74 +15,73 @@ import {
   PUBLIC_CTA_LABELS,
 } from '@/lib/marketing/cta';
 
+// Illustrative use-case scenarios — not anonymised customer histories.
+// Each one describes how FormaOS would land in a buyer of this shape,
+// using product capabilities that are actually shipping. Framework
+// labels reflect what's in lib/compliance/evaluators/register.ts: only
+// the 8 packs (SOC 2 TSC, ISO 27001, NIST CSF, CIS, HIPAA, GDPR, PCI DSS,
+// NDIS Practice Standards) ship as auto-evaluators. Industry standards
+// like NSQHS, RACGP, ACQS, and APRA CPS 234 are mapped via custom
+// controls + templates, not as full evaluator packs.
 const stories = [
   {
-    title: 'National disability services provider',
+    title: 'NDIS provider scenario',
     context:
-      'NDIS provider - 400+ staff, multi-state operations, NDIS Commission registered',
-    framework: 'NDIS Practice Standards (all 8 modules)',
+      'Illustrative scope — multi-site NDIS Commission-registered provider',
+    framework: 'NDIS Practice Standards · 25 evaluators across 8 modules',
     situation:
-      'Rapid growth created fragmented evidence, unclear ownership, and high audit risk across multiple sites. Reportable incidents were tracked in spreadsheets - NDIS Commission audits required days of reconstruction.',
+      'Rapid growth fragments evidence across shared drives. Reportable incidents tracked manually. NDIS Commission audits require days of reconstruction. Statutory SIRS clock (24h immediate / 5 business-day detailed) is hard to evidence after the fact.',
     outcome: [
-      'Centralized evidence vault with verification and sign-off chain',
-      'Clear control ownership at every practice standard module',
-      'Reportable incident response down from 3 days to under 24 hours',
-      'Audit preparation time reduced from 3 weeks to under 4 hours',
+      'NDIS Practice Standards mapped end-to-end (25 evaluators) — named owner per module',
+      'org_incidents schema encodes the SIRS 24h / 5bd clock at the predicate layer',
+      'Hash-chained audit log; chain top anchors daily to Sigstore Rekor at 05:30 UTC',
+      'Audit export ZIP with framework summary, evidence references, score history',
     ],
-    quote:
-      'We stopped chasing evidence in folders. FormaOS made accountability explicit and defensible - the Commission auditor had everything in front of them in 2 hours.',
-    attribution: 'Head of Quality & Compliance',
   },
   {
-    title: 'Regional healthcare operator',
+    title: 'Healthcare network scenario',
     context:
-      'Healthcare network - 6 sites, NSQHS accredited, AHPRA practitioners',
-    framework: 'NSQHS Standards + AHPRA + RACGP',
+      'Illustrative scope — multi-site healthcare operator with NSQHS accreditation cycle + AHPRA-registered practitioners',
+    framework:
+      'AHPRA credential tracking · custom NSQHS / RACGP control mapping',
     situation:
-      'Clinical governance controls existed on paper, but proof was inconsistent across sites. AHPRA registration renewals were tracked manually - two near-misses in 12 months. Leadership had no live posture view ahead of accreditation.',
+      'Clinical governance controls exist on paper, proof is inconsistent across sites. AHPRA registration renewals tracked manually. Leadership lacks a live posture view ahead of accreditation. NSQHS Standards and RACGP requirements are mapped through templates and custom controls, not as shipping evaluator packs.',
     outcome: [
-      'Control-to-evidence mapping with NSQHS Standards linkage',
-      'AHPRA registration expiry alerts at 90/60/30-day intervals',
-      'Executive posture dashboard with real-time framework coverage',
-      'NSQHS accreditation achieved first-pass with no major findings',
+      'AHPRA credential register with 90 / 60 / 30-day expiry alerts',
+      'Custom-control mapping for NSQHS Standards + RACGP general-practice requirements',
+      'ISO 27001 (93 evaluators) auto-evaluating nightly against your live data',
+      'Cross-site executive posture rendered at /app/compliance/health',
     ],
-    quote:
-      'We finally had one place to prove what happened, when it happened, and who approved it. The accreditation visit was the easiest we have had in 8 years.',
-    attribution: 'Director of Clinical Governance',
   },
   {
-    title: 'Multi-site aged care organization',
+    title: 'Aged-care operator scenario',
     context:
-      'Aged care provider - 12 residential facilities, Aged Care Quality and Safety Commission registered',
-    framework: 'Aged Care Quality Standards (8 standards)',
+      'Illustrative scope — multi-site provider under the Aged Care Quality and Safety Commission',
+    framework:
+      'Aged Care Quality Standards via custom controls · ISO 27001 evaluator pack',
     situation:
-      'Policy changes were hard to roll out uniformly, periodic reviews slipped without reliable triggers, and Standard 8 governance reporting consumed weeks of executive time before each Commission visit.',
+      'Policy changes are hard to roll out uniformly. Periodic reviews slip without reliable triggers. Standard 8 governance reporting consumes executive time before each Commission visit. The Aged Care Quality Standards are mapped via custom controls + policy templates rather than a shipping evaluator pack.',
     outcome: [
-      'Policy review cadence enforced with automated task triggers',
-      'Evidence renewal and expiry tracking across all 12 facilities',
-      'Standard 8 governance reporting cut from 3 weeks to 2 days',
-      'Commission visit resulted in commendable outcomes - no sanctions',
+      'Policy lifecycle with automated review-cadence triggers per Standard',
+      'Evidence renewal + expiry tracking across multiple facilities',
+      'ISO 27001 evaluator coverage layered on top for IT/security obligations',
+      'Audit export ZIP generated on demand with SHA-256 evidence hashes',
     ],
-    quote:
-      'The system makes compliance routine. We can focus on care delivery and still be fully audit-ready - Commission or not.',
-    attribution: 'CEO & Registered Provider',
   },
   {
-    title: 'Mid-market financial services firm',
+    title: 'Financial services scenario',
     context:
-      'Financial services - 200+ staff, ASIC and APRA regulated, AML/CTF reporting obligations',
-    framework: 'ISO 27001 + APRA CPS 234 + AML/CTF Act',
+      'Illustrative scope — ASIC + APRA-regulated firm with AML/CTF reporting obligations',
+    framework:
+      'ISO 27001 · SOC 2 TSC · APRA CPS 234 via custom controls · AML/CTF policy library',
     situation:
-      'Rapid fintech partnerships introduced new third-party risk, but control ownership and evidence collection remained manual. ASIC breach reporting timelines were tight - the team relied on email threads and shared drives to reconstruct incident histories. Board governance reporting consumed days of analyst time each quarter.',
+      'Fintech partnerships introduce new third-party risk. ASIC reportable-situation timelines are tight; teams rely on email threads to reconstruct incident histories. Board governance reporting consumes days of analyst time each quarter. APRA CPS 234 is mapped via custom controls (not a shipping evaluator pack).',
     outcome: [
-      'APRA CPS 234 control mapping with named owners and evidence trails',
-      'ASIC reportable situation response time reduced from days to under 4 hours',
-      'Board governance packs generated in minutes instead of days',
-      'ISO 27001 surveillance audit passed with zero non-conformities',
+      'SOC 2 TSC (61 evaluators) + ISO 27001 (93 evaluators) running nightly',
+      'APRA CPS 234 obligations mapped via custom controls with named owners',
+      'AML/CTF program tracked in the policy library with review cadence enforced',
+      'Board-ready posture rendered live; audit export ZIP available on demand',
     ],
-    quote:
-      'Our auditors used to spend the first two days requesting documents. Now they log into the read-only evidence room and have everything before the opening meeting.',
-    attribution: 'Head of Governance, Risk & Compliance',
   },
 ] as const;
 
@@ -106,7 +105,7 @@ export default function CustomerStoriesContent() {
             </span>
           </>
         }
-        subheadline="Anonymized scenarios from regulated organizations. Metrics reflect conditions at the time of deployment. We can discuss deeper walkthroughs during evaluation."
+        subheadline="Illustrative scenarios showing how FormaOS lands in regulated industries — not anonymised customer histories. Each describes a representative buyer shape and the product capabilities that apply. We can walk through real deployments during evaluation."
         primaryCta={{
           href: demoHref('customer_stories_hero'),
           label: PUBLIC_CTA_LABELS.bookDemo,
@@ -164,23 +163,12 @@ export default function CustomerStoriesContent() {
                   </ul>
                 </div>
 
-                <div className="mt-6 rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                      <Quote className="h-4 w-4 text-cyan-200" />
-                    </div>
-                    <div>
-                      <p className="text-sm leading-relaxed text-slate-200 italic">
-                        &ldquo;{s.quote}&rdquo;
-                      </p>
-                      {'attribution' in s && (
-                        <p className="mt-2 text-xs font-medium text-slate-400">
-                          - {s.attribution}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                {/* Quote block removed 2026-05-28 — the previous
+                    quotes ("- Head of Quality & Compliance", etc.) read
+                    as anonymised customer testimonials, but there are
+                    no real customer deployments behind them. These
+                    cards are illustrative scenarios; they shouldn't
+                    pretend to be quotes from real buyers. */}
               </motion.article>
             ))}
           </SectionChoreography>

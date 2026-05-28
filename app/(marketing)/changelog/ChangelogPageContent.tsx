@@ -1115,10 +1115,10 @@ const releases: ChangelogRelease[] = [
           'Build personalized compliance dashboards with 15 widget types including compliance scores, task boards, evidence timelines, framework coverage, and risk heatmaps. Drag-and-drop layout with save/share capability.',
       },
       {
-        text: 'Integration marketplace with 20+ connectors',
+        text: 'Integration marketplace UI',
         tag: 'integration',
         detail:
-          'Categorized integration marketplace with connectors for productivity (Slack, Teams, Jira), cloud (AWS, Azure, GCP), identity (Okta, Azure AD), security (Qualys, Tenable), and HRIS (BambooHR, Workday). One-click install with configuration wizard.',
+          'Categorised marketplace surface for the integrations currently shipping (Slack, Microsoft Teams, Jira, Azure AD SSO, Google Workspace, and custom webhooks). One-click install with configuration wizard. Connectors for AWS, Azure, GCP, Okta, Qualys, Tenable, HRIS systems are on the roadmap — not in this release.',
       },
       {
         text: 'Enhanced audit trail with advanced filtering and export',
@@ -1137,10 +1137,10 @@ const releases: ChangelogRelease[] = [
     isMajor: true,
     changes: [
       {
-        text: 'Third-party integration engine with 12 pre-built connectors',
+        text: 'Third-party integration engine with 6 pre-built connectors',
         tag: 'integration',
         detail:
-          'Configurable integration framework supporting Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS CloudTrail, Azure Monitor, Okta, Google Workspace, Qualys, Tenable, and ServiceNow. OAuth2 and API key auth with automatic token refresh and health monitoring.',
+          'Configurable integration framework supporting Jira, Slack, Microsoft Teams, Azure AD (SSO + directory sync), Google Workspace (directory sync), and custom webhooks. OAuth2 and API key auth with retry handling and basic health monitoring. The engine is extensible; additional connectors (cloud, scanner, HRIS, ITSM) are on the roadmap, not in this release.',
       },
       {
         text: 'Threaded comments on all compliance entities',
