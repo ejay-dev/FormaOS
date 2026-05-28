@@ -68,12 +68,9 @@ test.afterAll(async () => {
     try {
       await admin.from('org_subscriptions').delete().eq('organization_id', orgId);
       await admin.from('org_members').delete().eq('organization_id', orgId);
-      // `organizations` is canonical; the DB trigger
-      // `trg_mirror_organizations_delete_to_orgs` (migration 20260624029)
-      // removes the matching `orgs` row automatically. Deleting `orgs`
-      // explicitly would race the trigger and previously produced drift
-      // when organizations.delete failed silently (Supabase .delete()
-      // returns {error} rather than throwing).
+      // public.orgs (and its mirror triggers) dropped by migration
+      // 20260624051 (R2 Phase B, commit 6126ab21). organizations(id) is
+      // now the only source of truth.
       await admin.from('organizations').delete().eq('id', orgId);
     } catch {
       // ignore
@@ -122,25 +119,9 @@ async function provisionMfaUser() {
   }
   createdOrgIds.push(org.id);
 
-  // Mirror to legacy `orgs` table (v4-001). The bootstrap path normally
-  // does this for real users, but this spec inserts directly via admin
-  // client and never triggers bootstrap. Without this mirror the
-  // organizations row leaves a reverse-direction orphan.
-  const { error: legacyOrgsError } = await admin.from('orgs').upsert(
-    {
-      id: org.id,
-      name: `MFA Test Org ${id}`,
-      created_by: created.user.id,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: 'id' },
-  );
-  if (legacyOrgsError) {
-    throw new Error(
-      `Failed to mirror MFA test org to legacy orgs: ${legacyOrgsError.message}`,
-    );
-  }
+  // Legacy public.orgs mirror removed: migration 20260624051 (R2 Phase B,
+  // commit 6126ab21) dropped the table after repointing every dependent
+  // FK to organizations(id).
 
   await admin.from('org_members').insert({
     user_id: created.user.id,
