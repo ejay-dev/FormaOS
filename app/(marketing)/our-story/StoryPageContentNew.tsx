@@ -155,17 +155,39 @@ function FounderQuote() {
               className="w-32 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full mb-8"
             />
 
-            {/* Attribution */}
+            {/* Attribution with founder avatar.
+                Image file at /public/team/founder.jpg — page renders
+                cleanly with initials fallback even if the binary isn't
+                uploaded yet. */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.8, duration: duration.slow }}
-              className="relative text-gray-400"
+              className="relative flex flex-col items-center gap-4 text-gray-400 sm:flex-row sm:justify-center"
             >
-              <span className="font-semibold text-white">Ejaz Hussain</span>
-              <span className="mx-3 text-indigo-500">•</span>
-              <span>Founder & Chief Engineer, FormaOS</span>
+              <div className="relative h-16 w-16 shrink-0">
+                <div
+                  aria-hidden
+                  className="absolute inset-0 flex items-center justify-center rounded-full border border-indigo-500/30 bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-sm font-semibold text-white/50"
+                >
+                  EH
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/team/founder.jpg"
+                  alt="Portrait of Ejaz Hussain, founder of FormaOS"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                  className="relative h-16 w-16 rounded-full border border-white/[0.1] object-cover"
+                />
+              </div>
+              <div>
+                <span className="font-semibold text-white">Ejaz Hussain</span>
+                <span className="mx-3 text-indigo-500">•</span>
+                <span>Founder &amp; Chief Engineer, FormaOS</span>
+              </div>
             </motion.div>
           </div>
         </motion.div>

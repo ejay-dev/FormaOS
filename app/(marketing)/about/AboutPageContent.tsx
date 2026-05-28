@@ -165,7 +165,7 @@ export default function AboutPageContent() {
       {/* Founder Origin Story */}
       <DeferredSection minHeight={220}>
         <section className="mk-section relative">
-          <div className="mx-auto max-w-4xl px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
               variant="depthScale"
               range={[0, 0.3]}
@@ -177,48 +177,77 @@ export default function AboutPageContent() {
             </ScrollReveal>
 
             <ScrollReveal variant="slideUp" range={[0.05, 0.35]}>
-              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8 sm:p-10">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="rounded-xl border border-teal-400/20 bg-teal-500/10 p-3 shrink-0">
-                    <Code2 className="w-5 h-5 text-teal-400" />
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 sm:p-8 lg:p-10">
+                <div className="grid gap-8 lg:grid-cols-[280px_1fr] lg:gap-10 lg:items-start">
+                  {/* Founder photo. Real binary lives at
+                      /public/team/founder.jpg — until that's uploaded
+                      the <img>'s onError hides itself and reveals the
+                      "EH" initials placeholder behind it. */}
+                  <div className="relative mx-auto aspect-[7/10] w-full max-w-[280px] lg:mx-0">
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 flex items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500/10 to-violet-500/10 border border-white/[0.08]"
+                    >
+                      <span className="font-display text-5xl font-semibold tracking-tight text-white/40">
+                        EH
+                      </span>
+                    </div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/team/founder.jpg"
+                      alt="Portrait of Ejaz Hussain, founder of FormaOS"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                      className="relative h-full w-full rounded-2xl border border-white/[0.08] object-cover"
+                    />
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">
-                      Ejaz Hussain
-                    </h3>
-                    <p className="text-sm text-teal-400/70">Founder & CEO</p>
-                  </div>
-                </div>
 
-                <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
-                  <p>
-                    FormaOS didn&apos;t start as a product idea. It started as
-                    frustration. After years building technology for regulated
-                    organizations - healthcare networks, NDIS providers,
-                    financial services firms - the same pattern emerged
-                    everywhere: compliance teams managing critical obligations
-                    in spreadsheets, shared drives, and email threads. Evidence
-                    scattered. Ownership unclear. Audit preparation consuming
-                    weeks that should have been hours.
-                  </p>
-                  <p>
-                    The tools available solved storage - not execution. They
-                    could hold documents, but they couldn&apos;t enforce
-                    accountability. They could generate reports, but they
-                    couldn&apos;t prove who owned what, when it was verified, or
-                    whether the work actually happened. When regulators arrived,
-                    teams scrambled to reconstruct timelines that should have
-                    been captured automatically.
-                  </p>
-                  <p>
-                    FormaOS was built to close that gap. Not as another document
-                    repository or checklist tool, but as a compliance operating
-                    system - infrastructure that connects obligations to
-                    controls, controls to owners, owners to evidence, and
-                    evidence to defensible audit trails. The system regulators
-                    expect, built the way engineers think about systems:
-                    structured, traceable, and continuously operational.
-                  </p>
+                  <div>
+                    <div className="mb-5">
+                      <h3 className="text-xl font-bold text-white">
+                        Ejaz Hussain
+                      </h3>
+                      <p className="mt-1 text-sm text-teal-400/80">
+                        Founder &amp; Chief Engineer
+                      </p>
+                      <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                        Sydney · Building FormaOS since 2022
+                      </p>
+                    </div>
+
+                    <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
+                      <p>
+                        FormaOS didn&apos;t start as a product idea. It started
+                        as frustration. After years building technology for
+                        regulated organizations — healthcare networks, NDIS
+                        providers, financial services firms — the same pattern
+                        emerged everywhere: compliance teams managing critical
+                        obligations in spreadsheets, shared drives, and email
+                        threads. Evidence scattered. Ownership unclear. Audit
+                        preparation consuming weeks that should have been hours.
+                      </p>
+                      <p>
+                        The tools available solved storage — not execution.
+                        They could hold documents, but they couldn&apos;t
+                        enforce accountability. They could generate reports, but
+                        they couldn&apos;t prove who owned what, when it was
+                        verified, or whether the work actually happened. When
+                        regulators arrived, teams scrambled to reconstruct
+                        timelines that should have been captured automatically.
+                      </p>
+                      <p>
+                        FormaOS was built to close that gap. Not as another
+                        document repository or checklist tool, but as a
+                        compliance operating system — infrastructure that
+                        connects obligations to controls, controls to owners,
+                        owners to evidence, and evidence to defensible audit
+                        trails. The system regulators expect, built the way
+                        engineers think about systems: structured, traceable,
+                        and continuously operational.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </ScrollReveal>

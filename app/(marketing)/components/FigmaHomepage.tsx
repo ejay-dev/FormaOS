@@ -197,6 +197,15 @@ export default function FormaOSHomepage({
             <FrameworkTrustStrip />,
             200,
           )}
+          {/* Cryptographic audit-chain proof — pulled to position 3
+              (after hero + framework strip) on 2026-05-28 to surface
+              the most code-grounded section early. Before, this sat
+              below 8 marketing-feature sections; a buyer scrolling
+              past the hero saw "compliance SaaS" framing instead of
+              "compliance product with cryptographic infrastructure." */}
+          <DeferredSection minHeight={420}>
+            <AuditChainSection />
+          </DeferredSection>
           {sectionVisibility.value_proposition !== false
             ? renderSection('value_proposition', <ValueProposition />)
             : null}
@@ -241,12 +250,6 @@ export default function FormaOSHomepage({
           {sectionVisibility.outcome_proof !== false
             ? renderSection('outcome_proof', <OutcomeProofSection />, 440)
             : null}
-          {/* Cryptographic audit-chain proof — always shown; the audit
-              log Merkle + Sigstore Rekor anchoring is core proof that
-              FormaOS is not vapor, so it is not gated by control plane. */}
-          <DeferredSection minHeight={420}>
-            <AuditChainSection />
-          </DeferredSection>
           {/* Social proof - always shown; not gated by control plane */}
           <DeferredSection minHeight={380}>
             <TestimonialsSection />
