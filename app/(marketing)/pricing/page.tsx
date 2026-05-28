@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import PricingPageContent from './PricingPageContent';
+import { KeyFacts } from '../components/shared/KeyFacts';
 import { PRICING_FAQS } from './components/faq-data';
 import { faqSchema, pricingSchema } from '@/lib/seo';
 import { breadcrumbSchema, siteUrl } from '@/lib/seo';
@@ -81,6 +82,19 @@ export default function PricingPage() {
             ]),
             pricingSchema(),
           ]} />
+      <KeyFacts
+        summary="FormaOS pricing covers four plans for regulated Australian organisations — Foundation through Enterprise. Pricing in AUD, GST applicable. Every plan unlocks the same 8 framework packs and 252 mapped controls."
+        facts={[
+          { label: 'Plans', value: 'Foundation · Growth · Scale · Enterprise' },
+          { label: 'Pricing model', value: 'Per-seat monthly. AUD pricing. GST applicable.' },
+          { label: 'Foundation', value: 'From AUD $297/month — single-site, one framework focus, all 252 controls available' },
+          { label: 'Growth', value: 'From AUD $797/month — multi-site, multi-framework cross-mapping, automation triggers' },
+          { label: 'Scale', value: 'From AUD $1,800/month — directory sync, advanced governance, expanded API quota' },
+          { label: 'Enterprise', value: 'From AUD $5,000/month — SAML 2.0 SSO, AU-managed deployment, dedicated security review, vendor assurance materials' },
+          { label: 'Trial', value: 'Guided assessment — not self-serve free tier (compliance setup needs scoping)' },
+          { label: 'Hosting', value: 'AU-hosted by default (Vercel Sydney + Supabase ap-southeast-2)' },
+        ]}
+      />
       <PricingPageContent />
     </>
   );
