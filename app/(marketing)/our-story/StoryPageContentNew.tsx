@@ -167,18 +167,19 @@ function FounderQuote() {
               transition={{ delay: 0.8, duration: duration.slow }}
               className="relative flex flex-col items-center gap-4 text-gray-400 sm:flex-row sm:justify-center"
             >
-              {/* Avatar: source photo is 499×1023 portrait. A plain
-                  64px circle showed head + suit + shoulders with the
-                  face only filling ~30% of the disc, which read as
-                  "stock headshot in a tile" rather than "founder
-                  avatar." Wrapping in overflow-hidden and scaling the
-                  inner img to 150% with the transform anchored at
-                  20% from top crops the shoulders out and lets the
-                  face fill the circle the way profile avatars do. */}
-              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/[0.1]">
+              {/* Avatar: source is a 1:2 portrait (499×1023). Earlier
+                  attempts used `scale-[1.5] origin-[50%_20%]` to zoom
+                  the face into a 64px circle — but the scale push
+                  cropped the right half of the face whenever the
+                  subject sat slightly off-centre in the source. New
+                  approach: larger 80px circle, no transform, just
+                  `object-cover` with `object-position` tuned to anchor
+                  the visible window around the upper portion of the
+                  portrait so the face lands centred without scaling. */}
+              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-white/[0.1]">
                 <div
                   aria-hidden
-                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-sm font-semibold text-white/50"
+                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-base font-semibold text-white/50"
                 >
                   EH
                 </div>
@@ -188,7 +189,7 @@ function FounderQuote() {
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
-                  className="relative h-full w-full object-cover scale-[1.5] origin-[50%_20%]"
+                  className="relative h-full w-full object-cover object-[50%_18%]"
                 />
               </div>
               <div>
