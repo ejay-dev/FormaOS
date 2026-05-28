@@ -105,7 +105,7 @@ export default function CustomerStoriesContent() {
             </span>
           </>
         }
-        subheadline="Illustrative scenarios showing how FormaOS lands in regulated industries — not anonymised customer histories. Each describes a representative buyer shape and the product capabilities that apply. We can walk through real deployments during evaluation."
+        subheadline="Illustrative scenarios showing how FormaOS lands in regulated industries — not anonymised customer histories. Real deployments discussed during evaluation."
         primaryCta={{
           href: demoHref('customer_stories_hero'),
           label: PUBLIC_CTA_LABELS.bookDemo,
