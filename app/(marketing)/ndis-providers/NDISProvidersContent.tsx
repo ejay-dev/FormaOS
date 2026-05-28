@@ -187,8 +187,13 @@ function FeatureVisual({
 }) {
   return (
     <div className="p-5 space-y-3">
-      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-        {label}
+      <div>
+        <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+          {label}
+        </div>
+        <div className="mt-0.5 text-[9px] text-slate-600">
+          Illustrative · sample data
+        </div>
       </div>
       <div className="space-y-2">
         {rows.map((r) => (

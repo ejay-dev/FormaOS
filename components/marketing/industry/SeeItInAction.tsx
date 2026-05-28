@@ -104,8 +104,13 @@ export function DemoDashboardContent({
 }) {
   return (
     <div className="p-6 lg:p-8">
-      <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-4">
-        {title}
+      <div className="mb-4">
+        <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+          {title}
+        </div>
+        <div className="mt-1 text-[10px] text-slate-600">
+          Illustrative dashboard · sample data, not a customer posture
+        </div>
       </div>
       <div className="space-y-2">
         {rows.map((row) => (
