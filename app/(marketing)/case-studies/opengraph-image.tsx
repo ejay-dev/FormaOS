@@ -10,7 +10,7 @@ export default function Image() {
     eyebrow: 'Company',
     headline: 'Case Studies',
       subhead: 'Representative FormaOS proof packs showing audit preparation, governed workflows, and evidence trails for regulated operators.',
-    badges: ['Australia', 'Sydney HQ'],
+    badges: ['Australia', 'Adelaide HQ'],
     accent: 'violet',
   });
 }

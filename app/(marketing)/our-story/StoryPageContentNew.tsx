@@ -139,10 +139,11 @@ function FounderQuote() {
               transition={{ delay: 0.3, duration: duration.slower }}
               className="relative text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight mb-8"
             >
-              We didn&apos;t build FormaOS to manage compliance.
+              The audit log signs itself.
               <br />
               <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                We built it to make accountability unavoidable.
+                FormaOS anchors it daily to a public transparency tree so a
+                regulator can verify any event without trusting me.
               </span>
             </motion.blockquote>
 
@@ -155,17 +156,46 @@ function FounderQuote() {
               className="w-32 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full mb-8"
             />
 
-            {/* Attribution */}
+            {/* Attribution with founder avatar.
+                Image file at /public/team/founder.jpg — page renders
+                cleanly with initials fallback even if the binary isn't
+                uploaded yet. */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.8, duration: duration.slow }}
-              className="relative text-gray-400"
+              className="relative flex flex-col items-center gap-4 text-gray-400 sm:flex-row sm:justify-center"
             >
-              <span className="font-semibold text-white">Ejaz Hussain</span>
-              <span className="mx-3 text-indigo-500">•</span>
-              <span>Founder & Chief Engineer, FormaOS</span>
+              {/* Avatar: source photo is 499×1023 portrait. A plain
+                  64px circle showed head + suit + shoulders with the
+                  face only filling ~30% of the disc, which read as
+                  "stock headshot in a tile" rather than "founder
+                  avatar." Wrapping in overflow-hidden and scaling the
+                  inner img to 150% with the transform anchored at
+                  20% from top crops the shoulders out and lets the
+                  face fill the circle the way profile avatars do. */}
+              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/[0.1]">
+                <div
+                  aria-hidden
+                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-sm font-semibold text-white/50"
+                >
+                  EH
+                </div>
+                <img
+                  src="/team/founder.jpeg"
+                  alt="Portrait of Ejaz Hussain, founder of FormaOS"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                  className="relative h-full w-full object-cover scale-[1.5] origin-[50%_20%]"
+                />
+              </div>
+              <div>
+                <span className="font-semibold text-white">Ejaz Hussain</span>
+                <span className="mx-3 text-indigo-500">•</span>
+                <span>Founder &amp; Chief Engineer, FormaOS</span>
+              </div>
             </motion.div>
           </div>
         </motion.div>

@@ -62,7 +62,7 @@ function AboutHero() {
       visualInteractive
       badge={{
         icon: <Users className="w-4 h-4 text-violet-400" />,
-        text: 'About FormaOS · Founded 2025 · Sydney, Australia',
+        text: 'About FormaOS · Building since 2022 · Adelaide, Australia',
         colorClass: 'violet',
       }}
       headline={
@@ -80,33 +80,6 @@ function AboutHero() {
     />
   );
 }
-
-const milestones = [
-  {
-    year: '2022',
-    title: 'Problem identified',
-    detail:
-      'After years working inside regulated organizations, the founding team recognized a structural gap: compliance tools stored documents, but none enforced execution. The concept for a compliance operating system was born.',
-  },
-  {
-    year: '2023',
-    title: 'First regulated deployment',
-    detail:
-      'FormaOS deployed with its first NDIS provider - 400+ staff across multiple states. The platform proved that compliance could run as operational workflow with named ownership and defensible evidence.',
-  },
-  {
-    year: '2024',
-    title: 'Healthcare and multi-framework expansion',
-    detail:
-      'AHPRA credential tracking, NSQHS Standards mapping, and ISO 27001 frameworks went live. Multi-entity support and SAML 2.0 SSO launched for enterprise identity governance.',
-  },
-  {
-    year: '2025',
-    title: 'Enterprise-grade infrastructure',
-    detail:
-      'AU-hosted deployment by default, APRA CPS 234 framework support, SAML 2.0 SSO, and a more mature enterprise review pack covering DPA, vendor assurance materials, SLA review, and security documentation.',
-  },
-] as const;
 
 const values = [
   {
@@ -165,7 +138,7 @@ export default function AboutPageContent() {
       {/* Founder Origin Story */}
       <DeferredSection minHeight={220}>
         <section className="mk-section relative">
-          <div className="mx-auto max-w-4xl px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
               variant="depthScale"
               range={[0, 0.3]}
@@ -177,114 +150,87 @@ export default function AboutPageContent() {
             </ScrollReveal>
 
             <ScrollReveal variant="slideUp" range={[0.05, 0.35]}>
-              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8 sm:p-10">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="rounded-xl border border-teal-400/20 bg-teal-500/10 p-3 shrink-0">
-                    <Code2 className="w-5 h-5 text-teal-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">
-                      Ejaz Hussain
-                    </h3>
-                    <p className="text-sm text-teal-400/70">Founder & CEO</p>
-                  </div>
-                </div>
-
-                <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
-                  <p>
-                    FormaOS didn&apos;t start as a product idea. It started as
-                    frustration. After years building technology for regulated
-                    organizations - healthcare networks, NDIS providers,
-                    financial services firms - the same pattern emerged
-                    everywhere: compliance teams managing critical obligations
-                    in spreadsheets, shared drives, and email threads. Evidence
-                    scattered. Ownership unclear. Audit preparation consuming
-                    weeks that should have been hours.
-                  </p>
-                  <p>
-                    The tools available solved storage - not execution. They
-                    could hold documents, but they couldn&apos;t enforce
-                    accountability. They could generate reports, but they
-                    couldn&apos;t prove who owned what, when it was verified, or
-                    whether the work actually happened. When regulators arrived,
-                    teams scrambled to reconstruct timelines that should have
-                    been captured automatically.
-                  </p>
-                  <p>
-                    FormaOS was built to close that gap. Not as another document
-                    repository or checklist tool, but as a compliance operating
-                    system - infrastructure that connects obligations to
-                    controls, controls to owners, owners to evidence, and
-                    evidence to defensible audit trails. The system regulators
-                    expect, built the way engineers think about systems:
-                    structured, traceable, and continuously operational.
-                  </p>
-                </div>
-              </div>
-            </ScrollReveal>
-          </div>
-        </section>
-      </DeferredSection>
-
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
-
-      {/* Company Timeline */}
-      <DeferredSection minHeight={280}>
-        <section className="mk-section relative">
-          <div className="mx-auto max-w-5xl px-6 lg:px-8">
-            <ScrollReveal
-              variant="depthScale"
-              range={[0, 0.3]}
-              className="text-center mb-12"
-            >
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                Company Timeline
-              </h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">
-                From identifying the compliance execution gap to deploying
-                enterprise infrastructure across regulated sectors.
-              </p>
-            </ScrollReveal>
-
-            <SectionChoreography
-              pattern="cascade"
-              stagger={0.06}
-              className="relative"
-            >
-              {/* Vertical timeline line */}
-              <div className="absolute left-6 sm:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-teal-400/30 via-teal-400/10 to-transparent" />
-
-              <div className="space-y-8">
-                {milestones.map((milestone, i) => (
-                  <div
-                    key={milestone.year}
-                    className={`relative flex items-start gap-6 ${i % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}
-                  >
-                    {/* Timeline dot */}
-                    <div className="absolute left-6 sm:left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-teal-400 border-2 border-[#0a0f1c] z-10" />
-
-                    {/* Content card */}
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 sm:p-8 lg:p-10">
+                <div className="grid gap-8 lg:grid-cols-[240px_1fr] lg:gap-10 lg:items-start">
+                  {/* Founder photo. Source is 499×1023 (≈1:2 portrait);
+                      frame uses aspect-[1/2] + object-top so the face
+                      stays anchored at the top instead of getting cropped
+                      by a default centre-crop. <img> falls back to the
+                      "EH" initials tile if the binary 404s. */}
+                  <div className="relative mx-auto aspect-[1/2] w-full max-w-[240px] lg:mx-0">
                     <div
-                      className={`ml-8 sm:ml-0 sm:w-[calc(50%-2rem)] ${i % 2 === 0 ? '' : 'sm:ml-auto'}`}
+                      aria-hidden
+                      className="absolute inset-0 flex items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500/10 to-violet-500/10 border border-white/[0.08]"
                     >
-                      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4 sm:p-6 hover:border-teal-400/15 hover:bg-white/[0.06] transition-all duration-200">
-                        <div className="text-xs font-bold uppercase tracking-wider text-teal-400 mb-2">
-                          {milestone.year}
-                        </div>
-                        <h3 className="text-base font-semibold text-white mb-2">
-                          {milestone.title}
-                        </h3>
-                        <p className="text-sm text-slate-400 leading-relaxed">
-                          {milestone.detail}
-                        </p>
-                      </div>
+                      <span className="font-display text-5xl font-semibold tracking-tight text-white/40">
+                        EH
+                      </span>
+                    </div>
+                    <img
+                      src="/team/founder.jpeg"
+                      alt="Portrait of Ejaz Hussain, founder of FormaOS"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                      className="relative h-full w-full rounded-2xl border border-white/[0.08] object-cover object-top"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="mb-5">
+                      <h3 className="text-xl font-bold text-white">
+                        Ejaz Hussain
+                      </h3>
+                      <p className="mt-1 text-sm text-teal-400/80">
+                        Founder &amp; Chief Engineer
+                      </p>
+                      <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                        Adelaide · Building FormaOS since 2022
+                      </p>
+                    </div>
+
+                    <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
+                      <p>
+                        FormaOS is my first project in compliance
+                        infrastructure. I&apos;ve been writing it from
+                        Adelaide since 2022, fitting it around freelance work
+                        &mdash; websites and web apps for whoever was paying
+                        that month. FormaOS was always the bigger thing, the
+                        one I actually cared about. I just needed the
+                        freelance to fund the runway.
+                      </p>
+                      <p>
+                        Compliance picked me as much as I picked it.
+                        Australian regulators have spent the past decade
+                        tightening expectations on NDIS providers, aged-care
+                        operators, healthcare networks, and AFS licensees.
+                        The software answering that pressure has, almost
+                        without exception, stayed at the level of a document
+                        repository with a workflow tab on top. I kept looking
+                        at it and thinking the actual problem was an
+                        engineering one. There was no executable layer
+                        connecting an obligation to a control to a task to a
+                        piece of evidence to an auditor who could verify any
+                        of it. Nobody was building that. So I started.
+                      </p>
+                      <p>
+                        Today FormaOS runs 252 controls across 8 framework
+                        packs. About 85 auto-evaluate nightly against your
+                        live data; the other 167 are surfaced as human
+                        attestations and labelled as such. The audit log is
+                        hash-chained at the database layer, with append-only
+                        enforced by Postgres RLS &mdash; not application code
+                        &mdash; and the chain top anchors daily at 05:30 UTC
+                        to Sigstore Rekor, the same transparency log the
+                        Linux Foundation uses for signed open-source releases.
+                        It&apos;s bootstrapped, sole-engineered, AU-hosted.
+                        The roadmap is short on purpose.
+                      </p>
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
-            </SectionChoreography>
+            </ScrollReveal>
           </div>
         </section>
       </DeferredSection>
@@ -292,6 +238,12 @@ export default function AboutPageContent() {
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
+
+      {/* Timeline section removed 2026-05-28 — the previous milestone
+          array claimed customer deployments and framework launches
+          that hadn't actually shipped. Pulled the whole section
+          rather than fabricate a four-year history. /about flows hero
+          → founder card → values → mission now. */}
 
       {/* Mission & Purpose */}
       <DeferredSection minHeight={240}>
