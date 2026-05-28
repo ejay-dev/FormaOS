@@ -173,9 +173,8 @@ function FounderQuote() {
                 >
                   EH
                 </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/team/founder.jpg"
+                  src="/team/founder.jpeg"
                   alt="Portrait of Ejaz Hussain, founder of FormaOS"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
