@@ -167,10 +167,18 @@ function FounderQuote() {
               transition={{ delay: 0.8, duration: duration.slow }}
               className="relative flex flex-col items-center gap-4 text-gray-400 sm:flex-row sm:justify-center"
             >
-              <div className="relative h-16 w-16 shrink-0">
+              {/* Avatar: source photo is 499×1023 portrait. A plain
+                  64px circle showed head + suit + shoulders with the
+                  face only filling ~30% of the disc, which read as
+                  "stock headshot in a tile" rather than "founder
+                  avatar." Wrapping in overflow-hidden and scaling the
+                  inner img to 150% with the transform anchored at
+                  20% from top crops the shoulders out and lets the
+                  face fill the circle the way profile avatars do. */}
+              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-white/[0.1]">
                 <div
                   aria-hidden
-                  className="absolute inset-0 flex items-center justify-center rounded-full border border-indigo-500/30 bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-sm font-semibold text-white/50"
+                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-sm font-semibold text-white/50"
                 >
                   EH
                 </div>
@@ -180,7 +188,7 @@ function FounderQuote() {
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
-                  className="relative h-16 w-16 rounded-full border border-white/[0.1] object-cover object-[center_25%]"
+                  className="relative h-full w-full object-cover scale-[1.5] origin-[50%_20%]"
                 />
               </div>
               <div>
