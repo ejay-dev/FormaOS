@@ -106,10 +106,14 @@ function PostureCard({
   isInView: boolean;
   noMotion: boolean;
 }) {
+  // Illustrative dashboard mock-up. The numbers are an example of
+  // what a customer's posture screen would render, NOT a claim about
+  // FormaOS itself. Labelled "Illustrative dashboard" so a reader
+  // doesn't read "47/50" as our marketing claim.
   const stats = [
-    { value: '47/50', label: 'Active Controls', color: 'text-teal-400' },
-    { value: '312', label: 'Evidence Items', color: 'text-sky-400' },
-    { value: '9', label: 'Frameworks', color: 'text-violet-400' },
+    { value: '47/50', label: 'Active controls', color: 'text-teal-400' },
+    { value: '312', label: 'Evidence items', color: 'text-sky-400' },
+    { value: '8', label: 'Framework packs', color: 'text-violet-400' },
   ] as const;
 
   return (
@@ -208,7 +212,7 @@ function PostureCard({
               94%
             </motion.span>
             <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">
-              Posture
+              Posture · illustrative
             </span>
           </div>
         </div>
@@ -216,12 +220,13 @@ function PostureCard({
         {/* Copy + metrics */}
         <div className="flex-1 text-center sm:text-left">
           <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
-            Continuous Compliance Posture
+            What the posture screen looks like
           </h3>
           <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-md">
-            Real-time visibility into your entire compliance program. Not
-            point-in-time snapshots reconstructed before an audit — live,
-            always-current posture across every framework.
+            Live posture computed nightly from
+            <code className="mx-1 rounded bg-white/[0.04] px-1 py-0.5 font-mono text-xs text-slate-300">org_control_evaluations</code>
+            and rendered at <code className="rounded bg-white/[0.04] px-1 py-0.5 font-mono text-xs text-slate-300">/app/compliance/health</code>.
+            Numbers below are example values, not a customer claim.
           </p>
           <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6">
             {stats.map((s, i) => (
@@ -353,11 +358,12 @@ function EnforcementCard({
    Card 3: Evidence Chain
    ════════════════════════════════════════════════════════════ */
 
+// Illustrative timeline — generic role labels, no invented names.
 const EVIDENCE_EVENTS = [
-  { text: 'Control created', time: 'Mar 2', color: 'bg-sky-400' },
-  { text: 'Evidence uploaded — J. Chen', time: 'Mar 5', color: 'bg-teal-400' },
-  { text: 'Review approved — S. Patel', time: 'Mar 6', color: 'bg-violet-400' },
-  { text: 'Audit-sealed — immutable', time: 'Mar 6', color: 'bg-emerald-400' },
+  { text: 'Control created', time: 'Day 0', color: 'bg-sky-400' },
+  { text: 'Evidence uploaded — by named owner', time: 'Day 3', color: 'bg-teal-400' },
+  { text: 'Review approved — by control reviewer', time: 'Day 4', color: 'bg-violet-400' },
+  { text: 'Hash anchored — Sigstore Rekor entry', time: 'Day 5', color: 'bg-emerald-400' },
 ] as const;
 
 function EvidenceCard({
@@ -433,23 +439,24 @@ function EvidenceCard({
    Card 4: Named Ownership
    ════════════════════════════════════════════════════════════ */
 
+// Designer feedback 2026-05-27 specifically called out "Priya M." / "Sarah L."
+// as stock SaaS personas. Replaced with role-only labels — no invented
+// names, no invented headshots-by-initials. Real customer assignments live
+// inside the product, never in marketing copy.
 const OWNERS = [
   {
-    initials: 'SL',
-    name: 'Sarah L.',
-    role: 'Access Control',
+    initials: 'AC',
+    role: 'Access control owner',
     gradient: 'from-teal-500/30 to-cyan-500/30',
   },
   {
-    initials: 'DK',
-    name: 'David K.',
-    role: 'Data Encryption',
+    initials: 'DE',
+    role: 'Data encryption owner',
     gradient: 'from-violet-500/30 to-indigo-500/30',
   },
   {
-    initials: 'PM',
-    name: 'Priya M.',
-    role: 'Incident Response',
+    initials: 'IR',
+    role: 'Incident response owner',
     gradient: 'from-amber-500/30 to-orange-500/30',
   },
 ] as const;
@@ -480,7 +487,7 @@ function OwnershipCard({
       <div className="space-y-3">
         {OWNERS.map((o, i) => (
           <motion.div
-            key={o.name}
+            key={o.role}
             initial={noMotion ? false : { opacity: 0, y: 8 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{
@@ -495,15 +502,15 @@ function OwnershipCard({
             >
               {o.initials}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="text-[12px] font-semibold text-slate-300 truncate">
-                {o.name}
-              </div>
-              <div className="text-[10px] text-slate-500 truncate">
                 {o.role}
               </div>
+              <div className="text-[10px] text-slate-500 truncate">
+                Assigned in workspace
+              </div>
             </div>
-            <div className="ml-auto shrink-0 w-1.5 h-1.5 rounded-full bg-teal-400/60" />
+            <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-teal-400/60" />
           </motion.div>
         ))}
       </div>

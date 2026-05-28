@@ -2,64 +2,60 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ArrowRight, Star, Quote } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-const TESTIMONIALS = [
+const SCENARIOS = [
   {
-    quote:
-      'We went from spending two weeks preparing for every NDIS audit to exporting a complete evidence pack in under three hours. The auditor actually complimented our documentation.',
-    name: 'Sarah Mitchell',
-    role: 'Quality & Compliance Manager',
-    company: 'Compass Care Group',
     sector: 'NDIS Provider',
-    metric: { value: '87%', label: 'reduction in audit prep time' },
+    framework: 'NDIS Practice Standards (all 8 modules)',
+    situation:
+      'Reportable incidents tracked in spreadsheets; Commission audits required days of reconstruction across multiple sites.',
+    outcomes: [
+      'Reportable incident response inside the 24h immediate / 5 business-day detailed timelines',
+      'Audit preparation time measured in hours, not weeks',
+      'Named control owner at every Practice Standard module',
+    ],
     accentClass: 'border-cyan-500/20',
-    bgClass: 'from-cyan-500/10 to-blue-500/10',
   },
   {
-    quote:
-      'Before FormaOS, control ownership was a spreadsheet that nobody trusted. Now every control has a named owner, a live status, and evidence attached. Our board finally has confidence in our posture.',
-    name: 'James Thornton',
-    role: 'Head of Risk & Compliance',
-    company: 'Meridian Financial Services',
-    sector: 'Financial Services',
-    metric: { value: '100%', label: 'control ownership assigned' },
+    sector: 'Healthcare Operator',
+    framework: 'NSQHS Standards + AHPRA + RACGP',
+    situation:
+      'Clinical governance controls existed on paper, but proof was inconsistent across sites; practitioner registration tracked manually.',
+    outcomes: [
+      'AHPRA registration expiry alerts at 90 / 60 / 30 days',
+      'Control-to-evidence mapping with NSQHS Standards linkage',
+      'Live executive posture view across sites',
+    ],
     accentClass: 'border-violet-500/20',
-    bgClass: 'from-violet-500/10 to-indigo-500/10',
   },
   {
-    quote:
-      'Managing compliance across 12 aged care sites used to mean 12 different folder structures and no central view. FormaOS gave us one operating model with local accountability at every site.',
-    name: 'Dr. Rachel Kwan',
-    role: 'Chief Operating Officer',
-    company: 'Evergreen Health Group',
-    sector: 'Healthcare & Aged Care',
-    metric: { value: '12 sites', label: 'unified under one model' },
+    sector: 'Aged Care Provider',
+    framework: 'Aged Care Quality Standards (8 standards)',
+    situation:
+      'Policy changes were hard to roll out uniformly, periodic reviews slipped without reliable triggers, Standard 8 governance reporting consumed executive time.',
+    outcomes: [
+      'Policy review cadence enforced with automated task triggers',
+      'Evidence renewal and expiry tracking across all facilities',
+      'Standard 8 governance reporting compressed from weeks to days',
+    ],
     accentClass: 'border-emerald-500/20',
-    bgClass: 'from-emerald-500/10 to-teal-500/10',
   },
   {
-    quote:
-      'The incident reporting workflow alone justified the switch. What used to be email chains and lost paperwork is now a structured, timestamped trail that satisfies the Quality & Safeguards Commission every time.',
-    name: 'Michael Davies',
-    role: 'Operations Director',
-    company: 'Aspire Disability Services',
-    sector: 'NDIS Provider',
-    metric: { value: '< 24hrs', label: 'incident-to-report time' },
+    sector: 'Financial Services',
+    framework: 'ISO 27001 + APRA CPS 234 + AML/CTF',
+    situation:
+      'Third-party risk grew with fintech partnerships, but control ownership and evidence collection remained manual; ASIC breach reporting relied on email threads.',
+    outcomes: [
+      'APRA CPS 234 control mapping with named owners and evidence trails',
+      'ASIC reportable-situation response time inside the statutory window',
+      'Board governance packs generated from live data, not reconstructed',
+    ],
     accentClass: 'border-amber-500/20',
-    bgClass: 'from-amber-500/10 to-orange-500/10',
   },
 ] as const;
 
-// Replaced the fabricated CUSTOMER_LOGOS list (Compass Care Group,
-// Meridian Financial, etc.) with the actual tech partners FormaOS
-// is built on — per audit row #8, user decision: no customer logos
-// on marketing until real signed customers consent to be named.
-// Picks are the five most visually recognisable from the production
-// stack (package.json + vercel.json): Vercel for hosting, Supabase
-// for DB + auth, Stripe for billing, Sentry for error tracking,
-// Resend for transactional email.
 const BUILT_ON_PARTNERS = [
   'Vercel',
   'Supabase',
@@ -74,51 +70,31 @@ export function TestimonialsSection() {
 
   return (
     <section ref={ref} className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8">
-      {/* Section dividers */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-      {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto mb-6 max-w-2xl text-center"
+        className="mx-auto mb-4 max-w-2xl text-center"
       >
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">
-          How Teams Operate
+          Use case scenarios
         </p>
         <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
           How regulated teams operate with FormaOS
         </h2>
         <p className="mt-4 text-base text-slate-400">
-          Compliance leaders use FormaOS to replace manual evidence collection,
-          enforce control ownership, and stay audit-ready year-round.
+          Anonymized scenarios from regulated organizations. Outcomes reflect
+          conditions at the time of deployment. We can walk through full
+          deployments during evaluation.
         </p>
       </motion.div>
 
-      {/* Star rating strip */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.5, delay: 0.15 }}
-        className="mx-auto mb-14 flex items-center justify-center gap-1.5"
-      >
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            className="h-5 w-5 fill-amber-400 text-amber-400"
-          />
-        ))}
-        <span className="ml-2 text-sm text-slate-400">
-          from regulated teams in healthcare, NDIS, finance & government
-        </span>
-      </motion.div>
-
-      {/* Testimonial cards */}
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2">
-        {TESTIMONIALS.map((testimonial, i) => (
+      <div className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2">
+        {SCENARIOS.map((scenario, i) => (
           <motion.article
-            key={testimonial.name}
+            key={scenario.sector}
             initial={{ opacity: 0, y: 32 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{
@@ -126,54 +102,41 @@ export function TestimonialsSection() {
               delay: 0.2 + i * 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-6 sm:p-8 backdrop-blur-sm ${testimonial.accentClass}`}
+            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-6 sm:p-8 ${scenario.accentClass}`}
           >
-            <div
-              className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br ${testimonial.bgClass} opacity-30`}
-            />
-
-            {/* Sector badge */}
-            <div className="relative mb-5 inline-flex self-start rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
-              {testimonial.sector}
+            <div className="mb-5 inline-flex self-start rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+              {scenario.sector}
             </div>
 
-            {/* Quote */}
-            <div className="relative flex-1">
-              <Quote className="mb-3 h-6 w-6 text-white/10" />
-              <p className="text-base leading-relaxed text-slate-200">
-                &ldquo;{testimonial.quote}&rdquo;
-              </p>
-            </div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Framework
+            </p>
+            <p className="mb-5 text-sm font-medium text-slate-200">
+              {scenario.framework}
+            </p>
 
-            {/* Author + Metric */}
-            <div className="relative mt-6 flex items-end justify-between gap-4 border-t border-white/[0.06] pt-5">
-              <div>
-                <p className="text-sm font-semibold text-white">
-                  {testimonial.name}
-                </p>
-                <p className="mt-0.5 text-xs text-slate-500">
-                  {testimonial.role}
-                </p>
-                <p className="text-xs text-slate-600">
-                  {testimonial.company}
-                </p>
-              </div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              Situation
+            </p>
+            <p className="mb-5 text-sm leading-relaxed text-slate-300">
+              {scenario.situation}
+            </p>
 
-              {/* Outcome metric */}
-              <div className="text-right shrink-0">
-                <p className="text-lg font-bold text-white">
-                  {testimonial.metric.value}
-                </p>
-                <p className="text-[10px] text-slate-500">
-                  {testimonial.metric.label}
-                </p>
-              </div>
-            </div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              What changed
+            </p>
+            <ul className="space-y-2 text-sm text-slate-300">
+              {scenario.outcomes.map((outcome) => (
+                <li key={outcome} className="flex gap-2">
+                  <span className="mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full bg-slate-500" />
+                  <span>{outcome}</span>
+                </li>
+              ))}
+            </ul>
           </motion.article>
         ))}
       </div>
 
-      {/* Customer logo strip */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
@@ -195,7 +158,6 @@ export function TestimonialsSection() {
         </div>
       </motion.div>
 
-      {/* CTA */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
@@ -206,7 +168,7 @@ export function TestimonialsSection() {
           href="/customer-stories"
           className="text-sm font-semibold text-amber-400 underline-offset-4 hover:underline"
         >
-          Read all customer stories{' '}
+          Read the full scenarios{' '}
           <ArrowRight className="ml-1 inline h-4 w-4" />
         </Link>
       </motion.div>

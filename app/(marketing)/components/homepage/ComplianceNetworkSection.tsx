@@ -53,7 +53,7 @@ export function ComplianceNetworkSection() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-6">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-60" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-400" />
             </span>
             Compliance Data Model
@@ -81,7 +81,7 @@ export function ComplianceNetworkSection() {
                     className={`h-3 w-3 rounded-full ${item.color} ${item.glow} shadow-[0_0_8px]`}
                   />
                   <div
-                    className={`absolute inset-0 h-3 w-3 rounded-full ${item.color} animate-ping opacity-30`}
+                    className={`absolute inset-0 h-3 w-3 rounded-full ${item.color} opacity-30`}
                   />
                 </div>
                 <div className="text-left">
@@ -106,7 +106,7 @@ export function ComplianceNetworkSection() {
             <div className="home-panel home-panel--soft rounded-xl border border-teal-400/15 bg-slate-950/60 px-4 py-3 text-left backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-60" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-60" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-teal-400" />
                 </span>
                 <p className="text-[10px] uppercase tracking-[0.18em] text-teal-300/80">
@@ -120,7 +120,7 @@ export function ComplianceNetworkSection() {
             <div className="home-panel home-panel--soft rounded-xl border border-indigo-400/20 bg-slate-950/60 px-4 py-3 text-left backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-60" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
                 </span>
                 <p className="text-[10px] uppercase tracking-[0.18em] text-indigo-300/80">
@@ -160,7 +160,7 @@ export function ComplianceNetworkSection() {
               <div className="home-panel home-panel--soft max-w-[48%] rounded-xl border border-teal-400/12 bg-slate-950/70 px-4 py-3 backdrop-blur-md">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-60" />
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-60" />
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-teal-400" />
                   </span>
                   <p className="text-[10px] uppercase tracking-[0.18em] text-teal-300/80">
@@ -177,7 +177,7 @@ export function ComplianceNetworkSection() {
                     Audit Readiness
                   </p>
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-60" />
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
                   </span>
                 </div>
@@ -209,7 +209,7 @@ export function ComplianceNetworkSection() {
               </div>
               <div className="flex items-center gap-2 rounded-lg bg-slate-950/60 px-3 py-1.5 backdrop-blur-md border border-white/[0.04]">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.14em] text-emerald-400/80">

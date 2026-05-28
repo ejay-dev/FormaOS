@@ -80,6 +80,11 @@ const TestimonialsSection = dynamic(
     import('./homepage/TestimonialsSection').then((m) => m.TestimonialsSection),
   { ssr: false, loading: () => null },
 );
+const AuditChainSection = dynamic(
+  () =>
+    import('./homepage/AuditChainSection').then((m) => m.AuditChainSection),
+  { ssr: false, loading: () => null },
+);
 // Interactive demo components (lazy-loaded, client-only)
 const InteractiveDemo = dynamic(
   () => import('@/components/marketing/demo/InteractiveDemo'),
@@ -236,6 +241,12 @@ export default function FormaOSHomepage({
           {sectionVisibility.outcome_proof !== false
             ? renderSection('outcome_proof', <OutcomeProofSection />, 440)
             : null}
+          {/* Cryptographic audit-chain proof — always shown; the audit
+              log Merkle + Sigstore Rekor anchoring is core proof that
+              FormaOS is not vapor, so it is not gated by control plane. */}
+          <DeferredSection minHeight={420}>
+            <AuditChainSection />
+          </DeferredSection>
           {/* Social proof - always shown; not gated by control plane */}
           <DeferredSection minHeight={380}>
             <TestimonialsSection />

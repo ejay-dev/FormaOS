@@ -229,7 +229,7 @@ function PostureRing({
           <span className="text-lg text-indigo-400/80">%</span>
         </span>
         <span className="text-[10px] font-medium text-slate-500 mt-1 uppercase tracking-wider">
-          Posture Score
+          Posture · illustrative
         </span>
       </div>
     </div>
@@ -240,11 +240,15 @@ function PostureRing({
    Data
    ════════════════════════════════════════════════════════════ */
 
+// Illustrative log preview using role labels — never invented names.
+// The earlier version embedded the same fabricated personas (Sarah M.,
+// James T., Rachel K., Michael D.) that were called out in the
+// 2026-05-27 design audit.
 const AUDIT_LOG_ENTRIES = [
   {
     action: 'Evidence approved',
     control: 'CC6.1 — Logical access controls',
-    actor: 'Sarah M.',
+    actor: 'Control owner',
     time: '2 min ago',
     status: 'verified' as const,
   },
@@ -258,30 +262,33 @@ const AUDIT_LOG_ENTRIES = [
   {
     action: 'Audit packet exported',
     control: 'SOC 2 Type II — Full pack',
-    actor: 'James T.',
+    actor: 'Workspace admin',
     time: '1 hr ago',
     status: 'verified' as const,
   },
   {
     action: 'Policy acknowledged',
     control: 'ISO 27001 — A.5.1 Policies',
-    actor: 'Rachel K.',
+    actor: 'Policy reviewer',
     time: '3 hr ago',
     status: 'verified' as const,
   },
   {
     action: 'Worker credential updated',
     control: 'NDIS — Worker Screening',
-    actor: 'Michael D.',
+    actor: 'Workforce coordinator',
     time: '5 hr ago',
     status: 'verified' as const,
   },
 ];
 
+// Numbers below match the evaluator registry:
+// lib/compliance/evaluators/register.ts — SOC2-TSC = 61, ISO 27001 = 93,
+// NDIS Practice Standards = 25 (Phase 2 as of 2026-05-27).
 const POSTURE_CONTROLS = [
-  { label: 'SOC 2 Controls', mapped: 47, total: 50, color: '#818cf8' },
+  { label: 'SOC 2 TSC', mapped: 61, total: 61, color: '#818cf8' },
   { label: 'ISO 27001', mapped: 93, total: 93, color: '#06b6d4' },
-  { label: 'NDIS Standards', mapped: 38, total: 38, color: '#34d399' },
+  { label: 'NDIS Practice Standards', mapped: 25, total: 25, color: '#34d399' },
 ];
 
 const ENCRYPTION_LAYERS = [
@@ -337,6 +344,8 @@ const PostureCard = memo(function PostureCard({
           Real-time compliance health across all active frameworks
         </p>
 
+        {/* Illustrative score — labelled below so it doesn't read as a
+            product-wide marketing claim. */}
         <PostureRing score={98} isInView={isInView} noMotion={noMotion} />
 
         {/* Control mapping bars */}
@@ -548,7 +557,7 @@ const AuditLogCard = memo(function AuditLogCard({
         <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
             </span>
             <span className="text-xs font-semibold uppercase tracking-widest text-slate-300">
@@ -844,7 +853,7 @@ export const SecuritySection = memo(function SecuritySection() {
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/[0.08] border border-indigo-400/20 text-indigo-400 text-xs font-medium">
               <span className="relative flex h-1.5 w-1.5">
                 {!noMotion && (
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-60" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
                 )}
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
               </span>
