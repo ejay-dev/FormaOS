@@ -218,40 +218,38 @@ export default function AboutPageContent() {
 
                     <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
                       <p>
-                        Before FormaOS I was building software for organisations
-                        that had to answer to regulators &mdash; hospitals,
-                        NDIS providers, finance firms running on the
-                        three-letter regulators that put real people out of work
-                        when things slip. The pattern wasn&apos;t a missing
-                        feature. It was a missing system. Evidence lived on
-                        shared drives. Control ownership lived in somebody&apos;s
-                        head. Three nights before every audit, somebody would
-                        stay late stitching a defensible story out of email
-                        threads. The day after the auditor left, the system
-                        relapsed to whatever it had been before.
+                        FormaOS is my first project in compliance
+                        infrastructure. I started writing it in 2022 from
+                        Adelaide because the tools that exist for regulated
+                        teams all looked the same to me: document repositories
+                        with marketing on top. None of them treated audit
+                        evidence as something a regulator could verify
+                        cryptographically, without taking the vendor&apos;s
+                        word for anything.
                       </p>
                       <p>
-                        I started writing FormaOS in 2022. Not as a &ldquo;compliance
-                        platform&rdquo; &mdash; those exist and they are storage
-                        with marketing. As infrastructure. Controls map to
-                        obligations. Obligations dispatch tasks to a named
-                        owner with a deadline. Completed tasks write evidence to
-                        a hash-chained audit log. The top of that chain anchors
-                        daily, at 05:30 UTC, to Sigstore Rekor &mdash; the same
-                        append-only transparency log the Linux Foundation runs
-                        for signed open-source releases. Append-only is enforced
-                        by Postgres RLS, not by application code. Even a
-                        platform admin with service-role credentials cannot
-                        mutate a row.
+                        So FormaOS treats compliance as a system that runs,
+                        not a folder that fills up. Every control maps to an
+                        obligation. Every obligation dispatches a task to a
+                        named owner with a deadline. Every completed task
+                        writes evidence to a hash-chained audit log. The top
+                        of that chain anchors daily at 05:30 UTC to Sigstore
+                        Rekor &mdash; the append-only transparency log the
+                        Linux Foundation runs for signed open-source releases
+                        &mdash; so an auditor verifies a timestamp without
+                        having to trust me. Append-only is enforced by
+                        Postgres RLS at the database layer, not in application
+                        code.
                       </p>
                       <p>
-                        I ship from Adelaide. The registry today is 252 controls
-                        across 8 framework packs &mdash; SOC 2 TSC, ISO 27001,
-                        NIST CSF, CIS, HIPAA, GDPR, PCI DSS, NDIS Practice
-                        Standards &mdash; with about 85 auto-evaluated nightly
-                        against your live data and 167 surfaced as human
-                        attestations. We don&apos;t hide which is which. The
-                        roadmap is short because the standard is high.
+                        Today the registry runs 252 controls across 8
+                        framework packs: SOC 2 TSC, ISO 27001, NIST CSF, CIS,
+                        HIPAA, GDPR, PCI DSS, and NDIS Practice Standards.
+                        About 85 of those auto-evaluate nightly against your
+                        live data; the other 167 are surfaced as human
+                        attestations and labelled as such &mdash; we don&apos;t
+                        hide which is which. Small team. AU-hosted. The
+                        roadmap is short on purpose.
                       </p>
                     </div>
                   </div>
