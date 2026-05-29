@@ -4,6 +4,9 @@ import {
 } from '@/lib/api-keys/middleware';
 import { publishForm } from '@/lib/forms/form-store';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/forms/[formId]/publish');
 
 export const runtime = 'nodejs';
 
@@ -24,12 +27,7 @@ export async function POST(
     const form = await publishForm(auth.context.db, formId, auth.context.orgId);
     return jsonWithContext(auth.context, { data: form });
   } catch (err) {
-    return Response.json(
-      {
-        error:
-          err instanceof Error ? err.message : 'Failed to publish form',
-      },
-      { status: 500 },
-    );
+    log.error({ err, formId }, 'publish form failed');
+    return Response.json({ error: 'Failed to publish form' }, { status: 500 });
   }
 }

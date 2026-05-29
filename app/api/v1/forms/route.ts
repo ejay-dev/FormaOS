@@ -8,6 +8,9 @@ import { getStringParam } from '@/lib/api/v1-helpers';
 import { createForm, listForms } from '@/lib/forms/form-store';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { formatZodError, validateBody } from '@/lib/security/api-validation';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/forms');
 
 const createFormSchema = z.object({
   title: z.string().trim().min(1, 'title is required').max(200),
@@ -48,10 +51,8 @@ export async function GET(request: Request) {
       paginatedEnvelope(result.data, { offset, limit, total: result.total }),
     );
   } catch (err) {
-    return Response.json(
-      { error: err instanceof Error ? err.message : 'Failed to list forms' },
-      { status: 500 },
-    );
+    log.error({ err }, 'list forms failed');
+    return Response.json({ error: 'Failed to list forms' }, { status: 500 });
   }
 }
 
@@ -90,9 +91,7 @@ export async function POST(request: Request) {
 
     return Response.json({ data: form }, { status: 201 });
   } catch (err) {
-    return Response.json(
-      { error: err instanceof Error ? err.message : 'Failed to create form' },
-      { status: 500 },
-    );
+    log.error({ err }, 'create form failed');
+    return Response.json({ error: 'Failed to create form' }, { status: 500 });
   }
 }

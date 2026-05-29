@@ -6,6 +6,9 @@ import {
 import { getSubmission, reviewSubmission } from '@/lib/forms/submission-engine';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { formatZodError, validateBody } from '@/lib/security/api-validation';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/forms/[formId]/submissions/[submissionId]');
 
 const reviewSubmissionSchema = z.object({
   status: z.enum(['approved', 'rejected']),
@@ -33,10 +36,8 @@ export async function GET(
     );
     return jsonWithContext(auth.context, { data: submission });
   } catch (err) {
-    return Response.json(
-      { error: err instanceof Error ? err.message : 'Submission not found' },
-      { status: 404 },
-    );
+    log.warn({ err, submissionId }, 'get submission failed (likely not found)');
+    return Response.json({ error: 'Submission not found' }, { status: 404 });
   }
 }
 
@@ -69,9 +70,7 @@ export async function PATCH(
     );
     return jsonWithContext(auth.context, { data: submission });
   } catch (err) {
-    return Response.json(
-      { error: err instanceof Error ? err.message : 'Review failed' },
-      { status: 500 },
-    );
+    log.error({ err, submissionId }, 'review submission failed');
+    return Response.json({ error: 'Review failed' }, { status: 500 });
   }
 }

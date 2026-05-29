@@ -4,6 +4,9 @@ import {
 } from '@/lib/api-keys/middleware';
 import { duplicateForm } from '@/lib/forms/form-store';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/forms/[formId]/duplicate');
 
 export const runtime = 'nodejs';
 
@@ -29,12 +32,7 @@ export async function POST(
     );
     return jsonWithContext(auth.context, { data: form }, { status: 201 });
   } catch (err) {
-    return Response.json(
-      {
-        error:
-          err instanceof Error ? err.message : 'Failed to duplicate form',
-      },
-      { status: 500 },
-    );
+    log.error({ err, formId }, 'duplicate form failed');
+    return Response.json({ error: 'Failed to duplicate form' }, { status: 500 });
   }
 }

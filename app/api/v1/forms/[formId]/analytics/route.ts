@@ -3,6 +3,9 @@ import {
   jsonWithContext,
 } from '@/lib/api-keys/middleware';
 import { getSubmissionAnalytics } from '@/lib/forms/submission-engine';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/forms/[formId]/analytics');
 
 export const runtime = 'nodejs';
 
@@ -42,12 +45,7 @@ export async function GET(
     );
     return jsonWithContext(auth.context, { data: analytics });
   } catch (err) {
-    return Response.json(
-      {
-        error:
-          err instanceof Error ? err.message : 'Failed to get analytics',
-      },
-      { status: 500 },
-    );
+    log.error({ err, formId }, 'form analytics failed');
+    return Response.json({ error: 'Failed to get analytics' }, { status: 500 });
   }
 }

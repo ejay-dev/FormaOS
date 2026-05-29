@@ -10,6 +10,9 @@ import {
 } from '@/lib/forms/form-store';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
 import { formatZodError, validateBody } from '@/lib/security/api-validation';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/forms/[formId]');
 
 const updateFormSchema = z
   .object({
@@ -80,10 +83,8 @@ export async function PATCH(
     );
     return jsonWithContext(auth.context, { data: form });
   } catch (err) {
-    return Response.json(
-      { error: err instanceof Error ? err.message : 'Failed to update form' },
-      { status: 500 },
-    );
+    log.error({ err, formId }, 'update form failed');
+    return Response.json({ error: 'Failed to update form' }, { status: 500 });
   }
 }
 

@@ -15,6 +15,9 @@ import {
   formatZodError,
   validateBody,
 } from '@/lib/security/api-validation';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/api/v1/forms/[formId]/submissions');
 
 // The submission `data` payload is intentionally a free-form object —
 // the form's own schema (stored in org_forms.fields) governs its
@@ -65,11 +68,9 @@ export async function GET(
       paginatedEnvelope(result.data, { offset, limit, total: result.total }),
     );
   } catch (err) {
+    log.error({ err, formId }, 'list submissions failed');
     return Response.json(
-      {
-        error:
-          err instanceof Error ? err.message : 'Failed to list submissions',
-      },
+      { error: 'Failed to list submissions' },
       { status: 500 },
     );
   }
@@ -117,9 +118,7 @@ export async function POST(
         { status: 422 },
       );
     }
-    return Response.json(
-      { error: err instanceof Error ? err.message : 'Submission failed' },
-      { status: 500 },
-    );
+    log.error({ err, formId }, 'form submission failed');
+    return Response.json({ error: 'Submission failed' }, { status: 500 });
   }
 }
