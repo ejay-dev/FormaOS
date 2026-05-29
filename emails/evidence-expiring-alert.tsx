@@ -1,4 +1,5 @@
 import {
+  Img,
   Body,
   Button,
   Container,
@@ -190,7 +191,7 @@ export function EvidenceExpiringAlertEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Evidence Expiry Alert</Text>
           </Section>
 
