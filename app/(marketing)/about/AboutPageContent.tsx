@@ -68,7 +68,7 @@ function AboutHero() {
         <>
           Compliance infrastructure
           <br />
-          <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-rose-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             built for accountability
           </span>
         </>
@@ -159,7 +159,7 @@ export default function AboutPageContent() {
                   <div className="relative mx-auto aspect-[1/2] w-full max-w-[240px] lg:mx-0">
                     <div
                       aria-hidden
-                      className="absolute inset-0 flex items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500/10 to-violet-500/10 border border-white/[0.08]"
+                      className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/[0.04] border border-white/[0.08]"
                     >
                       <span className="font-display text-5xl font-semibold tracking-tight text-white/40">
                         EH
@@ -659,7 +659,7 @@ export default function AboutPageContent() {
                       boxShadow: '0 0 40px rgba(20, 184, 166, 0.4)',
                     }}
                     whileTap={{ scale: 0.98 }}
-                    className="group px-8 py-4 rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-semibold text-lg flex items-center justify-center gap-3 shadow-lg shadow-teal-500/25 hover:shadow-teal-500/40 transition-all whitespace-nowrap w-full sm:w-auto"
+                    className="group px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg flex items-center justify-center gap-3 shadow-lg hover:opacity-90 transition-all whitespace-nowrap w-full sm:w-auto"
                   >
                     <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
