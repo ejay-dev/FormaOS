@@ -25,15 +25,15 @@ const frameworkChips = [
   },
   {
     id: 'soc',
-    color: 'bg-indigo-400',
-    glow: 'shadow-indigo-400/40',
+    color: 'bg-zinc-400',
+    glow: 'shadow-zinc-500/30',
     label: 'SOC 2',
     count: 11,
   },
   {
     id: 'nist',
-    color: 'bg-sky-400',
-    glow: 'shadow-sky-400/40',
+    color: 'bg-zinc-400',
+    glow: 'shadow-zinc-500/30',
     label: 'NIST CSF',
     count: 10,
   },
@@ -69,8 +69,8 @@ const frameworkChips = [
 
 const statBlocks = [
   { label: 'Frameworks', value: String(brand.frameworks.count), accent: 'text-teal-300/80' },
-  { label: 'Controls', value: `${brand.frameworks.controlCount}+`, accent: 'text-indigo-300/80' },
-  { label: 'Cross-Links', value: '42', accent: 'text-sky-300/80' },
+  { label: 'Controls', value: `${brand.frameworks.controlCount}+`, accent: 'text-zinc-400/80' },
+  { label: 'Cross-Links', value: '42', accent: 'text-zinc-400/80' },
   { label: 'Coverage', value: '100%', accent: 'text-emerald-300/80' },
 ];
 
@@ -83,7 +83,7 @@ export function FullControlMapSection() {
       {/* Ambient background halos */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(113,113,122,0.06),transparent_65%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(99,102,241,0.04),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(113,113,122,0.04),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.03),transparent_50%)]" />
       </div>
 
@@ -148,8 +148,8 @@ export function FullControlMapSection() {
           <div className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-gray-950/95 via-[#050a18] to-[#030710] shadow-2xl shadow-black/50 ring-1 ring-white/[0.03]">
             {/* Radial overlays */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(113,113,122,0.10),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.07),transparent_40%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_75%,rgba(99,102,241,0.05),transparent_45%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(113,113,122,0.07),transparent_40%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_75%,rgba(113,113,122,0.05),transparent_45%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(167,139,250,0.04),transparent_50%)]" />
 
             {/* Dot grid */}
@@ -157,15 +157,15 @@ export function FullControlMapSection() {
 
             {/* Corner accents */}
             <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-teal-500/6 to-transparent rounded-br-full" />
-            <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-tl from-indigo-500/5 to-transparent rounded-tl-full" />
-            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-sky-500/4 to-transparent rounded-bl-full" />
+            <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-tl from-zinc-700/5 to-transparent rounded-tl-full" />
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-zinc-700/4 to-transparent rounded-bl-full" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-violet-500/3 to-transparent rounded-tr-full" />
 
             {/* Edge glow lines */}
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-indigo-400/15 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-zinc-500/15 to-transparent" />
             <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-teal-400/10 to-transparent" />
-            <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-sky-400/8 to-transparent" />
+            <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-zinc-500/8 to-transparent" />
 
             {/* Top HUD overlay cards (desktop) */}
             <div className="pointer-events-none absolute inset-x-5 top-5 z-20 hidden lg:flex items-start justify-between gap-4">
@@ -184,14 +184,14 @@ export function FullControlMapSection() {
                   compliance chains.
                 </p>
               </div>
-              <div className="max-w-[35%] rounded-xl border border-indigo-400/12 bg-slate-950/75 px-5 py-3.5 backdrop-blur-md text-right">
+              <div className="max-w-[35%] rounded-xl border border-zinc-600/12 bg-slate-950/75 px-5 py-3.5 backdrop-blur-md text-right">
                 <div className="flex items-center justify-end gap-2 mb-1.5">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-indigo-300/80">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-zinc-400/80">
                     Real-Time Sync
                   </p>
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-60" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-zinc-400 opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-zinc-400" />
                   </span>
                 </div>
                 <p className="text-xs text-slate-300/80 leading-relaxed">

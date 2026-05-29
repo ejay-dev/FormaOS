@@ -17,8 +17,8 @@ const legendItems = [
     status: 'Active',
   },
   {
-    color: 'bg-indigo-400',
-    glow: 'shadow-indigo-400/40',
+    color: 'bg-zinc-400',
+    glow: 'shadow-zinc-500/30',
     label: 'Controls',
     count: '6 mapped',
     status: 'Enforced',
@@ -51,10 +51,10 @@ export function ComplianceNetworkSection() {
           range={[0, 0.3]}
           className="mb-10 text-center lg:mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-700/10 border border-zinc-600/20 text-zinc-300 text-sm font-medium mb-6">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-400" />
+              <span className="absolute inline-flex h-full w-full rounded-full bg-zinc-400 opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-zinc-400" />
             </span>
             Compliance Data Model
           </div>
@@ -117,13 +117,13 @@ export function ComplianceNetworkSection() {
                 Framework obligations connected to active controls.
               </p>
             </div>
-            <div className="home-panel home-panel--soft rounded-xl border border-indigo-400/20 bg-slate-950/60 px-4 py-3 text-left backdrop-blur-md">
+            <div className="home-panel home-panel--soft rounded-xl border border-zinc-600/20 bg-slate-950/60 px-4 py-3 text-left backdrop-blur-md">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-zinc-400 opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-zinc-400" />
                 </span>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-indigo-300/80">
+                <p className="text-[10px] uppercase tracking-[0.18em] text-zinc-400/80">
                   Audit Readiness
                 </p>
               </div>
@@ -138,7 +138,7 @@ export function ComplianceNetworkSection() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(113,113,122,0.12),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(161,161,170,0.10),transparent_42%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_75%,rgba(52,211,153,0.08),transparent_48%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_85%,rgba(99,102,241,0.06),transparent_45%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_85%,rgba(113,113,122,0.06),transparent_45%)]" />
 
             {/* Dot grid with center-focused mask */}
             <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(148,163,184,0.3)_1px,transparent_1.2px)] [background-size:28px_28px] [mask-image:radial-gradient(circle_at_center,black_25%,transparent_85%)]" />
@@ -146,12 +146,12 @@ export function ComplianceNetworkSection() {
             {/* Corner glows */}
             <div className="absolute top-0 left-0 w-48 h-48 bg-gradient-to-br from-teal-500/8 to-transparent rounded-br-full" />
             <div className="absolute bottom-0 right-0 w-48 h-48 bg-gradient-to-tl from-emerald-500/6 to-transparent rounded-tl-full" />
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-indigo-500/5 to-transparent rounded-bl-full" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-zinc-700/5 to-transparent rounded-bl-full" />
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-amber-500/4 to-transparent rounded-tr-full" />
 
             {/* Edge glow lines */}
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-indigo-400/15 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-zinc-500/15 to-transparent" />
             <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-teal-400/10 to-transparent" />
             <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-emerald-400/10 to-transparent" />
 
@@ -171,14 +171,14 @@ export function ComplianceNetworkSection() {
                   Framework obligations connected to active controls.
                 </p>
               </div>
-              <div className="home-panel home-panel--soft max-w-[48%] rounded-xl border border-indigo-400/15 bg-slate-950/70 px-4 py-3 backdrop-blur-md text-right">
+              <div className="home-panel home-panel--soft max-w-[48%] rounded-xl border border-zinc-600/15 bg-slate-950/70 px-4 py-3 backdrop-blur-md text-right">
                 <div className="flex items-center justify-end gap-2 mb-1.5">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-indigo-300/80">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-zinc-400/80">
                     Audit Readiness
                   </p>
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-zinc-400 opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-zinc-400" />
                   </span>
                 </div>
                 <p className="text-xs text-slate-300/80">
@@ -198,7 +198,7 @@ export function ComplianceNetworkSection() {
                 <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500">
                   Edges
                 </span>
-                <span className="text-xs font-mono text-indigo-300/80">22</span>
+                <span className="text-xs font-mono text-zinc-400/80">22</span>
                 <span className="h-3 w-px bg-slate-700" />
                 <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500">
                   Coverage
@@ -226,7 +226,7 @@ export function ComplianceNetworkSection() {
               <span className="h-px w-6 bg-gradient-to-r from-transparent to-slate-600" />
               Trace dependencies from{' '}
               <span className="text-teal-300">Frameworks</span> to{' '}
-              <span className="text-indigo-300">Controls</span> to{' '}
+              <span className="text-zinc-300">Controls</span> to{' '}
               <span className="text-emerald-300">Evidence</span> to{' '}
               <span className="text-amber-300">Tasks</span>
               <span className="h-px w-6 bg-gradient-to-l from-transparent to-slate-600" />

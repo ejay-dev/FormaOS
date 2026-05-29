@@ -50,8 +50,8 @@ const ROLE_CONFIG: Record<
     name: 'Member',
     description: 'Standard team member access',
     icon: User,
-    color: 'blue',
-    gradient: 'from-blue-500/20 to-indigo-500/20',
+    color: 'slate',
+    gradient: 'from-slate-600/20 to-slate-800/20',
   },
   admin: {
     name: 'Admin',

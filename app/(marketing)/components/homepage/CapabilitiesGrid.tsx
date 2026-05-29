@@ -34,7 +34,7 @@ const capabilities = [
     title: '9 Framework Packs',
     description:
       'SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, NDIS Practice Standards, and Essential Eight — pre-built.',
-    color: 'from-indigo-500 to-violet-500',
+    color: 'from-zinc-700 to-zinc-900',
   },
   {
     icon: Shield,

@@ -61,7 +61,7 @@ const HEALTHCARE_REPORTS: ReportTemplate[] = [
     description:
       'National Safety and Quality Health Service Standards compliance posture',
     icon: HeartPulse,
-    color: 'from-sky-500/20 to-sky-500/5 border-sky-400/20',
+    color: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20',
     reportType: 'hipaa',
   },
   {
@@ -160,7 +160,7 @@ const FINANCIAL_REPORTS: ReportTemplate[] = [
     description:
       'Executive summary for board reporting with RAG status across obligations',
     icon: Landmark,
-    color: 'from-indigo-500/20 to-indigo-500/5 border-indigo-400/20',
+    color: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20',
     reportType: 'trust',
   },
   {
@@ -169,7 +169,7 @@ const FINANCIAL_REPORTS: ReportTemplate[] = [
     description:
       'Anti-money laundering program compliance and customer due diligence status',
     icon: ShieldCheck,
-    color: 'from-sky-500/20 to-sky-500/5 border-sky-400/20',
+    color: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20',
     reportType: 'soc2',
   },
 ];

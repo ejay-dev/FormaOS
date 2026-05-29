@@ -70,8 +70,8 @@ const PILLARS: Pillar[] = [
     title: 'Evidence Vault',
     lede: 'Defensible evidence with chain-of-custody — not a dumping ground.',
     Icon: FolderLock,
-    accent: 'from-blue-500 via-indigo-400 to-violet-500',
-    glow: 'radial-gradient(circle at 70% 30%, rgba(136,100,255,0.22), transparent 60%)',
+    accent: 'from-zinc-600 via-zinc-700 to-zinc-800',
+    glow: 'radial-gradient(circle at 70% 30%, rgba(161,161,170,0.18), transparent 60%)',
     features: [
       {
         name: 'Verification workflows',

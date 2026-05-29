@@ -24,11 +24,11 @@ const principles = [
     title: 'Obligations are structured as system logic',
     description:
       'Regulatory requirements become enforceable workflows, not checklists',
-    color: 'from-indigo-500 to-blue-500',
-    iconBg: 'from-indigo-500/20 to-indigo-500/10',
-    iconBorder: 'border-indigo-500/20',
-    iconColor: 'text-indigo-400',
-    hoverColor: 'group-hover:text-indigo-400',
+    color: 'from-zinc-600 to-zinc-800',
+    iconBg: 'from-zinc-700/20 to-zinc-700/10',
+    iconBorder: 'border-zinc-600/20',
+    iconColor: 'text-zinc-300',
+    hoverColor: 'group-hover:text-zinc-300',
   },
   {
     number: '2',

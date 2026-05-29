@@ -72,7 +72,7 @@ function TermsHero() {
           }}
         />
         {/* Tertiary accent - center glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-indigo-500/5 to-transparent rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-zinc-700/5 to-transparent rounded-full" />
       </div>
 
       {/* Main Hero Content */}
@@ -128,7 +128,7 @@ function TermsHero() {
                 Effective: January 16, 2026
               </span>
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
                 Last Updated: January 16, 2026
               </span>
             </motion.div>
@@ -311,7 +311,7 @@ function TermsContent() {
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl"
+          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-white/[0.04] blur-3xl"
           animate={{
             x: [0, -50, 0],
             y: [0, -30, 0],

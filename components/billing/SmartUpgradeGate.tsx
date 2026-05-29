@@ -49,9 +49,9 @@ export function SmartUpgradeGate({
         <div className={`${showPreview ? 'absolute inset-0' : ''} flex items-center justify-center py-12`}>
           <div className="text-center max-w-lg mx-auto px-6">
             {/* Feature-specific icon */}
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500/20 to-indigo-500/20 border border-sky-400/20 shadow-xl">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-zinc-700/20 to-zinc-900/20 border border-zinc-600/20 shadow-lg">
               {featureBenefit ? (
-                <featureBenefit.icon className="h-7 w-7 text-sky-400" />
+                <featureBenefit.icon className="h-7 w-7 text-foreground" />
               ) : (
                 <Lock className="h-7 w-7 text-foreground/70" />
               )}
@@ -87,7 +87,7 @@ export function SmartUpgradeGate({
             {featureBenefit && (
               <div className="mb-6 flex items-center justify-center gap-2">
                 <span className="text-xs text-muted-foreground/60">Available on</span>
-                <span className="inline-flex items-center gap-1 text-xs font-bold text-sky-300 bg-sky-500/15 px-2 py-1 rounded-full">
+                <span className="inline-flex items-center gap-1 text-xs font-bold text-zinc-200 bg-zinc-500/15 px-2 py-1 rounded-full">
                   <Crown className="h-3 w-3" />
                   {featureBenefit.requiredPlan.toUpperCase()}
                 </span>
@@ -153,14 +153,14 @@ export function SmartFeatureTeaser({
   return (
     <>
       <div
-        className={`rounded-lg border border-sky-400/20 bg-sky-500/5 p-3 ${className}`}
+        className={`rounded-lg border border-zinc-600/20 bg-zinc-500/5 p-3 ${className}`}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-sky-500/10">
+          <div className="p-2 rounded-lg bg-zinc-700/10">
             {featureBenefit ? (
-              <featureBenefit.icon className="h-4 w-4 text-sky-400" />
+              <featureBenefit.icon className="h-4 w-4 text-foreground" />
             ) : (
-              <Lock className="h-4 w-4 text-sky-400" />
+              <Lock className="h-4 w-4 text-foreground" />
             )}
           </div>
           <div className="flex-1 min-w-0">
@@ -174,7 +174,7 @@ export function SmartFeatureTeaser({
           {canManageBilling && (
             <button
               onClick={() => setShowModal(true)}
-              className="shrink-0 text-xs font-medium text-sky-400 hover:text-sky-300 flex items-center gap-1"
+              className="shrink-0 text-xs font-medium text-zinc-300 hover:text-zinc-200 flex items-center gap-1"
             >
               <Sparkles className="h-3 w-3" />
               Upgrade

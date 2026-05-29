@@ -55,9 +55,9 @@ const categoryConfigs: Record<string, CategoryConfig> = {
     ],
   },
   technology: {
-    gradient: 'from-blue-500/20 via-indigo-500/10 to-purple-500/5',
-    accentGradient: 'from-blue-400 to-indigo-500',
-    glowColor: 'rgba(59, 130, 246, 0.3)',
+    gradient: 'from-zinc-500/20 via-zinc-600/10 to-zinc-800/5',
+    accentGradient: 'from-zinc-400 to-zinc-500',
+    glowColor: 'rgba(113, 113, 122, 0.3)',
     icon: Zap,
     nodes: [
       { x: '25%', y: '28%', size: '10px', delay: 0.1 },

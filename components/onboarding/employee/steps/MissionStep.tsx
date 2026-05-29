@@ -61,8 +61,8 @@ export function MissionStep({
       </div>
 
       {/* Tagline */}
-      <div className="rounded-2xl border border-indigo-500/20 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent p-4">
-        <p className="text-base font-bold text-indigo-300 italic">
+      <div className="rounded-2xl border border-zinc-700/20 bg-gradient-to-r from-zinc-700/10 via-purple-500/5 to-transparent p-4">
+        <p className="text-base font-bold text-zinc-300 italic">
           &ldquo;{missionContent.tagline}&rdquo;
         </p>
       </div>

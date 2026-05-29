@@ -53,7 +53,7 @@ export function StoryHero() {
         <>
           Built for Organizations Where
           <br />
-          <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             Compliance Is Mission-Critical
           </span>
         </>
@@ -90,7 +90,7 @@ function FounderQuote() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-transparent blur-3xl"
+          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 via-purple-500/15 to-transparent blur-3xl"
         />
         <motion.div
           animate={{
@@ -118,7 +118,7 @@ function FounderQuote() {
           {/* Glassmorphism Panel */}
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl p-12 lg:p-16 text-center relative overflow-hidden">
             {/* Decorative glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/5 rounded-3xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-zinc-700/10 to-purple-500/5 rounded-3xl" />
 
             {/* Quote Icon */}
             <motion.div
@@ -126,9 +126,9 @@ function FounderQuote() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: duration.slow }}
-              className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 mb-8"
+              className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-zinc-700/20 to-purple-500/20 border border-zinc-600/30 mb-8"
             >
-              <Quote className="w-10 h-10 text-indigo-400" />
+              <Quote className="w-10 h-10 text-zinc-400" />
             </motion.div>
 
             {/* Quote Text */}
@@ -141,7 +141,7 @@ function FounderQuote() {
             >
               The audit log signs itself.
               <br />
-              <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 FormaOS anchors it daily to a public transparency tree so a
                 regulator can verify any event without trusting me.
               </span>
@@ -153,7 +153,7 @@ function FounderQuote() {
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6, duration: duration.slower }}
-              className="w-32 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full mb-8"
+              className="w-32 h-1 bg-gradient-to-r from-zinc-700 via-purple-500 to-pink-500 mx-auto rounded-full mb-8"
             />
 
             {/* Attribution with founder avatar.
@@ -179,7 +179,7 @@ function FounderQuote() {
               <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-white/[0.1]">
                 <div
                   aria-hidden
-                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-500/15 to-purple-500/15 text-base font-semibold text-white/50"
+                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-700/15 to-purple-500/15 text-base font-semibold text-white/50"
                 >
                   EH
                 </div>
@@ -194,7 +194,7 @@ function FounderQuote() {
               </div>
               <div>
                 <span className="font-semibold text-white">Ejaz Hussain</span>
-                <span className="mx-3 text-indigo-500">•</span>
+                <span className="mx-3 text-zinc-700">•</span>
                 <span>Founder &amp; Chief Engineer, FormaOS</span>
               </div>
             </motion.div>
@@ -314,7 +314,7 @@ function TheProblem() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.8 }}
-          className="text-xl text-indigo-400 font-medium"
+          className="text-xl text-zinc-400 font-medium"
         >
           We believed there had to be a better way.
         </motion.p>
@@ -356,7 +356,7 @@ function TheApproach() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/3 -left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-indigo-500/20 to-transparent blur-3xl"
+          className="absolute top-1/3 -left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 to-transparent blur-3xl"
         />
         <motion.div
           animate={{
@@ -388,14 +388,14 @@ function TheApproach() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
           >
-            <Lightbulb className="h-3 w-3 text-indigo-400" />
+            <Lightbulb className="h-3 w-3 text-zinc-400" />
             <span className="text-gray-300">Our Approach</span>
           </motion.div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             From Policy to Proof
             <br />
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Built Into Operations
             </span>
           </h2>
@@ -407,7 +407,7 @@ function TheApproach() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.1 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-indigo-500/20 via-white/[0.08] to-white/[0.04] rounded-3xl border border-indigo-500/30 p-8 lg:p-10 mb-12"
+          className="backdrop-blur-xl bg-gradient-to-br from-zinc-700/20 via-white/[0.08] to-white/[0.04] rounded-3xl border border-zinc-600/30 p-8 lg:p-10 mb-12"
         >
           <p className="text-lg text-gray-400 mb-4">
             FormaOS is not a document system. It is an operational compliance
@@ -416,7 +416,7 @@ function TheApproach() {
           <p className="text-xl text-white font-medium mb-4">
             We designed FormaOS around one principle:
           </p>
-          <p className="text-2xl sm:text-3xl text-indigo-400 font-bold italic leading-tight">
+          <p className="text-2xl sm:text-3xl text-zinc-400 font-bold italic leading-tight">
             &ldquo;Compliance should be embedded into how work is done, not
             verified after it is done.&rdquo;
           </p>
@@ -437,10 +437,10 @@ function TheApproach() {
             {capabilities.map((capability, idx) => (
               <div
                 key={idx}
-                className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-indigo-500/30 transition-all duration-300"
+                className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-zinc-600/30 transition-all duration-300"
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <capability.icon className="w-5 h-5 text-indigo-400" />
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-700/20 to-purple-500/20 border border-zinc-600/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <capability.icon className="w-5 h-5 text-zinc-400" />
                 </div>
                 <span className="text-lg text-gray-300">{capability.text}</span>
               </div>
@@ -456,7 +456,7 @@ function TheApproach() {
           transition={{ duration: duration.slow, delay: 0.6 }}
           className="mb-12 max-w-2xl mx-auto"
         >
-          <DemoComplianceChain glowColor="from-indigo-500/15 to-purple-500/15" />
+          <DemoComplianceChain glowColor="from-zinc-700/15 to-purple-500/15" />
         </motion.div>
 
         {/* Closing */}
@@ -616,7 +616,7 @@ function WhatMakesUsDifferent() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute bottom-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-indigo-500/15 to-transparent blur-3xl"
+          className="absolute bottom-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/15 to-transparent blur-3xl"
         />
         <motion.div
           animate={{
@@ -655,7 +655,7 @@ function WhatMakesUsDifferent() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             An Operating System for Compliance,
             <br />
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Not a Tool
             </span>
           </h2>
@@ -679,14 +679,14 @@ function WhatMakesUsDifferent() {
               <motion.div
                 key={principle.title}
                 whileHover={{ y: -8, transition: { duration: duration.fast } }}
-                className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-indigo-500/30 transition-all duration-500"
+                className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-zinc-600/30 transition-all duration-500"
               >
                 {/* Hover glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
+                <div className="absolute inset-0 bg-gradient-to-br from-zinc-700/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
 
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <principle.icon className="w-6 h-6 text-indigo-400" />
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-700/20 to-purple-500/20 border border-zinc-600/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <principle.icon className="w-6 h-6 text-zinc-400" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-2">
@@ -711,7 +711,7 @@ function WhatMakesUsDifferent() {
           <p className="text-gray-500">This is not about passing audits.</p>
           <p className="text-white font-medium">
             This is about building organizations that can{' '}
-            <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               stand behind every decision they make
             </span>
             .
@@ -864,7 +864,7 @@ function FinalCTA() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-indigo-500/20 via-purple-500/15 to-transparent blur-3xl"
+          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 via-purple-500/15 to-transparent blur-3xl"
         />
         <motion.div
           animate={{
@@ -899,7 +899,7 @@ function FinalCTA() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2, duration: duration.slow }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-indigo-400"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-zinc-400"
                 >
                   <Building2 className="h-3 w-3" />
                   Join Us
@@ -914,7 +914,7 @@ function FinalCTA() {
                 >
                   <span className="text-white">Build Compliance Into</span>
                   <br className="hidden sm:inline" />
-                  <span className="bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     How Your Organization Operates
                   </span>
                 </motion.h2>
@@ -924,7 +924,7 @@ function FinalCTA() {
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: duration.slower }}
-                  className="w-24 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full"
+                  className="w-24 h-1 bg-gradient-to-r from-zinc-700 via-purple-500 to-pink-500 mx-auto rounded-full"
                 />
               </div>
             </div>
@@ -953,13 +953,12 @@ function FinalCTA() {
               >
                 <Link
                   href={compliancePlanHref('our_story_final')}
-                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 px-8 py-4 text-base font-semibold text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                  className="group relative overflow-hidden rounded-2xl bg-foreground text-background px-8 py-4 text-base font-semibold shadow-lg hover:opacity-90 transition-all duration-300 hover:scale-105"
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     {PUBLIC_CTA_LABELS.compliancePlan}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>
                 <Link
                   href={demoHref('our_story_final')}

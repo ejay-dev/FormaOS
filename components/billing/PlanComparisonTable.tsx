@@ -230,7 +230,7 @@ export function PlanComparisonTable() {
               key={planKey}
               className={`relative rounded-2xl border p-6 transition-all ${
                 isRecommended
-                  ? 'border-sky-400/50 bg-sky-500/5 ring-1 ring-sky-400/20'
+                  ? 'border-zinc-400/50 bg-zinc-500/5 ring-1 ring-zinc-400/20'
                   : isCurrent
                     ? 'border-emerald-400/30 bg-emerald-500/5'
                     : 'border-glass-border bg-surface-1'
@@ -238,7 +238,7 @@ export function PlanComparisonTable() {
             >
               {/* Recommended badge */}
               {isRecommended && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-gradient-to-r from-sky-500 to-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-foreground text-background text-xs font-bold px-3 py-1 rounded-full">
                   <Sparkles className="h-3 w-3" />
                   RECOMMENDED
                 </div>
@@ -254,7 +254,7 @@ export function PlanComparisonTable() {
               <div className="text-center space-y-3 pt-2">
                 <PlanIcon
                   className={`h-8 w-8 mx-auto ${
-                    isRecommended ? 'text-sky-400' : 'text-muted-foreground'
+                    isRecommended ? 'text-foreground' : 'text-muted-foreground'
                   }`}
                 />
 

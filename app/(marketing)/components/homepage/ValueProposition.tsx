@@ -112,7 +112,7 @@ function PostureCard({
   // doesn't read "47/50" as our marketing claim.
   const stats = [
     { value: '47/50', label: 'Active controls', color: 'text-teal-400' },
-    { value: '312', label: 'Evidence items', color: 'text-sky-400' },
+    { value: '312', label: 'Evidence items', color: 'text-zinc-300' },
     { value: '8', label: 'Framework packs', color: 'text-violet-400' },
   ] as const;
 
@@ -360,7 +360,7 @@ function EnforcementCard({
 
 // Illustrative timeline — generic role labels, no invented names.
 const EVIDENCE_EVENTS = [
-  { text: 'Control created', time: 'Day 0', color: 'bg-sky-400' },
+  { text: 'Control created', time: 'Day 0', color: 'bg-zinc-400' },
   { text: 'Evidence uploaded — by named owner', time: 'Day 3', color: 'bg-teal-400' },
   { text: 'Review approved — by control reviewer', time: 'Day 4', color: 'bg-violet-400' },
   { text: 'Hash anchored — Sigstore Rekor entry', time: 'Day 5', color: 'bg-emerald-400' },
@@ -381,7 +381,7 @@ function EvidenceCard({
       noMotion={noMotion}
     >
       <div className="flex items-center gap-2 mb-4">
-        <Link2 className="w-4 h-4 text-sky-400" />
+        <Link2 className="w-4 h-4 text-zinc-300" />
         <h3 className="text-base font-bold text-white">Evidence Chain</h3>
       </div>
       <p className="text-[13px] text-slate-500 leading-relaxed mb-5">
@@ -452,7 +452,7 @@ const OWNERS = [
   {
     initials: 'DE',
     role: 'Data encryption owner',
-    gradient: 'from-violet-500/30 to-indigo-500/30',
+    gradient: 'from-violet-500/30 to-zinc-700/30',
   },
   {
     initials: 'IR',

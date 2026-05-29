@@ -81,7 +81,7 @@ function BlogHero() {
       headline={
         <>
           FormaOS{' '}
-          <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             Blog
           </span>
         </>
@@ -114,7 +114,7 @@ function FeaturedPost() {
               <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
 
               {/* Glow effect on hover */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-cyan-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-zinc-600/20 via-zinc-500/20 to-zinc-700/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
 
               <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
                 {/* Category visual */}

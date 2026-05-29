@@ -344,7 +344,7 @@ export function FeatureEnableFlow({ onModuleSelect }: FeatureEnableFlowProps) {
             plan === 'pro' &&
               'bg-gradient-to-r from-cyan-500/20 to-teal-500/20 text-cyan-300 border border-cyan-400/30',
             plan === 'basic' &&
-              'bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-blue-300 border border-blue-400/30',
+              'bg-gradient-to-r from-zinc-600/20 to-zinc-800/20 text-zinc-300 border border-zinc-500/30',
             plan === 'trial' &&
               'bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-400/30',
           )}

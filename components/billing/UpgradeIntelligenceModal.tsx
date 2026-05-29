@@ -127,11 +127,11 @@ export function UpgradeIntelligenceModal({
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-edge-2">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-sky-500/20 to-indigo-500/20">
+            <div className="p-2 rounded-xl bg-white/[0.04]">
               {featureBenefit ? (
-                <featureBenefit.icon className="h-5 w-5 text-sky-400" />
+                <featureBenefit.icon className="h-5 w-5 text-foreground" />
               ) : (
-                <Zap className="h-5 w-5 text-sky-400" />
+                <Zap className="h-5 w-5 text-foreground" />
               )}
             </div>
             <h2 className="text-xl font-bold text-foreground">
@@ -176,7 +176,7 @@ export function UpgradeIntelligenceModal({
                   onClick={() => meetsRequirement && setSelectedPlan(key)}
                   className={`relative rounded-xl border p-5 transition-all cursor-pointer ${
                     isSelected
-                      ? 'border-sky-400/50 bg-sky-500/5 ring-2 ring-sky-400/30'
+                      ? 'border-zinc-400/50 bg-zinc-500/5 ring-2 ring-zinc-400/30'
                       : meetsRequirement
                         ? 'border-glass-border bg-glass-subtle hover:border-glass-border-strong hover:bg-glass-strong'
                         : 'border-edge-1 bg-white/[0.02] opacity-50 cursor-not-allowed'
@@ -185,7 +185,7 @@ export function UpgradeIntelligenceModal({
                   {/* Recommended badge */}
                   {recommended && meetsRequirement && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="text-xs font-bold text-sky-300 bg-sky-500/20 px-3 py-1 rounded-full flex items-center gap-1 border border-sky-400/20">
+                      <span className="text-xs font-bold text-zinc-200 bg-zinc-500/20 px-3 py-1 rounded-full flex items-center gap-1 border border-zinc-400/20">
                         <Sparkles className="h-2.5 w-2.5" />
                         RECOMMENDED
                       </span>
@@ -199,7 +199,7 @@ export function UpgradeIntelligenceModal({
                         key === 'enterprise'
                           ? 'text-amber-400'
                           : key === 'pro'
-                            ? 'text-sky-400'
+                            ? 'text-zinc-300'
                             : 'text-muted-foreground'
                       }`}
                     />

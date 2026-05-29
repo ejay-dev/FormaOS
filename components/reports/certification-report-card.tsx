@@ -34,8 +34,8 @@ export function CertificationReportCard({
   }, [])
 
   const colorClasses = {
-    sky: 'from-sky-500/20 to-sky-500/5 border-sky-400/20 text-sky-400',
-    indigo: 'from-indigo-500/20 to-indigo-500/5 border-indigo-400/20 text-indigo-400',
+    sky: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20 text-zinc-300',
+    indigo: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20 text-zinc-300',
     pink: 'from-pink-500/20 to-pink-500/5 border-pink-400/20 text-pink-400',
     emerald: 'from-emerald-500/20 to-emerald-500/5 border-emerald-400/20 text-emerald-400',
   }
