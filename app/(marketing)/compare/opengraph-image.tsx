@@ -23,14 +23,14 @@ export default function Image() {
         }}
       >
         <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: '#00d4fb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ color: '#0a0f1c', fontSize: 22, fontWeight: 900 }}>F</div>
           </div>
           <span style={{ color: '#ffffff', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>FormaOS</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div style={{ color: '#00d4fb', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+          <div style={{ color: '#a1a1aa', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
             Platform Comparison
           </div>
           <div style={{ color: '#ffffff', fontSize: 54, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', maxWidth: 820 }}>

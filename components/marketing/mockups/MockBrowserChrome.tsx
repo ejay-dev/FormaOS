@@ -31,8 +31,6 @@ export function MockBrowserChrome({
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{
         scale: 1.01,
-        boxShadow:
-          '0 0 80px rgba(0,212,251,0.1), 0 0 160px rgba(160,131,255,0.04)',
       }}
       className={`rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-[#0a0f1e] cursor-default select-none ${className}`}
     >
@@ -55,7 +53,7 @@ export function MockBrowserChrome({
           <span className="text-[10px] text-white/40 font-mono">{url}</span>
         </div>
         {/* Avatar */}
-        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
           <span className="text-[8px] font-bold text-white">FO</span>
         </div>
       </motion.div>

@@ -26,8 +26,8 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     title: 'Structure',
     verb: 'Model',
     subtitle: 'Model your organisation with governance built in',
-    accent: 'from-teal-400 to-emerald-500',
-    glowColor: 'rgba(20,184,166,0.15)',
+    accent: 'from-zinc-700 to-zinc-900',
+    glowColor: 'rgba(113,113,122,0.15)',
     color: 'teal',
   },
   operationalize: {
@@ -36,7 +36,7 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     title: 'Operationalize',
     verb: 'Execute',
     subtitle: 'Turn requirements into real execution',
-    accent: 'from-emerald-500 to-teal-600',
+    accent: 'from-zinc-700 to-zinc-900',
     glowColor: 'rgba(52,211,153,0.15)',
     color: 'emerald',
   },
@@ -46,8 +46,8 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     title: 'Validate',
     verb: 'Verify',
     subtitle: 'Continuously verify controls are working',
-    accent: 'from-teal-600 to-emerald-600',
-    glowColor: 'rgba(20,184,166,0.15)',
+    accent: 'from-zinc-700 to-zinc-900',
+    glowColor: 'rgba(113,113,122,0.15)',
     color: 'tealAlt',
   },
   defend: {
@@ -56,7 +56,7 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     title: 'Defend',
     verb: 'Prove',
     subtitle: 'Produce audit-ready evidence instantly',
-    accent: 'from-amber-500 to-teal-500',
+    accent: 'from-zinc-700 to-zinc-900',
     glowColor: 'rgba(245,158,11,0.15)',
     color: 'amber',
   },
@@ -67,7 +67,7 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
 // -----------------------------------------------------------------------------
 
 export const structureFrameworks = [
-  { id: 'iso27001', name: 'ISO 27001', controls: 52, color: '#14b8a6' },
+  { id: 'iso27001', name: 'ISO 27001', controls: 52, color: '#a1a1aa' },
   { id: 'soc2', name: 'SOC 2 Type II', controls: 48, color: '#10b981' },
   { id: 'hipaa', name: 'HIPAA', controls: 42, color: '#f59e0b' },
 ];

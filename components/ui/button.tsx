@@ -32,8 +32,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         premium: "bg-primary text-primary-foreground shadow-premium hover:shadow-premium-lg",
         glass: "bg-transparent text-foreground border border-glass-border backdrop-blur-sm hover:bg-glass-bg hover:border-glass-border-strong",
-        // Gradient primary for high-emphasis CTAs (explicit brand gradient — keeps tinted shadow by design)
-        gradient: "bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white shadow-premium-lg hover:shadow-premium-xl hover:brightness-110",
+        // High-emphasis CTA — solid charcoal/ink, theme-aware high contrast (monochrome brand)
+        gradient: "bg-foreground text-background shadow-premium-lg hover:shadow-premium-xl hover:opacity-90",
       },
       size: {
         // iOS HIG and Material Design both call for ≥44px tap targets on

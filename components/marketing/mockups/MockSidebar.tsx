@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useReducedMotion } from 'framer-motion';
+import { FoMonogram } from '@/components/brand/FoMonogram';
 import {
   LayoutDashboard,
   Shield,
@@ -114,9 +115,7 @@ export function MockSidebar({
       {/* Logo */}
       <div className="px-3 pt-3 pb-1">
         <div className="flex items-center gap-1.5">
-          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-            <span className="text-[7px] font-bold text-white">FO</span>
-          </div>
+          <FoMonogram className="h-5 w-5 shrink-0 text-white" />
           <div className="min-w-0">
             <span className="text-[10px] font-semibold text-white block leading-none">
               FormaOS

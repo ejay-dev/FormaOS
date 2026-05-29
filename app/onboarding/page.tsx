@@ -964,7 +964,7 @@ export default async function OnboardingPage({
               <div className="mt-5 space-y-3">
                 <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                    className="h-full rounded-full bg-foreground"
                     style={{ width: `${completedRatio}%` }}
                   />
                 </div>

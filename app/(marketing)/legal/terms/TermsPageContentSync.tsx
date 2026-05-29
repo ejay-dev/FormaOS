@@ -50,7 +50,7 @@ function TermsHero() {
       <div className="absolute inset-0 overflow-hidden">
         {/* Primary gradient orb - top left */}
         <motion.div
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/15 via-blue-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-white/[0.04] rounded-full blur-3xl"
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.3, 0.4, 0.3],
@@ -72,7 +72,7 @@ function TermsHero() {
           }}
         />
         {/* Tertiary accent - center glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-indigo-500/5 to-transparent rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-zinc-700/5 to-transparent rounded-full" />
       </div>
 
       {/* Main Hero Content */}
@@ -100,7 +100,7 @@ function TermsHero() {
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Terms &{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 Conditions
               </span>
             </motion.h1>
@@ -128,7 +128,7 @@ function TermsHero() {
                 Effective: January 16, 2026
               </span>
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
                 Last Updated: January 16, 2026
               </span>
             </motion.div>
@@ -275,7 +275,7 @@ function TermsSection({
           <div className="relative">
             {/* Section Header */}
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-xl bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Icon className="w-6 h-6 text-cyan-400" />
               </div>
               <div>
@@ -311,7 +311,7 @@ function TermsContent() {
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl"
+          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-white/[0.04] blur-3xl"
           animate={{
             x: [0, -50, 0],
             y: [0, -30, 0],
@@ -643,10 +643,9 @@ function TermsCTA() {
                 href="/contact"
                 whileHover={{
                   scale: 1.05,
-                  boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
                 }}
                 whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all whitespace-nowrap"
+                className="group px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg flex items-center gap-3 shadow-lg hover:opacity-90 transition-all whitespace-nowrap"
               >
                 <span>Contact Us</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

@@ -16,7 +16,7 @@ const steps = [
     description:
       'Define your governance architecture. Map obligations to controls, controls to owners, and owners to evidence requirements. The OS knows who is accountable for what.',
     icon: Box,
-    color: 'from-teal-400 to-emerald-500',
+    color: 'from-zinc-700 to-zinc-900',
     features: [
       'Governance hierarchy as code',
       'Framework-to-control mapping',
@@ -29,7 +29,7 @@ const steps = [
     description:
       'Controls become enforced workflows. Tasks are assigned, deadlines are tracked, escalations are automatic. The OS ensures execution, not just intention.',
     icon: Zap,
-    color: 'from-emerald-500 to-teal-600',
+    color: 'from-zinc-700 to-zinc-900',
     features: [
       'Automated control enforcement',
       'Deadline and escalation rules',
@@ -42,7 +42,7 @@ const steps = [
     description:
       'The OS continuously verifies control status. Gaps are flagged instantly. Compliance posture is always current, never a point-in-time snapshot.',
     icon: ShieldCheck,
-    color: 'from-teal-600 to-emerald-600',
+    color: 'from-zinc-700 to-zinc-900',
     features: [
       'Real-time control verification',
       'Continuous posture monitoring',
@@ -55,7 +55,7 @@ const steps = [
     description:
       'When auditors arrive, the evidence is already assembled. Chain of custody, timestamps, attestations. All exportable, all defensible, all undeniable.',
     icon: FileCheck,
-    color: 'from-amber-500 to-teal-500',
+    color: 'from-zinc-700 to-zinc-900',
     features: [
       'Pre-assembled evidence packages',
       'Immutable audit trail',
@@ -181,7 +181,7 @@ export function ScrollStory() {
         {/* Lifecycle steps - vertical flow */}
         <div className="relative">
           {/* Central timeline line (desktop) */}
-          <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-teal-400/20 via-emerald-500/15 to-teal-600/20" />
+          <div className="hidden lg:block absolute left-1/2 -translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-zinc-700/20 via-zinc-600/15 to-zinc-800/20" />
 
           <div className="space-y-8 lg:space-y-12">
             {steps.map((step, i) => (

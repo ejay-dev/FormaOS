@@ -87,7 +87,7 @@ export function WhoIsFor() {
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
               Built for those who{' '}
-              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 can't afford to guess
               </span>
             </h2>

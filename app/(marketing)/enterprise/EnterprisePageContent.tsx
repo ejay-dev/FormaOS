@@ -89,7 +89,7 @@ const trustBadges: TrustBadge[] = [
     icon: Building2,
     label: 'SAML + MFA',
     detail: 'Enterprise identity controls supported',
-    colorRgb: '34,211,238',
+    colorRgb: '161,161,170',
   },
   {
     icon: Lock,
@@ -160,7 +160,7 @@ const securityLayers: SecurityLayer[] = [
       'Backup and recovery procedures',
       'Operational change controls',
     ],
-    colorRgb: '34,211,238',
+    colorRgb: '161,161,170',
   },
   {
     name: 'Governance & Logging',
@@ -218,7 +218,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'DPA review',
       'Procurement review path',
     ],
-    colorRgb: '34,211,238',
+    colorRgb: '161,161,170',
   },
   {
     icon: UserCheck,
@@ -460,7 +460,7 @@ const deploymentOptions: DeploymentOption[] = [
     ],
     icon: CloudCog,
     recommended: true,
-    colorRgb: '34,211,238',
+    colorRgb: '161,161,170',
   },
   {
     name: 'On-Premise / Private Cloud',
@@ -675,7 +675,7 @@ function SecurityArchitecture() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Five-layer{' '}
-              <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 security architecture
               </span>
             </h2>
@@ -799,7 +799,7 @@ function TrustBadgesSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Built for{' '}
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 enterprise review
               </span>
             </h2>
@@ -874,7 +874,7 @@ function SLASection() {
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Enterprise{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 service commitments
               </span>
             </h2>
@@ -932,7 +932,7 @@ function DeploymentSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Deploy{' '}
-              <span className="bg-gradient-to-r from-blue-400 via-violet-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 your way
               </span>
             </h2>
@@ -1175,7 +1175,7 @@ function EnterpriseCTA() {
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Start your{' '}
-                  <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     enterprise evaluation
                   </span>
                 </h2>
@@ -1307,7 +1307,7 @@ function EnterpriseHero() {
         />
         <motion.div
           className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(34,211,238,0.06)' }}
+          style={{ background: 'rgba(113,113,122,0.06)' }}
           animate={{
             scale: [1, 1.06, 1],
             opacity: [0.06, 0.1, 0.06],
@@ -1353,7 +1353,7 @@ function EnterpriseHero() {
         >
           One Evaluation Path from
           <br />
-          <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+          <span className="text-foreground">
             Security Review to Rollout
           </span>
         </motion.h1>
@@ -1492,7 +1492,7 @@ export default function EnterprisePageContent() {
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                 Built for{' '}
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="text-foreground">
                   security teams
                 </span>
               </h2>

@@ -36,7 +36,7 @@ export function IndustriesHero() {
         <>
           One OS. Multiple
           <br />
-          <span className="bg-gradient-to-r from-blue-400 via-emerald-500 to-cyan-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             Regulatory Frameworks.
           </span>
         </>

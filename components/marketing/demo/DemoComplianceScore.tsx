@@ -57,7 +57,7 @@ interface DemoComplianceScoreProps {
 export default function DemoComplianceScore({
   categories = defaultCategories,
   overallScore,
-  glowColor = 'from-teal-500/15 to-emerald-500/15',
+  glowColor = 'from-white/[0.04] to-white/[0.02]',
   accentColor = 'teal',
 }: DemoComplianceScoreProps) {
   const prefersReducedMotion = useReducedMotion();

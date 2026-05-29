@@ -277,7 +277,7 @@ function SignUpContent() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
-        <Logo variant="mark" size={44} />
+        <Logo variant="wordmark" size={28} className="text-white" />
         <div className="text-xs sm:text-sm text-slate-400 text-center sm:text-left">
           Secure · Compliance-First · Enterprise-Ready
         </div>
@@ -326,7 +326,7 @@ function SignUpContent() {
 
             {/* Plan Features */}
             {plan && (
-              <div className="mb-8 p-4 rounded-lg bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-cyan-500/10 border border-sky-400/20">
+              <div className="mb-8 p-4 rounded-lg bg-white/[0.04] border border-sky-400/20">
                 <div className="text-sm font-medium text-sky-200 mb-3">
                   What's included:
                 </div>
@@ -482,7 +482,7 @@ function SignUpContent() {
                 type="submit"
                 data-testid="signup-submit-button"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   'Creating account...'
@@ -496,7 +496,7 @@ function SignUpContent() {
             </form>
 
             {!plan && (
-              <div className="mt-6 p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 to-sky-500/10 border border-emerald-400/20">
+              <div className="mt-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-400/20">
                 <div className="text-center">
                   <p className="text-xs text-slate-300 mb-2">
                     Haven't chosen a plan yet?
@@ -538,7 +538,7 @@ export default function SignUpPage() {
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
           <div className="flex items-center gap-3 rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm px-6 py-4 text-sm text-slate-300">
-            <Logo variant="mark" size={18} />
+            <Logo variant="mark" size={18} className="text-white" />
             <span>Loading FormaOS signup...</span>
           </div>
         </div>

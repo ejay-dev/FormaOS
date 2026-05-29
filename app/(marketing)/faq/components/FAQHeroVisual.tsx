@@ -49,11 +49,11 @@ function FAQHeroVisualInner() {
             height="140"
             viewBox="0 0 100 140"
             fill="none"
-            className="drop-shadow-[0_0_24px_rgba(6,182,212,0.5)]"
+            className="drop-shadow-[0_0_24px_rgba(255,255,255,0.18)]"
           >
             <path
               d={Q_PATH}
-              stroke="rgb(6 182 212)"
+              stroke="rgb(212 212 216)"
               strokeWidth={4}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -99,7 +99,7 @@ function FAQHeroVisualInner() {
             className="absolute w-[160px] h-[160px] rounded-full"
             style={{
               background:
-                'radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)',
+                'radial-gradient(circle, rgba(113,113,122,0.12) 0%, transparent 70%)',
             }}
             animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0.2, 0.6] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
@@ -111,11 +111,11 @@ function FAQHeroVisualInner() {
             height="140"
             viewBox="0 0 100 140"
             fill="none"
-            className="drop-shadow-[0_0_24px_rgba(6,182,212,0.5)]"
+            className="drop-shadow-[0_0_24px_rgba(255,255,255,0.18)]"
           >
             <motion.path
               d={Q_PATH}
-              stroke="rgb(6 182 212)"
+              stroke="rgb(212 212 216)"
               strokeWidth={4}
               strokeLinecap="round"
               strokeLinejoin="round"

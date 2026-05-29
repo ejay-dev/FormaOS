@@ -24,7 +24,7 @@ export default function Image() {
       >
         {/* Top accent bar */}
         <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: '#00d4fb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: '#d4d4d8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ color: '#0a0f1c', fontSize: 22, fontWeight: 900 }}>F</div>
           </div>
           <span style={{ color: '#ffffff', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>FormaOS</span>
@@ -32,7 +32,7 @@ export default function Image() {
 
         {/* Main content */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div style={{ color: '#00d4fb', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+          <div style={{ color: '#a1a1aa', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
             Platform
           </div>
           <div style={{ color: '#ffffff', fontSize: 56, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', maxWidth: 820 }}>
@@ -56,7 +56,7 @@ export default function Image() {
           transform: 'translateY(-50%)',
           width: 320, height: 320,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,212,251,0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(161,161,170,0.12) 0%, transparent 70%)',
         }} />
       </div>
     ),

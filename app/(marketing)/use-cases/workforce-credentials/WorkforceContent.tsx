@@ -190,7 +190,7 @@ export default function WorkforceContent() {
       demoSlot={
         <>
           <DemoCredentialTracker />
-          <DemoComplianceScore glowColor="from-emerald-500/15 to-cyan-500/15" />
+          <DemoComplianceScore glowColor="from-zinc-700/15 to-zinc-900/15" />
         </>
       }
       workflows={workflows}

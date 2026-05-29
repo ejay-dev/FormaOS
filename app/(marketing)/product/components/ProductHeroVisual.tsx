@@ -84,7 +84,7 @@ function ProductHeroVisualInner() {
               rotateX: cursorActive ? frontRotateX : 0,
             }}
           >
-            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(6,182,212,0.06)]`}>
+            <div className={`${GLASS} w-full h-full p-5 shadow-lg`}>
               <ComplianceDashboard />
             </div>
           </motion.div>

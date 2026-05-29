@@ -1,85 +1,74 @@
 import { brand } from '@/config/brand';
-import { FoShieldMark } from '@/components/brand/FoShieldMark';
+import { FoMonogram } from '@/components/brand/FoMonogram';
+import { FoWordmark } from '@/components/brand/FoWordmark';
 
 type LogoVariant = 'full' | 'mark' | 'wordmark';
 
 interface LogoProps {
   /** Which variant to render */
   variant?: LogoVariant;
-  /** Shield size in pixels */
+  /** mark: square size in px. wordmark/full: rendered HEIGHT in px (width auto). */
   size?: number;
-  /** Additional CSS classes */
+  /** Additional CSS classes (applied to the wrapper) */
   className?: string;
-  /** Override the default alt text */
+  /** Override the default alt/title text */
   alt?: string;
-  /** Controls accent tint when optional text is shown. Default: true */
+  /** Include the "COMPLIANCE, SIMPLIFIED" tagline (wordmark/full). Implied for "full". */
+  withTagline?: boolean;
+  /* ---- deprecated, retained for API compatibility (no-ops) ---- */
+  /** @deprecated wordmark inherits color via currentColor */
   darkBackground?: boolean;
-  /** Show app name text next to the mark (opt-in only) */
+  /** @deprecated the wordmark variant is the text lockup */
   showText?: boolean;
-  /** Text size class override */
+  /** @deprecated */
   textClassName?: string;
-  /** Enable subtle mark animation */
+  /** @deprecated mark is static */
   animated?: boolean;
 }
 
 /**
- * Unified FormaOS logo component.
- * Shield-only by default to enforce monogram consistency across app + marketing.
+ * Unified FormaOS logo.
+ *
+ * The mark inherits color via `currentColor`, so it renders charcoal on light
+ * surfaces and white on dark ones — set `text-*` on the wrapper to override.
  *
  * Usage:
- *   <Logo />                           — FO shield mark (animated)
- *   <Logo variant="mark" size={40} />  — Icon only
- *   <Logo variant="full" showText />   — Optional legacy text lockup
+ *   <Logo />                              — "FO" monogram (square, default 36px)
+ *   <Logo variant="mark" size={28} />     — monogram at 28px
+ *   <Logo variant="wordmark" size={28} /> — FORMAOS lockup, 28px tall
+ *   <Logo variant="full" size={64} />     — FORMAOS lockup + tagline
  */
 export function Logo({
   variant = 'mark',
   size = 36,
   className = '',
   alt,
-  darkBackground = true, // retained for API compatibility
-  showText = false,
-  textClassName = '',
-  animated = true,
+  withTagline,
 }: LogoProps) {
   const altText = alt ?? brand.appName;
-  const motionEnabled = animated && size >= 24;
-  const renderMark = () => (
-    <FoShieldMark
-      size={size}
-      title={altText}
-      animated={motionEnabled}
-      className="select-none shrink-0"
-    />
-  );
 
-  /* ---- Mark only (default) ---- */
   if (variant === 'mark') {
-    return <span className={`inline-flex select-none ${className}`}>{renderMark()}</span>;
-  }
-
-  /* ---- Legacy wordmark variant now resolves to shield-only ---- */
-  if (variant === 'wordmark') {
     return (
-      <span className={`inline-flex items-center select-none ${className}`}>
-        {renderMark()}
+      <span
+        className={`inline-flex text-foreground select-none ${className}`}
+        style={{ width: size, height: size }}
+      >
+        <FoMonogram title={altText} className="h-full w-full shrink-0" />
       </span>
     );
   }
 
-  /* ---- Full variant: mark-only unless text is explicitly requested ---- */
+  const showTagline = withTagline ?? variant === 'full';
   return (
-    <span className={`inline-flex items-center gap-2 select-none ${className}`}>
-      {renderMark()}
-      {showText && (
-        <span
-          className={textClassName || 'text-lg font-semibold tracking-tight'}
-        >
-          Forma
-          <span className={darkBackground ? 'text-primary' : 'text-secondary'}>
-            OS
-          </span>
-        </span>
-      )}
+    <span
+      className={`inline-flex items-center text-foreground select-none ${className}`}
+      style={{ height: size }}
+    >
+      <FoWordmark
+        title={altText}
+        withTagline={showTagline}
+        className="h-full w-auto shrink-0"
+      />
     </span>
   );
 }

@@ -51,7 +51,7 @@ export function ReadyStep({
     <div className="flex flex-col items-center text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Completion mark */}
       <div className="relative">
-        <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 shadow-2xl shadow-emerald-500/10">
+        <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30 shadow-2xl shadow-emerald-500/10">
           <CheckCircle2 className="h-10 w-10 text-emerald-400" />
         </div>
         {/* Ping rings */}
@@ -63,7 +63,7 @@ export function ReadyStep({
       <div className="space-y-3">
         <h2 className="text-3xl font-black text-slate-100 tracking-tight">
           You&apos;re all set,{' '}
-          <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-emerald-400 to-emerald-500 bg-clip-text text-transparent">
             {firstName}
           </span>
           .
@@ -98,7 +98,7 @@ export function ReadyStep({
       <button
         onClick={() => handleComplete(readyCTA.primary.href)}
         disabled={busy}
-        className="group flex w-full max-w-sm items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all duration-200 hover:brightness-110 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+        className="group flex w-full max-w-sm items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 transition-all duration-200 hover:brightness-110 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {completePending ? (
           <>

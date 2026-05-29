@@ -146,7 +146,7 @@ export function ComplianceIntelligenceSummary() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
+      <div className="rounded-2xl border border-glass-border bg-white/[0.04] p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
         <div className="animate-pulse space-y-4">
           <div className="h-6 w-48 rounded bg-glass-strong" />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -212,7 +212,7 @@ export function ComplianceIntelligenceSummary() {
   const scoreHistory = data.complianceScore.history.map((h) => h.score);
 
   return (
-    <div className="rounded-2xl border border-glass-border bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-cyan-500/5 p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
+    <div className="rounded-2xl border border-glass-border bg-white/[0.04] p-6 backdrop-blur-sm" style={{ minHeight: '400px' }}>
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">

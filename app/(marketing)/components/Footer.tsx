@@ -31,13 +31,13 @@ function FooterCTA() {
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(135deg, rgba(6,182,212,0.08) 0%, rgba(99,102,241,0.06) 50%, rgba(6,182,212,0.04) 100%)',
+            'linear-gradient(135deg, rgba(113,113,122,0.08) 0%, rgba(99,102,241,0.06) 50%, rgba(113,113,122,0.04) 100%)',
         }}
       />
       {/* Ambient glow */}
       <div
         className="absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full blur-[120px] pointer-events-none"
-        style={{ background: 'rgba(6,182,212,0.08)' }}
+        style={{ background: 'rgba(113,113,122,0.08)' }}
       />
       <div
         className="absolute -bottom-20 -right-20 w-[300px] h-[300px] rounded-full blur-[100px] pointer-events-none"
@@ -71,7 +71,7 @@ function FooterCTA() {
                   variant: 'primary',
                 })
               }
-              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-7 py-3.5 min-h-[48px] w-full sm:w-auto text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:brightness-110"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-foreground text-background px-7 py-3.5 min-h-[48px] w-full sm:w-auto text-sm font-semibold transition-all hover:opacity-90"
             >
               {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -156,7 +156,7 @@ export function Footer() {
         className="absolute inset-x-0 top-0 h-px"
         style={{
           background:
-            'linear-gradient(90deg, transparent 10%, rgba(6,182,212,0.1) 50%, transparent 90%)',
+            'linear-gradient(90deg, transparent 10%, rgba(113,113,122,0.1) 50%, transparent 90%)',
         }}
       />
 
@@ -171,11 +171,12 @@ export function Footer() {
           <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
             {/* Brand column — wider */}
             <div className="col-span-2 sm:col-span-3 lg:col-span-2 mb-2 lg:mb-0">
-              <Link href="/" className="inline-flex items-center gap-2.5 group">
-                <Logo variant="mark" size={28} />
-                <span className="text-sm font-semibold text-white group-hover:text-cyan-400 transition-colors">
-                  FormaOS
-                </span>
+              <Link
+                href="/"
+                aria-label="FormaOS home"
+                className="inline-flex items-center text-white transition-opacity hover:opacity-90"
+              >
+                <Logo variant="wordmark" size={22} />
               </Link>
               <p className="mt-4 text-[13px] text-slate-500 leading-relaxed max-w-[260px]">
                 The compliance operating system for regulated Australian

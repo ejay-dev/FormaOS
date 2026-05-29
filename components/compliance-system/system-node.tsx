@@ -67,7 +67,7 @@ const STATE_STYLES: Record<
       'bg-gradient-to-br from-cyan-500/20 to-teal-500/20 border-cyan-400/50',
     icon: 'text-cyan-400',
     label: 'text-cyan-300',
-    glow: 'shadow-[0_0_30px_rgba(34,211,238,0.4)]',
+    glow: 'shadow-lg',
     pulse: true,
   },
   active: {

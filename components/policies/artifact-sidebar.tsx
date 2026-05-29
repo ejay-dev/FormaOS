@@ -218,7 +218,7 @@ export function ArtifactSidebar({
       )}
 
       {/* INFO CARD - Updated with node language */}
-      <div className="relative overflow-hidden rounded-[1.25rem] p-5 text-white shadow-xl bg-gradient-to-br from-violet-600/80 via-indigo-600/80 to-cyan-600/80 border border-violet-400/20">
+      <div className="relative overflow-hidden rounded-[1.25rem] p-5 text-white shadow-xl bg-gradient-to-br from-zinc-700 to-zinc-900 border border-white/10">
         <div className="absolute top-0 right-0 w-24 h-24 bg-glass-strong rounded-full blur-2xl -mr-12 -mt-12" />
         <div className="flex items-center gap-2 mb-3 relative z-10">
           <ShieldCheck className="h-4 w-4 text-emerald-400" />

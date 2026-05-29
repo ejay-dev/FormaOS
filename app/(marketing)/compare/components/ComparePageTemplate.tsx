@@ -391,7 +391,7 @@ export function ComparePageTemplate({
                       compareSource: source,
                     })
                   }
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:brightness-110"
+                  className="inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-5 py-2.5 text-sm font-semibold shadow-lg transition-all hover:opacity-90"
                 >
                   {PUBLIC_CTA_LABELS.compliancePlan}
                   <ArrowRight className="h-3.5 w-3.5" />

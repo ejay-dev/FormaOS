@@ -16,7 +16,7 @@ interface KpiSparklineProps {
 }
 
 const ACCENTS = {
-  cyan: { stroke: '#00d4fb', fill: 'rgba(0,212,251,0.15)' },
+  cyan: { stroke: '#71717a', fill: 'rgba(113,113,122,0.15)' },
   violet: { stroke: '#8864ff', fill: 'rgba(136,100,255,0.15)' },
   emerald: { stroke: '#10b981', fill: 'rgba(16,185,129,0.15)' },
   amber: { stroke: '#f59e0b', fill: 'rgba(245,158,11,0.15)' },

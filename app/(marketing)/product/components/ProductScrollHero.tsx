@@ -180,7 +180,7 @@ export function ProductScrollHero() {
         <>
           Run Compliance as
           <br />
-          <span className="bg-gradient-to-r from-violet-300 via-cyan-300 to-emerald-300 bg-clip-text text-transparent">
+          <span className="text-foreground">
             a Compliance Operating System
           </span>
         </>

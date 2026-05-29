@@ -105,7 +105,7 @@ function SecurityHeroLaserInner() {
                 style={{
                   background: `
                     radial-gradient(ellipse 50% 40% at 50% 48%, rgba(139,92,246,0.2) 0%, transparent 70%),
-                    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(6,182,212,0.1) 0%, transparent 65%),
+                    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(161, 161, 170,0.1) 0%, transparent 65%),
                     radial-gradient(ellipse 35% 25% at 50% 50%, rgba(139,92,246,0.15) 0%, transparent 50%)
                   `,
                 }}

@@ -41,7 +41,7 @@ const SecurityCTA = dynamic(
 function SecurityReviewBanner() {
   return (
     <section className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-r from-emerald-500/[0.06] via-white/[0.02] to-teal-500/[0.06] p-5 sm:p-6">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mt-0.5">
@@ -70,7 +70,7 @@ function SecurityReviewBanner() {
           <div className="flex items-center gap-3 flex-shrink-0 w-full lg:w-auto">
             <Link
               href="/security-review"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition-all hover:shadow-xl hover:brightness-110 w-full lg:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground text-background px-6 py-3 text-sm font-semibold shadow-lg transition-all hover:opacity-90 w-full lg:w-auto"
             >
               Review Packet
               <ArrowRight className="h-3.5 w-3.5" />

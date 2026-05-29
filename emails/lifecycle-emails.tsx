@@ -1,4 +1,5 @@
 import {
+  Img,
   Body,
   Button,
   Container,
@@ -86,7 +87,7 @@ const statBox = {
   margin: '20px 0',
 };
 const statRow = { color: '#e2e8f0', fontSize: '14px', margin: '4px 0' };
-const cyan = { color: '#22d3ee' };
+const cyan = { color: '#3f3f46' };
 
 // ============================================================
 // 1. Trial Welcome Email
@@ -109,7 +110,7 @@ export function TrialWelcomeEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -169,7 +170,7 @@ export function ActivationNudgeEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -227,7 +228,7 @@ export function Day7ProgressEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -291,7 +292,7 @@ export function TrialExpiringEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -353,7 +354,7 @@ export function TrialFinalWarningEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -399,7 +400,7 @@ export function TrialExpiredEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -446,7 +447,7 @@ export function PaymentFailedEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -496,7 +497,7 @@ export function PaymentRecoveredEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -546,7 +547,7 @@ export function PlanUpgradedEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -597,7 +598,7 @@ export function PlanDowngradedEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -637,7 +638,7 @@ export function SubscriptionCancelledEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>
@@ -687,7 +688,7 @@ export function TeamInviteEmail({
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
           <Section style={content}>

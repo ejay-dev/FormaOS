@@ -83,7 +83,7 @@ interface DemoCredentialTrackerProps {
 
 export default function DemoCredentialTracker({
   credentials = defaultCredentials,
-  glowColor = 'from-emerald-500/15 to-cyan-500/15',
+  glowColor = 'from-white/[0.04] to-white/[0.02]',
 }: DemoCredentialTrackerProps) {
   const prefersReducedMotion = useReducedMotion();
   const [highlighted, setHighlighted] = useState(0);

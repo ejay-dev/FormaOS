@@ -242,7 +242,7 @@ function FAQHero() {
       headline={
         <>
           Frequently Asked{' '}
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             Questions
           </span>
         </>
@@ -481,10 +481,9 @@ function FAQCTA() {
                   href="/contact"
                   whileHover={{
                     scale: 1.05,
-                    boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
+                  className="group px-8 py-4 rounded-full bg-foreground text-background hover:opacity-90 font-semibold text-lg flex items-center gap-3 shadow-lg transition-all"
                 >
                   <span>{PUBLIC_CTA_LABELS.talkToSales}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

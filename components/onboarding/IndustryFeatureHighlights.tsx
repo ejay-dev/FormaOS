@@ -93,8 +93,8 @@ const INDUSTRY_CONFIGS: Record<string, IndustryOnboardingConfig> = {
   healthcare: {
     industry: 'healthcare',
     displayName: 'Healthcare & Medical',
-    color: 'from-blue-500 to-cyan-500',
-    gradient: 'from-blue-500/20 to-cyan-500/20',
+    color: 'from-zinc-300 to-zinc-500',
+    gradient: 'from-zinc-700/20 to-zinc-900/20',
     features: [
       {
         icon: Users,
@@ -149,8 +149,8 @@ const INDUSTRY_CONFIGS: Record<string, IndustryOnboardingConfig> = {
   aged_care: {
     industry: 'aged_care',
     displayName: 'Aged Care',
-    color: 'from-emerald-500 to-teal-500',
-    gradient: 'from-emerald-500/20 to-teal-500/20',
+    color: 'from-zinc-300 to-zinc-500',
+    gradient: 'from-zinc-700/20 to-zinc-900/20',
     features: [
       {
         icon: Users,
@@ -205,8 +205,8 @@ const INDUSTRY_CONFIGS: Record<string, IndustryOnboardingConfig> = {
   default: {
     industry: 'default',
     displayName: 'General Compliance',
-    color: 'from-indigo-500 to-purple-500',
-    gradient: 'from-indigo-500/20 to-purple-500/20',
+    color: 'from-zinc-300 to-zinc-500',
+    gradient: 'from-zinc-700/20 to-zinc-900/20',
     features: [
       {
         icon: FileCheck,
@@ -317,14 +317,14 @@ export function IndustryOnboardingFeatures({
                   onFeatureClick(feature.route);
                 }
               }}
-              className="group p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all cursor-pointer"
+              className="group p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-zinc-600/30 transition-all cursor-pointer"
             >
               <div
                 className={`w-12 h-12 rounded-xl bg-gradient-to-br ${config.gradient} border border-glass-border flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
               >
                 <Icon className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-base font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">
+              <h3 className="text-base font-bold text-white mb-2 group-hover:text-zinc-300 transition-colors">
                 {feature.title}
               </h3>
               <p className="text-sm text-gray-400 leading-relaxed">
@@ -338,7 +338,7 @@ export function IndustryOnboardingFeatures({
       {/* Quick Wins */}
       <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-edge-2">
         <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-          <Clock className="h-5 w-5 text-indigo-400" />
+          <Clock className="h-5 w-5 text-zinc-400" />
           Quick Wins (Next 30 Minutes)
         </h3>
         <ul className="space-y-2">
@@ -350,7 +350,7 @@ export function IndustryOnboardingFeatures({
               transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
               className="flex items-start gap-3 text-sm text-gray-300"
             >
-              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xs font-bold mt-0.5">
+              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-zinc-700/20 border border-zinc-600/30 flex items-center justify-center text-zinc-400 text-xs font-bold mt-0.5">
                 {index + 1}
               </span>
               <span>{win}</span>
@@ -381,7 +381,7 @@ export function IndustryFeatureSpotlight({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 px-1">
-        <Heart className="h-4 w-4 text-indigo-400" />
+        <Heart className="h-4 w-4 text-zinc-400" />
         <h4 className="text-sm font-bold text-white">Recommended for You</h4>
       </div>
       {features.map((feature) => {
@@ -390,7 +390,7 @@ export function IndustryFeatureSpotlight({
           <a
             key={feature.title}
             href={feature.route}
-            className="group block p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-indigo-500/30 transition-all motion-safe:hover:scale-102"
+            className="group block p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-glass-border hover:border-zinc-600/30 transition-all motion-safe:hover:scale-102"
           >
             <div className="flex items-start gap-3">
               <div
@@ -399,7 +399,7 @@ export function IndustryFeatureSpotlight({
                 <Icon className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <h5 className="text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors mb-0.5">
+                <h5 className="text-sm font-semibold text-white group-hover:text-zinc-300 transition-colors mb-0.5">
                   {feature.title}
                 </h5>
                 <p className="text-xs text-gray-400 line-clamp-2">

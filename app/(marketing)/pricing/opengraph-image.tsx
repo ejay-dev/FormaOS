@@ -34,7 +34,7 @@ export default function Image() {
             width: 40,
             height: 40,
             borderRadius: 10,
-            background: '#00d4fb',
+            background: '#d4d4d8',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -59,7 +59,7 @@ export default function Image() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         <div
           style={{
-            color: '#00d4fb',
+            color: '#a1a1aa',
             fontSize: 14,
             fontWeight: 600,
             letterSpacing: '0.15em',
@@ -90,9 +90,9 @@ export default function Image() {
             <div
               key={badge}
               style={{
-                background: 'rgba(0,212,251,0.1)',
-                border: '1px solid rgba(0,212,251,0.2)',
-                color: '#00d4fb',
+                background: 'rgba(161,161,170,0.1)',
+                border: '1px solid rgba(161,161,170,0.2)',
+                color: '#d4d4d8',
                 padding: '6px 16px',
                 borderRadius: 999,
                 fontSize: 14,

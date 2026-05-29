@@ -134,13 +134,13 @@ function CheckEmailContent() {
     <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-6 py-12">
       {/* Header */}
       <div className="absolute top-6 left-6">
-        <Logo variant="mark" size={44} />
+        <Logo variant="wordmark" size={28} className="text-white" />
       </div>
 
       <div className="w-full max-w-md">
         <div className="rounded-2xl border border-edge-2 bg-surface-1 backdrop-blur-sm p-8 text-center">
           {/* Icon */}
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
             <Mail className="w-10 h-10 text-emerald-400" />
           </div>
 
@@ -175,7 +175,7 @@ function CheckEmailContent() {
             onClick={handleContinue}
             data-testid="check-email-continue-button"
             disabled={isChecking}
-            className="w-full mb-3 py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+            className="w-full mb-3 py-4 px-6 rounded-xl bg-foreground text-background font-semibold shadow-lg hover:opacity-90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isChecking ? (
               <>

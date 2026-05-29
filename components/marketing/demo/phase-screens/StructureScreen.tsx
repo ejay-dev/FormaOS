@@ -35,7 +35,7 @@ function ComplianceBaselineRing({ score }: { score: number }) {
         />
         <defs>
           <linearGradient id="baselineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#06b6d4" />
+            <stop offset="0%" stopColor="#a1a1aa" />
             <stop offset="100%" stopColor="#3b82f6" />
           </linearGradient>
         </defs>
@@ -178,7 +178,7 @@ export default function StructureScreen() {
                       <div className="flex-1 h-px bg-white/[0.08]">
                         {item.status !== 'pending' && (
                           <motion.div
-                            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                            className="h-full bg-zinc-500"
                             initial={{ width: 0 }}
                             animate={{ width: '100%' }}
                             transition={{ delay: 3.8 + i * 0.3, duration: 0.5 }}

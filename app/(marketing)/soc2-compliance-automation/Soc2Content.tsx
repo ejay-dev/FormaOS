@@ -11,7 +11,7 @@ export default function Soc2Content() {
       headline={
         <>
           SOC 2 Compliance Automation{' '}
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             Built for Type II
           </span>
         </>

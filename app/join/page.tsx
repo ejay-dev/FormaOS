@@ -118,7 +118,7 @@ export default function JoinOrCreatePage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
       <div className="flex items-center justify-between p-6">
-        <Logo variant="mark" size={44} />
+        <Logo variant="wordmark" size={28} className="text-white" />
         {userEmail && (
           <span className="text-xs text-slate-400 truncate max-w-[200px]">
             {userEmail}
@@ -172,7 +172,7 @@ export default function JoinOrCreatePage() {
               <button
                 type="submit"
                 disabled={joining || !inviteToken.trim()}
-                className="w-full rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-lg bg-white px-6 py-3 text-sm font-semibold text-slate-900 hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {joining ? (
                   <>

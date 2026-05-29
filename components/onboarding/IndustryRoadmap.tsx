@@ -229,7 +229,7 @@ export function IndustryRoadmapEngine({
                     initial={{ width: 0 }}
                     animate={{ width: `${progressStats.progress}%` }}
                     transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className="h-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
+                    className="h-2 rounded-full bg-gradient-to-r from-zinc-400 to-zinc-600"
                   />
                 </div>
               </div>

@@ -11,7 +11,7 @@ export default function AuditEvidenceContent() {
       headline={
         <>
           Audit Evidence Management{' '}
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             That Captures Itself
           </span>
         </>

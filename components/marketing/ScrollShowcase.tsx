@@ -64,7 +64,7 @@ function SceneTab({
       onClick={onClick}
       className={`group w-full text-left p-4 rounded-xl border transition-all duration-300 ${
         isActive
-          ? `${depth.glass.strong} border-cyan-500/30 shadow-[0_0_20px_rgba(6,182,212,0.08)]`
+          ? `${depth.glass.strong} border-cyan-500/30 shadow-lg`
           : 'bg-transparent border-white/[0.05] hover:border-white/[0.12] hover:bg-white/[0.02]'
       }`}
     >
@@ -115,7 +115,7 @@ function PrimaryMedia({
         className={`absolute -inset-4 rounded-3xl opacity-20 blur-2xl transition-colors duration-700 ${
           scene.accentColor
             ? `bg-gradient-to-br ${scene.accentColor}`
-            : 'bg-gradient-to-br from-cyan-500 to-blue-600'
+            : 'bg-gradient-to-br from-zinc-700 to-zinc-900'
         }`}
       />
 

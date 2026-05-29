@@ -15,7 +15,7 @@ import { useCursorPosition } from '@/components/motion/CursorContext';
 
 const MILESTONES = [
   { year: '2022', label: 'Founded', color: 'rgb(16,185,129)', z: -10 },
-  { year: '2023', label: 'First Client', color: 'rgb(6,182,212)', z: -25 },
+  { year: '2023', label: 'First Client', color: 'rgb(161,161,170)', z: -25 },
   { year: '2024', label: 'SOC 2', color: 'rgb(59,130,246)', z: -35 },
   { year: '2025', label: 'Series A', color: 'rgb(139,92,246)', z: -45 },
   { year: '2026', label: 'Global', color: 'rgb(245,158,11)', z: -50 },
@@ -107,7 +107,7 @@ function AboutHeroVisualInner() {
             }}
           />
           {/* Inner glow */}
-          <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 via-transparent to-cyan-500/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-emerald-500/10 via-transparent to-white/[0.04]" />
         </motion.div>
 
         {/* Milestone nodes */}

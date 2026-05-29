@@ -20,21 +20,21 @@ const capabilities = [
     title: 'Automation Engine',
     description:
       'Triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation.',
-    color: 'from-teal-400 to-emerald-500',
+    color: 'from-zinc-700 to-zinc-900',
   },
   {
     icon: Database,
     title: 'Evidence Vault',
     description:
       'Every upload, review, and approval tracked with full audit trail context and chain of custody.',
-    color: 'from-emerald-500 to-teal-600',
+    color: 'from-zinc-700 to-zinc-900',
   },
   {
     icon: GitBranch,
     title: '9 Framework Packs',
     description:
       'SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, NDIS Practice Standards, and Essential Eight — pre-built.',
-    color: 'from-indigo-500 to-violet-500',
+    color: 'from-zinc-700 to-zinc-900',
   },
   {
     icon: Shield,
@@ -55,7 +55,7 @@ const capabilities = [
     title: 'Multi-Site Operations',
     description:
       'Each entity maintains its own controls and evidence with cross-site rollup reporting for executive governance.',
-    color: 'from-cyan-400 to-blue-500',
+    color: 'from-zinc-700 to-zinc-900',
   },
   {
     icon: Code2,

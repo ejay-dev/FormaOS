@@ -78,7 +78,7 @@ export function HowItWorks() {
         {/* Steps */}
         <div className="grid md:grid-cols-3 gap-8 relative">
           {/* Connecting line */}
-          <div className="hidden md:block absolute top-[72px] left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-cyan-500/30 via-violet-500/30 to-emerald-500/30" />
+          <div className="hidden md:block absolute top-[72px] left-[16.67%] right-[16.67%] h-px bg-gradient-to-r from-zinc-600/30 via-zinc-500/30 to-zinc-600/30" />
 
           {steps.map((step, i) => {
             const c = colorMap[step.color];

@@ -34,7 +34,7 @@ const WIRE_STYLES: Record<
     strokeWidth: 3,
     dashArray: '8 4',
     glowFilter: 'url(#wireGlow)',
-    particleColor: '#22d3ee',
+    particleColor: '#a1a1aa',
   },
   connected: {
     stroke: 'url(#wireGradientConnected)',
@@ -126,9 +126,9 @@ export function SystemWire({
           x2="100%"
           y2="0%"
         >
-          <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.3" />
-          <stop offset="50%" stopColor="#06b6d4" stopOpacity="1" />
-          <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.3" />
+          <stop offset="0%" stopColor="#a1a1aa" stopOpacity="0.3" />
+          <stop offset="50%" stopColor="#71717a" stopOpacity="1" />
+          <stop offset="100%" stopColor="#52525b" stopOpacity="0.3" />
         </linearGradient>
 
         <linearGradient
@@ -305,9 +305,9 @@ export function WireCanvas({ children, className }: WireCanvasProps) {
       <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
         <defs>
           <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.3" />
-            <stop offset="50%" stopColor="#06b6d4" stopOpacity="1" />
-            <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.3" />
+            <stop offset="0%" stopColor="#a1a1aa" stopOpacity="0.3" />
+            <stop offset="50%" stopColor="#71717a" stopOpacity="1" />
+            <stop offset="100%" stopColor="#52525b" stopOpacity="0.3" />
           </linearGradient>
           <filter id="flowGlow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="4" result="coloredBlur" />

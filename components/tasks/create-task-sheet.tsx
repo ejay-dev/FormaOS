@@ -83,7 +83,7 @@ export function CreateTaskSheet() {
       }}
     >
       <SheetTrigger asChild>
-        <button className="group flex items-center gap-2 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(52,211,153,0.35)] motion-safe:active:scale-[0.98]">
+        <button className="group flex items-center gap-2 bg-foreground text-background px-5 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 transition-all shadow-lg motion-safe:active:scale-[0.98]">
           <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />{' '}
           New Task
         </button>
@@ -215,7 +215,7 @@ export function CreateTaskSheet() {
               <SheetFooter className="pt-4">
                 <button
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 text-white py-4 rounded-xl font-bold text-sm hover:brightness-110 disabled:opacity-50 flex justify-center items-center gap-2 shadow-[0_10px_30px_rgba(52,211,153,0.35)] motion-safe:active:scale-[0.98]"
+                  className="w-full bg-foreground text-background py-4 rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50 flex justify-center items-center gap-2 shadow-lg motion-safe:active:scale-[0.98]"
                 >
                   {loading ? (
                     <>

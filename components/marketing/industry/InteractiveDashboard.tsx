@@ -187,7 +187,7 @@ export function InteractiveDashboard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ scale: 1.01, boxShadow: '0 0 60px rgba(0,212,251,0.08)' }}
+      whileHover={{ scale: 1.01 }}
       className="rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/50 bg-[#0a0f1e] select-none"
       style={{ cursor: 'default' }}
     >
@@ -203,7 +203,7 @@ export function InteractiveDashboard({
             app.formaos.com.au / dashboard
           </span>
         </div>
-        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
           <span className="text-[8px] font-bold text-white">FO</span>
         </div>
       </div>
@@ -293,7 +293,7 @@ export function InteractiveDashboard({
                 <Bell className="w-2.5 h-2.5 text-white/30" />
                 <Settings className="w-2.5 h-2.5 text-white/30" />
                 <Sun className="w-2.5 h-2.5 text-white/30" />
-                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
                   <span className="text-[6px] font-bold text-white">E</span>
                 </div>
                 <span className="rounded bg-amber-500/15 border border-amber-500/25 px-1 py-0.5 text-[6px] font-medium text-amber-400">

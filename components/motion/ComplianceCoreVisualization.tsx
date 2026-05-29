@@ -309,8 +309,8 @@ export function ComplianceCoreVisualization() {
               className="absolute inset-0 rounded-full border border-primary/30"
             />
 
-            {/* Core gradient orb - soft glass with cyan→purple */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400/40 via-blue-500/35 to-purple-600/40 backdrop-blur-sm shadow-[0_0_30px_rgba(34,211,238,0.35)] border border-glass-border-strong" />
+            {/* Core gradient orb - soft glass, neutral mono */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zinc-400/40 via-zinc-500/35 to-zinc-700/40 backdrop-blur-sm shadow-[0_0_30px_rgba(113,113,122,0.3)] border border-glass-border-strong" />
             
             {/* Soft internal light sweep - minimal */}
             <motion.div

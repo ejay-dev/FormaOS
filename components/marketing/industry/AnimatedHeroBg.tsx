@@ -8,10 +8,10 @@ export interface AnimatedHeroBgProps {
 }
 
 const accentMap: Record<string, { primary: string; secondary: string }> = {
-  'cyan-blue': { primary: 'rgba(0,212,251,0.08)', secondary: 'rgba(59,130,246,0.06)' },
-  'cyan-violet': { primary: 'rgba(0,212,251,0.08)', secondary: 'rgba(160,131,255,0.06)' },
-  'violet-cyan': { primary: 'rgba(160,131,255,0.08)', secondary: 'rgba(0,212,251,0.06)' },
-  'emerald-cyan': { primary: 'rgba(52,211,153,0.08)', secondary: 'rgba(0,212,251,0.06)' },
+  'cyan-blue': { primary: 'rgba(113,113,122,0.08)', secondary: 'rgba(82,82,91,0.06)' },
+  'cyan-violet': { primary: 'rgba(113,113,122,0.08)', secondary: 'rgba(82,82,91,0.06)' },
+  'violet-cyan': { primary: 'rgba(113,113,122,0.08)', secondary: 'rgba(82,82,91,0.06)' },
+  'emerald-cyan': { primary: 'rgba(52,211,153,0.08)', secondary: 'rgba(113,113,122,0.06)' },
   'amber-orange': { primary: 'rgba(251,191,36,0.08)', secondary: 'rgba(251,146,60,0.06)' },
 };
 

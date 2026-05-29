@@ -198,7 +198,7 @@ export default function TaskShowcase() {
                                 animate={{ opacity: 1, x: 0 }}
                                 className="flex items-center gap-1.5 mt-2"
                               >
-                                <div className="h-4 w-4 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
+                                <div className="h-4 w-4 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
                                   <span className="text-[6px] font-bold text-white">SC</span>
                                 </div>
                                 <span className="text-[10px] text-muted-foreground">Min Park</span>

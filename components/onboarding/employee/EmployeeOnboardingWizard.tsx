@@ -54,7 +54,7 @@ const SPRING = { type: 'spring', stiffness: 340, damping: 32 } as const;
 function FormaLogo() {
   return (
     <div className="flex items-center gap-2">
-      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 shadow-md">
+      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-zinc-700 to-zinc-900 shadow-md">
         <span className="text-[10px] font-black text-white tracking-tight">
           F
         </span>
@@ -91,7 +91,7 @@ function StepProgress({
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-600"
+          className="h-full rounded-full bg-gradient-to-r from-zinc-400 to-zinc-600"
           initial={false}
           animate={{ width: `${percent}%` }}
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}

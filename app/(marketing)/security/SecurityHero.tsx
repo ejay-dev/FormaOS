@@ -31,7 +31,7 @@ export function SecurityHero() {
         <>
           Enterprise Security
           <br />
-          <span className="bg-gradient-to-r from-cyan-400 via-teal-400 to-blue-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             by Design
           </span>
         </>

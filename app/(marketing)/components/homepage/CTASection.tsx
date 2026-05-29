@@ -36,7 +36,7 @@ export function CTASection() {
 
       {/* Subtle background glow */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/[0.04] to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(20,184,166,0.06)_0%,transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(113,113,122,0.06)_0%,transparent_70%)]" />
 
       <div className="relative z-10 py-20 sm:py-28 lg:py-40 max-w-4xl mx-auto px-5 sm:px-6 lg:px-12 text-center">
         <ScrollReveal variant="scaleUp" range={[0, 0.25]}>

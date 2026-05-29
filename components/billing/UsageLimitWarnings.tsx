@@ -84,7 +84,7 @@ function UsageWarningBanner({
       {canManageBilling && (
         <Link
           href="/app/billing"
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-3 py-1.5 text-xs font-bold text-slate-950 motion-safe:hover:scale-[1.02] transition-transform"
+          className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3 py-1.5 text-xs font-bold text-background hover:opacity-90 motion-safe:hover:scale-[1.02] transition-transform"
         >
           <Zap className="h-3 w-3" />
           Upgrade
@@ -127,7 +127,7 @@ export function DashboardUpgradeNudge() {
   const atRiskItems = usage.filter((u) => u.limit !== -1 && u.percentage >= 50);
 
   return (
-    <div className="rounded-2xl border border-sky-400/20 bg-gradient-to-br from-sky-500/10 to-indigo-500/10 p-6">
+    <div className="rounded-2xl border border-zinc-600/20 bg-gradient-to-br from-zinc-700/10 to-zinc-900/10 p-6">
       <div className="flex items-start justify-between">
         <div className="space-y-3">
           <h3 className="text-base font-bold text-foreground">
@@ -155,7 +155,7 @@ export function DashboardUpgradeNudge() {
                           ? 'bg-rose-400'
                           : item.percentage >= 80
                             ? 'bg-amber-400'
-                            : 'bg-sky-400'
+                            : 'bg-zinc-400'
                       }`}
                       style={{ width: `${Math.min(100, item.percentage)}%` }}
                     />
@@ -170,7 +170,7 @@ export function DashboardUpgradeNudge() {
 
           <Link
             href="/app/billing"
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-5 py-2.5 text-sm font-bold text-slate-950 motion-safe:hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20 transition-all"
+            className="inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-5 py-2.5 text-sm font-bold motion-safe:hover:scale-[1.02] hover:opacity-90 transition-all"
           >
             <Zap className="h-4 w-4" />
             Upgrade Now
@@ -234,7 +234,7 @@ export function FeaturePreviewBlur({
           {canManageBilling && (
             <Link
               href="/app/billing"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-500 px-4 py-2 text-xs font-bold text-slate-950 motion-safe:hover:scale-[1.02] transition-transform"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-4 py-2 text-xs font-bold text-background hover:opacity-90 motion-safe:hover:scale-[1.02] transition-transform"
             >
               <Zap className="h-3 w-3" />
               Upgrade Plan

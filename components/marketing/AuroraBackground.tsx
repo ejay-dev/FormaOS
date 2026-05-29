@@ -44,7 +44,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
         )}
         style={{
           background:
-            'radial-gradient(circle at center, rgba(45,212,191,0.5) 0%, rgba(20,184,166,0.18) 45%, transparent 70%)',
+            'radial-gradient(circle at center, rgba(113,113,122,0.45) 0%, rgba(63,63,70,0.15) 45%, transparent 70%)',
           filter: 'blur(100px)',
         }}
       />
@@ -56,7 +56,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
         )}
         style={{
           background:
-            'radial-gradient(circle at center, rgba(34,211,238,0.45) 0%, rgba(6,182,212,0.15) 45%, transparent 70%)',
+            'radial-gradient(circle at center, rgba(113,113,122,0.45) 0%, rgba(63,63,70,0.15) 45%, transparent 70%)',
           filter: 'blur(110px)',
         }}
       />
@@ -97,12 +97,12 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
         speed={0.8}
         particleDensity={80}
       />
-      {/* Midground layer - brand-colored teal sparkles */}
+      {/* Midground layer - neutral sparkles */}
       <SparklesCore
         id="hero-stars-mid"
         className="absolute inset-0 h-full w-full"
         background="transparent"
-        particleColor="#67e8f9"
+        particleColor="#c4c4cc"
         minSize={0.5}
         maxSize={1.6}
         speed={2}
@@ -146,7 +146,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       </div>
 
       {/* ── Layer 4: Subtle atmospheric haze ────────────── */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(34,211,238,0.06)_0%,transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(113,113,122,0.06)_0%,transparent_60%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_80%,rgba(129,140,248,0.04)_0%,transparent_50%)]" />
 
       {/* ── Layer 5: Film grain for analog depth ────────── */}

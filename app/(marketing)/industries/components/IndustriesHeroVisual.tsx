@@ -50,8 +50,8 @@ const SECTORS: Sector[] = [
     name: 'Government',
     angle: 90, // bottom
     z: -40,
-    iconColor: 'rgba(34,211,238,0.8)',
-    glowColor: 'rgba(34,211,238,0.12)',
+    iconColor: 'rgba(113,113,122,0.8)',
+    glowColor: 'rgba(113,113,122,0.12)',
     iconPaths: ['M3 21h18', 'M5 21V7l7-4 7 4v14', 'M9 21v-6h6v6', 'M9 10h1', 'M14 10h1'],
   },
   {

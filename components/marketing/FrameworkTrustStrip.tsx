@@ -158,7 +158,7 @@ export const FrameworkTrustStrip = memo(function FrameworkTrustStrip({
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(6,182,212,0.03)' }}
+          style={{ background: 'rgba(113,113,122,0.03)' }}
         />
       </div>
 

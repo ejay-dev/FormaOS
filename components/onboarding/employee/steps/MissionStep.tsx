@@ -61,8 +61,8 @@ export function MissionStep({
       </div>
 
       {/* Tagline */}
-      <div className="rounded-2xl border border-indigo-500/20 bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent p-4">
-        <p className="text-base font-bold text-indigo-300 italic">
+      <div className="rounded-2xl border border-zinc-700/20 bg-gradient-to-r from-zinc-700/10 via-purple-500/5 to-transparent p-4">
+        <p className="text-base font-bold text-zinc-300 italic">
           &ldquo;{missionContent.tagline}&rdquo;
         </p>
       </div>
@@ -112,7 +112,7 @@ export function MissionStep({
         </button>
         <button
           onClick={onNext}
-          className="group flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
+          className="group flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-foreground px-6 py-3.5 text-sm font-bold text-background shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
         >
           Show me my tools
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

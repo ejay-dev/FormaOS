@@ -1,6 +1,20 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import React from 'react';
-import { StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Image, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { registerPdfFonts } from './fonts';
+
+// FormaOS charcoal wordmark, embedded as a base64 data URI so PDF rendering
+// never depends on a network fetch or deploy URL. Read once, memoized.
+let _brandWordmark: string | null = null;
+function brandWordmark(): string {
+  if (_brandWordmark) return _brandWordmark;
+  const buf = fs.readFileSync(
+    path.join(process.cwd(), 'public/brand/formaos-wordmark-charcoal.png'),
+  );
+  _brandWordmark = `data:image/png;base64,${buf.toString('base64')}`;
+  return _brandWordmark;
+}
 
 registerPdfFonts();
 
@@ -149,7 +163,13 @@ export type PageHeaderFooterProps = {
 export function PageHeader({ title, orgName, classification }: PageHeaderFooterProps) {
   return (
     <View style={styles.pageHeader} fixed>
-      <Text>{orgName}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Image
+          src={brandWordmark()}
+          style={{ height: 11, width: 110, marginRight: 8 }}
+        />
+        <Text>{orgName}</Text>
+      </View>
       <Text>{title}</Text>
       {classification ? <Text>{classification}</Text> : <Text> </Text>}
     </View>

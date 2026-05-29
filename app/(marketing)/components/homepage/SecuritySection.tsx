@@ -418,7 +418,7 @@ const EncryptionCard = memo(function EncryptionCard({
 }) {
   return (
     <GlassCard
-      glowColor="rgba(6,182,212,0.12)"
+      glowColor="rgba(113,113,122,0.12)"
       noMotion={noMotion}
       delay={0.2}
       isInView={isInView}
@@ -576,7 +576,7 @@ const AuditLogCard = memo(function AuditLogCard({
               className="absolute inset-x-0 h-px pointer-events-none z-30"
               style={{
                 background:
-                  'linear-gradient(90deg, transparent 5%, rgba(99,102,241,0.4) 30%, rgba(6,182,212,0.6) 50%, rgba(99,102,241,0.4) 70%, transparent 95%)',
+                  'linear-gradient(90deg, transparent 5%, rgba(99,102,241,0.4) 30%, rgba(113,113,122,0.6) 50%, rgba(99,102,241,0.4) 70%, transparent 95%)',
                 boxShadow: '0 0 12px rgba(99,102,241,0.3)',
               }}
               animate={{ top: ['0px', '64px', '0px'] }}
@@ -819,7 +819,7 @@ export const SecuritySection = memo(function SecuritySection() {
         />
         <div
           className="absolute w-[500px] h-[500px] rounded-full blur-[130px]"
-          style={{ right: '0%', bottom: '5%', background: 'rgba(6,182,212,0.04)' }}
+          style={{ right: '0%', bottom: '5%', background: 'rgba(113,113,122,0.04)' }}
         />
         <motion.div
           className="absolute w-[400px] h-[400px] rounded-full blur-[120px]"

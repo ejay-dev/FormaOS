@@ -50,7 +50,7 @@ function PrivacyHero() {
       <div className="absolute inset-0 overflow-hidden">
         {/* Primary gradient orb - top left */}
         <motion.div
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-gradient-to-br from-cyan-500/15 via-blue-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-white/[0.04] rounded-full blur-3xl"
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.3, 0.4, 0.3],
@@ -100,7 +100,7 @@ function PrivacyHero() {
               className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
             >
               Privacy{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 Policy
               </span>
             </motion.h1>
@@ -266,7 +266,7 @@ function PrivacySection({
           <div className="relative">
             {/* Section Header */}
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              <div className="w-12 h-12 rounded-xl bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                 <Icon className="w-6 h-6 text-cyan-400" />
               </div>
               <div>
@@ -549,7 +549,7 @@ function PrivacyContent() {
             <li>Session management</li>
             <li>Performance monitoring</li>
           </ul>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/5 border border-cyan-500/20 mt-4">
+          <div className="p-4 rounded-xl bg-white/[0.04] border border-cyan-500/20 mt-4">
             <p className="text-cyan-400 font-medium flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-cyan-400" />
               No third-party advertising trackers are used.
@@ -650,10 +650,9 @@ function PrivacyCTA() {
                 href="/contact"
                 whileHover={{
                   scale: 1.05,
-                  boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)',
                 }}
                 whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-lg flex items-center gap-3 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all whitespace-nowrap"
+                className="group px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg flex items-center gap-3 shadow-lg hover:opacity-90 transition-all whitespace-nowrap"
               >
                 <span>Contact Us</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

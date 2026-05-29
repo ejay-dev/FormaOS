@@ -114,7 +114,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
         animate={allowInteractiveMotion ? { scale: [1, 1.12, 1], opacity: [0.12, 0.25, 0.12] } : undefined}
         transition={allowInteractiveMotion ? { duration: 4, repeat: Infinity, ease: 'easeInOut' } : undefined}
         style={{
-          background: 'radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, rgba(161,161,170,0.14) 0%, transparent 60%)',
           filter: tierConfig.enableBlur ? 'blur(35px)' : 'blur(18px)',
         }}
       />
@@ -157,7 +157,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
             {/* Inner ring (counter-rotate) */}
             <motion.div
               className="absolute inset-[8%] rounded-full pointer-events-none"
-              style={{ rotateZ: counterRingRotation, border: '1px dashed rgba(6,182,212,0.15)' }}
+              style={{ rotateZ: counterRingRotation, border: '1px dashed rgba(161,161,170,0.15)' }}
             />
 
             {/* Glass shell */}
@@ -179,7 +179,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.6)]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
                 <span className="text-[9px] sm:text-[10px] font-semibold text-white/70">Controls</span>
               </div>
               <div className="space-y-1">
@@ -257,7 +257,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               animate={allowInteractiveMotion ? { scale: [1, 1.1, 1], opacity: [0.5, 0.9, 0.5] } : undefined}
               transition={allowInteractiveMotion ? { duration: 3, repeat: Infinity, ease: 'easeInOut' } : undefined}
             >
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-violet-400/30 via-cyan-400/20 to-blue-500/30 shadow-[0_0_30px_rgba(139,92,246,0.25),0_0_60px_rgba(6,182,212,0.12)]" />
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-zinc-700/40 to-zinc-900/40 shadow-lg" />
               <div className="absolute inset-[25%] rounded-full bg-gradient-to-br from-white/20 to-white/5" />
             </motion.div>
 
@@ -371,9 +371,9 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
 function StaticCore() {
   return (
     <div className="relative w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] flex items-center justify-center">
-      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-500/10 to-cyan-500/5" style={{ filter: 'blur(30px)' }} />
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-zinc-700/10 to-zinc-900/5" style={{ filter: 'blur(30px)' }} />
       <div className="relative w-[70%] h-[70%] rounded-[28px] border border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.02] flex items-center justify-center">
-        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-violet-400/20 to-cyan-400/15 shadow-[0_0_25px_rgba(139,92,246,0.2)]" />
+        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-zinc-700/20 to-zinc-900/15 shadow-lg" />
       </div>
     </div>
   );

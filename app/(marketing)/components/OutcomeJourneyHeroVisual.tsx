@@ -12,7 +12,7 @@ interface OutcomeJourneyHeroVisualProps {
 }
 
 const JOURNEY_STAGES = [
-  { key: 'evaluate', label: 'Evaluate', color: 'rgba(34,211,238,0.8)' },
+  { key: 'evaluate', label: 'Evaluate', color: 'rgba(161,161,170,0.8)' },
   { key: 'prove', label: 'Prove', color: 'rgba(52,211,153,0.7)' },
   { key: 'operate', label: 'Operate', color: 'rgba(59,130,246,0.7)' },
   { key: 'govern', label: 'Govern', color: 'rgba(139,92,246,0.7)' },
@@ -90,7 +90,7 @@ function OutcomeJourneyHeroVisualInner({ journeyKey }: OutcomeJourneyHeroVisualP
                 y1={125}
                 x2={550 / 2 + startX + totalWidth - 22}
                 y2={125}
-                stroke="rgba(34,211,238,0.15)"
+                stroke="rgba(161,161,170,0.15)"
                 strokeWidth="2"
                 strokeDasharray="6 4"
                 initial={sa ? { pathLength: 0, opacity: 0 } : undefined}
@@ -103,7 +103,7 @@ function OutcomeJourneyHeroVisualInner({ journeyKey }: OutcomeJourneyHeroVisualP
                 y1={125}
                 x2={550 / 2 + startX + activeIdx * NODE_SPACING}
                 y2={125}
-                stroke="rgba(34,211,238,0.4)"
+                stroke="rgba(161,161,170,0.4)"
                 strokeWidth="2"
                 initial={sa ? { pathLength: 0 } : undefined}
                 animate={{ pathLength: 1 }}
@@ -138,7 +138,7 @@ function OutcomeJourneyHeroVisualInner({ journeyKey }: OutcomeJourneyHeroVisualP
                   {isActive && (
                     <motion.div
                       className="absolute -inset-4 rounded-full blur-xl"
-                      style={{ backgroundColor: 'rgba(34,211,238,0.12)' }}
+                      style={{ backgroundColor: 'rgba(161,161,170,0.12)' }}
                       animate={sa ? { opacity: [0.3, 0.6, 0.3], scale: [1, 1.15, 1] } : undefined}
                       transition={sa ? { duration: 3, repeat: Infinity, ease: 'easeInOut' } : undefined}
                     />

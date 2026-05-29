@@ -40,8 +40,8 @@ interface ActionButtonProps {
 
 const VARIANT_STYLES = {
   primary: {
-    idle: "bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white shadow-[0_8px_24px_rgba(0,212,251,0.3)] hover:shadow-[0_12px_32px_rgba(0,212,251,0.4)] hover:brightness-110",
-    loading: "bg-gradient-to-r from-cyan-500/80 via-blue-500/80 to-indigo-500/80 text-white/80",
+    idle: "bg-foreground text-background shadow-lg hover:opacity-90",
+    loading: "bg-foreground/80 text-background/80",
     success: "bg-emerald-500 text-white shadow-[0_8px_24px_rgba(16,185,129,0.4)]",
     error: "bg-rose-500 text-white shadow-[0_8px_24px_rgba(244,63,94,0.4)]",
   },

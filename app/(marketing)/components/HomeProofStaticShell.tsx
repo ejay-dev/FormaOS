@@ -28,9 +28,9 @@ const PROOF_BLOCKS = [
     cta: 'See how it works',
     step: '01',
     color: {
-      accent: 'rgba(6, 182, 212, 1)',
-      glow: 'rgba(6, 182, 212, 0.12)',
-      border: 'rgba(6, 182, 212, 0.25)',
+      accent: 'rgba(161, 161, 170, 1)',
+      glow: 'rgba(161, 161, 170, 0.12)',
+      border: 'rgba(161, 161, 170, 0.25)',
       iconBg: 'bg-cyan-500/10',
       iconBorder: 'border-cyan-400/25',
       iconText: 'text-cyan-300',
@@ -278,7 +278,7 @@ export function HomeProofStaticShell() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
           className="absolute w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ left: '5%', top: '25%', background: 'rgba(6, 182, 212, 0.06)' }}
+          style={{ left: '5%', top: '25%', background: 'rgba(161, 161, 170, 0.06)' }}
         />
         <div
           className="absolute w-[600px] h-[600px] rounded-full blur-[140px]"
@@ -325,7 +325,7 @@ export function HomeProofStaticShell() {
         className="absolute top-0 left-0 right-0 h-px"
         style={{
           background:
-            'linear-gradient(90deg, transparent 0%, rgba(6,182,212,0.3) 25%, rgba(139,92,246,0.3) 50%, rgba(16,185,129,0.3) 75%, transparent 100%)',
+            'linear-gradient(90deg, transparent 0%, rgba(161,161,170,0.3) 25%, rgba(139,92,246,0.3) 50%, rgba(16,185,129,0.3) 75%, transparent 100%)',
         }}
       />
       {/* ── Bottom edge glow ── */}
@@ -333,7 +333,7 @@ export function HomeProofStaticShell() {
         className="absolute bottom-0 left-0 right-0 h-px"
         style={{
           background:
-            'linear-gradient(90deg, transparent 0%, rgba(6,182,212,0.15) 25%, rgba(139,92,246,0.15) 50%, rgba(16,185,129,0.15) 75%, transparent 100%)',
+            'linear-gradient(90deg, transparent 0%, rgba(161,161,170,0.15) 25%, rgba(139,92,246,0.15) 50%, rgba(16,185,129,0.15) 75%, transparent 100%)',
         }}
       />
 
@@ -350,14 +350,14 @@ export function HomeProofStaticShell() {
             {!noMotion ? (
               <motion.span
                 className="w-2 h-2 rounded-full"
-                style={{ background: 'rgba(6, 182, 212, 1)' }}
+                style={{ background: 'rgba(161, 161, 170, 1)' }}
                 animate={{ scale: [1, 1.5, 1], opacity: [0.6, 1, 0.6] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               />
             ) : (
               <span
                 className="w-2 h-2 rounded-full"
-                style={{ background: 'rgba(6, 182, 212, 1)' }}
+                style={{ background: 'rgba(161, 161, 170, 1)' }}
               />
             )}
             <span className="text-sm font-medium text-slate-300">
@@ -375,7 +375,7 @@ export function HomeProofStaticShell() {
                 transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
                 style={{
                   background:
-                    'linear-gradient(135deg, rgba(6,182,212,0.5), rgba(139,92,246,0.35))',
+                    'linear-gradient(135deg, rgba(161,161,170,0.5), rgba(139,92,246,0.35))',
                 }}
               />
             ) : (
@@ -383,7 +383,7 @@ export function HomeProofStaticShell() {
                 className="absolute left-1/2 bottom-0 -translate-x-1/2 w-[70%] h-[60%] rounded-full blur-[60px] pointer-events-none"
                 style={{
                   background:
-                    'linear-gradient(135deg, rgba(6,182,212,0.3), rgba(139,92,246,0.2))',
+                    'linear-gradient(135deg, rgba(161,161,170,0.3), rgba(139,92,246,0.2))',
                   opacity: 0.15,
                 }}
               />
@@ -405,7 +405,7 @@ export function HomeProofStaticShell() {
                 className="bg-clip-text"
                 style={{
                   backgroundImage:
-                    'linear-gradient(135deg, rgba(6,182,212,1) 0%, rgba(167,139,250,0.85) 100%)',
+                    'linear-gradient(135deg, rgba(161,161,170,1) 0%, rgba(167,139,250,0.85) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}

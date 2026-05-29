@@ -81,7 +81,7 @@ export function OperationalScenarioProof() {
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/contact?type=compliance-plan&source=operational_scenarios"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground text-background px-6 py-3 text-sm font-semibold hover:opacity-90"
           >
             Get Compliance Plan
             <ArrowRight className="h-4 w-4" />

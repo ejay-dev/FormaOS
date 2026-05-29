@@ -238,7 +238,7 @@ export default function HealthcareComplianceContent() {
           <>
             AHPRA Audits Don&apos;t Wait.
             <br />
-            <span className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Neither Should You.
             </span>
           </>
@@ -509,7 +509,7 @@ export default function HealthcareComplianceContent() {
             description:
               'FormaOS ships with NSQHS Standards, AHPRA registration requirements, and clinical governance frameworks pre-built. Select your service type and your obligation register is live in minutes.',
             gradient:
-              'from-cyan-500/20 to-violet-500/20 border-cyan-500/30 text-cyan-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Framework Activation"
@@ -544,7 +544,7 @@ export default function HealthcareComplianceContent() {
             description:
               'Upload clinical governance documents, credentials, training records. FormaOS links each to specific NSQHS standards and AHPRA requirements - building continuous evidence chains.',
             gradient:
-              'from-violet-500/20 to-cyan-500/20 border-violet-500/30 text-violet-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Evidence Mapping"
@@ -579,7 +579,7 @@ export default function HealthcareComplianceContent() {
             description:
               'Automated alerts for every credential expiry, CPD deadline, and evidence gap. When accreditation assessors arrive, your evidence pack is one click away.',
             gradient:
-              'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Readiness Score"

@@ -64,7 +64,12 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
                     aria-label="FormaOS Home"
                     className="flex items-center text-white transition-opacity hover:opacity-90"
                   >
-                    <Logo variant="mark" size={42} />
+                    <Logo variant="mark" size={36} className="md:hidden" />
+                    <Logo
+                      variant="wordmark"
+                      size={24}
+                      className="hidden md:inline-flex"
+                    />
                   </Link>
                 </div>
 

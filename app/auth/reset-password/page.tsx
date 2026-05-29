@@ -109,7 +109,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
-          <Logo variant="mark" size={44} />
+          <Logo variant="wordmark" size={28} className="text-white" />
         </div>
         <div className="flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-md">
@@ -123,7 +123,7 @@ export default function ResetPasswordPage() {
               </p>
               <Link
                 href="/auth/forgot-password"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:brightness-110 transition-all"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all"
               >
                 Request new link
               </Link>
@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
-          <Logo variant="mark" size={44} />
+          <Logo variant="wordmark" size={28} className="text-white" />
         </div>
         <div className="flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-md">
@@ -163,7 +163,7 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-6">
-        <Logo variant="mark" size={44} />
+        <Logo variant="wordmark" size={28} className="text-white" />
       </div>
       <div className="flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
@@ -253,7 +253,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Updating...' : 'Update password'}
               </button>

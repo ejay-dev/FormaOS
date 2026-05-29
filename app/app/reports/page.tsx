@@ -40,13 +40,13 @@ const EXPORT_CARDS: ExportCard[] = [
     title: 'SOC 2',
     description: 'Service Organization Control Type II readiness assessment',
     type: 'soc2',
-    color: 'from-sky-500/20 to-sky-500/5 border-sky-400/20',
+    color: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20',
   },
   {
     title: 'ISO 27001',
     description: 'Statement of Applicability with implementation coverage',
     type: 'iso27001',
-    color: 'from-indigo-500/20 to-indigo-500/5 border-indigo-400/20',
+    color: 'from-zinc-700/20 to-zinc-700/5 border-zinc-600/20',
   },
   {
     title: 'NDIS',

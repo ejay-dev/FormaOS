@@ -20,8 +20,8 @@ type CategoryConfig = {
 
 const categoryConfigs: Record<string, CategoryConfig> = {
   compliance: {
-    gradient: 'from-emerald-500/20 via-cyan-500/10 to-blue-500/5',
-    accentGradient: 'from-emerald-400 to-cyan-500',
+    gradient: 'from-emerald-500/20 via-zinc-500/10 to-zinc-700/5',
+    accentGradient: 'from-emerald-400 to-zinc-400',
     glowColor: 'rgba(16, 185, 129, 0.3)',
     icon: Sparkles,
     nodes: [
@@ -55,9 +55,9 @@ const categoryConfigs: Record<string, CategoryConfig> = {
     ],
   },
   technology: {
-    gradient: 'from-blue-500/20 via-indigo-500/10 to-purple-500/5',
-    accentGradient: 'from-blue-400 to-indigo-500',
-    glowColor: 'rgba(59, 130, 246, 0.3)',
+    gradient: 'from-zinc-500/20 via-zinc-600/10 to-zinc-800/5',
+    accentGradient: 'from-zinc-400 to-zinc-500',
+    glowColor: 'rgba(113, 113, 122, 0.3)',
     icon: Zap,
     nodes: [
       { x: '25%', y: '28%', size: '10px', delay: 0.1 },
@@ -66,9 +66,9 @@ const categoryConfigs: Record<string, CategoryConfig> = {
     ],
   },
   'product updates': {
-    gradient: 'from-cyan-500/20 via-teal-500/10 to-emerald-500/5',
-    accentGradient: 'from-cyan-400 to-teal-500',
-    glowColor: 'rgba(6, 182, 212, 0.3)',
+    gradient: 'from-zinc-500/20 via-zinc-600/10 to-zinc-800/5',
+    accentGradient: 'from-zinc-400 to-zinc-500',
+    glowColor: 'rgba(113, 113, 122, 0.3)',
     icon: ClipboardCheck,
     nodes: [
       { x: '18%', y: '22%', size: '9px', delay: 0 },

@@ -178,11 +178,11 @@ export function ComplianceMaturityAssessment() {
   if (showResults) {
     return (
       <section className="relative overflow-hidden py-20">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.12),transparent_38%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(113,113,122,0.12),transparent_38%)]" />
         <div className="mx-auto max-w-3xl px-6">
           <div className="relative overflow-hidden rounded-3xl border border-cyan-300/[0.14] bg-slate-950/70 p-8 text-center shadow-[0_28px_90px_rgba(8,47,73,0.35),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl">
             <BarChart3
-              className="mx-auto mb-4 h-10 w-10 text-cyan-300 drop-shadow-[0_0_18px_rgba(34,211,238,0.35)]"
+              className="mx-auto mb-4 h-10 w-10 text-cyan-300"
               aria-hidden="true"
             />
             <h3 className="text-2xl font-bold text-white">
@@ -209,7 +209,7 @@ export function ComplianceMaturityAssessment() {
                   cy="60"
                   r="52"
                   fill="none"
-                  stroke="rgba(34,211,238,0.9)"
+                  stroke="rgba(161,161,170,0.9)"
                   strokeWidth="8"
                   strokeDasharray={`${(percentScore / 100) * 327} 327`}
                   strokeLinecap="round"
@@ -265,7 +265,7 @@ export function ComplianceMaturityAssessment() {
               </button>
               <a
                 href={assessmentHref('maturity_assessment')}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:brightness-110"
+                className="inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-6 py-3 text-sm font-semibold transition hover:opacity-90"
               >
                 {PUBLIC_CTA_LABELS.startAssessment}{' '}
                 <ArrowRight className="h-4 w-4" />
@@ -279,7 +279,7 @@ export function ComplianceMaturityAssessment() {
 
   return (
     <section className="relative overflow-hidden py-20">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(34,211,238,0.1),transparent_34%),radial-gradient(circle_at_80%_85%,rgba(20,184,166,0.08),transparent_32%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(113,113,122,0.1),transparent_34%),radial-gradient(circle_at_80%_85%,rgba(82,82,91,0.08),transparent_32%)]" />
       <div className="mx-auto max-w-3xl px-6">
         <div className="text-center mb-10">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/[0.08] px-4 py-1.5 text-sm font-medium text-cyan-200">
@@ -313,7 +313,7 @@ export function ComplianceMaturityAssessment() {
                     className={cn(
                       'p-3 rounded-lg border text-left transition-all',
                       answers[q.id] === opt.score
-                        ? 'border-cyan-300/35 bg-cyan-300/[0.08] text-white shadow-[0_0_24px_rgba(34,211,238,0.12)]'
+                        ? 'border-cyan-300/35 bg-cyan-300/[0.08] text-white'
                         : 'border-white/[0.08] bg-white/[0.035] text-slate-400 hover:border-cyan-300/25 hover:bg-white/[0.06] hover:text-white',
                     )}
                   >
@@ -333,7 +333,7 @@ export function ComplianceMaturityAssessment() {
             <div className="text-center">
               <button
                 onClick={() => setShowResults(true)}
-                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-teal-400 px-8 py-4 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:brightness-110"
+                className="inline-flex items-center gap-2 rounded-2xl bg-foreground text-background px-8 py-4 text-sm font-semibold transition hover:opacity-90"
               >
                 See my score <ArrowRight className="h-4 w-4" />
               </button>

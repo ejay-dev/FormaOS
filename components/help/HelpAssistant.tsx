@@ -147,7 +147,7 @@ export function HelpAssistant() {
       <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+5rem)] right-4 z-[80] md:bottom-[calc(env(safe-area-inset-bottom)+1rem)]">
         <button
           onClick={toggle}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-glass-border bg-gradient-to-br from-cyan-400/90 to-blue-500/90 text-slate-900 shadow-lg shadow-cyan-500/30 transition-transform hover:-translate-y-0.5"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-glass-border bg-foreground text-background shadow-lg transition-transform hover:-translate-y-0.5"
           aria-label="Open help assistant"
         >
           <LifeBuoy className="h-5 w-5" />
@@ -214,7 +214,7 @@ export function HelpAssistant() {
                       size="sm"
                       onClick={submitBugReport}
                       disabled={submitStatus === 'submitting'}
-                      className="bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900"
+                      className="bg-foreground text-background hover:opacity-90"
                     >
                       <Send className="mr-2 h-4 w-4" />
                       {submitStatus === 'submitting' ? 'Sending...' : 'Submit'}

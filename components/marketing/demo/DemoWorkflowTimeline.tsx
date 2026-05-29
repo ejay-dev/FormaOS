@@ -34,7 +34,7 @@ interface DemoWorkflowTimelineProps {
 export default function DemoWorkflowTimeline({
   steps,
   stepDuration = 2800,
-  glowColor = 'from-cyan-500/15 to-blue-500/15',
+  glowColor = 'from-white/[0.04] to-white/[0.02]',
   bottomCard,
 }: DemoWorkflowTimelineProps) {
   const prefersReducedMotion = useReducedMotion();

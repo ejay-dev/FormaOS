@@ -46,7 +46,7 @@ interface DemoAuditTrailCardProps {
 export default function DemoAuditTrailCard({
   entries = defaultEntries,
   maxVisible = 6,
-  glowColor = 'from-cyan-500/15 to-blue-500/15',
+  glowColor = 'from-white/[0.04] to-white/[0.02]',
 }: DemoAuditTrailCardProps) {
   const prefersReducedMotion = useReducedMotion();
 

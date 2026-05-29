@@ -180,7 +180,7 @@ function IndustryCard({
   const smoothX = useSpring(localX, { stiffness: 200, damping: 25 });
   const smoothY = useSpring(localY, { stiffness: 200, damping: 25 });
 
-  const rgb = glowRGB[industry.color] ?? '34,211,238';
+  const rgb = glowRGB[industry.color] ?? '113,113,122';
   const lightGradient = useTransform(
     [smoothX, smoothY] as MotionValue<number>[],
     ([x, y]: number[]) =>
@@ -337,7 +337,7 @@ function CardFrontContent({
             {/* Industry-specific animated pulse dot */}
             <motion.div
               className="flex-shrink-0 w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: pulseColors[industry.color] ?? 'rgb(34,211,238)' }}
+              style={{ backgroundColor: pulseColors[industry.color] ?? 'rgb(113,113,122)' }}
               animate={
                 reducedMotion
                   ? undefined
@@ -345,9 +345,9 @@ function CardFrontContent({
                       scale: [1, 1.3, 1],
                       opacity: [0.5, 1, 0.5],
                       boxShadow: [
-                        `0 0 0 0 ${pulseColors[industry.color] ?? 'rgb(34,211,238)'}40`,
-                        `0 0 8px 3px ${pulseColors[industry.color] ?? 'rgb(34,211,238)'}30`,
-                        `0 0 0 0 ${pulseColors[industry.color] ?? 'rgb(34,211,238)'}40`,
+                        `0 0 0 0 ${pulseColors[industry.color] ?? 'rgb(113,113,122)'}40`,
+                        `0 0 8px 3px ${pulseColors[industry.color] ?? 'rgb(113,113,122)'}30`,
+                        `0 0 0 0 ${pulseColors[industry.color] ?? 'rgb(113,113,122)'}40`,
                       ],
                     }
               }
@@ -437,7 +437,7 @@ export function IndustryVerticals() {
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               Compliance Infrastructure
-              <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-emerald-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 {' '}
                 Across Industries
               </span>

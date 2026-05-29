@@ -108,7 +108,7 @@ export function GuidedTourOverlay({
                 <div key={i} className="flex-1" style={{ borderRight: i < 3 ? '1px solid rgba(255,255,255,0.04)' : undefined }}>
                   {i <= currentStep && (
                     <motion.div
-                      className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                      className="h-full bg-zinc-500"
                       initial={{ width: i < currentStep ? '100%' : '0%' }}
                       animate={{ width: '100%' }}
                       transition={{ duration: 0.5 }}
@@ -122,7 +122,7 @@ export function GuidedTourOverlay({
               {/* Header */}
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-xl bg-white/[0.06] flex items-center justify-center">
                     <Icon className="h-4 w-4 text-cyan-400" />
                   </div>
                   <div>
@@ -148,7 +148,7 @@ export function GuidedTourOverlay({
               <p className="text-[12px] text-muted-foreground leading-relaxed mb-3">{step.description}</p>
 
               {/* Outcome */}
-              <div className="rounded-lg bg-gradient-to-r from-cyan-500/[0.06] to-blue-500/[0.04] border border-cyan-500/10 p-3 mb-4">
+              <div className="rounded-lg bg-white/[0.04] border border-cyan-500/10 p-3 mb-4">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Sparkles className="h-3 w-3 text-cyan-400" />
                   <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider">Outcome</span>
@@ -187,7 +187,7 @@ export function GuidedTourOverlay({
                       trackDemoEvent({ type: 'demo_tour_completed' });
                       onDismiss();
                     }}
-                    className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-3.5 py-1.5 text-[11px] font-semibold text-white shadow-[0_0_20px_rgba(6,182,212,0.25)]"
+                    className="flex items-center gap-1.5 rounded-lg bg-foreground text-background px-3.5 py-1.5 text-[11px] font-semibold hover:opacity-90"
                   >
                     <Sparkles className="h-3 w-3" /> Finish Tour
                   </button>

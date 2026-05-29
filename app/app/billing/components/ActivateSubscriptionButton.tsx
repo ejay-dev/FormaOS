@@ -42,7 +42,7 @@ export function ActivateSubscriptionButton({
       <button
         onClick={handleActivate}
         disabled={disabled || isPending}
-        className="relative overflow-hidden inline-flex min-h-[44px] items-center justify-center rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-foreground transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed group"
+        className="relative overflow-hidden inline-flex min-h-[44px] items-center justify-center rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed group"
       >
         {/* Loading overlay */}
         {isPending && (

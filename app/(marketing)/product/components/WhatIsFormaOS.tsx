@@ -53,7 +53,7 @@ export function WhatIsFormaOS() {
 
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-5 text-white">
               An end-to-end{' '}
-              <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 Compliance Operating System
               </span>
             </h2>

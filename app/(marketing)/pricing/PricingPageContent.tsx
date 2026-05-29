@@ -167,7 +167,7 @@ function HowPricingWorks() {
     <section className="relative overflow-hidden py-24 sm:py-32">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#07111f] via-[#0d1424] to-[#07111f]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_55%,rgba(6,182,212,0.08),transparent_50%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_55%,rgba(161,161,170,0.06),transparent_50%)]" />
       </div>
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
@@ -185,7 +185,7 @@ function HowPricingWorks() {
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
             Priced by compliance scope,{' '}
-            <span className="bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-300 bg-clip-text text-transparent">
+            <span className="text-foreground">
               not feature unlocks.
             </span>
           </h2>
@@ -203,7 +203,7 @@ function HowPricingWorks() {
             aria-hidden="true"
             className="pointer-events-none absolute left-0 right-0 top-[72px] hidden md:block"
           >
-            <div className="mx-auto h-px max-w-5xl bg-[image:linear-gradient(to_right,transparent,rgba(45,212,191,0.5)_25%,rgba(6,182,212,0.5)_50%,rgba(16,185,129,0.5)_75%,transparent)] [mask-image:linear-gradient(to_right,transparent_5%,black_15%,black_85%,transparent_95%)]" />
+            <div className="mx-auto h-px max-w-5xl bg-[image:linear-gradient(to_right,transparent,rgba(161,161,170,0.45)_25%,rgba(161,161,170,0.45)_50%,rgba(161,161,170,0.45)_75%,transparent)] [mask-image:linear-gradient(to_right,transparent_5%,black_15%,black_85%,transparent_95%)]" />
           </div>
 
           <SectionChoreography

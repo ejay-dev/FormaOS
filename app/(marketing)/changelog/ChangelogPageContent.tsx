@@ -76,7 +76,7 @@ const TAG_CONFIG: Record<ChangeTag, TagConfig> = {
   improvement: {
     label: 'Improvement',
     icon: Zap,
-    colorRgb: '34,211,238',
+    colorRgb: '161,161,170',
     bg: 'bg-cyan-500/10',
     border: 'border-cyan-400/20',
     text: 'text-cyan-400',
@@ -2565,7 +2565,7 @@ function ReleaseTimelineVisual() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-5">
               Shipping{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 every month
               </span>
             </h2>
@@ -2581,7 +2581,7 @@ function ReleaseTimelineVisual() {
             {/* Chart header */}
             <div className="flex flex-wrap items-center justify-between gap-4 px-6 sm:px-8 pt-6 sm:pt-8 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-1.5 h-8 rounded-full bg-gradient-to-b from-emerald-400 to-cyan-400" />
+                <div className="w-1.5 h-8 rounded-full bg-gradient-to-b from-zinc-700 to-zinc-900" />
                 <div>
                   <h3 className="text-sm font-semibold text-white">
                     Release Activity
@@ -2855,7 +2855,7 @@ function TagBreakdownSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Change{' '}
-              <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 breakdown
               </span>
             </h2>
@@ -2943,7 +2943,7 @@ function VersionHistoryTable() {
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Complete{' '}
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 release history
               </span>
             </h2>
@@ -3041,7 +3041,7 @@ const milestones = [
     date: 'January 2026',
     description:
       'Full coverage across ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, and CIS Controls.',
-    accentRgb: '34,211,238',
+    accentRgb: '161,161,170',
   },
   {
     icon: Lock,
@@ -3089,7 +3089,7 @@ const milestones = [
     date: 'May 2026',
     description:
       'v4.2 Compliance Foundations: per-control evaluator registry, framework packs expanded to all 64 SOC 2 TSC criteria and 93 ISO 27001:2022 Annex A controls, twelve working SOC 2 evaluators, and a real PDF report engine with brand typography for board packs and posture reports.',
-    accentRgb: '34,211,238',
+    accentRgb: '161,161,170',
   },
 ];
 
@@ -3111,7 +3111,7 @@ function MilestonesSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               The journey from{' '}
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 Genesis to Horizon
               </span>
             </h2>
@@ -3245,7 +3245,7 @@ function SubscribeCTA() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(34,211,238,0.06), transparent 50%)',
+                  'radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
               }}
             />
 
@@ -3282,7 +3282,7 @@ function SubscribeCTA() {
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Never miss a{' '}
-                  <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     release
                   </span>
                 </h2>
@@ -3295,10 +3295,8 @@ function SubscribeCTA() {
                   <Link
                     href={compliancePlanHref('changelog_final')}
                     className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-                      bg-gradient-to-r from-emerald-500 to-teal-500
-                      text-white font-semibold text-sm
-                      shadow-lg shadow-emerald-500/20
-                      hover:shadow-xl hover:shadow-emerald-500/30
+                      bg-foreground text-background hover:opacity-90 font-semibold text-sm
+                      shadow-lg
                       transition-all duration-300"
                   >
                     {PUBLIC_CTA_LABELS.compliancePlan}
@@ -3386,7 +3384,7 @@ function ChangelogHero() {
         />
         <motion.div
           className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(34,211,238,0.06)' }}
+          style={{ background: 'rgba(113,113,122,0.06)' }}
           animate={{
             scale: [1, 1.06, 1],
             opacity: [0.06, 0.1, 0.06],
@@ -3432,7 +3430,7 @@ function ChangelogHero() {
         <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[1.08] mb-6">
           Every change,
           <br />
-          <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">
+          <span className="text-foreground">
             shipped transparently
           </span>
         </h1>
@@ -3589,7 +3587,7 @@ export default function ChangelogPageContent() {
             >
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                 Release{' '}
-                <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="text-foreground">
                   timeline
                 </span>
               </h2>

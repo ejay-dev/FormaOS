@@ -1,4 +1,5 @@
 import {
+  Img,
   Body,
   Button,
   Container,
@@ -34,7 +35,7 @@ export default function WelcomeEmail({
         <Container style={container}>
           {/* Header */}
           <Section style={header}>
-            <Heading style={logo}>FormaOS</Heading>
+            <Img src="https://app.formaos.com.au/brand/formaos-wordmark-white.png" width="170" height="17" alt="FormaOS" style={logo} />
             <Text style={tagline}>Compliance Operating System</Text>
           </Section>
 

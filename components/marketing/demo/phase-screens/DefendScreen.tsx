@@ -70,7 +70,7 @@ function ComplianceTrendChart() {
           cy={p.y}
           r="2.5"
           fill="#0b1022"
-          stroke={i === data.length - 1 ? '#06b6d4' : '#3b82f6'}
+          stroke={i === data.length - 1 ? '#a1a1aa' : '#3b82f6'}
           strokeWidth="1.5"
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -83,7 +83,7 @@ function ComplianceTrendChart() {
         cy={points[points.length - 1].y}
         r="5"
         fill="none"
-        stroke="#06b6d4"
+        stroke="#a1a1aa"
         strokeWidth="1"
         animate={{ r: [5, 10, 5], opacity: [0.6, 0, 0.6] }}
         transition={{ duration: 2, repeat: Infinity, delay: 3.5 }}
@@ -111,7 +111,7 @@ function ComplianceTrendChart() {
         x={points[points.length - 1].x + 2}
         y={points[points.length - 1].y - 6}
         textAnchor="start"
-        fill="#06b6d4"
+        fill="#a1a1aa"
         fontSize="8"
         fontWeight="bold"
         initial={{ opacity: 0 }}
@@ -123,11 +123,11 @@ function ComplianceTrendChart() {
       <defs>
         <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#3b82f6" />
-          <stop offset="100%" stopColor="#06b6d4" />
+          <stop offset="100%" stopColor="#a1a1aa" />
         </linearGradient>
         <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.2" />
-          <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
+          <stop offset="0%" stopColor="#a1a1aa" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#a1a1aa" stopOpacity="0" />
         </linearGradient>
       </defs>
     </svg>
@@ -228,7 +228,7 @@ export default function DefendScreen() {
         }}
         transition={{ delay: 5.0, duration: 0.8, ease: easing.signature }}
       >
-        <div className="bg-gradient-to-r from-emerald-500/[0.06] to-cyan-500/[0.04] p-3">
+        <div className="bg-white/[0.04] p-3">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
               <Shield className="h-5 w-5 text-emerald-400" />

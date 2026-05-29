@@ -56,7 +56,7 @@ export function PricingTiers() {
       */}
       {/* Section backgrounds */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        <TopographicPattern color="rgba(20,184,166,0.04)" />
+        <TopographicPattern color="rgba(113,113,122,0.04)" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(16,185,129,0.12),transparent_55%)]" />
       </div>
 

@@ -33,7 +33,7 @@ function BgLayer({
 /* Used on: Industries section - signals "coverage across regulated territory" */
 
 export function TopographicPattern({
-  color = 'rgba(45, 212, 191, 0.03)',
+  color = 'rgba(161, 161, 170, 0.03)',
   className = '',
 }: {
   color?: string;
@@ -78,7 +78,7 @@ export function TopographicPattern({
 /* Used on: Outcome Proof section - "measurable outcomes" */
 
 export function RadarPulse({
-  color = 'rgba(45, 212, 191, 0.12)',
+  color = 'rgba(161, 161, 170, 0.12)',
   className = '',
 }: {
   color?: string;
@@ -138,7 +138,7 @@ export function RadarPulse({
 
 export function DecisionTreePattern({
   color = 'rgba(148, 163, 184, 0.06)',
-  nodeColor = 'rgba(45, 212, 191, 0.15)',
+  nodeColor = 'rgba(161, 161, 170, 0.15)',
   count = 6,
   className = '',
 }: {
@@ -205,8 +205,8 @@ export function DecisionTreePattern({
 /* Used on: Product "What Is FormaOS" - abstract connected system */
 
 export function CircuitPattern({
-  color = 'rgba(20, 184, 166, 0.04)',
-  nodeColor = 'rgba(45, 212, 191, 0.1)',
+  color = 'rgba(113, 113, 122, 0.04)',
+  nodeColor = 'rgba(161, 161, 170, 0.1)',
   className = '',
 }: {
   color?: string;
@@ -274,7 +274,7 @@ export function CircuitPattern({
 /* Used on: Product "Obligation to Execution" - directional process flow */
 
 export function FlowPath({
-  color = 'rgba(45, 212, 191, 0.08)',
+  color = 'rgba(161, 161, 170, 0.08)',
   className = '',
 }: {
   color?: string;
@@ -341,7 +341,7 @@ export function FlowPath({
 /* Used on: Enterprise Security Layers, Security page - layered defense */
 
 export function ShieldRings({
-  color = 'rgba(45, 212, 191, 0.04)',
+  color = 'rgba(161, 161, 170, 0.04)',
   className = '',
 }: {
   color?: string;
@@ -380,7 +380,7 @@ export function ShieldRings({
 /* Used on: Enterprise Trust Badges - trust infrastructure pattern */
 
 export function HexGrid({
-  color = 'rgba(45, 212, 191, 0.025)',
+  color = 'rgba(161, 161, 170, 0.025)',
   className = '',
 }: {
   color?: string;
@@ -435,8 +435,8 @@ export function HexGrid({
 /* Used on: Security Evidence Chain - visualizes chain of custody */
 
 export function ChainLinks({
-  color = 'rgba(45, 212, 191, 0.06)',
-  lockColor = 'rgba(45, 212, 191, 0.12)',
+  color = 'rgba(161, 161, 170, 0.06)',
+  lockColor = 'rgba(161, 161, 170, 0.12)',
   className = '',
 }: {
   color?: string;
@@ -521,7 +521,7 @@ export function DotGrid({
 /* Used on: Compare pages - visual tension between columns */
 
 export function VersusDivider({
-  color = 'rgba(45, 212, 191, 0.15)',
+  color = 'rgba(161, 161, 170, 0.15)',
   className = '',
 }: {
   color?: string;
@@ -548,7 +548,7 @@ export function VersusDivider({
 /* Used on: Trust Assurance Modules - continuous verification signal */
 
 export function ScanLine({
-  color = 'rgba(45, 212, 191, 0.04)',
+  color = 'rgba(161, 161, 170, 0.04)',
   className = '',
 }: {
   color?: string;
@@ -630,8 +630,8 @@ export function StampPattern({
 /* Used on: Trust Modules - signals live monitoring across trust surface */
 
 export function MonitoringNodes({
-  color = 'rgba(45, 212, 191, 0.08)',
-  pulseColor = 'rgba(45, 212, 191, 0.2)',
+  color = 'rgba(161, 161, 170, 0.08)',
+  pulseColor = 'rgba(161, 161, 170, 0.2)',
   className = '',
 }: {
   color?: string;
