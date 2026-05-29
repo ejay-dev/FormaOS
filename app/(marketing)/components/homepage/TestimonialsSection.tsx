@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 const SCENARIOS = [
   {
@@ -69,7 +70,15 @@ export function TestimonialsSection() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section ref={ref} className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8">
+    <section
+      ref={ref}
+      className="relative isolate overflow-hidden py-24 sm:py-32 px-4 sm:px-6 lg:px-8"
+    >
+      <SectionMedia
+        src="/marketing-media/enterprise.jpg"
+        objectPosition="50% 30%"
+        opacity={0.16}
+      />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <motion.div

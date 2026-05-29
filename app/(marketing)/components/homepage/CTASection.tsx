@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
@@ -29,7 +30,8 @@ export function CTASection() {
   void runtime;
 
   return (
-    <section className="home-section home-section--cta relative overflow-hidden">
+    <section className="home-section home-section--cta relative isolate overflow-hidden">
+      <SectionMedia src="/marketing-media/home.jpg" objectPosition="50% 35%" opacity={0.2} />
       {/* Section dividers */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />

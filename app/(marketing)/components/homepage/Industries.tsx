@@ -14,6 +14,7 @@ import {
 } from 'framer-motion';
 import { duration, easing } from '@/config/motion';
 import Link from 'next/link';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import type { LucideIcon } from 'lucide-react';
 import {
   Heart,
@@ -668,12 +669,17 @@ export const Industries = memo(function Industries() {
   return (
     <section
       ref={sectionRef}
-      className="mk-section home-section home-section--contrast relative overflow-hidden"
+      className="mk-section home-section home-section--contrast relative isolate overflow-hidden"
       style={{
         background:
           'linear-gradient(180deg, #020617 0%, #080d20 35%, #0c1129 60%, #020617 100%)',
       }}
     >
+      <SectionMedia
+        src="/marketing-media/use-case-ndis-aged-care.jpg"
+        objectPosition="50% 40%"
+        opacity={0.18}
+      />
       {/* Edge lines */}
       <div
         className="absolute inset-x-0 top-0 h-px"
