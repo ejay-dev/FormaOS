@@ -31,7 +31,12 @@ export function CTASection() {
 
   return (
     <section className="home-section home-section--cta relative isolate overflow-hidden">
-      <SectionMedia src="/marketing-media/home.jpg" objectPosition="50% 35%" opacity={0.2} />
+      <SectionMedia
+        src="/marketing-media/home.jpg"
+        objectPosition="50% 32%"
+        opacity={0.9}
+        scrim="center"
+      />
       {/* Section dividers */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />

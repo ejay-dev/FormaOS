@@ -76,8 +76,9 @@ export function TestimonialsSection() {
     >
       <SectionMedia
         src="/marketing-media/enterprise.jpg"
-        objectPosition="50% 30%"
-        opacity={0.16}
+        objectPosition="50% 28%"
+        opacity={0.66}
+        scrim="center"
       />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 

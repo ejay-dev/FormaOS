@@ -677,8 +677,9 @@ export const Industries = memo(function Industries() {
     >
       <SectionMedia
         src="/marketing-media/use-case-ndis-aged-care.jpg"
-        objectPosition="50% 40%"
-        opacity={0.18}
+        objectPosition="50% 38%"
+        opacity={0.68}
+        scrim="center"
       />
       {/* Edge lines */}
       <div
