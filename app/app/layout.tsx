@@ -233,12 +233,7 @@ export default async function AppLayout({
               {/* Sidebar */}
               <aside className="relative z-30 hidden md:flex h-full w-52 shrink-0 flex-col glass-panel-strong border-r border-border">
                 <div className="flex h-12 items-center border-b border-border px-4">
-                  <div className="flex items-center gap-2">
-                    <Logo variant="mark" size={28} />
-                    <div>
-                      <div className="text-sm font-bold">{brand.appName}</div>
-                    </div>
-                  </div>
+                  <Logo variant="wordmark" size={17} alt={brand.appName} />
                 </div>
                 <div className="flex flex-1 overflow-y-auto">
                   <Sidebar role={systemState.role} />

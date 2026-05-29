@@ -171,11 +171,12 @@ export function Footer() {
           <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
             {/* Brand column — wider */}
             <div className="col-span-2 sm:col-span-3 lg:col-span-2 mb-2 lg:mb-0">
-              <Link href="/" className="inline-flex items-center gap-2.5 group">
-                <Logo variant="mark" size={28} />
-                <span className="text-sm font-semibold text-white group-hover:text-cyan-400 transition-colors">
-                  FormaOS
-                </span>
+              <Link
+                href="/"
+                aria-label="FormaOS home"
+                className="inline-flex items-center text-white transition-opacity hover:opacity-90"
+              >
+                <Logo variant="wordmark" size={22} />
               </Link>
               <p className="mt-4 text-[13px] text-slate-500 leading-relaxed max-w-[260px]">
                 The compliance operating system for regulated Australian

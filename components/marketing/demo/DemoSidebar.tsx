@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { FoMonogram } from '@/components/brand/FoMonogram';
 import {
   LayoutDashboard,
   FileText,
@@ -59,9 +60,7 @@ export default function DemoSidebar({
       {/* Logo */}
       <div className="px-3 pt-3 pb-1">
         <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-            <span className="text-[8px] font-bold text-white">FO</span>
-          </div>
+          <FoMonogram className="h-6 w-6 shrink-0 text-white" />
           <div className="min-w-0">
             <span className="text-[11px] font-semibold text-white block leading-none">
               FormaOS
