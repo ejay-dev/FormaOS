@@ -27,7 +27,7 @@ function warnOnLegacyServiceRoleAliases(): void {
   // Imported by proxy.ts (edge runtime) — consoleShim pulls in pino +
   // 'server-only' and breaks the middleware bundle. Plain console.warn
   // is intentional here.
-  // eslint-disable-next-line no-console
+   
   console.warn(
     `[Supabase env] Legacy service-role alias detected (${aliases.join(
       ', ',

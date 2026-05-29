@@ -138,7 +138,7 @@ export function validateCsrfOrigin(request: Request): NextResponse | null {
     // Called from proxy.ts middleware (edge runtime). consoleShim pulls
     // in pino + 'server-only' which Turbopack refuses to bundle for
     // edge — plain console.warn is the safe path.
-    // eslint-disable-next-line no-console
+     
     console.warn('[CSRF] Blocked request with no Origin/Referer header', {
       method,
       url: request.url,
@@ -151,7 +151,7 @@ export function validateCsrfOrigin(request: Request): NextResponse | null {
 
   const trusted = getTrustedOrigins();
   if (!trusted.has(requestOrigin) && !isDevelopmentLoopbackOrigin(requestOrigin)) {
-    // eslint-disable-next-line no-console
+     
     console.warn('[CSRF] Blocked request from untrusted origin', {
       requestOrigin,
       method,

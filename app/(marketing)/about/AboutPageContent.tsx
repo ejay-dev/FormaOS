@@ -9,7 +9,6 @@ import {
   Building2,
   Shield,
   CheckCircle,
-  Code2,
   Layers,
   Zap,
   Eye,

@@ -48,6 +48,7 @@ build_output.txt
 /AUDIT_REPORT_v3_2026-05-22.md
 /AUDIT_REPORT_v4_2026-05-23.md
 /DEEP_E2E_AUDIT_MASTER_PROMPT.md
+/APP_LINK_INTEGRITY_REPORT.md
 
 # debug
 npm-debug.log*

@@ -42,7 +42,7 @@ export function getCachedProgress(
   } catch (error) {
     // Client-only module (localStorage) — consoleShim pulls in pino +
     // 'server-only' and breaks the build.
-    // eslint-disable-next-line no-console
+     
     console.warn('[progress-persistence] Failed to read cache:', error);
     return null;
   }
@@ -65,7 +65,7 @@ export function setCachedProgress(
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.warn('[progress-persistence] Failed to save cache:', error);
   }
 }
@@ -79,7 +79,7 @@ export function clearCachedProgress(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.warn('[progress-persistence] Failed to clear cache:', error);
   }
 }

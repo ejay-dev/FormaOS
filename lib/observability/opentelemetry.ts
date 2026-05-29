@@ -129,7 +129,7 @@ export async function registerOpenTelemetry(): Promise<boolean> {
     // consoleShim → server-logger → pino has 'server-only' which Turbopack
     // refuses to bundle for the edge variant; raw console.warn is the
     // safe path here.
-    // eslint-disable-next-line no-console
+     
     console.warn(
       '[observability] OpenTelemetry bootstrap failed:',
       error instanceof Error ? error.message : 'Unknown error',

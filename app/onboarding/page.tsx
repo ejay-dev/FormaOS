@@ -11,7 +11,6 @@ import { sendEmail } from '@/lib/email/send-email';
 import { resolvePlanKey, PLAN_CATALOG } from '@/lib/plans';
 import { ensureSubscription } from '@/lib/billing/subscriptions';
 import {
-  FRAMEWORK_OPTIONS,
   frameworkOptionsForIndustry,
   INDUSTRY_OPTIONS,
   TEAM_SIZE_OPTIONS,

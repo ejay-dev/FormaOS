@@ -84,7 +84,7 @@ export class FeatureFlagManager {
     } catch (error) {
       // Used in client components — consoleShim pulls in pino +
       // 'server-only' and breaks the browser bundle.
-      // eslint-disable-next-line no-console
+       
       console.warn('Failed to parse feature flags, using defaults:', error)
     }
     
@@ -194,7 +194,7 @@ export function getServerSideFeatureFlags(): FeatureFlags {
       }
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.warn('Failed to parse server-side feature flags:', error)
   }
 

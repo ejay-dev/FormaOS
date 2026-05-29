@@ -18,7 +18,7 @@ declare const require: NodeJS.Require | undefined;
 
 if (typeof globalThis.WebSocket === 'undefined') {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+     
     const ws = typeof require === 'function' ? require('ws') : null;
     if (ws) {
       (globalThis as { WebSocket?: unknown }).WebSocket = ws.WebSocket ?? ws;

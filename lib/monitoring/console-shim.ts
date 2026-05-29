@@ -35,7 +35,7 @@ function adapt(
     // jest.spyOn(console, '...') assertions keep working. Production
     // and dev go through pino only — that's the redaction path.
     if (isTest) {
-      // eslint-disable-next-line no-console
+       
       (console[consoleMethod] as (...a: unknown[]) => void)(...args);
     }
 

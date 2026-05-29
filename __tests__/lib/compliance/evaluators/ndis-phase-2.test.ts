@@ -11,7 +11,6 @@
 import {
   evaluatePersonCentredSupports,
   evaluateRiskManagement,
-  evaluateInformationManagement,
   evaluateComplaintsManagement,
   evaluateResponsiveSupport,
   evaluateSupportPlanning,

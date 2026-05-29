@@ -128,7 +128,7 @@ export function createSupabaseClient() {
   if (!hasValidUrl || !key) {
     // Browser bundle — consoleShim pulls in pino + 'server-only' and breaks
     // the build. Raw console.* on the client path is intentional.
-    // eslint-disable-next-line no-console
+     
     console.error('[Supabase] Missing NEXT_PUBLIC_SUPABASE_URL or public key.');
     cachedClient = createFallbackClient();
     return cachedClient;
@@ -140,7 +140,7 @@ export function createSupabaseClient() {
     });
     return cachedClient;
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error('[Supabase] Failed to initialize browser client:', error);
     cachedClient = createFallbackClient();
     return cachedClient;

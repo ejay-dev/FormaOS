@@ -45,7 +45,7 @@ export interface DetectionResult {
 // org-bounded query (detectPrivilegeEscalation's membership check) is
 // itself a guard verifying the claimed orgId — wrapping it in the
 // org-scoped client would beg the question.
-/* eslint-disable formaos/no-admin-client-with-org-filter */
+ 
 
 /**
  * Detect brute force login attempts
