@@ -27,6 +27,9 @@ import {
 } from '@/app/app/actions/patients';
 import { createTask } from '@/app/app/actions/tasks';
 import { logAuditEvent } from '@/app/app/actions/audit-events';
+import { routeLog } from '@/lib/monitoring/server-logger';
+
+const log = routeLog('/app/patients/[id]');
 
 type PatientRow = {
   id: string;
@@ -207,7 +210,9 @@ export default async function PatientDetailPage({
   // patient detail page loads full demographics + DOB + diagnosis +
   // active incident history — every render is a read of protected
   // information. Fire-and-forget logAuditEvent so a slow audit
-  // write never blocks the page render.
+  // write never blocks the page render — but a failed audit event is
+  // itself a compliance signal, so log it loudly via pino instead of
+  // swallowing it. Sentry picks up `level: 50` automatically.
   void logAuditEvent({
     organizationId: membership.organization_id,
     actorUserId: user.id,
@@ -222,7 +227,18 @@ export default async function PatientDetailPage({
       incidents_loaded: (incidents ?? []).length,
     },
     reason: 'phi_read',
-  }).catch(() => {});
+  }).catch((err) => {
+    log.error(
+      {
+        err,
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        entityId: patient.id,
+        actionType: 'PATIENT_VIEWED',
+      },
+      'HIPAA PHI-read audit emission failed — compliance evidence missing',
+    );
+  });
 
   const nowIso = new Date().toISOString();
   const overdueTasks = (tasks ?? []).filter(

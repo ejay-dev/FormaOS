@@ -27,7 +27,7 @@ export default async function PatientsPage() {
     .eq('user_id', user.id)
     .maybeSingle();
 
-  if (!membership?.organization_id) return null;
+  if (!membership?.organization_id) redirect('/onboarding');
 
   const roleKey = normalizeRole(membership.role ?? null);
   const canWrite = ['OWNER', 'COMPLIANCE_OFFICER', 'MANAGER', 'STAFF'].includes(

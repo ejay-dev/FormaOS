@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { MFAEnrollment } from '@/components/settings/mfa-enrollment';
@@ -17,7 +18,7 @@ export default async function SecuritySettingsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return null;
+  if (!user) redirect('/auth/signin?next=/app/settings/security');
 
   const { data: membership } = await supabase
     .from('org_members')

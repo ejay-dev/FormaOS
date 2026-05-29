@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { Database, LockKeyhole, MapPinned, FileClock } from 'lucide-react';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -25,7 +26,7 @@ export default async function GovernancePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return null;
+  if (!user) redirect('/auth/signin?next=/app/governance');
 
   const { data: membership } = await supabase
     .from('org_members')
@@ -35,7 +36,7 @@ export default async function GovernancePage() {
 
   const orgId = membership?.organization_id as string | undefined;
   const role = membership?.role as string | undefined;
-  if (!orgId || !role) return null;
+  if (!orgId || !role) redirect('/onboarding');
 
   const isAdmin = role === 'owner' || role === 'admin';
   if (!isAdmin) {

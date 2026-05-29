@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   TrendingUp,
@@ -86,7 +86,11 @@ export function ExecutiveDashboardClient({
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = async () => {
+  // Memoised so the 5-minute interval below always calls the latest
+  // closure. The body only depends on setState setters (stable
+  // identities), so an empty dep list is safe and avoids re-creating
+  // the interval on every render.
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [postureRes, forecastRes] = await Promise.all([
@@ -116,14 +120,14 @@ export function ExecutiveDashboardClient({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
     // Refresh every 5 minutes
     const interval = setInterval(fetchData, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchData]);
 
   const posture = data.posture;
   const criticalFailures = posture?.criticalFailures ?? [];

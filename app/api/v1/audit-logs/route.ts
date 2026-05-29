@@ -51,8 +51,23 @@ export async function GET(request: Request) {
     // 3. Parse query parameters
     const { searchParams } = new URL(request.url);
     const action = searchParams.get('action') || undefined;
-    const startDate = searchParams.get('startDate') || undefined;
-    const endDate = searchParams.get('endDate') || undefined;
+    const rawStartDate = searchParams.get('startDate');
+    const rawEndDate = searchParams.get('endDate');
+    const isIsoDate = (v: string) => !Number.isNaN(new Date(v).getTime());
+    if (rawStartDate && !isIsoDate(rawStartDate)) {
+      return NextResponse.json(
+        { error: "Invalid 'startDate' — expected ISO-8601 timestamp" },
+        { status: 400 },
+      );
+    }
+    if (rawEndDate && !isIsoDate(rawEndDate)) {
+      return NextResponse.json(
+        { error: "Invalid 'endDate' — expected ISO-8601 timestamp" },
+        { status: 400 },
+      );
+    }
+    const startDate = rawStartDate ?? undefined;
+    const endDate = rawEndDate ?? undefined;
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 200);
 
     // 4. Fetch audit logs
