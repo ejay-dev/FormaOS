@@ -41,15 +41,14 @@ export function CTASection() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-      {/* Subtle background glow */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/[0.04] to-transparent" />
+      {/* Subtle background glow — monochrome, single neutral wash */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(113,113,122,0.06)_0%,transparent_70%)]" />
 
       <div className="relative z-10 py-20 sm:py-28 lg:py-40 max-w-4xl mx-auto px-5 sm:px-6 lg:px-12 text-center">
         <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 mb-6 sm:mb-8">
-            <Sparkles className="w-4 h-4 text-teal-400" />
-            <span className="text-sm text-teal-400 font-medium">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-6 sm:mb-8">
+            <Sparkles className="w-4 h-4 text-slate-400" />
+            <span className="text-sm text-slate-400 font-medium">
               {PUBLIC_CTA_LABELS.compliancePlan}
             </span>
           </div>

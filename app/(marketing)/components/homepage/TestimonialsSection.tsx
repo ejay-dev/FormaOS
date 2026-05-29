@@ -17,7 +17,6 @@ const SCENARIOS = [
       'Audit preparation time measured in hours, not weeks',
       'Named control owner at every Practice Standard module',
     ],
-    accentClass: 'border-cyan-500/20',
   },
   {
     sector: 'Healthcare Operator',
@@ -29,7 +28,6 @@ const SCENARIOS = [
       'Control-to-evidence mapping with NSQHS Standards linkage',
       'Live executive posture view across sites',
     ],
-    accentClass: 'border-violet-500/20',
   },
   {
     sector: 'Aged Care Provider',
@@ -41,7 +39,6 @@ const SCENARIOS = [
       'Evidence renewal and expiry tracking across all facilities',
       'Standard 8 governance reporting compressed from weeks to days',
     ],
-    accentClass: 'border-emerald-500/20',
   },
   {
     sector: 'Financial Services',
@@ -53,7 +50,6 @@ const SCENARIOS = [
       'ASIC reportable-situation response time inside the statutory window',
       'Board governance packs generated from live data, not reconstructed',
     ],
-    accentClass: 'border-amber-500/20',
   },
 ] as const;
 
@@ -88,7 +84,7 @@ export function TestimonialsSection() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="mx-auto mb-4 max-w-2xl text-center"
       >
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
           Use case scenarios
         </p>
         <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -112,7 +108,7 @@ export function TestimonialsSection() {
               delay: 0.2 + i * 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className={`relative flex flex-col rounded-2xl border bg-white/[0.03] p-6 sm:p-8 ${scenario.accentClass}`}
+            className="relative flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 sm:p-8"
           >
             <div className="mb-5 inline-flex self-start rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
               {scenario.sector}
@@ -176,7 +172,7 @@ export function TestimonialsSection() {
       >
         <Link
           href="/customer-stories"
-          className="text-sm font-semibold text-amber-400 underline-offset-4 hover:underline"
+          className="text-sm font-semibold text-white underline-offset-4 hover:underline"
         >
           Read the full scenarios{' '}
           <ArrowRight className="ml-1 inline h-4 w-4" />

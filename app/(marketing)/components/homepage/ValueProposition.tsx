@@ -111,9 +111,9 @@ function PostureCard({
   // FormaOS itself. Labelled "Illustrative dashboard" so a reader
   // doesn't read "47/50" as our marketing claim.
   const stats = [
-    { value: '47/50', label: 'Active controls', color: 'text-teal-400' },
-    { value: '312', label: 'Evidence items', color: 'text-zinc-300' },
-    { value: '8', label: 'Framework packs', color: 'text-violet-400' },
+    { value: '47/50', label: 'Active controls', color: 'text-white' },
+    { value: '312', label: 'Evidence items', color: 'text-white' },
+    { value: '8', label: 'Framework packs', color: 'text-white' },
   ] as const;
 
   return (
@@ -270,7 +270,7 @@ function EnforcementCard({
 }) {
   return (
     <GlassCard
-      accent="rgba(244,63,94,0.6)"
+      accent="rgba(148,163,184,0.6)"
       index={1}
       isInView={isInView}
       noMotion={noMotion}
@@ -360,10 +360,10 @@ function EnforcementCard({
 
 // Illustrative timeline — generic role labels, no invented names.
 const EVIDENCE_EVENTS = [
-  { text: 'Control created', time: 'Day 0', color: 'bg-zinc-400' },
-  { text: 'Evidence uploaded — by named owner', time: 'Day 3', color: 'bg-teal-400' },
-  { text: 'Review approved — by control reviewer', time: 'Day 4', color: 'bg-violet-400' },
-  { text: 'Hash anchored — Sigstore Rekor entry', time: 'Day 5', color: 'bg-emerald-400' },
+  { text: 'Control created', time: 'Day 0', color: 'bg-slate-500' },
+  { text: 'Evidence uploaded — by named owner', time: 'Day 3', color: 'bg-slate-400' },
+  { text: 'Review approved — by control reviewer', time: 'Day 4', color: 'bg-slate-400' },
+  { text: 'Hash anchored — Sigstore Rekor entry', time: 'Day 5', color: 'bg-slate-300' },
 ] as const;
 
 function EvidenceCard({
@@ -447,17 +447,14 @@ const OWNERS = [
   {
     initials: 'AC',
     role: 'Access control owner',
-    gradient: 'from-teal-500/30 to-cyan-500/30',
   },
   {
     initials: 'DE',
     role: 'Data encryption owner',
-    gradient: 'from-violet-500/30 to-zinc-700/30',
   },
   {
     initials: 'IR',
     role: 'Incident response owner',
-    gradient: 'from-amber-500/30 to-orange-500/30',
   },
 ] as const;
 
@@ -470,13 +467,13 @@ function OwnershipCard({
 }) {
   return (
     <GlassCard
-      accent="rgba(139,92,246,0.6)"
+      accent="rgba(148,163,184,0.6)"
       index={3}
       isInView={isInView}
       noMotion={noMotion}
     >
       <div className="flex items-center gap-2 mb-4">
-        <UserCheck className="w-4 h-4 text-violet-400" />
+        <UserCheck className="w-4 h-4 text-slate-300" />
         <h3 className="text-base font-bold text-white">Named Ownership</h3>
       </div>
       <p className="text-[13px] text-slate-500 leading-relaxed mb-5">
@@ -498,7 +495,7 @@ function OwnershipCard({
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/[0.015] border border-white/[0.04]"
           >
             <div
-              className={`w-8 h-8 rounded-full bg-gradient-to-br ${o.gradient} border border-white/[0.08] flex items-center justify-center text-[10px] font-bold text-white/80 shrink-0`}
+              className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-[10px] font-bold text-slate-300 shrink-0"
             >
               {o.initials}
             </div>
@@ -510,7 +507,7 @@ function OwnershipCard({
                 Assigned in workspace
               </div>
             </div>
-            <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-teal-400/60" />
+            <div className="shrink-0 w-1.5 h-1.5 rounded-full bg-slate-500" />
           </motion.div>
         ))}
       </div>
@@ -531,13 +528,13 @@ function AuditCard({
 }) {
   return (
     <GlassCard
-      accent="rgba(251,191,36,0.5)"
+      accent="rgba(148,163,184,0.5)"
       index={4}
       isInView={isInView}
       noMotion={noMotion}
     >
       <div className="flex items-center gap-2 mb-4">
-        <Clock className="w-4 h-4 text-amber-400" />
+        <Clock className="w-4 h-4 text-slate-300" />
         <h3 className="text-base font-bold text-white">Audit-Ready</h3>
       </div>
       <p className="text-[13px] text-slate-500 leading-relaxed mb-6">
@@ -552,15 +549,7 @@ function AuditCard({
           animate={isInView ? { opacity: 1, scale: 1 } : undefined}
           transition={{ delay: 0.6, duration: 0.5, ease: signatureEase }}
         >
-          <span
-            className="text-5xl sm:text-6xl font-black bg-clip-text"
-            style={{
-              backgroundImage:
-                'linear-gradient(135deg, rgba(251,191,36,1), rgba(245,158,11,0.8))',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+          <span className="text-5xl sm:text-6xl font-black text-white">
             Minutes
           </span>
           <div className="text-sm text-slate-500 mt-2 font-medium">
@@ -623,7 +612,7 @@ export function ValueProposition() {
           style={{
             right: '5%',
             top: '40%',
-            background: 'rgba(139, 92, 246, 0.025)',
+            background: 'rgba(148, 163, 184, 0.025)',
           }}
         />
       </div>
@@ -663,28 +652,12 @@ export function ValueProposition() {
             transition={{ duration: duration.slow, ease: signatureEase }}
             className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-6"
           >
-            <span className="w-2 h-2 rounded-full bg-teal-400" />
             <span className="text-sm font-medium text-slate-300">
               Operating System Architecture
             </span>
           </motion.div>
 
           <div className="relative">
-            {!noMotion && (
-              <motion.div
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[50%] h-[80%] rounded-full blur-[50px] pointer-events-none"
-                animate={{ opacity: [0.08, 0.16, 0.08] }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-                style={{
-                  background:
-                    'linear-gradient(135deg, rgba(113,113,122,0.4), rgba(161,161,170,0.3))',
-                }}
-              />
-            )}
             <motion.h2
               initial={noMotion ? false : { opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : undefined}
@@ -696,17 +669,7 @@ export function ValueProposition() {
               className="relative text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-5"
             >
               Not a repository.{' '}
-              <span
-                className="bg-clip-text"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(135deg, rgba(113,113,122,1) 0%, rgba(161,161,170,0.85) 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                A live system.
-              </span>
+              <span className="text-slate-400">A live system.</span>
             </motion.h2>
           </div>
 

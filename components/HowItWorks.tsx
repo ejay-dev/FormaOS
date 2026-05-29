@@ -1,12 +1,13 @@
+'use client';
+
+import { useRef } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ClipboardList, FileCheck2, GitPullRequestArrow, ShieldCheck, Workflow } from 'lucide-react';
-import {
-  AccentText,
-  IconFrame,
-  SectionEyebrow,
-  StatusPill,
-  SystemSection,
-  systemPanelClass,
-} from '@/components/marketing/SystemMarketingPrimitives';
+import { duration, easing } from '@/config/motion';
+
+const signatureEase: [number, number, number, number] = [
+  ...easing.signature,
+] as [number, number, number, number];
 
 const steps = [
   {
@@ -37,36 +38,84 @@ const steps = [
 ];
 
 export function HowItWorks({ className = '' }: { className?: string }) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const noMotion = Boolean(useReducedMotion());
+  const isInView = useInView(sectionRef, { once: true, margin: '-60px' });
+
   return (
-    <SystemSection variant="emerald" className={className}>
+    <section
+      ref={sectionRef}
+      className={`relative isolate overflow-hidden bg-slate-950 px-6 py-20 sm:py-24 lg:px-12 ${className}`}
+    >
+      {/* Single hairline top seam — no rainbow edge glow */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+
+      <div className="relative mx-auto max-w-7xl">
         <div className="mx-auto max-w-3xl text-center">
-          <SectionEyebrow icon={Workflow} tone="valid">How It Works</SectionEyebrow>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            From obligation to <AccentText>enforced evidence chain</AccentText>
-          </h2>
-          <p className="mt-4 text-base leading-7 text-slate-300">
+          <motion.div
+            initial={noMotion ? false : { opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: duration.slow, ease: signatureEase }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500"
+          >
+            <Workflow className="h-3.5 w-3.5" aria-hidden="true" />
+            How It Works
+          </motion.div>
+
+          <motion.h2
+            initial={noMotion ? false : { opacity: 0, y: 16 }}
+            animate={isInView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: duration.slow, delay: 0.08, ease: signatureEase }}
+            className="mt-4 text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl"
+          >
+            From obligation to <span className="text-slate-400">enforced evidence chain</span>
+          </motion.h2>
+
+          <motion.p
+            initial={noMotion ? false : { opacity: 0, y: 12 }}
+            animate={isInView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: duration.slow, delay: 0.16, ease: signatureEase }}
+            className="mt-4 text-base leading-7 text-slate-400"
+          >
             FormaOS turns compliance into a continuous operating loop rather
             than a document clean-up project before an audit.
-          </p>
+          </motion.p>
         </div>
+
         <div className="mt-12 grid gap-4 md:grid-cols-5">
           {steps.map((step, index) => (
-            <article
+            <motion.article
               key={step.title}
-              className={`p-5 ${systemPanelClass}`}
+              initial={noMotion ? false : { opacity: 0, y: 24 }}
+              animate={isInView ? { opacity: 1, y: 0 } : undefined}
+              transition={{
+                duration: duration.slow,
+                delay: 0.12 + index * 0.08,
+                ease: signatureEase,
+              }}
+              className="group relative flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors duration-300 hover:border-white/20"
             >
               <div className="flex items-center justify-between gap-3">
-                <IconFrame icon={step.icon} tone={index >= 2 ? 'valid' : 'live'} />
-                {index === 2 ? <StatusPill tone="valid">Enforcing</StatusPill> : null}
+                {/* Monochrome icon tile */}
+                <div className="inline-flex w-fit rounded-xl border border-white/10 bg-white/[0.05] p-3">
+                  <step.icon className="h-5 w-5 text-slate-300" aria-hidden="true" />
+                </div>
+                {index === 2 ? (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                    Enforcing
+                  </span>
+                ) : null}
               </div>
               <p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                 {String(index + 1).padStart(2, '0')}
               </p>
               <h3 className="mt-2 text-base font-semibold text-white">{step.title}</h3>
               <p className="mt-3 text-sm leading-6 text-slate-400">{step.body}</p>
-            </article>
+            </motion.article>
           ))}
         </div>
-    </SystemSection>
+      </div>
+    </section>
   );
 }

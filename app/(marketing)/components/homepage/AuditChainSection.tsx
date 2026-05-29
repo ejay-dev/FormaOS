@@ -47,8 +47,8 @@ export function AuditChainSection() {
           range={[0, 0.3]}
           className="mx-auto max-w-3xl text-center"
         >
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-cyan-200">
-            <Lock className="h-3.5 w-3.5" />
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <Lock className="h-3.5 w-3.5" aria-hidden="true" />
             Cryptographic audit chain
           </div>
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
@@ -68,11 +68,11 @@ export function AuditChainSection() {
             return (
               <ScrollReveal
                 key={pillar.title}
-                variant="fadeRight"
+                variant="fadeUp"
                 range={[idx * 0.05, 0.3 + idx * 0.05]}
               >
-                <article className="h-full rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-                  <Icon className="mb-4 h-5 w-5 text-cyan-300/80" />
+                <article className="h-full rounded-xl border border-white/[0.08] bg-white/[0.02] p-6 transition-colors duration-300 hover:border-white/20">
+                  <Icon className="mb-4 h-5 w-5 text-slate-300" aria-hidden="true" />
                   <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
                     {pillar.eyebrow}
                   </p>
@@ -91,10 +91,13 @@ export function AuditChainSection() {
         <div className="mt-10 text-center sm:mt-14">
           <Link
             href="/trust"
-            className="text-sm font-semibold text-cyan-200 underline-offset-4 hover:underline"
+            className="group inline-flex items-center gap-1.5 text-sm font-semibold text-white underline-offset-4 hover:underline"
           >
             Full architecture, retention, and hosting on /trust
-            <ArrowRight className="ml-1 inline h-4 w-4" />
+            <ArrowRight
+              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+              aria-hidden="true"
+            />
           </Link>
         </div>
       </div>

@@ -33,29 +33,31 @@ const NODE_COLORS: Record<
   NetworkNode['type'],
   { fill: string; glow: string; ring: string; label: string }
 > = {
+  // Monochrome node identity — types stay distinguishable by lightness
+  // (framework brightest → evidence darkest), no colour.
   framework: {
-    fill: 'rgba(20, 184, 166, 0.92)',
-    glow: 'rgba(20, 184, 166, 0.35)',
-    ring: 'rgba(20, 184, 166, 0.5)',
-    label: 'rgba(94, 234, 212, 1)',
+    fill: 'rgba(241, 245, 249, 0.95)',
+    glow: 'rgba(226, 232, 240, 0.28)',
+    ring: 'rgba(241, 245, 249, 0.55)',
+    label: 'rgba(248, 250, 252, 1)',
   },
   control: {
-    fill: 'rgba(99, 102, 241, 0.88)',
-    glow: 'rgba(99, 102, 241, 0.30)',
-    ring: 'rgba(129, 140, 248, 0.5)',
-    label: 'rgba(165, 180, 252, 1)',
+    fill: 'rgba(148, 163, 184, 0.92)',
+    glow: 'rgba(148, 163, 184, 0.24)',
+    ring: 'rgba(203, 213, 225, 0.5)',
+    label: 'rgba(203, 213, 225, 1)',
   },
   evidence: {
-    fill: 'rgba(16, 185, 129, 0.88)',
-    glow: 'rgba(16, 185, 129, 0.30)',
-    ring: 'rgba(52, 211, 153, 0.5)',
-    label: 'rgba(110, 231, 183, 1)',
+    fill: 'rgba(100, 116, 139, 0.92)',
+    glow: 'rgba(100, 116, 139, 0.24)',
+    ring: 'rgba(148, 163, 184, 0.5)',
+    label: 'rgba(148, 163, 184, 1)',
   },
   task: {
-    fill: 'rgba(245, 158, 11, 0.88)',
-    glow: 'rgba(245, 158, 11, 0.30)',
-    ring: 'rgba(251, 191, 36, 0.5)',
-    label: 'rgba(253, 224, 71, 1)',
+    fill: 'rgba(203, 213, 225, 0.92)',
+    glow: 'rgba(203, 213, 225, 0.24)',
+    ring: 'rgba(226, 232, 240, 0.5)',
+    label: 'rgba(226, 232, 240, 1)',
   },
 };
 
@@ -494,9 +496,9 @@ function ComplianceNetworkVizInner({
         centerY,
         unit * 0.6,
       );
-      halo1.addColorStop(0, 'rgba(20, 184, 166, 0.12)');
-      halo1.addColorStop(0.3, 'rgba(56, 189, 248, 0.06)');
-      halo1.addColorStop(0.6, 'rgba(99, 102, 241, 0.04)');
+      halo1.addColorStop(0, 'rgba(148, 163, 184, 0.10)');
+      halo1.addColorStop(0.3, 'rgba(148, 163, 184, 0.05)');
+      halo1.addColorStop(0.6, 'rgba(148, 163, 184, 0.03)');
       halo1.addColorStop(1, 'rgba(15, 23, 42, 0)');
       ctx.fillStyle = halo1;
       ctx.fillRect(0, 0, w, h);
@@ -543,9 +545,9 @@ function ComplianceNetworkVizInner({
         const sx = centerX + Math.cos(sweepAngle) * sweepLen;
         const sy = centerY + Math.sin(sweepAngle) * sweepLen;
         const sweepGrad = ctx.createLinearGradient(centerX, centerY, sx, sy);
-        sweepGrad.addColorStop(0, 'rgba(20, 184, 166, 0)');
-        sweepGrad.addColorStop(0.5, 'rgba(20, 184, 166, 0.04)');
-        sweepGrad.addColorStop(1, 'rgba(20, 184, 166, 0)');
+        sweepGrad.addColorStop(0, 'rgba(148, 163, 184, 0)');
+        sweepGrad.addColorStop(0.5, 'rgba(148, 163, 184, 0.04)');
+        sweepGrad.addColorStop(1, 'rgba(148, 163, 184, 0)');
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.lineTo(sx, sy);

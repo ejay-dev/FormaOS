@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { RadarPulse } from '@/components/marketing/SectionBackgrounds';
 import {
   ArrowRight,
   BarChart3,
@@ -69,11 +68,8 @@ const outcomeStats = [
 export function OutcomeProofSection() {
   return (
     <section className="mk-section home-section home-section--proof relative overflow-hidden">
-      <RadarPulse />
-      {/* Data section treatment: dark inset panel */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#060a14] to-transparent" />
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
         <ScrollReveal
@@ -81,8 +77,8 @@ export function OutcomeProofSection() {
           range={[0, 0.3]}
           className="mx-auto max-w-3xl text-center"
         >
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-teal-400/30 bg-teal-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-teal-200">
-            <BarChart3 className="h-3.5 w-3.5" />
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <BarChart3 className="h-3.5 w-3.5 text-slate-300" />
             What ships, what runs
           </div>
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
@@ -104,26 +100,23 @@ export function OutcomeProofSection() {
               variant="fadeLeft"
               range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <article className="home-panel home-panel--interactive group relative rounded-2xl bg-[#080c18] border border-white/[0.06] p-6 overflow-hidden">
-                {/* Top illumination line */}
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
-
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-white/70 mb-5">
+              <article className="group relative rounded-2xl bg-white/[0.02] border border-white/[0.08] p-6 overflow-hidden transition-colors duration-300 hover:border-white/20">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-5">
                   {scenario.title}
                 </h3>
 
-                {/* Before/After comparison */}
+                {/* Before/After comparison — semantic state only */}
                 <div className="space-y-3 text-sm mb-5">
-                  <div className="flex items-start gap-3 p-3 rounded-lg bg-rose-500/[0.06] border border-rose-500/10">
-                    <TrendingDown className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.08]">
+                    <TrendingDown className="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-semibold text-rose-300 text-xs uppercase tracking-wider">
+                      <span className="font-semibold text-slate-500 text-xs uppercase tracking-wider">
                         Before
                       </span>
                       <p className="text-slate-300 mt-1">{scenario.before}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 p-3 rounded-lg bg-emerald-500/[0.06] border border-emerald-500/10">
+                  <div className="flex items-start gap-3 p-3 rounded-lg bg-emerald-500/[0.06] border border-emerald-500/15">
                     <TrendingUp className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                     <div>
                       <span className="font-semibold text-emerald-300 text-xs uppercase tracking-wider">
@@ -134,33 +127,33 @@ export function OutcomeProofSection() {
                   </div>
                 </div>
 
-                {/* Illuminated metric panel */}
-                <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                {/* Metric panel */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/[0.02] border border-white/[0.08]">
                   <div className="text-center flex-1">
-                    <div className="text-lg font-bold text-rose-400/80">
+                    <div className="text-lg font-bold text-slate-500">
                       {scenario.metric.before}
                     </div>
-                    <div className="text-[10px] text-gray-600 uppercase tracking-wider">
+                    <div className="text-[10px] text-slate-600 uppercase tracking-wider">
                       Before
                     </div>
                   </div>
                   <div className="text-center px-3">
-                    <div className="text-xs font-bold text-teal-400 bg-teal-500/10 border border-teal-500/20 rounded-full px-2 py-0.5">
+                    <div className="text-xs font-semibold text-slate-300 bg-white/[0.05] border border-white/10 rounded-full px-2 py-0.5">
                       {scenario.metric.improvement}
                     </div>
                   </div>
                   <div className="text-center flex-1">
-                    <div className="text-lg font-bold text-emerald-400">
+                    <div className="text-lg font-bold text-white">
                       {scenario.metric.after}
                     </div>
-                    <div className="text-[10px] text-gray-600 uppercase tracking-wider">
+                    <div className="text-[10px] text-slate-600 uppercase tracking-wider">
                       After
                     </div>
                   </div>
                 </div>
 
                 {/* Impact badge */}
-                <div className="mt-4 inline-flex rounded-full border border-amber-400/20 bg-amber-500/[0.06] px-3 py-1 text-xs font-semibold text-amber-300">
+                <div className="mt-4 inline-flex rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-slate-300">
                   {scenario.impact}
                 </div>
               </article>
@@ -178,9 +171,8 @@ export function OutcomeProofSection() {
                 variant="fadeRight"
                 range={[idx * 0.04, 0.3 + idx * 0.04]}
               >
-                <div className="home-panel home-panel--soft group relative rounded-xl bg-[#080c18] border border-white/[0.06] px-5 py-4 text-center overflow-hidden">
-                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/0 group-hover:via-teal-400/20 to-transparent transition-all duration-500" />
-                  <Icon className="w-5 h-5 text-teal-400/60 mx-auto mb-2" />
+                <div className="group relative rounded-xl bg-white/[0.02] border border-white/[0.08] px-5 py-4 text-center overflow-hidden transition-colors duration-300 hover:border-white/20">
+                  <Icon className="w-5 h-5 text-slate-300 mx-auto mb-2" />
                   <p className="text-sm font-bold text-white">{stat.value}</p>
                   <p className="mt-1 text-xs text-slate-500">{stat.label}</p>
                 </div>
@@ -192,7 +184,7 @@ export function OutcomeProofSection() {
         <div className="mt-8 text-center">
           <Link
             href="/customer-stories"
-            className="text-sm font-semibold text-teal-400 underline-offset-4 hover:underline"
+            className="text-sm font-semibold text-white underline-offset-4 hover:underline"
           >
             See all customer outcomes{' '}
             <ArrowRight className="ml-1 inline h-4 w-4" />

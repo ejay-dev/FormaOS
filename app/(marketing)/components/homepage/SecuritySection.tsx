@@ -42,7 +42,7 @@ const signatureEase: [number, number, number, number] = [
 function GlassCard({
   children,
   className = '',
-  glowColor = 'rgba(99,102,241,0.12)',
+  glowColor = 'rgba(148,163,184,0.1)',
   noMotion,
   delay = 0,
   isInView,
@@ -65,9 +65,6 @@ function GlassCard({
     });
   }, []);
 
-  const tiltX = hovered && !noMotion ? (mouse.y - 0.5) * -5 : 0;
-  const tiltY = hovered && !noMotion ? (mouse.x - 0.5) * 5 : 0;
-
   return (
     <motion.div
       initial={noMotion ? false : { opacity: 0, y: 20 }}
@@ -80,20 +77,11 @@ function GlassCard({
         setMouse({ x: 0.5, y: 0.5 });
       }}
       className={`group relative ${className}`}
-      style={{ perspective: '1000px' }}
     >
-      <div
-        className="relative h-full overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-sm transition-colors duration-300 hover:bg-white/[0.04] hover:border-white/[0.1]"
-        style={{
-          transform: `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`,
-          transition: hovered
-            ? 'transform 0.15s ease-out'
-            : 'transform 0.4s ease-out',
-        }}
-      >
+      <div className="relative h-full overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-sm transition-colors duration-300 hover:bg-white/[0.04] hover:border-white/20">
         {hovered && !noMotion && (
           <div
-            className="absolute inset-0 pointer-events-none opacity-50 z-10"
+            className="absolute inset-0 pointer-events-none opacity-40 z-10"
             style={{
               background: `radial-gradient(400px circle at ${mouse.x * 100}% ${mouse.y * 100}%, ${glowColor}, transparent 70%)`,
             }}
@@ -182,7 +170,7 @@ function PostureRing({
           cx="60"
           cy="60"
           r="54"
-          stroke="rgba(99,102,241,0.1)"
+          stroke="rgba(255,255,255,0.06)"
           strokeWidth="6"
         />
         {/* Progress */}
@@ -200,7 +188,7 @@ function PostureRing({
           cx="60"
           cy="60"
           r="57"
-          stroke="rgba(99,102,241,0.06)"
+          stroke="rgba(255,255,255,0.04)"
           strokeWidth="1"
         />
         <defs>
@@ -211,9 +199,8 @@ function PostureRing({
             x2="100%"
             y2="100%"
           >
-            <stop offset="0%" stopColor="#818cf8" />
-            <stop offset="50%" stopColor="#6366f1" />
-            <stop offset="100%" stopColor="#06b6d4" />
+            <stop offset="0%" stopColor="#cbd5e1" />
+            <stop offset="100%" stopColor="#94a3b8" />
           </linearGradient>
         </defs>
       </svg>
@@ -226,7 +213,7 @@ function PostureRing({
             noMotion={noMotion}
             delay={0.3}
           />
-          <span className="text-lg text-indigo-400/80">%</span>
+          <span className="text-lg text-slate-400">%</span>
         </span>
         <span className="text-[10px] font-medium text-slate-500 mt-1 uppercase tracking-wider">
           Posture · illustrative
@@ -286,9 +273,9 @@ const AUDIT_LOG_ENTRIES = [
 // lib/compliance/evaluators/register.ts — SOC2-TSC = 61, ISO 27001 = 93,
 // NDIS Practice Standards = 25 (Phase 2 as of 2026-05-27).
 const POSTURE_CONTROLS = [
-  { label: 'SOC 2 TSC', mapped: 61, total: 61, color: '#818cf8' },
-  { label: 'ISO 27001', mapped: 93, total: 93, color: '#06b6d4' },
-  { label: 'NDIS Practice Standards', mapped: 25, total: 25, color: '#34d399' },
+  { label: 'SOC 2 TSC', mapped: 61, total: 61, color: '#cbd5e1' },
+  { label: 'ISO 27001', mapped: 93, total: 93, color: '#94a3b8' },
+  { label: 'NDIS Practice Standards', mapped: 25, total: 25, color: '#cbd5e1' },
 ];
 
 const ENCRYPTION_LAYERS = [
@@ -328,14 +315,14 @@ const PostureCard = memo(function PostureCard({
   return (
     <GlassCard
       className="md:col-span-2 md:row-span-2"
-      glowColor="rgba(99,102,241,0.12)"
+      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.1}
       isInView={isInView}
     >
       <div className="p-5 lg:p-6 h-full flex flex-col">
         <div className="flex items-center gap-2 mb-1">
-          <ShieldCheck className="w-4 h-4 text-indigo-400" />
+          <ShieldCheck className="w-4 h-4 text-slate-300" />
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Security Posture
           </span>
@@ -394,7 +381,7 @@ const PostureCard = memo(function PostureCard({
           {['SOC 2', 'ISO 27001', 'NDIS', 'HIPAA', 'PCI DSS'].map((fw) => (
             <span
               key={fw}
-              className="inline-flex items-center rounded-md border border-indigo-400/15 bg-indigo-500/[0.08] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-indigo-400/80"
+              className="inline-flex items-center rounded-md border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-400"
             >
               {fw}
             </span>
@@ -425,7 +412,7 @@ const EncryptionCard = memo(function EncryptionCard({
     >
       <div className="p-5 lg:p-6 h-full flex flex-col">
         <div className="flex items-center gap-2 mb-4">
-          <Lock className="w-4 h-4 text-cyan-400" />
+          <Lock className="w-4 h-4 text-slate-300" />
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Encryption
           </span>
@@ -433,21 +420,8 @@ const EncryptionCard = memo(function EncryptionCard({
 
         {/* Visual lock */}
         <div className="flex items-center justify-center mb-4">
-          <div className="relative">
-            <div className="w-14 h-14 rounded-xl bg-cyan-500/[0.1] border border-cyan-400/20 flex items-center justify-center">
-              <Lock className="w-6 h-6 text-cyan-400" />
-            </div>
-            {!noMotion && (
-              <motion.div
-                className="absolute inset-0 rounded-xl border border-cyan-400/20"
-                animate={{ scale: [1, 1.4, 1], opacity: [0.4, 0, 0.4] }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              />
-            )}
+          <div className="w-14 h-14 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center">
+            <Lock className="w-6 h-6 text-slate-300" />
           </div>
         </div>
 
@@ -466,7 +440,7 @@ const EncryptionCard = memo(function EncryptionCard({
               className="flex items-center justify-between py-1.5 border-b border-white/[0.04] last:border-0"
             >
               <span className="text-xs text-slate-400">{layer.label}</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400/80 bg-cyan-500/[0.08] border border-cyan-400/15 rounded px-1.5 py-0.5">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300 bg-white/[0.05] border border-white/10 rounded px-1.5 py-0.5">
                 {layer.protocol}
               </span>
             </motion.div>
@@ -490,14 +464,14 @@ const AccessCard = memo(function AccessCard({
 }) {
   return (
     <GlassCard
-      glowColor="rgba(52,211,153,0.12)"
+      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.3}
       isInView={isInView}
     >
       <div className="p-5 lg:p-6 h-full flex flex-col">
         <div className="flex items-center gap-2 mb-4">
-          <Fingerprint className="w-4 h-4 text-emerald-400" />
+          <Fingerprint className="w-4 h-4 text-slate-300" />
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Identity & Access
           </span>
@@ -517,7 +491,7 @@ const AccessCard = memo(function AccessCard({
               className="flex items-start gap-2.5"
             >
               <div className="mt-0.5 shrink-0">
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-400/70" />
+                <CheckCircle className="w-3.5 h-3.5 text-slate-400" />
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-medium text-white/90 leading-snug">
@@ -547,7 +521,7 @@ const AuditLogCard = memo(function AuditLogCard({
   return (
     <GlassCard
       className="md:col-span-4"
-      glowColor="rgba(99,102,241,0.1)"
+      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.35}
       isInView={isInView}
@@ -556,10 +530,7 @@ const AuditLogCard = memo(function AuditLogCard({
         {/* Terminal header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-            </span>
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
             <span className="text-xs font-semibold uppercase tracking-widest text-slate-300">
               Live Audit Log
             </span>
@@ -568,22 +539,6 @@ const AuditLogCard = memo(function AuditLogCard({
             Immutable &middot; Timestamped
           </span>
         </div>
-
-        {/* Scanning line */}
-        {!noMotion && (
-          <div className="relative">
-            <motion.div
-              className="absolute inset-x-0 h-px pointer-events-none z-30"
-              style={{
-                background:
-                  'linear-gradient(90deg, transparent 5%, rgba(99,102,241,0.4) 30%, rgba(113,113,122,0.6) 50%, rgba(99,102,241,0.4) 70%, transparent 95%)',
-                boxShadow: '0 0 12px rgba(99,102,241,0.3)',
-              }}
-              animate={{ top: ['0px', '64px', '0px'] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-            />
-          </div>
-        )}
 
         {/* Entries — horizontal grid on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-5">
@@ -654,14 +609,14 @@ const AuditLogCard = memo(function AuditLogCard({
               }}
               className="text-center"
             >
-              <p className="text-sm font-bold text-indigo-400">
+              <p className="text-sm font-bold text-white">
                 <AnimatedCounter
                   value={stat.value}
                   isInView={isInView}
                   noMotion={noMotion}
                   delay={0.8 + i * 0.06}
                 />
-                <span className="text-[10px] text-indigo-400/60 ml-0.5 font-medium">
+                <span className="text-[10px] text-slate-500 ml-0.5 font-medium">
                   {stat.suffix}
                 </span>
               </p>
@@ -687,36 +642,25 @@ const DataResidencyCard = memo(function DataResidencyCard({
 }) {
   return (
     <GlassCard
-      glowColor="rgba(52,211,153,0.1)"
+      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.35}
       isInView={isInView}
     >
       <div className="p-5 lg:p-6 h-full flex flex-col items-center justify-center text-center">
-        <div className="relative mb-3">
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/[0.1] border border-emerald-400/20 flex items-center justify-center">
-            <Globe className="w-5 h-5 text-emerald-400" />
+        <div className="mb-3">
+          <div className="w-12 h-12 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center">
+            <Globe className="w-5 h-5 text-slate-300" />
           </div>
-          {!noMotion && (
-            <motion.div
-              className="absolute inset-0 rounded-xl border border-emerald-400/15"
-              animate={{ scale: [1, 1.35, 1], opacity: [0.3, 0, 0.3] }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-          )}
         </div>
         <p className="text-sm font-semibold text-white mb-1">AU-Hosted</p>
         <p className="text-[11px] text-slate-500 leading-relaxed">
           Australian data residency by default. Sovereignty-first
           infrastructure.
         </p>
-        <div className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-emerald-400/15 bg-emerald-500/[0.08] px-2 py-0.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400/80">
+        <div className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.05] px-2 py-0.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300">
             Sovereignty
           </span>
         </div>
@@ -738,37 +682,25 @@ const AuditReadyCard = memo(function AuditReadyCard({
 }) {
   return (
     <GlassCard
-      glowColor="rgba(251,191,36,0.1)"
+      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.4}
       isInView={isInView}
     >
       <div className="p-5 lg:p-6 h-full flex flex-col items-center justify-center text-center">
-        <div className="relative mb-3">
-          <div className="w-12 h-12 rounded-xl bg-amber-500/[0.1] border border-amber-400/20 flex items-center justify-center">
-            <Shield className="w-5 h-5 text-amber-400" />
+        <div className="mb-3">
+          <div className="w-12 h-12 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center">
+            <Shield className="w-5 h-5 text-slate-300" />
           </div>
-          {!noMotion && (
-            <motion.div
-              className="absolute inset-0 rounded-xl border border-amber-400/15"
-              animate={{ scale: [1, 1.35, 1], opacity: [0.3, 0, 0.3] }}
-              transition={{
-                duration: 4,
-                delay: 1,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-          )}
         </div>
         <p className="text-sm font-semibold text-white mb-1">Tamper-Evident</p>
         <p className="text-[11px] text-slate-500 leading-relaxed">
           Immutable audit trails. Every action logged, timestamped, and
           regulator-ready.
         </p>
-        <div className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-amber-400/15 bg-amber-500/[0.08] px-2 py-0.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400/80">
+        <div className="mt-3 inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/[0.05] px-2 py-0.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300">
             Immutable
           </span>
         </div>
@@ -800,14 +732,14 @@ export const SecuritySection = memo(function SecuritySection() {
         className="absolute inset-x-0 top-0 h-px"
         style={{
           background:
-            'linear-gradient(90deg, transparent 5%, rgba(99,102,241,0.12) 30%, rgba(99,102,241,0.2) 50%, rgba(99,102,241,0.12) 70%, transparent 95%)',
+            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.08) 50%, transparent 90%)',
         }}
       />
       <div
         className="absolute inset-x-0 bottom-0 h-px"
         style={{
           background:
-            'linear-gradient(90deg, transparent 5%, rgba(99,102,241,0.08) 50%, transparent 95%)',
+            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.06) 50%, transparent 90%)',
         }}
       />
 
@@ -815,17 +747,11 @@ export const SecuritySection = memo(function SecuritySection() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
           className="absolute w-[600px] h-[600px] rounded-full blur-[150px]"
-          style={{ left: '-5%', top: '10%', background: 'rgba(99,102,241,0.06)' }}
+          style={{ left: '-5%', top: '10%', background: 'rgba(148,163,184,0.05)' }}
         />
         <div
           className="absolute w-[500px] h-[500px] rounded-full blur-[130px]"
           style={{ right: '0%', bottom: '5%', background: 'rgba(113,113,122,0.04)' }}
-        />
-        <motion.div
-          className="absolute w-[400px] h-[400px] rounded-full blur-[120px]"
-          style={{ left: '30%', top: '50%', background: 'rgba(52,211,153,0.03)' }}
-          animate={noMotion ? false : { opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
 
@@ -834,8 +760,8 @@ export const SecuritySection = memo(function SecuritySection() {
         className="absolute inset-0 pointer-events-none opacity-[0.015]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(99,102,241,0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(99,102,241,0.3) 1px, transparent 1px)
+            linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px',
         }}
@@ -850,13 +776,7 @@ export const SecuritySection = memo(function SecuritySection() {
             transition={{ duration: duration.slow, ease: signatureEase }}
             className="mb-5"
           >
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/[0.08] border border-indigo-400/20 text-indigo-400 text-xs font-medium">
-              <span className="relative flex h-1.5 w-1.5">
-                {!noMotion && (
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
-                )}
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
-              </span>
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300 text-xs font-medium uppercase tracking-[0.18em]">
               Security &amp; Trust
             </span>
           </motion.div>
@@ -871,33 +791,9 @@ export const SecuritySection = memo(function SecuritySection() {
             }}
             className="relative"
           >
-            {!noMotion && (
-              <motion.div
-                className="absolute -inset-x-16 -inset-y-6 pointer-events-none"
-                style={{
-                  background:
-                    'radial-gradient(ellipse 40% 60% at 50% 50%, rgba(99,102,241,0.08), transparent)',
-                  filter: 'blur(24px)',
-                }}
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{
-                  duration: 7,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              />
-            )}
             <h2 className="relative text-3xl sm:text-4xl md:text-5xl font-bold text-white">
               Security built into{' '}
-              <span
-                className="bg-clip-text text-transparent"
-                style={{
-                  backgroundImage:
-                    'linear-gradient(135deg, #818cf8, #6366f1, #a78bfa)',
-                }}
-              >
-                the platform layer
-              </span>
+              <span className="text-slate-400">the platform layer</span>
             </h2>
           </motion.div>
 
@@ -957,7 +853,7 @@ export const SecuritySection = memo(function SecuritySection() {
                   delay: 0.7 + i * 0.04,
                   ease: signatureEase,
                 }}
-                className="group flex items-center justify-center p-3 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] hover:border-indigo-400/15 transition-all duration-300"
+                className="group flex items-center justify-center p-3 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 transition-all duration-300"
               >
                 <span className="text-slate-500 group-hover:text-slate-300 transition-colors duration-300 text-xs font-medium text-center">
                   {sector}
@@ -980,7 +876,7 @@ export const SecuritySection = memo(function SecuritySection() {
         >
           <Link
             href="/trust/packet"
-            className="mk-btn mk-btn-primary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-indigo-100"
+            className="mk-btn mk-btn-primary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-white"
           >
             <span className="inline-flex items-center gap-2 font-medium">
               <FileLock2 className="h-4 w-4" />

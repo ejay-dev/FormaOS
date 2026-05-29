@@ -86,8 +86,8 @@ const artifactBadges = [
 export function ObjectionHandlingSection() {
   return (
     <section className="mk-section home-section home-section--proof relative overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/10 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-violet-400/10 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
         {/* Header */}
@@ -96,8 +96,8 @@ export function ObjectionHandlingSection() {
           range={[0, 0.3]}
           className="mx-auto max-w-3xl text-center"
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-violet-300">
-            <BadgeCheck className="h-3.5 w-3.5" />
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <BadgeCheck className="h-3.5 w-3.5 text-slate-300" />
             Enterprise Ready
           </div>
           <h2 className="text-2xl font-bold text-white sm:text-4xl">
@@ -117,8 +117,8 @@ export function ObjectionHandlingSection() {
               variant="clipUp"
               range={[idx * 0.03, 0.28 + idx * 0.03]}
             >
-              <article className="group relative rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5 hover:bg-white/[0.03] hover:border-violet-400/15 transition-all duration-300">
-                <Quote className="w-6 h-6 text-white/[0.06] mb-3" />
+              <article className="group relative rounded-2xl bg-white/[0.02] border border-white/[0.08] p-5 hover:border-white/20 transition-colors duration-300">
+                <Quote className="w-6 h-6 text-white/[0.08] mb-3" />
 
                 <p className="text-sm font-semibold text-white leading-snug mb-3">
                   {card.objection}
@@ -129,8 +129,8 @@ export function ObjectionHandlingSection() {
                 </p>
 
                 <div className="flex items-center gap-2">
-                  <card.icon className="h-3.5 w-3.5 text-violet-400/50" />
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-violet-400/50 bg-violet-500/[0.06] border border-violet-400/10 rounded px-2 py-0.5">
+                  <card.icon className="h-3.5 w-3.5 text-slate-400" />
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-white/[0.05] border border-white/10 rounded px-2 py-0.5">
                     {card.proof}
                   </span>
                 </div>
@@ -154,13 +154,13 @@ export function ObjectionHandlingSection() {
               return (
                 <div
                   key={item.step}
-                  className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 hover:border-violet-400/15 hover:bg-white/[0.04] transition-all duration-300"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 hover:border-white/20 transition-colors duration-300"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="inline-flex items-center justify-center rounded-xl border border-violet-400/20 bg-violet-500/10 p-2.5">
-                      <Icon className="w-5 h-5 text-violet-400" />
+                    <div className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] p-2.5">
+                      <Icon className="w-5 h-5 text-slate-300" />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-400/60">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
                       Step {item.step}
                     </span>
                   </div>
@@ -178,8 +178,8 @@ export function ObjectionHandlingSection() {
 
         {/* Artifact badges */}
         <ScrollReveal variant="fadeUp" range={[0.05, 0.35]} className="mt-6">
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 relative overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/20 to-transparent" />
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 relative overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
               Buyer-facing artifacts included from day one
             </p>
@@ -187,7 +187,7 @@ export function ObjectionHandlingSection() {
               {artifactBadges.map((badge) => (
                 <span
                   key={badge}
-                  className="rounded-full border border-violet-400/15 bg-violet-500/[0.06] px-3 py-1 text-xs text-violet-300"
+                  className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs text-slate-300"
                 >
                   {badge}
                 </span>
