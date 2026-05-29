@@ -514,7 +514,7 @@ const categoryMeta: Record<CategoryName, CategoryConfig> = {
       'Automation, incident management, bulk operations, and care delivery workflows that eliminate manual compliance overhead.',
     gradient: 'from-cyan-500/20 via-cyan-500/5 to-transparent',
     accent: 'cyan',
-    accentRgb: '34,211,238',
+    accentRgb: '113,113,122',
     icon: Workflow,
     dotColor: 'bg-cyan-400',
     bgGlow: 'bg-cyan-500/[0.04]',
@@ -548,7 +548,7 @@ const categoryMeta: Record<CategoryName, CategoryConfig> = {
       'Real-time collaboration, intelligent search, contextual help, and keyboard-first workflows for compliance teams.',
     gradient: 'from-blue-500/20 via-blue-500/5 to-transparent',
     accent: 'blue',
-    accentRgb: '59,130,246',
+    accentRgb: '113,113,122',
     icon: MessageSquare,
     dotColor: 'bg-blue-400',
     bgGlow: 'bg-blue-500/[0.04]',
@@ -641,7 +641,7 @@ const architectureLayers = [
       'Server-side middleware enforcing permission checks, rate limiting, and compliance state validation on every request.',
     icon: Server,
     accent: 'cyan',
-    accentRgb: '34,211,238',
+    accentRgb: '113,113,122',
   },
   {
     label: 'Business Logic',
@@ -649,7 +649,7 @@ const architectureLayers = [
       'Workflow engine processing automation rules, scoring calculations, and cross-framework evidence mapping.',
     icon: GitBranch,
     accent: 'blue',
-    accentRgb: '59,130,246',
+    accentRgb: '113,113,122',
   },
   {
     label: 'Database RLS',
@@ -967,7 +967,7 @@ function ArchitectureSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Five layers of{' '}
-              <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 defense in depth
               </span>
             </h2>
@@ -1076,7 +1076,7 @@ function ComparisonSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Legacy compliance vs{' '}
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 FormaOS
               </span>
             </h2>
@@ -1327,7 +1327,7 @@ function FrameworkCoverageSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Pre-built compliance{' '}
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 framework libraries
               </span>
             </h2>
@@ -1435,7 +1435,7 @@ const capabilityTabs = [
     label: 'Automation Engine',
     icon: Workflow,
     accent: 'cyan',
-    accentRgb: '34,211,238',
+    accentRgb: '113,113,122',
     heading: 'Compliance workflows that run themselves',
     description:
       'Configure event-driven automation rules that create tasks, send notifications, and escalate issues without manual intervention.',
@@ -1507,7 +1507,7 @@ const capabilityTabs = [
     label: 'Scoring & Analytics',
     icon: TrendingUp,
     accent: 'blue',
-    accentRgb: '59,130,246',
+    accentRgb: '113,113,122',
     heading: 'Continuous compliance intelligence',
     description:
       'Real-time posture scoring, trend analysis, and risk visualization that gives leadership actionable compliance insights.',
@@ -1562,7 +1562,7 @@ function CapabilityDeepDive() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Explore core{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 capabilities
               </span>
             </h2>
@@ -1680,7 +1680,7 @@ const workflowSteps = [
     title: 'Assign Control Owners',
     description:
       'Every control gets a named owner with clear responsibility, review cadence, and escalation path.',
-    accentRgb: '34,211,238',
+    accentRgb: '113,113,122',
     icon: Users,
   },
   {
@@ -1688,7 +1688,7 @@ const workflowSteps = [
     title: 'Collect & Verify Evidence',
     description:
       'Upload evidence with SHA-256 verification, automated expiry tracking, and cross-framework mapping.',
-    accentRgb: '59,130,246',
+    accentRgb: '113,113,122',
     icon: FileCheck,
   },
   {
@@ -1735,7 +1735,7 @@ function PlatformWorkflowSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               From activation to{' '}
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 audit-ready
               </span>
             </h2>
@@ -1833,7 +1833,7 @@ function EnterpriseCTA() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(34,211,238,0.06), transparent 50%)',
+                  'radial-gradient(ellipse at 50% 0%, rgba(113,113,122,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
               }}
             />
 
@@ -1870,7 +1870,7 @@ function EnterpriseCTA() {
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Ready to operate compliance{' '}
-                  <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     as infrastructure?
                   </span>
                 </h2>
@@ -1883,10 +1883,10 @@ function EnterpriseCTA() {
                   <Link
                     href={compliancePlanHref('features_final')}
                     className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-                      bg-gradient-to-r from-emerald-500 to-teal-500
-                      text-white font-semibold text-sm
-                      shadow-lg shadow-emerald-500/20
-                      hover:shadow-xl hover:shadow-emerald-500/30
+                      bg-foreground
+                      text-background font-semibold text-sm
+                      shadow-lg
+                      hover:shadow-xl
                       transition-all duration-300"
                   >
                     {PUBLIC_CTA_LABELS.compliancePlan}
@@ -1947,7 +1947,7 @@ function FeaturesHero() {
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <motion.div
           className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(52,211,153,0.12)' }}
+          style={{ background: 'rgba(113,113,122,0.12)' }}
           animate={{
             scale: [1, 1.08, 1],
             opacity: [0.12, 0.18, 0.12],
@@ -1960,7 +1960,7 @@ function FeaturesHero() {
         />
         <motion.div
           className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(34,211,238,0.10)' }}
+          style={{ background: 'rgba(113,113,122,0.10)' }}
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.1, 0.16, 0.1],
@@ -1974,7 +1974,7 @@ function FeaturesHero() {
         />
         <motion.div
           className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(139,92,246,0.06)' }}
+          style={{ background: 'rgba(113,113,122,0.06)' }}
           animate={{
             scale: [1, 1.06, 1],
             opacity: [0.06, 0.1, 0.06],
@@ -2027,7 +2027,7 @@ function FeaturesHero() {
         >
           Compliance infrastructure
           <br />
-          <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+          <span className="text-foreground">
             engineered for accountability
           </span>
         </motion.h1>
@@ -2052,10 +2052,10 @@ function FeaturesHero() {
           <Link
             href={compliancePlanHref('features_secondary_final')}
             className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-              bg-gradient-to-r from-emerald-500 to-teal-500
-              text-white font-semibold text-sm
-              shadow-lg shadow-emerald-500/20
-              hover:shadow-xl hover:shadow-emerald-500/30
+              bg-foreground
+              text-background font-semibold text-sm
+              shadow-lg
+              hover:shadow-xl
               transition-all duration-300"
           >
             {PUBLIC_CTA_LABELS.compliancePlan}
@@ -2151,7 +2151,7 @@ export default function FeaturesPageContent() {
             >
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                 Every feature, built for{' '}
-                <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="text-foreground">
                   regulated teams
                 </span>
               </h2>
