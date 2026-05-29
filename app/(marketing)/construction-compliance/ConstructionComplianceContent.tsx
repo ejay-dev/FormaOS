@@ -232,11 +232,9 @@ function FeatureVisual({
 export default function ConstructionComplianceContent() {
   return (
     <MarketingPageShell>
-      {/* TEMP FALLBACK: no dedicated construction hero photo exists yet —
-          using industries.jpg until a construction-specific image is added. */}
       <div className="relative isolate overflow-hidden">
         <SectionMedia
-          src="/marketing-media/industries.jpg"
+          src="/marketing-media/construction-compliance.jpg"
           objectPosition="50% 35%"
           opacity={0.22}
         />

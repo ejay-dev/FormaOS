@@ -272,11 +272,9 @@ function FeatureVisual({
 export default function ChildcareComplianceContent() {
   return (
     <MarketingPageShell>
-      {/* TEMP FALLBACK: no dedicated childcare hero photo exists yet —
-          using industries.jpg until a childcare-specific image is added. */}
       <div className="relative isolate overflow-hidden">
         <SectionMedia
-          src="/marketing-media/industries.jpg"
+          src="/marketing-media/childcare-compliance.jpg"
           objectPosition="50% 35%"
           opacity={0.22}
         />
