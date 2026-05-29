@@ -7,12 +7,19 @@ export const brand = {
   domain: 'formaos.com.au',
   identity: 'Compliance Operating System',
   logo: {
+    // "FO" monogram for square slots (favicon, app icons, email header img).
     mark: '/brand/formaos-mark.svg',
-    markLight: '/brand/formaos-mark-light.svg',
-    markWhite: '/brand/formaos-mark-white.svg',
-    // Legacy fields intentionally point to monogram assets.
-    wordmarkLight: '/brand/formaos-mark-light.svg',
-    wordmarkDark: '/brand/formaos-mark.svg',
+    markTile: '/brand/formaos-mark-tile.svg', // white-on-charcoal rounded tile (icons)
+    markTileLight: '/brand/formaos-mark-tile-light.svg',
+    // Horizontal FORMAOS wordmark (currentColor, tints per surface).
+    wordmark: '/brand/formaos-wordmark.svg',
+    wordmarkWhite: '/brand/master/formaos-wordmark-white-on-dark.svg',
+    wordmarkGrey: '/brand/master/formaos-wordmark-grey.svg',
+    // Legacy field names retained so existing consumers don't break.
+    markLight: '/brand/formaos-mark-tile-light.svg',
+    markWhite: '/brand/formaos-mark-tile.svg',
+    wordmarkLight: '/brand/formaos-wordmark.svg',
+    wordmarkDark: '/brand/formaos-wordmark.svg',
     favicon: '/favicon.ico',
     icon: '/icon.svg',
     appleTouchIcon: '/apple-touch-icon.png',
