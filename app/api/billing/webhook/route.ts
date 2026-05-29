@@ -734,6 +734,52 @@ export async function POST(request: Request) {
       }
     }
 
+    // Stripe Smart-Retry recovery: when a previously paused-for-failure
+    // subscription succeeds on retry, Stripe emits
+    // `customer.subscription.resumed`. Without an explicit handler the
+    // org stayed flagged `paused` until the next nightly reconciliation
+    // catch-up (~24h drift on entitlement re-enable).
+    if (event.type === 'customer.subscription.resumed') {
+      const subscription = event.data.object as Stripe.Subscription;
+      const subscriptionId = subscription.id;
+      const customerId =
+        typeof subscription.customer === 'string' ? subscription.customer : null;
+
+      const { data: subRow } = await admin
+        .from('org_subscriptions')
+        .select('organization_id')
+        .eq('stripe_subscription_id', subscriptionId)
+        .maybeSingle();
+
+      const { error: resumeErr } = await admin
+        .from('org_subscriptions')
+        .update({
+          status: subscription.status ?? 'active',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('stripe_subscription_id', subscriptionId);
+      if (resumeErr) {
+        log.error(
+          { err: resumeErr.message },
+          '[billing/webhook] customer.subscription.resumed update failed:',
+        );
+        throw resumeErr;
+      }
+
+      if (subRow?.organization_id) {
+        orgsToRevalidate.add(subRow.organization_id);
+        await writeBillingAudit({
+          organizationId: subRow.organization_id,
+          stripeCustomerId: customerId,
+          payload: {
+            stripe_subscription_id: subscriptionId,
+            resumed_status: subscription.status ?? null,
+            event_type: 'customer.subscription.resumed',
+          },
+        });
+      }
+    }
+
     // P1-D (2026-05-26): a Stripe operator (or our own retry-invoice
     // admin action) can void an open invoice. Persist a billing-audit
     // signal so the admin console + reconciliation can see the void.
@@ -1107,6 +1153,21 @@ export async function POST(request: Request) {
             );
             throw updateErr;
           }
+          // Auto-disable paid features while the dispute is open. Keeps
+          // access from drifting until ops triages — `dispute.closed`
+          // below restores entitlements if the dispute lands `won`.
+          // Reading the entitlements gate manually after this still sees
+          // dispute_open=true via org_subscriptions; this call drops the
+          // org_entitlements rows so the UI reflects the held state
+          // immediately rather than waiting for nightly reconciliation.
+          try {
+            await disableEntitlementsForOrg(subRow.organization_id);
+          } catch (entErr) {
+            log.error(
+              { err: entErr, eventId: event.id },
+              '[billing/webhook] charge.dispute.created: disable entitlements failed (will retry via reconciler)',
+            );
+          }
           orgsToRevalidate.add(subRow.organization_id);
           await writeBillingAudit({
             organizationId: subRow.organization_id,
@@ -1121,6 +1182,7 @@ export async function POST(request: Request) {
               dispute_id: dispute.id,
               reason: dispute.reason ?? null,
               status: dispute.status ?? null,
+              entitlements_disabled: true,
             },
           });
         }
@@ -1159,6 +1221,28 @@ export async function POST(request: Request) {
             );
             throw updateErr;
           }
+          // If the dispute closed in our favour, the create handler had
+          // disabled entitlements — restore them from the active plan
+          // row. If we lost the dispute, leave entitlements off and let
+          // ops decide whether to cancel.
+          if (dispute.status === 'won') {
+            try {
+              const { data: planRow } = await admin
+                .from('org_subscriptions')
+                .select('plan_key, status')
+                .eq('organization_id', subRow.organization_id)
+                .maybeSingle();
+              const planKey = resolvePlanKey(planRow?.plan_key ?? null);
+              if (planKey && planRow?.status !== 'cancelled') {
+                await syncEntitlementsForPlan(subRow.organization_id, planKey);
+              }
+            } catch (entErr) {
+              log.error(
+                { err: entErr, eventId: event.id },
+                '[billing/webhook] charge.dispute.closed: restore entitlements failed',
+              );
+            }
+          }
           orgsToRevalidate.add(subRow.organization_id);
           await writeBillingAudit({
             organizationId: subRow.organization_id,
@@ -1178,6 +1262,7 @@ export async function POST(request: Request) {
                   : dispute.status === 'lost'
                     ? 'lost'
                     : 'other',
+              entitlements_restored: dispute.status === 'won',
             },
           });
         }

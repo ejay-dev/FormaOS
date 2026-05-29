@@ -124,6 +124,11 @@ export async function applyCredit(
 
 /**
  * Extend a trial period.
+ *
+ * Writes the new deadline to `org_subscriptions.trial_expires_at` —
+ * that's the column `requireActiveSubscription` reads at runtime. The
+ * mirror on `organizations.trial_expires_at` is kept in sync so any
+ * legacy reader stays correct, but it is no longer the source of truth.
  */
 export async function extendTrial(
   orgId: string,
@@ -133,25 +138,44 @@ export async function extendTrial(
 ) {
   const db = createSupabaseAdminClient();
 
-  const { data: org } = await db
-    .from('organizations')
-    .select('trial_expires_at')
-    .eq('id', orgId)
-    .single();
+  const { data: sub } = await db
+    .from('org_subscriptions')
+    .select('trial_expires_at, current_period_end')
+    .eq('organization_id', orgId)
+    .maybeSingle();
 
-  const currentExpiry = org?.trial_expires_at
-    ? new Date(org.trial_expires_at)
-    : new Date();
-  const newExpiry = new Date(
-    currentExpiry.getTime() + days * 24 * 60 * 60 * 1000,
-  );
+  // Anchor off the existing trial deadline if there is one, else off the
+  // current_period_end (covers the pending_checkout grace window), else
+  // off "now". This matches the precedence used by requireActiveSubscription.
+  const anchorIso =
+    sub?.trial_expires_at ??
+    (sub as { current_period_end?: string | null } | null)?.current_period_end ??
+    null;
+  const anchor = anchorIso ? new Date(anchorIso) : new Date();
+  const anchorMs = Number.isFinite(anchor.getTime())
+    ? anchor.getTime()
+    : Date.now();
+  const newExpiry = new Date(anchorMs + days * 24 * 60 * 60 * 1000);
 
   await db
-    .from('organizations')
+    .from('org_subscriptions')
     .update({
       trial_expires_at: newExpiry.toISOString(),
+      updated_at: new Date().toISOString(),
     })
-    .eq('id', orgId);
+    .eq('organization_id', orgId);
+
+  // Keep the legacy organizations.trial_expires_at mirror in sync. Failure
+  // here doesn't undo the authoritative update — the gate reads the
+  // org_subscriptions row above.
+  try {
+    await db
+      .from('organizations')
+      .update({ trial_expires_at: newExpiry.toISOString() })
+      .eq('id', orgId);
+  } catch {
+    // best-effort mirror only
+  }
 
   await db.from('admin_audit_log').insert({
     admin_id: adminId,
