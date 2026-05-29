@@ -80,6 +80,8 @@ export default function ProvePage() {
         'Increase executive confidence in external compliance narratives.',
       ]}
       journeyKey="prove"
+      mediaSrc="/marketing-media/prove.jpg"
+      mediaSrcSecondary="/marketing-media/audit-evidence-management.jpg"
     />
   );
 }

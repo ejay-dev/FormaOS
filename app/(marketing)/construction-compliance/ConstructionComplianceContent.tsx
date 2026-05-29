@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   compliancePlanHref,
   demoHref,
@@ -231,7 +232,15 @@ function FeatureVisual({
 export default function ConstructionComplianceContent() {
   return (
     <MarketingPageShell>
-      <IndustryHero
+      {/* TEMP FALLBACK: no dedicated construction hero photo exists yet —
+          using industries.jpg until a construction-specific image is added. */}
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/industries.jpg"
+          objectPosition="50% 35%"
+          opacity={0.22}
+        />
+        <IndustryHero
         accent="amber-orange"
         statsBar={
           <HeroStatsBar
@@ -274,7 +283,8 @@ export default function ConstructionComplianceContent() {
           { label: 'SafeWork Australia' },
           { label: 'SWMS Requirements' },
         ]}
-      />
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -948,10 +958,17 @@ export default function ConstructionComplianceContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <IndustryCTA
-        industry="Construction"
-        urgencyCallout="SafeWork inspections don't announce themselves. Is your SWMS register current right now?"
-      />
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/enterprise.jpg"
+          objectPosition="50% 40%"
+          opacity={0.15}
+        />
+        <IndustryCTA
+          industry="Construction"
+          urgencyCallout="SafeWork inspections don't announce themselves. Is your SWMS register current right now?"
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />

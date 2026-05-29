@@ -53,6 +53,7 @@ import {
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import {
@@ -1826,7 +1827,12 @@ function PlatformWorkflowSection() {
 function EnterpriseCTA() {
   return (
     <DeferredSection minHeight={350}>
-      <section className="mk-section relative">
+      <section className="mk-section relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/product.jpg"
+          objectPosition="50% 40%"
+          opacity={0.15}
+        />
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <div className="relative rounded-3xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
             <div
@@ -1942,8 +1948,13 @@ function FeaturesHero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
+      className="relative isolate min-h-[90vh] flex items-center justify-center overflow-hidden"
     >
+      <SectionMedia
+        src="/marketing-media/features.jpg"
+        objectPosition="50% 35%"
+        opacity={0.22}
+      />
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <motion.div
           className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"

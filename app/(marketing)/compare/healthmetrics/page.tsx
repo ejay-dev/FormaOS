@@ -194,6 +194,8 @@ export default function CompareHealthMetricsPage() {
         competitorStrengths={competitorStrengths}
         source="compare_healthmetrics"
         datePublished="2026-05-07"
+        mediaSrc="/marketing-media/compare.jpg"
+        mediaSrcSecondary="/marketing-media/enterprise.jpg"
       />
     </>
   );

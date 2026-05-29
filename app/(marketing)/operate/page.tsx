@@ -80,6 +80,8 @@ export default function OperatePage() {
         'Scale multi-team execution without sacrificing governance clarity.',
       ]}
       journeyKey="operate"
+      mediaSrc="/marketing-media/operate.jpg"
+      mediaSrcSecondary="/marketing-media/enterprise-proof.jpg"
     />
   );
 }

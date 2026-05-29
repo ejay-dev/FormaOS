@@ -6,6 +6,7 @@ import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection, MarketingPageShell } from '.';
 import {
@@ -56,6 +57,10 @@ interface SeoLandingTemplateProps {
   /** CTA */
   ctaTitle: string;
   ctaDescription: string;
+  /** Optional grayscale photographic backdrop for the hero section */
+  mediaSrc?: string;
+  /** Optional grayscale photographic backdrop for the final CTA section */
+  mediaSrcSecondary?: string;
 }
 
 export function SeoLandingTemplate({
@@ -71,20 +76,25 @@ export function SeoLandingTemplate({
   relatedLinks,
   ctaTitle,
   ctaDescription,
+  mediaSrc,
+  mediaSrcSecondary,
 }: SeoLandingTemplateProps) {
   return (
     <MarketingPageShell>
-      <ImmersiveHero
-        theme="product"
-        badge={{ icon: badgeIcon, text: badge }}
-        headline={headline}
-        subheadline={subheadline}
-        primaryCta={{
-          href: compliancePlanHref('seo_landing'),
-          label: PUBLIC_CTA_LABELS.compliancePlan,
-        }}
-        secondaryCta={{ href: demoHref('seo_landing'), label: PUBLIC_CTA_LABELS.bookDemo }}
-      />
+      <section className="relative isolate overflow-hidden">
+        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.22} />}
+        <ImmersiveHero
+          theme="product"
+          badge={{ icon: badgeIcon, text: badge }}
+          headline={headline}
+          subheadline={subheadline}
+          primaryCta={{
+            href: compliancePlanHref('seo_landing'),
+            label: PUBLIC_CTA_LABELS.compliancePlan,
+          }}
+          secondaryCta={{ href: demoHref('seo_landing'), label: PUBLIC_CTA_LABELS.bookDemo }}
+        />
+      </section>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
@@ -256,7 +266,8 @@ export function SeoLandingTemplate({
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* Final CTA */}
-      <section className="relative mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
+        {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.15} />}
         <GlassCard intensity="intense" glow className="p-8 text-center sm:p-10">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">{ctaTitle}</h2>
           <p className="mx-auto mt-4 max-w-3xl text-slate-300">{ctaDescription}</p>

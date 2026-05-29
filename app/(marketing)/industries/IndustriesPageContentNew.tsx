@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { IndustriesHero } from './components';
 
 const MissionCriticalContext = dynamic(
@@ -41,7 +42,14 @@ const IndustriesCTA = dynamic(
 export default function IndustriesPageContentNew() {
   return (
     <MarketingPageShell>
-      <IndustriesHero />
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/industries.jpg"
+          objectPosition="50% 35%"
+          opacity={0.22}
+        />
+        <IndustriesHero />
+      </div>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
@@ -76,7 +84,14 @@ export default function IndustriesPageContentNew() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
       <DeferredSection minHeight={440}>
-        <IndustriesCTA />
+        <div className="relative isolate overflow-hidden">
+          <SectionMedia
+            src="/marketing-media/use-case-ndis-aged-care.jpg"
+            objectPosition="50% 40%"
+            opacity={0.15}
+          />
+          <IndustriesCTA />
+        </div>
       </DeferredSection>
     </MarketingPageShell>
   );

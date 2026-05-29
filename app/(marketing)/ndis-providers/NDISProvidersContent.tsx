@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   compliancePlanHref,
   demoHref,
@@ -228,7 +229,13 @@ function FeatureVisual({
 export default function NDISProvidersContent() {
   return (
     <MarketingPageShell>
-      <IndustryHero
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/ndis-compliance-system.jpg"
+          objectPosition="50% 35%"
+          opacity={0.22}
+        />
+        <IndustryHero
         eyebrow="NDIS Commission Aligned Framework"
         accent="cyan-blue"
         headline={
@@ -271,7 +278,8 @@ export default function NDISProvidersContent() {
           { label: 'NDIS Commission' },
           { label: 'SIRS Reportable Incidents' },
         ]}
-      />
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -946,10 +954,17 @@ export default function NDISProvidersContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <IndustryCTA
-        industry="NDIS"
-        urgencyCallout="The NDIS Commission can visit without notice. Is your evidence chain current right now?"
-      />
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/use-case-ndis-aged-care.jpg"
+          objectPosition="50% 40%"
+          opacity={0.15}
+        />
+        <IndustryCTA
+          industry="NDIS"
+          urgencyCallout="The NDIS Commission can visit without notice. Is your evidence chain current right now?"
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />

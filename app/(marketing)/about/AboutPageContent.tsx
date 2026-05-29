@@ -23,6 +23,7 @@ import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
 import { EnterpriseShaderHero } from '@/components/marketing/EnterpriseShaderHero';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const DemoAuditTrailCard = dynamic(
@@ -136,7 +137,12 @@ export default function AboutPageContent() {
 
       {/* Founder Origin Story */}
       <DeferredSection minHeight={220}>
-        <section className="mk-section relative">
+        <section className="mk-section relative isolate overflow-hidden">
+          <SectionMedia
+            src="/marketing-media/about.jpg"
+            objectPosition="50% 35%"
+            opacity={0.22}
+          />
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
               variant="depthScale"
@@ -633,7 +639,12 @@ export default function AboutPageContent() {
 
       {/* CTA Section */}
       <DeferredSection minHeight={200}>
-        <section className="mk-section relative">
+        <section className="mk-section relative isolate overflow-hidden">
+          <SectionMedia
+            src="/marketing-media/our-story.jpg"
+            objectPosition="50% 40%"
+            opacity={0.15}
+          />
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
               <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-10">

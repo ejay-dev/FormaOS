@@ -7,6 +7,7 @@ import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { SecurityHero } from './SecurityHero';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 const LaserFlowSection = dynamic(
   () =>
@@ -40,7 +41,8 @@ const SecurityCTA = dynamic(
 /* ── Inline mid-page trust CTA (no DeferredSection wrapper) ── */
 function SecurityReviewBanner() {
   return (
-    <section className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <section className="relative isolate overflow-hidden mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.15} />
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div className="flex items-start gap-4">

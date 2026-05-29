@@ -192,6 +192,8 @@ export default function Compare6clicksPage() {
         competitorStrengths={competitorStrengths}
         source="compare_6clicks"
         datePublished="2026-04-09"
+        mediaSrc="/marketing-media/compare.jpg"
+        mediaSrcSecondary="/marketing-media/enterprise.jpg"
       />
     </>
   );

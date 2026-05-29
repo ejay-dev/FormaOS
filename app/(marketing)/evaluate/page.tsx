@@ -80,6 +80,8 @@ export default function EvaluatePage() {
         'Create a defensible record of compliance decisions over time.',
       ]}
       journeyKey="evaluate"
+      mediaSrc="/marketing-media/evaluate.jpg"
+      mediaSrcSecondary="/marketing-media/enterprise.jpg"
     />
   );
 }

@@ -19,6 +19,7 @@ import { duration } from '@/config/motion';
 import dynamic from 'next/dynamic';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { DeferredSection } from '../components/shared';
 import { OurStoryHeroVisual } from './components/OurStoryHeroVisual';
 import {
@@ -107,7 +108,12 @@ function FounderQuote() {
         />
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+      <div className="relative isolate z-10 max-w-5xl mx-auto px-6 lg:px-12 overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/our-story.jpg"
+          objectPosition="50% 35%"
+          opacity={0.22}
+        />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -881,7 +887,12 @@ function FinalCTA() {
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="relative isolate z-10 max-w-7xl mx-auto px-6 lg:px-12 overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/about.jpg"
+          objectPosition="50% 40%"
+          opacity={0.15}
+        />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -13,6 +13,7 @@ import { DepthSection } from '@/components/motion/DepthSection';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { CircuitPattern } from '@/components/marketing/SectionBackgrounds';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   FinalCTA,
   FAQSection,
@@ -272,7 +273,10 @@ export default function PricingPageContent() {
   return (
     <MarketingPageShell className="text-white pricing-page-flow">
       {/* Hero */}
-      <PricingHero />
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia src="/marketing-media/pricing.jpg" objectPosition="50% 35%" opacity={0.22} />
+        <PricingHero />
+      </div>
 
       <TrustBar />
 

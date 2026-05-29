@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   compliancePlanHref,
   demoHref,
@@ -231,7 +232,13 @@ function FeatureVisual({
 export default function HealthcareComplianceContent() {
   return (
     <MarketingPageShell>
-      <IndustryHero
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/healthcare-compliance-platform.jpg"
+          objectPosition="50% 35%"
+          opacity={0.22}
+        />
+        <IndustryHero
         eyebrow="AHPRA + NSQHS Compliance"
         accent="cyan-violet"
         headline={
@@ -274,7 +281,8 @@ export default function HealthcareComplianceContent() {
           { label: 'NSQHS Standards' },
           { label: 'ACSQHC Accreditation' },
         ]}
-      />
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -982,10 +990,17 @@ export default function HealthcareComplianceContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      <IndustryCTA
-        industry="Healthcare"
-        urgencyCallout="NSQHS accreditation cycles don't pause. Your evidence chain shouldn't either."
-      />
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/use-case-healthcare.jpg"
+          objectPosition="50% 40%"
+          opacity={0.15}
+        />
+        <IndustryCTA
+          industry="Healthcare"
+          urgencyCallout="NSQHS accreditation cycles don't pause. Your evidence chain shouldn't either."
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />

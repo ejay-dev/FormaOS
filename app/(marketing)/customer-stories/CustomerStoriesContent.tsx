@@ -9,6 +9,7 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { CustomerStoriesHeroVisual } from './components/CustomerStoriesHeroVisual';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   compliancePlanHref,
   demoHref,
@@ -89,6 +90,8 @@ export default function CustomerStoriesContent() {
   return (
     <MarketingPageShell>
       {/* Hero */}
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia src="/marketing-media/customer-stories.jpg" objectPosition="50% 35%" opacity={0.22} />
       <ImmersiveHero
         theme="customer-stories"
         visualContent={<CustomerStoriesHeroVisual />}
@@ -115,6 +118,7 @@ export default function CustomerStoriesContent() {
           label: PUBLIC_CTA_LABELS.compliancePlan,
         }}
       />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
@@ -207,7 +211,8 @@ export default function CustomerStoriesContent() {
 
       {/* ROI Proof - Worked Example */}
       <DeferredSection minHeight={500}>
-        <section className="relative mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+          <SectionMedia src="/marketing-media/enterprise-proof.jpg" objectPosition="50% 40%" opacity={0.15} />
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">

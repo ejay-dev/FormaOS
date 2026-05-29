@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowUpRight, Lock, Shield, Eye, FileCheck, Key } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SecurityHeroVisual } from './components/SecurityHeroVisual';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   compliancePlanHref,
   PUBLIC_CTA_LABELS,
@@ -19,6 +20,8 @@ const SECURITY_PILLS = [
 
 export function SecurityHero() {
   return (
+    <div className="relative isolate overflow-hidden">
+      <SectionMedia src="/marketing-media/security.jpg" objectPosition="50% 35%" opacity={0.22} />
     <ImmersiveHero
       theme="security"
       visualContent={<SecurityHeroVisual />}
@@ -78,5 +81,6 @@ export function SecurityHero() {
         label: PUBLIC_CTA_LABELS.securityReview,
       }}
     />
+    </div>
   );
 }

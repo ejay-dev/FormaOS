@@ -5,6 +5,7 @@ import { ShieldCheck } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { TrustHeroVisual } from './TrustHeroVisual';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   PUBLIC_CTA_LABELS,
   securityReviewHref,
@@ -15,6 +16,8 @@ export function TrustHero() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
+    <div className="relative isolate overflow-hidden">
+      <SectionMedia src="/marketing-media/trust.jpg" objectPosition="50% 35%" opacity={0.22} />
     <ImmersiveHero
       theme="trust"
       visualContent={<TrustHeroVisual />}
@@ -114,5 +117,6 @@ export function TrustHero() {
         })
       }
     />
+    </div>
   );
 }

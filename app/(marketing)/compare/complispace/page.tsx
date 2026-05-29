@@ -192,6 +192,8 @@ export default function CompareCompliSpacePage() {
         competitorStrengths={competitorStrengths}
         source="compare_complispace"
         datePublished="2026-04-09"
+        mediaSrc="/marketing-media/compare.jpg"
+        mediaSrcSecondary="/marketing-media/enterprise.jpg"
       />
     </>
   );

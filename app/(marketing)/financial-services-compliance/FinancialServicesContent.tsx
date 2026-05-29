@@ -1,6 +1,7 @@
 'use client';
 
 import { RelatedIndustries } from '@/components/marketing/RelatedIndustries';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   compliancePlanHref,
   demoHref,
@@ -241,7 +242,13 @@ export default function FinancialServicesContent() {
   return (
     <MarketingPageShell>
       {/* ---- Hero ---- */}
-      <IndustryHero
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/use-case-financial-services.jpg"
+          objectPosition="50% 35%"
+          opacity={0.22}
+        />
+        <IndustryHero
         eyebrow="ASIC + APRA + AUSTRAC Ready"
         accent="violet-cyan"
         headline={
@@ -283,7 +290,8 @@ export default function FinancialServicesContent() {
           { label: 'APRA Prudential Standards' },
           { label: 'AUSTRAC AML/CTF' },
         ]}
-      />
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -953,10 +961,17 @@ export default function FinancialServicesContent() {
       </div>
 
       {/* ---- CTA ---- */}
-      <IndustryCTA
-        industry="Financial Services"
-        urgencyCallout="ASIC surveillance reviews don't announce themselves. Can you demonstrate your obligation coverage right now?"
-      />
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia
+          src="/marketing-media/enterprise.jpg"
+          objectPosition="50% 40%"
+          opacity={0.15}
+        />
+        <IndustryCTA
+          industry="Financial Services"
+          urgencyCallout="ASIC surveillance reviews don't announce themselves. Can you demonstrate your obligation coverage right now?"
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />

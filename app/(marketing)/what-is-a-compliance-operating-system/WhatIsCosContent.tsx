@@ -7,6 +7,7 @@ import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { DeferredSection, MarketingPageShell } from '../components/shared';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   compliancePlanHref,
   demoHref,
@@ -16,6 +17,8 @@ import {
 export default function WhatIsCosContent() {
   return (
     <MarketingPageShell>
+      <div className="relative isolate overflow-hidden">
+        <SectionMedia src="/marketing-media/what-is-a-compliance-operating-system.jpg" objectPosition="50% 35%" opacity={0.22} />
       <ImmersiveHero
         theme="product"
         badge={{ icon: <BookOpen className="h-4 w-4" />, text: 'Definition' }}
@@ -35,6 +38,7 @@ export default function WhatIsCosContent() {
           label: PUBLIC_CTA_LABELS.bookDemo,
         }}
       />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
@@ -272,7 +276,8 @@ export default function WhatIsCosContent() {
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       {/* CTA */}
-      <section className="relative mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
+        <SectionMedia src="/marketing-media/product.jpg" objectPosition="50% 40%" opacity={0.15} />
         <GlassCard intensity="intense" glow className="p-8 text-center sm:p-10">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             See the compliance operating system in action

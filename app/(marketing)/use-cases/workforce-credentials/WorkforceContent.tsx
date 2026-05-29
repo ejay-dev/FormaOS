@@ -199,6 +199,8 @@ export default function WorkforceContent() {
       industryKey="workforce_credentials"
       ctaTitle="Operationalize credential compliance - with zero expiry surprises"
       ctaDescription="Replace fragmented spreadsheets and ad-hoc reminders with a governed credential system. Named owners, automated renewal cadences, and export-ready evidence for every workforce compliance review."
+      mediaSrc="/marketing-media/use-case-workforce-credentials.jpg"
+      mediaSrcSecondary="/marketing-media/use-case-healthcare.jpg"
     />
   );
 }

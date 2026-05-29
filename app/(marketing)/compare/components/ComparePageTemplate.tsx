@@ -20,6 +20,7 @@ import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 import { DeferredSection } from '../../components/shared';
 import { motion } from 'framer-motion';
 import { CompareHeroVisual } from './CompareHeroVisual';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 import { AppMockup } from '@/components/marketing/mockups';
 import {
@@ -49,6 +50,10 @@ export interface ComparePageTemplateProps {
   competitorStrengths: readonly string[];
   source: string;
   datePublished?: string;
+  /** Optional grayscale photographic backdrop for the hero section */
+  mediaSrc?: string;
+  /** Optional grayscale photographic backdrop for the closing CTA band */
+  mediaSrcSecondary?: string;
 }
 
 const relatedLinksBySource: Record<
@@ -157,6 +162,8 @@ export function ComparePageTemplate({
   competitorStrengths,
   source,
   datePublished,
+  mediaSrc,
+  mediaSrcSecondary,
 }: ComparePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks =
@@ -182,8 +189,10 @@ export function ComparePageTemplate({
   return (
     <MarketingPageShell>
       {/* Hero */}
-      <ImmersiveHero
-        theme="compare"
+      <section className="relative isolate overflow-hidden">
+        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.22} />}
+        <ImmersiveHero
+          theme="compare"
         visualContent={<CompareHeroVisual competitor={competitor} />}
         badge={{
           icon: <Sparkles className="w-4 h-4" />,
@@ -228,7 +237,8 @@ export function ComparePageTemplate({
             compareSource: source,
           })
         }
-      />
+        />
+      </section>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -576,7 +586,8 @@ export function ComparePageTemplate({
 
       {/* Ideal If + CTAs */}
       <DeferredSection minHeight={240}>
-        <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="mk-section mk-section--compact relative isolate overflow-hidden mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.15} />}
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">

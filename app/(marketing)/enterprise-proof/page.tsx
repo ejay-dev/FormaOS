@@ -12,6 +12,7 @@ import {
 import { MarketingPageShell } from '@/app/(marketing)/components/shared/MarketingPageShell';
 import { CompactHero } from '@/components/motion/CompactHero';
 import { CompactHeroIcon } from '@/components/motion/CompactHeroIcon';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { siteUrl } from '@/lib/seo';
 
 export const dynamic = 'force-static';
@@ -108,7 +109,12 @@ export default function EnterpriseProofPage() {
         }
       />
 
-      <div className="mx-auto max-w-5xl px-6 pb-24">
+      <div className="relative isolate overflow-hidden mx-auto max-w-5xl px-6 pb-24 pt-12">
+        <SectionMedia
+          src="/marketing-media/enterprise-proof.jpg"
+          objectPosition="50% 35%"
+          opacity={0.22}
+        />
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {proofAreas.map((area) => {
             const Icon = area.icon;
@@ -132,8 +138,15 @@ export default function EnterpriseProofPage() {
             );
           })}
         </div>
+      </div>
 
-        <div className="mt-10 rounded-2xl border border-border bg-card p-8">
+      <div className="relative isolate overflow-hidden mx-auto max-w-5xl px-6 pb-24">
+        <SectionMedia
+          src="/marketing-media/enterprise.jpg"
+          objectPosition="50% 40%"
+          opacity={0.15}
+        />
+        <div className="rounded-2xl border border-border bg-card p-8">
           <h2 className="text-xl font-semibold text-foreground">
             Fast Buyer Validation Path
           </h2>

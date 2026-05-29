@@ -14,6 +14,7 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { MarketingPageShell } from './shared/MarketingPageShell';
 import { DeferredSection } from './shared';
 import { OutcomeJourneyHeroVisual } from './OutcomeJourneyHeroVisual';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import {
   compliancePlanHref,
   demoHref,
@@ -40,6 +41,10 @@ type JourneyPageProps = {
   }>;
   trustArtifacts?: string[];
   journeyKey: 'evaluate' | 'prove' | 'operate' | 'govern';
+  /** Optional grayscale photographic backdrop for the hero section. */
+  mediaSrc?: string;
+  /** Optional grayscale photographic backdrop for a later section. */
+  mediaSrcSecondary?: string;
 };
 
 const TRUST_ARTIFACTS = [
@@ -64,13 +69,23 @@ export function OutcomeJourneyPage({
   pillars,
   trustArtifacts,
   journeyKey,
+  mediaSrc,
+  mediaSrcSecondary,
 }: JourneyPageProps) {
   const resolvedTrustArtifacts = trustArtifacts ?? TRUST_ARTIFACTS;
 
   return (
     <MarketingPageShell>
       {/* Hero */}
-      <ImmersiveHero
+      <div className="relative isolate overflow-hidden">
+        {mediaSrc && (
+          <SectionMedia
+            src={mediaSrc}
+            objectPosition="50% 35%"
+            opacity={0.22}
+          />
+        )}
+        <ImmersiveHero
         theme="outcome-journey"
         visualContent={<OutcomeJourneyHeroVisual journeyKey={journeyKey} />}
         badge={{
@@ -119,7 +134,8 @@ export function OutcomeJourneyPage({
           href: demoHref(`outcome_${journeyKey}`),
           label: PUBLIC_CTA_LABELS.bookDemo,
         }}
-      />
+        />
+      </div>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
@@ -171,7 +187,14 @@ export function OutcomeJourneyPage({
 
       {/* Outcomes Grid */}
       <DeferredSection minHeight={280}>
-        <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="mk-section mk-section--compact relative isolate overflow-hidden mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {mediaSrcSecondary && (
+            <SectionMedia
+              src={mediaSrcSecondary}
+              objectPosition="50% 40%"
+              opacity={0.15}
+            />
+          )}
           <SectionChoreography pattern="cascade" className="grid gap-4 md:grid-cols-2">
             {outcomes.map((outcome) => (
                 <div key={outcome} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-5 transition-colors hover:border-cyan-500/15">

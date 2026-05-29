@@ -80,6 +80,8 @@ export default function GovernPage() {
         'Strengthen governance with measurable control-operating confidence.',
       ]}
       journeyKey="govern"
+      mediaSrc="/marketing-media/govern.jpg"
+      mediaSrcSecondary="/marketing-media/enterprise.jpg"
     />
   );
 }

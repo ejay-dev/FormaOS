@@ -126,6 +126,8 @@ export default function IsoContent() {
       ]}
       ctaTitle="Make ISO compliance operational"
       ctaDescription="Stop treating certification as a project. FormaOS connects Annex A controls to daily workflows, captures evidence continuously, and keeps your ISMS audit-ready year-round."
+      mediaSrc="/marketing-media/iso-compliance-software.jpg"
+      mediaSrcSecondary="/marketing-media/frameworks.jpg"
     />
   );
 }

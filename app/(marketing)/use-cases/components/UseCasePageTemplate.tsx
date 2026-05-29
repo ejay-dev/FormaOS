@@ -8,6 +8,7 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { DeferredSection } from '../../components/shared';
 import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
@@ -61,6 +62,10 @@ interface UseCasePageTemplateProps {
   ctaSecondaryLabel?: string;
   ctaSecondaryHref?: string;
   industryKey: string;
+  /** Optional grayscale photographic backdrop for the hero section */
+  mediaSrc?: string;
+  /** Optional grayscale photographic backdrop for the measured-impact band */
+  mediaSrcSecondary?: string;
 }
 
 const relatedLinksByIndustry: Record<
@@ -190,6 +195,8 @@ export function UseCasePageTemplate({
   ctaSecondaryLabel = PUBLIC_CTA_LABELS.seeDemo,
   ctaSecondaryHref,
   industryKey,
+  mediaSrc,
+  mediaSrcSecondary,
 }: UseCasePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks =
@@ -199,8 +206,10 @@ export function UseCasePageTemplate({
 
   return (
     <MarketingPageShell>
-      <ImmersiveHero
-        theme="use-cases"
+      <section className="relative isolate overflow-hidden">
+        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.22} />}
+        <ImmersiveHero
+          theme="use-cases"
         visualContent={<UseCaseHeroVisual icon={badgeIcon ?? <ShieldCheck className="h-4 w-4" />} steps={workflows.slice(0, 4).map((w) => w.title)} />}
         badge={{
           icon: badgeIcon ?? <ShieldCheck className="h-4 w-4" />,
@@ -232,7 +241,8 @@ export function UseCasePageTemplate({
             industry: industryKey,
           })
         }
-      />
+        />
+      </section>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
@@ -363,7 +373,8 @@ export function UseCasePageTemplate({
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <DeferredSection minHeight={380}>
-        <section className="relative mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+          {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.15} />}
           <SectionHeader
             badge="Measured Impact"
             title="Expected operational outcomes"

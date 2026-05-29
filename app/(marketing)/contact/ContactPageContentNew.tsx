@@ -18,6 +18,7 @@ import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 type ContactIntent =
   | 'general'
@@ -301,6 +302,8 @@ function ContactHero() {
   const copy = CONTACT_INTENT_COPY[intent];
 
   return (
+    <div className="relative isolate overflow-hidden">
+      <SectionMedia src="/marketing-media/contact.jpg" objectPosition="50% 35%" opacity={0.22} />
     <ImmersiveHero
       className="contact-hero--focused"
       theme="contact"
@@ -319,6 +322,7 @@ function ContactHero() {
       primaryCta={{ href: '#demo-form', label: copy.submitLabel }}
       secondaryCta={{ href: copy.secondaryHref, label: copy.secondaryLabel }}
     />
+    </div>
   );
 }
 
@@ -954,7 +958,8 @@ function ClosingCTA() {
   const copy = CONTACT_INTENT_COPY[intent];
 
   return (
-    <section className="mk-section mk-section--compact relative">
+    <section className="mk-section mk-section--compact relative isolate overflow-hidden">
+      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.15} />
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">

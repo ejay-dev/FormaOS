@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, Building2, Rocket } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 const PATHS = [
   {
@@ -46,7 +47,8 @@ export function FinalCTA() {
   const { trackCtaClick } = useMarketingTelemetry();
 
   return (
-    <section className="relative overflow-hidden py-20 sm:py-28 lg:py-32">
+    <section className="relative isolate overflow-hidden py-20 sm:py-28 lg:py-32">
+      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.15} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(113,113,122,0.12),transparent_45%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_70%,rgba(139,92,246,0.10),transparent_45%)]" />
 

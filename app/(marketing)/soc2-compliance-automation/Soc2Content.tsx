@@ -141,6 +141,8 @@ export default function Soc2Content() {
       ]}
       ctaTitle="Build continuous SOC 2 compliance"
       ctaDescription="Type II demands evidence of control effectiveness over time. FormaOS turns Trust Service Criteria into operational workflows that generate evidence continuously."
+      mediaSrc="/marketing-media/soc2-compliance-automation.jpg"
+      mediaSrcSecondary="/marketing-media/audit-evidence-management.jpg"
     />
   );
 }

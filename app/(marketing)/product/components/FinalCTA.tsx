@@ -3,11 +3,17 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 export function FinalCTA() {
   return (
-    <section className="product-section product-section--cta relative py-16 sm:py-24 lg:py-32 overflow-hidden">
+    <section className="product-section product-section--cta relative isolate py-16 sm:py-24 lg:py-32 overflow-hidden">
+      <SectionMedia
+        src="/marketing-media/features.jpg"
+        objectPosition="50% 40%"
+        opacity={0.15}
+      />
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">

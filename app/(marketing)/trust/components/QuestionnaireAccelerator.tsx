@@ -5,6 +5,7 @@ import { ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScanLine } from '@/components/marketing/SectionBackgrounds';
+import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 const questionnaireFastLane = [
   {
@@ -41,7 +42,8 @@ export function QuestionnaireAccelerator() {
   return (
     <>
       {/* Security Questionnaire Fast-Lane */}
-      <section className="relative mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+        <SectionMedia src="/marketing-media/trust-packet.jpg" objectPosition="50% 40%" opacity={0.15} />
         <ScanLine />
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-sm lg:p-10">

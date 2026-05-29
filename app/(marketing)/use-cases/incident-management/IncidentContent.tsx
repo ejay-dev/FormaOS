@@ -199,6 +199,8 @@ export default function IncidentContent() {
       industryKey="incident_management"
       ctaTitle="Run incidents as accountable operations - with proof that holds under scrutiny"
       ctaDescription="Replace reactive reporting with structured response workflows. Every incident gets a named owner, documented investigation, and closure evidence - ready for regulators, customers, or the board in minutes."
+      mediaSrc="/marketing-media/use-case-incident-management.jpg"
+      mediaSrcSecondary="/marketing-media/enterprise-proof.jpg"
     />
   );
 }

@@ -191,6 +191,8 @@ export default function CompareRiskwarePage() {
         competitorStrengths={competitorStrengths}
         source="compare_riskware"
         datePublished="2026-04-09"
+        mediaSrc="/marketing-media/compare.jpg"
+        mediaSrcSecondary="/marketing-media/enterprise.jpg"
       />
     </>
   );
