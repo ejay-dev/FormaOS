@@ -34,7 +34,7 @@ export function CTASection() {
       <SectionMedia
         src="/marketing-media/home.jpg"
         objectPosition="50% 32%"
-        opacity={0.9}
+        opacity={0.4}
         scrim="center"
       />
       {/* Section dividers */}
