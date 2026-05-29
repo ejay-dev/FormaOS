@@ -27,9 +27,13 @@
 import { execFileSync } from 'node:child_process';
 import process from 'node:process';
 
-// Baseline as of 2026-05-26 lint run. Lower this number when you land
-// a batch of migrations or justifications and the count goes down.
-const BASELINE = 266;
+// Baseline as of 2026-05-28 (Audit 2026-05-28 cycle): locked in after a
+// batch of file-level justifications on 4 cron routes + the founder
+// admin/orgs/[orgId] surface (all are legitimately cross-tenant per
+// ENGINEERING_CHANGE_MATRIX "Tenant Data Access" guidance).
+// Lower this number when you land another batch of migrations or
+// justifications and the count goes down.
+const BASELINE = 263;
 
 const RULE = 'formaos/no-admin-client-with-org-filter';
 

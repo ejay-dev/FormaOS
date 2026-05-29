@@ -1,3 +1,9 @@
+/* eslint-disable formaos/no-admin-client-with-org-filter --
+ * Cross-tenant cron: verifies hash-chain integrity for every org. The
+ * admin client is required to span tenants; per-org integrity checks
+ * are filtered via `.eq('org_id', orgId)`. Per ENGINEERING_CHANGE_MATRIX
+ * "Tenant Data Access" guidance for cron / cross-tenant scans.
+ */
 import { NextResponse } from 'next/server';
 import * as Sentry from '@sentry/nextjs';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';

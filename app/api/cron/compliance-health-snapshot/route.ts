@@ -1,3 +1,10 @@
+/* eslint-disable formaos/no-admin-client-with-org-filter --
+ * Cross-tenant cron: iterates every org's compliance snapshot. The
+ * admin client is required to span tenants; per-org rows are then
+ * filtered explicitly via `.eq('organization_id', orgId)`. Per
+ * ENGINEERING_CHANGE_MATRIX.md "Tenant Data Access" guidance for
+ * cron / cross-tenant scans.
+ */
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { verifyVercelCronRequest } from '@/lib/security/cron-auth';

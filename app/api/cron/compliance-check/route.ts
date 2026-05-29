@@ -1,3 +1,10 @@
+/* eslint-disable formaos/no-admin-client-with-org-filter --
+ * Cross-tenant cron: daily compliance posture sweep across every org
+ * (expiring credentials, overdue tasks, evidence gaps). The admin
+ * client is required to span tenants; per-org writes are filtered via
+ * `.eq('organization_id', orgId)`. Per ENGINEERING_CHANGE_MATRIX
+ * "Tenant Data Access" guidance for cron / cross-tenant scans.
+ */
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { captureRouteError } from '@/lib/observability/with-route-observability';

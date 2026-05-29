@@ -57,6 +57,21 @@ function stripComments(sql) {
     .join('\n');
 }
 
+// Strip dollar-quoted function bodies ($$ ... $$ or $tag$ ... $tag$).
+// The gate is concerned with current_setting('app.*') in CREATE POLICY
+// USING/WITH CHECK clauses — those live in policy syntax, not inside a
+// function body. The recommended escape hatch (per the gate's own
+// guidance below) is to set the GUC in a SECURITY DEFINER function,
+// and that function body legitimately uses current_setting('app.*').
+// Without this strip we false-positive on every SECDEF audit helper.
+function stripDollarBodies(sql) {
+  // First pass: tagged bodies like $func$ ... $func$
+  let out = sql.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*)\$[\s\S]*?\$\1\$/g, ' ');
+  // Second pass: untagged bodies $$ ... $$
+  out = out.replace(/\$\$[\s\S]*?\$\$/g, ' ');
+  return out;
+}
+
 let files;
 try {
   files = readdirSync(MIGRATIONS_DIR).filter((f) => f.endsWith('.sql'));
@@ -67,20 +82,58 @@ try {
 
 const violations = [];
 
+// Compute the line ranges that fall inside a dollar-quoted body so
+// per-line hit recovery can skip them too.
+function dollarBodyLineRanges(raw) {
+  const ranges = [];
+  const taggedRegex = /\$([a-zA-Z_][a-zA-Z0-9_]*)\$([\s\S]*?)\$\1\$/g;
+  let m;
+  while ((m = taggedRegex.exec(raw)) !== null) {
+    const startLine = raw.slice(0, m.index).split('\n').length;
+    const endLine = startLine + m[0].split('\n').length - 1;
+    ranges.push([startLine, endLine]);
+  }
+  // Mask the tagged spans before scanning for untagged $$ so we don't
+  // double-count or split overlapping bodies.
+  let masked = raw;
+  for (const [s, e] of ranges) {
+    const lines = masked.split('\n');
+    for (let i = s - 1; i < e; i++) lines[i] = '';
+    masked = lines.join('\n');
+  }
+  const untaggedRegex = /\$\$([\s\S]*?)\$\$/g;
+  while ((m = untaggedRegex.exec(masked)) !== null) {
+    const startLine = masked.slice(0, m.index).split('\n').length;
+    const endLine = startLine + m[0].split('\n').length - 1;
+    ranges.push([startLine, endLine]);
+  }
+  return ranges;
+}
+
+function inAnyRange(line, ranges) {
+  for (const [s, e] of ranges) if (line >= s && line <= e) return true;
+  return false;
+}
+
 for (const file of files) {
   if (ALLOWLIST.has(file)) continue;
   const full = path.join(MIGRATIONS_DIR, file);
   const raw = readFileSync(full, 'utf-8');
-  const stripped = stripComments(raw);
+  const stripped = stripDollarBodies(stripComments(raw));
   if (PATTERN.test(stripped)) {
-    // Recover line numbers from the original file (not stripped).
+    // Recover line numbers from the original file (not stripped), but
+    // skip lines that live inside a dollar-quoted body — the gate
+    // intentionally ignores those (see stripDollarBodies above).
     const lines = raw.split('\n');
+    const bodyRanges = dollarBodyLineRanges(raw);
     const hits = [];
     for (let i = 0; i < lines.length; i++) {
+      const lineNo = i + 1;
+      if (inAnyRange(lineNo, bodyRanges)) continue;
       const lineNoComment = lines[i].replace(/--.*$/, '');
-      if (PATTERN.test(lineNoComment)) hits.push(i + 1);
+      if (PATTERN.test(lineNoComment)) hits.push(lineNo);
     }
-    violations.push({ file, lines: hits });
+    if (hits.length > 0) violations.push({ file, lines: hits });
   }
 }
 

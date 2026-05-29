@@ -99,9 +99,182 @@
     {
       "name": "Audit Logs",
       "description": "Audit trail and activity logs"
+    },
+    {
+      "name": "Account",
+      "description": "Authenticated user account — active org preference, GDPR export, GDPR self-serve deletion"
     }
   ],
   "paths": {
+    "/api/v1/account/active-organization": {
+      "get": {
+        "summary": "Get the user's active organization preference",
+        "description": "Returns the caller's current active-organization preference and the full list of memberships available for switching. Session-cookie authentication.",
+        "operationId": "getActiveOrganization",
+        "tags": ["Account"],
+        "responses": {
+          "200": {
+            "description": "Active-org preference and membership list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["current", "memberships"],
+                  "properties": {
+                    "current": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true,
+                      "description": "Currently selected organization id, or null when the caller has no preference set and is not a member of exactly one org"
+                    },
+                    "memberships": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["organizationId"],
+                        "properties": {
+                          "organizationId": { "type": "string", "format": "uuid" },
+                          "role": { "type": "string", "nullable": true }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      },
+      "post": {
+        "summary": "Set the user's active organization preference",
+        "description": "Persists the caller's active-organization preference after verifying membership. Recovery path for the 409 `active_org_required` response from multi-org context resolution.",
+        "operationId": "setActiveOrganization",
+        "tags": ["Account"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["organizationId"],
+                "properties": {
+                  "organizationId": { "type": "string", "format": "uuid" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preference persisted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "organizationId": { "type": "string", "format": "uuid" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Caller is not a member of the requested organization" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/account/export": {
+      "get": {
+        "summary": "Export the caller's personal data (GDPR Article 15 / 20)",
+        "description": "Returns a JSON document containing every row keyed to the caller's auth user — account, profile, security flags (no secrets), email preferences, org memberships, and audit/activity rows.",
+        "operationId": "exportAccount",
+        "tags": ["Account"],
+        "responses": {
+          "200": {
+            "description": "Personal-data export bundle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["exported_at", "schema_version", "account"],
+                  "properties": {
+                    "exported_at": { "type": "string", "format": "date-time" },
+                    "schema_version": { "type": "integer", "enum": [1] },
+                    "account": { "type": "object" },
+                    "profile": { "type": "object", "nullable": true },
+                    "security": { "type": "object", "nullable": true },
+                    "email_preferences": { "type": "object", "nullable": true },
+                    "memberships": { "type": "array", "items": { "type": "object" } },
+                    "notifications_preferences": { "type": "object", "nullable": true }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/account/delete": {
+      "post": {
+        "summary": "Delete the caller's account (GDPR Article 17 erasure)",
+        "description": "Self-serve account deletion. Cancels Stripe subscriptions for orphaned orgs (sole-member case), deletes the user's memberships and per-user rows, and erases the auth user. Sole-ownership of a multi-member org is a hard block — transfer ownership first.",
+        "operationId": "deleteAccount",
+        "tags": ["Account"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["confirm"],
+                "properties": {
+                  "confirm": {
+                    "type": "string",
+                    "enum": ["DELETE"],
+                    "description": "Must equal the literal string \"DELETE\" to acknowledge irreversibility"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "cascaded_orgs": {
+                      "type": "array",
+                      "items": { "type": "string", "format": "uuid" }
+                    },
+                    "stripe_cancellations": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Caller is the sole owner of an organization with other members" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Deletion failed mid-flight; safe to retry" }
+        }
+      }
+    },
     "/api/v1/organizations": {
       "get": {
         "summary": "Get organization overview",

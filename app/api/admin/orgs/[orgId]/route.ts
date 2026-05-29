@@ -1,3 +1,10 @@
+/* eslint-disable formaos/no-admin-client-with-org-filter --
+ * Admin/founder route: acts on an explicitly-supplied {orgId} URL
+ * param, gated by requireAdminAccess. The admin client is intentional
+ * — admins by definition operate cross-tenant; per-org rows are
+ * filtered via `.eq('organization_id', orgId)`. Per
+ * ENGINEERING_CHANGE_MATRIX "Tenant Data Access" guidance.
+ */
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireAdminAccess } from '@/app/app/admin/access';

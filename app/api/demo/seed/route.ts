@@ -5,6 +5,13 @@
  * PROTECTED: Requires founder access
  */
 
+/* eslint-disable formaos/no-admin-client-with-org-filter --
+ * Founder-gated demo-data seeder: writes across multiple seed-orgs
+ * for the demo flow. Founder access is enforced via
+ * requireFounderAccess; the admin client is intentional. Per
+ * ENGINEERING_CHANGE_MATRIX "Tenant Data Access" guidance for
+ * cross-tenant scans.
+ */
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { requireFounderAccess } from '@/app/app/admin/access';

@@ -139,6 +139,9 @@ jobs:
         if: steps.rls-secrets-check.outputs.available == 'true'
         run: npm run test:db:secdef-grants
 
+      - name: Run RLS GUC guard — block current_setting('app.*') in policy bodies
+        run: npm run test:db:rls-guc-guard
+
       - name: Run leaked-secrets scan (Audit 2026-05-27)
         run: npm run test:security:leaked-secrets
 
