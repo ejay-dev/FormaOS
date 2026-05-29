@@ -236,7 +236,8 @@ export default function ConstructionComplianceContent() {
         <SectionMedia
           src="/marketing-media/construction-compliance.jpg"
           objectPosition="50% 35%"
-          opacity={0.22}
+          opacity={0.5}
+          scrim="center"
         />
         <IndustryHero
         accent="amber-orange"
@@ -960,7 +961,8 @@ export default function ConstructionComplianceContent() {
         <SectionMedia
           src="/marketing-media/enterprise.jpg"
           objectPosition="50% 40%"
-          opacity={0.15}
+          opacity={0.6}
+          scrim="center"
         />
         <IndustryCTA
           industry="Construction"

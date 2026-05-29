@@ -190,7 +190,7 @@ export function ComparePageTemplate({
     <MarketingPageShell>
       {/* Hero */}
       <section className="relative isolate overflow-hidden">
-        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.22} />}
+        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.85} scrim="center" />}
         <ImmersiveHero
           theme="compare"
         visualContent={<CompareHeroVisual competitor={competitor} />}
@@ -587,7 +587,7 @@ export function ComparePageTemplate({
       {/* Ideal If + CTAs */}
       <DeferredSection minHeight={240}>
         <section className="mk-section mk-section--compact relative isolate overflow-hidden mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.15} />}
+          {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.6} scrim="center" />}
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">

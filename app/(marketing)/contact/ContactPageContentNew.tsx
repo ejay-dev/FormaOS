@@ -303,7 +303,7 @@ function ContactHero() {
 
   return (
     <div className="relative isolate overflow-hidden">
-      <SectionMedia src="/marketing-media/contact.jpg" objectPosition="50% 35%" opacity={0.22} />
+      <SectionMedia src="/marketing-media/contact.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
     <ImmersiveHero
       className="contact-hero--focused"
       theme="contact"
@@ -959,7 +959,7 @@ function ClosingCTA() {
 
   return (
     <section className="mk-section mk-section--compact relative isolate overflow-hidden">
-      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.15} />
+      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">

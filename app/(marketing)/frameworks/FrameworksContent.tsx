@@ -91,7 +91,7 @@ export default function FrameworksContent() {
     <MarketingPageShell>
       {/* Hero */}
       <div className="relative isolate overflow-hidden">
-        <SectionMedia src="/marketing-media/frameworks.jpg" objectPosition="50% 35%" opacity={0.22} />
+        <SectionMedia src="/marketing-media/frameworks.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
       <ImmersiveHero
         theme="frameworks"
         visualContent={<FrameworksHeroVisual />}
@@ -235,7 +235,7 @@ export default function FrameworksContent() {
       {/* Framework Packs */}
       <DeferredSection minHeight={400}>
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.15} />
+          <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
           <ScrollReveal variant="depthScale" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
               <div className="flex items-end justify-between gap-6">

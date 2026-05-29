@@ -91,7 +91,7 @@ export default function CustomerStoriesContent() {
     <MarketingPageShell>
       {/* Hero */}
       <div className="relative isolate overflow-hidden">
-        <SectionMedia src="/marketing-media/customer-stories.jpg" objectPosition="50% 35%" opacity={0.22} />
+        <SectionMedia src="/marketing-media/customer-stories.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
       <ImmersiveHero
         theme="customer-stories"
         visualContent={<CustomerStoriesHeroVisual />}
@@ -212,7 +212,7 @@ export default function CustomerStoriesContent() {
       {/* ROI Proof - Worked Example */}
       <DeferredSection minHeight={500}>
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          <SectionMedia src="/marketing-media/enterprise-proof.jpg" objectPosition="50% 40%" opacity={0.15} />
+          <SectionMedia src="/marketing-media/enterprise-proof.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
             <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">

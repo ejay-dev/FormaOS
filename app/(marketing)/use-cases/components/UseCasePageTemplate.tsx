@@ -207,7 +207,7 @@ export function UseCasePageTemplate({
   return (
     <MarketingPageShell>
       <section className="relative isolate overflow-hidden">
-        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.22} />}
+        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.85} scrim="center" />}
         <ImmersiveHero
           theme="use-cases"
         visualContent={<UseCaseHeroVisual icon={badgeIcon ?? <ShieldCheck className="h-4 w-4" />} steps={workflows.slice(0, 4).map((w) => w.title)} />}
@@ -374,7 +374,7 @@ export function UseCasePageTemplate({
 
       <DeferredSection minHeight={380}>
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-          {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.15} />}
+          {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.6} scrim="center" />}
           <SectionHeader
             badge="Measured Impact"
             title="Expected operational outcomes"

@@ -18,7 +18,7 @@ export default function WhatIsCosContent() {
   return (
     <MarketingPageShell>
       <div className="relative isolate overflow-hidden">
-        <SectionMedia src="/marketing-media/what-is-a-compliance-operating-system.jpg" objectPosition="50% 35%" opacity={0.22} />
+        <SectionMedia src="/marketing-media/what-is-a-compliance-operating-system.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
       <ImmersiveHero
         theme="product"
         badge={{ icon: <BookOpen className="h-4 w-4" />, text: 'Definition' }}
@@ -277,7 +277,7 @@ export default function WhatIsCosContent() {
 
       {/* CTA */}
       <section className="relative isolate overflow-hidden mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
-        <SectionMedia src="/marketing-media/product.jpg" objectPosition="50% 40%" opacity={0.15} />
+        <SectionMedia src="/marketing-media/product.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
         <GlassCard intensity="intense" glow className="p-8 text-center sm:p-10">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             See the compliance operating system in action

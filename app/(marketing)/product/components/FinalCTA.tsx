@@ -12,7 +12,8 @@ export function FinalCTA() {
       <SectionMedia
         src="/marketing-media/features.jpg"
         objectPosition="50% 40%"
-        opacity={0.15}
+        opacity={0.6}
+        scrim="center"
       />
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>

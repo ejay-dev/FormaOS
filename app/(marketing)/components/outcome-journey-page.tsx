@@ -82,7 +82,8 @@ export function OutcomeJourneyPage({
           <SectionMedia
             src={mediaSrc}
             objectPosition="50% 35%"
-            opacity={0.22}
+            opacity={0.85}
+            scrim="center"
           />
         )}
         <ImmersiveHero
@@ -192,7 +193,8 @@ export function OutcomeJourneyPage({
             <SectionMedia
               src={mediaSrcSecondary}
               objectPosition="50% 40%"
-              opacity={0.15}
+              opacity={0.6}
+              scrim="center"
             />
           )}
           <SectionChoreography pattern="cascade" className="grid gap-4 md:grid-cols-2">

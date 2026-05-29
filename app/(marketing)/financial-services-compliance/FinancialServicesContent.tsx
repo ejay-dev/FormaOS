@@ -246,7 +246,8 @@ export default function FinancialServicesContent() {
         <SectionMedia
           src="/marketing-media/use-case-financial-services.jpg"
           objectPosition="50% 35%"
-          opacity={0.22}
+          opacity={0.5}
+          scrim="center"
         />
         <IndustryHero
         eyebrow="ASIC + APRA + AUSTRAC Ready"
@@ -965,7 +966,8 @@ export default function FinancialServicesContent() {
         <SectionMedia
           src="/marketing-media/enterprise.jpg"
           objectPosition="50% 40%"
-          opacity={0.15}
+          opacity={0.6}
+          scrim="center"
         />
         <IndustryCTA
           industry="Financial Services"

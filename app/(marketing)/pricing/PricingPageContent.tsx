@@ -274,7 +274,7 @@ export default function PricingPageContent() {
     <MarketingPageShell className="text-white pricing-page-flow">
       {/* Hero */}
       <div className="relative isolate overflow-hidden">
-        <SectionMedia src="/marketing-media/pricing.jpg" objectPosition="50% 35%" opacity={0.22} />
+        <SectionMedia src="/marketing-media/pricing.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
         <PricingHero />
       </div>
 

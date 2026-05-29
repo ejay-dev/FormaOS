@@ -233,7 +233,8 @@ export default function NDISProvidersContent() {
         <SectionMedia
           src="/marketing-media/ndis-compliance-system.jpg"
           objectPosition="50% 35%"
-          opacity={0.22}
+          opacity={0.5}
+          scrim="center"
         />
         <IndustryHero
         eyebrow="NDIS Commission Aligned Framework"
@@ -958,7 +959,8 @@ export default function NDISProvidersContent() {
         <SectionMedia
           src="/marketing-media/use-case-ndis-aged-care.jpg"
           objectPosition="50% 40%"
-          opacity={0.15}
+          opacity={0.6}
+          scrim="center"
         />
         <IndustryCTA
           industry="NDIS"

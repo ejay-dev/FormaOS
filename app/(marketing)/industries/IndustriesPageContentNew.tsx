@@ -46,7 +46,8 @@ export default function IndustriesPageContentNew() {
         <SectionMedia
           src="/marketing-media/industries.jpg"
           objectPosition="50% 35%"
-          opacity={0.22}
+          opacity={0.62}
+          scrim="center"
         />
         <IndustriesHero />
       </div>
@@ -88,7 +89,8 @@ export default function IndustriesPageContentNew() {
           <SectionMedia
             src="/marketing-media/use-case-ndis-aged-care.jpg"
             objectPosition="50% 40%"
-            opacity={0.15}
+            opacity={0.6}
+            scrim="center"
           />
           <IndustriesCTA />
         </div>

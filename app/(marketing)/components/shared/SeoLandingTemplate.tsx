@@ -82,7 +82,7 @@ export function SeoLandingTemplate({
   return (
     <MarketingPageShell>
       <section className="relative isolate overflow-hidden">
-        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.22} />}
+        {mediaSrc && <SectionMedia src={mediaSrc} objectPosition="50% 35%" opacity={0.85} scrim="center" />}
         <ImmersiveHero
           theme="product"
           badge={{ icon: badgeIcon, text: badge }}
@@ -267,7 +267,7 @@ export function SeoLandingTemplate({
 
       {/* Final CTA */}
       <section className="relative isolate overflow-hidden mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
-        {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.15} />}
+        {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.6} scrim="center" />}
         <GlassCard intensity="intense" glow className="p-8 text-center sm:p-10">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">{ctaTitle}</h2>
           <p className="mx-auto mt-4 max-w-3xl text-slate-300">{ctaDescription}</p>

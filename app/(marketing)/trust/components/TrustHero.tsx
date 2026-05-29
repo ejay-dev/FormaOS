@@ -17,7 +17,7 @@ export function TrustHero() {
 
   return (
     <div className="relative isolate overflow-hidden">
-      <SectionMedia src="/marketing-media/trust.jpg" objectPosition="50% 35%" opacity={0.22} />
+      <SectionMedia src="/marketing-media/trust.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
     <ImmersiveHero
       theme="trust"
       visualContent={<TrustHeroVisual />}

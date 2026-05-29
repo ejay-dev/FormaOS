@@ -15,7 +15,8 @@ export function ProductHeroSection() {
       <SectionMedia
         src="/marketing-media/product.jpg"
         objectPosition="50% 35%"
-        opacity={0.22}
+        opacity={0.5}
+        scrim="center"
       />
       <ProductScrollHero />
     </div>

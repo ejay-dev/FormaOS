@@ -276,7 +276,8 @@ export default function ChildcareComplianceContent() {
         <SectionMedia
           src="/marketing-media/childcare-compliance.jpg"
           objectPosition="50% 35%"
-          opacity={0.22}
+          opacity={0.5}
+          scrim="center"
         />
         <IndustryHero
         accent="emerald-cyan"
@@ -1015,7 +1016,8 @@ export default function ChildcareComplianceContent() {
         <SectionMedia
           src="/marketing-media/use-case-healthcare.jpg"
           objectPosition="50% 40%"
-          opacity={0.15}
+          opacity={0.6}
+          scrim="center"
         />
         <IndustryCTA
           industry="Childcare"

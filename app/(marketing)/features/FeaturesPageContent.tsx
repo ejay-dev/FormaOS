@@ -1831,7 +1831,8 @@ function EnterpriseCTA() {
         <SectionMedia
           src="/marketing-media/product.jpg"
           objectPosition="50% 40%"
-          opacity={0.15}
+          opacity={0.6}
+          scrim="center"
         />
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <div className="relative rounded-3xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
@@ -1953,7 +1954,8 @@ function FeaturesHero() {
       <SectionMedia
         src="/marketing-media/features.jpg"
         objectPosition="50% 35%"
-        opacity={0.22}
+        opacity={0.85}
+        scrim="center"
       />
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <motion.div

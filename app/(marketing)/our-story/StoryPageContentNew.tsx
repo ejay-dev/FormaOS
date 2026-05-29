@@ -112,7 +112,8 @@ function FounderQuote() {
         <SectionMedia
           src="/marketing-media/our-story.jpg"
           objectPosition="50% 35%"
-          opacity={0.22}
+          opacity={0.62}
+          scrim="center"
         />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -891,7 +892,8 @@ function FinalCTA() {
         <SectionMedia
           src="/marketing-media/about.jpg"
           objectPosition="50% 40%"
-          opacity={0.15}
+          opacity={0.62}
+          scrim="center"
         />
         <motion.div
           initial={{ opacity: 0, y: 40 }}

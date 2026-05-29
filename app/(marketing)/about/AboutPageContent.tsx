@@ -141,7 +141,8 @@ export default function AboutPageContent() {
           <SectionMedia
             src="/marketing-media/about.jpg"
             objectPosition="50% 35%"
-            opacity={0.22}
+            opacity={0.62}
+            scrim="center"
           />
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
@@ -643,7 +644,8 @@ export default function AboutPageContent() {
           <SectionMedia
             src="/marketing-media/our-story.jpg"
             objectPosition="50% 40%"
-            opacity={0.15}
+            opacity={0.62}
+            scrim="center"
           />
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal variant="depthSlide" range={[0, 0.3]}>

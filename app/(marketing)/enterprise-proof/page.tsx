@@ -113,7 +113,8 @@ export default function EnterpriseProofPage() {
         <SectionMedia
           src="/marketing-media/enterprise-proof.jpg"
           objectPosition="50% 35%"
-          opacity={0.22}
+          opacity={0.85}
+          scrim="center"
         />
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {proofAreas.map((area) => {
@@ -144,7 +145,8 @@ export default function EnterpriseProofPage() {
         <SectionMedia
           src="/marketing-media/enterprise.jpg"
           objectPosition="50% 40%"
-          opacity={0.15}
+          opacity={0.6}
+          scrim="center"
         />
         <div className="rounded-2xl border border-border bg-card p-8">
           <h2 className="text-xl font-semibold text-foreground">

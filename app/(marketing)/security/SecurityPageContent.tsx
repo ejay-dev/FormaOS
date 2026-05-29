@@ -42,7 +42,7 @@ const SecurityCTA = dynamic(
 function SecurityReviewBanner() {
   return (
     <section className="relative isolate overflow-hidden mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.15} />
+      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div className="flex items-start gap-4">
