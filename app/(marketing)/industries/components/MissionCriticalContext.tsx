@@ -24,7 +24,7 @@ export function MissionCriticalContext() {
     <section className="relative py-32 overflow-hidden">
       {/* Ambient Background */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/[0.04] rounded-full blur-3xl"
         animate={
           allowAmbientMotion
             ? {
@@ -54,7 +54,7 @@ export function MissionCriticalContext() {
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               Built for Environments Where
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 {' '}
                 Accountability Is Non-Negotiable
               </span>

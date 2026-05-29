@@ -38,7 +38,7 @@ export function HealthcareSection() {
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               Integrated Health Service
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 {' '}
                 Compliance Frameworks
               </span>
@@ -110,7 +110,7 @@ export function HealthcareSection() {
                 href="/contact"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all"
+                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-full bg-foreground text-background font-semibold shadow-lg hover:opacity-90 transition-all"
               >
                 Healthcare Demo
                 <ArrowRight className="ml-2 h-4 w-4" />

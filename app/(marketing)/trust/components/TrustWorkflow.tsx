@@ -173,13 +173,13 @@ export function TrustWorkflow() {
             </div>
             <motion.div
               className="relative overflow-hidden rounded-lg border border-white/[0.06] bg-slate-950/60 p-3"
-              style={{ boxShadow: 'inset 0 0 28px rgba(34,211,238,0.06)' }}
+              style={{ boxShadow: 'inset 0 0 28px rgba(161, 161, 170,0.06)' }}
             >
               <motion.div
                 className="pointer-events-none absolute inset-0"
                 style={{
                   background:
-                    'radial-gradient(circle at 50% 50%, rgba(34,211,238,0.16), transparent 68%)',
+                    'radial-gradient(circle at 50% 50%, rgba(161, 161, 170,0.16), transparent 68%)',
                   opacity: reducedMotion ? 0.35 : graphGlow,
                 }}
               />
@@ -197,8 +197,8 @@ export function TrustWorkflow() {
                     x2="100%"
                     y2="0%"
                   >
-                    <stop offset="0%" stopColor="rgba(34,211,238,0.1)" />
-                    <stop offset="100%" stopColor="rgba(34,211,238,0.9)" />
+                    <stop offset="0%" stopColor="rgba(161, 161, 170,0.1)" />
+                    <stop offset="100%" stopColor="rgba(161, 161, 170,0.9)" />
                   </linearGradient>
                   <linearGradient
                     id="trustPathB"
@@ -228,9 +228,9 @@ export function TrustWorkflow() {
                     x2="100%"
                     y2="0%"
                   >
-                    <stop offset="0%" stopColor="rgba(34,211,238,0.0)" />
-                    <stop offset="60%" stopColor="rgba(34,211,238,0.6)" />
-                    <stop offset="100%" stopColor="rgba(34,211,238,1)" />
+                    <stop offset="0%" stopColor="rgba(161, 161, 170,0.0)" />
+                    <stop offset="60%" stopColor="rgba(161, 161, 170,0.6)" />
+                    <stop offset="100%" stopColor="rgba(161, 161, 170,1)" />
                   </linearGradient>
                   <linearGradient
                     id="trustGlowB"
@@ -324,7 +324,7 @@ export function TrustWorkflow() {
 
                 {/* ── Nodes with in-view pulse ── */}
                 {[
-                  { x: 80, y: 140, color: 'rgba(34,211,238,0.9)' },
+                  { x: 80, y: 140, color: 'rgba(161, 161, 170,0.9)' },
                   { x: 300, y: 95, color: 'rgba(59,130,246,0.9)' },
                   { x: 500, y: 90, color: 'rgba(16,185,129,0.9)' },
                   { x: 600, y: 55, color: 'rgba(251,191,36,0.95)' },

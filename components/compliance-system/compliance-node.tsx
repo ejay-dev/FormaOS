@@ -63,7 +63,7 @@ const NODE_CONFIG: Record<NodeType, {
   policy: {
     icon: FileText,
     baseClass: "border-cyan-400/40 bg-cyan-500/10",
-    activeGlow: "shadow-[0_0_24px_rgba(0,212,251,0.5)]",
+    activeGlow: "shadow-lg",
     shape: "rounded-full", // Pill shape
     borderColor: "border-cyan-400/60",
     bgGradient: "bg-gradient-to-br from-cyan-500/20 via-cyan-500/10 to-transparent",
@@ -72,7 +72,7 @@ const NODE_CONFIG: Record<NodeType, {
   control: {
     icon: Shield,
     baseClass: "border-teal-400/40 bg-teal-500/10",
-    activeGlow: "shadow-[0_0_24px_rgba(20,184,166,0.5)]",
+    activeGlow: "shadow-lg",
     shape: "rounded-lg", // Square-ish
     borderColor: "border-teal-400/60",
     bgGradient: "bg-gradient-to-br from-teal-500/20 via-teal-500/10 to-transparent",

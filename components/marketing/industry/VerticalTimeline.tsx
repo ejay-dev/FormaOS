@@ -44,7 +44,7 @@ export function VerticalTimeline({ steps }: VerticalTimelineProps) {
           {/* Connecting line */}
           <div className="hidden lg:block absolute left-[50%] top-0 bottom-0 w-px">
             <motion.div
-              className="h-full w-full bg-gradient-to-b from-cyan-500/30 via-violet-500/20 to-emerald-500/30"
+              className="h-full w-full bg-gradient-to-b from-zinc-600/30 via-zinc-500/20 to-zinc-600/30"
               initial={shouldReduceMotion ? false : { scaleY: 0 }}
               whileInView={shouldReduceMotion ? undefined : { scaleY: 1 }}
               viewport={{ once: true, margin: '-100px' }}

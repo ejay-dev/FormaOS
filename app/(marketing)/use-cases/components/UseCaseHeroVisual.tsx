@@ -14,7 +14,7 @@ interface UseCaseHeroVisualProps {
 
 const STEP_POSITIONS = [
   { angle: -60, z: -15, color: 'rgba(52,211,153,0.6)' },
-  { angle: 30, z: -30, color: 'rgba(34,211,238,0.6)' },
+  { angle: 30, z: -30, color: 'rgba(113,113,122,0.6)' },
   { angle: 150, z: -20, color: 'rgba(59,130,246,0.6)' },
   { angle: -150, z: -40, color: 'rgba(139,92,246,0.6)' },
 ];

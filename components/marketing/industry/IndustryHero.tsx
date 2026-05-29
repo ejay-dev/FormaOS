@@ -71,7 +71,7 @@ export function IndustryHero({
       ) : (
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a] via-[#0d1117] to-[#0a0e1a]" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(0,212,251,0.08)_0%,transparent_70%)]" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(113,113,122,0.08)_0%,transparent_70%)]" />
           <div className="absolute bottom-0 left-1/4 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(160,131,255,0.06)_0%,transparent_70%)]" />
           <div
             className="absolute inset-0 opacity-[0.03]"
@@ -119,7 +119,7 @@ export function IndustryHero({
             >
               <Link
                 href={primaryCta.href}
-                className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 px-7 py-3.5 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:shadow-cyan-500/30 hover:brightness-110"
+                className="group inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-7 py-3.5 text-sm font-semibold shadow-lg transition-all hover:opacity-90"
               >
                 {primaryCta.label}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -190,7 +190,7 @@ export function IndustryHero({
               </div>
             </div>
             {/* Glow effect behind dashboard */}
-            <div className="absolute -inset-4 -z-10 rounded-3xl bg-gradient-to-r from-cyan-500/10 via-violet-500/5 to-cyan-500/10 blur-xl" />
+            <div className="absolute -inset-4 -z-10 rounded-3xl bg-white/[0.04] blur-xl" />
           </motion.div>
         </div>
       </div>

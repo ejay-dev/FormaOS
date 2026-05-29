@@ -156,7 +156,7 @@ export function AllPlansInclude() {
                 {/* Glow ring behind icon – visible on hover */}
                 <div className="absolute inset-[-6px] rounded-2xl bg-emerald-500/0 group-hover:bg-emerald-500/15 transition-all duration-500 blur-md" />
                 <motion.div
-                  className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center"
+                  className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 border border-emerald-500/30 flex items-center justify-center"
                   whileHover={
                     shouldReduceMotion
                       ? undefined
@@ -188,7 +188,7 @@ export function AllPlansInclude() {
           range={[0.05, 0.4]}
           className="mt-12 max-w-xl mx-auto"
         >
-          <DemoComplianceChain glowColor="from-emerald-500/15 to-cyan-500/15" />
+          <DemoComplianceChain glowColor="from-emerald-500/15 to-emerald-500/10" />
         </ScrollReveal>
 
         {/* Bottom Note */}

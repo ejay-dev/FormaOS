@@ -2119,7 +2119,7 @@ export function ProductLiveDemo() {
               app.formaos.com.au / {activeView}
             </span>
           </div>
-          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
             <span className="text-[8px] font-bold text-white">FO</span>
           </div>
         </div>
@@ -2184,7 +2184,7 @@ export function ProductLiveDemo() {
               </nav>
               <div className="mt-auto pt-2 pb-3 px-3 border-t border-white/[0.06]">
                 <div className="flex items-center gap-2 mt-1">
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 shrink-0 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 shrink-0 flex items-center justify-center">
                     <span className="text-[7px] font-bold text-white">NM</span>
                   </div>
                   <span className="text-[10px] text-white/40 truncate">
@@ -2256,7 +2256,7 @@ export function ProductLiveDemo() {
                     </button>
                   </>
                 )}
-                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
                   <span className="text-[7px] font-bold text-white">E</span>
                 </div>
                 <span className="rounded bg-amber-500/15 border border-amber-500/25 px-1.5 py-0.5 text-[9px] font-medium text-amber-400">

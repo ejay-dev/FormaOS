@@ -11,7 +11,7 @@ const SHIELD_W = 120;
 const SHIELD_H = 140;
 
 const RINGS = [
-  { radius: 200, color: 'rgba(6,182,212,0.3)', speed: 12, z: -20, parallax: 0.5 },
+  { radius: 200, color: 'rgba(161, 161, 170,0.3)', speed: 12, z: -20, parallax: 0.5 },
   { radius: 260, color: 'rgba(59,130,246,0.25)', speed: 18, z: -40, parallax: 0.7 },
   { radius: 320, color: 'rgba(139,92,246,0.2)', speed: 25, z: -60, parallax: 1.0 },
 ] as const;
@@ -92,7 +92,7 @@ function SecurityHeroVisualInner() {
               height: node.size,
               left: node.x - node.size / 2,
               top: node.y - node.size / 2,
-              boxShadow: '0 0 6px rgba(6,182,212,0.3)',
+              boxShadow: '0 0 6px rgba(161, 161, 170,0.3)',
             }}
             initial={animate ? { opacity: 0, scale: 0 } : false}
             animate={
@@ -167,7 +167,7 @@ function SecurityHeroVisualInner() {
               'inset 0 -2px 0 rgba(0,0,0,0.3)',
               'inset 2px 0 0 rgba(255,255,255,0.06)',
               'inset -2px 0 0 rgba(0,0,0,0.15)',
-              '0 0 80px rgba(6,182,212,0.08)',
+              '0 0 80px rgba(161, 161, 170,0.08)',
               '0 25px 60px rgba(0,0,0,0.5)',
               '0 8px 20px rgba(0,0,0,0.4)',
             ].join(', '),
@@ -212,7 +212,7 @@ function SecurityHeroVisualInner() {
               height: SHIELD_H,
               left: `calc(50% - ${SHIELD_W / 2}px)`,
               top: `calc(50% - ${SHIELD_H / 2}px)`,
-              filter: 'drop-shadow(0 0 20px rgba(6,182,212,0.4)) drop-shadow(0 0 40px rgba(6,182,212,0.15))',
+              filter: 'drop-shadow(0 0 20px rgba(161, 161, 170,0.4)) drop-shadow(0 0 40px rgba(161, 161, 170,0.15))',
             }}
             initial={animate ? { opacity: 0 } : false}
             animate={{ opacity: 1 }}
@@ -222,7 +222,7 @@ function SecurityHeroVisualInner() {
             <motion.path
               d="M60 8 L108 34 L108 76 Q108 118 60 138 Q12 118 12 76 L12 34 Z"
               fill="none"
-              stroke="rgba(6,182,212,0.6)"
+              stroke="rgba(161, 161, 170,0.6)"
               strokeWidth="2.5"
               strokeLinejoin="round"
               initial={animate ? { pathLength: 0 } : false}
@@ -236,7 +236,7 @@ function SecurityHeroVisualInner() {
             {/* Shield inner glow fill */}
             <path
               d="M60 16 L100 38 L100 74 Q100 112 60 130 Q20 112 20 74 L20 38 Z"
-              fill="rgba(6,182,212,0.05)"
+              fill="rgba(161, 161, 170,0.05)"
             />
             {/* Lock body */}
             <motion.rect
@@ -246,7 +246,7 @@ function SecurityHeroVisualInner() {
               height="24"
               rx="4"
               fill="none"
-              stroke="rgba(6,182,212,0.6)"
+              stroke="rgba(161, 161, 170,0.6)"
               strokeWidth="2"
               initial={animate ? { pathLength: 0 } : false}
               animate={{ pathLength: 1 }}
@@ -260,7 +260,7 @@ function SecurityHeroVisualInner() {
             <motion.path
               d="M50 64 V56 Q50 44 60 44 Q70 44 70 56 V64"
               fill="none"
-              stroke="rgba(6,182,212,0.6)"
+              stroke="rgba(161, 161, 170,0.6)"
               strokeWidth="2"
               strokeLinecap="round"
               initial={animate ? { pathLength: 0 } : false}
@@ -277,8 +277,8 @@ function SecurityHeroVisualInner() {
               animate={{ opacity: 1 }}
               transition={animate ? { duration: 0.5, delay: 1.4 } : { duration: 0 }}
             >
-              <circle cx="60" cy="74" r="3.5" fill="rgba(6,182,212,0.7)" />
-              <rect x="58.5" y="76" width="3" height="6" rx="1" fill="rgba(6,182,212,0.7)" />
+              <circle cx="60" cy="74" r="3.5" fill="rgba(161, 161, 170,0.7)" />
+              <rect x="58.5" y="76" width="3" height="6" rx="1" fill="rgba(161, 161, 170,0.7)" />
             </motion.g>
           </motion.svg>
 
@@ -291,7 +291,7 @@ function SecurityHeroVisualInner() {
               left: 'calc(50% - 80px)',
               top: 'calc(50% - 80px)',
               background:
-                'radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)',
+                'radial-gradient(circle, rgba(161, 161, 170,0.12) 0%, transparent 70%)',
             }}
             animate={
               animate

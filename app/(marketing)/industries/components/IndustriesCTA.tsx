@@ -17,7 +17,7 @@ export function IndustriesCTA() {
       {/* Premium Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-to-r from-emerald-500/10 via-cyan-500/5 to-blue-500/10 rounded-full blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-white/[0.04] rounded-full blur-3xl"
           animate={
             allowAmbientMotion
               ? {
@@ -50,7 +50,7 @@ export function IndustriesCTA() {
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 text-white">
                   If your organization operates under regulation,
                   <br className="hidden lg:inline" />
-                  <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     FormaOS provides the system to run compliance as part of
                     daily operations.
                   </span>
@@ -58,7 +58,7 @@ export function IndustriesCTA() {
               </ScrollReveal>
 
               <ScrollReveal variant="scaleUp" range={[0.08, 0.4]}>
-                <div className="w-24 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 mx-auto rounded-full" />
+                <div className="w-24 h-1 bg-zinc-700 mx-auto rounded-full" />
               </ScrollReveal>
             </div>
 
@@ -117,10 +117,9 @@ export function IndustriesCTA() {
                         href={demoHref('industries_cta')}
                         whileHover={{
                           scale: 1.05,
-                          boxShadow: '0 0 40px rgba(16, 185, 129, 0.4)',
                         }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-semibold text-lg shadow-lg shadow-emerald-500/25 transition-all"
+                        className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg shadow-lg hover:opacity-90 transition-all"
                       >
                         Request Industry Demo
                       </motion.a>

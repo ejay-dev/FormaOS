@@ -93,8 +93,8 @@ const INDUSTRY_CONFIGS: Record<string, IndustryOnboardingConfig> = {
   healthcare: {
     industry: 'healthcare',
     displayName: 'Healthcare & Medical',
-    color: 'from-blue-500 to-cyan-500',
-    gradient: 'from-blue-500/20 to-cyan-500/20',
+    color: 'from-zinc-300 to-zinc-500',
+    gradient: 'from-zinc-700/20 to-zinc-900/20',
     features: [
       {
         icon: Users,
@@ -149,8 +149,8 @@ const INDUSTRY_CONFIGS: Record<string, IndustryOnboardingConfig> = {
   aged_care: {
     industry: 'aged_care',
     displayName: 'Aged Care',
-    color: 'from-emerald-500 to-teal-500',
-    gradient: 'from-emerald-500/20 to-teal-500/20',
+    color: 'from-zinc-300 to-zinc-500',
+    gradient: 'from-zinc-700/20 to-zinc-900/20',
     features: [
       {
         icon: Users,

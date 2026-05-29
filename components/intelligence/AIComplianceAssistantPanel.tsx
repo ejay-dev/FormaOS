@@ -22,7 +22,7 @@ export function AIComplianceAssistantPanel({
   suggestions: Suggestion[];
 }) {
   return (
-    <section className="rounded-2xl border border-cyan-400/20 bg-gradient-to-br from-cyan-500/10 to-blue-600/10 p-6">
+    <section className="rounded-2xl border border-cyan-400/20 bg-white/[0.04] p-6">
       <div className="mb-4 flex items-center gap-2">
         <Sparkles className="h-5 w-5 text-cyan-300" />
         <h2 className="text-lg font-semibold text-foreground">

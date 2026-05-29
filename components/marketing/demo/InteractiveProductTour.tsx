@@ -43,8 +43,8 @@ const TOUR_STEPS: TourStep[] = [
       'Select from pre-built frameworks like ISO 27001, NDIS Practice Standards, or Essential Eight -- or define your own. FormaOS maps every obligation to controls, owners, and evidence requirements automatically.',
     screenshot: '/marketing/screenshots/compliance.png',
     icon: Layers,
-    accent: 'from-cyan-500 to-blue-500',
-    glowColor: 'rgba(6, 182, 212, 0.35)',
+    accent: 'from-zinc-700 to-zinc-900',
+    glowColor: 'rgba(113, 113, 122, 0.35)',
   },
   {
     id: 2,
@@ -267,7 +267,7 @@ export function InteractiveProductTour() {
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
             Four Steps to{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+            <span className="text-white">
               Continuous Compliance
             </span>
           </h2>

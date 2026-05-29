@@ -23,14 +23,14 @@ export default function Image() {
         }}
       >
         <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: '#00d4fb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: '#a1a1aa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ color: '#030712', fontSize: 22, fontWeight: 900 }}>F</div>
           </div>
           <span style={{ color: '#ffffff', fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em' }}>FormaOS</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div style={{ color: '#00d4fb', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+          <div style={{ color: '#a1a1aa', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
             Security & Compliance Infrastructure
           </div>
           <div style={{ color: '#ffffff', fontSize: 52, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', maxWidth: 780 }}>
@@ -61,7 +61,7 @@ export default function Image() {
           position: 'absolute', right: 60, top: '40%',
           width: 360, height: 360,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,212,251,0.08) 0%, transparent 65%)',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 65%)',
         }} />
       </div>
     ),

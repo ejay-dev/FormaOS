@@ -34,7 +34,7 @@ const headerStyle = {
   padding: '24px 32px',
   textAlign: 'center' as const,
   background: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  borderBottom: '1px solid rgba(34,211,238,0.2)',
+  borderBottom: '1px solid rgba(113,113,122,0.2)',
 };
 const contentStyle = { padding: '32px' };
 
@@ -49,7 +49,7 @@ function EmailShell({ children }: { children: React.ReactNode }) {
     <div style={main}>
       <div style={container}>
         <div style={headerStyle}>
-          <div style={{ color: '#22d3ee', fontSize: '24px', fontWeight: 800 }}>
+          <div style={{ color: '#fafafa', fontSize: '24px', fontWeight: 800 }}>
             FormaOS
           </div>
           <div
@@ -81,27 +81,27 @@ const templates: TemplateConfig[] = [
         </h1>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
           You&apos;re set up for{' '}
-          <strong style={{ color: '#22d3ee' }}>Healthcare</strong> compliance.
+          <strong style={{ color: '#e4e4e7' }}>Healthcare</strong> compliance.
         </p>
         <div
           style={{
             background: '#0f172a',
-            border: '1px solid rgba(34,211,238,0.15)',
+            border: '1px solid rgba(113,113,122,0.15)',
             borderRadius: 10,
             padding: '16px 20px',
             margin: '20px 0',
           }}
         >
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            <strong style={{ color: '#22d3ee' }}>1.</strong> Activate your first
+            <strong style={{ color: '#e4e4e7' }}>1.</strong> Activate your first
             framework
           </p>
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            <strong style={{ color: '#22d3ee' }}>2.</strong> Create your first
+            <strong style={{ color: '#e4e4e7' }}>2.</strong> Create your first
             obligation
           </p>
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            <strong style={{ color: '#22d3ee' }}>3.</strong> Invite your team
+            <strong style={{ color: '#e4e4e7' }}>3.</strong> Invite your team
           </p>
         </div>
         <div style={{ textAlign: 'center', margin: '24px 0' }}>
@@ -110,7 +110,7 @@ const templates: TemplateConfig[] = [
             style={{
               display: 'inline-block',
               padding: '14px 32px',
-              backgroundColor: '#22d3ee',
+              backgroundColor: '#fafafa',
               borderRadius: 8,
               color: '#0f172a',
               fontSize: 15,
@@ -137,7 +137,7 @@ const templates: TemplateConfig[] = [
         </h1>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
           We have pre-built frameworks for{' '}
-          <strong style={{ color: '#22d3ee' }}>Healthcare</strong> ready to go.
+          <strong style={{ color: '#e4e4e7' }}>Healthcare</strong> ready to go.
           Takes less than 2 minutes.
         </p>
         <div style={{ textAlign: 'center', margin: '24px 0' }}>
@@ -146,7 +146,7 @@ const templates: TemplateConfig[] = [
             style={{
               display: 'inline-block',
               padding: '14px 32px',
-              backgroundColor: '#22d3ee',
+              backgroundColor: '#fafafa',
               borderRadius: 8,
               color: '#0f172a',
               fontSize: 15,
@@ -171,7 +171,7 @@ const templates: TemplateConfig[] = [
         <div
           style={{
             background: '#0f172a',
-            border: '1px solid rgba(34,211,238,0.15)',
+            border: '1px solid rgba(113,113,122,0.15)',
             borderRadius: 10,
             padding: '16px 20px',
             margin: '20px 0',
@@ -179,16 +179,16 @@ const templates: TemplateConfig[] = [
         >
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
             Obligations created:{' '}
-            <strong style={{ color: '#22d3ee' }}>12</strong>
+            <strong style={{ color: '#e4e4e7' }}>12</strong>
           </p>
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            Tasks completed: <strong style={{ color: '#22d3ee' }}>5</strong>
+            Tasks completed: <strong style={{ color: '#e4e4e7' }}>5</strong>
           </p>
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            Team members: <strong style={{ color: '#22d3ee' }}>3</strong>
+            Team members: <strong style={{ color: '#e4e4e7' }}>3</strong>
           </p>
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            Compliance score: <strong style={{ color: '#22d3ee' }}>32%</strong>
+            Compliance score: <strong style={{ color: '#e4e4e7' }}>32%</strong>
           </p>
         </div>
       </EmailShell>
@@ -204,14 +204,14 @@ const templates: TemplateConfig[] = [
         </h1>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
           You&apos;ve built{' '}
-          <strong style={{ color: '#22d3ee' }}>12 obligations</strong> and
+          <strong style={{ color: '#e4e4e7' }}>12 obligations</strong> and
           collected{' '}
-          <strong style={{ color: '#22d3ee' }}>8 evidence items</strong>.
+          <strong style={{ color: '#e4e4e7' }}>8 evidence items</strong>.
         </p>
         <div
           style={{
             background: '#0f172a',
-            border: '1px solid rgba(34,211,238,0.15)',
+            border: '1px solid rgba(113,113,122,0.15)',
             borderRadius: 10,
             padding: '16px 20px',
             margin: '20px 0',
@@ -232,7 +232,7 @@ const templates: TemplateConfig[] = [
             style={{
               display: 'inline-block',
               padding: '14px 32px',
-              backgroundColor: '#22d3ee',
+              backgroundColor: '#fafafa',
               borderRadius: 8,
               color: '#0f172a',
               fontSize: 15,
@@ -257,7 +257,7 @@ const templates: TemplateConfig[] = [
         <div
           style={{
             background: '#0f172a',
-            border: '1px solid rgba(34,211,238,0.15)',
+            border: '1px solid rgba(113,113,122,0.15)',
             borderRadius: 10,
             padding: '16px 20px',
             margin: '20px 0',
@@ -301,7 +301,7 @@ const templates: TemplateConfig[] = [
         <h1 style={{ color: '#f1f5f9', fontSize: 22 }}>Your trial has ended</h1>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
           Your trial has ended but{' '}
-          <strong style={{ color: '#22d3ee' }}>your data is safe</strong>. We
+          <strong style={{ color: '#e4e4e7' }}>your data is safe</strong>. We
           keep it for 30 days.
         </p>
         <div style={{ textAlign: 'center', margin: '24px 0' }}>
@@ -310,7 +310,7 @@ const templates: TemplateConfig[] = [
             style={{
               display: 'inline-block',
               padding: '14px 32px',
-              backgroundColor: '#22d3ee',
+              backgroundColor: '#fafafa',
               borderRadius: 8,
               color: '#0f172a',
               fontSize: 15,
@@ -333,7 +333,7 @@ const templates: TemplateConfig[] = [
         <div
           style={{
             background: '#0f172a',
-            border: '1px solid rgba(34,211,238,0.15)',
+            border: '1px solid rgba(113,113,122,0.15)',
             borderRadius: 10,
             padding: '16px 20px',
             margin: '20px 0',
@@ -375,7 +375,7 @@ const templates: TemplateConfig[] = [
     subject: 'Payment successful — FormaOS access restored',
     body: (
       <EmailShell>
-        <h1 style={{ color: '#22d3ee', fontSize: 22 }}>
+        <h1 style={{ color: '#f1f5f9', fontSize: 22 }}>
           ✅ Payment successful
         </h1>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
@@ -396,20 +396,20 @@ const templates: TemplateConfig[] = [
         <div
           style={{
             background: '#0f172a',
-            border: '1px solid rgba(34,211,238,0.15)',
+            border: '1px solid rgba(113,113,122,0.15)',
             borderRadius: 10,
             padding: '16px 20px',
             margin: '20px 0',
           }}
         >
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            <span style={{ color: '#22d3ee' }}>✓</span> Advanced reporting
+            <span style={{ color: '#e4e4e7' }}>✓</span> Advanced reporting
           </p>
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            <span style={{ color: '#22d3ee' }}>✓</span> Governance controls
+            <span style={{ color: '#e4e4e7' }}>✓</span> Governance controls
           </p>
           <p style={{ color: '#e2e8f0', fontSize: 14, margin: '4px 0' }}>
-            <span style={{ color: '#22d3ee' }}>✓</span> Workflow automation
+            <span style={{ color: '#e4e4e7' }}>✓</span> Workflow automation
           </p>
         </div>
       </EmailShell>
@@ -425,7 +425,7 @@ const templates: TemplateConfig[] = [
         </h1>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
           Your FormaOS plan is now{' '}
-          <strong style={{ color: '#22d3ee' }}>Starter</strong>. Your data is
+          <strong style={{ color: '#e4e4e7' }}>Starter</strong>. Your data is
           all still there.
         </p>
       </EmailShell>
@@ -441,7 +441,7 @@ const templates: TemplateConfig[] = [
         </h1>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
           Your subscription has been cancelled. Your data is kept for{' '}
-          <strong style={{ color: '#22d3ee' }}>30 days</strong>.
+          <strong style={{ color: '#e4e4e7' }}>30 days</strong>.
         </p>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
           What could we have done better? Just reply to this email.
@@ -459,7 +459,7 @@ const templates: TemplateConfig[] = [
         </h1>
         <p style={{ color: '#94a3b8', fontSize: 15, lineHeight: 1.7 }}>
           <strong style={{ color: '#f1f5f9' }}>Alex Chen</strong> has invited
-          you to join <strong style={{ color: '#22d3ee' }}>Acme Corp</strong> on
+          you to join <strong style={{ color: '#e4e4e7' }}>Acme Corp</strong> on
           FormaOS.
         </p>
         <div style={{ textAlign: 'center', margin: '24px 0' }}>
@@ -468,7 +468,7 @@ const templates: TemplateConfig[] = [
             style={{
               display: 'inline-block',
               padding: '14px 32px',
-              backgroundColor: '#22d3ee',
+              backgroundColor: '#fafafa',
               borderRadius: 8,
               color: '#0f172a',
               fontSize: 15,

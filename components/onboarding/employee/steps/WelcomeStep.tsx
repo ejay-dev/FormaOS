@@ -21,7 +21,7 @@ export function WelcomeStep({
     <div className="flex flex-col items-center text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* Avatar / Greeting Icon */}
       <div className="relative">
-        <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-500/20 via-blue-500/20 to-indigo-500/20 border border-cyan-500/30 shadow-2xl shadow-cyan-500/10">
+        <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-zinc-700/20 to-zinc-900/20 border border-cyan-500/30 shadow-2xl">
           <Sparkles className="h-10 w-10 text-cyan-400" />
         </div>
         <div className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 shadow-lg">
@@ -33,7 +33,7 @@ export function WelcomeStep({
       <div className="space-y-3">
         <h1 className="text-4xl font-black text-slate-100 tracking-tight">
           Welcome,{' '}
-          <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+          <span className="text-foreground">
             {firstName}
           </span>
           .
@@ -92,7 +92,7 @@ export function WelcomeStep({
       {/* CTA */}
       <button
         onClick={onNext}
-        className="group flex w-full max-w-sm items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:brightness-110 hover:shadow-cyan-500/30 active:scale-[0.98]"
+        className="group flex w-full max-w-sm items-center justify-center gap-2.5 rounded-2xl bg-foreground px-6 py-4 text-sm font-bold text-background shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
       >
         Let&apos;s go
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

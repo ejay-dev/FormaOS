@@ -6,20 +6,20 @@ type StatusTone = 'valid' | 'warning' | 'blocked' | 'live' | 'neutral';
 
 const glowByVariant: Record<SystemSectionVariant, string> = {
   cyan:
-    'bg-[radial-gradient(circle_at_16%_10%,rgba(45,212,191,0.13),transparent_30%),radial-gradient(circle_at_82%_74%,rgba(20,184,166,0.08),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_16%_10%,rgba(161,161,170,0.13),transparent_30%),radial-gradient(circle_at_82%_74%,rgba(113,113,122,0.08),transparent_34%)]',
   emerald:
-    'bg-[radial-gradient(circle_at_18%_12%,rgba(52,211,153,0.12),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(45,212,191,0.08),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_18%_12%,rgba(52,211,153,0.12),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(113,113,122,0.08),transparent_34%)]',
   amber:
-    'bg-[radial-gradient(circle_at_18%_12%,rgba(245,158,11,0.1),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(45,212,191,0.07),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_18%_12%,rgba(245,158,11,0.1),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(113,113,122,0.07),transparent_34%)]',
   red:
-    'bg-[radial-gradient(circle_at_18%_12%,rgba(248,113,113,0.1),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(45,212,191,0.07),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_18%_12%,rgba(248,113,113,0.1),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(113,113,122,0.07),transparent_34%)]',
 };
 
 const statusTone: Record<StatusTone, string> = {
   valid: 'border-emerald-300/25 bg-emerald-300/[0.09] text-emerald-100 shadow-[0_0_22px_rgba(52,211,153,0.12)]',
   warning: 'border-amber-300/25 bg-amber-300/[0.09] text-amber-100 shadow-[0_0_22px_rgba(245,158,11,0.11)]',
   blocked: 'border-red-300/30 bg-red-500/[0.1] text-red-100 shadow-[0_0_28px_rgba(248,113,113,0.16)]',
-  live: 'border-cyan-300/25 bg-cyan-300/[0.09] text-cyan-100 shadow-[0_0_22px_rgba(45,212,191,0.12)]',
+  live: 'border-cyan-300/25 bg-cyan-300/[0.09] text-cyan-100',
   neutral: 'border-slate-300/15 bg-white/[0.06] text-slate-200',
 };
 
@@ -58,7 +58,7 @@ export function SystemSection({
 
 export function AccentText({ children }: { children: ReactNode }) {
   return (
-    <span className="bg-gradient-to-r from-cyan-200 via-teal-200 to-emerald-300 bg-clip-text text-transparent">
+    <span className="text-foreground">
       {children}
     </span>
   );
@@ -135,7 +135,7 @@ export function SystemFrame({
 }) {
   return (
     <div className={`${systemPanelClass} relative overflow-hidden p-3 ${className}`}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(45,212,191,0.08),transparent_40%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(161,161,170,0.08),transparent_40%)]" />
       <div className="relative overflow-hidden rounded-xl border border-white/[0.07] bg-slate-950/72">
         <div className="flex items-center justify-between gap-4 border-b border-white/[0.07] px-4 py-3">
           <div className="flex items-center gap-2">

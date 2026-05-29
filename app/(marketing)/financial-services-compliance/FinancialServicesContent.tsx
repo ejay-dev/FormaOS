@@ -247,7 +247,7 @@ export default function FinancialServicesContent() {
         headline={
           <>
             Your AFS Licence Obligations.{' '}
-            <span className="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Governed.
             </span>
           </>
@@ -513,7 +513,7 @@ export default function FinancialServicesContent() {
             description:
               'Upload your existing ASIC, APRA, or AUSTRAC obligation spreadsheets - or start with our pre-built framework packs. FormaOS maps every obligation to its regulation reference, assigns owners, and sets review cycles automatically.',
             gradient:
-              'from-violet-500/20 to-cyan-500/20 border-violet-500/30 text-violet-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Framework Activation"
@@ -536,7 +536,7 @@ export default function FinancialServicesContent() {
             description:
               'Every obligation gets a named owner, escalation path, and linked evidence requirement. Your team uploads policies, procedures, and attestations against each obligation - building a live evidence repository from day one.',
             gradient:
-              'from-cyan-500/20 to-violet-500/20 border-cyan-500/30 text-cyan-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Obligation Ownership"
@@ -571,7 +571,7 @@ export default function FinancialServicesContent() {
             description:
               'Real-time dashboards show RAG status across every framework. Generate board packs, breach registers, and regulator-ready audit exports on demand. When ASIC, APRA, or AUSTRAC asks for evidence, you export it in minutes - not weeks.',
             gradient:
-              'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Compliance Status"

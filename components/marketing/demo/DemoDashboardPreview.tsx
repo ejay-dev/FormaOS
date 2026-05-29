@@ -18,7 +18,7 @@ interface DemoDashboardPreviewProps {
 }
 
 const defaultFrameworks = [
-  { name: 'ISO 27001', score: 91, color: '#06b6d4' },
+  { name: 'ISO 27001', score: 91, color: '#a1a1aa' },
   { name: 'SOC 2', score: 84, color: '#3b82f6' },
   { name: 'HIPAA', score: 88, color: '#8b5cf6' },
 ];
@@ -34,7 +34,7 @@ export default function DemoDashboardPreview({
   complianceScore = 87,
   frameworks = defaultFrameworks,
   kpis = defaultKpis,
-  glowColor = 'from-cyan-500/15 to-blue-500/15',
+  glowColor = 'from-white/[0.04] to-white/[0.02]',
 }: DemoDashboardPreviewProps) {
   const prefersReducedMotion = useReducedMotion();
   const circumference = 2 * Math.PI * 32;
@@ -48,7 +48,7 @@ export default function DemoDashboardPreview({
         {/* Top bar */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="h-5 w-5 rounded bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
+            <div className="h-5 w-5 rounded bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
               <span className="text-[7px] font-bold text-white">F</span>
             </div>
             <span className="text-[10px] font-medium text-muted-foreground">Compliance Dashboard</span>
@@ -78,7 +78,7 @@ export default function DemoDashboardPreview({
               />
               <defs>
                 <linearGradient id="dashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#06b6d4" />
+                  <stop offset="0%" stopColor="#a1a1aa" />
                   <stop offset="100%" stopColor="#3b82f6" />
                 </linearGradient>
               </defs>

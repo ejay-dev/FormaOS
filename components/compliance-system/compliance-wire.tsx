@@ -49,15 +49,15 @@ const WIRE_CONFIG: Record<WireType, {
   description: string;
 }> = {
   "policy-control": {
-    color: "#00d4fb", // cyan
+    color: "#71717a", // neutral (zinc-500)
     dashArray: "none", // solid
-    glowColor: "rgba(0, 212, 251, 0.4)",
+    glowColor: "rgba(113, 113, 122, 0.4)",
     description: "requires",
   },
   "control-evidence": {
-    color: "#14b8a6", // teal
+    color: "#52525b", // neutral (zinc-600)
     dashArray: "4,4", // dotted
-    glowColor: "rgba(20, 184, 166, 0.4)",
+    glowColor: "rgba(82, 82, 91, 0.4)",
     description: "generates",
   },
   "evidence-audit": {

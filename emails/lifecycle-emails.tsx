@@ -87,7 +87,7 @@ const statBox = {
   margin: '20px 0',
 };
 const statRow = { color: '#e2e8f0', fontSize: '14px', margin: '4px 0' };
-const cyan = { color: '#22d3ee' };
+const cyan = { color: '#3f3f46' };
 
 // ============================================================
 // 1. Trial Welcome Email

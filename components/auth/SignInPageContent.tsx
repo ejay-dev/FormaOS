@@ -588,7 +588,7 @@ function SignInContent() {
             </div>
 
             {/* Trust Indicators */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-cyan-500/10 border border-emerald-400/20">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8 p-4 rounded-lg bg-white/[0.04] border border-emerald-400/20">
               <div className="text-center">
                 <CheckCircle2 className="h-5 w-5 text-emerald-400 mx-auto mb-1" />
                 <div className="text-xs font-medium text-emerald-200">
@@ -803,7 +803,7 @@ function SignInContent() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   'Signing in...'

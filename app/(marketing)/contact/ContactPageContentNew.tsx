@@ -959,7 +959,7 @@ function ClosingCTA() {
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">
             {copy.closingTitle} <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-blue-400 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
+            <span className="text-foreground">
               with FormaOS
             </span>
           </h2>

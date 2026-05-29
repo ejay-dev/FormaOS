@@ -76,7 +76,7 @@ export default function CompareIndexContent() {
           <>
             FormaOS vs the
             <br />
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-teal-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Alternatives
             </span>
           </>

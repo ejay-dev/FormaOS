@@ -12,16 +12,17 @@
   --mk-ink: hsl(var(--foreground));
   --mk-muted: hsl(var(--muted-foreground));
 
-  --mk-cyan: #2dd4bf;
-  --mk-blue: #14b8a6;
+  /* Marketing brand accent neutralized to charcoal/grey (cyan/teal retired) */
+  --mk-cyan: #71717a;
+  --mk-blue: #52525b;
   --mk-amber: #f59e0b;
   --mk-violet: var(--mk-amber); /* alias kept for backwards compat */
 
   --mk-gradient-brand: linear-gradient(
     135deg,
-    var(--mk-cyan) 0%,
-    var(--mk-blue) 48%,
-    #34d399 100%
+    #3f3f46 0%,
+    #27272a 60%,
+    #18181b 100%
   );
   --mk-gradient-surface: linear-gradient(
     135deg,
@@ -43,7 +44,7 @@
     0 12px 32px rgba(2, 6, 23, 0.35), 0 4px 16px rgba(0, 0, 0, 0.2);
   --mk-shadow-lg:
     0 24px 64px rgba(2, 6, 23, 0.42), 0 8px 24px rgba(0, 0, 0, 0.28);
-  --mk-shadow-glow-cyan: 0 0 28px rgba(45, 212, 191, 0.22);
+  --mk-shadow-glow-cyan: 0 0 20px rgba(113, 113, 122, 0.15);
   --mk-shadow-glow-violet: 0 0 28px rgba(245, 158, 11, 0.22);
 
   --mk-focus: 0 0 0 3px rgba(56, 189, 248, 0.35);

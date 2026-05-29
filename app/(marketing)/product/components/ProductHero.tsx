@@ -37,7 +37,7 @@ export function ProductHero() {
       <HeroAtmosphere topColor="cyan" bottomColor="violet" particleIntensity="normal" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <CursorTilt intensity={3} glowFollow glowColor="6,182,212" className="w-full">
+        <CursorTilt intensity={3} glowFollow glowColor="113,113,122" className="w-full">
           <div className="flex flex-col items-center text-center">
             <motion.div style={{ opacity, scale, y }}>
               <motion.div
@@ -60,7 +60,7 @@ export function ProductHero() {
               >
                 The Compliance OS
                 <br />
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                <span className="text-foreground">
                   for Real Organizations
                 </span>
               </motion.h1>
@@ -121,7 +121,7 @@ export function ProductHero() {
                   href={compliancePlanHref('product_hero')}
                   whileHover={
                     shouldAnimateIntro
-                      ? { scale: 1.05, boxShadow: '0 0 40px rgba(6, 182, 212, 0.4)' }
+                      ? { scale: 1.05, boxShadow: '0 10px 30px rgba(0, 0, 0, 0.35)' }
                       : undefined
                   }
                   whileTap={shouldAnimateIntro ? { scale: 0.98 } : undefined}

@@ -93,7 +93,7 @@ interface DemoComplianceChainProps {
 export default function DemoComplianceChain({
   steps = defaultSteps,
   stepDuration = 2800,
-  glowColor = 'from-teal-500/15 to-emerald-500/15',
+  glowColor = 'from-white/[0.04] to-white/[0.02]',
 }: DemoComplianceChainProps) {
   const prefersReducedMotion = useReducedMotion();
   const [activeStep, setActiveStep] = useState(0);

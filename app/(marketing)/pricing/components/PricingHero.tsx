@@ -196,7 +196,7 @@ export function PricingHero() {
           className="relative"
         >
           {/* Outer halo */}
-          <div className="pointer-events-none absolute -inset-6 -z-10 bg-[radial-gradient(circle_at_50%_30%,rgba(20,184,166,0.18),transparent_60%)]" />
+          <div className="pointer-events-none absolute -inset-6 -z-10 bg-[radial-gradient(circle_at_50%_30%,rgba(113,113,122,0.18),transparent_60%)]" />
 
           <div className="relative overflow-hidden rounded-[28px] border border-white/[0.08] bg-gradient-to-br from-[#0a1322]/95 via-[#070d1c]/90 to-[#040810]/95 shadow-2xl shadow-black/50 ring-1 ring-white/[0.04] backdrop-blur-xl">
             {/* Corner accents */}

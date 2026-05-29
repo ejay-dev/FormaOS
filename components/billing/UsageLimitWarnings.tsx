@@ -170,7 +170,7 @@ export function DashboardUpgradeNudge() {
 
           <Link
             href="/app/billing"
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-5 py-2.5 text-sm font-bold text-slate-950 motion-safe:hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20 transition-all"
+            className="inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-5 py-2.5 text-sm font-bold motion-safe:hover:scale-[1.02] hover:opacity-90 transition-all"
           >
             <Zap className="h-4 w-4" />
             Upgrade Now

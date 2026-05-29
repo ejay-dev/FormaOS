@@ -27,7 +27,7 @@ export function TrustHero() {
         <>
           Enterprise Trust Center
           <br />
-          <span className="bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-500 bg-clip-text text-transparent">
+          <span className="text-foreground">
             for Faster Security Reviews
           </span>
         </>

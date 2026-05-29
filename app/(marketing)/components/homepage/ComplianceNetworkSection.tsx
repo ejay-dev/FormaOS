@@ -135,8 +135,8 @@ export function ComplianceNetworkSection() {
 
           <div className="home-panel home-panel--strong relative min-h-[280px] overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-br from-gray-950/90 via-[#060c1e] to-[#040810] shadow-2xl shadow-black/40 ring-1 ring-white/[0.03] aspect-[3/2] sm:min-h-[500px] sm:aspect-[16/11] lg:min-h-0 lg:aspect-[16/7]">
             {/* Multi-layer radial glows */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(20,184,166,0.12),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.10),transparent_42%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(113,113,122,0.12),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(161,161,170,0.10),transparent_42%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_75%,rgba(52,211,153,0.08),transparent_48%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_85%,rgba(99,102,241,0.06),transparent_45%)]" />
 

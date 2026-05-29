@@ -202,7 +202,7 @@ export default async function AcceptInvitePage({
         <>
           <Link
             href={`/auth/signin?redirect=/accept-invite/${token}`}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-3 font-semibold text-white transition-all hover:brightness-110"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground px-6 py-3 font-semibold text-background transition-all hover:opacity-90"
           >
             Sign In with Different Account
           </Link>
@@ -256,7 +256,7 @@ export default async function AcceptInvitePage({
           <form action={acceptInviteAction} className="flex flex-col gap-3">
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-8 py-4 font-semibold text-white transition-all hover:brightness-110"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground px-8 py-4 font-semibold text-background transition-all hover:opacity-90"
             >
               Accept Invitation
               <ArrowRight className="h-5 w-5" />

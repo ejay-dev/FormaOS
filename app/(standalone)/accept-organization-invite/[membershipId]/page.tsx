@@ -31,7 +31,7 @@ function StateCard(props: {
         <div className="mt-8 flex flex-col gap-3">
           <Link
             href={props.primaryHref}
-            className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-3 font-semibold text-white transition-all hover:brightness-110"
+            className="inline-flex items-center justify-center rounded-xl bg-foreground px-6 py-3 font-semibold text-background transition-all hover:opacity-90"
           >
             {props.primaryLabel}
           </Link>
@@ -149,7 +149,7 @@ export default async function AcceptOrganizationInvitePage({
         <form action={acceptAction} className="mt-8">
           <button
             type="submit"
-            className="inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-6 py-3 font-semibold text-white transition-all hover:brightness-110"
+            className="inline-flex w-full items-center justify-center rounded-xl bg-foreground px-6 py-3 font-semibold text-background transition-all hover:opacity-90"
           >
             Accept invitation
           </button>

@@ -47,7 +47,7 @@ export function FinalCTA() {
 
   return (
     <section className="relative overflow-hidden py-20 sm:py-28 lg:py-32">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(45,212,191,0.12),transparent_45%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(113,113,122,0.12),transparent_45%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_70%,rgba(139,92,246,0.10),transparent_45%)]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
@@ -67,7 +67,7 @@ export function FinalCTA() {
             Stop relying on people to{' '}
             <span className="text-slate-500">remember</span> compliance.
             <br />
-            <span className="bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-300 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Let the system enforce it.
             </span>
           </h2>
@@ -191,7 +191,7 @@ export function FinalCTA() {
                     }
                     className={`mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl px-6 py-4 text-sm font-semibold transition ${
                       isPrimary
-                        ? 'bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-slate-900 shadow-lg shadow-emerald-950/40 hover:brightness-110'
+                        ? 'bg-foreground text-background hover:opacity-90'
                         : 'border border-white/[0.1] bg-white/[0.04] text-white hover:border-white/[0.2] hover:bg-white/[0.08]'
                     }`}
                   >

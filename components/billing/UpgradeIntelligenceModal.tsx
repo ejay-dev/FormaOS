@@ -283,7 +283,7 @@ export function UpgradeIntelligenceModal({
           <button
             onClick={() => handleUpgrade(selectedPlan)}
             disabled={loadingPlan !== null}
-            className="w-full sm:w-auto flex-1 sm:flex-none rounded-xl bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-8 py-3 text-sm font-bold text-slate-950 transition-all motion-safe:hover:scale-[1.01] hover:shadow-lg hover:shadow-sky-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full sm:w-auto flex-1 sm:flex-none rounded-xl bg-foreground text-background px-8 py-3 text-sm font-bold transition-all motion-safe:hover:scale-[1.01] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loadingPlan === selectedPlan ? (
               <Loader2 className="h-4 w-4 animate-spin" />

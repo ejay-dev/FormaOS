@@ -119,7 +119,7 @@ export default function InteractiveDemo() {
     <section className="relative py-20 sm:py-24 lg:py-32 overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-gradient-to-r from-cyan-500/8 via-blue-500/6 to-purple-500/8 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-white/[0.04] rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -153,7 +153,7 @@ export default function InteractiveDemo() {
           className="relative"
         >
           {/* Glow border effect */}
-          <div className="absolute -inset-px rounded-2xl bg-gradient-to-b from-cyan-500/20 via-blue-500/10 to-purple-500/20 blur-sm" />
+          <div className="absolute -inset-px rounded-2xl bg-white/[0.06] blur-sm" />
 
           <div className="relative rounded-2xl border border-white/[0.08] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.4)]">
             {/* Browser chrome bar */}
@@ -236,7 +236,7 @@ export default function InteractiveDemo() {
             {/* Progress bar */}
             <div className="h-0.5 bg-white/[0.04]">
               <motion.div
-                className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                className="h-full bg-zinc-500"
                 style={{ width: `${progress * 100}%` }}
                 transition={{ duration: 0.05 }}
               />

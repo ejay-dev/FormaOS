@@ -96,13 +96,13 @@ const COLOR_CLASSES: Record<string, { bg: string; border: string; text: string; 
     bg: "bg-cyan-500/10",
     border: "border-cyan-400/40",
     text: "text-cyan-300",
-    glow: "shadow-[0_0_20px_rgba(0,212,251,0.3)]",
+    glow: "shadow-lg",
   },
   teal: {
     bg: "bg-teal-500/10",
     border: "border-teal-400/40",
     text: "text-teal-300",
-    glow: "shadow-[0_0_20px_rgba(20,184,166,0.3)]",
+    glow: "shadow-lg",
   },
   violet: {
     bg: "bg-violet-500/10",
@@ -189,7 +189,7 @@ export function ComplianceLifecycleHeader({
       className
     )}>
       {/* Header glow */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-r from-cyan-500/10 via-transparent to-violet-500/10 blur-2xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-white/[0.04] blur-2xl" />
       
       {/* Header content */}
       <div className="relative px-6 py-5 border-b border-edge-2">

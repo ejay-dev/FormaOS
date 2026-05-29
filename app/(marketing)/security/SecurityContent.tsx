@@ -183,7 +183,7 @@ function LightCard({
 export function SecuritySafeguards() {
   return (
     <LightSection className="py-10 sm:py-14 lg:py-16">
-      <ShieldRings color="rgba(45, 212, 191, 0.03)" />
+      <ShieldRings color="rgba(161, 161, 170, 0.03)" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         <SectionHeader
           badge="Security Safeguards"
@@ -304,7 +304,7 @@ export function SecurityEvidenceChain() {
                 range={[idx * 0.06, 0.3 + idx * 0.06]}
               >
                 <div className="flex items-start gap-6">
-                  <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center shadow-[0_0_15px_rgba(0,180,220,0.08)]">
+                  <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
                     <item.icon className="h-6 w-6 text-primary" />
                   </div>
                   <div>
@@ -336,7 +336,7 @@ export function SecurityCTA() {
               className="absolute inset-0 pointer-events-none opacity-30"
               style={{
                 background: `
-                  radial-gradient(ellipse 60% 50% at 30% 40%, rgba(0, 180, 220, 0.15) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 50% at 30% 40%, rgba(161, 161, 170, 0.15) 0%, transparent 60%),
                   radial-gradient(ellipse 50% 60% at 70% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 60%)
                 `,
               }}

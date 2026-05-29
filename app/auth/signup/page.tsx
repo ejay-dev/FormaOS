@@ -326,7 +326,7 @@ function SignUpContent() {
 
             {/* Plan Features */}
             {plan && (
-              <div className="mb-8 p-4 rounded-lg bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-cyan-500/10 border border-sky-400/20">
+              <div className="mb-8 p-4 rounded-lg bg-white/[0.04] border border-sky-400/20">
                 <div className="text-sm font-medium text-sky-200 mb-3">
                   What's included:
                 </div>
@@ -482,7 +482,7 @@ function SignUpContent() {
                 type="submit"
                 data-testid="signup-submit-button"
                 disabled={isLoading}
-                className="w-full rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full rounded-lg bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   'Creating account...'
@@ -496,7 +496,7 @@ function SignUpContent() {
             </form>
 
             {!plan && (
-              <div className="mt-6 p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 to-sky-500/10 border border-emerald-400/20">
+              <div className="mt-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-400/20">
                 <div className="text-center">
                   <p className="text-xs text-slate-300 mb-2">
                     Haven't chosen a plan yet?

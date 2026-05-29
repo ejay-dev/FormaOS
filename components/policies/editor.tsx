@@ -145,7 +145,7 @@ export function PolicyEditor({
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-5 py-2 rounded-xl text-xs font-bold hover:bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 disabled:opacity-50 transition-all shadow-md motion-safe:active:scale-95"
+            className="flex items-center gap-2 bg-foreground text-background px-5 py-2 rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all shadow-md motion-safe:active:scale-95"
           >
             {isSaving ? (
               <Loader2 className="h-3 w-3 animate-spin" />
@@ -181,7 +181,7 @@ function ToolbarButton({
       title={label}
       className={`p-2 rounded-lg transition-all flex items-center justify-center ${
         active
-          ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white shadow-inner scale-95'
+          ? 'bg-foreground text-background shadow-inner scale-95'
           : 'text-muted-foreground hover:bg-glass-strong hover:text-foreground'
       }`}
     >

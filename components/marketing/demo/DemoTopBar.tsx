@@ -40,7 +40,7 @@ export default function DemoTopBar() {
 
           {/* Avatar */}
           <div className="flex items-center gap-1.5">
-            <div className="h-5 w-5 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+            <div className="h-5 w-5 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
               <span className="text-[8px] font-bold text-white">{currentUser.avatar}</span>
             </div>
             <span className="hidden sm:block text-[10px] font-medium text-white/60 truncate max-w-[80px]">

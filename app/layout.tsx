@@ -130,7 +130,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <NextTopLoader color="#22d3ee" height={2} showSpinner={false} />
+        <NextTopLoader color="#71717a" height={2} showSpinner={false} />
         <ObservabilityProvider />
         {/* Mount CookieConsent BEFORE {children} so DOM tab order
             places it immediately after Skip-to-main on every page.

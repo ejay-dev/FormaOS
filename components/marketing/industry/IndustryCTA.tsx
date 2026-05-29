@@ -68,7 +68,7 @@ export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
           )}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-[var(--font-display)] leading-[1.1] mb-4">
             Start Governing {industry}{' '}
-            <span className="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
+            <span className="text-white">
               Compliance Today
             </span>
           </h2>
@@ -91,7 +91,7 @@ export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
               transition={{ duration: 0.4, delay: i * 0.1 }}
               className={`relative rounded-xl border p-6 text-left transition-all ${
                 plan.highlighted
-                  ? 'border-cyan-500/30 bg-cyan-500/[0.06] shadow-lg shadow-cyan-500/10'
+                  ? 'border-cyan-500/30 bg-cyan-500/[0.06] shadow-lg'
                   : 'border-white/[0.06] bg-white/[0.02]'
               }`}
             >
@@ -128,7 +128,7 @@ export function IndustryCTA({ industry, urgencyCallout }: IndustryCTAProps) {
         >
           <Link
             href={compliancePlanHref(`industry_${industry}`)}
-            className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 px-8 py-4 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:shadow-xl hover:shadow-cyan-500/30 hover:brightness-110"
+            className="group inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-8 py-4 text-sm font-semibold shadow-lg transition-all hover:opacity-90"
           >
             {PUBLIC_CTA_LABELS.compliancePlan}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

@@ -288,7 +288,7 @@ export default function ChildcareComplianceContent() {
           <>
             NQF Assessment Ready.
             <br />
-            <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Every Day.
             </span>
           </>
@@ -534,7 +534,7 @@ export default function ChildcareComplianceContent() {
             description:
               'Select your service type (long day care, family day care, OSHC, preschool). FormaOS loads all 7 NQF quality areas with element-level requirements, self-assessment prompts, and evidence templates - ready to populate.',
             gradient:
-              'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Quality Area Setup"
@@ -561,7 +561,7 @@ export default function ChildcareComplianceContent() {
             description:
               'Enter your educators and link their WWC checks, first aid certificates, qualifications, and anaphylaxis training. RAG alerts trigger automatically at 90, 60, and 30 days before expiry.',
             gradient:
-              'from-cyan-500/20 to-emerald-500/20 border-cyan-500/30 text-cyan-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Educator Credentials"

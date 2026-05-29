@@ -177,7 +177,7 @@ function RiskHeatmap({
             <div className="mt-3">
               <div className="h-2 w-full rounded-full bg-muted">
                 <div
-                  className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600"
+                  className="h-2 rounded-full bg-gradient-to-r from-zinc-700 to-zinc-900"
                   style={{
                     width: `${Math.min(Math.round(cell.ratio * 100), 100)}%`,
                   }}

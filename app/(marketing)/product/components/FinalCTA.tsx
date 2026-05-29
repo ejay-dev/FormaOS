@@ -17,7 +17,7 @@ export function FinalCTA() {
                   Most platforms <span className="text-gray-500">store</span>{' '}
                   compliance.
                   <br />
-                  <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     FormaOS operates it.
                   </span>
                 </h2>

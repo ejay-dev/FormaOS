@@ -251,7 +251,7 @@ function OverviewPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantT
                 strokeDasharray={circumference} strokeDashoffset={offset} />
               <defs>
                 <linearGradient id="sandboxScoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#06b6d4" />
+                  <stop offset="0%" stopColor="#a1a1aa" />
                   <stop offset="100%" stopColor="#3b82f6" />
                 </linearGradient>
               </defs>

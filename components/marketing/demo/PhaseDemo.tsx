@@ -54,7 +54,7 @@ const phaseActiveColors: Record<string, { tab: string; border: string; glow: str
   teal: {
     tab: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
     border: 'border-teal-500/25',
-    glow: 'shadow-[0_0_60px_rgba(20,184,166,0.12)]',
+    glow: 'shadow-2xl',
   },
   emerald: {
     tab: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
@@ -64,7 +64,7 @@ const phaseActiveColors: Record<string, { tab: string; border: string; glow: str
   tealAlt: {
     tab: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
     border: 'border-teal-500/25',
-    glow: 'shadow-[0_0_60px_rgba(20,184,166,0.12)]',
+    glow: 'shadow-2xl',
   },
   amber: {
     tab: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
@@ -368,7 +368,7 @@ export default function PhaseDemo() {
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 tracking-tight">
             Four Phases.
-            <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 bg-clip-text text-transparent">
+            <span className="text-white">
               {' '}Complete Control.
             </span>
           </h2>
@@ -755,7 +755,7 @@ export default function PhaseDemo() {
               <a
                 href="/contact?type=demo&source=phase_demo"
                 onClick={handleCtaClick}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_30px_rgba(20,184,166,0.3)] hover:brightness-110 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-6 py-3 text-sm font-semibold hover:opacity-90 transition-all"
               >
                 Book Demo
                 <ArrowRight className="h-4 w-4" />

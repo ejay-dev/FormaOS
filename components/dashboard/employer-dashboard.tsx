@@ -118,7 +118,7 @@ function ActivationMilestones({
             </p>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-glass-strong">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                className="h-full rounded-full bg-gradient-to-r from-zinc-700 to-zinc-900"
                 style={{ width: `${progress}%` }}
               />
             </div>

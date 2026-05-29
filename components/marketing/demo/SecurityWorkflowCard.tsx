@@ -93,7 +93,7 @@ export default function SecurityWorkflowCard() {
   return (
     <div className="relative">
       {/* Glow */}
-      <div className="absolute -inset-px rounded-2xl bg-gradient-to-b from-cyan-500/15 to-blue-500/15 blur-sm" />
+      <div className="absolute -inset-px rounded-2xl bg-white/[0.04] blur-sm" />
 
       <div className="relative rounded-2xl border border-white/[0.08] bg-[#0b1022] p-5 sm:p-6 overflow-hidden">
         {/* Step timeline */}
@@ -183,7 +183,7 @@ export default function SecurityWorkflowCard() {
                         animate={{ opacity: 1, x: 0 }}
                         className="flex items-center gap-1.5 mt-2"
                       >
-                        <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
+                        <div className="h-4 w-4 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
                           <CheckCircle className="h-2.5 w-2.5 text-white" />
                         </div>
                         <span className="text-[10px] text-emerald-400">Integrity verified - chain of custody sealed</span>

@@ -41,7 +41,7 @@ export function HeaderCTA() {
             variant: 'primary',
           })
         }
-        className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-teal-400 px-4 py-1.5 text-[13px] font-semibold text-slate-950 shadow-sm shadow-cyan-500/20 transition-all hover:shadow-md hover:brightness-110 whitespace-nowrap"
+        className="inline-flex items-center gap-1.5 rounded-lg bg-foreground text-background px-4 py-1.5 text-[13px] font-semibold transition-all hover:opacity-90 whitespace-nowrap"
       >
         {PUBLIC_CTA_LABELS.compliancePlan}
       </Link>

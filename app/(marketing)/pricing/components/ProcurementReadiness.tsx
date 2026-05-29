@@ -74,7 +74,7 @@ export function ProcurementReadiness() {
         <ScrollReveal variant="depthSlide" range={[0.1, 0.4]} className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/security-review"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-6 py-3 text-sm font-semibold text-white"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-background hover:opacity-90"
           >
             Review Security Packet
             <ArrowRight className="h-4 w-4" />

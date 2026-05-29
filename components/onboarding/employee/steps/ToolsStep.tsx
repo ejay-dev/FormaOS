@@ -126,7 +126,7 @@ export function ToolsStep({ tools, onNext, onBack }: ToolsStepProps) {
         </button>
         <button
           onClick={onNext}
-          className="group flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
+          className="group flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-foreground px-6 py-3.5 text-sm font-bold text-background shadow-lg transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
         >
           Set up my profile
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

@@ -19,7 +19,7 @@ const ARC_C = 2 * Math.PI * ARC_R; // circumference
 function GlassCard({
   children,
   className = '',
-  accent = 'rgba(20,184,166,0.7)',
+  accent = 'rgba(113,113,122,0.7)',
   index = 0,
   isInView,
   noMotion,
@@ -129,7 +129,7 @@ function PostureCard({
           <svg
             viewBox="0 0 128 128"
             className="w-36 h-36 sm:w-40 sm:h-40"
-            style={{ filter: 'drop-shadow(0 0 20px rgba(20,184,166,0.15))' }}
+            style={{ filter: 'drop-shadow(0 0 20px rgba(113,113,122,0.15))' }}
           >
             {/* Track */}
             <circle
@@ -196,8 +196,8 @@ function PostureCard({
                 x2="128"
                 y2="128"
               >
-                <stop offset="0%" stopColor="rgba(20,184,166,1)" />
-                <stop offset="100%" stopColor="rgba(56,189,248,1)" />
+                <stop offset="0%" stopColor="rgba(113,113,122,1)" />
+                <stop offset="100%" stopColor="rgba(161,161,170,1)" />
               </linearGradient>
             </defs>
           </svg>
@@ -375,7 +375,7 @@ function EvidenceCard({
 }) {
   return (
     <GlassCard
-      accent="rgba(56,189,248,0.6)"
+      accent="rgba(161,161,170,0.6)"
       index={2}
       isInView={isInView}
       noMotion={noMotion}
@@ -615,7 +615,7 @@ export function ValueProposition() {
           style={{
             left: '10%',
             top: '5%',
-            background: 'rgba(20, 184, 166, 0.035)',
+            background: 'rgba(113, 113, 122, 0.035)',
           }}
         />
         <div
@@ -681,7 +681,7 @@ export function ValueProposition() {
                 }}
                 style={{
                   background:
-                    'linear-gradient(135deg, rgba(20,184,166,0.4), rgba(56,189,248,0.3))',
+                    'linear-gradient(135deg, rgba(113,113,122,0.4), rgba(161,161,170,0.3))',
                 }}
               />
             )}
@@ -700,7 +700,7 @@ export function ValueProposition() {
                 className="bg-clip-text"
                 style={{
                   backgroundImage:
-                    'linear-gradient(135deg, rgba(20,184,166,1) 0%, rgba(56,189,248,0.85) 100%)',
+                    'linear-gradient(135deg, rgba(113,113,122,1) 0%, rgba(161,161,170,0.85) 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}

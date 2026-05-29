@@ -96,13 +96,13 @@ interface CategoryConfig {
 const CATEGORY_CONFIG: Record<IntegrationCategory, CategoryConfig> = {
   'Project Management': { icon: Layers, colorRgb: '59,130,246' },
   Communication: { icon: MessageSquare, colorRgb: '139,92,246' },
-  'Cloud Infrastructure': { icon: Cloud, colorRgb: '34,211,238' },
+  'Cloud Infrastructure': { icon: Cloud, colorRgb: '113,113,122' },
   'Identity & Access': { icon: Lock, colorRgb: '251,113,133' },
   'Developer Tools': { icon: GitBranch, colorRgb: '52,211,153' },
   'HR & People': { icon: Users, colorRgb: '245,158,11' },
   Security: { icon: Shield, colorRgb: '239,68,68' },
   Automation: { icon: Workflow, colorRgb: '168,85,247' },
-  Monitoring: { icon: Monitor, colorRgb: '34,211,238' },
+  Monitoring: { icon: Monitor, colorRgb: '113,113,122' },
   'Document Management': { icon: FileText, colorRgb: '59,130,246' },
 };
 
@@ -333,7 +333,7 @@ const integrations: Integration[] = [
     category: 'Automation',
     status: 'live',
     initials: 'WH',
-    color: '#22D3EE',
+    color: '#A1A1AA',
     features: [
       'HMAC-SHA256 signed payloads',
       'Configurable retry with backoff',
@@ -576,7 +576,7 @@ const architectureLayers: ArchitectureLayer[] = [
     description:
       'Transform integration-specific data formats into FormaOS canonical schema for unified processing.',
     icon: Workflow,
-    colorRgb: '34,211,238',
+    colorRgb: '113,113,122',
     details: [
       'Schema mapping engine',
       'Custom field transformers',
@@ -941,7 +941,7 @@ function ArchitectureSection() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Integration{' '}
-              <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 architecture
               </span>
             </h2>
@@ -1075,7 +1075,7 @@ function CategoryBreakdown() {
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Integration{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 coverage
               </span>
             </h2>
@@ -1209,7 +1209,7 @@ function IntegrationsCTA() {
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Don&apos;t see your{' '}
-                  <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     tool?
                   </span>
                 </h2>
@@ -1223,10 +1223,8 @@ function IntegrationsCTA() {
                   <Link
                     href={compliancePlanHref('integrations_final')}
                     className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-                      bg-gradient-to-r from-emerald-500 to-teal-500
-                      text-white font-semibold text-sm
-                      shadow-lg shadow-emerald-500/20
-                      hover:shadow-xl hover:shadow-emerald-500/30
+                      bg-foreground text-background font-semibold text-sm
+                      shadow-lg hover:opacity-90
                       transition-all duration-300"
                   >
                     {PUBLIC_CTA_LABELS.compliancePlan}

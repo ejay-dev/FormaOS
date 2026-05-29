@@ -108,7 +108,7 @@ export function ProgressIndicator({
           styles.bar
         )}>
           <div
-            className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-zinc-700 to-zinc-900 rounded-full transition-all duration-300"
             style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
           />
         </div>

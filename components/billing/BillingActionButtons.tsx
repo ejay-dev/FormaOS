@@ -101,7 +101,7 @@ export function BillingActionButtons({
           <button
             onClick={handleActivate}
             disabled={isPending}
-            className="group relative overflow-hidden rounded-lg bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 transition-all duration-300 motion-safe:hover:scale-[1.02] hover:shadow-lg hover:shadow-sky-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none flex items-center gap-2"
+            className="group relative overflow-hidden rounded-lg bg-foreground text-background px-6 py-3 text-sm font-semibold transition-all duration-300 motion-safe:hover:scale-[1.02] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
           >
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />

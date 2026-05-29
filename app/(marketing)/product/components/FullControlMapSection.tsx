@@ -82,7 +82,7 @@ export function FullControlMapSection() {
 
       {/* Ambient background halos */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(20,184,166,0.06),transparent_65%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(113,113,122,0.06),transparent_65%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(99,102,241,0.04),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.03),transparent_50%)]" />
       </div>
@@ -104,7 +104,7 @@ export function FullControlMapSection() {
 
           <h2 className="mb-5 text-2xl font-bold sm:text-3xl lg:text-5xl xl:text-6xl tracking-tight">
             Every Control.{' '}
-            <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Every Framework.
             </span>
             <br className="hidden sm:block" />
@@ -147,7 +147,7 @@ export function FullControlMapSection() {
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
           <div className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-gray-950/95 via-[#050a18] to-[#030710] shadow-2xl shadow-black/50 ring-1 ring-white/[0.03]">
             {/* Radial overlays */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(20,184,166,0.10),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(113,113,122,0.10),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(56,189,248,0.07),transparent_40%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_75%,rgba(99,102,241,0.05),transparent_45%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(167,139,250,0.04),transparent_50%)]" />

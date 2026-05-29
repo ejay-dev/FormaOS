@@ -89,7 +89,7 @@ export function PolicyEditor({
               <AlertDialogTrigger asChild>
                 <button
                   disabled={publishing}
-                  className="flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:brightness-110 transition-colors"
+                  className="flex items-center gap-2 bg-foreground text-background px-4 py-2 rounded-xl text-sm font-bold hover:opacity-90 transition-colors"
                 >
                   {publishing ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

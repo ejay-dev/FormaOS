@@ -790,7 +790,7 @@ function OurMission() {
             Our mission is simple:
           </p>
 
-          <p className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+          <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
             To transform regulatory obligation into operational certainty.
           </p>
         </motion.div>
@@ -834,7 +834,7 @@ function OurMission() {
           </p>
 
           <p className="text-2xl text-white font-semibold">
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Provable compliance
             </span>{' '}
             built into daily operations.

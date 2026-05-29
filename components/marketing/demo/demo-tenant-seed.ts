@@ -177,7 +177,7 @@ const users: TenantUser[] = [
 ];
 
 const frameworks: TenantFramework[] = [
-  { id: 'fw1', name: 'ISO 27001', shortName: 'ISO', controlCount: 52, compliantCount: 47, score: 91, color: '#06b6d4', status: 'active' },
+  { id: 'fw1', name: 'ISO 27001', shortName: 'ISO', controlCount: 52, compliantCount: 47, score: 91, color: '#a1a1aa', status: 'active' },
   { id: 'fw2', name: 'SOC 2 Type II', shortName: 'SOC2', controlCount: 48, compliantCount: 40, score: 84, color: '#3b82f6', status: 'active' },
   { id: 'fw3', name: 'HIPAA', shortName: 'HIPAA', controlCount: 42, compliantCount: 37, score: 88, color: '#8b5cf6', status: 'active' },
 ];

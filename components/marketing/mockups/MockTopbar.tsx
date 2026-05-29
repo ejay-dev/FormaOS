@@ -77,7 +77,7 @@ export function MockTopbar({ orgName = 'greenfield-care' }: MockTopbarProps) {
             initial={shouldReduceMotion ? undefined : 'hidden'}
             whileInView="visible"
             viewport={{ once: true }}
-            className="w-4 h-4 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center"
+            className="w-4 h-4 rounded-full bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center"
           >
             <span className="text-[6px] font-bold text-white">E</span>
           </motion.div>

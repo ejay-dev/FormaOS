@@ -100,7 +100,7 @@ export default function CustomerStoriesContent() {
           <>
             Use Case Scenarios from
             <br />
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-teal-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Regulated Industries
             </span>
           </>
@@ -362,7 +362,7 @@ export default function CustomerStoriesContent() {
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/customer-stories/template"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_0_24px_rgba(34,211,238,0.25)] transition hover:shadow-[0_0_32px_rgba(34,211,238,0.4)]"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-foreground text-background px-6 py-3 text-sm font-semibold shadow-lg transition hover:opacity-90"
                 >
                   Use Case Study Template
                   <ArrowRight className="h-4 w-4" />

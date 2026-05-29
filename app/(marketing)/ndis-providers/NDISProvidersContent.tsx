@@ -235,7 +235,7 @@ export default function NDISProvidersContent() {
           <>
             Stop Dreading
             <br />
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               Unannounced NDIS Audits
             </span>
           </>
@@ -496,7 +496,7 @@ export default function NDISProvidersContent() {
             description:
               'FormaOS ships with NDIS Practice Standards, SIRS requirements, and worker screening rules pre-built. Select your registration groups and your obligation register is live in minutes.',
             gradient:
-              'from-cyan-500/20 to-blue-500/20 border-cyan-500/30 text-cyan-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Framework Activation"
@@ -531,7 +531,7 @@ export default function NDISProvidersContent() {
             description:
               'Upload policies, worker credentials, incident records. FormaOS links each document to specific Practice Standards and SIRS requirements - building continuous evidence chains.',
             gradient:
-              'from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Evidence Mapping"
@@ -566,7 +566,7 @@ export default function NDISProvidersContent() {
             description:
               'Automated alerts for every screening expiry, incident deadline, and evidence gap. When the Commission arrives unannounced, your evidence pack is one click away.',
             gradient:
-              'from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Readiness Score"

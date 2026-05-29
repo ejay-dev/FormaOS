@@ -162,8 +162,8 @@ export default function GovernmentPublicSectorContent() {
       demoDescription="See policy lifecycle steps and audit trail integrity in a public-sector governance context."
       demoSlot={
         <>
-          <DemoPolicyLifecycle glowColor="from-cyan-500/15 to-emerald-500/15" />
-          <DemoAuditTrailCard glowColor="from-cyan-500/15 to-amber-500/15" />
+          <DemoPolicyLifecycle glowColor="from-zinc-700/15 to-zinc-900/15" />
+          <DemoAuditTrailCard glowColor="from-zinc-700/15 to-zinc-900/15" />
         </>
       }
       workflows={workflows}

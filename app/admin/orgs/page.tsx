@@ -164,7 +164,7 @@ export default async function AdminOrgsPage({
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-border flex items-center justify-center">
+                      <div className="h-8 w-8 rounded-full bg-white/[0.04] border border-border flex items-center justify-center">
                         <Building2 className="h-4 w-4 text-muted-foreground" />
                       </div>
                       <Link

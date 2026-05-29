@@ -7,7 +7,7 @@
 /* RGB values for rgba() usage - derived from globals.css palette */
 :root {
   --mk-rgb-bg: 10, 15, 28; /* --space-800 */
-  --mk-rgb-cyan: 13, 148, 136; /* --cyan-600 range */
+  --mk-rgb-cyan: 113, 113, 122; /* neutral grey (cyan retired) */
   --mk-rgb-cyan-alt: 20, 184, 166;
   --mk-rgb-blue: 45, 212, 191;
   --mk-rgb-blue-alt: 52, 211, 153;

@@ -41,8 +41,8 @@ const PILLARS: Pillar[] = [
     title: 'Compliance Engine',
     lede: 'Turn regulatory obligations into governed, testable controls with pre-built framework packs.',
     Icon: ShieldCheck,
-    accent: 'from-cyan-400 via-sky-400 to-blue-500',
-    glow: 'radial-gradient(circle at 30% 20%, rgba(0,212,251,0.22), transparent 60%)',
+    accent: 'from-zinc-600 via-zinc-700 to-zinc-800',
+    glow: 'radial-gradient(circle at 30% 20%, rgba(161,161,170,0.18), transparent 60%)',
     features: [
       {
         name: 'SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS',
@@ -152,7 +152,7 @@ const PILLARS: Pillar[] = [
     title: 'Trust Surface',
     lede: 'Buyer-grade assurance packets, AU-hosted by default, SSO-ready for the enterprise.',
     Icon: Handshake,
-    accent: 'from-emerald-400 via-teal-400 to-cyan-400',
+    accent: 'from-emerald-400 via-emerald-500 to-emerald-600',
     glow: 'radial-gradient(circle at 50% 40%, rgba(16,185,129,0.18), transparent 60%)',
     features: [
       {
@@ -213,7 +213,7 @@ export default function FeaturesPillarsPage() {
         className="pointer-events-none absolute inset-0 opacity-60"
         style={{
           background:
-            'radial-gradient(ellipse at 20% 0%, rgba(0,212,251,0.12), transparent 60%), radial-gradient(ellipse at 80% 10%, rgba(136,100,255,0.10), transparent 60%)',
+            'radial-gradient(ellipse at 20% 0%, rgba(161,161,170,0.10), transparent 60%), radial-gradient(ellipse at 80% 10%, rgba(113,113,122,0.08), transparent 60%)',
         }}
         aria-hidden="true"
       />
@@ -227,7 +227,7 @@ export default function FeaturesPillarsPage() {
           </span>
           <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
             One OS for every obligation <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-violet-300 bg-clip-text text-transparent">
+            <span className="text-foreground">
               you owe.
             </span>
           </h1>
@@ -238,7 +238,7 @@ export default function FeaturesPillarsPage() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               href={compliancePlanHref('features_pillars_hero')}
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-violet-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-[0_0_30px_rgba(0,212,251,0.3)] transition-transform hover:scale-[1.02]"
+              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition-transform hover:scale-[1.02] hover:opacity-90"
             >
               {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="h-4 w-4" />
@@ -388,7 +388,7 @@ export default function FeaturesPillarsPage() {
 
       {/* Final CTA */}
       <section className="relative mx-auto max-w-4xl px-6 pb-28 text-center">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-cyan-500/10 via-violet-500/10 to-pink-500/10 p-10 shadow-premium-lg">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-10 shadow-premium-lg">
           <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
             Ready to turn obligations into routines?
           </h2>
@@ -399,7 +399,7 @@ export default function FeaturesPillarsPage() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href={compliancePlanHref('features_pillars_final')}
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-violet-500 px-5 py-2.5 text-sm font-semibold text-slate-950"
+              className="inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-sm font-semibold text-background hover:opacity-90"
             >
               {PUBLIC_CTA_LABELS.compliancePlan}
               <ArrowRight className="h-4 w-4" />

@@ -132,7 +132,7 @@ const STATE_COLORS: Record<
     border: 'border-cyan-400/50',
     bg: 'bg-cyan-500/10',
     text: 'text-cyan-400',
-    glow: 'shadow-[0_0_20px_rgba(34,211,238,0.3)]',
+    glow: 'shadow-lg',
   },
   active: {
     border: 'border-emerald-400/50',

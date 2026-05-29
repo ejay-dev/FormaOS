@@ -9,7 +9,7 @@ import { duration, easing } from '@/config/motion';
 const signatureEase: [number, number, number, number] = [...easing.signature] as [number, number, number, number];
 
 const PIPELINE_STEPS = [
-  { label: 'Ingest', icon: FileText, color: 'text-cyan-400', borderColor: 'border-cyan-500/25', bgColor: 'bg-cyan-500/8', glowColor: 'shadow-[0_0_12px_rgba(6,182,212,0.15)]' },
+  { label: 'Ingest', icon: FileText, color: 'text-cyan-400', borderColor: 'border-cyan-500/25', bgColor: 'bg-cyan-500/8', glowColor: 'shadow-[0_0_12px_rgba(161,161,170,0.15)]' },
   { label: 'Verify', icon: Shield, color: 'text-violet-400', borderColor: 'border-violet-500/25', bgColor: 'bg-violet-500/8', glowColor: 'shadow-[0_0_12px_rgba(139,92,246,0.15)]' },
   { label: 'Seal', icon: Lock, color: 'text-emerald-400', borderColor: 'border-emerald-500/25', bgColor: 'bg-emerald-500/8', glowColor: 'shadow-[0_0_12px_rgba(52,211,153,0.15)]' },
 ];
@@ -34,7 +34,7 @@ export function LaserFlowSection() {
         style={{
           background: `
             radial-gradient(ellipse 80% 60% at 65% 50%, rgba(139,92,246,0.06) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 80% at 35% 40%, rgba(6,182,212,0.04) 0%, transparent 50%)
+            radial-gradient(ellipse 60% 80% at 35% 40%, rgba(161,161,170,0.04) 0%, transparent 50%)
           `,
         }}
       />
@@ -53,7 +53,7 @@ export function LaserFlowSection() {
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">
             From event intake to{' '}
-            <span className="bg-gradient-to-r from-cyan-400 via-violet-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               immutable audit evidence
             </span>
           </h2>

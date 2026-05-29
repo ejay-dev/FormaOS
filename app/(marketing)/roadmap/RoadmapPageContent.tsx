@@ -69,7 +69,7 @@ const STATUS_CONFIG: Record<RoadmapStatus, StatusConfig> = {
   'in-progress': {
     label: 'In Progress',
     icon: Loader2,
-    colorRgb: '34,211,238',
+    colorRgb: '161,161,170',
     bg: 'bg-cyan-500/10',
     border: 'border-cyan-400/20',
     text: 'text-cyan-400',
@@ -148,7 +148,7 @@ const CATEGORY_CONFIG: Record<RoadmapCategory, CategoryConfig> = {
   },
   Platform: {
     icon: Layers,
-    colorRgb: '34,211,238',
+    colorRgb: '161,161,170',
     bg: 'bg-cyan-500/10',
     border: 'border-cyan-400/20',
     text: 'text-cyan-400',
@@ -675,7 +675,7 @@ function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
           hover:bg-white/[0.04]
           ${
             item.status === 'in-progress'
-              ? `border-cyan-400/15 hover:border-cyan-400/25 hover:shadow-[0_0_40px_rgba(34,211,238,0.06)]`
+              ? `border-cyan-400/15 hover:border-cyan-400/25 hover:shadow-[0_0_40px_rgba(255,255,255,0.03)]`
               : item.status === 'shipped'
                 ? `border-emerald-400/10 hover:border-emerald-400/20 hover:shadow-[0_0_40px_rgba(52,211,153,0.05)]`
                 : `border-white/[0.06] hover:border-white/[0.12]`
@@ -942,7 +942,7 @@ function QuarterTimeline() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Quarterly{' '}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 delivery plan
               </span>
             </h2>
@@ -955,7 +955,7 @@ function QuarterTimeline() {
           <SectionChoreography pattern="stagger-wave" stagger={0.08}>
             <div className="relative">
               {/* Connecting line */}
-              <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-emerald-400/20 via-cyan-400/20 to-violet-400/20 hidden lg:block" />
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-white/[0.08] hidden lg:block" />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {quarterData.map((qd, i) => {
@@ -1120,7 +1120,7 @@ function CategoryBreakdown() {
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Where we&apos;re{' '}
-              <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 investing
               </span>
             </h2>
@@ -1266,7 +1266,7 @@ function TransparencySection() {
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Built with{' '}
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 transparency
               </span>
             </h2>
@@ -1396,7 +1396,7 @@ function FeatureRequestCTA() {
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Have a feature{' '}
-                  <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-300 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     request?
                   </span>
                 </h2>
@@ -1409,10 +1409,8 @@ function FeatureRequestCTA() {
                   <Link
                     href={compliancePlanHref('roadmap_final')}
                     className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-                      bg-gradient-to-r from-emerald-500 to-teal-500
-                      text-white font-semibold text-sm
-                      shadow-lg shadow-emerald-500/20
-                      hover:shadow-xl hover:shadow-emerald-500/30
+                      bg-foreground text-background hover:opacity-90 font-semibold text-sm
+                      shadow-lg
                       transition-all duration-300"
                   >
                     {PUBLIC_CTA_LABELS.compliancePlan}
@@ -1473,7 +1471,7 @@ function RoadmapHero() {
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <motion.div
           className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(34,211,238,0.12)' }}
+          style={{ background: 'rgba(113,113,122,0.12)' }}
           animate={{
             scale: [1, 1.08, 1],
             opacity: [0.12, 0.18, 0.12],
@@ -1546,7 +1544,7 @@ function RoadmapHero() {
         >
           Where FormaOS is
           <br />
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+          <span className="text-foreground">
             headed next
           </span>
         </motion.h1>
@@ -1655,7 +1653,7 @@ export default function RoadmapPageContent() {
             >
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                 Everything on{' '}
-                <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="text-foreground">
                   the roadmap
                 </span>
               </h2>

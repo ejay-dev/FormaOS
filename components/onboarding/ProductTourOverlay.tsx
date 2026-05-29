@@ -278,7 +278,7 @@ export function ProductTourOverlay() {
             <Button
               size="sm"
               onClick={nextStep}
-              className="bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900"
+              className="bg-foreground text-background hover:opacity-90"
             >
               {currentStep === totalSteps - 1 ? 'Finish' : 'Next'}
               {currentStep < totalSteps - 1 ? (

@@ -300,11 +300,11 @@ void main(void) {
     uv+=.1*cos(i*vec2(.1+.01*i, .8)+i*i+T*.42+.1*uv.x);
     vec2 p=uv;
     float d=length(p);
-    vec3 palette = vec3(0.19, 0.72, 0.98) + vec3(0.18, 0.10, 0.35) * sin(i + T*0.2);
+    vec3 palette = vec3(0.63, 0.63, 0.66) + vec3(0.12, 0.12, 0.12) * sin(i + T*0.2);
     col += (.0012/max(d,0.02)) * (palette + 0.7);
     float b=noise(i+p+bg*1.731);
     col += .0018*b/length(max(p,vec2(b*p.x*.02,p.y)));
-    col = mix(col, vec3(bg*.04,bg*.14,bg*.22), min(1.0,d*0.75));
+    col = mix(col, vec3(bg*.10,bg*.11,bg*.12), min(1.0,d*0.75));
   }
 
   float vignette = smoothstep(1.45, 0.22, length(st));
@@ -391,7 +391,7 @@ export function EnterpriseShaderHero({
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div
           ref={containerRef}
-          className="relative min-h-[500px] overflow-hidden rounded-3xl border border-cyan-300/15 bg-black/70 shadow-[0_22px_70px_rgba(6,182,212,0.18)] sm:min-h-[560px]"
+          className="relative min-h-[500px] overflow-hidden rounded-3xl border border-cyan-300/15 bg-black/70 shadow-2xl sm:min-h-[560px]"
         >
           <canvas
             ref={canvasRef}
@@ -399,7 +399,7 @@ export function EnterpriseShaderHero({
             aria-hidden
           />
 
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(124,58,237,0.22)_0%,transparent_44%),radial-gradient(circle_at_80%_70%,rgba(6,182,212,0.2)_0%,transparent_50%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(82,82,91,0.22)_0%,transparent_44%),radial-gradient(circle_at_80%_70%,rgba(113,113,122,0.2)_0%,transparent_50%)]" />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(125,211,252,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(125,211,252,0.07)_1px,transparent_1px)] bg-[size:44px_44px] opacity-30" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/22 via-slate-950/45 to-slate-950/78" />
 
@@ -414,7 +414,7 @@ export function EnterpriseShaderHero({
             <h2 className="max-w-5xl text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
               <span>{headline.line1}</span>
               <br />
-              <span className="bg-gradient-to-r from-cyan-300 via-violet-300 to-emerald-300 bg-clip-text text-transparent">
+              <span className="text-white">
                 {headline.line2}
               </span>
             </h2>
