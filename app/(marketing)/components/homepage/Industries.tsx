@@ -290,7 +290,7 @@ const industrySolutions: IndustrySolution[] = [
     frameworks: ['ISM', 'PSPF', 'Essential Eight', 'FOI Act'],
     stats: [
       { icon: Layers, value: '8', label: 'Essential Eight mitigations' },
-      { icon: Shield, value: 'Append-only', label: 'RLS audit log' },
+      { icon: Shield, value: 'Append-only', label: 'Immutable audit log' },
       { icon: Lock, value: 'RBAC', label: '+ row-level isolation' },
       { icon: FileText, value: 'PSPF', label: 'classification model' },
     ],

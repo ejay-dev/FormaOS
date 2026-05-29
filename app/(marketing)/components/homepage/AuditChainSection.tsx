@@ -6,8 +6,9 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 // Cryptographic audit-chain proof section. Surfaces the
 // Merkle + Sigstore Rekor anchoring (lib/audit/merkle.ts,
-// lib/audit/external-anchor.ts) and the append-only RLS
-// enforcement that lives in the codebase but was never
+// lib/audit/external-anchor.ts) and the append-only
+// immutability-trigger + RLS enforcement that lives in the
+// codebase but was never
 // represented in marketing copy until 2026-05-28.
 
 const PILLARS = [
@@ -30,7 +31,7 @@ const PILLARS = [
     eyebrow: 'postgres · rls',
     title: 'Append-only at the database',
     body:
-      'Restrictive RLS policies deny UPDATE and DELETE on audit tables at the database layer. Even a platform admin with service-role credentials cannot mutate a row — the rule is enforced by Postgres, not by application code.',
+      'A BEFORE UPDATE OR DELETE trigger rejects any mutation of audit rows, backed by restrictive RLS deny policies. Even a platform admin with service-role credentials — which bypasses RLS — is stopped by the trigger. The rule is enforced by Postgres, not by application code.',
   },
 ] as const;
 

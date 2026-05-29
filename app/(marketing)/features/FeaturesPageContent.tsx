@@ -83,7 +83,7 @@ const features: PlatformFeature[] = [
     description:
       'SOC 2 TSC, ISO 27001:2022, NIST CSF 2.0, CIS v8, HIPAA, GDPR, PCI DSS 4.0, and NDIS Practice Standards — each with mapped controls and evaluator coverage in lib/compliance/evaluators/register.ts.',
     longDescription:
-      'Each Framework Pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. 252 total controls across the 8 packs — ~85 auto-evaluated nightly against your live data, ~167 require human attestation. Controls are mapped cross-framework (40+ seeded mappings) so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.',
+      'Each Framework Pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. 252 total controls across the 8 packs — 102 auto-evaluate against your live data, 150 require human attestation. Controls are mapped cross-framework (40+ seeded mappings) so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.',
     category: 'Compliance Core',
     highlight: 'Most popular',
     capabilities: [
@@ -372,12 +372,12 @@ const features: PlatformFeature[] = [
     description:
       '61 SOC 2 Trust Service Criteria controls mapped, automated evaluators for ~28 of them, milestone tracking through audit readiness, and a downloadable report.',
     longDescription:
-      'SOC 2 Type II readiness across all 61 Trust Service Criteria (CC, A, C, PI, P) per lib/compliance/evaluators/register.ts. ~28 controls auto-evaluate nightly via the compliance-check cron at 06:00 UTC (MFA coverage, audit-log freshness, policy cadence, etc.); the remaining ~33 require human attestation. Milestone tracker at /app/compliance/soc2 guides framework enablement → evidence collection → readiness report. Score weights are not fixed marketing percentages — they reflect the actual count of passing vs. failing evaluators in each TSC category.',
+      'SOC 2 Type II readiness across all 61 Trust Service Criteria (CC, A, C, PI, P) per lib/compliance/evaluators/register.ts. ~28 controls auto-evaluate against your live data (MFA coverage, audit-log freshness, policy cadence, etc.); the remaining ~33 require human attestation. Milestone tracker at /app/compliance/soc2 guides framework enablement → evidence collection → readiness report. Score weights are not fixed marketing percentages — they reflect the actual count of passing vs. failing evaluators in each TSC category.',
     category: 'AI & Certification',
     highlight: 'Shipping',
     capabilities: [
       '61 SOC 2 TSC controls mapped',
-      '~28 auto-evaluated nightly',
+      '~28 auto-evaluated against live data',
       'Milestone tracker for readiness',
       'Downloadable readiness report',
     ],

@@ -26,7 +26,7 @@ const PILLARS = [
     eyebrow: 'postgres · rls',
     title: 'Append-only at the database',
     body:
-      'Restrictive RLS policies deny UPDATE and DELETE on audit tables at the database layer. A platform admin with service-role credentials cannot mutate a row — the rule is enforced by Postgres, not by application code, so an app-level bypass is not a vector.',
+      'A BEFORE UPDATE OR DELETE trigger rejects any mutation of audit rows, backed by restrictive RLS deny policies. A platform admin with service-role credentials — which bypasses RLS — is still stopped by the trigger. The rule is enforced by Postgres, not by application code, so an app-level bypass is not a vector.',
   },
 ] as const;
 

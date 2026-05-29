@@ -61,9 +61,9 @@ const proofScenarios = [
 const outcomeStats = [
   { value: '8', label: 'Framework packs', icon: GitBranch },
   { value: '252', label: 'Controls mapped', icon: ShieldCheck },
-  { value: '~85', label: 'Auto-evaluated daily', icon: TimerReset },
-  { value: '~167', label: 'Manual attestations', icon: TrendingUp },
-  { value: '9', label: 'Production crons', icon: CalendarCheck },
+  { value: '102', label: 'Auto-evaluated', icon: TimerReset },
+  { value: '150', label: 'Manual attestations', icon: TrendingUp },
+  { value: '16', label: 'Production crons', icon: CalendarCheck },
 ] as const;
 
 export function OutcomeProofSection() {

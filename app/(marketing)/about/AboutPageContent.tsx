@@ -213,17 +213,20 @@ export default function AboutPageContent() {
                         of it. Nobody was building that. So I started.
                       </p>
                       <p>
-                        Today FormaOS runs 252 controls across 8 framework
-                        packs. About 85 auto-evaluate nightly against your
-                        live data; the other 167 are surfaced as human
-                        attestations and labelled as such. The audit log is
-                        hash-chained at the database layer, with append-only
-                        enforced by Postgres RLS &mdash; not application code
-                        &mdash; and the chain top anchors daily at 05:30 UTC
-                        to Sigstore Rekor, the same transparency log the
-                        Linux Foundation uses for signed open-source releases.
-                        It&apos;s bootstrapped, sole-engineered, AU-hosted.
-                        The roadmap is short on purpose.
+                        Today FormaOS ships 252 control evaluators across
+                        framework packs spanning SOC&nbsp;2, ISO&nbsp;27001,
+                        HIPAA, GDPR, PCI-DSS, CIS, NIST&nbsp;CSF and NDIS.
+                        Over a hundred auto-evaluate against your live data;
+                        the rest are surfaced as human attestations and
+                        labelled as such. The audit log is hash-chained in
+                        Postgres, with append-only enforced at the database
+                        layer by an immutability trigger and RLS deny policies
+                        &mdash; not application code &mdash; and the chain head
+                        anchors daily at 05:30 UTC to Sigstore Rekor,
+                        the same transparency log the Linux Foundation uses for
+                        signed open-source releases. It&apos;s bootstrapped,
+                        sole-engineered, AU-hosted. The roadmap is short on
+                        purpose.
                       </p>
                     </div>
                   </div>

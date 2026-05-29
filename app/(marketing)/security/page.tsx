@@ -98,7 +98,7 @@ export default function SecurityPage() {
         facts={[
           { label: 'Hosting', value: 'Vercel Sydney + Supabase ap-southeast-2 (AU). Data does not leave Australia by default.' },
           { label: 'Audit chain', value: 'HMAC-SHA256 row-chained audit_log; chain top anchors daily at 05:30 UTC to Sigstore Rekor (Linux Foundation transparency log).' },
-          { label: 'Mutation defence', value: 'Append-only enforced at the Postgres layer via restrictive RLS policies — not in application code. Platform admins cannot mutate audit rows.' },
+          { label: 'Mutation defence', value: 'Append-only enforced at the Postgres layer by a BEFORE UPDATE OR DELETE immutability trigger, backed by restrictive RLS deny policies — not in application code. Even platform admins with service-role credentials (which bypass RLS) are stopped by the trigger.' },
           { label: 'Identity', value: 'SAML 2.0 SSO ships pre-wired for Microsoft Entra ID and Google Workspace on Enterprise. TOTP MFA + scrypt-hashed backup codes on all plans. SCIM v2 directory sync available.' },
           { label: 'Encryption', value: 'AES-256-GCM for integration secrets and TOTP material; TLS 1.3 in transit; secrets rotated on a documented cadence per /docs/operations/secret-rotation-runbook.md.' },
           { label: 'Multi-tenant isolation', value: '450+ Postgres RLS policies across 30+ tables. Every data query filters on org_members → organization_id at the database, not the API layer.' },
