@@ -26,12 +26,13 @@ export function ComplianceEngineDemo() {
           </p>
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            See the compliance engine{' '}
-            <span className="text-slate-400">in action</span>
+            How the compliance engine{' '}
+            <span className="text-slate-400">works</span>
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Watch the compliance lifecycle in real time - obligations flow to controls,
-            controls generate tasks, tasks produce evidence.
+            One connected lifecycle - obligations become controls, controls
+            generate tasks, tasks produce evidence, and every step stays
+            audit-ready.
           </p>
         </ScrollReveal>
 

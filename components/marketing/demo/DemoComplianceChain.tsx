@@ -1,29 +1,24 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import {
-  FileText, CheckSquare, Shield, Lock, BarChart3,
-  ArrowRight, CheckCircle, Clock,
-} from 'lucide-react';
-import { easing, duration } from '@/config/motion';
+import { FileText, CheckSquare, Shield, Lock, BarChart3 } from 'lucide-react';
 
 /**
- * DemoComplianceChain - Shows the FormaOS compliance lifecycle:
- * Obligation → Control → Task → Evidence → Audit
- * Props-driven content so each usage can be themed differently.
+ * DemoComplianceChain — the FormaOS compliance lifecycle:
+ * Obligation → Control → Task → Evidence → Audit.
+ *
+ * Rendered as a calm, static, monochrome process list. This replaced an
+ * auto-cycling "live demo" HUD (teal/emerald/amber chips, fake personas
+ * like "Owner: Min Park", fabricated due-dates, SHA-256 / "100% evidenced"
+ * meta, and a green "Complete" badge) that read as vibe-coded and clashed
+ * with the enterprise sections around it. Used on the homepage, /pricing,
+ * and /our-story; the /product page renders its own inline variant.
  */
 
 interface ChainStep {
   id: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  title: string;
   detail: string;
-  meta: string;
-  color: string;
-  bg: string;
-  border: string;
 }
 
 const defaultSteps: ChainStep[] = [
@@ -31,154 +26,86 @@ const defaultSteps: ChainStep[] = [
     id: 'obligation',
     label: 'Obligation',
     icon: FileText,
-    title: 'Regulatory Obligation Mapped',
-    detail: 'ISO 27001 A.9.2 - Access Control Policy',
-    meta: 'Framework imported • Controls auto-generated',
-    color: 'text-teal-400',
-    bg: 'bg-teal-500/15',
-    border: 'border-teal-500/20',
+    detail: 'Framework requirements mapped to controls',
   },
   {
     id: 'control',
     label: 'Control',
     icon: Shield,
-    title: 'Control Activated',
-    detail: 'Review access rights quarterly',
-    meta: 'Owner: Min Park • Frequency: Quarterly',
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-500/15',
-    border: 'border-emerald-500/20',
+    detail: 'Ownership and review cadence assigned',
   },
   {
     id: 'task',
     label: 'Task',
     icon: CheckSquare,
-    title: 'Task Auto-Assigned',
-    detail: 'Quarterly Access Review - Q1 2026',
-    meta: 'Due: 15 Mar 2026 • Escalation: 7 days',
-    color: 'text-teal-400',
-    bg: 'bg-teal-500/15',
-    border: 'border-teal-500/20',
+    detail: 'Work routed to the accountable owner',
   },
   {
     id: 'evidence',
     label: 'Evidence',
     icon: Lock,
-    title: 'Evidence Captured',
-    detail: 'Access review report uploaded & sealed',
-    meta: 'SHA-256 verified • Chain of custody logged',
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-500/15',
-    border: 'border-emerald-500/20',
+    detail: 'Artifacts linked and sealed to the control',
   },
   {
     id: 'audit',
     label: 'Audit',
     icon: BarChart3,
-    title: 'Audit-Ready',
-    detail: 'Full compliance trail exportable',
-    meta: 'ISO 27001 A.9.2 - 100% evidenced',
-    color: 'text-amber-400',
-    bg: 'bg-amber-500/15',
-    border: 'border-amber-500/20',
+    detail: 'Complete, exportable compliance trail',
   },
 ];
 
 interface DemoComplianceChainProps {
   steps?: ChainStep[];
-  stepDuration?: number;
+  /** Subtle monochrome edge glow; varies per surface. */
   glowColor?: string;
+  /** Retained for call-site compatibility; the list no longer animates. */
+  stepDuration?: number;
 }
 
 export default function DemoComplianceChain({
   steps = defaultSteps,
-  stepDuration = 2800,
-  glowColor = 'from-white/[0.04] to-white/[0.02]',
+  glowColor = 'from-white/[0.05] to-white/[0.02]',
 }: DemoComplianceChainProps) {
-  const prefersReducedMotion = useReducedMotion();
-  const [activeStep, setActiveStep] = useState(0);
-
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-    const timer = setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % steps.length);
-    }, stepDuration);
-    return () => clearInterval(timer);
-  }, [prefersReducedMotion, steps.length, stepDuration]);
-
-  const handleClick = useCallback((i: number) => setActiveStep(i), []);
-
   return (
     <div className="relative">
-      <div className={`absolute -inset-px rounded-2xl bg-gradient-to-b ${glowColor} blur-sm`} />
+      <div
+        className={`absolute -inset-px rounded-2xl bg-gradient-to-b ${glowColor} blur-sm`}
+      />
 
-      <div className="relative rounded-2xl border border-white/[0.08] bg-[#0b1022] p-4 sm:p-5 overflow-hidden">
-        {/* Step indicators */}
-        <div className="flex items-center gap-0.5 sm:gap-1 mb-5">
-          {steps.map((step, i) => {
+      <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 sm:p-6">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+        <p className="mb-6 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+          Compliance lifecycle
+        </p>
+
+        <ol>
+          {steps.map((step, index) => {
             const Icon = step.icon;
-            const isActive = i === activeStep;
-            const isPast = i < activeStep;
-
+            const isLast = index === steps.length - 1;
             return (
-              <div key={step.id} className="flex items-center flex-1 min-w-0">
-                <button
-                  type="button"
-                  onClick={() => handleClick(i)}
-                  aria-label={`Show ${step.label} stage`}
-                  className={`
-                    flex items-center gap-1 sm:gap-1.5 rounded-full px-1.5 sm:px-2.5 py-1 text-[9px] sm:text-[10px] font-medium transition-all w-full justify-center
-                    ${isActive ? `${step.bg} ${step.color} border ${step.border}` :
-                      isPast ? 'bg-white/[0.04] text-emerald-400' : 'bg-white/[0.02] text-muted-foreground/40'}
-                  `}
-                >
-                  <Icon className="h-3 w-3 flex-shrink-0" />
-                  <span className="sr-only">{step.label}</span>
-                  <span className="hidden sm:inline truncate">{step.label}</span>
-                </button>
-                {i < steps.length - 1 && (
-                  <ArrowRight className={`h-2.5 w-2.5 mx-0.5 flex-shrink-0 ${i < activeStep ? 'text-emerald-500/40' : 'text-white/[0.06]'}`} />
+              <li key={step.id} className="relative flex gap-4 pb-6 last:pb-0">
+                {!isLast && (
+                  <span
+                    aria-hidden
+                    className="absolute left-[21px] top-11 bottom-0 w-px bg-white/[0.08]"
+                  />
                 )}
-              </div>
+                <div className="relative z-10 inline-flex h-[42px] w-[42px] flex-shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.05]">
+                  <Icon className="h-5 w-5 text-slate-300" />
+                </div>
+                <div className="pt-1">
+                  <p className="text-sm font-semibold text-white">
+                    {step.label}
+                  </p>
+                  <p className="mt-0.5 text-xs leading-snug text-slate-400">
+                    {step.detail}
+                  </p>
+                </div>
+              </li>
             );
           })}
-        </div>
-
-        {/* Active card */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeStep}
-            initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
-            transition={{ duration: duration.normal, ease: easing.signature }}
-          >
-            {(() => {
-              const step = steps[activeStep];
-              const Icon = step.icon;
-              return (
-                <div className={`rounded-xl border ${step.border} ${step.bg.replace('/15', '/[0.06]')} p-3 sm:p-4`}>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className={`h-7 w-7 sm:h-8 sm:w-8 rounded-lg ${step.bg} flex items-center justify-center`}>
-                        <Icon className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${step.color}`} />
-                      </div>
-                      <div className="min-w-0">
-                        <p className={`text-[11px] sm:text-xs font-semibold ${step.color}`}>{step.title}</p>
-                        <p className="text-[10px] sm:text-[11px] text-muted-foreground truncate">{step.detail}</p>
-                      </div>
-                    </div>
-                    <div className={`hidden sm:flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium ${step.bg} ${step.color}`}>
-                      {activeStep === steps.length - 1 ? <CheckCircle className="h-2.5 w-2.5" /> : <Clock className="h-2.5 w-2.5" />}
-                      {activeStep === steps.length - 1 ? 'Complete' : `Step ${activeStep + 1}/${steps.length}`}
-                    </div>
-                  </div>
-                  <p className="text-[9px] sm:text-[10px] text-muted-foreground/60 pl-9 sm:pl-10">{step.meta}</p>
-                </div>
-              );
-            })()}
-          </motion.div>
-        </AnimatePresence>
+        </ol>
       </div>
     </div>
   );
