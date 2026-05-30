@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  CheckCircle2,
   ClipboardCheck,
   Settings2,
   ShieldCheck,
@@ -61,11 +62,9 @@ function CostOfNonCompliance() {
           range={[0, 0.35]}
           className="mx-auto mb-12 max-w-3xl text-center"
         >
-          <div className="mb-5 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
-            <span className="h-px w-6 bg-white/25" />
-            <span className="text-slate-400">Cost ledger</span>
-            <span className="text-slate-600">·</span>
-            <span>before / after FormaOS</span>
+          <div className="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <span className="h-px w-8 bg-white/25" />
+            <span>Manual vs FormaOS</span>
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
             One failed audit costs more than{' '}
@@ -81,63 +80,54 @@ function CostOfNonCompliance() {
         </ScrollReveal>
 
         <ScrollReveal variant="depthSlide" range={[0.05, 0.45]}>
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.07] bg-gradient-to-br from-[#0c1424]/90 via-[#070e1c]/85 to-[#040810]/90 shadow-2xl shadow-black/40 ring-1 ring-white/[0.03]">
-            {/* Edge glow lines */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
-            {/* Center divider */}
-            <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px bg-gradient-to-b from-transparent via-white/[0.08] to-transparent md:block" />
-            {/* Rail headers */}
-            <div className="grid grid-cols-1 border-b border-white/[0.06] md:grid-cols-2">
-              <div className="flex items-center gap-3 px-6 py-4">
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-                <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                  Manual / pre-FormaOS
-                </span>
+          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-950/50">
+            {/* Column headers (desktop) */}
+            <div className="hidden border-b border-white/[0.08] sm:grid sm:grid-cols-[1.1fr_1fr_1.15fr]">
+              <div className="px-6 py-4" />
+              <div className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Manual / pre-FormaOS
               </div>
-              <div className="flex items-center gap-3 border-t border-white/[0.06] px-6 py-4 md:border-t-0 md:border-l">
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
-                <span className="text-[10px] uppercase tracking-[0.22em] text-slate-200">
-                  System enforced
-                </span>
+              <div className="flex items-center gap-2 border-l border-white/[0.06] bg-white/[0.03] px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
+                <CheckCircle2 className="h-4 w-4 text-slate-300" aria-hidden="true" />
+                With FormaOS
               </div>
             </div>
 
             {/* Rows */}
-            <ul>
-              {MANUAL_COMPLIANCE_COST_ANCHORS.map((item, idx) => (
-                <li
-                  key={item.label}
-                  className={`grid grid-cols-1 ${idx > 0 ? 'border-t border-white/[0.05]' : ''} md:grid-cols-2`}
-                >
-                  <div className="relative flex items-start gap-4 px-6 py-5">
-                    <span className="mt-1.5 block h-1 w-1 shrink-0 rounded-full bg-slate-500" />
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                        {item.label}
-                      </p>
-                      <p className="mt-1.5 text-sm text-slate-300">
-                        {item.manual}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="relative flex items-start gap-4 border-t border-white/[0.04] px-6 py-5 md:border-t-0 md:border-l">
-                    <span className="mt-1.5 block h-1 w-1 shrink-0 rounded-full bg-slate-300" />
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                        Enforced
-                      </p>
-                      <p className="mt-1.5 text-sm text-slate-200">
-                        {item.formaos}
-                      </p>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {MANUAL_COMPLIANCE_COST_ANCHORS.map((item, idx) => (
+              <div
+                key={item.label}
+                className={`grid grid-cols-1 sm:grid-cols-[1.1fr_1fr_1.15fr] ${
+                  idx > 0 ? 'border-t border-white/[0.06]' : ''
+                }`}
+              >
+                {/* Dimension */}
+                <div className="px-6 pt-5 pb-2 sm:py-5">
+                  <span className="text-sm font-semibold text-white">
+                    {item.label}
+                  </span>
+                </div>
+                {/* Manual */}
+                <div className="px-6 pb-2 sm:py-5">
+                  <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:hidden">
+                    Manual
+                  </span>
+                  <span className="text-sm text-slate-400">{item.manual}</span>
+                </div>
+                {/* With FormaOS */}
+                <div className="border-white/[0.06] bg-white/[0.02] px-6 pb-5 pt-1 sm:border-l sm:py-5 sm:pt-5">
+                  <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400 sm:hidden">
+                    With FormaOS
+                  </span>
+                  <span className="text-sm font-medium text-white">
+                    {item.formaos}
+                  </span>
+                </div>
+              </div>
+            ))}
 
-            {/* Bottom caption */}
-            <div className="border-t border-white/[0.06] bg-white/[0.015] px-6 py-3.5 text-center text-xs text-slate-500">
+            {/* Footer caption */}
+            <div className="border-t border-white/[0.08] bg-white/[0.015] px-6 py-3.5 text-center text-xs text-slate-500">
               With FormaOS, evidence is captured continuously as work happens —
               not reconstructed before an audit.
             </div>
