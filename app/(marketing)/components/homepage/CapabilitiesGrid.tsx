@@ -72,17 +72,17 @@ export function CapabilitiesGrid() {
         <ScrollReveal
           variant="scaleUp"
           range={[0, 0.3]}
-          className="text-center mb-14"
+          className="mx-auto mb-12 max-w-2xl text-center lg:mb-14"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-400 text-xs font-semibold uppercase tracking-[0.18em] mb-6">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Platform Capabilities
-          </div>
+          </p>
 
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
+          <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
             Everything you need.{' '}
             <span className="text-slate-400">Nothing you don&apos;t.</span>
           </h2>
-          <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">
             Obligations flow to controls, controls trigger tasks, tasks produce
             evidence. One interconnected system.
           </p>

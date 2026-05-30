@@ -594,26 +594,6 @@ export function ValueProposition() {
           'linear-gradient(180deg, #020617 0%, #070b18 40%, #0a1020 60%, #020617 100%)',
       }}
     >
-      {/* ── Ambient lighting ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div
-          className="absolute w-[600px] h-[600px] rounded-full blur-[160px]"
-          style={{
-            left: '10%',
-            top: '5%',
-            background: 'rgba(113, 113, 122, 0.035)',
-          }}
-        />
-        <div
-          className="absolute w-[500px] h-[500px] rounded-full blur-[140px]"
-          style={{
-            right: '5%',
-            top: '40%',
-            background: 'rgba(148, 163, 184, 0.025)',
-          }}
-        />
-      </div>
-
       {/* ── Grid texture ── */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -641,49 +621,39 @@ export function ValueProposition() {
       />
 
       <div className="relative z-10 max-w-6xl mx-auto">
-        {/* ── Header ── */}
-        <div className="text-center mb-14">
+        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+            paired description column replace the centred eyebrow-pill template. */}
+        <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
           <motion.div
-            initial={noMotion ? false : { opacity: 0, y: 16, scale: 0.95 }}
-            animate={isInView ? { opacity: 1, y: 0, scale: 1 } : undefined}
+            initial={noMotion ? false : { opacity: 0, y: 16 }}
+            animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, ease: signatureEase }}
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-6"
+            className="lg:col-span-7"
           >
-            <span className="text-sm font-medium text-slate-300">
-              Operating System Architecture
-            </span>
-          </motion.div>
-
-          <div className="relative">
-            <motion.h2
-              initial={noMotion ? false : { opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : undefined}
-              transition={{
-                duration: duration.slow,
-                delay: 0.1,
-                ease: signatureEase,
-              }}
-              className="relative text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-5"
-            >
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px w-8 bg-white/25" />
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Operating System Architecture
+              </span>
+            </div>
+            <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
               Not a repository.{' '}
               <span className="text-slate-400">A live system.</span>
-            </motion.h2>
-          </div>
+            </h2>
+          </motion.div>
 
-          <motion.p
-            initial={noMotion ? false : { opacity: 0, y: 14 }}
+          <motion.div
+            initial={noMotion ? false : { opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{
-              duration: duration.slow,
-              delay: 0.15,
-              ease: signatureEase,
-            }}
-            className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed"
+            transition={{ duration: duration.slow, delay: 0.08, ease: signatureEase }}
+            className="lg:col-span-5"
           >
-            Other tools store documents. FormaOS enforces your compliance
-            program — controls are gated, ownership is structural, and evidence
-            is generated as teams operate.
-          </motion.p>
+            <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+              Other tools store documents. FormaOS enforces your compliance
+              program — controls are gated, ownership is structural, and evidence
+              is generated as teams operate.
+            </p>
+          </motion.div>
         </div>
 
         {/* ── Bento grid ── */}

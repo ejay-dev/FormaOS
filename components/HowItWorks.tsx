@@ -51,22 +51,21 @@ export function HowItWorks({ className = '' }: { className?: string }) {
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl">
-        <div className="mx-auto max-w-3xl text-center">
-          <motion.div
+        <div className="mx-auto mb-12 max-w-2xl text-center lg:mb-14">
+          <motion.p
             initial={noMotion ? false : { opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, ease: signatureEase }}
-            className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500"
+            className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500"
           >
-            <Workflow className="h-3.5 w-3.5" aria-hidden="true" />
             How It Works
-          </motion.div>
+          </motion.p>
 
           <motion.h2
             initial={noMotion ? false : { opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, delay: 0.08, ease: signatureEase }}
-            className="mt-4 text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl"
+            className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]"
           >
             From obligation to <span className="text-slate-400">enforced evidence chain</span>
           </motion.h2>
@@ -75,14 +74,14 @@ export function HowItWorks({ className = '' }: { className?: string }) {
             initial={noMotion ? false : { opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, delay: 0.16, ease: signatureEase }}
-            className="mt-4 text-base leading-7 text-slate-400"
+            className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400"
           >
             FormaOS turns compliance into a continuous operating loop rather
             than a document clean-up project before an audit.
           </motion.p>
         </div>
 
-        <div className="mt-12 grid gap-4 md:grid-cols-5">
+        <div className="grid gap-4 md:grid-cols-5">
           {steps.map((step, index) => (
             <motion.article
               key={step.title}

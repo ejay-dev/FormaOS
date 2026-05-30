@@ -37,28 +37,32 @@ export function ComplianceNetworkSection() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Centered header */}
-        <ScrollReveal
-          variant="blurIn"
-          range={[0, 0.3]}
-          className="mb-10 text-center lg:mb-16"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-400 text-xs font-semibold uppercase tracking-[0.18em] mb-6">
-            Compliance Data Model
+        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+            paired description column replace the centred eyebrow-pill template. */}
+        <ScrollReveal variant="blurIn" range={[0, 0.3]} className="mb-10 lg:mb-16">
+          <div className="grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="h-px w-8 bg-white/25" />
+                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  Compliance Data Model
+                </span>
+              </div>
+              <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+                See how everything connects
+              </h2>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+                Frameworks map to controls. Controls generate tasks. Tasks produce
+                evidence. Tap or hover any node to trace its compliance
+                relationships.
+              </p>
+            </div>
           </div>
 
-          <h2 className="mb-5 text-2xl font-bold sm:text-4xl lg:text-5xl text-white">
-            See how everything connects
-          </h2>
-
-          <p className="mx-auto mb-7 max-w-2xl text-base leading-relaxed text-gray-400 sm:text-lg">
-            Frameworks map to controls. Controls generate tasks. Tasks produce
-            evidence. Tap or hover any node to trace its compliance
-            relationships.
-          </p>
-
           {/* Legend row - enhanced with live status pulse */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 lg:gap-5">
+          <div className="mt-8 flex flex-wrap items-center gap-2.5 sm:gap-4 lg:gap-5">
             {legendItems.map((item) => (
               <div
                 key={item.label}

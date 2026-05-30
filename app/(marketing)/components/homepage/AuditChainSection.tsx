@@ -45,16 +45,15 @@ export function AuditChainSection() {
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.3]}
-          className="mx-auto max-w-3xl text-center"
+          className="mx-auto mb-12 max-w-2xl text-center lg:mb-14"
         >
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-            <Lock className="h-3.5 w-3.5" aria-hidden="true" />
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Cryptographic audit chain
-          </div>
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
+          </p>
+          <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
             Verifiable, not just &ldquo;we have logs&rdquo;
           </h2>
-          <p className="mt-4 text-sm leading-relaxed text-slate-300 sm:text-base">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">
             Every org&apos;s audit log is hash-chained, RLS-locked against
             mutation, and anchored daily to Sigstore Rekor — the same
             append-only transparency log the Linux Foundation runs for signed
@@ -62,7 +61,7 @@ export function AuditChainSection() {
           </p>
         </ScrollReveal>
 
-        <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-3">
           {PILLARS.map((pillar, idx) => {
             const Icon = pillar.icon;
             return (

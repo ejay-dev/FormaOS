@@ -121,23 +121,21 @@ export function HomeProofStaticShell() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
-        <div className="mx-auto max-w-3xl text-center">
-          <motion.div
+        <div className="mx-auto mb-12 max-w-2xl text-center lg:mb-14">
+          <motion.p
             initial={noMotion ? false : { opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, ease: signatureEase }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2"
+            className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500"
           >
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Why buyers stay
-            </span>
-          </motion.div>
+            Why buyers stay
+          </motion.p>
 
           <motion.h2
             initial={noMotion ? false : { opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, delay: 0.08, ease: signatureEase }}
-            className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-5xl"
+            className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]"
           >
             Three paths to conviction,
             <br className="hidden sm:block" />
@@ -149,7 +147,7 @@ export function HomeProofStaticShell() {
             initial={noMotion ? false : { opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, delay: 0.16, ease: signatureEase }}
-            className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-slate-400 sm:text-lg"
+            className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400"
           >
             Operators see accountable workflows. Security reviewers see
             defensible evidence. Procurement sees a structured evaluation path.
@@ -157,7 +155,7 @@ export function HomeProofStaticShell() {
           </motion.p>
         </div>
 
-        <div className="mt-14 grid gap-5 lg:grid-cols-3">
+        <div className="grid gap-5 lg:grid-cols-3">
           {PROOF_BLOCKS.map((block, i) => (
             <ConvictionCard
               key={block.title}

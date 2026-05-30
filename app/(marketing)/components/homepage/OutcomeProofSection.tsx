@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import {
   ArrowRight,
-  BarChart3,
   ShieldCheck,
   TimerReset,
   TrendingUp,
@@ -72,24 +71,21 @@ export function OutcomeProofSection() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <ScrollReveal
-          variant="slideUp"
-          range={[0, 0.3]}
-          className="mx-auto max-w-3xl text-center"
-        >
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-            <BarChart3 className="h-3.5 w-3.5 text-slate-300" />
-            What ships, what runs
+        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+          <div className="mx-auto mb-12 max-w-2xl text-center lg:mb-14">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              What ships, what runs
+            </p>
+            <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
+              Operational mechanics, not customer claims
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">
+              Every number below comes from the framework registry checked into
+              the codebase or the cron schedule running in production. The
+              scenarios name the actual table, predicate, or statutory clock
+              doing the work — not a generic &ldquo;automated workflow.&rdquo;
+            </p>
           </div>
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
-            Operational mechanics, not customer claims
-          </h2>
-          <p className="mt-4 text-sm leading-relaxed text-slate-300 sm:text-base">
-            Every number below comes from the framework registry checked into
-            the codebase or the cron schedule running in production. The
-            scenarios name the actual table, predicate, or statutory clock
-            doing the work — not a generic &ldquo;automated workflow.&rdquo;
-          </p>
         </ScrollReveal>
 
         {/* Scenario cards: dark panel with illuminated metrics */}

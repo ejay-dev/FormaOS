@@ -563,48 +563,42 @@ export const Industries = memo(function Industries() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-        {/* Heading */}
-        <div className="text-center mb-16 lg:mb-20">
-          <motion.div
-            initial={noMotion ? false : { opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: duration.slow, ease: signatureEase }}
-            className="mb-6"
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Industry Solutions
-            </span>
-          </motion.div>
-
+        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+            paired description column replace the centred eyebrow-pill template. */}
+        <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
           <motion.div
             initial={noMotion ? false : { opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{
-              duration: duration.slow,
-              delay: 0.05,
-              ease: signatureEase,
-            }}
-            className="relative"
+            transition={{ duration: duration.slow, ease: signatureEase }}
+            className="lg:col-span-7"
           >
-            <h2 className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px w-8 bg-white/25" />
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Industry Solutions
+              </span>
+            </div>
+            <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
               Built for high-accountability industries
             </h2>
           </motion.div>
 
-          <motion.p
+          <motion.div
             initial={noMotion ? false : { opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{
               duration: duration.slow,
-              delay: 0.1,
+              delay: 0.08,
               ease: signatureEase,
             }}
-            className="text-base md:text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed"
+            className="lg:col-span-5"
           >
-            When compliance failure means regulatory action, accreditation loss,
-            or operational shutdown, FormaOS delivers the evidence
-            infrastructure your industry demands.
-          </motion.p>
+            <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+              When compliance failure means regulatory action, accreditation
+              loss, or operational shutdown, FormaOS delivers the evidence
+              infrastructure your industry demands.
+            </p>
+          </motion.div>
         </div>
 
         {/* Accordion */}

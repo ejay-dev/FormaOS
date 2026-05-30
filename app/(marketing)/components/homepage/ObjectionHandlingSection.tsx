@@ -90,24 +90,28 @@ export function ObjectionHandlingSection() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Header */}
-        <ScrollReveal
-          variant="blurIn"
-          range={[0, 0.3]}
-          className="mx-auto max-w-3xl text-center"
-        >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-            <BadgeCheck className="h-3.5 w-3.5 text-slate-300" />
-            Enterprise Ready
-          </div>
-          <h2 className="text-2xl font-bold text-white sm:text-4xl">
-            From evaluation to procurement — no blockers
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-slate-400 sm:text-base">
-            FormaOS ships with the trust artifacts, security documentation, and
-            buyer-facing proof that enterprise procurement teams need on day one.
-          </p>
-        </ScrollReveal>
+        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+            paired description column replace the centred eyebrow-pill template. */}
+        <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
+          <ScrollReveal variant="slideUp" range={[0, 0.3]} className="lg:col-span-7">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px w-8 bg-white/25" />
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Enterprise Ready
+              </span>
+            </div>
+            <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+              From evaluation to procurement — no blockers
+            </h2>
+          </ScrollReveal>
+
+          <ScrollReveal variant="fadeUp" range={[0.04, 0.34]} className="lg:col-span-5">
+            <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+              FormaOS ships with the trust artifacts, security documentation, and
+              buyer-facing proof that enterprise procurement teams need on day one.
+            </p>
+          </ScrollReveal>
+        </div>
 
         {/* Objection cards - 2x2 grid */}
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
