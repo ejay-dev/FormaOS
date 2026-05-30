@@ -40,7 +40,6 @@ import {
   AlertTriangle,
   TrendingUp,
   GitBranch,
-  Settings,
   Monitor,
   Bot,
   ShieldCheck,
@@ -496,87 +495,87 @@ const categoryMeta: Record<CategoryName, CategoryConfig> = {
   'Compliance Core': {
     description:
       'Framework coverage, control enforcement, evidence management, and posture scoring - the operational backbone of your compliance program.',
-    gradient: 'from-emerald-500/20 via-emerald-500/5 to-transparent',
-    accent: 'emerald',
-    accentRgb: '52,211,153',
+    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
+    accent: 'slate',
+    accentRgb: '203,213,225',
     icon: Shield,
-    dotColor: 'bg-emerald-400',
-    bgGlow: 'bg-emerald-500/[0.04]',
-    borderHover: 'hover:border-emerald-400/20',
-    iconBg: 'bg-emerald-500/10',
-    iconBorder: 'border-emerald-400/20',
-    textColor: 'text-emerald-400',
-    badgeBg: 'bg-emerald-500/10',
-    badgeBorder: 'border-emerald-400/20',
-    badgeText: 'text-emerald-400',
+    dotColor: 'bg-slate-300',
+    bgGlow: 'bg-white/[0.04]',
+    borderHover: 'hover:border-white/20',
+    iconBg: 'bg-white/[0.06]',
+    iconBorder: 'border-white/10',
+    textColor: 'text-slate-200',
+    badgeBg: 'bg-white/[0.06]',
+    badgeBorder: 'border-white/10',
+    badgeText: 'text-slate-300',
   },
   'Workflow & Operations': {
     description:
       'Automation, incident management, bulk operations, and care delivery workflows that eliminate manual compliance overhead.',
-    gradient: 'from-cyan-500/20 via-cyan-500/5 to-transparent',
-    accent: 'cyan',
-    accentRgb: '113,113,122',
+    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
+    accent: 'slate',
+    accentRgb: '148,163,184',
     icon: Workflow,
-    dotColor: 'bg-cyan-400',
-    bgGlow: 'bg-cyan-500/[0.04]',
-    borderHover: 'hover:border-cyan-400/20',
-    iconBg: 'bg-cyan-500/10',
-    iconBorder: 'border-cyan-400/20',
-    textColor: 'text-cyan-400',
-    badgeBg: 'bg-cyan-500/10',
-    badgeBorder: 'border-cyan-400/20',
-    badgeText: 'text-cyan-400',
+    dotColor: 'bg-slate-400',
+    bgGlow: 'bg-white/[0.04]',
+    borderHover: 'hover:border-white/20',
+    iconBg: 'bg-white/[0.06]',
+    iconBorder: 'border-white/10',
+    textColor: 'text-slate-300',
+    badgeBg: 'bg-white/[0.06]',
+    badgeBorder: 'border-white/10',
+    badgeText: 'text-slate-300',
   },
   'Identity & Security': {
     description:
       'Enterprise identity governance, data residency, immutable audit trails, and risk visualization for regulated environments.',
-    gradient: 'from-violet-500/20 via-violet-500/5 to-transparent',
-    accent: 'violet',
-    accentRgb: '139,92,246',
+    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
+    accent: 'zinc',
+    accentRgb: '161,161,170',
     icon: Lock,
-    dotColor: 'bg-violet-400',
-    bgGlow: 'bg-violet-500/[0.04]',
-    borderHover: 'hover:border-violet-400/20',
-    iconBg: 'bg-violet-500/10',
-    iconBorder: 'border-violet-400/20',
-    textColor: 'text-violet-400',
-    badgeBg: 'bg-violet-500/10',
-    badgeBorder: 'border-violet-400/20',
-    badgeText: 'text-violet-400',
+    dotColor: 'bg-zinc-400',
+    bgGlow: 'bg-white/[0.04]',
+    borderHover: 'hover:border-white/20',
+    iconBg: 'bg-white/[0.06]',
+    iconBorder: 'border-white/10',
+    textColor: 'text-zinc-300',
+    badgeBg: 'bg-white/[0.06]',
+    badgeBorder: 'border-white/10',
+    badgeText: 'text-zinc-300',
   },
   'Collaboration & UX': {
     description:
       'Real-time collaboration, intelligent search, contextual help, and keyboard-first workflows for compliance teams.',
-    gradient: 'from-blue-500/20 via-blue-500/5 to-transparent',
-    accent: 'blue',
+    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
+    accent: 'zinc',
     accentRgb: '113,113,122',
     icon: MessageSquare,
-    dotColor: 'bg-blue-400',
-    bgGlow: 'bg-blue-500/[0.04]',
-    borderHover: 'hover:border-blue-400/20',
-    iconBg: 'bg-blue-500/10',
-    iconBorder: 'border-blue-400/20',
-    textColor: 'text-blue-400',
-    badgeBg: 'bg-blue-500/10',
-    badgeBorder: 'border-blue-400/20',
-    badgeText: 'text-blue-400',
+    dotColor: 'bg-zinc-500',
+    bgGlow: 'bg-white/[0.04]',
+    borderHover: 'hover:border-white/20',
+    iconBg: 'bg-white/[0.06]',
+    iconBorder: 'border-white/10',
+    textColor: 'text-slate-300',
+    badgeBg: 'bg-white/[0.06]',
+    badgeBorder: 'border-white/10',
+    badgeText: 'text-slate-300',
   },
   'AI & Certification': {
     description:
       'AI-powered compliance intelligence and automated self-certification engines that accelerate audit readiness.',
-    gradient: 'from-amber-500/20 via-amber-500/5 to-transparent',
-    accent: 'amber',
-    accentRgb: '245,158,11',
+    gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
+    accent: 'slate',
+    accentRgb: '203,213,225',
     icon: Bot,
-    dotColor: 'bg-amber-400',
-    bgGlow: 'bg-amber-500/[0.04]',
-    borderHover: 'hover:border-amber-400/20',
-    iconBg: 'bg-amber-500/10',
-    iconBorder: 'border-amber-400/20',
-    textColor: 'text-amber-400',
-    badgeBg: 'bg-amber-500/10',
-    badgeBorder: 'border-amber-400/20',
-    badgeText: 'text-amber-400',
+    dotColor: 'bg-slate-300',
+    bgGlow: 'bg-white/[0.04]',
+    borderHover: 'hover:border-white/20',
+    iconBg: 'bg-white/[0.06]',
+    iconBorder: 'border-white/10',
+    textColor: 'text-slate-200',
+    badgeBg: 'bg-white/[0.06]',
+    badgeBorder: 'border-white/10',
+    badgeText: 'text-slate-300',
   },
 };
 
@@ -633,23 +632,23 @@ const architectureLayers = [
     detail:
       'React compliance gates with real-time validation. Controls render-blocked UI when prerequisites are unmet.',
     icon: Monitor,
-    accent: 'emerald',
-    accentRgb: '52,211,153',
+    accent: 'slate',
+    accentRgb: '203,213,225',
   },
   {
     label: 'API Guards',
     detail:
       'Server-side middleware enforcing permission checks, rate limiting, and compliance state validation on every request.',
     icon: Server,
-    accent: 'cyan',
-    accentRgb: '113,113,122',
+    accent: 'slate',
+    accentRgb: '148,163,184',
   },
   {
     label: 'Business Logic',
     detail:
       'Workflow engine processing automation rules, scoring calculations, and cross-framework evidence mapping.',
     icon: GitBranch,
-    accent: 'blue',
+    accent: 'zinc',
     accentRgb: '113,113,122',
   },
   {
@@ -657,16 +656,16 @@ const architectureLayers = [
     detail:
       'Row-Level Security policies ensure tenant isolation at the database layer. Every query is scoped by organization.',
     icon: Database,
-    accent: 'violet',
-    accentRgb: '139,92,246',
+    accent: 'zinc',
+    accentRgb: '161,161,170',
   },
   {
     label: 'Environment Isolation',
     detail:
       'Infrastructure-level tenant isolation with dedicated encryption keys and configurable data residency.',
     icon: Key,
-    accent: 'rose',
-    accentRgb: '251,113,133',
+    accent: 'slate',
+    accentRgb: '148,163,184',
   },
 ];
 
@@ -707,7 +706,7 @@ function AnimatedStat({
     >
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-1">
         {value}
-        <span className="text-emerald-400">{suffix}</span>
+        <span className="text-slate-400">{suffix}</span>
       </div>
       <div className="text-xs sm:text-sm text-slate-400 font-medium">
         {label}
@@ -960,12 +959,9 @@ function ArchitectureSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-400/20 bg-violet-500/10 mb-6">
-              <Server className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
-                Platform Architecture
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Platform Architecture
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Five layers of{' '}
               <span className="text-foreground">
@@ -983,7 +979,7 @@ function ArchitectureSection() {
             stagger={0.08}
             className="relative"
           >
-            <div className="absolute left-8 sm:left-12 top-0 bottom-0 w-px bg-gradient-to-b from-emerald-400/40 via-violet-400/20 to-rose-400/40" />
+            <div className="absolute left-8 sm:left-12 top-0 bottom-0 w-px bg-gradient-to-b from-white/25 via-white/10 to-white/25" />
 
             <div className="space-y-4">
               {architectureLayers.map((layer, i) => {
@@ -1069,12 +1065,9 @@ function ComparisonSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-6">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                Built Different
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Built Different
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Legacy compliance vs{' '}
               <span className="text-foreground">
@@ -1092,7 +1085,7 @@ function ComparisonSection() {
               Legacy Approach
             </div>
             <div className="w-px" />
-            <div className="text-sm font-semibold text-emerald-400/70 uppercase tracking-wider text-center">
+            <div className="text-sm font-semibold text-slate-300 uppercase tracking-wider text-center">
               FormaOS
             </div>
           </div>
@@ -1118,14 +1111,14 @@ function ComparisonSection() {
                     </div>
 
                     <div className="hidden sm:flex items-center justify-center">
-                      <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-400/20 flex items-center justify-center">
-                        <ArrowRight className="w-4 h-4 text-emerald-400" />
+                      <div className="w-8 h-8 rounded-full bg-white/[0.06] border border-white/10 flex items-center justify-center">
+                        <ArrowRight className="w-4 h-4 text-slate-300" />
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <div className="shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-400/20 flex items-center justify-center">
-                        <ItemIcon className="w-4 h-4 text-emerald-400" />
+                      <div className="shrink-0 w-8 h-8 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center">
+                        <ItemIcon className="w-4 h-4 text-slate-300" />
                       </div>
                       <span className="text-sm text-white font-medium">
                         {item.formaos}
@@ -1320,12 +1313,9 @@ function FrameworkCoverageSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-              <Layers className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                Framework Packs
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Framework Packs
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Pre-built compliance{' '}
               <span className="text-foreground">
@@ -1348,12 +1338,12 @@ function FrameworkCoverageSection() {
                 key={fw.name}
                 className="group grid grid-cols-1 sm:grid-cols-[1fr,auto,auto] gap-3 sm:gap-6 items-center
                   rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6
-                  hover:bg-white/[0.04] hover:border-emerald-400/15 transition-all duration-300
-                  hover:shadow-[0_0_30px_rgba(52,211,153,0.05)]"
+                  hover:bg-white/[0.04] hover:border-white/15 transition-all duration-300
+                  hover:shadow-[0_0_30px_rgba(255,255,255,0.04)]"
               >
                 <div className="flex items-center gap-4">
-                  <div className="shrink-0 w-10 h-10 rounded-xl border border-emerald-400/20 bg-emerald-500/10 flex items-center justify-center">
-                    <Shield className="w-5 h-5 text-emerald-400" />
+                  <div className="shrink-0 w-10 h-10 rounded-xl border border-white/10 bg-white/[0.06] flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-slate-200" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -1361,7 +1351,7 @@ function FrameworkCoverageSection() {
                         {fw.name}
                       </h3>
                       {fw.badge && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 text-emerald-400">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.06] text-slate-300">
                           {fw.badge}
                         </span>
                       )}
@@ -1378,8 +1368,8 @@ function FrameworkCoverageSection() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm text-emerald-400 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-slate-300" />
+                  <span className="text-sm text-slate-300 font-medium">
                     {fw.status}
                   </span>
                 </div>
@@ -1399,8 +1389,8 @@ const capabilityTabs = [
     id: 'evidence',
     label: 'Evidence Management',
     icon: FileCheck,
-    accent: 'emerald',
-    accentRgb: '52,211,153',
+    accent: 'slate',
+    accentRgb: '203,213,225',
     heading: 'Tamper-evident evidence at every step',
     description:
       'From upload to audit export, every piece of compliance evidence is versioned, hashed, and tracked with full chain-of-custody.',
@@ -1435,8 +1425,8 @@ const capabilityTabs = [
     id: 'automation',
     label: 'Automation Engine',
     icon: Workflow,
-    accent: 'cyan',
-    accentRgb: '113,113,122',
+    accent: 'slate',
+    accentRgb: '148,163,184',
     heading: 'Compliance workflows that run themselves',
     description:
       'Configure event-driven automation rules that create tasks, send notifications, and escalate issues without manual intervention.',
@@ -1471,8 +1461,8 @@ const capabilityTabs = [
     id: 'identity',
     label: 'Identity & Access',
     icon: Fingerprint,
-    accent: 'violet',
-    accentRgb: '139,92,246',
+    accent: 'zinc',
+    accentRgb: '161,161,170',
     heading: 'Enterprise identity governance built in',
     description:
       'SAML 2.0 SSO, role-based access control, and deployment planning for organizations that require centralized identity management.',
@@ -1507,7 +1497,7 @@ const capabilityTabs = [
     id: 'scoring',
     label: 'Scoring & Analytics',
     icon: TrendingUp,
-    accent: 'blue',
+    accent: 'zinc',
     accentRgb: '113,113,122',
     heading: 'Continuous compliance intelligence',
     description:
@@ -1555,12 +1545,9 @@ function CapabilityDeepDive() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-6">
-              <Settings className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                Deep Dive
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Deep Dive
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Explore core{' '}
               <span className="text-foreground">
@@ -1673,7 +1660,7 @@ const workflowSteps = [
     title: 'Activate Frameworks',
     description:
       'Select your applicable compliance frameworks. Controls, evidence requirements, and scoring weights are pre-configured.',
-    accentRgb: '52,211,153',
+    accentRgb: '203,213,225',
     icon: Layers,
   },
   {
@@ -1697,7 +1684,7 @@ const workflowSteps = [
     title: 'Automate Workflows',
     description:
       'Configure triggers for task creation, notifications, and escalations. Compliance runs on autopilot.',
-    accentRgb: '139,92,246',
+    accentRgb: '161,161,170',
     icon: Workflow,
   },
   {
@@ -1705,7 +1692,7 @@ const workflowSteps = [
     title: 'Monitor & Score',
     description:
       'Continuous posture scoring with daily checks, drift detection, and real-time risk heatmap visualization.',
-    accentRgb: '251,113,133',
+    accentRgb: '148,163,184',
     icon: BarChart3,
   },
   {
@@ -1713,7 +1700,7 @@ const workflowSteps = [
     title: 'Export Audit Packets',
     description:
       'Export framework-mapped evidence bundles with verification metadata and reviewer-ready context.',
-    accentRgb: '245,158,11',
+    accentRgb: '203,213,225',
     icon: ExternalLink,
   },
 ];
@@ -1728,12 +1715,9 @@ function PlatformWorkflowSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-              <GitBranch className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                How It Works
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              How It Works
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               From activation to{' '}
               <span className="text-foreground">
@@ -1748,7 +1732,7 @@ function PlatformWorkflowSection() {
 
           <SectionChoreography pattern="cascade" stagger={0.08}>
             <div className="relative">
-              <div className="absolute left-[2.75rem] sm:left-1/2 sm:-translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-emerald-400/30 via-blue-400/20 to-amber-400/30" />
+              <div className="absolute left-[2.75rem] sm:left-1/2 sm:-translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-white/25 via-white/10 to-white/25" />
 
               <div className="space-y-6">
                 {workflowSteps.map((step, i) => {
@@ -1848,7 +1832,7 @@ function EnterpriseCTA() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1 h-1 rounded-full bg-emerald-400/30"
+                  className="absolute w-1 h-1 rounded-full bg-slate-400/30"
                   style={{
                     left: `${12 + ((i * 76) % 80)}%`,
                     top: `${8 + ((i * 53) % 85)}%`,
@@ -1869,12 +1853,9 @@ function EnterpriseCTA() {
 
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                    Compliance Plan
-                  </span>
-                </div>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  Compliance Plan
+                </p>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Ready to operate compliance{' '}
                   <span className="text-foreground">
@@ -1920,7 +1901,7 @@ function EnterpriseCTA() {
                     'Assessment-led onboarding',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400/50" />
+                      <CheckCircle2 className="w-3 h-3 text-slate-400/60" />
                       <span>{signal}</span>
                     </div>
                   ))}
@@ -2024,12 +2005,13 @@ function FeaturesHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-8"
+          className="mb-8 flex items-center justify-center gap-4"
         >
-          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
             Platform Features
           </span>
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
         </motion.div>
 
         <motion.h1

@@ -22,8 +22,8 @@ const PROGRESS_PCT = Math.round((COMPLETED_COUNT / TOTAL_COUNT) * 100);
 const BADGES = [
   {
     label: 'SOC 2',
-    dotColor: 'bg-emerald-400',
-    textColor: 'text-emerald-300',
+    dotColor: 'bg-slate-300',
+    textColor: 'text-slate-300',
     z: -25,
     angle: 0,
     radius: 175,
@@ -31,8 +31,8 @@ const BADGES = [
   },
   {
     label: 'ISO 27001',
-    dotColor: 'bg-cyan-400',
-    textColor: 'text-cyan-300',
+    dotColor: 'bg-slate-400',
+    textColor: 'text-slate-400',
     z: -45,
     angle: 120,
     radius: 185,
@@ -40,8 +40,8 @@ const BADGES = [
   },
   {
     label: 'HIPAA',
-    dotColor: 'bg-blue-400',
-    textColor: 'text-blue-300',
+    dotColor: 'bg-slate-500',
+    textColor: 'text-slate-400',
     z: -65,
     angle: 240,
     radius: 170,
@@ -124,7 +124,7 @@ function SecurityReviewHeroVisualInner() {
               <div className="relative w-3.5 h-3.5 flex-shrink-0">
                 {isChecked ? (
                   <motion.div
-                    className="w-full h-full rounded-[3px] bg-emerald-500/80 border border-emerald-400/40"
+                    className="w-full h-full rounded-[3px] bg-slate-400/80 border border-white/30"
                     initial={prefersReduced ? false : { scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{
@@ -167,7 +167,7 @@ function SecurityReviewHeroVisualInner() {
         </div>
         <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500/60 to-emerald-400/40"
+            className="h-full rounded-full bg-gradient-to-r from-slate-400/60 to-slate-300/40"
             initial={prefersReduced ? { width: `${PROGRESS_PCT}%` } : { width: '0%' }}
             animate={{
               width: `${Math.round((Math.min(checkedItems, COMPLETED_COUNT) / TOTAL_COUNT) * 100)}%`,

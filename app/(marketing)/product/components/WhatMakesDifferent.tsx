@@ -73,10 +73,9 @@ export function WhatMakesDifferent() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-400 text-sm font-medium mb-6">
-              <span className="w-2 h-2 rounded-full bg-teal-400" />
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               What Makes FormaOS Different
-            </div>
+            </p>
 
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
               Not just another{' '}
@@ -102,15 +101,15 @@ export function WhatMakesDifferent() {
               <motion.div
                 key={item.title}
                 whileHover={{ y: -4 }}
-                className={`relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-teal-400/20 hover:bg-white/[0.04] transition-all duration-300 overflow-hidden group ${
+                className={`relative rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-300 overflow-hidden group ${
                   index === 4 ? 'sm:col-span-2 lg:col-span-1' : ''
                 }`}
               >
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/0 group-hover:via-teal-400/20 to-transparent transition-all duration-500" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/0 group-hover:via-white/15 to-transparent transition-all duration-500" />
 
                 {/* Icon */}
-                <div className="inline-flex items-center justify-center rounded-xl border border-teal-400/20 bg-teal-500/10 p-3 mb-4">
-                  <Icon className="w-5 h-5 text-teal-400" />
+                <div className="inline-flex items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.05] p-3 mb-4">
+                  <Icon className="w-5 h-5 text-slate-300" />
                 </div>
 
                 <h3 className="text-base font-semibold mb-2 text-white">
@@ -127,7 +126,7 @@ export function WhatMakesDifferent() {
                       key={detail}
                       className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed"
                     >
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-400/50" />
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-500" />
                       {detail}
                     </li>
                   ))}

@@ -16,7 +16,6 @@ import {
   ChevronDown,
   ArrowRight,
   ChevronRight,
-  Sparkles,
   Shield,
   Link2,
   Eye,
@@ -27,7 +26,6 @@ import {
   Bell,
   MessageSquare,
   GitBranch,
-  Map,
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -55,45 +53,47 @@ interface StatusConfig {
   description: string;
 }
 
+// Status is differentiated by a restrained grayscale ramp + icon, not colour:
+// shipped reads brightest (done), fading through to exploring.
 const STATUS_CONFIG: Record<RoadmapStatus, StatusConfig> = {
   shipped: {
     label: 'Shipped',
     icon: CheckCircle2,
-    colorRgb: '52,211,153',
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-400/20',
-    text: 'text-emerald-400',
-    dotColor: 'bg-emerald-400',
+    colorRgb: '226,232,240',
+    bg: 'bg-white/[0.08]',
+    border: 'border-white/20',
+    text: 'text-white',
+    dotColor: 'bg-white/80',
     description: 'Live in production and available to all users.',
   },
   'in-progress': {
     label: 'In Progress',
     icon: Loader2,
-    colorRgb: '161,161,170',
-    bg: 'bg-cyan-500/10',
-    border: 'border-cyan-400/20',
-    text: 'text-cyan-400',
-    dotColor: 'bg-cyan-400',
+    colorRgb: '148,163,184',
+    bg: 'bg-white/[0.05]',
+    border: 'border-white/15',
+    text: 'text-slate-300',
+    dotColor: 'bg-slate-300',
     description: 'Actively under development with a target release date.',
   },
   planned: {
     label: 'Planned',
     icon: Calendar,
-    colorRgb: '139,92,246',
-    bg: 'bg-violet-500/10',
-    border: 'border-violet-400/20',
-    text: 'text-violet-400',
-    dotColor: 'bg-violet-400',
+    colorRgb: '100,116,139',
+    bg: 'bg-white/[0.04]',
+    border: 'border-white/10',
+    text: 'text-slate-400',
+    dotColor: 'bg-slate-400',
     description: 'Scoped and scheduled for an upcoming development cycle.',
   },
   exploring: {
     label: 'Exploring',
     icon: Compass,
-    colorRgb: '245,158,11',
-    bg: 'bg-amber-500/10',
-    border: 'border-amber-400/20',
-    text: 'text-amber-400',
-    dotColor: 'bg-amber-400',
+    colorRgb: '71,85,105',
+    bg: 'bg-white/[0.03]',
+    border: 'border-white/[0.08]',
+    text: 'text-slate-500',
+    dotColor: 'bg-slate-500',
     description: 'Under evaluation based on customer demand and feasibility.',
   },
 };
@@ -124,56 +124,21 @@ interface CategoryConfig {
   text: string;
 }
 
+// Categories are differentiated by icon, not colour — monochrome throughout.
+const NEUTRAL_CATEGORY = {
+  colorRgb: '148,163,184',
+  bg: 'bg-white/[0.05]',
+  border: 'border-white/10',
+  text: 'text-slate-300',
+};
 const CATEGORY_CONFIG: Record<RoadmapCategory, CategoryConfig> = {
-  Compliance: {
-    icon: Shield,
-    colorRgb: '52,211,153',
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-400/20',
-    text: 'text-emerald-400',
-  },
-  Security: {
-    icon: Lock,
-    colorRgb: '251,113,133',
-    bg: 'bg-rose-500/10',
-    border: 'border-rose-400/20',
-    text: 'text-rose-400',
-  },
-  Integrations: {
-    icon: Link2,
-    colorRgb: '59,130,246',
-    bg: 'bg-blue-500/10',
-    border: 'border-blue-400/20',
-    text: 'text-blue-400',
-  },
-  Platform: {
-    icon: Layers,
-    colorRgb: '161,161,170',
-    bg: 'bg-cyan-500/10',
-    border: 'border-cyan-400/20',
-    text: 'text-cyan-400',
-  },
-  Reporting: {
-    icon: BarChart3,
-    colorRgb: '139,92,246',
-    bg: 'bg-violet-500/10',
-    border: 'border-violet-400/20',
-    text: 'text-violet-400',
-  },
-  Automation: {
-    icon: Workflow,
-    colorRgb: '245,158,11',
-    bg: 'bg-amber-500/10',
-    border: 'border-amber-400/20',
-    text: 'text-amber-400',
-  },
-  Collaboration: {
-    icon: MessageSquare,
-    colorRgb: '59,130,246',
-    bg: 'bg-blue-500/10',
-    border: 'border-blue-400/20',
-    text: 'text-blue-400',
-  },
+  Compliance: { icon: Shield, ...NEUTRAL_CATEGORY },
+  Security: { icon: Lock, ...NEUTRAL_CATEGORY },
+  Integrations: { icon: Link2, ...NEUTRAL_CATEGORY },
+  Platform: { icon: Layers, ...NEUTRAL_CATEGORY },
+  Reporting: { icon: BarChart3, ...NEUTRAL_CATEGORY },
+  Automation: { icon: Workflow, ...NEUTRAL_CATEGORY },
+  Collaboration: { icon: MessageSquare, ...NEUTRAL_CATEGORY },
 };
 
 /* ─── Roadmap Data ────────────────────────────────────────── */
@@ -612,7 +577,7 @@ function AnimatedStat({
     >
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-1">
         {value}
-        <span className="text-emerald-400">{suffix}</span>
+        <span className="text-slate-400">{suffix}</span>
       </div>
       <div className="text-xs sm:text-sm text-slate-400 font-medium">
         {label}
@@ -675,9 +640,9 @@ function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
           hover:bg-white/[0.04]
           ${
             item.status === 'in-progress'
-              ? `border-cyan-400/15 hover:border-cyan-400/25 hover:shadow-[0_0_40px_rgba(255,255,255,0.03)]`
+              ? `border-white/15 hover:border-white/25 hover:shadow-[0_0_40px_rgba(255,255,255,0.04)]`
               : item.status === 'shipped'
-                ? `border-emerald-400/10 hover:border-emerald-400/20 hover:shadow-[0_0_40px_rgba(52,211,153,0.05)]`
+                ? `border-white/[0.1] hover:border-white/20 hover:shadow-[0_0_40px_rgba(255,255,255,0.04)]`
                 : `border-white/[0.06] hover:border-white/[0.12]`
           }`}
         onClick={() => setExpanded(!expanded)}
@@ -702,8 +667,7 @@ function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
         {item.status === 'in-progress' && (
           <div className="absolute -top-px -right-px">
             <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-50" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400/80" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-slate-300/80" />
             </span>
           </div>
         )}
@@ -722,7 +686,7 @@ function RoadmapCard({ item, index }: { item: RoadmapItem; index: number }) {
               </h3>
               <StatusBadge status={item.status} />
               {item.impact === 'high' && (
-                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-amber-400/20 bg-amber-500/10 text-amber-400">
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-300">
                   High Impact
                 </span>
               )}
@@ -934,12 +898,9 @@ function QuarterTimeline() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-6">
-              <Map className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                Timeline
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Timeline
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Quarterly{' '}
               <span className="text-foreground">
@@ -966,15 +927,14 @@ function QuarterTimeline() {
                       className={`relative rounded-2xl border p-5 transition-all duration-300
                         ${
                           isCurrent
-                            ? 'border-cyan-400/20 bg-cyan-500/[0.04] hover:bg-cyan-500/[0.06] hover:border-cyan-400/30'
+                            ? 'border-white/20 bg-white/[0.05] hover:bg-white/[0.07] hover:border-white/30'
                             : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1]'
                         }`}
                     >
                       {isCurrent && (
                         <div className="absolute -top-px -right-px">
                           <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-50" />
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400/80" />
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-slate-300/80" />
                           </span>
                         </div>
                       )}
@@ -984,7 +944,7 @@ function QuarterTimeline() {
                           {qd.quarter}
                         </h3>
                         {isCurrent && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 px-2 py-0.5 rounded-full border border-cyan-400/20 bg-cyan-500/10">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-200 px-2 py-0.5 rounded-full border border-white/15 bg-white/[0.06]">
                             Current
                           </span>
                         )}
@@ -1000,8 +960,8 @@ function QuarterTimeline() {
                       <div className="space-y-2">
                         {qd.shipped > 0 && (
                           <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-xs text-emerald-400">
-                              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                            <span className="flex items-center gap-1.5 text-xs text-white">
+                              <span className="w-2 h-2 rounded-full bg-white/80" />
                               Shipped
                             </span>
                             <span className="text-xs font-semibold text-white">
@@ -1011,8 +971,8 @@ function QuarterTimeline() {
                         )}
                         {qd.inProgress > 0 && (
                           <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-xs text-cyan-400">
-                              <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                            <span className="flex items-center gap-1.5 text-xs text-slate-300">
+                              <span className="w-2 h-2 rounded-full bg-slate-300" />
                               In Progress
                             </span>
                             <span className="text-xs font-semibold text-white">
@@ -1022,8 +982,8 @@ function QuarterTimeline() {
                         )}
                         {qd.planned > 0 && (
                           <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-xs text-violet-400">
-                              <span className="w-2 h-2 rounded-full bg-violet-400" />
+                            <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                              <span className="w-2 h-2 rounded-full bg-slate-400" />
                               Planned
                             </span>
                             <span className="text-xs font-semibold text-white">
@@ -1033,8 +993,8 @@ function QuarterTimeline() {
                         )}
                         {qd.exploring > 0 && (
                           <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-xs text-amber-400">
-                              <span className="w-2 h-2 rounded-full bg-amber-400" />
+                            <span className="flex items-center gap-1.5 text-xs text-slate-500">
+                              <span className="w-2 h-2 rounded-full bg-slate-500" />
                               Exploring
                             </span>
                             <span className="text-xs font-semibold text-white">
@@ -1048,7 +1008,7 @@ function QuarterTimeline() {
                       <div className="mt-4 h-1.5 rounded-full bg-white/[0.04] overflow-hidden flex">
                         {qd.shipped > 0 && (
                           <motion.div
-                            className="h-full bg-emerald-400/60"
+                            className="h-full bg-white/70"
                             initial={{ width: 0 }}
                             whileInView={{
                               width: `${(qd.shipped / qd.total) * 100}%`,
@@ -1059,7 +1019,7 @@ function QuarterTimeline() {
                         )}
                         {qd.inProgress > 0 && (
                           <motion.div
-                            className="h-full bg-cyan-400/60"
+                            className="h-full bg-slate-400/60"
                             initial={{ width: 0 }}
                             whileInView={{
                               width: `${(qd.inProgress / qd.total) * 100}%`,
@@ -1112,12 +1072,9 @@ function CategoryBreakdown() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-400/20 bg-violet-500/10 mb-6">
-              <BarChart3 className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
-                Investment Areas
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Investment Areas
+            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Where we&apos;re{' '}
               <span className="text-foreground">
@@ -1152,7 +1109,7 @@ function CategoryBreakdown() {
                         </span>
                       </div>
                       <div className="flex items-center gap-3 text-xs">
-                        <span className="text-emerald-400">
+                        <span className="text-slate-300">
                           {item.shipped} shipped
                         </span>
                         <span className="text-slate-500">/</span>
@@ -1166,7 +1123,7 @@ function CategoryBreakdown() {
                         <motion.div
                           className="h-full rounded-full"
                           style={{
-                            backgroundColor: `rgba(52,211,153, 0.5)`,
+                            backgroundColor: `rgba(255,255,255, 0.5)`,
                           }}
                           initial={{ width: 0 }}
                           whileInView={{
@@ -1258,12 +1215,9 @@ function TransparencySection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-              <Eye className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                Our Commitment
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Our Commitment
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Built with{' '}
               <span className="text-foreground">
@@ -1289,8 +1243,8 @@ function TransparencySection() {
                   className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 sm:p-6
                     hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
                 >
-                  <div className="w-10 h-10 rounded-xl border border-emerald-400/20 bg-emerald-500/10 flex items-center justify-center mb-4">
-                    <Icon className="w-5 h-5 text-emerald-400" />
+                  <div className="w-10 h-10 rounded-xl border border-white/10 bg-white/[0.06] flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5 text-slate-300" />
                   </div>
                   <h3 className="text-base font-semibold text-white mb-2">
                     {item.title}
@@ -1359,7 +1313,7 @@ function FeatureRequestCTA() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(139,92,246,0.06), transparent 50%)',
+                  'radial-gradient(ellipse at 50% 0%, rgba(148,163,184,0.07), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
               }}
             />
 
@@ -1367,7 +1321,7 @@ function FeatureRequestCTA() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1 h-1 rounded-full bg-emerald-400/30"
+                  className="absolute w-1 h-1 rounded-full bg-white/20"
                   style={{
                     left: `${12 + ((i * 76) % 80)}%`,
                     top: `${8 + ((i * 53) % 85)}%`,
@@ -1388,12 +1342,9 @@ function FeatureRequestCTA() {
 
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                    Shape the Product
-                  </span>
-                </div>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  Shape the Product
+                </p>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Have a feature{' '}
                   <span className="text-foreground">
@@ -1437,7 +1388,7 @@ function FeatureRequestCTA() {
                     'Transparent development',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400/50" />
+                      <CheckCircle2 className="w-3 h-3 text-slate-400/60" />
                       <span>{signal}</span>
                     </div>
                   ))}
@@ -1484,7 +1435,7 @@ function RoadmapHero() {
         />
         <motion.div
           className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(139,92,246,0.10)' }}
+          style={{ background: 'rgba(148,163,184,0.10)' }}
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.1, 0.16, 0.1],
@@ -1498,7 +1449,7 @@ function RoadmapHero() {
         />
         <motion.div
           className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(52,211,153,0.06)' }}
+          style={{ background: 'rgba(113,113,122,0.06)' }}
           animate={{
             scale: [1, 1.06, 1],
             opacity: [0.06, 0.1, 0.06],
@@ -1528,12 +1479,13 @@ function RoadmapHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-8"
+          className="mb-8 flex items-center justify-center gap-4"
         >
-          <Map className="w-3.5 h-3.5 text-cyan-400" />
-          <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
             Product Roadmap
           </span>
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
         </motion.div>
 
         <motion.h1

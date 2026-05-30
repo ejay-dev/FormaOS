@@ -254,9 +254,9 @@ function FAQHero() {
             <a
               key={cat.id}
               href={`#${cat.id}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] hover:border-cyan-500/30 hover:bg-white/[0.08] transition-all duration-300"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] hover:border-white/25 hover:bg-white/[0.08] transition-all duration-300"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
               {cat.title}
             </a>
           ))}
@@ -295,15 +295,15 @@ function FAQItem({
           onClick={onClick}
           className="w-full flex items-center justify-between py-5 text-left group"
         >
-          <span className="text-base sm:text-lg font-medium text-white group-hover:text-cyan-400 transition-colors pr-8">
+          <span className="text-base sm:text-lg font-medium text-white group-hover:text-slate-200 transition-colors pr-8">
             {question}
           </span>
           <motion.div
             animate={{ rotate: isOpen ? 180 : 0 }}
             transition={{ duration: duration.fast }}
-            className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 group-hover:bg-cyan-500/20 flex items-center justify-center transition-colors"
+            className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 group-hover:bg-white/[0.12] flex items-center justify-center transition-colors"
           >
-            <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-cyan-400 transition-colors" />
+            <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-slate-200 transition-colors" />
           </motion.div>
         </button>
         <AnimatePresence>
@@ -332,41 +332,23 @@ function FAQCategory({ category }: { category: (typeof faqCategories)[0] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const Icon = category.icon;
 
+  // Monochrome treatment — category identity comes from the icon, not colour.
+  const neutral = {
+    bg: 'bg-white/[0.06]',
+    text: 'text-slate-300',
+    border: 'border-white/10',
+  };
   const colorMap: Record<string, { bg: string; text: string; border: string }> =
     {
-      cyan: {
-        bg: 'bg-cyan-500/20',
-        text: 'text-cyan-400',
-        border: 'border-cyan-500/30',
-      },
-      purple: {
-        bg: 'bg-purple-500/20',
-        text: 'text-purple-400',
-        border: 'border-purple-500/30',
-      },
-      blue: {
-        bg: 'bg-blue-500/20',
-        text: 'text-blue-400',
-        border: 'border-blue-500/30',
-      },
-      green: {
-        bg: 'bg-emerald-500/20',
-        text: 'text-emerald-400',
-        border: 'border-emerald-500/30',
-      },
-      amber: {
-        bg: 'bg-amber-500/20',
-        text: 'text-amber-400',
-        border: 'border-amber-500/30',
-      },
-      rose: {
-        bg: 'bg-rose-500/20',
-        text: 'text-rose-400',
-        border: 'border-rose-500/30',
-      },
+      cyan: neutral,
+      purple: neutral,
+      blue: neutral,
+      green: neutral,
+      amber: neutral,
+      rose: neutral,
     };
 
-  const colors = colorMap[category.color] || colorMap.cyan;
+  const colors = colorMap[category.color] || neutral;
 
   return (
     <div id={category.id} className="scroll-mt-24">
@@ -415,7 +397,7 @@ function FAQContent() {
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <DotGrid />
         <motion.div
-          className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-cyan-500/5 blur-3xl"
+          className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-slate-400/5 blur-3xl"
           animate={{
             x: [0, 50, 0],
             y: [0, 30, 0],
@@ -423,7 +405,7 @@ function FAQContent() {
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-purple-500/5 blur-3xl"
+          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-zinc-400/5 blur-3xl"
           animate={{
             x: [0, -50, 0],
             y: [0, -30, 0],
@@ -453,7 +435,7 @@ function FAQCTA() {
     <section className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-500/5 blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-slate-400/5 blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -465,7 +447,7 @@ function FAQCTA() {
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
             <div className="text-center">
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
@@ -491,7 +473,7 @@ function FAQCTA() {
 
                 <Link
                   href={compliancePlanHref('faq_final')}
-                  className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
+                  className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-white/40 hover:bg-white/[0.08] transition-all"
                 >
                   <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

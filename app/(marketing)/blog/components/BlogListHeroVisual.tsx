@@ -14,10 +14,10 @@ import { useCursorPosition } from '@/components/motion/CursorContext';
  */
 
 const CARDS = [
-  { accent: 'bg-violet-500/60', accentName: 'violet', z: 0, yOff: 0, rot: 0, blur: 0, scale: 1 },
-  { accent: 'bg-rose-500/60', accentName: 'rose', z: -20, yOff: 18, rot: 1.5, blur: 1, scale: 0.97 },
-  { accent: 'bg-blue-500/60', accentName: 'blue', z: -40, yOff: 36, rot: 3, blur: 1.5, scale: 0.94 },
-  { accent: 'bg-cyan-500/60', accentName: 'cyan', z: -60, yOff: 54, rot: 4.5, blur: 2, scale: 0.91 },
+  { accent: 'bg-slate-300/60', accentName: 'slate-300', z: 0, yOff: 0, rot: 0, blur: 0, scale: 1 },
+  { accent: 'bg-slate-400/50', accentName: 'slate-400', z: -20, yOff: 18, rot: 1.5, blur: 1, scale: 0.97 },
+  { accent: 'bg-slate-500/50', accentName: 'slate-500', z: -40, yOff: 36, rot: 3, blur: 1.5, scale: 0.94 },
+  { accent: 'bg-slate-600/50', accentName: 'slate-600', z: -60, yOff: 54, rot: 4.5, blur: 2, scale: 0.91 },
 ] as const;
 
 const CARD_W = 260;

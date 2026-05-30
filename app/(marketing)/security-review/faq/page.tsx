@@ -141,12 +141,12 @@ export default function SecurityReviewFaqPage() {
       <CompactHero
         title="Security Review FAQ"
         description="Written for security, compliance, and procurement reviewers. This page avoids inflated claims and uses contract-accurate language."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<HelpCircle className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<HelpCircle className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

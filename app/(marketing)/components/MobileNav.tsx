@@ -290,11 +290,11 @@ export function MobileNav() {
                 <div className="px-4 pb-5 pt-2">
                   <div className="flex items-center justify-center gap-6 text-xs text-slate-500">
                     <span className="flex items-center gap-1.5">
-                      <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]" />
+                      <div className="h-2 w-2 rounded-full bg-slate-400" />
                       Guided plan
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <div className="h-2 w-2 rounded-full bg-cyan-400" />
+                      <div className="h-2 w-2 rounded-full bg-slate-400" />
                       AU-hosted
                     </span>
                   </div>

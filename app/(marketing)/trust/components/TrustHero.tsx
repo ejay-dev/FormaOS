@@ -22,9 +22,9 @@ export function TrustHero() {
       theme="trust"
       visualContent={<TrustHeroVisual />}
       badge={{
-        icon: <ShieldCheck className="w-4 h-4 text-emerald-400" />,
+        icon: <ShieldCheck className="w-4 h-4 text-slate-400" />,
         text: 'Trust Center',
-        colorClass: 'emerald',
+        colorClass: 'slate',
       }}
       headline={
         <>
@@ -50,7 +50,7 @@ export function TrustHero() {
                 variant: 'resource',
               })
             }
-            className="font-medium text-emerald-300 underline decoration-emerald-500/60 underline-offset-4 hover:text-emerald-200"
+            className="font-medium text-slate-300 underline decoration-white/20 underline-offset-4 hover:text-white"
           >
             Review security posture
           </Link>

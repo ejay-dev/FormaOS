@@ -23,9 +23,9 @@ const TIER_VISUAL = {
   },
   growth: {
     code: 'GRW',
-    accent: 'text-emerald-300',
-    rail: 'from-emerald-300/70 via-emerald-300/20 to-transparent',
-    chip: 'border-emerald-300/40 bg-emerald-300/[0.12] text-emerald-100',
+    accent: 'text-slate-200',
+    rail: 'from-white/60 via-white/20 to-transparent',
+    chip: 'border-white/25 bg-white/[0.1] text-white',
   },
   scale: {
     code: 'SCL',
@@ -57,12 +57,12 @@ export function PricingTiers() {
       {/* Section backgrounds */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
         <TopographicPattern color="rgba(113,113,122,0.04)" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(16,185,129,0.12),transparent_55%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(148,163,184,0.1),transparent_55%)]" />
       </div>
 
       {/* Top + bottom hairlines */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/15 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
         {/* Section header */}
@@ -119,7 +119,7 @@ export function PricingTiers() {
                 transition={{ duration: duration.fast }}
                 className={`group relative flex min-h-full flex-col overflow-hidden rounded-3xl border bg-gradient-to-b shadow-2xl ${
                   tier.featured
-                    ? 'border-emerald-300/40 from-emerald-300/[0.07] via-emerald-300/[0.02] to-white/[0.02] shadow-emerald-950/40 lg:-mt-4 lg:mb-4 lg:scale-[1.015]'
+                    ? 'border-white/25 from-white/[0.07] via-white/[0.02] to-white/[0.02] shadow-slate-950/50 lg:-mt-4 lg:mb-4 lg:scale-[1.015]'
                     : 'border-white/[0.07] from-white/[0.045] to-white/[0.015] shadow-slate-950/50 hover:border-white/[0.14]'
                 }`}
               >
@@ -173,7 +173,7 @@ export function PricingTiers() {
                   <div className="mt-3 inline-flex max-w-full items-center gap-2 self-start rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] text-slate-300">
                     <CheckCircle2
                       className={`h-3 w-3 shrink-0 ${
-                        tier.featured ? 'text-emerald-300' : 'text-slate-400'
+                        tier.featured ? 'text-slate-200' : 'text-slate-400'
                       }`}
                       aria-hidden="true"
                     />
@@ -197,7 +197,7 @@ export function PricingTiers() {
                     }
                     className={`mt-6 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition ${
                       tier.featured
-                        ? 'bg-emerald-400 text-slate-900 shadow-lg shadow-emerald-950/40 hover:bg-emerald-300'
+                        ? 'bg-white text-slate-900 shadow-lg shadow-slate-950/40 hover:bg-slate-100'
                         : 'border border-white/[0.1] bg-white/[0.04] text-white hover:border-white/[0.2] hover:bg-white/[0.08]'
                     }`}
                   >
@@ -224,7 +224,7 @@ export function PricingTiers() {
                           <CheckCircle2
                             className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
                               tier.featured
-                                ? 'text-emerald-300'
+                                ? 'text-slate-200'
                                 : 'text-slate-400'
                             }`}
                             aria-hidden="true"

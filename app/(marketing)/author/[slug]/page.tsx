@@ -105,7 +105,7 @@ export default async function AuthorPage({
         <section className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pt-24 pb-12">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-cyan-300 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back to all posts
@@ -113,14 +113,14 @@ export default async function AuthorPage({
 
           <div className="mt-8 rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 sm:p-10">
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-cyan-300/30 bg-cyan-500/10">
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06]">
                 <BookOpen
-                  className="h-6 w-6 text-cyan-200"
+                  className="h-6 w-6 text-slate-300"
                   aria-hidden="true"
                 />
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/80">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                   {author.kind === 'person' ? 'Author' : 'Editorial byline'}
                 </p>
                 <h1 className="mt-1 text-3xl sm:text-4xl font-bold text-white">
@@ -142,7 +142,7 @@ export default async function AuthorPage({
                     href={link}
                     rel="noopener noreferrer"
                     target="_blank"
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-xs text-slate-300 hover:border-cyan-300/40 hover:text-cyan-200 transition-colors"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-1.5 text-xs text-slate-300 hover:border-white/25 hover:text-slate-100 transition-colors"
                   >
                     {new URL(link).host}
                   </a>
@@ -167,7 +167,7 @@ export default async function AuthorPage({
               No published articles under this byline yet.{' '}
               <Link
                 href="/blog"
-                className="text-cyan-300 underline-offset-4 hover:underline"
+                className="text-slate-300 underline-offset-4 hover:underline"
               >
                 See all posts on the blog
               </Link>
@@ -179,7 +179,7 @@ export default async function AuthorPage({
                 <li key={post.id}>
                   <Link
                     href={`/blog/${post.id}`}
-                    className="block h-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-all duration-300 hover:border-cyan-300/30 hover:bg-white/[0.06]"
+                    className="block h-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
                   >
                     <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
                       {post.category}

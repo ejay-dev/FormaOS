@@ -119,10 +119,10 @@ export default function FrameworksContent() {
               <motion.article
                 key={p.title}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
               >
-                <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                  <p.icon className="h-5 w-5 text-cyan-200" />
+                <div className="mb-4 inline-flex rounded-lg border border-white/10 bg-white/[0.05] p-2">
+                  <p.icon className="h-5 w-5 text-slate-200" />
                 </div>
                 <h2 className="text-lg font-semibold text-white">
                   {p.title}
@@ -172,7 +172,7 @@ export default function FrameworksContent() {
         </h3>
         <ul className="mt-4 space-y-3 text-slate-300 leading-relaxed">
           <li className="pl-5 relative">
-            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-slate-500" />
             <strong className="text-white">Obligation library.</strong>{' '}
             Each framework is decomposed into atomic obligations — not the
             top-level clause numbers, the specific operational requirements
@@ -180,14 +180,14 @@ export default function FrameworksContent() {
             obligations once Annex A is unpacked.
           </li>
           <li className="pl-5 relative">
-            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-slate-500" />
             <strong className="text-white">Control catalogue.</strong>{' '}
             Each obligation maps to one or more FormaOS controls. Controls
             are tangible: a workflow, an access review, a policy approval
             cycle, an evidence requirement.
           </li>
           <li className="pl-5 relative">
-            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-slate-500" />
             <strong className="text-white">Evidence inheritance.</strong>{' '}
             Evidence collected against a control automatically satisfies
             every framework obligation that maps to it. A single quarterly
@@ -195,7 +195,7 @@ export default function FrameworksContent() {
             evidence bundles without manual duplication.
           </li>
           <li className="pl-5 relative">
-            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-slate-500" />
             <strong className="text-white">Coverage telemetry.</strong>{' '}
             Each framework displays a live readiness score derived from
             evidence freshness, control owner activity, and outstanding
@@ -222,7 +222,7 @@ export default function FrameworksContent() {
           Maturity Level 2 — the obligation library is extensible.{' '}
           <Link
             href="/contact?type=compliance-plan"
-            className="text-cyan-300 underline-offset-4 hover:underline"
+            className="text-white underline-offset-4 hover:underline"
           >
             Talk to our team
           </Link>{' '}
@@ -262,8 +262,8 @@ export default function FrameworksContent() {
                 {frameworkPacks.map((f) => (
                   <div key={f.name} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">
                     <div className="flex items-start gap-3">
-                      <div className="mt-0.5 inline-flex rounded-lg border border-emerald-400/20 bg-emerald-500/10 p-2">
-                        <CheckCircle2 className="h-4 w-4 text-emerald-200" />
+                      <div className="mt-0.5 inline-flex rounded-lg border border-white/10 bg-white/[0.05] p-2">
+                        <CheckCircle2 className="h-4 w-4 text-slate-200" />
                       </div>
                       <div>
                         <div className="text-sm font-semibold text-white">

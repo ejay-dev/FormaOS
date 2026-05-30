@@ -1,6 +1,6 @@
 'use client';
 
-import { Building2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { useDeviceTier } from '@/lib/device-tier';
@@ -40,10 +40,9 @@ export function IndustriesCTA() {
             {/* Header */}
             <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/[0.08] px-4 sm:px-6 md:px-8 py-6 sm:py-8 text-center">
               <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-emerald-400">
-                  <Building2 className="h-3 w-3" />
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Ready for Enterprise
-                </div>
+                </p>
               </ScrollReveal>
 
               <ScrollReveal variant="blurIn" range={[0.04, 0.35]}>
@@ -75,15 +74,15 @@ export function IndustriesCTA() {
                     <div className="space-y-4 mb-8">
                       {[
                         {
-                          color: 'bg-green-400',
+                          color: 'bg-slate-500',
                           text: 'Industry-specific frameworks ready from day one',
                         },
                         {
-                          color: 'bg-blue-400',
+                          color: 'bg-slate-500',
                           text: 'Complete regulatory mapping and controls',
                         },
                         {
-                          color: 'bg-purple-400',
+                          color: 'bg-slate-500',
                           text: 'Audit-ready evidence capture and reporting',
                         },
                       ].map((item) => (

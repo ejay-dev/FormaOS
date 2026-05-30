@@ -87,13 +87,19 @@ export const docSections: DocSection[] = [
   },
 ];
 
+// Monochrome treatment — section identity comes from the icon, not colour.
+const NEUTRAL_SECTION = {
+  bg: 'bg-white/[0.06]',
+  text: 'text-slate-300',
+  border: 'border-white/10',
+};
 const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-  cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400', border: 'border-cyan-500/30' },
-  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400', border: 'border-purple-500/30' },
-  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/30' },
-  green: { bg: 'bg-emerald-500/20', text: 'text-emerald-400', border: 'border-emerald-500/30' },
-  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400', border: 'border-amber-500/30' },
-  rose: { bg: 'bg-rose-500/20', text: 'text-rose-400', border: 'border-rose-500/30' },
+  cyan: NEUTRAL_SECTION,
+  purple: NEUTRAL_SECTION,
+  blue: NEUTRAL_SECTION,
+  green: NEUTRAL_SECTION,
+  amber: NEUTRAL_SECTION,
+  rose: NEUTRAL_SECTION,
 };
 
 export function DocSectionCard({ section, index }: { section: DocSection; index: number }) {
@@ -122,7 +128,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
               <Icon className={`w-6 h-6 ${colors.text}`} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">
+              <h2 className="text-xl font-bold text-white group-hover:text-slate-200 transition-colors">
                 {section.title}
               </h2>
               <p className="text-sm text-gray-500">{section.description}</p>
@@ -131,9 +137,9 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
             transition={{ duration: 0.3 }}
-            className="flex-shrink-0 w-10 h-10 rounded-full bg-white/5 group-hover:bg-cyan-500/20 flex items-center justify-center transition-colors"
+            className="flex-shrink-0 w-10 h-10 rounded-full bg-white/5 group-hover:bg-white/[0.12] flex items-center justify-center transition-colors"
           >
-            <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-cyan-400 transition-colors" />
+            <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-slate-200 transition-colors" />
           </motion.div>
         </button>
 
@@ -157,18 +163,18 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: i * 0.05 }}
-                      className="group/article flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all duration-300"
+                      className="group/article flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover/article:bg-cyan-500/20 transition-colors">
-                        <ArticleIcon className="w-4 h-4 text-gray-400 group-hover/article:text-cyan-400 transition-colors" />
+                      <div className="w-9 h-9 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover/article:bg-white/[0.12] transition-colors">
+                        <ArticleIcon className="w-4 h-4 text-gray-400 group-hover/article:text-slate-200 transition-colors" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-white group-hover/article:text-cyan-300 transition-colors truncate">
+                        <h3 className="text-sm font-medium text-white group-hover/article:text-slate-200 transition-colors truncate">
                           {article.title}
                         </h3>
                         <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{article.description}</p>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-gray-600 group-hover/article:text-cyan-400 group-hover/article:translate-x-1 transition-all flex-shrink-0 mt-1" />
+                      <ChevronRight className="w-4 h-4 text-gray-600 group-hover/article:text-slate-300 group-hover/article:translate-x-1 transition-all flex-shrink-0 mt-1" />
                     </motion.a>
                   );
                 })}

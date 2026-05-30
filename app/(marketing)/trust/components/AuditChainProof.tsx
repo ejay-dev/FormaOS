@@ -38,9 +38,11 @@ export function AuditChainProof() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 max-w-3xl">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-500/[0.08] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-200">
-            <Lock className="h-3 w-3" />
-            Cryptographic audit chain
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-px w-8 bg-white/25" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Cryptographic audit chain
+            </span>
           </div>
           <h2
             id="trust-audit-chain-heading"
@@ -66,7 +68,7 @@ export function AuditChainProof() {
                 key={pillar.title}
                 className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6"
               >
-                <Icon className="mb-4 h-5 w-5 text-cyan-300/80" />
+                <Icon className="mb-4 h-5 w-5 text-slate-300" />
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
                   {pillar.eyebrow}
                 </p>

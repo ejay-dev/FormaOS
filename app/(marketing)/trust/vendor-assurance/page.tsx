@@ -33,12 +33,12 @@ export default function VendorAssurancePage() {
       <CompactHero
         title="Vendor Assurance"
         description="Vendor assurance materials for enterprise review: DPA, questionnaire responses, security review packet, subprocessor disclosures, and current assessment context."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<ShieldCheck className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<ShieldCheck className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

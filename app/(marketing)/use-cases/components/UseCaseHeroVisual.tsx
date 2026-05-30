@@ -13,10 +13,10 @@ interface UseCaseHeroVisualProps {
 }
 
 const STEP_POSITIONS = [
-  { angle: -60, z: -15, color: 'rgba(52,211,153,0.6)' },
-  { angle: 30, z: -30, color: 'rgba(113,113,122,0.6)' },
-  { angle: 150, z: -20, color: 'rgba(59,130,246,0.6)' },
-  { angle: -150, z: -40, color: 'rgba(139,92,246,0.6)' },
+  { angle: -60, z: -15, color: 'rgba(203,213,225,0.6)' },
+  { angle: 30, z: -30, color: 'rgba(148,163,184,0.6)' },
+  { angle: 150, z: -20, color: 'rgba(148,163,184,0.6)' },
+  { angle: -150, z: -40, color: 'rgba(100,116,139,0.6)' },
 ];
 
 const STEP_RADIUS = 150;
@@ -74,7 +74,7 @@ function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
                     y1={190}
                     x2={x}
                     y2={y}
-                    stroke="rgba(52,211,153,0.12)"
+                    stroke="rgba(148,163,184,0.12)"
                     strokeWidth="1"
                     strokeDasharray="4 6"
                     initial={sa ? { pathLength: 0, opacity: 0 } : undefined}
@@ -94,11 +94,11 @@ function UseCaseHeroVisualInner({ icon, steps }: UseCaseHeroVisualProps) {
             >
               {/* Glow */}
               <motion.div
-                className="absolute -inset-6 rounded-3xl bg-emerald-500/10 blur-2xl"
+                className="absolute -inset-6 rounded-3xl bg-slate-400/10 blur-2xl"
                 animate={sa ? { opacity: [0.15, 0.3, 0.15], scale: [1, 1.05, 1] } : undefined}
                 transition={sa ? { duration: 4, repeat: Infinity, ease: 'easeInOut' } : undefined}
               />
-              <div className="relative w-[120px] h-[120px] rounded-2xl border border-emerald-500/20 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] flex items-center justify-center">
+              <div className="relative w-[120px] h-[120px] rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] flex items-center justify-center">
                 {icon}
               </div>
             </motion.div>

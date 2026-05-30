@@ -8,18 +8,18 @@ import { useDeviceTier } from '@/lib/device-tier';
 import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const VERTICALS = [
-  { label: 'NDIS', color: 'bg-pink-400' },
-  { label: 'Health', color: 'bg-blue-400' },
-  { label: 'Finance', color: 'bg-amber-400' },
-  { label: 'Gov', color: 'bg-emerald-400' },
+  { label: 'NDIS', color: 'bg-slate-400' },
+  { label: 'Health', color: 'bg-slate-400' },
+  { label: 'Finance', color: 'bg-slate-400' },
+  { label: 'Gov', color: 'bg-slate-400' },
 ];
 
 const PILLS = [
-  { color: 'bg-pink-400', label: 'NDIS & Aged Care' },
-  { color: 'bg-blue-400', label: 'Healthcare & Allied Health' },
-  { color: 'bg-amber-400', label: 'Financial Services' },
-  { color: 'bg-emerald-400', label: 'Education & Childcare' },
-  { color: 'bg-orange-400', label: 'Construction & Infrastructure' },
+  { color: 'bg-slate-400', label: 'NDIS & Aged Care' },
+  { color: 'bg-slate-400', label: 'Healthcare & Allied Health' },
+  { color: 'bg-slate-400', label: 'Financial Services' },
+  { color: 'bg-slate-400', label: 'Education & Childcare' },
+  { color: 'bg-slate-400', label: 'Construction & Infrastructure' },
 ];
 
 export function IndustriesHero() {
@@ -28,9 +28,9 @@ export function IndustriesHero() {
       theme="industries"
       visualContent={<IndustriesHeroVisual />}
       badge={{
-        icon: <Building2 className="w-4 h-4 text-blue-400" />,
+        icon: <Building2 className="w-4 h-4 text-slate-300" />,
         text: 'Industry Solutions',
-        colorClass: 'blue',
+        colorClass: 'slate',
       }}
       headline={
         <>

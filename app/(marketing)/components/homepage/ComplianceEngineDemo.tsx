@@ -21,12 +21,9 @@ export function ComplianceEngineDemo() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]} className="text-center mb-16">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-6"
-          >
-            <span className="w-2 h-2 rounded-full bg-teal-400" />
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Compliance Engine
-          </div>
+          </p>
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
             See the compliance engine{' '}

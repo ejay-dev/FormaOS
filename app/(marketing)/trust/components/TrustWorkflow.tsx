@@ -165,7 +165,7 @@ export function TrustWorkflow() {
 
           <div
             ref={graphRef}
-            className="mt-6 rounded-xl border border-cyan-500/20 bg-slate-950/45 p-4 sm:p-5"
+            className="mt-6 rounded-xl border border-white/[0.1] bg-slate-950/45 p-4 sm:p-5"
           >
             <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-wider text-slate-400">
               <span>Compliance Signal Graph</span>
@@ -207,8 +207,8 @@ export function TrustWorkflow() {
                     x2="100%"
                     y2="0%"
                   >
-                    <stop offset="0%" stopColor="rgba(59,130,246,0.1)" />
-                    <stop offset="100%" stopColor="rgba(59,130,246,0.9)" />
+                    <stop offset="0%" stopColor="rgba(161, 161, 170,0.1)" />
+                    <stop offset="100%" stopColor="rgba(161, 161, 170,0.9)" />
                   </linearGradient>
                   <linearGradient
                     id="trustPathC"
@@ -217,8 +217,8 @@ export function TrustWorkflow() {
                     x2="100%"
                     y2="0%"
                   >
-                    <stop offset="0%" stopColor="rgba(16,185,129,0.1)" />
-                    <stop offset="100%" stopColor="rgba(16,185,129,0.9)" />
+                    <stop offset="0%" stopColor="rgba(161, 161, 170,0.1)" />
+                    <stop offset="100%" stopColor="rgba(161, 161, 170,0.9)" />
                   </linearGradient>
                   {/* Glow trail gradients – brighter, shorter stops */}
                   <linearGradient
@@ -239,9 +239,9 @@ export function TrustWorkflow() {
                     x2="100%"
                     y2="0%"
                   >
-                    <stop offset="0%" stopColor="rgba(59,130,246,0.0)" />
-                    <stop offset="60%" stopColor="rgba(59,130,246,0.6)" />
-                    <stop offset="100%" stopColor="rgba(59,130,246,1)" />
+                    <stop offset="0%" stopColor="rgba(161, 161, 170,0.0)" />
+                    <stop offset="60%" stopColor="rgba(161, 161, 170,0.6)" />
+                    <stop offset="100%" stopColor="rgba(161, 161, 170,1)" />
                   </linearGradient>
                   <linearGradient
                     id="trustGlowC"
@@ -250,9 +250,9 @@ export function TrustWorkflow() {
                     x2="100%"
                     y2="0%"
                   >
-                    <stop offset="0%" stopColor="rgba(16,185,129,0.0)" />
-                    <stop offset="60%" stopColor="rgba(16,185,129,0.6)" />
-                    <stop offset="100%" stopColor="rgba(16,185,129,1)" />
+                    <stop offset="0%" stopColor="rgba(161, 161, 170,0.0)" />
+                    <stop offset="60%" stopColor="rgba(161, 161, 170,0.6)" />
+                    <stop offset="100%" stopColor="rgba(161, 161, 170,1)" />
                   </linearGradient>
                   <filter id="pathGlow">
                     <feGaussianBlur stdDeviation="4" result="blur" />
@@ -325,9 +325,9 @@ export function TrustWorkflow() {
                 {/* ── Nodes with in-view pulse ── */}
                 {[
                   { x: 80, y: 140, color: 'rgba(161, 161, 170,0.9)' },
-                  { x: 300, y: 95, color: 'rgba(59,130,246,0.9)' },
-                  { x: 500, y: 90, color: 'rgba(16,185,129,0.9)' },
-                  { x: 600, y: 55, color: 'rgba(251,191,36,0.95)' },
+                  { x: 300, y: 95, color: 'rgba(161, 161, 170,0.9)' },
+                  { x: 500, y: 90, color: 'rgba(161, 161, 170,0.9)' },
+                  { x: 600, y: 55, color: 'rgba(161, 161, 170,0.95)' },
                 ].map((node, index) => (
                   <PulseNode
                     key={`${node.x}-${node.y}`}
@@ -352,7 +352,7 @@ export function TrustWorkflow() {
                 key={item.step}
                 className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4"
               >
-                <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                   {item.step}
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-300">
@@ -364,7 +364,7 @@ export function TrustWorkflow() {
                       key={sp}
                       className="flex items-start gap-2 text-xs leading-relaxed text-slate-400"
                     >
-                      <span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-cyan-400/60" />
+                      <span className="mt-1 h-1 w-1 flex-shrink-0 rounded-full bg-white/40" />
                       <span>{sp}</span>
                     </li>
                   ))}

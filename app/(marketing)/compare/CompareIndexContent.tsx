@@ -108,7 +108,7 @@ export default function CompareIndexContent() {
               <motion.div key={c.href} whileHover={{ y: -6 }}>
                 <Link
                   href={c.href}
-                  className="group block rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                  className="group block rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
                 >
                   <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                     Compare
@@ -117,7 +117,7 @@ export default function CompareIndexContent() {
                     FormaOS vs {c.name}
                   </div>
                   <p className="mt-2 text-sm text-slate-300">{c.tagline}</p>
-                  <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+                  <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-300">
                     View comparison
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </div>
@@ -225,7 +225,7 @@ export default function CompareIndexContent() {
           actually sits. If you are evaluating something not listed,{' '}
           <Link
             href="/contact?type=procurement"
-            className="text-cyan-300 underline-offset-4 hover:underline"
+            className="text-slate-200 underline-offset-4 hover:underline"
           >
             start a buyer review
           </Link>{' '}
@@ -243,8 +243,8 @@ export default function CompareIndexContent() {
           <Reveal>
             <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
               <div className="flex items-center gap-3">
-                <div className="inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                  <ShieldCheck className="h-5 w-5 text-cyan-200" />
+                <div className="inline-flex rounded-lg border border-white/15 bg-white/[0.08] p-2">
+                  <ShieldCheck className="h-5 w-5 text-slate-300" />
                 </div>
                 <h2 className="text-lg font-semibold text-white">
                   What FormaOS is optimized for
@@ -253,7 +253,7 @@ export default function CompareIndexContent() {
               <ul className="mt-5 grid gap-3 sm:grid-cols-2 text-sm text-slate-300">
                 {differentiators.map((d) => (
                   <li key={d} className="flex items-start gap-2">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-300" />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                     <span>{d}</span>
                   </li>
                 ))}
@@ -278,9 +278,9 @@ export default function CompareIndexContent() {
               <motion.article
                 key={step.title}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
               >
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-cyan-200">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
                   {step.title}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">

@@ -83,12 +83,12 @@ export default function CaseStudyTemplatePage() {
       <CompactHero
         title="Case Study Template (Buyer-Grade)"
         description="Use this template to build credible outcome proof without inflated claims. Designed to match how procurement and auditors evaluate impact."
-        topColor="cyan"
-        bottomColor="blue"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<FileText className="w-8 h-8 text-cyan-400" />}
-            color="34,211,238"
+            icon={<FileText className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

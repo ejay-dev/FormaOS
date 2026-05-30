@@ -32,12 +32,12 @@ export default function IncidentResponsePage() {
       <CompactHero
         title="Incident Response"
         description="Summary for security and procurement reviewers. Contractual notification terms are defined in your MSA/SOW."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<AlertTriangle className="w-8 h-8 text-amber-400" />}
-            color="251,191,36"
+            icon={<AlertTriangle className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

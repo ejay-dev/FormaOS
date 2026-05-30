@@ -262,7 +262,7 @@ export function UseCasePageTemplate({
               >
                 <HoverLift>
                   <GlassCard intensity="normal" className="h-full p-6">
-                    <item.icon className="mb-4 h-6 w-6 text-cyan-300" />
+                    <item.icon className="mb-4 h-6 w-6 text-slate-300" />
                     <h3 className="text-lg font-semibold text-white">
                       {item.title}
                     </h3>
@@ -317,7 +317,7 @@ export function UseCasePageTemplate({
                     <ul className="mt-4 space-y-2 text-sm text-slate-300">
                       {workflow.steps.map((step) => (
                         <li key={step} className="flex items-start gap-2">
-                          <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-300" />
+                          <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                           <span>{step}</span>
                         </li>
                       ))}
@@ -358,7 +358,7 @@ export function UseCasePageTemplate({
                   <ul className="mt-4 space-y-2 text-sm text-slate-300">
                     {standard.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-cyan-300" />
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -394,7 +394,7 @@ export function UseCasePageTemplate({
                   <div className="text-3xl font-bold text-white">
                     {metric.value}
                   </div>
-                  <div className="mt-2 text-sm font-semibold uppercase tracking-wide text-cyan-200">
+                  <div className="mt-2 text-sm font-semibold uppercase tracking-wide text-slate-400">
                     {metric.label}
                   </div>
                   {metric.description && (

@@ -102,20 +102,20 @@ export default async function BlogPostPage({ params }: PageProps) {
       <div className="relative z-10">
         <section className="mk-hero relative overflow-hidden">
           <HeroAtmosphere
-            topColor="violet"
-            bottomColor="cyan"
+            topColor="slate"
+            bottomColor="slate"
             particleIntensity="subtle"
           />
           <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-2 text-sm text-purple-300 hover:text-purple-200 transition"
+              className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-slate-200 transition"
             >
               <span>← Back to Blog</span>
             </Link>
 
             <div className="mt-8 flex flex-wrap items-center gap-3 text-xs text-gray-400">
-              <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+              <span className="px-3 py-1 rounded-full bg-white/[0.08] text-slate-200 border border-white/15">
                 {post.category}
               </span>
               <span className="px-3 py-1 rounded-full bg-gray-800/60 border border-white/5">
@@ -139,7 +139,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   return a ? (
                     <Link
                       href={`/author/${a.slug}`}
-                      className="hover:text-cyan-300 transition-colors"
+                      className="hover:text-slate-200 transition-colors"
                     >
                       {post.author}
                     </Link>
@@ -211,7 +211,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                         <Link
                           key={link.href + link.label}
                           href={link.href}
-                          className="flex flex-col gap-1 rounded-xl border border-white/5 bg-white/5 px-4 py-3 text-sm text-purple-200 hover:border-purple-400/40 hover:bg-purple-500/10 transition"
+                          className="flex flex-col gap-1 rounded-xl border border-white/5 bg-white/5 px-4 py-3 text-sm text-slate-200 hover:border-white/20 hover:bg-white/[0.08] transition"
                         >
                           <span className="font-medium">{link.label}</span>
                           {link.description ? (
@@ -235,7 +235,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               <div className="mt-12 mb-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-6 sm:p-7">
                 <div className="flex flex-wrap items-baseline justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-200/80">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                       Written by
                     </p>
                     <h2 className="mt-1 text-xl font-semibold text-white">
@@ -245,7 +245,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   </div>
                   <Link
                     href={`/author/${a.slug}`}
-                    className="text-sm font-medium text-cyan-300 hover:text-cyan-200 underline-offset-4 hover:underline"
+                    className="text-sm font-medium text-slate-300 hover:text-slate-100 underline-offset-4 hover:underline"
                   >
                     More from this byline →
                   </Link>
@@ -291,13 +291,13 @@ export default async function BlogPostPage({ params }: PageProps) {
             <div className="flex gap-3">
               <Link
                 href="/product"
-                className="inline-flex items-center justify-center rounded-2xl bg-white/10 text-white px-6 py-3 border border-white/15 hover:border-purple-400/50 hover:bg-purple-500/10 transition"
+                className="inline-flex items-center justify-center rounded-2xl bg-white/10 text-white px-6 py-3 border border-white/15 hover:border-white/30 hover:bg-white/[0.14] transition"
               >
                 Explore Product
               </Link>
               <Link
                 href="/pricing"
-                className="inline-flex items-center justify-center rounded-2xl bg-purple-500 text-white px-6 py-3 border border-purple-400/50 hover:bg-purple-400 transition"
+                className="inline-flex items-center justify-center rounded-2xl bg-foreground text-background px-6 py-3 border border-white/15 hover:opacity-90 transition"
               >
                 View Pricing
               </Link>

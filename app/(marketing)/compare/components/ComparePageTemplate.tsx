@@ -266,7 +266,7 @@ export function ComparePageTemplate({
                       <th className="text-left py-3 px-6 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[45%]">
                         Capability
                       </th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-teal-400 w-[27.5%] bg-teal-500/[0.04]">
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-white w-[27.5%] bg-white/[0.04]">
                         FormaOS
                       </th>
                       <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[27.5%]">
@@ -283,7 +283,7 @@ export function ComparePageTemplate({
                         <td className="py-3 px-6 text-sm text-slate-300">
                           {row.feature}
                         </td>
-                        <td className="py-3 px-4 text-center bg-teal-500/[0.04]">
+                        <td className="py-3 px-4 text-center bg-white/[0.04]">
                           <FeatureCell value={row.formaos} />
                         </td>
                         <td className="py-3 px-4 text-center">
@@ -300,8 +300,8 @@ export function ComparePageTemplate({
                   {/* Score summary */}
                   <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
-                      <BarChart3 className="h-3.5 w-3.5 text-teal-400" />
-                      <span className="text-xs font-semibold text-teal-400">
+                      <BarChart3 className="h-3.5 w-3.5 text-slate-300" />
+                      <span className="text-xs font-semibold text-white">
                         FormaOS
                       </span>
                       <span className="text-xs text-slate-300">
@@ -376,7 +376,7 @@ export function ComparePageTemplate({
       <DeferredSection minHeight={80}>
         <section className="mk-section mk-section--compact relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-            <div className="rounded-2xl border border-teal-500/10 bg-gradient-to-r from-teal-500/[0.06] via-white/[0.03] to-cyan-500/[0.06] backdrop-blur-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="rounded-2xl border border-white/[0.1] bg-gradient-to-r from-white/[0.05] via-white/[0.03] to-white/[0.05] backdrop-blur-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h3 className="text-base font-semibold text-white">
                   Ready to see the difference firsthand?
@@ -445,13 +445,13 @@ export function ComparePageTemplate({
               <motion.article
                 key={p.title}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
               >
                 <div className="mb-4 flex items-center gap-3">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-400/20 bg-cyan-500/10 text-xs font-bold text-cyan-300">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/[0.08] text-xs font-bold text-slate-300">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
-                  <ShieldCheck className="h-5 w-5 text-cyan-200" />
+                  <ShieldCheck className="h-5 w-5 text-slate-300" />
                 </div>
                 <h2 className="text-lg font-semibold text-white">{p.title}</h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
@@ -524,7 +524,7 @@ export function ComparePageTemplate({
                         compareSource: source,
                       })
                     }
-                    className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                    className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
                   >
                     <div className="text-sm font-semibold text-white">
                       {link.label}
@@ -561,7 +561,7 @@ export function ComparePageTemplate({
                     key={check.title}
                     className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-4"
                   >
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                       {check.title}
                     </h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-300">
@@ -596,7 +596,7 @@ export function ComparePageTemplate({
               <ul className="mt-4 space-y-2 text-sm text-slate-300">
                 {idealIf.map((item) => (
                   <li key={item} className="flex items-start gap-2">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 text-emerald-300 flex-shrink-0" />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 text-slate-400 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}

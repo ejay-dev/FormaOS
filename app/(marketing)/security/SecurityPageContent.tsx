@@ -46,8 +46,8 @@ function SecurityReviewBanner() {
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mt-0.5">
-              <ShieldCheck className="h-5 w-5 text-emerald-400" />
+            <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center mt-0.5">
+              <ShieldCheck className="h-5 w-5 text-slate-300" />
             </div>
             <div>
               <h3 className="text-base font-semibold text-white">

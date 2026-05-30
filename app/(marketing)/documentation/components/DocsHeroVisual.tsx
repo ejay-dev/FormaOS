@@ -60,8 +60,8 @@ function DocsHeroVisualInner() {
                 style={{ width: `${w}%` }}
               />
             ))}
-            <div className="mt-2 h-[28px] rounded-lg bg-cyan-500/10" />
-            <div className="h-[22px] rounded-lg bg-cyan-500/10" />
+            <div className="mt-2 h-[28px] rounded-lg bg-white/[0.06]" />
+            <div className="h-[22px] rounded-lg bg-white/[0.06]" />
           </div>
           {/* Left page */}
           <div
@@ -115,7 +115,7 @@ function DocsHeroVisualInner() {
                   height: 24,
                 }}
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                 <span className="text-[8px] text-white/60 font-medium whitespace-nowrap">
                   {ch.label}
                 </span>
@@ -224,8 +224,8 @@ function DocsHeroVisualInner() {
             />
           ))}
           {/* 2 code block rectangles */}
-          <div className="mt-2 h-[28px] rounded-lg bg-cyan-500/10 border border-cyan-500/5" />
-          <div className="h-[22px] rounded-lg bg-cyan-500/10 border border-cyan-500/5" />
+          <div className="mt-2 h-[28px] rounded-lg bg-white/[0.06] border border-white/[0.05]" />
+          <div className="h-[22px] rounded-lg bg-white/[0.06] border border-white/[0.05]" />
         </motion.div>
 
         {/* Chapter marker pills */}
@@ -254,7 +254,7 @@ function DocsHeroVisualInner() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.4)]" />
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-400 shadow-[0_0_6px_rgba(148,163,184,0.4)]" />
               <span className="text-[8px] text-white/60 font-medium whitespace-nowrap">
                 {ch.label}
               </span>

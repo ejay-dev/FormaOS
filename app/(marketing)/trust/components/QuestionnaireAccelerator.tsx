@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { ScanLine } from '@/components/marketing/SectionBackgrounds';
@@ -81,11 +81,11 @@ export function QuestionnaireAccelerator() {
 
             <SectionChoreography pattern="alternating" stagger={0.05} className="mt-6 grid gap-3 md:grid-cols-3">
               {stakeholderTracks.map((track) => (
-                  <div key={track.persona} className="rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-4 py-3">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-cyan-200">
+                  <div key={track.persona} className="rounded-xl border border-white/[0.1] bg-white/[0.05] px-4 py-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                       {track.persona}
                     </p>
-                    <p className="mt-1 text-sm text-cyan-100">
+                    <p className="mt-1 text-sm text-slate-200">
                       {track.artifact}
                     </p>
                   </div>
@@ -98,15 +98,14 @@ export function QuestionnaireAccelerator() {
       {/* Assurance Signals */}
       <section className="relative mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
-          <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-100">
-              <ShieldCheck className="h-3.5 w-3.5" />
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               Assurance Signals
-            </div>
+            </p>
             <SectionChoreography pattern="stagger-wave" stagger={0.04} className="mt-4 flex flex-wrap gap-2.5">
               {trustSignals.map((signal) => (
-                  <span key={signal} className="inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-100">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  <span key={signal} className="inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.05] px-3 py-1.5 text-xs text-slate-300">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-slate-400" />
                     {signal}
                   </span>
               ))}

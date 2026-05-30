@@ -5,7 +5,6 @@ import {
   User,
   Link2,
   Archive,
-  FileCheck,
   CheckCircle,
 } from 'lucide-react';
 import { motion, useScroll, useTransform, useReducedMotion, useInView } from 'framer-motion';
@@ -74,7 +73,7 @@ function TimelineNode({
             initial={{ scaleX: 0 }}
             animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="h-full bg-gradient-to-r from-orange-500/40 to-amber-500/40 origin-left"
+            className="h-full bg-gradient-to-r from-white/20 to-white/10 origin-left"
           />
         </div>
       )}
@@ -84,9 +83,9 @@ function TimelineNode({
         initial={{ scale: 0, opacity: 0 }}
         animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
         transition={{ duration: 0.4, delay: index * 0.1 }}
-        className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500/30 to-amber-500/30 border-2 border-orange-500/50 flex items-center justify-center mb-4 z-10"
+        className="w-12 h-12 rounded-full bg-white/[0.08] border-2 border-white/20 flex items-center justify-center mb-4 z-10"
       >
-        <property.icon className="h-5 w-5 text-orange-400" />
+        <property.icon className="h-5 w-5 text-slate-300" />
       </motion.div>
 
       {/* Detail card */}
@@ -96,7 +95,7 @@ function TimelineNode({
         transition={{ duration: 0.5, delay: 0.15 + index * 0.1 }}
         className="text-center max-w-[180px]"
       >
-        <span className="text-xs font-bold text-orange-400/60 tracking-widest">
+        <span className="text-xs font-bold text-slate-500 tracking-widest">
           {property.number}
         </span>
         <h4 className="text-sm font-bold text-white mt-1">{property.title}</h4>
@@ -143,7 +142,7 @@ export function EvidenceIntegrity() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/2 left-1/4 -translate-y-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-orange-500/15 to-transparent blur-3xl"
+          className="absolute top-1/2 left-1/4 -translate-y-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-white/[0.06] to-transparent blur-3xl"
         />
       </div>
 
@@ -151,17 +150,14 @@ export function EvidenceIntegrity() {
         {/* Section Header */}
         <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-20">
           <div>
-            <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
-                <FileCheck className="h-3 w-3 text-orange-400" />
-                <span className="text-gray-300">Evidence Integrity</span>
-              </div>
-            </ScrollReveal>
+            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Evidence Integrity
+            </p>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               <span className="text-white">Evidence that auditors</span>
               <br />
-              <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
+              <span className="text-slate-400">
                 can actually trust.
               </span>
             </h2>
@@ -183,7 +179,7 @@ export function EvidenceIntegrity() {
             <div className="relative h-1 rounded-full bg-white/[0.06] overflow-hidden max-w-3xl mx-auto">
               <motion.div
                 style={{ width: progressWidth }}
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-400"
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-white/40 via-white/30 to-white/20"
               />
             </div>
           </motion.div>
@@ -211,17 +207,17 @@ export function EvidenceIntegrity() {
               variant="scaleUp"
               range={[index * 0.04, 0.3 + index * 0.04]}
             >
-              <div className="group relative backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-orange-500/30 transition-all duration-500">
+              <div className="group relative backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 hover:border-white/20 transition-all duration-500">
                 {/* Number indicator */}
                 <div className="absolute top-6 right-6">
-                  <span className="text-5xl font-bold text-white/[0.06] group-hover:text-orange-500/20 transition-colors duration-300">
+                  <span className="text-5xl font-bold text-white/[0.06] group-hover:text-white/[0.12] transition-colors duration-300">
                     {property.number}
                   </span>
                 </div>
 
                 <div className="flex items-start gap-5">
-                  <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 border border-orange-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <property.icon className="h-7 w-7 text-orange-400" />
+                  <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <property.icon className="h-7 w-7 text-slate-300" />
                   </div>
 
                   <div className="flex-1">
@@ -231,9 +227,9 @@ export function EvidenceIntegrity() {
                     <p className="text-gray-400 leading-relaxed mb-3">
                       {property.description}
                     </p>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
-                      <CheckCircle className="h-3 w-3 text-orange-400" />
-                      <span className="text-xs font-medium text-orange-300">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1]">
+                      <CheckCircle className="h-3 w-3 text-slate-400" />
+                      <span className="text-xs font-medium text-slate-300">
                         {property.detail}
                       </span>
                     </div>
@@ -246,7 +242,7 @@ export function EvidenceIntegrity() {
 
         {/* Live audit trail demo */}
         <ScrollReveal variant="fadeUp" range={[0.04, 0.35]} className="mt-12 max-w-xl mx-auto">
-          <DemoAuditTrailCard glowColor="from-orange-500/15 to-amber-500/15" />
+          <DemoAuditTrailCard glowColor="from-white/[0.06] to-white/[0.02]" />
         </ScrollReveal>
 
         {/* Quality Metrics */}
@@ -265,7 +261,7 @@ export function EvidenceIntegrity() {
                   range={[index * 0.04, 0.3 + index * 0.04]}
                 >
                   <div>
-                    <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent mb-2">
+                    <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
                       {metric.value}
                     </div>
                     <div className="text-sm text-gray-500">{metric.label}</div>

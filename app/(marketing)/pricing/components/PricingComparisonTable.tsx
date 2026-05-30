@@ -388,7 +388,7 @@ const COLUMNS: readonly Column[] = [
     label: 'Growth',
     code: 'GRW',
     price: '$797/mo',
-    accent: 'text-emerald-300',
+    accent: 'text-slate-200',
     featured: true,
   },
   {
@@ -413,7 +413,7 @@ function renderCell(value: Cell, featured?: boolean) {
   if (value === '✓') {
     return (
       <Check
-        className={`mx-auto h-4 w-4 ${featured ? 'text-emerald-300' : 'text-slate-400'}`}
+        className={`mx-auto h-4 w-4 ${featured ? 'text-slate-100' : 'text-slate-400'}`}
         aria-hidden="true"
       />
     );
@@ -425,7 +425,7 @@ function renderCell(value: Cell, featured?: boolean) {
   }
   return (
     <span
-      className={`font-mono text-[12px] ${featured ? 'text-emerald-200' : 'text-slate-200'}`}
+      className={`font-mono text-[12px] ${featured ? 'text-slate-100' : 'text-slate-200'}`}
     >
       {value}
     </span>
@@ -477,7 +477,7 @@ export function PricingComparisonTable() {
               <Minus className="h-3 w-3 text-slate-700" />
               <span>Not in plan</span>
             </span>
-            <span className="flex items-center gap-2 text-emerald-300/80">
+            <span className="flex items-center gap-2 text-slate-300">
               <span>Most popular column</span>
             </span>
           </div>
@@ -531,11 +531,11 @@ export function PricingComparisonTable() {
                       key={col.key}
                       scope="col"
                       className={`relative px-6 py-5 text-center ${
-                        col.featured ? 'bg-emerald-400/[0.04]' : ''
+                        col.featured ? 'bg-white/[0.04]' : ''
                       }`}
                     >
                       {col.featured ? (
-                        <span className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300/60 to-transparent" />
+                        <span className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
                       ) : null}
                       <div className="flex items-center justify-center gap-2">
                         <span className="text-base font-semibold text-white">
@@ -578,7 +578,7 @@ export function PricingComparisonTable() {
                       {COLUMNS.map((col) => (
                         <td
                           key={col.key}
-                          className={`px-6 py-3.5 ${col.featured ? 'bg-emerald-400/[0.04]' : ''}`}
+                          className={`px-6 py-3.5 ${col.featured ? 'bg-white/[0.04]' : ''}`}
                         />
                       ))}
                     </tr>
@@ -603,7 +603,7 @@ export function PricingComparisonTable() {
                           <td
                             key={col.key}
                             className={`px-6 py-3.5 text-center ${
-                              col.featured ? 'bg-emerald-400/[0.04]' : ''
+                              col.featured ? 'bg-white/[0.04]' : ''
                             }`}
                           >
                             {renderCell(row[col.key], col.featured)}
@@ -659,7 +659,7 @@ export function PricingComparisonTable() {
                           key={col.key}
                           className={`flex items-center justify-between rounded-xl border px-3 py-2 ${
                             col.featured
-                              ? 'border-emerald-300/30 bg-emerald-400/[0.06]'
+                              ? 'border-white/25 bg-white/[0.06]'
                               : 'border-white/[0.05] bg-white/[0.02]'
                           }`}
                         >
@@ -669,7 +669,7 @@ export function PricingComparisonTable() {
                           <dd className="ml-2">
                             {row[col.key] === '✓' ? (
                               <Check
-                                className={`h-3.5 w-3.5 ${col.featured ? 'text-emerald-300' : 'text-slate-400'}`}
+                                className={`h-3.5 w-3.5 ${col.featured ? 'text-slate-100' : 'text-slate-400'}`}
                                 aria-hidden="true"
                               />
                             ) : row[col.key] === '—' ? (

@@ -36,18 +36,17 @@ export function EnterpriseSecurity() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       {/* Subtle section tint */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-teal-500/[0.03] to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 sm:p-10 relative overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/25 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
             <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/10 border border-teal-400/20 text-teal-400 text-sm font-medium mb-5">
-                <Shield className="w-4 h-4" />
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                 Enterprise-Grade Security
-              </div>
+              </p>
 
               <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
                 Security built into the operating layer
@@ -69,10 +68,10 @@ export function EnterpriseSecurity() {
                 return (
                   <div
                     key={feature.label}
-                    className="flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:border-teal-400/15 hover:bg-white/[0.04] transition-all duration-200"
+                    className="flex items-center gap-3 p-3.5 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-200"
                   >
-                    <div className="inline-flex items-center justify-center rounded-lg border border-teal-400/20 bg-teal-500/10 p-2 shrink-0">
-                      <Icon className="w-4 h-4 text-teal-400" />
+                    <div className="inline-flex items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.05] p-2 shrink-0">
+                      <Icon className="w-4 h-4 text-slate-300" />
                     </div>
                     <span className="text-sm text-slate-300 leading-snug">
                       {feature.label}

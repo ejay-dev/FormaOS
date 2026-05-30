@@ -26,9 +26,9 @@ export function SecurityHero() {
       theme="security"
       visualContent={<SecurityHeroVisual />}
       badge={{
-        icon: <Shield className="w-4 h-4 text-cyan-400" />,
+        icon: <Shield className="w-4 h-4 text-slate-400" />,
         text: 'Security Architecture',
-        colorClass: 'cyan',
+        colorClass: 'slate',
       }}
       headline={
         <>
@@ -48,7 +48,7 @@ export function SecurityHero() {
                 key={item.label}
                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] backdrop-blur-sm"
               >
-                <item.icon className="h-4 w-4 text-cyan-400" />
+                <item.icon className="h-4 w-4 text-slate-400" />
                 <span className="text-sm font-medium text-gray-300">
                   {item.label}
                 </span>
@@ -65,7 +65,7 @@ export function SecurityHero() {
           */}
           <Link
             href="/trust/data-handling"
-            className="inline-flex items-center gap-1.5 text-xs text-cyan-300/80 hover:text-cyan-200 transition"
+            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition"
           >
             How tamper-evident logging + chain of custody works
             <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />

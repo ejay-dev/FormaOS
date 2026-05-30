@@ -87,10 +87,10 @@ export function TrustModules() {
                 >
                   <Link
                     href={card.href}
-                    className="group flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                    className="group flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm transition-colors hover:border-white/20 hover:bg-white/[0.06]"
                   >
-                    <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                      <Icon className="h-5 w-5 text-cyan-300" />
+                    <div className="mb-4 inline-flex rounded-lg border border-white/[0.1] bg-white/[0.06] p-2">
+                      <Icon className="h-5 w-5 text-slate-300" />
                     </div>
                     <h2 className="text-lg font-semibold text-white">
                       {card.title}
@@ -98,7 +98,7 @@ export function TrustModules() {
                     <p className="mt-3 text-sm leading-relaxed text-slate-300">
                       {card.description}
                     </p>
-                    <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200">
+                    <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-200">
                       {card.linkText}
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </div>
@@ -112,8 +112,8 @@ export function TrustModules() {
       <SectionChoreography pattern="alternating" stagger={0.05} className="mt-10 grid gap-4 lg:grid-cols-3">
         {assuranceModules.map((mod) => (
             <article key={mod.title} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-sm">
-              <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                <FileLock2 className="h-5 w-5 text-cyan-300" />
+              <div className="mb-4 inline-flex rounded-lg border border-white/[0.1] bg-white/[0.06] p-2">
+                <FileLock2 className="h-5 w-5 text-slate-300" />
               </div>
               <h2 className="text-lg font-semibold text-white">{mod.title}</h2>
               <p className="mt-3 text-sm leading-relaxed text-slate-300">

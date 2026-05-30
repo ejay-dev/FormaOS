@@ -22,36 +22,36 @@ const securityLayers = [
     title: 'Encrypted Data Storage',
     description:
       'Encryption at rest and in transit with data isolation across tenants.',
-    color: 'from-red-500/20 to-orange-500/20',
-    borderColor: 'border-red-500/30',
-    iconColor: 'text-red-400',
+    color: 'from-white/[0.08] to-white/[0.02]',
+    borderColor: 'border-white/[0.12]',
+    iconColor: 'text-slate-300',
   },
   {
     icon: Users,
     title: 'Role-Based Access Control',
     description:
       '6 role types with granular permissions. Principle of least privilege enforced across all actions.',
-    color: 'from-orange-500/20 to-amber-500/20',
-    borderColor: 'border-orange-500/30',
-    iconColor: 'text-orange-400',
+    color: 'from-white/[0.08] to-white/[0.02]',
+    borderColor: 'border-white/[0.12]',
+    iconColor: 'text-slate-300',
   },
   {
     icon: Server,
     title: 'Multi-Tenant Isolation',
     description:
       'Complete data isolation between organizations via Row Level Security. Strict tenant boundary enforcement.',
-    color: 'from-amber-500/20 to-yellow-500/20',
-    borderColor: 'border-amber-500/30',
-    iconColor: 'text-amber-400',
+    color: 'from-white/[0.08] to-white/[0.02]',
+    borderColor: 'border-white/[0.12]',
+    iconColor: 'text-slate-300',
   },
   {
     icon: FileCheck,
     title: 'Immutable Audit Logging',
     description:
       'Comprehensive audit trails that cannot be modified or deleted. Every action timestamped and attributed.',
-    color: 'from-yellow-500/20 to-lime-500/20',
-    borderColor: 'border-yellow-500/30',
-    iconColor: 'text-yellow-400',
+    color: 'from-white/[0.08] to-white/[0.02]',
+    borderColor: 'border-white/[0.12]',
+    iconColor: 'text-slate-300',
   },
 ];
 
@@ -125,7 +125,7 @@ export function SecurityArchitecture() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-red-500/20 to-transparent blur-3xl"
+          className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-white/[0.06] to-transparent blur-3xl"
         />
         <motion.div
           animate={{
@@ -139,7 +139,7 @@ export function SecurityArchitecture() {
             ease: 'easeInOut',
             delay: 3,
           }}
-          className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-tl from-orange-500/20 to-transparent blur-3xl"
+          className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-tl from-white/[0.05] to-transparent blur-3xl"
         />
       </div>
 
@@ -147,17 +147,14 @@ export function SecurityArchitecture() {
         {/* Section Header */}
         <ScrollReveal variant="depthScale" range={[0, 0.35]} className="text-center mb-20">
           <div>
-            <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
-                <Lock className="h-3 w-3 text-red-400" />
-                <span className="text-gray-300">Security Architecture</span>
-              </div>
-            </ScrollReveal>
+            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Security Architecture
+            </p>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               <span className="text-white">Defense in depth.</span>
               <br />
-              <span className="bg-gradient-to-r from-red-400 via-orange-400 to-amber-400 bg-clip-text text-transparent">
+              <span className="text-slate-400">
                 Protection at every layer.
               </span>
             </h2>
@@ -251,8 +248,8 @@ export function SecurityArchitecture() {
             <SectionChoreography pattern="stagger-wave" stagger={0.04} className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {certifications.map((cert) => (
                   <div key={cert.name} className="group text-center p-6 rounded-2xl bg-white/[0.04] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all duration-300">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <cert.icon className="h-6 w-6 text-red-400" />
+                    <div className="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.12] flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <cert.icon className="h-6 w-6 text-slate-300" />
                     </div>
                     <h4 className="text-sm font-bold text-white mb-1">
                       {cert.name}

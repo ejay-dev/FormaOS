@@ -18,10 +18,8 @@ import {
   ArrowRight,
   Building2,
   Server,
-  BadgeCheck,
   ChevronDown,
   ChevronRight,
-  Shield,
   Database,
   Key,
   HeartPulse,
@@ -31,10 +29,8 @@ import {
   CloudCog,
   BookOpen,
   UserCheck,
-  Activity,
   AlertTriangle,
   GitBranch,
-  Layers,
   type LucideIcon,
 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
@@ -66,25 +62,25 @@ const trustBadges: TrustBadge[] = [
     icon: ShieldCheck,
     label: 'Security review ready',
     detail: 'Procurement materials available on request',
-    colorRgb: '52,211,153',
+    colorRgb: '203,213,225',
   },
   {
     icon: Scale,
     label: 'Audit-ready exports',
     detail: 'Evidence and control context preserved',
-    colorRgb: '59,130,246',
+    colorRgb: '148,163,184',
   },
   {
     icon: Globe,
     label: 'AU-hosted by default',
     detail: 'Additional residency needs reviewed during procurement',
-    colorRgb: '139,92,246',
+    colorRgb: '161,161,170',
   },
   {
     icon: HeartPulse,
     label: 'Public status visibility',
     detail: 'Operational updates and uptime checks published',
-    colorRgb: '251,113,133',
+    colorRgb: '203,213,225',
   },
   {
     icon: Building2,
@@ -96,7 +92,7 @@ const trustBadges: TrustBadge[] = [
     icon: Lock,
     label: 'DPA and subprocessor docs',
     detail: 'Available for enterprise review',
-    colorRgb: '245,158,11',
+    colorRgb: '148,163,184',
   },
 ];
 
@@ -122,7 +118,7 @@ const securityLayers: SecurityLayer[] = [
       'Dependency and vulnerability review',
       'Controlled release and rollback procedures',
     ],
-    colorRgb: '52,211,153',
+    colorRgb: '203,213,225',
   },
   {
     name: 'Authentication & Identity',
@@ -135,7 +131,7 @@ const securityLayers: SecurityLayer[] = [
       'Session policy controls',
       'Audited role and access changes',
     ],
-    colorRgb: '139,92,246',
+    colorRgb: '148,163,184',
   },
   {
     name: 'Data Protection',
@@ -148,7 +144,7 @@ const securityLayers: SecurityLayer[] = [
       'Controlled export workflows',
       'Encrypted backup handling',
     ],
-    colorRgb: '59,130,246',
+    colorRgb: '161,161,170',
   },
   {
     name: 'Infrastructure Security',
@@ -174,7 +170,7 @@ const securityLayers: SecurityLayer[] = [
       'Configurable retention controls',
       'Documented incident handling',
     ],
-    colorRgb: '245,158,11',
+    colorRgb: '203,213,225',
   },
 ];
 
@@ -204,7 +200,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'MFA',
       'Session policies',
     ],
-    colorRgb: '139,92,246',
+    colorRgb: '148,163,184',
   },
   {
     icon: Database,
@@ -234,7 +230,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Permission audit trail',
       'Session controls',
     ],
-    colorRgb: '59,130,246',
+    colorRgb: '161,161,170',
   },
   {
     icon: FileText,
@@ -249,7 +245,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'SHA-256 verification',
       'Chain of custody',
     ],
-    colorRgb: '245,158,11',
+    colorRgb: '203,213,225',
   },
   {
     icon: GitBranch,
@@ -264,7 +260,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Configurable retention',
       'Bulk export',
     ],
-    colorRgb: '52,211,153',
+    colorRgb: '203,213,225',
   },
   {
     icon: ShieldCheck,
@@ -279,7 +275,7 @@ const enterpriseFeatures: EnterpriseFeature[] = [
       'Gap remediation',
       'Certification reports',
     ],
-    colorRgb: '52,211,153',
+    colorRgb: '148,163,184',
   },
 ];
 
@@ -446,7 +442,7 @@ const deploymentOptions: DeploymentOption[] = [
       'Standard data residency options',
     ],
     icon: Globe,
-    colorRgb: '52,211,153',
+    colorRgb: '203,213,225',
   },
   {
     name: 'Dedicated Cloud',
@@ -475,7 +471,7 @@ const deploymentOptions: DeploymentOption[] = [
       'Full compliance boundary control',
     ],
     icon: Server,
-    colorRgb: '139,92,246',
+    colorRgb: '148,163,184',
   },
 ];
 
@@ -505,7 +501,7 @@ function AnimatedStat({
     >
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-1">
         {value}
-        <span className="text-emerald-400 text-xl sm:text-2xl">{unit}</span>
+        <span className="text-slate-400 text-xl sm:text-2xl">{unit}</span>
       </div>
       <div className="text-xs sm:text-sm text-slate-400 font-medium">
         {label}
@@ -668,12 +664,9 @@ function SecurityArchitecture() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-400/20 bg-violet-500/10 mb-6">
-              <Layers className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
-                Defense in Depth
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Defense in Depth
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Five-layer{' '}
               <span className="text-foreground">
@@ -688,7 +681,7 @@ function SecurityArchitecture() {
 
           <div className="relative space-y-3">
             {/* Vertical line */}
-            <div className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-emerald-400/30 via-violet-400/30 to-amber-400/30 hidden sm:block" />
+            <div className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-white/20 via-white/10 to-white/20 hidden sm:block" />
 
             {securityLayers.map((layer, i) => {
               const Icon = layer.icon;
@@ -792,12 +785,9 @@ function TrustBadgesSection() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-              <BadgeCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                Trust & Compliance
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Trust &amp; Compliance
+            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Built for{' '}
               <span className="text-foreground">
@@ -867,12 +857,9 @@ function SLASection() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-6">
-              <Activity className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                Service Commitments
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Service Commitments
+            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Enterprise{' '}
               <span className="text-foreground">
@@ -898,7 +885,7 @@ function SLASection() {
               >
                 <div className="text-3xl sm:text-4xl font-bold text-white mb-1">
                   {item.value}
-                  <span className="text-cyan-400 text-lg">{item.unit}</span>
+                  <span className="text-slate-400 text-lg">{item.unit}</span>
                 </div>
                 <h3 className="text-sm font-semibold text-white mb-1">
                   {item.metric}
@@ -925,12 +912,9 @@ function DeploymentSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-blue-400/20 bg-blue-500/10 mb-6">
-              <Server className="w-3.5 h-3.5 text-blue-400" />
-              <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
-                Deployment Models
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Deployment Models
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Deploy{' '}
               <span className="text-foreground">
@@ -957,13 +941,13 @@ function DeploymentSection() {
                     transition-all duration-300
                     ${
                       option.recommended
-                        ? 'border-cyan-400/20 bg-cyan-500/[0.03] hover:bg-cyan-500/[0.06] hover:border-cyan-400/30'
+                        ? 'border-white/20 bg-white/[0.04] hover:bg-white/[0.06] hover:border-white/30'
                         : 'border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.12]'
                     }`}
                 >
                   {option.recommended && (
                     <div className="absolute -top-3 left-6">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-cyan-400 border border-cyan-400/20 bg-cyan-500/10">
+                      <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-200 border border-white/20 bg-white/[0.06]">
                         Recommended
                       </span>
                     </div>
@@ -1035,15 +1019,12 @@ function ProcurementFAQ() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-400/20 bg-amber-500/10 mb-6">
-              <FileText className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
-                Procurement Ready
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Procurement Ready
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Security{' '}
-              <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 questionnaire
               </span>
             </h2>
@@ -1080,8 +1061,8 @@ function ProcurementFAQ() {
                       className="w-full flex items-center gap-3 p-4 text-left"
                       onClick={() => setExpandedIndex(isExpanded ? null : i)}
                     >
-                      <div className="w-8 h-8 rounded-lg border border-amber-400/15 bg-amber-500/8 flex items-center justify-center shrink-0">
-                        <Icon className="w-4 h-4 text-amber-400/80" />
+                      <div className="w-8 h-8 rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center shrink-0">
+                        <Icon className="w-4 h-4 text-slate-300" />
                       </div>
                       <span className="flex-1 text-sm font-medium text-white">
                         {item.question}
@@ -1145,7 +1126,7 @@ function EnterpriseCTA() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(139,92,246,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(52,211,153,0.06), transparent 50%)',
+                  'radial-gradient(ellipse at 50% 0%, rgba(148,163,184,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
               }}
             />
 
@@ -1153,7 +1134,7 @@ function EnterpriseCTA() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1 h-1 rounded-full bg-violet-400/30"
+                  className="absolute w-1 h-1 rounded-full bg-slate-400/30"
                   style={{
                     left: `${12 + ((i * 76) % 80)}%`,
                     top: `${8 + ((i * 53) % 85)}%`,
@@ -1174,12 +1155,9 @@ function EnterpriseCTA() {
 
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-400/20 bg-violet-500/10 mb-6">
-                  <Building2 className="w-3.5 h-3.5 text-violet-400" />
-                  <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
-                    Enterprise Ready
-                  </span>
-                </div>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  Enterprise Ready
+                </p>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Start your{' '}
                   <span className="text-foreground">
@@ -1206,10 +1184,9 @@ function EnterpriseCTA() {
                       })
                     }
                     className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-                      bg-gradient-to-r from-violet-500 to-blue-500
-                      text-white font-semibold text-sm
-                      shadow-lg shadow-violet-500/20
-                      hover:shadow-xl hover:shadow-violet-500/30
+                      bg-white text-slate-950 font-semibold text-sm
+                      shadow-lg shadow-black/20
+                      hover:bg-slate-100 hover:shadow-xl
                       transition-all duration-300"
                   >
                     Contact Enterprise Sales
@@ -1252,7 +1229,7 @@ function EnterpriseCTA() {
                     'Custom enterprise terms',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400/50" />
+                      <CheckCircle2 className="w-3 h-3 text-slate-400/60" />
                       <span>{signal}</span>
                     </div>
                   ))}
@@ -1293,7 +1270,7 @@ function EnterpriseHero() {
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <motion.div
           className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(139,92,246,0.12)' }}
+          style={{ background: 'rgba(148,163,184,0.12)' }}
           animate={{
             scale: [1, 1.08, 1],
             opacity: [0.12, 0.18, 0.12],
@@ -1306,7 +1283,7 @@ function EnterpriseHero() {
         />
         <motion.div
           className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(52,211,153,0.10)' }}
+          style={{ background: 'rgba(113,113,122,0.10)' }}
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.1, 0.16, 0.1],
@@ -1350,12 +1327,13 @@ function EnterpriseHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-400/20 bg-violet-500/10 mb-8"
+          className="mb-8 flex items-center justify-center gap-4"
         >
-          <Building2 className="w-3.5 h-3.5 text-violet-400" />
-          <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
             Enterprise
           </span>
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
         </motion.div>
 
         <motion.h1
@@ -1401,10 +1379,9 @@ function EnterpriseHero() {
               })
             }
             className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-              bg-gradient-to-r from-violet-500 to-blue-500
-              text-white font-semibold text-sm
-              shadow-lg shadow-violet-500/20
-              hover:shadow-xl hover:shadow-violet-500/30
+              bg-white text-slate-950 font-semibold text-sm
+              shadow-lg shadow-black/20
+              hover:bg-slate-100 hover:shadow-xl
               transition-all duration-300"
           >
             {PUBLIC_CTA_LABELS.talkToSales}
@@ -1497,12 +1474,9 @@ export default function EnterprisePageContent() {
               range={[0, 0.3]}
               className="text-center mb-14"
             >
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-6">
-                <Shield className="w-3.5 h-3.5 text-cyan-400" />
-                <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                  Enterprise Capabilities
-                </span>
-              </div>
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Enterprise Capabilities
+              </p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                 Built for{' '}
                 <span className="text-foreground">

@@ -41,7 +41,7 @@ function DocsHeroExtras() {
           <input
             type="text"
             placeholder="Search documentation..."
-            className="w-full pl-14 pr-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all backdrop-blur-sm text-lg"
+            className="w-full pl-14 pr-5 py-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all backdrop-blur-sm text-lg"
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1 text-xs text-gray-500 bg-white/[0.06] px-2 py-1 rounded-md border border-white/[0.1]">
             <span>⌘</span>
@@ -58,12 +58,12 @@ function DocsHeroExtras() {
             <a
               key={link.title}
               href={link.href}
-              className="group flex flex-col items-center text-center p-4 rounded-xl backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-white/[0.06] transition-all duration-300"
+              className="group flex flex-col items-center text-center p-4 rounded-xl backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/[0.08] hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300"
             >
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                <Icon className="w-5 h-5 text-cyan-400" />
+              <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                <Icon className="w-5 h-5 text-slate-300" />
               </div>
-              <span className="text-sm font-medium text-white group-hover:text-cyan-300 transition-colors">
+              <span className="text-sm font-medium text-white group-hover:text-slate-200 transition-colors">
                 {link.title}
               </span>
               <span className="text-xs text-gray-500 mt-1">
@@ -89,7 +89,7 @@ export function DocsHero() {
       headline={
         <>
           FormaOS{' '}
-          <span className="bg-gradient-to-r from-cyan-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent">
+          <span className="text-slate-400">
             Documentation
           </span>
         </>

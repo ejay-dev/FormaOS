@@ -20,8 +20,8 @@ interface FrameworkNode {
 
 const RADIUS = 200;
 const LABELS = ['ISO 27001', 'SOC 2', 'GDPR', 'HIPAA', 'NIST', 'PCI DSS'] as const;
-const DOT_COLORS_TW = ['bg-emerald-400', 'bg-cyan-400', 'bg-blue-400', 'bg-violet-400', 'bg-amber-400', 'bg-rose-400'];
-const DOT_COLORS_HEX = ['#34d399', '#a1a1aa', '#60a5fa', '#a78bfa', '#fbbf24', '#fb7185'];
+const DOT_COLORS_TW = ['bg-slate-300', 'bg-slate-400', 'bg-slate-400', 'bg-slate-500', 'bg-slate-400', 'bg-slate-500'];
+const DOT_COLORS_HEX = ['#cbd5e1', '#94a3b8', '#94a3b8', '#64748b', '#94a3b8', '#64748b'];
 const Z_DEPTHS = [-10, -20, -30, -40, -50, -15];
 const PARALLAX_SCALES = [1.2, 1.0, 0.8, 1.4, 0.6, 1.1];
 
@@ -154,8 +154,8 @@ function TrustHeroVisualInner() {
         >
           <defs>
             <linearGradient id="trustWireGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="rgba(52,211,153,0.5)" />
-              <stop offset="100%" stopColor="rgba(161, 161, 170,0.5)" />
+              <stop offset="0%" stopColor="rgba(203,213,225,0.5)" />
+              <stop offset="100%" stopColor="rgba(148,163,184,0.5)" />
             </linearGradient>
           </defs>
 
@@ -250,7 +250,7 @@ function TrustHeroVisualInner() {
         >
           {/* Pulsing glow ring */}
           <motion.div
-            className="absolute rounded-full border border-emerald-500/40"
+            className="absolute rounded-full border border-white/25"
             style={{ width: 100, height: 100 }}
             animate={
               sa
@@ -265,10 +265,10 @@ function TrustHeroVisualInner() {
           />
           {/* Glass circle */}
           <div
-            className="relative flex items-center justify-center rounded-full border border-emerald-500/40 backdrop-blur-xl bg-gradient-to-br from-white/[0.10] to-white/[0.03]"
+            className="relative flex items-center justify-center rounded-full border border-white/25 backdrop-blur-xl bg-gradient-to-br from-white/[0.10] to-white/[0.03]"
             style={{ width: 100, height: 100 }}
           >
-            <span className="text-xs font-bold text-emerald-300 tracking-wide select-none">
+            <span className="text-xs font-bold text-white tracking-wide select-none">
               FormaOS
             </span>
           </div>

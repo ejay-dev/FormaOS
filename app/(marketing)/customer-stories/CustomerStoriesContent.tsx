@@ -133,7 +133,7 @@ export default function CustomerStoriesContent() {
               <motion.article
                 key={s.title}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
               >
                 <h2 className="text-lg font-semibold text-white">{s.title}</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -142,7 +142,7 @@ export default function CustomerStoriesContent() {
                   </span>
                 </div>
                 <div className="mt-2">
-                  <span className="inline-flex items-center rounded-full border border-cyan-400/20 bg-cyan-500/10 px-2.5 py-0.5 text-[11px] font-medium text-cyan-300">
+                  <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-[11px] font-medium text-slate-300">
                     {s.framework}
                   </span>
                 </div>
@@ -238,7 +238,7 @@ export default function CustomerStoriesContent() {
                       <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-emerald-400">
                         After FormaOS
                       </th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-teal-400">
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-white">
                         Hours Saved / Cycle
                       </th>
                     </tr>
@@ -250,7 +250,7 @@ export default function CustomerStoriesContent() {
                         3 weeks (120 hrs)
                       </td>
                       <td className="py-2.5 px-4 text-center">4 hours</td>
-                      <td className="py-2.5 px-4 text-center font-semibold text-teal-400">
+                      <td className="py-2.5 px-4 text-center font-semibold text-white">
                         116 hrs
                       </td>
                     </tr>
@@ -262,7 +262,7 @@ export default function CustomerStoriesContent() {
                         40 hrs / month
                       </td>
                       <td className="py-2.5 px-4 text-center">8 hrs / month</td>
-                      <td className="py-2.5 px-4 text-center font-semibold text-teal-400">
+                      <td className="py-2.5 px-4 text-center font-semibold text-white">
                         96 hrs / quarter
                       </td>
                     </tr>
@@ -274,7 +274,7 @@ export default function CustomerStoriesContent() {
                         20 hrs / month
                       </td>
                       <td className="py-2.5 px-4 text-center">2 hrs / month</td>
-                      <td className="py-2.5 px-4 text-center font-semibold text-teal-400">
+                      <td className="py-2.5 px-4 text-center font-semibold text-white">
                         54 hrs / quarter
                       </td>
                     </tr>
@@ -288,7 +288,7 @@ export default function CustomerStoriesContent() {
                       <td className="py-2.5 px-4 text-center">
                         4 hours per incident
                       </td>
-                      <td className="py-2.5 px-4 text-center font-semibold text-teal-400">
+                      <td className="py-2.5 px-4 text-center font-semibold text-white">
                         ~60 hrs / quarter
                       </td>
                     </tr>
@@ -301,7 +301,7 @@ export default function CustomerStoriesContent() {
                       >
                         Total hours saved per quarter
                       </td>
-                      <td className="py-3 px-4 text-center font-bold text-teal-400">
+                      <td className="py-3 px-4 text-center font-bold text-white">
                         ~326 hrs
                       </td>
                     </tr>
@@ -315,7 +315,7 @@ export default function CustomerStoriesContent() {
                 className="mt-6 grid gap-3 md:grid-cols-4"
               >
                 <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-teal-400">$27,710</div>
+                  <div className="text-xl font-bold text-white">$27,710</div>
                   <div className="text-xs text-slate-400 mt-1">
                     Quarterly savings
                   </div>
@@ -324,7 +324,7 @@ export default function CustomerStoriesContent() {
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-teal-400">
+                  <div className="text-xl font-bold text-white">
                     $110,840
                   </div>
                   <div className="text-xs text-slate-400 mt-1">
@@ -335,7 +335,7 @@ export default function CustomerStoriesContent() {
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-teal-400">
+                  <div className="text-xl font-bold text-white">
                     &lt; 1 month
                   </div>
                   <div className="text-xs text-slate-400 mt-1">
@@ -346,7 +346,7 @@ export default function CustomerStoriesContent() {
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-teal-400">38×</div>
+                  <div className="text-xl font-bold text-white">38×</div>
                   <div className="text-xs text-slate-400 mt-1">
                     Annual ROI multiple
                   </div>

@@ -22,7 +22,6 @@ const PATHS = [
     ctaLabel: 'Start setup',
     ctaHref: '/auth/signup?source=pricing_final',
     ctaVariant: 'primary' as const,
-    accent: 'teal',
   },
   {
     id: 'enterprise',
@@ -39,7 +38,6 @@ const PATHS = [
     ctaLabel: 'Talk to procurement',
     ctaHref: '/contact?type=enterprise&plan=enterprise&source=pricing_final',
     ctaVariant: 'secondary' as const,
-    accent: 'violet',
   },
 ];
 
@@ -50,7 +48,7 @@ export function FinalCTA() {
     <section className="relative isolate overflow-hidden py-20 sm:py-28 lg:py-32">
       <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(113,113,122,0.12),transparent_45%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_70%,rgba(139,92,246,0.10),transparent_45%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_70%,rgba(148,163,184,0.1),transparent_45%)]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
         {/* Header */}
@@ -60,8 +58,8 @@ export function FinalCTA() {
           className="mx-auto mb-12 max-w-3xl text-center"
         >
           <div className="mb-5 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
-            <span className="h-px w-6 bg-emerald-400/60" />
-            <span className="text-emerald-300">Closing decision</span>
+            <span className="h-px w-6 bg-white/25" />
+            <span className="text-slate-400">Closing decision</span>
             <span className="text-slate-600">·</span>
             <span>two procurement paths</span>
           </div>
@@ -85,26 +83,12 @@ export function FinalCTA() {
             {PATHS.map((path) => {
               const Icon = path.icon;
               const isPrimary = path.ctaVariant === 'primary';
-              const accentBorder =
-                path.accent === 'teal'
-                  ? 'border-teal-300/30'
-                  : 'border-violet-300/30';
-              const accentText =
-                path.accent === 'teal'
-                  ? 'text-teal-300'
-                  : 'text-violet-300';
+              const accentBorder = 'border-white/[0.12]';
+              const accentText = 'text-slate-200';
               const accentChip =
-                path.accent === 'teal'
-                  ? 'border-teal-300/30 bg-teal-400/[0.08] text-teal-200'
-                  : 'border-violet-300/30 bg-violet-400/[0.08] text-violet-200';
-              const cornerTop =
-                path.accent === 'teal'
-                  ? 'border-teal-400/60'
-                  : 'border-violet-400/60';
-              const cornerBottom =
-                path.accent === 'teal'
-                  ? 'border-teal-400/40'
-                  : 'border-violet-400/40';
+                'border-white/[0.12] bg-white/[0.06] text-slate-200';
+              const cornerTop = 'border-white/30';
+              const cornerBottom = 'border-white/20';
 
               return (
                 <article
@@ -167,13 +151,7 @@ export function FinalCTA() {
                         key={b}
                         className="flex items-start gap-2.5 text-[13px] leading-snug text-slate-300"
                       >
-                        <span
-                          className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${
-                            path.accent === 'teal'
-                              ? 'bg-teal-400'
-                              : 'bg-violet-400'
-                          }`}
-                        />
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
                         <span>{b}</span>
                       </li>
                     ))}
@@ -213,19 +191,19 @@ export function FinalCTA() {
           className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/[0.06] pt-6 font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500"
         >
           <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
             Assessment-led scoping
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
             No arbitrary feature gates
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
             Full platform access
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
+            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
             Procurement-ready
           </span>
         </ScrollReveal>

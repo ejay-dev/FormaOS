@@ -65,8 +65,8 @@ const TOUR_STEPS: TourStep[] = [
       'Watch your compliance posture update live. Dashboards surface control health, gap analysis, and risk scores across every framework and business unit in one view.',
     screenshot: '/marketing/screenshots/dashboard.png',
     icon: BarChart3,
-    accent: 'from-zinc-600 to-purple-500',
-    glowColor: 'rgba(139, 92, 246, 0.35)',
+    accent: 'from-zinc-700 to-zinc-900',
+    glowColor: 'rgba(113, 113, 122, 0.35)',
   },
   {
     id: 4,
@@ -76,8 +76,8 @@ const TOUR_STEPS: TourStep[] = [
       'Generate structured evidence bundles, audit-ready reports, and exportable compliance packages on demand. Everything is timestamped, version-controlled, and linked to its source control.',
     screenshot: '/marketing/screenshots/reports.png',
     icon: FileCheck2,
-    accent: 'from-purple-500 to-pink-500',
-    glowColor: 'rgba(168, 85, 247, 0.35)',
+    accent: 'from-zinc-700 to-zinc-900',
+    glowColor: 'rgba(113, 113, 122, 0.35)',
   },
 ];
 
@@ -254,16 +254,15 @@ export function InteractiveProductTour() {
           viewport={{ once: true }}
           className="text-center mb-14"
         >
-          <motion.div
+          <motion.p
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
+            className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500"
           >
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             Interactive Product Tour
-          </motion.div>
+          </motion.p>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
             Four Steps to{' '}
@@ -496,7 +495,7 @@ export function InteractiveProductTour() {
                   w-2.5 h-2.5 rounded-full transition-all duration-300
                   ${
                     idx === activeStep
-                      ? 'bg-cyan-400 scale-125'
+                      ? 'bg-slate-300 scale-125'
                       : 'bg-white/20 hover:bg-white/40'
                   }
                 `}

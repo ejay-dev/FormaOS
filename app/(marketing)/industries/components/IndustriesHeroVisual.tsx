@@ -32,8 +32,8 @@ const SECTORS: Sector[] = [
     name: 'Healthcare',
     angle: -90, // top
     z: -20,
-    iconColor: 'rgba(52,211,153,0.8)',
-    glowColor: 'rgba(52,211,153,0.12)',
+    iconColor: 'rgba(203,213,225,0.8)',
+    glowColor: 'rgba(203,213,225,0.12)',
     iconPaths: [
       'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z',
     ],
@@ -42,8 +42,8 @@ const SECTORS: Sector[] = [
     name: 'Finance',
     angle: 0, // right
     z: 0,
-    iconColor: 'rgba(59,130,246,0.8)',
-    glowColor: 'rgba(59,130,246,0.12)',
+    iconColor: 'rgba(148,163,184,0.8)',
+    glowColor: 'rgba(148,163,184,0.12)',
     iconPaths: ['M18 20V10', 'M12 20V4', 'M6 20v-6'],
   },
   {
@@ -58,8 +58,8 @@ const SECTORS: Sector[] = [
     name: 'Education',
     angle: 180, // left
     z: -10,
-    iconColor: 'rgba(139,92,246,0.8)',
-    glowColor: 'rgba(139,92,246,0.12)',
+    iconColor: 'rgba(100,116,139,0.8)',
+    glowColor: 'rgba(100,116,139,0.12)',
     iconPaths: ['M22 10l-10-5L2 10l10 5 10-5z', 'M6 12v5c0 0 2.5 3 6 3s6-3 6-3v-5', 'M22 10v6'],
   },
 ];
@@ -161,7 +161,7 @@ function IndustriesHeroVisualInner() {
                 rx={ORBIT_RADIUS}
                 ry={ORBIT_RADIUS * 0.5}
                 fill="none"
-                stroke="rgba(52,211,153,0.08)"
+                stroke="rgba(148,163,184,0.08)"
                 strokeWidth="1"
                 strokeDasharray="6 8"
               />

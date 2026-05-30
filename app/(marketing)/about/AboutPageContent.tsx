@@ -39,14 +39,14 @@ function AboutHeroGlobeVisual() {
     >
       <div className="pointer-events-auto absolute right-[clamp(1.25rem,3vw,4rem)] top-[62%] -translate-y-1/2">
         <div className="relative h-[560px] w-[560px] xl:h-[700px] xl:w-[700px]">
-          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(168,85,247,0.14)_0%,rgba(14,165,233,0.04)_50%,transparent_74%)]" />
+          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,rgba(148,163,184,0.12)_0%,rgba(148,163,184,0.04)_50%,transparent_74%)]" />
           <InteractiveGlobe
             size={700}
             className="h-full w-full opacity-82"
             autoRotateSpeed={0.0016}
-            dotColor="rgba(167,139,250, ALPHA)"
-            arcColor="rgba(99,102,241, 0.35)"
-            markerColor="rgba(125,211,252, 0.95)"
+            dotColor="rgba(203,213,225, ALPHA)"
+            arcColor="rgba(148,163,184, 0.35)"
+            markerColor="rgba(226,232,240, 0.95)"
           />
         </div>
       </div>
@@ -61,9 +61,9 @@ function AboutHero() {
       visualContent={<AboutHeroGlobeVisual />}
       visualInteractive
       badge={{
-        icon: <Users className="w-4 h-4 text-violet-400" />,
+        icon: <Users className="w-4 h-4 text-slate-400" />,
         text: 'About FormaOS · Building since 2022 · Adelaide, Australia',
-        colorClass: 'violet',
+        colorClass: 'slate',
       }}
       headline={
         <>
@@ -187,7 +187,7 @@ export default function AboutPageContent() {
                       <h3 className="text-xl font-bold text-white">
                         Ejaz Hussain
                       </h3>
-                      <p className="mt-1 text-sm text-teal-400/80">
+                      <p className="mt-1 text-sm text-slate-400">
                         Founder &amp; Chief Engineer
                       </p>
                       <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
@@ -278,9 +278,9 @@ export default function AboutPageContent() {
               stagger={0.06}
               className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
             >
-              <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-4 sm:mb-6">
-                  <Target className="h-6 w-6 text-teal-400" />
+              <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-white/20 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center mb-4 sm:mb-6">
+                  <Target className="h-6 w-6 text-slate-300" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">Mission</h3>
                 <p className="text-gray-400 leading-relaxed text-sm">
@@ -290,9 +290,9 @@ export default function AboutPageContent() {
                 </p>
               </div>
 
-              <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-6">
-                  <Lightbulb className="h-6 w-6 text-teal-400" />
+              <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-white/20 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center mb-6">
+                  <Lightbulb className="h-6 w-6 text-slate-300" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
                   Why it matters
@@ -304,9 +304,9 @@ export default function AboutPageContent() {
                 </p>
               </div>
 
-              <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-6">
-                  <AlertTriangle className="h-6 w-6 text-teal-400" />
+              <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-white/20 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center mb-6">
+                  <AlertTriangle className="h-6 w-6 text-slate-300" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
                   The problem we solve
@@ -318,9 +318,9 @@ export default function AboutPageContent() {
                 </p>
               </div>
 
-              <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-teal-400/20 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl border border-teal-400/20 bg-teal-500/10 flex items-center justify-center mb-6">
-                  <Shield className="h-6 w-6 text-teal-400" />
+              <div className="group rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 sm:p-8 hover:border-white/20 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center mb-6">
+                  <Shield className="h-6 w-6 text-slate-300" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">
                   Our commitment
@@ -368,11 +368,11 @@ export default function AboutPageContent() {
                 return (
                   <div
                     key={value.title}
-                    className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 hover:border-teal-400/15 hover:bg-white/[0.06] transition-all duration-200"
+                    className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 hover:border-white/20 hover:bg-white/[0.06] transition-all duration-200"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="rounded-lg border border-teal-400/20 bg-teal-500/10 p-2.5 shrink-0">
-                        <Icon className="w-5 h-5 text-teal-400" />
+                      <div className="rounded-lg border border-white/10 bg-white/[0.05] p-2.5 shrink-0">
+                        <Icon className="w-5 h-5 text-slate-300" />
                       </div>
                       <div>
                         <h3 className="text-base font-semibold text-white mb-2">
@@ -447,7 +447,7 @@ export default function AboutPageContent() {
                   key={label}
                   className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 text-center"
                 >
-                  <div className="text-2xl sm:text-3xl font-bold text-teal-400 mb-1">
+                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
                     {stat}
                   </div>
                   <div className="text-sm font-semibold text-white mb-2">
@@ -537,11 +537,11 @@ export default function AboutPageContent() {
               ].map(({ label, icon: Icon, regulators, detail }) => (
                 <div
                   key={label}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 hover:border-teal-400/15 hover:bg-white/[0.06] transition-all duration-200"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 hover:border-white/20 hover:bg-white/[0.06] transition-all duration-200"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="rounded-lg border border-teal-400/20 bg-teal-500/10 p-2.5">
-                      <Icon className="w-4 h-4 text-teal-400" />
+                    <div className="rounded-lg border border-white/10 bg-white/[0.05] p-2.5">
+                      <Icon className="w-4 h-4 text-slate-300" />
                     </div>
                     <h3 className="text-sm font-semibold text-white">
                       {label}
@@ -550,7 +550,7 @@ export default function AboutPageContent() {
                   <p className="text-xs text-slate-300 leading-relaxed mb-2">
                     {detail}
                   </p>
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-teal-400/70">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-slate-500">
                     {regulators}
                   </p>
                 </div>
@@ -583,7 +583,7 @@ export default function AboutPageContent() {
             </ScrollReveal>
             <ScrollReveal variant="depthSlide" range={[0.04, 0.34]}>
               <DemoAuditTrailCard
-                glowColor="from-purple-500/15 to-pink-500/15"
+                glowColor="from-white/10 to-white/[0.04]"
                 entries={[
                   {
                     action: 'Audit packet exported',
@@ -652,7 +652,7 @@ export default function AboutPageContent() {
               <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-10">
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-wider text-teal-400 font-semibold mb-3">
+                    <div className="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">
                       Ready to evaluate?
                     </div>
                     <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
@@ -669,7 +669,7 @@ export default function AboutPageContent() {
                     href={compliancePlanHref('about_final')}
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: '0 0 40px rgba(20, 184, 166, 0.4)',
+                      boxShadow: '0 0 40px rgba(255, 255, 255, 0.18)',
                     }}
                     whileTap={{ scale: 0.98 }}
                     className="group px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg flex items-center justify-center gap-3 shadow-lg hover:opacity-90 transition-all whitespace-nowrap w-full sm:w-auto"

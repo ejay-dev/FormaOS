@@ -27,7 +27,7 @@ export default function CaseStudiesPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#020817] text-white">
       <section className="relative isolate overflow-hidden px-6 py-24 lg:px-12 lg:py-32">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(45,212,191,0.22),transparent_34%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.13),transparent_30%),linear-gradient(180deg,#020617_0%,#061525_48%,#020617_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(148,163,184,0.18),transparent_34%),radial-gradient(circle_at_80%_20%,rgba(148,163,184,0.10),transparent_30%),linear-gradient(180deg,#020617_0%,#061525_48%,#020617_100%)]" />
         <div className="mk-security-grid pointer-events-none absolute inset-0 opacity-[0.2] [mask-image:radial-gradient(ellipse_at_center,black_0%,transparent_74%)]" />
         <div className="relative mx-auto max-w-7xl">
           <SectionEyebrow>Case Studies</SectionEyebrow>
@@ -55,15 +55,15 @@ export default function CaseStudiesPage() {
             </Link>
           </div>
           <div className="mt-8 grid max-w-3xl gap-3 text-sm text-slate-300 sm:grid-cols-3">
-            <div className="border-l border-cyan-300/25 pl-4">
+            <div className="border-l border-white/15 pl-4">
               <p className="font-semibold text-white">Baseline</p>
               <p className="mt-1 text-slate-400">What the team was managing manually.</p>
             </div>
-            <div className="border-l border-cyan-300/25 pl-4">
+            <div className="border-l border-white/15 pl-4">
               <p className="font-semibold text-white">Workflow</p>
               <p className="mt-1 text-slate-400">How controls, owners, and gates ran.</p>
             </div>
-            <div className="border-l border-cyan-300/25 pl-4">
+            <div className="border-l border-white/15 pl-4">
               <p className="font-semibold text-white">Evidence</p>
               <p className="mt-1 text-slate-400">What can be exported and reviewed.</p>
             </div>

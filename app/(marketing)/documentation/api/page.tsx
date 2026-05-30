@@ -60,7 +60,7 @@ export default function ApiDocumentationPage() {
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-16 text-slate-100">
       <header className="max-w-3xl">
-        <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">
+        <p className="text-xs font-black uppercase tracking-[0.28em] text-slate-500">
           FormaOS API
         </p>
         <h1 className="mt-3 text-5xl font-black tracking-tight">
@@ -114,7 +114,7 @@ export default function ApiDocumentationPage() {
                   className="rounded-2xl border border-white/10 bg-white/5 p-4"
                 >
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-cyan-200">
+                    <span className="rounded-full bg-white/[0.06] border border-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-slate-200">
                       {route.method}
                     </span>
                     <code className="text-sm text-slate-100">{route.path}</code>
@@ -139,7 +139,7 @@ export default function ApiDocumentationPage() {
                   className="rounded-2xl border border-white/10 bg-white/5 p-4"
                 >
                   <p className="font-semibold text-slate-100">{label}</p>
-                  <code className="mt-2 block text-xs text-cyan-200">
+                  <code className="mt-2 block text-xs text-slate-300">
                     {event}
                   </code>
                 </div>
@@ -167,7 +167,7 @@ export default function ApiDocumentationPage() {
             <h2 className="text-2xl font-black">Examples</h2>
             <div className="mt-6 space-y-4">
               <div>
-                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500">
                   cURL
                 </p>
                 <pre className="overflow-x-auto rounded-2xl bg-black/30 p-4 text-xs text-slate-200">
@@ -175,7 +175,7 @@ export default function ApiDocumentationPage() {
                 </pre>
               </div>
               <div>
-                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500">
                   JavaScript
                 </p>
                 <pre className="overflow-x-auto rounded-2xl bg-black/30 p-4 text-xs text-slate-200">
@@ -183,7 +183,7 @@ export default function ApiDocumentationPage() {
                 </pre>
               </div>
               <div>
-                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+                <p className="mb-2 text-xs font-black uppercase tracking-[0.2em] text-slate-500">
                   Python
                 </p>
                 <pre className="overflow-x-auto rounded-2xl bg-black/30 p-4 text-xs text-slate-200">

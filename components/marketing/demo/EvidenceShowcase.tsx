@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Upload, Tag, CheckCircle, Shield, Lock, FileCheck, ArrowRight } from 'lucide-react';
+import { Upload, Tag, CheckCircle, Shield, FileCheck, ArrowRight } from 'lucide-react';
 import { easing, duration } from '@/config/motion';
 
 const steps = [
@@ -13,9 +13,9 @@ const steps = [
     title: 'Evidence Uploaded',
     detail: 'SOC 2 Type II Report.pdf',
     meta: '2.4 MB • Marcus Rivera',
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/15',
-    border: 'border-blue-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-white/[0.05]',
+    border: 'border-white/[0.08]',
   },
   {
     id: 'tag',
@@ -24,9 +24,9 @@ const steps = [
     title: 'Tagged & Categorized',
     detail: 'Audit Reports → SOC 2 → Q1 2026',
     meta: 'Auto-linked to 3 controls',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/15',
-    border: 'border-purple-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-white/[0.05]',
+    border: 'border-white/[0.08]',
   },
   {
     id: 'approve',
@@ -46,9 +46,9 @@ const steps = [
     title: 'Immutable Audit Stamp',
     detail: 'SHA-256 hash locked',
     meta: 'Tamper-evident • Exportable',
-    color: 'text-cyan-400',
-    bg: 'bg-cyan-500/15',
-    border: 'border-cyan-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-white/[0.05]',
+    border: 'border-white/[0.08]',
   },
 ];
 
@@ -72,7 +72,7 @@ export default function EvidenceShowcase() {
     <section className="relative py-20 sm:py-24 lg:py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-purple-500/8 to-pink-500/8 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.04] rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,14 +84,13 @@ export default function EvidenceShowcase() {
             viewport={{ once: true }}
             transition={{ duration: duration.slow, ease: easing.signature }}
           >
-            <div className="inline-flex items-center gap-2 rounded-full bg-purple-500/10 border border-purple-500/20 px-3 py-1.5 mb-5">
-              <Lock className="h-3.5 w-3.5 text-purple-400" />
-              <span className="text-xs font-medium text-purple-300">Evidence Vault</span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Evidence Vault
+            </p>
 
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 tracking-tight">
               Audit-Ready Evidence,{' '}
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="text-white">
                 Always
               </span>
             </h3>
@@ -109,7 +108,7 @@ export default function EvidenceShowcase() {
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
-                    <Icon className="h-4 w-4 text-purple-400" />
+                    <Icon className="h-4 w-4 text-slate-400" />
                   </div>
                   <span className="text-sm text-foreground/70">{text}</span>
                 </div>
@@ -126,7 +125,7 @@ export default function EvidenceShowcase() {
           >
             <div className="relative">
               {/* Glow */}
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-b from-purple-500/15 to-pink-500/15 blur-sm" />
+              <div className="absolute -inset-px rounded-2xl bg-white/[0.06] blur-sm" />
 
               <div className="relative rounded-2xl border border-white/[0.08] bg-[#0b1022] p-5 sm:p-6 overflow-hidden">
                 {/* Step indicators */}

@@ -18,7 +18,7 @@ import { useDeviceTier } from '@/lib/device-tier';
  * on mobile touch devices for premium movement.
  */
 
-type GlowColor = 'cyan' | 'teal' | 'blue' | 'violet' | 'emerald' | 'rose' | 'amber';
+type GlowColor = 'cyan' | 'teal' | 'blue' | 'violet' | 'emerald' | 'rose' | 'amber' | 'slate';
 
 interface HeroAtmosphereProps {
   /** Top glow accent (default: cyan) */
@@ -42,6 +42,7 @@ const COLOR_MAP: Record<GlowColor, { glow: string; grid: string; rgb: string }> 
   emerald: { glow: 'rgba(52,211,153,',  grid: 'rgba(16,185,129,0.15)', rgb: '52,211,153' },
   rose:    { glow: 'rgba(251,113,133,', grid: 'rgba(244,63,94,0.15)',  rgb: '251,113,133' },
   amber:   { glow: 'rgba(251,191,36,',  grid: 'rgba(245,158,11,0.15)', rgb: '251,191,36' },
+  slate:   { glow: 'rgba(148,163,184,', grid: 'rgba(148,163,184,0.12)', rgb: '148,163,184' },
 };
 
 function HeroAtmosphereInner({

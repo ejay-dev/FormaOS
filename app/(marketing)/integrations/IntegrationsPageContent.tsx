@@ -21,7 +21,6 @@ import {
   Cloud,
   MessageSquare,
   GitBranch,
-  BarChart3,
   Users,
   Layers,
   Workflow,
@@ -68,24 +67,24 @@ interface StatusConfig {
 const STATUS_CONFIG: Record<IntegrationStatus, StatusConfig> = {
   live: {
     label: 'Live',
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-400/20',
-    text: 'text-emerald-400',
-    dotColor: 'bg-emerald-400',
+    bg: 'bg-white/[0.08]',
+    border: 'border-white/20',
+    text: 'text-white',
+    dotColor: 'bg-slate-200',
   },
   beta: {
     label: 'Beta',
-    bg: 'bg-cyan-500/10',
-    border: 'border-cyan-400/20',
-    text: 'text-cyan-400',
-    dotColor: 'bg-cyan-400',
+    bg: 'bg-white/[0.06]',
+    border: 'border-white/15',
+    text: 'text-slate-300',
+    dotColor: 'bg-slate-400',
   },
   'coming-soon': {
     label: 'Coming Soon',
-    bg: 'bg-amber-500/10',
-    border: 'border-amber-400/20',
-    text: 'text-amber-400',
-    dotColor: 'bg-amber-400',
+    bg: 'bg-white/[0.03]',
+    border: 'border-white/10',
+    text: 'text-slate-500',
+    dotColor: 'bg-slate-600',
   },
 };
 
@@ -95,16 +94,16 @@ interface CategoryConfig {
 }
 
 const CATEGORY_CONFIG: Record<IntegrationCategory, CategoryConfig> = {
-  'Project Management': { icon: Layers, colorRgb: '59,130,246' },
-  Communication: { icon: MessageSquare, colorRgb: '139,92,246' },
+  'Project Management': { icon: Layers, colorRgb: '148,163,184' },
+  Communication: { icon: MessageSquare, colorRgb: '161,161,170' },
   'Cloud Infrastructure': { icon: Cloud, colorRgb: '113,113,122' },
-  'Identity & Access': { icon: Lock, colorRgb: '251,113,133' },
-  'Developer Tools': { icon: GitBranch, colorRgb: '52,211,153' },
-  'HR & People': { icon: Users, colorRgb: '245,158,11' },
-  Security: { icon: Shield, colorRgb: '239,68,68' },
-  Automation: { icon: Workflow, colorRgb: '168,85,247' },
+  'Identity & Access': { icon: Lock, colorRgb: '203,213,225' },
+  'Developer Tools': { icon: GitBranch, colorRgb: '148,163,184' },
+  'HR & People': { icon: Users, colorRgb: '161,161,170' },
+  Security: { icon: Shield, colorRgb: '203,213,225' },
+  Automation: { icon: Workflow, colorRgb: '148,163,184' },
   Monitoring: { icon: Monitor, colorRgb: '113,113,122' },
-  'Document Management': { icon: FileText, colorRgb: '59,130,246' },
+  'Document Management': { icon: FileText, colorRgb: '161,161,170' },
 };
 
 interface Integration {
@@ -564,7 +563,7 @@ const architectureLayers: ArchitectureLayer[] = [
     description:
       'Real-time event ingestion from integrated tools via webhooks, polling, and change data capture.',
     icon: Zap,
-    colorRgb: '52,211,153',
+    colorRgb: '203,213,225',
     details: [
       'Webhook signature verification',
       'Event deduplication',
@@ -590,7 +589,7 @@ const architectureLayers: ArchitectureLayer[] = [
     description:
       'Automatically link integrated data to compliance controls using configurable mapping rules.',
     icon: Link2,
-    colorRgb: '139,92,246',
+    colorRgb: '161,161,170',
     details: [
       'Rule-based auto-mapping',
       'Manual mapping overrides',
@@ -603,7 +602,7 @@ const architectureLayers: ArchitectureLayer[] = [
     description:
       'Process, hash, version, and store integrated evidence with full chain-of-custody tracking.',
     icon: Shield,
-    colorRgb: '59,130,246',
+    colorRgb: '148,163,184',
     details: [
       'SHA-256 integrity hashing',
       'Immutable versioning',
@@ -616,7 +615,7 @@ const architectureLayers: ArchitectureLayer[] = [
     description:
       'Route integration events to the right stakeholders through configurable alert channels.',
     icon: Bell,
-    colorRgb: '245,158,11',
+    colorRgb: '203,213,225',
     details: [
       'Multi-channel delivery',
       'Escalation chains',
@@ -652,7 +651,7 @@ function AnimatedStat({
     >
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-1">
         {value}
-        {suffix && <span className="text-emerald-400">{suffix}</span>}
+        {suffix && <span className="text-slate-400">{suffix}</span>}
       </div>
       <div className="text-xs sm:text-sm text-slate-400 font-medium">
         {label}
@@ -837,7 +836,7 @@ function FilterBar({
             placeholder="Search integrations..."
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03]
               text-sm text-white placeholder:text-slate-500
-              focus:outline-none focus:ring-1 focus:ring-emerald-400/30 focus:border-emerald-400/20
+              focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20
               transition-all duration-300"
           />
         </div>
@@ -934,12 +933,9 @@ function ArchitectureSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-400/20 bg-violet-500/10 mb-6">
-              <Layers className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
-                How It Works
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              How It Works
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               Integration{' '}
               <span className="text-foreground">
@@ -954,7 +950,7 @@ function ArchitectureSection() {
 
           <div className="relative space-y-3">
             {/* Vertical line */}
-            <div className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-emerald-400/30 via-violet-400/30 to-amber-400/30 hidden sm:block" />
+            <div className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-white/20 via-white/10 to-white/20 hidden sm:block" />
 
             {architectureLayers.map((layer, i) => {
               const Icon = layer.icon;
@@ -1068,12 +1064,9 @@ function CategoryBreakdown() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-6">
-              <BarChart3 className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                Coverage
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Coverage
+            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Integration{' '}
               <span className="text-foreground">
@@ -1109,7 +1102,7 @@ function CategoryBreakdown() {
                         </span>
                       </div>
                       <div className="flex items-center gap-3 text-xs">
-                        <span className="text-emerald-400">
+                        <span className="text-slate-300">
                           {item.live} live
                         </span>
                         <span className="text-slate-500">/</span>
@@ -1121,7 +1114,7 @@ function CategoryBreakdown() {
                     <div className="h-2 rounded-full bg-white/[0.04] overflow-hidden">
                       <div className="h-full flex">
                         <motion.div
-                          className="h-full rounded-full bg-emerald-400/50"
+                          className="h-full rounded-full bg-slate-300/50"
                           initial={{ width: 0 }}
                           whileInView={{
                             width: `${(item.live / maxTotal) * 100}%`,
@@ -1174,7 +1167,7 @@ function IntegrationsCTA() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(139,92,246,0.06), transparent 50%)',
+                  'radial-gradient(ellipse at 50% 0%, rgba(148,163,184,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
               }}
             />
 
@@ -1182,7 +1175,7 @@ function IntegrationsCTA() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1 h-1 rounded-full bg-emerald-400/30"
+                  className="absolute w-1 h-1 rounded-full bg-slate-400/30"
                   style={{
                     left: `${12 + ((i * 76) % 80)}%`,
                     top: `${8 + ((i * 53) % 85)}%`,
@@ -1203,12 +1196,9 @@ function IntegrationsCTA() {
 
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-                  <Link2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                    Get Connected
-                  </span>
-                </div>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  Get Connected
+                </p>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Don&apos;t see your{' '}
                   <span className="text-foreground">
@@ -1253,7 +1243,7 @@ function IntegrationsCTA() {
                     'New integrations monthly',
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400/50" />
+                      <CheckCircle2 className="w-3 h-3 text-slate-400/60" />
                       <span>{signal}</span>
                     </div>
                   ))}
@@ -1294,7 +1284,7 @@ function IntegrationsHero() {
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <motion.div
           className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(52,211,153,0.12)' }}
+          style={{ background: 'rgba(148,163,184,0.12)' }}
           animate={{
             scale: [1, 1.08, 1],
             opacity: [0.12, 0.18, 0.12],
@@ -1307,7 +1297,7 @@ function IntegrationsHero() {
         />
         <motion.div
           className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(59,130,246,0.10)' }}
+          style={{ background: 'rgba(113,113,122,0.10)' }}
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.1, 0.16, 0.1],
@@ -1321,7 +1311,7 @@ function IntegrationsHero() {
         />
         <motion.div
           className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(139,92,246,0.06)' }}
+          style={{ background: 'rgba(161,161,170,0.06)' }}
           animate={{
             scale: [1, 1.06, 1],
             opacity: [0.06, 0.1, 0.06],
@@ -1351,12 +1341,13 @@ function IntegrationsHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-8"
+          className="mb-8 flex items-center justify-center gap-4"
         >
-          <Link2 className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
             Integrations
           </span>
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
         </motion.div>
 
         <motion.h1
@@ -1367,7 +1358,7 @@ function IntegrationsHero() {
         >
           Connect your
           <br />
-          <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+          <span className="text-foreground">
             compliance stack
           </span>
         </motion.h1>
@@ -1393,26 +1384,26 @@ function IntegrationsHero() {
             {
               label: 'Live',
               count: liveCount,
-              dotColor: 'bg-emerald-400',
-              bg: 'bg-emerald-500/10',
-              border: 'border-emerald-400/20',
-              text: 'text-emerald-400',
+              dotColor: 'bg-slate-200',
+              bg: 'bg-white/[0.08]',
+              border: 'border-white/20',
+              text: 'text-white',
             },
             {
               label: 'Beta',
               count: betaCount,
-              dotColor: 'bg-cyan-400',
-              bg: 'bg-cyan-500/10',
-              border: 'border-cyan-400/20',
-              text: 'text-cyan-400',
+              dotColor: 'bg-slate-400',
+              bg: 'bg-white/[0.06]',
+              border: 'border-white/15',
+              text: 'text-slate-300',
             },
             {
               label: 'Coming Soon',
               count: comingSoonCount,
-              dotColor: 'bg-amber-400',
-              bg: 'bg-amber-500/10',
-              border: 'border-amber-400/20',
-              text: 'text-amber-400',
+              dotColor: 'bg-slate-600',
+              bg: 'bg-white/[0.03]',
+              border: 'border-white/10',
+              text: 'text-slate-500',
             },
           ].map((badge) => (
             <div
@@ -1550,7 +1541,7 @@ export default function IntegrationsPageContent() {
             >
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                 Integration{' '}
-                <span className="bg-gradient-to-r from-emerald-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="text-foreground">
                   catalog
                 </span>
               </h2>

@@ -12,8 +12,8 @@ const CARDS = [
     rotate: 0,
     yOffset: 0,
     blur: 0,
-    accent: 'emerald',
-    accentColor: 'rgb(16 185 129)',
+    accent: 'slate-300',
+    accentColor: 'rgb(203 213 225)',
     metric: '47% faster',
     lines: 2,
     showLogo: true,
@@ -23,8 +23,8 @@ const CARDS = [
     rotate: 2,
     yOffset: 16,
     blur: 1,
-    accent: 'cyan',
-    accentColor: 'rgb(6 182 212)',
+    accent: 'slate-400',
+    accentColor: 'rgb(148 163 184)',
     metric: '3× ROI',
     lines: 1,
     showLogo: true,
@@ -34,8 +34,8 @@ const CARDS = [
     rotate: 4,
     yOffset: 32,
     blur: 2,
-    accent: 'violet',
-    accentColor: 'rgb(139 92 246)',
+    accent: 'slate-500',
+    accentColor: 'rgb(100 116 139)',
     metric: 'Audit-ready',
     lines: 0,
     showLogo: true,
@@ -163,11 +163,11 @@ interface CardProps {
 
 function CardContent({ card }: CardProps) {
   const pillBg =
-    card.accent === 'emerald'
-      ? 'bg-emerald-500/20 text-emerald-300'
-      : card.accent === 'cyan'
-        ? 'bg-cyan-500/20 text-cyan-300'
-        : 'bg-violet-500/20 text-violet-300';
+    card.accent === 'slate-300'
+      ? 'bg-white/[0.08] text-slate-200'
+      : card.accent === 'slate-400'
+        ? 'bg-white/[0.06] text-slate-300'
+        : 'bg-white/[0.05] text-slate-400';
 
   return (
     <div className="p-4 h-full flex flex-col justify-between">

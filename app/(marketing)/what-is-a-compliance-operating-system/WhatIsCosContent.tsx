@@ -125,7 +125,7 @@ export default function WhatIsCosContent() {
                 <thead>
                   <tr className="border-b border-white/10">
                     <th className="px-6 py-4 text-slate-400 font-medium">Capability</th>
-                    <th className="px-6 py-4 text-cyan-300 font-semibold">Compliance OS</th>
+                    <th className="px-6 py-4 text-white font-semibold">Compliance OS</th>
                     <th className="px-6 py-4 text-slate-400 font-medium">GRC / Spreadsheets</th>
                   </tr>
                 </thead>
@@ -142,7 +142,7 @@ export default function WhatIsCosContent() {
                   ].map((row, idx, arr) => (
                     <tr key={row.feature} className={idx < arr.length - 1 ? 'border-b border-white/5' : ''}>
                       <td className="px-6 py-4 text-white font-medium">{row.feature}</td>
-                      <td className="px-6 py-4 text-emerald-300">{row.formaos}</td>
+                      <td className="px-6 py-4 text-slate-100">{row.formaos}</td>
                       <td className="px-6 py-4 text-slate-400">{row.traditional}</td>
                     </tr>
                   ))}
@@ -262,7 +262,7 @@ export default function WhatIsCosContent() {
                   <GlassCard intensity="normal" className="h-full p-5">
                     <h4 className="text-sm font-semibold text-white">{link.label}</h4>
                     <p className="mt-2 text-xs text-slate-400">{link.description}</p>
-                    <span className="mt-3 inline-flex items-center gap-1 text-xs text-cyan-300">
+                    <span className="mt-3 inline-flex items-center gap-1 text-xs text-slate-300">
                       Learn more <ArrowRight className="h-3 w-3" />
                     </span>
                   </GlassCard>

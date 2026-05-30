@@ -1,6 +1,6 @@
 'use client';
 
-import { Shield, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { useDeviceTier } from '@/lib/device-tier';
@@ -15,7 +15,7 @@ export function HealthcareSection() {
     <section className="relative py-32 overflow-hidden">
       {/* Ambient Background */}
       <motion.div
-        className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-gradient-to-l from-cyan-500/10 to-transparent rounded-full blur-3xl"
+        className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-gradient-to-l from-white/[0.04] to-transparent rounded-full blur-3xl"
         animate={allowAmbientMotion ? { opacity: [0.3, 0.5, 0.3] } : undefined}
         transition={
           allowAmbientMotion
@@ -28,12 +28,9 @@ export function HealthcareSection() {
         <ScrollReveal variant="blurIn" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-              <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6"
-              >
-                <Shield className="w-4 h-4" />
-                Healthcare & Allied Health
-              </div>
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Healthcare &amp; Allied Health
+              </p>
             </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
@@ -73,7 +70,7 @@ export function HealthcareSection() {
             ].map((item, index) => (
               <ScrollReveal key={item.title} variant="blurIn" range={[index * 0.04, 0.3 + index * 0.04]}>
                 <div
-                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-cyan-500/30 p-6 transition-all duration-300"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-white/20 p-6 transition-all duration-300"
                 >
                   <h3 className="text-xl font-bold text-white mb-3">
                     {item.title}
@@ -86,7 +83,7 @@ export function HealthcareSection() {
 
           <ScrollReveal variant="fadeRight" range={[0.04, 0.38]}>
             <div
-              className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/10 to-white/[0.02] rounded-3xl border border-cyan-500/20 p-8"
+              className="backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] rounded-3xl border border-white/[0.1] p-8"
             >
               <h4 className="text-xl font-bold text-white mb-6">
                 Healthcare Framework Includes:
@@ -101,7 +98,7 @@ export function HealthcareSection() {
                   'Clinical handover and communication templates',
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full" />
+                    <div className="w-2 h-2 bg-slate-500 rounded-full" />
                     <span>{item}</span>
                   </div>
                 ))}

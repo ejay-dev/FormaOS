@@ -58,8 +58,8 @@ export function PricingHero() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16"
     >
       <HeroAtmosphere
-        topColor="cyan"
-        bottomColor="emerald"
+        topColor="slate"
+        bottomColor="slate"
         particleIntensity="normal"
       />
 
@@ -202,13 +202,13 @@ export function PricingHero() {
             {/* Corner accents */}
             <CornerAccents />
             {/* Edge glow lines */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/40 to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
             {/* Title bar */}
             <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-5 py-3">
               <div className="flex items-center gap-2.5">
-                <ShieldCheck className="h-3.5 w-3.5 text-teal-300" />
+                <ShieldCheck className="h-3.5 w-3.5 text-slate-300" />
                 <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-300">
                   formaos · plan configurator
                 </span>
@@ -261,12 +261,12 @@ export function PricingHero() {
                       <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">
                         {item.label}
                       </span>
-                      <span className="flex items-center gap-2 text-rose-200/85">
-                        <span className="h-1 w-1 shrink-0 rounded-full bg-rose-400" />
+                      <span className="flex items-center gap-2 text-slate-400">
+                        <span className="h-1 w-1 shrink-0 rounded-full bg-slate-500" />
                         {item.manual}
                       </span>
-                      <span className="flex items-center gap-2 text-emerald-200/90">
-                        <span className="h-1 w-1 shrink-0 rounded-full bg-emerald-400" />
+                      <span className="flex items-center gap-2 text-slate-200">
+                        <span className="h-1 w-1 shrink-0 rounded-full bg-slate-300" />
                         {item.formaos}
                       </span>
                     </li>
@@ -275,8 +275,8 @@ export function PricingHero() {
               </div>
 
               {/* Recommended plan */}
-              <div className="rounded-xl border border-emerald-300/20 bg-emerald-300/[0.04] p-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-300/90">
+              <div className="rounded-xl border border-white/[0.1] bg-white/[0.04] p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-300">
                   where most regulated teams land
                 </p>
                 <p className="mt-1.5 text-sm leading-snug text-slate-200">
@@ -303,10 +303,10 @@ export function PricingHero() {
 function CornerAccents() {
   return (
     <>
-      <span className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-teal-400/50" />
-      <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-cyan-400/50" />
-      <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-cyan-400/40" />
-      <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-emerald-400/40" />
+      <span className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-white/20" />
+      <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-white/20" />
+      <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-white/15" />
+      <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-white/15" />
     </>
   );
 }

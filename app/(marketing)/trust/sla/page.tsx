@@ -62,12 +62,12 @@ export default function SlaPage() {
       <CompactHero
         title="SLA"
         description="Enterprise plans can include documented service levels and support expectations in the executed agreement. Other plans operate on a best-effort basis."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<Clock className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<Clock className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

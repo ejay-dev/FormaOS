@@ -42,7 +42,7 @@ export default function MarketingError({
           </button>
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all"
+            className="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white hover:border-white/40 hover:bg-white/[0.08] transition-all"
           >
             Go home
           </Link>

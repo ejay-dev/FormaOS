@@ -36,11 +36,11 @@ const principles = [
     title: 'Controls are enforced operationally',
     description:
       'Compliance happens through daily work, not separate activities',
-    color: 'from-green-500 to-emerald-500',
-    iconBg: 'from-green-500/20 to-green-500/10',
-    iconBorder: 'border-green-500/20',
-    iconColor: 'text-green-400',
-    hoverColor: 'group-hover:text-green-400',
+    color: 'from-zinc-600 to-zinc-800',
+    iconBg: 'from-zinc-700/20 to-zinc-700/10',
+    iconBorder: 'border-zinc-600/20',
+    iconColor: 'text-zinc-300',
+    hoverColor: 'group-hover:text-zinc-300',
   },
   {
     number: '3',
@@ -48,11 +48,11 @@ const principles = [
     title: 'Evidence is captured continuously',
     description:
       'Proof of compliance accumulates as workflows are completed',
-    color: 'from-purple-500 to-violet-500',
-    iconBg: 'from-purple-500/20 to-purple-500/10',
-    iconBorder: 'border-purple-500/20',
-    iconColor: 'text-purple-400',
-    hoverColor: 'group-hover:text-purple-400',
+    color: 'from-zinc-600 to-zinc-800',
+    iconBg: 'from-zinc-700/20 to-zinc-700/10',
+    iconBorder: 'border-zinc-600/20',
+    iconColor: 'text-zinc-300',
+    hoverColor: 'group-hover:text-zinc-300',
   },
   {
     number: '4',
@@ -60,11 +60,11 @@ const principles = [
     title: 'Audits become reporting, not reconstruction',
     description:
       'Audit trails are available for inspection and reporting',
-    color: 'from-orange-500 to-red-500',
-    iconBg: 'from-orange-500/20 to-orange-500/10',
-    iconBorder: 'border-orange-500/20',
-    iconColor: 'text-orange-400',
-    hoverColor: 'group-hover:text-orange-400',
+    color: 'from-zinc-600 to-zinc-800',
+    iconBg: 'from-zinc-700/20 to-zinc-700/10',
+    iconBorder: 'border-zinc-600/20',
+    iconColor: 'text-zinc-300',
+    hoverColor: 'group-hover:text-zinc-300',
   },
 ];
 
@@ -75,17 +75,14 @@ export function CrossIndustryPrinciples() {
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-              <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-6"
-              >
-                <span className="w-2 h-2 rounded-full bg-purple-400" />
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                 Why It Works Across Industries
-              </div>
+              </p>
             </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               Universal Compliance
-              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-500 bg-clip-text text-transparent">
+              <span className="text-slate-400">
                 {' '}
                 Design Principles
               </span>
@@ -106,7 +103,7 @@ export function CrossIndustryPrinciples() {
                 <motion.div
                   key={principle.title}
                   whileHover={{ y: -4 }}
-                  className="group text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-purple-500/30 p-6 transition-all duration-300"
+                  className="group text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-white/20 p-6 transition-all duration-300"
                 >
                   <div className="flex flex-col items-center mb-6">
                     <div className="relative">
@@ -141,12 +138,12 @@ export function CrossIndustryPrinciples() {
           <div className="mb-12 max-w-2xl mx-auto">
             <DemoWorkflowTimeline
               steps={[
-                { id: 'map', label: 'Map', icon: FileCheck, title: 'Framework Mapped', detail: 'Industry obligations imported automatically', meta: 'Supports NDIS, AHPRA, ISO, SOC 2, HIPAA', color: 'text-cyan-400', bg: 'bg-cyan-500/15', border: 'border-cyan-500/20' },
-                { id: 'assign', label: 'Assign', icon: Users, title: 'Ownership Assigned', detail: 'Every control linked to an accountable person', meta: 'Role-based • Escalation rules • Delegation', color: 'text-blue-400', bg: 'bg-blue-500/15', border: 'border-blue-500/20' },
-                { id: 'execute', label: 'Execute', icon: Zap, title: 'Tasks Executed', detail: 'Compliance work happens inside the platform', meta: 'Automated reminders • Due dates • Priorities', color: 'text-purple-400', bg: 'bg-purple-500/15', border: 'border-purple-500/20' },
-                { id: 'prove', label: 'Prove', icon: Shield, title: 'Audit-Ready', detail: 'Full evidence chain for any regulator', meta: 'Immutable trail • Exportable • Zero gaps', color: 'text-emerald-400', bg: 'bg-emerald-500/15', border: 'border-emerald-500/20' },
+                { id: 'map', label: 'Map', icon: FileCheck, title: 'Framework Mapped', detail: 'Industry obligations imported automatically', meta: 'Supports NDIS, AHPRA, ISO, SOC 2, HIPAA', color: 'text-slate-300', bg: 'bg-white/[0.08]', border: 'border-white/15' },
+                { id: 'assign', label: 'Assign', icon: Users, title: 'Ownership Assigned', detail: 'Every control linked to an accountable person', meta: 'Role-based • Escalation rules • Delegation', color: 'text-slate-300', bg: 'bg-white/[0.08]', border: 'border-white/15' },
+                { id: 'execute', label: 'Execute', icon: Zap, title: 'Tasks Executed', detail: 'Compliance work happens inside the platform', meta: 'Automated reminders • Due dates • Priorities', color: 'text-slate-300', bg: 'bg-white/[0.08]', border: 'border-white/15' },
+                { id: 'prove', label: 'Prove', icon: Shield, title: 'Audit-Ready', detail: 'Full evidence chain for any regulator', meta: 'Immutable trail • Exportable • Zero gaps', color: 'text-slate-300', bg: 'bg-white/[0.08]', border: 'border-white/15' },
               ]}
-              glowColor="from-purple-500/15 to-pink-500/15"
+              glowColor="from-white/[0.06] to-white/[0.03]"
             />
           </div>
         </ScrollReveal>

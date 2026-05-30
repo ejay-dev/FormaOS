@@ -5,7 +5,6 @@ import {
   CheckCircle,
   FileCheck,
   ShieldCheck,
-  Sparkles,
   Workflow,
 } from 'lucide-react';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
@@ -94,7 +93,7 @@ function ProductHeroExtras() {
             <p className="mt-1 text-sm font-semibold text-white">
               {metric.value}
             </p>
-            <p className="mt-1 text-[11px] text-emerald-300">{metric.trend}</p>
+            <p className="mt-1 text-[11px] text-slate-400">{metric.trend}</p>
           </div>
         ))}
       </div>
@@ -107,8 +106,8 @@ function ProductHeroExtras() {
               key={capability.title}
               className="rounded-xl border border-white/[0.09] bg-white/[0.03] px-4 py-3.5 text-left"
             >
-              <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-cyan-300/20 bg-cyan-400/10">
-                <Icon className="h-4 w-4 text-cyan-300" />
+              <div className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.05]">
+                <Icon className="h-4 w-4 text-slate-300" />
               </div>
               <p className="text-sm font-semibold text-white">
                 {capability.title}
@@ -123,7 +122,7 @@ function ProductHeroExtras() {
 
       <div className="rounded-2xl border border-white/[0.1] bg-slate-950/55 p-3.5">
         <div className="mb-3 flex items-center gap-2 border-b border-white/[0.08] pb-3">
-          <Workflow className="h-4 w-4 text-cyan-300" />
+          <Workflow className="h-4 w-4 text-slate-300" />
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">
             Governance Workflow Snapshot
           </p>
@@ -141,10 +140,10 @@ function ProductHeroExtras() {
                 <p className="text-[11px] text-slate-400">{stage.owner}</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-semibold text-cyan-300">
+                <p className="text-xs font-semibold text-slate-300">
                   {stage.sla}
                 </p>
-                <p className="text-[10px] uppercase tracking-[0.12em] text-emerald-300">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-slate-400">
                   {stage.status}
                 </p>
               </div>
@@ -157,7 +156,7 @@ function ProductHeroExtras() {
         <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-300">
           {FRAMEWORKS.map((framework) => (
             <span key={framework} className="inline-flex items-center gap-1">
-              <CheckCircle className="h-3 w-3 text-emerald-300/80" />
+              <CheckCircle className="h-3 w-3 text-slate-400" />
               {framework}
             </span>
           ))}
@@ -172,9 +171,8 @@ export function ProductScrollHero() {
     <ImmersiveHero
       theme="product"
       badge={{
-        icon: <Sparkles className="h-4 w-4 text-violet-300" />,
         text: 'Compliance Operating System',
-        colorClass: 'violet',
+        colorClass: 'slate',
       }}
       headline={
         <>

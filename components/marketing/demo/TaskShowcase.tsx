@@ -14,9 +14,9 @@ const lifecycle = [
     task: 'Review Access Control Policy',
     detail: 'Auto-generated from ISO 27001 control A.9.2',
     meta: 'Priority: High • Due: 15 Feb 2026',
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/15',
-    border: 'border-blue-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-white/[0.05]',
+    border: 'border-white/[0.08]',
     statusIcon: Clock,
     statusLabel: 'Pending',
     statusColor: 'text-muted-foreground',
@@ -29,12 +29,12 @@ const lifecycle = [
     task: 'Review Access Control Policy',
     detail: 'Compliance Officer • Auto-assigned by role matching',
     meta: 'Email notification sent',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/15',
-    border: 'border-purple-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-white/[0.05]',
+    border: 'border-white/[0.08]',
     statusIcon: Clock,
     statusLabel: 'In Progress',
-    statusColor: 'text-blue-400',
+    statusColor: 'text-slate-300',
   },
   {
     id: 'progress',
@@ -88,7 +88,7 @@ export default function TaskShowcase() {
     <section className="relative py-20 sm:py-24 lg:py-32 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-500/8 to-purple-500/8 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.04] rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,7 +103,7 @@ export default function TaskShowcase() {
           >
             <div className="relative">
               {/* Glow */}
-              <div className="absolute -inset-px rounded-2xl bg-gradient-to-b from-blue-500/15 to-purple-500/15 blur-sm" />
+              <div className="absolute -inset-px rounded-2xl bg-white/[0.06] blur-sm" />
 
               <div className="relative rounded-2xl border border-white/[0.08] bg-[#0b1022] p-5 sm:p-6 overflow-hidden">
                 {/* Step timeline */}
@@ -181,7 +181,7 @@ export default function TaskShowcase() {
                           {/* Task preview card */}
                           <div className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-3">
                             <div className="flex items-center gap-2 mb-2">
-                              <CheckSquare className="h-3.5 w-3.5 text-blue-400" />
+                              <CheckSquare className="h-3.5 w-3.5 text-slate-400" />
                               <span className="text-[11px] font-medium text-foreground/90">{step.task}</span>
                             </div>
                             <div className="flex items-center gap-3 text-[9px] text-muted-foreground/60">
@@ -222,14 +222,13 @@ export default function TaskShowcase() {
             transition={{ duration: duration.slow, ease: easing.signature, delay: 0.1 }}
             className="order-1 md:order-2"
           >
-            <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 mb-5">
-              <CheckSquare className="h-3.5 w-3.5 text-blue-400" />
-              <span className="text-xs font-medium text-blue-300">Task Orchestration</span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Task Orchestration
+            </p>
 
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 tracking-tight">
               Every Control Has an{' '}
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="text-white">
                 Owner
               </span>
             </h3>
@@ -247,7 +246,7 @@ export default function TaskShowcase() {
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center flex-shrink-0">
-                    <Icon className="h-4 w-4 text-blue-400" />
+                    <Icon className="h-4 w-4 text-slate-400" />
                   </div>
                   <span className="text-sm text-foreground/70">{text}</span>
                 </div>

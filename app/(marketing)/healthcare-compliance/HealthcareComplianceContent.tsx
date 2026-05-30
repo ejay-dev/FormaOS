@@ -718,7 +718,7 @@ export default function HealthcareComplianceContent() {
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
                         i < 4
-                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                          ? 'bg-white/[0.12] text-white border border-white/20'
                           : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
                       }`}
                     >

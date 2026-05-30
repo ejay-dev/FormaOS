@@ -31,7 +31,7 @@ function FooterCTA() {
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(135deg, rgba(113,113,122,0.08) 0%, rgba(99,102,241,0.06) 50%, rgba(113,113,122,0.04) 100%)',
+            'linear-gradient(135deg, rgba(113,113,122,0.08) 0%, rgba(148,163,184,0.06) 50%, rgba(113,113,122,0.04) 100%)',
         }}
       />
       {/* Ambient glow */}
@@ -41,13 +41,13 @@ function FooterCTA() {
       />
       <div
         className="absolute -bottom-20 -right-20 w-[300px] h-[300px] rounded-full blur-[100px] pointer-events-none"
-        style={{ background: 'rgba(99,102,241,0.06)' }}
+        style={{ background: 'rgba(148,163,184,0.06)' }}
       />
 
       <div className="relative z-10 p-8 sm:p-10 lg:p-12">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-cyan-400/80 mb-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400 mb-2">
               Ready to evaluate?
             </p>
             <h3 className="text-2xl sm:text-3xl font-bold font-display text-white">
@@ -222,7 +222,7 @@ export function Footer() {
               <span className="text-slate-700">
                 {CURRENT_RELEASE_DISPLAY}
               </span>
-              <span className="text-cyan-600/40 font-mono text-[11px]">
+              <span className="text-slate-600/60 font-mono text-[11px]">
                 {CURRENT_RELEASE_TAG}
               </span>
             </div>

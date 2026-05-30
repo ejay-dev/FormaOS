@@ -11,7 +11,7 @@ import {
   Key,
   ArrowRight,
 } from 'lucide-react';
-import { SectionHeader, ArchitectureCard } from '@/components/motion';
+import { ArchitectureCard } from '@/components/motion';
 import {
   ShieldRings,
   ChainLinks,
@@ -132,9 +132,9 @@ function LightSection({
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 120% 80% at 20% 20%, rgba(0, 60, 120, 0.25) 0%, transparent 50%),
-            radial-gradient(ellipse 100% 100% at 80% 30%, rgba(30, 64, 175, 0.18) 0%, transparent 45%),
-            radial-gradient(ellipse 80% 80% at 50% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 50%)
+            radial-gradient(ellipse 120% 80% at 20% 20%, rgba(148, 163, 184, 0.10) 0%, transparent 50%),
+            radial-gradient(ellipse 100% 100% at 80% 30%, rgba(148, 163, 184, 0.08) 0%, transparent 45%),
+            radial-gradient(ellipse 80% 80% at 50% 80%, rgba(148, 163, 184, 0.06) 0%, transparent 50%)
           `,
         }}
       />
@@ -171,11 +171,38 @@ function LightCard({
         shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.1)]
         transition-colors duration-300
         hover:border-white/[0.18]
-        ${glow ? 'shadow-[0_0_20px_rgba(139,92,246,0.1),0_8px_32px_rgba(0,0,0,0.4)]' : ''}
+        ${glow ? 'shadow-[0_0_20px_rgba(148,163,184,0.08),0_8px_32px_rgba(0,0,0,0.4)]' : ''}
         ${className}
       `}
     >
       {children}
+    </div>
+  );
+}
+
+/* ─── Restrained section header — plain label, no pill / decorative icon ─── */
+function SectionLabelHeader({
+  label,
+  title,
+  subtitle,
+}: {
+  label: string;
+  title: React.ReactNode;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mb-12 lg:mb-16 flex flex-col items-center text-center">
+      <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+        {label}
+      </p>
+      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display max-w-4xl leading-[1.1]">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="mt-6 text-lg sm:text-xl text-foreground/70 leading-relaxed max-w-3xl">
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }
@@ -185,9 +212,8 @@ export function SecuritySafeguards() {
     <LightSection className="py-10 sm:py-14 lg:py-16">
       <ShieldRings color="rgba(161, 161, 170, 0.03)" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-        <SectionHeader
-          badge="Security Safeguards"
-          badgeIcon={<Shield className="h-4 w-4 text-accent" />}
+        <SectionLabelHeader
+          label="Security Safeguards"
           title={
             <>
               Built for organizations
@@ -198,7 +224,6 @@ export function SecuritySafeguards() {
             </>
           }
           subtitle="Enterprise-grade security architecture from day one"
-          alignment="center"
         />
 
         <SectionChoreography
@@ -209,8 +234,8 @@ export function SecuritySafeguards() {
           {safeguards.map((safeguard) => (
             <LightCard key={safeguard.title} glow className="p-5 sm:p-6 h-full">
               <div className="flex flex-col items-center text-center">
-                <div className="w-12 h-12 rounded-xl bg-[rgba(139,92,246,0.1)] border border-[rgba(139,92,246,0.2)] flex items-center justify-center mb-3">
-                  <safeguard.icon className="h-6 w-6 text-[rgb(139,92,246)]" />
+                <div className="w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center mb-3">
+                  <safeguard.icon className="h-6 w-6 text-slate-300" />
                 </div>
                 <h3 className="font-bold text-white text-base mb-1.5">
                   {safeguard.title}
@@ -231,9 +256,8 @@ export function SecurityArchitectureLayers() {
   return (
     <LightSection className="py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-        <SectionHeader
-          badge="Security Architecture"
-          badgeIcon={<Lock className="h-4 w-4 text-primary" />}
+        <SectionLabelHeader
+          label="Security Architecture"
           title={
             <>
               Defense in depth
@@ -242,7 +266,6 @@ export function SecurityArchitectureLayers() {
             </>
           }
           subtitle="Multi-layered security architecture protecting compliance data"
-          alignment="center"
         />
 
         <SectionChoreography
@@ -279,9 +302,8 @@ export function SecurityEvidenceChain() {
     <LightSection className="py-10 sm:py-14 lg:py-16">
       <ChainLinks />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
-        <SectionHeader
-          badge="Evidence Chain"
-          badgeIcon={<Eye className="h-4 w-4 text-secondary" />}
+        <SectionLabelHeader
+          label="Evidence Chain"
           title={
             <>
               Every action traced
@@ -292,7 +314,6 @@ export function SecurityEvidenceChain() {
             </>
           }
           subtitle="Immutable audit trail for legal defensibility"
-          alignment="center"
         />
 
         <LightCard className="p-6 sm:p-10 lg:p-12">
@@ -336,8 +357,8 @@ export function SecurityCTA() {
               className="absolute inset-0 pointer-events-none opacity-30"
               style={{
                 background: `
-                  radial-gradient(ellipse 60% 50% at 30% 40%, rgba(161, 161, 170, 0.15) 0%, transparent 60%),
-                  radial-gradient(ellipse 50% 60% at 70% 60%, rgba(139, 92, 246, 0.12) 0%, transparent 60%)
+                  radial-gradient(ellipse 60% 50% at 30% 40%, rgba(148, 163, 184, 0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse 50% 60% at 70% 60%, rgba(148, 163, 184, 0.10) 0%, transparent 60%)
                 `,
               }}
             />

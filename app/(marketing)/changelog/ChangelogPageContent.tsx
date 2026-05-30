@@ -27,12 +27,8 @@ import {
   Command,
   Layers,
   Workflow,
-  Bell,
-  GitBranch,
-  GitCommit,
   GitMerge,
   Package,
-  Milestone,
   type LucideIcon,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -64,55 +60,21 @@ interface TagConfig {
   text: string;
 }
 
+// Change-type tags are differentiated by icon + label, not colour. The palette
+// is monochrome so the timeline reads as an enterprise log, not a rainbow.
+const NEUTRAL_TAG = {
+  colorRgb: '148,163,184',
+  bg: 'bg-white/[0.05]',
+  border: 'border-white/10',
+  text: 'text-slate-300',
+};
 const TAG_CONFIG: Record<ChangeTag, TagConfig> = {
-  feature: {
-    label: 'Feature',
-    icon: Sparkles,
-    colorRgb: '52,211,153',
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-400/20',
-    text: 'text-emerald-400',
-  },
-  improvement: {
-    label: 'Improvement',
-    icon: Zap,
-    colorRgb: '161,161,170',
-    bg: 'bg-cyan-500/10',
-    border: 'border-cyan-400/20',
-    text: 'text-cyan-400',
-  },
-  security: {
-    label: 'Security',
-    icon: Shield,
-    colorRgb: '139,92,246',
-    bg: 'bg-violet-500/10',
-    border: 'border-violet-400/20',
-    text: 'text-violet-400',
-  },
-  fix: {
-    label: 'Fix',
-    icon: Bug,
-    colorRgb: '245,158,11',
-    bg: 'bg-amber-500/10',
-    border: 'border-amber-400/20',
-    text: 'text-amber-400',
-  },
-  enterprise: {
-    label: 'Enterprise',
-    icon: Lock,
-    colorRgb: '251,113,133',
-    bg: 'bg-rose-500/10',
-    border: 'border-rose-400/20',
-    text: 'text-rose-400',
-  },
-  integration: {
-    label: 'Integration',
-    icon: Globe,
-    colorRgb: '59,130,246',
-    bg: 'bg-blue-500/10',
-    border: 'border-blue-400/20',
-    text: 'text-blue-400',
-  },
+  feature: { label: 'Feature', icon: Sparkles, ...NEUTRAL_TAG },
+  improvement: { label: 'Improvement', icon: Zap, ...NEUTRAL_TAG },
+  security: { label: 'Security', icon: Shield, ...NEUTRAL_TAG },
+  fix: { label: 'Fix', icon: Bug, ...NEUTRAL_TAG },
+  enterprise: { label: 'Enterprise', icon: Lock, ...NEUTRAL_TAG },
+  integration: { label: 'Integration', icon: Globe, ...NEUTRAL_TAG },
 };
 
 const ALL_TAGS: ChangeTag[] = [
@@ -2130,7 +2092,7 @@ function AnimatedStat({
     >
       <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-1">
         {value}
-        <span className="text-emerald-400">{suffix}</span>
+        <span className="text-slate-400">{suffix}</span>
       </div>
       <div className="text-xs sm:text-sm text-slate-400 font-medium">
         {label}
@@ -2285,7 +2247,7 @@ function ReleaseCard({
         className={`absolute -left-[2.3rem] sm:-left-[2.8rem] top-8 w-4 h-4 rounded-full border-2 z-10
           ${
             release.isMajor
-              ? 'border-emerald-400/60 bg-emerald-500/20 shadow-[0_0_14px_rgba(52,211,153,0.3)]'
+              ? 'border-white/40 bg-white/15 shadow-[0_0_14px_rgba(255,255,255,0.15)]'
               : 'border-white/20 bg-white/5'
           }`}
       />
@@ -2294,7 +2256,7 @@ function ReleaseCard({
         className={`group rounded-2xl border bg-white/[0.02] overflow-hidden transition-all duration-400
           ${
             release.isMajor
-              ? 'border-emerald-400/15 hover:border-emerald-400/25 hover:shadow-[0_0_50px_rgba(52,211,153,0.06)]'
+              ? 'border-white/15 hover:border-white/25 hover:shadow-[0_0_50px_rgba(255,255,255,0.04)]'
               : 'border-white/[0.06] hover:border-white/[0.12] hover:shadow-[0_0_40px_rgba(255,255,255,0.02)]'
           }`}
       >
@@ -2304,7 +2266,7 @@ function ReleaseCard({
             className="absolute inset-0 pointer-events-none opacity-40"
             style={{
               background:
-                'radial-gradient(ellipse at 0% 0%, rgba(52,211,153,0.08), transparent 50%)',
+                'radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.05), transparent 50%)',
             }}
           />
         )}
@@ -2317,13 +2279,13 @@ function ReleaseCard({
                 className={`shrink-0 w-10 h-10 rounded-xl border flex items-center justify-center
                   ${
                     release.isMajor
-                      ? 'border-emerald-400/20 bg-emerald-500/10'
+                      ? 'border-white/15 bg-white/[0.08]'
                       : 'border-white/[0.08] bg-white/[0.04]'
                   }`}
               >
                 {release.isMajor ? (
                   <Rocket
-                    className={`w-5 h-5 ${release.isMajor ? 'text-emerald-400' : 'text-slate-400'}`}
+                    className="w-5 h-5 text-slate-300"
                   />
                 ) : (
                   <Package className="w-5 h-5 text-slate-400" />
@@ -2338,16 +2300,13 @@ function ReleaseCard({
                     {release.codename}
                   </span>
                   {isLatest && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-emerald-400/20 bg-emerald-500/10 text-emerald-400">
-                      <span className="relative flex h-1.5 w-1.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
-                      </span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-300">
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-slate-400" />
                       Latest
                     </span>
                   )}
                   {release.isMajor && !isLatest && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-violet-400/20 bg-violet-500/10 text-violet-400">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-300">
                       <Star className="w-2.5 h-2.5" />
                       Major
                     </span>
@@ -2428,14 +2387,14 @@ function ReleaseCard({
 function YearDivider({ year }: { year: string }) {
   return (
     <div className="relative flex items-center gap-4 py-4">
-      <div className="absolute -left-[2.3rem] sm:-left-[2.8rem] w-4 h-4 rounded-full border-2 border-violet-400/40 bg-violet-500/15 z-10 flex items-center justify-center">
-        <Star className="w-2 h-2 text-violet-400" />
+      <div className="absolute -left-[2.3rem] sm:-left-[2.8rem] w-4 h-4 rounded-full border-2 border-white/30 bg-white/[0.1] z-10 flex items-center justify-center">
+        <Star className="w-2 h-2 text-slate-300" />
       </div>
-      <div className="h-px flex-1 bg-gradient-to-r from-violet-400/30 via-violet-400/10 to-transparent" />
-      <span className="text-sm font-bold text-violet-400/70 uppercase tracking-wider">
+      <div className="h-px flex-1 bg-gradient-to-r from-white/25 via-white/10 to-transparent" />
+      <span className="text-sm font-bold text-slate-400 uppercase tracking-wider">
         {year}
       </span>
-      <div className="h-px flex-1 bg-gradient-to-l from-violet-400/30 via-violet-400/10 to-transparent" />
+      <div className="h-px flex-1 bg-gradient-to-l from-white/25 via-white/10 to-transparent" />
     </div>
   );
 }
@@ -2466,7 +2425,7 @@ function FilterBar({
             placeholder="Search changes..."
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03]
               text-sm text-white placeholder:text-slate-500
-              focus:outline-none focus:border-emerald-400/30 focus:ring-1 focus:ring-emerald-400/20
+              focus:outline-none focus:border-white/25 focus:ring-1 focus:ring-white/15
               transition-all duration-300"
           />
         </div>
@@ -2557,12 +2516,9 @@ function ReleaseTimelineVisual() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-cyan-400/20 bg-cyan-500/10 mb-6">
-              <Calendar className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                Release Cadence
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Release Cadence
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-5">
               Shipping{' '}
               <span className="text-foreground">
@@ -2593,15 +2549,15 @@ function ReleaseTimelineVisual() {
               </div>
               <div className="flex items-center gap-5 text-[11px] text-slate-500">
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-sm bg-emerald-400/60" />
+                  <div className="w-2.5 h-2.5 rounded-sm bg-white/70" />
                   Features &amp; Integrations
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-sm bg-violet-400/60" />
+                  <div className="w-2.5 h-2.5 rounded-sm bg-slate-400/60" />
                   Security &amp; Enterprise
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-sm bg-amber-400/50" />
+                  <div className="w-2.5 h-2.5 rounded-sm bg-slate-600/60" />
                   Improvements &amp; Fixes
                 </div>
               </div>
@@ -2669,19 +2625,19 @@ function ReleaseTimelineVisual() {
                               &ldquo;{d.codename}&rdquo;
                             </span>
                             {d.isMajor && (
-                              <span className="ml-1.5 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-emerald-400/20 bg-emerald-500/10 text-emerald-400">
+                              <span className="ml-1.5 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-300">
                                 Major
                               </span>
                             )}
                           </div>
                           <div className="flex items-center gap-3 mt-1.5 text-[10px]">
-                            <span className="text-emerald-400">
+                            <span className="text-white/90">
                               {d.features} feat
                             </span>
-                            <span className="text-violet-400">
+                            <span className="text-slate-300">
                               {d.security} sec
                             </span>
-                            <span className="text-amber-400">
+                            <span className="text-slate-500">
                               {d.fixes} fix
                             </span>
                             <span className="text-slate-500">
@@ -2709,7 +2665,7 @@ function ReleaseTimelineVisual() {
                         {/* The bar itself */}
                         <motion.div
                           className={`w-full rounded-t-md overflow-hidden cursor-default transition-all duration-300
-                            ${d.isMajor ? 'ring-1 ring-emerald-400/20' : ''}
+                            ${d.isMajor ? 'ring-1 ring-white/20' : ''}
                             group-hover:ring-1 group-hover:ring-white/20 group-hover:brightness-125`}
                           style={{ height: 0 }}
                           initial={{ height: 0 }}
@@ -2723,15 +2679,15 @@ function ReleaseTimelineVisual() {
                         >
                           <div className="h-full w-full flex flex-col-reverse">
                             <div
-                              className="w-full bg-gradient-to-t from-emerald-500/50 to-emerald-400/30"
+                              className="w-full bg-gradient-to-t from-white/40 to-white/25"
                               style={{ height: `${featPct}%` }}
                             />
                             <div
-                              className="w-full bg-gradient-to-t from-violet-500/50 to-violet-400/30"
+                              className="w-full bg-gradient-to-t from-slate-400/40 to-slate-400/20"
                               style={{ height: `${secPct}%` }}
                             />
                             <div
-                              className="w-full bg-gradient-to-t from-amber-500/40 to-amber-400/25"
+                              className="w-full bg-gradient-to-t from-slate-600/40 to-slate-600/20"
                               style={{ height: `${fixPct}%` }}
                             />
                           </div>
@@ -2752,7 +2708,7 @@ function ReleaseTimelineVisual() {
                 <div key={d.version} className="flex-1 text-center min-w-0">
                   <span
                     className={`text-[8px] sm:text-[10px] font-semibold leading-tight block truncate
-                      ${d.isMajor ? 'text-emerald-400' : 'text-slate-500'}`}
+                      ${d.isMajor ? 'text-white' : 'text-slate-500'}`}
                   >
                     {d.version}
                   </span>
@@ -2778,12 +2734,12 @@ function ReleaseTimelineVisual() {
                   {
                     label: 'Major releases',
                     value: majorReleases,
-                    color: 'text-emerald-400',
+                    color: 'text-white',
                   },
                   {
                     label: 'Total features',
                     value: totalFeatures,
-                    color: 'text-cyan-400',
+                    color: 'text-white',
                   },
                   {
                     label: 'Release frequency',
@@ -2804,8 +2760,7 @@ function ReleaseTimelineVisual() {
               <div className="flex items-center gap-4 text-[11px] text-slate-500">
                 <div className="flex items-center gap-1.5">
                   <div className="relative w-2 h-2">
-                    <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-40" />
-                    <span className="relative block w-2 h-2 rounded-full bg-emerald-400" />
+                    <span className="relative block w-2 h-2 rounded-full bg-white/70" />
                   </div>
                   Major release
                 </div>
@@ -2847,12 +2802,9 @@ function TagBreakdownSection() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-violet-400/20 bg-violet-500/10 mb-6">
-              <Tag className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-xs font-semibold text-violet-400 uppercase tracking-wider">
-                By Category
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              By Category
+            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Change{' '}
               <span className="text-foreground">
@@ -2935,12 +2887,9 @@ function VersionHistoryTable() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-              <GitBranch className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                Version History
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Version History
+            </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
               Complete{' '}
               <span className="text-foreground">
@@ -2995,7 +2944,7 @@ function VersionHistoryTable() {
                   </span>
                   <span className="hidden sm:block">
                     {release.isMajor ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-emerald-400/20 bg-emerald-500/10 text-emerald-400">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border border-white/15 bg-white/[0.06] text-slate-200">
                         <Rocket className="w-2.5 h-2.5" />
                         Major
                       </span>
@@ -3025,7 +2974,7 @@ const milestones = [
     date: 'January 2025',
     description:
       'FormaOS v1.0.0 Genesis launched with ISO 27001 framework pack and core compliance infrastructure.',
-    accentRgb: '52,211,153',
+    accentRgb: '148,163,184',
   },
   {
     icon: Shield,
@@ -3033,7 +2982,7 @@ const milestones = [
     date: 'August 2025',
     description:
       'SHA-256 cryptographic evidence verification with immutable chain-of-custody and version control.',
-    accentRgb: '139,92,246',
+    accentRgb: '148,163,184',
   },
   {
     icon: Layers,
@@ -3041,7 +2990,7 @@ const milestones = [
     date: 'January 2026',
     description:
       'Full coverage across ISO 27001, SOC 2, GDPR, HIPAA, PCI-DSS, NIST CSF, and CIS Controls.',
-    accentRgb: '161,161,170',
+    accentRgb: '148,163,184',
   },
   {
     icon: Lock,
@@ -3049,7 +2998,7 @@ const milestones = [
     date: 'February 2026',
     description:
       'SAML 2.0 SSO with Okta, Azure AD, and Google Workspace plus SCIM 2.0 automated provisioning.',
-    accentRgb: '251,113,133',
+    accentRgb: '148,163,184',
   },
   {
     icon: Workflow,
@@ -3057,7 +3006,7 @@ const milestones = [
     date: 'April 2026',
     description:
       'v3.0 Nexus: integrations engine, REST API v1, report generator, webhook relay, AI insights, and scheduled tasks.',
-    accentRgb: '59,130,246',
+    accentRgb: '148,163,184',
   },
   {
     icon: Eye,
@@ -3065,7 +3014,7 @@ const milestones = [
     date: 'April 2026',
     description:
       'v3.1 Citadel: framework cross-mapping, task management, permissions matrix, policy lifecycle, dashboard builder, and integration marketplace.',
-    accentRgb: '245,158,11',
+    accentRgb: '148,163,184',
   },
   {
     icon: Sparkles,
@@ -3073,7 +3022,7 @@ const milestones = [
     date: 'April 2026',
     description:
       'v3.6 Horizon: 100x homepage redesign, comprehensive SEO engine, LCP performance fix, 5-theme enterprise upgrade, and full product maturity infrastructure.',
-    accentRgb: '52,211,153',
+    accentRgb: '148,163,184',
   },
   {
     icon: Shield,
@@ -3081,7 +3030,7 @@ const milestones = [
     date: 'May 2026',
     description:
       'v4.0 Foundation Audit: closed seven blockers and thirteen high-severity findings — real row-level security on fourteen multi-tenant tables, MFA enforced at login, signed trust packets, default-on CSRF, hardened SAML, AUD/GST checkout, and CI gates that actually block merges.',
-    accentRgb: '139,92,246',
+    accentRgb: '148,163,184',
   },
   {
     icon: Layers,
@@ -3089,7 +3038,7 @@ const milestones = [
     date: 'May 2026',
     description:
       'v4.2 Compliance Foundations: per-control evaluator registry, framework packs expanded to all 64 SOC 2 TSC criteria and 93 ISO 27001:2022 Annex A controls, twelve working SOC 2 evaluators, and a real PDF report engine with brand typography for board packs and posture reports.',
-    accentRgb: '161,161,170',
+    accentRgb: '148,163,184',
   },
 ];
 
@@ -3103,12 +3052,9 @@ function MilestonesSection() {
             range={[0, 0.3]}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-              <Milestone className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                Key Milestones
-              </span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Key Milestones
+            </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
               The journey from{' '}
               <span className="text-foreground">
@@ -3124,7 +3070,7 @@ function MilestonesSection() {
           <SectionChoreography pattern="cascade" stagger={0.08}>
             <div className="relative">
               {/* Timeline spine */}
-              <div className="absolute left-8 sm:left-1/2 sm:-translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-emerald-400/40 via-blue-400/20 to-amber-400/30" />
+              <div className="absolute left-8 sm:left-1/2 sm:-translate-x-px top-0 bottom-0 w-px bg-gradient-to-b from-white/30 via-white/15 to-white/20" />
 
               <div className="space-y-6">
                 {milestones.map((ms, i) => {
@@ -3245,7 +3191,7 @@ function SubscribeCTA() {
               className="absolute inset-0 pointer-events-none"
               style={{
                 background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(52,211,153,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
+                  'radial-gradient(ellipse at 50% 0%, rgba(148,163,184,0.07), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
               }}
             />
 
@@ -3253,7 +3199,7 @@ function SubscribeCTA() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-1 h-1 rounded-full bg-emerald-400/30"
+                  className="absolute w-1 h-1 rounded-full bg-white/20"
                   style={{
                     left: `${12 + ((i * 76) % 80)}%`,
                     top: `${8 + ((i * 53) % 85)}%`,
@@ -3274,12 +3220,9 @@ function SubscribeCTA() {
 
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-6">
-                  <Bell className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                    Stay Updated
-                  </span>
-                </div>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  Stay Updated
+                </p>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Never miss a{' '}
                   <span className="text-foreground">
@@ -3323,7 +3266,7 @@ function SubscribeCTA() {
                     `${monthsActive} months of development`,
                   ].map((signal) => (
                     <div key={signal} className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400/50" />
+                      <CheckCircle2 className="w-3 h-3 text-slate-400/60" />
                       <span>{signal}</span>
                     </div>
                   ))}
@@ -3357,7 +3300,7 @@ function ChangelogHero() {
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <motion.div
           className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(52,211,153,0.12)' }}
+          style={{ background: 'rgba(148,163,184,0.10)' }}
           animate={{
             scale: [1, 1.08, 1],
             opacity: [0.12, 0.18, 0.12],
@@ -3370,7 +3313,7 @@ function ChangelogHero() {
         />
         <motion.div
           className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(139,92,246,0.10)' }}
+          style={{ background: 'rgba(113,113,122,0.08)' }}
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.1, 0.16, 0.1],
@@ -3414,12 +3357,13 @@ function ChangelogHero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 mb-8"
+          className="mb-8 flex items-center justify-center gap-4"
         >
-          <GitCommit className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
             Changelog
           </span>
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
         </motion.div>
 
         {/* Audit 2026-05-24: H1 + intro <p> were wrapped in motion.* with
@@ -3447,7 +3391,7 @@ function ChangelogHero() {
           transition={{ duration: 0.6, delay: 0.3, ease: EASE_OUT_EXPO }}
           className="flex flex-wrap justify-center gap-4 mb-10"
         >
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-emerald-400/15 bg-emerald-500/5 text-sm text-emerald-400">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/[0.12] bg-white/[0.05] text-sm text-slate-200">
             <GitMerge className="w-4 h-4" />
             Latest: {releases[0].version} {releases[0].codename}
           </div>
@@ -3606,7 +3550,7 @@ export default function ChangelogPageContent() {
 
             {/* Timeline spine */}
             <div className="relative pl-8 sm:pl-10">
-              <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-emerald-400/30 via-white/10 to-violet-400/20" />
+              <div className="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-white/25 via-white/10 to-white/20" />
 
               <div className="space-y-6">
                 {releasesWithYears.map((item, i) => {

@@ -44,7 +44,7 @@ export function ComplianceByDesign() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute bottom-1/4 left-1/3 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-amber-500/15 to-transparent blur-3xl"
+          className="absolute bottom-1/4 left-1/3 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-white/[0.06] to-transparent blur-3xl"
         />
         <motion.div
           animate={{
@@ -57,7 +57,7 @@ export function ComplianceByDesign() {
             ease: 'easeInOut',
             delay: 4,
           }}
-          className="absolute top-1/3 right-1/4 w-1/4 h-1/4 rounded-full bg-gradient-to-tl from-red-500/15 to-transparent blur-3xl"
+          className="absolute top-1/3 right-1/4 w-1/4 h-1/4 rounded-full bg-gradient-to-tl from-white/[0.05] to-transparent blur-3xl"
         />
       </div>
 
@@ -65,17 +65,14 @@ export function ComplianceByDesign() {
         {/* Section Header */}
         <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-20">
           <div>
-            <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6">
-                <CheckCircle className="h-3 w-3 text-amber-400" />
-                <span className="text-gray-300">Compliance by Design</span>
-              </div>
-            </ScrollReveal>
+            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Compliance by Design
+            </p>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
               <span className="text-white">Transparency is not optional.</span>
               <br />
-              <span className="bg-gradient-to-r from-amber-400 via-yellow-400 to-lime-400 bg-clip-text text-transparent">
+              <span className="text-slate-400">
                 It is the architecture.
               </span>
             </h2>
@@ -96,12 +93,12 @@ export function ComplianceByDesign() {
               variant="fadeRight"
               range={[index * 0.04, 0.3 + index * 0.04]}
             >
-              <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 hover:border-amber-500/30 transition-all duration-500">
+              <div className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 hover:border-white/20 transition-all duration-500">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
                   {/* Icon */}
                   <div className="flex-shrink-0">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20 border border-amber-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <principle.icon className="h-8 w-8 text-amber-400" />
+                    <div className="w-16 h-16 rounded-2xl bg-white/[0.06] border border-white/[0.12] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <principle.icon className="h-8 w-8 text-slate-300" />
                     </div>
                   </div>
 
@@ -119,10 +116,10 @@ export function ComplianceByDesign() {
                       {principle.metrics.map((metric) => (
                         <div
                           key={metric}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1]"
                         >
-                          <CheckCircle className="h-3 w-3 text-amber-400" />
-                          <span className="text-xs font-medium text-amber-300">
+                          <CheckCircle className="h-3 w-3 text-slate-400" />
+                          <span className="text-xs font-medium text-slate-300">
                             {metric}
                           </span>
                         </div>

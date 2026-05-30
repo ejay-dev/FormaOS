@@ -83,19 +83,19 @@ function TrustWirePathsInner() {
             <stop offset="100%" stopColor="rgba(161, 161, 170,0)" />
           </linearGradient>
           <linearGradient id="trustWire2" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(59,130,246,0)" />
-            <stop offset="50%" stopColor="rgba(59,130,246,0.5)" />
-            <stop offset="100%" stopColor="rgba(59,130,246,0)" />
+            <stop offset="0%" stopColor="rgba(161, 161, 170,0)" />
+            <stop offset="50%" stopColor="rgba(161, 161, 170,0.5)" />
+            <stop offset="100%" stopColor="rgba(161, 161, 170,0)" />
           </linearGradient>
           <linearGradient id="trustWire3" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(16,185,129,0)" />
-            <stop offset="50%" stopColor="rgba(16,185,129,0.5)" />
-            <stop offset="100%" stopColor="rgba(16,185,129,0)" />
+            <stop offset="0%" stopColor="rgba(161, 161, 170,0)" />
+            <stop offset="50%" stopColor="rgba(161, 161, 170,0.5)" />
+            <stop offset="100%" stopColor="rgba(161, 161, 170,0)" />
           </linearGradient>
           <linearGradient id="trustWire4" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(251,191,36,0)" />
-            <stop offset="50%" stopColor="rgba(251,191,36,0.4)" />
-            <stop offset="100%" stopColor="rgba(251,191,36,0)" />
+            <stop offset="0%" stopColor="rgba(161, 161, 170,0)" />
+            <stop offset="50%" stopColor="rgba(161, 161, 170,0.4)" />
+            <stop offset="100%" stopColor="rgba(161, 161, 170,0)" />
           </linearGradient>
         </defs>
 
@@ -138,9 +138,9 @@ function TrustWirePathsInner() {
         {/* Node dots at key intersections */}
         {[
           { cx: 720, cy: 180, fill: 'rgba(161, 161, 170,0.6)' },
-          { cx: 800, cy: 360, fill: 'rgba(59,130,246,0.6)' },
-          { cx: 850, cy: 540, fill: 'rgba(16,185,129,0.6)' },
-          { cx: 900, cy: 700, fill: 'rgba(251,191,36,0.5)' },
+          { cx: 800, cy: 360, fill: 'rgba(161, 161, 170,0.6)' },
+          { cx: 850, cy: 540, fill: 'rgba(161, 161, 170,0.6)' },
+          { cx: 900, cy: 700, fill: 'rgba(161, 161, 170,0.5)' },
         ].map((node) => (
           <circle
             key={`${node.cx}-${node.cy}`}

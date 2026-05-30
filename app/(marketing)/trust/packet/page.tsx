@@ -110,12 +110,12 @@ export default function TrustPacketPage() {
       <CompactHero
         title="Vendor Trust Packet"
         description="A downloadable PDF built from current review materials. Covers architecture, encryption, identity, data handling, subprocessors, and assurance context."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<Package className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<Package className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

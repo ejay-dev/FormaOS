@@ -4,13 +4,10 @@ import Link from 'next/link';
 import {
   ArrowRight,
   Sparkles,
-  Target,
   Shield,
   Zap,
   CheckCircle,
   Quote,
-  Lightbulb,
-  Building2,
   Users,
   FileCheck,
 } from 'lucide-react';
@@ -48,7 +45,7 @@ export function StoryHero() {
       badge={{
         icon: <Sparkles className="w-4 h-4" />,
         text: 'Our Story',
-        colorClass: 'indigo',
+        colorClass: 'slate',
       }}
       headline={
         <>
@@ -91,7 +88,7 @@ function FounderQuote() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 via-purple-500/15 to-transparent blur-3xl"
+          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 via-zinc-500/15 to-transparent blur-3xl"
         />
         <motion.div
           animate={{
@@ -104,7 +101,7 @@ function FounderQuote() {
             ease: 'easeInOut',
             delay: 3,
           }}
-          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-pink-500/20 via-violet-500/10 to-transparent blur-3xl"
+          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-zinc-600/20 via-zinc-500/10 to-transparent blur-3xl"
         />
       </div>
 
@@ -125,7 +122,7 @@ function FounderQuote() {
           {/* Glassmorphism Panel */}
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl p-12 lg:p-16 text-center relative overflow-hidden">
             {/* Decorative glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-700/10 to-purple-500/5 rounded-3xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-zinc-700/10 to-zinc-500/5 rounded-3xl" />
 
             {/* Quote Icon */}
             <motion.div
@@ -133,7 +130,7 @@ function FounderQuote() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: duration.slow }}
-              className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-zinc-700/20 to-purple-500/20 border border-zinc-600/30 mb-8"
+              className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-zinc-700/20 to-zinc-500/20 border border-zinc-600/30 mb-8"
             >
               <Quote className="w-10 h-10 text-zinc-400" />
             </motion.div>
@@ -160,7 +157,7 @@ function FounderQuote() {
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6, duration: duration.slower }}
-              className="w-32 h-1 bg-gradient-to-r from-zinc-700 via-purple-500 to-pink-500 mx-auto rounded-full mb-8"
+              className="w-32 h-1 bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-600 mx-auto rounded-full mb-8"
             />
 
             {/* Attribution with founder avatar.
@@ -186,7 +183,7 @@ function FounderQuote() {
               <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-white/[0.1]">
                 <div
                   aria-hidden
-                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-700/15 to-purple-500/15 text-base font-semibold text-white/50"
+                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-700/15 to-zinc-500/15 text-base font-semibold text-white/50"
                 >
                   EH
                 </div>
@@ -241,7 +238,7 @@ function TheProblem() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-red-500/15 to-transparent blur-3xl"
+          className="absolute top-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-600/15 to-transparent blur-3xl"
         />
       </div>
 
@@ -254,15 +251,9 @@ function TheProblem() {
           transition={{ duration: duration.slower }}
           className="mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <Target className="h-3 w-3 text-red-400" />
-            <span className="text-gray-300">The Challenge</span>
-          </motion.div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            The Challenge
+          </p>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             The Compliance Industry Solved Storage.
@@ -306,9 +297,9 @@ function TheProblem() {
             {problems.map((problem, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20"
+                className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/10"
               >
-                <span className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-slate-500 flex-shrink-0" />
                 <span className="text-gray-300">{problem}</span>
               </div>
             ))}
@@ -376,7 +367,7 @@ function TheApproach() {
             ease: 'easeInOut',
             delay: 4,
           }}
-          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-purple-500/15 to-transparent blur-3xl"
+          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-zinc-500/15 to-transparent blur-3xl"
         />
       </div>
 
@@ -389,15 +380,9 @@ function TheApproach() {
           transition={{ duration: duration.slower }}
           className="mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <Lightbulb className="h-3 w-3 text-zinc-400" />
-            <span className="text-gray-300">Our Approach</span>
-          </motion.div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            Our Approach
+          </p>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             From Policy to Proof
@@ -446,7 +431,7 @@ function TheApproach() {
                 key={idx}
                 className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-zinc-600/30 transition-all duration-300"
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-700/20 to-purple-500/20 border border-zinc-600/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-700/20 to-zinc-500/20 border border-zinc-600/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <capability.icon className="w-5 h-5 text-zinc-400" />
                 </div>
                 <span className="text-lg text-gray-300">{capability.text}</span>
@@ -463,7 +448,7 @@ function TheApproach() {
           transition={{ duration: duration.slow, delay: 0.6 }}
           className="mb-12 max-w-2xl mx-auto"
         >
-          <DemoComplianceChain glowColor="from-zinc-700/15 to-purple-500/15" />
+          <DemoComplianceChain glowColor="from-zinc-700/15 to-zinc-500/15" />
         </motion.div>
 
         {/* Closing */}
@@ -502,7 +487,7 @@ function WhyWeBuiltIt() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/2 left-1/3 -translate-y-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-violet-500/15 to-transparent blur-3xl"
+          className="absolute top-1/2 left-1/3 -translate-y-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-zinc-500/15 to-transparent blur-3xl"
         />
       </div>
 
@@ -515,15 +500,9 @@ function WhyWeBuiltIt() {
           transition={{ duration: duration.slower }}
           className="mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <Shield className="h-3 w-3 text-violet-400" />
-            <span className="text-gray-300">Our Purpose</span>
-          </motion.div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            Our Purpose
+          </p>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             Designed by Engineers.
@@ -551,8 +530,8 @@ function WhyWeBuiltIt() {
               We built FormaOS to answer one fundamental question:
             </p>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-violet-500/15 to-purple-500/10 border border-violet-500/30">
-              <p className="text-2xl text-violet-300 font-semibold italic leading-tight">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10">
+              <p className="text-2xl text-slate-200 font-semibold italic leading-tight">
                 &ldquo;Can an organization prove, at any moment, that it is
                 operating in line with its obligations?&rdquo;
               </p>
@@ -566,7 +545,7 @@ function WhyWeBuiltIt() {
               </p>
               <p className="text-xl text-white font-medium pt-4">
                 But through{' '}
-                <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                <span className="text-foreground">
                   live operational evidence
                 </span>
                 .
@@ -636,7 +615,7 @@ function WhatMakesUsDifferent() {
             ease: 'easeInOut',
             delay: 4,
           }}
-          className="absolute top-1/3 -right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-purple-500/15 to-transparent blur-3xl"
+          className="absolute top-1/3 -right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-zinc-500/15 to-transparent blur-3xl"
         />
       </div>
 
@@ -649,15 +628,9 @@ function WhatMakesUsDifferent() {
           transition={{ duration: duration.slower }}
           className="mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <Sparkles className="h-3 w-3 text-pink-400" />
-            <span className="text-gray-300">What Sets Us Apart</span>
-          </motion.div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            What Sets Us Apart
+          </p>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             An Operating System for Compliance,
@@ -692,7 +665,7 @@ function WhatMakesUsDifferent() {
                 <div className="absolute inset-0 bg-gradient-to-br from-zinc-700/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
 
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-700/20 to-purple-500/20 border border-zinc-600/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-700/20 to-zinc-500/20 border border-zinc-600/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <principle.icon className="w-6 h-6 text-zinc-400" />
                   </div>
                   <div>
@@ -755,7 +728,7 @@ function OurMission() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-cyan-500/15 to-transparent blur-3xl"
+          className="absolute top-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-zinc-500/15 to-transparent blur-3xl"
         />
       </div>
 
@@ -768,15 +741,9 @@ function OurMission() {
           transition={{ duration: duration.slower }}
           className="mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.08] border border-white/10 text-xs font-semibold uppercase tracking-wider mb-6"
-          >
-            <Target className="h-3 w-3 text-cyan-400" />
-            <span className="text-gray-300">Our Mission</span>
-          </motion.div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            Our Mission
+          </p>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             Operational Certainty
@@ -791,7 +758,7 @@ function OurMission() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.1 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-cyan-500/20 via-white/[0.08] to-white/[0.04] rounded-3xl border border-cyan-500/30 p-8 lg:p-10 mb-12 text-center"
+          className="backdrop-blur-xl bg-gradient-to-br from-white/[0.10] via-white/[0.06] to-white/[0.04] rounded-3xl border border-white/15 p-8 lg:p-10 mb-12 text-center"
         >
           <p className="text-xl text-white font-medium mb-4">
             Our mission is simple:
@@ -818,9 +785,9 @@ function OurMission() {
             {beliefs.map((belief, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20"
+                className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/10"
               >
-                <CheckCircle className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 text-slate-300 flex-shrink-0" />
                 <span className="text-gray-300">{belief}</span>
               </div>
             ))}
@@ -871,7 +838,7 @@ function FinalCTA() {
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 via-purple-500/15 to-transparent blur-3xl"
+          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 via-zinc-500/15 to-transparent blur-3xl"
         />
         <motion.div
           animate={{
@@ -884,7 +851,7 @@ function FinalCTA() {
             ease: 'easeInOut',
             delay: 3,
           }}
-          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-pink-500/20 via-violet-500/10 to-transparent blur-3xl"
+          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-zinc-600/20 via-zinc-500/10 to-transparent blur-3xl"
         />
       </div>
 
@@ -907,16 +874,15 @@ function FinalCTA() {
             {/* Header */}
             <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
               <div className="text-center">
-                <motion.div
+                <motion.p
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2, duration: duration.slow }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.12] border border-white/20 text-xs font-semibold uppercase tracking-wider mb-6 text-zinc-400"
+                  className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500"
                 >
-                  <Building2 className="h-3 w-3" />
                   Join Us
-                </motion.div>
+                </motion.p>
 
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
@@ -937,7 +903,7 @@ function FinalCTA() {
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: duration.slower }}
-                  className="w-24 h-1 bg-gradient-to-r from-zinc-700 via-purple-500 to-pink-500 mx-auto rounded-full"
+                  className="w-24 h-1 bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-600 mx-auto rounded-full"
                 />
               </div>
             </div>

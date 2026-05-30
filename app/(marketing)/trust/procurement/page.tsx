@@ -85,12 +85,12 @@ export default function ProcurementFAQPage() {
       <CompactHero
         title="Procurement"
         description="Common questions from procurement, security, and legal teams evaluating FormaOS."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<ClipboardList className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<ClipboardList className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

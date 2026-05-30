@@ -103,7 +103,7 @@ function ProductHeroVisualInner() {
               rotateX: cursorActive ? midRotateX : 0,
             }}
           >
-            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(16,185,129,0.06)]`}>
+            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(148,163,184,0.06)]`}>
               <EvidenceChecklist />
             </div>
           </motion.div>
@@ -122,7 +122,7 @@ function ProductHeroVisualInner() {
               rotateX: cursorActive ? backRotateX : 0,
             }}
           >
-            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(139,92,246,0.06)]`}>
+            <div className={`${GLASS} w-full h-full p-5 shadow-[0_0_60px_rgba(148,163,184,0.06)]`}>
               <AuditReport />
             </div>
           </motion.div>
@@ -165,7 +165,7 @@ function ComplianceDashboard() {
       {/* Header row */}
       <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+          <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
           <span className="text-sm font-semibold text-white/80 tracking-wide">Compliance Dashboard</span>
         </div>
         {/* Score badge */}
@@ -257,7 +257,7 @@ function EvidenceChecklist() {
     <>
       {/* Header */}
       <div className="flex items-center gap-2 mb-5 pb-3 border-b border-white/[0.06]">
-        <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+        <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
         <span className="text-sm font-semibold text-white/80 tracking-wide">Evidence Collection</span>
         <span className="ml-auto text-[10px] text-white/30 font-medium">3 / 5 complete</span>
       </div>
@@ -277,8 +277,8 @@ function EvidenceChecklist() {
             {/* Check circle */}
             {item.checked ? (
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
-                <circle cx="10" cy="10" r="9" className="fill-emerald-500/20 stroke-emerald-500/50" strokeWidth="1" />
-                <path d="M6.5 10.5L9 13L13.5 7.5" className="stroke-emerald-400" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="10" cy="10" r="9" className="fill-white/[0.12] stroke-white/30" strokeWidth="1" />
+                <path d="M6.5 10.5L9 13L13.5 7.5" className="stroke-slate-200" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             ) : (
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="flex-shrink-0">
@@ -289,7 +289,7 @@ function EvidenceChecklist() {
               {item.label}
             </span>
             {item.checked && (
-              <span className="ml-auto text-[9px] text-emerald-400/60 font-medium">Done</span>
+              <span className="ml-auto text-[9px] text-slate-400/70 font-medium">Done</span>
             )}
           </div>
         ))}
@@ -313,9 +313,9 @@ function AuditReport() {
     <>
       {/* Header */}
       <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/[0.06]">
-        <div className="w-2.5 h-2.5 rounded-full bg-violet-400" />
+        <div className="w-2.5 h-2.5 rounded-full bg-slate-400" />
         <span className="text-sm font-semibold text-white/80 tracking-wide">Audit Report</span>
-        <span className="ml-auto text-[10px] text-violet-400/60 font-medium">Q1 2026</span>
+        <span className="ml-auto text-[10px] text-slate-400/60 font-medium">Q1 2026</span>
       </div>
 
       {/* Progress ring + label */}
@@ -335,10 +335,10 @@ function AuditReport() {
               fill="none"
               strokeWidth="6"
               strokeLinecap="round"
-              className="stroke-violet-400"
+              className="stroke-slate-400"
               strokeDasharray={CIRCUMFERENCE}
               strokeDashoffset={DASH_OFFSET}
-              style={{ filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.4))' }}
+              style={{ filter: 'drop-shadow(0 0 6px rgba(148,163,184,0.35))' }}
             />
           </svg>
           {/* Center text */}
@@ -351,8 +351,8 @@ function AuditReport() {
 
       {/* 3-column stats grid */}
       <div className="grid grid-cols-3 gap-2">
-        <StatCell label="Controls" value="142/148" accent="cyan" />
-        <StatCell label="Evidence" value="98%" accent="emerald" />
+        <StatCell label="Controls" value="142/148" accent="slate" />
+        <StatCell label="Evidence" value="98%" accent="slate" />
         <StatCell label="Findings" value="3 Low" accent="amber" />
       </div>
 
@@ -361,7 +361,7 @@ function AuditReport() {
         {[0.7, 0.85, 0.65, 0.92, 0.88, 0.94, 0.78, 0.96].map((h, i) => (
           <div
             key={i}
-            className="flex-1 rounded-sm bg-gradient-to-t from-violet-500/30 to-violet-400/10"
+            className="flex-1 rounded-sm bg-gradient-to-t from-white/20 to-white/[0.05]"
             style={{ height: `${h * 100}%` }}
           />
         ))}
@@ -377,10 +377,10 @@ function StatCell({
 }: {
   label: string;
   value: string;
-  accent: 'cyan' | 'emerald' | 'amber';
+  accent: 'slate' | 'emerald' | 'amber';
 }) {
   const textColor = {
-    cyan: 'text-cyan-400',
+    slate: 'text-slate-300',
     emerald: 'text-emerald-400',
     amber: 'text-amber-400',
   }[accent];

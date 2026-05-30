@@ -76,7 +76,7 @@ function NavDropdown({
         aria-controls={menuId}
         aria-haspopup="menu"
         className={clsx(
-          'mk-nav-item flex cursor-pointer items-center gap-1.5 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+          'mk-nav-item flex cursor-pointer items-center gap-1.5 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40',
           hasActiveChild && 'mk-nav-item--active',
         )}
       >
@@ -125,9 +125,9 @@ function NavDropdown({
                   }
                 }}
                 className={clsx(
-                  'block rounded-lg px-3 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+                  'block rounded-lg px-3 py-2 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40',
                   isActive
-                    ? 'bg-cyan-500/10 text-cyan-200'
+                    ? 'bg-white/[0.06] text-white'
                     : 'text-slate-400 hover:bg-white/[0.06] hover:text-white',
                 )}
               >
@@ -186,7 +186,7 @@ function MobileSection({
                 className={clsx(
                   'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed break-words',
                   isActive
-                    ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+                    ? 'bg-white/[0.06] text-white border border-white/15'
                     : 'hover:bg-white/5 text-slate-300 hover:text-white',
                 )}
                 aria-current={isActive ? 'page' : undefined}
@@ -238,7 +238,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
           className={clsx(
             'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed',
             pathname === '/'
-              ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+              ? 'bg-white/[0.06] text-white border border-white/15'
               : 'hover:bg-white/5 text-slate-300 hover:text-white',
           )}
           aria-current={pathname === '/' ? 'page' : undefined}
@@ -251,7 +251,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
           className={clsx(
             'block rounded-xl px-4 py-3 transition-all text-sm leading-relaxed',
             pathname === '/pricing'
-              ? 'bg-gradient-to-r from-cyan-500/10 to-teal-500/10 text-cyan-300 border border-cyan-400/20'
+              ? 'bg-white/[0.06] text-white border border-white/15'
               : 'hover:bg-white/5 text-slate-300 hover:text-white',
           )}
           aria-current={pathname === '/pricing' ? 'page' : undefined}
@@ -286,7 +286,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
       <Link
         href="/"
         className={clsx(
-          'mk-nav-item focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+          'mk-nav-item focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40',
           pathname === '/' && 'mk-nav-item--active',
         )}
         aria-current={pathname === '/' ? 'page' : undefined}
@@ -310,7 +310,7 @@ export function NavLinks({ variant = 'desktop', onLinkClick }: NavLinksProps) {
       <Link
         href="/pricing"
         className={clsx(
-          'mk-nav-item focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40',
+          'mk-nav-item focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40',
           pathname === '/pricing' && 'mk-nav-item--active',
         )}
         aria-current={pathname === '/pricing' ? 'page' : undefined}

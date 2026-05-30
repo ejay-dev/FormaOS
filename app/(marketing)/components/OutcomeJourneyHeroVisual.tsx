@@ -12,10 +12,10 @@ interface OutcomeJourneyHeroVisualProps {
 }
 
 const JOURNEY_STAGES = [
-  { key: 'evaluate', label: 'Evaluate', color: 'rgba(161,161,170,0.8)' },
-  { key: 'prove', label: 'Prove', color: 'rgba(52,211,153,0.7)' },
-  { key: 'operate', label: 'Operate', color: 'rgba(59,130,246,0.7)' },
-  { key: 'govern', label: 'Govern', color: 'rgba(139,92,246,0.7)' },
+  { key: 'evaluate', label: 'Evaluate', color: 'rgba(203,213,225,0.8)' },
+  { key: 'prove', label: 'Prove', color: 'rgba(148,163,184,0.7)' },
+  { key: 'operate', label: 'Operate', color: 'rgba(148,163,184,0.7)' },
+  { key: 'govern', label: 'Govern', color: 'rgba(100,116,139,0.7)' },
 ];
 
 /**
@@ -55,7 +55,7 @@ function OutcomeJourneyHeroVisualInner({ journeyKey }: OutcomeJourneyHeroVisualP
                 <div
                   className={`rounded-full border flex items-center justify-center ${
                     isActive
-                      ? 'w-[70px] h-[70px] border-cyan-400/30 bg-gradient-to-br from-white/[0.10] to-white/[0.04]'
+                      ? 'w-[70px] h-[70px] border-white/30 bg-gradient-to-br from-white/[0.10] to-white/[0.04]'
                       : 'w-[44px] h-[44px] border-white/[0.10] bg-gradient-to-br from-white/[0.06] to-white/[0.02]'
                   }`}
                 >
@@ -153,14 +153,14 @@ function OutcomeJourneyHeroVisualInner({ journeyKey }: OutcomeJourneyHeroVisualP
                     <div
                       className={`rounded-full border backdrop-blur-xl flex items-center justify-center transition-all ${
                         isActive
-                          ? 'w-[70px] h-[70px] border-cyan-400/30 bg-gradient-to-br from-white/[0.12] to-white/[0.04]'
+                          ? 'w-[70px] h-[70px] border-white/30 bg-gradient-to-br from-white/[0.12] to-white/[0.04]'
                           : isPast
-                            ? 'w-[48px] h-[48px] border-emerald-400/20 bg-gradient-to-br from-white/[0.08] to-white/[0.02]'
+                            ? 'w-[48px] h-[48px] border-white/20 bg-gradient-to-br from-white/[0.08] to-white/[0.02]'
                             : 'w-[44px] h-[44px] border-white/[0.10] bg-gradient-to-br from-white/[0.06] to-white/[0.02]'
                       }`}
                     >
                       {isPast ? (
-                        <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <svg className="w-4 h-4 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       ) : (
@@ -172,7 +172,7 @@ function OutcomeJourneyHeroVisualInner({ journeyKey }: OutcomeJourneyHeroVisualP
                     </div>
                     <span
                       className={`mt-2 text-[10px] font-medium whitespace-nowrap ${
-                        isActive ? 'text-white/80' : isPast ? 'text-emerald-300/60' : 'text-white/40'
+                        isActive ? 'text-white/80' : isPast ? 'text-slate-300/60' : 'text-white/40'
                       }`}
                     >
                       {stage.label}

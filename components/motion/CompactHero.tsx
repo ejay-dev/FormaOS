@@ -16,9 +16,9 @@ interface CompactHeroProps {
   /** Optional floating 3D visual content (e.g. CompactHeroIcon) */
   visualContent?: ReactNode;
   /** HeroAtmosphere top glow color */
-  topColor?: 'cyan' | 'blue' | 'violet' | 'emerald' | 'amber' | 'rose';
+  topColor?: 'cyan' | 'blue' | 'violet' | 'emerald' | 'amber' | 'rose' | 'slate';
   /** HeroAtmosphere bottom glow color */
-  bottomColor?: 'cyan' | 'blue' | 'violet' | 'emerald' | 'amber' | 'rose';
+  bottomColor?: 'cyan' | 'blue' | 'violet' | 'emerald' | 'amber' | 'rose' | 'slate';
   /** Additional className on section */
   className?: string;
 }

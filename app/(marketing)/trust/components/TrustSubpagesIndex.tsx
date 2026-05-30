@@ -78,7 +78,7 @@ export function TrustSubpagesIndex() {
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="block h-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 transition-all duration-300 hover:border-cyan-400/30 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
+                className="block h-full rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               >
                 <h3 className="text-base font-semibold text-white">
                   {item.title}

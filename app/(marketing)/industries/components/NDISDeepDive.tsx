@@ -64,7 +64,7 @@ export function NDISDeepDive() {
     <section className="relative py-32 overflow-hidden">
       {/* Ambient Background */}
       <motion.div
-        className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-pink-500/5 via-transparent to-purple-500/5"
+        className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/[0.03] via-transparent to-white/[0.03]"
         animate={allowAmbientMotion ? { opacity: [0.5, 0.8, 0.5] } : undefined}
         transition={
           allowAmbientMotion
@@ -77,17 +77,14 @@ export function NDISDeepDive() {
         <ScrollReveal variant="blurIn" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-              <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-sm font-medium mb-6"
-              >
-                <Heart className="w-4 h-4" />
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                 NDIS Service Providers
-              </div>
+              </p>
             </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
               NDIS-aligned Practice Standards
-              <span className="bg-gradient-to-r from-pink-400 via-rose-400 to-purple-500 bg-clip-text text-transparent">
+              <span className="text-foreground">
                 {' '}
                 for Audit Readiness
               </span>
@@ -108,10 +105,10 @@ export function NDISDeepDive() {
               <ScrollReveal key={feature.title} variant="slideUp" range={[index * 0.04, 0.3 + index * 0.04]}>
                 <motion.div
                   whileHover={{ y: -4 }}
-                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-pink-500/30 p-6 transition-all duration-300"
+                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-white/20 p-6 transition-all duration-300"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500/20 to-pink-500/10 border border-pink-500/20 flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-pink-400" />
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-700/20 to-zinc-700/10 border border-zinc-600/20 flex items-center justify-center mb-4">
+                    <Icon className="w-6 h-6 text-slate-300" />
                   </div>
                   <h4 className="font-bold text-white mb-2">{feature.title}</h4>
                   <p className="text-sm text-gray-400 leading-relaxed">
@@ -143,7 +140,7 @@ export function NDISDeepDive() {
                     href="/contact"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
-                    className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transition-all"
+                    className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-foreground text-background font-semibold shadow-lg hover:opacity-90 transition-all"
                   >
                     Book NDIS Demo
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -173,7 +170,7 @@ export function NDISDeepDive() {
                     'Risk management and mitigation workflows',
                   ].map((item) => (
                     <li key={item} className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-pink-400 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-slate-400 flex-shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}

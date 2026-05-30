@@ -61,15 +61,15 @@ export function FinalCTA() {
               <ScrollReveal variant="perspectiveUp" range={[0.1, 0.42]}>
                 <div className="flex flex-wrap items-center justify-center gap-6 mt-8 text-sm text-gray-500">
                   <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <CheckCircle className="w-4 h-4 text-slate-400" />
                     Guided compliance plan
                   </span>
                   <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <CheckCircle className="w-4 h-4 text-slate-400" />
                     Assessment-led onboarding
                   </span>
                   <span className="product-panel product-panel--soft flex items-center gap-2 rounded-full px-3 py-1.5">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <CheckCircle className="w-4 h-4 text-slate-400" />
                     Full platform access
                   </span>
                 </div>

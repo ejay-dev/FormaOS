@@ -109,8 +109,9 @@ export default function SecurityReviewContent() {
         theme="security-review"
         visualContent={<SecurityReviewHeroVisual />}
         badge={{
-          icon: <ShieldCheck className="h-4 w-4" />,
+          icon: <ShieldCheck className="h-4 w-4 text-slate-400" />,
           text: 'Enterprise Review',
+          colorClass: 'slate',
         }}
         headline="Security Review Packet for Enterprise Buyers"
         subheadline="The core materials enterprise security, legal, and procurement teams usually review first: encryption, SSO, data handling, assurance posture, and DPA context."
@@ -140,10 +141,10 @@ export default function SecurityReviewContent() {
               >
                 <motion.article
                   whileHover={{ y: -6 }}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-cyan-500/20 hover:bg-white/[0.06]"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
                 >
-                  <div className="mb-4 inline-flex rounded-lg border border-cyan-400/20 bg-cyan-500/10 p-2">
-                    <s.icon className="h-5 w-5 text-cyan-200" />
+                  <div className="mb-4 inline-flex rounded-lg border border-white/[0.1] bg-white/[0.06] p-2">
+                    <s.icon className="h-5 w-5 text-slate-300" />
                   </div>
                   <h2 className="text-lg font-semibold text-white">
                     {s.title}

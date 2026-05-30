@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Play, Pause, Monitor } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import { easing, duration } from '@/config/motion';
 import DemoShell from './DemoShell';
 import DashboardScreen from './screens/DashboardScreen';
@@ -131,10 +131,9 @@ export default function InteractiveDemo() {
           transition={{ duration: duration.slow, ease: easing.signature }}
           className="text-center mb-10 sm:mb-14"
         >
-          <div className="inline-flex items-center gap-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-3.5 py-1.5 mb-5">
-            <Monitor className="h-3.5 w-3.5 text-cyan-400" />
-            <span className="text-xs font-medium text-cyan-300">Interactive Product Tour</span>
-          </div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            Interactive Product Tour
+          </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
             See FormaOS in Action
           </h2>
@@ -217,7 +216,7 @@ export default function InteractiveDemo() {
                   aria-label={`Show ${screenLabels[id]} screen`}
                   className={`flex-shrink-0 px-3 py-2 text-[11px] font-medium border-b-2 transition-colors ${
                     activeScreen === id
-                      ? 'text-cyan-300 border-cyan-400'
+                      ? 'text-white border-white/40'
                       : 'text-muted-foreground/60 border-transparent hover:text-foreground/70'
                   }`}
                 >
@@ -254,7 +253,7 @@ export default function InteractiveDemo() {
               aria-label={`Show ${screenLabels[id]} screen`}
               className={`group flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition-all ${
                 activeScreen === id
-                  ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/20'
+                  ? 'bg-white/[0.05] text-white border border-white/[0.08]'
                   : 'text-muted-foreground/60 hover:text-foreground/70 border border-transparent'
               }`}
             >

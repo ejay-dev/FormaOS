@@ -105,7 +105,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
         className="absolute w-[350px] h-[350px] sm:w-[500px] sm:h-[500px] lg:w-[650px] lg:h-[650px] rounded-full pointer-events-none"
         style={{
           opacity: glowIntensity,
-          background: 'radial-gradient(circle, rgba(139,92,246,0.25) 0%, rgba(59,130,246,0.1) 45%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(161,161,170,0.22) 0%, rgba(161,161,170,0.08) 45%, transparent 70%)',
           filter: tierConfig.enableBlur ? 'blur(50px)' : 'blur(25px)',
         }}
       />
@@ -136,14 +136,14 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
             {/* Outer ring */}
             <motion.div
               className="absolute inset-0 rounded-full pointer-events-none"
-              style={{ rotateZ: ringRotation, border: '1px solid rgba(139,92,246,0.2)' }}
+              style={{ rotateZ: ringRotation, border: '1px solid rgba(255,255,255,0.12)' }}
             >
               {[0, 90, 180, 270].map((angle) => {
                 const rad = (angle * Math.PI) / 180;
                 return (
                   <div
                     key={angle}
-                    className="absolute w-2 h-2 rounded-full bg-violet-400/50 shadow-[0_0_6px_rgba(139,92,246,0.4)]"
+                    className="absolute w-2 h-2 rounded-full bg-slate-400/50 shadow-[0_0_6px_rgba(161,161,170,0.4)]"
                     style={{
                       top: `${50 + Math.sin(rad) * 50}%`,
                       left: `${50 + Math.cos(rad) * 50}%`,
@@ -162,7 +162,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
 
             {/* Glass shell */}
             <div
-              className="absolute inset-[14%] rounded-[28px] sm:rounded-[36px] border border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-[0_0_60px_rgba(139,92,246,0.08),inset_0_1px_0_rgba(255,255,255,0.08)]"
+              className="absolute inset-[14%] rounded-[28px] sm:rounded-[36px] border border-white/[0.08] bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-[0_0_60px_rgba(161,161,170,0.08),inset_0_1px_0_rgba(255,255,255,0.08)]"
               style={{ backdropFilter: tierConfig.enableBlur ? 'blur(10px)' : undefined }}
             >
               <div className="absolute inset-0 rounded-[inherit] bg-gradient-to-tr from-transparent via-white/[0.03] to-transparent" />
@@ -170,7 +170,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
 
             {/* ─── UI Fragment: Controls (top-left) ─── */}
             <motion.div
-              className="absolute rounded-xl border border-white/[0.1] bg-gradient-to-br from-cyan-500/[0.08] to-transparent p-2.5 sm:p-3"
+              className="absolute rounded-xl border border-white/[0.1] bg-gradient-to-br from-white/[0.05] to-transparent p-2.5 sm:p-3"
               style={{
                 top: '20%', left: '16%', width: '40%',
                 opacity: fragmentOpacity, y: layer1Y, x: layer1X,
@@ -179,7 +179,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                 <span className="text-[9px] sm:text-[10px] font-semibold text-white/70">Controls</span>
               </div>
               <div className="space-y-1">
@@ -195,7 +195,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
 
             {/* ─── UI Fragment: Evidence (center) ─── */}
             <motion.div
-              className="absolute rounded-xl border border-white/[0.1] bg-gradient-to-br from-emerald-500/[0.08] to-transparent p-2.5 sm:p-3"
+              className="absolute rounded-xl border border-white/[0.1] bg-gradient-to-br from-white/[0.05] to-transparent p-2.5 sm:p-3"
               style={{
                 top: '40%', left: '32%', width: '38%',
                 opacity: fragmentOpacity, y: layer2Y,
@@ -204,7 +204,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                 <span className="text-[9px] sm:text-[10px] font-semibold text-white/70">Evidence</span>
               </div>
               <div className="space-y-1">
@@ -219,7 +219,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
 
             {/* ─── UI Fragment: Audit (bottom-right) ─── */}
             <motion.div
-              className="absolute rounded-xl border border-white/[0.1] bg-gradient-to-br from-violet-500/[0.08] to-transparent p-2.5 sm:p-3"
+              className="absolute rounded-xl border border-white/[0.1] bg-gradient-to-br from-white/[0.05] to-transparent p-2.5 sm:p-3"
               style={{
                 top: '55%', right: '14%', width: '40%',
                 opacity: fragmentOpacity, y: layer3Y, x: layer3X,
@@ -228,16 +228,16 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-violet-400 shadow-[0_0_6px_rgba(139,92,246,0.6)]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                 <span className="text-[9px] sm:text-[10px] font-semibold text-white/70">Audit</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative w-8 h-8 sm:w-10 sm:h-10">
                   <svg viewBox="0 0 48 48" className="w-full h-full -rotate-90">
                     <circle cx="24" cy="24" r="20" fill="none" strokeWidth="3" className="stroke-white/[0.06]" />
-                    <circle cx="24" cy="24" r="20" fill="none" strokeWidth="3" strokeLinecap="round" className="stroke-violet-400"
+                    <circle cx="24" cy="24" r="20" fill="none" strokeWidth="3" strokeLinecap="round" className="stroke-slate-300"
                       strokeDasharray={2 * Math.PI * 20} strokeDashoffset={2 * Math.PI * 20 * 0.06}
-                      style={{ filter: 'drop-shadow(0 0 3px rgba(139,92,246,0.4))' }}
+                      style={{ filter: 'drop-shadow(0 0 3px rgba(161,161,170,0.4))' }}
                     />
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -265,7 +265,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
             {allowInteractiveMotion && [0, 72, 144, 216, 288].map((angle, i) => (
               <motion.div
                 key={angle}
-                className="absolute top-1/2 left-1/2 w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cyan-300/50 pointer-events-none"
+                className="absolute top-1/2 left-1/2 w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-slate-300/50 pointer-events-none"
                 animate={{
                   x: [Math.cos((angle * Math.PI) / 180) * 100, Math.cos(((angle + 360) * Math.PI) / 180) * 100],
                   y: [Math.sin((angle * Math.PI) / 180) * 100, Math.sin(((angle + 360) * Math.PI) / 180) * 100],
@@ -289,7 +289,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
         style={{ scale: productScale, opacity: productOpacity, y: productY }}
       >
         <div
-          className="rounded-2xl sm:rounded-3xl border border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-[0_0_80px_rgba(139,92,246,0.1),0_24px_48px_rgba(0,0,0,0.4)] overflow-hidden"
+          className="rounded-2xl sm:rounded-3xl border border-white/[0.1] bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-[0_0_80px_rgba(161,161,170,0.1),0_24px_48px_rgba(0,0,0,0.4)] overflow-hidden"
           style={{ backdropFilter: tierConfig.enableBlur ? 'blur(14px)' : undefined }}
         >
           {/* Browser chrome */}
@@ -311,8 +311,8 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
             {/* Sidebar */}
             <div className="hidden sm:flex flex-col w-[130px] lg:w-[150px] border-r border-white/[0.04] p-2.5 gap-1">
               {['Dashboard', 'Controls', 'Evidence', 'Tasks', 'Reports', 'Settings'].map((item, i) => (
-                <div key={item} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[10px] ${i === 0 ? 'bg-violet-500/15 text-violet-300' : 'text-white/30'}`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-violet-400' : 'bg-white/15'}`} />
+                <div key={item} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[10px] ${i === 0 ? 'bg-white/[0.05] text-white/80' : 'text-white/30'}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-slate-300' : 'bg-white/15'}`} />
                   {item}
                 </div>
               ))}
@@ -334,7 +334,7 @@ function ComplianceCoreObjectInner({ scrollProgress, className = '' }: Complianc
               {/* Stats */}
               <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-3">
                 {[
-                  { v: '142', l: 'Controls', c: 'text-cyan-400' },
+                  { v: '142', l: 'Controls', c: 'text-slate-300' },
                   { v: '98%', l: 'Evidence', c: 'text-emerald-400' },
                   { v: '3', l: 'Findings', c: 'text-amber-400' },
                 ].map((s) => (

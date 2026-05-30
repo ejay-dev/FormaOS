@@ -240,7 +240,7 @@ export default function ConstructionComplianceContent() {
           scrim="center"
         />
         <IndustryHero
-        accent="amber-orange"
+        accent="cyan-violet"
         statsBar={
           <HeroStatsBar
             stats={[
@@ -256,7 +256,7 @@ export default function ConstructionComplianceContent() {
           <>
             SafeWork Inspection?
             <br />
-            <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="text-foreground">
               You&apos;re Already Prepared.
             </span>
           </>
@@ -511,7 +511,7 @@ export default function ConstructionComplianceContent() {
             description:
               'Add your active construction sites and upload existing SWMS documents. FormaOS creates a versioned SWMS register per site with worker sign-off tracking and review date alerts - ready for any SafeWork inspection.',
             gradient:
-              'from-amber-500/20 to-orange-500/20 border-amber-500/30 text-amber-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Site Setup"
@@ -542,7 +542,7 @@ export default function ConstructionComplianceContent() {
             description:
               'Add subcontractors per project and link their inductions, licences, and insurance. The contractor verification pipeline shows verified vs unverified workers at every site with automatic expiry alerts.',
             gradient:
-              'from-orange-500/20 to-amber-500/20 border-orange-500/30 text-orange-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Contractor Verification"
@@ -573,7 +573,7 @@ export default function ConstructionComplianceContent() {
             description:
               'Multi-site dashboard shows compliance scores across all projects. When an incident occurs, the pipeline tracks it from report through SafeWork notification to investigation and closure. Export structured evidence packs for any inspection.',
             gradient:
-              'from-emerald-500/20 to-amber-500/20 border-emerald-500/30 text-emerald-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Portfolio Compliance"
@@ -737,7 +737,7 @@ export default function ConstructionComplianceContent() {
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
                         i < 3
-                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                          ? 'bg-white/[0.12] text-white border border-white/20'
                           : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
                       }`}
                     >

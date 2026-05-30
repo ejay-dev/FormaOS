@@ -8,7 +8,6 @@ import {
   Handshake,
   ArrowRight,
   CheckCircle2,
-  Sparkles,
 } from 'lucide-react';
 import {
   compliancePlanHref,
@@ -97,8 +96,8 @@ const PILLARS: Pillar[] = [
     title: 'Tasks & Governance',
     lede: 'Named owners, clear SLAs, audit-ready history. Accountability, not spreadsheets.',
     Icon: Workflow,
-    accent: 'from-violet-500 via-fuchsia-400 to-pink-500',
-    glow: 'radial-gradient(circle at 40% 60%, rgba(217,70,239,0.18), transparent 60%)',
+    accent: 'from-zinc-600 via-zinc-700 to-zinc-800',
+    glow: 'radial-gradient(circle at 40% 60%, rgba(161,161,170,0.18), transparent 60%)',
     features: [
       {
         name: 'Owner-based task routing',
@@ -124,8 +123,8 @@ const PILLARS: Pillar[] = [
     title: 'Care Operations',
     lede: 'The wedge. Participants, visits, progress notes, credentials — all in compliance context.',
     Icon: HeartPulse,
-    accent: 'from-pink-500 via-rose-400 to-orange-400',
-    glow: 'radial-gradient(circle at 60% 70%, rgba(244,114,182,0.22), transparent 60%)',
+    accent: 'from-zinc-600 via-zinc-700 to-zinc-800',
+    glow: 'radial-gradient(circle at 60% 70%, rgba(161,161,170,0.18), transparent 60%)',
     features: [
       {
         name: 'Participant, patient & resident records',
@@ -152,8 +151,8 @@ const PILLARS: Pillar[] = [
     title: 'Trust Surface',
     lede: 'Buyer-grade assurance packets, AU-hosted by default, SSO-ready for the enterprise.',
     Icon: Handshake,
-    accent: 'from-emerald-400 via-emerald-500 to-emerald-600',
-    glow: 'radial-gradient(circle at 50% 40%, rgba(16,185,129,0.18), transparent 60%)',
+    accent: 'from-zinc-600 via-zinc-700 to-zinc-800',
+    glow: 'radial-gradient(circle at 50% 40%, rgba(161,161,170,0.18), transparent 60%)',
     features: [
       {
         name: 'Assurance packets',
@@ -221,10 +220,12 @@ export default function FeaturesPillarsPage() {
       {/* Hero */}
       <section className="relative mx-auto max-w-6xl px-6 pt-24 pb-16 sm:pt-32">
         <div className="flex flex-col items-start gap-5">
-          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/5 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cyan-300">
-            <Sparkles className="h-3 w-3" />
-            Features · 5 Pillars
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-white/25" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Features · 5 Pillars
+            </span>
+          </div>
           <h1 className="font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
             One OS for every obligation <br className="hidden sm:block" />
             <span className="text-foreground">
@@ -301,7 +302,7 @@ export default function FeaturesPillarsPage() {
                     </p>
                     {pillar.footnote && (
                       <p
-                        className="text-sm font-medium text-cyan-300/80"
+                        className="text-sm font-medium text-slate-400"
                         dangerouslySetInnerHTML={{ __html: pillar.footnote }}
                       />
                     )}
@@ -316,7 +317,7 @@ export default function FeaturesPillarsPage() {
                       >
                         <div className="flex items-start gap-2">
                           <CheckCircle2
-                            className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300/80"
+                            className="mt-0.5 h-4 w-4 shrink-0 text-slate-400"
                             aria-hidden="true"
                           />
                           <div>
@@ -354,7 +355,7 @@ export default function FeaturesPillarsPage() {
               <thead>
                 <tr className="border-b border-white/10 text-muted-foreground">
                   <th className="py-3 text-left font-medium">Capability</th>
-                  <th className="py-3 text-center font-semibold text-cyan-300">
+                  <th className="py-3 text-center font-semibold text-white">
                     FormaOS
                   </th>
                   <th className="py-3 text-center font-medium">Complispace</th>

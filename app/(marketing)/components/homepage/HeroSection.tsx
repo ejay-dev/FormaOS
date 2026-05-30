@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { duration } from '@/config/motion';
 import { brand } from '@/config/brand';
 import { AuroraBackground } from '@/components/marketing/AuroraBackground';
@@ -170,12 +170,13 @@ export function HeroSection() {
               ? { duration: duration.slow, delay: 0.12 }
               : { duration: 0 }
           }
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-500/10 px-4 py-2.5 backdrop-blur-md"
+          className="mb-7 flex items-center justify-center gap-4"
         >
-          <ShieldCheck className="h-4 w-4 text-cyan-300" />
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 sm:text-sm">
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
             {heroCopy.badgeText}
           </span>
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
         </motion.div>
 
         <motion.h1
@@ -190,7 +191,7 @@ export function HeroSection() {
         >
           <span>{heroCopy.headlinePrimary}</span>
           <br />
-          <span className="text-cyan-200">{heroCopy.headlineAccent}</span>
+          <span className="text-foreground">{heroCopy.headlineAccent}</span>
         </motion.h1>
 
         <motion.p

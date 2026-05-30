@@ -9,9 +9,9 @@ import { duration, easing } from '@/config/motion';
 const signatureEase: [number, number, number, number] = [...easing.signature] as [number, number, number, number];
 
 const PIPELINE_STEPS = [
-  { label: 'Ingest', icon: FileText, color: 'text-cyan-400', borderColor: 'border-cyan-500/25', bgColor: 'bg-cyan-500/8', glowColor: 'shadow-[0_0_12px_rgba(161,161,170,0.15)]' },
-  { label: 'Verify', icon: Shield, color: 'text-violet-400', borderColor: 'border-violet-500/25', bgColor: 'bg-violet-500/8', glowColor: 'shadow-[0_0_12px_rgba(139,92,246,0.15)]' },
-  { label: 'Seal', icon: Lock, color: 'text-emerald-400', borderColor: 'border-emerald-500/25', bgColor: 'bg-emerald-500/8', glowColor: 'shadow-[0_0_12px_rgba(52,211,153,0.15)]' },
+  { label: 'Ingest', icon: FileText, color: 'text-slate-300', borderColor: 'border-white/[0.1]', bgColor: 'bg-white/[0.04]', glowColor: '' },
+  { label: 'Verify', icon: Shield, color: 'text-slate-300', borderColor: 'border-white/[0.1]', bgColor: 'bg-white/[0.04]', glowColor: '' },
+  { label: 'Seal', icon: Lock, color: 'text-slate-300', borderColor: 'border-white/[0.1]', bgColor: 'bg-white/[0.04]', glowColor: '' },
 ];
 
 export function LaserFlowSection() {
@@ -33,8 +33,8 @@ export function LaserFlowSection() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background: `
-            radial-gradient(ellipse 80% 60% at 65% 50%, rgba(139,92,246,0.06) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 80% at 35% 40%, rgba(161,161,170,0.04) 0%, transparent 50%)
+            radial-gradient(ellipse 80% 60% at 65% 50%, rgba(148,163,184,0.05) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 80% at 35% 40%, rgba(148,163,184,0.04) 0%, transparent 50%)
           `,
         }}
       />
@@ -47,10 +47,9 @@ export function LaserFlowSection() {
           transition={sa ? { duration: duration.slow, ease: signatureEase } : { duration: 0 }}
           className="text-center mb-10 sm:mb-14"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-4">
-            <Shield className="w-3.5 h-3.5" />
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Security Pipeline
-          </div>
+          </p>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">
             From event intake to{' '}
             <span className="text-foreground">
@@ -83,7 +82,7 @@ export function LaserFlowSection() {
               ].map((bullet) => (
                 <div key={bullet.text} className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                    <bullet.icon className="w-4 h-4 text-cyan-400/70" />
+                    <bullet.icon className="w-4 h-4 text-slate-400" />
                   </div>
                   <p className="text-sm sm:text-base text-gray-400 leading-relaxed">{bullet.text}</p>
                 </div>

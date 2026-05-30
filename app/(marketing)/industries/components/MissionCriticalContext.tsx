@@ -6,12 +6,12 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { useDeviceTier } from '@/lib/device-tier';
 
 const consequences = [
-  { label: 'Regulatory fines, enforcement action, and legal liability', color: 'bg-rose-400' },
-  { label: 'License suspension, registration cancellation, or accreditation loss', color: 'bg-orange-400' },
-  { label: 'Criminal liability for executives and board members', color: 'bg-amber-400' },
-  { label: 'Service suspension affecting vulnerable participants', color: 'bg-red-400' },
-  { label: 'Reputational damage with media coverage and public disclosure', color: 'bg-yellow-400' },
-  { label: 'Contract termination with government and enterprise buyers', color: 'bg-orange-300' },
+  { label: 'Regulatory fines, enforcement action, and legal liability', color: 'bg-slate-400' },
+  { label: 'License suspension, registration cancellation, or accreditation loss', color: 'bg-slate-400' },
+  { label: 'Criminal liability for executives and board members', color: 'bg-slate-400' },
+  { label: 'Service suspension affecting vulnerable participants', color: 'bg-slate-400' },
+  { label: 'Reputational damage with media coverage and public disclosure', color: 'bg-slate-400' },
+  { label: 'Contract termination with government and enterprise buyers', color: 'bg-slate-400' },
 ];
 
 export function MissionCriticalContext() {
@@ -44,12 +44,9 @@ export function MissionCriticalContext() {
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-              <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-6"
-              >
-                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                 Industry Use
-              </div>
+              </p>
             </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">

@@ -107,14 +107,14 @@ export function TrustSection() {
             {trustSignals.map((stat) => (
               <div
                 key={stat.label}
-                className="group relative p-6 rounded-xl border border-white/[0.06] bg-white/[0.02] text-center overflow-hidden hover:border-teal-400/20 hover:bg-white/[0.04] transition-all duration-300"
+                className="group relative p-6 rounded-xl border border-white/[0.06] bg-white/[0.02] text-center overflow-hidden hover:border-white/10 hover:bg-white/[0.04] transition-all duration-300"
               >
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/0 group-hover:via-teal-400/30 to-transparent transition-all duration-500" />
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/0 group-hover:via-white/20 to-transparent transition-all duration-500" />
 
                 <div className="text-3xl sm:text-4xl font-bold text-white mb-1 tabular-nums">
                   <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                   {stat.unit && (
-                    <span className="text-base text-teal-400 ml-1 font-medium">{stat.unit}</span>
+                    <span className="text-base text-slate-400 ml-1 font-medium">{stat.unit}</span>
                   )}
                 </div>
                 <div className="text-xs text-slate-500">
@@ -130,7 +130,7 @@ export function TrustSection() {
           <div className="grid gap-3 md:grid-cols-3">
             <Link
               href="/trust/packet"
-              className="mk-btn mk-btn-primary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-teal-100"
+              className="mk-btn mk-btn-primary group flex items-center justify-between rounded-2xl px-4 py-3 text-sm text-white"
             >
               <span className="inline-flex items-center gap-2 font-medium">
                 <FileLock2 className="h-4 w-4" />

@@ -36,8 +36,8 @@ const TIERS: TierCard[] = [
     tiltIntensity: 2,
     blur: 2,
     isCenter: false,
-    accentColor: 'text-cyan-400/70',
-    borderColor: 'border-cyan-500/20',
+    accentColor: 'text-slate-400/70',
+    borderColor: 'border-white/10',
     glowColor: '',
     features: [
       { label: 'Core compliance', width: '72%' },
@@ -55,9 +55,9 @@ const TIERS: TierCard[] = [
     tiltIntensity: 4,
     blur: 0,
     isCenter: true,
-    accentColor: 'text-violet-300',
-    borderColor: 'border-violet-400/40',
-    glowColor: '0 0 40px rgba(139,92,246,0.18), 0 0 80px rgba(139,92,246,0.08)',
+    accentColor: 'text-slate-200',
+    borderColor: 'border-white/25',
+    glowColor: '0 0 40px rgba(148,163,184,0.18), 0 0 80px rgba(148,163,184,0.08)',
     features: [
       { label: 'Full framework map', width: '82%' },
       { label: 'Evidence automation', width: '68%' },
@@ -75,8 +75,8 @@ const TIERS: TierCard[] = [
     tiltIntensity: 3,
     blur: 1,
     isCenter: false,
-    accentColor: 'text-emerald-400/70',
-    borderColor: 'border-emerald-500/20',
+    accentColor: 'text-slate-400/70',
+    borderColor: 'border-white/10',
     glowColor: '',
     features: [
       { label: 'Unlimited controls', width: '76%' },
@@ -136,7 +136,7 @@ function PricingHeroVisualInner() {
           animate={{ opacity: [0.12, 0.25, 0.12], scale: [1, 1.06, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <div className="w-full h-full rounded-3xl bg-violet-500/20 blur-3xl" />
+          <div className="w-full h-full rounded-3xl bg-slate-400/20 blur-3xl" />
         </motion.div>
 
         {/* 3D perspective container */}
@@ -221,9 +221,9 @@ function TierCardVisual({
         <div className="mt-4 flex flex-col gap-2">
           {card.features.map((feat, fi) => (
             <div key={fi} className="flex items-center gap-2">
-              <div className={`w-1.5 h-1.5 rounded-full ${card.isCenter ? 'bg-violet-400/50' : 'bg-white/20'}`} />
+              <div className={`w-1.5 h-1.5 rounded-full ${card.isCenter ? 'bg-white/50' : 'bg-white/20'}`} />
               <motion.div
-                className={`h-[3px] rounded-full ${card.isCenter ? 'bg-violet-400/25' : 'bg-white/[0.08]'}`}
+                className={`h-[3px] rounded-full ${card.isCenter ? 'bg-white/25' : 'bg-white/[0.08]'}`}
                 style={{ width: feat.width }}
                 initial={sa ? { scaleX: 0, transformOrigin: 'left' } : false}
                 animate={{ scaleX: 1 }}
@@ -241,14 +241,14 @@ function TierCardVisual({
         <motion.div
           className={`mt-auto h-[28px] rounded-lg flex items-center justify-center ${
             card.isCenter
-              ? 'bg-violet-500/25 border border-violet-400/25'
+              ? 'bg-white/[0.12] border border-white/25'
               : 'bg-white/[0.05] border border-white/[0.08]'
           }`}
           initial={sa ? { opacity: 0 } : false}
           animate={{ opacity: 1 }}
           transition={sa ? { duration: 0.5, delay: 1.2 + index * 0.15 } : { duration: 0 }}
         >
-          <div className={`w-10 h-[3px] rounded-full ${card.isCenter ? 'bg-violet-400/30' : 'bg-white/10'}`} />
+          <div className={`w-10 h-[3px] rounded-full ${card.isCenter ? 'bg-white/30' : 'bg-white/10'}`} />
         </motion.div>
       </div>
     </motion.div>

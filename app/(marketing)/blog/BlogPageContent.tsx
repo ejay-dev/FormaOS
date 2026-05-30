@@ -51,16 +51,16 @@ function BlogHeroExtras() {
   return (
     <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
       <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-        <Tag className="w-4 h-4 text-purple-400" />
+        <Tag className="w-4 h-4 text-slate-300" />
         <span>{blogPosts.length} Articles</span>
       </div>
       <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-        <BookOpen className="w-4 h-4 text-pink-400" />
+        <BookOpen className="w-4 h-4 text-slate-300" />
         <span>{categories.length - 1} Categories</span>
       </div>
       {latestPostDate ? (
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
-          <TrendingUp className="w-4 h-4 text-cyan-400" />
+          <TrendingUp className="w-4 h-4 text-slate-300" />
           <span>Last updated {latestPostDate}</span>
         </div>
       ) : null}
@@ -74,9 +74,8 @@ function BlogHero() {
       theme="blog"
       visualContent={<BlogListHeroVisual />}
       badge={{
-        icon: <BookOpen className="w-4 h-4 text-violet-400" />,
+        icon: <BookOpen className="w-4 h-4" />,
         text: 'Insights & Updates',
-        colorClass: 'violet',
       }}
       headline={
         <>
@@ -105,24 +104,24 @@ function FeaturedPost() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12">
         <Link
           href={`/blog/${featuredPost.id}`}
-          className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-3xl"
+          className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-3xl"
           aria-label={`Read ${featuredPost.title}`}
         >
           <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="relative">
-            <div className="relative p-5 sm:p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
+            <div className="relative p-5 sm:p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
               {/* Top accent */}
-              <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
+              <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
               {/* Glow effect on hover */}
               <div className="absolute -inset-1 bg-gradient-to-r from-zinc-600/20 via-zinc-500/20 to-zinc-700/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
 
               <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
                 {/* Category visual */}
-                <div className="relative w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden border border-white/5 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent">
+                <div className="relative w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden border border-white/5 bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent">
                   <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent" />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-                      <FeaturedIcon className="w-16 h-16 text-purple-400" />
+                      <FeaturedIcon className="w-16 h-16 text-slate-300" />
                     </div>
                   </div>
                   <div className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/40 backdrop-blur-sm px-3 py-1 text-xs text-white/80 border border-white/10">
@@ -134,7 +133,7 @@ function FeaturedPost() {
                 {/* Content */}
                 <div className="flex-1 space-y-6">
                   <div className="flex items-center gap-4">
-                    <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-xs font-medium">
+                    <span className="px-3 py-1 rounded-full bg-white/[0.08] border border-white/10 text-slate-200 text-xs font-medium">
                       Featured
                     </span>
                     <span className="px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-gray-400 text-xs">
@@ -142,7 +141,7 @@ function FeaturedPost() {
                     </span>
                   </div>
 
-                  <h2 className="text-2xl lg:text-3xl font-bold text-white group-hover:text-purple-300 transition-colors leading-tight">
+                  <h2 className="text-2xl lg:text-3xl font-bold text-white group-hover:text-slate-200 transition-colors leading-tight">
                     {featuredPost.title}
                   </h2>
 
@@ -167,7 +166,7 @@ function FeaturedPost() {
 
                   <motion.span
                     whileHover={{ x: 5 }}
-                    className="flex items-center gap-2 text-purple-400 font-medium group/btn"
+                    className="flex items-center gap-2 text-slate-200 font-medium group/btn"
                   >
                     <span>Read Article</span>
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -211,8 +210,8 @@ function CategoryFilter({
               onClick={() => onCategoryChange(category.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === category.id
-                  ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                  : 'bg-white/[0.06] text-gray-400 border border-white/[0.1] hover:border-purple-500/30 hover:text-purple-300'
+                  ? 'bg-white/[0.1] text-white border border-white/20'
+                  : 'bg-white/[0.06] text-gray-400 border border-white/[0.1] hover:border-white/25 hover:text-slate-200'
               }`}
             >
               <span>{category.name}</span>
@@ -226,7 +225,7 @@ function CategoryFilter({
           range={[0.04, 0.34]}
           className="max-w-xl mx-auto"
         >
-          <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-gray-300 focus-within:border-purple-500/40 focus-within:ring-2 focus-within:ring-purple-500/20 transition">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-gray-300 focus-within:border-white/30 focus-within:ring-2 focus-within:ring-white/10 transition">
             <Search className="w-4 h-4 text-gray-400" />
             <input
               value={searchQuery}
@@ -239,7 +238,7 @@ function CategoryFilter({
           <div className="mt-3 flex justify-center">
             <a
               href="/blog/rss.xml"
-              className="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-purple-300 transition"
+              className="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-slate-200 transition"
             >
               <Rss className="w-3.5 h-3.5" aria-hidden="true" />
               Subscribe via RSS
@@ -261,26 +260,26 @@ function BlogCard({ post }: { post: (typeof blogPosts)[0] }) {
   return (
     <Link
       href={`/blog/${post.id}`}
-      className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 rounded-2xl h-full"
+      className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-2xl h-full"
       aria-label={`Read ${post.title}`}
     >
-      <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-purple-500/30 transition-all duration-500 shadow-xl shadow-black/20">
+      <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/20 transition-all duration-500 shadow-xl shadow-black/20">
         {/* Top accent */}
-        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-purple-400/30 transition-colors" />
+        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-white/25 transition-colors" />
 
-        <div className="relative mb-5 h-28 w-full rounded-xl overflow-hidden border border-white/5 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent group-hover:from-purple-500/20 transition-all duration-500">
+        <div className="relative mb-5 h-28 w-full rounded-xl overflow-hidden border border-white/5 bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent group-hover:from-white/[0.1] transition-all duration-500">
           <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 group-hover:bg-white/10 transition-all duration-500">
-              <Icon className="w-8 h-8 text-purple-400 group-hover:text-purple-300 transition-colors" />
+              <Icon className="w-8 h-8 text-slate-300 group-hover:text-slate-200 transition-colors" />
             </div>
           </div>
         </div>
 
         {/* Icon header */}
         <div className="flex items-center justify-between mb-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-purple-400" />
+          <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
+            <Icon className="w-5 h-5 text-slate-300" />
           </div>
           <span className="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-gray-400 text-xs">
             {post.category}
@@ -288,7 +287,7 @@ function BlogCard({ post }: { post: (typeof blogPosts)[0] }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-300 transition-colors line-clamp-2">
+        <h3 className="text-lg font-bold text-white mb-3 group-hover:text-slate-200 transition-colors line-clamp-2">
           {post.title}
         </h3>
 
@@ -311,7 +310,7 @@ function BlogCard({ post }: { post: (typeof blogPosts)[0] }) {
 
         {/* Hover CTA */}
         <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <span className="flex items-center gap-2 text-sm text-purple-400 font-medium">
+          <span className="flex items-center gap-2 text-sm text-slate-200 font-medium">
             <span>Read More</span>
             <ChevronRight className="w-4 h-4" />
           </span>
@@ -339,7 +338,7 @@ function BlogGrid({
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-1/3 -left-32 w-96 h-96 rounded-full bg-purple-500/5 blur-3xl"
+          className="absolute top-1/3 -left-32 w-96 h-96 rounded-full bg-slate-400/5 blur-3xl"
           animate={{
             x: [0, 50, 0],
             y: [0, 30, 0],
@@ -347,7 +346,7 @@ function BlogGrid({
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
-          className="absolute bottom-1/3 -right-32 w-96 h-96 rounded-full bg-cyan-500/5 blur-3xl"
+          className="absolute bottom-1/3 -right-32 w-96 h-96 rounded-full bg-zinc-400/5 blur-3xl"
           animate={{
             x: [0, -50, 0],
             y: [0, -30, 0],
@@ -387,7 +386,7 @@ function BlogGrid({
           >
             <button
               onClick={onLoadMore}
-              className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white font-medium hover:border-purple-500/30 hover:bg-purple-500/10 transition-all"
+              className="flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm text-white font-medium hover:border-white/25 hover:bg-white/[0.08] transition-all"
             >
               <span>Load More Articles</span>
               <ChevronRight className="w-4 h-4" />
@@ -408,7 +407,7 @@ function NewsletterCTA() {
     <section className="mk-section relative">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-purple-500/5 blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-slate-400/5 blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -420,15 +419,12 @@ function NewsletterCTA() {
       <div className="relative max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-purple-400/40 to-transparent" />
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
             <div className="text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/30 mb-6">
-                <BookOpen className="w-4 h-4 text-purple-400" />
-                <span className="text-sm text-purple-400 font-medium">
-                  Stay Informed
-                </span>
-              </div>
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Stay Informed
+              </p>
 
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                 Subscribe to Our Newsletter
@@ -442,16 +438,16 @@ function NewsletterCTA() {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="flex-1 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                  className="flex-1 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-white/30 focus:ring-2 focus:ring-white/10 transition-all"
                 />
                 <motion.button
                   type="submit"
                   whileHover={{
                     scale: 1.05,
-                    boxShadow: '0 0 40px rgba(168, 85, 247, 0.4)',
+                    boxShadow: '0 0 40px rgba(148, 163, 184, 0.25)',
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold flex items-center justify-center gap-2 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-all"
+                  className="px-6 py-3 rounded-full bg-foreground text-background font-semibold flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-all"
                 >
                   <span>Subscribe</span>
                   <ArrowRight className="w-4 h-4" />

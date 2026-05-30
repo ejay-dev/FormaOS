@@ -6,7 +6,6 @@ import {
   Database,
   Users,
   FileCheck,
-  Zap,
   Globe,
   Activity,
 } from 'lucide-react';
@@ -99,7 +98,7 @@ export function AllPlansInclude() {
                   ease: 'easeInOut',
                 }
           }
-          className="absolute top-1/2 left-1/4 -translate-y-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-cyan-500/15 to-transparent blur-3xl"
+          className="absolute top-1/2 left-1/4 -translate-y-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-slate-400/15 to-transparent blur-3xl"
         />
       </div>
 
@@ -111,10 +110,9 @@ export function AllPlansInclude() {
           className="text-center mb-16"
         >
           <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold uppercase tracking-wider mb-6">
-              <Zap className="h-3 w-3 text-cyan-400" />
-              <span className="text-gray-300">Core Foundation</span>
-            </div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Core Foundation
+            </p>
           </ScrollReveal>
 
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
@@ -147,31 +145,31 @@ export function AllPlansInclude() {
                       },
                     }
               }
-              className="group relative text-center p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/[0.08] hover:border-emerald-500/30 transition-all duration-500"
+              className="group relative text-center p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/[0.08] hover:border-white/20 transition-all duration-500"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
+              <div className="absolute inset-0 bg-gradient-to-br from-white/[0.06] to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
 
               {/* Icon container with pulse + glow on hover */}
               <div className="relative w-14 h-14 mx-auto mb-4">
                 {/* Glow ring behind icon – visible on hover */}
-                <div className="absolute inset-[-6px] rounded-2xl bg-emerald-500/0 group-hover:bg-emerald-500/15 transition-all duration-500 blur-md" />
+                <div className="absolute inset-[-6px] rounded-2xl bg-white/0 group-hover:bg-white/10 transition-all duration-500 blur-md" />
                 <motion.div
-                  className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/10 border border-emerald-500/30 flex items-center justify-center"
+                  className="relative w-14 h-14 rounded-2xl bg-gradient-to-br from-white/[0.1] to-white/[0.04] border border-white/15 flex items-center justify-center"
                   whileHover={
                     shouldReduceMotion
                       ? undefined
                       : {
                           scale: [1, 1.15, 1.1],
                           boxShadow: [
-                            '0 0 0px rgba(16,185,129,0)',
-                            '0 0 18px rgba(16,185,129,0.4)',
-                            '0 0 12px rgba(16,185,129,0.25)',
+                            '0 0 0px rgba(148,163,184,0)',
+                            '0 0 18px rgba(148,163,184,0.4)',
+                            '0 0 12px rgba(148,163,184,0.25)',
                           ],
                           transition: { duration: 0.6, ease: 'easeOut' },
                         }
                   }
                 >
-                  <feature.icon className="w-7 h-7 text-emerald-400 transition-colors duration-300 group-hover:text-emerald-300" />
+                  <feature.icon className="w-7 h-7 text-slate-300 transition-colors duration-300 group-hover:text-white" />
                 </motion.div>
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">
@@ -188,7 +186,7 @@ export function AllPlansInclude() {
           range={[0.05, 0.4]}
           className="mt-12 max-w-xl mx-auto"
         >
-          <DemoComplianceChain glowColor="from-emerald-500/15 to-emerald-500/10" />
+          <DemoComplianceChain glowColor="from-white/[0.12] to-white/[0.06]" />
         </ScrollReveal>
 
         {/* Bottom Note */}
@@ -200,7 +198,7 @@ export function AllPlansInclude() {
           <p className="text-gray-400 text-base">
             Every plan delivers the core compliance operating layer your team
             needs.
-            <span className="text-emerald-400 font-medium ml-1">
+            <span className="text-white font-medium ml-1">
               No tier compromises regulatory defensibility.
             </span>{' '}
             Upgrade or downgrade with full data portability, no penalty.

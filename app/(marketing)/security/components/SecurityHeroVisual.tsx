@@ -12,8 +12,8 @@ const SHIELD_H = 140;
 
 const RINGS = [
   { radius: 200, color: 'rgba(161, 161, 170,0.3)', speed: 12, z: -20, parallax: 0.5 },
-  { radius: 260, color: 'rgba(59,130,246,0.25)', speed: 18, z: -40, parallax: 0.7 },
-  { radius: 320, color: 'rgba(139,92,246,0.2)', speed: 25, z: -60, parallax: 1.0 },
+  { radius: 260, color: 'rgba(148,163,184,0.25)', speed: 18, z: -40, parallax: 0.7 },
+  { radius: 320, color: 'rgba(100,116,139,0.2)', speed: 25, z: -60, parallax: 1.0 },
 ] as const;
 
 /** 8 constellation nodes positioned around the vault */
@@ -86,7 +86,7 @@ function SecurityHeroVisualInner() {
         {CONSTELLATION_NODES.map((node, i) => (
           <motion.div
             key={`node-${i}`}
-            className="absolute rounded-full bg-cyan-400/40"
+            className="absolute rounded-full bg-slate-400/40"
             style={{
               width: node.size,
               height: node.size,

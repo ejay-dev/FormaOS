@@ -103,8 +103,8 @@ export default function EnterpriseProofPage() {
         bottomColor="cyan"
         visualContent={
           <CompactHeroIcon
-            icon={<ShieldCheck className="h-8 w-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<ShieldCheck className="h-8 w-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

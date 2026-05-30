@@ -24,11 +24,11 @@ import { useDeviceTier } from '@/lib/device-tier';
 
 /** Inline pulse color values for each industry (Tailwind can't animate these dynamically) */
 const pulseColors: Record<string, string> = {
-  pink: 'rgb(244,114,182)',    // rose/pink-400
-  blue: 'rgb(96,165,250)',     // blue-400
-  green: 'rgb(52,211,153)',    // emerald-400
-  orange: 'rgb(251,146,60)',   // amber/orange-400
-  purple: 'rgb(192,132,252)',  // purple-400
+  pink: 'rgb(148,163,184)',    // slate-400
+  blue: 'rgb(148,163,184)',    // slate-400
+  green: 'rgb(148,163,184)',   // slate-400
+  orange: 'rgb(148,163,184)',  // slate-400
+  purple: 'rgb(148,163,184)',  // slate-400
 };
 
 const industries = [
@@ -44,11 +44,11 @@ const industries = [
       'NDIS Worker Screening + SIRS',
     ],
     color: 'pink',
-    gradient: 'from-pink-500/20 to-pink-500/10',
-    border: 'border-pink-500/20',
-    hoverBorder: 'hover:border-pink-400/40',
-    textColor: 'text-pink-400',
-    dotColor: 'bg-pink-400',
+    gradient: 'from-zinc-700/20 to-zinc-700/10',
+    border: 'border-zinc-600/20',
+    hoverBorder: 'hover:border-white/20',
+    textColor: 'text-slate-300',
+    dotColor: 'bg-slate-400',
     metrics: [
       { label: 'NDIS Practice Standards Modules', value: '8/8' },
       { label: 'Reportable Incident Response', value: '<24h' },
@@ -67,11 +67,11 @@ const industries = [
       'RACGP Accreditation & Privacy Act NDB',
     ],
     color: 'blue',
-    gradient: 'from-blue-500/20 to-blue-500/10',
-    border: 'border-blue-500/20',
-    hoverBorder: 'hover:border-blue-400/40',
-    textColor: 'text-blue-400',
-    dotColor: 'bg-blue-400',
+    gradient: 'from-zinc-700/20 to-zinc-700/10',
+    border: 'border-zinc-600/20',
+    hoverBorder: 'hover:border-white/20',
+    textColor: 'text-slate-300',
+    dotColor: 'bg-slate-400',
     metrics: [
       { label: 'NSQHS Standards Covered', value: '8/8' },
       { label: 'Clinical Governance Tasks', value: '120+' },
@@ -90,11 +90,11 @@ const industries = [
       'Internal Audit + Board Reporting',
     ],
     color: 'green',
-    gradient: 'from-green-500/20 to-green-500/10',
-    border: 'border-green-500/20',
-    hoverBorder: 'hover:border-green-400/40',
-    textColor: 'text-green-400',
-    dotColor: 'bg-green-400',
+    gradient: 'from-zinc-700/20 to-zinc-700/10',
+    border: 'border-zinc-600/20',
+    hoverBorder: 'hover:border-white/20',
+    textColor: 'text-slate-300',
+    dotColor: 'bg-slate-400',
     metrics: [
       { label: 'Regulatory Obligations Tracked', value: '250+' },
       { label: 'Risk Control Coverage', value: '98%' },
@@ -113,11 +113,11 @@ const industries = [
       'Multi-site Incident Reporting',
     ],
     color: 'orange',
-    gradient: 'from-orange-500/20 to-orange-500/10',
-    border: 'border-orange-500/20',
-    hoverBorder: 'hover:border-orange-400/40',
-    textColor: 'text-orange-400',
-    dotColor: 'bg-orange-400',
+    gradient: 'from-zinc-700/20 to-zinc-700/10',
+    border: 'border-zinc-600/20',
+    hoverBorder: 'hover:border-white/20',
+    textColor: 'text-slate-300',
+    dotColor: 'bg-slate-400',
     metrics: [
       { label: 'Safety System Controls', value: '180+' },
       { label: 'Contractor Compliance Rate', value: '99.5%' },
@@ -136,11 +136,11 @@ const industries = [
       'Staff Credential & WWC Tracking',
     ],
     color: 'purple',
-    gradient: 'from-purple-500/20 to-purple-500/10',
-    border: 'border-purple-500/20',
-    hoverBorder: 'hover:border-purple-400/40',
-    textColor: 'text-purple-400',
-    dotColor: 'bg-purple-400',
+    gradient: 'from-zinc-700/20 to-zinc-700/10',
+    border: 'border-zinc-600/20',
+    hoverBorder: 'hover:border-white/20',
+    textColor: 'text-slate-300',
+    dotColor: 'bg-slate-400',
     metrics: [
       { label: 'NQF Quality Areas Covered', value: '7/7' },
       { label: 'Staff Compliance Rate', value: '97%' },
@@ -151,11 +151,11 @@ const industries = [
 
 /** RGB glow values keyed by industry color name */
 const glowRGB: Record<string, string> = {
-  pink: '244,114,182',
-  blue: '96,165,250',
-  green: '52,211,153',
-  orange: '251,146,60',
-  purple: '192,132,252',
+  pink: '148,163,184',
+  blue: '148,163,184',
+  green: '148,163,184',
+  orange: '148,163,184',
+  purple: '148,163,184',
 };
 
 /* ------------------------------------------------------------------ */
@@ -404,12 +404,12 @@ export function IndustryVerticals() {
     <section className="relative py-32 overflow-hidden">
       {/* Ambient Background */}
       <motion.div
-        className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-l from-blue-500/10 to-transparent rounded-full blur-3xl"
+        className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-l from-white/[0.04] to-transparent rounded-full blur-3xl"
         animate={allowAmbientMotion ? { opacity: [0.3, 0.5, 0.3] } : undefined}
         transition={allowAmbientMotion ? { duration: 10, repeat: Infinity, ease: 'easeInOut' } : undefined}
       />
       <motion.div
-        className="absolute bottom-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-r from-emerald-500/10 to-transparent rounded-full blur-3xl"
+        className="absolute bottom-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-r from-white/[0.03] to-transparent rounded-full blur-3xl"
         animate={allowAmbientMotion ? { opacity: [0.2, 0.4, 0.2] } : undefined}
         transition={
           allowAmbientMotion
@@ -427,12 +427,9 @@ export function IndustryVerticals() {
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="text-center mb-16">
             <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-              <div
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
-              >
-                <span className="w-2 h-2 rounded-full bg-blue-400" />
+              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                 Example Verticals
-              </div>
+              </p>
             </ScrollReveal>
 
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">

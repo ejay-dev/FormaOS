@@ -25,12 +25,13 @@ const appBase = brand.seo.appUrl.replace(/\/$/, '');
 // =========================================================
 
 interface HeroBadge {
-  icon: ReactNode;
+  icon?: ReactNode;
   text: string;
   colorClass?: HeroBadgeTone;
 }
 
 type HeroBadgeTone =
+  | 'slate'
   | 'cyan'
   | 'blue'
   | 'violet'
@@ -39,47 +40,6 @@ type HeroBadgeTone =
   | 'rose'
   | 'indigo'
   | 'teal';
-
-const HERO_BADGE_TONE_CLASSES: Record<
-  HeroBadgeTone,
-  {
-    shell: string;
-    text: string;
-  }
-> = {
-  cyan: {
-    shell: 'bg-cyan-500/10 border-cyan-500/30',
-    text: 'text-cyan-400',
-  },
-  blue: {
-    shell: 'bg-blue-500/10 border-blue-500/30',
-    text: 'text-blue-400',
-  },
-  violet: {
-    shell: 'bg-violet-500/10 border-violet-500/30',
-    text: 'text-violet-400',
-  },
-  emerald: {
-    shell: 'bg-emerald-500/10 border-emerald-500/30',
-    text: 'text-emerald-400',
-  },
-  amber: {
-    shell: 'bg-amber-500/10 border-amber-500/30',
-    text: 'text-amber-400',
-  },
-  rose: {
-    shell: 'bg-rose-500/10 border-rose-500/30',
-    text: 'text-rose-400',
-  },
-  indigo: {
-    shell: 'bg-indigo-500/10 border-indigo-500/30',
-    text: 'text-indigo-400',
-  },
-  teal: {
-    shell: 'bg-teal-500/10 border-teal-500/30',
-    text: 'text-teal-400',
-  },
-};
 
 interface HeroCta {
   href: string;
@@ -183,8 +143,6 @@ export function ImmersiveHero({
 
   // Resolve theme
   const t: HeroTheme = typeof theme === 'string' ? getHeroTheme(theme) : theme;
-  const badgeTone = badge?.colorClass ?? 'cyan';
-  const badgeToneClasses = HERO_BADGE_TONE_CLASSES[badgeTone];
   const copyIssues = useMemo(
     () =>
       evaluateEnterpriseCopy({
@@ -344,18 +302,19 @@ export function ImmersiveHero({
               animate={sa ? entranceVariants.visible : undefined}
               className="text-center flex flex-col items-center"
             >
-              {/* Badge */}
+              {/* Eyebrow — restrained hairline-flanked label, no pill/icon/colour */}
               {badge && (
                 <motion.div
                   initial={sa ? { opacity: 0, y: 20 } : false}
                   animate={{ opacity: 1, y: 0 }}
                   transition={sa ? staggerTransition(delays.badge, duration.slow) : { duration: 0 }}
-                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full mb-6 sm:mb-8 backdrop-blur-sm ${badgeToneClasses.shell}`}
+                  className="mb-6 flex items-center justify-center gap-4 sm:mb-8"
                 >
-                  {badge.icon}
-                  <span className={`text-sm font-medium tracking-wide ${badgeToneClasses.text}`}>
+                  <span className="hidden h-px w-10 bg-white/20 sm:block" />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
                     {badge.text}
                   </span>
+                  <span className="hidden h-px w-10 bg-white/20 sm:block" />
                 </motion.div>
               )}
 

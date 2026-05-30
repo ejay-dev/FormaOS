@@ -17,8 +17,8 @@ const FRAMEWORKS = [
   {
     name: 'ISO 27001',
     subtitle: 'International Standard',
-    accent: 'rgb(16,185,129)',    // emerald
-    accentBorder: 'border-emerald-500/20',
+    accent: 'rgb(226,232,240)',   // slate-200
+    accentBorder: 'border-white/20',
     z: 0,
     rotation: 0,
     blur: 0,
@@ -29,8 +29,8 @@ const FRAMEWORKS = [
   {
     name: 'SOC 2',
     subtitle: '',
-    accent: 'rgb(6,182,212)',     // cyan
-    accentBorder: 'border-cyan-500/20',
+    accent: 'rgb(203,213,225)',   // slate-300
+    accentBorder: 'border-white/15',
     z: -15,
     rotation: 4,
     blur: 0.5,
@@ -41,8 +41,8 @@ const FRAMEWORKS = [
   {
     name: 'NIST',
     subtitle: '',
-    accent: 'rgb(59,130,246)',    // blue
-    accentBorder: 'border-blue-500/20',
+    accent: 'rgb(148,163,184)',   // slate-400
+    accentBorder: 'border-white/15',
     z: -30,
     rotation: 8,
     blur: 1,
@@ -53,8 +53,8 @@ const FRAMEWORKS = [
   {
     name: 'HIPAA',
     subtitle: '',
-    accent: 'rgb(139,92,246)',    // violet
-    accentBorder: 'border-violet-500/20',
+    accent: 'rgb(113,113,122)',   // zinc-500
+    accentBorder: 'border-white/10',
     z: -45,
     rotation: -4,
     blur: 1.5,
@@ -65,8 +65,8 @@ const FRAMEWORKS = [
   {
     name: 'GDPR',
     subtitle: '',
-    accent: 'rgb(245,158,11)',    // amber
-    accentBorder: 'border-amber-500/20',
+    accent: 'rgb(100,116,139)',   // slate-500
+    accentBorder: 'border-white/10',
     z: -60,
     rotation: -8,
     blur: 2,

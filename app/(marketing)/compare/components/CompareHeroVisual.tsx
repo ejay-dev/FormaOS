@@ -49,7 +49,7 @@ function CompareHeroVisualInner({ competitor }: CompareHeroVisualProps) {
       z: 0,
       rotateX: rightRotateX,
       rotateY: rightRotateY,
-      borderClass: 'border-emerald-500/30',
+      borderClass: 'border-white/25',
       features: [
         { text: 'Compliance scope', hasCheck: true },
         { text: 'Evidence automation', hasCheck: true },
@@ -68,7 +68,7 @@ function CompareHeroVisualInner({ competitor }: CompareHeroVisualProps) {
               key={p.label}
               className={`w-[180px] h-[220px] rounded-2xl border ${p.borderClass} backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-4`}
             >
-              <span className={`text-xs font-bold ${p.isForma ? 'text-emerald-400' : 'text-white/50'}`}>{p.label}</span>
+              <span className={`text-xs font-bold ${p.isForma ? 'text-white' : 'text-white/50'}`}>{p.label}</span>
             </div>
           ))}
         </div>
@@ -101,7 +101,7 @@ function CompareHeroVisualInner({ competitor }: CompareHeroVisualProps) {
               className={`w-[180px] h-[220px] xl:w-[200px] xl:h-[240px] rounded-2xl border ${p.borderClass} backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-4 flex flex-col`}
             >
               {/* Header */}
-              <span className={`text-xs font-bold tracking-wide ${p.isForma ? 'text-emerald-400' : 'text-white/50'}`}>
+              <span className={`text-xs font-bold tracking-wide ${p.isForma ? 'text-white' : 'text-white/50'}`}>
                 {p.label}
               </span>
 
@@ -116,15 +116,15 @@ function CompareHeroVisualInner({ competitor }: CompareHeroVisualProps) {
                     transition={sa ? { duration: 0.4, delay: 0.8 + i * 0.15 + fi * 0.08, ease: signatureEase } : { duration: 0 }}
                   >
                     {f.hasCheck ? (
-                      <div className="w-3.5 h-3.5 rounded-full bg-emerald-500/30 border border-emerald-500/50 flex items-center justify-center">
-                        <svg viewBox="0 0 12 12" className="w-2 h-2" fill="none" stroke="rgba(52,211,153,0.9)" strokeWidth="2">
+                      <div className="w-3.5 h-3.5 rounded-full bg-white/[0.12] border border-white/30 flex items-center justify-center">
+                        <svg viewBox="0 0 12 12" className="w-2 h-2" fill="none" stroke="rgba(226,232,240,0.9)" strokeWidth="2">
                           <path d="M2.5 6l2.5 2.5 4.5-5" />
                         </svg>
                       </div>
                     ) : (
                       <div className="w-3.5 h-3.5 rounded-full border border-white/20" />
                     )}
-                    <div className={`h-[3px] rounded-full flex-1 ${p.isForma ? 'bg-emerald-400/20' : 'bg-white/[0.06]'}`} />
+                    <div className={`h-[3px] rounded-full flex-1 ${p.isForma ? 'bg-white/20' : 'bg-white/[0.06]'}`} />
                   </motion.div>
                 ))}
               </div>
@@ -133,7 +133,7 @@ function CompareHeroVisualInner({ competitor }: CompareHeroVisualProps) {
               <div className="mt-auto">
                 <div className={`text-center text-[10px] font-medium py-1 rounded-lg ${
                   p.isForma
-                    ? 'bg-emerald-500/15 text-emerald-400/80 border border-emerald-500/20'
+                    ? 'bg-white/[0.08] text-white/80 border border-white/20'
                     : 'bg-white/[0.04] text-white/30 border border-white/[0.06]'
                 }`}>
                   {p.isForma ? 'Full Coverage' : 'Partial'}

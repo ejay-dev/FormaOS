@@ -40,12 +40,12 @@ export default function DPAPage() {
       <CompactHero
         title="Data Processing Agreement"
         description="Customer data processed under the Australian Privacy Act 1988, GDPR, and applicable data protection laws. AU-hosted by default. Signed DPA available for enterprise."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<FileText className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<FileText className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

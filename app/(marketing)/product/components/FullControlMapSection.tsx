@@ -18,8 +18,8 @@ const CONTROL_MAP_STATS = {
 const frameworkChips = [
   {
     id: 'iso',
-    color: 'bg-teal-400',
-    glow: 'shadow-teal-400/40',
+    color: 'bg-slate-400',
+    glow: 'shadow-slate-400/30',
     label: 'ISO 27001',
     count: 10,
   },
@@ -39,52 +39,52 @@ const frameworkChips = [
   },
   {
     id: 'hipaa',
-    color: 'bg-pink-400',
-    glow: 'shadow-pink-400/40',
+    color: 'bg-slate-400',
+    glow: 'shadow-slate-400/30',
     label: 'HIPAA',
     count: 10,
   },
   {
     id: 'gdpr',
-    color: 'bg-violet-400',
-    glow: 'shadow-violet-400/40',
+    color: 'bg-slate-400',
+    glow: 'shadow-slate-400/30',
     label: 'GDPR',
     count: 10,
   },
   {
     id: 'pci',
-    color: 'bg-orange-400',
-    glow: 'shadow-orange-400/40',
+    color: 'bg-zinc-400',
+    glow: 'shadow-zinc-500/30',
     label: 'PCI DSS',
     count: 10,
   },
   {
     id: 'cis',
-    color: 'bg-emerald-400',
-    glow: 'shadow-emerald-400/40',
+    color: 'bg-slate-400',
+    glow: 'shadow-slate-400/30',
     label: 'CIS Controls',
     count: 10,
   },
 ];
 
 const statBlocks = [
-  { label: 'Frameworks', value: String(brand.frameworks.count), accent: 'text-teal-300/80' },
+  { label: 'Frameworks', value: String(brand.frameworks.count), accent: 'text-slate-300/80' },
   { label: 'Controls', value: `${brand.frameworks.controlCount}+`, accent: 'text-zinc-400/80' },
   { label: 'Cross-Links', value: '42', accent: 'text-zinc-400/80' },
-  { label: 'Coverage', value: '100%', accent: 'text-emerald-300/80' },
+  { label: 'Coverage', value: '100%', accent: 'text-slate-300/80' },
 ];
 
 export function FullControlMapSection() {
   return (
     <section className="mk-section relative overflow-hidden py-24 lg:py-32">
       {/* Top edge glow */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/15 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
       {/* Ambient background halos */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(113,113,122,0.06),transparent_65%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(113,113,122,0.04),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(167,139,250,0.03),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(113,113,122,0.03),transparent_50%)]" />
       </div>
 
       <div className="relative z-10 max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-12">
@@ -94,13 +94,9 @@ export function FullControlMapSection() {
           range={[0, 0.3]}
           className="mb-12 text-center lg:mb-16"
         >
-          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm font-medium mb-7">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-400" />
-            </span>
+          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Full Compliance Coverage Map
-          </div>
+          </p>
 
           <h2 className="mb-5 text-2xl font-bold sm:text-3xl lg:text-5xl xl:text-6xl tracking-tight">
             Every Control.{' '}
@@ -150,32 +146,32 @@ export function FullControlMapSection() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(113,113,122,0.10),transparent_55%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(113,113,122,0.07),transparent_40%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_75%,rgba(113,113,122,0.05),transparent_45%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(167,139,250,0.04),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(113,113,122,0.04),transparent_50%)]" />
 
             {/* Dot grid */}
             <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_center,rgba(148,163,184,0.25)_0.8px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(circle_at_center,black_20%,transparent_80%)]" />
 
             {/* Corner accents */}
-            <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-teal-500/6 to-transparent rounded-br-full" />
+            <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-white/[0.04] to-transparent rounded-br-full" />
             <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-tl from-zinc-700/5 to-transparent rounded-tl-full" />
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-zinc-700/4 to-transparent rounded-bl-full" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-violet-500/3 to-transparent rounded-tr-full" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-white/[0.03] to-transparent rounded-tr-full" />
 
             {/* Edge glow lines */}
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-zinc-500/15 to-transparent" />
-            <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-teal-400/10 to-transparent" />
+            <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
             <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-zinc-500/8 to-transparent" />
 
             {/* Top HUD overlay cards (desktop) */}
             <div className="pointer-events-none absolute inset-x-5 top-5 z-20 hidden lg:flex items-start justify-between gap-4">
-              <div className="max-w-[35%] rounded-xl border border-teal-400/12 bg-slate-950/75 px-5 py-3.5 backdrop-blur-md">
+              <div className="max-w-[35%] rounded-xl border border-white/[0.08] bg-slate-950/75 px-5 py-3.5 backdrop-blur-md">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-60" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-teal-400" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-400 opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-slate-400" />
                   </span>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-teal-300/80">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">
                     Full Coverage Map
                   </p>
                 </div>
@@ -229,13 +225,13 @@ export function FullControlMapSection() {
 
             {/* Mobile info cards */}
             <div className="relative z-20 grid gap-2 p-4 sm:hidden">
-              <div className="rounded-xl border border-teal-400/12 bg-slate-950/70 px-4 py-3 backdrop-blur-md">
+              <div className="rounded-xl border border-white/[0.08] bg-slate-950/70 px-4 py-3 backdrop-blur-md">
                 <div className="flex items-center gap-2">
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-400 opacity-60" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-teal-400" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-slate-400 opacity-60" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-slate-400" />
                   </span>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-teal-300/80">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">
                     70+ Controls Mapped
                   </p>
                 </div>

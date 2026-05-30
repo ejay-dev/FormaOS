@@ -32,12 +32,12 @@ export default function DataHandlingPage() {
       <CompactHero
         title="Data Handling"
         description="Procurement-oriented overview of how FormaOS stores and protects data. This page is informational and does not replace your executed agreement."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<Database className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<Database className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />

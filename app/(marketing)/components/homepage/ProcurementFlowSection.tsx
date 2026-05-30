@@ -6,7 +6,6 @@ import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
-  BadgeCheck,
   Building2,
   FileCheck2,
   ShieldCheck,
@@ -56,10 +55,9 @@ export function ProcurementFlowSection() {
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]} className="mx-auto max-w-3xl text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-teal-400/25 bg-teal-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-teal-300">
-            <BadgeCheck className="h-3.5 w-3.5" />
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Procurement Workflow
-          </div>
+          </p>
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
             From evaluation to procurement without narrative drift
           </h2>
@@ -82,19 +80,19 @@ export function ProcurementFlowSection() {
                 {/* Connector arrow between steps (hidden on mobile) */}
                 {idx < procurementFlow.length - 1 && (
                   <div className="absolute top-10 left-[calc(100%_-_8px)] z-20 hidden md:flex items-center">
-                    <ArrowRight className="w-5 h-5 text-teal-400/30" />
+                    <ArrowRight className="w-5 h-5 text-slate-500/40" />
                   </div>
                 )}
 
                 <motion.div
                   whileHover={{ y: -4 }}
-                  className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 hover:border-teal-400/20 hover:bg-white/[0.04] transition-all duration-300 h-full"
+                  className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 hover:border-white/10 hover:bg-white/[0.04] transition-all duration-300 h-full"
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="inline-flex items-center justify-center rounded-xl border border-teal-400/20 bg-teal-500/10 p-2.5">
-                      <Icon className="w-5 h-5 text-teal-400" />
+                    <div className="inline-flex items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.05] p-2.5">
+                      <Icon className="w-5 h-5 text-slate-300" />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-teal-400/60">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
                       Step {item.step}
                     </span>
                   </div>
@@ -115,7 +113,7 @@ export function ProcurementFlowSection() {
         {/* Buyer-facing artifacts panel */}
         <ScrollReveal variant="fadeUp" range={[0.05, 0.35]} className="mt-6">
           <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 relative overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
               Buyer-facing artifacts for the evaluation path
             </p>
@@ -123,7 +121,7 @@ export function ProcurementFlowSection() {
               {artifactBadges.map((badge) => (
                 <span
                   key={badge}
-                  className="rounded-full border border-teal-400/20 bg-teal-500/[0.06] px-3 py-1 text-xs text-teal-300"
+                  className="rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-xs text-slate-300"
                 >
                   {badge}
                 </span>

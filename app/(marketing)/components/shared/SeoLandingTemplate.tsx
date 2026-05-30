@@ -127,7 +127,7 @@ export function SeoLandingTemplate({
                   <ul className="mt-5 space-y-2 text-sm text-slate-300">
                     {section.bullets.map((b) => (
                       <li key={b} className="flex items-start gap-2">
-                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-300" />
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                         <span>{b}</span>
                       </li>
                     ))}
@@ -168,7 +168,7 @@ export function SeoLandingTemplate({
                       <ul className="mt-4 space-y-2 text-sm text-slate-300">
                         {section.bullets.map((b) => (
                           <li key={b} className="flex items-start gap-2">
-                            <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-cyan-300" />
+                            <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                             <span>{b}</span>
                           </li>
                         ))}
@@ -198,7 +198,7 @@ export function SeoLandingTemplate({
                 <thead>
                   <tr className="border-b border-white/10">
                     <th className="px-6 py-4 text-slate-400 font-medium">Feature</th>
-                    <th className="px-6 py-4 text-cyan-300 font-semibold">FormaOS</th>
+                    <th className="px-6 py-4 text-white font-semibold">FormaOS</th>
                     <th className="px-6 py-4 text-slate-400 font-medium">{comparison.traditionalLabel}</th>
                   </tr>
                 </thead>
@@ -209,7 +209,7 @@ export function SeoLandingTemplate({
                       className={idx < comparison.rows.length - 1 ? 'border-b border-white/5' : ''}
                     >
                       <td className="px-6 py-4 text-white font-medium">{row.feature}</td>
-                      <td className="px-6 py-4 text-emerald-300">{row.formaos}</td>
+                      <td className="px-6 py-4 text-white">{row.formaos}</td>
                       <td className="px-6 py-4 text-slate-400">{row.traditional}</td>
                     </tr>
                   ))}
@@ -252,7 +252,7 @@ export function SeoLandingTemplate({
                   <GlassCard intensity="normal" className="h-full p-5">
                     <h4 className="text-sm font-semibold text-white">{link.label}</h4>
                     <p className="mt-2 text-xs text-slate-400">{link.description}</p>
-                    <span className="mt-3 inline-flex items-center gap-1 text-xs text-cyan-300">
+                    <span className="mt-3 inline-flex items-center gap-1 text-xs text-slate-400">
                       Learn more <ArrowRight className="h-3 w-3" />
                     </span>
                   </GlassCard>

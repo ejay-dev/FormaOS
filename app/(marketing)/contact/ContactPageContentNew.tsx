@@ -308,9 +308,9 @@ function ContactHero() {
       className="contact-hero--focused"
       theme="contact"
       badge={{
-        icon: <Mail className="w-4 h-4 text-blue-400" />,
+        icon: <Mail className="w-4 h-4 text-slate-300" />,
         text: copy.badge,
-        colorClass: 'blue',
+        colorClass: 'slate',
       }}
       headline={copy.headline}
       subheadline={copy.subheadline}
@@ -350,13 +350,13 @@ function ContactInformation() {
           {/* Email */}
           <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
             <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-blue-500/20 flex items-center justify-center">
-                <Mail className="w-8 h-8 text-blue-400" />
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
+                <Mail className="w-8 h-8 text-slate-300" />
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Email</h3>
               <a
                 href="mailto:support@formaos.com.au"
-                className="text-blue-400 hover:text-blue-300 transition-colors"
+                className="text-slate-300 hover:text-white transition-colors"
               >
                 support@formaos.com.au
               </a>
@@ -366,13 +366,13 @@ function ContactInformation() {
           {/* Phone */}
           <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
             <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
-                <Phone className="w-8 h-8 text-cyan-400" />
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
+                <Phone className="w-8 h-8 text-slate-300" />
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Phone</h3>
               <a
                 href="tel:+61469715062"
-                className="text-cyan-400 hover:text-cyan-300 transition-colors"
+                className="text-slate-300 hover:text-white transition-colors"
               >
                 +61 469 715 062
               </a>
@@ -382,8 +382,8 @@ function ContactInformation() {
           {/* Availability */}
           <ScrollReveal variant="depthSlide" range={[0.08, 0.38]}>
             <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
-                <Clock className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
+                <Clock className="w-8 h-8 text-slate-300" />
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">
                 Availability
@@ -538,13 +538,13 @@ function ContactForm({ submitAction }: ContactFormProps) {
 
               <div className="grid grid-cols-1 gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:grid-cols-3">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-300">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                     Inquiry path
                   </p>
                   <p className="mt-2 text-sm text-white capitalize">{intent}</p>
                 </div>
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-300">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                     Plan in view
                   </p>
                   <p className="mt-2 text-sm text-white">
@@ -552,7 +552,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-cyan-300">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                     Source
                   </p>
                   <p className="mt-2 text-sm text-white">
@@ -580,7 +580,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                       fieldErrors.name ? 'name-error' : undefined
                     }
                     onChange={() => clearErrorOn('name')}
-                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all ${
                       fieldErrors.name
                         ? 'border-rose-500/70'
                         : 'border-white/10'
@@ -615,7 +615,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                       fieldErrors.email ? 'email-error' : undefined
                     }
                     onChange={() => clearErrorOn('email')}
-                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all ${
                       fieldErrors.email
                         ? 'border-rose-500/70'
                         : 'border-white/10'
@@ -656,7 +656,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                         : undefined
                     }
                     onChange={() => clearErrorOn('organization')}
-                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                    className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all ${
                       fieldErrors.organization
                         ? 'border-rose-500/70'
                         : 'border-white/10'
@@ -683,7 +683,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                   <select
                     id="industry"
                     name="industry"
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all"
                   >
                     <option value="" className="bg-[#0a0f1c]">
                       Select industry
@@ -719,7 +719,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                     id="primaryNeed"
                     name="primaryNeed"
                     defaultValue={defaultPrimaryNeedForIntent(intent)}
-                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all"
                   >
                     <option value="" className="bg-[#0a0f1c]">
                       Select focus
@@ -753,7 +753,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <select
                   id="timeline"
                   name="timeline"
-                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3 bg-white/[0.05] border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all"
                 >
                   <option value="" className="bg-[#0a0f1c]">
                     Select timeline
@@ -791,7 +791,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                     fieldErrors.message ? 'message-error' : undefined
                   }
                   onChange={() => clearErrorOn('message')}
-                  className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none ${
+                  className={`w-full px-4 py-3 bg-white/[0.05] border rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all resize-none ${
                     fieldErrors.message
                       ? 'border-rose-500/70'
                       : 'border-white/10'
@@ -813,7 +813,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 px-6 rounded-lg bg-blue-700 hover:bg-blue-600 disabled:bg-blue-700/50 text-white font-medium transition-all duration-300 flex items-center justify-center gap-2"
+                className="w-full py-4 px-6 rounded-lg bg-white hover:bg-slate-100 disabled:bg-white/50 text-slate-900 font-medium transition-all duration-300 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -886,9 +886,9 @@ function EnterpriseInquiries() {
     <section className="mk-section mk-section--compact relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
-          <div className="text-center p-6 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-purple-500/20 via-white/[0.08] to-white/[0.04] border border-purple-500/30 backdrop-blur-xl">
-            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-500/20 flex items-center justify-center">
-              <Building2 className="w-8 h-8 text-purple-400" />
+          <div className="text-center p-6 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] via-white/[0.06] to-white/[0.04] border border-white/15 backdrop-blur-xl">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
+              <Building2 className="w-8 h-8 text-slate-300" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
               {intent === 'procurement' || intent === 'security-review'
@@ -906,7 +906,7 @@ function EnterpriseInquiries() {
             </p>
             <a
               href="mailto:support@formaos.com.au"
-              className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-medium text-lg transition-colors"
+              className="inline-flex items-center gap-2 text-slate-300 hover:text-white font-medium text-lg transition-colors"
             >
               <Mail className="w-5 h-5" />
               support@formaos.com.au
@@ -931,8 +931,8 @@ function SecurityTrust() {
           range={[0, 0.3]}
           className="text-center"
         >
-          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-cyan-500/20 flex items-center justify-center">
-            <Shield className="w-8 h-8 text-cyan-400" />
+          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
+            <Shield className="w-8 h-8 text-slate-300" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Secure by Design
@@ -976,7 +976,7 @@ function ClosingCTA() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="#demo-form"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-blue-700 hover:bg-blue-600 text-white font-medium transition-all duration-300 w-full sm:w-auto justify-center"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-medium transition-all duration-300 w-full sm:w-auto justify-center"
             >
               {copy.submitLabel}
               <ArrowRight className="w-4 h-4" />

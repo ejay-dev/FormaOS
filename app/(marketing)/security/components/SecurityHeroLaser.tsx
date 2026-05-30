@@ -82,7 +82,7 @@ function SecurityHeroLaserInner() {
           >
             {showWebGL ? (
               <LaserFlow
-                color="#8B5CF6"
+                color="#94A3B8"
                 horizontalBeamOffset={0.0}
                 verticalBeamOffset={-0.05}
                 flowSpeed={0.22}
@@ -104,9 +104,9 @@ function SecurityHeroLaserInner() {
                 className="w-full h-full"
                 style={{
                   background: `
-                    radial-gradient(ellipse 50% 40% at 50% 48%, rgba(139,92,246,0.2) 0%, transparent 70%),
+                    radial-gradient(ellipse 50% 40% at 50% 48%, rgba(161, 161, 170,0.16) 0%, transparent 70%),
                     radial-gradient(ellipse 70% 55% at 50% 45%, rgba(161, 161, 170,0.1) 0%, transparent 65%),
-                    radial-gradient(ellipse 35% 25% at 50% 50%, rgba(139,92,246,0.15) 0%, transparent 50%)
+                    radial-gradient(ellipse 35% 25% at 50% 50%, rgba(161, 161, 170,0.12) 0%, transparent 50%)
                   `,
                 }}
               />

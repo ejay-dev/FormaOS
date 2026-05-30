@@ -280,7 +280,7 @@ export default function ChildcareComplianceContent() {
           scrim="center"
         />
         <IndustryHero
-        accent="emerald-cyan"
+        accent="cyan-violet"
         statsBar={
           <HeroStatsBar
             stats={[
@@ -605,7 +605,7 @@ export default function ChildcareComplianceContent() {
             description:
               'Attach evidence to each quality area element as part of daily operations. When an assessment visit is notified, generate a structured evidence pack per quality area - complete with gap analysis - in one click.',
             gradient:
-              'from-violet-500/20 to-emerald-500/20 border-violet-500/30 text-violet-300',
+              'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Assessment Evidence"
@@ -777,7 +777,7 @@ export default function ChildcareComplianceContent() {
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded-full text-[10px] font-bold ${
                         i < 4
-                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                          ? 'bg-white/[0.12] text-white border border-white/20'
                           : 'bg-white/[0.06] text-slate-500 border border-white/[0.08]'
                       }`}
                     >

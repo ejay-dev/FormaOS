@@ -35,12 +35,12 @@ export default function SubprocessorsPage() {
       <CompactHero
         title="Subprocessors"
         description="Third-party providers used to deliver FormaOS. Change notifications follow the applicable customer agreement."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
-            icon={<Users className="w-8 h-8 text-emerald-400" />}
-            color="52,211,153"
+            icon={<Users className="w-8 h-8 text-slate-300" />}
+            color="148,163,184"
           />
         }
       />
