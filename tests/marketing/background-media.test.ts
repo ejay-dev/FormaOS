@@ -16,16 +16,27 @@ describe('normalizeMarketingPath', () => {
 });
 
 describe('selectMarketingRouteMedia', () => {
-  it('returns exact media entries for known marketing routes', () => {
+  it('returns exact media entries for shared-backdrop routes', () => {
+    // Routes that rely solely on the shared route backdrop (no own
+    // <SectionMedia> hero) still resolve to their tuned image.
     expect(selectMarketingRouteMedia('/')?.imageSrc).toBe(
       '/marketing-media/home.jpg',
     );
-    expect(selectMarketingRouteMedia('/trust')?.imageSrc).toBe(
-      '/marketing-media/trust.jpg',
+    expect(selectMarketingRouteMedia('/about')?.imageSrc).toBe(
+      '/marketing-media/about.jpg',
     );
-    expect(selectMarketingRouteMedia('/industries')?.imageSrc).toBe(
-      '/marketing-media/industries.jpg',
+    expect(selectMarketingRouteMedia('/blog')?.imageSrc).toBe(
+      '/marketing-media/blog.jpg',
     );
+  });
+
+  it('suppresses the shared backdrop for routes with their own SectionMedia hero', () => {
+    // These pages paint their hero photo via <SectionMedia>; returning the
+    // shared backdrop here would double / ghost the image (fix 2026-05-30).
+    expect(selectMarketingRouteMedia('/pricing')).toBeNull();
+    expect(selectMarketingRouteMedia('/trust')).toBeNull();
+    expect(selectMarketingRouteMedia('/industries')).toBeNull();
+    expect(selectMarketingRouteMedia('/security')).toBeNull();
   });
 
   it('does not reuse a catch-all image for unknown or dynamic paths', () => {

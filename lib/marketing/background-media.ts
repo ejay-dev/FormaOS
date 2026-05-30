@@ -226,6 +226,44 @@ const ROUTE_MEDIA: Record<
   },
 };
 
+// Routes whose PAGE already paints its own hero photo via <SectionMedia>
+// (the newer per-section backdrop pattern rolled out 2026-05-29). For these
+// the shared route-level MarketingRouteBackdrop would render the SAME photo a
+// second time at 24% opacity behind the hero — a doubled / ghosted image.
+// Reported 2026-05-30 on /pricing and /trust; a DOM probe across every
+// ROUTE_MEDIA route confirmed all 20 routes below were doubled. They keep
+// their ROUTE_MEDIA entry (canonical per-route image, still used for the
+// hero's own SectionMedia and OG fallbacks) but opt OUT of the shared
+// backdrop here — mirroring the homepage skip in MarketingRouteBackdrop and
+// the industry-page omissions documented above.
+//
+// If a page in this set ever DROPS its own <SectionMedia> hero, remove it
+// here so the shared backdrop comes back. If you add a new <SectionMedia>
+// hero to a route that has a ROUTE_MEDIA entry, add it here too or the photo
+// will double.
+const SELF_HOSTED_HERO_ROUTES = new Set<string>([
+  '/audit-evidence-management',
+  '/contact',
+  '/customer-stories',
+  '/enterprise',
+  '/enterprise-proof',
+  '/evaluate',
+  '/features',
+  '/frameworks',
+  '/govern',
+  '/industries',
+  '/integrations',
+  '/iso-compliance-software',
+  '/operate',
+  '/pricing',
+  '/product',
+  '/prove',
+  '/security',
+  '/soc2-compliance-automation',
+  '/trust',
+  '/what-is-a-compliance-operating-system',
+]);
+
 export function normalizeMarketingPath(pathname: string | null | undefined): string {
   if (!pathname) return '/';
 
@@ -242,6 +280,11 @@ export function selectMarketingRouteMedia(
   pathname: string | null | undefined,
 ): MarketingRouteMedia | null {
   const normalizedPath = normalizeMarketingPath(pathname);
+
+  // Pages that render their own <SectionMedia> hero opt out of the shared
+  // route backdrop so the hero photo is not painted twice (see set above).
+  if (SELF_HOSTED_HERO_ROUTES.has(normalizedPath)) return null;
+
   const entry = ROUTE_MEDIA[normalizedPath];
 
   if (!entry) return null;
