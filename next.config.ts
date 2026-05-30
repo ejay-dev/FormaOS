@@ -176,6 +176,20 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // Build assets (JS/CSS chunks, fonts, media) must stay crawlable so
+        // Googlebot can render pages, but they should never be *indexed* as
+        // standalone documents. Without this, every `/_next/static/chunks/
+        // *.js?dpl=…` URL Googlebot discovers lands in Search Console's
+        // "Crawled - currently not indexed" bucket (85 such assets as of the
+        // 2026-05-30 GSC review), drowning the report and wasting crawl
+        // budget. `X-Robots-Tag: noindex` is the render-safe fix — the asset
+        // is still fetched for rendering, just not eligible to appear in
+        // search. (We deliberately do NOT `Disallow` these in robots.txt;
+        // blocking the fetch would break Google's render + Core Web Vitals.)
+        source: '/_next/static/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
+      },
+      {
         // Security headers for all routes (marketing + app)
         source: '/:path*',
         headers: [
