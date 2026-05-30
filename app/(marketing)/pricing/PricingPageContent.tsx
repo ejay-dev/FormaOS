@@ -202,12 +202,6 @@ function HowPricingWorks() {
                 key={step.title}
                 className="group relative overflow-hidden rounded-3xl border border-white/[0.07] bg-gradient-to-br from-white/[0.04] to-white/[0.01] p-6 transition-colors duration-300 hover:border-white/[0.14]"
               >
-                {/* Corner accents */}
-                <span className="pointer-events-none absolute left-2.5 top-2.5 h-2.5 w-2.5 border-l border-t border-white/20" />
-                <span className="pointer-events-none absolute right-2.5 top-2.5 h-2.5 w-2.5 border-r border-t border-white/15" />
-                <span className="pointer-events-none absolute bottom-2.5 left-2.5 h-2.5 w-2.5 border-b border-l border-white/15" />
-                <span className="pointer-events-none absolute bottom-2.5 right-2.5 h-2.5 w-2.5 border-b border-r border-white/20" />
-
                 {/* Stage marker */}
                 <div className="mb-6 flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.06] text-sm text-slate-200">
@@ -259,7 +253,7 @@ export default function PricingPageContent() {
     <MarketingPageShell className="text-white pricing-page-flow">
       {/* Hero */}
       <div className="relative isolate overflow-hidden">
-        <SectionMedia src="/marketing-media/pricing.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
+        <SectionMedia src="/marketing-media/pricing.jpg" objectPosition="50% 35%" opacity={0.5} scrim="center" />
         <PricingHero />
       </div>
 
