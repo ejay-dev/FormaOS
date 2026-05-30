@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import ChildcareComplianceContent from './ChildcareComplianceContent';
-import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 
@@ -110,17 +109,6 @@ export default function ChildcareCompliancePage() {
             childcareServiceSchema,
             childcareFaqSchema,
           ]} />
-      <KeyFacts
-        summary="FormaOS is a compliance operating system for childcare and early learning services under the National Quality Framework — mapped to ACECQA Quality Standards, NQF compliance, educator credentials, and QIP cycles."
-        facts={[
-          { label: 'Frameworks covered', value: 'National Quality Framework (7 Quality Areas), ACECQA Quality Standards, NQF compliance obligations' },
-          { label: 'Educator records', value: 'Working with Children Check, qualification status, and CPD tracked per educator' },
-          { label: 'QIP cycles', value: 'Quality Improvement Plan workflows with assessment and rating preparation' },
-          { label: 'Incident notifications', value: 'Serious incident workflows per Education and Care Services National Law' },
-          { label: 'Hosting', value: 'AU-hosted (Sydney). Child and family data never leaves Australia.' },
-          { label: 'Built for', value: 'Long day care, family day care, OSHC, and preschool operators' },
-        ]}
-      />
       <ChildcareComplianceContent />
     </>
   );

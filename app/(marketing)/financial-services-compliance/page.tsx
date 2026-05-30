@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import FinancialServicesContent from './FinancialServicesContent';
-import { KeyFacts } from '../components/shared/KeyFacts';
 import { breadcrumbSchema, serviceSchema, faqSchema, siteUrl } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 
@@ -114,17 +113,6 @@ export default function FinancialServicesCompliancePage() {
             financialServiceSchema,
             financialFaqSchema,
           ]} />
-      <KeyFacts
-        summary="FormaOS is a compliance operating system for AFS licensees and Australian Credit Licence holders — mapped to ASIC, APRA, and AUSTRAC obligations with breach register, AML/CTF program, and licence-conduct evidence built in."
-        facts={[
-          { label: 'Regulators covered', value: 'ASIC, APRA, AUSTRAC (AML/CTF)' },
-          { label: 'AFS licence conduct', value: 'Corporations Act s912A general obligations mapped to ongoing controls' },
-          { label: 'Breach register', value: 'Reportable Situations regime workflows — 30-day reporting timer built in' },
-          { label: 'AML/CTF', value: 'AUSTRAC compliance program documentation, annual report workflows, ML/TF risk assessment' },
-          { label: 'APRA alignment', value: 'CPS 234 information security, CPS 230 operational risk (where applicable)' },
-          { label: 'Hosting', value: 'AU-hosted (Sydney). Client and account data never leaves Australia.' },
-        ]}
-      />
       <FinancialServicesContent />
     </>
   );
