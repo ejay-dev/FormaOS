@@ -57,7 +57,7 @@ export function FinalCTA() {
           range={[0, 0.35]}
           className="mx-auto mb-12 max-w-3xl text-center"
         >
-          <div className="mb-5 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
+          <div className="mb-5 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
             <span className="h-px w-6 bg-white/25" />
             <span className="text-slate-400">Closing decision</span>
             <span className="text-slate-600">·</span>
@@ -112,11 +112,11 @@ export function FinalCTA() {
                   {/* Stage marker */}
                   <div className="mb-6 flex items-center gap-3">
                     <span
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl border ${accentBorder} bg-white/[0.03] font-mono text-sm ${accentText}`}
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl border ${accentBorder} bg-white/[0.03] text-sm ${accentText}`}
                     >
                       {path.code}
                     </span>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                    <span className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
                       Path / {path.id.toUpperCase()}
                     </span>
                     <span className="ml-auto h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
@@ -188,7 +188,7 @@ export function FinalCTA() {
         <ScrollReveal
           variant="fadeUp"
           range={[0.1, 0.45]}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/[0.06] pt-6 font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500"
+          className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/[0.06] pt-6 text-[10px] uppercase tracking-[0.22em] text-slate-500"
         >
           <span className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />

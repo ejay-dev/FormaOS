@@ -69,35 +69,21 @@ export function PricingTiers() {
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
-          className="mb-14 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end"
+          className="mb-14 max-w-3xl"
         >
-          <div>
-            <div className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
-              <span className="h-px w-6 bg-white/20" />
-              <span className="text-slate-300">Plan catalog</span>
-              <span className="text-slate-600">·</span>
-              <span>4 tiers · 1 architecture</span>
-            </div>
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
-              One compliance OS, four ways to deploy it.
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
-              Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
-              is contracted with procurement and security review. Same
-              compliance engine across every plan — only scope changes.
-            </p>
+          <div className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            <span className="h-px w-8 bg-white/25" />
+            <span className="text-slate-500">Plan catalog</span>
           </div>
-          <div className="hidden rounded-2xl border border-white/[0.06] bg-black/30 px-5 py-4 backdrop-blur-md lg:block">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              Currency
-            </p>
-            <p className="mt-1.5 font-mono text-sm text-white">AUD · GST inc.</p>
-            <div className="mt-3 h-px bg-gradient-to-r from-white/10 to-transparent" />
-            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              Billing
-            </p>
-            <p className="mt-1.5 font-mono text-sm text-white">Monthly · Stripe</p>
-          </div>
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
+            One compliance OS, four ways to deploy it.
+          </h2>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
+            Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
+            is contracted with procurement and security review. Same compliance
+            engine across every plan — only scope changes. Prices in AUD, GST
+            inclusive, billed monthly via Stripe.
+          </p>
         </ScrollReveal>
 
         {/* Tier grid */}
@@ -130,16 +116,9 @@ export function PricingTiers() {
 
                 {/* Header strip */}
                 <div className="flex items-center justify-between border-b border-white/[0.05] bg-white/[0.02] px-6 py-3.5">
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
-                      Tier {number}
-                    </span>
-                    <span
-                      className={`font-mono text-[10px] uppercase tracking-[0.22em] ${visual.accent}`}
-                    >
-                      / {visual.code}
-                    </span>
-                  </div>
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+                    Tier {number}
+                  </span>
                   {tier.badge ? (
                     <span
                       className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${visual.chip}`}
@@ -157,13 +136,13 @@ export function PricingTiers() {
                   <p className="mt-1.5 text-[13px] leading-snug text-slate-400">
                     {tier.audience}
                   </p>
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                  <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-slate-500">
                     {tier.audienceSize}
                   </p>
 
                   {/* Price */}
                   <div className="mt-7 flex items-end gap-2">
-                    <span className="font-mono text-5xl font-semibold tracking-tight text-white">
+                    <span className="text-5xl font-semibold tracking-tight text-white">
                       {priceLabelFor(tier)}
                     </span>
                     <span className="pb-2 text-sm font-medium text-slate-400">
@@ -212,7 +191,7 @@ export function PricingTiers() {
 
                   {/* Features ledger */}
                   <div className="mt-6 border-t border-white/[0.06] pt-5">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
                       Includes
                     </p>
                     <ul className="mt-3 flex-1 space-y-2.5">
@@ -246,10 +225,10 @@ export function PricingTiers() {
           range={[0, 0.4]}
           className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-6"
         >
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
             Prices in AUD · GST inclusive · Stripe-secured payments
           </p>
-          <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+          <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.18em] text-slate-500">
             <span>SSO available on Enterprise</span>
             <span className="text-slate-600">·</span>
             <span>Cancel anytime</span>

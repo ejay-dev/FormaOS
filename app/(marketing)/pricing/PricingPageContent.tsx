@@ -61,7 +61,7 @@ function CostOfNonCompliance() {
           range={[0, 0.35]}
           className="mx-auto mb-12 max-w-3xl text-center"
         >
-          <div className="mb-5 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
+          <div className="mb-5 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
             <span className="h-px w-6 bg-white/25" />
             <span className="text-slate-400">Cost ledger</span>
             <span className="text-slate-600">·</span>
@@ -87,23 +87,17 @@ function CostOfNonCompliance() {
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
             {/* Center divider */}
             <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px bg-gradient-to-b from-transparent via-white/[0.08] to-transparent md:block" />
-            {/* Corner accents */}
-            <span className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-white/20" />
-            <span className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-white/20" />
-            <span className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-white/15" />
-            <span className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-white/15" />
-
             {/* Rail headers */}
             <div className="grid grid-cols-1 border-b border-white/[0.06] md:grid-cols-2">
               <div className="flex items-center gap-3 px-6 py-4">
                 <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
                   Manual / pre-FormaOS
                 </span>
               </div>
               <div className="flex items-center gap-3 border-t border-white/[0.06] px-6 py-4 md:border-t-0 md:border-l">
                 <span className="h-1.5 w-1.5 rounded-full bg-slate-300" />
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-200">
+                <span className="text-[10px] uppercase tracking-[0.22em] text-slate-200">
                   System enforced
                 </span>
               </div>
@@ -119,7 +113,7 @@ function CostOfNonCompliance() {
                   <div className="relative flex items-start gap-4 px-6 py-5">
                     <span className="mt-1.5 block h-1 w-1 shrink-0 rounded-full bg-slate-500" />
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
                         {item.label}
                       </p>
                       <p className="mt-1.5 text-sm text-slate-300">
@@ -130,7 +124,7 @@ function CostOfNonCompliance() {
                   <div className="relative flex items-start gap-4 border-t border-white/[0.04] px-6 py-5 md:border-t-0 md:border-l">
                     <span className="mt-1.5 block h-1 w-1 shrink-0 rounded-full bg-slate-300" />
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
                         Enforced
                       </p>
                       <p className="mt-1.5 text-sm text-slate-200">
@@ -142,13 +136,10 @@ function CostOfNonCompliance() {
               ))}
             </ul>
 
-            {/* Bottom strip */}
-            <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.015] px-6 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              <span>cost-ledger.v2 · 4 anchors</span>
-              <span className="flex items-center gap-2 text-slate-400">
-                <span className="h-1 w-1 rounded-full bg-slate-400" />
-                evidence captured continuously
-              </span>
+            {/* Bottom caption */}
+            <div className="border-t border-white/[0.06] bg-white/[0.015] px-6 py-3.5 text-center text-xs text-slate-500">
+              With FormaOS, evidence is captured continuously as work happens —
+              not reconstructed before an audit.
             </div>
           </div>
         </ScrollReveal>
@@ -172,7 +163,7 @@ function HowPricingWorks() {
           range={[0, 0.35]}
           className="mx-auto mb-14 max-w-3xl text-center"
         >
-          <div className="mb-5 inline-flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
+          <div className="mb-5 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
             <span className="h-px w-6 bg-white/25" />
             <span className="text-slate-400">Pricing pipeline</span>
             <span className="text-slate-600">·</span>
@@ -219,10 +210,10 @@ function HowPricingWorks() {
 
                 {/* Stage marker */}
                 <div className="mb-6 flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.06] font-mono text-sm text-slate-200">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.06] text-sm text-slate-200">
                     {step.code}
                   </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
                     Stage {String(index + 1).padStart(2, '0')}
                   </span>
                   <span className="ml-auto h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
@@ -248,7 +239,7 @@ function HowPricingWorks() {
 
         <ScrollReveal variant="fadeUp" range={[0.1, 0.5]}>
           <div className="mx-auto mt-10 flex max-w-3xl items-center gap-4 rounded-2xl border border-white/[0.08] bg-gradient-to-r from-white/[0.05] via-white/[0.02] to-transparent px-5 py-4 text-sm leading-6 text-slate-300">
-            <span className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
+            <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-slate-400">
               <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
               Output
             </span>

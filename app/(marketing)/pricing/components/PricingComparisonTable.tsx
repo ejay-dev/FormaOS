@@ -425,7 +425,7 @@ function renderCell(value: Cell, featured?: boolean) {
   }
   return (
     <span
-      className={`font-mono text-[12px] ${featured ? 'text-slate-100' : 'text-slate-200'}`}
+      className={`text-[12px] ${featured ? 'text-slate-100' : 'text-slate-200'}`}
     >
       {value}
     </span>
@@ -453,7 +453,7 @@ export function PricingComparisonTable() {
           className="mb-12 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end"
         >
           <div>
-            <div className="mb-5 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500">
+            <div className="mb-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
               <span className="h-px w-6 bg-white/20" />
               <span className="text-slate-300">Capability matrix</span>
               <span className="text-slate-600">·</span>
@@ -468,7 +468,7 @@ export function PricingComparisonTable() {
               audit and it is not listed, ask us.
             </p>
           </div>
-          <div className="hidden lg:flex flex-col items-end gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+          <div className="hidden lg:flex flex-col items-end gap-2 text-[10px] uppercase tracking-[0.18em] text-slate-500">
             <span className="flex items-center gap-2">
               <Check className="h-3 w-3 text-slate-400" />
               <span>Included</span>
@@ -489,14 +489,14 @@ export function PricingComparisonTable() {
           range={[0, 0.4]}
           className="mb-6 hidden flex-wrap items-center gap-2 lg:flex"
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-500">
+          <span className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
             Jump to:
           </span>
           {GROUPS.map((g) => (
             <a
               key={g.code}
               href={`#capability-${slugifyGroupCode(g.code)}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-300 transition hover:border-white/[0.15] hover:bg-white/[0.05] hover:text-white"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-slate-300 transition hover:border-white/[0.15] hover:bg-white/[0.05] hover:text-white"
             >
               {g.title}
               <span className="text-slate-500">· {g.rows.length}</span>
@@ -509,10 +509,10 @@ export function PricingComparisonTable() {
           <div className="relative hidden overflow-hidden rounded-3xl border border-white/[0.07] bg-gradient-to-br from-[#0a1322]/85 via-[#070d1c]/80 to-[#040810]/85 shadow-2xl shadow-black/40 ring-1 ring-white/[0.03] backdrop-blur-sm lg:block">
             {/* Frame title bar */}
             <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-6 py-3">
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
+              <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
                 formaos · capability matrix
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+              <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
                 FY26 · AUD · GST inc.
               </span>
             </div>
@@ -522,7 +522,7 @@ export function PricingComparisonTable() {
                 <tr className="border-b border-white/[0.06] bg-[#070d1c]/95">
                   <th
                     scope="col"
-                    className="w-[34%] px-6 py-5 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500"
+                    className="w-[34%] px-6 py-5 text-left text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500"
                   >
                     Capability
                   </th>
@@ -542,12 +542,12 @@ export function PricingComparisonTable() {
                           {col.label}
                         </span>
                         <span
-                          className={`font-mono text-[10px] uppercase tracking-[0.2em] ${col.accent}`}
+                          className={`text-[10px] uppercase tracking-[0.2em] ${col.accent}`}
                         >
                           / {col.code}
                         </span>
                       </div>
-                      <div className="mt-1 font-mono text-xs text-slate-400">
+                      <div className="mt-1 text-xs text-slate-400">
                         {col.price}
                       </div>
                     </th>
@@ -564,13 +564,13 @@ export function PricingComparisonTable() {
                     >
                       <td className="px-6 py-3.5">
                         <div className="flex items-center gap-3">
-                          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                          <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
                             {group.code}
                           </span>
                           <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/80">
                             {group.title}
                           </span>
-                          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                          <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
                             · {group.rows.length}
                           </span>
                         </div>
@@ -617,7 +617,7 @@ export function PricingComparisonTable() {
             </table>
 
             {/* Footer status bar */}
-            <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.015] px-6 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+            <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.015] px-6 py-3 text-[10px] uppercase tracking-[0.18em] text-slate-500">
               <span>{TOTAL_ROWS} capabilities · {GROUPS.length} categories</span>
               <span>Stripe · SSO · DPA · AU-hosted</span>
             </div>
@@ -635,7 +635,7 @@ export function PricingComparisonTable() {
                 id={`capability-${slugifyGroupCode(group.code)}-mobile`}
                 className="mb-4 flex items-center gap-3 scroll-mt-24"
               >
-                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
                   {group.code}
                 </span>
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">
@@ -663,7 +663,7 @@ export function PricingComparisonTable() {
                               : 'border-white/[0.05] bg-white/[0.02]'
                           }`}
                         >
-                          <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                          <dt className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
                             {col.code}
                           </dt>
                           <dd className="ml-2">
@@ -678,7 +678,7 @@ export function PricingComparisonTable() {
                                 aria-hidden="true"
                               />
                             ) : (
-                              <span className="font-mono text-[11px] text-slate-200">
+                              <span className="text-[11px] text-slate-200">
                                 {row[col.key]}
                               </span>
                             )}

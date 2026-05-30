@@ -35,7 +35,7 @@ export function KeyFacts({
       aria-labelledby="key-facts-heading"
       className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-10"
     >
-      <div className="rounded-2xl border border-white/[0.1] bg-gradient-to-br from-white/[0.05] via-white/[0.03] to-transparent backdrop-blur-sm p-6 sm:p-8">
+      <div className="rounded-2xl border border-white/[0.08] bg-slate-950/80 p-6 backdrop-blur-md sm:p-8">
         <div className="flex items-start gap-3">
           <CheckCircle2
             className="h-5 w-5 flex-shrink-0 text-slate-400 mt-1"
