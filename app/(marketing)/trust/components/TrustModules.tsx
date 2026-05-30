@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShieldCheck, FileLock2, CheckCircle2, ArrowRight } from 'lucide-react';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { MonitoringNodes } from '@/components/marketing/SectionBackgrounds';
 
 const navCards = [
   {
@@ -75,7 +74,6 @@ const assuranceModules = [
 export function TrustModules() {
   return (
     <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-      <MonitoringNodes />
       {/* Trust center navigation cards */}
       <SectionChoreography pattern="alternating" stagger={0.05} className="grid gap-4 lg:grid-cols-4">
           {navCards.map((card) => {

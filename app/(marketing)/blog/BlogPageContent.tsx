@@ -112,9 +112,6 @@ function FeaturedPost() {
               {/* Top accent */}
               <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
-              {/* Glow effect on hover */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-zinc-600/20 via-zinc-500/20 to-zinc-700/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
-
               <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
                 {/* Category visual */}
                 <div className="relative w-full lg:w-1/2 aspect-video rounded-2xl overflow-hidden border border-white/5 bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent">
@@ -335,26 +332,6 @@ function BlogGrid({
 }) {
   return (
     <section className="mk-section relative">
-      {/* Animated background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/3 -left-32 w-96 h-96 rounded-full bg-slate-400/5 blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-1/3 -right-32 w-96 h-96 rounded-full bg-zinc-400/5 blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
       <div className="relative max-w-6xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="blurIn" range={[0, 0.3]}>
           <h2 className="text-2xl font-bold text-white mb-8">
@@ -405,17 +382,6 @@ function BlogGrid({
 function NewsletterCTA() {
   return (
     <section className="mk-section relative">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-slate-400/5 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
       <div className="relative max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">

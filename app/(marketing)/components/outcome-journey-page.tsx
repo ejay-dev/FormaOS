@@ -4,7 +4,6 @@ import {
   ArrowRight,
   CheckCircle2,
   ShieldCheck,
-  Sparkles,
   Target,
 } from 'lucide-react';
 import { Reveal } from '@/components/motion';
@@ -90,7 +89,6 @@ export function OutcomeJourneyPage({
         theme="outcome-journey"
         visualContent={<OutcomeJourneyHeroVisual journeyKey={journeyKey} />}
         badge={{
-          icon: <Sparkles className="h-3.5 w-3.5" />,
           text: badge,
         }}
         headline={title}
@@ -199,7 +197,7 @@ export function OutcomeJourneyPage({
           )}
           <SectionChoreography pattern="cascade" className="grid gap-4 md:grid-cols-2">
             {outcomes.map((outcome) => (
-                <div key={outcome} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-5 transition-colors hover:border-white/20">
+                <div key={outcome} className="rounded-2xl border border-white/[0.08] bg-slate-950/60 backdrop-blur-sm p-5 transition-colors hover:border-white/20">
                   <div className="flex items-start gap-3">
                     <Target className="mt-0.5 h-5 w-5 text-slate-300 flex-shrink-0" />
                     <p className="text-sm leading-relaxed text-slate-200">
@@ -211,7 +209,7 @@ export function OutcomeJourneyPage({
           </SectionChoreography>
 
           <Reveal delay={0.2}>
-            <div className="mt-10 rounded-2xl border border-white/[0.1] bg-white/[0.04] p-5">
+            <div className="mt-10 rounded-2xl border border-white/[0.1] bg-slate-950/60 p-5">
               <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-200">
                 <ShieldCheck className="h-4 w-4" />
                 Enterprise Trust Layer

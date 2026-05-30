@@ -240,7 +240,6 @@ export default function ConstructionComplianceContent() {
           scrim="center"
         />
         <IndustryHero
-        accent="cyan-violet"
         statsBar={
           <HeroStatsBar
             stats={[

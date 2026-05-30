@@ -73,9 +73,13 @@ export function WhatMakesDifferent() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="text-center mb-14">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              What Makes FormaOS Different
-            </p>
+            <div className="mb-4 flex items-center justify-center gap-3">
+              <span className="h-px w-8 bg-white/25" />
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                What Makes FormaOS Different
+              </span>
+              <span className="h-px w-8 bg-white/25" />
+            </div>
 
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
               Not just another{' '}

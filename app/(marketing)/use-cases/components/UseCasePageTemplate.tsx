@@ -5,7 +5,6 @@ import { type ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { SectionHeader } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { GlassCard, HoverLift } from '@/components/motion/EnhancedMotion';
 import { SectionMedia } from '@/components/marketing/SectionMedia';
@@ -176,6 +175,50 @@ const relatedLinksByIndustry: Record<
   ],
 };
 
+/* Plain editorial section header — replaces the rotating-icon glass pill.
+   `variant="rule"` renders a centred hairline-flanked label; `variant="label"`
+   renders a quiet uppercase eyebrow. Headers are varied across the page so the
+   layout never reads as a repeated template. */
+function UseCaseSectionHeader({
+  label,
+  title,
+  subtitle,
+  variant = 'label',
+}: {
+  label: string;
+  title: string;
+  subtitle?: string;
+  variant?: 'label' | 'rule';
+}) {
+  return (
+    <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+      <div className="mx-auto mb-12 max-w-3xl text-center lg:mb-16">
+        {variant === 'rule' ? (
+          <div className="mb-5 flex items-center justify-center gap-3">
+            <span className="h-px w-8 bg-white/20" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              {label}
+            </span>
+            <span className="h-px w-8 bg-white/20" />
+          </div>
+        ) : (
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            {label}
+          </p>
+        )}
+        <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-400">
+            {subtitle}
+          </p>
+        )}
+      </div>
+    </ScrollReveal>
+  );
+}
+
 export function UseCasePageTemplate({
   badge,
   badgeIcon,
@@ -248,10 +291,11 @@ export function UseCasePageTemplate({
 
       <DeferredSection minHeight={460}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Common Challenges"
+          <UseCaseSectionHeader
+            label="Common Challenges"
             title="Where compliance operations typically break down"
             subtitle="Challenges vary by environment, but the failure modes are consistent: ownership gaps, weak evidence chains, and manual reconstruction."
+            variant="rule"
           />
           <div className="grid gap-4 md:grid-cols-2">
             {challenges.map((item, idx) => (
@@ -281,8 +325,8 @@ export function UseCasePageTemplate({
 
       <DeferredSection minHeight={520}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Interactive Demo"
+          <UseCaseSectionHeader
+            label="Interactive Demo"
             title={demoTitle}
             subtitle={demoDescription}
           />
@@ -294,10 +338,11 @@ export function UseCasePageTemplate({
 
       <DeferredSection minHeight={420}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Operational Workflows"
+          <UseCaseSectionHeader
+            label="Operational Workflows"
             title="Execution model"
             subtitle="Run compliance through explicit workflows so tasks, approvals, and evidence remain connected."
+            variant="rule"
           />
           <div className="space-y-4">
             {workflows.map((workflow, idx) => (
@@ -334,8 +379,8 @@ export function UseCasePageTemplate({
 
       <DeferredSection minHeight={560}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Mapped Standards"
+          <UseCaseSectionHeader
+            label="Mapped Standards"
             title="Framework and control coverage"
             subtitle="Maintain audit-ready evidence against the standards your teams are accountable for."
           />
@@ -375,10 +420,11 @@ export function UseCasePageTemplate({
       <DeferredSection minHeight={380}>
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
           {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.6} scrim="center" />}
-          <SectionHeader
-            badge="Measured Impact"
+          <UseCaseSectionHeader
+            label="Measured Impact"
             title="Expected operational outcomes"
             subtitle="Representative outcomes from teams moving compliance from periodic projects to daily operations."
+            variant="rule"
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {metrics.map((metric, idx) => (
@@ -388,7 +434,7 @@ export function UseCasePageTemplate({
                 range={[0, 0.3 + idx * 0.04]}
               >
                 <GlassCard
-                  className="h-full p-6 text-center"
+                  className="h-full p-6 text-center !bg-slate-950/60"
                   intensity="strong"
                 >
                   <div className="text-3xl font-bold text-white">
@@ -413,8 +459,8 @@ export function UseCasePageTemplate({
 
       <DeferredSection minHeight={260}>
         <section className="relative mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-          <SectionHeader
-            badge="Continue Evaluation"
+          <UseCaseSectionHeader
+            label="Continue Evaluation"
             title="Related trust and buying paths"
             subtitle="Use adjacent comparison, trust, and pricing pages to move from industry fit into security review and procurement."
           />
@@ -458,7 +504,7 @@ export function UseCasePageTemplate({
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
       <section className="relative mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
-        <GlassCard intensity="intense" glow className="p-8 text-center sm:p-10">
+        <GlassCard intensity="intense" className="p-8 text-center sm:p-10">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             {ctaTitle}
           </h2>

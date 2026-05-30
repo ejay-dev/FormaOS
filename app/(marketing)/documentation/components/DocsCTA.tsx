@@ -12,22 +12,6 @@ export function DocsCTA() {
 
   return (
     <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-slate-400/5 blur-3xl"
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : { scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }
-          }
-          transition={
-            shouldReduceMotion
-              ? undefined
-              : { duration: 10, repeat: Infinity, ease: 'easeInOut' }
-          }
-        />
-      </div>
-
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">

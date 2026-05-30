@@ -393,25 +393,9 @@ function FAQCategory({ category }: { category: (typeof faqCategories)[0] }) {
 function FAQContent() {
   return (
     <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
-      {/* Animated background gradient orbs */}
+      {/* Static dot-grid hairline texture */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <DotGrid />
-        <motion.div
-          className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-slate-400/5 blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-zinc-400/5 blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-        />
       </div>
 
       <SectionChoreography
@@ -433,17 +417,6 @@ function FAQContent() {
 function FAQCTA() {
   return (
     <section className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-slate-400/5 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
-
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">

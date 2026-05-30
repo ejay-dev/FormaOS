@@ -280,7 +280,6 @@ export default function ChildcareComplianceContent() {
           scrim="center"
         />
         <IndustryHero
-        accent="cyan-violet"
         statsBar={
           <HeroStatsBar
             stats={[

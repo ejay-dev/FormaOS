@@ -1,16 +1,15 @@
 'use client';
 
 import { memo } from 'react';
-import { motion, useReducedMotion, useTransform } from 'framer-motion';
-import { useCursorPosition } from '@/components/motion/CursorContext';
+import { motion, useReducedMotion } from 'framer-motion';
 
 /**
  * FrameworksHeroVisual - "Framework Stack"
  * ─────────────────────────────────────────
  * 5 compliance framework cards stacked in a cascading fan.
  * Front card is detailed; back cards progressively simpler and blurred.
- * Cursor changes fan angle and tilts the deck via rotateX/Y.
- * Desktop-only, pointer-events-none.
+ * Cards settle into the fan on entrance, then hold still — no cursor-driven
+ * tilt or fan-spread reactivity. Desktop-only, pointer-events-none.
  */
 
 const FRAMEWORKS = [
@@ -81,14 +80,6 @@ const GLASS =
 
 function FrameworksHeroVisualInner() {
   const shouldReduceMotion = useReducedMotion();
-  const cursor = useCursorPosition();
-
-  // Overall deck tilt (+-3deg)
-  const rotateY = useTransform(cursor.mouseX, [0, 1], [-3, 3]);
-  const rotateX = useTransform(cursor.mouseY, [0, 1], [3, -3]);
-
-  // Cursor X modulates fan spread (multiplier on card rotation)
-  const fanMultiplier = useTransform(cursor.mouseX, [0, 1], [0.6, 1.4]);
 
   /* ── Static layout for reduced-motion ── */
   if (shouldReduceMotion) {
@@ -141,24 +132,15 @@ function FrameworksHeroVisualInner() {
   /* ── Animated layout ── */
   return (
     <div className="hidden lg:flex items-center justify-center pointer-events-none w-[350px] h-[300px]">
-      <motion.div
+      <div
         className="relative"
         style={{
-          perspective: 800,
-          transformStyle: 'preserve-3d',
           width: 350,
           height: 300,
-          rotateX: cursor.isActive ? rotateX : 0,
-          rotateY: cursor.isActive ? rotateY : 0,
         }}
       >
         {/* Render back-to-front so front card is on top */}
         {[...FRAMEWORKS].reverse().map((fw) => {
-          // Dynamic rotation driven by cursor when active
-          const dynamicRotation = cursor.isActive
-            ? useTransform(fanMultiplier, (m) => fw.rotation * m)
-            : fw.rotation;
-
           return (
             <motion.div
               key={fw.name}
@@ -168,9 +150,6 @@ function FrameworksHeroVisualInner() {
                 height: 100,
                 translateX: '-50%',
                 translateY: '-50%',
-                translateZ: fw.z,
-                y: fw.yOffset,
-                rotate: dynamicRotation,
                 filter: fw.blur > 0 ? `blur(${fw.blur}px)` : undefined,
               }}
               initial={{ rotate: 0, y: 0, opacity: 0, scale: 0.9 }}
@@ -188,11 +167,8 @@ function FrameworksHeroVisualInner() {
             >
               {/* Accent dot */}
               <div
-                className="w-2.5 h-2.5 rounded-full mb-2 shadow-lg"
-                style={{
-                  backgroundColor: fw.accent,
-                  boxShadow: `0 0 8px ${fw.accent}44`,
-                }}
+                className="w-2.5 h-2.5 rounded-full mb-2"
+                style={{ backgroundColor: fw.accent }}
               />
               <span className="text-[11px] text-white/80 font-semibold tracking-wide">
                 {fw.name}
@@ -220,7 +196,7 @@ function FrameworksHeroVisualInner() {
             </motion.div>
           );
         })}
-      </motion.div>
+      </div>
     </div>
   );
 }

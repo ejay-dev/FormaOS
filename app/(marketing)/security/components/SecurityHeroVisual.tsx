@@ -1,8 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { motion, useReducedMotion, useTransform } from 'framer-motion';
-import { useCursorPosition } from '@/components/motion/CursorContext';
+import { motion, useReducedMotion } from 'framer-motion';
 
 // ─── Constants ───
 
@@ -11,9 +10,9 @@ const SHIELD_W = 120;
 const SHIELD_H = 140;
 
 const RINGS = [
-  { radius: 200, color: 'rgba(161, 161, 170,0.3)', speed: 12, z: -20, parallax: 0.5 },
-  { radius: 260, color: 'rgba(148,163,184,0.25)', speed: 18, z: -40, parallax: 0.7 },
-  { radius: 320, color: 'rgba(100,116,139,0.2)', speed: 25, z: -60, parallax: 1.0 },
+  { radius: 200, color: 'rgba(161, 161, 170,0.3)', z: -20 },
+  { radius: 260, color: 'rgba(148,163,184,0.25)', z: -40 },
+  { radius: 320, color: 'rgba(100,116,139,0.2)', z: -60 },
 ] as const;
 
 /** 8 constellation nodes positioned around the vault */
@@ -38,20 +37,16 @@ const CONSTELLATION_LINES = CONSTELLATION_NODES.map((n) => ({
 
 // ─── Component ───
 
+/**
+ * SecurityHeroVisual
+ * ──────────────────
+ * Vault + shield hero artwork. Elements draw in once on entrance; no
+ * perpetual ring rotation, pulsing core glow, or cursor-reactive tilt
+ * (kept enterprise-restrained).
+ */
 function SecurityHeroVisualInner() {
   const shouldReduceMotion = useReducedMotion();
   const animate = !shouldReduceMotion;
-  const { mouseX, mouseY } = useCursorPosition();
-
-  // Vault door cursor reactivity: +-5 degrees
-  const vaultRotateX = useTransform(mouseY, [0, 1], [5, -5]);
-  const vaultRotateY = useTransform(mouseX, [0, 1], [-5, 5]);
-
-  // Per-ring parallax offsets (additional rotation from cursor)
-  const ringOffsets = RINGS.map((ring) => ({
-    rotateX: useTransform(mouseY, [0, 1], [8 * ring.parallax, -8 * ring.parallax]),
-    rotateY: useTransform(mouseX, [0, 1], [-8 * ring.parallax, 8 * ring.parallax]),
-  }));
 
   return (
     <div className="hidden lg:flex items-center justify-center pointer-events-none">
@@ -95,28 +90,16 @@ function SecurityHeroVisualInner() {
               boxShadow: '0 0 6px rgba(161, 161, 170,0.3)',
             }}
             initial={animate ? { opacity: 0, scale: 0 } : false}
-            animate={
-              animate
-                ? { opacity: [0.3, 0.7, 0.3], scale: 1 }
-                : { opacity: 0.5, scale: 1 }
-            }
+            animate={{ opacity: 0.5, scale: 1 }}
             transition={
               animate
-                ? {
-                    opacity: {
-                      duration: 2.5 + i * 0.4,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                      delay: 1.4 + i * 0.1,
-                    },
-                    scale: { duration: 0.4, delay: 1.2 + i * 0.08 },
-                  }
+                ? { duration: 0.4, delay: 1.2 + i * 0.08 }
                 : { duration: 0 }
             }
           />
         ))}
 
-        {/* ── 3 orbiting chain rings ── */}
+        {/* ── 3 concentric chain rings ── */}
         {RINGS.map((ring, i) => (
           <motion.div
             key={`ring-${i}`}
@@ -128,26 +111,15 @@ function SecurityHeroVisualInner() {
               top: `calc(50% - ${ring.radius}px)`,
               border: `2px solid ${ring.color}`,
               transformStyle: 'preserve-3d',
-              rotateX: animate ? ringOffsets[i].rotateX : 0,
-              rotateY: animate ? ringOffsets[i].rotateY : 0,
               translateZ: ring.z,
             }}
             initial={animate ? { opacity: 0, scale: 0.7 } : false}
-            animate={
-              animate
-                ? { opacity: 1, scale: 1, rotate: 360 }
-                : { opacity: 1, scale: 1 }
-            }
+            animate={{ opacity: 1, scale: 1 }}
             transition={
               animate
                 ? {
                     opacity: { duration: 0.6, delay: 0.6 + i * 0.3 },
                     scale: { duration: 0.8, delay: 0.6 + i * 0.3, ease: [0.22, 1, 0.36, 1] },
-                    rotate: {
-                      duration: ring.speed,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    },
                   }
                 : { duration: 0 }
             }
@@ -173,8 +145,6 @@ function SecurityHeroVisualInner() {
             ].join(', '),
             border: '1px solid rgba(255,255,255,0.08)',
             transformStyle: 'preserve-3d',
-            rotateX: animate ? vaultRotateX : 0,
-            rotateY: animate ? vaultRotateY : 0,
           }}
           initial={animate ? { opacity: 0, scale: 0.85, filter: 'blur(12px)' } : false}
           animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
@@ -282,8 +252,8 @@ function SecurityHeroVisualInner() {
             </motion.g>
           </motion.svg>
 
-          {/* Subtle pulsing core glow behind shield */}
-          <motion.div
+          {/* Static core glow behind shield */}
+          <div
             className="absolute rounded-full"
             style={{
               width: 160,
@@ -291,18 +261,8 @@ function SecurityHeroVisualInner() {
               left: 'calc(50% - 80px)',
               top: 'calc(50% - 80px)',
               background:
-                'radial-gradient(circle, rgba(161, 161, 170,0.12) 0%, transparent 70%)',
+                'radial-gradient(circle, rgba(161, 161, 170,0.10) 0%, transparent 70%)',
             }}
-            animate={
-              animate
-                ? { scale: [1, 1.2, 1], opacity: [0.6, 1, 0.6] }
-                : undefined
-            }
-            transition={
-              animate
-                ? { duration: 3, repeat: Infinity, ease: 'easeInOut' }
-                : undefined
-            }
           />
         </motion.div>
       </div>

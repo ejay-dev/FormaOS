@@ -238,7 +238,6 @@ export default function NDISProvidersContent() {
         />
         <IndustryHero
         eyebrow="NDIS Commission Aligned Framework"
-        accent="cyan-blue"
         headline={
           <>
             Stop Dreading

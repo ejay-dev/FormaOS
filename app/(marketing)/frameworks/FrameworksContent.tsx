@@ -237,7 +237,7 @@ export default function FrameworksContent() {
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
           <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
           <ScrollReveal variant="depthScale" range={[0, 0.35]}>
-            <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-slate-950/60 backdrop-blur-sm p-7 lg:p-10">
               <div className="flex items-end justify-between gap-6">
                 <div>
                   <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">

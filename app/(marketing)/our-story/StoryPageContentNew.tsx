@@ -74,37 +74,7 @@ export function StoryHero() {
 // ----------------------------------------------------------------------------
 function FounderQuote() {
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.2, 0.35, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 via-zinc-500/15 to-transparent blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.15, 0.25, 0.15],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-zinc-600/20 via-zinc-500/10 to-transparent blur-3xl"
-        />
-      </div>
-
+    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative isolate z-10 max-w-5xl mx-auto px-6 lg:px-12 overflow-hidden">
         <SectionMedia
           src="/marketing-media/our-story.jpg"
@@ -119,20 +89,17 @@ function FounderQuote() {
           transition={{ duration: duration.slower }}
           className="relative"
         >
-          {/* Glassmorphism Panel */}
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl p-12 lg:p-16 text-center relative overflow-hidden">
-            {/* Decorative glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-700/10 to-zinc-500/5 rounded-3xl" />
-
+          {/* Quote panel — solid scrim over the section photo */}
+          <div className="rounded-3xl border border-white/10 bg-slate-950/65 shadow-2xl p-12 lg:p-16 text-center relative overflow-hidden">
             {/* Quote Icon */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: duration.slow }}
-              className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-zinc-700/20 to-zinc-500/20 border border-zinc-600/30 mb-8"
+              className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl border border-white/10 bg-white/[0.05] mb-8"
             >
-              <Quote className="w-10 h-10 text-zinc-400" />
+              <Quote className="w-10 h-10 text-slate-300" />
             </motion.div>
 
             {/* Quote Text */}
@@ -151,13 +118,13 @@ function FounderQuote() {
               </span>
             </motion.blockquote>
 
-            {/* Gradient divider */}
+            {/* Hairline divider */}
             <motion.div
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.6, duration: duration.slower }}
-              className="w-32 h-1 bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-600 mx-auto rounded-full mb-8"
+              className="w-32 h-px bg-white/20 mx-auto rounded-full mb-8"
             />
 
             {/* Attribution with founder avatar.
@@ -183,7 +150,7 @@ function FounderQuote() {
               <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-white/[0.1]">
                 <div
                   aria-hidden
-                  className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-700/15 to-zinc-500/15 text-base font-semibold text-white/50"
+                  className="absolute inset-0 flex items-center justify-center bg-white/[0.05] text-base font-semibold text-white/50"
                 >
                   EH
                 </div>
@@ -223,27 +190,9 @@ function TheProblem() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-[#0a0f1c]">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-            x: [0, 30, 0],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-1/4 -right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-600/15 to-transparent blur-3xl"
-        />
-      </div>
-
+    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — labelled hairline rule */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -251,9 +200,12 @@ function TheProblem() {
           transition={{ duration: duration.slower }}
           className="mb-16"
         >
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            The Challenge
-          </p>
+          <div className="mb-5 flex items-center gap-3">
+            <span className="h-px w-8 bg-white/25" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              The Challenge
+            </span>
+          </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             The Compliance Industry Solved Storage.
@@ -268,7 +220,7 @@ function TheProblem() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.1 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 mb-10"
+          className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-10"
         >
           <div className="space-y-6">
             <p className="text-lg text-gray-400 leading-relaxed">
@@ -293,7 +245,10 @@ function TheProblem() {
           className="mb-10"
         >
           <p className="text-xl text-white font-semibold mb-6">The result?</p>
-          <SectionChoreography pattern="stagger-wave" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <SectionChoreography
+            pattern="stagger-wave"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
             {problems.map((problem, idx) => (
               <div
                 key={idx}
@@ -340,45 +295,15 @@ function TheApproach() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.15, 0.25, 0.15],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-1/3 -left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 to-transparent blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 14,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 4,
-          }}
-          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-zinc-500/15 to-transparent blur-3xl"
-        />
-      </div>
-
+    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — centered plain label */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slower }}
-          className="mb-16"
+          className="mb-16 text-center"
         >
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Our Approach
@@ -387,9 +312,7 @@ function TheApproach() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             From Policy to Proof
             <br />
-            <span className="text-foreground">
-              Built Into Operations
-            </span>
+            <span className="text-foreground">Built Into Operations</span>
           </h2>
         </motion.div>
 
@@ -399,7 +322,7 @@ function TheApproach() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.1 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-zinc-700/20 via-white/[0.08] to-white/[0.04] rounded-3xl border border-zinc-600/30 p-8 lg:p-10 mb-12"
+          className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-12"
         >
           <p className="text-lg text-gray-400 mb-4">
             FormaOS is not a document system. It is an operational compliance
@@ -408,7 +331,7 @@ function TheApproach() {
           <p className="text-xl text-white font-medium mb-4">
             We designed FormaOS around one principle:
           </p>
-          <p className="text-2xl sm:text-3xl text-zinc-400 font-bold italic leading-tight">
+          <p className="text-2xl sm:text-3xl text-slate-300 font-bold italic leading-tight">
             &ldquo;Compliance should be embedded into how work is done, not
             verified after it is done.&rdquo;
           </p>
@@ -429,10 +352,10 @@ function TheApproach() {
             {capabilities.map((capability, idx) => (
               <div
                 key={idx}
-                className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] border border-white/10 hover:border-zinc-600/30 transition-all duration-300"
+                className="group flex items-center gap-4 p-4 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 transition-colors duration-300"
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-zinc-700/20 to-zinc-500/20 border border-zinc-600/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <capability.icon className="w-5 h-5 text-zinc-400" />
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center">
+                  <capability.icon className="w-5 h-5 text-slate-300" />
                 </div>
                 <span className="text-lg text-gray-300">{capability.text}</span>
               </div>
@@ -473,26 +396,9 @@ function TheApproach() {
 // ----------------------------------------------------------------------------
 function WhyWeBuiltIt() {
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-[#0a0f1c]">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 14,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-1/2 left-1/3 -translate-y-1/2 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-zinc-500/15 to-transparent blur-3xl"
-        />
-      </div>
-
+    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — labelled hairline rule */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -500,9 +406,12 @@ function WhyWeBuiltIt() {
           transition={{ duration: duration.slower }}
           className="mb-16"
         >
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Our Purpose
-          </p>
+          <div className="mb-5 flex items-center gap-3">
+            <span className="h-px w-8 bg-white/25" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Our Purpose
+            </span>
+          </div>
 
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             Designed by Engineers.
@@ -517,7 +426,7 @@ function WhyWeBuiltIt() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.1 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10"
+          className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10"
         >
           <div className="space-y-6">
             <p className="text-lg text-gray-400 leading-relaxed">
@@ -530,7 +439,7 @@ function WhyWeBuiltIt() {
               We built FormaOS to answer one fundamental question:
             </p>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.03] border border-white/10">
+            <div className="p-6 rounded-2xl bg-white/[0.05] border border-white/10">
               <p className="text-2xl text-slate-200 font-semibold italic leading-tight">
                 &ldquo;Can an organization prove, at any moment, that it is
                 operating in line with its obligations?&rdquo;
@@ -587,46 +496,15 @@ function WhatMakesUsDifferent() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.15, 0.25, 0.15],
-            x: [0, -30, 0],
-          }}
-          transition={{
-            duration: 16,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute bottom-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/15 to-transparent blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.18, 0.1],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 4,
-          }}
-          className="absolute top-1/3 -right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-zinc-500/15 to-transparent blur-3xl"
-        />
-      </div>
-
+    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — centered plain label */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slower }}
-          className="mb-16"
+          className="mb-16 text-center"
         >
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             What Sets Us Apart
@@ -635,11 +513,9 @@ function WhatMakesUsDifferent() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
             An Operating System for Compliance,
             <br />
-            <span className="text-foreground">
-              Not a Tool
-            </span>
+            <span className="text-foreground">Not a Tool</span>
           </h2>
-          <p className="text-lg text-gray-400 max-w-3xl">
+          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
             FormaOS is purpose-built for regulated environments that demand
             precision, traceability, and trust.
           </p>
@@ -654,19 +530,19 @@ function WhatMakesUsDifferent() {
           className="mb-12"
         >
           <p className="text-lg text-white font-medium mb-8">Key principles:</p>
-          <SectionChoreography pattern="alternating" className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SectionChoreography
+            pattern="alternating"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
             {principles.map((principle) => (
               <motion.div
                 key={principle.title}
                 whileHover={{ y: -8, transition: { duration: duration.fast } }}
-                className="group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/10 p-6 hover:border-zinc-600/30 transition-all duration-500"
+                className="group rounded-2xl border border-white/10 bg-white/[0.04] p-6 hover:border-white/20 transition-colors duration-300"
               >
-                {/* Hover glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-zinc-700/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10" />
-
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-700/20 to-zinc-500/20 border border-zinc-600/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <principle.icon className="w-6 h-6 text-zinc-400" />
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center">
+                    <principle.icon className="w-6 h-6 text-slate-300" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-white mb-2">
@@ -714,32 +590,15 @@ function OurMission() {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-[#0a0f1c]">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-br from-zinc-500/15 to-transparent blur-3xl"
-        />
-      </div>
-
+    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — centered plain label */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slower }}
-          className="mb-16"
+          className="mb-16 text-center"
         >
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Our Mission
@@ -758,7 +617,7 @@ function OurMission() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.1 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-white/[0.10] via-white/[0.06] to-white/[0.04] rounded-3xl border border-white/15 p-8 lg:p-10 mb-12 text-center"
+          className="rounded-3xl border border-white/10 bg-white/[0.05] p-8 lg:p-10 mb-12 text-center"
         >
           <p className="text-xl text-white font-medium mb-4">
             Our mission is simple:
@@ -775,13 +634,16 @@ function OurMission() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.2 }}
-          className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/10 p-8 lg:p-10 mb-12"
+          className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-12"
         >
           <p className="text-lg text-gray-400 mb-6">
             We believe every organization operating in regulated environments
             deserves systems that:
           </p>
-          <SectionChoreography pattern="stagger-wave" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <SectionChoreography
+            pattern="stagger-wave"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+          >
             {beliefs.map((belief, idx) => (
               <div
                 key={idx}
@@ -808,10 +670,8 @@ function OurMission() {
           </p>
 
           <p className="text-2xl text-white font-semibold">
-            <span className="text-foreground">
-              Provable compliance
-            </span>{' '}
-            built into daily operations.
+            <span className="text-foreground">Provable compliance</span> built
+            into daily operations.
           </p>
         </motion.div>
       </div>
@@ -824,37 +684,7 @@ function OurMission() {
 // ----------------------------------------------------------------------------
 function FinalCTA() {
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        {/* Animated gradient orbs */}
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.2, 0.35, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-br from-zinc-700/20 via-zinc-500/15 to-transparent blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.15, 0.25, 0.15],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-          className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 rounded-full bg-gradient-to-tl from-zinc-600/20 via-zinc-500/10 to-transparent blur-3xl"
-        />
-      </div>
-
+    <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative isolate z-10 max-w-7xl mx-auto px-6 lg:px-12 overflow-hidden">
         <SectionMedia
           src="/marketing-media/about.jpg"
@@ -869,10 +699,10 @@ function FinalCTA() {
           transition={{ duration: duration.slower }}
           className="relative"
         >
-          {/* Executive Panel */}
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden max-w-4xl mx-auto">
+          {/* Executive Panel — solid scrim over the section photo */}
+          <div className="rounded-3xl border border-white/10 bg-slate-950/65 shadow-2xl overflow-hidden max-w-4xl mx-auto">
             {/* Header */}
-            <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
+            <div className="bg-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
               <div className="text-center">
                 <motion.p
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -903,7 +733,7 @@ function FinalCTA() {
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.8, duration: duration.slower }}
-                  className="w-24 h-1 bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-600 mx-auto rounded-full"
+                  className="w-24 h-px bg-white/20 mx-auto rounded-full"
                 />
               </div>
             </div>
@@ -949,7 +779,8 @@ function FinalCTA() {
               </motion.div>
 
               <div className="text-center mt-8 text-sm text-gray-500">
-                Guided compliance plan • Assessment-led onboarding • Procurement-ready review
+                Guided compliance plan • Assessment-led onboarding •
+                Procurement-ready review
               </div>
             </div>
           </div>
@@ -966,27 +797,39 @@ export function StoryContent() {
   return (
     <div className="min-h-screen text-white overflow-hidden">
       <FounderQuote />
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
       <DeferredSection minHeight={400}>
         <TheProblem />
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
       <DeferredSection minHeight={500}>
         <TheApproach />
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
       <DeferredSection minHeight={400}>
         <WhyWeBuiltIt />
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
       <DeferredSection minHeight={420}>
         <WhatMakesUsDifferent />
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
       <DeferredSection minHeight={400}>
         <OurMission />
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
       <DeferredSection minHeight={300}>
         <FinalCTA />
       </DeferredSection>

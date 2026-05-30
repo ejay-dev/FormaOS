@@ -44,9 +44,13 @@ export function EnterpriseSecurity() {
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
             <div className="text-center mb-10">
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                Enterprise-Grade Security
-              </p>
+              <div className="mb-4 flex items-center justify-center gap-3">
+                <span className="h-px w-8 bg-white/25" />
+                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                  Enterprise-Grade Security
+                </span>
+                <span className="h-px w-8 bg-white/25" />
+              </div>
 
               <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-white">
                 Security built into the operating layer

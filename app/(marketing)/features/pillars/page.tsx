@@ -207,16 +207,6 @@ function Cell({ value }: { value: boolean | string }) {
 export default function FeaturesPillarsPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[hsl(var(--canvas-950))] text-foreground">
-      {/* Ambient background */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          background:
-            'radial-gradient(ellipse at 20% 0%, rgba(161,161,170,0.10), transparent 60%), radial-gradient(ellipse at 80% 10%, rgba(113,113,122,0.08), transparent 60%)',
-        }}
-        aria-hidden="true"
-      />
-
       {/* Hero */}
       <section className="relative mx-auto max-w-6xl px-6 pt-24 pb-16 sm:pt-32">
         <div className="flex flex-col items-start gap-5">
@@ -269,12 +259,6 @@ export default function FeaturesPillarsPage() {
                 id={pillar.id}
                 className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[hsl(var(--card))] via-[hsl(var(--panel-2))] to-[hsl(var(--panel-2))] p-8 shadow-premium-lg sm:p-12"
               >
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-70"
-                  style={{ background: pillar.glow }}
-                  aria-hidden="true"
-                />
-
                 <div
                   className={`relative grid gap-10 lg:grid-cols-[1fr,1.2fr] lg:items-center ${
                     isOdd ? 'lg:[&>*:first-child]:order-2' : ''

@@ -91,36 +91,41 @@ export default function CustomerStoriesContent() {
     <MarketingPageShell>
       {/* Hero */}
       <div className="relative isolate overflow-hidden">
-        <SectionMedia src="/marketing-media/customer-stories.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
-      <ImmersiveHero
-        theme="customer-stories"
-        visualContent={<CustomerStoriesHeroVisual />}
-        badge={{
-          icon: <ShieldCheck className="w-4 h-4" />,
-          text: 'Proof in Practice',
-        }}
-        headline={
-          <>
-            Use Case Scenarios from
-            <br />
-            <span className="text-foreground">
-              Regulated Industries
-            </span>
-          </>
-        }
-        subheadline="Illustrative scenarios showing how FormaOS lands in regulated industries — not anonymised customer histories. Real deployments discussed during evaluation."
-        primaryCta={{
-          href: demoHref('customer_stories_hero'),
-          label: PUBLIC_CTA_LABELS.bookDemo,
-        }}
-        secondaryCta={{
-          href: compliancePlanHref('customer_stories_hero'),
-          label: PUBLIC_CTA_LABELS.compliancePlan,
-        }}
-      />
+        <SectionMedia
+          src="/marketing-media/customer-stories.jpg"
+          objectPosition="50% 35%"
+          opacity={0.85}
+          scrim="center"
+        />
+        <ImmersiveHero
+          theme="customer-stories"
+          visualContent={<CustomerStoriesHeroVisual />}
+          badge={{
+            icon: <ShieldCheck className="w-4 h-4" />,
+            text: 'Proof in Practice',
+          }}
+          headline={
+            <>
+              Use Case Scenarios from
+              <br />
+              <span className="text-foreground">Regulated Industries</span>
+            </>
+          }
+          subheadline="Illustrative scenarios showing how FormaOS lands in regulated industries — not anonymised customer histories. Real deployments discussed during evaluation."
+          primaryCta={{
+            href: demoHref('customer_stories_hero'),
+            label: PUBLIC_CTA_LABELS.bookDemo,
+          }}
+          secondaryCta={{
+            href: compliancePlanHref('customer_stories_hero'),
+            label: PUBLIC_CTA_LABELS.compliancePlan,
+          }}
+        />
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Story Cards */}
       <DeferredSection minHeight={500}>
@@ -179,13 +184,15 @@ export default function CustomerStoriesContent() {
         </section>
       </DeferredSection>
 
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
 
       {/* Buyer-ready proof walkthrough CTA */}
       <DeferredSection minHeight={160}>
         <section className="relative mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
-            <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-white">
@@ -212,9 +219,14 @@ export default function CustomerStoriesContent() {
       {/* ROI Proof - Worked Example */}
       <DeferredSection minHeight={500}>
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          <SectionMedia src="/marketing-media/enterprise-proof.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
+          <SectionMedia
+            src="/marketing-media/enterprise-proof.jpg"
+            objectPosition="50% 40%"
+            opacity={0.6}
+            scrim="center"
+          />
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-slate-950/60 backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
                 ROI Proof - Worked Example
               </h3>
@@ -324,9 +336,7 @@ export default function CustomerStoriesContent() {
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
-                  <div className="text-xl font-bold text-white">
-                    $110,840
-                  </div>
+                  <div className="text-xl font-bold text-white">$110,840</div>
                   <div className="text-xs text-slate-400 mt-1">
                     Annual savings
                   </div>
@@ -357,11 +367,10 @@ export default function CustomerStoriesContent() {
               </SectionChoreography>
 
               <p className="mt-4 text-[10px] text-slate-500">
-
-                Illustrative example based on typical NDIS provider metrics as of March 2026.
-                Actual savings vary by organization size, audit frequency, and
-                compliance team structure. We can model your specific scenario
-                during evaluation.
+                Illustrative example based on typical NDIS provider metrics as
+                of March 2026. Actual savings vary by organization size, audit
+                frequency, and compliance team structure. We can model your
+                specific scenario during evaluation.
               </p>
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">

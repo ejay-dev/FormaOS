@@ -48,6 +48,82 @@ import { demoHref, PUBLIC_CTA_LABELS, salesHref } from '@/lib/marketing/cta';
 /* ─── Easing ──────────────────────────────────────────────── */
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
+/* ─── Section Headers ─────────────────────────────────────────
+   Two restrained header treatments — a centred-minimal label and an
+   editorial left-aligned label flanked by a hairline rule. Sections
+   alternate between them so the page does not read as one repeated
+   template.
+   ──────────────────────────────────────────────────────────── */
+
+function CenteredHeader({
+  label,
+  title,
+  emphasis,
+  description,
+  className = 'mb-14',
+}: {
+  label: string;
+  title: string;
+  emphasis: string;
+  description: string;
+  className?: string;
+}) {
+  return (
+    <ScrollReveal
+      variant="depthScale"
+      range={[0, 0.3]}
+      className={`text-center ${className}`}
+    >
+      <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+        {label}
+      </p>
+      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+        {title} <span className="text-slate-400">{emphasis}</span>
+      </h2>
+      <p className="text-base text-slate-400 max-w-xl mx-auto">{description}</p>
+    </ScrollReveal>
+  );
+}
+
+function EditorialHeader({
+  label,
+  title,
+  emphasis,
+  description,
+  className = 'mb-14',
+}: {
+  label: string;
+  title: string;
+  emphasis: string;
+  description: string;
+  className?: string;
+}) {
+  return (
+    <ScrollReveal
+      variant="fadeUp"
+      range={[0, 0.3]}
+      className={`grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:grid-cols-12 lg:items-end ${className}`}
+    >
+      <div className="lg:col-span-7">
+        <div className="mb-5 flex items-center gap-3">
+          <span className="h-px w-8 bg-white/25" />
+          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            {label}
+          </span>
+        </div>
+        <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+          {title} <span className="text-slate-400">{emphasis}</span>
+        </h2>
+      </div>
+      <div className="lg:col-span-5">
+        <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+          {description}
+        </p>
+      </div>
+    </ScrollReveal>
+  );
+}
+
 /* ─── Trust Badges ────────────────────────────────────────── */
 
 interface TrustBadge {
@@ -659,25 +735,12 @@ function SecurityArchitecture() {
       <section className="mk-section relative">
         <ShieldRings />
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-14"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Defense in Depth
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Five-layer{' '}
-              <span className="text-foreground">
-                security architecture
-              </span>
-            </h2>
-            <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Every layer independently secured, monitored, and audited -
-              because enterprise compliance demands defense in depth.
-            </p>
-          </ScrollReveal>
+          <CenteredHeader
+            label="Defense in Depth"
+            title="Five-layer"
+            emphasis="security architecture"
+            description="Every layer independently secured, monitored, and audited - because enterprise compliance demands defense in depth."
+          />
 
           <div className="relative space-y-3">
             {/* Vertical line */}
@@ -780,25 +843,13 @@ function TrustBadgesSection() {
       <section className="mk-section relative">
         <HexGrid />
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-10"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Trust &amp; Compliance
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Built for{' '}
-              <span className="text-foreground">
-                enterprise review
-              </span>
-            </h2>
-            <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Trust signals that procurement, legal, and security teams expect
-              to verify before signing.
-            </p>
-          </ScrollReveal>
+          <CenteredHeader
+            label="Trust & Compliance"
+            title="Built for"
+            emphasis="enterprise review"
+            description="Trust signals that procurement, legal, and security teams expect to verify before signing."
+            className="mb-10"
+          />
 
           <SectionChoreography
             pattern="stagger-wave"
@@ -852,25 +903,13 @@ function SLASection() {
     <DeferredSection minHeight={300}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-10"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Service Commitments
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Enterprise{' '}
-              <span className="text-foreground">
-                service commitments
-              </span>
-            </h2>
-            <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Operational visibility, structured support paths, and enterprise
-              controls - with specific terms defined during procurement.
-            </p>
-          </ScrollReveal>
+          <EditorialHeader
+            label="Service Commitments"
+            title="Enterprise"
+            emphasis="service commitments"
+            description="Operational visibility, structured support paths, and enterprise controls - with specific terms defined during procurement."
+            className="mb-12"
+          />
 
           <SectionChoreography
             pattern="stagger-wave"
@@ -907,25 +946,12 @@ function DeploymentSection() {
     <DeferredSection minHeight={400}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-14"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Deployment Models
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Deploy{' '}
-              <span className="text-foreground">
-                your way
-              </span>
-            </h2>
-            <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Choose the deployment model that matches your security
-              requirements, regulatory constraints, and operational preferences.
-            </p>
-          </ScrollReveal>
+          <CenteredHeader
+            label="Deployment Models"
+            title="Deploy"
+            emphasis="your way"
+            description="Choose the deployment model that matches your security requirements, regulatory constraints, and operational preferences."
+          />
 
           <SectionChoreography
             pattern="cascade"
@@ -1014,25 +1040,13 @@ function ProcurementFAQ() {
     <DeferredSection minHeight={500}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-14"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Procurement Ready
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Security{' '}
-              <span className="text-foreground">
-                questionnaire
-              </span>
-            </h2>
-            <p className="text-base text-slate-400 max-w-xl mx-auto">
-              Answers to the questions your procurement, legal, and information
-              security teams need answered before signing.
-            </p>
-          </ScrollReveal>
+          <EditorialHeader
+            label="Procurement Ready"
+            title="Security"
+            emphasis="questionnaire"
+            description="Answers to the questions your procurement, legal, and information security teams need answered before signing."
+            className="mb-12"
+          />
 
           <div className="space-y-2.5">
             {procurementItems.map((item, i) => {
@@ -1121,38 +1135,7 @@ function EnterpriseCTA() {
           scrim="center"
         />
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
-          <div className="relative rounded-3xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(148,163,184,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
-              }}
-            />
-
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 rounded-full bg-slate-400/30"
-                  style={{
-                    left: `${12 + ((i * 76) % 80)}%`,
-                    top: `${8 + ((i * 53) % 85)}%`,
-                  }}
-                  animate={{
-                    y: [0, -20, 0],
-                    opacity: [0.2, 0.6, 0.2],
-                  }}
-                  transition={{
-                    duration: 4 + i * 0.5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: i * 0.4,
-                  }}
-                />
-              ))}
-            </div>
-
+          <div className="relative rounded-3xl border border-white/[0.06] bg-slate-950/60 overflow-hidden">
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
@@ -1160,7 +1143,7 @@ function EnterpriseCTA() {
                 </p>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Start your{' '}
-                  <span className="text-foreground">
+                  <span className="text-slate-400">
                     enterprise evaluation
                   </span>
                 </h2>
@@ -1268,47 +1251,6 @@ function EnterpriseHero() {
         scrim="center"
       />
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <motion.div
-          className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(148,163,184,0.12)' }}
-          animate={{
-            scale: [1, 1.08, 1],
-            opacity: [0.12, 0.18, 0.12],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        <motion.div
-          className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(113,113,122,0.10)' }}
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.1, 0.16, 0.1],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-        />
-        <motion.div
-          className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(113,113,122,0.06)' }}
-          animate={{
-            scale: [1, 1.06, 1],
-            opacity: [0.06, 0.1, 0.06],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 6,
-          }}
-        />
         <div
           className="absolute inset-0 opacity-[0.015]"
           style={{
@@ -1344,7 +1286,7 @@ function EnterpriseHero() {
         >
           One Evaluation Path from
           <br />
-          <span className="text-foreground">
+          <span className="text-slate-400">
             Security Review to Rollout
           </span>
         </motion.h1>
@@ -1469,25 +1411,13 @@ export default function EnterprisePageContent() {
       <DeferredSection minHeight={560}>
         <section className="mk-section relative">
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
-            <ScrollReveal
-              variant="depthScale"
-              range={[0, 0.3]}
-              className="text-center mb-14"
-            >
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                Enterprise Capabilities
-              </p>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-                Built for{' '}
-                <span className="text-foreground">
-                  security teams
-                </span>
-              </h2>
-              <p className="text-base text-slate-400 max-w-xl mx-auto">
-                Every feature designed around enterprise security requirements,
-                compliance obligations, and operational excellence.
-              </p>
-            </ScrollReveal>
+            <EditorialHeader
+              label="Enterprise Capabilities"
+              title="Built for"
+              emphasis="security teams"
+              description="Every feature designed around enterprise security requirements, compliance obligations, and operational excellence."
+              className="mb-12"
+            />
 
             <div className="grid gap-4 sm:grid-cols-2">
               {enterpriseFeatures.map((feature, i) => (

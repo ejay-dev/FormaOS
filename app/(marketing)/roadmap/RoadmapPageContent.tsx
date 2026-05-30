@@ -1317,29 +1317,6 @@ function FeatureRequestCTA() {
               }}
             />
 
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 rounded-full bg-white/20"
-                  style={{
-                    left: `${12 + ((i * 76) % 80)}%`,
-                    top: `${8 + ((i * 53) % 85)}%`,
-                  }}
-                  animate={{
-                    y: [0, -20, 0],
-                    opacity: [0.2, 0.6, 0.2],
-                  }}
-                  transition={{
-                    duration: 4 + i * 0.5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: i * 0.4,
-                  }}
-                />
-              ))}
-            </div>
-
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
@@ -1420,47 +1397,6 @@ function RoadmapHero() {
       className="relative min-h-[90vh] flex items-center justify-center overflow-hidden"
     >
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <motion.div
-          className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(113,113,122,0.12)' }}
-          animate={{
-            scale: [1, 1.08, 1],
-            opacity: [0.12, 0.18, 0.12],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        <motion.div
-          className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(148,163,184,0.10)' }}
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.1, 0.16, 0.1],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-        />
-        <motion.div
-          className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(113,113,122,0.06)' }}
-          animate={{
-            scale: [1, 1.06, 1],
-            opacity: [0.06, 0.1, 0.06],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 6,
-          }}
-        />
         <div
           className="absolute inset-0 opacity-[0.015]"
           style={{

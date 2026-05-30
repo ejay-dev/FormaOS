@@ -13,7 +13,6 @@ import {
 import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { CircuitPattern } from '@/components/marketing/SectionBackgrounds';
 
 const UNIFIES = [
   { icon: Building2, label: 'Governance structure and framework alignment' },
@@ -41,7 +40,6 @@ export function WhatIsFormaOS() {
 
       {/* Subtle section background */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent" />
-      <CircuitPattern />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>

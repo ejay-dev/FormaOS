@@ -99,8 +99,8 @@ export default function EnterpriseProofPage() {
       <CompactHero
         title="Enterprise Operations Proof"
         description="A clear view of how FormaOS governs admin power, supports enterprise customers, and creates buyer-visible operational proof."
-        topColor="emerald"
-        bottomColor="cyan"
+        topColor="slate"
+        bottomColor="slate"
         visualContent={
           <CompactHeroIcon
             icon={<ShieldCheck className="h-8 w-8 text-slate-300" />}
@@ -122,7 +122,7 @@ export default function EnterpriseProofPage() {
             return (
               <div
                 key={area.title}
-                className="rounded-2xl border border-border bg-card p-6"
+                className="rounded-2xl border border-border bg-slate-950/60 p-6"
               >
                 <div className="mb-4 flex items-center gap-2">
                   <Icon className="h-4 w-4 text-primary" />
@@ -148,7 +148,7 @@ export default function EnterpriseProofPage() {
           opacity={0.6}
           scrim="center"
         />
-        <div className="rounded-2xl border border-border bg-card p-8">
+        <div className="rounded-2xl border border-border bg-slate-950/60 p-8">
           <h2 className="text-xl font-semibold text-foreground">
             Fast Buyer Validation Path
           </h2>

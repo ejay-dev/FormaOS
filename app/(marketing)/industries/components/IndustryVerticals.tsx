@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   Heart,
@@ -10,26 +10,10 @@ import {
   Users,
   ArrowRight,
 } from 'lucide-react';
-import {
-  motion,
-  useReducedMotion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from 'framer-motion';
-import type { MotionValue } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { useDeviceTier } from '@/lib/device-tier';
-
-/** Inline pulse color values for each industry (Tailwind can't animate these dynamically) */
-const pulseColors: Record<string, string> = {
-  pink: 'rgb(148,163,184)',    // slate-400
-  blue: 'rgb(148,163,184)',    // slate-400
-  green: 'rgb(148,163,184)',   // slate-400
-  orange: 'rgb(148,163,184)',  // slate-400
-  purple: 'rgb(148,163,184)',  // slate-400
-};
 
 const industries = [
   {
@@ -149,76 +133,33 @@ const industries = [
   },
 ];
 
-/** RGB glow values keyed by industry color name */
-const glowRGB: Record<string, string> = {
-  pink: '148,163,184',
-  blue: '148,163,184',
-  green: '148,163,184',
-  orange: '148,163,184',
-  purple: '148,163,184',
-};
-
 /* ------------------------------------------------------------------ */
-/*  IndustryCard – flip card with cursor-tracking glow                */
+/*  IndustryCard – flip card revealing per-industry metrics           */
 /* ------------------------------------------------------------------ */
 function IndustryCard({
   industry,
-  index,
   reducedMotion,
 }: {
   industry: (typeof industries)[number];
-  index: number;
   reducedMotion: boolean;
 }) {
   const [flipped, setFlipped] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
   const Icon = industry.icon;
 
-  // --- cursor-tracking glow (from GlassDepthCard pattern) ---
-  const localX = useMotionValue(0.5);
-  const localY = useMotionValue(0.5);
-  const smoothX = useSpring(localX, { stiffness: 200, damping: 25 });
-  const smoothY = useSpring(localY, { stiffness: 200, damping: 25 });
-
-  const rgb = glowRGB[industry.color] ?? '113,113,122';
-  const lightGradient = useTransform(
-    [smoothX, smoothY] as MotionValue<number>[],
-    ([x, y]: number[]) =>
-      `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(${rgb},0.14) 0%, transparent 60%)`,
-  );
-
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (reducedMotion || !cardRef.current) return;
-      const rect = cardRef.current.getBoundingClientRect();
-      localX.set((e.clientX - rect.left) / rect.width);
-      localY.set((e.clientY - rect.top) / rect.height);
-    },
-    [reducedMotion, localX, localY],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    localX.set(0.5);
-    localY.set(0.5);
-  }, [localX, localY]);
-
-  // Reduced-motion: static card without flip or glow
+  // Reduced-motion: static card without flip
   if (reducedMotion) {
     return (
       <div
         className={`group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-all duration-300`}
       >
-        <CardFrontContent industry={industry} index={index} reducedMotion={reducedMotion} />
+        <CardFrontContent industry={industry} />
       </div>
     );
   }
 
   return (
     <motion.div
-      ref={cardRef}
       onClick={() => setFlipped(!flipped)}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
       whileHover={{ y: -4 }}
       style={{ perspective: 1000 }}
       className="cursor-pointer"
@@ -234,7 +175,7 @@ function IndustryCard({
           className={`group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-[border-color] duration-300 relative overflow-hidden`}
           style={{ backfaceVisibility: 'hidden' }}
         >
-          <CardFrontContent industry={industry} index={index} reducedMotion={reducedMotion} />
+          <CardFrontContent industry={industry} />
 
           {/* Tap to flip indicator */}
           <div className="mt-4 flex items-center gap-1.5 text-[11px] text-gray-500/70 select-none">
@@ -243,12 +184,6 @@ function IndustryCard({
             </svg>
             Tap to flip
           </div>
-
-          {/* Cursor-tracking light sweep */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none rounded-[inherit] z-10"
-            style={{ background: lightGradient } as Record<string, unknown>}
-          />
         </div>
 
         {/* ---------- BACK FACE ---------- */}
@@ -299,12 +234,6 @@ function IndustryCard({
             </svg>
             Tap to flip back
           </div>
-
-          {/* Cursor-tracking light sweep (back face too) */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none rounded-[inherit] z-10"
-            style={{ background: lightGradient } as Record<string, unknown>}
-          />
         </div>
       </motion.div>
     </motion.div>
@@ -316,12 +245,8 @@ function IndustryCard({
 /* ------------------------------------------------------------------ */
 function CardFrontContent({
   industry,
-  index,
-  reducedMotion,
 }: {
   industry: (typeof industries)[number];
-  index: number;
-  reducedMotion: boolean;
 }) {
   const Icon = industry.icon;
   return (
@@ -334,30 +259,7 @@ function CardFrontContent({
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            {/* Industry-specific animated pulse dot */}
-            <motion.div
-              className="flex-shrink-0 w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: pulseColors[industry.color] ?? 'rgb(113,113,122)' }}
-              animate={
-                reducedMotion
-                  ? undefined
-                  : {
-                      scale: [1, 1.3, 1],
-                      opacity: [0.5, 1, 0.5],
-                      boxShadow: [
-                        `0 0 0 0 ${pulseColors[industry.color] ?? 'rgb(113,113,122)'}40`,
-                        `0 0 8px 3px ${pulseColors[industry.color] ?? 'rgb(113,113,122)'}30`,
-                        `0 0 0 0 ${pulseColors[industry.color] ?? 'rgb(113,113,122)'}40`,
-                      ],
-                    }
-              }
-              transition={{
-                duration: 2.5,
-                delay: index * 0.4,
-                repeat: reducedMotion ? 0 : Infinity,
-                ease: 'easeInOut',
-              }}
-            />
+            <div className={`flex-shrink-0 w-2.5 h-2.5 rounded-full ${industry.dotColor}`} />
             <h4
               className={`font-bold text-lg mb-1 text-white group-hover:${industry.textColor} transition-colors duration-300`}
             >
@@ -398,31 +300,9 @@ export function IndustryVerticals() {
     Boolean(prefersReducedMotion) ||
     tierConfig.tier !== 'high' ||
     tierConfig.isTouch;
-  const allowAmbientMotion = !reducedMotion;
 
   return (
     <section className="relative py-32 overflow-hidden">
-      {/* Ambient Background */}
-      <motion.div
-        className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-gradient-to-l from-white/[0.04] to-transparent rounded-full blur-3xl"
-        animate={allowAmbientMotion ? { opacity: [0.3, 0.5, 0.3] } : undefined}
-        transition={allowAmbientMotion ? { duration: 10, repeat: Infinity, ease: 'easeInOut' } : undefined}
-      />
-      <motion.div
-        className="absolute bottom-1/4 left-0 w-[600px] h-[600px] bg-gradient-to-r from-white/[0.03] to-transparent rounded-full blur-3xl"
-        animate={allowAmbientMotion ? { opacity: [0.2, 0.4, 0.2] } : undefined}
-        transition={
-          allowAmbientMotion
-            ? {
-                duration: 12,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: 3,
-              }
-            : undefined
-        }
-      />
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
           <div className="text-center mb-16">
@@ -448,11 +328,10 @@ export function IndustryVerticals() {
 
         {/* Industries Grid */}
         <SectionChoreography pattern="stagger-wave" stagger={0.05} className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {industries.map((industry, index) => (
+          {industries.map((industry) => (
             <IndustryCard
               key={industry.title}
               industry={industry}
-              index={index}
               reducedMotion={reducedMotion}
             />
           ))}

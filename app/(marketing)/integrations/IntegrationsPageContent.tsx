@@ -699,14 +699,6 @@ function IntegrationCard({
           }
         }}
       >
-        {/* Hover glow */}
-        <div
-          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{
-            background: `radial-gradient(ellipse at 50% 0%, ${integration.color}10, transparent 70%)`,
-          }}
-        />
-
         <div className="relative flex items-start gap-3.5">
           {/* Icon */}
           <div
@@ -937,10 +929,7 @@ function ArchitectureSection() {
               How It Works
             </p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Integration{' '}
-              <span className="text-foreground">
-                architecture
-              </span>
+              Integration architecture
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
               Five processing layers ensure every integration delivers verified,
@@ -973,13 +962,6 @@ function ArchitectureSection() {
                       hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
                     style={{ marginLeft: `${i * 12}px` }}
                   >
-                    <div
-                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                      style={{
-                        background: `radial-gradient(ellipse at 0% 50%, rgba(${layer.colorRgb}, 0.05), transparent 60%)`,
-                      }}
-                    />
-
                     <div className="relative p-5 sm:p-6">
                       <div className="flex items-start gap-4 mb-3">
                         <div className="relative">
@@ -1064,14 +1046,15 @@ function CategoryBreakdown() {
             range={[0, 0.3]}
             className="text-center mb-10"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Coverage
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Integration{' '}
-              <span className="text-foreground">
-                coverage
+            <div className="mb-4 flex items-center justify-center gap-3">
+              <span className="h-px w-8 bg-white/25" />
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Coverage
               </span>
+              <span className="h-px w-8 bg-white/25" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Integration coverage
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
               Integrations across categories - embedding compliance into every
@@ -1162,48 +1145,14 @@ function IntegrationsCTA() {
       <section className="mk-section relative isolate overflow-hidden">
         <SectionMedia src="/marketing-media/product.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
-          <div className="relative rounded-3xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(148,163,184,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
-              }}
-            />
-
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 rounded-full bg-slate-400/30"
-                  style={{
-                    left: `${12 + ((i * 76) % 80)}%`,
-                    top: `${8 + ((i * 53) % 85)}%`,
-                  }}
-                  animate={{
-                    y: [0, -20, 0],
-                    opacity: [0.2, 0.6, 0.2],
-                  }}
-                  transition={{
-                    duration: 4 + i * 0.5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: i * 0.4,
-                  }}
-                />
-              ))}
-            </div>
-
+          <div className="relative rounded-3xl border border-white/[0.06] bg-slate-950/60 overflow-hidden">
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Get Connected
                 </p>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-                  Don&apos;t see your{' '}
-                  <span className="text-foreground">
-                    tool?
-                  </span>
+                  Don&apos;t see your tool?
                 </h2>
                 <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
                   We&apos;re adding new integrations every month based on
@@ -1282,47 +1231,6 @@ function IntegrationsHero() {
     >
       <SectionMedia src="/marketing-media/integrations.jpg" objectPosition="50% 35%" opacity={0.85} scrim="center" />
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <motion.div
-          className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(148,163,184,0.12)' }}
-          animate={{
-            scale: [1, 1.08, 1],
-            opacity: [0.12, 0.18, 0.12],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        <motion.div
-          className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(113,113,122,0.10)' }}
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.1, 0.16, 0.1],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-        />
-        <motion.div
-          className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(161,161,170,0.06)' }}
-          animate={{
-            scale: [1, 1.06, 1],
-            opacity: [0.06, 0.1, 0.06],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 6,
-          }}
-        />
         <div
           className="absolute inset-0 opacity-[0.015]"
           style={{
@@ -1358,9 +1266,7 @@ function IntegrationsHero() {
         >
           Connect your
           <br />
-          <span className="text-foreground">
-            compliance stack
-          </span>
+          <span className="text-slate-400">compliance stack</span>
         </motion.h1>
 
         <motion.p
@@ -1540,10 +1446,7 @@ export default function IntegrationsPageContent() {
               className="text-center mb-6"
             >
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-                Integration{' '}
-                <span className="text-foreground">
-                  catalog
-                </span>
+                Integration <span className="text-slate-400">catalog</span>
               </h2>
               <p className="text-base text-slate-400 max-w-xl mx-auto">
                 Browse all {integrations.length} integrations by category,

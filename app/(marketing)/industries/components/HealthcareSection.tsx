@@ -1,29 +1,12 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { useDeviceTier } from '@/lib/device-tier';
 
 export function HealthcareSection() {
-  const shouldReduceMotion = useReducedMotion();
-  const tierConfig = useDeviceTier();
-  const allowAmbientMotion =
-    !shouldReduceMotion && tierConfig.tier === 'high' && !tierConfig.isTouch;
-
   return (
     <section className="relative py-32 overflow-hidden">
-      {/* Ambient Background */}
-      <motion.div
-        className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-gradient-to-l from-white/[0.04] to-transparent rounded-full blur-3xl"
-        animate={allowAmbientMotion ? { opacity: [0.3, 0.5, 0.3] } : undefined}
-        transition={
-          allowAmbientMotion
-            ? { duration: 10, repeat: Infinity, ease: 'easeInOut' }
-            : undefined
-        }
-      />
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="blurIn" range={[0, 0.35]}>
           <div className="text-center mb-16">

@@ -69,9 +69,7 @@ function AboutHero() {
         <>
           Compliance infrastructure
           <br />
-          <span className="text-foreground">
-            built for accountability
-          </span>
+          <span className="text-foreground">built for accountability</span>
         </>
       }
       subheadline="Built for regulated teams where compliance failure has real consequences - and leadership needs more than a spreadsheet to prove control."
@@ -190,7 +188,7 @@ export default function AboutPageContent() {
                       <p className="mt-1 text-sm text-slate-400">
                         Founder &amp; Chief Engineer
                       </p>
-                      <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                      <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-slate-500">
                         Adelaide · Building FormaOS since 2022
                       </p>
                     </div>
@@ -198,40 +196,40 @@ export default function AboutPageContent() {
                     <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
                       <p>
                         FormaOS is my first project in compliance
-                        infrastructure. I&apos;ve been writing it from
-                        Adelaide since 2022, fitting it around freelance work
-                        &mdash; websites and web apps for whoever was paying
-                        that month. FormaOS was always the bigger thing, the
-                        one I actually cared about. I just needed the
-                        freelance to fund the runway.
+                        infrastructure. I&apos;ve been writing it from Adelaide
+                        since 2022, fitting it around freelance work &mdash;
+                        websites and web apps for whoever was paying that month.
+                        FormaOS was always the bigger thing, the one I actually
+                        cared about. I just needed the freelance to fund the
+                        runway.
                       </p>
                       <p>
-                        Compliance picked me as much as I picked it.
-                        Australian regulators have spent the past decade
-                        tightening expectations on NDIS providers, aged-care
-                        operators, healthcare networks, and AFS licensees.
-                        The software answering that pressure has, almost
-                        without exception, stayed at the level of a document
-                        repository with a workflow tab on top. I kept looking
-                        at it and thinking the actual problem was an
-                        engineering one. There was no executable layer
-                        connecting an obligation to a control to a task to a
-                        piece of evidence to an auditor who could verify any
-                        of it. Nobody was building that. So I started.
+                        Compliance picked me as much as I picked it. Australian
+                        regulators have spent the past decade tightening
+                        expectations on NDIS providers, aged-care operators,
+                        healthcare networks, and AFS licensees. The software
+                        answering that pressure has, almost without exception,
+                        stayed at the level of a document repository with a
+                        workflow tab on top. I kept looking at it and thinking
+                        the actual problem was an engineering one. There was no
+                        executable layer connecting an obligation to a control
+                        to a task to a piece of evidence to an auditor who could
+                        verify any of it. Nobody was building that. So I
+                        started.
                       </p>
                       <p>
                         Today FormaOS ships 252 control evaluators across
                         framework packs spanning SOC&nbsp;2, ISO&nbsp;27001,
-                        HIPAA, GDPR, PCI-DSS, CIS, NIST&nbsp;CSF and NDIS.
-                        Over a hundred auto-evaluate against your live data;
-                        the rest are surfaced as human attestations and
-                        labelled as such. The audit log is hash-chained in
-                        Postgres, with append-only enforced at the database
-                        layer by an immutability trigger and RLS deny policies
-                        &mdash; not application code &mdash; and the chain head
-                        anchors daily at 05:30 UTC to Sigstore Rekor,
-                        the same transparency log the Linux Foundation uses for
-                        signed open-source releases. It&apos;s bootstrapped,
+                        HIPAA, GDPR, PCI-DSS, CIS, NIST&nbsp;CSF and NDIS. Over
+                        a hundred auto-evaluate against your live data; the rest
+                        are surfaced as human attestations and labelled as such.
+                        The audit log is hash-chained in Postgres, with
+                        append-only enforced at the database layer by an
+                        immutability trigger and RLS deny policies &mdash; not
+                        application code &mdash; and the chain head anchors
+                        daily at 05:30 UTC to Sigstore Rekor, the same
+                        transparency log the Linux Foundation uses for signed
+                        open-source releases. It&apos;s bootstrapped,
                         sole-engineered, AU-hosted. The roadmap is short on
                         purpose.
                       </p>
@@ -667,10 +665,6 @@ export default function AboutPageContent() {
                   </div>
                   <motion.a
                     href={compliancePlanHref('about_final')}
-                    whileHover={{
-                      scale: 1.05,
-                      boxShadow: '0 0 40px rgba(255, 255, 255, 0.18)',
-                    }}
                     whileTap={{ scale: 0.98 }}
                     className="group px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg flex items-center justify-center gap-3 shadow-lg hover:opacity-90 transition-all whitespace-nowrap w-full sm:w-auto"
                   >

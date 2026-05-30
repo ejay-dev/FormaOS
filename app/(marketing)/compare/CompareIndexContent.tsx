@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Scale, ShieldCheck } from 'lucide-react';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Reveal } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
@@ -71,7 +71,7 @@ export default function CompareIndexContent() {
       <ImmersiveHero
         theme="compare"
         visualContent={<CompareHeroVisual competitor="Alternatives" />}
-        badge={{ icon: <Scale className="w-4 h-4" />, text: 'Compare' }}
+        badge={{ text: 'Compare' }}
         headline={
           <>
             FormaOS vs the
@@ -241,15 +241,10 @@ export default function CompareIndexContent() {
       <DeferredSection minHeight={280}>
         <section className="mk-section relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
-              <div className="flex items-center gap-3">
-                <div className="inline-flex rounded-lg border border-white/15 bg-white/[0.08] p-2">
-                  <ShieldCheck className="h-5 w-5 text-slate-300" />
-                </div>
-                <h2 className="text-lg font-semibold text-white">
-                  What FormaOS is optimized for
-                </h2>
-              </div>
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-7 lg:p-10">
+              <h2 className="text-lg font-semibold text-white">
+                What FormaOS is optimized for
+              </h2>
               <ul className="mt-5 grid gap-3 sm:grid-cols-2 text-sm text-slate-300">
                 {differentiators.map((d) => (
                   <li key={d} className="flex items-start gap-2">

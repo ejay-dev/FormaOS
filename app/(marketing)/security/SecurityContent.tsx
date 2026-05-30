@@ -180,7 +180,7 @@ function LightCard({
   );
 }
 
-/* ─── Restrained section header — plain label, no pill / decorative icon ─── */
+/* ─── Restrained section header — plain centered label, no pill / icon ─── */
 function SectionLabelHeader({
   label,
   title,
@@ -207,6 +207,36 @@ function SectionLabelHeader({
   );
 }
 
+/* ─── Editorial header variant — left-aligned hairline + label rule ─── */
+function SectionRuleHeader({
+  label,
+  title,
+  subtitle,
+}: {
+  label: string;
+  title: React.ReactNode;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mb-12 lg:mb-16 max-w-3xl">
+      <div className="mb-4 flex items-center gap-3">
+        <span className="h-px w-8 bg-white/25" />
+        <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+          {label}
+        </span>
+      </div>
+      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display leading-[1.1]">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="mt-5 text-lg text-foreground/70 leading-relaxed">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function SecuritySafeguards() {
   return (
     <LightSection className="py-10 sm:py-14 lg:py-16">
@@ -218,7 +248,7 @@ export function SecuritySafeguards() {
             <>
               Built for organizations
               <br className="hidden sm:inline" />
-              <span className="text-gradient-system">
+              <span className="text-slate-400">
                 that answer to regulators
               </span>
             </>
@@ -262,7 +292,7 @@ export function SecurityArchitectureLayers() {
             <>
               Defense in depth
               <br className="hidden sm:inline" />
-              <span className="text-gradient-system">across every layer</span>
+              <span className="text-slate-400">across every layer</span>
             </>
           }
           subtitle="Multi-layered security architecture protecting compliance data"
@@ -302,13 +332,12 @@ export function SecurityEvidenceChain() {
     <LightSection className="py-10 sm:py-14 lg:py-16">
       <ChainLinks />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
-        <SectionLabelHeader
+        <SectionRuleHeader
           label="Evidence Chain"
           title={
             <>
-              Every action traced
-              <br className="hidden sm:inline" />
-              <span className="text-gradient-system">
+              Every action traced{' '}
+              <span className="text-slate-400">
                 from creation to export
               </span>
             </>
@@ -326,7 +355,7 @@ export function SecurityEvidenceChain() {
               >
                 <div className="flex items-start gap-6">
                   <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
-                    <item.icon className="h-6 w-6 text-primary" />
+                    <item.icon className="h-6 w-6 text-slate-300" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold font-display mb-2">
@@ -352,22 +381,11 @@ export function SecurityCTA() {
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
         <ScrollReveal variant="splitLeft" range={[0, 0.35]}>
           <LightCard className="p-8 sm:p-12 lg:p-16 text-center relative overflow-hidden">
-            {/* Subtle gradient mesh - static, no animation */}
-            <div
-              className="absolute inset-0 pointer-events-none opacity-30"
-              style={{
-                background: `
-                  radial-gradient(ellipse 60% 50% at 30% 40%, rgba(148, 163, 184, 0.12) 0%, transparent 60%),
-                  radial-gradient(ellipse 50% 60% at 70% 60%, rgba(148, 163, 184, 0.10) 0%, transparent 60%)
-                `,
-              }}
-            />
-
             <div className="relative z-10">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-4 sm:mb-6">
                 Security review?
                 <br />
-                <span className="text-gradient-system-animated">
+                <span className="text-slate-400">
                   We&apos;re ready before you ask
                 </span>
               </h2>

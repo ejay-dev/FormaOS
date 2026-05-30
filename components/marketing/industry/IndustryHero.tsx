@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Shield, CheckCircle, Globe } from 'lucide-react';
+import { ArrowRight, CheckCircle, Globe } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { AnimatedHeroBg } from './AnimatedHeroBg';
 
@@ -72,7 +72,7 @@ export function IndustryHero({
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a] via-[#0d1117] to-[#0a0e1a]" />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(113,113,122,0.08)_0%,transparent_70%)]" />
-          <div className="absolute bottom-0 left-1/4 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(160,131,255,0.06)_0%,transparent_70%)]" />
+          <div className="absolute bottom-0 left-1/4 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(148,163,184,0.05)_0%,transparent_70%)]" />
           <div
             className="absolute inset-0 opacity-[0.03]"
             style={{
@@ -88,10 +88,10 @@ export function IndustryHero({
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Copy column */}
           <div className="max-w-2xl">
-            {/* Eyebrow badge */}
-            <motion.div {...fadeUp(0)} className="mb-6">
-              <span className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-cyan-300">
-                <Shield className="h-3.5 w-3.5" />
+            {/* Eyebrow — restrained hairline label */}
+            <motion.div {...fadeUp(0)} className="mb-6 flex items-center gap-3">
+              <span className="h-px w-8 bg-white/25" />
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                 {eyebrow}
               </span>
             </motion.div>
@@ -142,7 +142,7 @@ export function IndustryHero({
                   key={signal}
                   className="inline-flex items-center gap-1.5 text-[13px] text-slate-500"
                 >
-                  <CheckCircle className="h-3.5 w-3.5 text-cyan-500/70" />
+                  <CheckCircle className="h-3.5 w-3.5 text-slate-400" />
                   {signal}
                 </span>
               ))}
@@ -163,7 +163,7 @@ export function IndustryHero({
                     className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] font-medium text-slate-300"
                   >
                     {badge.icon ?? (
-                      <Globe className="h-3 w-3 text-cyan-400/70" />
+                      <Globe className="h-3 w-3 text-slate-400" />
                     )}
                     {badge.label}
                   </span>

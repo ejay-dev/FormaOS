@@ -94,17 +94,6 @@ function FAQHeroVisualInner() {
       >
         {/* ── Central question mark ──────────────────────────── */}
         <div className="absolute inset-0 flex items-center justify-center">
-          {/* Pulsing glow ring */}
-          <motion.div
-            className="absolute w-[160px] h-[160px] rounded-full"
-            style={{
-              background:
-                'radial-gradient(circle, rgba(113,113,122,0.12) 0%, transparent 70%)',
-            }}
-            animate={{ scale: [1, 1.3, 1], opacity: [0.6, 0.2, 0.6] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          />
-
           {/* SVG question mark with draw-on animation */}
           <svg
             width="100"

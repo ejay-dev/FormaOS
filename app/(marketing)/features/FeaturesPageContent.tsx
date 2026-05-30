@@ -64,6 +64,83 @@ import {
 /* ─── Easing ────────────────────────────────────────────── */
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
+/* ─── Section Headers ─────────────────────────────────────────
+   Centred-minimal and editorial left-aligned header treatments.
+   Sections alternate so the page reads as composed editorial rather
+   than one repeated eyebrow-pill template.
+   ──────────────────────────────────────────────────────────── */
+
+function CenteredHeader({
+  label,
+  title,
+  emphasis,
+  description,
+  className = 'mb-14',
+}: {
+  label: string;
+  title: string;
+  emphasis: string;
+  description: string;
+  className?: string;
+}) {
+  return (
+    <ScrollReveal
+      variant="depthScale"
+      range={[0, 0.3]}
+      className={`text-center ${className}`}
+    >
+      <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+        {label}
+      </p>
+      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+        {title} <span className="text-slate-400">{emphasis}</span>
+      </h2>
+      <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+        {description}
+      </p>
+    </ScrollReveal>
+  );
+}
+
+function EditorialHeader({
+  label,
+  title,
+  emphasis,
+  description,
+  className = 'mb-14',
+}: {
+  label: string;
+  title: string;
+  emphasis: string;
+  description: string;
+  className?: string;
+}) {
+  return (
+    <ScrollReveal
+      variant="fadeUp"
+      range={[0, 0.3]}
+      className={`grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:grid-cols-12 lg:items-end ${className}`}
+    >
+      <div className="lg:col-span-7">
+        <div className="mb-5 flex items-center gap-3">
+          <span className="h-px w-8 bg-white/25" />
+          <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            {label}
+          </span>
+        </div>
+        <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+          {title} <span className="text-slate-400">{emphasis}</span>
+        </h2>
+      </div>
+      <div className="lg:col-span-5">
+        <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+          {description}
+        </p>
+      </div>
+    </ScrollReveal>
+  );
+}
+
 /* ─── Feature Data ──────────────────────────────────────── */
 
 interface PlatformFeature {
@@ -954,25 +1031,12 @@ function ArchitectureSection() {
     <DeferredSection minHeight={500}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-14"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Platform Architecture
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Five layers of{' '}
-              <span className="text-foreground">
-                defense in depth
-              </span>
-            </h2>
-            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
-              Every request traverses five independent security and compliance
-              verification layers. No single point of failure. No bypass path.
-            </p>
-          </ScrollReveal>
+          <CenteredHeader
+            label="Platform Architecture"
+            title="Five layers of"
+            emphasis="defense in depth"
+            description="Every request traverses five independent security and compliance verification layers. No single point of failure. No bypass path."
+          />
 
           <SectionChoreography
             pattern="cascade"
@@ -1060,25 +1124,13 @@ function ComparisonSection() {
     <DeferredSection minHeight={420}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-14"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Built Different
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Legacy compliance vs{' '}
-              <span className="text-foreground">
-                FormaOS
-              </span>
-            </h2>
-            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
-              See the structural difference between managing compliance in
-              spreadsheets and operating it as infrastructure.
-            </p>
-          </ScrollReveal>
+          <EditorialHeader
+            label="Built Different"
+            title="Legacy compliance vs"
+            emphasis="FormaOS"
+            description="See the structural difference between managing compliance in spreadsheets and operating it as infrastructure."
+            className="mb-12"
+          />
 
           <div className="hidden sm:grid grid-cols-[1fr,auto,1fr] gap-4 mb-6 px-2">
             <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider text-center">
@@ -1196,7 +1248,7 @@ function FeatureCatalogIndex() {
                 {features.length} features across {categories.length} categories
               </span>
             </h2>
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+            <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
               Skim · click a category to expand
             </span>
           </div>
@@ -1308,25 +1360,12 @@ function FrameworkCoverageSection() {
     <DeferredSection minHeight={500}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-14"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Framework Packs
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Pre-built compliance{' '}
-              <span className="text-foreground">
-                framework libraries
-              </span>
-            </h2>
-            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
-              Each framework ships with mapped controls, evidence templates, and
-              cross-framework overlap detection. Activate in one click.
-            </p>
-          </ScrollReveal>
+          <CenteredHeader
+            label="Framework Packs"
+            title="Pre-built compliance"
+            emphasis="framework libraries"
+            description="Each framework ships with mapped controls, evidence templates, and cross-framework overlap detection. Activate in one click."
+          />
 
           <SectionChoreography
             pattern="stagger-wave"
@@ -1540,25 +1579,13 @@ function CapabilityDeepDive() {
     <DeferredSection minHeight={420}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-14"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Deep Dive
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Explore core{' '}
-              <span className="text-foreground">
-                capabilities
-              </span>
-            </h2>
-            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
-              Four pillars of the FormaOS platform, each engineered for depth,
-              auditability, and operational control.
-            </p>
-          </ScrollReveal>
+          <EditorialHeader
+            label="Deep Dive"
+            title="Explore core"
+            emphasis="capabilities"
+            description="Four pillars of the FormaOS platform, each engineered for depth, auditability, and operational control."
+            className="mb-12"
+          />
 
           <div className="flex flex-wrap justify-center gap-2 mb-10">
             {capabilityTabs.map((t, i) => {
@@ -1710,25 +1737,12 @@ function PlatformWorkflowSection() {
     <DeferredSection minHeight={500}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <ScrollReveal
-            variant="depthScale"
-            range={[0, 0.3]}
-            className="text-center mb-14"
-          >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              How It Works
-            </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-              From activation to{' '}
-              <span className="text-foreground">
-                audit-ready
-              </span>
-            </h2>
-            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
-              Six steps to transform compliance from manual overhead into a
-              continuously operating system with verifiable evidence.
-            </p>
-          </ScrollReveal>
+          <CenteredHeader
+            label="How It Works"
+            title="From activation to"
+            emphasis="audit-ready"
+            description="Six steps to transform compliance from manual overhead into a continuously operating system with verifiable evidence."
+          />
 
           <SectionChoreography pattern="cascade" stagger={0.08}>
             <div className="relative">
@@ -1819,38 +1833,7 @@ function EnterpriseCTA() {
           scrim="center"
         />
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
-          <div className="relative rounded-3xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(113,113,122,0.08), transparent 60%), radial-gradient(ellipse at 50% 100%, rgba(113,113,122,0.06), transparent 50%)',
-              }}
-            />
-
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-1 h-1 rounded-full bg-slate-400/30"
-                  style={{
-                    left: `${12 + ((i * 76) % 80)}%`,
-                    top: `${8 + ((i * 53) % 85)}%`,
-                  }}
-                  animate={{
-                    y: [0, -20, 0],
-                    opacity: [0.2, 0.6, 0.2],
-                  }}
-                  transition={{
-                    duration: 4 + i * 0.5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                    delay: i * 0.4,
-                  }}
-                />
-              ))}
-            </div>
-
+          <div className="relative rounded-3xl border border-white/[0.06] bg-slate-950/60 overflow-hidden">
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
               <ScrollReveal variant="depthScale" range={[0, 0.3]}>
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
@@ -1858,7 +1841,7 @@ function EnterpriseCTA() {
                 </p>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                   Ready to operate compliance{' '}
-                  <span className="text-foreground">
+                  <span className="text-slate-400">
                     as infrastructure?
                   </span>
                 </h2>
@@ -1939,60 +1922,12 @@ function FeaturesHero() {
         scrim="center"
       />
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <motion.div
-          className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full blur-[140px]"
-          style={{ background: 'rgba(113,113,122,0.12)' }}
-          animate={{
-            scale: [1, 1.08, 1],
-            opacity: [0.12, 0.18, 0.12],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        <motion.div
-          className="absolute bottom-[-10%] right-[15%] w-[500px] h-[500px] rounded-full blur-[120px]"
-          style={{ background: 'rgba(113,113,122,0.10)' }}
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.1, 0.16, 0.1],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-        />
-        <motion.div
-          className="absolute top-[40%] right-[30%] w-[400px] h-[400px] rounded-full blur-[100px]"
-          style={{ background: 'rgba(113,113,122,0.06)' }}
-          animate={{
-            scale: [1, 1.06, 1],
-            opacity: [0.06, 0.1, 0.06],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 6,
-          }}
-        />
         <div
           className="absolute inset-0 opacity-[0.015]"
           style={{
             backgroundImage: `linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
               linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
             backgroundSize: '72px 72px',
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            mixBlendMode: 'overlay',
           }}
         />
       </div>
@@ -2022,7 +1957,7 @@ function FeaturesHero() {
         >
           Compliance infrastructure
           <br />
-          <span className="text-foreground">
+          <span className="text-slate-400">
             engineered for accountability
           </span>
         </motion.h1>
@@ -2146,7 +2081,7 @@ export default function FeaturesPageContent() {
             >
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                 Every feature, built for{' '}
-                <span className="text-foreground">
+                <span className="text-slate-400">
                   regulated teams
                 </span>
               </h2>

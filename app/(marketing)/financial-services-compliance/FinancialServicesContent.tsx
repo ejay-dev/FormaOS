@@ -251,7 +251,6 @@ export default function FinancialServicesContent() {
         />
         <IndustryHero
         eyebrow="ASIC + APRA + AUSTRAC Ready"
-        accent="violet-cyan"
         headline={
           <>
             Your AFS Licence Obligations.{' '}

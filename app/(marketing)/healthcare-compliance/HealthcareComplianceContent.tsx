@@ -241,7 +241,6 @@ export default function HealthcareComplianceContent() {
         />
         <IndustryHero
         eyebrow="AHPRA + NSQHS Compliance"
-        accent="cyan-violet"
         headline={
           <>
             AHPRA Audits Don&apos;t Wait.

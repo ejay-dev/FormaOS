@@ -1,39 +1,13 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { useDeviceTier } from '@/lib/device-tier';
 import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 export function IndustriesCTA() {
-  const shouldReduceMotion = useReducedMotion();
-  const tierConfig = useDeviceTier();
-  const allowAmbientMotion =
-    !shouldReduceMotion && tierConfig.tier === 'high' && !tierConfig.isTouch;
-
   return (
     <section className="relative py-32 overflow-hidden">
-      {/* Premium Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-white/[0.04] rounded-full blur-3xl"
-          animate={
-            allowAmbientMotion
-              ? {
-                  scale: [1, 1.1, 1],
-                  opacity: [0.3, 0.5, 0.3],
-                }
-              : undefined
-          }
-          transition={
-            allowAmbientMotion
-              ? { duration: 15, repeat: Infinity, ease: 'easeInOut' }
-              : undefined
-          }
-        />
-      </div>
-
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden">

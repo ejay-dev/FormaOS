@@ -1,8 +1,7 @@
 'use client';
 
-import { memo, useEffect, useState } from 'react';
-import { motion, useReducedMotion, useTransform } from 'framer-motion';
-import { useCursorPosition } from '@/components/motion/CursorContext';
+import { memo } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 /* ─── Data ────────────────────────────────────────────────────── */
 
@@ -20,33 +19,9 @@ const TOTAL_COUNT = CHECKLIST_ITEMS.length;
 const PROGRESS_PCT = Math.round((COMPLETED_COUNT / TOTAL_COUNT) * 100);
 
 const BADGES = [
-  {
-    label: 'SOC 2',
-    dotColor: 'bg-slate-300',
-    textColor: 'text-slate-300',
-    z: -25,
-    angle: 0,
-    radius: 175,
-    speed: 20,
-  },
-  {
-    label: 'ISO 27001',
-    dotColor: 'bg-slate-400',
-    textColor: 'text-slate-400',
-    z: -45,
-    angle: 120,
-    radius: 185,
-    speed: 26,
-  },
-  {
-    label: 'HIPAA',
-    dotColor: 'bg-slate-500',
-    textColor: 'text-slate-400',
-    z: -65,
-    angle: 240,
-    radius: 170,
-    speed: 32,
-  },
+  { label: 'SOC 2', dotColor: 'bg-slate-300', textColor: 'text-slate-300', z: -25, angle: 0, radius: 175 },
+  { label: 'ISO 27001', dotColor: 'bg-slate-400', textColor: 'text-slate-400', z: -45, angle: 120, radius: 185 },
+  { label: 'HIPAA', dotColor: 'bg-slate-500', textColor: 'text-slate-400', z: -65, angle: 240, radius: 170 },
 ] as const;
 
 /* ─── Check SVG ───────────────────────────────────────────────── */
@@ -73,40 +48,19 @@ function CheckIcon() {
 
 /* ─── Component ───────────────────────────────────────────────── */
 
+/**
+ * SecurityReviewHeroVisual
+ * ────────────────────────
+ * Review-checklist clipboard ringed by framework badges. Renders the
+ * settled state directly — no auto-running check-off telemetry, no
+ * orbiting badges, no cursor-reactive tilt (enterprise-restrained).
+ * Clipboard + badges fade/scale in once on entrance.
+ */
 function SecurityReviewHeroVisualInner() {
   const prefersReduced = useReducedMotion();
-  const cursor = useCursorPosition();
-  const [mounted, setMounted] = useState(false);
-  const [checkedItems, setCheckedItems] = useState(0);
+  const animate = !prefersReduced;
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  /* Stagger check-off animation */
-  useEffect(() => {
-    if (!mounted || prefersReduced) {
-      if (prefersReduced) setCheckedItems(COMPLETED_COUNT);
-      return;
-    }
-    let count = 0;
-    const interval = setInterval(() => {
-      count += 1;
-      setCheckedItems(count);
-      if (count >= COMPLETED_COUNT) clearInterval(interval);
-    }, 400);
-    return () => clearInterval(interval);
-  }, [mounted, prefersReduced]);
-
-  /* Cursor tilt (±4°) */
-  const rotateX = useTransform(cursor.mouseY, [0, 1], [4, -4]);
-  const rotateY = useTransform(cursor.mouseX, [0, 1], [-4, 4]);
-
-  /* Badge parallax */
-  const badgeParallaxX = useTransform(cursor.mouseX, [0, 1], [-8, 8]);
-  const badgeParallaxY = useTransform(cursor.mouseY, [0, 1], [-8, 8]);
-
-  /* ── Clipboard content (shared) ─────────────────────────────── */
+  /* ── Clipboard content (settled state) ──────────────────────── */
   const clipboardContent = (
     <>
       {/* Clipboard handle */}
@@ -117,24 +71,15 @@ function SecurityReviewHeroVisualInner() {
       {/* Checklist items */}
       <div className="flex flex-col gap-2.5 px-4">
         {CHECKLIST_ITEMS.map((item, i) => {
-          const isChecked = i < checkedItems;
+          const isChecked = i < COMPLETED_COUNT;
           return (
             <div key={i} className="flex items-center gap-2.5">
               {/* Checkbox */}
               <div className="relative w-3.5 h-3.5 flex-shrink-0">
                 {isChecked ? (
-                  <motion.div
-                    className="w-full h-full rounded-[3px] bg-slate-400/80 border border-white/30"
-                    initial={prefersReduced ? false : { scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 500,
-                      damping: 25,
-                    }}
-                  >
+                  <div className="w-full h-full rounded-[3px] bg-slate-400/80 border border-white/30">
                     <CheckIcon />
-                  </motion.div>
+                  </div>
                 ) : (
                   <div className="w-full h-full rounded-[3px] border border-white/[0.15] bg-white/[0.04]" />
                 )}
@@ -154,149 +99,61 @@ function SecurityReviewHeroVisualInner() {
       <div className="mt-4 px-4">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[9px] text-white/40">
-            {Math.min(checkedItems, COMPLETED_COUNT)}/{TOTAL_COUNT} Complete
+            {COMPLETED_COUNT}/{TOTAL_COUNT} Complete
           </span>
-          <span className="text-[9px] text-white/30">
-            {Math.min(checkedItems, COMPLETED_COUNT) === COMPLETED_COUNT
-              ? PROGRESS_PCT
-              : Math.round(
-                  (Math.min(checkedItems, COMPLETED_COUNT) / TOTAL_COUNT) * 100,
-                )}
-            %
-          </span>
+          <span className="text-[9px] text-white/30">{PROGRESS_PCT}%</span>
         </div>
         <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
-          <motion.div
+          <div
             className="h-full rounded-full bg-gradient-to-r from-slate-400/60 to-slate-300/40"
-            initial={prefersReduced ? { width: `${PROGRESS_PCT}%` } : { width: '0%' }}
-            animate={{
-              width: `${Math.round((Math.min(checkedItems, COMPLETED_COUNT) / TOTAL_COUNT) * 100)}%`,
-            }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
+            style={{ width: `${PROGRESS_PCT}%` }}
           />
         </div>
       </div>
     </>
   );
 
-  /* ── Reduced-motion: static layout ──────────────────────────── */
-  if (prefersReduced) {
-    return (
-      <div className="hidden lg:flex items-center justify-center pointer-events-none w-[380px] h-[400px] relative">
-        {/* Clipboard */}
-        <div className="rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] w-[280px] py-5">
-          {clipboardContent}
-        </div>
-
-        {/* Badges */}
-        {BADGES.map((badge, i) => {
-          const rad = ((badge.angle - 90) * Math.PI) / 180;
-          const bx = Math.cos(rad) * badge.radius;
-          const by = Math.sin(rad) * badge.radius;
-          return (
-            <div
-              key={i}
-              className="absolute rounded-full border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5"
-              style={{
-                left: `calc(50% + ${bx}px)`,
-                top: `calc(50% + ${by}px)`,
-                transform: `translate(-50%, -50%) translateZ(${badge.z}px)`,
-              }}
-            >
-              <div className={`w-1.5 h-1.5 rounded-full ${badge.dotColor}`} />
-              <span className={`text-[10px] font-medium ${badge.textColor}`}>
-                {badge.label}
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  /* ── Animated layout ────────────────────────────────────────── */
   return (
     <div className="hidden lg:flex items-center justify-center pointer-events-none w-[380px] h-[400px] relative">
-      <motion.div
+      <div
         className="relative w-full h-full flex items-center justify-center"
-        style={{
-          perspective: '900px',
-          transformStyle: 'preserve-3d',
-          rotateX: cursor.isActive ? rotateX : 0,
-          rotateY: cursor.isActive ? rotateY : 0,
-        }}
+        style={{ perspective: '900px', transformStyle: 'preserve-3d' }}
       >
         {/* ── Clipboard ──────────────────────────────────────── */}
         <motion.div
           className="rounded-2xl border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] w-[280px] py-5 shadow-2xl"
           style={{ transformStyle: 'preserve-3d' }}
-          initial={{ scale: 0.9, filter: 'blur(8px)', opacity: 0 }}
-          animate={
-            mounted
-              ? { scale: 1, filter: 'blur(0px)', opacity: 1 }
-              : undefined
-          }
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          initial={animate ? { scale: 0.9, filter: 'blur(8px)', opacity: 0 } : false}
+          animate={{ scale: 1, filter: 'blur(0px)', opacity: 1 }}
+          transition={animate ? { duration: 0.7, ease: [0.22, 1, 0.36, 1] } : { duration: 0 }}
         >
           {clipboardContent}
         </motion.div>
 
-        {/* ── Orbiting badges ────────────────────────────────── */}
+        {/* ── Framework badges (fixed positions) ─────────────── */}
         {BADGES.map((badge, i) => {
-          const depthScale = Math.abs(badge.z) / 65;
+          const rad = ((badge.angle - 90) * Math.PI) / 180;
+          const bx = Math.cos(rad) * badge.radius;
+          const by = Math.sin(rad) * badge.radius;
           return (
             <motion.div
               key={i}
               className="absolute rounded-full border border-white/[0.10] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] px-2 py-1 flex items-center gap-1.5 shadow-lg"
               style={{
+                left: `calc(50% + ${bx}px)`,
+                top: `calc(50% + ${by}px)`,
                 transformStyle: 'preserve-3d',
                 translateZ: badge.z,
-                x: cursor.isActive
-                  ? useTransform(badgeParallaxX, (v) => v * depthScale)
-                  : 0,
-                y: cursor.isActive
-                  ? useTransform(badgeParallaxY, (v) => v * depthScale)
-                  : 0,
+                x: '-50%',
+                y: '-50%',
               }}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={
-                mounted
-                  ? {
-                      opacity: 1,
-                      scale: 1,
-                      left: [
-                        `calc(50% + ${Math.cos(((badge.angle - 90) * Math.PI) / 180) * badge.radius}px)`,
-                        `calc(50% + ${Math.cos(((badge.angle + 90 - 90) * Math.PI) / 180) * badge.radius}px)`,
-                        `calc(50% + ${Math.cos(((badge.angle + 180 - 90) * Math.PI) / 180) * badge.radius}px)`,
-                        `calc(50% + ${Math.cos(((badge.angle + 270 - 90) * Math.PI) / 180) * badge.radius}px)`,
-                        `calc(50% + ${Math.cos(((badge.angle + 360 - 90) * Math.PI) / 180) * badge.radius}px)`,
-                      ],
-                      top: [
-                        `calc(50% + ${Math.sin(((badge.angle - 90) * Math.PI) / 180) * badge.radius}px)`,
-                        `calc(50% + ${Math.sin(((badge.angle + 90 - 90) * Math.PI) / 180) * badge.radius}px)`,
-                        `calc(50% + ${Math.sin(((badge.angle + 180 - 90) * Math.PI) / 180) * badge.radius}px)`,
-                        `calc(50% + ${Math.sin(((badge.angle + 270 - 90) * Math.PI) / 180) * badge.radius}px)`,
-                        `calc(50% + ${Math.sin(((badge.angle + 360 - 90) * Math.PI) / 180) * badge.radius}px)`,
-                      ],
-                    }
-                  : undefined
+              initial={animate ? { opacity: 0, scale: 0.6 } : false}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={
+                animate
+                  ? { duration: 0.5, delay: 0.8 + i * 0.15 }
+                  : { duration: 0 }
               }
-              transition={{
-                opacity: { duration: 0.5, delay: 0.8 + i * 0.15 },
-                scale: { duration: 0.5, delay: 0.8 + i * 0.15 },
-                left: {
-                  duration: badge.speed,
-                  repeat: Infinity,
-                  ease: 'linear',
-                  delay: 0.8 + i * 0.15,
-                },
-                top: {
-                  duration: badge.speed,
-                  repeat: Infinity,
-                  ease: 'linear',
-                  delay: 0.8 + i * 0.15,
-                },
-              }}
             >
               <div className={`w-1.5 h-1.5 rounded-full ${badge.dotColor}`} />
               <span className={`text-[10px] font-medium ${badge.textColor} whitespace-nowrap`}>
@@ -305,7 +162,7 @@ function SecurityReviewHeroVisualInner() {
             </motion.div>
           );
         })}
-      </motion.div>
+      </div>
     </div>
   );
 }

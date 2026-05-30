@@ -627,25 +627,6 @@ export function APIPreview() {
       id="api-reference"
       className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]"
     >
-      {/* Ambient background glow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/4 -right-32 w-96 h-96 rounded-full bg-slate-400/5 blur-3xl"
-          animate={{ x: [0, -40, 0], y: [0, 20, 0] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 -left-32 w-96 h-96 rounded-full bg-zinc-400/5 blur-3xl"
-          animate={{ x: [0, 40, 0], y: [0, -20, 0] }}
-          transition={{
-            duration: 22,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3,
-          }}
-        />
-      </div>
-
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         {/* -------- Section header -------- */}
         <ScrollReveal variant="blurIn" range={[0, 0.35]} className="text-center mb-16">

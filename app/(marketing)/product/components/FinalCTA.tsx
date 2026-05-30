@@ -17,8 +17,8 @@ export function FinalCTA() {
       />
       <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
-          <div className="product-panel product-panel--strong backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/10 px-5 sm:px-8 lg:px-12 py-8 sm:py-10 text-center">
+          <div className="product-panel product-panel--strong backdrop-blur-xl bg-slate-950/70 rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+            <div className="bg-white/[0.03] border-b border-white/10 px-5 sm:px-8 lg:px-12 py-8 sm:py-10 text-center">
               <ScrollReveal variant="blurIn" range={[0.02, 0.35]}>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-white">
                   Most platforms <span className="text-gray-500">store</span>{' '}

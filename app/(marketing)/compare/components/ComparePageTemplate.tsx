@@ -4,12 +4,9 @@ import Link from 'next/link';
 import {
   ArrowRight,
   CheckCircle2,
-  ShieldCheck,
-  Sparkles,
   Check,
   Minus,
   AlertCircle,
-  BarChart3,
 } from 'lucide-react';
 import { Reveal } from '@/components/motion';
 import { ImmersiveHero } from '@/components/motion/ImmersiveHero';
@@ -195,7 +192,6 @@ export function ComparePageTemplate({
           theme="compare"
         visualContent={<CompareHeroVisual competitor={competitor} />}
         badge={{
-          icon: <Sparkles className="w-4 h-4" />,
           text: 'Comparison',
         }}
         headline={<>FormaOS vs {competitor}</>}
@@ -266,7 +262,7 @@ export function ComparePageTemplate({
                       <th className="text-left py-3 px-6 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[45%]">
                         Capability
                       </th>
-                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-white w-[27.5%] bg-white/[0.04]">
+                      <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-white w-[27.5%] bg-white/[0.04] border-b-2 border-white/30">
                         FormaOS
                       </th>
                       <th className="text-center py-3 px-4 text-xs font-semibold uppercase tracking-wider text-slate-400 w-[27.5%]">
@@ -300,7 +296,6 @@ export function ComparePageTemplate({
                   {/* Score summary */}
                   <div className="flex items-center gap-6">
                     <div className="flex items-center gap-2">
-                      <BarChart3 className="h-3.5 w-3.5 text-slate-300" />
                       <span className="text-xs font-semibold text-white">
                         FormaOS
                       </span>
@@ -376,7 +371,7 @@ export function ComparePageTemplate({
       <DeferredSection minHeight={80}>
         <section className="mk-section mk-section--compact relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-            <div className="rounded-2xl border border-white/[0.1] bg-gradient-to-r from-white/[0.05] via-white/[0.03] to-white/[0.05] backdrop-blur-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] backdrop-blur-sm p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h3 className="text-base font-semibold text-white">
                   Ready to see the difference firsthand?
@@ -451,7 +446,6 @@ export function ComparePageTemplate({
                   <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/[0.08] text-xs font-bold text-slate-300">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
-                  <ShieldCheck className="h-5 w-5 text-slate-300" />
                 </div>
                 <h2 className="text-lg font-semibold text-white">{p.title}</h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
@@ -589,7 +583,7 @@ export function ComparePageTemplate({
         <section className="mk-section mk-section--compact relative isolate overflow-hidden mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.6} scrim="center" />}
           <Reveal>
-            <div className="rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.06] via-white/[0.03] to-transparent backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-slate-950/65 backdrop-blur-sm p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
                 FormaOS is ideal if
               </h3>

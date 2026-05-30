@@ -69,7 +69,7 @@ export function AuditChainProof() {
                 className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-6"
               >
                 <Icon className="mb-4 h-5 w-5 text-slate-300" />
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                   {pillar.eyebrow}
                 </p>
                 <h3 className="mt-2 text-base font-semibold text-white">
