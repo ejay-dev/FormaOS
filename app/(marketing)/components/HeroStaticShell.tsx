@@ -12,7 +12,7 @@
  */
 
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 
 const heroCopy = DEFAULT_RUNTIME_MARKETING.hero;
@@ -52,12 +52,14 @@ export function HeroStaticShell() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
 
       <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-12 pt-16 text-center sm:px-8 sm:pt-24 lg:px-12 lg:pt-28">
-        {/* Badge */}
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/35 bg-cyan-500/10 px-4 py-2.5 backdrop-blur-md">
-          <ShieldCheck className="h-4 w-4 text-cyan-300" aria-hidden="true" />
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-cyan-100 sm:text-sm">
+        {/* Eyebrow — restrained typographic label flanked by hairlines,
+            no pill / icon / colour. */}
+        <div className="mb-7 flex items-center justify-center gap-4">
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
+          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-xs">
             {heroCopy.badgeText}
           </span>
+          <span className="hidden h-px w-10 bg-white/20 sm:block" />
         </div>
 
         {/* Primary headline - the core SEO H1 */}
