@@ -1,14 +1,19 @@
 'use client';
 
-import { ArrowRight, CheckCircle, Activity, UserCheck } from 'lucide-react';
+import { Fragment } from 'react';
+import {
+  ArrowRight,
+  CheckCircle,
+  Activity,
+  UserCheck,
+  FileText,
+  Shield,
+  CheckSquare,
+  Lock,
+  BarChart3,
+} from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import dynamic from 'next/dynamic';
-
-const DemoComplianceChain = dynamic(
-  () => import('@/components/marketing/demo/DemoComplianceChain'),
-  { ssr: false },
-);
 
 const flow = [
   {
@@ -27,6 +32,18 @@ const flow = [
     step: 'Evidence',
     becomes: 'complete audit trail',
   },
+] as const;
+
+// Static, monochrome rendering of the compliance lifecycle. Replaces the
+// auto-cycling neon "demo chain" HUD (teal/emerald/amber chips, fake
+// personas, "Complete" badges) that read as vibe-coded — now presented as
+// a calm process strip matching the WhatIsFormaOS / OperatingModel panels.
+const lifecycle = [
+  { label: 'Obligation', icon: FileText, detail: 'Framework requirements mapped' },
+  { label: 'Control', icon: Shield, detail: 'Ownership and cadence assigned' },
+  { label: 'Task', icon: CheckSquare, detail: 'Routed to the accountable owner' },
+  { label: 'Evidence', icon: Lock, detail: 'Artifacts linked and sealed' },
+  { label: 'Audit', icon: BarChart3, detail: 'Exportable compliance trail' },
 ] as const;
 
 export function ObligationToExecution() {
@@ -85,10 +102,44 @@ export function ObligationToExecution() {
           ))}
         </SectionChoreography>
 
-        <ScrollReveal variant="depthSlide" range={[0.1, 0.4]}>
-          <div className="mt-12 max-w-2xl mx-auto">
-            <div className="product-panel product-panel--strong rounded-2xl p-2">
-              <DemoComplianceChain glowColor="from-white/[0.05] to-white/[0.02]" />
+        <ScrollReveal variant="slideUp" range={[0.1, 0.4]}>
+          <div className="mt-12 max-w-4xl mx-auto">
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 sm:p-8">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+              <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                One connected lifecycle
+              </p>
+
+              <SectionChoreography
+                pattern="cascade"
+                stagger={0.05}
+                className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-0"
+              >
+                {lifecycle.map((stage, index) => {
+                  const Icon = stage.icon;
+                  return (
+                    <Fragment key={stage.label}>
+                      <div className="flex flex-1 flex-col items-center px-3 text-center">
+                        <div className="mb-3 inline-flex items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.05] p-3">
+                          <Icon className="h-5 w-5 text-slate-300" />
+                        </div>
+                        <p className="text-sm font-semibold text-white">
+                          {stage.label}
+                        </p>
+                        <p className="mt-1 text-xs leading-snug text-slate-400">
+                          {stage.detail}
+                        </p>
+                      </div>
+                      {index < lifecycle.length - 1 && (
+                        <div className="flex items-center justify-center lg:pt-5">
+                          <ArrowRight className="h-4 w-4 rotate-90 text-white/20 lg:rotate-0" />
+                        </div>
+                      )}
+                    </Fragment>
+                  );
+                })}
+              </SectionChoreography>
             </div>
           </div>
         </ScrollReveal>
