@@ -73,7 +73,7 @@ export function TestimonialsSection() {
       <SectionMedia
         src="/marketing-media/enterprise.jpg"
         objectPosition="50% 28%"
-        opacity={0.28}
+        opacity={0.14}
         scrim="center"
       />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
@@ -108,7 +108,7 @@ export function TestimonialsSection() {
               delay: 0.2 + i * 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="relative flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 sm:p-8"
+            className="relative flex flex-col rounded-2xl border border-white/[0.08] bg-slate-950/60 p-6 sm:p-8"
           >
             <div className="mb-5 inline-flex self-start rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
               {scenario.sector}

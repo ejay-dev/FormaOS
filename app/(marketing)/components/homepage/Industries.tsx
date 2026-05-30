@@ -414,8 +414,8 @@ const AccordionItem = memo(function AccordionItem({
         onClick={onToggle}
         className={`group relative w-full text-left rounded-2xl border overflow-hidden transition-all duration-300 ${
           isExpanded
-            ? `bg-white/[0.06] ${a.activeBorder}`
-            : `bg-white/[0.02] border-white/[0.06] hover:border-white/[0.1] hover:bg-white/[0.04]`
+            ? `bg-slate-950/70 ${a.activeBorder}`
+            : `bg-slate-950/55 border-white/[0.08] hover:border-white/[0.15] hover:bg-slate-950/70`
         }`}
       >
         {isExpanded && (
@@ -463,7 +463,7 @@ const AccordionItem = memo(function AccordionItem({
             transition={{ duration: duration.normal, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="mt-1 relative rounded-2xl border border-white/[0.08] bg-white/[0.03] overflow-hidden">
+            <div className="mt-1 relative rounded-2xl border border-white/[0.08] bg-slate-950/70 overflow-hidden">
               <div className="relative z-10 p-5 lg:p-7">
                 {/* Row 1: Tagline + framework badges */}
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-6">
@@ -556,7 +556,7 @@ export const Industries = memo(function Industries() {
       <SectionMedia
         src="/marketing-media/use-case-ndis-aged-care.jpg"
         objectPosition="50% 38%"
-        opacity={0.28}
+        opacity={0.12}
         scrim="center"
       />
       {/* Hairline top seam */}
