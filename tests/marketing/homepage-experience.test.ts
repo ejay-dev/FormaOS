@@ -258,13 +258,14 @@ describe('homepage-experience: section decisions', () => {
     );
     const summary = summarizeHomepageDecisions(decisions);
 
-    // 11 visible in default config: 4 critical (hero, framework_trust_strip,
-    // value_proposition, compliance_network) + 7 non-critical (interactive_demo,
-    // industries, security, outcome_proof, procurement_flow, cta, trust)
-    expect(summary.totalVisible).toBe(11);
+    // 12 visible in default config: 4 critical (hero, framework_trust_strip,
+    // value_proposition, compliance_network) + 8 non-critical (interactive_demo,
+    // compliance_engine_demo, industries, security, outcome_proof,
+    // procurement_flow, cta, trust)
+    expect(summary.totalVisible).toBe(12);
     expect(summary.totalDeferred).toBeGreaterThanOrEqual(0);
     expect(summary.criticalVisible).toBe(4);
-    expect(summary.nonCriticalVisible).toBe(7);
+    expect(summary.nonCriticalVisible).toBe(8);
   });
 });
 

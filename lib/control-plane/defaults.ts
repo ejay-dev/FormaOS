@@ -48,7 +48,7 @@ export const DEFAULT_RUNTIME_MARKETING: RuntimeMarketingConfig = {
       compliance_network: true,
       interactive_demo: true,
       scroll_story: false,
-      compliance_engine_demo: false,
+      compliance_engine_demo: true,
       capabilities_grid: false,
       evidence_showcase: false,
       industries: true,

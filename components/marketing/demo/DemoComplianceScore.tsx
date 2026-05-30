@@ -64,9 +64,14 @@ export default function DemoComplianceScore({
       <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5 sm:p-6">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
-        <p className="mb-6 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-          Compliance score
-        </p>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+            Compliance score
+          </p>
+          <span className="rounded-full border border-white/[0.08] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-slate-500">
+            Illustrative
+          </span>
+        </div>
 
         {/* Overall */}
         <div className="mb-6 flex items-center gap-4">
