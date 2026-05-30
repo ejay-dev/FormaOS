@@ -204,19 +204,16 @@ function PostureRing({
           </linearGradient>
         </defs>
       </svg>
-      {/* Center score */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-bold text-white leading-none">
+      {/* Center score — number only, nothing else inside the ring */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-4xl font-bold text-white leading-none tracking-tight">
           <AnimatedCounter
             value={score}
             isInView={isInView}
             noMotion={noMotion}
             delay={0.3}
           />
-          <span className="text-lg text-slate-400">%</span>
-        </span>
-        <span className="text-[10px] font-medium text-slate-500 mt-1 uppercase tracking-wider">
-          Posture · illustrative
+          <span className="text-xl text-slate-400">%</span>
         </span>
       </div>
     </div>
@@ -331,9 +328,11 @@ const PostureCard = memo(function PostureCard({
           Real-time compliance health across all active frameworks
         </p>
 
-        {/* Illustrative score — labelled below so it doesn't read as a
-            product-wide marketing claim. */}
+        {/* Illustrative score — caveat sits below the ring, never inside it. */}
         <PostureRing score={98} isInView={isInView} noMotion={noMotion} />
+        <p className="mt-3 text-center text-[10px] font-medium uppercase tracking-[0.18em] text-slate-600">
+          Composite posture · illustrative
+        </p>
 
         {/* Control mapping bars */}
         <div className="mt-5 space-y-3 flex-1">
@@ -768,49 +767,39 @@ export const SecuritySection = memo(function SecuritySection() {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        {/* Heading — centered */}
-        <div className="text-center mb-12 lg:mb-14">
-          <motion.div
-            initial={noMotion ? false : { opacity: 0, y: 12 }}
-            animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: duration.slow, ease: signatureEase }}
-            className="mb-5"
-          >
-            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-300 text-xs font-medium uppercase tracking-[0.18em]">
-              Security &amp; Trust
-            </span>
-          </motion.div>
-
+        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+            paired description column replace the centred eyebrow-pill template. */}
+        <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
           <motion.div
             initial={noMotion ? false : { opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{
-              duration: duration.slow,
-              delay: 0.05,
-              ease: signatureEase,
-            }}
-            className="relative"
+            transition={{ duration: duration.slow, ease: signatureEase }}
+            className="lg:col-span-7"
           >
-            <h2 className="relative text-3xl sm:text-4xl md:text-5xl font-bold text-white">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="h-px w-8 bg-white/25" />
+              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Security &amp; Trust
+              </span>
+            </div>
+            <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
               Security built into{' '}
               <span className="text-slate-400">the platform layer</span>
             </h2>
           </motion.div>
 
-          <motion.p
-            initial={noMotion ? false : { opacity: 0, y: 10 }}
+          <motion.div
+            initial={noMotion ? false : { opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
-            transition={{
-              duration: duration.slow,
-              delay: 0.1,
-              ease: signatureEase,
-            }}
-            className="text-sm sm:text-base text-slate-400 mt-4 max-w-2xl mx-auto leading-relaxed"
+            transition={{ duration: duration.slow, delay: 0.08, ease: signatureEase }}
+            className="lg:col-span-5"
           >
-            Controls are enforced, not just documented. Encryption, identity
-            governance, and tamper-evident audit logs are infrastructure — not
-            add-ons.
-          </motion.p>
+            <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+              Controls are enforced, not just documented. Encryption, identity
+              governance, and tamper-evident audit logs are infrastructure — not
+              add-ons.
+            </p>
+          </motion.div>
         </div>
 
         {/* ══ Bento Grid ══ */}

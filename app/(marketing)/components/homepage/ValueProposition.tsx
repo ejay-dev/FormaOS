@@ -201,19 +201,16 @@ function PostureCard({
               </linearGradient>
             </defs>
           </svg>
-          {/* Center text */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
+          {/* Center text — number only, no label crowding the ring */}
+          <div className="absolute inset-0 flex items-center justify-center">
             <motion.span
-              className="text-3xl sm:text-4xl font-black tabular-nums text-white"
+              className="text-4xl sm:text-5xl font-black tabular-nums tracking-tight text-white"
               initial={noMotion ? false : { opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : undefined}
               transition={{ delay: 1.2, duration: 0.4, ease: signatureEase }}
             >
               94%
             </motion.span>
-            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mt-0.5">
-              Posture · illustrative
-            </span>
           </div>
         </div>
 
