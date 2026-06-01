@@ -25,14 +25,29 @@ describe('data-residency', () => {
     adminSupabase.reset();
   });
 
-  it('lists the supported regions and availability flags', () => {
-    expect(getAvailableRegions()).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ region: 'au', available: true }),
-        expect.objectContaining({ region: 'us', available: false }),
-        expect.objectContaining({ region: 'eu', available: false }),
-      ]),
-    );
+  it('lists only provisioned regions (AU only until US/EU URLs are set)', () => {
+    const regions = getAvailableRegions();
+    // AU is always available; US/EU are hidden until their Supabase URLs exist.
+    expect(regions).toEqual([
+      expect.objectContaining({ region: 'au', available: true }),
+    ]);
+    expect(regions.find((r) => r.region === 'us')).toBeUndefined();
+    expect(regions.find((r) => r.region === 'eu')).toBeUndefined();
+  });
+
+  it('exposes a region once its Supabase URL is provisioned', () => {
+    const env = setupTestEnv({ SUPABASE_US_URL: 'https://us.example.supabase.co' });
+    try {
+      const regions = getAvailableRegions();
+      expect(regions.find((r) => r.region === 'us')).toMatchObject({
+        region: 'us',
+        available: true,
+      });
+      // EU still unprovisioned → still hidden.
+      expect(regions.find((r) => r.region === 'eu')).toBeUndefined();
+    } finally {
+      env.restore();
+    }
   });
 
   it('returns the organization region when one is stored', async () => {

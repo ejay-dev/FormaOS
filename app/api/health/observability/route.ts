@@ -43,7 +43,9 @@ export async function GET() {
 
   const langfuse = {
     publicKeyPresent: bool(process.env.LANGFUSE_PUBLIC_KEY),
-    hostPresent: bool(process.env.LANGFUSE_HOST),
+    // Config + .env.example use LANGFUSE_BASE_URL (not LANGFUSE_HOST), so the
+    // old check always reported the host as absent even when configured.
+    hostPresent: bool(process.env.LANGFUSE_BASE_URL),
   };
 
   const allSentryWired =

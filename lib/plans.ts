@@ -126,6 +126,28 @@ export function isTrialEligiblePlan(planKey: PlanKey): boolean {
   return TRIAL_ELIGIBLE_PLANS.includes(planKey);
 }
 
+/**
+ * Max number of compliance frameworks a plan may enable. Returns `null` for
+ * unlimited. Used to enforce the maxFrameworks cap server-side at the
+ * framework-provisioning chokepoint (previously the cap was advertised but
+ * enforced nowhere, so any plan could enable unlimited frameworks).
+ */
+export function getMaxFrameworks(planKey: PlanKey): number | null {
+  const max = PLAN_CATALOG[planKey].limits.maxFrameworks;
+  return max === 'unlimited' ? null : max;
+}
+
+/**
+ * Max number of sites/locations a plan may create. Returns `null` for
+ * unlimited. Sites are not yet a user-creatable entity, so there is no write
+ * path to enforce against today — this helper exists so the cap is ready the
+ * moment site creation ships, and so the limit lives in one place.
+ */
+export function getMaxSites(planKey: PlanKey): number | null {
+  const max = PLAN_CATALOG[planKey].limits.maxSites;
+  return max === 'unlimited' ? null : max;
+}
+
 // ---------------------------------------------------------------------
 // Audit 2026-05-23 — billing-shape helpers
 // ---------------------------------------------------------------------

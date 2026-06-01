@@ -11,6 +11,10 @@ import {
   Plus,
 } from 'lucide-react';
 import { EntityEvidencePanel } from '@/components/compliance/EntityEvidencePanel';
+import { IncidentStatusPipeline } from '@/components/incidents/IncidentStatusPipeline';
+import { IncidentRegulatoryCountdowns } from '@/components/incidents/RegulatoryCountdown';
+import { IncidentChainView } from '@/components/incidents/incident-chain-view';
+import { RegulatoryNotificationTrackerWired } from '@/components/incidents/regulatory-notification-tracker-wired';
 
 function formatDateTime(value: string | null | undefined): string {
   if (!value) return 'N/A';
@@ -42,6 +46,7 @@ type IncidentRow = {
   root_cause: string | null;
   preventive_measures: string | null;
   created_at: string;
+  notifications_sent: string[] | null;
   patient_id: string | null;
   reported_by: string | null;
   patient: { id: string; full_name: string } | null;
@@ -83,6 +88,7 @@ export default async function IncidentDetailPage({
       root_cause,
       preventive_measures,
       created_at,
+      notifications_sent,
       patient_id,
       reported_by
     `,
@@ -127,6 +133,104 @@ export default async function IncidentDetailPage({
       : null,
   };
 
+  // Related compliance records for the resolution chain, regulatory tracker,
+  // and lifecycle pipeline.
+  const [
+    { data: regulatoryNotifications },
+    { data: investigationRows },
+    { data: capaRows },
+  ] = await Promise.all([
+    supabase
+      .from('org_regulatory_notifications')
+      .select(
+        'id, regulation, notification_type, due_date, status, submitted_at, reference_number, body_name',
+      )
+      .eq('organization_id', orgId)
+      .eq('incident_id', incidentId)
+      .order('due_date', { ascending: true }),
+    supabase
+      .from('org_investigations')
+      .select('id, status, created_at')
+      .eq('organization_id', orgId)
+      .eq('incident_id', incidentId)
+      .order('created_at', { ascending: true }),
+    supabase
+      .from('org_capa_items')
+      .select('id, title, status, created_at')
+      .eq('organization_id', orgId)
+      .eq('incident_id', incidentId)
+      .order('created_at', { ascending: true }),
+  ]);
+
+  const regulatoryList = (regulatoryNotifications ?? []).map((n) => ({
+    id: n.id as string,
+    regulation: n.regulation as string,
+    notification_type: n.notification_type as string,
+    due_date: n.due_date as string,
+    status: n.status as string,
+    submitted_at: (n.submitted_at as string | null) ?? undefined,
+    reference_number: (n.reference_number as string | null) ?? undefined,
+    body_name: (n.body_name as string | null) ?? undefined,
+  }));
+
+  // Resolution chain: incident → investigation(s) → CAPA(s) → regulatory.
+  const chainNodes: {
+    type: 'incident' | 'investigation' | 'capa' | 'regulatory';
+    id: string;
+    label: string;
+    status: string;
+    href: string;
+  }[] = [
+    {
+      type: 'incident',
+      id: incident.id,
+      label: (incident.incident_type || 'Incident').replace(/_/g, ' '),
+      status: incident.status,
+      href: `/app/incidents/${incident.id}`,
+    },
+    ...(investigationRows ?? []).map((r) => ({
+      type: 'investigation' as const,
+      id: r.id as string,
+      label: 'Investigation',
+      status: (r.status as string) ?? 'assigned',
+      href: `/app/incidents/${incident.id}/investigation`,
+    })),
+    ...(capaRows ?? []).map((r) => ({
+      type: 'capa' as const,
+      id: r.id as string,
+      label: (r.title as string) || 'CAPA',
+      status: (r.status as string) ?? 'open',
+      href: `/app/capa/${r.id as string}`,
+    })),
+    ...regulatoryList.map((r) => ({
+      type: 'regulatory' as const,
+      id: r.id,
+      label: `${r.regulation.replace(/_/g, ' ')} (${r.notification_type.replace(/_/g, ' ')})`,
+      status: r.status,
+      // No standalone regulatory detail route exists yet; link back to the case.
+      href: `/app/incidents/${incident.id}`,
+    })),
+  ];
+
+  // Lifecycle pipeline step, derived from real columns (status + notifications_sent).
+  const industry = systemState.organization.industry ?? '';
+  const careIndustry = ['ndis', 'aged_care', 'healthcare', 'childcare'].includes(
+    industry,
+  );
+  const REGULATOR_NOTIFY_KEYS = ['ndis_commission', 'police'];
+  const pipelineStep: 'reported' | 'under_investigation' | 'regulator_notified' | 'closed' =
+    ['closed', 'archived', 'resolved'].includes(incident.status)
+      ? 'closed'
+      : (incident.notifications_sent ?? []).some((n) =>
+            REGULATOR_NOTIFY_KEYS.includes(n),
+          )
+        ? 'regulator_notified'
+        : incident.status === 'investigating'
+          ? 'under_investigation'
+          : 'reported';
+
+  const incidentClockStart = incident.occurred_at ?? incident.created_at;
+
   const isOpen = incident.status === 'open';
   const resolveAction = async (fd: FormData) => {
     'use server';
@@ -152,6 +256,8 @@ export default async function IncidentDetailPage({
           Case status, controls, and closure details.
         </p>
       </div>
+
+      <IncidentStatusPipeline currentStep={pipelineStep} />
 
       <div className="grid gap-4 md:grid-cols-4">
         <div className="rounded-xl border border-border bg-card p-4">
@@ -187,6 +293,25 @@ export default async function IncidentDetailPage({
           </p>
         </div>
       </div>
+
+      {careIndustry ? (
+        <section className="rounded-xl border border-border bg-card p-5">
+          <IncidentRegulatoryCountdowns
+            incidentCreatedAt={incidentClockStart}
+            industry={industry}
+            submittedNotifications={[]}
+          />
+        </section>
+      ) : null}
+
+      <section className="rounded-xl border border-border bg-card p-5">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          Resolution Chain
+        </h2>
+        <div className="mt-4">
+          <IncidentChainView incidentId={incident.id} nodes={chainNodes} />
+        </div>
+      </section>
 
       <section className="rounded-xl border border-border bg-card p-5">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -270,6 +395,16 @@ export default async function IncidentDetailPage({
         heading="Incident Evidence"
         emptyState="Attach photos, witness statements, or documents related to this incident."
       />
+
+      <section className="rounded-xl border border-border bg-card p-5">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+          Regulatory Notifications
+        </h2>
+        <RegulatoryNotificationTrackerWired
+          notifications={regulatoryList}
+          incidentId={incident.id}
+        />
+      </section>
 
       <section className="rounded-xl border border-border bg-card p-5">
         <h2 className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">

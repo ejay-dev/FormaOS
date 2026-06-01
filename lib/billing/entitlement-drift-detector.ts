@@ -174,17 +174,61 @@ export async function detectEntitlementDrift(
     try {
       await syncEntitlementsForPlan(orgId, planKey);
 
-      // Mark all corrections as fixed
-      for (const correction of corrections) {
-        correction.corrected = true;
+      // Re-fetch and verify each correction was ACTUALLY resolved before
+      // marking it corrected. Previously this loop set corrected=true
+      // unconditionally — so when the sync couldn't disable "extra"
+      // entitlements (the old downgrade-leak bug), the scan still reported
+      // them as fixed. We now confirm against the post-sync state.
+      const { data: postSync } = await supabase
+        .from("org_entitlements")
+        .select("feature_key, enabled, limit_value");
+
+      const postMap = new Map<string, { enabled: boolean; limit: number | null }>();
+      for (const ent of postSync || []) {
+        postMap.set(ent.feature_key, {
+          enabled: ent.enabled ?? false,
+          limit: ent.limit_value ?? null,
+        });
       }
-      autoFixed = true;
+
+      for (const correction of corrections) {
+        const after = postMap.get(correction.featureKey);
+        switch (correction.type) {
+          case "missing":
+          case "disabled":
+            correction.corrected = after?.enabled === true;
+            break;
+          case "extra":
+            correction.corrected = !after || after.enabled === false;
+            break;
+          case "limit_mismatch":
+            correction.corrected = after?.limit === correction.expected;
+            break;
+        }
+      }
+
+      autoFixed = corrections.some((c) => c.corrected);
+      const unresolved = corrections.filter((c) => !c.corrected);
 
       billingLogger.info("entitlement_drift_fixed", {
         orgId,
         planKey,
         corrections: corrections.length,
+        resolved: corrections.length - unresolved.length,
+        unresolved: unresolved.length,
       });
+
+      if (unresolved.length > 0) {
+        billingLogger.error(
+          "entitlement_drift_fix_incomplete",
+          new Error("Some entitlement corrections were not resolved by sync"),
+          {
+            orgId,
+            planKey,
+            unresolved: unresolved.map((c) => `${c.featureKey}:${c.type}`),
+          },
+        );
+      }
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       billingLogger.error("entitlement_drift_fix_failed", err, { orgId, planKey });

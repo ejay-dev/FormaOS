@@ -463,6 +463,61 @@ export async function resolveIncident(id: string, formData: FormData) {
   }
 }
 
+export async function markRegulatoryNotificationSubmitted(
+  notificationId: string,
+  referenceNumber: string,
+  incidentId: string,
+) {
+  try {
+    const supabase = await createSupabaseServerClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
+    const organizationId = await requireUserOrganization(supabase, user.id);
+
+    const submittedAt = new Date().toISOString();
+    const { error } = await supabase
+      .from('org_regulatory_notifications')
+      .update({
+        status: 'submitted',
+        submitted_at: submittedAt,
+        submitted_by: user.id,
+        reference_number: referenceNumber || null,
+      })
+      .eq('id', notificationId)
+      .eq('organization_id', organizationId);
+
+    if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'incident',
+        entityId: incidentId,
+        actionType: 'REGULATORY_NOTIFICATION_SUBMITTED',
+        afterState: {
+          notification_id: notificationId,
+          status: 'submitted',
+          submitted_at: submittedAt,
+          has_reference: Boolean(referenceNumber),
+        },
+        reason: 'regulatory_notification_submission',
+      },
+      { required: true },
+    );
+
+    revalidatePath(`/app/incidents/${incidentId}`);
+    return { success: true } as const;
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
 // =========================================================
 // STAFF CREDENTIAL ACTIONS
 // =========================================================

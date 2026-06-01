@@ -297,13 +297,52 @@ describe('detectEntitlementDrift', () => {
           error: null,
         });
       }
-      return createBuilder({ data: [], error: null });
+      // call 2: pre-fix entitlements (empty → all four basic features missing)
+      if (callCount === 2) return createBuilder({ data: [], error: null });
+      // call 3: post-sync re-fetch. syncEntitlementsForPlan is mocked, so we
+      // simulate the DB state it would have produced — all basic features now
+      // enabled. The detector re-verifies against this before marking fixed.
+      return createBuilder({
+        data: [
+          { feature_key: 'audit_export', enabled: true, limit_value: null },
+          { feature_key: 'reports', enabled: true, limit_value: null },
+          {
+            feature_key: 'framework_evaluations',
+            enabled: true,
+            limit_value: null,
+          },
+          { feature_key: 'team_limit', enabled: true, limit_value: 10 },
+        ],
+        error: null,
+      });
     });
 
     const result = await detectEntitlementDrift('org-1', true);
     expect(result.autoFixed).toBe(true);
     expect(syncEntitlementsForPlan).toHaveBeenCalled();
     expect(result.corrections.every((c) => c.corrected)).toBe(true);
+  });
+
+  it('does NOT mark corrections fixed when sync fails to resolve them', async () => {
+    // Regression guard for the old bug: the detector used to mark every
+    // correction corrected=true even when sync left the drift in place.
+    let callCount = 0;
+    mockAdmin.from = jest.fn(() => {
+      callCount++;
+      if (callCount === 1) {
+        return createBuilder({
+          data: { plan_key: 'basic', status: 'active' },
+          error: null,
+        });
+      }
+      // Pre-fix AND post-sync both empty → nothing was actually resolved.
+      return createBuilder({ data: [], error: null });
+    });
+
+    const result = await detectEntitlementDrift('org-1', true);
+    expect(syncEntitlementsForPlan).toHaveBeenCalled();
+    expect(result.corrections.every((c) => c.corrected)).toBe(false);
+    expect(result.autoFixed).toBe(false);
   });
 
   it('does not auto-fix when status is canceled', async () => {

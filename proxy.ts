@@ -62,9 +62,12 @@ function isLocalE2ERateLimitBypass(request: NextRequest): boolean {
   );
 }
 
-// Periodic cleanup to prevent memory leak (runs every 2 minutes)
+// Periodic cleanup to prevent memory leak (runs every 2 minutes).
+// `.unref()` so this timer never keeps the process alive on its own — without
+// it the interval is an open handle that prevents Jest from exiting cleanly
+// (flagged by `jest --detectOpenHandles`) and would block graceful shutdown.
 if (typeof setInterval !== 'undefined') {
-  setInterval(() => {
+  const rateBucketCleanup = setInterval(() => {
     const now = Date.now();
     for (const [ip, bucket] of apiRateBuckets) {
       if (now - bucket.windowStart > API_RATE_WINDOW_MS * 2) {
@@ -72,6 +75,8 @@ if (typeof setInterval !== 'undefined') {
       }
     }
   }, API_RATE_WINDOW_MS * 2);
+  // Edge runtime timers don't expose unref(); guard the call.
+  rateBucketCleanup.unref?.();
 }
 
 // Auth routes that should pass through without auth checks

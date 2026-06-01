@@ -50,7 +50,7 @@ async function safeCount(
 
 async function fetchSeenSteps(
   admin: ReturnType<typeof createSupabaseOrgClient>,
-  orgId: string,
+  _orgId: string,
 ): Promise<FirstSessionStepId[]> {
   try {
     const { data, error } = await admin
@@ -83,7 +83,7 @@ async function fetchSeenSteps(
 
 async function firstCarePlanWithGoalsId(
   admin: ReturnType<typeof createSupabaseOrgClient>,
-  orgId: string,
+  _orgId: string,
 ): Promise<{ planId: string | null; hasGoals: boolean }> {
   try {
     const { data } = await admin

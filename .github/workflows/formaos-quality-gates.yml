@@ -74,6 +74,13 @@ jobs:
       - run: npx playwright install --with-deps chromium
 
       - name: Run smoke, app action, and export integrity suites
+        env:
+          # Strict on protected branches: push to main and same-repo PRs MUST
+          # be able to authenticate, or the gate fails (a skipped authed spec
+          # reporting green is the false-confidence gap we're closing). Fork
+          # PRs can't carry secrets, so they stay advisory (var left empty →
+          # specs skip cleanly instead of failing external contributors).
+          E2E_REQUIRE_AUTH: ${{ github.event.pull_request.head.repo.fork == true && '' || '1' }}
         run: >
           npx playwright test
           e2e/smoke.spec.ts
