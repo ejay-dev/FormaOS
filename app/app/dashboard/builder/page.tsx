@@ -30,10 +30,11 @@ export default async function DashboardBuilderPage() {
     .from('org_controls')
     .select('*', { count: 'exact', head: true })
     .eq('organization_id', orgId);
-  // Audit v2-regress-005 (2026-05-22): match the same status synonyms the
-  // unified-score helper recognises ('compliant' | 'satisfied' | 'met') so
-  // the widget doesn't undercount when the evaluator pipeline emits the
-  // alternate value. Mirror filter in lib/compliance/unified-score.ts.
+  // Audit v2-regress-005 (2026-05-22): match the status synonyms the
+  // evaluator pipeline can emit ('compliant' | 'satisfied' | 'met') so the
+  // widget doesn't undercount. (The former lib/compliance/unified-score.ts —
+  // a third, unused scoring formula — was removed in audit H3; the canonical
+  // score is the persisted evaluator-overlay path surfaced via the snapshot.)
   const { count: compliantControls } = await db
     .from('org_controls')
     .select('*', { count: 'exact', head: true })

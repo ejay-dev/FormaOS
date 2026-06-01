@@ -99,6 +99,42 @@ export async function getOrgComplianceSnapshotCore(
       }
     }
 
+    // Audit H3: overlay the persisted evaluator-aware control status from the
+    // framework-evaluation path (org_control_evaluations.control_type =
+    // 'framework_control'). That path applies the registry evaluator overlay
+    // (DB-signal checks the snapshot can't afford to re-run live across ~253
+    // evaluators) on top of the same evidence/task heuristic. Reading its
+    // persisted verdict — rather than recomputing a heuristic-only status —
+    // makes the dashboard snapshot and the framework page report ONE number
+    // for the same org (they previously diverged; audit-package emitted both).
+    const persistedStatusByControl = new Map<string, ControlStatus>();
+    const VALID_CONTROL_STATUSES: ReadonlySet<string> = new Set([
+      'compliant',
+      'at_risk',
+      'non_compliant',
+      'not_applicable',
+    ]);
+    try {
+      const { data: persistedEvalRows } = await supabase
+        .from('org_control_evaluations')
+        .select('control_key, status, details')
+        .eq('organization_id', orgId)
+        .eq('control_type', 'framework_control');
+      for (const row of persistedEvalRows ?? []) {
+        const controlId =
+          (row as { details?: { control_id?: string } }).details?.control_id ??
+          (typeof (row as { control_key?: string }).control_key === 'string'
+            ? (row as { control_key: string }).control_key.replace(/^control:/, '')
+            : null);
+        const status = (row as { status?: string }).status;
+        if (controlId && status && VALID_CONTROL_STATUSES.has(status)) {
+          persistedStatusByControl.set(controlId, status as ControlStatus);
+        }
+      }
+    } catch {
+      // Non-fatal — fall back to the live heuristic for every control.
+    }
+
     const evidenceBacklog = {
       pending: evidenceRows.filter((e) => (e.status || 'pending') === 'pending')
         .length,
@@ -180,6 +216,15 @@ export async function getOrgComplianceSnapshotCore(
           status = 'non_compliant';
         } else {
           status = 'at_risk';
+        }
+
+        // Prefer the persisted evaluator-aware verdict when the framework
+        // evaluation has run for this control (audit H3). Mandatory controls
+        // only — `not_applicable` is a structural property of the control, not
+        // something an evaluation run should flip.
+        const persistedStatus = persistedStatusByControl.get(control.id);
+        if (isMandatory && persistedStatus && persistedStatus !== 'not_applicable') {
+          status = persistedStatus;
         }
 
         if (status !== 'not_applicable') {
