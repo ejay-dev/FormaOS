@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-05-27T13:37:47.485Z",
+  "takenAt": "2026-06-01T01:25:48.437Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -1061,6 +1061,10 @@
     {
       "version": "20260624072",
       "name": "audit_2026_05_27_dormant_user_purge_holds"
+    },
+    {
+      "version": "20260624073",
+      "name": "investigation_analysis_data"
     }
   ]
 }

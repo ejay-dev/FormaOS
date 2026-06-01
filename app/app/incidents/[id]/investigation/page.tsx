@@ -12,6 +12,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import Link from 'next/link';
+import { InvestigationAnalysisPanel } from '@/components/incidents/investigation-analysis-panel';
 
 export const metadata = { title: 'Investigation' };
 
@@ -127,6 +128,36 @@ export default async function InvestigationPage({
     ? (statusIcons[investigation.status] ?? Clock)
     : Clock;
 
+  // Structured RCA: only available once a methodology has been chosen.
+  const RCA_METHODOLOGIES = [
+    '5_whys',
+    'fishbone',
+    'timeline_analysis',
+    'barrier_analysis',
+  ] as const;
+  const rcaMethodology =
+    investigation &&
+    RCA_METHODOLOGIES.includes(
+      investigation.methodology as (typeof RCA_METHODOLOGIES)[number],
+    )
+      ? (investigation.methodology as (typeof RCA_METHODOLOGIES)[number])
+      : null;
+  const rcaAnalysis = (investigation?.analysis_data ?? {}) as {
+    whys?: string[];
+    fishbone?: Record<string, string[]>;
+    timeline?: Array<{ time: string; event: string }>;
+    barriers?: Array<{ barrier: string; status: string }>;
+  };
+  const rcaInitialData = {
+    rootCause: (investigation?.root_cause as string | null) ?? undefined,
+    contributingFactors:
+      (investigation?.contributing_factors as string[] | null) ?? undefined,
+    whys: rcaAnalysis.whys,
+    fishbone: rcaAnalysis.fishbone,
+    timeline: rcaAnalysis.timeline,
+    barriers: rcaAnalysis.barriers,
+  };
+
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -200,6 +231,20 @@ export default async function InvestigationPage({
               <p className="text-sm whitespace-pre-wrap">
                 {investigation.root_cause}
               </p>
+            </div>
+          )}
+
+          {rcaMethodology && (
+            <div className="border border-border rounded-lg p-4 bg-card">
+              <h3 className="text-sm font-medium mb-4">
+                Root-Cause Analysis —{' '}
+                {rcaMethodology.replace(/_/g, ' ')}
+              </h3>
+              <InvestigationAnalysisPanel
+                incidentId={incidentId}
+                methodology={rcaMethodology}
+                initialData={rcaInitialData}
+              />
             </div>
           )}
 
