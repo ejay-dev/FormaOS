@@ -221,8 +221,12 @@ export async function POST(request: Request) {
       try {
         await admin
           .from('org_subscriptions')
+          // American spelling to match calculateModuleState / RECOVERABLE_STATES
+          // (audit: canceled-normalization). The report enum below keeps its
+          // own 'cancelled' literal — that's an API response value, not the
+          // subscription status column.
           .update({
-            status: 'cancelled',
+            status: 'canceled',
             updated_at: new Date().toISOString(),
           })
           .eq('organization_id', orgId);

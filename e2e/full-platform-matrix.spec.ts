@@ -17,7 +17,10 @@ import {
   PLAN_OPTIONS,
 } from '../lib/validators/organization';
 import { PLAN_CATALOG, type PlanKey } from '../lib/plans';
-import { PACK_SLUGS } from '../lib/frameworks/framework-installer';
+// Import from the pure registry module (not framework-installer) so test
+// collection does not pull in the server-only Supabase admin client, which
+// crashed `playwright test --list` (audit H6).
+import { PACK_SLUGS } from '../lib/frameworks/pack-registry';
 import { getIndustryNavigation } from '../lib/navigation/industry-sidebar';
 
 loadEnv({ path: '.env.local' });

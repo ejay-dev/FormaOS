@@ -424,6 +424,21 @@ export async function executeRetention(orgId: string, dryRun = true) {
     },
   });
 
+  // Stamp the sweep time so the nightly data-retention cron can round-robin
+  // across all orgs (it orders by last_retention_at NULLS FIRST). Best-effort:
+  // a missing column (migration not yet applied) returns an error we ignore
+  // rather than failing the retention run (audit M8).
+  if (!dryRun) {
+    const { error: stampError } = await admin
+      .from('organizations')
+      .update({ last_retention_at: new Date().toISOString() })
+      .eq('id', orgId);
+    if (stampError) {
+      // Non-fatal — column may not be deployed yet.
+      void stampError;
+    }
+  }
+
   return results;
 }
 

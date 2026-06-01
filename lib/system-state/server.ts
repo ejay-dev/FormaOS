@@ -645,6 +645,11 @@ export function calculateModuleState(
   }
   if (
     subscriptionStatus === 'canceled' ||
+    // Tolerate the legacy British spelling that admin-sync / account-delete
+    // wrote in the past; otherwise those canceled subs were mis-bucketed as
+    // active (audit: canceled-normalization). Cast: 'cancelled' isn't in the
+    // modelled status union, but legacy rows can still hold it at runtime.
+    (subscriptionStatus as string) === 'cancelled' ||
     subscriptionStatus === 'pending' ||
     subscriptionStatus === 'blocked'
   ) {

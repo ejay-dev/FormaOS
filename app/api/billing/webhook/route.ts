@@ -25,6 +25,60 @@ import { captureStripeEvent } from '@/lib/analytics/posthog-server';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+/**
+ * Resolve the Stripe customer id behind a dispute.
+ *
+ * In webhook deliveries `dispute.charge` arrives as a *string* charge id
+ * (nested objects are never expanded on webhook events), so the previous
+ * `typeof dispute.charge === 'object'` guard always evaluated to `null` and
+ * the entire dispute-handling path was dead in production (audit billing C1).
+ * We resolve the customer from the expanded object when present, otherwise by
+ * retrieving the charge, and finally fall back to the payment intent. Returns
+ * null only when Stripe genuinely cannot tie the dispute to a customer.
+ */
+async function resolveDisputeCustomerId(
+  stripe: Stripe,
+  dispute: Stripe.Dispute,
+  log: ReturnType<typeof routeLog>,
+  eventId: string,
+): Promise<string | null> {
+  const customerFromCharge =
+    typeof dispute.charge === 'object' && dispute.charge?.customer
+      ? typeof dispute.charge.customer === 'string'
+        ? dispute.charge.customer
+        : dispute.charge.customer.id
+      : null;
+  if (customerFromCharge) return customerFromCharge;
+
+  try {
+    if (typeof dispute.charge === 'string' && dispute.charge) {
+      const charge = await stripe.charges.retrieve(dispute.charge);
+      if (charge.customer) {
+        return typeof charge.customer === 'string'
+          ? charge.customer
+          : charge.customer.id;
+      }
+    }
+    const pi = dispute.payment_intent;
+    if (typeof pi === 'string' && pi) {
+      const intent = await stripe.paymentIntents.retrieve(pi);
+      if (intent.customer) {
+        return typeof intent.customer === 'string'
+          ? intent.customer
+          : intent.customer.id;
+      }
+    } else if (pi && typeof pi === 'object' && pi.customer) {
+      return typeof pi.customer === 'string' ? pi.customer : pi.customer.id;
+    }
+  } catch (err) {
+    log.error(
+      { err: err instanceof Error ? err.message : String(err), eventId, disputeId: dispute.id },
+      '[billing/webhook] failed to resolve dispute customer',
+    );
+  }
+  return null;
+}
+
 export async function POST(request: Request) {
   const signature = request.headers.get('stripe-signature');
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -880,7 +934,11 @@ export async function POST(request: Request) {
           .from('org_subscriptions')
           .update({
             stripe_customer_id: null,
-            status: 'cancelled',
+            // American spelling to match every other status writer +
+            // calculateModuleState / RECOVERABLE_STATES, which only match
+            // 'canceled'. The British 'cancelled' here was mis-bucketed
+            // by the module gate (audit: canceled-normalization).
+            status: 'canceled',
             updated_at: new Date().toISOString(),
           })
           .eq('organization_id', subRow.organization_id);
@@ -1118,12 +1176,7 @@ export async function POST(request: Request) {
 
     if (event.type === 'charge.dispute.created') {
       const dispute = event.data.object as Stripe.Dispute;
-      const customerId =
-        typeof dispute.charge === 'object' && dispute.charge?.customer
-          ? (typeof dispute.charge.customer === 'string'
-              ? dispute.charge.customer
-              : dispute.charge.customer.id)
-          : null;
+      const customerId = await resolveDisputeCustomerId(stripe, dispute, log, event.id);
       if (customerId) {
         const { data: subRow } = await admin
           .from('org_subscriptions')
@@ -1191,12 +1244,7 @@ export async function POST(request: Request) {
 
     if (event.type === 'charge.dispute.closed') {
       const dispute = event.data.object as Stripe.Dispute;
-      const customerId =
-        typeof dispute.charge === 'object' && dispute.charge?.customer
-          ? (typeof dispute.charge.customer === 'string'
-              ? dispute.charge.customer
-              : dispute.charge.customer.id)
-          : null;
+      const customerId = await resolveDisputeCustomerId(stripe, dispute, log, event.id);
       if (customerId) {
         const { data: subRow } = await admin
           .from('org_subscriptions')
@@ -1233,7 +1281,11 @@ export async function POST(request: Request) {
                 .eq('organization_id', subRow.organization_id)
                 .maybeSingle();
               const planKey = resolvePlanKey(planRow?.plan_key ?? null);
-              if (planKey && planRow?.status !== 'cancelled') {
+              if (
+                planKey &&
+                planRow?.status !== 'canceled' &&
+                planRow?.status !== 'cancelled'
+              ) {
                 await syncEntitlementsForPlan(subRow.organization_id, planKey);
               }
             } catch (entErr) {

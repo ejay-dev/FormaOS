@@ -33,6 +33,10 @@ env:
   STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET || '' }}
   STRIPE_PRICE_FOUNDATION: ${{ secrets.STRIPE_PRICE_FOUNDATION || vars.STRIPE_PRICE_FOUNDATION || '' }}
   STRIPE_PRICE_GROWTH: ${{ secrets.STRIPE_PRICE_GROWTH || vars.STRIPE_PRICE_GROWTH || '' }}
+  # audit M9: required by scripts/check-env.js productionRequiredKeys but was
+  # absent here, so the production-config gate could never pass clean. Set the
+  # STRIPE_PRICE_SCALE secret/var in the repo for this to resolve.
+  STRIPE_PRICE_SCALE: ${{ secrets.STRIPE_PRICE_SCALE || vars.STRIPE_PRICE_SCALE || '' }}
   RESEND_API_KEY: ${{ secrets.RESEND_API_KEY || '' }}
   RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL || vars.RESEND_FROM_EMAIL || '' }}
   UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL || vars.UPSTASH_REDIS_REST_URL || '' }}
@@ -265,28 +269,40 @@ jobs:
     needs: [deploy_to_vercel]
     steps:
       - name: Health check
+        # audit M10: these checks used `curl -f … || echo "⚠️"`, so a real
+        # outage only printed a warning and the step still passed. Now they
+        # fail the job. `-L` follows the apex→www 308 redirect
+        # (next.config.ts), `--retry` rides out cold-start latency.
         run: |
+          set -euo pipefail
           echo "🏥 Running post-deployment health checks..."
 
-          # Check if site is accessible
-          curl -f https://formaos.com.au || echo "⚠️ Site accessibility check failed"
+          # Site root (follows apex → www redirect)
+          curl -fsSL --retry 3 --retry-delay 5 --retry-connrefused \
+            -o /dev/null https://formaos.com.au
 
-          # Check specific endpoints
-          curl -f https://formaos.com.au/pricing || echo "⚠️ Pricing page check failed"
+          # Pricing page
+          curl -fsSL --retry 3 --retry-delay 5 --retry-connrefused \
+            -o /dev/null https://formaos.com.au/pricing
 
-          echo "✅ Basic health checks completed"
+          echo "✅ Basic health checks passed"
 
       - name: Security verification
         run: |
+          set -euo pipefail
           echo "🔒 Verifying security after deployment..."
 
-          # Check that admin routes are protected (basic test)
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://formaos.com.au/admin || echo "000")
-          if [ "$RESPONSE" == "302" ] || [ "$RESPONSE" == "401" ] || [ "$RESPONSE" == "403" ]; then
-            echo "✅ Admin routes properly protected (HTTP $RESPONSE)"
-          else
-            echo "⚠️ Admin route protection may be compromised (HTTP $RESPONSE)"
-          fi
+          # Admin routes must redirect/deny unauthenticated traffic. A 200 OR
+          # a curl failure (000) both fail the gate — a publicly-reachable
+          # admin route or an unreachable site are both deployment failures.
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -L --max-redirs 0 https://formaos.com.au/admin || echo "000")
+          case "$RESPONSE" in
+            301|302|303|307|308|401|403)
+              echo "✅ Admin routes properly protected (HTTP $RESPONSE)" ;;
+            *)
+              echo "❌ Admin route protection check failed (HTTP $RESPONSE)"
+              exit 1 ;;
+          esac
 
       - name: Deployment summary
         run: |
