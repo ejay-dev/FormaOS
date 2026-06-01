@@ -29,6 +29,25 @@ export const INDUSTRY_PACKS: Record<string, IndustryPack> = {
             { name: "Staff Training Register", type: "data", criticality: "high" }
         ]
     },
+    "mental_health": {
+        id: "mental_health",
+        name: "Mental Health Services",
+        description: "Compliance framework for mental health service providers aligned with the National Standards for Mental Health Services (NSMHS).",
+        policies: [
+            { title: "Consumer Rights and Dignity Policy", content: "## 1. Purpose\nTo uphold the rights, dignity, and autonomy of mental health consumers and their carers..." },
+            { title: "Restrictive Practices and Seclusion Policy", content: "## 1. Purpose\nTo minimise and govern the use of seclusion and restraint, with authorisation and review requirements..." },
+            { title: "Incident Management and Reportable Incidents Policy", content: "## 1. Purpose\nTo ensure incidents affecting consumer safety are recorded, escalated, and reported..." }
+        ],
+        tasks: [
+            { title: "Worker Screening Check", description: "Verify worker screening and police checks for all clinical and support staff." },
+            { title: "Complete NSMHS Self-Assessment", description: "Review service operations against the National Standards for Mental Health Services." },
+            { title: "Review Restrictive Practice Register", description: "Audit current seclusion and restraint authorisations and review cycles." }
+        ],
+        assets: [
+            { name: "Consumer Records Database", type: "data", criticality: "critical" },
+            { name: "Restrictive Practices Register", type: "data", criticality: "high" }
+        ]
+    },
     "healthcare": {
         id: "healthcare",
         name: "GP / Medical Practice",

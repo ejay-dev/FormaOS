@@ -44,6 +44,14 @@ export const PACK_REGISTRY = [
   // Audit 2026-05-27 (R10 Phase 1): NDIS Practice Standards Core Module —
   // 8 manual-attestation controls. Phase 2 requires NDIS-domain expert.
   { slug: 'ndis', file: 'ndis.json', code: 'NDIS' },
+  // Mental Health Services vertical — National Standards for Mental
+  // Health Services (NSMHS) 2010, 10 standards / 14 controls. 4 DB-signal
+  // (org_incidents, org_registers, org_policies, org_risks), 10 manual.
+  {
+    slug: 'mental-health-au',
+    file: 'mental-health-au.json',
+    code: 'MENTAL_HEALTH_AU',
+  },
 ];
 
 export function getFrameworkCodeForSlug(slug: string) {

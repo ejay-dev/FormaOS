@@ -12,6 +12,7 @@ import {
   Star,
   BookOpen,
   Scale,
+  HeartPulse,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
@@ -212,6 +213,148 @@ export function NDISSIRSTrackerWidget() {
       <DashboardSectionCard
         title={sirsLabel}
         description="Serious incident reporting status"
+        icon={AlertTriangle}
+      >
+        <div className="grid grid-cols-3 gap-2">
+          <div className="text-center">
+            <p className="text-lg font-bold font-mono text-[var(--wire-alert)]">
+              {counts?.open ?? '—'}
+            </p>
+            <p className="text-[10px] text-muted-foreground">Open</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold font-mono text-amber-400">
+              {counts?.notified ?? '—'}
+            </p>
+            <p className="text-[10px] text-muted-foreground">Notified</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold font-mono text-[var(--wire-action)]">
+              {counts?.investigating ?? '—'}
+            </p>
+            <p className="text-[10px] text-muted-foreground">Investigating</p>
+          </div>
+        </div>
+      </DashboardSectionCard>
+    </ErrorBoundary>
+  );
+}
+
+// ==========================================================
+// MENTAL HEALTH — Consumer Safety Snapshot
+// ==========================================================
+export function MentalHealthConsumerSnapshot() {
+  const [data, setData] = useState<{
+    total: number;
+    plansOverdue: number;
+    restrictivePractices: number;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/v1/participants/snapshot')
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setData)
+      .catch(() => {});
+  }, []);
+
+  return (
+    <ErrorBoundary name="MentalHealthConsumerSnapshot" level="component">
+      <div className="grid grid-cols-3 gap-2">
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+          <p className="text-xl font-bold font-mono">{data?.total ?? '—'}</p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+            Consumers
+          </p>
+        </div>
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+          <p className="text-xl font-bold font-mono text-amber-400">
+            {data?.plansOverdue ?? '—'}
+          </p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+            Reviews Due
+          </p>
+        </div>
+        <div className="rounded-xl border border-glass-border bg-glass-subtle p-3 text-center">
+          <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
+            {data?.restrictivePractices ?? '—'}
+          </p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+            Active RP
+          </p>
+        </div>
+      </div>
+    </ErrorBoundary>
+  );
+}
+
+// ==========================================================
+// MENTAL HEALTH — Care Plan Review Tracking
+// ==========================================================
+export function MentalHealthCarePlanWidget() {
+  const [data, setData] = useState<{
+    dueThisMonth: number;
+    overdue: number;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/v1/care-plans/review-status')
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setData)
+      .catch(() => {});
+  }, []);
+
+  return (
+    <ErrorBoundary name="MentalHealthCarePlanWidget" level="component">
+      <DashboardSectionCard
+        title="Care Plan Reviews"
+        description="Consumer care plan review tracking"
+        icon={HeartPulse}
+      >
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+            <p className="text-xl font-bold font-mono text-amber-400">
+              {data?.dueThisMonth ?? '—'}
+            </p>
+            <p className="text-[10px] text-muted-foreground uppercase">
+              Due This Month
+            </p>
+          </div>
+          <div className="rounded-lg border border-glass-border bg-glass-subtle p-3 text-center">
+            <p className="text-xl font-bold font-mono text-[var(--wire-alert)]">
+              {data?.overdue ?? '—'}
+            </p>
+            <p className="text-[10px] text-muted-foreground uppercase">
+              Overdue
+            </p>
+          </div>
+        </div>
+      </DashboardSectionCard>
+    </ErrorBoundary>
+  );
+}
+
+// ==========================================================
+// MENTAL HEALTH — Restrictive Practice / Incident Watch
+// ==========================================================
+export function MentalHealthIncidentWatchWidget() {
+  const [counts, setCounts] = useState<{
+    open: number;
+    notified: number;
+    investigating: number;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/v1/incidents/sirs-summary')
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setCounts)
+      .catch(() => {});
+  }, []);
+
+  return (
+    <ErrorBoundary name="MentalHealthIncidentWatchWidget" level="component">
+      <DashboardSectionCard
+        title="Incident & Restrictive Practice Watch"
+        description="Reportable incident and seclusion/restraint status"
         icon={AlertTriangle}
       >
         <div className="grid grid-cols-3 gap-2">

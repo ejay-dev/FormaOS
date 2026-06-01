@@ -56,6 +56,7 @@ export interface NavItem {
 
 export type IndustryType =
   | 'ndis'
+  | 'mental_health'
   | 'healthcare'
   | 'aged_care'
   | 'childcare'
@@ -139,6 +140,160 @@ export const NDIS_NAV: NavItem[] = [
     icon: NotebookPen,
     category: 'Care Operations',
     testId: 'nav-progress-notes',
+  },
+  {
+    name: 'Behaviour Support',
+    href: '/app/behaviour-support-plans',
+    icon: FileText,
+    category: 'Care Operations',
+    testId: 'nav-behaviour-support-plans',
+  },
+  {
+    name: 'Incidents',
+    href: '/app/incidents',
+    icon: AlertTriangle,
+    category: 'Care Operations',
+    testId: 'nav-incidents',
+    ragKey: 'incidents',
+  },
+
+  // Workforce
+  {
+    name: 'Staff Compliance',
+    href: '/app/staff-compliance',
+    icon: UserCheck,
+    category: 'Workforce',
+    testId: 'nav-staff-compliance',
+    ragKey: 'staff',
+  },
+  {
+    name: 'Team',
+    href: '/app/team',
+    icon: Users,
+    category: 'Workforce',
+    testId: 'nav-team',
+  },
+
+  // Registers & Reports
+  {
+    name: 'Registers',
+    href: '/app/registers',
+    icon: ClipboardList,
+    category: 'Registers',
+    testId: 'nav-registers',
+  },
+  {
+    name: 'Forms',
+    href: '/app/forms',
+    icon: FormInput,
+    category: 'Registers',
+    testId: 'nav-forms',
+  },
+  {
+    name: 'Reports',
+    href: '/app/reports',
+    icon: BarChart3,
+    category: 'Reports',
+    testId: 'nav-reports',
+  },
+  {
+    name: 'Executive View',
+    href: '/app/executive',
+    icon: Shield,
+    category: 'Reports',
+    testId: 'nav-executive',
+  },
+
+  // System
+  {
+    name: 'Settings',
+    href: '/app/settings',
+    icon: Settings,
+    category: 'System',
+    testId: 'nav-settings',
+  },
+];
+
+// =========================================================
+// MENTAL HEALTH SERVICES SIDEBAR
+// =========================================================
+export const MENTAL_HEALTH_NAV: NavItem[] = [
+  // Overview
+  {
+    name: 'Dashboard',
+    href: '/app',
+    icon: LayoutDashboard,
+    category: 'Overview',
+    testId: 'nav-dashboard',
+  },
+
+  // Compliance
+  {
+    name: 'Obligations',
+    href: '/app/compliance',
+    icon: ShieldCheck,
+    category: 'Compliance',
+    testId: 'nav-obligations',
+    ragKey: 'obligations',
+    children: [
+      {
+        name: 'Frameworks',
+        href: '/app/compliance/frameworks',
+        testId: 'nav-frameworks',
+      },
+      { name: 'Controls', href: '/app/controls', testId: 'nav-controls' },
+      {
+        name: 'Cross-Map',
+        href: '/app/compliance/cross-map',
+        testId: 'nav-cross-map',
+      },
+    ],
+  },
+  {
+    name: 'Policies',
+    href: '/app/policies',
+    icon: FileText,
+    category: 'Compliance',
+    testId: 'nav-policies',
+    ragKey: 'policies',
+  },
+  {
+    name: 'Evidence Vault',
+    href: '/app/vault',
+    icon: Lock,
+    category: 'Compliance',
+    testId: 'nav-vault',
+    ragKey: 'evidence',
+  },
+
+  // Care Operations
+  {
+    name: 'Consumers',
+    href: '/app/participants',
+    icon: Users,
+    category: 'Care Operations',
+    testId: 'nav-consumers',
+  },
+  {
+    name: 'Service Delivery',
+    href: '/app/visits',
+    icon: Calendar,
+    category: 'Care Operations',
+    testId: 'nav-visits',
+  },
+  {
+    name: 'Progress Notes',
+    href: '/app/progress-notes',
+    icon: NotebookPen,
+    category: 'Care Operations',
+    testId: 'nav-progress-notes',
+  },
+  {
+    name: 'Care Plans',
+    href: '/app/care-plans',
+    icon: HeartPulse,
+    category: 'Care Operations',
+    testId: 'nav-care-plans',
   },
   {
     name: 'Behaviour Support',
@@ -1452,6 +1607,9 @@ export function getIndustryNavigation(
     case 'ndis':
       navigation = NDIS_NAV;
       break;
+    case 'mental_health':
+      navigation = MENTAL_HEALTH_NAV;
+      break;
     case 'healthcare':
       navigation = HEALTHCARE_NAV;
       break;
@@ -1492,6 +1650,7 @@ export function getIndustryNavigation(
 export function isCareIndustry(industry: string | null | undefined): boolean {
   return (
     industry === 'ndis' ||
+    industry === 'mental_health' ||
     industry === 'healthcare' ||
     industry === 'aged_care' ||
     industry === 'childcare' ||
@@ -1506,6 +1665,8 @@ export function getIndustryLabel(industry: string | null | undefined): string {
   switch (industry) {
     case 'ndis':
       return 'NDIS Provider';
+    case 'mental_health':
+      return 'Mental Health Services';
     case 'healthcare':
       return 'Healthcare';
     case 'aged_care':

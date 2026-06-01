@@ -11,6 +11,14 @@ const INDUSTRY_OPTIONS = [
     frameworks: ['NDIS Practice Standards', 'Aged Care Quality Standards'],
   },
   {
+    id: 'mental_health',
+    label: 'Mental Health Services',
+    frameworks: [
+      'National Standards for Mental Health Services',
+      'SIRS / Reportable Incidents',
+    ],
+  },
+  {
     id: 'healthcare',
     label: 'Healthcare',
     frameworks: ['NSQHS Standards', 'AHPRA obligations'],

@@ -1,0 +1,177 @@
+{
+  "framework": {
+    "name": "National Standards for Mental Health Services",
+    "slug": "mental-health-au",
+    "version": "2010",
+    "description": "National Standards for Mental Health Services (NSMHS) 2010 — the Australian standards endorsed by Health Ministers for use across public, private and non-government mental health services. Ten standards covering consumer rights, safety, participation, diversity, prevention, governance, integration and the delivery-of-care cycle. Phase 1 ships 14 controls: 4 carry conservative DB-signal predicates against existing FormaOS tables (org_incidents, org_registers, org_policies, org_risks); the remaining 10 are manual-attestation where no verified automation signal exists. A clinical / mental-health-domain expert should review predicate semantics and expand sub-criteria coverage in a later phase.",
+    "is_active": true
+  },
+  "domains": [
+    { "name": "Rights and Responsibilities", "description": "Standard 1: the rights and responsibilities of people receiving mental health care are upheld by the mental health service and its staff, and are documented, prominently displayed, applied and promoted.", "sort_order": 1, "key": "std-1" },
+    { "name": "Safety", "description": "Standard 2: the activities and environment of the mental health service are safe for consumers, carers, families, visitors, staff and the community.", "sort_order": 2, "key": "std-2" },
+    { "name": "Consumer and Carer Participation", "description": "Standard 3: consumers and carers are actively involved in the development, planning, delivery and evaluation of services.", "sort_order": 3, "key": "std-3" },
+    { "name": "Diversity Responsiveness", "description": "Standard 4: the mental health service delivers services that take into account the cultural and social diversity of its consumers and meets their needs and those of their carers and community throughout all phases of care.", "sort_order": 4, "key": "std-4" },
+    { "name": "Promotion and Prevention", "description": "Standard 5: the mental health service works with the community in undertaking mental health promotion, prevention of mental health problems and early intervention.", "sort_order": 5, "key": "std-5" },
+    { "name": "Consumers", "description": "Standard 6: consumers are provided with timely, comprehensive access to a range of treatment, care and support, and are supported as central participants in their own care.", "sort_order": 6, "key": "std-6" },
+    { "name": "Carers", "description": "Standard 7: the mental health service recognises, respects, values and supports the importance of carers to the wellbeing, treatment and recovery of people with a mental illness.", "sort_order": 7, "key": "std-7" },
+    { "name": "Governance, Leadership and Management", "description": "Standard 8: the mental health service is governed, led and managed effectively and efficiently to facilitate the delivery of quality and coordinated services.", "sort_order": 8, "key": "std-8" },
+    { "name": "Integration", "description": "Standard 9: the mental health service collaborates with and develops partnerships to facilitate coordinated and integrated care across programs, sites and other related health and human services.", "sort_order": 9, "key": "std-9" },
+    { "name": "Delivery of Care", "description": "Standard 10: the consumer and their carer(s) have access to, and move through, the mental health service to achieve optimal, timely outcomes across the care cycle: access, entry, assessment and review, treatment and support, and exit and re-entry.", "sort_order": 10, "key": "std-10" }
+  ],
+  "controls": [
+    {
+      "control_code": "MHS-1",
+      "title": "Rights and responsibilities",
+      "summary_description": "The rights and responsibilities of consumers, carers and families are upheld, documented, prominently displayed, applied and promoted throughout the service.",
+      "implementation_guidance": "Maintain a documented charter of consumer and carer rights and responsibilities aligned with the Australian Charter of Healthcare Rights; display it prominently in service locations and provide it on entry; train staff on rights including informed consent, privacy, confidentiality, advocacy access and the right to a second opinion; record acknowledgement at intake.",
+      "default_risk_level": "high",
+      "review_frequency_days": 365,
+      "domain": "Rights and Responsibilities",
+      "suggested_evidence_types": ["policy_document", "rights_charter", "staff_training_record", "signed_consent"],
+      "suggested_automation_triggers": ["policy_published", "staff_training_completed"]
+    },
+    {
+      "control_code": "MHS-2",
+      "title": "Safety of consumers, carers, staff and the community",
+      "summary_description": "The activities and environment of the service are safe; incidents, aggression, self-harm and adverse events are identified, reported, reviewed and acted upon.",
+      "implementation_guidance": "Operate a documented incident-management system covering self-harm, suicide risk, aggression, restraint, seclusion and medication events; record every incident in the incident register, triage by severity, and ensure timely review and closure; analyse incident trends to drive safety improvements. Reviewed at least quarterly.",
+      "default_risk_level": "critical",
+      "review_frequency_days": 90,
+      "domain": "Safety",
+      "suggested_evidence_types": ["incident_register", "policy_document", "safety_review_minutes"],
+      "suggested_automation_triggers": ["incident_reported", "incident_resolved"]
+    },
+    {
+      "control_code": "MHS-3",
+      "title": "Consumer and carer participation",
+      "summary_description": "Consumers and carers are actively involved in the development, planning, delivery and evaluation of services, including through feedback and complaints mechanisms.",
+      "implementation_guidance": "Provide accessible feedback and complaints channels; record consumer/carer feedback and complaints in a register; demonstrate consumer/carer representation in service planning and quality committees; show that feedback is acknowledged, investigated and used to improve services.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 180,
+      "domain": "Consumer and Carer Participation",
+      "suggested_evidence_types": ["complaint_register", "feedback_register", "committee_minutes", "attestation"],
+      "suggested_automation_triggers": ["complaint_logged", "feedback_logged"]
+    },
+    {
+      "control_code": "MHS-4",
+      "title": "Diversity responsiveness",
+      "summary_description": "Services take into account the cultural and social diversity of consumers and carers and meet their needs throughout all phases of care.",
+      "implementation_guidance": "Document diversity-responsive practice covering Aboriginal and Torres Strait Islander peoples, culturally and linguistically diverse communities, age, gender, sexuality and disability; provide interpreter access; train staff in cultural safety; review service data for equity of access and outcomes.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Diversity Responsiveness",
+      "suggested_evidence_types": ["policy_document", "staff_training_record", "interpreter_access_record"],
+      "suggested_automation_triggers": ["policy_published", "staff_training_completed"]
+    },
+    {
+      "control_code": "MHS-5",
+      "title": "Promotion and prevention",
+      "summary_description": "The service works with the community on mental health promotion, prevention of mental health problems and early intervention.",
+      "implementation_guidance": "Maintain a documented promotion, prevention and early-intervention plan; record community engagement, education and stigma-reduction activities; collaborate with primary care and community organisations on early-intervention pathways; evaluate the reach and impact of activities.",
+      "default_risk_level": "low",
+      "review_frequency_days": 365,
+      "domain": "Promotion and Prevention",
+      "suggested_evidence_types": ["program_plan", "community_engagement_record", "attestation"],
+      "suggested_automation_triggers": []
+    },
+    {
+      "control_code": "MHS-6",
+      "title": "Consumers",
+      "summary_description": "Consumers are supported as central participants in their own care, with comprehensive, recovery-oriented treatment, care and support.",
+      "implementation_guidance": "Develop individualised, recovery-oriented care plans with consumer involvement; ensure timely access to a range of treatment and support; document informed consent and shared decision-making; review care plans at agreed intervals and on significant change.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Consumers",
+      "suggested_evidence_types": ["care_plan", "signed_consent", "review_record"],
+      "suggested_automation_triggers": ["care_plan_updated"]
+    },
+    {
+      "control_code": "MHS-7",
+      "title": "Carers",
+      "summary_description": "The service recognises, respects, values and supports carers in the wellbeing, treatment and recovery of people with a mental illness.",
+      "implementation_guidance": "Identify and record carers (with consumer consent); provide carers with information, education and support consistent with privacy obligations; involve carers in care planning where consented; document carer feedback and support arrangements.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Carers",
+      "suggested_evidence_types": ["policy_document", "carer_support_record", "attestation"],
+      "suggested_automation_triggers": []
+    },
+    {
+      "control_code": "MHS-8",
+      "title": "Governance, leadership and management",
+      "summary_description": "The service is governed, led and managed through current, approved policies and procedures that facilitate quality and coordinated care.",
+      "implementation_guidance": "Maintain a current suite of approved governance policies (clinical governance, safety and quality, risk management, workforce, privacy) reviewed on a defined cadence; document organisational structure, delegations and accountabilities; operate a quality-improvement system with measurable objectives and regular review.",
+      "default_risk_level": "high",
+      "review_frequency_days": 365,
+      "domain": "Governance, Leadership and Management",
+      "suggested_evidence_types": ["policy_document", "governance_framework", "quality_plan"],
+      "suggested_automation_triggers": ["policy_published"]
+    },
+    {
+      "control_code": "MHS-9",
+      "title": "Integration",
+      "summary_description": "The service collaborates and develops partnerships to facilitate coordinated and integrated care across programs, sites and other health and human services.",
+      "implementation_guidance": "Maintain documented agreements, referral pathways and shared-care arrangements with primary care, hospitals, community services and NGOs; ensure consented information-sharing protocols; record care-coordination and transfer-of-care processes that prevent gaps at transition points.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Integration",
+      "suggested_evidence_types": ["partnership_agreement", "referral_pathway", "attestation"],
+      "suggested_automation_triggers": []
+    },
+    {
+      "control_code": "MHS-10.1",
+      "title": "Delivery of care — Access",
+      "summary_description": "The service is accessible to the defined community, with care provided in the least restrictive manner and timely access regardless of where the consumer presents.",
+      "implementation_guidance": "Publish service-access criteria and operating hours; document arrangements for after-hours and crisis access; demonstrate the principle of least-restrictive care and equitable access; monitor access times and barriers and act on identified gaps.",
+      "default_risk_level": "high",
+      "review_frequency_days": 365,
+      "domain": "Delivery of Care",
+      "suggested_evidence_types": ["access_policy", "service_information", "attestation"],
+      "suggested_automation_triggers": []
+    },
+    {
+      "control_code": "MHS-10.2",
+      "title": "Delivery of care — Entry",
+      "summary_description": "Entry to the service is timely, with the consumer and carer informed of the process and of their rights, and intake captured systematically.",
+      "implementation_guidance": "Operate a documented intake/entry process that records presenting needs, risk screening and consent; provide consumers and carers with information about the service and their rights at entry; ensure entry decisions and waitlist management are recorded and reviewed.",
+      "default_risk_level": "medium",
+      "review_frequency_days": 365,
+      "domain": "Delivery of Care",
+      "suggested_evidence_types": ["intake_record", "entry_policy", "signed_consent"],
+      "suggested_automation_triggers": []
+    },
+    {
+      "control_code": "MHS-10.3",
+      "title": "Delivery of care — Assessment and review",
+      "summary_description": "Consumers receive a comprehensive, timely assessment, and care is reviewed at agreed intervals and on significant change in condition or risk.",
+      "implementation_guidance": "Conduct and document a comprehensive biopsychosocial assessment including risk; agree review intervals in the care plan and conduct scheduled and triggered reviews; ensure assessment outcomes inform the care plan and are shared with the consumer and (with consent) carers.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Delivery of Care",
+      "suggested_evidence_types": ["assessment_record", "review_record", "care_plan"],
+      "suggested_automation_triggers": ["care_plan_updated"]
+    },
+    {
+      "control_code": "MHS-10.4",
+      "title": "Delivery of care — Treatment and support",
+      "summary_description": "Treatment and support are evidence-based, recovery-oriented and matched to assessed need and risk, with clinical and consumer risks actively managed.",
+      "implementation_guidance": "Maintain a risk register that captures clinical and consumer safety risks (e.g. suicide/self-harm, absconding, medication, aggression) with treatments and review dates; ensure elevated risks are reviewed frequently and residual risks have documented treatment plans; align treatment with evidence-based and recovery-oriented practice.",
+      "default_risk_level": "critical",
+      "review_frequency_days": 90,
+      "domain": "Delivery of Care",
+      "suggested_evidence_types": ["risk_register", "care_plan", "review_record"],
+      "suggested_automation_triggers": ["risk_register_reviewed"]
+    },
+    {
+      "control_code": "MHS-10.5",
+      "title": "Delivery of care — Exit and re-entry",
+      "summary_description": "Exit from the service is planned and documented, with relapse-prevention and re-entry arrangements that support continuity of care.",
+      "implementation_guidance": "Document discharge/exit planning including relapse-prevention plans, follow-up arrangements and communication to the consumer, carers (with consent) and ongoing providers; record clear re-entry pathways so consumers can return to care without re-establishing eligibility from scratch; review exits that result in early re-entry or adverse outcomes.",
+      "default_risk_level": "high",
+      "review_frequency_days": 180,
+      "domain": "Delivery of Care",
+      "suggested_evidence_types": ["discharge_plan", "relapse_prevention_plan", "attestation"],
+      "suggested_automation_triggers": []
+    }
+  ]
+}

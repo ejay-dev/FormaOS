@@ -16,7 +16,7 @@ const BODY = `# FormaOS — Compliance Operating System for Australian Regulated
 > Authoritative source: ${SITE}
 > Last reviewed: 2026-05-23
 
-FormaOS is a compliance operating system built for Australian regulated organisations. It turns regulatory obligations from NDIS Practice Standards, AHPRA, NSQHS, ACECQA, ASIC, APRA, AUSTRAC, SafeWork, and international frameworks (ISO 27001, SOC 2, GDPR, HIPAA, PCI DSS, NIST, CIS) into structured controls, owned tasks, and immutable evidence — so compliance is provable every day, not reconstructed during the week before an audit.
+FormaOS is a compliance operating system built for Australian regulated organisations. It turns regulatory obligations from NDIS Practice Standards, the National Standards for Mental Health Services (NSMHS), AHPRA, NSQHS, ACECQA, ASIC, APRA, AUSTRAC, SafeWork, and international frameworks (ISO 27001, SOC 2, GDPR, HIPAA, PCI DSS, NIST, CIS) into structured controls, owned tasks, and immutable evidence — so compliance is provable every day, not reconstructed during the week before an audit.
 
 FormaOS is AU-hosted by default (Vercel Sydney region + Supabase AU), with row-level multi-tenant isolation, SAML 2.0 SSO, MFA with TOTP and backup codes, and SOC 2 attestation in progress. Trust documentation including DPA, SLA, sub-processor list, incident response policy, and vendor assurance materials are published at ${SITE}/trust.
 
@@ -63,6 +63,12 @@ Designed for registered NDIS providers facing the NDIS Quality and Safeguards Co
 Common drivers: 2026 unannounced audit increases, NDIS Provider Registration and Practice Standards (Quality Indicators) 2018 Amendment compliance, integration with NDIS Commission portal workflows.
 
 Reference: ${SITE}/ndis-providers
+
+### Mental health services
+
+For mental health service providers aligned with the National Standards for Mental Health Services (NSMHS). All ten standards are mapped — rights and responsibilities, safety, consumer and carer participation, diversity responsiveness, promotion and prevention, consumers, carers, governance and leadership, integration, and delivery of care. FormaOS maintains a restrictive practices register per consumer (linking seclusion and restraint events to authorisations and scheduled review cycles), runs reportable incidents through a structured report-investigate-notify-close pipeline with notification timers, and tracks worker screening clearances and police checks per worker with expiry alerts. Consumer rights evidence — consent, complaints, and feedback — is captured against the relevant standards so compliance is demonstrable continuously, not reconstructed before a review.
+
+Reference: ${SITE}/mental-health-compliance
 
 ### Healthcare
 

@@ -11,7 +11,7 @@ const SITE = brand.seo.siteUrl.replace(/\/$/, '');
 
 const BODY = `# FormaOS
 
-> A compliance operating system for Australian regulated industries — NDIS providers, aged care, healthcare, financial services, childcare, and construction. FormaOS turns regulatory obligations into enforced workflows with named owners, immutable evidence chains, and audit-ready posture every day.
+> A compliance operating system for Australian regulated industries — NDIS providers, mental health services, aged care, healthcare, financial services, childcare, and construction. FormaOS turns regulatory obligations into enforced workflows with named owners, immutable evidence chains, and audit-ready posture every day.
 
 FormaOS is built in Australia, hosted in Australia (Sydney region), and aligned with the regulators Australian operators actually answer to: NDIS Commission, AHPRA, ACECQA, ASIC, AUSTRAC, APRA, SafeWork, and the NSQHS Standards. Framework packs ship for ISO 27001, SOC 2 (in progress), GDPR, HIPAA, PCI DSS, NIST CSF, and CIS. SOC 2 attestation is currently in progress.
 
@@ -29,6 +29,7 @@ The full content export — every marketing and trust page concatenated as a sin
 ## Industries
 
 - [NDIS providers](${SITE}/ndis-providers): all 8 Practice Standards modules, SIRS notifications, worker screening, unannounced audit prep.
+- [Mental health services](${SITE}/mental-health-compliance): National Standards for Mental Health Services (NSMHS), restrictive-practice governance, reportable incidents, consumer rights, worker screening.
 - [Healthcare](${SITE}/healthcare-compliance): AHPRA registrations, NSQHS Standards accreditation, CPD hours, adverse events.
 - [Financial services](${SITE}/financial-services-compliance): ASIC, APRA, AUSTRAC alignment for AFS licensees and credit licensees.
 - [Childcare](${SITE}/childcare-compliance): NQF, ACECQA, child safety obligations.

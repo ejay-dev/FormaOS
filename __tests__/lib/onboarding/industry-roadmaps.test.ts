@@ -21,6 +21,7 @@ const ALL_INDUSTRY_IDS = [
   'childcare',
   'community_services',
   'financial_services',
+  'mental_health',
   'saas_technology',
   'enterprise',
   'other',
