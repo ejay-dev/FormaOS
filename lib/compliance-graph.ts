@@ -8,16 +8,25 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { graphLogger } from '@/lib/observability/structured-logger';
 import { consoleShim } from '@/lib/monitoring/console-shim';
 
+export type GraphNodeType =
+  | 'organization'
+  | 'role'
+  | 'policy'
+  | 'task'
+  | 'evidence'
+  | 'audit'
+  | 'entity';
+
+export type GraphWireType =
+  | 'organization_user'
+  | 'user_role'
+  | 'policy_task'
+  | 'task_evidence'
+  | 'evidence_audit';
+
 export interface GraphNode {
   id: string;
-  type:
-    | 'organization'
-    | 'role'
-    | 'policy'
-    | 'task'
-    | 'evidence'
-    | 'audit'
-    | 'entity';
+  type: GraphNodeType;
   organizationId: string;
   createdAt: string;
   createdBy?: string | null;
@@ -26,13 +35,368 @@ export interface GraphNode {
 export interface GraphWire {
   fromNodeId: string;
   toNodeId: string;
-  wireType:
-    | 'organization_user'
-    | 'user_role'
-    | 'policy_task'
-    | 'task_evidence'
-    | 'evidence_audit';
+  wireType: GraphWireType;
   organizationId: string;
+}
+
+/**
+ * A persisted node row as returned by getComplianceGraph (shape mirrors
+ * public.graph_nodes).
+ */
+export interface PersistedGraphNode {
+  id: string;
+  organizationId: string;
+  nodeType: GraphNodeType;
+  sourceId: string;
+  label: string | null;
+  metadata: Record<string, unknown>;
+  createdBy: string | null;
+  createdAt: string;
+  refreshedAt: string;
+}
+
+/**
+ * A persisted wire row as returned by getComplianceGraph (shape mirrors
+ * public.graph_wires).
+ */
+export interface PersistedGraphWire {
+  id: string;
+  organizationId: string;
+  fromNodeId: string;
+  toNodeId: string;
+  wireType: GraphWireType;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+  refreshedAt: string;
+}
+
+interface DerivedNode {
+  nodeType: GraphNodeType;
+  sourceId: string;
+  label: string | null;
+  createdBy: string | null;
+}
+
+interface DerivedWire {
+  wireType: GraphWireType;
+  fromType: GraphNodeType;
+  fromSourceId: string;
+  toType: GraphNodeType;
+  toSourceId: string;
+}
+
+const nodeKey = (nodeType: GraphNodeType, sourceId: string): string =>
+  `${nodeType}:${sourceId}`;
+
+/**
+ * Derive the node-wire graph for an organization from the live tenant
+ * tables, then UPSERT it into public.graph_nodes / public.graph_wires.
+ *
+ * WRITES go through the service-role admin client (createSupabaseOrgClient
+ * wraps createSupabaseAdminClient and stamps organization_id), which
+ * bypasses RLS — the append-only RESTRICTIVE policies only gate
+ * `authenticated` session callers, so persistence is service-role-only by
+ * design. Idempotent on the UNIQUE(organization_id, node_type, source_id)
+ * and UNIQUE(organization_id, wire_type, from_node_id, to_node_id)
+ * constraints; every run bumps refreshed_at.
+ *
+ * Node source_id is the source row's primary key. The organization node's
+ * source_id is the organization_id itself.
+ */
+export async function rebuildOrgGraph(
+  organizationId: string,
+  userId?: string,
+): Promise<{
+  success: boolean;
+  error?: string;
+  nodeCount: number;
+  wireCount: number;
+}> {
+  try {
+    const admin = createSupabaseOrgClient(organizationId);
+    const now = new Date().toISOString();
+
+    // --- Derive nodes/wires from the live tenant tables ---------------
+    const [members, policies, tasks, evidence, audits, entities] =
+      await Promise.all([
+        admin.from('org_members').select('id, user_id, role'),
+        admin.from('org_policies').select('id, title'),
+        admin.from('org_tasks').select('id, title, policy_id'),
+        admin.from('org_evidence').select('id, title, task_id'),
+        admin.from('org_audit_events').select('id'),
+        admin.from('org_entities').select('id, name'),
+      ]);
+
+    // Coerce to arrays defensively: a misconfigured caller or a driver
+    // that returns a single object (rather than a list) shouldn't crash
+    // the rebuild — it should just contribute no rows.
+    const asRows = <T>(data: unknown): T[] => (Array.isArray(data) ? (data as T[]) : []);
+
+    const memberRows = asRows<{
+      id: string;
+      user_id: string;
+      role: string | null;
+    }>(members.data);
+    const policyRows = asRows<{
+      id: string;
+      title: string | null;
+    }>(policies.data);
+    const taskRows = asRows<{
+      id: string;
+      title: string | null;
+      policy_id: string | null;
+    }>(tasks.data);
+    const evidenceRows = asRows<{
+      id: string;
+      title: string | null;
+      task_id: string | null;
+    }>(evidence.data);
+    const auditRows = asRows<{ id: string }>(audits.data);
+    const entityRows = asRows<{
+      id: string;
+      name: string | null;
+    }>(entities.data);
+
+    const derivedNodes: DerivedNode[] = [];
+    const derivedWires: DerivedWire[] = [];
+
+    // Organization node — source_id == organization_id.
+    derivedNodes.push({
+      nodeType: 'organization',
+      sourceId: organizationId,
+      label: null,
+      createdBy: userId ?? null,
+    });
+
+    for (const m of memberRows) {
+      // Role node (one per membership) + organization_user / user_role wires.
+      derivedNodes.push({
+        nodeType: 'role',
+        sourceId: m.id,
+        label: m.role,
+        createdBy: m.user_id,
+      });
+      derivedWires.push({
+        wireType: 'user_role',
+        fromType: 'organization',
+        fromSourceId: organizationId,
+        toType: 'role',
+        toSourceId: m.id,
+      });
+    }
+
+    for (const p of policyRows) {
+      derivedNodes.push({
+        nodeType: 'policy',
+        sourceId: p.id,
+        label: p.title,
+        createdBy: null,
+      });
+    }
+
+    for (const t of taskRows) {
+      derivedNodes.push({
+        nodeType: 'task',
+        sourceId: t.id,
+        label: t.title,
+        createdBy: null,
+      });
+      if (t.policy_id) {
+        derivedWires.push({
+          wireType: 'policy_task',
+          fromType: 'policy',
+          fromSourceId: t.policy_id,
+          toType: 'task',
+          toSourceId: t.id,
+        });
+      }
+    }
+
+    for (const e of evidenceRows) {
+      derivedNodes.push({
+        nodeType: 'evidence',
+        sourceId: e.id,
+        label: e.title,
+        createdBy: null,
+      });
+      if (e.task_id) {
+        derivedWires.push({
+          wireType: 'task_evidence',
+          fromType: 'task',
+          fromSourceId: e.task_id,
+          toType: 'evidence',
+          toSourceId: e.id,
+        });
+      }
+    }
+
+    for (const a of auditRows) {
+      derivedNodes.push({
+        nodeType: 'audit',
+        sourceId: a.id,
+        label: null,
+        createdBy: null,
+      });
+    }
+
+    for (const en of entityRows) {
+      derivedNodes.push({
+        nodeType: 'entity',
+        sourceId: en.id,
+        label: en.name,
+        createdBy: userId ?? null,
+      });
+    }
+
+    // --- Persist nodes (idempotent on UNIQUE org/type/source) ---------
+    const nodePayload = derivedNodes.map((n) => ({
+      node_type: n.nodeType,
+      source_id: n.sourceId,
+      label: n.label,
+      created_by: n.createdBy,
+      refreshed_at: now,
+    }));
+
+    const { data: upsertedNodes, error: nodeError } = await admin
+      .from('graph_nodes')
+      .upsert(nodePayload, {
+        onConflict: 'organization_id,node_type,source_id',
+      })
+      .select('id, node_type, source_id');
+
+    if (nodeError) {
+      throw new Error(`graph_nodes upsert failed: ${nodeError.message}`);
+    }
+
+    // Resolve persisted node ids by (node_type, source_id) so wires can
+    // reference the canonical row ids. Fall back to a fresh read when the
+    // upsert didn't return rows (defensive — some drivers omit the
+    // representation on conflict).
+    const idByKey = new Map<string, string>();
+    let resolvedNodes = (upsertedNodes ?? []) as Array<{
+      id: string;
+      node_type: GraphNodeType;
+      source_id: string;
+    }>;
+    if (resolvedNodes.length === 0 && derivedNodes.length > 0) {
+      const { data: readBack } = await admin
+        .from('graph_nodes')
+        .select('id, node_type, source_id');
+      resolvedNodes = (readBack ?? []) as Array<{
+        id: string;
+        node_type: GraphNodeType;
+        source_id: string;
+      }>;
+    }
+    for (const n of resolvedNodes) {
+      idByKey.set(nodeKey(n.node_type, n.source_id), n.id);
+    }
+
+    // --- Persist wires (idempotent on UNIQUE org/type/from/to) --------
+    const wirePayload = derivedWires
+      .map((w) => {
+        const fromId = idByKey.get(nodeKey(w.fromType, w.fromSourceId));
+        const toId = idByKey.get(nodeKey(w.toType, w.toSourceId));
+        if (!fromId || !toId) return null;
+        return {
+          wire_type: w.wireType,
+          from_node_id: fromId,
+          to_node_id: toId,
+          refreshed_at: now,
+        };
+      })
+      .filter((w): w is NonNullable<typeof w> => w !== null);
+
+    let persistedWireCount = 0;
+    if (wirePayload.length > 0) {
+      const { error: wireError } = await admin
+        .from('graph_wires')
+        .upsert(wirePayload, {
+          onConflict: 'organization_id,wire_type,from_node_id,to_node_id',
+        });
+      if (wireError) {
+        throw new Error(`graph_wires upsert failed: ${wireError.message}`);
+      }
+      persistedWireCount = wirePayload.length;
+    }
+
+    graphLogger.info('graph_rebuilt', {
+      organizationId,
+      nodeCount: derivedNodes.length,
+      wireCount: persistedWireCount,
+    });
+
+    return {
+      success: true,
+      nodeCount: derivedNodes.length,
+      wireCount: persistedWireCount,
+    };
+  } catch (error) {
+    consoleShim.error('[compliance-graph] Graph rebuild failed:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      nodeCount: 0,
+      wireCount: 0,
+    };
+  }
+}
+
+/**
+ * Read the persisted compliance graph for an organization. READS go
+ * through the member-facing session client — the org-membership SELECT
+ * RLS policy gates which rows are visible, so this never exposes
+ * cross-tenant data and requires no service-role key.
+ */
+export async function getComplianceGraph(organizationId: string): Promise<{
+  nodes: PersistedGraphNode[];
+  wires: PersistedGraphWire[];
+}> {
+  const supabase = await createSupabaseServerClient();
+
+  const [{ data: nodeRows }, { data: wireRows }] = await Promise.all([
+    supabase
+      .from('graph_nodes')
+      .select(
+        'id, organization_id, node_type, source_id, label, metadata, created_by, created_at, refreshed_at',
+      )
+      .eq('organization_id', organizationId),
+    supabase
+      .from('graph_wires')
+      .select(
+        'id, organization_id, from_node_id, to_node_id, wire_type, metadata, created_at, refreshed_at',
+      )
+      .eq('organization_id', organizationId),
+  ]);
+
+  const nodes: PersistedGraphNode[] = (
+    (nodeRows ?? []) as Array<Record<string, unknown>>
+  ).map((r) => ({
+    id: r.id as string,
+    organizationId: r.organization_id as string,
+    nodeType: r.node_type as GraphNodeType,
+    sourceId: r.source_id as string,
+    label: (r.label as string | null) ?? null,
+    metadata: (r.metadata as Record<string, unknown>) ?? {},
+    createdBy: (r.created_by as string | null) ?? null,
+    createdAt: r.created_at as string,
+    refreshedAt: r.refreshed_at as string,
+  }));
+
+  const wires: PersistedGraphWire[] = (
+    (wireRows ?? []) as Array<Record<string, unknown>>
+  ).map((r) => ({
+    id: r.id as string,
+    organizationId: r.organization_id as string,
+    fromNodeId: r.from_node_id as string,
+    toNodeId: r.to_node_id as string,
+    wireType: r.wire_type as GraphWireType,
+    metadata: (r.metadata as Record<string, unknown>) ?? {},
+    createdAt: r.created_at as string,
+    refreshedAt: r.refreshed_at as string,
+  }));
+
+  return { nodes, wires };
 }
 
 /**
@@ -189,7 +553,25 @@ export async function initializeComplianceGraph(
     const allNodes = [organizationNode, roleNode, ...policyNodes];
     if (entityNode) allNodes.push(entityNode);
 
-    graphLogger.info('graph_initialized', { nodeCount: allNodes.length, wireCount: wires.length });
+    // Persist the derived graph. rebuildOrgGraph re-reads the seeded
+    // tenant tables and UPSERTs into graph_nodes/graph_wires via the
+    // service-role admin client. Non-fatal: seeding succeeded even if
+    // persistence hits a transient error, and the validate/repair path
+    // (or the next login) will rebuild.
+    const persisted = await rebuildOrgGraph(organizationId, userId);
+    if (!persisted.success) {
+      graphLogger.warn('graph_persist_warning', {
+        organizationId,
+        error: persisted.error,
+      });
+    }
+
+    graphLogger.info('graph_initialized', {
+      nodeCount: allNodes.length,
+      wireCount: wires.length,
+      persistedNodeCount: persisted.nodeCount,
+      persistedWireCount: persisted.wireCount,
+    });
 
     return {
       success: true,
@@ -417,6 +799,10 @@ export async function repairComplianceGraph(
         metadata: { repairTimestamp: new Date().toISOString() },
       });
     }
+
+    // Re-derive and persist the graph so the repaired wires (newly-linked
+    // tasks, role assignments) are reflected in graph_nodes/graph_wires.
+    await rebuildOrgGraph(organizationId, userId);
 
     return {
       success: true,

@@ -33,6 +33,7 @@ import {
   Zap,
   Lock,
   Eye,
+  Brain,
 } from 'lucide-react';
 
 const signatureEase: [number, number, number, number] = [
@@ -157,6 +158,42 @@ const industrySolutions: IndustrySolution[] = [
       },
     ],
     cta: { text: 'Explore NDIS Solution', href: '/ndis-providers' },
+  },
+  {
+    icon: Brain,
+    title: 'Mental Health Services',
+    subtitle: 'National Standards for Mental Health Services (NSMHS)',
+    tagline:
+      'Consumer rights, restrictive-practice governance, and reportable incident timelines — evidenced continuously, not reconstructed for review.',
+    accent: 'violet',
+    frameworks: ['NSMHS', 'Restrictive Practices', 'Reportable Incidents'],
+    stats: [
+      { icon: Layers, value: '10', label: 'NSMHS standards' },
+      { icon: Shield, value: 'Register', label: 'Restrictive practices' },
+      { icon: BadgeCheck, value: 'Per worker', label: 'Screening tracked' },
+      { icon: Eye, value: 'AU-hosted', label: 'Default region' },
+    ],
+    capabilities: [
+      {
+        icon: Shield,
+        title: 'Consumer Rights',
+        description: 'Consent and complaints evidence mapped to NSMHS standards',
+      },
+      {
+        icon: FileText,
+        title: 'Restrictive Practices',
+        description: 'Register linking authorisations to scheduled review cycles',
+      },
+      {
+        icon: CheckCircle,
+        title: 'Review Evidence',
+        description: 'Evidence bundles structured by NSMHS standard',
+      },
+    ],
+    cta: {
+      text: 'Explore Mental Health Solution',
+      href: '/mental-health-compliance',
+    },
   },
   {
     icon: TrendingUp,

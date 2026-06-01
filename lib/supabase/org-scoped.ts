@@ -143,6 +143,11 @@ const TENANT_TABLE_SCOPES = {
   // R10 Phase 3 (audit 2026-05-27): BSP CRUD + weekly health snapshot.
   org_behaviour_support_plans: { column: 'organization_id' },
   org_compliance_health_snapshots: { column: 'organization_id' },
+  // Persisted compliance graph (audit 2026-06-01). Derived in
+  // lib/compliance-graph.ts; written via the service-role admin client,
+  // read via the session client (org-membership RLS SELECT).
+  graph_nodes: { column: 'organization_id' },
+  graph_wires: { column: 'organization_id' },
   search_index: { column: 'org_id' },
   recent_items: { column: 'org_id' },
   search_history: { column: 'org_id' },

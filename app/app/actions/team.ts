@@ -68,8 +68,12 @@ export async function inviteMember(email: string, role: string): Promise<InviteM
     throw new Error("Organization context lost.");
   }
 
+  // `null` means unlimited (e.g. Enterprise); a numeric limit — including 0 —
+  // must be enforced. The previous `if (limit)` truthiness check silently
+  // skipped enforcement when the limit was 0, granting unlimited seats and
+  // disagreeing with the /api/v1/members/invite path (audit H4).
   const limit = await getEntitlementLimit(permissionCtx.orgId, "team_limit");
-  if (limit) {
+  if (limit != null) {
     const [{ count: memberCount }, { count: inviteCount }] = await Promise.all([
       supabase
         .from("org_members")

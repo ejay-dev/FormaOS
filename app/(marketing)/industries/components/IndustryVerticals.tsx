@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Building2,
   Users,
+  Brain,
   ArrowRight,
 } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -37,6 +38,29 @@ const industries = [
       { label: 'NDIS Practice Standards Modules', value: '8/8' },
       { label: 'Reportable Incident Response', value: '<24h' },
       { label: 'Audit Pack Export', value: '< 4 hrs' },
+    ],
+  },
+  {
+    icon: Brain,
+    href: '/mental-health-compliance',
+    title: 'Mental Health Services',
+    description:
+      'Operationalize the National Standards for Mental Health Services, restrictive-practice governance, reportable incidents, consumer rights, and worker screening - with continuous evidence, not pre-review scrambles.',
+    features: [
+      'National Standards for Mental Health Services',
+      'Restrictive Practices Register & Reviews',
+      'Reportable Incidents + Worker Screening',
+    ],
+    color: 'teal',
+    gradient: 'from-zinc-700/20 to-zinc-700/10',
+    border: 'border-zinc-600/20',
+    hoverBorder: 'hover:border-white/20',
+    textColor: 'text-slate-300',
+    dotColor: 'bg-slate-400',
+    metrics: [
+      { label: 'NSMHS Standards Covered', value: '10/10' },
+      { label: 'Restrictive Practice Reviews', value: 'Tracked' },
+      { label: 'Review Pack Export', value: '1-click' },
     ],
   },
   {

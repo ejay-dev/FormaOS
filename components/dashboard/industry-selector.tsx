@@ -8,6 +8,7 @@ import {
   Landmark,
   Laptop,
   Briefcase,
+  Brain,
   HelpCircle,
   type LucideIcon,
 } from 'lucide-react';
@@ -31,6 +32,15 @@ const INDUSTRY_CARDS: IndustryCard[] = [
     icon: Building2,
     bgColor: 'bg-purple-500/10',
     textColor: 'text-purple-300',
+  },
+  {
+    id: 'mental_health',
+    name: 'Mental Health Services',
+    description:
+      'National Standards for Mental Health Services (NSMHS) for mental health providers.',
+    icon: Brain,
+    bgColor: 'bg-teal-500/10',
+    textColor: 'text-teal-300',
   },
   {
     id: 'healthcare',

@@ -297,6 +297,80 @@ import { meta as ndis_M_1 } from './ndis/NDIS-M.1';
 import { meta as ndis_M_2 } from './ndis/NDIS-M.2';
 import { meta as ndis_W_1 } from './ndis/NDIS-W.1';
 
+// Australian Financial Services pack (framework slug = 'financial-services-au',
+// 20 controls — ASIC AFS, APRA CPS 230/234/510, AUSTRAC AML/CTF, AFCA).
+// Coverage breakdown (DB-signal vs. manual attestation):
+//   - 7 DB-signal: AFS-003 (PDS/FSG policy cadence), AFS-004
+//     (conflict_of_interest register), CPS-001 (org_risks freshness),
+//     CPS-002 (business_continuity_plan register), CPS-004 (infosec +
+//     incident-response policy + audit activity), AML-001 (AML/CTF
+//     policy cadence), AFCA-002 (complaint register, RG 271 30-day).
+//   - 13 manual attestation. AFS-006 + AML-004 were planned as DB-signal
+//     against org_regulatory_notifications but that table cannot model
+//     ASIC/AUSTRAC lodgements (its `regulation` CHECK excludes them,
+//     `notification_type` is NDIS-specific, and it requires an
+//     incident_id FK) — reading it would surface false NDIS signals, so
+//     they fall back to manual. The other 11 (AFS-001/002/005/007/008,
+//     CPS-003/005, AML-002/003/005, AFCA-001) verify licences, registers,
+//     trust-account reconciliations, training, and board sign-offs that
+//     FormaOS does not model as rows. Each carries a
+//     `manual_attestation_required` gap — never a false pass.
+// DB-signal helpers that find no finance-tagged rows return
+// manualAttestation / not_evaluated, never `pass`.
+import { meta as fsau_AFS_001 } from './financial-services-au/AFS-001';
+import { meta as fsau_AFS_002 } from './financial-services-au/AFS-002';
+import { meta as fsau_AFS_003 } from './financial-services-au/AFS-003';
+import { meta as fsau_AFS_004 } from './financial-services-au/AFS-004';
+import { meta as fsau_AFS_005 } from './financial-services-au/AFS-005';
+import { meta as fsau_AFS_006 } from './financial-services-au/AFS-006';
+import { meta as fsau_AFS_007 } from './financial-services-au/AFS-007';
+import { meta as fsau_AFS_008 } from './financial-services-au/AFS-008';
+import { meta as fsau_CPS_001 } from './financial-services-au/CPS-001';
+import { meta as fsau_CPS_002 } from './financial-services-au/CPS-002';
+import { meta as fsau_CPS_003 } from './financial-services-au/CPS-003';
+import { meta as fsau_CPS_004 } from './financial-services-au/CPS-004';
+import { meta as fsau_CPS_005 } from './financial-services-au/CPS-005';
+import { meta as fsau_AML_001 } from './financial-services-au/AML-001';
+import { meta as fsau_AML_002 } from './financial-services-au/AML-002';
+import { meta as fsau_AML_003 } from './financial-services-au/AML-003';
+import { meta as fsau_AML_004 } from './financial-services-au/AML-004';
+import { meta as fsau_AML_005 } from './financial-services-au/AML-005';
+import { meta as fsau_AFCA_001 } from './financial-services-au/AFCA-001';
+import { meta as fsau_AFCA_002 } from './financial-services-au/AFCA-002';
+
+// National Standards for Mental Health Services pack (framework slug =
+// 'mental-health-au', code MENTAL_HEALTH_AU, 14 controls — NSMHS 2010
+// Standards 1–10, with Standard 10 split into 10.1–10.5).
+// Coverage breakdown (DB-signal vs. manual attestation):
+//   - 4 DB-signal: MHS-2 (org_incidents safety register, 12mo, open
+//     high/critical → fail), MHS-3 (org_registers type/category
+//     feedback|complaint, 12mo, open >30d → partial), MHS-8
+//     (org_policies governance title-keyword cadence, 365d), MHS-10.4
+//     (org_risks freshness — elevated 90d / routine 365d, empty → fail).
+//   - 10 manual attestation: MHS-1 (rights charter display), MHS-4
+//     (diversity/cultural safety), MHS-5 (promotion/prevention), MHS-6
+//     (consumer care plans), MHS-7 (carers), MHS-9 (integration
+//     partnerships), MHS-10.1 (access), MHS-10.2 (entry), MHS-10.3
+//     (assessment & review), MHS-10.5 (exit & re-entry). Each verifies
+//     clinical-record or governance artefacts FormaOS does not model as
+//     rows and carries a `manual_attestation_required` gap — never a
+//     false pass. ⚠️ Clinical/mental-health-domain review recommended
+//     for predicate semantics and sub-criteria expansion.
+import { meta as mhs_1 } from './mental-health-au/MHS-1';
+import { meta as mhs_2 } from './mental-health-au/MHS-2';
+import { meta as mhs_3 } from './mental-health-au/MHS-3';
+import { meta as mhs_4 } from './mental-health-au/MHS-4';
+import { meta as mhs_5 } from './mental-health-au/MHS-5';
+import { meta as mhs_6 } from './mental-health-au/MHS-6';
+import { meta as mhs_7 } from './mental-health-au/MHS-7';
+import { meta as mhs_8 } from './mental-health-au/MHS-8';
+import { meta as mhs_9 } from './mental-health-au/MHS-9';
+import { meta as mhs_10_1 } from './mental-health-au/MHS-10.1';
+import { meta as mhs_10_2 } from './mental-health-au/MHS-10.2';
+import { meta as mhs_10_3 } from './mental-health-au/MHS-10.3';
+import { meta as mhs_10_4 } from './mental-health-au/MHS-10.4';
+import { meta as mhs_10_5 } from './mental-health-au/MHS-10.5';
+
 import { meta as pci_PCI_1 } from './pci-dss/PCI-1';
 import { meta as pci_PCI_2 } from './pci-dss/PCI-2';
 import { meta as pci_PCI_3 } from './pci-dss/PCI-3';
@@ -573,6 +647,44 @@ const ALL_EVALUATORS = [
   ndis_M_1,
   ndis_M_2,
   ndis_W_1,
+  // Australian Financial Services pack (framework slug = 'financial-services-au',
+  // 20 controls). 7 DB-signal, 13 manual attestation.
+  fsau_AFS_001,
+  fsau_AFS_002,
+  fsau_AFS_003,
+  fsau_AFS_004,
+  fsau_AFS_005,
+  fsau_AFS_006,
+  fsau_AFS_007,
+  fsau_AFS_008,
+  fsau_CPS_001,
+  fsau_CPS_002,
+  fsau_CPS_003,
+  fsau_CPS_004,
+  fsau_CPS_005,
+  fsau_AML_001,
+  fsau_AML_002,
+  fsau_AML_003,
+  fsau_AML_004,
+  fsau_AML_005,
+  fsau_AFCA_001,
+  fsau_AFCA_002,
+  // National Standards for Mental Health Services (framework slug =
+  // 'mental-health-au', 14 controls). 4 DB-signal, 10 manual attestation.
+  mhs_1,
+  mhs_2,
+  mhs_3,
+  mhs_4,
+  mhs_5,
+  mhs_6,
+  mhs_7,
+  mhs_8,
+  mhs_9,
+  mhs_10_1,
+  mhs_10_2,
+  mhs_10_3,
+  mhs_10_4,
+  mhs_10_5,
 ];
 
 let registered = false;

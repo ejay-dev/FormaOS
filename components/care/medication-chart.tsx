@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Pill, Clock, AlertTriangle, Check, X, History } from 'lucide-react';
+import { Pill, Clock, AlertTriangle, Check, X, History, Plus } from 'lucide-react';
+import { createMedication } from '@/app/app/actions/care-operations';
 
 interface Medication {
   id: string;
@@ -55,7 +56,23 @@ export function MedicationChart({
   orgId: string;
 }) {
   const [filter, setFilter] = useState<'all' | 'active' | 'prn'>('active');
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
   const [showAdminForm, setShowAdminForm] = useState<string | null>(null);
+
+  async function handleCreate(formData: FormData) {
+    const result = await createMedication(formData);
+    // Server action revalidates the page on success; collapse the form.
+    // On failure surface result.error inline.
+    if (!result || (result as { success?: boolean }).success) {
+      setShowAddForm(false);
+      setCreateError(null);
+    } else {
+      setCreateError(
+        (result as { error?: string }).error ?? 'Failed to add medication.',
+      );
+    }
+  }
   const [adminForm, setAdminForm] = useState({
     dose_given: '',
     status: 'given' as string,
@@ -96,6 +113,133 @@ export function MedicationChart({
 
   return (
     <div className="space-y-4">
+      {/* Add Medication */}
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => {
+            setShowAddForm((v) => !v);
+            setCreateError(null);
+          }}
+          className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          <Plus className="h-4 w-4" /> Add Medication
+        </button>
+      </div>
+
+      {showAddForm && (
+        <form
+          action={handleCreate}
+          className="rounded-lg border border-border bg-muted/40 p-4 space-y-3"
+        >
+          <input type="hidden" name="participant_id" value={participantId} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="text-sm">
+              <span className="text-muted-foreground">Medication name *</span>
+              <input
+                name="name"
+                required
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+              />
+            </label>
+            <label className="text-sm">
+              <span className="text-muted-foreground">Route</span>
+              <select
+                name="route"
+                defaultValue="oral"
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm capitalize"
+              >
+                {['oral', 'topical', 'injection', 'inhaled', 'sublingual', 'other'].map(
+                  (r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
+            <label className="text-sm">
+              <span className="text-muted-foreground">Dosage</span>
+              <input
+                name="dosage"
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+              />
+            </label>
+            <label className="text-sm">
+              <span className="text-muted-foreground">Frequency</span>
+              <input
+                name="frequency"
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+              />
+            </label>
+            <label className="text-sm">
+              <span className="text-muted-foreground">Prescribed by</span>
+              <input
+                name="prescribed_by"
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+              />
+            </label>
+            <label className="text-sm flex items-end gap-2 pb-1.5">
+              <input type="checkbox" name="is_prn" value="true" className="h-4 w-4" />
+              <span className="text-muted-foreground">PRN (as needed)</span>
+            </label>
+            <label className="text-sm">
+              <span className="text-muted-foreground">Start date</span>
+              <input
+                type="date"
+                name="start_date"
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+              />
+            </label>
+            <label className="text-sm">
+              <span className="text-muted-foreground">End date</span>
+              <input
+                type="date"
+                name="end_date"
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+              />
+            </label>
+          </div>
+          <label className="block text-sm">
+            <span className="text-muted-foreground">Instructions</span>
+            <textarea
+              name="instructions"
+              rows={2}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="text-muted-foreground">Precautions</span>
+            <textarea
+              name="precautions"
+              rows={2}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+            />
+          </label>
+          {createError && (
+            <p className="text-sm text-destructive">{createError}</p>
+          )}
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Save Medication
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowAddForm(false);
+                setCreateError(null);
+              }}
+              className="rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
       {/* Summary Cards */}
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-3">

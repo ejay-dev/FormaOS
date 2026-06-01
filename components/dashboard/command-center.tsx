@@ -33,6 +33,9 @@ import {
   NDISWorkerScreeningWidget,
   NDISParticipantSnapshot,
   NDISSIRSTrackerWidget,
+  MentalHealthConsumerSnapshot,
+  MentalHealthCarePlanWidget,
+  MentalHealthIncidentWatchWidget,
   HealthcarePractitionerWidget,
   HealthcareNSQHSWidget,
   AgedCareCarePlanWidget,
@@ -848,6 +851,17 @@ function renderIndustryWidgets(industry: string | null | undefined) {
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
           <NDISWorkerScreeningWidget />
           <NDISSIRSTrackerWidget />
+        </div>
+      </div>
+    );
+  }
+  if (industry === 'mental_health') {
+    return (
+      <div className="space-y-3">
+        <MentalHealthConsumerSnapshot />
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <MentalHealthCarePlanWidget />
+          <MentalHealthIncidentWatchWidget />
         </div>
       </div>
     );

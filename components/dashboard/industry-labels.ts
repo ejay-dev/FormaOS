@@ -2,6 +2,8 @@ export function getExpiryLabel(industry?: string | null): string {
   switch (industry) {
     case 'ndis':
       return 'Screening Expiry';
+    case 'mental_health':
+      return 'Screening Expiry';
     case 'healthcare':
       return 'Registration Expiry';
     case 'childcare':
@@ -19,6 +21,8 @@ export function getEntityLabel(industry?: string | null): string {
   switch (industry) {
     case 'ndis':
       return 'participant compliance';
+    case 'mental_health':
+      return 'consumer safety';
     case 'healthcare':
       return 'clinical';
     case 'aged_care':
@@ -42,6 +46,8 @@ export function getTasksLabel(industry?: string | null): string {
   switch (industry) {
     case 'ndis':
       return 'Compliance Tasks';
+    case 'mental_health':
+      return 'Care Tasks';
     case 'healthcare':
       return 'Clinical Tasks';
     case 'aged_care':

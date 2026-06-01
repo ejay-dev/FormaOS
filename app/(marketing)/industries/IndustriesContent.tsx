@@ -8,6 +8,7 @@ import {
   Building,
   GraduationCap,
   Briefcase,
+  Brain,
   ArrowRight,
   Layers,
 } from 'lucide-react';
@@ -28,6 +29,13 @@ const industries = [
     title: 'NDIS & disability services',
     description:
       'Practice standards alignment, incident management, worker screening, and service delivery evidence tracking',
+    color: 'cyan' as const,
+  },
+  {
+    icon: Brain,
+    title: 'Mental health services',
+    description:
+      'National Standards for Mental Health Services, restrictive-practice governance, reportable incidents, and consumer rights evidence',
     color: 'cyan' as const,
   },
   {

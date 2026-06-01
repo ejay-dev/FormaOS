@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { assertOrgCanWrite } from "@/lib/billing/enforce-grace-period";
 
 export type PermissionKey =
   | "VIEW_CONTROLS"
@@ -126,10 +127,31 @@ export function hasPermission(role: RoleKey, permission: PermissionKey) {
   return ROLE_PERMISSIONS[role].includes(permission);
 }
 
+// Mutating permissions. When an org has exhausted its 3-day payment grace
+// window (isReadOnly), these are blocked at the chokepoint via
+// assertOrgCanWrite — read/export permissions stay available so the customer
+// can still see and extract their compliance data (audit H2: the grace
+// read-only state was previously enforced in only 2 of ~40 action files).
+const WRITE_PERMISSIONS: ReadonlySet<PermissionKey> = new Set([
+  "EDIT_CONTROLS",
+  "UPLOAD_EVIDENCE",
+  "APPROVE_EVIDENCE",
+  "REJECT_EVIDENCE",
+  "RESOLVE_COMPLIANCE_BLOCK",
+  "GENERATE_CERTIFICATIONS",
+  "MANAGE_USERS",
+  "DRAFT_AI_POLICIES",
+]);
+
 export async function requirePermission(permission: PermissionKey) {
   const membership = await getUserOrgMembership();
   if (!hasPermission(membership.role, permission)) {
     throw new Error(`Access denied: missing permission ${permission}`);
+  }
+  if (WRITE_PERMISSIONS.has(permission)) {
+    // Throws OrgReadOnlyError when the org is past its payment grace window;
+    // callers' actionError() catch turns it into a user-facing message.
+    await assertOrgCanWrite(membership.orgId);
   }
   return membership;
 }

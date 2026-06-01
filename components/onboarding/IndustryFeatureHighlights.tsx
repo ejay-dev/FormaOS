@@ -90,6 +90,62 @@ const INDUSTRY_CONFIGS: Record<string, IndustryOnboardingConfig> = {
       'Create incident response workflows',
     ],
   },
+  mental_health: {
+    industry: 'mental_health',
+    displayName: 'Mental Health Services',
+    color: 'from-zinc-300 to-zinc-500',
+    gradient: 'from-zinc-700/20 to-zinc-900/20',
+    features: [
+      {
+        icon: Users,
+        title: 'Consumer Management',
+        description:
+          'Track consumers with care status, risk levels, and safety flags. Every interaction becomes compliance evidence.',
+        route: '/app/patients',
+      },
+      {
+        icon: Calendar,
+        title: 'Service Delivery Scheduling',
+        description:
+          'Schedule service delivery with automatic audit trails. No double entry—session logs become compliance evidence.',
+        route: '/app/visits',
+      },
+      {
+        icon: Activity,
+        title: 'Incident & Restrictive Practice Tracking',
+        description:
+          'Log incidents and restrictive practices with severity classification, authorisation, and review. Reporting-ready.',
+        route: '/app/patients',
+      },
+      {
+        icon: FileCheck,
+        title: 'National Standards for Mental Health Services',
+        description:
+          'Pre-configured controls aligned to the NSMHS. Start auditing in minutes.',
+        route: '/app/dashboard',
+      },
+      {
+        icon: Shield,
+        title: 'Worker Screening Tracking',
+        description:
+          'Track worker screening clearances and police checks with automatic expiry reminders.',
+        route: '/app/registers',
+      },
+      {
+        icon: Heart,
+        title: 'Staff Portal',
+        description:
+          'Front-line workers get their own dashboard: tasks, consumers, shifts. No admin clutter.',
+        route: '/app/staff',
+      },
+    ],
+    quickWins: [
+      'Map the National Standards for Mental Health Services to your services',
+      'Start logging service delivery with automatic evidence capture',
+      'Set up worker screening expiry reminders',
+      'Create incident and restrictive practice review workflows',
+    ],
+  },
   healthcare: {
     industry: 'healthcare',
     displayName: 'Healthcare & Medical',

@@ -161,14 +161,26 @@ export default async function AppLayout({
   // identically to other unpaid states so feature pages cannot be reached.
   const trialExpired = status === 'trialing' && subscription?.trialActive === false;
   // Allowlist of paid states. The /app layout redirects anything else
-  // (pending_checkout, past_due, canceled, incomplete, incomplete_expired,
-  // paused, unpaid, expired trialing, missing status) into the in-app billing
-  // flow. Switching to an allowlist closes the denylist gap audit billing-004
+  // (pending_checkout, canceled, incomplete, incomplete_expired, paused,
+  // unpaid, expired trialing, missing status) into the in-app billing flow.
+  // Switching to an allowlist closes the denylist gap audit billing-004
   // flagged — the prior code silently let incomplete_expired / paused /
   // unpaid statuses through.
+  //
+  // Audit H1: `past_due` is admitted *during the 3-day grace window only*
+  // (isReadOnly === false). This is the one Stripe-recoverable state — a
+  // transient card decline that Stripe is still retrying — and the grace
+  // module (lib/billing/grace-period.ts) was built to keep these customers
+  // working for 3 days, then read-only. billing-004 had inadvertently swept
+  // past_due into the hard-lock bucket, making that grace window unreachable.
+  // After grace (isReadOnly === true) past_due falls through to the redirect,
+  // and assertOrgCanWrite enforces read-only on the surfaces they can reach.
+  const inGracePeriod =
+    status === 'past_due' && subscription?.isReadOnly === false;
   const hasActivePaidAccess =
     status === 'active' ||
-    (status === 'trialing' && subscription?.trialActive !== false);
+    (status === 'trialing' && subscription?.trialActive !== false) ||
+    inGracePeriod;
   const needsCheckout =
     !systemState.isFounder && !onBillingRoute && !hasActivePaidAccess;
 

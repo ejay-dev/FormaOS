@@ -279,6 +279,247 @@ const NDIS_ROADMAP: IndustryRoadmap = {
 };
 
 /**
+ * MENTAL HEALTH SERVICES ROADMAP
+ */
+const MENTAL_HEALTH_ROADMAP: IndustryRoadmap = {
+  industryId: 'mental_health',
+  industryName: 'Mental Health Services',
+  icon: 'Brain',
+  tagline: 'NSMHS-aligned compliance workflows and consumer safety evidence',
+  estimatedTimeToOperational: '7-14 days',
+  keyFrameworks: ['Policy pack', 'Evidence vault', 'Automation workflows'],
+  phases: [
+    {
+      id: 'org-setup',
+      title: 'Organization Setup',
+      description: 'Configure your mental health service structure and team',
+      estimatedDays: 2,
+      steps: [
+        {
+          id: 'provider-details',
+          title: 'Complete Service Registration Details',
+          description:
+            'Confirm your organization profile, service scope, and compliance contacts',
+          cta: 'Update Organization Profile',
+          ctaHref: '/app/settings',
+          icon: 'Building2',
+          priority: 'critical',
+          category: 'setup',
+          estimatedMinutes: 15,
+        },
+        {
+          id: 'staff-setup',
+          title: 'Add Clinical & Support Team',
+          description:
+            'Create staff profiles, assign roles, track worker screening and police checks',
+          cta: 'Manage Team Members',
+          ctaHref: '/app/team',
+          icon: 'Users',
+          priority: 'critical',
+          category: 'setup',
+          estimatedMinutes: 30,
+        },
+        {
+          id: 'participant-onboarding',
+          title: 'Set Up Consumer Records System',
+          description:
+            'Configure consumer management, care plans, and consent documentation',
+          cta: 'Configure Consumers',
+          ctaHref: '/app/patients',
+          icon: 'HeartHandshake',
+          priority: 'high',
+          category: 'setup',
+          estimatedMinutes: 20,
+        },
+        {
+          id: 'location-setup',
+          title: 'Register Service Locations or Assets',
+          description:
+            'Capture service delivery sites or critical assets in registers',
+          cta: 'Add to Registers',
+          ctaHref: '/app/registers',
+          icon: 'MapPin',
+          priority: 'high',
+          category: 'setup',
+          estimatedMinutes: 10,
+        },
+      ],
+    },
+    {
+      id: 'compliance-setup',
+      title: 'Compliance Framework Activation',
+      description: 'Enable NSMHS baseline and industry policy templates',
+      estimatedDays: 3,
+      steps: [
+        {
+          id: 'framework-provision',
+          title: 'Activate the NSMHS Framework',
+          description:
+            'Enable the National Standards for Mental Health Services pack and align it to your operations',
+          cta: 'Enable Frameworks',
+          ctaHref: '/app/compliance/frameworks',
+          icon: 'Shield',
+          priority: 'critical',
+          category: 'compliance',
+          automationTrigger: 'framework_activated',
+          estimatedMinutes: 5,
+        },
+        {
+          id: 'credential-register',
+          title: 'Set Up Worker Screening Register',
+          description:
+            'Track worker screening clearances, police checks, and qualifications',
+          cta: 'Configure Credential Register',
+          ctaHref: '/app/registers',
+          icon: 'FileCheck',
+          priority: 'critical',
+          category: 'compliance',
+          estimatedMinutes: 20,
+        },
+        {
+          id: 'incident-system',
+          title: 'Set Up Incident & Restrictive Practice Tasks',
+          description:
+            'Define incident response tasks, restrictive practice reviews, escalation owners, and review cadence',
+          cta: 'Create Incident Tasks',
+          ctaHref: '/app/tasks',
+          icon: 'AlertTriangle',
+          priority: 'critical',
+          category: 'compliance',
+          automationTrigger: 'incident_register_activated',
+          estimatedMinutes: 15,
+        },
+        {
+          id: 'policy-library',
+          title: 'Review Pre-loaded Mental Health Policies',
+          description:
+            'Review and approve Consumer Rights, Restrictive Practices, and Incident Management policies',
+          cta: 'Review Policy Library',
+          ctaHref: '/app/policies',
+          icon: 'FileText',
+          priority: 'high',
+          category: 'compliance',
+          estimatedMinutes: 45,
+        },
+      ],
+    },
+    {
+      id: 'operational',
+      title: 'Operational Workflows',
+      description: 'Deploy day-to-day compliance workflows',
+      estimatedDays: 5,
+      steps: [
+        {
+          id: 'incident-logging',
+          title: 'Run a Test Incident Workflow',
+          description:
+            'Create a test incident task to validate your response and notification workflow',
+          cta: 'Create Incident Task',
+          ctaHref: '/app/tasks',
+          icon: 'FileWarning',
+          priority: 'high',
+          category: 'operational',
+          automationTrigger: 'incident_created',
+          estimatedMinutes: 10,
+        },
+        {
+          id: 'evidence-capture',
+          title: 'Upload First Compliance Evidence',
+          description:
+            'Store worker screening, insurance certificates, or training records',
+          cta: 'Upload Evidence',
+          ctaHref: '/app/vault',
+          icon: 'Upload',
+          priority: 'high',
+          category: 'operational',
+          automationTrigger: 'evidence_uploaded',
+          estimatedMinutes: 10,
+        },
+        {
+          id: 'staff-credential-tracking',
+          title: 'Track Staff Credential Expiry',
+          description:
+            'Enable automation for expiring worker screening and qualification renewals',
+          cta: 'Configure Credential Tracking',
+          ctaHref: '/app/workflows',
+          icon: 'Clock',
+          priority: 'high',
+          category: 'operational',
+          automationTrigger: 'credential_expiry_enabled',
+          estimatedMinutes: 15,
+        },
+        {
+          id: 'participant-workflows',
+          title: 'Implement Consumer Care Plan Workflows',
+          description:
+            'Configure care plan review cycles, consent management, and restrictive practice authorisation tracking',
+          cta: 'Set Up Care Plan Workflows',
+          ctaHref: '/app/workflows',
+          icon: 'Workflow',
+          priority: 'medium',
+          category: 'operational',
+          estimatedMinutes: 30,
+        },
+      ],
+    },
+    {
+      id: 'audit-readiness',
+      title: 'Audit Readiness',
+      description: 'Prepare for NSMHS reviews and accreditation',
+      estimatedDays: 3,
+      steps: [
+        {
+          id: 'compliance-scoring',
+          title: 'Review Compliance Overview',
+          description:
+            'Track compliance progress and open gaps from the dashboard',
+          cta: 'View Dashboard',
+          ctaHref: '/app',
+          icon: 'TrendingUp',
+          priority: 'high',
+          category: 'readiness',
+          estimatedMinutes: 10,
+        },
+        {
+          id: 'evidence-vault',
+          title: 'Verify Evidence Vault Coverage',
+          description:
+            'Ensure all critical controls have supporting evidence uploaded and approved',
+          cta: 'Audit Evidence Vault',
+          ctaHref: '/app/vault',
+          icon: 'Archive',
+          priority: 'high',
+          category: 'readiness',
+          estimatedMinutes: 20,
+        },
+        {
+          id: 'audit-export',
+          title: 'Generate Audit Evidence Pack',
+          description: 'Export evidence bundles for internal review or accreditation',
+          cta: 'Generate Export',
+          ctaHref: '/app/reports',
+          icon: 'Download',
+          priority: 'critical',
+          category: 'readiness',
+          estimatedMinutes: 5,
+        },
+        {
+          id: 'auditor-sharing',
+          title: 'Prepare Reviewer-Ready Exports',
+          description: 'Package evidence for external review against the NSMHS',
+          cta: 'Open Reports',
+          ctaHref: '/app/reports',
+          icon: 'Share2',
+          priority: 'medium',
+          category: 'readiness',
+          estimatedMinutes: 5,
+        },
+      ],
+    },
+  ],
+};
+
+/**
  * HEALTHCARE / MEDICAL PRACTICE ROADMAP
  */
 const HEALTHCARE_ROADMAP: IndustryRoadmap = {
@@ -1721,6 +1962,7 @@ const DEFAULT_ROADMAP: IndustryRoadmap = {
  */
 export const INDUSTRY_ROADMAPS: Record<string, IndustryRoadmap> = {
   ndis: NDIS_ROADMAP,
+  mental_health: MENTAL_HEALTH_ROADMAP,
   healthcare: HEALTHCARE_ROADMAP,
   aged_care: AGED_CARE_ROADMAP,
   childcare: CHILDCARE_ROADMAP,

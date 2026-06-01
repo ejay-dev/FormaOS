@@ -407,6 +407,116 @@ export async function createIncident(formData: FormData) {
   }
 }
 
+const MEDICATION_ROUTES = [
+  'oral',
+  'topical',
+  'injection',
+  'inhaled',
+  'sublingual',
+  'other',
+] as const;
+
+/**
+ * Audit H5: backs the previously-dead "Add Medication" button. The
+ * org_medications table + RLS already existed; only this create path was
+ * missing. NOTE: org_medications scopes by `org_id` (not `organization_id`),
+ * matching the administer route and the medication-chart query.
+ */
+export async function createMedication(formData: FormData) {
+  try {
+    const supabase = await createSupabaseServerClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) redirect('/auth/signin');
+
+    const { data: membership } = await supabase
+      .from('org_members')
+      .select('organization_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!membership) throw new Error('No organization found');
+
+    const participantId = (formData.get('participant_id') as string) || '';
+    if (!participantId) throw new Error('Participant is required');
+
+    const name = ((formData.get('name') as string) || '').trim();
+    if (!name) throw new Error('Medication name is required');
+
+    const route = ((formData.get('route') as string) || 'oral').toLowerCase();
+    if (!MEDICATION_ROUTES.includes(route as (typeof MEDICATION_ROUTES)[number])) {
+      throw new Error('Invalid medication route');
+    }
+
+    // Verify the participant belongs to this org before writing (org_patients
+    // is scoped by organization_id — see the administer route's same check).
+    const { data: participant } = await supabase
+      .from('org_patients')
+      .select('id')
+      .eq('id', participantId)
+      .eq('organization_id', membership.organization_id)
+      .maybeSingle();
+    if (!participant) throw new Error('Participant not found');
+
+    const text = (key: string) => {
+      const value = (formData.get(key) as string) || '';
+      return value.trim() ? value.trim() : null;
+    };
+
+    const medication = {
+      org_id: membership.organization_id,
+      participant_id: participantId,
+      name,
+      dosage: text('dosage'),
+      frequency: text('frequency'),
+      route,
+      prescribed_by: text('prescribed_by'),
+      start_date: text('start_date'),
+      end_date: text('end_date'),
+      instructions: text('instructions'),
+      precautions: text('precautions'),
+      is_prn: formData.get('is_prn') === 'true' || formData.get('is_prn') === 'on',
+      status: 'active',
+      created_by: user.id,
+    };
+
+    const { data: inserted, error } = await supabase
+      .from('org_medications')
+      .insert(medication)
+      .select('id')
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    await logAuditEvent(
+      {
+        organizationId: membership.organization_id,
+        actorUserId: user.id,
+        actorRole: null,
+        entityType: 'medication',
+        entityId: inserted?.id ?? null,
+        actionType: 'MEDICATION_CREATED',
+        afterState: {
+          participant_id: participantId,
+          name,
+          route,
+          is_prn: medication.is_prn,
+        },
+        reason: 'create_medication',
+      },
+      { required: true },
+    );
+
+    revalidatePath(`/app/participants/${participantId}/medications`);
+    return { success: true as const };
+  } catch (error) {
+    if (isNextInternalError(error)) throw error;
+    return actionError(error);
+  }
+}
+
 export async function resolveIncident(id: string, formData: FormData) {
   try {
     const supabase = await createSupabaseServerClient();

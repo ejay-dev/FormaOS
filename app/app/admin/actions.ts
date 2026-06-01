@@ -149,7 +149,10 @@ export async function resyncStripeSubscription(formData: FormData) {
   }
 
   const stripeSub = await stripe.subscriptions.retrieve(subscription.stripe_subscription_id);
-  const stripeStatus = stripeSub.status === "canceled" ? "cancelled" : stripeSub.status;
+  // Store Stripe's status verbatim. The previous canceled→cancelled remap
+  // wrote a spelling that calculateModuleState didn't recognise, so admin-
+  // synced cancellations were mis-bucketed as active (audit: canceled-normalization).
+  const stripeStatus = stripeSub.status;
   const priceId = stripeSub.items.data[0]?.price?.id ?? null;
   const planKey = resolvePlanKeyFromPriceId(priceId);
   const periodEndUnix = subscriptionPeriodEnd(stripeSub);
