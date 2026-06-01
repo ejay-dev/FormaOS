@@ -133,6 +133,13 @@ describe('syncOrgFrameworksFromOrgRecord', () => {
             data: { frameworks: ['nist', 'cis', 'pci'] },
             error: null,
           });
+        // 3 slugs > smallest plan cap (2) → the limit lookup runs. Enterprise
+        // is unlimited, so all three normalize through without capping.
+        if (callCount === 2)
+          return createBuilder({
+            data: { plan_key: 'enterprise' },
+            error: null,
+          });
         return createBuilder({ data: null, error: null });
       }),
     });
@@ -140,6 +147,31 @@ describe('syncOrgFrameworksFromOrgRecord', () => {
     expect(result).toContain('nist-csf');
     expect(result).toContain('cis-controls');
     expect(result).toContain('pci-dss');
+  });
+
+  it('caps provisioned frameworks to the plan limit (basic = 2)', async () => {
+    getServerSideFeatureFlags.mockReturnValue({ enableFrameworkEngine: true });
+    let callCount = 0;
+    createSupabaseAdminClient.mockReturnValue({
+      from: jest.fn(() => {
+        callCount++;
+        // 1: organizations.frameworks (3 requested)
+        if (callCount === 1)
+          return createBuilder({
+            data: { frameworks: ['soc2', 'iso27001', 'gdpr'] },
+            error: null,
+          });
+        // 2: org_subscriptions → basic plan (limit 2)
+        if (callCount === 2)
+          return createBuilder({ data: { plan_key: 'basic' }, error: null });
+        // 3: existing org_frameworks (none yet)
+        if (callCount === 3) return createBuilder({ data: [], error: null });
+        // 4: upsert
+        return createBuilder({ data: null, error: null });
+      }),
+    });
+    const result = await syncOrgFrameworksFromOrgRecord('org-1');
+    expect(result).toHaveLength(2);
   });
 });
 

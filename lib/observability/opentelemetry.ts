@@ -108,12 +108,18 @@ async function startOpenTelemetry(): Promise<boolean> {
     ],
   });
 
-  process.once('SIGTERM', () => {
-    void provider.shutdown();
-  });
-  process.once('SIGINT', () => {
-    void provider.shutdown();
-  });
+  // Skip graceful-shutdown signal handlers under test. Jest spins up many
+  // workers that each import this module, and registering SIGTERM/SIGINT
+  // listeners per-import trips Node's MaxListenersExceededWarning and leaves
+  // handles that delay worker exit. Production (Node runtime) still gets them.
+  if (process.env.NODE_ENV !== 'test') {
+    process.once('SIGTERM', () => {
+      void provider.shutdown();
+    });
+    process.once('SIGINT', () => {
+      void provider.shutdown();
+    });
+  }
 
   return true;
 }

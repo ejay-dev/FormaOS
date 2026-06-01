@@ -5,6 +5,37 @@ import {
   PACK_SLUGS,
 } from './framework-installer';
 import { getServerSideFeatureFlags } from '@/lib/feature-flags';
+import { getMaxFrameworks, resolvePlanKey, PLAN_CATALOG } from '@/lib/plans';
+import type { PlanKey } from '@/lib/plans';
+import { apiLogger } from '@/lib/observability/structured-logger';
+
+// Smallest framework cap across all plans. If a request enables no more than
+// this many frameworks, no plan could possibly cap it, so we skip the
+// subscription lookup entirely (cheaper, and avoids an extra query on the
+// common small-org path).
+const MIN_PLAN_FRAMEWORK_LIMIT = Math.min(
+  ...(Object.keys(PLAN_CATALOG) as PlanKey[])
+    .map(getMaxFrameworks)
+    .filter((n): n is number => n !== null),
+);
+
+/**
+ * Resolve the org's plan framework cap. Returns null for unlimited. Falls back
+ * to the most restrictive plan ('basic') when no subscription row exists, so
+ * an unprovisioned org can't enable more frameworks than the entry tier.
+ */
+async function getOrgFrameworkLimit(
+  admin: ReturnType<typeof createSupabaseAdminClient>,
+  orgId: string,
+): Promise<number | null> {
+  const { data } = await admin
+    .from('org_subscriptions')
+    .select('plan_key')
+    .eq('organization_id', orgId)
+    .maybeSingle();
+  const planKey = resolvePlanKey(data?.plan_key) ?? 'basic';
+  return getMaxFrameworks(planKey);
+}
 
 const ORG_FRAMEWORK_MAP: Record<string, string> = {
   soc2: 'soc2',
@@ -53,7 +84,40 @@ export async function syncOrgFrameworksFromOrgRecord(orgId: string) {
 
   if (!slugs.length) return [];
 
-  const rows = slugs.map((slug) => ({
+  // Enforce the plan's maxFrameworks cap. Frameworks already provisioned keep
+  // their slots (we never strip existing compliance data on a downgrade); the
+  // cap applies to the total provisioned set, so an org cannot grow beyond
+  // what its plan allows. Deterministic slice keeps existing-first ordering.
+  // Skip the subscription lookup when the count can't exceed even the smallest
+  // plan's cap.
+  let effectiveSlugs = slugs;
+  const limit =
+    slugs.length > MIN_PLAN_FRAMEWORK_LIMIT
+      ? await getOrgFrameworkLimit(admin, orgId)
+      : null;
+  if (limit !== null && slugs.length > limit) {
+    const { data: existing } = await admin
+      .from('org_frameworks')
+      .select('framework_slug')
+      .eq('organization_id', orgId);
+    const existingSlugs = new Set(
+      (existing ?? []).map((r: { framework_slug: string }) => r.framework_slug),
+    );
+    // Keep already-enabled frameworks first, then fill remaining slots.
+    const retained = slugs.filter((s) => existingSlugs.has(s));
+    const additions = slugs.filter((s) => !existingSlugs.has(s));
+    effectiveSlugs = [...retained, ...additions].slice(0, limit);
+    if (effectiveSlugs.length < slugs.length) {
+      apiLogger.warn('framework_limit_enforced', {
+        orgId,
+        requested: slugs.length,
+        limit,
+        dropped: slugs.filter((s) => !effectiveSlugs.includes(s)),
+      });
+    }
+  }
+
+  const rows = effectiveSlugs.map((slug) => ({
     organization_id: orgId,
     framework_slug: slug,
     enabled_at: new Date().toISOString(),
@@ -63,7 +127,7 @@ export async function syncOrgFrameworksFromOrgRecord(orgId: string) {
     .from('org_frameworks')
     .upsert(rows, { onConflict: 'organization_id,framework_slug' });
 
-  return slugs;
+  return effectiveSlugs;
 }
 
 export async function getOrgFrameworkOverview(orgId: string) {

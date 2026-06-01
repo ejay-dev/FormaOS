@@ -3,6 +3,7 @@ import { generateBoardPack } from '@/lib/executive/board-pack-generator';
 import { renderPdf } from '@/lib/exports/pdf/renderer';
 import type { BoardPackPdfInput } from '@/lib/exports/pdf/types';
 import { validateCsrfOrigin } from '@/lib/security/csrf';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
@@ -51,6 +52,14 @@ function parseRequest(body: unknown): BoardPackRequest | { error: string } {
 export async function POST(request: Request) {
   const csrfError = validateCsrfOrigin(request);
   if (csrfError) return csrfError;
+
+  // Board-pack PDF generation is CPU-heavy (full document render). Rate-limit
+  // it like the other export endpoints so an authenticated member can't spin
+  // up unbounded concurrent renders.
+  const rate = await rateLimitApi(request);
+  if (!rate.success) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
 
   const supabase = await createSupabaseServerClient();
   const {

@@ -89,8 +89,14 @@ export async function POST(request: Request) {
       .eq('organization_id', orgId);
 
     if (error) {
+      // Don't return the raw DB error.message — it can leak column/constraint
+      // names and internal schema detail. Log the full error server-side; the
+      // client gets a generic message (consistent with the catch block below).
       log.error({ err: error }, 'failed to update policy');
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to update policy' },
+        { status: 500 },
+      );
     }
 
     return NextResponse.json({ ok: true, savedAt: updates.updated_at });

@@ -22,7 +22,6 @@ import {
   CheckCircle2,
   Star,
   Calendar,
-  Tag,
   Eye,
   Command,
   Layers,

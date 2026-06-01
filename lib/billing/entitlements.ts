@@ -18,6 +18,30 @@ export type EntitlementKey =
   | 'retention_governance';
 
 /**
+ * The full universe of entitlement keys. Used by syncEntitlementsForPlan to
+ * DISABLE features that the new plan does not include — without this list a
+ * downgrade (e.g. Enterprise → Pro) would leave higher-tier features
+ * (sso_saml, directory_sync, retention_governance, workflow_automation, …)
+ * stuck at enabled=true forever, since the sync only ever upserted enables.
+ * Keep in sync with the EntitlementKey union above.
+ */
+export const ALL_ENTITLEMENT_KEYS: readonly EntitlementKey[] = [
+  'audit_export',
+  'reports',
+  'framework_evaluations',
+  'certifications',
+  'team_limit',
+  'ai_assistant',
+  'capa_management',
+  'custom_reports',
+  'form_analytics',
+  'workflow_automation',
+  'sso_saml',
+  'directory_sync',
+  'retention_governance',
+];
+
+/**
  * v4-031: entitlements safe to grant during the `pending_checkout`
  * grace window. The status sits between "user clicked Subscribe" and
  * "Stripe webhook arrived" — usually under 60s, occasionally longer
@@ -256,7 +280,25 @@ export async function syncEntitlementsForPlan(orgId: string, planKey: PlanKey) {
       limit_value: limit,
     }));
 
-  const records = [...enabledRecords, ...limitRecords];
+  // DISABLE every entitlement the new plan does NOT grant. This is what makes
+  // a downgrade actually revoke higher-tier features. Without it, switching
+  // Enterprise → Pro left sso_saml / directory_sync / retention_governance
+  // enabled forever (the customer kept paid features for free). We emit an
+  // explicit enabled=false row (idempotent upsert) rather than relying on a
+  // prior teardown, so the state is correct regardless of history.
+  const grantedKeys = new Set<string>([
+    ...plan.enabled,
+    ...Object.keys(plan.limits),
+  ]);
+  const disabledRecords = ALL_ENTITLEMENT_KEYS.filter(
+    (featureKey) => !grantedKeys.has(featureKey),
+  ).map((featureKey) => ({
+    feature_key: featureKey,
+    enabled: false,
+    limit_value: null,
+  }));
+
+  const records = [...enabledRecords, ...limitRecords, ...disabledRecords];
   if (records.length === 0) return;
 
   await supabase.from('org_entitlements').upsert(records, {

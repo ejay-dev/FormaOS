@@ -2,10 +2,21 @@ import * as Sentry from '@sentry/nextjs';
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
+    // Turbopack does not auto-load `sentry.server.config.ts`, so server-side
+    // Sentry.init must be triggered explicitly here or `onRequestError`
+    // (below) has nothing initialized to capture into. Importing the config
+    // module runs its `Sentry.init()` at load time.
+    await import('./sentry.server.config');
+
     const { registerOpenTelemetry } = await import(
       '@/lib/observability/opentelemetry'
     );
     await registerOpenTelemetry();
+  }
+
+  if (process.env.NEXT_RUNTIME === 'edge') {
+    // Same Turbopack caveat for the edge runtime (middleware / edge routes).
+    await import('./sentry.edge.config');
   }
 }
 

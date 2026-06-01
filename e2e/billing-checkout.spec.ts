@@ -91,7 +91,9 @@ test.describe('Stripe checkout → webhook flow', () => {
       'STRIPE_WEBHOOK_SECRET missing — webhook signature can\'t be synthesised',
     );
 
-    const context = await getWorkspaceSeedContext();
+    // Seeds the workspace as a side effect; the returned context isn't used
+    // until the webhook-signature assertion is implemented (see hook below).
+    await getWorkspaceSeedContext();
     await authenticateWorkspacePage(page);
 
     // Implementation hook for the next agent: load the Stripe SDK in

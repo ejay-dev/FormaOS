@@ -48,6 +48,17 @@ export async function getCredentials(): Promise<{
     return await getTestCredentials();
   } catch (error) {
     if (error instanceof E2EAuthBootstrapError) {
+      // E2E_REQUIRE_AUTH=1 is set by the protected-branch CI gate. There, a
+      // missing auth bootstrap must FAIL the run, not silently skip — a skip
+      // reports green while exercising nothing authenticated (the false-
+      // confidence gap). Fork PRs (no secrets, var unset) still skip cleanly.
+      if (process.env.E2E_REQUIRE_AUTH === '1') {
+        throw new Error(
+          `[E2E gate] Authenticated E2E required on this branch but auth ` +
+            `bootstrap is unavailable. Configure E2E_TEST_EMAIL/E2E_TEST_PASSWORD ` +
+            `or the Supabase service-role secret. Original error: ${error.message}`,
+        );
+      }
       test.skip(true, error.message);
       return undefined as never; // unreachable — test.skip throws internally
     }

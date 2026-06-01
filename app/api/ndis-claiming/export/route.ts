@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { exportClaimFile } from '@/lib/care/ndis-claiming';
+import { rateLimitApi } from '@/lib/security/rate-limiter';
 import { routeLog } from '@/lib/monitoring/server-logger';
 
 const log = routeLog('/api/ndis-claiming/export');
@@ -24,6 +25,15 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL('/auth/signin', request.url), {
         status: 303,
       });
+    }
+
+    // Claim-file generation is an expensive export; rate-limit it.
+    const rate = await rateLimitApi(request);
+    if (!rate.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 },
+      );
     }
 
     const { data: membership } = await supabase

@@ -66,7 +66,30 @@ describe('syncEntitlementsForPlan', () => {
       ]),
     );
 
-    expect(records).toHaveLength(4);
+    // Every entitlement key is now emitted: the 4 the basic plan grants are
+    // enabled, the rest are explicitly disabled so a downgrade INTO basic
+    // revokes higher-tier features instead of leaving them stuck enabled.
+    expect(records).toHaveLength(13);
+
+    // Features the basic plan does NOT include must be present as enabled=false.
+    for (const absent of [
+      'ai_assistant',
+      'capa_management',
+      'custom_reports',
+      'form_analytics',
+      'workflow_automation',
+      'sso_saml',
+      'directory_sync',
+      'retention_governance',
+      'certifications',
+    ]) {
+      expect(records).toContainEqual({
+        organization_id: TEST_ORG_ID,
+        feature_key: absent,
+        enabled: false,
+        limit_value: null,
+      });
+    }
 
     for (const record of records) {
       expect(record.organization_id).toBe(TEST_ORG_ID);
@@ -142,7 +165,24 @@ describe('syncEntitlementsForPlan', () => {
       ]),
     );
 
-    expect(records).toHaveLength(9);
+    // 9 granted (enabled) + 4 not-in-plan (disabled) = all 13 keys emitted.
+    expect(records).toHaveLength(13);
+
+    // The four Scale/Enterprise-only features must be disabled under Pro, so a
+    // downgrade from a higher tier actually revokes them.
+    for (const absent of [
+      'workflow_automation',
+      'sso_saml',
+      'directory_sync',
+      'retention_governance',
+    ]) {
+      expect(records).toContainEqual({
+        organization_id: TEST_ORG_ID,
+        feature_key: absent,
+        enabled: false,
+        limit_value: null,
+      });
+    }
 
     for (const record of records) {
       expect(record.organization_id).toBe(TEST_ORG_ID);
