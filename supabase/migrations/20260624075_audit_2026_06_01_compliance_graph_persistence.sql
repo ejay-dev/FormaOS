@@ -71,6 +71,17 @@ ALTER TABLE public.graph_nodes FORCE ROW LEVEL SECURITY;
 ALTER TABLE public.graph_wires ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.graph_wires FORCE ROW LEVEL SECURITY;
 
+-- Drop-if-exists so the migration is safe to re-run (CREATE POLICY is not
+-- idempotent; the rest of this file already uses IF NOT EXISTS).
+DROP POLICY IF EXISTS graph_nodes_select_org_members ON public.graph_nodes;
+DROP POLICY IF EXISTS graph_nodes_no_insert ON public.graph_nodes;
+DROP POLICY IF EXISTS graph_nodes_no_update ON public.graph_nodes;
+DROP POLICY IF EXISTS graph_nodes_no_delete ON public.graph_nodes;
+DROP POLICY IF EXISTS graph_wires_select_org_members ON public.graph_wires;
+DROP POLICY IF EXISTS graph_wires_no_insert ON public.graph_wires;
+DROP POLICY IF EXISTS graph_wires_no_update ON public.graph_wires;
+DROP POLICY IF EXISTS graph_wires_no_delete ON public.graph_wires;
+
 -- Org members may SELECT their own graph. Writes are service-role-only
 -- (rebuildOrgGraph via the admin client), so the table is append-only
 -- from the application's authenticated point of view.

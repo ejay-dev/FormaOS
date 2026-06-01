@@ -1,121 +1,33 @@
 {
-  "timestamp": "2026-05-25T11:16:57.802Z",
+  "timestamp": "2026-06-01T09:59:07.059Z",
   "controls": {
-    "security": [
-      {
-        "name": "Authentication Requirements",
-        "control": "CC6.1",
-        "passed": true,
-        "details": "Protected resources must require authentication"
-      },
-      {
-        "name": "Authorization Controls",
-        "control": "CC6.2",
-        "passed": true,
-        "details": "Admin resources must enforce proper authorization"
-      },
-      {
-        "name": "Session Management",
-        "control": "CC6.1",
-        "passed": true,
-        "details": "Must implement secure session management"
-      },
-      {
-        "name": "Encryption in Transit",
-        "control": "CC6.7",
-        "passed": false,
-        "details": "HTTPS not available on local baseUrl — passes in production behind Vercel TLS"
-      },
-      {
-        "name": "Input Validation",
-        "control": "CC6.6",
-        "passed": true,
-        "details": "Forms must implement input validation"
-      }
-    ],
-    "availability": [
-      {
-        "name": "System Health Monitoring",
-        "control": "A1.2",
-        "passed": true,
-        "details": "System health monitoring must be operational (status: degraded)"
-      },
-      {
-        "name": "Error Handling",
-        "control": "A1.1",
-        "passed": true,
-        "details": "Must handle errors gracefully"
-      },
-      {
-        "name": "Performance Monitoring",
-        "control": "A1.2",
-        "passed": true,
-        "details": "Page load time: 14ms (should be < 5000ms)"
-      },
-      {
-        "name": "Backup and Recovery Indicators",
-        "control": "A1.3",
-        "passed": true,
-        "details": "Backup and recovery processes must be documented"
-      }
-    ],
-    "processing": [
-      {
-        "name": "Data Validation",
-        "control": "PI1.1",
-        "passed": true,
-        "details": "No data input forms found"
-      },
-      {
-        "name": "Audit Trail",
-        "control": "PI1.2",
-        "passed": true,
-        "details": "Audit logging must be implemented"
-      },
-      {
-        "name": "Data Integrity Checks",
-        "control": "PI1.1",
-        "passed": true,
-        "details": "Data integrity checks must be operational"
-      }
-    ],
-    "confidentiality": [
-      {
-        "name": "Data Classification",
-        "control": "C1.1",
-        "passed": true,
-        "details": "Data classification must be documented"
-      },
-      {
-        "name": "Access Controls",
-        "control": "C1.2",
-        "passed": true,
-        "details": "Role-based access controls must be implemented"
-      },
-      {
-        "name": "Data Encryption",
-        "control": "C1.1",
-        "passed": "max-age=0",
-        "details": "Security headers must be implemented"
-      }
-    ],
+    "security": [],
+    "availability": [],
+    "processing": [],
+    "confidentiality": [],
     "privacy": []
   },
-  "violations": [],
+  "violations": [
+    {
+      "category": "Environment",
+      "control": "INFRA",
+      "test": "Application Availability",
+      "error": "Unable to reach http://localhost:3000: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
+    }
+  ],
   "recommendations": [
-    "1 control tests failed. Address these for SOC2 compliance.",
-    "Security controls need attention. Implement proper authentication and authorization."
+    "Start the app at http://localhost:3000 before running SOC2 compliance tests."
   ],
   "environment": {
     "baseUrl": "http://localhost:3000",
-    "available": true,
-    "error": null
+    "available": false,
+    "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
   },
   "summary": {
-    "totalControls": 15,
-    "passedControls": 14,
-    "failedControls": 1,
-    "violations": 0,
-    "environmentStatus": "available"
+    "totalControls": 0,
+    "passedControls": 0,
+    "failedControls": 0,
+    "violations": 1,
+    "environmentStatus": "unavailable"
   }
 }

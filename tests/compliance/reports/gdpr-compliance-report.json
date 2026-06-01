@@ -1,102 +1,24 @@
 {
-  "timestamp": "2026-05-25T11:17:48.127Z",
+  "timestamp": "2026-06-01T09:59:06.396Z",
   "compliance": {
-    "dataProtection": [
-      {
-        "name": "Privacy Policy Accessibility",
-        "passed": true,
-        "details": "Privacy policy must be easily accessible"
-      },
-      {
-        "name": "Data Processing Disclosure",
-        "passed": true,
-        "details": "Must disclose data processing activities"
-      },
-      {
-        "name": "Data Controller Information",
-        "passed": true,
-        "details": "Must identify data controller"
-      },
-      {
-        "name": "Legal Basis Declaration",
-        "passed": true,
-        "details": "Must declare legal basis for processing"
-      }
-    ],
-    "userRights": [
-      {
-        "name": "Data Access Request Process",
-        "passed": true,
-        "details": "Users must be able to access their personal data"
-      },
-      {
-        "name": "Data Deletion Process",
-        "passed": true,
-        "details": "Users must be able to delete their data"
-      },
-      {
-        "name": "Data Portability",
-        "passed": true,
-        "details": "Must provide data portability options"
-      },
-      {
-        "name": "Data Rectification",
-        "passed": true,
-        "details": "Users must be able to update their information"
-      }
-    ],
-    "consent": [
-      {
-        "name": "Cookie Consent Banner",
-        "passed": true,
-        "details": "Must display cookie consent banner"
-      },
-      {
-        "name": "Granular Consent Options",
-        "passed": true,
-        "details": "Must provide granular consent options"
-      },
-      {
-        "name": "Consent Withdrawal",
-        "passed": true,
-        "details": "Must allow consent withdrawal"
-      },
-      {
-        "name": "Marketing Consent Separate",
-        "passed": true,
-        "details": "Marketing consent must be separate and optional"
-      }
-    ],
+    "dataProtection": [],
+    "userRights": [],
+    "consent": [],
     "security": []
   },
   "violations": [
     {
-      "category": "Security",
-      "test": "HTTPS Enforcement",
-      "error": "page.goto: net::ERR_SSL_PROTOCOL_ERROR at https://localhost:3000/\nCall log:\n  - navigating to \"https://localhost:3000/\", waiting until \"load\"\n"
-    },
-    {
-      "category": "Security",
-      "test": "Secure Authentication",
-      "error": "page.goto: Navigation to \"http://localhost:3000/login\" is interrupted by another navigation to \"chrome-error://chromewebdata/\"\nCall log:\n  - navigating to \"http://localhost:3000/login\", waiting until \"load\"\n"
-    },
-    {
-      "category": "Security",
-      "test": "Session Security",
-      "error": "page.goto: Navigation to \"http://localhost:3000/\" is interrupted by another navigation to \"http://localhost:3000/login\"\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"load\"\n"
-    },
-    {
-      "category": "Security",
-      "test": "Data Breach Notification Process",
-      "error": "page.goto: Navigation to \"http://localhost:3000/privacy\" is interrupted by another navigation to \"http://localhost:3000/\"\nCall log:\n  - navigating to \"http://localhost:3000/privacy\", waiting until \"load\"\n"
+      "category": "Environment",
+      "test": "Application Availability",
+      "error": "Unable to reach http://localhost:3000: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
     }
   ],
   "recommendations": [
-    "4 technical violations found. Address these for full compliance."
+    "Start the app at http://localhost:3000 before running GDPR compliance tests."
   ],
   "environment": {
     "baseUrl": "http://localhost:3000",
-    "available": true,
-    "error": null
+    "available": false,
+    "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/\nCall log:\n  - navigating to \"http://localhost:3000/\", waiting until \"domcontentloaded\"\n"
   }
 }
