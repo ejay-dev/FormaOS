@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { MedicationChart } from '@/components/care/medication-chart';
 
@@ -64,9 +64,6 @@ export default async function ParticipantMedicationsPage({
             {participant.full_name}
           </p>
         </div>
-        <button className="inline-flex min-h-[44px] md:min-h-0 items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-          <Plus className="h-4 w-4" /> Add Medication
-        </button>
       </div>
 
       <MedicationChart
