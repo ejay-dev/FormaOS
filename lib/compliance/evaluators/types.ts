@@ -54,7 +54,8 @@ export type FrameworkSlug =
   | 'pci-dss'
   | 'nist-csf'
   | 'cis-controls'
-  | 'ndis';
+  | 'ndis'
+  | 'financial-services-au';
 
 export type ControlEvaluatorMeta = {
   framework: FrameworkSlug;

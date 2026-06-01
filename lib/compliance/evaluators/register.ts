@@ -297,6 +297,47 @@ import { meta as ndis_M_1 } from './ndis/NDIS-M.1';
 import { meta as ndis_M_2 } from './ndis/NDIS-M.2';
 import { meta as ndis_W_1 } from './ndis/NDIS-W.1';
 
+// Australian Financial Services pack (framework slug = 'financial-services-au',
+// 20 controls — ASIC AFS, APRA CPS 230/234/510, AUSTRAC AML/CTF, AFCA).
+// Coverage breakdown (DB-signal vs. manual attestation):
+//   - 7 DB-signal: AFS-003 (PDS/FSG policy cadence), AFS-004
+//     (conflict_of_interest register), CPS-001 (org_risks freshness),
+//     CPS-002 (business_continuity_plan register), CPS-004 (infosec +
+//     incident-response policy + audit activity), AML-001 (AML/CTF
+//     policy cadence), AFCA-002 (complaint register, RG 271 30-day).
+//   - 13 manual attestation. AFS-006 + AML-004 were planned as DB-signal
+//     against org_regulatory_notifications but that table cannot model
+//     ASIC/AUSTRAC lodgements (its `regulation` CHECK excludes them,
+//     `notification_type` is NDIS-specific, and it requires an
+//     incident_id FK) — reading it would surface false NDIS signals, so
+//     they fall back to manual. The other 11 (AFS-001/002/005/007/008,
+//     CPS-003/005, AML-002/003/005, AFCA-001) verify licences, registers,
+//     trust-account reconciliations, training, and board sign-offs that
+//     FormaOS does not model as rows. Each carries a
+//     `manual_attestation_required` gap — never a false pass.
+// DB-signal helpers that find no finance-tagged rows return
+// manualAttestation / not_evaluated, never `pass`.
+import { meta as fsau_AFS_001 } from './financial-services-au/AFS-001';
+import { meta as fsau_AFS_002 } from './financial-services-au/AFS-002';
+import { meta as fsau_AFS_003 } from './financial-services-au/AFS-003';
+import { meta as fsau_AFS_004 } from './financial-services-au/AFS-004';
+import { meta as fsau_AFS_005 } from './financial-services-au/AFS-005';
+import { meta as fsau_AFS_006 } from './financial-services-au/AFS-006';
+import { meta as fsau_AFS_007 } from './financial-services-au/AFS-007';
+import { meta as fsau_AFS_008 } from './financial-services-au/AFS-008';
+import { meta as fsau_CPS_001 } from './financial-services-au/CPS-001';
+import { meta as fsau_CPS_002 } from './financial-services-au/CPS-002';
+import { meta as fsau_CPS_003 } from './financial-services-au/CPS-003';
+import { meta as fsau_CPS_004 } from './financial-services-au/CPS-004';
+import { meta as fsau_CPS_005 } from './financial-services-au/CPS-005';
+import { meta as fsau_AML_001 } from './financial-services-au/AML-001';
+import { meta as fsau_AML_002 } from './financial-services-au/AML-002';
+import { meta as fsau_AML_003 } from './financial-services-au/AML-003';
+import { meta as fsau_AML_004 } from './financial-services-au/AML-004';
+import { meta as fsau_AML_005 } from './financial-services-au/AML-005';
+import { meta as fsau_AFCA_001 } from './financial-services-au/AFCA-001';
+import { meta as fsau_AFCA_002 } from './financial-services-au/AFCA-002';
+
 import { meta as pci_PCI_1 } from './pci-dss/PCI-1';
 import { meta as pci_PCI_2 } from './pci-dss/PCI-2';
 import { meta as pci_PCI_3 } from './pci-dss/PCI-3';
@@ -573,6 +614,28 @@ const ALL_EVALUATORS = [
   ndis_M_1,
   ndis_M_2,
   ndis_W_1,
+  // Australian Financial Services pack (framework slug = 'financial-services-au',
+  // 20 controls). 7 DB-signal, 13 manual attestation.
+  fsau_AFS_001,
+  fsau_AFS_002,
+  fsau_AFS_003,
+  fsau_AFS_004,
+  fsau_AFS_005,
+  fsau_AFS_006,
+  fsau_AFS_007,
+  fsau_AFS_008,
+  fsau_CPS_001,
+  fsau_CPS_002,
+  fsau_CPS_003,
+  fsau_CPS_004,
+  fsau_CPS_005,
+  fsau_AML_001,
+  fsau_AML_002,
+  fsau_AML_003,
+  fsau_AML_004,
+  fsau_AML_005,
+  fsau_AFCA_001,
+  fsau_AFCA_002,
 ];
 
 let registered = false;
