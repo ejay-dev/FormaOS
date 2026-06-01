@@ -55,9 +55,12 @@ jobs:
       # --max-warnings 25 matches the deployment-gates ceiling so lint
       # warnings can't accumulate unbounded through the PR gate (audit H8).
       - run: npm run lint -- --max-warnings 25
-      # Jest unit suite runs on every PR — previously it only ran nightly
-      # / on push-to-main, so PRs merged with no unit-test signal (audit H8).
-      - run: npm test -- --ci
+      # NOTE (audit H8): the Jest unit suite is gated on PRs by the
+      # qa-pipeline "Unit & Integration Tests" job (npm run test:coverage,
+      # blocking on home-repo PRs) — we deliberately do NOT duplicate it
+      # here. A duplicate `npm test -- --ci` run was removed: it was redundant
+      # and flaked on an order-sensitive hook test under this job's worker
+      # scheduling (passes locally + in the qa-pipeline run).
       - run: SECURITY_BASELINE_STRICT=1 npm run check:security-baseline
       - run: npm run build
       - run: npm run check:app-links
