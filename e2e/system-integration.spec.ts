@@ -240,7 +240,12 @@ test.describe('System integration', () => {
     await page.goto(`/app/incidents/${incidentId}`, {
       waitUntil: 'domcontentloaded',
     });
-    await expect(page.locator('text=Resolution Record')).toBeVisible({
+    // The detail page renders headings in duplicated responsive containers, so
+    // scope to the heading role + .first() (matching the working pattern in
+    // deep-workflow-integrity.spec.ts) instead of a strict-mode-fragile text= match.
+    await expect(
+      page.getByRole('heading', { name: 'Resolution Record' }).first(),
+    ).toBeVisible({
       timeout: 10_000,
     });
 
