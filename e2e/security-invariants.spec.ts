@@ -240,13 +240,16 @@ test.describe('Authentication Invariants', () => {
     for (const route of protectedRoutes) {
       await page.goto(route);
 
-      // Should redirect to signin
+      // Should be blocked. Most protected routes redirect to signin; /app/team
+      // intentionally routes unauthenticated visitors to /unauthorized (a
+      // documented SOC2 access-controls-probe design — see app/app/layout.tsx),
+      // which is still a "blocked" outcome. Accept either.
       await page
-        .waitForURL(/\/(auth\/signin|signin|login)/i, { timeout: 10000 })
+        .waitForURL(/\/(auth\/signin|signin|login|unauthorized)/i, { timeout: 10000 })
         .catch(() => {});
       const url = page.url();
-      expect(url).toMatch(/\/(auth\/signin|signin|login|onboarding)/i);
-      console.log(`${route}: Redirected to auth`);
+      expect(url).toMatch(/\/(auth\/signin|signin|login|onboarding|unauthorized)/i);
+      console.log(`${route}: blocked -> ${new URL(url).pathname}`);
     }
   });
 
