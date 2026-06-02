@@ -86,7 +86,7 @@ export function TestimonialsSection() {
       >
         <span className="mt-1.5 h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent" />
         <div className="max-w-2xl">
-          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.28em] text-slate-500">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
             Use case scenarios
           </p>
           <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">

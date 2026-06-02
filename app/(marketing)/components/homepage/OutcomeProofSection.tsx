@@ -1,39 +1,40 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ArrowRight } from 'lucide-react';
 
-// Mechanic-grounded scenarios. The "after" column names a real artifact
+// Mechanic-grounded scenarios. The "after" state names a real artifact
 // (table, cron, statutory timeline) so the section reads like a product
 // brief, not a customer-success deck.
 const proofScenarios = [
   {
     title: 'Audit preparation',
-    impact: 'Auditor bundle on demand',
+    impact: 'Auditor bundle, on demand',
     before:
       'Evidence scattered across email threads, shared drives, and spreadsheets. Days lost reconstructing trails.',
     after:
       'On-demand ZIP export: framework summary, evidence references with SHA-256 hashes, automation log, score history, chain top anchored to Sigstore Rekor.',
-    delta: { from: 'Reconstructed', to: 'Hash-chained', note: 'Verifiable' },
+    state: { before: 'Reconstructed by hand', after: 'Hash-chained', tag: 'Verifiable' },
   },
   {
     title: 'Incident response',
-    impact: 'SIRS clock automated',
+    impact: 'Statutory clock, automated',
     before:
       'Email threads, ad-hoc severity tagging, statutory timelines tracked by memory.',
     after:
       'org_incidents writes carry severity classification, named owner, and the NDIS SIRS 24h-immediate / 5-business-day-detailed clock encoded in the predicate.',
-    delta: { from: 'By memory', to: 'In schema', note: '24h / 5bd' },
+    state: { before: 'Tracked by memory', after: 'Encoded in schema', tag: '24h / 5bd' },
   },
   {
     title: 'Compliance posture',
-    impact: 'Nightly at 06:00 UTC',
+    impact: 'Refreshed nightly',
     before:
       'Manual status reconciliation. Board gets a stale quarterly snapshot. Drift surfaces too late.',
     after:
       'Nightly cron at 06:00 UTC iterates orgs in batches, writes to org_control_evaluations; /app/compliance/health renders the live posture with a 4-week sparkline.',
-    delta: { from: 'Quarterly', to: 'Nightly', note: 'Cron-driven' },
+    state: { before: 'Quarterly snapshot', after: 'Live, nightly', tag: 'Cron-driven' },
   },
 ] as const;
 
@@ -48,6 +49,86 @@ const outcomeStats = [
   { value: '16', label: 'Production crons' },
 ] as const;
 
+type Scenario = (typeof proofScenarios)[number];
+
+function ScenarioCard({ scenario }: { scenario: Scenario }) {
+  const [showAfter, setShowAfter] = useState(true);
+
+  return (
+    <article className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.025] p-6 transition-colors duration-300 hover:border-white/20">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-semibold text-white">{scenario.title}</h3>
+          <p className="mt-1 text-sm text-slate-500">{scenario.impact}</p>
+        </div>
+
+        {/* Before / After toggle */}
+        <div
+          role="group"
+          aria-label={`${scenario.title} — before or after`}
+          className="flex flex-shrink-0 rounded-lg border border-white/10 bg-black/20 p-0.5"
+        >
+          <button
+            type="button"
+            onClick={() => setShowAfter(false)}
+            aria-pressed={!showAfter}
+            className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+              showAfter
+                ? 'text-slate-500 hover:text-slate-300'
+                : 'bg-white/10 text-white'
+            }`}
+          >
+            Before
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowAfter(true)}
+            aria-pressed={showAfter}
+            className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+              showAfter
+                ? 'bg-white/10 text-white'
+                : 'text-slate-500 hover:text-slate-300'
+            }`}
+          >
+            After
+          </button>
+        </div>
+      </div>
+
+      {/* Body — swaps with the toggle; min-height keeps the row from jumping */}
+      <p
+        key={showAfter ? 'after' : 'before'}
+        className={`min-h-[7.5rem] animate-[fadeIn_0.25s_ease] text-[0.95rem] leading-relaxed lg:min-h-[8.5rem] ${
+          showAfter ? 'text-slate-200' : 'text-slate-400'
+        }`}
+      >
+        {showAfter ? scenario.after : scenario.before}
+      </p>
+
+      {/* State line — reflects the active side */}
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/[0.07] pt-5">
+        <div>
+          <p className="text-[11px] uppercase tracking-wide text-slate-600">
+            {showAfter ? 'With FormaOS' : 'Without'}
+          </p>
+          <p
+            className={`mt-0.5 text-sm font-semibold ${
+              showAfter ? 'text-white' : 'text-slate-400'
+            }`}
+          >
+            {showAfter ? scenario.state.after : scenario.state.before}
+          </p>
+        </div>
+        {showAfter && (
+          <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs font-medium text-slate-300">
+            {scenario.state.tag}
+          </span>
+        )}
+      </div>
+    </article>
+  );
+}
+
 export function OutcomeProofSection() {
   return (
     <section className="mk-section home-section home-section--proof relative overflow-hidden">
@@ -56,8 +137,8 @@ export function OutcomeProofSection() {
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-          <div className="mx-auto mb-14 max-w-2xl text-center lg:mb-16">
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.32em] text-slate-500">
+          <div className="mx-auto mb-12 max-w-2xl text-center lg:mb-14">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
               What ships, what runs
             </p>
             <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
@@ -65,73 +146,26 @@ export function OutcomeProofSection() {
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-400">
               Every number below comes from the framework registry checked into
-              the codebase or the cron schedule running in production. The
-              scenarios name the actual table, predicate, or statutory clock
-              doing the work — not a generic &ldquo;automated workflow.&rdquo;
+              the codebase or the cron schedule running in production. Toggle any
+              card to see the shift &mdash; from the manual status quo to the
+              actual table, predicate, or statutory clock doing the work.
             </p>
           </div>
         </ScrollReveal>
 
-        {/* Spec-ledger cards: monochrome hierarchy, numbered, no decorative chrome */}
-        <div className="grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3">
           {proofScenarios.map((scenario, idx) => (
             <ScrollReveal
               key={scenario.title}
               variant="fadeLeft"
               range={[idx * 0.04, 0.3 + idx * 0.04]}
             >
-              <article className="group relative flex h-full flex-col bg-[#070b14] p-7 transition-colors duration-300 hover:bg-[#0a0f1a]">
-                {/* top accent rail, revealed on hover */}
-                <span className="absolute inset-x-0 top-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-500 group-hover:scale-x-100" />
-
-                <header className="mb-6 flex items-baseline justify-between gap-4">
-                  <div>
-                    <h3 className="font-display text-lg font-semibold text-white">
-                      {scenario.title}
-                    </h3>
-                    <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500">
-                      {scenario.impact}
-                    </p>
-                  </div>
-                  <span className="font-mono text-sm font-medium tabular-nums text-white/15">
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                </header>
-
-                <div className="space-y-4 text-sm leading-relaxed">
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-600">
-                      Before
-                    </span>
-                    <p className="mt-1.5 text-slate-500">{scenario.before}</p>
-                  </div>
-                  <div>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                      After
-                    </span>
-                    <p className="mt-1.5 text-slate-200">{scenario.after}</p>
-                  </div>
-                </div>
-
-                {/* State delta — single clean line, no cramped tri-panel */}
-                <div className="mt-auto flex items-center gap-2.5 pt-6 font-mono text-xs">
-                  <span className="text-slate-600 line-through decoration-slate-700">
-                    {scenario.delta.from}
-                  </span>
-                  <ArrowRight className="h-3.5 w-3.5 flex-shrink-0 text-slate-600" />
-                  <span className="font-medium text-white">
-                    {scenario.delta.to}
-                  </span>
-                  <span className="ml-auto rounded-sm border border-white/10 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-slate-400">
-                    {scenario.delta.note}
-                  </span>
-                </div>
-              </article>
+              <ScenarioCard scenario={scenario} />
             </ScrollReveal>
           ))}
         </div>
 
-        {/* Metrics bar: tabular ledger, hairline-divided, no icon-cards */}
+        {/* Metrics bar: tabular ledger, hairline-divided */}
         <ScrollReveal variant="slideUp" range={[0.1, 0.4]}>
           <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] sm:grid-cols-3 lg:grid-cols-5">
             {outcomeStats.map((stat) => (

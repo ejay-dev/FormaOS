@@ -45,7 +45,7 @@ export function ComplianceNetworkSection() {
               {/* Eyebrow as a relationship chain — previews the graph below and
                   differentiates this header from the labelled-rule used by the
                   sections above it. */}
-              <div className="mb-5 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500">
+              <div className="mb-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">
                 <span>Frameworks</span>
                 <span className="text-slate-600">&rarr;</span>
                 <span>Controls</span>
