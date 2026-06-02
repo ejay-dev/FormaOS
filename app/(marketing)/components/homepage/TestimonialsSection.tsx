@@ -2,9 +2,8 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import Link from 'next/link';
-import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 const SCENARIOS = [
   {
@@ -70,12 +69,7 @@ export function TestimonialsSection() {
       ref={ref}
       className="relative isolate overflow-hidden py-24 sm:py-32 px-4 sm:px-6 lg:px-8"
     >
-      <SectionMedia
-        src="/marketing-media/enterprise.jpg"
-        objectPosition="50% 28%"
-        opacity={0.14}
-        scrim="center"
-      />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_50%_at_50%_0%,rgba(255,255,255,0.04),transparent_70%)]" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <motion.div
@@ -111,37 +105,40 @@ export function TestimonialsSection() {
               delay: 0.2 + i * 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="relative flex flex-col rounded-2xl border border-white/[0.08] bg-slate-950/60 p-6 sm:p-8"
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 transition-colors duration-300 hover:border-white/20 sm:p-8"
           >
-            <div className="mb-5 inline-flex self-start rounded-full border border-white/[0.08] bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
-              {scenario.sector}
-            </div>
+            {/* top accent rail, revealed on hover */}
+            <span className="absolute inset-x-0 top-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-500 group-hover:scale-x-100" />
 
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Framework
-            </p>
-            <p className="mb-5 text-sm font-medium text-slate-200">
+            {/* Header: sector as a real heading, framework as the supporting line */}
+            <h3 className="font-display text-xl font-semibold tracking-tight text-white">
+              {scenario.sector}
+            </h3>
+            <p className="mt-1.5 text-sm font-medium text-slate-400">
               {scenario.framework}
             </p>
 
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Situation
-            </p>
-            <p className="mb-5 text-sm leading-relaxed text-slate-300">
+            {/* Situation — lead paragraph, no label */}
+            <p className="mt-5 text-sm leading-relaxed text-slate-400">
               {scenario.situation}
             </p>
 
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-              What changed
-            </p>
-            <ul className="space-y-2 text-sm text-slate-300">
-              {scenario.outcomes.map((outcome) => (
-                <li key={outcome} className="flex gap-2">
-                  <span className="mt-1.5 inline-block h-1 w-1 shrink-0 rounded-full bg-slate-500" />
-                  <span>{outcome}</span>
-                </li>
-              ))}
-            </ul>
+            {/* Outcomes — the only retained label, as a checklist of wins */}
+            <div className="mt-auto border-t border-white/[0.07] pt-5">
+              <p className="mb-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                What changed
+              </p>
+              <ul className="space-y-3 text-sm leading-relaxed text-slate-200">
+                {scenario.outcomes.map((outcome) => (
+                  <li key={outcome} className="flex gap-3">
+                    <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.04]">
+                      <Check className="h-2.5 w-2.5 text-slate-200" strokeWidth={2.5} />
+                    </span>
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </motion.article>
         ))}
       </div>
