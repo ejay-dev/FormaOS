@@ -6,6 +6,7 @@
 import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
 import type { Credential, CredentialType, CareScorecardAlert } from './types';
 import { consoleShim } from '@/lib/monitoring/console-shim';
+import { buildUserProfileMap } from './user-profile-map';
 
 /**
  * Get all expiring credentials with detailed information
@@ -57,20 +58,7 @@ export async function getExpiringCredentials(
 
   // Get user details
   const userIds = [...new Set(credentials?.map((c: { user_id: string }) => c.user_id) || [])];
-  const { data: members } = await admin
-    .from('org_members')
-    .select('user_id, profiles:profiles!inner(full_name, email)')
-    .in('user_id', userIds);
-
-  const userMap = new Map<string, { name: string; email: string }>(
-    members?.map((m: { user_id: string; profiles: { full_name?: string; email?: string }[] | { full_name?: string; email?: string } | null }) => {
-      const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
-      return [
-        m.user_id,
-        { name: profile?.full_name || 'Unknown', email: profile?.email || '' },
-      ] as [string, { name: string; email: string }];
-    }) || []
-  );
+  const userMap = await buildUserProfileMap(userIds);
 
   return (credentials || []).map((cred: { id: string; user_id: string; credential_type?: string; credential_name?: string; credential_number?: string; expiry_date: string; status?: string; document_url?: string }) => {
     const user = userMap.get(cred.user_id);
@@ -123,20 +111,7 @@ export async function getExpiredCredentials(
 
   // Get user details
   const userIds = [...new Set(credentials?.map((c: { user_id: string }) => c.user_id) || [])];
-  const { data: members } = await admin
-    .from('org_members')
-    .select('user_id, profiles:profiles!inner(full_name, email)')
-    .in('user_id', userIds);
-
-  const userMap = new Map<string, { name: string; email: string }>(
-    members?.map((m: { user_id: string; profiles: { full_name?: string; email?: string }[] | { full_name?: string; email?: string } | null }) => {
-      const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
-      return [
-        m.user_id,
-        { name: profile?.full_name || 'Unknown', email: profile?.email || '' },
-      ] as [string, { name: string; email: string }];
-    }) || []
-  );
+  const userMap = await buildUserProfileMap(userIds);
 
   return (credentials || []).map((cred: { id: string; user_id: string; credential_type?: string; credential_name?: string; credential_number?: string; expiry_date: string; status?: string; document_url?: string }) => {
     const user = userMap.get(cred.user_id);

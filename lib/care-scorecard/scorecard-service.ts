@@ -4,6 +4,7 @@
  */
 
 import { createSupabaseOrgClient } from '@/lib/supabase/org-scoped';
+import { buildUserProfileMap } from './user-profile-map';
 import type {
   CareScorecard,
   CareIndustry,
@@ -83,7 +84,7 @@ async function calculateStaffCompliance(
   // Get compliance status for each staff member
   const { data: credentials } = await admin
     .from('org_staff_credentials')
-    .select('user_id, status, expires_at');
+    .select('user_id, status, expiry_date');
 
   const now = new Date();
   const userStatusMap = new Map<string, 'compliant' | 'non_compliant' | 'pending'>();
@@ -95,7 +96,7 @@ async function calculateStaffCompliance(
       userStatusMap.set(member.user_id, 'pending');
     } else {
       const hasExpired = userCreds.some(
-        (c: { status?: string; expires_at?: string }) => c.status === 'expired' || (c.expires_at && new Date(c.expires_at) < now)
+        (c: { status?: string; expiry_date?: string }) => c.status === 'expired' || (c.expiry_date && new Date(c.expiry_date) < now)
       );
       const hasPending = userCreds.some((c: { status?: string }) => c.status === 'pending');
 
@@ -165,29 +166,17 @@ async function calculateCredentialMetrics(orgId: string): Promise<CredentialMetr
       id,
       user_id,
       credential_type,
-      name,
+      credential_name,
       credential_number,
-      expires_at,
+      expiry_date,
       status,
       document_url
     `);
 
-  // Get user details
+  // Get user details (see buildUserProfileMap — the old profiles!inner embed
+  // silently failed, so staff names showed "Unknown").
   const userIds = [...new Set(credentials?.map((c: { user_id: string }) => c.user_id) || [])];
-  const { data: members } = await admin
-    .from('org_members')
-    .select('user_id, profiles:profiles!inner(full_name, email)')
-    .in('user_id', userIds);
-
-  const userMap = new Map<string, { name: string; email: string }>(
-    members?.map((m: { user_id: string; profiles: { full_name?: string; email?: string }[] | { full_name?: string; email?: string } | null }) => {
-      const profile = Array.isArray(m.profiles) ? m.profiles[0] : m.profiles;
-      return [
-        m.user_id,
-        { name: profile?.full_name || 'Unknown', email: profile?.email || '' },
-      ] as [string, { name: string; email: string }];
-    }) || []
-  );
+  const userMap = await buildUserProfileMap(userIds);
 
   const total = credentials?.length || 0;
   let verified = 0;
@@ -211,7 +200,7 @@ async function calculateCredentialMetrics(orgId: string): Promise<CredentialMetr
   };
 
   for (const cred of credentials || []) {
-    const expiryDate = cred.expires_at ? new Date(cred.expires_at) : null;
+    const expiryDate = cred.expiry_date ? new Date(cred.expiry_date) : null;
     const user = userMap.get(cred.user_id);
     const credType = (cred.credential_type as CredentialType) || 'other';
 
@@ -240,9 +229,9 @@ async function calculateCredentialMetrics(orgId: string): Promise<CredentialMetr
         staffName: user?.name || 'Unknown',
         staffEmail: user?.email || '',
         type: credType,
-        name: cred.name || credType,
+        name: cred.credential_name || credType,
         credentialNumber: cred.credential_number ?? undefined,
-        expiryDate: cred.expires_at,
+        expiryDate: cred.expiry_date,
         daysUntilExpiry,
         status: daysUntilExpiry <= 30 ? 'expiring_soon' : status,
         documentUrl: cred.document_url ?? undefined,
@@ -577,7 +566,11 @@ async function calculateWorkloadMetrics(orgId: string): Promise<WorkloadMetrics>
   // Get staff members
   const { data: members } = await admin
     .from('org_members')
-    .select('user_id, role, profiles:profiles!inner(full_name, email)');
+    .select('user_id, role');
+
+  const workloadUserMap = await buildUserProfileMap(
+    [...new Set((members ?? []).map((m: { user_id: string }) => m.user_id))],
+  );
 
   // Get active clients per staff
   const { data: patientAssignments } = await admin
@@ -617,8 +610,8 @@ async function calculateWorkloadMetrics(orgId: string): Promise<WorkloadMetrics>
 
     distribution.push({
       userId: member.user_id,
-      staffName: (member as { profiles?: { full_name?: string } }).profiles?.full_name || 'Unknown',
-      staffEmail: (member as { profiles?: { email?: string } }).profiles?.email || '',
+      staffName: workloadUserMap.get(member.user_id)?.name || 'Unknown',
+      staffEmail: workloadUserMap.get(member.user_id)?.email || '',
       role: member.role,
       load: loadScore,
       activeClients,

@@ -70,11 +70,16 @@ export function ConversationSidebar({ activeId, onSelect, onNew, onDelete }: Con
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     try {
-      await fetch(`/api/v1/ai/conversations/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/v1/ai/conversations/${id}`, {
+        method: 'DELETE',
+      });
+      // Only drop it from the list if the server actually deleted it —
+      // otherwise it reappears on reload and the user is misled.
+      if (!res.ok) return;
       setConversations((prev) => prev.filter((c) => c.id !== id));
       onDelete(id);
     } catch {
-      // Silently fail
+      // Network error — leave the conversation in the list.
     }
   };
 

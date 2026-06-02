@@ -68,7 +68,10 @@ const STATUS_CONFIG: Record<
 interface Props {
   notifications: RegulatoryNotification[];
   incidentId: string;
-  onMarkSubmitted?: (id: string, referenceNumber: string) => void;
+  onMarkSubmitted?: (
+    id: string,
+    referenceNumber: string,
+  ) => Promise<boolean> | void;
 }
 
 export function RegulatoryNotificationTracker({
@@ -78,12 +81,27 @@ export function RegulatoryNotificationTracker({
 }: Props) {
   const [submitDialog, setSubmitDialog] = useState<string | null>(null);
   const [refNumber, setRefNumber] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleSubmit = (notifId: string) => {
-    if (!refNumber.trim()) return;
-    onMarkSubmitted?.(notifId, refNumber.trim());
-    setSubmitDialog(null);
-    setRefNumber('');
+  const handleSubmit = async (notifId: string) => {
+    if (!refNumber.trim() || submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      // Only close the dialog / clear the input if the server confirms the
+      // submission. Previously the dialog closed optimistically, so a failed
+      // regulatory-notification update silently looked like success.
+      const ok = await onMarkSubmitted?.(notifId, refNumber.trim());
+      if (ok === false) {
+        setSubmitError('Could not record the notification. Please try again.');
+        return;
+      }
+      setSubmitDialog(null);
+      setRefNumber('');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!notifications.length) {
@@ -173,30 +191,39 @@ export function RegulatoryNotificationTracker({
               {!['submitted', 'acknowledged'].includes(notif.status) && (
                 <div className="mt-3">
                   {submitDialog === notif.id ? (
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={refNumber}
-                        onChange={(e) => setRefNumber(e.target.value)}
-                        placeholder="Reference number"
-                        aria-label="Reference number"
-                        className="flex-1 rounded-md border border-input bg-background px-2 py-1 text-sm"
-                      />
-                      <button
-                        onClick={() => handleSubmit(notif.id)}
-                        className="px-3 py-1 rounded-md text-xs font-medium bg-primary text-primary-foreground"
-                      >
-                        Confirm
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSubmitDialog(null);
-                          setRefNumber('');
-                        }}
-                        className="px-3 py-1 rounded-md text-xs text-muted-foreground"
-                      >
-                        Cancel
-                      </button>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={refNumber}
+                          onChange={(e) => setRefNumber(e.target.value)}
+                          placeholder="Reference number"
+                          aria-label="Reference number"
+                          className="flex-1 rounded-md border border-input bg-background px-2 py-1 text-sm"
+                        />
+                        <button
+                          onClick={() => handleSubmit(notif.id)}
+                          disabled={submitting}
+                          className="px-3 py-1 rounded-md text-xs font-medium bg-primary text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {submitting ? 'Saving…' : 'Confirm'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSubmitDialog(null);
+                            setRefNumber('');
+                            setSubmitError(null);
+                          }}
+                          className="px-3 py-1 rounded-md text-xs text-muted-foreground"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                      {submitError && (
+                        <p role="alert" className="text-xs text-red-600">
+                          {submitError}
+                        </p>
+                      )}
                     </div>
                   ) : (
                     <button

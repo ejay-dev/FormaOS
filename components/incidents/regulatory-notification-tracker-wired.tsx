@@ -5,7 +5,6 @@
 // because the tracker takes an `onMarkSubmitted` function prop, which a Server
 // Component page cannot pass across the boundary. This is a passthrough only —
 // no new affordance beyond what the tracker already renders.
-import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { RegulatoryNotificationTracker } from './regulatory-notification-tracker';
 import { markRegulatoryNotificationSubmitted } from '@/app/app/actions/care-operations';
@@ -22,23 +21,23 @@ export function RegulatoryNotificationTrackerWired({
   incidentId: string;
 }) {
   const router = useRouter();
-  const [, startTransition] = useTransition();
 
   return (
     <RegulatoryNotificationTracker
       notifications={notifications}
       incidentId={incidentId}
-      onMarkSubmitted={(id, referenceNumber) => {
-        startTransition(async () => {
-          const result = await markRegulatoryNotificationSubmitted(
-            id,
-            referenceNumber,
-            incidentId,
-          );
-          if (result && 'success' in result && result.success) {
-            router.refresh();
-          }
-        });
+      onMarkSubmitted={async (id, referenceNumber) => {
+        const result = await markRegulatoryNotificationSubmitted(
+          id,
+          referenceNumber,
+          incidentId,
+        );
+        const ok = !!(result && 'success' in result && result.success);
+        // Refresh on success; return the flag so the tracker keeps the
+        // dialog open and surfaces an error on failure instead of silently
+        // closing as if it worked.
+        if (ok) router.refresh();
+        return ok;
       }}
     />
   );
