@@ -21,14 +21,21 @@ export interface ScimGroupRecord {
 
 const ROLE_NAME_MAP: Record<string, FormaOrgRole> = {
   owner: 'owner',
+  owners: 'owner',
   admin: 'admin',
+  admins: 'admin',
   administrator: 'admin',
+  administrators: 'admin',
   auditor: 'auditor',
+  auditors: 'auditor',
   viewer: 'viewer',
+  viewers: 'viewer',
   read_only: 'viewer',
   readonly: 'viewer',
   member: 'member',
+  members: 'member',
   employee: 'member',
+  employees: 'member',
 };
 
 export function inferRoleMapping(
@@ -38,13 +45,12 @@ export function inferRoleMapping(
   const source = explicitRole ?? displayName;
   const normalized = source.trim().toLowerCase().replace(/[\s-]+/g, '_');
 
-  for (const [key, role] of Object.entries(ROLE_NAME_MAP)) {
-    if (normalized === key || normalized.includes(key)) {
-      return role;
-    }
-  }
-
-  return null;
+  // Exact match only. The previous `normalized.includes(key)` was a
+  // privilege-escalation vector: a group named "non-admin", "ex-admin", or
+  // "app-admin-readers" all contain "admin" and were mapped to the admin
+  // role. Mirror the hardened JIT path (lib/sso/jit-provisioning.ts) —
+  // fail safe (no mapping) rather than fail open to an elevated role.
+  return ROLE_NAME_MAP[normalized] ?? null;
 }
 
 export async function getGroupById(orgId: string, groupId: string) {

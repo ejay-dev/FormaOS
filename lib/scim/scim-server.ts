@@ -1,5 +1,7 @@
 import { createHash } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { revokeAllSessions } from '@/lib/auth/session-revocation';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import {
   getGroupMembers,
   inferRoleMapping,
@@ -851,6 +853,16 @@ export async function deleteUser(
 
   if (error) {
     return { status: 500, error: scimError(500, error.message) };
+  }
+
+  // Deprovisioning must also cut off any live session: removing the
+  // org_members row blocks new org access, but an already-issued token would
+  // keep working until expiry. Revoke all sessions so the session-revocation
+  // watermark (assertSessionNotRevoked) rejects them immediately.
+  try {
+    await revokeAllSessions(userId, { reason: 'scim_deprovision' });
+  } catch (err) {
+    consoleShim.error('[SCIM] deleteUser: session revoke failed', err);
   }
 
   return { status: 204, data: null };

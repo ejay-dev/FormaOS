@@ -1,5 +1,7 @@
 import { randomUUID } from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { revokeAllSessions } from '@/lib/auth/session-revocation';
+import { consoleShim } from '@/lib/monitoring/console-shim';
 import { logIdentityEvent } from '@/lib/identity/audit';
 import { upsertScimGroup, syncGroupMembership } from '@/lib/scim/scim-groups';
 import type { DirectorySyncProvider } from '@/lib/sso/saml';
@@ -418,6 +420,14 @@ export async function syncDirectory(
 
       if (!directoryUser.active) {
         deactivatedUsers += 1;
+        // Deactivation must also revoke live sessions — marking the member
+        // inactive blocks new access checks, but an already-issued token
+        // would otherwise keep working until expiry.
+        try {
+          await revokeAllSessions(user.id, { reason: 'directory_sync_deactivate' });
+        } catch (err) {
+          consoleShim.error('[DirectorySync] session revoke failed', err);
+        }
       }
     }
 
