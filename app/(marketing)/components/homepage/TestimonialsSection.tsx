@@ -82,19 +82,22 @@ export function TestimonialsSection() {
         initial={{ opacity: 0, y: 24 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto mb-4 max-w-2xl text-center"
+        className="mb-4 flex items-start gap-5"
       >
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-          Use case scenarios
-        </p>
-        <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          How regulated teams operate with FormaOS
-        </h2>
-        <p className="mt-4 text-base text-slate-400">
-          Anonymized scenarios from regulated organizations. Outcomes reflect
-          conditions at the time of deployment. We can walk through full
-          deployments during evaluation.
-        </p>
+        <span className="mt-1.5 h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent" />
+        <div className="max-w-2xl">
+          <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.28em] text-slate-500">
+            Use case scenarios
+          </p>
+          <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            How regulated teams operate with FormaOS
+          </h2>
+          <p className="mt-4 max-w-xl text-base text-slate-400">
+            Anonymized scenarios from regulated organizations. Outcomes reflect
+            conditions at the time of deployment. We can walk through full
+            deployments during evaluation.
+          </p>
+        </div>
       </motion.div>
 
       <div className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2">

@@ -47,9 +47,13 @@ export function AuditChainSection() {
           range={[0, 0.3]}
           className="mx-auto mb-12 max-w-2xl text-center lg:mb-14"
         >
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Cryptographic audit chain
-          </p>
+          <div className="mb-5 flex items-center justify-center gap-3">
+            <span className="h-px w-8 bg-white/15" />
+            <p className="font-mono text-[11px] uppercase tracking-[0.28em] text-slate-500">
+              cryptographic_audit_chain
+            </p>
+            <span className="h-px w-8 bg-white/15" />
+          </div>
           <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
             Verifiable, not just &ldquo;we have logs&rdquo;
           </h2>
