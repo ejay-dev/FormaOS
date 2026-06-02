@@ -125,7 +125,7 @@ export async function GET() {
         .eq('organization_id', orgId)
         .gte('created_at', thirtyDaysAgo.toISOString()),
       supabase
-        .from('org_compliance_snapshots')
+        .from('compliance_score_snapshots')
         .select('compliance_score, captured_at')
         .eq('organization_id', orgId)
         .order('captured_at', { ascending: false })

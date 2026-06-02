@@ -91,7 +91,7 @@ export async function calculateTrialValue(
       .select('*', { count: 'exact', head: true }),
     // Compliance snapshots for improvement
     admin
-      .from('org_compliance_snapshots')
+      .from('compliance_score_snapshots')
       .select('compliance_score, captured_at')
       .order('captured_at', { ascending: true })
       .limit(30),

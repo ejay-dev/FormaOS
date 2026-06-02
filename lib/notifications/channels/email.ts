@@ -10,14 +10,35 @@ import type {
   NotificationUserContext,
 } from '../types';
 
+/** Escape user-controllable values before interpolating into email HTML. */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/** Only allow http(s) links; anything else (javascript:, data:, …) falls back. */
+function safeHref(value: unknown): string {
+  if (typeof value === 'string' && /^https?:\/\//i.test(value.trim())) {
+    return value.trim();
+  }
+  return `${brand.seo.appUrl}/app`;
+}
+
 function renderNotificationEmail(
   recipient: NotificationUserContext,
   event: NotificationEvent,
 ) {
-  const href =
-    typeof event.data?.href === 'string'
-      ? event.data.href
-      : `${brand.seo.appUrl}/app`;
+  // event.title/body, recipient.fullName, and data.href are user/tenant
+  // controllable — escape them to prevent HTML/attribute injection and
+  // javascript:/data: link injection in the rendered email.
+  const href = escapeHtml(safeHref(event.data?.href));
+  const title = escapeHtml(event.title ?? '');
+  const body = escapeHtml(event.body ?? '');
+  const greeting = escapeHtml(recipient.fullName || 'Hello');
 
   return `
     <div style="background:#eff6ff;padding:32px;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif;color:#0f172a;">
@@ -26,14 +47,14 @@ function renderNotificationEmail(
           <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#bae6fd;">
             ${brand.identity}
           </div>
-          <h1 style="margin:10px 0 0;font-size:26px;line-height:1.1;">${event.title}</h1>
+          <h1 style="margin:10px 0 0;font-size:26px;line-height:1.1;">${title}</h1>
         </div>
         <div style="padding:28px 32px;">
           <p style="font-size:15px;color:#334155;margin-top:0;">
-            ${recipient.fullName || 'Hello'},
+            ${greeting},
           </p>
           <p style="font-size:15px;color:#334155;line-height:1.7;">
-            ${event.body}
+            ${body}
           </p>
           <div style="margin-top:24px;">
             <a href="${href}" style="display:inline-block;background:#0f172a;color:#ffffff;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700;">

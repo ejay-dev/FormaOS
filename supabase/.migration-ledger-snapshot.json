@@ -1,5 +1,5 @@
 {
-  "takenAt": "2026-06-01T01:25:48.437Z",
+  "takenAt": "2026-06-02T02:44:00.803Z",
   "source": "rpc:list_migration_ledger",
   "rows": [
     {
@@ -713,6 +713,14 @@
     {
       "version": "20260601",
       "name": "security_hardening_v2"
+    },
+    {
+      "version": "20260601101425",
+      "name": "audit_2026_06_01_org_last_retention_at"
+    },
+    {
+      "version": "20260601101452",
+      "name": "audit_2026_06_01_compliance_graph_persistence"
     },
     {
       "version": "20260602",

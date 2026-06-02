@@ -467,7 +467,7 @@ export async function listRetentionExecutions(orgId: string) {
 export async function getRetentionSchemaStatus() {
   const admin = createSupabaseAdminClient();
   const checks = await Promise.all([
-    admin.from('retention_policies').select('id, resource_type').limit(1),
+    admin.from('retention_policies').select('id, document_category').limit(1),
     admin.from('retention_executions').select('id, executed_at').limit(1),
   ]);
   const missing = checks

@@ -107,7 +107,7 @@ export async function computeHealthRankings(
       .gte('created_at', thirtyDaysAgo.toISOString())
       .limit(10000),
     adminClient
-      .from('org_compliance_snapshots')
+      .from('compliance_score_snapshots')
       .select('organization_id, compliance_score, captured_at')
       .in('organization_id', orgIds)
       .order('captured_at', { ascending: false })

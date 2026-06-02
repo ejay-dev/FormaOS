@@ -107,7 +107,7 @@ export async function calculateAuditForecast(
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
   const { data: historicalSnapshots } = await admin
-    .from('org_compliance_snapshots')
+    .from('compliance_score_snapshots')
     .select('compliance_score, captured_at')
     .eq('organization_id', orgId)
     .order('captured_at', { ascending: true })
