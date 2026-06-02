@@ -48,6 +48,17 @@ docker exec -i "$DBC" psql -U postgres -d postgres -v ON_ERROR_STOP=1 < "$SCHEMA
 echo "==> Loading reference seed ($(basename "$SEED"))"
 docker exec -i "$DBC" psql -U postgres -d postgres -v ON_ERROR_STOP=1 < "$SEED"
 
+echo "==> Ensuring storage buckets (prod set; evidence/export flows need them)"
+docker exec -i "$DBC" psql -U postgres -d postgres -v ON_ERROR_STOP=1 -c \
+  "insert into storage.buckets (id, name, public) values \
+     ('audit-bundles','audit-bundles',false), \
+     ('compliance-exports','compliance-exports',false), \
+     ('evidence','evidence',false), \
+     ('org-files','org-files',false), \
+     ('report-exports','report-exports',false), \
+     ('user-avatars','user-avatars',false) \
+   on conflict (id) do nothing;"
+
 TABLES=$(docker exec "$DBC" psql -U postgres -d postgres -tAc \
   "select count(*) from information_schema.tables where table_schema='public'")
 PLANS=$(docker exec "$DBC" psql -U postgres -d postgres -tAc "select count(*) from billing_plans")
