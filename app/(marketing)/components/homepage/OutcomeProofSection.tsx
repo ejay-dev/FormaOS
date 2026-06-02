@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { ArrowRight, Bot } from 'lucide-react';
@@ -51,22 +51,106 @@ const outcomeStats = [
 
 type Scenario = (typeof proofScenarios)[number];
 
-// A single automation "agent" that rides a track across the three cards and
-// dwells over each — a literal stand-in for the crons/evaluators working the
-// scenarios below. Monochrome + soft glow to stay on-brand; lg-only (the cards
-// are a row there). Motion + beam are disabled under prefers-reduced-motion
-// via the .outcome-bot rules in globals.css.
-function AutomationBot() {
+// The cards plus an automation "agent" that travels along a track above them —
+// a literal stand-in for the crons/evaluators working the scenarios below.
+// It auto-patrols when idle and chases the cursor while the mouse is over the
+// board (eased, not 1:1). Monochrome + soft glow to stay on-brand; lg-only (the
+// cards are a row there) and parked centred under prefers-reduced-motion.
+function ScenarioBoard({ children }: { children: ReactNode }) {
+  const boardRef = useRef<HTMLDivElement>(null);
+  const botRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const board = boardRef.current;
+    const bot = botRef.current;
+    if (!board || !bot) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      bot.style.left = '50%';
+      return;
+    }
+
+    // x/target are percentages of the board width (clamped to the track).
+    const st = { x: 50, target: 50, hovering: false, t: 0 };
+    let raf = 0;
+    let last = performance.now();
+    let visible = true;
+
+    const tick = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (!st.hovering) {
+        st.t += dt;
+        // Smooth idle patrol sweeping between the outer columns.
+        st.target = 50 + 34 * Math.sin(st.t * 0.5);
+      }
+      st.x += (st.target - st.x) * Math.min(1, dt * 6);
+      bot.style.left = `${st.x}%`;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (raf) return;
+      last = performance.now();
+      raf = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    const onMove = (e: MouseEvent) => {
+      const rect = board.getBoundingClientRect();
+      const pct = ((e.clientX - rect.left) / rect.width) * 100;
+      st.target = Math.max(8, Math.min(92, pct));
+      // Any movement over the board counts as hovering — more reliable than
+      // depending on mouseenter firing first.
+      if (!st.hovering) {
+        st.hovering = true;
+        bot.classList.add('outcome-bot--awake');
+      }
+    };
+    const onLeave = () => {
+      st.hovering = false;
+      bot.classList.remove('outcome-bot--awake');
+    };
+
+    // Pause the loop when the board scrolls out of view.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        if (visible) start();
+        else stop();
+      },
+      { threshold: 0 },
+    );
+    io.observe(board);
+
+    board.addEventListener('mousemove', onMove);
+    board.addEventListener('mouseleave', onLeave);
+    if (visible) start();
+
+    return () => {
+      stop();
+      io.disconnect();
+      board.removeEventListener('mousemove', onMove);
+      board.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
   return (
-    <div className="pointer-events-none absolute -top-4 left-0 right-0 z-20 hidden h-8 lg:block">
-      <div className="absolute top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      <div className="outcome-bot absolute top-1/2">
-        <span className="absolute left-1/2 top-1/2 h-11 w-11 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-white/10 blur-lg" />
-        <span className="relative flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-[#0a0f1a] shadow-lg shadow-black/50">
-          <Bot className="h-4 w-4 text-slate-200" />
-        </span>
-        <span className="outcome-bot-beam absolute left-1/2 top-full h-12 w-px -translate-x-1/2 bg-gradient-to-b from-white/25 to-transparent" />
+    <div ref={boardRef} className="relative">
+      <div className="pointer-events-none absolute -top-4 left-0 right-0 z-20 hidden h-8 lg:block">
+        <div className="absolute top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div ref={botRef} className="outcome-bot absolute top-1/2">
+          <span className="outcome-bot-glow absolute left-1/2 top-1/2 h-11 w-11 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-white/10 blur-lg" />
+          <span className="relative flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-[#0a0f1a] shadow-lg shadow-black/50">
+            <Bot className="h-4 w-4 text-slate-200" />
+          </span>
+          <span className="outcome-bot-beam absolute left-1/2 top-full h-12 w-px -translate-x-1/2 bg-gradient-to-b from-white/25 to-transparent" />
+        </div>
       </div>
+      {children}
     </div>
   );
 }
@@ -173,8 +257,7 @@ export function OutcomeProofSection() {
           </div>
         </ScrollReveal>
 
-        <div className="relative">
-          <AutomationBot />
+        <ScenarioBoard>
           <div className="grid gap-4 lg:grid-cols-3">
             {proofScenarios.map((scenario, idx) => (
               <ScrollReveal
@@ -186,7 +269,7 @@ export function OutcomeProofSection() {
               </ScrollReveal>
             ))}
           </div>
-        </div>
+        </ScenarioBoard>
 
         {/* Metrics bar: tabular ledger, hairline-divided */}
         <ScrollReveal variant="slideUp" range={[0.1, 0.4]}>

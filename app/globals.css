@@ -1550,38 +1550,25 @@
   }
 }
 
-/* Automation agent that rides a track across the homepage outcome cards,
-   dwelling over each of the three columns (centres at 16.66/50/83.33%). */
+/* Automation agent that rides a track across the homepage outcome cards.
+   Horizontal position (left %) is driven by JS — it auto-patrols when idle
+   and eases toward the cursor while the mouse is over the board. */
 .outcome-bot {
-  left: 16.66%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  animation: outcome-bot-track 14s ease-in-out infinite;
+  transition: transform 0.25s ease;
 }
-@keyframes outcome-bot-track {
-  0%,
-  10% {
-    left: 16.66%;
-  }
-  22%,
-  34% {
-    left: 50%;
-  }
-  46%,
-  58% {
-    left: 83.33%;
-  }
-  70%,
-  82% {
-    left: 50%;
-  }
-  100% {
-    left: 16.66%;
-  }
+/* "Awake" while the cursor is over the board: lift + brighten the glow. */
+.outcome-bot--awake {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+.outcome-bot--awake .outcome-bot-glow {
+  background: rgba(255, 255, 255, 0.2);
 }
 @media (prefers-reduced-motion: reduce) {
   .outcome-bot {
     left: 50%;
-    animation: none;
+    transition: none;
   }
   .outcome-bot-beam {
     display: none;
