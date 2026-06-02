@@ -38,7 +38,7 @@ Two committed artifacts reproduce prod faithfully on a fresh DB:
 
 ```bash
 npx supabase start                 # starts local Postgres/Auth/Storage (Docker)
-bash scripts/provision-local-db.sh # rebuilds public schema from the baseline + seed
+bash scripts/provision-fresh-db.sh # rebuilds public schema from the baseline + seed
 ```
 
 The script drops/recreates `public`, enables the required extensions
@@ -82,13 +82,38 @@ ledger, so do it deliberately:
    alignment gate stays meaningful.
 
 Until the cutover is done, `supabase db reset` will continue to fail — use
-`scripts/provision-local-db.sh`.
+`scripts/provision-fresh-db.sh`.
 
-## Note on remaining E2E blocker
+## Running the authed E2E suite locally
 
-With a baseline-provisioned DB, the app boots and login authenticates locally.
-Authed E2E still stops at the MFA gate (`/auth/mfa-challenge`): the
-`user_security` MFA check fails closed for freshly-bootstrapped test users and
-the Playwright `loginAs` helper doesn't complete MFA. A non-prod-gated
-`E2E_BYPASS_MFA` (or seeding `user_security` so the gate passes) is needed to
-run the authed suite end-to-end.
+With a baseline-provisioned DB the full authed suite runs end-to-end:
+
+```bash
+npx supabase start
+bash scripts/provision-fresh-db.sh
+
+# Build + serve pointed at local Supabase (legacy local JWT keys),
+# with the E2E MFA bypass enabled:
+export NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+export NEXT_PUBLIC_SUPABASE_ANON_KEY=<local anon key from `supabase status -o env`>
+export SUPABASE_SERVICE_ROLE_KEY=<local service_role key>
+export E2E_BYPASS_MFA=1
+npx next build && npx next start &
+
+PLAYWRIGHT_REUSE_SERVER=true npx playwright test e2e/security-invariants.spec.ts --project=chromium
+```
+
+`E2E_BYPASS_MFA` is implemented in `lib/auth/mfa-gate.ts` (`isE2eMfaBypassEnabled`)
+and consulted by `evaluateMfaGate` + the auth callback. It is **triple-gated**
+(`E2E_BYPASS_MFA=1` AND not running on Vercel AND `VERCEL_ENV !== 'production'`)
+so it can never take effect on any deployment — test users have
+`two_factor_enabled=true`, and a fresh UI login mints a session whose id doesn't
+match the bootstrap's MFA-passed session, so without the bypass every `/app`
+request bounces to `/auth/mfa-challenge`.
+
+Verified runtime results (local baseline DB): security-invariants 9/11,
+enterprise-invariants + qa-enterprise-smoke 22/22. The two security-invariants
+failures are (1) a test that assumes a non-owner user (the bootstrapped user is
+the org owner, which the executive API correctly admits) and (2) `/app/team`
+redirecting unauthenticated users to `/unauthorized` instead of `/signin` —
+a minor redirect inconsistency (access is still denied).
