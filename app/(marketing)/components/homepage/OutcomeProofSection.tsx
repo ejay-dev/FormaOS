@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Bot } from 'lucide-react';
 
 // Mechanic-grounded scenarios. The "after" state names a real artifact
 // (table, cron, statutory timeline) so the section reads like a product
@@ -50,6 +50,26 @@ const outcomeStats = [
 ] as const;
 
 type Scenario = (typeof proofScenarios)[number];
+
+// A single automation "agent" that rides a track across the three cards and
+// dwells over each — a literal stand-in for the crons/evaluators working the
+// scenarios below. Monochrome + soft glow to stay on-brand; lg-only (the cards
+// are a row there). Motion + beam are disabled under prefers-reduced-motion
+// via the .outcome-bot rules in globals.css.
+function AutomationBot() {
+  return (
+    <div className="pointer-events-none absolute -top-4 left-0 right-0 z-20 hidden h-8 lg:block">
+      <div className="absolute top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      <div className="outcome-bot absolute top-1/2">
+        <span className="absolute left-1/2 top-1/2 h-11 w-11 -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-full bg-white/10 blur-lg" />
+        <span className="relative flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-[#0a0f1a] shadow-lg shadow-black/50">
+          <Bot className="h-4 w-4 text-slate-200" />
+        </span>
+        <span className="outcome-bot-beam absolute left-1/2 top-full h-12 w-px -translate-x-1/2 bg-gradient-to-b from-white/25 to-transparent" />
+      </div>
+    </div>
+  );
+}
 
 function ScenarioCard({ scenario }: { scenario: Scenario }) {
   const [showAfter, setShowAfter] = useState(true);
@@ -153,16 +173,19 @@ export function OutcomeProofSection() {
           </div>
         </ScrollReveal>
 
-        <div className="grid gap-4 lg:grid-cols-3">
-          {proofScenarios.map((scenario, idx) => (
-            <ScrollReveal
-              key={scenario.title}
-              variant="fadeLeft"
-              range={[idx * 0.04, 0.3 + idx * 0.04]}
-            >
-              <ScenarioCard scenario={scenario} />
-            </ScrollReveal>
-          ))}
+        <div className="relative">
+          <AutomationBot />
+          <div className="grid gap-4 lg:grid-cols-3">
+            {proofScenarios.map((scenario, idx) => (
+              <ScrollReveal
+                key={scenario.title}
+                variant="fadeLeft"
+                range={[idx * 0.04, 0.3 + idx * 0.04]}
+              >
+                <ScenarioCard scenario={scenario} />
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
 
         {/* Metrics bar: tabular ledger, hairline-divided */}
