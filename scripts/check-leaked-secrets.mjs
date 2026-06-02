@@ -20,7 +20,7 @@
 // Run: `npm run test:security:leaked-secrets` (added to package.json).
 
 import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const patterns = [
   {
@@ -107,6 +107,68 @@ for (const path of files) {
       });
     }
   }
+}
+
+// --- Advisory pass: gitignored on-disk env files -------------------------
+// The tracked-file scan above is the BLOCKING gate (a secret committed to git
+// is a hard failure). But it cannot see gitignored dotfiles like .env.local —
+// which legitimately hold *dev* secrets, so we must not fail on them. We DO,
+// however, warn (advisory, non-blocking) when a local env file contains a
+// LIVE/prod key shape: prod credentials in a developer dotfile are a real
+// disk-exposure risk and should be rotated + replaced with test keys. In CI
+// these files don't exist, so this pass is silent there.
+function scanLocalEnvFiles() {
+  let entries;
+  try {
+    entries = readdirSync('.', { withFileTypes: true });
+  } catch {
+    return [];
+  }
+  const envFiles = entries
+    .filter((e) => e.isFile())
+    .map((e) => e.name)
+    .filter((n) => /^\.env($|\.)/.test(n) && !n.endsWith('.example'));
+
+  const warnings = [];
+  for (const file of envFiles) {
+    let content;
+    try {
+      content = readFileSync(file, 'utf8');
+    } catch {
+      continue;
+    }
+    for (const pattern of patterns) {
+      const matches = content.match(pattern.regex);
+      if (matches && matches.length > 0) {
+        warnings.push({
+          file,
+          pattern: pattern.name,
+          severity: pattern.severity,
+          sample: matches[0].slice(0, 12) + '…' + matches[0].slice(-4),
+          count: matches.length,
+        });
+      }
+    }
+  }
+  return warnings;
+}
+
+const envWarnings = scanLocalEnvFiles();
+if (envWarnings.length > 0) {
+  console.warn(
+    `\n⚠️  Live/prod secret patterns found in local (gitignored) env file(s):`,
+  );
+  for (const w of envWarnings) {
+    console.warn(`  [${w.severity.toUpperCase()}] ${w.file}`);
+    console.warn(
+      `         pattern=${w.pattern}  sample=${w.sample}  count=${w.count}`,
+    );
+  }
+  console.warn(
+    `  These are NOT committed (gitignored), so this does not fail the gate, but\n` +
+      `  prod keys on disk are a real exposure risk. Use test keys locally and rotate:\n` +
+      `    node scripts/record-secret-rotation.mjs --secret <name> --reason "<details>"\n`,
+  );
 }
 
 if (findings.length === 0) {

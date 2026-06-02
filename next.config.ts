@@ -252,6 +252,15 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in https://vercel.com",
               `connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com${
                 process.env.VERCEL_ENV !== 'production' ? ' https://vercel.live wss://ws-us3.pusher.com' : ''
+              }${
+                // Allow a localhost/self-hosted Supabase origin (local dev +
+                // E2E) when that's what's configured. No-op in prod (the URL
+                // is *.supabase.co), so it doesn't widen the prod policy.
+                /^https?:\/\/(localhost|127\.0\.0\.1)/.test(
+                  process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+                )
+                  ? ' http://127.0.0.1:54321 ws://127.0.0.1:54321 http://localhost:54321 ws://localhost:54321'
+                  : ''
               }`,
               'frame-src https://js.stripe.com https://hooks.stripe.com',
               "worker-src 'self' blob:",

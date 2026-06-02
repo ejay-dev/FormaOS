@@ -90,9 +90,40 @@ const STATUS_WEIGHT: Record<'fail' | 'partial', number> = {
   partial: 2,
 };
 
-function normaliseStatus(value: string | null): HealthStatus {
-  if (value === 'pass' || value === 'partial' || value === 'fail') return value;
-  return 'not_evaluated';
+/**
+ * Map a persisted evaluation status into the health vocabulary.
+ *
+ * org_control_evaluations.status is written by the evaluator engine in its
+ * own vocabulary (compliant / at_risk / non_compliant / not_applicable —
+ * see lib/compliance/_engine-shared.ts). The health dashboard speaks
+ * pass / partial / fail / not_evaluated. Before this mapping existed every
+ * engine-written row fell through to 'not_evaluated', so scoreFramework
+ * scored *every* org ~0% — diverging from the canonical snapshot score.
+ *
+ * Returns 'not_applicable' as a distinct sentinel so the aggregate loop can
+ * drop N/A controls from the denominator, matching how the canonical
+ * snapshot scorer excludes them from the weighted total.
+ */
+function normaliseStatus(value: string | null): HealthStatus | 'not_applicable' {
+  switch (value) {
+    // Health-native vocabulary (legacy rows / direct in-memory callers).
+    case 'pass':
+    case 'partial':
+    case 'fail':
+    case 'not_evaluated':
+      return value;
+    // Engine vocabulary.
+    case 'compliant':
+      return 'pass';
+    case 'at_risk':
+      return 'partial';
+    case 'non_compliant':
+      return 'fail';
+    case 'not_applicable':
+      return 'not_applicable';
+    default:
+      return 'not_evaluated';
+  }
 }
 
 function normaliseRisk(value: string | null | undefined): RiskLevel {
@@ -166,9 +197,13 @@ export function aggregateHealth(input: AggregateInput): HealthAggregate {
     const fw = byFramework.get(row.framework_id);
     if (!fw) continue;
     const status = normaliseStatus(row.status);
+    fw.lastEvaluatedAt = pickLater(fw.lastEvaluatedAt, row.last_evaluated_at);
+    // N/A controls are excluded from scoring entirely (not counted, not in
+    // the denominator) so they don't dilute the score — matches the
+    // canonical snapshot scorer.
+    if (status === 'not_applicable') continue;
     fw.counts[status] += 1;
     fw.total += 1;
-    fw.lastEvaluatedAt = pickLater(fw.lastEvaluatedAt, row.last_evaluated_at);
 
     if ((status === 'partial' || status === 'fail') && row.control_key) {
       const risk = normaliseRisk(row.risk_level);

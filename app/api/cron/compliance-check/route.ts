@@ -9,6 +9,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { captureRouteError } from '@/lib/observability/with-route-observability';
 import { verifyVercelCronRequest } from '@/lib/security/cron-auth';
+import { rebuildOrgGraph } from '@/lib/compliance-graph';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -32,6 +33,7 @@ export async function GET(request: Request) {
     overdueTasks: 0,
     evidenceGaps: 0,
     orgsChecked: 0,
+    graphsRebuilt: 0,
   };
 
   try {
@@ -168,6 +170,21 @@ export async function GET(request: Request) {
         },
         { onConflict: 'organization_id' },
       );
+
+      // 6. Refresh the persisted compliance graph. Previously this was
+      // only rebuilt on login (lib/compliance-graph.ts), so the graph and
+      // its query API went stale between sessions as policies/tasks/
+      // evidence changed. Rebuilding here bounds staleness to the daily
+      // sweep. Best-effort: a single org's graph failure must not abort
+      // the batch.
+      try {
+        const graph = await rebuildOrgGraph(org.id);
+        if (graph.success) results.graphsRebuilt++;
+      } catch (graphErr) {
+        captureRouteError('cron.compliance-check.graph', graphErr, {
+          orgId: org.id,
+        });
+      }
     })); // end Promise.all per-batch
     } // end while (hasMore)
 

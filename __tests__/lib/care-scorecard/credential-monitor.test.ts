@@ -51,16 +51,14 @@ describe('getExpiringCredentials', () => {
         document_url: 'https://example.com/doc.pdf',
       },
     ];
-    const members = [
-      {
-        user_id: 'user-1',
-        profiles: { full_name: 'Alice Smith', email: 'alice@test.com' },
-      },
+    // Second query is now buildUserProfileMap -> user_profiles (flat rows).
+    const profiles = [
+      { user_id: 'user-1', full_name: 'Alice Smith', email: 'alice@test.com' },
     ];
 
     setupChainMock([
       { data: credentials, error: null },
-      { data: members, error: null },
+      { data: profiles, error: null },
     ]);
 
     const result = await getExpiringCredentials('org-1');
@@ -131,10 +129,7 @@ describe('getExpiredCredentials', () => {
       },
       {
         data: [
-          {
-            user_id: 'user-2',
-            profiles: { full_name: 'Bob Jones', email: 'bob@test.com' },
-          },
+          { user_id: 'user-2', full_name: 'Bob Jones', email: 'bob@test.com' },
         ],
         error: null,
       },
@@ -166,9 +161,9 @@ describe('generateCredentialAlerts', () => {
             id: 'exp-1',
             user_id: 'u1',
             credential_type: 'cpr',
-            name: 'CPR',
+            credential_name: 'CPR',
             credential_number: null,
-            expires_at: pastDate.toISOString(),
+            expiry_date: pastDate.toISOString(),
             status: 'expired',
             document_url: null,
           },
@@ -184,9 +179,9 @@ describe('generateCredentialAlerts', () => {
             id: 'soon-1',
             user_id: 'u2',
             credential_type: 'wwcc',
-            name: 'WWCC',
+            credential_name: 'WWCC',
             credential_number: null,
-            expires_at: monthAhead.toISOString(),
+            expiry_date: monthAhead.toISOString(),
             status: 'verified',
             document_url: null,
           },
@@ -222,17 +217,17 @@ describe('getCredentialSummaryByType', () => {
           {
             credential_type: 'wwcc',
             status: 'verified',
-            expires_at: futureDate.toISOString(),
+            expiry_date: futureDate.toISOString(),
           },
           {
             credential_type: 'wwcc',
             status: 'expired',
-            expires_at: pastDate.toISOString(),
+            expiry_date: pastDate.toISOString(),
           },
           {
             credential_type: 'cpr',
             status: 'verified',
-            expires_at: futureDate.toISOString(),
+            expiry_date: futureDate.toISOString(),
           },
         ],
         error: null,

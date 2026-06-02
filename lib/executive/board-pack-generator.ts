@@ -43,13 +43,18 @@ export async function generateBoardPack(
   const sections: BoardPackSection[] = [];
 
   // 1. Executive Summary
+  // org_controls is a view with NO `priority` column — selecting it made
+  // PostgREST error and null the whole board pack. Use the real columns.
+  // "Passing" = satisfied OR compliant (the evaluator persists `compliant`;
+  // counting only `satisfied` understated the score ~6x).
+  const PASSING_STATUSES = new Set(['satisfied', 'compliant']);
   const { data: controls } = await db
     .from('org_controls')
-    .select('id, status, priority, framework_id');
+    .select('id, status, required, title, framework_id');
 
   const totalControls = controls?.length ?? 0;
   const satisfiedControls =
-    controls?.filter((c: any) => c.status === 'satisfied').length ?? 0;
+    controls?.filter((c: any) => PASSING_STATUSES.has(c.status)).length ?? 0;
   const complianceScore =
     totalControls > 0
       ? Math.round((satisfiedControls / totalControls) * 100)
@@ -89,7 +94,7 @@ export async function generateBoardPack(
     if (!frameworkScores[fw])
       frameworkScores[fw] = { total: 0, satisfied: 0, score: 0 };
     frameworkScores[fw].total++;
-    if (ctrl.status === 'satisfied') frameworkScores[fw].satisfied++;
+    if (PASSING_STATUSES.has(ctrl.status)) frameworkScores[fw].satisfied++;
   }
   for (const fw of Object.keys(frameworkScores)) {
     frameworkScores[fw].score =
@@ -106,13 +111,11 @@ export async function generateBoardPack(
     data: frameworkScores,
   });
 
-  // 3. Risk Register — top 10 critical/high priority unsatisfied controls
+  // 3. Risk Register — top 10 REQUIRED controls that are not yet passing.
+  // (org_controls has no priority column; `required` is the available
+  // risk signal.)
   const topRisks = (controls ?? [])
-    .filter(
-      (c: any) =>
-        c.status !== 'satisfied' &&
-        ['critical', 'high'].includes(c.priority ?? ''),
-    )
+    .filter((c: any) => !PASSING_STATUSES.has(c.status) && c.required)
     .slice(0, 10);
 
   sections.push({
@@ -124,9 +127,10 @@ export async function generateBoardPack(
   // 4. Control Gaps — controls without adequate evidence
   const { data: gapControls } = await db
     .from('org_controls')
-    .select('id, title, status, priority')
+    .select('id, title, status, required')
     .neq('status', 'satisfied')
-    .order('priority');
+    .neq('status', 'compliant')
+    .order('created_at', { ascending: false });
 
   sections.push({
     title: 'Control Gaps',

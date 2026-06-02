@@ -54,7 +54,7 @@ export async function scanTable(
   let query = admin.from(table).select('*').limit(sampleSize);
 
   if (orgId) {
-    if (['identity_audit_events', 'retention_policies', 'retention_executions'].includes(table)) {
+    if (['identity_audit_events', 'retention_policies', 'retention_executions', 'org_notifications'].includes(table)) {
       query = query.eq('org_id', orgId);
     } else {
       query = query.eq('organization_id', orgId);
@@ -85,7 +85,7 @@ export async function generatePIIReport(orgId: string) {
     'user_profiles',
     'org_evidence',
     'org_policies',
-    'notifications',
+    'org_notifications',
     'identity_audit_events',
   ];
 

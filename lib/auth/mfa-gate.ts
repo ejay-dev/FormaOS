@@ -18,6 +18,28 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export const MFA_CHALLENGE_PATH = '/auth/mfa-challenge';
 
+/**
+ * E2E-ONLY MFA bypass. Lets the Playwright suite reach `/app` without
+ * completing a TOTP challenge (test users have MFA enabled, but a fresh UI
+ * login mints a session whose id doesn't match the bootstrap's MFA-passed
+ * session, so the gate would bounce every request).
+ *
+ * Triple-gated so it can NEVER take effect on a real deployment:
+ *   1. The explicit `E2E_BYPASS_MFA=1` flag must be set (never set in prod).
+ *   2. `process.env.VERCEL` must be unset — ANY Vercel deployment
+ *      (production OR preview) sets this, so the bypass is impossible there.
+ *   3. `VERCEL_ENV` must not be 'production' (belt-and-braces).
+ * Net: only a local / non-Vercel CI run with the flag explicitly set can
+ * bypass MFA. Production (always on Vercel) cannot.
+ */
+export function isE2eMfaBypassEnabled(): boolean {
+  return (
+    process.env.E2E_BYPASS_MFA === '1' &&
+    !process.env.VERCEL &&
+    process.env.VERCEL_ENV !== 'production'
+  );
+}
+
 export interface MfaGateState {
   /** User has TOTP enabled and must clear the challenge for their current session. */
   required: boolean;
@@ -63,6 +85,11 @@ export async function evaluateMfaGate(
   supabase?: SupabaseClient,
 ): Promise<MfaGateState> {
   const client = supabase ?? (await createSupabaseServerClient());
+
+  // E2E-only bypass (impossible on any Vercel deployment — see helper).
+  if (isE2eMfaBypassEnabled()) {
+    return { required: false, passed: true, sessionId: null };
+  }
 
   const [{ data: sessionData }, { data: userData }] = await Promise.all([
     client.auth.getSession(),

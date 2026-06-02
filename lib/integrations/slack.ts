@@ -8,6 +8,7 @@
 import { createSupabaseServerClient as createClient } from '@/lib/supabase/server';
 import { decodeIntegrationConfig } from './config-crypto';
 import { consoleShim } from '@/lib/monitoring/console-shim';
+import { validateWebhookUrl } from '@/lib/security/url-validator';
 
 export interface SlackConfig {
   organizationId: string;
@@ -50,6 +51,10 @@ export async function sendSlackMessage(
     if (!config || !config.enabled || !config.webhookUrl) {
       return { success: false, error: 'Slack integration not configured' };
     }
+
+    // SSRF guard: the webhook URL is org-admin-supplied; reject private/
+    // internal targets before the server makes the outbound request.
+    await validateWebhookUrl(config.webhookUrl);
 
     const response = await fetch(config.webhookUrl, {
       method: 'POST',
@@ -349,6 +354,9 @@ export async function testSlackIntegration(webhookUrl: string): Promise<{
   error?: string;
 }> {
   try {
+    // SSRF guard on the admin-supplied test URL.
+    await validateWebhookUrl(webhookUrl);
+
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

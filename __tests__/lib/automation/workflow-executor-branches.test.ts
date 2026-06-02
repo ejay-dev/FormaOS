@@ -393,8 +393,10 @@ describe('workflow-executor branches', () => {
     expect(result.trace.steps[0].status).toBe('skipped');
   });
 
-  it('long delay fails when trigger task not scheduled', async () => {
-    mockTriggerTask.mockResolvedValueOnce(false);
+  it('long delay pauses (waiting_delay) and records resume time for the cron', async () => {
+    // Previously a >30s delay threw "Failed to schedule" when no background
+    // scheduler was configured (the bug). The engine now persists + pauses;
+    // the workflow-resume cron continues it once delay_resume_at elapses.
     const workflow = makeWorkflow([
       { id: 's1', type: 'delay', duration: '2h' },
     ]);
@@ -403,7 +405,9 @@ describe('workflow-executor branches', () => {
       { trigger: { type: 'manual', data: {} } },
       { persist: false },
     );
-    expect(result.execution.status).toBe('failed');
+    expect(result.execution.status).toBe('waiting_delay');
+    expect(result.execution.current_step_id).toBe('s1');
+    expect(result.execution.delay_resume_at).toBeTruthy();
   });
 
   it('send_notification with null userId is handled', async () => {

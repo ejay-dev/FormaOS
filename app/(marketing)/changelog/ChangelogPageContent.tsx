@@ -104,6 +104,162 @@ interface ChangelogRelease {
 
 const releases: ChangelogRelease[] = [
   {
+    version: 'v5.1.0',
+    codename: 'Two New Verticals & Operational Wiring',
+    date: '2026-06-02',
+    summary:
+      'Two compliance verticals — mental-health services and Australian financial services — join NDIS, so providers in those sectors start against a real control set instead of a blank framework. Several capabilities that existed in the data model but had no way in — structured incident investigations, regulatory-notification tracking, the medication chart’s add action, executive-digest scheduling — are now wired end to end. The automation engine that had been dormant since we removed the external task runner runs again, this time on the platform’s own scheduler.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Mental Health Services (NSMHS) compliance vertical',
+        tag: 'feature',
+        detail:
+          'A new pack built on the National Standards for Mental Health Services: 14 controls across the standard’s domains. Four are evaluated automatically against your own incidents, registers, policies and risk records; the remaining ten are manual attestations with evidence attachment. A mental-health provider can now open the platform and see exactly which of their obligations are met, which are outstanding, and what evidence is attached — without first building the framework themselves.',
+      },
+      {
+        text: 'Financial Services (AU) compliance vertical',
+        tag: 'feature',
+        detail:
+          'A 20-control pack covering AFS-licence conduct and AML/CTF obligations, each control mapped to its source obligation. The pack ships with automated evaluators so the dashboard reflects your real posture rather than a static checklist. This sits alongside the existing SOC 2, ISO 27001, HIPAA, PCI-DSS, NIST CSF, CIS and GDPR packs.',
+      },
+      {
+        text: 'NDIS Practice Standards — automated coverage',
+        tag: 'improvement',
+        detail:
+          'The NDIS Practice Standards pack now carries 25 controls, 22 of them backed by automated predicates that read your live records — incidents, registers, restrictive-practice logs, worker screening — with the statutory citation attached to each. The remaining three stay as manual attestations. Where a control was previously a tick-box, it now reflects whether the underlying record actually exists.',
+      },
+      {
+        text: 'Incident investigations, regulatory countdowns and a chain of record',
+        tag: 'feature',
+        detail:
+          'Five incident capabilities that existed in the schema but had no interface are now wired into the incident detail view: a status pipeline derived from where the incident actually is, statutory notification countdown timers for care industries, an incident → investigation → CAPA → regulator chain view, a regulatory-notification tracker with a “mark submitted” action, and a structured root-cause investigation form whose analysis is saved against the incident.',
+      },
+      {
+        text: 'Automation workflows run again',
+        tag: 'feature',
+        detail:
+          'The workflow engine persists every run, pauses on approval steps and on long delays, and is continued by two scheduled sweeps — one that resumes delayed runs, one that fails out approvals that time out — instead of an external task runner. Approval steps are scoped to the organisation that owns them, so one tenant can never see or action another tenant’s approval.',
+      },
+      {
+        text: 'Compliance relationships are now a queryable graph',
+        tag: 'improvement',
+        detail:
+          'The links between controls, evidence, policies, risks and corrective actions are persisted as a graph and exposed through an API, so the platform can answer “what evidence supports this control” or “what breaks if this policy lapses” directly instead of re-deriving it on every page load.',
+      },
+      {
+        text: 'One canonical compliance score',
+        tag: 'fix',
+        detail:
+          'The compliance score shown on the dashboard, in the executive board pack and in exports is now computed in a single place and read everywhere, so the same organisation no longer shows a slightly different number depending on which surface you look at.',
+      },
+      {
+        text: '“Add Medication” on the care medication chart now saves',
+        tag: 'fix',
+        detail:
+          'The button on the medication chart was inert. It now writes the medication and refreshes the chart, and surfaces any error inline rather than appearing to succeed and silently doing nothing.',
+      },
+      {
+        text: 'Past-due accounts keep access through the grace window',
+        tag: 'fix',
+        detail:
+          'A failed payment no longer cuts off access the moment it fails. Entitlements stay active for a three-day grace period and are only disabled on day four if the balance is still unpaid — so a transient card decline does not lock a paying customer out of their own compliance records.',
+      },
+    ],
+  },
+  {
+    version: 'v5.0.0',
+    codename: 'FORMAOS — New Identity',
+    date: '2026-05-30',
+    summary:
+      'A full visual rebrand. The product is now FORMAOS, with a charcoal wordmark and an “FO” monogram in place of the previous cyan shield, and a near-monochrome palette across the app, the marketing site, the sign-in screens, email and PDF exports. Alongside the new look, every marketing claim was re-checked against what the codebase actually does — invented personas, round-number metrics and any statement the product could not stand behind were removed.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'New FORMAOS wordmark and FO monogram',
+        tag: 'improvement',
+        detail:
+          'A charcoal wordmark and a square “FO” monogram replace the previous cyan shield, applied consistently to the app shell, the marketing site, sign-in, email headers, PDF export headers, the favicons and app icons, and the social-share image. The mark inherits its colour from context, so it reads correctly on both light and dark surfaces.',
+      },
+      {
+        text: 'Near-monochrome charcoal palette',
+        tag: 'improvement',
+        detail:
+          'The cyan and teal accent is retired in favour of a charcoal-and-ink neutral scale, so the interface reads as an operations record rather than a marketing gradient. This is a colour change only — no layout, copy or behaviour changed with it.',
+      },
+      {
+        text: 'Marketing honesty pass across the site',
+        tag: 'improvement',
+        detail:
+          'The homepage, pricing, /features, /trust, /integrations, customer stories and roadmap were re-checked line by line against the codebase. Unverifiable claims, placeholder personas and decorative dashboards that implied capabilities we do not ship were corrected, relabelled as illustrative, or removed. The compliance and audit-chain claims now describe what the product actually does.',
+      },
+      {
+        text: 'Real founder presence on /about and /our-story',
+        tag: 'improvement',
+        detail:
+          'The about and story pages now carry the actual founder rather than a stock team grid, and the homepage was reordered so the audit-chain story sits where it belongs in the narrative rather than leading with it.',
+      },
+    ],
+  },
+  {
+    version: 'v4.5.0',
+    codename: 'Verifiable Audit Trail & Public Trust Surface',
+    date: '2026-05-27',
+    summary:
+      'The audit trail moves from a plain hash chain to a keyed, externally-anchored one — and customers can now verify it themselves without having to trust us. New public pages give procurement and security reviewers the evidence they ask for: a live status page and a self-serve audit-bundle verifier. Account security gains login lockout and tighter MFA handling, evidence files are hashed on upload and re-checked on download, and GDPR erasure now runs as a queued, auditable purge.',
+    isMajor: true,
+    changes: [
+      {
+        text: 'Keyed audit chain with external anchoring',
+        tag: 'security',
+        detail:
+          'Each organisation’s audit chain is now sealed with a per-organisation HMAC key, encrypted at rest, so a chain cannot be silently recomputed without it. The top of each chain is periodically anchored to the public Sigstore Rekor transparency log — meaning the existence and order of your records can be proven against an independent third party, not just against our own database.',
+      },
+      {
+        text: 'Verify an audit export yourself at /verify',
+        tag: 'feature',
+        detail:
+          'A public page where you paste an exported audit bundle or a Rekor entry and confirm it has not been altered. Verification runs entirely in your browser using a Merkle inclusion proof — nothing is sent back to us — so an external auditor can independently check that an export they were handed is genuine and complete.',
+      },
+      {
+        text: 'Live public status page at /status',
+        tag: 'feature',
+        detail:
+          'Platform and per-subsystem health plus the latest audit-chain anchor, with no login required, refreshing roughly every 30 seconds. It reads the same health and integrity probes the platform monitors itself with, so a reviewer sees the real state rather than a hand-maintained status board.',
+      },
+      {
+        text: 'Login lockout and tighter MFA handling',
+        tag: 'security',
+        detail:
+          'Five failed sign-ins for the same email within fifteen minutes now trigger a fifteen-minute lockout, MFA verification is rate-limited per user, and backup codes are consumed atomically so a single code can no longer be replayed in a race.',
+      },
+      {
+        text: 'Evidence files are hashed and type-checked',
+        tag: 'security',
+        detail:
+          'Every evidence file is SHA-256 hashed when you upload it and re-verified when it is downloaded, so tampering is detectable. Uploads are restricted to a fixed allow-list — PDF, common image formats, Office documents, and plain text/CSV — and validated by inspecting the file’s actual bytes, not just trusting its extension.',
+      },
+      {
+        text: 'Compliance gaps raise a corrective action automatically',
+        tag: 'improvement',
+        detail:
+          'When a control evaluates as failing, a corrective-action (CAPA) item is opened automatically and de-duplicated against any existing one for the same control, so a gap surfaced by the evaluator cannot be quietly lost between a failing check and someone remembering to log it.',
+      },
+      {
+        text: 'Unified compliance health view',
+        tag: 'improvement',
+        detail:
+          'A single compliance-health surface shows the canonical score alongside the outstanding controls behind it, so the headline number and the work it represents live on the same page instead of being scattered across separate views.',
+      },
+      {
+        text: 'GDPR erasure runs as a queued, auditable purge',
+        tag: 'security',
+        detail:
+          'Account and subject erasure is processed by a scheduled purge that hard-deletes or anonymises across tables and revokes sessions. For records that must legally be retained for audit, the subject’s identifiers are redacted at export time rather than left in the exported file — satisfying the erasure request without breaking the audit trail.',
+      },
+    ],
+  },
+  {
     version: 'v4.4.0',
     codename: 'Privacy Self-Serve & Operational Continuity',
     date: '2026-05-25',

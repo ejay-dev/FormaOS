@@ -1,7 +1,6 @@
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { logActivity } from '@/lib/activity/feed';
 import { notify } from '@/lib/notifications/engine';
-import { triggerTaskIfConfigured } from '@/lib/trigger/client';
 import { automationLogger } from '@/lib/observability/structured-logger';
 import { validateWebhookUrl } from '@/lib/security/url-validator';
 import {
@@ -94,15 +93,6 @@ function shouldTraverseForResume(step: WorkflowStep, state: ExecutionState): boo
   return stepContainsId(step, state.resumeFromStepId);
 }
 
-function toDelayString(ms: number): string {
-  const seconds = Math.max(1, Math.ceil(ms / 1000));
-
-  if (seconds % 604800 === 0) return `${seconds / 604800}w`;
-  if (seconds % 86400 === 0) return `${seconds / 86400}d`;
-  if (seconds % 3600 === 0) return `${seconds / 3600}h`;
-  if (seconds % 60 === 0) return `${seconds / 60}m`;
-  return `${seconds}s`;
-}
 
 async function persistTrace(
   execution: WorkflowExecutionRecord,
@@ -112,6 +102,7 @@ async function persistTrace(
   await updateWorkflowExecution(execution.id, {
     status: status ?? execution.status,
     current_step_id: execution.current_step_id,
+    delay_resume_at: execution.delay_resume_at,
     execution_trace: execution.execution_trace,
     context_snapshot: context.getRuntimeState() as unknown as Record<string, unknown>,
     completed_at: execution.completed_at,
@@ -470,6 +461,7 @@ async function executeStep(
         await createApprovalRequest({
           executionId: execution.id,
           stepId: step.id,
+          orgId: workflow.org_id,
           approvers,
           timeoutAt,
         });
@@ -560,32 +552,18 @@ async function executeStep(
 
         const resumeAt = new Date(Date.now() + delayMs);
         execution.status = 'waiting_delay';
+        // Record where + when to resume so the cron sweep
+        // (app/api/cron/workflow-resume) can continue this run. This
+        // replaces the removed Trigger.dev delayed-resume task: instead of
+        // throwing when no scheduler is configured (the old bug — every
+        // >30s delay failed the workflow), we persist and pause.
+        execution.current_step_id = step.id;
+        execution.delay_resume_at = resumeAt.toISOString();
         finalize({
           ...baseResult,
           status: 'waiting_delay',
           output: { resumeAt: resumeAt.toISOString() },
         });
-
-        const scheduled = await triggerTaskIfConfigured(
-          'resume-workflow-after-delay',
-          {
-            executionId: execution.id,
-            workflowId: workflow.id,
-            orgId: workflow.org_id,
-            resumeStepId: step.id,
-          },
-          {
-            queue: 'workflow-engine',
-            delay: toDelayString(delayMs),
-            idempotencyKey: ['workflow-delay', execution.id, step.id, resumeAt.toISOString()],
-          },
-        );
-
-        if (!scheduled) {
-          throw new Error(
-            `Failed to schedule delayed resume for workflow ${workflow.id} step ${step.id}`,
-          );
-        }
 
         if (options.persist) {
           await persistTrace(execution, context, 'waiting_delay');

@@ -72,6 +72,8 @@ export default function Comments({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
   // Audit 2026-05-23: replaced window.confirm() with AlertDialog. Holding
   // the pending-delete id in state lets the dialog open + close cleanly
   // and keeps the focus trap / aria semantics the browser confirm lacked.
@@ -97,11 +99,17 @@ export default function Comments({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return; // guard against double-submit
     const parsed = commentSchema.safeParse({ content: newComment.trim() });
-    if (!parsed.success) return;
+    if (!parsed.success) {
+      setActionError(parsed.error.issues[0]?.message ?? 'Invalid comment');
+      return;
+    }
 
+    setSubmitting(true);
+    setActionError(null);
     try {
-      await fetch('/api/comments', {
+      const res = await fetch('/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -113,30 +121,57 @@ export default function Comments({
         }),
       });
 
+      if (!res.ok) {
+        // Keep the user's text so they can retry; surface the failure.
+        setActionError(
+          res.status === 429
+            ? 'You are commenting too fast. Please wait a moment and try again.'
+            : 'Could not post your comment. Please try again.',
+        );
+        return;
+      }
+
       setNewComment('');
       setReplyingTo(null);
       await fetchComments();
     } catch (error) {
       console.error('Failed to create comment:', error);
+      setActionError('Network error — your comment was not posted.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleEdit = async (commentId: string) => {
+    if (submitting) return;
     const parsed = commentSchema.safeParse({ content: editContent.trim() });
-    if (!parsed.success) return;
+    if (!parsed.success) {
+      setActionError(parsed.error.issues[0]?.message ?? 'Invalid comment');
+      return;
+    }
 
+    setSubmitting(true);
+    setActionError(null);
     try {
-      await fetch(`/api/comments/${commentId}`, {
+      const res = await fetch(`/api/comments/${commentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: editContent }),
       });
+
+      if (!res.ok) {
+        setActionError('Could not save your edit. Please try again.');
+        return;
+      }
 
       setEditingId(null);
       setEditContent('');
       await fetchComments();
     } catch (error) {
       console.error('Failed to update comment:', error);
+      setActionError('Network error — your edit was not saved.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -260,9 +295,10 @@ export default function Comments({
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(comment.id)}
-                      className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                      disabled={submitting}
+                      className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Save
+                      {submitting ? 'Saving…' : 'Save'}
                     </button>
                     <button
                       onClick={() => {
@@ -397,13 +433,19 @@ export default function Comments({
         </div>
         <button
           type="submit"
-          disabled={!newComment.trim()}
+          disabled={!newComment.trim() || submitting}
           className="h-12 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           <Send className="h-4 w-4" />
-          {replyingTo ? 'Reply' : 'Comment'}
+          {submitting ? 'Posting…' : replyingTo ? 'Reply' : 'Comment'}
         </button>
       </form>
+
+      {actionError && (
+        <p role="alert" className="text-sm text-red-600">
+          {actionError}
+        </p>
+      )}
 
       {/* Comments list */}
       <div className="space-y-4">

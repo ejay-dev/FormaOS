@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { resolveActiveMembership } from '@/lib/auth/membership-cache';
 import { routeLog } from '@/lib/monitoring/server-logger';
 import {
   getRuntimeSnapshot,
@@ -12,29 +12,23 @@ const log = routeLog('/api/runtime/control-plane');
 
 async function resolveContext() {
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const membership = await resolveActiveMembership(supabase);
 
-  if (!user) {
-    return {
-      userId: null,
-      orgId: null,
-    };
+  if (membership.kind === 'unauthorized') {
+    return { userId: null, orgId: null };
   }
 
-  const admin = createSupabaseAdminClient();
-  const { data: membership } = await admin
-    .from('org_members')
-    .select('organization_id')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: true })
-    .limit(1)
-    .maybeSingle();
+  // Only bind an org when the active org is unambiguous. For a multi-org
+  // user with no active selection we deliberately fall back to a no-org
+  // snapshot rather than picking an arbitrary (oldest) org, which could
+  // surface another tenant's runtime flags.
+  if (membership.kind === 'ok') {
+    return { userId: membership.userId, orgId: membership.organizationId };
+  }
 
   return {
-    userId: user.id,
-    orgId: membership?.organization_id ?? null,
+    userId: 'userId' in membership ? membership.userId : null,
+    orgId: null,
   };
 }
 

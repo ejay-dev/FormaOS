@@ -31,6 +31,7 @@ import {
 } from '@/lib/compliance-graph';
 import { authLogger } from '@/lib/observability/structured-logger';
 import { OAUTH_STATE_COOKIE_NAME } from '@/lib/auth/oauth-state';
+import { isE2eMfaBypassEnabled } from '@/lib/auth/mfa-gate';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -343,7 +344,8 @@ export async function GET(request: Request) {
   // bootstrap a workspace until the TOTP challenge clears. Bounce to
   // the challenge page; the /app/* layout will keep enforcing on every
   // subsequent request.
-  try {
+  // E2E-only bypass (impossible on any Vercel deployment — see helper).
+  if (!isE2eMfaBypassEnabled()) try {
     const { data: securityRow } = await admin
       .from('user_security')
       .select('two_factor_enabled')

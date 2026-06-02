@@ -93,10 +93,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Process the decision
+    // Process the decision — scoped to the caller's org so it cannot
+    // approve/reject another tenant's pending approval (cross-tenant IDOR).
     await processApprovalDecision({
       executionId,
       stepId,
+      orgId: ctx.orgId,
       decision,
       decidedBy: ctx.user.id,
       comment,

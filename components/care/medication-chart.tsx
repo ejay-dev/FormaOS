@@ -59,6 +59,8 @@ export function MedicationChart({
   const [showAddForm, setShowAddForm] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [showAdminForm, setShowAdminForm] = useState<string | null>(null);
+  const [adminError, setAdminError] = useState<string | null>(null);
+  const [administering, setAdministering] = useState(false);
 
   async function handleCreate(formData: FormData) {
     const result = await createMedication(formData);
@@ -92,8 +94,11 @@ export function MedicationChart({
       .slice(0, 5);
 
   const handleAdminister = async (medId: string) => {
+    if (administering) return; // guard double-submit (duplicate dose record)
+    setAdministering(true);
+    setAdminError(null);
     try {
-      await fetch(`/api/v1/medications/${medId}/administer`, {
+      const res = await fetch(`/api/v1/medications/${medId}/administer`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -102,10 +107,24 @@ export function MedicationChart({
           ...adminForm,
         }),
       });
+      if (!res.ok) {
+        // Clinical-record integrity: do NOT clear the form or reload as if
+        // it succeeded — the dose was not logged.
+        setAdminError(
+          'Failed to record administration — the dose was NOT logged. Please try again.',
+        );
+        return;
+      }
       setShowAdminForm(null);
       setAdminForm({ dose_given: '', status: 'given', notes: '' });
       window.location.reload();
-    } catch {}
+    } catch {
+      setAdminError(
+        'Network error — the dose was NOT logged. Please try again.',
+      );
+    } finally {
+      setAdministering(false);
+    }
   };
 
   const activeMeds = medications.filter((m) => m.status === 'active');
@@ -371,15 +390,24 @@ export function MedicationChart({
                       className="rounded-md border border-border bg-background px-3 py-1.5 text-sm"
                     />
                   </div>
+                  {adminError && (
+                    <p role="alert" className="text-xs text-red-600">
+                      {adminError}
+                    </p>
+                  )}
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleAdminister(med.id)}
-                      className="rounded-md bg-primary px-3 py-1 text-xs text-primary-foreground hover:bg-primary/90"
+                      disabled={administering}
+                      className="rounded-md bg-primary px-3 py-1 text-xs text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Record
+                      {administering ? 'Recording…' : 'Record'}
                     </button>
                     <button
-                      onClick={() => setShowAdminForm(null)}
+                      onClick={() => {
+                        setShowAdminForm(null);
+                        setAdminError(null);
+                      }}
                       className="rounded-md border border-border px-3 py-1 text-xs hover:bg-muted"
                     >
                       Cancel

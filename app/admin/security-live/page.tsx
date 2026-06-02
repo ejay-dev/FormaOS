@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRealtimeSecurity } from '@/lib/hooks/use-realtime-security';
+import { useModalA11y } from '@/lib/hooks/use-modal-a11y';
 
 type UserRef = {
   id: string;
@@ -109,6 +110,11 @@ export default function SecurityLivePage() {
     () => alerts.find((alert) => alert.id === selectedAlertId) ?? null,
     [alerts, selectedAlertId],
   );
+  const closeAlertPanel = useCallback(() => setSelectedAlertId(null), []);
+  const alertPanelRef = useModalA11y<HTMLDivElement>(
+    !!selectedAlert,
+    closeAlertPanel,
+  );
   const visibleAlerts = useMemo(() => alerts.slice(0, 100), [alerts]);
   const visibleEvents = useMemo(() => events.slice(0, 40), [events]);
 
@@ -165,16 +171,8 @@ export default function SecurityLivePage() {
     return () => clearInterval(interval);
   }, [connected, fetchData]);
 
-  useEffect(() => {
-    if (!selectedAlertId) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setSelectedAlertId(null);
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [selectedAlertId]);
+  // Escape-to-close, focus management, and focus trap for the alert panel
+  // are handled by useModalA11y (see alertPanelRef above).
 
   const updateAlertStatus = useCallback(
     async (alertId: string, status: string, notes?: string) => {
@@ -503,6 +501,7 @@ export default function SecurityLivePage() {
       {selectedAlert && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/40">
           <div
+            ref={alertPanelRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="security-alert-dialog-title"
@@ -519,6 +518,7 @@ export default function SecurityLivePage() {
               </div>
               <button
                 onClick={() => setSelectedAlertId(null)}
+                aria-label="Close alert details"
                 className="rounded-lg border border-slate-700 bg-slate-900 p-2 text-slate-300 hover:bg-slate-800"
               >
                 <X className="h-4 w-4" />

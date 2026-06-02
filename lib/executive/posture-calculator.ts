@@ -41,15 +41,27 @@ export async function calculateExecutivePosture(
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
+  // Trend source is compliance_score_snapshots (per-framework, 0–100), not the
+  // never-created `org_compliance_snapshots`. Average the most-recent prior
+  // per-framework snapshots to approximate the org's overall score 30 days ago.
   const { data: previousSnapshots } = await admin
-    .from('org_compliance_snapshots')
-    .select('compliance_score')
+    .from('compliance_score_snapshots')
+    .select('compliance_score, captured_at')
     .eq('organization_id', orgId)
     .lte('captured_at', thirtyDaysAgo.toISOString())
     .order('captured_at', { ascending: false })
-    .limit(1);
+    .limit(10);
 
-  const previousScore = previousSnapshots?.[0]?.compliance_score ?? weightedScore;
+  const previousScore =
+    previousSnapshots && previousSnapshots.length > 0
+      ? Math.round(
+          previousSnapshots.reduce(
+            (s: number, r: { compliance_score: number | string }) =>
+              s + Number(r.compliance_score),
+            0,
+          ) / previousSnapshots.length,
+        )
+      : weightedScore;
   const trendPercentage = previousScore > 0 ? weightedScore - previousScore : 0;
   const trend: 'up' | 'down' | 'stable' =
     trendPercentage > 2 ? 'up' : trendPercentage < -2 ? 'down' : 'stable';
@@ -76,8 +88,12 @@ export async function calculateExecutivePosture(
     .gte('triggered_at', thirtyDaysAgo.toISOString());
 
   const activeWorkflows = workflows?.filter((w: { status?: string }) => w.status === 'active').length || 0;
+  // Bug fix: the multiply-by-10 was outside Math.round, so effectiveness could
+  // only ever be a multiple of 10. Round the final value instead.
   const automationEffectiveness =
-    activeWorkflows > 0 ? Math.min(100, Math.round((workflowTriggers || 0) / activeWorkflows) * 10) : 0;
+    activeWorkflows > 0
+      ? Math.min(100, Math.round(((workflowTriggers || 0) / activeWorkflows) * 10))
+      : 0;
 
   // Get critical control failures
   const criticalFailures = await getCriticalControlFailures(orgId, admin);

@@ -132,6 +132,9 @@ jobs:
         if: steps.rls-secrets-check.outputs.available == 'true'
         run: npm run test:db:orgs-sync
 
+      - name: Run migration parity gate (Audit 2026-06-02)
+        run: npm run test:db:migration-parity
+
       - name: Run migration-ledger alignment check (R6)
         run: npm run test:db:ledger-alignment
 

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { fetchSystemState } from '@/lib/system-state/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { resolveActiveMembership } from '@/lib/auth/membership-cache';
 import {
   RecordCard,
   RecordList,
@@ -14,7 +15,36 @@ import {
   XCircle,
   Download,
   RefreshCw,
+  CheckCircle2,
+  Send,
 } from 'lucide-react';
+import {
+  markDraftsReady,
+  markSubmitted,
+  markPaid,
+  rejectClaim,
+} from './actions';
+
+const NOTICE_MESSAGES: Record<string, string> = {
+  marked_ready: 'Validated drafts and moved the eligible ones to Ready.',
+  submitted: 'Claim marked as submitted.',
+  paid: 'Claim marked as paid.',
+  rejected: 'Claim marked as rejected.',
+};
+
+const ERROR_MESSAGES: Record<string, string> = {
+  no_claims: 'No ready claim items are available to export yet.',
+  no_drafts: 'There are no draft items to validate.',
+  validation_failed:
+    'Export blocked: one or more ready items failed validation. Fix them before exporting.',
+  forbidden: 'Only an owner or admin can mark claims paid or rejected.',
+  payment_ref_required: 'A payment reference is required to mark a claim paid.',
+  reason_required: 'A rejection reason is required.',
+  active_org: 'Select an active organisation before claiming.',
+  membership: 'No organisation membership found.',
+  bad_request: 'That action could not be completed.',
+  update_failed: 'The claim could not be updated. Please try again.',
+};
 
 export const metadata = { title: 'NDIS Claiming | FormaOS' };
 
@@ -26,6 +56,10 @@ export default async function NdisClaimingPage({
   const resolvedSearchParams = (await searchParams) ?? {};
   const state = await fetchSystemState();
   if (!state) redirect('/auth/signin');
+
+  const membership = await resolveActiveMembership();
+  const role = membership.kind === 'ok' ? membership.role : null;
+  const isManager = role === 'owner' || role === 'admin';
 
   const db = await createSupabaseServerClient();
 
@@ -75,6 +109,16 @@ export default async function NdisClaimingPage({
     typeof resolvedSearchParams.error === 'string'
       ? resolvedSearchParams.error
       : null;
+  const noticeCode =
+    typeof resolvedSearchParams.notice === 'string'
+      ? resolvedSearchParams.notice
+      : null;
+  const noticeInvalid = Number(resolvedSearchParams.invalid ?? 0);
+  const exportInvalid =
+    errorCode === 'validation_failed'
+      ? Number(resolvedSearchParams.invalid ?? 0)
+      : 0;
+  const hasDrafts = items.some((i) => i.status === 'draft');
 
   const statusColors: Record<string, string> = {
     draft: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
@@ -94,11 +138,22 @@ export default async function NdisClaimingPage({
         </div>
       )}
 
+      {noticeCode && (
+        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
+          {NOTICE_MESSAGES[noticeCode] ?? 'Done.'}
+          {noticeCode === 'marked_ready' && noticeInvalid > 0
+            ? ` ${noticeInvalid} item${noticeInvalid === 1 ? '' : 's'} failed validation and stayed in Draft.`
+            : ''}
+        </div>
+      )}
+
       {errorCode && (
         <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300">
-          {errorCode === 'no_claims'
-            ? 'No draft or ready claim items are available to export yet.'
-            : 'The NDIS claiming action could not be completed. Please try again.'}
+          {ERROR_MESSAGES[errorCode] ??
+            'The NDIS claiming action could not be completed. Please try again.'}
+          {errorCode === 'validation_failed' && exportInvalid > 0
+            ? ` (${exportInvalid} item${exportInvalid === 1 ? '' : 's'})`
+            : ''}
         </div>
       )}
 
@@ -110,17 +165,24 @@ export default async function NdisClaimingPage({
             NDIS portal.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <form action="/api/ndis-claiming/generate" method="POST">
             <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted">
               <RefreshCw className="h-4 w-4" /> Generate from Visits
             </button>
           </form>
+          {hasDrafts && (
+            <form action={markDraftsReady}>
+              <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted">
+                <CheckCircle2 className="h-4 w-4" /> Validate &amp; Mark Ready
+              </button>
+            </form>
+          )}
           <Link
             href="/api/ndis-claiming/export"
             className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm text-primary-foreground hover:bg-primary/90"
           >
-            <Download className="h-4 w-4" /> Export Claim File
+            <Download className="h-4 w-4" /> Export Ready Claims
           </Link>
         </div>
       </div>
@@ -205,6 +267,7 @@ export default async function NdisClaimingPage({
                       value: new Date(item.created_at).toLocaleDateString(),
                     },
                   ]}
+                  actions={<RowActions item={item} isManager={isManager} />}
                 />
               );
             })}
@@ -245,6 +308,9 @@ export default async function NdisClaimingPage({
                 <th className="px-4 py-2 text-left font-medium text-muted-foreground">
                   Date
                 </th>
+                <th className="px-4 py-2 text-left font-medium text-muted-foreground">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -283,13 +349,16 @@ export default async function NdisClaimingPage({
                     <td className="px-4 py-2.5 text-muted-foreground">
                       {new Date(item.created_at).toLocaleDateString()}
                     </td>
+                    <td className="px-4 py-2.5">
+                      <RowActions item={item} isManager={isManager} />
+                    </td>
                   </tr>
                 );
               })}
               {items.length === 0 && (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="px-4 py-12 text-center text-muted-foreground"
                   >
                     No line items yet. Generate claims from completed visits.
@@ -302,6 +371,93 @@ export default async function NdisClaimingPage({
       </div>
     </div>
   );
+}
+
+function RowActions({
+  item,
+  isManager,
+}: {
+  item: {
+    id: string;
+    status: string;
+    payment_reference?: string | null;
+    rejection_reason?: string | null;
+  };
+  isManager: boolean;
+}) {
+  switch (item.status) {
+    case 'ready':
+      return (
+        <form action={markSubmitted}>
+          <input type="hidden" name="id" value={item.id} />
+          <button className="inline-flex items-center gap-1 rounded border border-border px-2 py-1 text-xs hover:bg-muted">
+            <Send className="h-3 w-3" /> Mark Submitted
+          </button>
+        </form>
+      );
+    case 'submitted':
+      if (!isManager) {
+        return (
+          <span className="text-xs text-muted-foreground">
+            Awaiting owner/admin
+          </span>
+        );
+      }
+      return (
+        <div className="flex flex-col gap-1.5">
+          <form action={markPaid} className="flex items-center gap-1">
+            <input type="hidden" name="id" value={item.id} />
+            <input
+              name="payment_reference"
+              required
+              placeholder="Payment ref"
+              aria-label="Payment reference"
+              className="w-28 rounded border border-border bg-background px-2 py-1 text-xs"
+            />
+            <button className="rounded bg-green-600 px-2 py-1 text-xs font-medium text-white hover:bg-green-700">
+              Paid
+            </button>
+          </form>
+          <form action={rejectClaim} className="flex items-center gap-1">
+            <input type="hidden" name="id" value={item.id} />
+            <input
+              name="rejection_reason"
+              required
+              placeholder="Reason"
+              aria-label="Rejection reason"
+              className="w-28 rounded border border-border bg-background px-2 py-1 text-xs"
+            />
+            <button className="rounded border border-rose-400 px-2 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950">
+              Reject
+            </button>
+          </form>
+        </div>
+      );
+    case 'paid':
+      return (
+        <span className="text-xs text-muted-foreground">
+          Ref: {item.payment_reference ?? '—'}
+        </span>
+      );
+    case 'rejected':
+      return (
+        <span
+          className="text-xs text-rose-600"
+          title={item.rejection_reason ?? undefined}
+        >
+          {item.rejection_reason
+            ? `Rejected: ${item.rejection_reason}`
+            : 'Rejected'}
+        </span>
+      );
+    case 'draft':
+    default:
+      return (
+        <span className="text-xs text-muted-foreground">
+          Validate &amp; Mark Ready
+        </span>
+      );
+  }
 }
 
 function SummaryCard({

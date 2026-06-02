@@ -41,17 +41,23 @@ import {
 beforeEach(() => jest.clearAllMocks());
 
 describe('inferRoleMapping', () => {
+  // Exact-match only (hardened): role names must match exactly (incl. common
+  // plurals + "Read Only"/spacing variants that normalise to a key). This
+  // prevents the substring privilege-escalation where a group merely
+  // CONTAINING "admin" (e.g. "non-admin") was mapped to the admin role.
   it('maps owner', () => expect(inferRoleMapping('owner')).toBe('owner'));
   it('maps admin', () => expect(inferRoleMapping('admin')).toBe('admin'));
   it('maps administrator', () =>
-    expect(inferRoleMapping('administrator team')).toBe('admin'));
+    expect(inferRoleMapping('administrator')).toBe('admin'));
+  it('maps plural admins', () =>
+    expect(inferRoleMapping('Admins')).toBe('admin'));
   it('maps auditor', () =>
-    expect(inferRoleMapping('Auditor Group')).toBe('auditor'));
+    expect(inferRoleMapping('Auditor')).toBe('auditor'));
   it('maps viewer', () => expect(inferRoleMapping('viewer')).toBe('viewer'));
   it('maps read_only', () =>
     expect(inferRoleMapping('Read Only')).toBe('viewer'));
   it('maps readonly', () =>
-    expect(inferRoleMapping('readonly-users')).toBe('viewer'));
+    expect(inferRoleMapping('readonly')).toBe('viewer'));
   it('maps member', () => expect(inferRoleMapping('member')).toBe('member'));
   it('maps employee', () =>
     expect(inferRoleMapping('employee')).toBe('member'));
@@ -59,8 +65,13 @@ describe('inferRoleMapping', () => {
     expect(inferRoleMapping('custom-group')).toBeNull());
   it('uses explicit role over displayName', () =>
     expect(inferRoleMapping('custom-name', 'admin')).toBe('admin'));
-  it('uses null explicit role falls back to display name', () =>
-    expect(inferRoleMapping('admin team', null)).toBe('admin'));
+  // Security: names that merely CONTAIN a role keyword must NOT map (fail safe).
+  it('does NOT map substring/multi-word names to a role', () => {
+    expect(inferRoleMapping('non-admin')).toBeNull();
+    expect(inferRoleMapping('app-admin-readers')).toBeNull();
+    expect(inferRoleMapping('admin team')).toBeNull();
+    expect(inferRoleMapping('Auditor Group')).toBeNull();
+  });
 });
 
 describe('getGroupById', () => {

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useComplianceAction } from '@/components/compliance-system';
 import { useAppStore } from '@/lib/stores/app';
+import { useModalA11y } from '@/lib/hooks/use-modal-a11y';
 import { z } from 'zod';
 
 const uploadArtifactSchema = z.object({
@@ -54,6 +55,8 @@ export function UploadArtifactModal({
   const supabase = createSupabaseClient();
   const { evidenceAdded, reportError } = useComplianceAction();
   const orgId = useAppStore((state) => state.organization?.id ?? null);
+
+  const panelRef = useModalA11y<HTMLDivElement>(isOpen, onClose);
 
   // Reset state when modal closes
   useEffect(() => {
@@ -215,11 +218,19 @@ export function UploadArtifactModal({
   if (success) {
     return (
       <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-        <div className="w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden p-10 sm:p-12 flex flex-col items-center justify-center animate-in zoom-in-95">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="upload-artifact-success-title"
+          className="w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden p-10 sm:p-12 flex flex-col items-center justify-center animate-in zoom-in-95"
+        >
           <div className="h-20 w-20 rounded-full bg-violet-400/20 flex items-center justify-center mb-4 border-2 border-violet-400/40">
             <CheckCircle2 className="h-10 w-10 text-violet-400" />
           </div>
-          <h3 className="text-xl font-bold text-foreground">
+          <h3
+            id="upload-artifact-success-title"
+            className="text-xl font-bold text-foreground"
+          >
             Evidence Secured
           </h3>
           <p className="text-sm text-muted-foreground mt-2 text-center">
@@ -232,18 +243,25 @@ export function UploadArtifactModal({
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="upload-artifact-title"
+        className="w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-800 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto"
+      >
         <div className="p-6 border-b border-glass-border flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full bg-violet-400/20 flex items-center justify-center">
               <div className="h-2 w-2 rounded-full bg-violet-400" />
             </div>
-            <h3 className="font-bold text-foreground">
+            <h3 id="upload-artifact-title" className="font-bold text-foreground">
               Upload Evidence Artifact
             </h3>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close"
             className="p-2 hover:bg-glass-strong rounded-xl transition-colors"
           >
             <X className="h-4 w-4 text-muted-foreground" />

@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
     await processApprovalDecision({
       executionId: body.executionId,
       stepId: body.stepId,
+      orgId: context.orgId,
       decision: body.decision,
       decidedBy: context.userId,
       comment: body.comment,

@@ -9,6 +9,7 @@ import { createSupabaseServerClient as createClient } from '@/lib/supabase/serve
 import { logAuditEventCore } from '@/lib/audit/log-audit-event';
 import { decodeIntegrationConfig } from './config-crypto';
 import { consoleShim } from '@/lib/monitoring/console-shim';
+import { validateWebhookUrl } from '@/lib/security/url-validator';
 
 export type TeamsEventType =
   | 'task_created'
@@ -45,6 +46,10 @@ export async function sendTeamsMessage(
   card: TeamsCard,
 ): Promise<boolean> {
   try {
+    // SSRF guard: webhook URL is org-admin-supplied; block private/internal
+    // targets before the server makes the outbound request.
+    await validateWebhookUrl(webhookUrl);
+
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {

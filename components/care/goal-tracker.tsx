@@ -68,6 +68,8 @@ export function GoalTracker({
 }) {
   const [expandedGoal, setExpandedGoal] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [newGoal, setNewGoal] = useState({
     goal_text: '',
     category: 'independence',
@@ -78,13 +80,19 @@ export function GoalTracker({
   });
 
   const handleAddGoal = async () => {
-    if (!newGoal.goal_text.trim()) return;
+    if (!newGoal.goal_text.trim() || saving) return;
+    setSaving(true);
+    setAddError(null);
     try {
-      await fetch(`/api/v1/care-plans/${carePlanId}/goals`, {
+      const res = await fetch(`/api/v1/care-plans/${carePlanId}/goals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...newGoal, org_id: orgId }),
       });
+      if (!res.ok) {
+        setAddError('Could not save the goal. Please try again.');
+        return;
+      }
       setShowAddForm(false);
       setNewGoal({
         goal_text: '',
@@ -95,7 +103,11 @@ export function GoalTracker({
         target_value: '',
       });
       window.location.reload();
-    } catch {}
+    } catch {
+      setAddError('Network error — the goal was not saved. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const achievedCount = goals.filter((g) => g.status === 'achieved').length;
@@ -188,15 +200,24 @@ export function GoalTracker({
                 className="rounded-md border border-border bg-background px-3 py-2 text-sm"
               />
             </div>
+            {addError && (
+              <p role="alert" className="text-sm text-red-600">
+                {addError}
+              </p>
+            )}
             <div className="flex gap-2">
               <button
                 onClick={handleAddGoal}
-                className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground hover:bg-primary/90"
+                disabled={saving}
+                className="rounded-md bg-primary px-4 py-1.5 text-sm text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Save Goal
+                {saving ? 'Saving…' : 'Save Goal'}
               </button>
               <button
-                onClick={() => setShowAddForm(false)}
+                onClick={() => {
+                  setShowAddForm(false);
+                  setAddError(null);
+                }}
                 className="rounded-md border border-border px-4 py-1.5 text-sm hover:bg-muted"
               >
                 Cancel

@@ -79,8 +79,12 @@ export async function getGroupRollup(groupId: string) {
       .eq('organization_id', orgId);
 
     const total = controls?.length ?? 0;
+    // "Passing" = satisfied OR compliant — the evaluator persists `compliant`,
+    // so counting only `satisfied` understated the group rollup score.
     const satisfied =
-      controls?.filter((c) => c.status === 'satisfied').length ?? 0;
+      controls?.filter(
+        (c) => c.status === 'satisfied' || c.status === 'compliant',
+      ).length ?? 0;
 
     const { count: evidenceCount } = await db
       .from('org_evidence')

@@ -30,6 +30,18 @@ const MIGRATIONS_DIR = 'supabase/migrations';
 const SNAPSHOT_PATH = 'supabase/.migration-ledger-snapshot.json';
 
 if (!existsSync(SNAPSHOT_PATH)) {
+  // The snapshot is committed to the repo, so it is present in every real
+  // checkout — including fork PRs. A missing snapshot in CI therefore means
+  // it was deleted/not committed, which would silently turn this drift gate
+  // into a no-op. Fail in CI; only tolerate the absence for fresh local setup.
+  if (process.env.CI) {
+    console.error(
+      `❌ ${SNAPSHOT_PATH} is missing in CI. The committed ledger snapshot must\n` +
+        `   exist for the alignment gate to run. Restore it or regenerate via\n` +
+        `   \`npm run db:ledger:snapshot\` against prod.`,
+    );
+    process.exit(1);
+  }
   console.log(
     `ℹ️  Skipping ledger-alignment check — ${SNAPSHOT_PATH} missing.\n   Run \`npm run db:ledger:snapshot\` against prod to generate it.`,
   );
