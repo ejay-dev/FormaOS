@@ -5662,6 +5662,65 @@ CREATE TABLE IF NOT EXISTS "public"."webhook_deliveries" (
 ALTER TABLE "public"."webhook_deliveries" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."workflow_approvals" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "execution_id" "uuid" NOT NULL,
+    "step_id" "text" NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "approvers" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "approved_by" "uuid",
+    "approved_at" timestamp with time zone,
+    "timeout_at" timestamp with time zone,
+    "decision" "text",
+    "comment" "text",
+    CONSTRAINT "workflow_approvals_decision_check" CHECK (("decision" = ANY (ARRAY['approve'::"text", 'reject'::"text"]))),
+    CONSTRAINT "workflow_approvals_status_check" CHECK (("status" = ANY (ARRAY['pending'::"text", 'approved'::"text", 'rejected'::"text", 'timed_out'::"text", 'escalated'::"text"])))
+);
+
+
+ALTER TABLE "public"."workflow_approvals" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."workflow_definitions" (
+    "row_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "id" "uuid" NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "name" "text" NOT NULL,
+    "description" "text" DEFAULT ''::"text" NOT NULL,
+    "version" integer DEFAULT 1 NOT NULL,
+    "definition" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "enabled" boolean DEFAULT true NOT NULL,
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."workflow_definitions" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."workflow_executions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "workflow_id" "uuid" NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "trigger_event" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "workflow_version" integer DEFAULT 1 NOT NULL,
+    "status" "text" DEFAULT 'running'::"text" NOT NULL,
+    "started_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "completed_at" timestamp with time zone,
+    "error" "text",
+    "current_step_id" "text",
+    "delay_resume_at" timestamp with time zone,
+    "execution_trace" "jsonb" DEFAULT '{"logs": [], "steps": []}'::"jsonb" NOT NULL,
+    "context_snapshot" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    CONSTRAINT "workflow_executions_status_check" CHECK (("status" = ANY (ARRAY['running'::"text", 'completed'::"text", 'failed'::"text", 'cancelled'::"text", 'waiting_approval'::"text", 'waiting_delay'::"text", 'paused'::"text"])))
+);
+
+
+ALTER TABLE "public"."workflow_executions" OWNER TO "postgres";
+
+
 ALTER TABLE ONLY "public"."active_sessions"
     ADD CONSTRAINT "active_sessions_pkey" PRIMARY KEY ("id");
 
@@ -6979,6 +7038,26 @@ ALTER TABLE ONLY "public"."webhook_configs"
 
 ALTER TABLE ONLY "public"."webhook_deliveries"
     ADD CONSTRAINT "webhook_deliveries_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."workflow_approvals"
+    ADD CONSTRAINT "workflow_approvals_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."workflow_definitions"
+    ADD CONSTRAINT "workflow_definitions_id_version_key" UNIQUE ("id", "version");
+
+
+
+ALTER TABLE ONLY "public"."workflow_definitions"
+    ADD CONSTRAINT "workflow_definitions_pkey" PRIMARY KEY ("row_id");
+
+
+
+ALTER TABLE ONLY "public"."workflow_executions"
+    ADD CONSTRAINT "workflow_executions_pkey" PRIMARY KEY ("id");
 
 
 
@@ -8306,7 +8385,31 @@ CREATE INDEX "idx_webhook_deliveries_webhook_status" ON "public"."webhook_delive
 
 
 
+CREATE INDEX "idx_workflow_approvals_execution" ON "public"."workflow_approvals" USING "btree" ("execution_id", "status");
+
+
+
+CREATE INDEX "idx_workflow_approvals_org" ON "public"."workflow_approvals" USING "btree" ("org_id", "status");
+
+
+
+CREATE INDEX "idx_workflow_approvals_pending_timeout" ON "public"."workflow_approvals" USING "btree" ("timeout_at") WHERE ("status" = 'pending'::"text");
+
+
+
+CREATE INDEX "idx_workflow_definitions_org" ON "public"."workflow_definitions" USING "btree" ("org_id", "enabled", "updated_at" DESC);
+
+
+
+CREATE INDEX "idx_workflow_executions_delay_resume" ON "public"."workflow_executions" USING "btree" ("delay_resume_at") WHERE ("status" = 'waiting_delay'::"text");
+
+
+
 CREATE INDEX "idx_workflow_executions_executed_at" ON "public"."org_workflow_executions" USING "btree" ("executed_at");
+
+
+
+CREATE INDEX "idx_workflow_executions_org_status" ON "public"."workflow_executions" USING "btree" ("org_id", "status", "started_at" DESC);
 
 
 
@@ -10162,6 +10265,36 @@ ALTER TABLE ONLY "public"."webhook_configs"
 
 ALTER TABLE ONLY "public"."webhook_deliveries"
     ADD CONSTRAINT "webhook_deliveries_webhook_id_fkey" FOREIGN KEY ("webhook_id") REFERENCES "public"."webhook_configs"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."workflow_approvals"
+    ADD CONSTRAINT "workflow_approvals_approved_by_fkey" FOREIGN KEY ("approved_by") REFERENCES "auth"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."workflow_approvals"
+    ADD CONSTRAINT "workflow_approvals_execution_id_fkey" FOREIGN KEY ("execution_id") REFERENCES "public"."workflow_executions"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."workflow_approvals"
+    ADD CONSTRAINT "workflow_approvals_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."workflow_definitions"
+    ADD CONSTRAINT "workflow_definitions_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id");
+
+
+
+ALTER TABLE ONLY "public"."workflow_definitions"
+    ADD CONSTRAINT "workflow_definitions_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."workflow_executions"
+    ADD CONSTRAINT "workflow_executions_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON DELETE CASCADE;
 
 
 
@@ -13120,6 +13253,57 @@ ALTER TABLE "public"."webhook_configs" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."webhook_deliveries" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."workflow_approvals" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "workflow_approvals_manage_org" ON "public"."workflow_approvals" USING (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE (("org_members"."user_id" = "auth"."uid"()) AND ("org_members"."role" = ANY (ARRAY['owner'::"text", 'admin'::"text", 'compliance_officer'::"text"])))))) WITH CHECK (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE (("org_members"."user_id" = "auth"."uid"()) AND ("org_members"."role" = ANY (ARRAY['owner'::"text", 'admin'::"text", 'compliance_officer'::"text"]))))));
+
+
+
+CREATE POLICY "workflow_approvals_select_org" ON "public"."workflow_approvals" FOR SELECT USING (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE ("org_members"."user_id" = "auth"."uid"()))));
+
+
+
+ALTER TABLE "public"."workflow_definitions" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "workflow_definitions_manage_org" ON "public"."workflow_definitions" USING (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE (("org_members"."user_id" = "auth"."uid"()) AND ("org_members"."role" = ANY (ARRAY['owner'::"text", 'admin'::"text", 'compliance_officer'::"text"])))))) WITH CHECK (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE (("org_members"."user_id" = "auth"."uid"()) AND ("org_members"."role" = ANY (ARRAY['owner'::"text", 'admin'::"text", 'compliance_officer'::"text"]))))));
+
+
+
+CREATE POLICY "workflow_definitions_select_org" ON "public"."workflow_definitions" FOR SELECT USING (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE ("org_members"."user_id" = "auth"."uid"()))));
+
+
+
+ALTER TABLE "public"."workflow_executions" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "workflow_executions_manage_org" ON "public"."workflow_executions" USING (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE (("org_members"."user_id" = "auth"."uid"()) AND ("org_members"."role" = ANY (ARRAY['owner'::"text", 'admin'::"text", 'compliance_officer'::"text"])))))) WITH CHECK (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE (("org_members"."user_id" = "auth"."uid"()) AND ("org_members"."role" = ANY (ARRAY['owner'::"text", 'admin'::"text", 'compliance_officer'::"text"]))))));
+
+
+
+CREATE POLICY "workflow_executions_select_org" ON "public"."workflow_executions" FOR SELECT USING (("org_id" IN ( SELECT "org_members"."organization_id"
+   FROM "public"."org_members"
+  WHERE ("org_members"."user_id" = "auth"."uid"()))));
+
+
+
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
@@ -14679,6 +14863,24 @@ GRANT ALL ON TABLE "public"."webhook_configs" TO "service_role";
 GRANT ALL ON TABLE "public"."webhook_deliveries" TO "anon";
 GRANT ALL ON TABLE "public"."webhook_deliveries" TO "authenticated";
 GRANT ALL ON TABLE "public"."webhook_deliveries" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."workflow_approvals" TO "anon";
+GRANT ALL ON TABLE "public"."workflow_approvals" TO "authenticated";
+GRANT ALL ON TABLE "public"."workflow_approvals" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."workflow_definitions" TO "anon";
+GRANT ALL ON TABLE "public"."workflow_definitions" TO "authenticated";
+GRANT ALL ON TABLE "public"."workflow_definitions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."workflow_executions" TO "anon";
+GRANT ALL ON TABLE "public"."workflow_executions" TO "authenticated";
+GRANT ALL ON TABLE "public"."workflow_executions" TO "service_role";
 
 
 

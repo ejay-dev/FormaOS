@@ -234,6 +234,8 @@ export interface WorkflowExecutionRecord {
   error?: string | null;
   execution_trace: WorkflowExecutionTrace;
   current_step_id?: string | null;
+  /** When a >30s delay step pauses the run, the time the resume cron should continue it. */
+  delay_resume_at?: string | null;
   context_snapshot?: Record<string, unknown>;
   workflowId?: string;
   orgId?: string;
@@ -351,6 +353,7 @@ export interface WorkflowExecutionSummary {
 export interface ApprovalRequest {
   executionId: string;
   stepId: string;
+  orgId: string;
   approvers: string[];
   timeoutAt?: string;
 }
@@ -358,6 +361,8 @@ export interface ApprovalRequest {
 export interface ApprovalDecision {
   executionId: string;
   stepId: string;
+  /** Scopes the approval write to the caller's org — prevents cross-tenant approve/reject. */
+  orgId: string;
   decision: 'approve' | 'reject';
   decidedBy: string;
   comment?: string;

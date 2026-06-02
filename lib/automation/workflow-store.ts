@@ -47,6 +47,7 @@ type ExecutionRow = {
   error: string | null;
   execution_trace: Record<string, unknown> | null;
   current_step_id?: string | null;
+  delay_resume_at?: string | null;
   context_snapshot?: Record<string, unknown> | null;
   workflow_definitions?: { name?: string | null } | { name?: string | null }[];
 };
@@ -112,6 +113,7 @@ function mapExecutionRow(row: ExecutionRow): WorkflowExecutionRecord {
       logs: Array.isArray(trace?.logs) ? (trace.logs as WorkflowExecutionTrace['logs']) : [],
     },
     current_step_id: row.current_step_id ?? null,
+    delay_resume_at: row.delay_resume_at ?? null,
     context_snapshot: row.context_snapshot ?? {},
     workflowId: row.workflow_id,
     orgId: row.org_id,
@@ -463,6 +465,7 @@ export async function updateWorkflowExecution(
   if (updates.error !== undefined) record.error = updates.error;
   if (updates.execution_trace !== undefined) record.execution_trace = updates.execution_trace;
   if (updates.current_step_id !== undefined) record.current_step_id = updates.current_step_id;
+  if (updates.delay_resume_at !== undefined) record.delay_resume_at = updates.delay_resume_at;
   if (updates.context_snapshot !== undefined) record.context_snapshot = updates.context_snapshot;
 
   const { error } = await supabase
@@ -480,6 +483,7 @@ export async function updateWorkflowExecution(
 export async function createWorkflowApproval(params: {
   executionId: string;
   stepId: string;
+  orgId: string;
   approvers: string[];
   timeoutAt?: string;
 }): Promise<WorkflowApprovalRecord> {
@@ -489,6 +493,7 @@ export async function createWorkflowApproval(params: {
     .insert({
       execution_id: params.executionId,
       step_id: params.stepId,
+      org_id: params.orgId,
       approvers: params.approvers,
       status: 'pending',
       timeout_at: params.timeoutAt ?? null,
@@ -537,11 +542,40 @@ export async function processApprovalDecision(
     })
     .eq('execution_id', decision.executionId)
     .eq('step_id', decision.stepId)
+    .eq('org_id', decision.orgId)
     .eq('status', 'pending');
 
   if (error) {
     throw new Error(error.message);
   }
+}
+
+/**
+ * Cross-tenant cron query: executions paused on a >30s delay whose resume
+ * time has elapsed. Uses the admin client (spans orgs); the caller resumes
+ * each within its own org context.
+ */
+export async function listExecutionsToResume(
+  before: string,
+  limit = 50,
+): Promise<WorkflowExecutionRecord[]> {
+  const supabase = createSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from('workflow_executions')
+    .select('*')
+    .eq('status', 'waiting_delay')
+    .lte('delay_resume_at', before)
+    .order('delay_resume_at', { ascending: true })
+    .limit(limit);
+
+  if (error) {
+    automationLogger.error(
+      'Failed to list executions to resume',
+      new Error(error.message),
+    );
+    return [];
+  }
+  return (data ?? []).map((row: unknown) => mapExecutionRow(row as ExecutionRow));
 }
 
 export async function listTimedOutApprovals(
@@ -779,6 +813,7 @@ export async function createApprovalRequest(request: ApprovalRequest): Promise<v
   await createWorkflowApproval({
     executionId: request.executionId,
     stepId: request.stepId,
+    orgId: request.orgId,
     approvers: request.approvers,
     timeoutAt: request.timeoutAt,
   });
