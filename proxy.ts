@@ -1014,6 +1014,24 @@ export async function proxy(request: NextRequest) {
       'https://fonts.googleapis.com',
     ].join(' ');
 
+    // Derive the connect-src allowance from the actually-configured Supabase
+    // URL rather than only hardcoding *.supabase.co. This keeps prod working
+    // (its origin matches the wildcard) AND lets self-hosted / local Supabase
+    // (e.g. http://127.0.0.1:54321 for local dev + E2E) connect, which the
+    // wildcard-only policy previously blocked ("Failed to fetch").
+    const supabaseConnectExtra = (() => {
+      try {
+        const u = new URL(getSupabaseUrl() ?? '');
+        const ws = u.protocol === 'https:' ? 'wss:' : 'ws:';
+        return ` ${u.origin} ${ws}//${u.host}`;
+      } catch {
+        return '';
+      }
+    })();
+    const connectSrc =
+      "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com" +
+      supabaseConnectExtra;
+
     response.headers.set(
       'Content-Security-Policy',
       [
@@ -1023,7 +1041,7 @@ export async function proxy(request: NextRequest) {
         `style-src ${styleSrc}`,
         "img-src 'self' data: blob: https:",
         "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com",
+        connectSrc,
         "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
         // v4-031: modern clickjacking gate. X-Frame-Options: DENY is also
         // set above; frame-ancestors is the CSP-native replacement and
@@ -1056,7 +1074,7 @@ export async function proxy(request: NextRequest) {
         `style-src ${styleSrcReportOnly}`,
         "img-src 'self' data: blob: https:",
         "font-src 'self' data: https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co wss://*.supabase.in https://*.sentry.io https://*.posthog.com https://api.stripe.com https://vitals.vercel-insights.com",
+        connectSrc,
         "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
         "frame-ancestors 'none'",
         "worker-src 'self' blob:",

@@ -29,12 +29,24 @@ ON org_workflow_executions(organization_id, executed_at DESC);
 CREATE INDEX IF NOT EXISTS idx_control_evaluations_org_score
 ON org_control_evaluations(organization_id, compliance_score DESC);
 
--- Add index for evidence expiry checks
+-- Add index for evidence expiry checks.
+-- Replayability fix: this partial index references verification_status, which
+-- was historically only added later (20260425001). Ensure the column exists
+-- here so a from-scratch `supabase db reset` succeeds in timestamp order.
+-- Idempotent + matches the later definition, so it's a no-op on prod and on
+-- the later migration.
+ALTER TABLE org_evidence
+  ADD COLUMN IF NOT EXISTS verification_status TEXT DEFAULT 'pending';
 CREATE INDEX IF NOT EXISTS idx_evidence_created_verified
 ON org_evidence(organization_id, created_at)
 WHERE verification_status = 'verified' AND renewal_task_created = FALSE;
 
--- Add index for policy review checks
+-- Add index for policy review checks.
+-- Replayability fix: last_updated_at is not created by any migration (it
+-- exists on prod out-of-band). Ensure it exists so a from-scratch reset
+-- succeeds; idempotent no-op on prod.
+ALTER TABLE org_policies
+  ADD COLUMN IF NOT EXISTS last_updated_at TIMESTAMPTZ;
 CREATE INDEX IF NOT EXISTS idx_policies_last_updated
 ON org_policies(organization_id, last_updated_at)
 WHERE status IN ('published', 'approved') AND review_task_created = FALSE;
