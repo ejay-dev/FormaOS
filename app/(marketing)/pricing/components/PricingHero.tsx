@@ -102,8 +102,11 @@ export function PricingHero() {
           </Link>
         </motion.div>
 
-        {/* Clean supporting stats — three facts, plainly set, no terminal HUD */}
-        <motion.dl
+        {/* Clean supporting stats — three facts, plainly set, no terminal HUD.
+            Plain div/grid (not a <dl>): the prior <dl> nested <dd> before <dt>
+            plus a stray <p>, an invalid definition-list structure that tripped
+            a serious axe `definition-list` (WCAG 1.3.1) violation on /pricing. */}
+        <motion.div
           initial={animate ? { opacity: 0 } : false}
           animate={{ opacity: 1 }}
           transition={{ duration: animate ? duration.slower : 0, delay: animate ? 0.32 : 0 }}
@@ -111,16 +114,16 @@ export function PricingHero() {
         >
           {HERO_STATS.map((stat) => (
             <div key={stat.label} className="bg-slate-950/40 px-6 py-5 text-center">
-              <dd className="text-3xl font-semibold tracking-tight text-white">
+              <div className="text-3xl font-semibold tracking-tight text-white">
                 {stat.value}
-              </dd>
-              <dt className="mt-1.5 text-sm font-medium text-slate-300">
+              </div>
+              <div className="mt-1.5 text-sm font-medium text-slate-300">
                 {stat.label}
-              </dt>
+              </div>
               <p className="mt-0.5 text-xs text-slate-500">{stat.sub}</p>
             </div>
           ))}
-        </motion.dl>
+        </motion.div>
       </div>
     </section>
   );
