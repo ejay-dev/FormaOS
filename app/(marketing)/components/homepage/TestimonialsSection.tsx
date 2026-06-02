@@ -2,12 +2,20 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ArrowRight, Check } from 'lucide-react';
+import {
+  Accessibility,
+  ArrowRight,
+  Check,
+  Landmark,
+  Stethoscope,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
 
 const SCENARIOS = [
   {
     sector: 'NDIS Provider',
+    icon: Accessibility,
     framework: 'NDIS Practice Standards (all 8 modules)',
     situation:
       'Reportable incidents tracked in spreadsheets; Commission audits required days of reconstruction across multiple sites.',
@@ -19,6 +27,7 @@ const SCENARIOS = [
   },
   {
     sector: 'Healthcare Operator',
+    icon: Stethoscope,
     framework: 'NSQHS Standards + AHPRA + RACGP',
     situation:
       'Clinical governance controls existed on paper, but proof was inconsistent across sites; practitioner registration tracked manually.',
@@ -30,6 +39,7 @@ const SCENARIOS = [
   },
   {
     sector: 'Aged Care Provider',
+    icon: Users,
     framework: 'Aged Care Quality Standards (8 standards)',
     situation:
       'Policy changes were hard to roll out uniformly, periodic reviews slipped without reliable triggers, Standard 8 governance reporting consumed executive time.',
@@ -41,6 +51,7 @@ const SCENARIOS = [
   },
   {
     sector: 'Financial Services',
+    icon: Landmark,
     framework: 'ISO 27001 + APRA CPS 234 + AML/CTF',
     situation:
       'Third-party risk grew with fintech partnerships, but control ownership and evidence collection remained manual; ASIC breach reporting relied on email threads.',
@@ -110,16 +121,30 @@ export function TestimonialsSection() {
             {/* top accent rail, revealed on hover */}
             <span className="absolute inset-x-0 top-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-500 group-hover:scale-x-100" />
 
-            {/* Header: sector as a real heading, framework as the supporting line */}
-            <h3 className="font-display text-xl font-semibold tracking-tight text-white">
-              {scenario.sector}
-            </h3>
-            <p className="mt-1.5 text-sm font-medium text-slate-400">
-              {scenario.framework}
-            </p>
+            {/* Header: sector icon tile anchors the card, sector as heading */}
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-300 transition-colors duration-300 group-hover:text-white">
+                <scenario.icon className="h-5 w-5" strokeWidth={1.75} />
+              </span>
+              <h3 className="font-display text-xl font-semibold tracking-tight text-white">
+                {scenario.sector}
+              </h3>
+            </div>
+
+            {/* Frameworks as scannable chips instead of a run-on line */}
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {scenario.framework.split(' + ').map((fw) => (
+                <span
+                  key={fw}
+                  className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-1 text-[11px] font-medium text-slate-400"
+                >
+                  {fw}
+                </span>
+              ))}
+            </div>
 
             {/* Situation — lead paragraph, no label */}
-            <p className="mt-5 text-sm leading-relaxed text-slate-400">
+            <p className="mt-4 text-sm leading-relaxed text-slate-400">
               {scenario.situation}
             </p>
 
