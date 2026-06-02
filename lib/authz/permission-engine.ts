@@ -171,11 +171,21 @@ export async function createCustomRole(
   name: string,
   baseRole: string,
   permissions: Partial<PermissionMatrix>,
+  description?: string | null,
 ) {
   const db = createSupabaseAdminClient();
+  const trimmed = description?.trim();
   const { data, error } = await db
     .from('custom_roles')
-    .insert({ org_id: orgId, name, base_role: baseRole, permissions })
+    .insert({
+      org_id: orgId,
+      name,
+      base_role: baseRole,
+      permissions,
+      // custom_roles.description exists in the schema; the New Role form
+      // captured it but previously dropped it on the floor.
+      description: trimmed ? trimmed : null,
+    })
     .select()
     .single();
 

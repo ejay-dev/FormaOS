@@ -43,14 +43,26 @@ async function loginAs(page: Page, email: string, password: string) {
   await page.fill('input[type="password"]', password);
   await page.click('button[type="submit"]');
   try {
-    await page.waitForURL(/\/app/, { timeout: 15000 });
+    await page.waitForURL(/\/app/, { timeout: 20000 });
   } catch {
     const url = page.url();
-    test.skip(
-      true,
-      `loginAs: landed on ${url} instead of /app — Supabase auth or onboarding not complete`,
+    // We only reach loginAs AFTER getCredentials() succeeded — i.e. Supabase
+    // secrets are present and the test user bootstrapped. A login that then
+    // fails to land on /app is a genuine auth/onboarding regression, not an
+    // environment gap, so it must FAIL the test rather than skip (which is
+    // how an RBAC regression previously turned green). Escape hatch:
+    // E2E_STRICT_AUTH=0 restores the old skip behaviour for flaky local runs.
+    if (process.env.E2E_STRICT_AUTH === '0') {
+      test.skip(
+        true,
+        `loginAs: landed on ${url} instead of /app (strict auth disabled)`,
+      );
+      return;
+    }
+    throw new Error(
+      `loginAs failed: landed on ${url} instead of /app. Credentials bootstrapped, ` +
+        `so this is a real sign-in/onboarding regression. Set E2E_STRICT_AUTH=0 to skip locally.`,
     );
-    return;
   }
   await dismissProductTour(page);
 }

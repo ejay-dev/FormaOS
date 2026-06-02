@@ -13,11 +13,18 @@ async function createRole(formData: FormData) {
 
   const name = String(formData.get('name') ?? '').trim();
   const baseRole = String(formData.get('base_role') ?? 'member');
+  const description = String(formData.get('description') ?? '').trim();
 
   if (!name) redirect('/app/settings/roles/new?error=name-required');
 
   try {
-    await createCustomRole(state.organization.id, name, baseRole, {});
+    await createCustomRole(
+      state.organization.id,
+      name,
+      baseRole,
+      {},
+      description,
+    );
     redirect('/app/settings/roles');
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to create role';

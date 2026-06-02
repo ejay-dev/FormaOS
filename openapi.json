@@ -103,6 +103,34 @@
     {
       "name": "Account",
       "description": "Authenticated user account — active org preference, GDPR export, GDPR self-serve deletion"
+    },
+    {
+      "name": "Forms",
+      "description": "Dynamic form builder — templates, forms, submissions, analytics, and exports"
+    },
+    {
+      "name": "Care",
+      "description": "Care operations — care plans, goals, and review status"
+    },
+    {
+      "name": "Medications",
+      "description": "Medication administration records"
+    },
+    {
+      "name": "Incidents",
+      "description": "Incident reporting and SIRS summaries"
+    },
+    {
+      "name": "Participants",
+      "description": "Participant and client snapshots"
+    },
+    {
+      "name": "Registers",
+      "description": "Regulatory registers — breach register and self-reporting"
+    },
+    {
+      "name": "Staff Compliance",
+      "description": "Staff credential and screening compliance"
     }
   ],
   "paths": {
@@ -2659,6 +2687,1895 @@
           "401": { "$ref": "#/components/responses/Unauthorized" },
           "403": { "$ref": "#/components/responses/Forbidden" },
           "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/api/v1/ai/reindex": {
+      "post": {
+        "summary": "Trigger an AI knowledge-base reindex",
+        "description": "Re-runs the AI indexing pipeline for the active organization. Session-cookie authentication with CSRF origin validation; restricted to owner/admin roles and gated by the `ai_assistant` entitlement. This is a form-submit endpoint: it always responds with a 303 redirect back to `/app/settings/ai` carrying the outcome as query params (`reindexed`, `reindexErrors`, or `error`), never a JSON body.",
+        "operationId": "reindexAi",
+        "tags": ["AI"],
+        "responses": {
+          "303": {
+            "description": "Redirect to /app/settings/ai with the reindex outcome (or an error code) as query parameters"
+          }
+        }
+      }
+    },
+    "/api/v1/care-plans/review-status": {
+      "get": {
+        "summary": "Get care-plan review status counts",
+        "description": "Returns counts of care plans due for review this month and overdue, for the active organization. Session-cookie authentication; non-fatal errors return zeroed counts.",
+        "operationId": "getCarePlanReviewStatus",
+        "tags": ["Care"],
+        "responses": {
+          "200": {
+            "description": "Care-plan review counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["dueThisMonth", "overdue"],
+                  "properties": {
+                    "dueThisMonth": { "type": "integer" },
+                    "overdue": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/care-plans/{id}/goals": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Care plan ID",
+          "schema": { "type": "string", "format": "uuid" }
+        }
+      ],
+      "get": {
+        "summary": "List goals for a care plan",
+        "description": "Returns the goals attached to a care plan in the active organization. Session-cookie authentication.",
+        "operationId": "listCarePlanGoals",
+        "tags": ["Care"],
+        "responses": {
+          "200": {
+            "description": "List of care goals",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["goals"],
+                  "properties": {
+                    "goals": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      },
+      "post": {
+        "summary": "Create a goal for a care plan",
+        "description": "Adds a new goal to a care plan in the active organization. Session-cookie authentication with CSRF origin validation. The participant is inferred from the care plan.",
+        "operationId": "createCarePlanGoal",
+        "tags": ["Care"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["goal_text"],
+                "properties": {
+                  "goal_text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+                  "category": {
+                    "type": "string",
+                    "default": "independence",
+                    "enum": [
+                      "daily_living",
+                      "social",
+                      "health",
+                      "employment",
+                      "education",
+                      "community",
+                      "independence",
+                      "safety"
+                    ]
+                  },
+                  "target_date": { "type": "string", "maxLength": 40 },
+                  "measurement_method": { "type": "string", "maxLength": 500 },
+                  "baseline_value": { "type": "string", "maxLength": 500 },
+                  "target_value": { "type": "string", "maxLength": 500 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created goal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "goal": { "type": "object" } }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "description": "Care plan not found" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Failed to create goal" }
+        }
+      },
+      "patch": {
+        "summary": "Update a care goal",
+        "description": "Updates a goal by its goal ID (passed in the `{id}` segment for this handler). Session-cookie authentication with CSRF origin validation.",
+        "operationId": "updateCarePlanGoal",
+        "tags": ["Care"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["not_started", "in_progress", "achieved", "partially_achieved", "discontinued"]
+                  },
+                  "progress_percentage": { "type": "number", "minimum": 0, "maximum": 100 },
+                  "current_value": { "type": "string", "maxLength": 500 },
+                  "goal_text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+                  "target_date": { "type": "string", "maxLength": 40 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated goal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "goal": { "type": "object" } }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "description": "Goal not found" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Failed to update goal" }
+        }
+      }
+    },
+    "/api/v1/compliance/graph": {
+      "get": {
+        "summary": "Get the compliance graph",
+        "description": "Returns the organization's compliance graph (nodes and wires) with counts. Session-cookie authentication; row visibility is gated by org-membership RLS.",
+        "operationId": "getComplianceGraph",
+        "tags": ["Compliance"],
+        "responses": {
+          "200": {
+            "description": "Compliance graph nodes and wires",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["nodes", "wires"],
+                  "properties": {
+                    "nodes": { "type": "array", "items": { "type": "object" } },
+                    "wires": { "type": "array", "items": { "type": "object" } },
+                    "nodeCount": { "type": "integer" },
+                    "wireCount": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/v1/compliance/nqf-progress": {
+      "get": {
+        "summary": "Get NQF Quality Area progress (experimental)",
+        "description": "EXPERIMENTAL. Returns per-Quality-Area progress for the National Quality Framework, computed by keyword-matching org task titles. This is keyword spotting, NOT a regulatory NQF assessment — every response carries `experimental: true` and a notice. Session-cookie authentication.",
+        "operationId": "getNqfProgress",
+        "tags": ["Compliance"],
+        "responses": {
+          "200": {
+            "description": "NQF Quality Area progress estimates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["experimental", "notice", "areas"],
+                  "properties": {
+                    "experimental": { "type": "boolean", "enum": [true] },
+                    "notice": { "type": "string" },
+                    "areas": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "number": { "type": "integer" },
+                          "title": { "type": "string" },
+                          "progress": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "503": { "description": "Underlying task data unavailable" },
+          "500": { "description": "Internal error" }
+        }
+      }
+    },
+    "/api/v1/compliance/nsqhs-progress": {
+      "get": {
+        "summary": "Get NSQHS Standard progress (experimental)",
+        "description": "EXPERIMENTAL. Returns per-Standard progress for the National Safety and Quality Health Service Standards, computed by keyword-matching org task titles. This is keyword spotting, NOT an ACSQHC accreditation evaluation — every response carries `experimental: true` and a notice. Session-cookie authentication.",
+        "operationId": "getNsqhsProgress",
+        "tags": ["Compliance"],
+        "responses": {
+          "200": {
+            "description": "NSQHS Standard progress estimates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["experimental", "notice", "standards"],
+                  "properties": {
+                    "experimental": { "type": "boolean", "enum": [true] },
+                    "notice": { "type": "string" },
+                    "standards": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "number": { "type": "integer" },
+                          "title": { "type": "string" },
+                          "progress": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "503": { "description": "Underlying task data unavailable" },
+          "500": { "description": "Internal error" }
+        }
+      }
+    },
+    "/api/v1/compliance/star-rating-readiness": {
+      "get": {
+        "summary": "Get aged-care Star Rating readiness (experimental)",
+        "description": "EXPERIMENTAL. Returns a single `completionPercentage` derived from (completed tasks / total tasks). This is a generic completion ratio with NO mapping to the Aged Care Quality Indicators or Star Rating dimensions — every response carries `experimental: true` and a notice. Session-cookie authentication.",
+        "operationId": "getStarRatingReadiness",
+        "tags": ["Compliance"],
+        "responses": {
+          "200": {
+            "description": "Task-completion ratio (not a true Star Rating)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["experimental", "notice", "completionPercentage"],
+                  "properties": {
+                    "experimental": { "type": "boolean", "enum": [true] },
+                    "notice": { "type": "string" },
+                    "completionPercentage": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "503": { "description": "Underlying task data unavailable" },
+          "500": { "description": "Internal error" }
+        }
+      }
+    },
+    "/api/v1/compliance/transaction-monitoring": {
+      "get": {
+        "summary": "Get AML/CTF transaction-monitoring summary (experimental)",
+        "description": "EXPERIMENTAL. Approximates AML/CTF transaction monitoring by keyword-matching `org_incidents.incident_type` and AML/CTF-related task titles. This is NOT a real transaction-monitoring or SMR system and is not AUSTRAC compliance evidence — every response carries `experimental: true` and a notice. Session-cookie authentication.",
+        "operationId": "getTransactionMonitoring",
+        "tags": ["Compliance"],
+        "responses": {
+          "200": {
+            "description": "Approximated AML/CTF monitoring summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["experimental", "notice", "alertsTriggered"],
+                  "properties": {
+                    "experimental": { "type": "boolean", "enum": [true] },
+                    "notice": { "type": "string" },
+                    "alertsTriggered": { "type": "integer" },
+                    "lastReviewDate": { "type": "string", "format": "date-time", "nullable": true },
+                    "nextReviewDue": { "type": "string", "format": "date-time", "nullable": true }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Internal error" }
+        }
+      }
+    },
+    "/api/v1/evidence/suggest-mappings": {
+      "post": {
+        "summary": "Suggest control mappings for an evidence file",
+        "description": "Returns suggested control mappings for an uploaded evidence file by keyword-matching the file name against ISO 27001 Annex A control codes, intersected with the org's provisioned controls. Session-cookie authentication with CSRF origin validation. Returns an empty `suggestions` array (still 401 on no session) when there is no match or no active org.",
+        "operationId": "suggestEvidenceMappings",
+        "tags": ["Evidence"],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fileName": { "type": "string", "description": "File name to analyse for control keywords" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Suggested control mappings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["suggestions"],
+                  "properties": {
+                    "suggestions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "controlId": { "type": "string" },
+                          "code": { "type": "string" },
+                          "title": { "type": "string" },
+                          "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+                          "reason": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/evidence/upload": {
+      "post": {
+        "summary": "Upload evidence files",
+        "description": "Uploads one to ten evidence files (max 10MB each) to the `evidence` storage bucket and records them against an obligation (task) or another entity. Session-cookie authentication with CSRF origin validation. Request body is `multipart/form-data`. MIME type is validated by allow-list and magic-byte sniffing; a SHA-256 hash is captured at upload. Each upload writes audit events.",
+        "operationId": "uploadEvidence",
+        "tags": ["Evidence"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["files"],
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" },
+                    "description": "1-10 files, max 10MB each, non-empty"
+                  },
+                  "obligationId": { "type": "string", "description": "Task/obligation ID to attach to (alias: taskId). Required if entityId is not provided." },
+                  "taskId": { "type": "string", "description": "Alias for obligationId" },
+                  "entityId": { "type": "string", "description": "Alternative parent entity ID. Required if obligationId is not provided." },
+                  "entityType": { "type": "string", "enum": ["incident", "staff_credential", "capa"], "description": "Type of the parent entity when entityId is used" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Uploaded evidence items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["items"],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "type": { "type": "string", "enum": ["file"] },
+                          "title": { "type": "string" },
+                          "description": { "type": "string", "nullable": true },
+                          "submittedBy": {
+                            "type": "object",
+                            "properties": { "name": { "type": "string" } }
+                          },
+                          "submittedAt": { "type": "string", "format": "date-time" },
+                          "locked": { "type": "boolean" },
+                          "filePath": { "type": "string" },
+                          "fileName": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "description": "Parent obligation or entity not found in this organization" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "415": { "description": "Unsupported or mismatched file media type" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Upload or evidence-record write failed" }
+        }
+      }
+    },
+    "/api/v1/form-templates": {
+      "get": {
+        "summary": "List built-in form templates",
+        "description": "Returns the catalog of built-in form templates. Requires API-key authentication with the `compliance:read` scope. Optional filters by category and industry (industry filter also includes `general` templates).",
+        "operationId": "listFormTemplates",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "parameters": [
+          { "name": "category", "in": "query", "description": "Filter by template category", "schema": { "type": "string" } },
+          { "name": "industry", "in": "query", "description": "Filter by industry (also returns general templates)", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Form templates",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Envelope" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/api/v1/forms": {
+      "get": {
+        "summary": "List forms",
+        "description": "Returns the organization's forms with pagination. Requires API-key authentication with the `forms:read` scope.",
+        "operationId": "listForms",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "parameters": [
+          { "name": "status", "in": "query", "description": "Filter by form status", "schema": { "type": "string", "enum": ["draft", "published", "archived"] } },
+          { "name": "q", "in": "query", "description": "Search term", "schema": { "type": "string" } },
+          { "$ref": "#/components/parameters/Limit" },
+          { "$ref": "#/components/parameters/Offset" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of forms",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PaginatedEnvelope" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Failed to list forms" }
+        }
+      },
+      "post": {
+        "summary": "Create a form",
+        "description": "Creates a new form. Requires API-key authentication with the `forms:write` scope and CSRF origin validation.",
+        "operationId": "createForm",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+                  "description": { "type": "string", "maxLength": 2000 },
+                  "slug": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9-]+$" },
+                  "fields": { "type": "array", "maxItems": 200, "items": { "type": "object" } },
+                  "settings": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created form",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Envelope" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Failed to create form" }
+        }
+      }
+    },
+    "/api/v1/forms/{formId}": {
+      "parameters": [
+        { "name": "formId", "in": "path", "required": true, "description": "Form ID", "schema": { "type": "string" } }
+      ],
+      "get": {
+        "summary": "Get a form",
+        "description": "Returns a single form. Requires API-key authentication with the `forms:read` scope.",
+        "operationId": "getForm",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Form details",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "description": "Form not found" }
+        }
+      },
+      "patch": {
+        "summary": "Update a form",
+        "description": "Updates a form. Requires API-key authentication with the `forms:write` scope and CSRF origin validation. At least one field must be provided.",
+        "operationId": "updateForm",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "properties": {
+                  "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+                  "description": { "type": "string", "maxLength": 2000 },
+                  "slug": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9-]+$" },
+                  "fields": { "type": "array", "maxItems": 200, "items": { "type": "object" } },
+                  "settings": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated form",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Failed to update form" }
+        }
+      },
+      "delete": {
+        "summary": "Archive a form",
+        "description": "Archives (soft-deletes) a form. Requires API-key authentication with the `forms:write` scope and CSRF origin validation.",
+        "operationId": "archiveForm",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Archived form",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "description": "Form not found" }
+        }
+      }
+    },
+    "/api/v1/forms/{formId}/analytics": {
+      "parameters": [
+        { "name": "formId", "in": "path", "required": true, "description": "Form ID", "schema": { "type": "string" } }
+      ],
+      "get": {
+        "summary": "Get form submission analytics",
+        "description": "Returns submission analytics for a form. Requires API-key authentication with the `forms:read` scope and the `form_analytics` entitlement (Growth or Enterprise).",
+        "operationId": "getFormAnalytics",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Form analytics",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing forms:read scope or form_analytics entitlement" },
+          "500": { "description": "Failed to get analytics" }
+        }
+      }
+    },
+    "/api/v1/forms/{formId}/duplicate": {
+      "parameters": [
+        { "name": "formId", "in": "path", "required": true, "description": "Form ID to duplicate", "schema": { "type": "string" } }
+      ],
+      "post": {
+        "summary": "Duplicate a form",
+        "description": "Creates a copy of an existing form. Requires API-key authentication with the `forms:write` scope and CSRF origin validation.",
+        "operationId": "duplicateForm",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "201": {
+            "description": "Duplicated form",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Failed to duplicate form" }
+        }
+      }
+    },
+    "/api/v1/forms/{formId}/publish": {
+      "parameters": [
+        { "name": "formId", "in": "path", "required": true, "description": "Form ID to publish", "schema": { "type": "string" } }
+      ],
+      "post": {
+        "summary": "Publish a form",
+        "description": "Publishes a form so it can accept submissions. Requires API-key authentication with the `forms:write` scope and CSRF origin validation.",
+        "operationId": "publishForm",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Published form",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Failed to publish form" }
+        }
+      }
+    },
+    "/api/v1/forms/{formId}/submissions": {
+      "parameters": [
+        { "name": "formId", "in": "path", "required": true, "description": "Form ID", "schema": { "type": "string" } }
+      ],
+      "get": {
+        "summary": "List form submissions",
+        "description": "Returns submissions for a form with pagination. Requires API-key authentication with the `forms:read` scope.",
+        "operationId": "listFormSubmissions",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "parameters": [
+          { "name": "status", "in": "query", "description": "Filter by submission status", "schema": { "type": "string" } },
+          { "name": "date_from", "in": "query", "description": "Filter submissions created on or after this date", "schema": { "type": "string" } },
+          { "name": "date_to", "in": "query", "description": "Filter submissions created on or before this date", "schema": { "type": "string" } },
+          { "$ref": "#/components/parameters/Limit" },
+          { "$ref": "#/components/parameters/Offset" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of submissions",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedEnvelope" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Failed to list submissions" }
+        }
+      },
+      "post": {
+        "summary": "Submit a form",
+        "description": "Creates a submission for a form. Requires API-key authentication with the `forms:write` scope and CSRF origin validation. The `data` object is free-form and validated against the form's own field schema by the submission engine.",
+        "operationId": "submitForm",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": { "type": "object", "description": "Form field responses; shape governed by the form schema" },
+                  "respondent_email": { "type": "string", "format": "email" },
+                  "respondent_name": { "type": "string", "maxLength": 200 },
+                  "metadata": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created submission",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "422": { "description": "Form field validation failed (per-field errors in details)" },
+          "500": { "description": "Submission failed" }
+        }
+      }
+    },
+    "/api/v1/forms/{formId}/submissions/{submissionId}": {
+      "parameters": [
+        { "name": "formId", "in": "path", "required": true, "description": "Form ID", "schema": { "type": "string" } },
+        { "name": "submissionId", "in": "path", "required": true, "description": "Submission ID", "schema": { "type": "string" } }
+      ],
+      "get": {
+        "summary": "Get a form submission",
+        "description": "Returns a single submission. Requires API-key authentication with the `forms:read` scope.",
+        "operationId": "getFormSubmission",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Submission details",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "description": "Submission not found" }
+        }
+      },
+      "patch": {
+        "summary": "Review a form submission",
+        "description": "Approves or rejects a submission. Requires API-key authentication with the `forms:write` scope and CSRF origin validation.",
+        "operationId": "reviewFormSubmission",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "type": "string", "enum": ["approved", "rejected"] },
+                  "notes": { "type": "string", "maxLength": 5000 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reviewed submission",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Review failed" }
+        }
+      }
+    },
+    "/api/v1/forms/{formId}/submissions/export": {
+      "parameters": [
+        { "name": "formId", "in": "path", "required": true, "description": "Form ID (must be a UUID)", "schema": { "type": "string", "format": "uuid" } }
+      ],
+      "get": {
+        "summary": "Export form submissions",
+        "description": "Exports up to 10,000 submissions for a form as a downloadable file (CSV by default). Requires API-key authentication with the `forms:read` scope. Returns a file attachment, not a JSON envelope.",
+        "operationId": "exportFormSubmissions",
+        "tags": ["Forms"],
+        "security": [{ "apiKeyAuth": [] }],
+        "parameters": [
+          { "name": "format", "in": "query", "description": "Export format (defaults to csv)", "schema": { "type": "string", "default": "csv" } },
+          { "name": "status", "in": "query", "description": "Filter by submission status", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Submission export file (tabular; CSV/XLSX per format)",
+            "content": {
+              "text/csv": { "schema": { "type": "string", "format": "binary" } },
+              "application/octet-stream": { "schema": { "type": "string", "format": "binary" } }
+            }
+          },
+          "400": { "description": "Invalid formId" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "description": "Form not found" },
+          "500": { "description": "Failed to load form or submissions for export" }
+        }
+      }
+    },
+    "/api/v1/frameworks/activate": {
+      "post": {
+        "summary": "Activate a compliance framework",
+        "description": "Enables a compliance framework for the active organization and seeds its controls so the compliance score starts at a real baseline. Session-cookie authentication with CSRF origin validation; restricted to owner, admin, or compliance_admin roles.",
+        "operationId": "activateFramework",
+        "tags": ["Frameworks"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["frameworkSlug"],
+                "properties": {
+                  "frameworkSlug": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9_-]+$" },
+                  "industry": { "type": "string", "maxLength": 64 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Framework activated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "frameworkSlug": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Caller role may not activate frameworks" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Failed to activate framework" }
+        }
+      }
+    },
+    "/api/v1/incidents/sirs-summary": {
+      "get": {
+        "summary": "Get incident SIRS summary counts",
+        "description": "Returns counts of open, notified, and investigating incidents for the active organization. Session-cookie authentication.",
+        "operationId": "getSirsSummary",
+        "tags": ["Incidents"],
+        "responses": {
+          "200": {
+            "description": "Incident summary counts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["open", "notified", "investigating"],
+                  "properties": {
+                    "open": { "type": "integer" },
+                    "notified": { "type": "integer" },
+                    "investigating": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/medications/{id}/administer": {
+      "parameters": [
+        { "name": "id", "in": "path", "required": true, "description": "Medication ID", "schema": { "type": "string", "format": "uuid" } }
+      ],
+      "post": {
+        "summary": "Record a medication administration",
+        "description": "Records an administration event for a medication in the active organization. Session-cookie authentication with CSRF origin validation. Both participant_id (if it differs from the medication's participant) and witness_id are verified to belong to the caller's org.",
+        "operationId": "administerMedication",
+        "tags": ["Medications"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "participant_id": { "type": "string", "format": "uuid" },
+                  "dose_given": { "type": "string", "maxLength": 200 },
+                  "status": { "type": "string", "default": "given", "enum": ["given", "withheld", "refused", "self_administered"] },
+                  "notes": { "type": "string", "maxLength": 2000 },
+                  "witness_id": { "type": "string", "format": "uuid" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recorded administration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "administration": { "type": "object" } }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "participant_id or witness_id does not belong to your organization" },
+          "404": { "description": "Medication not found" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Failed to record administration" }
+        }
+      }
+    },
+    "/api/v1/members/invite": {
+      "post": {
+        "summary": "Invite members to the organization",
+        "description": "Invites up to 10 members by email in a single request. Session-cookie authentication; restricted to owner/admin (only owners may grant the owner role). Enforces the org's `team_limit` seat entitlement and rejects the whole batch if it would exceed remaining seats.",
+        "operationId": "inviteMembers",
+        "tags": ["Members"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["invites"],
+                "properties": {
+                  "invites": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "items": {
+                      "type": "object",
+                      "required": ["email"],
+                      "properties": {
+                        "email": { "type": "string", "format": "email" },
+                        "role": { "type": "string", "default": "member", "enum": ["owner", "admin", "member", "viewer"] }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Per-invite results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["results"],
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": { "type": "string" },
+                          "ok": { "type": "boolean" },
+                          "error": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "description": "Seat limit reached or batch exceeds remaining seats" },
+          "403": { "description": "Only owners and admins can invite members" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/organizations/onboarding-complete": {
+      "post": {
+        "summary": "Mark organization onboarding complete",
+        "description": "Marks the active organization's onboarding as complete and provisions controls for all selected frameworks. Session-cookie authentication with CSRF origin validation; restricted to owner/admin roles.",
+        "operationId": "completeOnboarding",
+        "tags": ["Organizations"],
+        "responses": {
+          "200": {
+            "description": "Onboarding marked complete",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "success": { "type": "boolean" } }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Caller is not an owner or admin" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/v1/organizations/seed-data": {
+      "post": {
+        "summary": "Seed demo data for the organization",
+        "description": "Generates industry-specific demo tasks and policies for the active organization (marked `is_demo`). Session-cookie authentication with CSRF origin validation; restricted to owner/admin roles. Refuses if the org already has more than 5 real tasks.",
+        "operationId": "seedOrganizationData",
+        "tags": ["Organizations"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "industry": { "type": "string", "minLength": 1, "maxLength": 64, "default": "other" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Demo data seeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "seeded": {
+                      "type": "object",
+                      "properties": {
+                        "obligations": { "type": "integer" },
+                        "incidents": { "type": "integer" },
+                        "tasks": { "type": "integer" },
+                        "policies": { "type": "integer" },
+                        "staff": { "type": "integer" },
+                        "participants": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Caller is not an owner or admin" },
+          "409": { "description": "Organization already has data; seed skipped" },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "delete": {
+        "summary": "Clear demo data for the organization",
+        "description": "Deletes all `is_demo` tasks and policies and marks demo data inactive. Session-cookie authentication; restricted to owner/admin roles.",
+        "operationId": "clearOrganizationDemoData",
+        "tags": ["Organizations"],
+        "responses": {
+          "200": {
+            "description": "Demo data cleared",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "success": { "type": "boolean" } }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Caller is not an owner or admin" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/v1/participants/snapshot": {
+      "get": {
+        "summary": "Get participant snapshot counts",
+        "description": "Returns aggregate participant counts for the active organization: total participants, care plans overdue for review, and open restrictive-practice incidents. Session-cookie authentication.",
+        "operationId": "getParticipantSnapshot",
+        "tags": ["Participants"],
+        "responses": {
+          "200": {
+            "description": "Participant snapshot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["total", "plansOverdue", "restrictivePractices"],
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "plansOverdue": { "type": "integer" },
+                    "restrictivePractices": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/registers/breach": {
+      "get": {
+        "summary": "List regulatory breaches",
+        "description": "Returns up to 50 regulatory breaches derived from high/critical org incidents, with a computed status and ASIC self-reporting flag. Session-cookie authentication.",
+        "operationId": "listBreaches",
+        "tags": ["Registers"],
+        "responses": {
+          "200": {
+            "description": "Derived breach register entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["breaches"],
+                  "properties": {
+                    "breaches": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "breach_id": { "type": "string" },
+                          "description": { "type": "string" },
+                          "detected_date": { "type": "string" },
+                          "reported_to_asic": { "type": "boolean" },
+                          "reported_date": { "type": "string", "nullable": true },
+                          "days_open": { "type": "integer" },
+                          "status": { "type": "string", "enum": ["detected", "assessed", "reported", "closed"] }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/registers/breach-summary": {
+      "get": {
+        "summary": "Get breach register summary",
+        "description": "Returns aggregate breach metrics for the active organization: open breaches, self-reported count, and days since the most recent detection. Session-cookie authentication.",
+        "operationId": "getBreachSummary",
+        "tags": ["Registers"],
+        "responses": {
+          "200": {
+            "description": "Breach summary metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["openBreaches", "selfReported", "daysSinceDetection"],
+                  "properties": {
+                    "openBreaches": { "type": "integer" },
+                    "selfReported": { "type": "integer" },
+                    "daysSinceDetection": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/registers/breach/{id}/report": {
+      "parameters": [
+        { "name": "id", "in": "path", "required": true, "description": "Underlying incident ID for the breach", "schema": { "type": "string", "format": "uuid" } }
+      ],
+      "post": {
+        "summary": "Record a regulatory self-report for a breach",
+        "description": "Appends an ASIC self-report notice to the underlying incident's notifications, sets reported_at, and advances status. Session-cookie authentication with CSRF origin validation. Defaults regulation to 's912D Corporations Act 2001' and action to 'self-report' when omitted.",
+        "operationId": "reportBreach",
+        "tags": ["Registers"],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "breach_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+                  "regulation": { "type": "string", "minLength": 1, "maxLength": 200 },
+                  "action": { "type": "string", "minLength": 1, "maxLength": 64 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Self-report recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "breach_id": { "type": "string" },
+                    "reported_at": { "type": "string", "format": "date-time" },
+                    "regulation": { "type": "string" },
+                    "action": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": { "description": "Breach (incident) not found" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Failed to record report" }
+        }
+      }
+    },
+    "/api/v1/reports/custom": {
+      "get": {
+        "summary": "List custom (saved) reports",
+        "description": "Returns the organization's saved custom reports with pagination. Requires API-key authentication with the `reports:read` scope and the custom-reports entitlement.",
+        "operationId": "listCustomReports",
+        "tags": ["Reports"],
+        "security": [{ "apiKeyAuth": [] }],
+        "parameters": [
+          { "$ref": "#/components/parameters/Limit" },
+          { "$ref": "#/components/parameters/Offset" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of saved reports",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PaginatedEnvelope" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing reports:read scope or custom-reports entitlement" },
+          "500": { "description": "Failed to list reports" }
+        }
+      },
+      "post": {
+        "summary": "Create a custom report",
+        "description": "Creates a new saved custom report. Requires API-key authentication with the `reports:write` scope and the custom-reports entitlement.",
+        "operationId": "createCustomReport",
+        "tags": ["Reports"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+                  "description": { "type": "string", "maxLength": 2000 },
+                  "config": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created report",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing reports:write scope or custom-reports entitlement" },
+          "500": { "description": "Failed to create report" }
+        }
+      }
+    },
+    "/api/v1/reports/custom/{reportId}": {
+      "parameters": [
+        { "name": "reportId", "in": "path", "required": true, "description": "Saved report ID", "schema": { "type": "string" } }
+      ],
+      "get": {
+        "summary": "Get a custom report",
+        "description": "Returns a single saved custom report. Requires API-key authentication with the `reports:read` scope and the custom-reports entitlement. Returns the raw report row (not wrapped in an envelope).",
+        "operationId": "getCustomReport",
+        "tags": ["Reports"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Saved report row",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing reports:read scope or custom-reports entitlement" },
+          "404": { "description": "Report not found" },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "patch": {
+        "summary": "Update a custom report",
+        "description": "Updates a saved custom report. Requires API-key authentication with the `reports:write` scope and the custom-reports entitlement. At least one field must be provided. Returns the raw updated row.",
+        "operationId": "updateCustomReport",
+        "tags": ["Reports"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "properties": {
+                  "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+                  "description": { "type": "string", "maxLength": 2000 },
+                  "config": { "type": "object" },
+                  "schedule": { "type": "object", "nullable": true }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated report row",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing reports:write scope or custom-reports entitlement" },
+          "404": { "description": "Report not found or update failed" },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a custom report",
+        "description": "Deletes a saved custom report. Requires API-key authentication with the `reports:write` scope and the custom-reports entitlement.",
+        "operationId": "deleteCustomReport",
+        "tags": ["Reports"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Report deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "deleted": { "type": "boolean" } }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing reports:write scope or custom-reports entitlement" },
+          "500": { "description": "Delete failed" }
+        }
+      }
+    },
+    "/api/v1/reports/custom/{reportId}/generate": {
+      "parameters": [
+        { "name": "reportId", "in": "path", "required": true, "description": "Saved report ID", "schema": { "type": "string" } }
+      ],
+      "post": {
+        "summary": "Generate a custom report",
+        "description": "Resolves all of a saved report's widgets and produces output. Requires API-key authentication with the `reports:write` scope and the custom-reports entitlement. With `format: \"csv\"` it returns a CSV file attachment; otherwise it returns JSON. Each generation is recorded.",
+        "operationId": "generateCustomReport",
+        "tags": ["Reports"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "format": { "type": "string", "default": "json", "enum": ["json", "csv"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Generated report (JSON by default, CSV file when format=csv)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reportId": { "type": "string" },
+                    "name": { "type": "string" },
+                    "generatedAt": { "type": "string", "format": "date-time" },
+                    "widgets": { "type": "array", "items": { "type": "object" } }
+                  }
+                }
+              },
+              "text/csv": { "schema": { "type": "string", "format": "binary" } }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing reports:write scope or custom-reports entitlement" },
+          "404": { "description": "Report not found" }
+        }
+      }
+    },
+    "/api/v1/reports/custom/{reportId}/schedule": {
+      "parameters": [
+        { "name": "reportId", "in": "path", "required": true, "description": "Saved report ID", "schema": { "type": "string" } }
+      ],
+      "post": {
+        "summary": "Schedule a custom report",
+        "description": "Schedules recurring generation and email delivery of a saved report. Requires API-key authentication with the `reports:write` scope and the custom-reports entitlement.",
+        "operationId": "scheduleCustomReport",
+        "tags": ["Reports"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["frequency"],
+                "properties": {
+                  "frequency": { "type": "string", "enum": ["daily", "weekly", "monthly"] },
+                  "recipients": { "type": "array", "maxItems": 100, "items": { "type": "string", "format": "email" } },
+                  "format": { "type": "string", "default": "pdf", "enum": ["pdf", "csv", "xlsx"] },
+                  "dayOfWeek": { "type": "integer", "minimum": 0, "maximum": 6 },
+                  "dayOfMonth": { "type": "integer", "minimum": 1, "maximum": 31 },
+                  "hour": { "type": "integer", "minimum": 0, "maximum": 23, "default": 8 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule created",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing reports:write scope or custom-reports entitlement" },
+          "404": { "description": "Report not found" },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "delete": {
+        "summary": "Unschedule a custom report",
+        "description": "Removes the recurring schedule for a saved report. Requires API-key authentication with the `reports:write` scope and the custom-reports entitlement.",
+        "operationId": "unscheduleCustomReport",
+        "tags": ["Reports"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Schedule removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "unscheduled": { "type": "boolean" } }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "description": "Missing reports:write scope or custom-reports entitlement" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/v1/search/analytics": {
+      "get": {
+        "summary": "Get search analytics",
+        "description": "Returns aggregate search analytics for the organization. Requires API-key authentication with the `audit:read` scope.",
+        "operationId": "getSearchAnalytics",
+        "tags": ["Search"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Search analytics",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/v1/search/saved": {
+      "get": {
+        "summary": "List saved searches",
+        "description": "Returns the caller's saved searches (up to 50) for the organization. Requires API-key authentication with the `search:read` scope.",
+        "operationId": "listSavedSearches",
+        "tags": ["Search"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Saved searches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["savedSearches"],
+                  "properties": {
+                    "savedSearches": { "type": "array", "items": { "type": "object" } }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "post": {
+        "summary": "Create a saved search",
+        "description": "Saves a search query for the caller. Requires API-key authentication with the `search:write` scope. Returns the raw created row.",
+        "operationId": "createSavedSearch",
+        "tags": ["Search"],
+        "security": [{ "apiKeyAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "query"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+                  "query": { "type": "string", "minLength": 1, "maxLength": 2000 },
+                  "filters": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created saved search row",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Failed to save search" }
+        }
+      }
+    },
+    "/api/v1/search/saved/{id}": {
+      "parameters": [
+        { "name": "id", "in": "path", "required": true, "description": "Saved search ID", "schema": { "type": "string" } }
+      ],
+      "delete": {
+        "summary": "Delete a saved search",
+        "description": "Deletes one of the caller's saved searches. Requires API-key authentication with the `search:write` scope.",
+        "operationId": "deleteSavedSearch",
+        "tags": ["Search"],
+        "security": [{ "apiKeyAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Saved search deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "deleted": { "type": "boolean" } }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Failed to delete saved search" }
+        }
+      }
+    },
+    "/api/v1/search/suggest": {
+      "get": {
+        "summary": "Get search suggestions",
+        "description": "Returns autocomplete suggestions for a query prefix. Requires API-key authentication with the `search:read` scope.",
+        "operationId": "suggestSearch",
+        "tags": ["Search"],
+        "security": [{ "apiKeyAuth": [] }],
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "description": "Query prefix", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Suggestions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["suggestions"],
+                  "properties": {
+                    "suggestions": { "type": "array", "items": { "type": "object" } }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "q parameter required" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/v1/search/unified": {
+      "get": {
+        "summary": "Unified cross-entity search",
+        "description": "Searches across entity types with optional type, date, and pagination filters, and tracks the query. Requires API-key authentication with the `search:read` scope.",
+        "operationId": "unifiedSearch",
+        "tags": ["Search"],
+        "security": [{ "apiKeyAuth": [] }],
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "description": "Search query", "schema": { "type": "string" } },
+          { "name": "types", "in": "query", "description": "Comma-separated entity types to include", "schema": { "type": "string" } },
+          { "name": "from", "in": "query", "description": "Start date filter", "schema": { "type": "string" } },
+          { "name": "to", "in": "query", "description": "End date filter", "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "description": "Maximum results", "schema": { "type": "integer", "default": 20 } },
+          { "name": "offset", "in": "query", "description": "Results to skip", "schema": { "type": "integer", "default": 0 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["results", "total"],
+                  "properties": {
+                    "results": { "type": "array", "items": { "type": "object" } },
+                    "total": { "type": "integer" },
+                    "limit": { "type": "integer" },
+                    "offset": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "q parameter required" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/api/v1/staff-compliance/educators": {
+      "get": {
+        "summary": "Get educator credential compliance",
+        "description": "Returns up to 25 educators with derived WWC and first-aid expiry/days-remaining and qualification status, from org staff credentials. Session-cookie authentication.",
+        "operationId": "getEducatorCompliance",
+        "tags": ["Staff Compliance"],
+        "responses": {
+          "200": {
+            "description": "Educator compliance records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["educators"],
+                  "properties": {
+                    "educators": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "name": { "type": "string" },
+                          "wwcExpiry": { "type": "string" },
+                          "wwcDays": { "type": "integer" },
+                          "firstAidExpiry": { "type": "string" },
+                          "firstAidDays": { "type": "integer" },
+                          "qualificationStatus": { "type": "string", "enum": ["qualified", "in_progress", "not_started"] }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/staff-compliance/practitioners": {
+      "get": {
+        "summary": "Get practitioner credential compliance",
+        "description": "Returns up to 25 practitioners with derived AHPRA registration status, CPD, and indemnity insurance expiry, from org staff credentials. Session-cookie authentication.",
+        "operationId": "getPractitionerCompliance",
+        "tags": ["Staff Compliance"],
+        "responses": {
+          "200": {
+            "description": "Practitioner compliance records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["practitioners"],
+                  "properties": {
+                    "practitioners": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "name": { "type": "string" },
+                          "ahpraStatus": { "type": "string", "enum": ["registered", "suspended", "lapsed"] },
+                          "cpdLogged": { "type": "integer" },
+                          "cpdRequired": { "type": "integer" },
+                          "indemnityExpiry": { "type": "string" },
+                          "indemnityDaysRemaining": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/staff-compliance/screening": {
+      "get": {
+        "summary": "Get worker screening compliance",
+        "description": "Returns up to 25 staff credentials with expiry dates, ordered by soonest expiry, each classified as current / expiring_soon / expired. Session-cookie authentication.",
+        "operationId": "getScreeningCompliance",
+        "tags": ["Staff Compliance"],
+        "responses": {
+          "200": {
+            "description": "Worker screening records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["workers"],
+                  "properties": {
+                    "workers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "name": { "type": "string" },
+                          "checkStatus": { "type": "string", "enum": ["current", "expiring_soon", "expired"] },
+                          "expiryDate": { "type": "string" },
+                          "daysRemaining": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" }
+        }
+      }
+    },
+    "/api/v1/tasks/{id}/status": {
+      "parameters": [
+        { "name": "id", "in": "path", "required": true, "description": "Task ID", "schema": { "type": "string", "format": "uuid" } }
+      ],
+      "patch": {
+        "summary": "Update a task's status",
+        "description": "Updates a task's status in the active organization. Session-cookie authentication with CSRF origin validation. UI statuses (overdue/due_today/due_soon) are normalized to the `pending` DB status.",
+        "operationId": "updateTaskStatus",
+        "tags": ["Tasks"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "type": "string", "enum": ["overdue", "due_today", "due_soon", "in_progress", "pending", "completed"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status updated (returns the normalized DB status)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "status": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "409": { "description": "Ambiguous active organization — set an active org first" },
+          "429": { "description": "Rate limit exceeded" },
+          "500": { "description": "Failed to update" }
         }
       }
     }

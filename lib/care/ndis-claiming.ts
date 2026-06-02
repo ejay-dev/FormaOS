@@ -151,7 +151,14 @@ export async function validateLineItem(
     .limit(1)
     .single();
 
-  if (guide && lineItem.unit_price > guide.price_national) {
+  // Fail closed when no price-guide row exists: without the ceiling we
+  // cannot prove the unit price is within the NDIS cap, and an
+  // unverifiable claim must not be submitted to the NDIA.
+  if (guide?.price_national == null) {
+    errors.push(
+      `No NDIS price-guide entry for support item ${lineItem.support_item_number} — cannot verify the unit price ceiling. Add the rate under org_ndis_price_guide before claiming.`,
+    );
+  } else if (lineItem.unit_price > guide.price_national) {
     errors.push(
       `Unit price $${lineItem.unit_price} exceeds NDIS ceiling $${guide.price_national}`,
     );
@@ -328,6 +335,9 @@ export async function markAsPaid(
       claimed_at: new Date().toISOString(),
     })
     .eq('org_id', orgId)
+    // State-machine guard: only a submitted claim can be marked paid, so a
+    // stale/duplicate request can't flip a draft or rejected item to paid.
+    .eq('status', 'submitted')
     .in('id', lineItemIds);
 
   if (error) throw new Error(error.message);

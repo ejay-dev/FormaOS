@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { inviteMember } from '@/app/app/actions/team';
+import { useModalA11y } from '@/lib/hooks/use-modal-a11y';
 import {
   Mail,
   Shield,
@@ -40,6 +41,8 @@ export function InviteModal({
   const [manualShareUrl, setManualShareUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const panelRef = useModalA11y<HTMLDivElement>(isOpen, onCloseAction);
 
   if (!isOpen) return null;
 
@@ -100,11 +103,20 @@ export function InviteModal({
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-neutral-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
-      <div className="w-full max-w-lg bg-white rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-neutral-200">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="invite-modal-title"
+        className="w-full max-w-lg bg-white rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-neutral-200"
+      >
         {/* Header */}
         <div className="p-8 border-b border-neutral-100 flex items-start justify-between bg-neutral-50/30">
           <div className="space-y-1">
-            <h3 className="text-xl font-black text-neutral-900 tracking-tight">
+            <h3
+              id="invite-modal-title"
+              className="text-xl font-black text-neutral-900 tracking-tight"
+            >
               Invite Personnel
             </h3>
             <p className="text-xs font-medium text-neutral-500">
@@ -113,6 +125,7 @@ export function InviteModal({
           </div>
           <button
             onClick={onCloseAction}
+            aria-label="Close"
             className="p-2 hover:bg-neutral-100 rounded-xl transition-colors -mr-2 -mt-2 group"
           >
             <X className="h-5 w-5 text-neutral-400 group-hover:text-neutral-900 transition-colors" />

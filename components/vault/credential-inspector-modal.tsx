@@ -14,6 +14,7 @@ import {
 import { verifyCredential } from '@/app/app/actions/credentials';
 import { fetchRequiredNonCompliantCount } from '@/app/app/actions/control-evaluations';
 import { getEvidenceSignedUrl } from '@/app/app/actions/vault';
+import { useModalA11y } from '@/lib/hooks/use-modal-a11y';
 
 export function CredentialInspectorModal({
   isOpen,
@@ -37,6 +38,8 @@ export function CredentialInspectorModal({
   const [reason, setReason] = useState('');
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const publicUrl = signedUrl ?? '';
+
+  const panelRef = useModalA11y<HTMLDivElement>(isOpen && !!credential, onClose);
 
   useEffect(() => {
     if (!isOpen || !credential) {
@@ -116,7 +119,13 @@ export function CredentialInspectorModal({
 
   return (
     <div className="fixed inset-0 z-[var(--z-tour)] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-300">
-      <div className="w-full max-w-6xl h-[92vh] sm:h-[90vh] bg-glass-strong rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="credential-inspector-title"
+        className="w-full max-w-6xl h-[92vh] sm:h-[90vh] bg-glass-strong rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col md:flex-row"
+      >
         {/* LEFT: Document Preview (The "Proof") */}
         <div className="flex-1 bg-glass-strong relative overflow-hidden flex items-center justify-center p-6 sm:p-8 border-b md:border-b-0 md:border-r border-glass-border min-h-[240px]">
           <div className="absolute top-6 left-6 z-10">
@@ -138,7 +147,10 @@ export function CredentialInspectorModal({
         <div className="w-full md:w-[400px] flex flex-col justify-between p-6 sm:p-10 bg-glass-strong">
           <div className="space-y-10">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-black text-foreground tracking-tight">
+              <h3
+                id="credential-inspector-title"
+                className="text-sm font-black text-foreground tracking-tight"
+              >
                 Audit Inspection
               </h3>
               <button

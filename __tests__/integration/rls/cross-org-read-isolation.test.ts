@@ -268,10 +268,12 @@ maybeDescribe('R8 (Audit 2026-05-27): cross-org READ isolation under RLS', () =>
         const orgARow = seededRows.find(
           (r) => r.table === spec.table && r.orgId === seedA!.orgId,
         );
-        if (!orgARow) {
-          // Table didn't accept the seed at all — skip silently.
-          return;
-        }
+        // A missing seed row means the table rejected our insert (schema
+        // drift / a new NOT NULL column). Fail loudly — silently returning
+        // here would pass with zero assertions and quietly stop testing
+        // tenant isolation for this table.
+        expect(orgARow).toBeTruthy();
+        if (!orgARow) return; // satisfies TS narrowing; unreachable after assert
 
         const userClient = jwtClient(seedA);
         const { data, error } = await userClient
@@ -292,7 +294,10 @@ maybeDescribe('R8 (Audit 2026-05-27): cross-org READ isolation under RLS', () =>
         const orgBRow = seededRows.find(
           (r) => r.table === spec.table && r.orgId === seedB!.orgId,
         );
-        if (!orgBRow) return; // table didn't accept the seed; skip.
+        // Fail loudly if the seed didn't land — otherwise this cross-tenant
+        // deny check would no-op (pass without probing anything).
+        expect(orgBRow).toBeTruthy();
+        if (!orgBRow) return;
 
         const attackerClient = jwtClient(seedA);
         const { data, error } = await attackerClient
@@ -319,6 +324,8 @@ maybeDescribe('R8 (Audit 2026-05-27): cross-org READ isolation under RLS', () =>
         const orgBRow = seededRows.find(
           (r) => r.table === spec.table && r.orgId === seedB!.orgId,
         );
+        // Fail loudly if the seed didn't land (see note above).
+        expect(orgBRow).toBeTruthy();
         if (!orgBRow) return;
 
         const attackerClient = jwtClient(seedA);

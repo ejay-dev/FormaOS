@@ -56,6 +56,7 @@
     "test:db:rls-guc-guard": "node scripts/check-rls-current-setting.mjs",
     "test:db:orgs-sync": "node scripts/check-orgs-sync.mjs",
     "test:db:ledger-alignment": "node scripts/check-migration-ledger-alignment.mjs",
+    "test:db:migration-parity": "node scripts/check-migration-parity.mjs",
     "test:db:secdef-grants": "node scripts/check-security-definer-grants.mjs",
     "test:db:restore-recency": "node scripts/check-restore-test-recency.mjs",
     "test:security:leaked-secrets": "node scripts/check-leaked-secrets.mjs",

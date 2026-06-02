@@ -20,6 +20,7 @@ import {
 import { useSystemState } from '@/lib/system-state';
 import { UserRole, ROLE_PERMISSIONS } from '@/lib/system-state/types';
 import { useComplianceAction } from '@/components/compliance-system';
+import { useModalA11y } from '@/lib/hooks/use-modal-a11y';
 
 /**
  * =========================================================
@@ -353,6 +354,11 @@ export function AdminPermissionFlow({
     setSelectedRole(null);
   }, []);
 
+  const confirmPanelRef = useModalA11y<HTMLDivElement>(
+    showConfirm && !!selectedRole,
+    handleCancelChange,
+  );
+
   const roles: UserRole[] = ['viewer', 'member', 'admin', 'owner'];
 
   return (
@@ -403,13 +409,22 @@ export function AdminPermissionFlow({
       {/* Confirmation Modal */}
       {showConfirm && selectedRole && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-200 p-4">
-          <div className="bg-slate-800 border border-glass-border rounded-t-3xl sm:rounded-3xl p-6 max-w-md w-full mx-auto animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto">
+          <div
+            ref={confirmPanelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-role-change-title"
+            className="bg-slate-800 border border-glass-border rounded-t-3xl sm:rounded-3xl p-6 max-w-md w-full mx-auto animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto"
+          >
             <div className="flex items-center gap-3 mb-4">
               <div className="h-12 w-12 rounded-xl bg-violet-500/20 flex items-center justify-center">
                 <Zap className="h-6 w-6 text-violet-400" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">
+                <h3
+                  id="confirm-role-change-title"
+                  className="text-lg font-bold text-white"
+                >
                   Confirm Role Change
                 </h3>
                 <p className="text-sm text-muted-foreground">

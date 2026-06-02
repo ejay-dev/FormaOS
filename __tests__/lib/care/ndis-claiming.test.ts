@@ -30,9 +30,9 @@ import {
 } from '@/lib/care/ndis-claiming';
 
 describe('generateLineItems', () => {
-  it('generates line item for completed personal_care visit', async () => {
+  it('generates a personal_care line item with correct dollar math', async () => {
     const now = new Date();
-    const start = new Date(now.getTime() - 2 * 3600000).toISOString();
+    const start = new Date(now.getTime() - 2 * 3600000).toISOString(); // 2h
     const end = now.toISOString();
     const visit = {
       id: 'v1',
@@ -47,6 +47,7 @@ describe('generateLineItems', () => {
       org_patients: { id: 'p1', first_name: 'John', last_name: 'Doe' },
     };
 
+    let inserted: any = null;
     let callCount = 0;
     const db = {
       from: jest.fn(() => {
@@ -54,12 +55,68 @@ describe('generateLineItems', () => {
         if (callCount === 1) return createBuilder({ data: visit, error: null });
         if (callCount === 2)
           return createBuilder({ data: { price_national: 65.0 }, error: null });
-        return createBuilder({ data: { id: 'li1' }, error: null });
+        const b = createBuilder({ data: { id: 'li1' }, error: null });
+        b.insert = jest.fn((payload: any) => {
+          inserted = payload;
+          return b;
+        });
+        return b;
       }),
     };
 
     const result = await generateLineItems(db as any, 'org-1', 'v1');
     expect(result).toBeDefined();
+    // 2-hour personal_care visit at $65/hr → quantity 2, total $130. This
+    // is the revenue-producing path against government (NDIA) billing — the
+    // exact figures must be asserted, not just "did not throw".
+    expect(inserted).toMatchObject({
+      org_id: 'org-1',
+      participant_id: 'p1',
+      support_item_number: '01_011_0107_1_1',
+      unit_price: 65,
+      quantity: 2,
+      total_amount: 130,
+      status: 'draft',
+    });
+  });
+
+  it('rounds quantity to 15-minute increments (1h47m → 1.75 units)', async () => {
+    const now = new Date();
+    // 1h47m = 1.7833h → round(1.7833 * 4)/4 = 1.75 units.
+    const start = new Date(now.getTime() - (107 * 60 * 1000)).toISOString();
+    const end = now.toISOString();
+    const visit = {
+      id: 'v1',
+      status: 'completed',
+      visit_type: 'personal_care',
+      start_time: start,
+      end_time: end,
+      actual_start_time: null,
+      actual_end_time: null,
+      client_id: 'p1',
+      care_plan_id: null,
+    };
+
+    let inserted: any = null;
+    let callCount = 0;
+    const db = {
+      from: jest.fn(() => {
+        callCount++;
+        if (callCount === 1) return createBuilder({ data: visit, error: null });
+        if (callCount === 2)
+          return createBuilder({ data: { price_national: 65.0 }, error: null });
+        const b = createBuilder({ data: { id: 'li5' }, error: null });
+        b.insert = jest.fn((payload: any) => {
+          inserted = payload;
+          return b;
+        });
+        return b;
+      }),
+    };
+
+    await generateLineItems(db as any, 'org-1', 'v1');
+    expect(inserted.quantity).toBe(1.75);
+    expect(inserted.total_amount).toBeCloseTo(113.75, 2); // 65 × 1.75
   });
 
   it('uses actual start/end time when available', async () => {
