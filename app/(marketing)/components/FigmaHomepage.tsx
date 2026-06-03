@@ -8,7 +8,6 @@ import {
   ValueProposition,
   ComplianceNetworkSection,
 } from './homepage';
-import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useDeviceTier } from '@/lib/device-tier';
@@ -75,11 +74,9 @@ const CTASection = dynamic(
   },
 );
 // TrustSection merged into SecuritySection
-const TestimonialsSection = dynamic(
-  () =>
-    import('./homepage/TestimonialsSection').then((m) => m.TestimonialsSection),
-  { ssr: false, loading: () => null },
-);
+// TestimonialsSection removed from the homepage in the 2026-06-03 cull —
+// OutcomeProofSection ("operational mechanics, not customer claims") is the
+// single, honest proof beat. Component retained for other surfaces.
 const AuditChainSection = dynamic(
   () =>
     import('./homepage/AuditChainSection').then((m) => m.AuditChainSection),
@@ -192,11 +189,6 @@ export default function FormaOSHomepage({
         {/* Page Sections */}
         <div className="mk-marketing-flow relative z-10">
           {!skipHero && renderSection('hero', <HeroSection />)}
-          {renderSection(
-            'framework_trust_strip',
-            <FrameworkTrustStrip />,
-            200,
-          )}
           {/* Cryptographic audit-chain proof — pulled to position 3
               (after hero + framework strip) on 2026-05-28 to surface
               the most code-grounded section early. Before, this sat
@@ -250,10 +242,6 @@ export default function FormaOSHomepage({
           {sectionVisibility.outcome_proof !== false
             ? renderSection('outcome_proof', <OutcomeProofSection />, 440)
             : null}
-          {/* Social proof - always shown; not gated by control plane */}
-          <DeferredSection minHeight={380}>
-            <TestimonialsSection />
-          </DeferredSection>
           {sectionVisibility.objection_handling !== false
             ? renderSection(
                 'objection_handling',

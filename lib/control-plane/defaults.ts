@@ -45,10 +45,15 @@ export const DEFAULT_RUNTIME_MARKETING: RuntimeMarketingConfig = {
     },
     sectionVisibility: {
       value_proposition: true,
-      compliance_network: true,
-      interactive_demo: true,
+      // 2026-06-03 (homepage cull): four "how it works" sections collapsed to
+      // one (HowItWorks) — AuditChain + ValueProposition already carry the
+      // product mechanics. compliance_network / compliance_engine_demo and the
+      // interactive_demo showcase turned off by default to cut the page from
+      // ~15 stacked sections to ~9. Re-enable per-deployment via control plane.
+      compliance_network: false,
+      interactive_demo: false,
       scroll_story: false,
-      compliance_engine_demo: true,
+      compliance_engine_demo: false,
       capabilities_grid: false,
       evidence_showcase: false,
       industries: true,
