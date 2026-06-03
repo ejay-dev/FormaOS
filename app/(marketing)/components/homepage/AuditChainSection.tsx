@@ -11,20 +11,20 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 const PILLARS = [
   {
     icon: Lock,
-    eyebrow: 'R3 · audit_log',
     title: 'HMAC-chained rows',
+    tag: 'Tamper-evident by construction',
     body: 'Each row carries a sequence number and an HMAC-SHA256 signature linking it to the previous row. A nightly cron re-walks the chain; any drift surfaces as a chain-integrity break before the next audit.',
   },
   {
     icon: History,
-    eyebrow: 'R4 · sigstore rekor',
     title: 'External anchor at 05:30 UTC',
+    tag: 'Verifiable without trusting us',
     body: "Daily, each org's chain top is submitted to Sigstore Rekor as an RFC 6962-style Merkle entry. An auditor can verify the timestamp of any event without trusting us — the proof goes through Linux Foundation infrastructure.",
   },
   {
     icon: ShieldCheck,
-    eyebrow: 'postgres · rls',
     title: 'Append-only at the database',
+    tag: 'Immutable, even to platform admins',
     body: 'A BEFORE UPDATE OR DELETE trigger rejects any mutation of audit rows, backed by restrictive RLS deny policies. Even a platform admin with service-role credentials — which bypasses RLS — is stopped by the trigger. Enforced by Postgres, not application code.',
   },
 ] as const;
@@ -153,24 +153,60 @@ function AuditBoard({ children }: { children: ReactNode }) {
       <div className="pointer-events-none absolute -top-5 left-0 right-0 z-20 hidden h-10 lg:block">
         <div className="absolute top-1/2 h-px w-full -translate-y-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
         <div ref={botRef} className="audit-bot absolute top-1/2">
-          {/* antenna */}
-          <span className="absolute left-1/2 -top-2.5 h-2 w-px -translate-x-1/2 bg-white/30" />
-          <span className="absolute left-1/2 -top-[13px] h-1.5 w-1.5 -translate-x-1/2 animate-pulse rounded-full bg-white" />
           {/* glow */}
-          <span className="audit-bot-glow absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-lg" />
-          {/* head */}
-          <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 bg-gradient-to-b from-[#141b2e] to-[#0a0f1d] shadow-lg shadow-black/50">
-            <svg viewBox="0 0 44 24" className="h-[18px] w-[34px]">
-              <rect x="3" y="3" width="16" height="18" rx="6" fill="#060a13" />
-              <rect x="25" y="3" width="16" height="18" rx="6" fill="#060a13" />
+          <span className="audit-bot-glow absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-lg" />
+          {/* robot */}
+          <svg
+            viewBox="0 0 48 56"
+            className="relative h-[52px] w-[44px] drop-shadow-[0_4px_10px_rgba(0,0,0,0.55)]"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="audit-bot-head" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#1b2438" />
+                <stop offset="100%" stopColor="#0a0f1d" />
+              </linearGradient>
+              <radialGradient id="audit-bot-eye" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="100%" stopColor="#9fb4d6" />
+              </radialGradient>
+            </defs>
+
+            {/* antenna */}
+            <line x1="24" y1="11" x2="24" y2="5" stroke="rgba(255,255,255,0.4)" strokeWidth="1.4" strokeLinecap="round" />
+            <circle cx="24" cy="3.6" r="2.2" fill="#ffffff" className="animate-pulse" />
+
+            {/* side ears */}
+            <rect x="2.5" y="27" width="4" height="11" rx="2" fill="#26304a" stroke="rgba(255,255,255,0.1)" strokeWidth="0.75" />
+            <rect x="41.5" y="27" width="4" height="11" rx="2" fill="#26304a" stroke="rgba(255,255,255,0.1)" strokeWidth="0.75" />
+
+            {/* head casing */}
+            <rect x="7" y="11" width="34" height="38" rx="12" fill="url(#audit-bot-head)" stroke="rgba(255,255,255,0.16)" strokeWidth="1" />
+            {/* top highlight */}
+            <rect x="12" y="14" width="24" height="7" rx="5" fill="rgba(255,255,255,0.06)" />
+
+            {/* face screen */}
+            <rect x="11" y="19.5" width="26" height="19" rx="8" fill="#05080f" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+
+            {/* eyes (blink) → pupils (cursor tracking) */}
+            <g className="audit-bot-eyes">
               <g ref={pupilsRef}>
-                <circle cx="11" cy="12" r="3.1" fill="#e2e8f0" />
-                <circle cx="33" cy="12" r="3.1" fill="#e2e8f0" />
+                <circle cx="19" cy="28.5" r="5" fill="#ffffff" opacity="0.14" />
+                <circle cx="29" cy="28.5" r="5" fill="#ffffff" opacity="0.14" />
+                <circle cx="19" cy="28.5" r="3.2" fill="url(#audit-bot-eye)" />
+                <circle cx="29" cy="28.5" r="3.2" fill="url(#audit-bot-eye)" />
               </g>
-            </svg>
-          </div>
+            </g>
+
+            {/* mouth grille */}
+            <g stroke="rgba(255,255,255,0.22)" strokeWidth="1.3" strokeLinecap="round">
+              <line x1="20.5" y1="43" x2="20.5" y2="45.6" />
+              <line x1="24" y1="43" x2="24" y2="45.6" />
+              <line x1="27.5" y1="43" x2="27.5" y2="45.6" />
+            </g>
+          </svg>
           {/* scan beam */}
-          <span className="audit-bot-beam absolute left-1/2 top-full h-10 w-px -translate-x-1/2 bg-gradient-to-b from-white/25 to-transparent" />
+          <span className="audit-bot-beam absolute left-1/2 top-full h-9 w-px -translate-x-1/2 bg-gradient-to-b from-white/25 to-transparent" />
         </div>
       </div>
       {children}
@@ -215,21 +251,19 @@ export function AuditChainSection() {
                   range={[idx * 0.05, 0.3 + idx * 0.05]}
                 >
                   <article className="group flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.025] p-6 transition-colors duration-300 hover:border-white/20">
-                    <div className="mb-4 flex items-center gap-2.5">
-                      <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03]">
-                        <Icon
-                          className="h-5 w-5 text-slate-300"
-                          aria-hidden="true"
-                        />
-                      </span>
-                      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                        {pillar.eyebrow}
-                      </p>
-                    </div>
-                    <h3 className="text-base font-semibold text-white">
+                    <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03]">
+                      <Icon
+                        className="h-5 w-5 text-slate-300"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <h3 className="mt-4 text-base font-semibold text-white">
                       {pillar.title}
                     </h3>
-                    <p className="mt-2.5 text-sm leading-relaxed text-slate-400">
+                    <p className="mt-1 text-[13px] text-slate-500">
+                      {pillar.tag}
+                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-400">
                       {pillar.body}
                     </p>
                   </article>
@@ -248,7 +282,7 @@ export function AuditChainSection() {
                 className="flex flex-col gap-1 bg-[#070b14] px-5 py-5 transition-colors duration-300 hover:bg-[#0a0f1a]"
               >
                 <dt className="order-2 text-xs text-slate-500">{fact.label}</dt>
-                <dd className="order-1 font-mono text-sm font-semibold text-white">
+                <dd className="order-1 text-[15px] font-semibold text-white">
                   {fact.value}
                 </dd>
               </div>
