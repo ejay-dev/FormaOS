@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import {
   Accessibility,
@@ -74,6 +74,8 @@ const BUILT_ON_PARTNERS = [
 export function TestimonialsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [active, setActive] = useState(0);
+  const scenario = SCENARIOS[active];
 
   return (
     <section
@@ -105,51 +107,94 @@ export function TestimonialsSection() {
         </div>
       </motion.div>
 
-      <div className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2">
-        {SCENARIOS.map((scenario, i) => (
-          <motion.article
-            key={scenario.sector}
-            initial={{ opacity: 0, y: 32 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{
-              duration: 0.6,
-              delay: 0.2 + i * 0.1,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 transition-colors duration-300 hover:border-white/20 sm:p-8"
+      {/* Interactive explorer: pick a sector on the left, read one scenario on
+          the right. Replaces the four full-text cards so only a quarter of the
+          copy is on screen at once. */}
+      <motion.div
+        initial={{ opacity: 0, y: 28 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-4 lg:grid-cols-12 lg:gap-8"
+      >
+        {/* Sector selector */}
+        <div
+          role="tablist"
+          aria-label="Use case sectors"
+          className="flex flex-col gap-2 lg:col-span-4"
+        >
+          {SCENARIOS.map((s, i) => {
+            const Icon = s.icon;
+            const isActive = i === active;
+            return (
+              <button
+                key={s.sector}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActive(i)}
+                className={`group relative flex items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left transition-colors duration-200 ${
+                  isActive
+                    ? 'border-white/20 bg-white/[0.04]'
+                    : 'border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.02]'
+                }`}
+              >
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 h-7 w-0.5 -translate-y-1/2 rounded-full bg-white/70" />
+                )}
+                <span
+                  className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border transition-colors ${
+                    isActive
+                      ? 'border-white/15 bg-white/[0.06] text-white'
+                      : 'border-white/10 bg-white/[0.02] text-slate-400 group-hover:text-slate-200'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" strokeWidth={1.75} />
+                </span>
+                <span className="min-w-0">
+                  <span
+                    className={`block text-sm font-semibold ${
+                      isActive ? 'text-white' : 'text-slate-300'
+                    }`}
+                  >
+                    {s.sector}
+                  </span>
+                  <span className="block truncate text-xs text-slate-500">
+                    {s.framework}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Selected scenario detail */}
+        <div className="lg:col-span-8">
+          <div
+            key={active}
+            role="tabpanel"
+            className="h-full animate-[fadeIn_0.3s_ease] rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 sm:p-8"
           >
-            {/* top accent rail, revealed on hover */}
-            <span className="absolute inset-x-0 top-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-500 group-hover:scale-x-100" />
-
-            {/* Header: sector icon tile anchors the card, sector as heading */}
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-slate-300 transition-colors duration-300 group-hover:text-white">
-                <scenario.icon className="h-5 w-5" strokeWidth={1.75} />
-              </span>
-              <h3 className="font-display text-xl font-semibold tracking-tight text-white">
-                {scenario.sector}
-              </h3>
-            </div>
-
-            {/* Frameworks as scannable chips instead of a run-on line */}
-            <div className="mt-4 flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {scenario.framework.split(' + ').map((fw) => (
                 <span
                   key={fw}
-                  className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-1 text-[11px] font-medium text-slate-400"
+                  className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium text-slate-400"
                 >
                   {fw}
                 </span>
               ))}
             </div>
 
-            {/* Situation — lead paragraph, no label */}
-            <p className="mt-4 text-sm leading-relaxed text-slate-400">
-              {scenario.situation}
-            </p>
+            <div className="mt-6">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                The challenge
+              </p>
+              <p className="text-base leading-relaxed text-slate-300">
+                {scenario.situation}
+              </p>
+            </div>
 
-            {/* Outcomes — the only retained label, as a checklist of wins */}
-            <div className="mt-auto border-t border-white/[0.07] pt-5">
+            <div className="mt-6 border-t border-white/[0.07] pt-6">
               <p className="mb-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 What changed
               </p>
@@ -157,16 +202,19 @@ export function TestimonialsSection() {
                 {scenario.outcomes.map((outcome) => (
                   <li key={outcome} className="flex gap-3">
                     <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.04]">
-                      <Check className="h-2.5 w-2.5 text-slate-200" strokeWidth={2.5} />
+                      <Check
+                        className="h-2.5 w-2.5 text-slate-200"
+                        strokeWidth={2.5}
+                      />
                     </span>
                     <span>{outcome}</span>
                   </li>
                 ))}
               </ul>
             </div>
-          </motion.article>
-        ))}
-      </div>
+          </div>
+        </div>
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}
