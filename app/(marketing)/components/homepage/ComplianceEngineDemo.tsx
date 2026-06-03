@@ -15,25 +15,31 @@ const DemoComplianceScore = dynamic(
 export function ComplianceEngineDemo() {
   return (
     <section className="mk-section home-section home-section--process relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-white/[0.04] rounded-full blur-3xl" />
-      </div>
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="slideUp" range={[0, 0.3]} className="text-center mb-16">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Compliance Engine
-          </p>
-
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            How the compliance engine{' '}
-            <span className="text-slate-400">works</span>
-          </h2>
-          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            One connected lifecycle - obligations become controls, controls
-            generate tasks, tasks produce evidence, and every step stays
-            audit-ready.
-          </p>
+        {/* Editorial header — left-aligned labelled rule + paired description,
+            sized to the rest of the homepage (no oversized hero heading). */}
+        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+          <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="h-px w-8 bg-white/25" />
+                <span className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  Compliance engine
+                </span>
+              </div>
+              <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+                How the compliance engine{' '}
+                <span className="text-slate-400">works</span>
+              </h2>
+            </div>
+            <div className="lg:col-span-5">
+              <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
+                One connected lifecycle — obligations become controls, controls
+                generate tasks, tasks produce evidence, and every step stays
+                audit-ready.
+              </p>
+            </div>
+          </div>
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
