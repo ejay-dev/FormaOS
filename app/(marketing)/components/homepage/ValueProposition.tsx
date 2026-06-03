@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ShieldCheck, ShieldOff, Clock, Link2, UserCheck } from 'lucide-react';
 import { duration, easing } from '@/config/motion';
@@ -31,22 +31,6 @@ function GlassCard({
   isInView: boolean;
   noMotion: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
-  const [hovered, setHovered] = useState(false);
-
-  const onMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!ref.current || noMotion) return;
-      const r = ref.current.getBoundingClientRect();
-      setMouse({
-        x: (e.clientX - r.left) / r.width,
-        y: (e.clientY - r.top) / r.height,
-      });
-    },
-    [noMotion],
-  );
-
   return (
     <motion.div
       initial={noMotion ? false : { opacity: 0, y: 28, scale: 0.96 }}
@@ -58,35 +42,12 @@ function GlassCard({
       }}
       className={className}
     >
-      <div
-        role="presentation"
-        ref={ref}
-        onMouseMove={onMove}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => {
-          setHovered(false);
-          setMouse({ x: 0.5, y: 0.5 });
-        }}
-        className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] transition-colors duration-300 hover:border-white/[0.1]"
-      >
-        {/* Mouse spotlight */}
+      <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.12]">
+        {/* Top accent — brightens on hover */}
         <div
-          className="absolute inset-0 rounded-2xl pointer-events-none"
-          style={{
-            background: hovered
-              ? `radial-gradient(400px circle at ${mouse.x * 100}% ${mouse.y * 100}%, ${accent.replace(/[\d.]+\)$/, '0.07)')}, transparent 40%)`
-              : 'none',
-            opacity: hovered ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-          }}
-        />
-        {/* Top accent */}
-        <div
-          className="absolute inset-x-0 top-0 h-px"
+          className="absolute inset-x-0 top-0 h-px opacity-40 transition-opacity duration-300 group-hover:opacity-100"
           style={{
             background: `linear-gradient(90deg, transparent 15%, ${accent.replace(/[\d.]+\)$/, '0.2)')}, transparent 85%)`,
-            opacity: hovered ? 1 : 0.4,
-            transition: 'opacity 0.3s ease',
           }}
         />
         <div className="relative h-full p-6 sm:p-7">{children}</div>
@@ -116,6 +77,13 @@ function PostureCard({
     { value: '8', label: 'Framework packs', color: 'text-white' },
   ] as const;
 
+  // Illustrative per-framework rows — what a posture screen renders.
+  const frameworks = [
+    { name: 'SOC 2 Type II', score: 94 },
+    { name: 'ISO 27001', score: 88 },
+    { name: 'HIPAA', score: 96 },
+  ] as const;
+
   return (
     <GlassCard
       className="md:col-span-2"
@@ -126,11 +94,7 @@ function PostureCard({
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
         {/* Animated progress arc */}
         <div className="relative shrink-0">
-          <svg
-            viewBox="0 0 128 128"
-            className="w-36 h-36 sm:w-40 sm:h-40"
-            style={{ filter: 'drop-shadow(0 0 20px rgba(113,113,122,0.15))' }}
-          >
+          <svg viewBox="0 0 128 128" className="w-36 h-36 sm:w-40 sm:h-40">
             {/* Track */}
             <circle
               cx="64"
@@ -150,31 +114,6 @@ function PostureCard({
               strokeWidth="10"
               strokeLinecap="round"
               strokeDasharray={ARC_C}
-              initial={{ strokeDashoffset: ARC_C }}
-              animate={
-                isInView
-                  ? { strokeDashoffset: ARC_C * (1 - 0.94) }
-                  : { strokeDashoffset: ARC_C }
-              }
-              transition={{
-                duration: noMotion ? 0 : 2,
-                delay: 0.4,
-                ease: signatureEase,
-              }}
-              transform="rotate(-90 64 64)"
-            />
-            {/* Glow layer */}
-            <motion.circle
-              cx="64"
-              cy="64"
-              r={ARC_R}
-              fill="none"
-              stroke="url(#posture-arc-grad)"
-              strokeWidth="14"
-              strokeLinecap="round"
-              strokeDasharray={ARC_C}
-              opacity={0.15}
-              style={{ filter: 'blur(6px)' }}
               initial={{ strokeDashoffset: ARC_C }}
               animate={
                 isInView
@@ -219,33 +158,63 @@ function PostureCard({
           <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
             What the posture screen looks like
           </h3>
-          <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-md">
+          <p className="text-sm text-slate-400 leading-relaxed mb-5 max-w-md">
             Live posture computed nightly from
             <code className="mx-1 rounded bg-white/[0.04] px-1 py-0.5 font-mono text-xs text-slate-300">org_control_evaluations</code>
             and rendered at <code className="rounded bg-white/[0.04] px-1 py-0.5 font-mono text-xs text-slate-300">/app/compliance/health</code>.
-            Numbers below are example values, not a customer claim.
+            Example values, not a customer claim.
           </p>
-          <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6">
-            {stats.map((s, i) => (
+
+          {/* Illustrative posture screen — per-framework rows */}
+          <div className="space-y-2.5 text-left">
+            {frameworks.map((f, i) => (
               <motion.div
-                key={s.label}
-                initial={noMotion ? false : { opacity: 0, y: 8 }}
-                animate={isInView ? { opacity: 1, y: 0 } : undefined}
+                key={f.name}
+                initial={noMotion ? false : { opacity: 0, x: -8 }}
+                animate={isInView ? { opacity: 1, x: 0 } : undefined}
                 transition={{
-                  delay: 0.8 + i * 0.12,
+                  delay: 0.7 + i * 0.1,
                   duration: duration.normal,
                   ease: signatureEase,
                 }}
               >
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-300">
+                    {f.name}
+                  </span>
+                  <span className="font-mono text-xs tabular-nums text-slate-400">
+                    {f.score}%
+                  </span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                  <motion.div
+                    className="h-full rounded-full bg-slate-300/80"
+                    initial={{ width: 0 }}
+                    animate={isInView ? { width: `${f.score}%` } : undefined}
+                    transition={{
+                      delay: 0.8 + i * 0.1,
+                      duration: 1,
+                      ease: signatureEase,
+                    }}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Summary stats */}
+          <div className="mt-5 flex flex-wrap justify-center gap-5 border-t border-white/[0.06] pt-4 sm:justify-start sm:gap-7">
+            {stats.map((s) => (
+              <div key={s.label}>
                 <div
-                  className={`text-xl sm:text-2xl font-bold tabular-nums ${s.color}`}
+                  className={`text-lg sm:text-xl font-bold tabular-nums ${s.color}`}
                 >
                   {s.value}
                 </div>
                 <div className="text-[10px] text-slate-500 font-medium mt-0.5">
                   {s.label}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -312,11 +281,11 @@ function EnforcementCard({
             duration: duration.normal,
             ease: signatureEase,
           }}
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-teal-500/[0.05] border border-teal-500/[0.12]"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/[0.12]"
         >
-          <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
           <div>
-            <div className="text-[11px] font-semibold text-teal-400">
+            <div className="text-[11px] font-semibold text-emerald-400">
               Approved
             </div>
             <div className="text-[10px] text-slate-500">
@@ -334,11 +303,11 @@ function EnforcementCard({
             duration: duration.normal,
             ease: signatureEase,
           }}
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-teal-500/[0.05] border border-teal-500/[0.12]"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/[0.12]"
         >
-          <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
           <div>
-            <div className="text-[11px] font-semibold text-teal-400">
+            <div className="text-[11px] font-semibold text-emerald-400">
               Approved
             </div>
             <div className="text-[10px] text-slate-500">
@@ -591,34 +560,15 @@ export function ValueProposition() {
       className="relative overflow-hidden px-6 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-28"
       style={{
         background:
-          'linear-gradient(180deg, #020617 0%, #070b18 40%, #0a1020 60%, #020617 100%)',
+          'linear-gradient(180deg, #030711 0%, #060910 50%, #030711 100%)',
       }}
     >
-      {/* ── Grid texture ── */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-        }}
-      />
+      {/* Subtle neutral depth */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
 
       {/* ── Section edges ── */}
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.06) 50%, transparent 90%)',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 bottom-0 h-px"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.06) 50%, transparent 90%)',
-        }}
-      />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
