@@ -77,6 +77,13 @@ function PostureCard({
     { value: '8', label: 'Framework packs', color: 'text-white' },
   ] as const;
 
+  // Illustrative per-framework rows — what a posture screen renders.
+  const frameworks = [
+    { name: 'SOC 2 Type II', score: 94 },
+    { name: 'ISO 27001', score: 88 },
+    { name: 'HIPAA', score: 96 },
+  ] as const;
+
   return (
     <GlassCard
       className="md:col-span-2"
@@ -151,33 +158,63 @@ function PostureCard({
           <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
             What the posture screen looks like
           </h3>
-          <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-md">
+          <p className="text-sm text-slate-400 leading-relaxed mb-5 max-w-md">
             Live posture computed nightly from
             <code className="mx-1 rounded bg-white/[0.04] px-1 py-0.5 font-mono text-xs text-slate-300">org_control_evaluations</code>
             and rendered at <code className="rounded bg-white/[0.04] px-1 py-0.5 font-mono text-xs text-slate-300">/app/compliance/health</code>.
-            Numbers below are example values, not a customer claim.
+            Example values, not a customer claim.
           </p>
-          <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6">
-            {stats.map((s, i) => (
+
+          {/* Illustrative posture screen — per-framework rows */}
+          <div className="space-y-2.5 text-left">
+            {frameworks.map((f, i) => (
               <motion.div
-                key={s.label}
-                initial={noMotion ? false : { opacity: 0, y: 8 }}
-                animate={isInView ? { opacity: 1, y: 0 } : undefined}
+                key={f.name}
+                initial={noMotion ? false : { opacity: 0, x: -8 }}
+                animate={isInView ? { opacity: 1, x: 0 } : undefined}
                 transition={{
-                  delay: 0.8 + i * 0.12,
+                  delay: 0.7 + i * 0.1,
                   duration: duration.normal,
                   ease: signatureEase,
                 }}
               >
+                <div className="mb-1 flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-300">
+                    {f.name}
+                  </span>
+                  <span className="font-mono text-xs tabular-nums text-slate-400">
+                    {f.score}%
+                  </span>
+                </div>
+                <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                  <motion.div
+                    className="h-full rounded-full bg-slate-300/80"
+                    initial={{ width: 0 }}
+                    animate={isInView ? { width: `${f.score}%` } : undefined}
+                    transition={{
+                      delay: 0.8 + i * 0.1,
+                      duration: 1,
+                      ease: signatureEase,
+                    }}
+                  />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Summary stats */}
+          <div className="mt-5 flex flex-wrap justify-center gap-5 border-t border-white/[0.06] pt-4 sm:justify-start sm:gap-7">
+            {stats.map((s) => (
+              <div key={s.label}>
                 <div
-                  className={`text-xl sm:text-2xl font-bold tabular-nums ${s.color}`}
+                  className={`text-lg sm:text-xl font-bold tabular-nums ${s.color}`}
                 >
                   {s.value}
                 </div>
                 <div className="text-[10px] text-slate-500 font-medium mt-0.5">
                   {s.label}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
