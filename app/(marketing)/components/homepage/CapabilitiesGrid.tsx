@@ -70,22 +70,24 @@ export function CapabilitiesGrid() {
     <section className="mk-section home-section home-section--contrast relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal
-          variant="scaleUp"
+          variant="slideUp"
           range={[0, 0.3]}
-          className="mx-auto mb-12 max-w-2xl text-center lg:mb-14"
+          className="mb-12 flex items-start gap-5 lg:mb-14"
         >
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Platform Capabilities
-          </p>
-
-          <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
-            Everything you need.{' '}
-            <span className="text-slate-400">Nothing you don&apos;t.</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">
-            Obligations flow to controls, controls trigger tasks, tasks produce
-            evidence. One interconnected system.
-          </p>
+          <span className="mt-1.5 h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent" />
+          <div className="max-w-2xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Platform capabilities
+            </p>
+            <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
+              Everything you need.{' '}
+              <span className="text-slate-400">Nothing you don&apos;t.</span>
+            </h2>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-400">
+              Obligations flow to controls, controls trigger tasks, tasks produce
+              evidence. One interconnected system.
+            </p>
+          </div>
         </ScrollReveal>
 
         <SectionChoreography

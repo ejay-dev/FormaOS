@@ -1538,6 +1538,43 @@
   }
 }
 
+/* Subtle content-swap fade (e.g. Before/After toggle on the homepage). */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Automation agent that rides a track across the homepage outcome cards.
+   Horizontal position (left %) is driven by JS — it auto-patrols when idle
+   and eases toward the cursor while the mouse is over the board. */
+.outcome-bot {
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.25s ease;
+}
+/* "Awake" while the cursor is over the board: lift + brighten the glow. */
+.outcome-bot--awake {
+  transform: translate(-50%, -50%) scale(1.12);
+}
+.outcome-bot--awake .outcome-bot-glow {
+  background: rgba(255, 255, 255, 0.2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .outcome-bot {
+    left: 50%;
+    transition: none;
+  }
+  .outcome-bot-beam {
+    display: none;
+  }
+}
+
 @keyframes fade-in-down {
   from {
     opacity: 0;

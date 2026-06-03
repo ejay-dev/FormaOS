@@ -42,11 +42,17 @@ export function ComplianceNetworkSection() {
         <ScrollReveal variant="blurIn" range={[0, 0.3]} className="mb-10 lg:mb-16">
           <div className="grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:grid-cols-12 lg:items-end">
             <div className="lg:col-span-7">
-              <div className="mb-5 flex items-center gap-3">
-                <span className="h-px w-8 bg-white/25" />
-                <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Compliance Data Model
-                </span>
+              {/* Eyebrow as a relationship chain — previews the graph below and
+                  differentiates this header from the labelled-rule used by the
+                  sections above it. */}
+              <div className="mb-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">
+                <span>Frameworks</span>
+                <span className="text-slate-600">&rarr;</span>
+                <span>Controls</span>
+                <span className="text-slate-600">&rarr;</span>
+                <span>Tasks</span>
+                <span className="text-slate-600">&rarr;</span>
+                <span className="text-slate-300">Evidence</span>
               </div>
               <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
                 See how everything connects
