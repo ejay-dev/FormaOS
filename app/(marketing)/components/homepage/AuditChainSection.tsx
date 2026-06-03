@@ -1,7 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, History, Lock, ShieldCheck } from 'lucide-react';
+import {
+  ArrowRight,
+  CheckCircle2,
+  History,
+  Lock,
+  ShieldCheck,
+} from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 
 // Cryptographic audit-chain proof section. Surfaces the
@@ -35,6 +41,15 @@ const PILLARS = [
   },
 ] as const;
 
+// Illustrative hash-chain rows. Each row's `prev` equals the previous row's
+// `hmac`, so the linkage is internally consistent — it demonstrates the
+// mechanism, not real customer data.
+const CHAIN_ROWS = [
+  { seq: '1024', hmac: 'a3f1…9c2', prev: '5e8b…41d' },
+  { seq: '1025', hmac: '7c1e…0b4', prev: 'a3f1…9c2' },
+  { seq: '1026', hmac: 'd92a…5f7', prev: '7c1e…0b4', top: true },
+] as const;
+
 export function AuditChainSection() {
   return (
     <section className="mk-section relative overflow-hidden py-24 sm:py-32">
@@ -63,6 +78,86 @@ export function AuditChainSection() {
             append-only transparency log the Linux Foundation runs for signed
             open-source releases.
           </p>
+        </ScrollReveal>
+
+        {/* Hash-chain visual — rows linked by HMAC, anchored to Rekor */}
+        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+          <div className="mx-auto mb-10 max-w-5xl rounded-2xl border border-white/[0.08] bg-white/[0.015] p-5 sm:mb-12 sm:p-7">
+            <div className="mb-5 flex items-center justify-between gap-3">
+              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500">
+                audit_log · append-only · hash-chained
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-slate-600">
+                illustrative
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch">
+              {CHAIN_ROWS.map((row) => (
+                <div
+                  key={row.seq}
+                  className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center"
+                >
+                  <div className="flex-1 rounded-xl border border-white/[0.1] bg-[#0a0f1d] p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="font-mono text-xs font-semibold text-white">
+                        #{row.seq}
+                      </span>
+                      {'top' in row && row.top ? (
+                        <span className="rounded border border-white/15 bg-white/[0.05] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-300">
+                          chain top
+                        </span>
+                      ) : (
+                        <Lock
+                          className="h-3.5 w-3.5 text-slate-600"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
+                    <dl className="space-y-1.5 font-mono text-[11px]">
+                      <div className="flex items-center justify-between gap-2">
+                        <dt className="text-slate-600">hmac</dt>
+                        <dd className="text-slate-200">{row.hmac}</dd>
+                      </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <dt className="text-slate-600">prev</dt>
+                        <dd className="text-slate-500">{row.prev}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <div className="flex justify-center text-slate-600">
+                    <ArrowRight
+                      className="h-4 w-4 rotate-90 lg:rotate-0"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
+              ))}
+
+              {/* External anchor */}
+              <div className="flex-1 rounded-xl border border-white/[0.12] bg-white/[0.04] p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <CheckCircle2
+                    className="h-4 w-4 text-emerald-400"
+                    aria-hidden="true"
+                  />
+                  <span className="text-xs font-semibold text-white">
+                    Sigstore Rekor
+                  </span>
+                </div>
+                <dl className="space-y-1.5 font-mono text-[11px]">
+                  <div className="flex items-center justify-between gap-2">
+                    <dt className="text-slate-600">proof</dt>
+                    <dd className="text-slate-300">Merkle inclusion</dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <dt className="text-slate-600">anchored</dt>
+                    <dd className="text-slate-300">05:30 UTC</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
         </ScrollReveal>
 
         <div className="mx-auto grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-3">
