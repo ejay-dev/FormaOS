@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { HomeClientMarker } from './components/home-client-marker';
 import FigmaHomepage from './components/FigmaHomepage';
 import { HeroStaticShell } from './components/HeroStaticShell';
-import { HomeProofStaticShell } from './components/HomeProofStaticShell';
 import { HowItWorks } from '@/components/HowItWorks';
 import { TrustBar } from '@/components/TrustBar';
 import { siteUrl } from '@/lib/seo';
@@ -74,7 +73,6 @@ export default function HomePage() {
       {/* Server-rendered hero: copy is in the initial HTML for crawlers and LCP */}
       <HeroStaticShell />
       <TrustBar />
-      <HomeProofStaticShell />
       <HowItWorks />
 
       {/* Client sections: animations, control-plane overrides, below-fold content */}
