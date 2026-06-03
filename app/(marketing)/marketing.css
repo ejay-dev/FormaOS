@@ -783,15 +783,17 @@
 }
 
 .home-section--process {
+  /* Neutral monochrome wash — the emerald/cyan radials here rendered as a
+     real green/teal glow (off-brand); replaced with subtle white. */
   background:
     radial-gradient(
       circle at 24% 20%,
-      rgba(var(--mk-rgb-emerald), 0.12),
+      rgba(255, 255, 255, 0.05),
       transparent 52%
     ),
     radial-gradient(
       circle at 76% 84%,
-      rgba(var(--mk-rgb-cyan-alt), 0.1),
+      rgba(255, 255, 255, 0.035),
       transparent 50%
     ),
     linear-gradient(
