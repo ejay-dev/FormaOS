@@ -89,7 +89,7 @@ export function TestimonialsSection() {
         initial={{ opacity: 0, y: 24 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-4 flex items-start gap-5"
+        className="mx-auto mb-4 flex w-full max-w-6xl items-start gap-5"
       >
         <span className="mt-1.5 h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent" />
         <div className="max-w-2xl">
@@ -120,7 +120,7 @@ export function TestimonialsSection() {
         <div
           role="tablist"
           aria-label="Use case sectors"
-          className="flex flex-col gap-2 lg:col-span-4"
+          className="flex flex-col gap-2.5 lg:col-span-5"
         >
           {SCENARIOS.map((s, i) => {
             const Icon = s.icon;
@@ -132,17 +132,17 @@ export function TestimonialsSection() {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => setActive(i)}
-                className={`group relative flex items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left transition-colors duration-200 ${
+                className={`group relative flex items-center gap-4 rounded-xl border px-5 py-4 text-left transition-colors duration-200 ${
                   isActive
                     ? 'border-white/20 bg-white/[0.04]'
                     : 'border-white/[0.06] hover:border-white/[0.12] hover:bg-white/[0.02]'
                 }`}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-1/2 h-7 w-0.5 -translate-y-1/2 rounded-full bg-white/70" />
+                  <span className="absolute left-0 top-1/2 h-9 w-0.5 -translate-y-1/2 rounded-full bg-white/70" />
                 )}
                 <span
-                  className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border transition-colors ${
+                  className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border transition-colors ${
                     isActive
                       ? 'border-white/15 bg-white/[0.06] text-white'
                       : 'border-white/10 bg-white/[0.02] text-slate-400 group-hover:text-slate-200'
@@ -152,13 +152,13 @@ export function TestimonialsSection() {
                 </span>
                 <span className="min-w-0">
                   <span
-                    className={`block text-sm font-semibold ${
+                    className={`block text-[15px] font-semibold ${
                       isActive ? 'text-white' : 'text-slate-300'
                     }`}
                   >
                     {s.sector}
                   </span>
-                  <span className="block truncate text-xs text-slate-500">
+                  <span className="mt-0.5 block truncate text-xs text-slate-500">
                     {s.framework}
                   </span>
                 </span>
@@ -168,11 +168,11 @@ export function TestimonialsSection() {
         </div>
 
         {/* Selected scenario detail */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-7">
           <div
             key={active}
             role="tabpanel"
-            className="h-full animate-[fadeIn_0.3s_ease] rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 sm:p-8"
+            className="flex h-full animate-[fadeIn_0.3s_ease] flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 sm:p-9"
           >
             <div className="flex flex-wrap gap-1.5">
               {scenario.framework.split(' + ').map((fw) => (
@@ -185,16 +185,16 @@ export function TestimonialsSection() {
               ))}
             </div>
 
-            <div className="mt-6">
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <div className="mt-7">
+              <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 The challenge
               </p>
-              <p className="text-base leading-relaxed text-slate-300">
+              <p className="text-lg leading-relaxed text-slate-200">
                 {scenario.situation}
               </p>
             </div>
 
-            <div className="mt-6 border-t border-white/[0.07] pt-6">
+            <div className="mt-auto border-t border-white/[0.07] pt-7">
               <p className="mb-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 What changed
               </p>
