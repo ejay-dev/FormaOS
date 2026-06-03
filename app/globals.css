@@ -1575,6 +1575,34 @@
   }
 }
 
+/* Compliance-engine pipeline: a light travelling along the rail from the
+   first lifecycle stage to the last ("data flowing through the engine"). */
+.engine-pulse {
+  left: 10%;
+  animation: engine-pulse-move 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes engine-pulse-move {
+  0% {
+    left: 10%;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(90% - 5rem);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .engine-pulse {
+    display: none;
+  }
+}
+
 @keyframes fade-in-down {
   from {
     opacity: 0;
