@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ShieldCheck, ShieldOff, Clock, Link2, UserCheck } from 'lucide-react';
 import { duration, easing } from '@/config/motion';
@@ -31,22 +31,6 @@ function GlassCard({
   isInView: boolean;
   noMotion: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
-  const [hovered, setHovered] = useState(false);
-
-  const onMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!ref.current || noMotion) return;
-      const r = ref.current.getBoundingClientRect();
-      setMouse({
-        x: (e.clientX - r.left) / r.width,
-        y: (e.clientY - r.top) / r.height,
-      });
-    },
-    [noMotion],
-  );
-
   return (
     <motion.div
       initial={noMotion ? false : { opacity: 0, y: 28, scale: 0.96 }}
@@ -58,35 +42,12 @@ function GlassCard({
       }}
       className={className}
     >
-      <div
-        role="presentation"
-        ref={ref}
-        onMouseMove={onMove}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => {
-          setHovered(false);
-          setMouse({ x: 0.5, y: 0.5 });
-        }}
-        className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] transition-colors duration-300 hover:border-white/[0.1]"
-      >
-        {/* Mouse spotlight */}
+      <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.12]">
+        {/* Top accent — brightens on hover */}
         <div
-          className="absolute inset-0 rounded-2xl pointer-events-none"
-          style={{
-            background: hovered
-              ? `radial-gradient(400px circle at ${mouse.x * 100}% ${mouse.y * 100}%, ${accent.replace(/[\d.]+\)$/, '0.07)')}, transparent 40%)`
-              : 'none',
-            opacity: hovered ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-          }}
-        />
-        {/* Top accent */}
-        <div
-          className="absolute inset-x-0 top-0 h-px"
+          className="absolute inset-x-0 top-0 h-px opacity-40 transition-opacity duration-300 group-hover:opacity-100"
           style={{
             background: `linear-gradient(90deg, transparent 15%, ${accent.replace(/[\d.]+\)$/, '0.2)')}, transparent 85%)`,
-            opacity: hovered ? 1 : 0.4,
-            transition: 'opacity 0.3s ease',
           }}
         />
         <div className="relative h-full p-6 sm:p-7">{children}</div>
@@ -126,11 +87,7 @@ function PostureCard({
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
         {/* Animated progress arc */}
         <div className="relative shrink-0">
-          <svg
-            viewBox="0 0 128 128"
-            className="w-36 h-36 sm:w-40 sm:h-40"
-            style={{ filter: 'drop-shadow(0 0 20px rgba(113,113,122,0.15))' }}
-          >
+          <svg viewBox="0 0 128 128" className="w-36 h-36 sm:w-40 sm:h-40">
             {/* Track */}
             <circle
               cx="64"
@@ -150,31 +107,6 @@ function PostureCard({
               strokeWidth="10"
               strokeLinecap="round"
               strokeDasharray={ARC_C}
-              initial={{ strokeDashoffset: ARC_C }}
-              animate={
-                isInView
-                  ? { strokeDashoffset: ARC_C * (1 - 0.94) }
-                  : { strokeDashoffset: ARC_C }
-              }
-              transition={{
-                duration: noMotion ? 0 : 2,
-                delay: 0.4,
-                ease: signatureEase,
-              }}
-              transform="rotate(-90 64 64)"
-            />
-            {/* Glow layer */}
-            <motion.circle
-              cx="64"
-              cy="64"
-              r={ARC_R}
-              fill="none"
-              stroke="url(#posture-arc-grad)"
-              strokeWidth="14"
-              strokeLinecap="round"
-              strokeDasharray={ARC_C}
-              opacity={0.15}
-              style={{ filter: 'blur(6px)' }}
               initial={{ strokeDashoffset: ARC_C }}
               animate={
                 isInView
@@ -312,11 +244,11 @@ function EnforcementCard({
             duration: duration.normal,
             ease: signatureEase,
           }}
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-teal-500/[0.05] border border-teal-500/[0.12]"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/[0.12]"
         >
-          <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
           <div>
-            <div className="text-[11px] font-semibold text-teal-400">
+            <div className="text-[11px] font-semibold text-emerald-400">
               Approved
             </div>
             <div className="text-[10px] text-slate-500">
@@ -334,11 +266,11 @@ function EnforcementCard({
             duration: duration.normal,
             ease: signatureEase,
           }}
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-teal-500/[0.05] border border-teal-500/[0.12]"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/[0.12]"
         >
-          <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
           <div>
-            <div className="text-[11px] font-semibold text-teal-400">
+            <div className="text-[11px] font-semibold text-emerald-400">
               Approved
             </div>
             <div className="text-[10px] text-slate-500">
@@ -591,34 +523,15 @@ export function ValueProposition() {
       className="relative overflow-hidden px-6 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-28"
       style={{
         background:
-          'linear-gradient(180deg, #020617 0%, #070b18 40%, #0a1020 60%, #020617 100%)',
+          'linear-gradient(180deg, #030711 0%, #060910 50%, #030711 100%)',
       }}
     >
-      {/* ── Grid texture ── */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-        }}
-      />
+      {/* Subtle neutral depth */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
 
       {/* ── Section edges ── */}
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.06) 50%, transparent 90%)',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 bottom-0 h-px"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.06) 50%, transparent 90%)',
-        }}
-      />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
