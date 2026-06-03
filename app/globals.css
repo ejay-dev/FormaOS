@@ -1603,6 +1603,29 @@
   }
 }
 
+/* Audit-chain "re-walker" agent — JS drives `left`; it patrols and eases
+   toward the cursor (with eye-tracking) while the pointer is over the cards. */
+.audit-bot {
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.25s ease;
+}
+.audit-bot--awake {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+.audit-bot--awake .audit-bot-glow {
+  background: rgba(255, 255, 255, 0.18);
+}
+@media (prefers-reduced-motion: reduce) {
+  .audit-bot {
+    left: 50%;
+    transition: none;
+  }
+  .audit-bot-beam {
+    display: none;
+  }
+}
+
 @keyframes fade-in-down {
   from {
     opacity: 0;
