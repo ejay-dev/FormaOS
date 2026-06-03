@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  memo,
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   motion,
@@ -42,51 +36,24 @@ const signatureEase: [number, number, number, number] = [
 function GlassCard({
   children,
   className = '',
-  glowColor = 'rgba(148,163,184,0.1)',
   noMotion,
   delay = 0,
   isInView,
 }: {
   children: React.ReactNode;
   className?: string;
-  glowColor?: string;
   noMotion: boolean;
   delay?: number;
   isInView: boolean;
 }) {
-  const [hovered, setHovered] = useState(false);
-  const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    setMouse({
-      x: (e.clientX - rect.left) / rect.width,
-      y: (e.clientY - rect.top) / rect.height,
-    });
-  }, []);
-
   return (
     <motion.div
       initial={noMotion ? false : { opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : undefined}
       transition={{ duration: duration.slow, delay, ease: signatureEase }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => {
-        setHovered(false);
-        setMouse({ x: 0.5, y: 0.5 });
-      }}
       className={`group relative ${className}`}
     >
-      <div className="relative h-full overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-sm transition-colors duration-300 hover:bg-white/[0.04] hover:border-white/20">
-        {hovered && !noMotion && (
-          <div
-            className="absolute inset-0 pointer-events-none opacity-40 z-10"
-            style={{
-              background: `radial-gradient(400px circle at ${mouse.x * 100}% ${mouse.y * 100}%, ${glowColor}, transparent 70%)`,
-            }}
-          />
-        )}
+      <div className="relative h-full overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.025] transition-colors duration-300 hover:bg-white/[0.04] hover:border-white/20">
         <div className="relative z-20 h-full">{children}</div>
       </div>
     </motion.div>
@@ -224,44 +191,38 @@ function PostureRing({
    Data
    ════════════════════════════════════════════════════════════ */
 
-// Illustrative log preview using role labels — never invented names.
-// The earlier version embedded the same fabricated personas (Sarah M.,
-// James T., Rachel K., Michael D.) that were called out in the
-// 2026-05-27 design audit.
+// Illustrative example of the event TYPES the audit trail captures — role
+// labels only, never invented names, and no fabricated "X min ago" clock
+// (a live-feed timestamp would imply real activity that isn't there).
 const AUDIT_LOG_ENTRIES = [
   {
     action: 'Evidence approved',
     control: 'CC6.1 — Logical access controls',
     actor: 'Control owner',
-    time: '2 min ago',
     status: 'verified' as const,
   },
   {
     action: 'Control drift detected',
     control: 'A1.2 — Availability monitoring',
     actor: 'System',
-    time: '14 min ago',
     status: 'alert' as const,
   },
   {
     action: 'Audit packet exported',
     control: 'SOC 2 Type II — Full pack',
     actor: 'Workspace admin',
-    time: '1 hr ago',
     status: 'verified' as const,
   },
   {
     action: 'Policy acknowledged',
     control: 'ISO 27001 — A.5.1 Policies',
     actor: 'Policy reviewer',
-    time: '3 hr ago',
     status: 'verified' as const,
   },
   {
     action: 'Worker credential updated',
     control: 'NDIS — Worker Screening',
     actor: 'Workforce coordinator',
-    time: '5 hr ago',
     status: 'verified' as const,
   },
 ];
@@ -312,7 +273,6 @@ const PostureCard = memo(function PostureCard({
   return (
     <GlassCard
       className="md:col-span-2 md:row-span-2"
-      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.1}
       isInView={isInView}
@@ -404,7 +364,6 @@ const EncryptionCard = memo(function EncryptionCard({
 }) {
   return (
     <GlassCard
-      glowColor="rgba(113,113,122,0.12)"
       noMotion={noMotion}
       delay={0.2}
       isInView={isInView}
@@ -415,13 +374,6 @@ const EncryptionCard = memo(function EncryptionCard({
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
             Encryption
           </span>
-        </div>
-
-        {/* Visual lock */}
-        <div className="flex items-center justify-center mb-4">
-          <div className="w-14 h-14 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center">
-            <Lock className="w-6 h-6 text-slate-300" />
-          </div>
         </div>
 
         {/* Encryption layers */}
@@ -463,7 +415,6 @@ const AccessCard = memo(function AccessCard({
 }) {
   return (
     <GlassCard
-      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.3}
       isInView={isInView}
@@ -507,7 +458,7 @@ const AccessCard = memo(function AccessCard({
 });
 
 /* ════════════════════════════════════════════════════════════
-   AuditLogCard — live terminal
+   AuditLogCard — audit-trail event types (not a live feed)
    ════════════════════════════════════════════════════════════ */
 
 const AuditLogCard = memo(function AuditLogCard({
@@ -520,20 +471,16 @@ const AuditLogCard = memo(function AuditLogCard({
   return (
     <GlassCard
       className="md:col-span-4"
-      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.35}
       isInView={isInView}
     >
       <div className="h-full">
-        {/* Terminal header */}
+        {/* Header — describes what the trail captures, not a live feed */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
-          <div className="flex items-center gap-2.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-            <span className="text-xs font-semibold uppercase tracking-widest text-slate-300">
-              Live Audit Log
-            </span>
-          </div>
+          <span className="text-xs font-semibold uppercase tracking-widest text-slate-300">
+            What the audit trail captures
+          </span>
           <span className="text-[10px] text-slate-600 uppercase tracking-wider font-medium">
             Immutable &middot; Timestamped
           </span>
@@ -578,13 +525,9 @@ const AuditLogCard = memo(function AuditLogCard({
               <p className="text-[11px] text-slate-500 truncate">
                 {entry.control}
               </p>
-              <div className="flex items-center gap-1.5 mt-auto">
-                <span className="text-[10px] text-slate-600">
-                  {entry.actor}
-                </span>
-                <span className="text-[10px] text-slate-700">&middot;</span>
-                <span className="text-[10px] text-slate-600">{entry.time}</span>
-              </div>
+              <span className="mt-auto text-[10px] text-slate-600">
+                {entry.actor}
+              </span>
             </motion.div>
           ))}
         </div>
@@ -641,7 +584,6 @@ const DataResidencyCard = memo(function DataResidencyCard({
 }) {
   return (
     <GlassCard
-      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.35}
       isInView={isInView}
@@ -681,7 +623,6 @@ const AuditReadyCard = memo(function AuditReadyCard({
 }) {
   return (
     <GlassCard
-      glowColor="rgba(148,163,184,0.1)"
       noMotion={noMotion}
       delay={0.4}
       isInView={isInView}
@@ -721,50 +662,10 @@ export const SecuritySection = memo(function SecuritySection() {
     <section
       ref={sectionRef}
       className="mk-section home-section home-section--proof relative overflow-hidden"
-      style={{
-        background:
-          'linear-gradient(180deg, #020617 0%, #070c1f 30%, #0c1129 60%, #020617 100%)',
-      }}
     >
       {/* Edge lines */}
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.08) 50%, transparent 90%)',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 bottom-0 h-px"
-        style={{
-          background:
-            'linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.06) 50%, transparent 90%)',
-        }}
-      />
-
-      {/* Ambient orbs */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div
-          className="absolute w-[600px] h-[600px] rounded-full blur-[150px]"
-          style={{ left: '-5%', top: '10%', background: 'rgba(148,163,184,0.05)' }}
-        />
-        <div
-          className="absolute w-[500px] h-[500px] rounded-full blur-[130px]"
-          style={{ right: '0%', bottom: '5%', background: 'rgba(113,113,122,0.04)' }}
-        />
-      </div>
-
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.015]"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '60px 60px',
-        }}
-      />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
