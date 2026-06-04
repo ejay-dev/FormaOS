@@ -52,6 +52,54 @@ const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
    template.
    ──────────────────────────────────────────────────────────── */
 
+const stickySalesHref = salesHref('enterprise_sticky');
+
+/** Mobile-only thumb-reachable primary CTA (shown below md, post-hero). */
+function MobileStickyCta() {
+  const reduce = useReducedMotion();
+  const { trackCtaClick } = useMarketingTelemetry();
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShow(window.scrollY > 600);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {show ? (
+        <motion.div
+          initial={reduce ? false : { y: '110%' }}
+          animate={{ y: 0 }}
+          exit={reduce ? undefined : { y: '110%' }}
+          transition={{ duration: reduce ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0a0f1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur-md md:hidden"
+        >
+          <Link
+            href={stickySalesHref}
+            onClick={() =>
+              trackCtaClick({
+                surface: 'enterprise',
+                section: 'sticky_cta',
+                location: 'mobile_sticky',
+                ctaLabel: PUBLIC_CTA_LABELS.talkToSales,
+                ctaHref: stickySalesHref,
+                variant: 'primary',
+              })
+            }
+            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-slate-900 transition active:bg-slate-100"
+          >
+            {PUBLIC_CTA_LABELS.talkToSales}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
+  );
+}
+
 function CenteredHeader({
   label,
   title,
@@ -812,18 +860,18 @@ function DefenseFlow() {
         >
           {status}
         </p>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 max-sm:w-full">
           <button
             type="button"
             onClick={trace}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-white transition hover:border-white/25 hover:bg-white/[0.08]"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-white transition hover:border-white/25 hover:bg-white/[0.08] max-sm:min-h-[44px] max-sm:flex-1"
           >
             Trace a request
           </button>
           <button
             type="button"
             onClick={bypass}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:border-rose-400/30 hover:text-rose-300"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:border-rose-400/30 hover:text-rose-300 max-sm:min-h-[44px] max-sm:flex-1"
           >
             Attempt bypass
           </button>
@@ -831,7 +879,7 @@ function DefenseFlow() {
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-500 transition hover:text-white"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-500 transition hover:text-white max-sm:min-h-[44px] max-sm:flex-1"
             >
               Reset
             </button>
@@ -1333,7 +1381,7 @@ function EnterpriseHero() {
   return (
     <section
       ref={heroRef}
-      className="relative isolate min-h-[90vh] flex items-center justify-center overflow-hidden"
+      className="relative isolate flex min-h-[80vh] items-center justify-center overflow-hidden sm:min-h-[90vh]"
     >
       <SectionMedia
         src="/marketing-media/enterprise.jpg"
@@ -1354,7 +1402,7 @@ function EnterpriseHero() {
 
       <motion.div
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
-        className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8 py-32 sm:py-40 text-center"
+        className="relative z-10 mx-auto max-w-5xl px-6 lg:px-8 py-20 sm:py-40 text-center"
       >
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -1553,6 +1601,8 @@ export default function EnterprisePageContent() {
 
       {/* CTA */}
       <EnterpriseCTA />
+
+      <MobileStickyCta />
     </MarketingPageShell>
   );
 }
