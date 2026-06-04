@@ -8,6 +8,7 @@ interface MarketingCtaClickDetails {
   surface:
     | 'pricing'
     | 'product'
+    | 'features'
     | 'trust'
     | 'compare'
     | 'use_case'
