@@ -87,7 +87,7 @@ export const docSections: DocSection[] = [
   },
 ];
 
-// Monochrome treatment — section identity comes from the icon, not colour.
+// Monochrome treatment, section identity comes from the icon, not colour.
 const NEUTRAL_SECTION = {
   bg: 'bg-white/[0.06]',
   text: 'text-slate-300',
@@ -114,7 +114,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
       range={[index * 0.04, 0.3 + index * 0.04]}
       className="scroll-mt-24"
     >
-      <div id={section.id} className="relative p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
+      <div id={section.id} className="relative p-6 lg:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
         <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
         <button
@@ -131,7 +131,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
               <h2 className="text-xl font-bold text-white group-hover:text-slate-200 transition-colors">
                 {section.title}
               </h2>
-              <p className="text-sm text-gray-500">{section.description}</p>
+              <p className="text-sm text-slate-500">{section.description}</p>
             </div>
           </div>
           <motion.div
@@ -139,7 +139,7 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
             transition={{ duration: 0.3 }}
             className="flex-shrink-0 w-10 h-10 rounded-full bg-white/5 group-hover:bg-white/[0.12] flex items-center justify-center transition-colors"
           >
-            <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-slate-200 transition-colors" />
+            <ChevronDown className="w-5 h-5 text-slate-400 group-hover:text-slate-200 transition-colors" />
           </motion.div>
         </button>
 
@@ -166,15 +166,15 @@ export function DocSectionCard({ section, index }: { section: DocSection; index:
                       className="group/article flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 hover:bg-white/[0.06] transition-all duration-300"
                     >
                       <div className="w-9 h-9 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover/article:bg-white/[0.12] transition-colors">
-                        <ArticleIcon className="w-4 h-4 text-gray-400 group-hover/article:text-slate-200 transition-colors" />
+                        <ArticleIcon className="w-4 h-4 text-slate-400 group-hover/article:text-slate-200 transition-colors" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-sm font-medium text-white group-hover/article:text-slate-200 transition-colors truncate">
                           {article.title}
                         </h3>
-                        <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{article.description}</p>
+                        <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{article.description}</p>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-gray-600 group-hover/article:text-slate-300 group-hover/article:translate-x-1 transition-all flex-shrink-0 mt-1" />
+                      <ChevronRight className="w-4 h-4 text-slate-600 group-hover/article:text-slate-300 group-hover/article:translate-x-1 transition-all flex-shrink-0 mt-1" />
                     </motion.a>
                   );
                 })}

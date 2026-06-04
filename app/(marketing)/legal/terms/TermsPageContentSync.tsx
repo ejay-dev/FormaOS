@@ -110,7 +110,7 @@ function TermsHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: duration.slower, delay: 0.5 }}
-              className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
+              className="text-lg sm:text-xl text-slate-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
             >
               The framework for responsible platform usage, data integrity, and
               shared accountability between FormaOS and your organization.
@@ -121,7 +121,7 @@ function TermsHero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: duration.slower, delay: 0.6 }}
-              className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600"
+              className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600"
             >
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
@@ -189,7 +189,7 @@ function TableOfContents() {
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="blurIn">
-          <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30">
+          <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30">
             {/* Top accent line */}
             <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
 
@@ -206,7 +206,7 @@ function TableOfContents() {
                 transition={{ duration: 0.3 }}
                 className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors"
               >
-                <ChevronDown className="w-5 h-5 text-gray-400" />
+                <ChevronDown className="w-5 h-5 text-slate-400" />
               </motion.div>
             </button>
 
@@ -224,7 +224,7 @@ function TableOfContents() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.03 }}
-                    className="group flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300"
+                    className="group flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300"
                   >
                     <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
                       <section.icon className="w-4 h-4 text-cyan-400" />
@@ -267,7 +267,7 @@ function TermsSection({
     <ScrollReveal variant="fadeUp" className="scroll-mt-24">
       <div id={id}>
         {/* Section Card - Glassmorphism */}
-        <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-gray-900/40 to-gray-950/40 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group">
+        <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group">
           {/* Hover glow effect */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -287,7 +287,7 @@ function TermsSection({
             </div>
 
             {/* Section Content */}
-            <div className="text-gray-400 leading-relaxed space-y-4 pl-16">
+            <div className="text-slate-400 leading-relaxed space-y-4 pl-16">
               {children}
             </div>
           </div>
@@ -621,7 +621,7 @@ function TermsCTA() {
 
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="scaleUp">
-          <div className="relative p-6 sm:p-8 md:p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-2xl shadow-black/30">
+          <div className="relative p-6 sm:p-8 md:p-10 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-2xl shadow-black/30">
             {/* Top accent line */}
             <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
 
@@ -634,7 +634,7 @@ function TermsCTA() {
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
                   Need clarification on our Terms?
                 </h2>
-                <p className="text-gray-400 leading-relaxed">
+                <p className="text-slate-400 leading-relaxed">
                   Contact our team for any questions regarding platform usage,
                   data handling, or compliance requirements.
                 </p>
