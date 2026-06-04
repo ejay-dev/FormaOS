@@ -70,7 +70,7 @@ export function FinalCTA() {
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-400">
             Choose a path that matches your buying motion. Same compliance
-            engine, same architecture — different procurement and onboarding.
+            engine, same architecture, just different procurement and onboarding.
           </p>
         </ScrollReveal>
 

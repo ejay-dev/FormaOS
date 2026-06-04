@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { TrustBar } from '@/components/TrustBar';
 import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -48,7 +48,7 @@ function PlanScopeSection() {
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-400">
             Answer four questions about how you operate. We&rsquo;ll point you to
-            the tier your scope requires — every plan runs the same engine.
+            the tier your scope requires. Every plan runs the same engine.
           </p>
         </ScrollReveal>
 
@@ -61,8 +61,9 @@ function PlanScopeSection() {
 }
 
 /**
- * Cost context — manual compliance work vs. FormaOS. De-gimmicked to
- * sit on the shared base background with hairlines only.
+ * Cost context. Asymmetric editorial layout: an argument on the left, a
+ * "transformation ledger" on the right where each metric travels from a
+ * dim manual state to a lit FormaOS state. Sits on the shared base bg.
  */
 function CostOfNonCompliance() {
   return (
@@ -70,71 +71,64 @@ function CostOfNonCompliance() {
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-      <div className="relative z-10 mx-auto max-w-5xl px-6 lg:px-12">
-        {/* Header — left labelled rule */}
-        <ScrollReveal variant="slideUp" range={[0, 0.35]} className="mb-12 max-w-2xl">
+      <div className="relative z-10 mx-auto grid max-w-6xl gap-x-14 gap-y-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:px-12">
+        {/* Argument */}
+        <ScrollReveal variant="slideUp" range={[0, 0.35]}>
           <div className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
             <span className="h-px w-8 bg-white/25" />
             <span>The math</span>
           </div>
-          <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl">
             One failed audit costs more than a year of FormaOS.
           </h2>
-          <p className="mt-4 text-base leading-7 text-slate-400">
-            Pricing only makes sense measured against the manual work it
-            replaces — evidence chasing, repeated reviews, escalation gaps, and
-            late remediation.
+          <p className="mt-5 text-base leading-7 text-slate-400">
+            Pricing only makes sense against the manual work it removes. The
+            same four jobs, before and after the system runs them for you.
+          </p>
+          <p className="mt-6 border-l-2 border-white/15 pl-4 text-[15px] leading-7 text-slate-300">
+            Evidence is captured continuously as work happens. Nothing is
+            reconstructed in the weeks before an audit.
           </p>
         </ScrollReveal>
 
+        {/* Transformation ledger */}
         <ScrollReveal variant="depthSlide" range={[0.05, 0.45]}>
           <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015]">
-            {/* Column headers (desktop) */}
-            <div className="hidden border-b border-white/[0.08] sm:grid sm:grid-cols-[1.1fr_1fr_1.15fr]">
-              <div className="px-6 py-4" />
-              <div className="px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Manual / pre-FormaOS
-              </div>
-              <div className="flex items-center gap-2 border-l border-white/[0.06] bg-white/[0.03] px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
-                <CheckCircle2 className="h-4 w-4 text-slate-300" aria-hidden="true" />
+            {/* Zone captions */}
+            <div className="grid grid-cols-[1fr_auto_1fr] items-center border-b border-white/[0.08] text-[10px] font-semibold uppercase tracking-[0.18em]">
+              <span className="px-5 py-3 text-slate-500">Manual</span>
+              <span className="px-2 py-3 text-slate-700" aria-hidden="true" />
+              <span className="bg-white/[0.03] px-5 py-3 text-slate-200">
                 With FormaOS
-              </div>
+              </span>
             </div>
 
-            {/* Rows */}
             {MANUAL_COMPLIANCE_COST_ANCHORS.map((item, idx) => (
               <div
                 key={item.label}
-                className={`grid grid-cols-1 sm:grid-cols-[1.1fr_1fr_1.15fr] ${
-                  idx > 0 ? 'border-t border-white/[0.06]' : ''
-                }`}
+                className={idx > 0 ? 'border-t border-white/[0.06]' : ''}
               >
-                <div className="px-6 pt-5 pb-2 sm:py-5">
-                  <span className="text-sm font-semibold text-white">
-                    {item.label}
+                <p className="px-5 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  {item.label}
+                </p>
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+                  <span className="px-5 pb-4 pt-1 text-[15px] text-slate-500 line-through decoration-slate-700/70">
+                    {item.manual}
                   </span>
-                </div>
-                <div className="px-6 pb-2 sm:py-5">
-                  <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:hidden">
-                    Manual
-                  </span>
-                  <span className="text-sm text-slate-400">{item.manual}</span>
-                </div>
-                <div className="border-white/[0.06] bg-white/[0.02] px-6 pb-5 pt-1 sm:border-l sm:py-5 sm:pt-5">
-                  <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400 sm:hidden">
-                    With FormaOS
-                  </span>
-                  <span className="text-sm font-medium text-white">
-                    {item.formaos}
+                  <ArrowRight
+                    className="h-4 w-4 shrink-0 text-slate-600"
+                    aria-hidden="true"
+                  />
+                  <span className="flex items-start gap-2 self-stretch bg-white/[0.03] px-5 pb-4 pt-1 text-[15px] font-medium text-white">
+                    <Check
+                      className="mt-1 h-3.5 w-3.5 shrink-0 text-emerald-400/80"
+                      aria-hidden="true"
+                    />
+                    <span>{item.formaos}</span>
                   </span>
                 </div>
               </div>
             ))}
-
-            <div className="border-t border-white/[0.08] bg-white/[0.015] px-6 py-3.5 text-center text-xs text-slate-500">
-              With FormaOS, evidence is captured continuously as work happens —
-              not reconstructed before an audit.
-            </div>
           </div>
         </ScrollReveal>
       </div>

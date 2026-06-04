@@ -58,7 +58,7 @@ export function PricingHero() {
         >
           FormaOS replaces manual compliance work with enforced workflows and
           real-time audit evidence. Plans are anchored to risk, framework scope,
-          and operational complexity — not feature unlocks.
+          and operational complexity, not feature unlocks.
         </motion.p>
 
         <motion.div

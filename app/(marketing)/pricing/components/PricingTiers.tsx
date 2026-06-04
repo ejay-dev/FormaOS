@@ -77,8 +77,8 @@ export function PricingTiers() {
           <p className="text-sm leading-7 text-slate-400 lg:pb-1">
             Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
             is contracted with procurement and security review. Same engine
-            across every plan — only scope changes. Prices in AUD, GST inclusive,
-            billed monthly.
+            across every plan. Only the scope changes. Prices in AUD, GST
+            inclusive, billed monthly.
           </p>
         </ScrollReveal>
 
@@ -88,9 +88,10 @@ export function PricingTiers() {
           stagger={0.07}
           className="grid items-stretch gap-5 lg:grid-cols-4"
         >
-          {PUBLIC_PRICING_TIERS.map((tier, index) => {
+          {PUBLIC_PRICING_TIERS.map((tier) => {
             const visual = TIER_VISUAL[tier.id];
-            const number = String(index + 1).padStart(2, '0');
+            const price = priceLabelFor(tier);
+            const isCustomPrice = !price.startsWith('$');
 
             return (
               <motion.article
@@ -110,22 +111,19 @@ export function PricingTiers() {
                   className={`pointer-events-none absolute inset-y-6 left-0 w-px bg-gradient-to-b ${visual.rail}`}
                 />
 
-                {/* Header strip */}
-                <div className="flex items-center justify-between border-b border-white/[0.05] bg-white/[0.02] px-6 py-3.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-                    Tier {number}
-                  </span>
-                  {tier.badge ? (
-                    <span
-                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${visual.chip}`}
-                    >
-                      {tier.badge}
-                    </span>
-                  ) : null}
-                </div>
-
                 {/* Body */}
-                <div className="flex flex-1 flex-col px-6 pt-6 pb-6">
+                <div className="flex flex-1 flex-col px-6 pb-6 pt-7">
+                  {/* Badge row (reserved height keeps card tops aligned) */}
+                  <div className="mb-4 flex h-5 items-center">
+                    {tier.badge ? (
+                      <span
+                        className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${visual.chip}`}
+                      >
+                        {tier.badge}
+                      </span>
+                    ) : null}
+                  </div>
+
                   <h3 className="text-2xl font-semibold tracking-tight text-white">
                     {nameFor(tier)}
                   </h3>
@@ -137,22 +135,36 @@ export function PricingTiers() {
                   </p>
 
                   {/* Price */}
-                  <div className="mt-7 flex items-end gap-2">
-                    <span className="text-5xl font-semibold tracking-tight text-white">
-                      {priceLabelFor(tier)}
-                    </span>
-                    <span className="pb-2 text-sm font-medium text-slate-400">
-                      {tier.priceSubtext}
-                    </span>
+                  <div className="mt-7">
+                    <div className="flex items-end gap-2">
+                      <span
+                        className={`font-semibold tracking-tight text-white ${
+                          isCustomPrice ? 'text-4xl' : 'text-5xl'
+                        }`}
+                      >
+                        {price}
+                      </span>
+                      {!isCustomPrice ? (
+                        <span className="pb-2 text-sm font-medium text-slate-400">
+                          {tier.priceSubtext}
+                        </span>
+                      ) : null}
+                    </div>
+                    {isCustomPrice ? (
+                      <p className="mt-1 text-sm font-medium text-slate-400">
+                        {tier.priceSubtext}
+                      </p>
+                    ) : null}
                   </div>
-                  <div className="mt-3 inline-flex max-w-full items-center gap-2 self-start rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] text-slate-300">
+
+                  <div className="mt-3 flex items-start gap-2 text-[11px] leading-snug text-slate-400">
                     <CheckCircle2
-                      className={`h-3 w-3 shrink-0 ${
-                        tier.featured ? 'text-slate-200' : 'text-slate-400'
+                      className={`mt-0.5 h-3 w-3 shrink-0 ${
+                        tier.featured ? 'text-slate-200' : 'text-slate-500'
                       }`}
                       aria-hidden="true"
                     />
-                    <span className="truncate">{tier.trustNote}</span>
+                    <span>{tier.trustNote}</span>
                   </div>
 
                   {/* CTA */}

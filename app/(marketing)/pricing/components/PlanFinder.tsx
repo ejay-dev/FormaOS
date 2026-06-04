@@ -45,7 +45,7 @@ const DIMENSIONS: Dimension[] = [
     initial: 1,
     options: [
       { label: '1 site', requires: 'foundation', note: 'single location' },
-      { label: '2–3 sites', requires: 'growth', note: 'up to 3 sites' },
+      { label: '2-3 sites', requires: 'growth', note: 'up to 3 sites' },
       { label: '4+ sites', requires: 'scale', note: 'unlimited sites' },
     ],
   },

@@ -560,8 +560,8 @@ export function PricingComparisonTable() {
                 <span className="font-semibold text-white">
                   {focusedCol.label}
                 </span>{' '}
-                is the compliance core — the engine, evidence trail, and
-                immutable audit log are included in every plan.
+                is the compliance core. The engine, evidence trail, and
+                immutable audit log ship in every plan.
               </p>
             )}
           </div>
