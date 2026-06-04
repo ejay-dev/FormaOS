@@ -973,18 +973,11 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.56;
-  background:
-    radial-gradient(
-      circle at 14% 22%,
-      rgba(var(--mk-rgb-cyan), 0.09),
-      transparent 48%
-    ),
-    radial-gradient(
-      circle at 84% 76%,
-      rgba(var(--mk-rgb-violet-alt), 0.08),
-      transparent 52%
-    );
+  background: radial-gradient(
+    58% 45% at 50% 0%,
+    rgba(255, 255, 255, 0.03),
+    transparent 70%
+  );
 }
 
 .product-section--hero {
@@ -1027,23 +1020,12 @@
 }
 
 .product-section--process {
-  background:
-    radial-gradient(
-      circle at 24% 20%,
-      rgba(139, 92, 246, 0.14),
-      transparent 52%
-    ),
-    radial-gradient(
-      circle at 78% 78%,
-      rgba(56, 189, 248, 0.11),
-      transparent 54%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(5, 8, 20, 0.84) 0%,
-      rgba(7, 10, 24, 0.58) 50%,
-      rgba(5, 8, 20, 0.86) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    rgba(5, 8, 20, 0.84) 0%,
+    rgba(7, 10, 24, 0.58) 50%,
+    rgba(5, 8, 20, 0.86) 100%
+  );
 }
 
 .product-section--security {
