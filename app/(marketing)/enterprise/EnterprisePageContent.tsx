@@ -35,10 +35,6 @@ import {
 } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import {
-  ShieldRings,
-  HexGrid,
-} from '@/components/marketing/SectionBackgrounds';
 import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -77,7 +73,7 @@ function CenteredHeader({
       <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
         {label}
       </p>
-      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+      <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
         {title} <span className="text-slate-400">{emphasis}</span>
       </h2>
       <p className="text-base text-slate-400 max-w-xl mx-auto">{description}</p>
@@ -733,13 +729,12 @@ function SecurityArchitecture() {
   return (
     <DeferredSection minHeight={500}>
       <section className="mk-section relative">
-        <ShieldRings />
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <CenteredHeader
             label="Defense in Depth"
             title="Five-layer"
             emphasis="security architecture"
-            description="Every layer independently secured, monitored, and audited - because enterprise compliance demands defense in depth."
+            description="Every layer independently secured, monitored, and audited, because enterprise compliance demands defense in depth."
           />
 
           <div className="relative space-y-3">
@@ -841,7 +836,6 @@ function TrustBadgesSection() {
   return (
     <DeferredSection minHeight={250}>
       <section className="mk-section relative">
-        <HexGrid />
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
           <CenteredHeader
             label="Trust & Compliance"
@@ -907,7 +901,7 @@ function SLASection() {
             label="Service Commitments"
             title="Enterprise"
             emphasis="service commitments"
-            description="Operational visibility, structured support paths, and enterprise controls - with specific terms defined during procurement."
+            description="Operational visibility, structured support paths, and enterprise controls, with specific terms defined during procurement."
             className="mb-12"
           />
 
@@ -1141,7 +1135,7 @@ function EnterpriseCTA() {
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Enterprise Ready
                 </p>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+                <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                   Start your{' '}
                   <span className="text-slate-400">
                     enterprise evaluation
@@ -1299,7 +1293,7 @@ function EnterpriseHero() {
         >
           SAML SSO, audit-ready evidence exports, and structured procurement
           materials for organizations where compliance is an operational
-          requirement - not a checkbox exercise.
+          requirement, not a checkbox exercise.
         </motion.p>
 
         <motion.div
