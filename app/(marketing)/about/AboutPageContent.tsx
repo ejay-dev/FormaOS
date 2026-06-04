@@ -23,7 +23,6 @@ import { InteractiveGlobe } from '@/components/marketing/InteractiveGlobe';
 import { EnterpriseShaderHero } from '@/components/marketing/EnterpriseShaderHero';
 import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
-import { SectionMedia } from '@/components/marketing/SectionMedia';
 import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
 
 const DemoAuditTrailCard = dynamic(
@@ -72,7 +71,7 @@ function AboutHero() {
           <span className="text-foreground">built for accountability</span>
         </>
       }
-      subheadline="Built for regulated teams where compliance failure has real consequences - and leadership needs more than a spreadsheet to prove control."
+      subheadline="Built for regulated teams where compliance failure has real consequences, and leadership needs more than a spreadsheet to prove control."
       primaryCta={{ href: '/our-story', label: 'Read Our Story' }}
       secondaryCta={{ href: '/product', label: 'See How It Works' }}
     />
@@ -90,19 +89,19 @@ const values = [
     icon: Layers,
     title: 'Infrastructure over features',
     detail:
-      'We build compliance infrastructure - not a feature checklist. Every capability connects to the operating model: controls link to evidence, evidence links to owners, owners link to audit trails.',
+      'We build compliance infrastructure, not a feature checklist. Every capability connects to the operating model: controls link to evidence, evidence links to owners, owners link to audit trails.',
   },
   {
     icon: Zap,
     title: 'Execution over documentation',
     detail:
-      'Documentation without execution is liability. FormaOS enforces compliance as work: tasks with deadlines, evidence with verification, controls with named owners - not PDFs in a folder.',
+      'Documentation without execution is liability. FormaOS enforces compliance as work: tasks with deadlines, evidence with verification, controls with named owners, not PDFs in a folder.',
   },
   {
     icon: Award,
     title: 'Accountability over aspiration',
     detail:
-      'We build for organizations where compliance failure has real consequences - sanctions, registration loss, enforcement actions. Our platform is designed for the teams regulators hold accountable.',
+      'We build for organizations where compliance failure has real consequences, sanctions, registration loss, enforcement actions. Our platform is designed for the teams regulators hold accountable.',
   },
 ] as const;
 
@@ -135,20 +134,14 @@ export default function AboutPageContent() {
 
       {/* Founder Origin Story */}
       <DeferredSection minHeight={220}>
-        <section className="mk-section relative isolate overflow-hidden">
-          <SectionMedia
-            src="/marketing-media/about.jpg"
-            objectPosition="50% 35%"
-            opacity={0.62}
-            scrim="center"
-          />
+        <section className="mk-section relative">
           <div className="mx-auto max-w-5xl px-6 lg:px-8">
             <ScrollReveal
               variant="depthScale"
               range={[0, 0.3]}
               className="text-center mb-10"
             >
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                 Built by operators, for operators
               </h2>
             </ScrollReveal>
@@ -197,7 +190,7 @@ export default function AboutPageContent() {
                       <p>
                         FormaOS is my first project in compliance
                         infrastructure. I&apos;ve been writing it from Adelaide
-                        since 2022, fitting it around freelance work &mdash;
+                        since 2022, fitting it around freelance work:
                         websites and web apps for whoever was paying that month.
                         FormaOS was always the bigger thing, the one I actually
                         cared about. I just needed the freelance to fund the
@@ -225,8 +218,8 @@ export default function AboutPageContent() {
                         are surfaced as human attestations and labelled as such.
                         The audit log is hash-chained in Postgres, with
                         append-only enforced at the database layer by an
-                        immutability trigger and RLS deny policies &mdash; not
-                        application code &mdash; and the chain head anchors
+                        immutability trigger and RLS deny policies, not
+                        application code, and the chain head anchors
                         daily at 05:30 UTC to Sigstore Rekor, the same
                         transparency log the Linux Foundation uses for signed
                         open-source releases. It&apos;s bootstrapped,
@@ -264,7 +257,7 @@ export default function AboutPageContent() {
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
                 Why FormaOS Exists
               </h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">
+              <p className="text-slate-400 max-w-2xl mx-auto">
                 Regulated organizations face a structural gap: governance
                 requirements that grow faster than the tools available to meet
                 them.
@@ -281,7 +274,7 @@ export default function AboutPageContent() {
                   <Target className="h-6 w-6 text-slate-300" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">Mission</h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
+                <p className="text-slate-400 leading-relaxed text-sm">
                   Deliver operational clarity for regulated industries by
                   connecting controls, evidence, and accountability in a single
                   compliance operating system.
@@ -295,7 +288,7 @@ export default function AboutPageContent() {
                 <h3 className="text-xl font-bold text-white mb-3">
                   Why it matters
                 </h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
+                <p className="text-slate-400 leading-relaxed text-sm">
                   Regulators expect defensible evidence, not just documentation.
                   FormaOS provides the audit trail and proof required to protect
                   leadership teams and their organizations.
@@ -309,9 +302,9 @@ export default function AboutPageContent() {
                 <h3 className="text-xl font-bold text-white mb-3">
                   The problem we solve
                 </h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
+                <p className="text-slate-400 leading-relaxed text-sm">
                   Compliance teams are stuck managing obligations across
-                  spreadsheets, shared drives, and disconnected tools - with no
+                  spreadsheets, shared drives, and disconnected tools, with no
                   single source of truth when auditors arrive.
                 </p>
               </div>
@@ -323,9 +316,9 @@ export default function AboutPageContent() {
                 <h3 className="text-xl font-bold text-white mb-3">
                   Our commitment
                 </h3>
-                <p className="text-gray-400 leading-relaxed text-sm">
+                <p className="text-slate-400 leading-relaxed text-sm">
                   FormaOS is built for the organizations where compliance
-                  failure has real consequences - clinical, financial,
+                  failure has real consequences, clinical, financial,
                   reputational. We take that accountability seriously.
                 </p>
               </div>
@@ -350,7 +343,7 @@ export default function AboutPageContent() {
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
                 What We Stand For
               </h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">
+              <p className="text-slate-400 max-w-2xl mx-auto">
                 These aren&apos;t aspirational values on a poster. They&apos;re
                 engineering decisions that shape every feature we ship.
               </p>
@@ -405,7 +398,7 @@ export default function AboutPageContent() {
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
                 Operational Proof, Not Promises
               </h2>
-              <p className="text-gray-400 max-w-xl mx-auto text-sm">
+              <p className="text-slate-400 max-w-xl mx-auto text-sm">
                 These are the outcomes regulated teams achieve when compliance
                 runs as infrastructure.
               </p>
@@ -420,7 +413,7 @@ export default function AboutPageContent() {
                   stat: '< 2 min',
                   label: 'Audit packet export',
                   detail:
-                    'Framework-mapped evidence bundles generated on demand - no manual reconstruction',
+                    'Framework-mapped evidence bundles generated on demand, no manual reconstruction',
                 },
                 {
                   stat: '9',
@@ -432,7 +425,7 @@ export default function AboutPageContent() {
                   stat: '100%',
                   label: 'Control ownership',
                   detail:
-                    'Every control has a named owner, review cadence, and evidence trail - no orphaned obligations',
+                    'Every control has a named owner, review cadence, and evidence trail, no orphaned obligations',
                 },
                 {
                   stat: '~90%',
@@ -477,7 +470,7 @@ export default function AboutPageContent() {
               <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
                 Who We Serve
               </h2>
-              <p className="text-gray-400 max-w-xl mx-auto text-sm">
+              <p className="text-slate-400 max-w-xl mx-auto text-sm">
                 FormaOS is purpose-built for organizations operating in
                 regulated environments where accountability is mandatory, not
                 aspirational.
@@ -572,11 +565,11 @@ export default function AboutPageContent() {
               className="text-center mb-8"
             >
               <h3 className="text-xl font-bold text-white mb-2">
-                The Audit Trail Never Lies
+                The audit trail never lies
               </h3>
-              <p className="text-sm text-gray-400">
-                Every action timestamped, attributed, and preserved - exactly as
-                regulators expect
+              <p className="text-sm text-slate-400">
+                Every action timestamped, attributed to a role, and preserved,
+                exactly as regulators expect. Illustrative sample.
               </p>
             </ScrollReveal>
             <ScrollReveal variant="depthSlide" range={[0.04, 0.34]}>
@@ -585,43 +578,43 @@ export default function AboutPageContent() {
                 entries={[
                   {
                     action: 'Audit packet exported',
-                    user: 'Min Park',
-                    target: 'SOC 2 Type II - Q4 2025',
+                    user: 'Compliance Lead',
+                    target: 'SOC 2 Type II, Q4 2025',
                     time: '09:47',
                     type: 'compliance',
                   },
                   {
                     action: 'Policy approved',
-                    user: 'Marcus Rivera',
+                    user: 'Policy Owner',
                     target: 'Data Retention Policy v3.0',
                     time: '09:14',
                     type: 'policy',
                   },
                   {
                     action: 'Evidence uploaded',
-                    user: 'Emma Rodriguez',
-                    target: 'ISO 27001 A.12.1.3 - Capacity Management',
+                    user: 'Evidence Reviewer',
+                    target: 'ISO 27001 A.12.1.3, Capacity Management',
                     time: '08:42',
                     type: 'evidence',
                   },
                   {
                     action: 'Risk assessed',
-                    user: 'James Wilson',
+                    user: 'Risk Analyst',
                     target: 'Third-Party Vendor Security Review',
                     time: '08:15',
                     type: 'compliance',
                   },
                   {
                     action: 'Control verified',
-                    user: 'Priya Nair',
-                    target: 'HIPAA § 164.312(a)(1) - Access Control',
+                    user: 'Security Reviewer',
+                    target: 'HIPAA § 164.312(a)(1), Access Control',
                     time: '07:58',
                     type: 'task',
                   },
                   {
                     action: 'Control mapped',
                     user: 'System',
-                    target: 'NDIS Practice Standard 4.2 - Incident Management',
+                    target: 'NDIS Practice Standard 4.2, Incident Management',
                     time: '07:30',
                     type: 'system',
                   },
@@ -638,13 +631,7 @@ export default function AboutPageContent() {
 
       {/* CTA Section */}
       <DeferredSection minHeight={200}>
-        <section className="mk-section relative isolate overflow-hidden">
-          <SectionMedia
-            src="/marketing-media/our-story.jpg"
-            objectPosition="50% 40%"
-            opacity={0.62}
-            scrim="center"
-          />
+        <section className="mk-section relative">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
               <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-10">
@@ -656,7 +643,7 @@ export default function AboutPageContent() {
                     <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
                       See the compliance operating system in action
                     </h2>
-                    <p className="text-gray-400 leading-relaxed">
+                    <p className="text-slate-400 leading-relaxed">
                       We work with regulated operators who need certainty,
                       defensible evidence, and the operational infrastructure to
                       prove it. Request a scoped compliance plan and evaluate

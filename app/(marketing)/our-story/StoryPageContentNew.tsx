@@ -31,7 +31,7 @@ const DemoComplianceChain = dynamic(
 );
 
 // ============================================================================
-// OUR STORY PAGE - DESIGN SYNCED WITH HOME/PRODUCT VISUAL SYSTEM
+// OUR STORY PAGE, DESIGN SYNCED WITH HOME/PRODUCT VISUAL SYSTEM
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ export function StoryHero() {
           </span>
         </>
       }
-      subheadline="Built for organizations where a compliance failure isn't a setback - it's a shutdown. Infrastructure that makes accountability unavoidable."
+      subheadline="Built for organizations where a compliance failure isn't a setback, it's a shutdown. Infrastructure that makes accountability unavoidable."
       primaryCta={{
         href: compliancePlanHref('our_story_hero'),
         label: PUBLIC_CTA_LABELS.compliancePlan,
@@ -89,7 +89,7 @@ function FounderQuote() {
           transition={{ duration: duration.slower }}
           className="relative"
         >
-          {/* Quote panel — solid scrim over the section photo */}
+          {/* Quote panel, solid scrim over the section photo */}
           <div className="rounded-3xl border border-white/10 bg-slate-950/65 shadow-2xl p-12 lg:p-16 text-center relative overflow-hidden">
             {/* Quote Icon */}
             <motion.div
@@ -128,7 +128,7 @@ function FounderQuote() {
             />
 
             {/* Attribution with founder avatar.
-                Image file at /public/team/founder.jpg — page renders
+                Image file at /public/team/founder.jpg, page renders
                 cleanly with initials fallback even if the binary isn't
                 uploaded yet. */}
             <motion.div
@@ -136,11 +136,11 @@ function FounderQuote() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.8, duration: duration.slow }}
-              className="relative flex flex-col items-center gap-4 text-gray-400 sm:flex-row sm:justify-center"
+              className="relative flex flex-col items-center gap-4 text-slate-400 sm:flex-row sm:justify-center"
             >
               {/* Avatar: source is a 1:2 portrait (499×1023). Earlier
                   attempts used `scale-[1.5] origin-[50%_20%]` to zoom
-                  the face into a 64px circle — but the scale push
+                  the face into a 64px circle, but the scale push
                   cropped the right half of the face whenever the
                   subject sat slightly off-centre in the source. New
                   approach: larger 80px circle, no transform, just
@@ -182,7 +182,7 @@ function FounderQuote() {
 function TheProblem() {
   const problems = [
     'Evidence reconstructed hours before audits',
-    'Fragmented ownership - nobody knows who owns what',
+    'Fragmented ownership, nobody knows who owns what',
     'Controls documented but never enforced',
     'Framework coverage gaps discovered at audit time',
     'No single source of truth for regulators',
@@ -192,7 +192,7 @@ function TheProblem() {
   return (
     <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header — labelled hairline rule */}
+        {/* Section Header, labelled hairline rule */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -207,10 +207,10 @@ function TheProblem() {
             </span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
             The Compliance Industry Solved Storage.
             <br />
-            <span className="text-gray-500">Not Execution.</span>
+            <span className="text-slate-500">Not Execution.</span>
           </h2>
         </motion.div>
 
@@ -223,13 +223,13 @@ function TheProblem() {
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-10"
         >
           <div className="space-y-6">
-            <p className="text-lg text-gray-400 leading-relaxed">
+            <p className="text-lg text-slate-400 leading-relaxed">
               Most compliance platforms focus on documentation: policies in
               folders, evidence in files, reports at audit time. But real
               compliance does not live in documents. It lives in decisions,
               workflows, handovers, approvals, and accountability.
             </p>
-            <p className="text-lg text-gray-400 leading-relaxed">
+            <p className="text-lg text-slate-400 leading-relaxed">
               Organizations were being asked to prove compliance after the fact,
               instead of being supported to operate compliantly by design.
             </p>
@@ -255,7 +255,7 @@ function TheProblem() {
                 className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/10"
               >
                 <span className="w-2 h-2 rounded-full bg-slate-500 flex-shrink-0" />
-                <span className="text-gray-300">{problem}</span>
+                <span className="text-slate-300">{problem}</span>
               </div>
             ))}
           </SectionChoreography>
@@ -297,7 +297,7 @@ function TheApproach() {
   return (
     <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header — centered plain label */}
+        {/* Section Header, centered plain label */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -309,7 +309,7 @@ function TheApproach() {
             Our Approach
           </p>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
             From Policy to Proof
             <br />
             <span className="text-foreground">Built Into Operations</span>
@@ -324,7 +324,7 @@ function TheApproach() {
           transition={{ duration: duration.slow, delay: 0.1 }}
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-12"
         >
-          <p className="text-lg text-gray-400 mb-4">
+          <p className="text-lg text-slate-400 mb-4">
             FormaOS is not a document system. It is an operational compliance
             operating system.
           </p>
@@ -357,7 +357,7 @@ function TheApproach() {
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl border border-white/10 bg-white/[0.05] flex items-center justify-center">
                   <capability.icon className="w-5 h-5 text-slate-300" />
                 </div>
-                <span className="text-lg text-gray-300">{capability.text}</span>
+                <span className="text-lg text-slate-300">{capability.text}</span>
               </div>
             ))}
           </SectionChoreography>
@@ -380,7 +380,7 @@ function TheApproach() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: duration.slow, delay: 0.8 }}
-          className="text-xl text-gray-400"
+          className="text-xl text-slate-400"
         >
           Compliance becomes part of the{' '}
           <span className="text-white font-medium">operating fabric</span> of
@@ -398,7 +398,7 @@ function WhyWeBuiltIt() {
   return (
     <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header — labelled hairline rule */}
+        {/* Section Header, labelled hairline rule */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -413,10 +413,10 @@ function WhyWeBuiltIt() {
             </span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
             Designed by Engineers.
             <br />
-            <span className="text-gray-500">Built for Accountability.</span>
+            <span className="text-slate-500">Built for Accountability.</span>
           </h2>
         </motion.div>
 
@@ -429,7 +429,7 @@ function WhyWeBuiltIt() {
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10"
         >
           <div className="space-y-6">
-            <p className="text-lg text-gray-400 leading-relaxed">
+            <p className="text-lg text-slate-400 leading-relaxed">
               FormaOS was built by engineers who understand that systems shape
               outcomes. If accountability is not designed into a system, it
               cannot be enforced at scale.
@@ -447,9 +447,9 @@ function WhyWeBuiltIt() {
             </div>
 
             <div className="pt-4 space-y-3">
-              <p className="text-lg text-gray-500">Not at audit time.</p>
-              <p className="text-lg text-gray-500">Not through spreadsheets.</p>
-              <p className="text-lg text-gray-500">
+              <p className="text-lg text-slate-500">Not at audit time.</p>
+              <p className="text-lg text-slate-500">Not through spreadsheets.</p>
+              <p className="text-lg text-slate-500">
                 Not through manual reconciliation.
               </p>
               <p className="text-xl text-white font-medium pt-4">
@@ -498,7 +498,7 @@ function WhatMakesUsDifferent() {
   return (
     <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header — centered plain label */}
+        {/* Section Header, centered plain label */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -510,12 +510,12 @@ function WhatMakesUsDifferent() {
             What Sets Us Apart
           </p>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
             An Operating System for Compliance,
             <br />
             <span className="text-foreground">Not a Tool</span>
           </h2>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg text-slate-400 max-w-3xl mx-auto">
             FormaOS is purpose-built for regulated environments that demand
             precision, traceability, and trust.
           </p>
@@ -548,7 +548,7 @@ function WhatMakesUsDifferent() {
                     <h3 className="text-lg font-semibold text-white mb-2">
                       {principle.title}
                     </h3>
-                    <p className="text-gray-400">{principle.description}</p>
+                    <p className="text-slate-400">{principle.description}</p>
                   </div>
                 </div>
               </motion.div>
@@ -564,7 +564,7 @@ function WhatMakesUsDifferent() {
           transition={{ duration: duration.slow, delay: 0.6 }}
           className="space-y-3 text-lg"
         >
-          <p className="text-gray-500">This is not about passing audits.</p>
+          <p className="text-slate-500">This is not about passing audits.</p>
           <p className="text-white font-medium">
             This is about building organizations that can{' '}
             <span className="text-foreground">
@@ -592,7 +592,7 @@ function OurMission() {
   return (
     <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        {/* Section Header — centered plain label */}
+        {/* Section Header, centered plain label */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -604,10 +604,10 @@ function OurMission() {
             Our Mission
           </p>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6">
             Operational Certainty
             <br />
-            <span className="text-gray-500">for Regulated Organizations</span>
+            <span className="text-slate-500">for Regulated Organizations</span>
           </h2>
         </motion.div>
 
@@ -636,7 +636,7 @@ function OurMission() {
           transition={{ duration: duration.slow, delay: 0.2 }}
           className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 lg:p-10 mb-12"
         >
-          <p className="text-lg text-gray-400 mb-6">
+          <p className="text-lg text-slate-400 mb-6">
             We believe every organization operating in regulated environments
             deserves systems that:
           </p>
@@ -650,7 +650,7 @@ function OurMission() {
                 className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/10"
               >
                 <CheckCircle className="w-5 h-5 text-slate-300 flex-shrink-0" />
-                <span className="text-gray-300">{belief}</span>
+                <span className="text-slate-300">{belief}</span>
               </div>
             ))}
           </SectionChoreography>
@@ -664,7 +664,7 @@ function OurMission() {
           transition={{ duration: duration.slow, delay: 0.6 }}
           className="space-y-4"
         >
-          <p className="text-lg text-gray-400">
+          <p className="text-lg text-slate-400">
             FormaOS exists to give organizations something they&apos;ve never
             truly had before:
           </p>
@@ -686,12 +686,6 @@ function FinalCTA() {
   return (
     <section className="relative py-32 overflow-hidden bg-[#0a0f1c]">
       <div className="relative isolate z-10 max-w-7xl mx-auto px-6 lg:px-12 overflow-hidden">
-        <SectionMedia
-          src="/marketing-media/about.jpg"
-          objectPosition="50% 40%"
-          opacity={0.62}
-          scrim="center"
-        />
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -699,7 +693,7 @@ function FinalCTA() {
           transition={{ duration: duration.slower }}
           className="relative"
         >
-          {/* Executive Panel — solid scrim over the section photo */}
+          {/* Executive Panel, solid scrim over the section photo */}
           <div className="rounded-3xl border border-white/10 bg-slate-950/65 shadow-2xl overflow-hidden max-w-4xl mx-auto">
             {/* Header */}
             <div className="bg-white/[0.04] border-b border-white/10 px-8 sm:px-12 py-8 sm:py-10">
@@ -741,7 +735,7 @@ function FinalCTA() {
             {/* Content */}
             <div className="px-8 sm:px-12 py-10 sm:py-12">
               <div className="text-center mb-10">
-                <p className="text-lg text-gray-400 mb-6 max-w-2xl mx-auto">
+                <p className="text-lg text-slate-400 mb-6 max-w-2xl mx-auto">
                   FormaOS is built for organizations that cannot afford
                   ambiguity, inconsistency, or after-the-fact compliance.
                 </p>
@@ -778,7 +772,7 @@ function FinalCTA() {
                 </Link>
               </motion.div>
 
-              <div className="text-center mt-8 text-sm text-gray-500">
+              <div className="text-center mt-8 text-sm text-slate-500">
                 Guided compliance plan • Assessment-led onboarding •
                 Procurement-ready review
               </div>
