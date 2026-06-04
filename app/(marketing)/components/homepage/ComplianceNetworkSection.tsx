@@ -31,6 +31,32 @@ const legendItems = [
   },
 ];
 
+// Mobile-native form of the node graph: the same Frameworks → Controls →
+// Tasks → Evidence dependency chain as a vertical trace. The SVG galaxy is
+// unreadable on a phone (and renders blank under prefers-reduced-motion).
+const lifecycleStages = [
+  {
+    label: 'Frameworks',
+    count: '5 supported',
+    detail: 'The obligations from every standard you adopt.',
+  },
+  {
+    label: 'Controls',
+    count: '6 mapped',
+    detail: 'Each framework maps to the controls that enforce it.',
+  },
+  {
+    label: 'Tasks',
+    count: '3 workflows',
+    detail: 'Controls generate owned, scheduled work.',
+  },
+  {
+    label: 'Evidence',
+    count: '4 types',
+    detail: 'Tasks produce verifiable, audit-ready evidence.',
+  },
+];
+
 export function ComplianceNetworkSection() {
   return (
     <section className="mk-section home-section home-section--network relative overflow-hidden">
@@ -67,8 +93,9 @@ export function ComplianceNetworkSection() {
             </div>
           </div>
 
-          {/* Legend row - enhanced with live status pulse */}
-          <div className="mt-8 flex flex-wrap items-center gap-2.5 sm:gap-4 lg:gap-5">
+          {/* Legend row - enhanced with live status pulse (mobile uses the
+              vertical lifecycle trace below instead, so hide it < sm) */}
+          <div className="mt-8 hidden flex-wrap items-center gap-2.5 sm:flex sm:gap-4 lg:gap-5">
             {legendItems.map((item) => (
               <div
                 key={item.label}
@@ -92,33 +119,36 @@ export function ComplianceNetworkSection() {
 
         {/* Full-width canvas - upgraded container */}
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
-          {/* Mobile info cards */}
-          <div className="mb-4 grid gap-2 sm:hidden">
-            <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-left">
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-                <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                  Live Mapping
-                </p>
-              </div>
-              <p className="mt-1.5 text-xs text-slate-300">
-                Framework obligations connected to active controls.
-              </p>
-            </div>
-            <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-left">
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-                <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                  Audit Readiness
-                </p>
-              </div>
-              <p className="mt-1.5 text-xs text-slate-300">
-                Task and evidence chains remain continuously verifiable.
-              </p>
-            </div>
-          </div>
+          {/* Mobile: the dependency chain as a vertical trace (the SVG galaxy
+              is unreadable on a phone and renders blank under reduced motion) */}
+          <ol className="relative sm:hidden">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-6 left-[0.9375rem] top-6 w-px bg-white/[0.1]"
+            />
+            {lifecycleStages.map((stage, i) => (
+              <li key={stage.label} className="relative flex gap-4 pb-5 last:pb-0">
+                <span className="relative z-10 mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.12] bg-slate-950 font-mono text-[11px] font-semibold text-slate-300">
+                  {i + 1}
+                </span>
+                <div className="min-w-0 flex-1 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="text-sm font-semibold text-white">
+                      {stage.label}
+                    </span>
+                    <span className="text-[11px] tabular-nums text-slate-500">
+                      {stage.count}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[13px] leading-snug text-slate-400">
+                    {stage.detail}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
 
-          <div className="relative min-h-[280px] overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] aspect-[3/2] sm:min-h-[500px] sm:aspect-[16/11] lg:min-h-0 lg:aspect-[16/7]">
+          <div className="relative hidden min-h-[280px] overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] aspect-[3/2] sm:block sm:min-h-[500px] sm:aspect-[16/11] lg:min-h-0 lg:aspect-[16/7]">
             {/* Dot grid with center-focused mask */}
             <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(148,163,184,0.3)_1px,transparent_1.2px)] [background-size:28px_28px] [mask-image:radial-gradient(circle_at_center,black_25%,transparent_85%)]" />
 
