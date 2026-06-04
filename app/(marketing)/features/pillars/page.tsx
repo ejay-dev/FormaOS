@@ -8,6 +8,7 @@ import {
   Handshake,
   ArrowRight,
   CheckCircle2,
+  Minus,
 } from 'lucide-react';
 import {
   compliancePlanHref,
@@ -16,9 +17,9 @@ import {
 } from '@/lib/marketing/cta';
 
 export const metadata: Metadata = {
-  title: 'Features — 5 Pillars | FormaOS',
+  title: 'Features · 5 Pillars | FormaOS',
   description:
-    'One OS for every obligation you owe. Compliance, evidence, tasks, care operations, and trust — governed end-to-end.',
+    'One OS for every obligation you owe. Compliance, evidence, tasks, care operations, and trust, governed end-to-end.',
 };
 
 interface Pillar {
@@ -45,7 +46,7 @@ const PILLARS: Pillar[] = [
     features: [
       {
         name: 'SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS',
-        detail: 'Global security and privacy framework packs — ready on day one.',
+        detail: 'Global security and privacy framework packs, ready on day one.',
       },
       {
         name: 'NIST CSF, CIS Controls, Essential Eight',
@@ -54,11 +55,11 @@ const PILLARS: Pillar[] = [
       {
         name: 'NDIS Practice Standards',
         detail:
-          'Purpose-built for Australian NDIS providers — the wedge vs generic tools.',
+          'Purpose-built for Australian NDIS providers. The wedge vs generic tools.',
       },
       {
         name: 'Custom frameworks',
-        detail: 'Bring your own obligations — map controls, owners, evidence.',
+        detail: 'Bring your own obligations: map controls, owners, evidence.',
       },
     ],
     footnote: '8 framework packs included. Cross-map once, satisfy many.',
@@ -67,7 +68,7 @@ const PILLARS: Pillar[] = [
     id: 'evidence',
     eyebrow: 'Pillar 02',
     title: 'Evidence Vault',
-    lede: 'Defensible evidence with chain-of-custody — not a dumping ground.',
+    lede: 'Defensible evidence with chain-of-custody, not a dumping ground.',
     Icon: FolderLock,
     accent: 'from-zinc-600 via-zinc-700 to-zinc-800',
     glow: 'radial-gradient(circle at 70% 30%, rgba(161,161,170,0.18), transparent 60%)',
@@ -78,15 +79,15 @@ const PILLARS: Pillar[] = [
       },
       {
         name: 'Immutable audit trail',
-        detail: 'Who uploaded, who verified, what changed — provable.',
+        detail: 'Who uploaded, who verified, what changed. Provable.',
       },
       {
         name: 'Expiry monitoring',
-        detail: 'Automated alerts 30/14/7 days out — nothing lapses silently.',
+        detail: 'Automated alerts 30/14/7 days out, so nothing lapses silently.',
       },
       {
         name: 'Multi-site scoping',
-        detail: 'Evidence rolls up from sites to the org — no double handling.',
+        detail: 'Evidence rolls up from sites to the org, with no double handling.',
       },
     ],
   },
@@ -101,7 +102,7 @@ const PILLARS: Pillar[] = [
     features: [
       {
         name: 'Owner-based task routing',
-        detail: 'Every obligation has a human accountable — not a mailbox.',
+        detail: 'Every obligation has a human accountable, not a mailbox.',
       },
       {
         name: 'SLA timers',
@@ -121,7 +122,7 @@ const PILLARS: Pillar[] = [
     id: 'care',
     eyebrow: 'Pillar 04',
     title: 'Care Operations',
-    lede: 'The wedge. Participants, visits, progress notes, credentials — all in compliance context.',
+    lede: 'The wedge. Participants, visits, progress notes, credentials, all in compliance context.',
     Icon: HeartPulse,
     accent: 'from-zinc-600 via-zinc-700 to-zinc-800',
     glow: 'radial-gradient(circle at 60% 70%, rgba(161,161,170,0.18), transparent 60%)',
@@ -132,11 +133,11 @@ const PILLARS: Pillar[] = [
       },
       {
         name: 'Care plans with review tracking',
-        detail: 'Goals, supports, and reviews — never lapse, always auditable.',
+        detail: 'Goals, supports, and reviews that never lapse and stay auditable.',
       },
       {
         name: 'Credential expiry monitoring',
-        detail: 'WWCC, AHPRA, First Aid, NDIS Screening — expiring 30/14/7 days out.',
+        detail: 'WWCC, AHPRA, First Aid, NDIS Screening, flagged 30/14/7 days out.',
       },
       {
         name: 'Progress notes & incidents',
@@ -157,7 +158,7 @@ const PILLARS: Pillar[] = [
       {
         name: 'Assurance packets',
         detail:
-          'Share a trust link — procurement teams see controls, evidence, SOC 2 status.',
+          'Share a trust link and procurement teams see controls, evidence, and SOC 2 status.',
       },
       {
         name: 'SSO / SAML',
@@ -198,7 +199,7 @@ function Cell({ value }: { value: boolean | string }) {
       <CheckCircle2 className="mx-auto h-4 w-4 text-emerald-400" aria-hidden="true" />
     );
   if (value === false)
-    return <span className="text-xs text-muted-foreground">—</span>;
+    return <Minus className="mx-auto h-4 w-4 text-slate-700" aria-hidden="true" />;
   return (
     <span className="text-xs text-amber-300 font-semibold">{value}</span>
   );
@@ -223,7 +224,7 @@ export default function FeaturesPillarsPage() {
             </span>
           </h1>
           <p className="max-w-2xl text-lg text-muted-foreground">
-            Frameworks, controls, evidence, tasks, and assurance — governed
+            Frameworks, controls, evidence, tasks, and assurance, governed
             end-to-end. Built for regulated operators, AU-hosted by default.
           </p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -331,7 +332,7 @@ export default function FeaturesPillarsPage() {
               How we compare
             </span>
             <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              Built for regulated operators — not just security teams.
+              Built for regulated operators, not just security teams.
             </h2>
           </div>
           <div className="overflow-x-auto">

@@ -92,12 +92,47 @@ function CenteredHeader({
       <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
         {label}
       </p>
-      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+      <h2 className="mb-4 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
         {title} <span className="text-slate-400">{emphasis}</span>
       </h2>
       <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
         {description}
       </p>
+    </ScrollReveal>
+  );
+}
+
+// Left vertical-bar header — third variant so the centered template
+// never repeats on adjacent sections.
+function BarHeader({
+  label,
+  title,
+  emphasis,
+  description,
+  className = 'mb-14',
+}: {
+  label: string;
+  title: string;
+  emphasis: string;
+  description: string;
+  className?: string;
+}) {
+  return (
+    <ScrollReveal
+      variant="slideUp"
+      range={[0, 0.3]}
+      className={`flex items-start gap-5 ${className}`}
+    >
+      <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
+      <div className="max-w-2xl">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+          {label}
+        </p>
+        <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          {title} <span className="text-slate-400">{emphasis}</span>
+        </h2>
+        <p className="mt-4 text-base leading-7 text-slate-400">{description}</p>
+      </div>
     </ScrollReveal>
   );
 }
@@ -158,9 +193,9 @@ const features: PlatformFeature[] = [
     icon: Layers,
     title: '8 Pre-Built Framework Packs',
     description:
-      'SOC 2 TSC, ISO 27001:2022, NIST CSF 2.0, CIS v8, HIPAA, GDPR, PCI DSS 4.0, and NDIS Practice Standards — each with mapped controls and evaluator coverage in lib/compliance/evaluators/register.ts.',
+      'SOC 2 TSC, ISO 27001:2022, NIST CSF 2.0, CIS v8, HIPAA, GDPR, PCI DSS 4.0, and NDIS Practice Standards, each with mapped controls and evaluator coverage in lib/compliance/evaluators/register.ts.',
     longDescription:
-      'Each Framework Pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. 252 total controls across the 8 packs — 102 auto-evaluate against your live data, 150 require human attestation. Controls are mapped cross-framework (40+ seeded mappings) so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.',
+      'Each Framework Pack ships with pre-mapped controls, evidence templates, and an evaluator implementation. 252 total controls across the 8 packs: 102 auto-evaluate against your live data, 150 require human attestation. Controls are mapped cross-framework (40+ seeded mappings) so evidence collected for ISO 27001 cascades credit to overlapping SOC 2 and HIPAA requirements.',
     category: 'Compliance Core',
     highlight: 'Most popular',
     capabilities: [
@@ -176,7 +211,7 @@ const features: PlatformFeature[] = [
     description:
       'Critical actions are blocked when required controls are unresolved or evidence is missing. Accountability is enforced by the system before work proceeds.',
     longDescription:
-      'Compliance Gates are configurable enforcement points that prevent progress when prerequisites are unmet. Unlike advisory warnings, gates are structural - they block deployment, approval, and sign-off workflows until evidence is verified and controls are resolved. Gates integrate with your CI/CD pipeline, approval workflows, and audit preparation processes.',
+      'Compliance Gates are configurable enforcement points that prevent progress when prerequisites are unmet. Unlike advisory warnings, gates are structural. They block deployment, approval, and sign-off workflows until evidence is verified and controls are resolved. Gates integrate with your CI/CD pipeline, approval workflows, and audit preparation processes.',
     category: 'Compliance Core',
     capabilities: [
       'Configurable enforcement rules',
@@ -191,7 +226,7 @@ const features: PlatformFeature[] = [
     description:
       'Real-time compliance posture scoring with historical trending. Scheduled checks run daily to detect drift, expiring credentials, and evidence gaps.',
     longDescription:
-      'The scoring engine continuously evaluates your compliance posture across all active frameworks. Scores are broken down by framework, category, and individual control - with drill-down from aggregate score to specific failing checks. Historical trending shows improvement trajectories, and automated alerts fire when scores drop below configurable thresholds.',
+      'The scoring engine continuously evaluates your compliance posture across all active frameworks. Scores are broken down by framework, category, and individual control, with drill-down from aggregate score to specific failing checks. Historical trending shows improvement trajectories, and automated alerts fire when scores drop below configurable thresholds.',
     category: 'Compliance Core',
     capabilities: [
       'Real-time posture scoring',
@@ -206,7 +241,7 @@ const features: PlatformFeature[] = [
     description:
       'Upload, version, and verify compliance evidence with SHA-256 checksums. Every artifact gets tamper-evident chain-of-custody from upload through audit.',
     longDescription:
-      'The Evidence Vault provides immutable, versioned storage for all compliance artifacts. Every file receives a SHA-256 hash at upload, with cryptographic verification at every access point. Chain-of-custody tracking records who uploaded, reviewed, approved, and exported each piece of evidence - creating a tamper-evident audit trail that satisfies the most rigorous regulatory requirements.',
+      'The Evidence Vault provides immutable, versioned storage for all compliance artifacts. Every file receives a SHA-256 hash at upload, with cryptographic verification at every access point. Chain-of-custody tracking records who uploaded, reviewed, approved, and exported each piece of evidence, creating a tamper-evident audit trail that satisfies the most rigorous regulatory requirements.',
     category: 'Compliance Core',
     highlight: 'Enterprise-grade',
     capabilities: [
@@ -237,7 +272,7 @@ const features: PlatformFeature[] = [
     description:
       'Manage controls, evidence, tasks, and user provisioning in bulk. Assign, update, or archive across your entire compliance program in one action.',
     longDescription:
-      'Perform mass operations across your compliance program without tedious one-by-one updates. Bulk assign controls to owners, update evidence status across frameworks, provision users with role templates, and archive completed audit cycles - all with full audit trail preservation and rollback capability.',
+      'Perform mass operations across your compliance program without tedious one-by-one updates. Bulk assign controls to owners, update evidence status across frameworks, provision users with role templates, and archive completed audit cycles, all with full audit trail preservation and rollback capability.',
     category: 'Workflow & Operations',
     capabilities: [
       'Multi-select across entities',
@@ -298,7 +333,7 @@ const features: PlatformFeature[] = [
     description:
       'AU-hosted by default with configurable data residency preferences. Infrastructure-ready for US and EU regions.',
     longDescription:
-      'All data is hosted in Australia by default with infrastructure ready for US and EU data residency as regulatory requirements expand. Data residency controls ensure that compliance evidence, audit trails, and user data remain within jurisdictional boundaries - critical for organizations subject to data sovereignty requirements under GDPR, Privacy Act 1988, and sector-specific regulations.',
+      'All data is hosted in Australia by default with infrastructure ready for US and EU data residency as regulatory requirements expand. Data residency controls ensure that compliance evidence, audit trails, and user data remain within jurisdictional boundaries, critical for organizations subject to data sovereignty requirements under GDPR, Privacy Act 1988, and sector-specific regulations.',
     category: 'Identity & Security',
     capabilities: [
       'AU-default data hosting',
@@ -311,7 +346,7 @@ const features: PlatformFeature[] = [
     icon: Eye,
     title: 'Immutable Audit Trail',
     description:
-      'Every action logged with full context - who, what, when, and why. Append-only, tamper-evident records.',
+      'Every action logged with full context: who, what, when, and why. Append-only, tamper-evident records.',
     longDescription:
       'The audit trail captures every significant action with full context: the actor, the action, the timestamp, the affected entity, and the justification. Records are append-only and cryptographically linked to prevent tampering. Audit trails are exportable in formats that satisfy regulatory inquiry requirements, with configurable retention policies and automated archival.',
     category: 'Identity & Security',
@@ -358,7 +393,7 @@ const features: PlatformFeature[] = [
     description:
       'Centralized hub for task assignments, evidence reviews, credential expirations, and compliance alerts.',
     longDescription:
-      'A centralized notification hub that aggregates alerts across your compliance program. Configure notification preferences by type, urgency, and channel - with support for in-app, email, Slack, and Microsoft Teams delivery. Smart batching prevents notification fatigue while ensuring critical alerts receive immediate attention.',
+      'A centralized notification hub that aggregates alerts across your compliance program. Configure notification preferences by type, urgency, and channel, with support for in-app, email, Slack, and Microsoft Teams delivery. Smart batching prevents notification fatigue while ensuring critical alerts receive immediate attention.',
     category: 'Collaboration & UX',
     capabilities: [
       'Multi-channel delivery',
@@ -373,7 +408,7 @@ const features: PlatformFeature[] = [
     description:
       'Power-user navigation: jump to any control, task, evidence, or setting instantly. Keyboard-first workflow.',
     longDescription:
-      'The Command Palette provides instant access to any entity in your compliance program. Type to search controls, tasks, evidence, incidents, users, and settings - with fuzzy matching and recent history. Keyboard shortcuts for common actions let power users navigate the entire platform without touching a mouse.',
+      'The Command Palette provides instant access to any entity in your compliance program. Type to search controls, tasks, evidence, incidents, users, and settings, with fuzzy matching and recent history. Keyboard shortcuts for common actions let power users navigate the entire platform without touching a mouse.',
     category: 'Collaboration & UX',
     capabilities: [
       'Fuzzy entity search',
@@ -418,7 +453,7 @@ const features: PlatformFeature[] = [
     description:
       'Live presence indicators, real-time updates, and synchronized views across the team.',
     longDescription:
-      'See who is working on what with live presence indicators on controls, evidence, and tasks. Changes sync in real-time across all connected sessions - no refresh required. Conflict resolution ensures simultaneous edits merge gracefully, with visual indicators showing when a control or evidence item is being edited by a teammate.',
+      'See who is working on what with live presence indicators on controls, evidence, and tasks. Changes sync in real-time across all connected sessions, no refresh required. Conflict resolution ensures simultaneous edits merge gracefully, with visual indicators showing when a control or evidence item is being edited by a teammate.',
     category: 'Collaboration & UX',
     capabilities: [
       'Live presence indicators',
@@ -431,9 +466,9 @@ const features: PlatformFeature[] = [
     icon: Bot,
     title: 'Compliance Q&A assistant',
     description:
-      'General-purpose AI Q&A for compliance questions, policy drafting, and prompt-template workflows. Surface-level org context only — not grounded in your live policies, evidence, or controls.',
+      'General-purpose AI Q&A for compliance questions, policy drafting, and prompt-template workflows. Surface-level org context only, not grounded in your live policies, evidence, or controls.',
     longDescription:
-      'A stateless AI Q&A wrapper trained for compliance vocabulary. Useful for "how is GDPR Article 32 typically implemented?" or "draft a vendor risk policy starter" — not for "what does my current control evidence show?" Surface-level org context (industry, team size) is passed in; live policies, controls, and evidence are NOT used as grounding. Real retrieval-augmented chat against your evidence vault is on the roadmap but not shipping today.',
+      'A stateless AI Q&A wrapper trained for compliance vocabulary. Useful for "how is GDPR Article 32 typically implemented?" or "draft a vendor risk policy starter", not for "what does my current control evidence show?" Surface-level org context (industry, team size) is passed in; live policies, controls, and evidence are NOT used as grounding. Real retrieval-augmented chat against your evidence vault is on the roadmap but not shipping today.',
     category: 'AI & Certification',
     highlight: 'General-purpose · not RAG',
     capabilities: [
@@ -449,7 +484,7 @@ const features: PlatformFeature[] = [
     description:
       '61 SOC 2 Trust Service Criteria controls mapped, automated evaluators for ~28 of them, milestone tracking through audit readiness, and a downloadable report.',
     longDescription:
-      'SOC 2 Type II readiness across all 61 Trust Service Criteria (CC, A, C, PI, P) per lib/compliance/evaluators/register.ts. ~28 controls auto-evaluate against your live data (MFA coverage, audit-log freshness, policy cadence, etc.); the remaining ~33 require human attestation. Milestone tracker at /app/compliance/soc2 guides framework enablement → evidence collection → readiness report. Score weights are not fixed marketing percentages — they reflect the actual count of passing vs. failing evaluators in each TSC category.',
+      'SOC 2 Type II readiness across all 61 Trust Service Criteria (CC, A, C, PI, P) per lib/compliance/evaluators/register.ts. ~28 controls auto-evaluate against your live data (MFA coverage, audit-log freshness, policy cadence, etc.); the remaining ~33 require human attestation. Milestone tracker at /app/compliance/soc2 guides you from framework enablement through evidence collection to a readiness report. Score weights are not fixed marketing percentages. They reflect the actual count of passing vs. failing evaluators in each TSC category.',
     category: 'AI & Certification',
     highlight: 'Shipping',
     capabilities: [
@@ -465,7 +500,7 @@ const features: PlatformFeature[] = [
     description:
       'Map controls across frameworks with strength scoring. 40+ pre-loaded cross-mappings seeded between ISO 27001, SOC 2, HIPAA, and NIST CSF.',
     longDescription:
-      'Framework Cross-Mapping manages the relationships between controls across compliance frameworks. Each mapping carries a strength label — exact, partial, or related — so teams can judge overlap quality. 40+ cross-mappings are seeded by migration 20260403003 covering ISO 27001, SOC 2, HIPAA, and NIST CSF, and the engine walks both forward and reverse relationships so a satisfied control on one framework can cascade credit to its mapped peers on others.',
+      'Framework Cross-Mapping manages the relationships between controls across compliance frameworks. Each mapping carries a strength label (exact, partial, or related) so teams can judge overlap quality. 40+ cross-mappings are seeded by migration 20260403003 covering ISO 27001, SOC 2, HIPAA, and NIST CSF, and the engine walks both forward and reverse relationships so a satisfied control on one framework can cascade credit to its mapped peers on others.',
     category: 'Compliance Core',
     highlight: 'Shipping',
     capabilities: [
@@ -571,7 +606,7 @@ interface CategoryConfig {
 const categoryMeta: Record<CategoryName, CategoryConfig> = {
   'Compliance Core': {
     description:
-      'Framework coverage, control enforcement, evidence management, and posture scoring - the operational backbone of your compliance program.',
+      'Framework coverage, control enforcement, evidence management, and posture scoring: the operational backbone of your compliance program.',
     gradient: 'from-white/[0.12] via-white/[0.04] to-transparent',
     accent: 'slate',
     accentRgb: '203,213,225',
@@ -1243,9 +1278,10 @@ function FeatureCatalogIndex() {
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.015] p-5 lg:p-7">
           <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
             <h2 className="text-base font-semibold text-white">
-              Feature catalog —{' '}
+              Feature catalog{' '}
               <span className="text-slate-400">
-                {features.length} features across {categories.length} categories
+                · {features.length} features across {categories.length}{' '}
+                categories
               </span>
             </h2>
             <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
@@ -1360,7 +1396,7 @@ function FrameworkCoverageSection() {
     <DeferredSection minHeight={500}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
-          <CenteredHeader
+          <BarHeader
             label="Framework Packs"
             title="Pre-built compliance"
             emphasis="framework libraries"
@@ -1737,7 +1773,7 @@ function PlatformWorkflowSection() {
     <DeferredSection minHeight={500}>
       <section className="mk-section relative">
         <div className="mx-auto max-w-5xl px-6 lg:px-8">
-          <CenteredHeader
+          <BarHeader
             label="How It Works"
             title="From activation to"
             emphasis="audit-ready"
@@ -1839,7 +1875,7 @@ function EnterpriseCTA() {
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Compliance Plan
                 </p>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+                <h2 className="mb-4 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
                   Ready to operate compliance{' '}
                   <span className="text-slate-400">
                     as infrastructure?
@@ -1969,7 +2005,7 @@ function FeaturesHero() {
           className="text-base sm:text-lg lg:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           25 features across compliance, workflow, identity, collaboration,
-          and AI — built for regulated teams that need provable control over
+          and AI, built for regulated teams that need provable control over
           every obligation.
         </motion.p>
 
@@ -2079,14 +2115,14 @@ export default function FeaturesPageContent() {
               range={[0, 0.3]}
               className="text-center mb-6"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+              <h2 className="mb-4 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Every feature, built for{' '}
                 <span className="text-slate-400">
                   regulated teams
                 </span>
               </h2>
               <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
-                25 platform features across five categories — each designed to
+                25 platform features across five categories, each designed to
                 close the gap between compliance obligations and operational
                 execution.
               </p>
