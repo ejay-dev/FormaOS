@@ -12,10 +12,6 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { ArchitectureCard } from '@/components/motion';
-import {
-  ShieldRings,
-  ChainLinks,
-} from '@/components/marketing/SectionBackgrounds';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import Link from 'next/link';
@@ -28,25 +24,25 @@ const safeguards = [
     icon: Lock,
     title: 'Tenant isolation',
     description:
-      'Row-Level Security (RLS) enforces strict organizational boundaries. Every record, audit log, and evidence item is scoped to its organization - no cross-tenant data access.',
+      'Row-Level Security (RLS) enforces strict organizational boundaries. Every record, audit log, and evidence item is scoped to its organization, with no cross-tenant data access.',
   },
   {
     icon: Activity,
     title: 'Tamper-evident audit logs',
     description:
-      'Immutable, timestamped audit events capture who did what, when, and in relation to which control. Every compliance decision is permanently recorded - uneditable after creation.',
+      'Immutable, timestamped audit events capture who did what, when, and in relation to which control. Every compliance decision is permanently recorded and uneditable after creation.',
   },
   {
     icon: UserCheck,
     title: 'Role-based access and RBAC',
     description:
-      'Granular permissions with segregation of duties. Approvals, evidence exports, and control sign-offs are gated by role - preventing unauthorized access or self-approval.',
+      'Granular permissions with segregation of duties. Approvals, evidence exports, and control sign-offs are gated by role, preventing unauthorized access or self-approval.',
   },
   {
     icon: Eye,
     title: 'Chain-of-custody evidence',
     description:
-      'Every evidence artifact links to its uploader, approver, associated controls, and export timestamps - providing a complete defensible custody record for auditors.',
+      'Every evidence artifact links to its uploader, approver, associated controls, and export timestamps, providing a complete defensible custody record for auditors.',
   },
   {
     icon: FileCheck,
@@ -66,24 +62,24 @@ const securityLayers = {
   'Application Security': [
     'Multi-tenant architecture with Row-Level Security (RLS)',
     'Role-based access control (RBAC) with segregation of duties',
-    'SAML 2.0 SSO - Okta, Azure AD, Google Workspace (Enterprise)',
+    'SAML 2.0 SSO (Okta, Azure AD, Google Workspace) on Enterprise',
     'MFA policy enforcement and session duration controls',
     'Centralized identity requirements reviewed during enterprise deployment',
   ],
   'Data Protection': [
-    'AES-256 encryption at rest - evidence, controls, and audit logs',
+    'AES-256 encryption at rest for evidence, controls, and audit logs',
     'TLS 1.3 encryption in transit for primary platform traffic',
-    'Immutable audit log storage - tamper-evident by design',
+    'Immutable audit log storage, tamper-evident by design',
     'Backup, disaster recovery, and business continuity controls',
   ],
   'Compliance Controls': [
     'Evidence approval workflows with sign-off chain',
     'Change tracking, versioning, and before/after audit capture',
-    'Audit trail completeness - every compliance action recorded',
+    'Audit trail completeness: every compliance action recorded',
     'Independent security review and remediation process',
   ],
   'Infrastructure & Residency': [
-    'AU-based hosting by default - aligned for Australian-regulated orgs',
+    'AU-based hosting by default, aligned for Australian-regulated orgs',
     'Additional residency requirements reviewed during procurement',
     'Private storage buckets with network isolation',
     'Provider-managed network and availability controls',
@@ -120,32 +116,10 @@ function LightSection({
   className?: string;
 }) {
   return (
-    <section
-      className={`relative overflow-hidden ${className}`}
-      style={{
-        background:
-          'linear-gradient(180deg, #030712 0%, #0a0f1f 50%, #0f172a 100%)',
-      }}
-    >
-      {/* Single subtle glow - no blur filter, just a radial gradient */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 120% 80% at 20% 20%, rgba(148, 163, 184, 0.10) 0%, transparent 50%),
-            radial-gradient(ellipse 100% 100% at 80% 30%, rgba(148, 163, 184, 0.08) 0%, transparent 45%),
-            radial-gradient(ellipse 80% 80% at 50% 80%, rgba(148, 163, 184, 0.06) 0%, transparent 50%)
-          `,
-        }}
-      />
-      {/* Vignette */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, transparent 40%, rgba(3, 7, 18, 0.4) 100%)',
-        }}
-      />
+    <section className={`relative isolate overflow-hidden ${className}`}>
+      {/* Single subtle white radial + top hairline — matches the homepage hand */}
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       {/* Content */}
       <div className="relative z-10">{children}</div>
     </section>
@@ -195,7 +169,7 @@ function SectionLabelHeader({
       <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
         {label}
       </p>
-      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display max-w-4xl leading-[1.1]">
+      <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight max-w-4xl leading-[1.1]">
         {title}
       </h2>
       {subtitle && (
@@ -225,7 +199,7 @@ function SectionRuleHeader({
           {label}
         </span>
       </div>
-      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display leading-[1.1]">
+      <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight leading-[1.1]">
         {title}
       </h2>
       {subtitle && (
@@ -240,9 +214,8 @@ function SectionRuleHeader({
 export function SecuritySafeguards() {
   return (
     <LightSection className="py-10 sm:py-14 lg:py-16">
-      <ShieldRings color="rgba(161, 161, 170, 0.03)" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
-        <SectionLabelHeader
+        <SectionRuleHeader
           label="Security Safeguards"
           title={
             <>
@@ -330,7 +303,6 @@ export function SecurityArchitectureLayers() {
 export function SecurityEvidenceChain() {
   return (
     <LightSection className="py-10 sm:py-14 lg:py-16">
-      <ChainLinks />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative">
         <SectionRuleHeader
           label="Evidence Chain"
@@ -382,7 +354,7 @@ export function SecurityCTA() {
         <ScrollReveal variant="splitLeft" range={[0, 0.35]}>
           <LightCard className="p-8 sm:p-12 lg:p-16 text-center relative overflow-hidden">
             <div className="relative z-10">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-display mb-4 sm:mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight mb-4 sm:mb-6">
                 Security review?
                 <br />
                 <span className="text-slate-400">
@@ -391,7 +363,7 @@ export function SecurityCTA() {
               </h2>
 
               <p className="text-lg sm:text-xl text-foreground/70 mb-8 sm:mb-10 max-w-2xl mx-auto">
-                Enterprise security review packet available now - architecture,
+                Enterprise security review packet available now: architecture,
                 encryption, identity governance, data residency, and DPA. No
                 delays for your procurement team.
               </p>

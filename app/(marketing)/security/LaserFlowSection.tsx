@@ -23,21 +23,11 @@ export function LaserFlowSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative py-16 sm:py-20 overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, #030712 0%, #0a0f1f 50%, #0f172a 100%)',
-      }}
+      className="relative isolate py-16 sm:py-20 overflow-hidden"
     >
-      {/* Subtle background glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 60% at 65% 50%, rgba(148,163,184,0.05) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 80% at 35% 40%, rgba(148,163,184,0.04) 0%, transparent 50%)
-          `,
-        }}
-      />
+      {/* Subtle white radial + top hairline */}
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         {/* Section heading */}
@@ -56,8 +46,8 @@ export function LaserFlowSection() {
               immutable audit evidence
             </span>
           </h2>
-          <p className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto">
-            Every compliance event follows a secured pipeline - ingested, verified, and sealed into an immutable record.
+          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+            Every compliance event follows a secured pipeline: ingested, verified, and sealed into an immutable record.
           </p>
         </motion.div>
 
@@ -78,13 +68,13 @@ export function LaserFlowSection() {
               {[
                 { text: 'Events are ingested with cryptographic timestamps and actor identity', icon: FileText },
                 { text: 'Multi-layer verification ensures data integrity before sealing', icon: Shield },
-                { text: 'Immutable audit logs are append-only - no edits, no deletions', icon: Lock },
+                { text: 'Immutable audit logs are append-only, with no edits or deletions', icon: Lock },
               ].map((bullet) => (
                 <div key={bullet.text} className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-0.5 w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
                     <bullet.icon className="w-4 h-4 text-slate-400" />
                   </div>
-                  <p className="text-sm sm:text-base text-gray-400 leading-relaxed">{bullet.text}</p>
+                  <p className="text-sm sm:text-base text-slate-400 leading-relaxed">{bullet.text}</p>
                 </div>
               ))}
             </div>

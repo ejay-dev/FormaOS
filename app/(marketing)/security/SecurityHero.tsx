@@ -39,7 +39,7 @@ export function SecurityHero() {
           </span>
         </>
       }
-      subheadline="AES-256 encryption, SAML 2.0 SSO, tamper-evident audit logs, and compliance workflow gates - built for organizations where a breach is a regulatory event."
+      subheadline="AES-256 encryption, SAML 2.0 SSO, tamper-evident audit logs, and compliance workflow gates, built for organizations where a breach is a regulatory event."
       extras={
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-wrap justify-center gap-3">
@@ -49,7 +49,7 @@ export function SecurityHero() {
                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] backdrop-blur-sm"
               >
                 <item.icon className="h-4 w-4 text-slate-400" />
-                <span className="text-sm font-medium text-gray-300">
+                <span className="text-sm font-medium text-slate-300">
                   {item.label}
                 </span>
               </div>

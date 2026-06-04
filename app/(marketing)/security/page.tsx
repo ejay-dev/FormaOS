@@ -63,7 +63,7 @@ const securityFaqItems = [
   {
     question: 'How does FormaOS ensure audit integrity?',
     answer:
-      'Every action in FormaOS is automatically logged with full context - who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence.',
+      'Every action in FormaOS is automatically logged with full context: who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence.',
   },
   {
     question: 'How is evidence made immutable?',
