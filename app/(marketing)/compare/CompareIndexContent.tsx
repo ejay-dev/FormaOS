@@ -40,7 +40,7 @@ const comparisons = [
 ] as const;
 
 const differentiators = [
-  'Purpose-built for NDIS, aged care, healthcare, and childcare — not SaaS security teams',
+  'Purpose-built for NDIS, aged care, healthcare, and childcare, not SaaS security teams',
   'Operational accountability: tasks, owners, deadlines, and audit history in one chain',
   'Evidence defensibility: verification workflows and chain-of-custody for regulators',
   'Australian data residency and pre-built frameworks for AU-regulated industries',
@@ -81,7 +81,7 @@ export default function CompareIndexContent() {
             </span>
           </>
         }
-        subheadline="How FormaOS compares to GRC tools, care software, and legacy compliance — on the features that matter for NDIS, aged care, and healthcare."
+        subheadline="How FormaOS compares to GRC tools, care software, and legacy compliance, on the features that matter for NDIS, aged care, and healthcare."
         primaryCta={{
           href: '/contact?type=procurement',
           label: 'Start Buyer Review',
@@ -155,7 +155,7 @@ export default function CompareIndexContent() {
         </p>
         <p className="mt-4 text-slate-300 leading-relaxed">
           FormaOS is a compliance operating system. The distinction matters
-          when you are running a regulated organisation — an NDIS provider
+          when you are running a regulated organisation: an NDIS provider
           managing 80 staff and a quarterly audit window, an aged-care
           operator preparing for an unannounced visit, a financial services
           licensee whose ASIC obligations cross five teams. You need the
@@ -175,7 +175,7 @@ export default function CompareIndexContent() {
             <p className="mt-2 text-sm text-slate-300 leading-relaxed">
               Policies, controls, evidence, training, incidents, and risk
               register live in one graph. Updating a control updates every
-              framework that references it — no spreadsheet duplication, no
+              framework that references it, with no spreadsheet duplication, no
               quarterly reconciliation between tools.
             </p>
           </article>
@@ -185,7 +185,7 @@ export default function CompareIndexContent() {
             </h4>
             <p className="mt-2 text-sm text-slate-300 leading-relaxed">
               Every obligation has a named owner with a real due date.
-              Compliance is no longer &quot;everyone&apos;s job&quot; — it is
+              Compliance is no longer &quot;everyone&apos;s job&quot;. It is
               specific people, with specific evidence, on a calendar the
               board can read.
             </p>
@@ -196,7 +196,7 @@ export default function CompareIndexContent() {
             </h4>
             <p className="mt-2 text-sm text-slate-300 leading-relaxed">
               Evidence bundles regenerate as work happens. When the audit
-              window opens — scheduled or unannounced — the export is one
+              window opens, scheduled or unannounced, and the export is one
               click, not a six-week scramble through email, Drive, and the
               old SharePoint nobody remembers the password for.
             </p>
@@ -207,7 +207,7 @@ export default function CompareIndexContent() {
             </h4>
             <p className="mt-2 text-sm text-slate-300 leading-relaxed">
               NDIS Practice Standards, AHPRA, NSQHS, ACECQA, AFS licence,
-              AUSTRAC, SafeWork — the obligation library is pre-built for
+              AUSTRAC, SafeWork. The obligation library is pre-built for
               the regulators Australian operators actually answer to, not
               ported from a US SOC 2 tool.
             </p>
@@ -220,7 +220,7 @@ export default function CompareIndexContent() {
         <p className="mt-4 text-slate-300 leading-relaxed">
           The four head-to-head pages cover the platforms we hear about most
           in buyer conversations. They are written for compliance leaders
-          who already know what they need — not as feature checklists, but
+          who already know what they need, not as feature checklists, but
           as a clear read on where each platform&apos;s centre of gravity
           actually sits. If you are evaluating something not listed,{' '}
           <Link
