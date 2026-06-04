@@ -11,7 +11,6 @@ import {
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { TopographicPattern } from '@/components/marketing/SectionBackgrounds';
 import { duration } from '@/config/motion';
 
 const TIER_VISUAL = {
@@ -54,35 +53,32 @@ export function PricingTiers() {
         not work because this component is rendered behind a deferred
         IntersectionObserver and the id would not be in SSR HTML.
       */}
-      {/* Section backgrounds */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        <TopographicPattern color="rgba(113,113,122,0.04)" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(148,163,184,0.1),transparent_55%)]" />
-      </div>
-
-      {/* Top + bottom hairlines */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      {/* Subtle white radial + hairlines (matches homepage exemplars) */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.035),transparent_70%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section header */}
+        {/* Section header — labelled rule + paired descriptor */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
-          className="mb-14 max-w-3xl"
+          className="mb-14 grid gap-x-12 gap-y-5 lg:grid-cols-[1fr_minmax(0,22rem)] lg:items-end"
         >
-          <div className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            <span className="h-px w-8 bg-white/25" />
-            <span className="text-slate-500">Plan catalog</span>
+          <div>
+            <div className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <span className="h-px w-8 bg-white/25" />
+              <span>Plan catalog</span>
+            </div>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              One compliance OS, four ways to deploy it.
+            </h2>
           </div>
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
-            One compliance OS, four ways to deploy it.
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
+          <p className="text-sm leading-7 text-slate-400 lg:pb-1">
             Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
-            is contracted with procurement and security review. Same compliance
-            engine across every plan — only scope changes. Prices in AUD, GST
-            inclusive, billed monthly via Stripe.
+            is contracted with procurement and security review. Same engine
+            across every plan. Only the scope changes. Prices in AUD, GST
+            inclusive, billed monthly.
           </p>
         </ScrollReveal>
 
@@ -92,9 +88,10 @@ export function PricingTiers() {
           stagger={0.07}
           className="grid items-stretch gap-5 lg:grid-cols-4"
         >
-          {PUBLIC_PRICING_TIERS.map((tier, index) => {
+          {PUBLIC_PRICING_TIERS.map((tier) => {
             const visual = TIER_VISUAL[tier.id];
-            const number = String(index + 1).padStart(2, '0');
+            const price = priceLabelFor(tier);
+            const isCustomPrice = !price.startsWith('$');
 
             return (
               <motion.article
@@ -114,22 +111,19 @@ export function PricingTiers() {
                   className={`pointer-events-none absolute inset-y-6 left-0 w-px bg-gradient-to-b ${visual.rail}`}
                 />
 
-                {/* Header strip */}
-                <div className="flex items-center justify-between border-b border-white/[0.05] bg-white/[0.02] px-6 py-3.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-                    Tier {number}
-                  </span>
-                  {tier.badge ? (
-                    <span
-                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${visual.chip}`}
-                    >
-                      {tier.badge}
-                    </span>
-                  ) : null}
-                </div>
-
                 {/* Body */}
-                <div className="flex flex-1 flex-col px-6 pt-6 pb-6">
+                <div className="flex flex-1 flex-col px-6 pb-6 pt-7">
+                  {/* Badge row (reserved height keeps card tops aligned) */}
+                  <div className="mb-4 flex h-5 items-center">
+                    {tier.badge ? (
+                      <span
+                        className={`inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${visual.chip}`}
+                      >
+                        {tier.badge}
+                      </span>
+                    ) : null}
+                  </div>
+
                   <h3 className="text-2xl font-semibold tracking-tight text-white">
                     {nameFor(tier)}
                   </h3>
@@ -141,22 +135,36 @@ export function PricingTiers() {
                   </p>
 
                   {/* Price */}
-                  <div className="mt-7 flex items-end gap-2">
-                    <span className="text-5xl font-semibold tracking-tight text-white">
-                      {priceLabelFor(tier)}
-                    </span>
-                    <span className="pb-2 text-sm font-medium text-slate-400">
-                      {tier.priceSubtext}
-                    </span>
+                  <div className="mt-7">
+                    <div className="flex items-end gap-2">
+                      <span
+                        className={`font-semibold tracking-tight text-white ${
+                          isCustomPrice ? 'text-4xl' : 'text-5xl'
+                        }`}
+                      >
+                        {price}
+                      </span>
+                      {!isCustomPrice ? (
+                        <span className="pb-2 text-sm font-medium text-slate-400">
+                          {tier.priceSubtext}
+                        </span>
+                      ) : null}
+                    </div>
+                    {isCustomPrice ? (
+                      <p className="mt-1 text-sm font-medium text-slate-400">
+                        {tier.priceSubtext}
+                      </p>
+                    ) : null}
                   </div>
-                  <div className="mt-3 inline-flex max-w-full items-center gap-2 self-start rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] text-slate-300">
+
+                  <div className="mt-3 flex items-start gap-2 text-[11px] leading-snug text-slate-400">
                     <CheckCircle2
-                      className={`h-3 w-3 shrink-0 ${
-                        tier.featured ? 'text-slate-200' : 'text-slate-400'
+                      className={`mt-0.5 h-3 w-3 shrink-0 ${
+                        tier.featured ? 'text-slate-200' : 'text-slate-500'
                       }`}
                       aria-hidden="true"
                     />
-                    <span className="truncate">{tier.trustNote}</span>
+                    <span>{tier.trustNote}</span>
                   </div>
 
                   {/* CTA */}

@@ -1,8 +1,8 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import { Check, Minus } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
-import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 
 type Cell = '✓' | '—' | string;
 
@@ -409,24 +409,25 @@ const COLUMNS: readonly Column[] = [
 
 const TOTAL_ROWS = GROUPS.reduce((sum, g) => sum + g.rows.length, 0);
 
-function renderCell(value: Cell, featured?: boolean) {
+function renderCell(value: Cell, focused: boolean) {
   if (value === '✓') {
     return (
       <Check
-        className={`mx-auto h-4 w-4 ${featured ? 'text-slate-100' : 'text-slate-400'}`}
+        className={`mx-auto h-4 w-4 ${focused ? 'text-white' : 'text-slate-500'}`}
         aria-hidden="true"
       />
     );
   }
   if (value === '—') {
     return (
-      <Minus className="mx-auto h-4 w-4 text-slate-700" aria-hidden="true" />
+      <Minus
+        className={`mx-auto h-4 w-4 ${focused ? 'text-slate-600' : 'text-slate-700'}`}
+        aria-hidden="true"
+      />
     );
   }
   return (
-    <span
-      className={`text-[12px] ${featured ? 'text-slate-100' : 'text-slate-200'}`}
-    >
+    <span className={`text-[12px] ${focused ? 'text-white' : 'text-slate-500'}`}>
       {value}
     </span>
   );
@@ -436,122 +437,178 @@ function slugifyGroupCode(code: string): string {
   return code.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 
+const COLUMN_KEYS = COLUMNS.map((c) => c.key);
+
+/** Capabilities the focused plan adds over the plan one tier below it. */
+function upgradesOver(focusKey: Column['key']): { label: string; value: string }[] {
+  const idx = COLUMN_KEYS.indexOf(focusKey);
+  if (idx <= 0) return [];
+  const prevKey = COLUMN_KEYS[idx - 1];
+  const out: { label: string; value: string }[] = [];
+  for (const group of GROUPS) {
+    for (const row of group.rows) {
+      const now = row[focusKey];
+      const before = row[prevKey];
+      const gained = before === '—' && now !== '—';
+      const upgraded =
+        before !== '—' && now !== '—' && now !== before && now !== '✓';
+      if (gained) {
+        out.push({ label: row.label, value: now === '✓' ? '' : String(now) });
+      } else if (upgraded) {
+        out.push({ label: row.label, value: String(now) });
+      }
+    }
+  }
+  return out;
+}
+
 export function PricingComparisonTable() {
+  const [focus, setFocus] = useState<Column['key']>('pro');
+  const focusedCol = COLUMNS.find((c) => c.key === focus) ?? COLUMNS[1];
+  const upgrades = useMemo(() => upgradesOver(focus), [focus]);
+  const focusIndex = COLUMN_KEYS.indexOf(focus);
+  const prevLabel = focusIndex > 0 ? COLUMNS[focusIndex - 1].label : null;
+
   return (
-    <section className="relative overflow-hidden py-24 sm:py-32">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0d1424] via-[#0a0f1c] to-[#0d1424]">
-        <DotGrid />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(161,161,170,0.05),transparent_45%)]" />
-      </div>
+    <section className="relative isolate overflow-hidden py-24 sm:py-32">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section header */}
+        {/* Section header — left vertical-bar accent */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
-          className="mb-12 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end"
+          className="flex items-start gap-5"
         >
-          <div>
-            <div className="mb-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
-              <span className="h-px w-6 bg-white/20" />
-              <span className="text-slate-300">Capability matrix</span>
-              <span className="text-slate-600">·</span>
-              <span>{GROUPS.length} categories · {TOTAL_ROWS} capabilities</span>
-            </div>
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
-              Every capability, side by side.
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
-              Built for Australian NDIS, aged care, and healthcare buyers
-              comparing real procurement options. If something matters to your
-              audit and it is not listed, ask us.
+          <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
+          <div className="max-w-2xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Capability matrix
             </p>
-          </div>
-          <div className="hidden lg:flex flex-col items-end gap-2 text-[10px] uppercase tracking-[0.18em] text-slate-500">
-            <span className="flex items-center gap-2">
-              <Check className="h-3 w-3 text-slate-400" />
-              <span>Included</span>
-            </span>
-            <span className="flex items-center gap-2">
-              <Minus className="h-3 w-3 text-slate-700" />
-              <span>Not in plan</span>
-            </span>
-            <span className="flex items-center gap-2 text-slate-300">
-              <span>Most popular column</span>
-            </span>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Pick a plan. See exactly what it covers.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-slate-400">
+              {GROUPS.length} categories, {TOTAL_ROWS} capabilities, side by
+              side.{' '}
+              <span className="hidden lg:inline">
+                Select a plan to focus its column and see what it adds over the
+                tier below.{' '}
+              </span>
+              If something matters to your audit and it is not listed, ask us.
+            </p>
           </div>
         </ScrollReveal>
 
-        {/* Jump-to anchor strip (additive UX) */}
+        {/* Plan focus selector */}
         <ScrollReveal
           variant="fadeUp"
           range={[0, 0.4]}
-          className="mb-6 hidden flex-wrap items-center gap-2 lg:flex"
+          className="mt-10 hidden lg:block"
         >
-          <span className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
-            Jump to:
-          </span>
-          {GROUPS.map((g) => (
-            <a
-              key={g.code}
-              href={`#capability-${slugifyGroupCode(g.code)}`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-slate-300 transition hover:border-white/[0.15] hover:bg-white/[0.05] hover:text-white"
-            >
-              {g.title}
-              <span className="text-slate-500">· {g.rows.length}</span>
-            </a>
-          ))}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Focus
+            </span>
+            {COLUMNS.map((col) => {
+              const active = col.key === focus;
+              return (
+                <button
+                  key={col.key}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setFocus(col.key)}
+                  className={`flex items-baseline gap-2 rounded-xl border px-4 py-2 transition-colors duration-200 ${
+                    active
+                      ? 'border-white/30 bg-white/[0.08] text-white'
+                      : 'border-white/[0.08] bg-white/[0.02] text-slate-400 hover:border-white/[0.16] hover:text-slate-200'
+                  }`}
+                >
+                  <span className="text-sm font-semibold">{col.label}</span>
+                  <span className="text-[11px] text-slate-500">{col.price}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* "What this plan adds over the one below" callout */}
+          <div className="mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-5 py-4">
+            {prevLabel ? (
+              <>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  {focusedCol.label} adds over {prevLabel}
+                </p>
+                <div className="mt-2.5 flex flex-wrap gap-x-5 gap-y-1.5">
+                  {upgrades.map((u) => (
+                    <span
+                      key={u.label}
+                      className="inline-flex items-center gap-2 text-[13px] text-slate-300"
+                    >
+                      <span className="h-1 w-1 rounded-full bg-slate-400" />
+                      {u.label}
+                      {u.value ? (
+                        <span className="text-slate-500">· {u.value}</span>
+                      ) : null}
+                    </span>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="text-[13px] text-slate-300">
+                <span className="font-semibold text-white">
+                  {focusedCol.label}
+                </span>{' '}
+                is the compliance core. The engine, evidence trail, and
+                immutable audit log ship in every plan.
+              </p>
+            )}
+          </div>
         </ScrollReveal>
 
-        {/* Desktop matrix wrapped in HUD frame */}
+        {/* Desktop matrix */}
         <ScrollReveal variant="fadeUp" range={[0, 0.4]}>
-          <div className="relative hidden overflow-hidden rounded-3xl border border-white/[0.07] bg-gradient-to-br from-[#0a1322]/85 via-[#070d1c]/80 to-[#040810]/85 shadow-2xl shadow-black/40 ring-1 ring-white/[0.03] backdrop-blur-sm lg:block">
-            {/* Frame title bar */}
-            <div className="flex items-center justify-between border-b border-white/[0.06] bg-white/[0.02] px-6 py-3">
-              <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                formaos · capability matrix
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                FY26 · AUD · GST inc.
-              </span>
-            </div>
-
+          <div className="relative mt-6 hidden overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.015] lg:block">
             <table className="w-full">
-              <thead className="sticky top-0 z-10 backdrop-blur-md">
-                <tr className="border-b border-white/[0.06] bg-[#070d1c]/95">
+              <thead className="sticky top-0 z-10">
+                <tr className="border-b border-white/[0.08] bg-[#0a0f1c]/95 backdrop-blur-md">
                   <th
                     scope="col"
                     className="w-[34%] px-6 py-5 text-left text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500"
                   >
                     Capability
                   </th>
-                  {COLUMNS.map((col) => (
-                    <th
-                      key={col.key}
-                      scope="col"
-                      className={`relative px-6 py-5 text-center ${
-                        col.featured ? 'bg-white/[0.04]' : ''
-                      }`}
-                    >
-                      {col.featured ? (
-                        <span className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-                      ) : null}
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="text-base font-semibold text-white">
-                          {col.label}
-                        </span>
-                        <span
-                          className={`text-[10px] uppercase tracking-[0.2em] ${col.accent}`}
+                  {COLUMNS.map((col) => {
+                    const isFocus = col.key === focus;
+                    return (
+                      <th
+                        key={col.key}
+                        scope="col"
+                        aria-sort={isFocus ? 'other' : undefined}
+                        className={`relative cursor-pointer px-6 py-5 text-center transition-colors duration-200 ${
+                          isFocus ? 'bg-white/[0.06]' : 'hover:bg-white/[0.02]'
+                        }`}
+                        onClick={() => setFocus(col.key)}
+                      >
+                        {isFocus ? (
+                          <span className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+                        ) : null}
+                        <div className="flex items-center justify-center gap-2">
+                          <span
+                            className={`text-base font-semibold ${isFocus ? 'text-white' : 'text-slate-400'}`}
+                          >
+                            {col.label}
+                          </span>
+                        </div>
+                        <div
+                          className={`mt-1 text-xs ${isFocus ? 'text-slate-300' : 'text-slate-500'}`}
                         >
-                          / {col.code}
-                        </span>
-                      </div>
-                      <div className="mt-1 text-xs text-slate-400">
-                        {col.price}
-                      </div>
-                    </th>
-                  ))}
+                          {col.price}
+                        </div>
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
               <tbody>
@@ -560,25 +617,17 @@ export function PricingComparisonTable() {
                     <tr
                       key={`group-${group.title}`}
                       id={`capability-${slugifyGroupCode(group.code)}`}
-                      className="scroll-mt-24 bg-white/[0.04]"
+                      className="scroll-mt-24 bg-white/[0.035]"
                     >
-                      <td className="px-6 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                            {group.code}
-                          </span>
-                          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/80">
-                            {group.title}
-                          </span>
-                          <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
-                            · {group.rows.length}
-                          </span>
-                        </div>
+                      <td className="px-6 py-3" colSpan={1}>
+                        <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/75">
+                          {group.title}
+                        </span>
                       </td>
                       {COLUMNS.map((col) => (
                         <td
                           key={col.key}
-                          className={`px-6 py-3.5 ${col.featured ? 'bg-white/[0.04]' : ''}`}
+                          className={`px-6 py-3 ${col.key === focus ? 'bg-white/[0.06]' : ''}`}
                         />
                       ))}
                     </tr>
@@ -587,8 +636,8 @@ export function PricingComparisonTable() {
                         key={`${group.title}-${row.label}`}
                         className={
                           idx % 2 === 0
-                            ? 'border-t border-white/[0.04] hover:bg-white/[0.02]'
-                            : 'border-t border-white/[0.04] bg-white/[0.012] hover:bg-white/[0.025]'
+                            ? 'border-t border-white/[0.04]'
+                            : 'border-t border-white/[0.04] bg-white/[0.012]'
                         }
                       >
                         <td className="px-6 py-3.5 text-sm text-slate-200">
@@ -602,11 +651,11 @@ export function PricingComparisonTable() {
                         {COLUMNS.map((col) => (
                           <td
                             key={col.key}
-                            className={`px-6 py-3.5 text-center ${
-                              col.featured ? 'bg-white/[0.04]' : ''
+                            className={`px-6 py-3.5 text-center transition-colors duration-200 ${
+                              col.key === focus ? 'bg-white/[0.06]' : ''
                             }`}
                           >
-                            {renderCell(row[col.key], col.featured)}
+                            {renderCell(row[col.key], col.key === focus)}
                           </td>
                         ))}
                       </tr>
@@ -615,12 +664,6 @@ export function PricingComparisonTable() {
                 ))}
               </tbody>
             </table>
-
-            {/* Footer status bar */}
-            <div className="flex items-center justify-between border-t border-white/[0.06] bg-white/[0.015] px-6 py-3 text-[10px] uppercase tracking-[0.18em] text-slate-500">
-              <span>{TOTAL_ROWS} capabilities · {GROUPS.length} categories</span>
-              <span>Stripe · SSO · DPA · AU-hosted</span>
-            </div>
           </div>
         </ScrollReveal>
 

@@ -73,7 +73,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
     badge: 'Most Popular',
     badgeTone: 'popular',
     audience: 'For most registered NDIS and healthcare providers',
-    audienceSize: 'Up to 3 sites · 10–25 staff',
+    audienceSize: 'Up to 3 sites · 10-25 staff',
     summary:
       "Your compliance infrastructure for the next three years. Full enforcement, multi-site support, and pre-built NDIS Practice Standards so you're audit-ready from day one.",
     trustNote: 'Billed monthly · cancel anytime · onboarding included',
@@ -127,7 +127,7 @@ export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
     audience: 'For networks, peak bodies, and government-adjacent providers',
     audienceSize: 'Unlimited everything · custom rollout',
     summary:
-      "We build it with you. Tailored compliance architecture, procurement and security review, white-glove onboarding, and a dedicated account manager. Contracted directly with our team — no self-serve checkout.",
+      'We build it with you. Tailored compliance architecture, procurement and security review, white-glove onboarding, and a dedicated account manager. Contracted directly with our team, with no self-serve checkout.',
     trustNote: 'Sandbox walkthrough · security review pack · custom SLA',
     ctaLabel: 'Talk to us',
     ctaHref: '/contact?type=enterprise&plan=enterprise&source=pricing',
