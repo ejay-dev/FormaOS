@@ -49,8 +49,6 @@ export interface ComparePageTemplateProps {
   datePublished?: string;
   /** Optional grayscale photographic backdrop for the hero section */
   mediaSrc?: string;
-  /** Optional grayscale photographic backdrop for the closing CTA band */
-  mediaSrcSecondary?: string;
 }
 
 const relatedLinksBySource: Record<
@@ -160,7 +158,6 @@ export function ComparePageTemplate({
   source,
   datePublished,
   mediaSrc,
-  mediaSrcSecondary,
 }: ComparePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks =
@@ -354,7 +351,7 @@ export function ComparePageTemplate({
                 See the difference in action
               </h2>
               <p className="text-sm text-slate-400">
-                The FormaOS Obligations Register - cross-framework,
+                The FormaOS Obligations Register: cross-framework,
                 owner-assigned, evidence-linked.
               </p>
             </div>
@@ -581,9 +578,8 @@ export function ComparePageTemplate({
       {/* Ideal If + CTAs */}
       <DeferredSection minHeight={240}>
         <section className="mk-section mk-section--compact relative isolate overflow-hidden mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.6} scrim="center" />}
           <Reveal>
-            <div className="rounded-2xl border border-white/[0.08] bg-slate-950/65 backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
                 FormaOS is ideal if
               </h3>
