@@ -37,12 +37,12 @@ export function ComplianceNetworkSection() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+        {/* Editorial header, asymmetric, left-aligned. A labelled rule and a
             paired description column replace the centred eyebrow-pill template. */}
         <ScrollReveal variant="blurIn" range={[0, 0.3]} className="mb-10 lg:mb-16">
           <div className="grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:grid-cols-12 lg:items-end">
             <div className="lg:col-span-7">
-              {/* Eyebrow as a relationship chain — previews the graph below and
+              {/* Eyebrow as a relationship chain, previews the graph below and
                   differentiates this header from the labelled-rule used by the
                   sections above it. */}
               <div className="mb-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">

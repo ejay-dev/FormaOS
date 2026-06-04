@@ -49,7 +49,7 @@ export function FinalCTA() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Header — centered label flanked by hairlines */}
+        {/* Header, centered label flanked by hairlines */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}

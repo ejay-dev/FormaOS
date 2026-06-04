@@ -197,7 +197,7 @@ export default function FormaOSHomepage({
             <FrameworkTrustStrip />,
             200,
           )}
-          {/* Cryptographic audit-chain proof — pulled to position 3
+          {/* Cryptographic audit-chain proof, pulled to position 3
               (after hero + framework strip) on 2026-05-28 to surface
               the most code-grounded section early. Before, this sat
               below 8 marketing-feature sections; a buyer scrolling

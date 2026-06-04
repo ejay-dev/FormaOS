@@ -216,7 +216,7 @@ export function MobileNav() {
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
               <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-y-contain pb-[max(env(safe-area-inset-bottom),0.75rem)]" style={{ touchAction: 'pan-y' }}>
-                {/* Pull indicator — native sheet affordance */}
+                {/* Pull indicator, native sheet affordance */}
                 <div className="flex justify-center pt-3 pb-2">
                   <div className="w-8 h-1 rounded-full bg-white/20" />
                 </div>

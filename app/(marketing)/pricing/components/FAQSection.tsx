@@ -18,7 +18,7 @@ export function FAQSection() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 lg:px-12">
-        {/* Section header — left vertical-bar accent */}
+        {/* Section header, left vertical-bar accent */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}

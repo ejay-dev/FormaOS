@@ -19,13 +19,13 @@ const PILLARS = [
     icon: History,
     title: 'External anchor at 05:30 UTC',
     tag: 'Verifiable without trusting us',
-    body: "Daily, each org's chain top is submitted to Sigstore Rekor as an RFC 6962-style Merkle entry. An auditor can verify the timestamp of any event without trusting us — the proof goes through Linux Foundation infrastructure.",
+    body: "Daily, each org's chain top is submitted to Sigstore Rekor as an RFC 6962-style Merkle entry. An auditor can verify the timestamp of any event without trusting us, the proof goes through Linux Foundation infrastructure.",
   },
   {
     icon: ShieldCheck,
     title: 'Append-only at the database',
     tag: 'Immutable, even to platform admins',
-    body: 'A BEFORE UPDATE OR DELETE trigger rejects any mutation of audit rows, backed by restrictive RLS deny policies. Even a platform admin with service-role credentials — which bypasses RLS — is stopped by the trigger. Enforced by Postgres, not application code.',
+    body: 'A BEFORE UPDATE OR DELETE trigger rejects any mutation of audit rows, backed by restrictive RLS deny policies. Even a platform admin with service-role credentials, which bypasses RLS, is stopped by the trigger. Enforced by Postgres, not application code.',
   },
 ] as const;
 
@@ -81,7 +81,7 @@ function AuditBoard({ children }: { children: ReactNode }) {
       st.x += (st.target - st.x) * Math.min(1, dt * 6);
       bot.style.left = `${st.x}%`;
 
-      // Eye tracking — pupils ease toward the cursor while hovering.
+      // Eye tracking, pupils ease toward the cursor while hovering.
       const rect = board.getBoundingClientRect();
       const cx = rect.left + (st.x / 100) * rect.width;
       const cy = rect.top;
@@ -221,7 +221,7 @@ export function AuditChainSection() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Header — matches the "Operational mechanics" section */}
+        {/* Header, matches the "Operational mechanics" section */}
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="mx-auto mb-12 max-w-2xl text-center lg:mb-14">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
@@ -232,7 +232,7 @@ export function AuditChainSection() {
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-slate-400">
               Every org&apos;s audit log is hash-chained, RLS-locked against
-              mutation, and anchored daily to Sigstore Rekor — the same
+              mutation, and anchored daily to Sigstore Rekor, the same
               append-only transparency log the Linux Foundation runs for signed
               open-source releases.
             </p>
@@ -273,7 +273,7 @@ export function AuditChainSection() {
           </div>
         </AuditBoard>
 
-        {/* Facts bar — the technical primitives, hairline-divided */}
+        {/* Facts bar, the technical primitives, hairline-divided */}
         <ScrollReveal variant="slideUp" range={[0.1, 0.4]}>
           <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] sm:grid-cols-3 lg:grid-cols-5">
             {CHAIN_FACTS.map((fact) => (

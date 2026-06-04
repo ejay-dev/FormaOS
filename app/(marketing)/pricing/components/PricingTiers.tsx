@@ -48,7 +48,7 @@ export function PricingTiers() {
     <section className="relative overflow-hidden py-24 sm:py-32">
       {/*
         The `id="pricing-table"` anchor that the hero's "View pricing"
-        CTA targets lives on a sibling div in PricingPageContent — see
+        CTA targets lives on a sibling div in PricingPageContent, see
         the comment there. Putting it on this section directly would
         not work because this component is rendered behind a deferred
         IntersectionObserver and the id would not be in SSR HTML.
@@ -59,7 +59,7 @@ export function PricingTiers() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section header — labelled rule + paired descriptor */}
+        {/* Section header, labelled rule + paired descriptor */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}

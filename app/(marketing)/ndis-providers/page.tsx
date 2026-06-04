@@ -112,7 +112,7 @@ export default function NDISProvidersPage() {
             ndisServiceSchema,
             ndisFaqSchema,
           ]} />
-      {/* AEO key-facts block — renders in initial SSR HTML so AI answer
+      {/* AEO key-facts block, renders in initial SSR HTML so AI answer
           engines and procurement scanners hit citable claims first. */}
       <NDISProvidersContent />
     </>

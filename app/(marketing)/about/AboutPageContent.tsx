@@ -239,7 +239,7 @@ export default function AboutPageContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      {/* Timeline section removed 2026-05-28 — the previous milestone
+      {/* Timeline section removed 2026-05-28, the previous milestone
           array claimed customer deployments and framework launches
           that hadn't actually shipped. Pulled the whole section
           rather than fabricate a four-year history. /about flows hero

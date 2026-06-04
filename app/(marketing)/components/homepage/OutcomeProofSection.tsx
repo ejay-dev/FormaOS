@@ -51,7 +51,7 @@ const outcomeStats = [
 
 type Scenario = (typeof proofScenarios)[number];
 
-// The cards plus an automation "agent" that travels along a track above them —
+// The cards plus an automation "agent" that travels along a track above them , 
 // a literal stand-in for the crons/evaluators working the scenarios below.
 // It auto-patrols when idle and chases the cursor while the mouse is over the
 // board (eased, not 1:1). Monochrome + soft glow to stay on-brand; lg-only (the
@@ -103,7 +103,7 @@ function ScenarioBoard({ children }: { children: ReactNode }) {
       const rect = board.getBoundingClientRect();
       const pct = ((e.clientX - rect.left) / rect.width) * 100;
       st.target = Math.max(8, Math.min(92, pct));
-      // Any movement over the board counts as hovering — more reliable than
+      // Any movement over the board counts as hovering, more reliable than
       // depending on mouseenter firing first.
       if (!st.hovering) {
         st.hovering = true;
@@ -169,7 +169,7 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
         {/* Before / After toggle */}
         <div
           role="group"
-          aria-label={`${scenario.title} — before or after`}
+          aria-label={`${scenario.title}, before or after`}
           className="flex flex-shrink-0 rounded-lg border border-white/10 bg-black/20 p-0.5"
         >
           <button
@@ -199,7 +199,7 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
         </div>
       </div>
 
-      {/* Body — swaps with the toggle; min-height keeps the row from jumping */}
+      {/* Body, swaps with the toggle; min-height keeps the row from jumping */}
       <p
         key={showAfter ? 'after' : 'before'}
         className={`min-h-[7.5rem] animate-[fadeIn_0.25s_ease] text-[0.95rem] leading-relaxed lg:min-h-[8.5rem] ${
@@ -209,7 +209,7 @@ function ScenarioCard({ scenario }: { scenario: Scenario }) {
         {showAfter ? scenario.after : scenario.before}
       </p>
 
-      {/* State line — reflects the active side */}
+      {/* State line, reflects the active side */}
       <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/[0.07] pt-5">
         <div>
           <p className="text-[11px] uppercase tracking-wide text-slate-600">

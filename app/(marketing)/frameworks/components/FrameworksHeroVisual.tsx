@@ -8,7 +8,7 @@ import { motion, useReducedMotion } from 'framer-motion';
  * ─────────────────────────────────────────
  * 5 compliance framework cards stacked in a cascading fan.
  * Front card is detailed; back cards progressively simpler and blurred.
- * Cards settle into the fan on entrance, then hold still — no cursor-driven
+ * Cards settle into the fan on entrance, then hold still, no cursor-driven
  * tilt or fan-spread reactivity. Desktop-only, pointer-events-none.
  */
 

@@ -24,7 +24,7 @@ export async function generateMetadata({
   if (!author) {
     return { title: 'Author not found | FormaOS' };
   }
-  const title = `${author.name} — ${author.role} | FormaOS`;
+  const title = `${author.name}, ${author.role} | FormaOS`;
   const description = author.bio.slice(0, 155);
   return {
     title,
@@ -77,7 +77,7 @@ export default async function AuthorPage({
           ]),
         ]
       : [
-          // Collective bylines emit Organization rather than Person —
+          // Collective bylines emit Organization rather than Person , 
           // honest signal to crawlers about what the byline represents.
           {
             '@context': 'https://schema.org',

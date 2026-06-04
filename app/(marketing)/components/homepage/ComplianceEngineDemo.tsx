@@ -84,7 +84,7 @@ export function ComplianceEngineDemo() {
             </div>
             <div className="lg:col-span-5">
               <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
-                One connected lifecycle — obligations become controls, controls
+                One connected lifecycle, obligations become controls, controls
                 generate tasks, tasks produce evidence, and every step stays
                 audit-ready.
               </p>

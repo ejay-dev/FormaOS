@@ -31,7 +31,7 @@ const capabilities = [
     icon: GitBranch,
     title: '9 Framework Packs',
     description:
-      'SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, NDIS Practice Standards, and Essential Eight — pre-built.',
+      'SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS Controls, NDIS Practice Standards, and Essential Eight, pre-built.',
   },
   {
     icon: Shield,
@@ -61,7 +61,7 @@ const capabilities = [
     icon: Bot,
     title: 'AI Compliance Assistant',
     description:
-      'Context-aware AI that drafts policies, runs gap analysis, and gives actionable steps — powered by your live org data.',
+      'Context-aware AI that drafts policies, runs gap analysis, and gives actionable steps, powered by your live org data.',
   },
 ];
 

@@ -3,8 +3,8 @@ import Link from 'next/link';
 // Static, server-rendered index of every Trust Center sub-page. Each of
 // these documents existed in the sitemap but was previously only reachable
 // via JS-rendered cards (TrustModules is dynamic({ ssr: false })). For
-// crawlers that don't execute JS — and for the human procurement reviewer
-// scanning for a specific document — this gives a guaranteed link.
+// crawlers that don't execute JS, and for the human procurement reviewer
+// scanning for a specific document, this gives a guaranteed link.
 const TRUST_SUBPAGES = [
   {
     href: '/trust/data-handling',

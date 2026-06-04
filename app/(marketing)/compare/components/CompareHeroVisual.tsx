@@ -14,7 +14,7 @@ interface CompareHeroVisualProps {
  * CompareHeroVisual
  * ─────────────────
  * Two side-by-side panels: the competitor and FormaOS (emphasised).
- * Restrained entrance only — no cursor tilt, floating loop, or blur chrome.
+ * Restrained entrance only, no cursor tilt, floating loop, or blur chrome.
  */
 function CompareHeroVisualInner({ competitor }: CompareHeroVisualProps) {
   const shouldReduceMotion = useReducedMotion();

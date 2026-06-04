@@ -46,7 +46,7 @@ const TILE_SIZE = 130; // px
 /**
  * IndustriesHeroVisual
  * ────────────────────
- * Four sector glass tiles arranged on a flat ring. Static, restrained —
+ * Four sector glass tiles arranged on a flat ring. Static, restrained , 
  * no auto-rotation, cursor tilt, or pulsing glow.
  */
 function IndustriesHeroVisualInner() {

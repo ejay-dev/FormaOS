@@ -19,7 +19,7 @@ import {
 } from './components';
 
 /**
- * Scope explorer — replaces the old three-identical-card "How pricing
+ * Scope explorer, replaces the old three-identical-card "How pricing
  * works" grid with an interactive recommender (PlanFinder). Priced by
  * compliance scope, not feature unlocks: the inputs map to real plan
  * limits and surface the tier your scope actually requires.
@@ -31,7 +31,7 @@ function PlanScopeSection() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Header — centered label flanked by hairlines */}
+        {/* Header, centered label flanked by hairlines */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
@@ -73,7 +73,7 @@ function CostOfNonCompliance() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-12">
-        {/* Header — left labelled rule */}
+        {/* Header, left labelled rule */}
         <ScrollReveal variant="slideUp" range={[0, 0.3]} className="mb-12 max-w-2xl">
           <div className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
             <span className="h-px w-8 bg-white/25" />

@@ -15,7 +15,7 @@ import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 /**
  * Scope → plan recommender. Replaces the old three-identical-card
  * "How pricing works" grid. Inputs map to real PLAN_CATALOG limits
- * (sites, seats, frameworks, identity) so the readout is grounded —
+ * (sites, seats, frameworks, identity) so the readout is grounded , 
  * the recommended tier is the highest tier any answer requires.
  */
 

@@ -52,7 +52,7 @@ function CheckIcon() {
  * SecurityReviewHeroVisual
  * ────────────────────────
  * Review-checklist clipboard ringed by framework badges. Renders the
- * settled state directly — no auto-running check-off telemetry, no
+ * settled state directly, no auto-running check-off telemetry, no
  * orbiting badges, no cursor-reactive tilt (enterprise-restrained).
  * Clipboard + badges fade/scale in once on entrance.
  */

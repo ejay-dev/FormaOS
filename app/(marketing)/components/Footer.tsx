@@ -169,7 +169,7 @@ export function Footer() {
         {/* Main Footer Content */}
         <div className="border-t border-white/[0.06] py-12 sm:py-14">
           <div className="grid grid-cols-1 min-[480px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 lg:gap-8">
-            {/* Brand column — wider */}
+            {/* Brand column, wider */}
             <div className="col-span-2 sm:col-span-3 lg:col-span-2 mb-2 lg:mb-0">
               <Link
                 href="/"
@@ -240,7 +240,7 @@ export function Footer() {
                 <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
                 {brand.address.locality}, {brand.address.region}, {brand.address.country}
               </div>
-              {/* /status badge removed 2026-05-13 — was hardcoded
+              {/* /status badge removed 2026-05-13, was hardcoded
                   "All systems operational" against 0% uptime data.
                   Route will return when a real status provider is
                   wired. */}

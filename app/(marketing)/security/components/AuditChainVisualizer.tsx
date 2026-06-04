@@ -4,7 +4,7 @@
  * Interactive, tamper-evident audit-chain visualizer.
  *
  * Honesty: hashes are REAL SHA-256 (Web Crypto), and chaining mirrors the
- * production design described on /trust — each row's hash is derived from
+ * production design described on /trust, each row's hash is derived from
  * the previous row's hash plus its own content, so editing any sealed row
  * makes its recomputed hash diverge from the stored seal and breaks every
  * block after it. The Rekor anchor footer is labelled illustrative;

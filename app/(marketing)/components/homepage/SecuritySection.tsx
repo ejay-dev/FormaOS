@@ -30,7 +30,7 @@ const signatureEase: [number, number, number, number] = [
 ] as [number, number, number, number];
 
 /* ════════════════════════════════════════════════════════════
-   Shared — GlassCard with 3D tilt + spotlight
+   Shared, GlassCard with 3D tilt + spotlight
    ════════════════════════════════════════════════════════════ */
 
 function GlassCard({
@@ -98,7 +98,7 @@ function AnimatedCounter({
 }
 
 /* ════════════════════════════════════════════════════════════
-   PostureRing — animated SVG security score
+   PostureRing, animated SVG security score
    ════════════════════════════════════════════════════════════ */
 
 function PostureRing({
@@ -171,7 +171,7 @@ function PostureRing({
           </linearGradient>
         </defs>
       </svg>
-      {/* Center score — number only, nothing else inside the ring */}
+      {/* Center score, number only, nothing else inside the ring */}
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-4xl font-bold text-white leading-none tracking-tight">
           <AnimatedCounter
@@ -191,44 +191,44 @@ function PostureRing({
    Data
    ════════════════════════════════════════════════════════════ */
 
-// Illustrative example of the event TYPES the audit trail captures — role
+// Illustrative example of the event TYPES the audit trail captures, role
 // labels only, never invented names, and no fabricated "X min ago" clock
 // (a live-feed timestamp would imply real activity that isn't there).
 const AUDIT_LOG_ENTRIES = [
   {
     action: 'Evidence approved',
-    control: 'CC6.1 — Logical access controls',
+    control: 'CC6.1, Logical access controls',
     actor: 'Control owner',
     status: 'verified' as const,
   },
   {
     action: 'Control drift detected',
-    control: 'A1.2 — Availability monitoring',
+    control: 'A1.2, Availability monitoring',
     actor: 'System',
     status: 'alert' as const,
   },
   {
     action: 'Audit packet exported',
-    control: 'SOC 2 Type II — Full pack',
+    control: 'SOC 2 Type II, Full pack',
     actor: 'Workspace admin',
     status: 'verified' as const,
   },
   {
     action: 'Policy acknowledged',
-    control: 'ISO 27001 — A.5.1 Policies',
+    control: 'ISO 27001, A.5.1 Policies',
     actor: 'Policy reviewer',
     status: 'verified' as const,
   },
   {
     action: 'Worker credential updated',
-    control: 'NDIS — Worker Screening',
+    control: 'NDIS, Worker Screening',
     actor: 'Workforce coordinator',
     status: 'verified' as const,
   },
 ];
 
 // Numbers below match the evaluator registry:
-// lib/compliance/evaluators/register.ts — SOC2-TSC = 61, ISO 27001 = 93,
+// lib/compliance/evaluators/register.ts, SOC2-TSC = 61, ISO 27001 = 93,
 // NDIS Practice Standards = 25 (Phase 2 as of 2026-05-27).
 const POSTURE_CONTROLS = [
   { label: 'SOC 2 TSC', mapped: 61, total: 61, color: '#cbd5e1' },
@@ -260,7 +260,7 @@ const trustedSectors = [
 ];
 
 /* ════════════════════════════════════════════════════════════
-   PostureCard — security score + control bars
+   PostureCard, security score + control bars
    ════════════════════════════════════════════════════════════ */
 
 const PostureCard = memo(function PostureCard({
@@ -288,7 +288,7 @@ const PostureCard = memo(function PostureCard({
           Real-time compliance health across all active frameworks
         </p>
 
-        {/* Illustrative score — caveat sits below the ring, never inside it. */}
+        {/* Illustrative score, caveat sits below the ring, never inside it. */}
         <PostureRing score={98} isInView={isInView} noMotion={noMotion} />
         <p className="mt-3 text-center text-[10px] font-medium uppercase tracking-[0.18em] text-slate-600">
           Composite posture · illustrative
@@ -352,7 +352,7 @@ const PostureCard = memo(function PostureCard({
 });
 
 /* ════════════════════════════════════════════════════════════
-   EncryptionCard — visual lock + layer status
+   EncryptionCard, visual lock + layer status
    ════════════════════════════════════════════════════════════ */
 
 const EncryptionCard = memo(function EncryptionCard({
@@ -403,7 +403,7 @@ const EncryptionCard = memo(function EncryptionCard({
 });
 
 /* ════════════════════════════════════════════════════════════
-   AccessCard — identity & access control
+   AccessCard, identity & access control
    ════════════════════════════════════════════════════════════ */
 
 const AccessCard = memo(function AccessCard({
@@ -458,7 +458,7 @@ const AccessCard = memo(function AccessCard({
 });
 
 /* ════════════════════════════════════════════════════════════
-   AuditLogCard — audit-trail event types (not a live feed)
+   AuditLogCard, audit-trail event types (not a live feed)
    ════════════════════════════════════════════════════════════ */
 
 const AuditLogCard = memo(function AuditLogCard({
@@ -476,7 +476,7 @@ const AuditLogCard = memo(function AuditLogCard({
       isInView={isInView}
     >
       <div className="h-full">
-        {/* Header — describes what the trail captures, not a live feed */}
+        {/* Header, describes what the trail captures, not a live feed */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
           <span className="text-xs font-semibold uppercase tracking-widest text-slate-300">
             What the audit trail captures
@@ -486,7 +486,7 @@ const AuditLogCard = memo(function AuditLogCard({
           </span>
         </div>
 
-        {/* Entries — horizontal grid on desktop */}
+        {/* Entries, horizontal grid on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-5">
           {AUDIT_LOG_ENTRIES.map((entry, i) => (
             <motion.div
@@ -572,7 +572,7 @@ const AuditLogCard = memo(function AuditLogCard({
 });
 
 /* ════════════════════════════════════════════════════════════
-   DataResidencyCard — AU hosting visual
+   DataResidencyCard, AU hosting visual
    ════════════════════════════════════════════════════════════ */
 
 const DataResidencyCard = memo(function DataResidencyCard({
@@ -611,7 +611,7 @@ const DataResidencyCard = memo(function DataResidencyCard({
 });
 
 /* ════════════════════════════════════════════════════════════
-   AuditReadyCard — tamper-evident visual
+   AuditReadyCard, tamper-evident visual
    ════════════════════════════════════════════════════════════ */
 
 const AuditReadyCard = memo(function AuditReadyCard({
@@ -668,7 +668,7 @@ export const SecuritySection = memo(function SecuritySection() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+        {/* Editorial header, asymmetric, left-aligned. A labelled rule and a
             paired description column replace the centred eyebrow-pill template. */}
         <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
           <motion.div
@@ -697,7 +697,7 @@ export const SecuritySection = memo(function SecuritySection() {
           >
             <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
               Controls are enforced, not just documented. Encryption, identity
-              governance, and tamper-evident audit logs are infrastructure — not
+              governance, and tamper-evident audit logs are infrastructure, not
               add-ons.
             </p>
           </motion.div>
@@ -714,7 +714,7 @@ export const SecuritySection = memo(function SecuritySection() {
           <AccessCard isInView={isInView} noMotion={noMotion} />
           <AuditReadyCard isInView={isInView} noMotion={noMotion} />
 
-          {/* Row 3: AuditLog — full width */}
+          {/* Row 3: AuditLog, full width */}
           <AuditLogCard isInView={isInView} noMotion={noMotion} />
         </div>
 

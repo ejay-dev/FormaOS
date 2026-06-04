@@ -46,7 +46,7 @@ import { demoHref, PUBLIC_CTA_LABELS, salesHref } from '@/lib/marketing/cta';
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /* ─── Section Headers ─────────────────────────────────────────
-   Two restrained header treatments — a centred-minimal label and an
+   Two restrained header treatments, a centred-minimal label and an
    editorial left-aligned label flanked by a hairline rule. Sections
    alternate between them so the page does not read as one repeated
    template.
@@ -747,7 +747,7 @@ function SecurityArchitecture() {
 
 /* ─── Interactive defense-in-depth flow ───────────────────────
    Trace a request through all five gates, or attempt a bypass and watch
-   it get stopped at the first one — "no bypass path" demonstrated, not
+   it get stopped at the first one, "no bypass path" demonstrated, not
    asserted. Reuses the securityLayers data. */
 
 type FlowMode = 'idle' | 'trace' | 'bypass';

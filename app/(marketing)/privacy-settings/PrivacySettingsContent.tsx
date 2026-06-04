@@ -73,7 +73,7 @@ export default function PrivacySettingsContent() {
       ? 'Analytics cookies are currently enabled.'
       : consent === 'rejected'
         ? 'Only essential cookies are in use.'
-        : 'No preference set — the cookie banner will appear on your next visit.';
+        : 'No preference set, the cookie banner will appear on your next visit.';
 
   return (
     <main
@@ -99,7 +99,7 @@ export default function PrivacySettingsContent() {
           </h1>
           <p className="text-slate-400 leading-relaxed">
             Manage how FormaOS uses cookies and analytics in your browser. You
-            can withdraw your consent or change your choice at any time — the
+            can withdraw your consent or change your choice at any time, the
             change takes effect immediately.
           </p>
         </header>
@@ -176,7 +176,7 @@ export default function PrivacySettingsContent() {
           {/* Audit 2026-05-25 (GDPR): cross-link affordances to the
               authenticated self-serve surface at /app/privacy. The data
               selectors below are also probed by tests/compliance/
-              gdpr-compliance.js — keep `data-testid="export-data"`,
+              gdpr-compliance.js, keep `data-testid="export-data"`,
               `data-testid="delete-account"`, and `data-export` in lockstep
               with that test. */}
           <div className="grid gap-3 sm:grid-cols-3">

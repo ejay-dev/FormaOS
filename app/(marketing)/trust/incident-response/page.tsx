@@ -83,7 +83,7 @@ export default function IncidentResponsePage() {
           <Link href="/trust" className="text-primary hover:underline">
             ← Back to Trust Center
           </Link>
-          {/* Status link removed 2026-05-13 — /status route unshipped
+          {/* Status link removed 2026-05-13, /status route unshipped
               until a real status provider is wired. */}
         </div>
       </div>

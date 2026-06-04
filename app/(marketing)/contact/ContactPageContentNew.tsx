@@ -438,7 +438,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
   // doesn't linger after the user fixes it.
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  // Same email shape the server action uses (see actions.ts:10) —
+  // Same email shape the server action uses (see actions.ts:10) , 
   // mirroring it client-side keeps the two checks aligned.
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 

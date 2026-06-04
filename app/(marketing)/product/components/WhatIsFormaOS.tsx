@@ -27,7 +27,7 @@ export function WhatIsFormaOS() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto grid max-w-6xl gap-x-14 gap-y-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-12">
-        {/* Thesis — left vertical-bar accent */}
+        {/* Thesis, left vertical-bar accent */}
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="flex items-start gap-5">
             <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
@@ -59,7 +59,7 @@ export function WhatIsFormaOS() {
           </div>
         </ScrollReveal>
 
-        {/* What it unifies — clean ruled list, no icon tiles */}
+        {/* What it unifies, clean ruled list, no icon tiles */}
         <ScrollReveal variant="slideUp" range={[0.05, 0.4]}>
           <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
             <p className="border-b border-white/[0.06] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">

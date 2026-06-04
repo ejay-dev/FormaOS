@@ -88,7 +88,7 @@ export default function Image() {
             maxWidth: 700,
           }}
         >
-          Operational compliance execution vs clinical governance reporting —
+          Operational compliance execution vs clinical governance reporting , 
           see why Australian care providers choose FormaOS.
         </div>
       </div>
