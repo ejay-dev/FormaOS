@@ -141,7 +141,7 @@ const CONTACT_INTENT_COPY = {
     badge: 'Product Walkthrough',
     headline: 'See FormaOS Enforce Compliance in Real Operations',
     subheadline:
-      'Book a walkthrough of the exact workflows your team uses today — evidence, approvals, and the checks that happen before anything counts.',
+      'Book a walkthrough of the exact workflows your team uses today, evidence, approvals, and the checks that happen before anything counts.',
     intro:
       'Demos are tailored to your framework and role, not a generic product tour.',
     formTitle: 'Book a walkthrough',
@@ -209,9 +209,9 @@ const CONTACT_INTENT_COPY = {
     badge: 'Proof Pack Walkthrough',
     headline: 'Walk Through a Representative Proof Pack',
     subheadline:
-      'See how a regulated team produced the exact evidence their audit required — workflow trail, approvals, and the enforcement layer behind it.',
+      'See how a regulated team produced the exact evidence their audit required, workflow trail, approvals, and the enforcement layer behind it.',
     intro:
-      'Proof packs are representative — we walk you through how the evidence was produced, not just what it looks like.',
+      'Proof packs are representative, we walk you through how the evidence was produced, not just what it looks like.',
     formTitle: 'Request a proof walkthrough',
     formBody:
       "Tell us your framework and the evidence you're trying to produce. We'll match you to a relevant proof pack.",
@@ -315,7 +315,7 @@ function ContactHero() {
       headline={copy.headline}
       subheadline={copy.subheadline}
       extras={
-        <p className="text-base text-gray-500 max-w-2xl mx-auto text-center">
+        <p className="text-base text-slate-500 max-w-2xl mx-auto text-center">
           {copy.intro}
         </p>
       }
@@ -349,7 +349,7 @@ function ContactInformation() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Email */}
           <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
-            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
                 <Mail className="w-8 h-8 text-slate-300" />
               </div>
@@ -365,7 +365,7 @@ function ContactInformation() {
 
           {/* Phone */}
           <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
-            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
                 <Phone className="w-8 h-8 text-slate-300" />
               </div>
@@ -381,15 +381,15 @@ function ContactInformation() {
 
           {/* Availability */}
           <ScrollReveal variant="depthSlide" range={[0.08, 0.38]}>
-            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+            <div className="text-center p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
               <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
                 <Clock className="w-8 h-8 text-slate-300" />
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">
                 Availability
               </h3>
-              <p className="text-gray-400">Monday – Friday</p>
-              <p className="text-gray-400">9:00 AM – 6:00 PM (AEST)</p>
+              <p className="text-slate-400">Monday, Friday</p>
+              <p className="text-slate-400">9:00 AM, 6:00 PM (AEST)</p>
             </div>
           </ScrollReveal>
         </div>
@@ -519,14 +519,14 @@ function ContactForm({ submitAction }: ContactFormProps) {
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             {copy.formTitle}
           </h2>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
             {copy.formBody} A FormaOS specialist will respond promptly.
           </p>
         </ScrollReveal>
 
         {/* Form Card */}
         <ScrollReveal variant="perspectiveUp" range={[0.04, 0.34]}>
-          <div className="p-5 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl">
+          <div className="p-5 sm:p-8 md:p-12 rounded-2xl bg-white/[0.03] border border-white/10">
             <form
               onSubmit={onClientSubmit}
               className="space-y-6"
@@ -566,7 +566,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="block text-sm font-medium text-slate-300 mb-2"
                   >
                     Full Name *
                   </label>
@@ -600,7 +600,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="block text-sm font-medium text-slate-300 mb-2"
                   >
                     Work Email *
                   </label>
@@ -639,7 +639,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="organization"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="block text-sm font-medium text-slate-300 mb-2"
                   >
                     Organization *
                   </label>
@@ -676,7 +676,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="industry"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="block text-sm font-medium text-slate-300 mb-2"
                   >
                     Industry
                   </label>
@@ -711,7 +711,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
                 <div>
                   <label
                     htmlFor="primaryNeed"
-                    className="block text-sm font-medium text-gray-300 mb-2"
+                    className="block text-sm font-medium text-slate-300 mb-2"
                   >
                     Primary Need
                   </label>
@@ -746,7 +746,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               <div>
                 <label
                   htmlFor="timeline"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium text-slate-300 mb-2"
                 >
                   Desired Timeline
                 </label>
@@ -777,7 +777,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               <div>
                 <label
                   htmlFor="message"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium text-slate-300 mb-2"
                 >
                   Message
                 </label>
@@ -837,7 +837,7 @@ function ContactForm({ submitAction }: ContactFormProps) {
               </button>
 
               {/* Trust Note */}
-              <p className="text-center text-sm text-gray-500">
+              <p className="text-center text-sm text-slate-500">
                 Your information is handled securely and never shared.
               </p>
             </form>
@@ -886,7 +886,7 @@ function EnterpriseInquiries() {
     <section className="mk-section mk-section--compact relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthSlide" range={[0, 0.3]}>
-          <div className="text-center p-6 sm:p-8 md:p-12 rounded-2xl bg-gradient-to-br from-white/[0.08] via-white/[0.06] to-white/[0.04] border border-white/15 backdrop-blur-xl">
+          <div className="text-center p-6 sm:p-8 md:p-12 rounded-2xl bg-white/[0.04] border border-white/15">
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
               <Building2 className="w-8 h-8 text-slate-300" />
             </div>
@@ -897,7 +897,7 @@ function EnterpriseInquiries() {
                   ? 'Proof Pack and Case Study Requests'
                   : 'Enterprise and Partnership Requests'}
             </h2>
-            <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
               {intent === 'procurement' || intent === 'security-review'
                 ? 'If your review already needs direct coordination with legal, security, or procurement stakeholders, email us directly.'
                 : intent === 'case-study'
@@ -937,7 +937,7 @@ function SecurityTrust() {
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
             Secure by Design
           </h2>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
             All communications are handled in line with our security and privacy
             standards. FormaOS is built for regulated environments where
             confidentiality, data integrity, and auditability are essential.
@@ -958,8 +958,7 @@ function ClosingCTA() {
   const copy = CONTACT_INTENT_COPY[intent];
 
   return (
-    <section className="mk-section mk-section--compact relative isolate overflow-hidden">
-      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
+    <section className="mk-section mk-section--compact relative">
       <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-6">
@@ -969,7 +968,7 @@ function ClosingCTA() {
             </span>
           </h2>
 
-          <p className="text-base sm:text-lg text-gray-400 mb-8 sm:mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-400 mb-8 sm:mb-12 max-w-2xl mx-auto">
             {copy.closingBody}
           </p>
 

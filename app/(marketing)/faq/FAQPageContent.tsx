@@ -27,7 +27,7 @@ import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing
 import { brand } from '@/config/brand';
 
 // ============================================================================
-// FAQ DATA - Enterprise-Grade Content
+// FAQ DATA, Enterprise-Grade Content
 // ============================================================================
 
 const faqCategories = [
@@ -67,7 +67,7 @@ const faqCategories = [
     questions: [
       {
         q: 'Is FormaOS SOC 2 aligned?',
-        a: 'FormaOS is built with SOC 2-aligned controls across the Common Criteria, Availability, and Confidentiality trust service categories. We implement AES-256 encryption, identity governance, tamper-evident audit logs, and structured incident response procedures aligned with the framework. Our security review packet - covering architecture, controls, and data handling - is available for enterprise procurement and security teams on request.',
+        a: 'FormaOS is built with SOC 2-aligned controls across the Common Criteria, Availability, and Confidentiality trust service categories. We implement AES-256 encryption, identity governance, tamper-evident audit logs, and structured incident response procedures aligned with the framework. Our security review packet, covering architecture, controls, and data handling, is available for enterprise procurement and security teams on request.',
       },
       {
         q: 'How is data encrypted?',
@@ -99,7 +99,7 @@ const faqCategories = [
       },
       {
         q: 'Is evidence immutable?',
-        a: 'Yes. Evidence records in FormaOS are append-only and tamper-evident. Once uploaded, evidence cannot be modified or deleted - only superseded by a new version, with the original preserved in the audit trail. Every upload, update, approval, and version change is recorded with an immutable timestamp, the identity of the actor, and a correlation ID linking it to the originating control or workflow. This chain-of-custody model ensures that auditors and regulators see a complete, unaltered history of every compliance artifact from creation through current state.',
+        a: 'Yes. Evidence records in FormaOS are append-only and tamper-evident. Once uploaded, evidence cannot be modified or deleted, only superseded by a new version, with the original preserved in the audit trail. Every upload, update, approval, and version change is recorded with an immutable timestamp, the identity of the actor, and a correlation ID linking it to the originating control or workflow. This chain-of-custody model ensures that auditors and regulators see a complete, unaltered history of every compliance artifact from creation through current state.',
       },
       {
         q: 'Can we export regulatory reports?',
@@ -249,7 +249,7 @@ function FAQHero() {
       }
       subheadline="Straight answers on platform capabilities, enterprise security, procurement documentation, data residency, integrations, and support."
       extras={
-        <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
+        <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600">
           {faqCategories.map((cat) => (
             <a
               key={cat.id}
@@ -303,7 +303,7 @@ function FAQItem({
             transition={{ duration: duration.fast }}
             className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 group-hover:bg-white/[0.12] flex items-center justify-center transition-colors"
           >
-            <ChevronDown className="w-4 h-4 text-gray-400 group-hover:text-slate-200 transition-colors" />
+            <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-200 transition-colors" />
           </motion.div>
         </button>
         <AnimatePresence>
@@ -315,7 +315,7 @@ function FAQItem({
               transition={{ duration: duration.fast }}
               className="overflow-hidden"
             >
-              <p className="pb-5 text-gray-400 leading-relaxed">{answer}</p>
+              <p className="pb-5 text-slate-400 leading-relaxed">{answer}</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -332,7 +332,7 @@ function FAQCategory({ category }: { category: (typeof faqCategories)[0] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const Icon = category.icon;
 
-  // Monochrome treatment — category identity comes from the icon, not colour.
+  // Monochrome treatment, category identity comes from the icon, not colour.
   const neutral = {
     bg: 'bg-white/[0.06]',
     text: 'text-slate-300',
@@ -352,7 +352,7 @@ function FAQCategory({ category }: { category: (typeof faqCategories)[0] }) {
 
   return (
     <div id={category.id} className="scroll-mt-24">
-      <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
+      <div className="relative p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
         {/* Top accent line */}
         <div
           className={`absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent`}
@@ -419,14 +419,14 @@ function FAQCTA() {
     <section className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-          <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
+          <div className="relative p-10 rounded-3xl bg-white/[0.03] border border-white/5 shadow-2xl shadow-black/30">
             <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
             <div className="text-center">
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                 Still have questions?
               </h2>
-              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+              <p className="text-slate-400 mb-8 max-w-xl mx-auto">
                 Our team is ready to help. Contact us for personalized answers
                 or schedule a demo to see FormaOS in action.
               </p>
