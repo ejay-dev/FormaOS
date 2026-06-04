@@ -63,8 +63,6 @@ interface UseCasePageTemplateProps {
   industryKey: string;
   /** Optional grayscale photographic backdrop for the hero section */
   mediaSrc?: string;
-  /** Optional grayscale photographic backdrop for the measured-impact band */
-  mediaSrcSecondary?: string;
 }
 
 const relatedLinksByIndustry: Record<
@@ -239,7 +237,6 @@ export function UseCasePageTemplate({
   ctaSecondaryHref,
   industryKey,
   mediaSrc,
-  mediaSrcSecondary,
 }: UseCasePageTemplateProps) {
   const { trackCtaClick } = useMarketingTelemetry();
   const relatedLinks =
@@ -419,7 +416,6 @@ export function UseCasePageTemplate({
 
       <DeferredSection minHeight={380}>
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-          {mediaSrcSecondary && <SectionMedia src={mediaSrcSecondary} objectPosition="50% 40%" opacity={0.6} scrim="center" />}
           <UseCaseSectionHeader
             label="Measured Impact"
             title="Expected operational outcomes"
