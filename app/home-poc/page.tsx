@@ -1,6 +1,7 @@
 import { Reveal } from './_components/Reveal';
 import { Ledger } from './_components/Ledger';
 import { Schematic } from './_components/Schematic';
+import { DashboardPreview } from './_components/DashboardPreview';
 import { Ticker } from './_components/Ticker';
 import { CountUp } from './_components/CountUp';
 import { HeroIntro } from './_components/HeroIntro';
@@ -192,7 +193,7 @@ export default function HomePocPage() {
 
       <hr className="bru-rule-strong" />
 
-      {/* ========== COMPLIANCE ENGINE / SCHEMATIC ========== */}
+      {/* ========== COMPLIANCE ENGINE: DASHBOARD + SCHEMATIC ========== */}
       <section className="bru-frame bru-section">
         <div className="bru-head" style={{ alignItems: 'end' }}>
           <div className="lg:max-w-[60%]">
@@ -203,22 +204,42 @@ export default function HomePocPage() {
           </div>
           <p className="bru-body" style={{ maxWidth: '36ch' }}>
             Obligations become controls, controls generate tasks, tasks produce evidence —
-            and every step stays audit-ready.
+            and every step stays audit-ready, on one live screen.
           </p>
         </div>
-        <Reveal y={0}>
-          <div style={{ border: '1px solid var(--line-2)', background: 'var(--bg)', padding: 'clamp(0.5rem, 1.5vw, 1.25rem)' }}>
-            <Schematic />
-          </div>
+
+        {/* The live product */}
+        <Reveal y={28}>
+          <DashboardPreview />
         </Reveal>
-        <div className="grid gap-px sm:grid-cols-5" style={{ marginTop: 28, border: '1px solid var(--line-2)', background: 'var(--line)' }}>
-          {ENGINE.map(([t, d], i) => (
-            <div key={t} style={{ background: 'var(--bg)', padding: '22px 18px', position: 'relative' }}>
-              <div className="bru-card-title" style={{ fontSize: '1.05rem' }}>{t}</div>
-              <p className="bru-body" style={{ fontSize: '0.82rem', marginTop: 12 }}>{d}</p>
-              {i < ENGINE.length - 1 && <span className="bru-flow-arrow" aria-hidden>→</span>}
+        <p className="bru-mono" style={{ fontSize: 11, color: 'var(--ink-faint)', letterSpacing: '0.05em', marginTop: 14 }}>
+          /APP/COMPLIANCE/HEALTH · LIVE POSTURE FROM org_control_evaluations · ILLUSTRATIVE ORG DATA
+        </p>
+
+        {/* The model behind the screen */}
+        <div style={{ marginTop: 'clamp(3.5rem, 6vw, 5.5rem)' }}>
+          <div className="bru-head" style={{ alignItems: 'end', marginBottom: 'clamp(1.5rem, 3vw, 2.25rem)' }}>
+            <div className="lg:max-w-[60%]">
+              <span className="bru-eyebrow">The model behind the screen</span>
+              <h2 className="bru-h2" style={{ fontSize: 'clamp(1.6rem, 3.6vw, 2.6rem)', marginTop: 14 }}>
+                Wired, not filed.
+              </h2>
             </div>
-          ))}
+          </div>
+          <Reveal y={0}>
+            <div style={{ border: '1px solid var(--line-2)', background: 'var(--bg)', padding: 'clamp(0.5rem, 1.5vw, 1.25rem)' }}>
+              <Schematic />
+            </div>
+          </Reveal>
+          <div className="grid gap-px sm:grid-cols-5" style={{ marginTop: 28, border: '1px solid var(--line-2)', background: 'var(--line)' }}>
+            {ENGINE.map(([t, d], i) => (
+              <div key={t} style={{ background: 'var(--bg)', padding: '22px 18px', position: 'relative' }}>
+                <div className="bru-card-title" style={{ fontSize: '1.05rem' }}>{t}</div>
+                <p className="bru-body" style={{ fontSize: '0.82rem', marginTop: 12 }}>{d}</p>
+                {i < ENGINE.length - 1 && <span className="bru-flow-arrow" aria-hidden>→</span>}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

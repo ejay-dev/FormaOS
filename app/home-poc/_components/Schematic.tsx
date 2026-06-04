@@ -134,12 +134,41 @@ export function Schematic() {
         </g>
       ))}
 
-      {/* signal pulse along evidence wire */}
+      {/* continuous signal pulses travelling the bus */}
       {!reduce && (
-        <circle r="4" fill="var(--red)">
-          <animateMotion dur="1.3s" begin="1.3s" repeatCount="1" fill="freeze" path={W_EVD.d} />
-        </circle>
+        <>
+          {[
+            { d: W_OBL.d, begin: '0s', accent: false },
+            { d: W_FWK.d, begin: '0.6s', accent: false },
+            { d: W_OWN.d, begin: '1.1s', accent: false },
+            { d: W_EVD.d, begin: '0.3s', accent: true },
+            { d: W_AUD.d, begin: '0.9s', accent: false },
+          ].map((p, i) => (
+            <circle key={i} r={p.accent ? 4 : 3} fill={p.accent ? 'var(--red)' : 'var(--ink-dim)'}>
+              <animateMotion dur="2.6s" begin={p.begin} repeatCount="indefinite" path={p.d} />
+            </circle>
+          ))}
+          {/* scan sweep */}
+          <line y1="58" y2="502" stroke="var(--red)" strokeWidth="1" opacity="0.16">
+            <animate attributeName="x1" values="60;1230;60" dur="7.5s" repeatCount="indefinite" />
+            <animate attributeName="x2" values="60;1230;60" dur="7.5s" repeatCount="indefinite" />
+          </line>
+        </>
       )}
+
+      {/* live readout panel (top-right, balances the title block) */}
+      <g>
+        <rect x="980" y="40" width="260" height="92" fill="#141416" stroke="var(--line-2)" strokeWidth="1" />
+        <line x1="980" y1="68" x2="1240" y2="68" stroke="var(--line)" />
+        <text x="992" y="59" className="bru-schem-label" fontSize="11">LIVE READOUT</text>
+        <circle cx="1226" cy="55" r="3.5" fill="var(--red)">
+          {!reduce && <animate attributeName="opacity" values="1;0.2;1" dur="1.6s" repeatCount="indefinite" />}
+        </circle>
+        <text x="992" y="92" className="bru-schem-sub" fill="var(--ink-dim)">POSTURE</text>
+        <text x="1228" y="92" textAnchor="end" className="bru-schem-label" fontSize="13" fill="var(--ok)">82%</text>
+        <text x="992" y="116" className="bru-schem-sub" fill="var(--ink-dim)">AUTO-EVALUATED</text>
+        <text x="1228" y="116" textAnchor="end" className="bru-schem-label" fontSize="13">102 / 252</text>
+      </g>
 
       {/* boxes */}
       {ORDER.map((id, i) => {
