@@ -69,6 +69,20 @@ export function HeroIntro() {
             </p>
           </motion.div>
         </div>
+
+        <motion.div variants={mv} className="bru-herostats">
+          {[
+            ['8', 'Framework packs'],
+            ['252', 'Controls mapped'],
+            ['100%', 'Audit coverage'],
+            ['05:30', 'UTC Rekor anchor'],
+          ].map(([n, l]) => (
+            <div className="bru-herostat" key={l}>
+              <div className="bru-herostat-n">{n}</div>
+              <div className="bru-herostat-l">{l}</div>
+            </div>
+          ))}
+        </motion.div>
       </motion.div>
     </section>
   );

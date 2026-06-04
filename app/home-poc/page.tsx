@@ -5,6 +5,13 @@ import { DashboardPreview } from './_components/DashboardPreview';
 import { Ticker } from './_components/Ticker';
 import { CountUp } from './_components/CountUp';
 import { HeroIntro } from './_components/HeroIntro';
+import { TrustWall } from './_components/TrustWall';
+import { HowItWorks } from './_components/HowItWorks';
+import { SecurityGrid } from './_components/SecurityGrid';
+import { UseCases } from './_components/UseCases';
+import { ObjectionHandling } from './_components/ObjectionHandling';
+import { Faq } from './_components/Faq';
+import { SiteFooter } from './_components/SiteFooter';
 import { StickyCTA } from './_components/StickyCTA';
 
 export const dynamic = 'force-static';
@@ -174,6 +181,11 @@ export default function HomePocPage() {
 
       <hr className="bru-rule-strong" />
 
+      {/* ========== TRUST WALL ========== */}
+      <TrustWall />
+
+      <hr className="bru-rule-strong" />
+
       {/* ========== LIVE SYSTEM / LEDGER ========== */}
       <section className="bru-frame bru-section">
         <div className="bru-head">
@@ -245,6 +257,11 @@ export default function HomePocPage() {
 
       <hr className="bru-rule-strong" />
 
+      {/* ========== HOW IT WORKS ========== */}
+      <HowItWorks />
+
+      <hr className="bru-rule-strong" />
+
       {/* ========== CAPABILITIES ========== */}
       <section className="bru-frame bru-section">
         <div className="bru-head">
@@ -310,6 +327,11 @@ export default function HomePocPage() {
 
       <hr className="bru-rule-strong" />
 
+      {/* ========== SECURITY ========== */}
+      <SecurityGrid />
+
+      <hr className="bru-rule-strong" />
+
       {/* ========== INDUSTRIES INDEX ========== */}
       <section className="bru-frame bru-section">
         <div className="bru-head">
@@ -336,6 +358,11 @@ export default function HomePocPage() {
           </div>
         </Reveal>
       </section>
+
+      <hr className="bru-rule-strong" />
+
+      {/* ========== USE CASES ========== */}
+      <UseCases />
 
       <hr className="bru-rule-strong" />
 
@@ -383,6 +410,16 @@ export default function HomePocPage() {
           </div>
         </Reveal>
       </section>
+
+      <hr className="bru-rule-strong" />
+
+      {/* ========== OBJECTION HANDLING ========== */}
+      <ObjectionHandling />
+
+      <hr className="bru-rule-strong" />
+
+      {/* ========== FAQ ========== */}
+      <Faq />
 
       {/* ========== RED STATEMENT BAND ========== */}
       <section className="bru-band">
@@ -438,13 +475,7 @@ export default function HomePocPage() {
         </div>
       </section>
 
-      <hr className="bru-rule-strong" />
-      <footer className="bru-frame" style={{ paddingBlock: '2.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-        <span className="bru-wordmark">FORMAOS</span>
-        <span className="bru-mono" style={{ fontSize: 11, color: 'var(--ink-faint)', letterSpacing: '0.06em' }}>
-          © 2026 · COMPLIANCE OPERATING SYSTEM · ADELAIDE AU
-        </span>
-      </footer>
+      <SiteFooter />
 
       <StickyCTA />
       <div className="lg:hidden" style={{ height: 60 }} />
