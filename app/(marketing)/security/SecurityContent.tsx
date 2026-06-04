@@ -12,6 +12,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { ArchitectureCard } from '@/components/motion';
+import { AuditChainVisualizer } from './components/AuditChainVisualizer';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import Link from 'next/link';
@@ -314,34 +315,33 @@ export function SecurityEvidenceChain() {
               </span>
             </>
           }
-          subtitle="Immutable audit trail for legal defensibility"
+          subtitle="Append an event and watch it seal into the chain. Edit any sealed entry to see the hash diverge and the tail break. Hashes are live SHA-256."
         />
 
-        <LightCard className="p-6 sm:p-10 lg:p-12">
-          <div className="space-y-6 sm:space-y-8">
-            {evidenceChain.map((item, idx) => (
-              <ScrollReveal
-                key={item.title}
-                variant="depthSlide"
-                range={[idx * 0.06, 0.3 + idx * 0.06]}
-              >
-                <div className="flex items-start gap-6">
-                  <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center">
-                    <item.icon className="h-6 w-6 text-slate-300" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold font-display mb-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-foreground/70 leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </LightCard>
+        {/* Interactive centerpiece: real hash-chained, tamper-evident log */}
+        <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
+          <AuditChainVisualizer />
+        </ScrollReveal>
+
+        {/* Supporting guarantees */}
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {evidenceChain.map((item) => (
+            <div
+              key={item.title}
+              className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5"
+            >
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.1] bg-white/[0.05]">
+                <item.icon className="h-5 w-5 text-slate-300" />
+              </div>
+              <h3 className="font-display text-base font-semibold text-white">
+                {item.title}
+              </h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-foreground/70">
+                {item.description}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </LightSection>
   );
