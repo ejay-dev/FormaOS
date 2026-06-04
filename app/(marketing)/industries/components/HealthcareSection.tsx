@@ -16,7 +16,7 @@ export function HealthcareSection() {
               </p>
             </ScrollReveal>
 
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight mb-6 text-white">
               Integrated Health Service
               <span className="text-foreground">
                 {' '}
@@ -24,7 +24,7 @@ export function HealthcareSection() {
               </span>
             </h2>
 
-            <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+            <p className="text-lg text-slate-400 max-w-3xl mx-auto">
               AHPRA registration, clinical governance, and safety requirements in
               one system
             </p>
@@ -53,12 +53,12 @@ export function HealthcareSection() {
             ].map((item, index) => (
               <ScrollReveal key={item.title} variant="blurIn" range={[index * 0.04, 0.3 + index * 0.04]}>
                 <div
-                  className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-white/20 p-6 transition-all duration-300"
+                  className="bg-white/[0.03] rounded-2xl border border-white/[0.08] hover:border-white/20 p-6 transition-all duration-300"
                 >
                   <h3 className="text-xl font-bold text-white mb-3">
                     {item.title}
                   </h3>
-                  <p className="text-gray-400">{item.description}</p>
+                  <p className="text-slate-400">{item.description}</p>
                 </div>
               </ScrollReveal>
             ))}
@@ -66,12 +66,12 @@ export function HealthcareSection() {
 
           <ScrollReveal variant="fadeRight" range={[0.04, 0.38]}>
             <div
-              className="backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] rounded-3xl border border-white/[0.1] p-8"
+              className="bg-white/[0.03] rounded-3xl border border-white/[0.1] p-8"
             >
               <h4 className="text-xl font-bold text-white mb-6">
                 Healthcare Framework Includes:
               </h4>
-              <div className="space-y-3 text-sm text-gray-400 mb-8">
+              <div className="space-y-3 text-sm text-slate-400 mb-8">
                 {[
                   'NSQHS Standards tracking templates',
                   'Clinical incident and near-miss reporting workflows',

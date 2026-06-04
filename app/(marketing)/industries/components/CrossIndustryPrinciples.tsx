@@ -73,25 +73,21 @@ export function CrossIndustryPrinciples() {
     <section className="relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
-          <div className="text-center mb-16">
-            <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+          <div className="mb-14 flex items-start gap-5">
+            <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
+            <div className="max-w-2xl">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
                 Why It Works Across Industries
               </p>
-            </ScrollReveal>
-
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
-              Universal Compliance
-              <span className="text-slate-400">
-                {' '}
-                Design Principles
-              </span>
-            </h2>
-
-            <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-              Four core principles that make FormaOS effective across all
-              regulated environments
-            </p>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white">
+                Universal compliance{' '}
+                <span className="text-slate-400">design principles</span>
+              </h2>
+              <p className="mt-4 text-base leading-7 text-slate-400">
+                Four core principles that make FormaOS effective across all
+                regulated environments.
+              </p>
+            </div>
           </div>
         </ScrollReveal>
 
@@ -103,7 +99,7 @@ export function CrossIndustryPrinciples() {
                 <motion.div
                   key={principle.title}
                   whileHover={{ y: -4 }}
-                  className="group text-center backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] hover:border-white/20 p-6 transition-all duration-300"
+                  className="group text-center bg-white/[0.03] rounded-2xl border border-white/[0.08] hover:border-white/20 p-6 transition-all duration-300"
                 >
                   <div className="flex flex-col items-center mb-6">
                     <div className="relative">
@@ -125,7 +121,7 @@ export function CrossIndustryPrinciples() {
                   >
                     {principle.title}
                   </h4>
-                  <p className="text-sm text-gray-400 leading-relaxed">
+                  <p className="text-sm text-slate-400 leading-relaxed">
                     {principle.description}
                   </p>
                 </motion.div>
@@ -151,15 +147,15 @@ export function CrossIndustryPrinciples() {
         {/* Design Philosophy Statement */}
         <ScrollReveal variant="slideUp" range={[0.06, 0.4]}>
           <div
-            className="backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-3xl border border-white/[0.08] p-8 sm:p-12 text-center"
+            className="bg-white/[0.03] rounded-3xl border border-white/[0.08] p-8 sm:p-12 text-center"
           >
             <h4 className="text-xl font-bold mb-4 text-white">
               This design philosophy makes FormaOS effective across any regulatory
               environment
             </h4>
-            <p className="text-gray-400 max-w-3xl mx-auto">
+            <p className="text-slate-400 max-w-3xl mx-auto">
               Whether managing NDIS obligations, healthcare accreditation,
-              financial regulations, or construction safety – the core principle
+              financial regulations, or construction safety, the core principle
               remains the same: compliance should be operational, not
               administrative.
             </p>

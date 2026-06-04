@@ -10,7 +10,7 @@ export function IndustriesCTA() {
     <section className="relative py-32 overflow-hidden">
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
-          <div className="backdrop-blur-xl bg-gradient-to-br from-white/[0.12] to-white/[0.04] rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden">
+          <div className="bg-white/[0.04] rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden">
             {/* Header */}
             <div className="bg-gradient-to-r from-white/[0.08] to-white/[0.04] border-b border-white/[0.08] px-4 sm:px-6 md:px-8 py-6 sm:py-8 text-center">
               <ScrollReveal variant="scaleUp" range={[0.02, 0.3]}>
@@ -20,7 +20,7 @@ export function IndustriesCTA() {
               </ScrollReveal>
 
               <ScrollReveal variant="blurIn" range={[0.04, 0.35]}>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-6 text-white">
+                <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight leading-tight mb-6 text-white">
                   If your organization operates under regulation,
                   <br className="hidden lg:inline" />
                   <span className="text-foreground">
@@ -67,14 +67,14 @@ export function IndustriesCTA() {
                           <div
                             className={`w-2 h-2 rounded-full ${item.color}`}
                           />
-                          <span className="text-sm text-gray-400">
+                          <span className="text-sm text-slate-400">
                             {item.text}
                           </span>
                         </div>
                       ))}
                     </div>
 
-                    <p className="text-gray-500">
+                    <p className="text-slate-500">
                       See how FormaOS transforms compliance from a quarterly
                       burden into daily operational certainty for your specific
                       regulatory environment.
@@ -108,7 +108,7 @@ export function IndustriesCTA() {
                       </motion.a>
                     </div>
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-slate-500">
                       Assessment-led onboarding • Industry framework mapping • Procurement-ready review
                     </p>
                   </div>
