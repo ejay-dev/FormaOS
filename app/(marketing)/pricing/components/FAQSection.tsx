@@ -7,60 +7,36 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 import { duration } from '@/config/motion';
 import { PRICING_FAQS } from './faq-data';
-import { DotGrid } from '@/components/marketing/SectionBackgrounds';
 
 export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative py-32 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        <DotGrid />
-        <motion.div
-          animate={
-            shouldReduceMotion
-              ? undefined
-              : {
-                  scale: [1, 1.15, 1],
-                  opacity: [0.1, 0.2, 0.1],
-                }
-          }
-          transition={
-            shouldReduceMotion
-              ? undefined
-              : {
-                  duration: 14,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }
-          }
-          className="absolute bottom-1/4 right-1/3 h-1/3 w-1/3 rounded-full bg-gradient-to-br from-slate-400/12 to-transparent blur-3xl"
-        />
-      </div>
+    <section className="relative isolate overflow-hidden py-24 sm:py-32">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 lg:px-12">
-        {/* Section Header */}
+      <div className="relative z-10 mx-auto max-w-4xl px-6 lg:px-12">
+        {/* Section header — left vertical-bar accent */}
         <ScrollReveal
-          variant="depthScale"
+          variant="slideUp"
           range={[0, 0.35]}
-          className="text-center mb-16"
+          className="mb-12 flex items-start gap-5"
         >
-          <ScrollReveal variant="scaleUp" range={[0, 0.3]}>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              FAQ
+          <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
+          <div className="max-w-2xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Questions
             </p>
-          </ScrollReveal>
-
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Frequently Asked Questions
-          </h2>
-
-          <p className="text-lg text-gray-400">
-            Answers for compliance leaders, procurement teams, and IT security
-            evaluating platform fit, data handling, and enterprise readiness
-          </p>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Answers for the people who sign off.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-slate-400">
+              For compliance leaders, procurement, and IT security evaluating
+              platform fit, data handling, and enterprise readiness.
+            </p>
+          </div>
         </ScrollReveal>
 
         {/* FAQ Items */}
@@ -76,10 +52,10 @@ export function FAQSection() {
             return (
               <div
                 key={faq.question}
-                className={`backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border transition-all duration-300 ${
+                className={`rounded-2xl border bg-white/[0.02] transition-colors duration-300 ${
                   isOpen
-                    ? 'border-white/25'
-                    : 'border-white/10 hover:border-white/20'
+                    ? 'border-white/20'
+                    : 'border-white/[0.08] hover:border-white/[0.16]'
                 }`}
               >
                 <h3 className="m-0">
@@ -100,7 +76,7 @@ export function FAQSection() {
                       className="flex-shrink-0"
                       aria-hidden="true"
                     >
-                      <ChevronDown className="w-5 h-5 text-gray-400" />
+                      <ChevronDown className="w-5 h-5 text-slate-400" />
                     </motion.span>
                   </button>
                 </h3>
@@ -122,7 +98,7 @@ export function FAQSection() {
                         }}
                         className="overflow-hidden"
                       >
-                        <p className="text-gray-300 px-6 pb-6 leading-relaxed">
+                        <p className="px-6 pb-6 leading-relaxed text-slate-300">
                           {faq.answer}
                         </p>
                       </motion.div>

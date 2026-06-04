@@ -11,7 +11,6 @@ import {
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { TopographicPattern } from '@/components/marketing/SectionBackgrounds';
 import { duration } from '@/config/motion';
 
 const TIER_VISUAL = {
@@ -54,35 +53,32 @@ export function PricingTiers() {
         not work because this component is rendered behind a deferred
         IntersectionObserver and the id would not be in SSR HTML.
       */}
-      {/* Section backgrounds */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1424] to-[#0a0f1c]">
-        <TopographicPattern color="rgba(113,113,122,0.04)" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(148,163,184,0.1),transparent_55%)]" />
-      </div>
-
-      {/* Top + bottom hairlines */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      {/* Subtle white radial + hairlines (matches homepage exemplars) */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.035),transparent_70%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section header */}
+        {/* Section header — labelled rule + paired descriptor */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
-          className="mb-14 max-w-3xl"
+          className="mb-14 grid gap-x-12 gap-y-5 lg:grid-cols-[1fr_minmax(0,22rem)] lg:items-end"
         >
-          <div className="mb-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            <span className="h-px w-8 bg-white/25" />
-            <span className="text-slate-500">Plan catalog</span>
+          <div>
+            <div className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <span className="h-px w-8 bg-white/25" />
+              <span>Plan catalog</span>
+            </div>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              One compliance OS, four ways to deploy it.
+            </h2>
           </div>
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
-            One compliance OS, four ways to deploy it.
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-400">
+          <p className="text-sm leading-7 text-slate-400 lg:pb-1">
             Foundation, Growth, and Scale are self-serve via Stripe. Enterprise
-            is contracted with procurement and security review. Same compliance
-            engine across every plan — only scope changes. Prices in AUD, GST
-            inclusive, billed monthly via Stripe.
+            is contracted with procurement and security review. Same engine
+            across every plan — only scope changes. Prices in AUD, GST inclusive,
+            billed monthly.
           </p>
         </ScrollReveal>
 

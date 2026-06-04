@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { ArrowRight, Building2, Rocket } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
-import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 const PATHS = [
   {
@@ -46,32 +45,30 @@ export function FinalCTA() {
 
   return (
     <section className="relative isolate overflow-hidden py-20 sm:py-28 lg:py-32">
-      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(113,113,122,0.12),transparent_45%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_70%,rgba(148,163,184,0.1),transparent_45%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_50%_30%,rgba(255,255,255,0.04),transparent_70%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Header */}
+        {/* Header — centered label flanked by hairlines */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
           className="mx-auto mb-12 max-w-3xl text-center"
         >
-          <div className="mb-5 inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-slate-500">
-            <span className="h-px w-6 bg-white/25" />
-            <span className="text-slate-400">Closing decision</span>
-            <span className="text-slate-600">·</span>
-            <span>two procurement paths</span>
+          <div className="mb-5 flex items-center justify-center gap-4">
+            <span className="h-px w-10 bg-white/20" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              Two ways to start
+            </span>
+            <span className="h-px w-10 bg-white/20" />
           </div>
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Stop relying on people to{' '}
             <span className="text-slate-500">remember</span> compliance.
-            <br />
-            <span className="text-foreground">
-              Let the system enforce it.
-            </span>
+            <br className="hidden sm:block" />
+            Let the system enforce it.
           </h2>
-          <p className="mt-5 text-base leading-7 text-slate-400 sm:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-400">
             Choose a path that matches your buying motion. Same compliance
             engine, same architecture — different procurement and onboarding.
           </p>
@@ -83,54 +80,23 @@ export function FinalCTA() {
             {PATHS.map((path) => {
               const Icon = path.icon;
               const isPrimary = path.ctaVariant === 'primary';
-              const accentBorder = 'border-white/[0.12]';
-              const accentText = 'text-slate-200';
-              const accentChip =
-                'border-white/[0.12] bg-white/[0.06] text-slate-200';
-              const cornerTop = 'border-white/30';
-              const cornerBottom = 'border-white/20';
 
               return (
                 <article
                   key={path.id}
-                  className={`relative overflow-hidden rounded-3xl border ${accentBorder} bg-gradient-to-br from-white/[0.04] to-white/[0.01] p-7 sm:p-9`}
+                  className="relative overflow-hidden rounded-3xl border border-white/[0.1] bg-white/[0.025] p-7 transition-colors duration-300 hover:border-white/[0.18] sm:p-9"
                 >
-                  {/* Corner accents */}
-                  <span
-                    className={`pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t ${cornerTop}`}
-                  />
-                  <span
-                    className={`pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t ${cornerTop}`}
-                  />
-                  <span
-                    className={`pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l ${cornerBottom}`}
-                  />
-                  <span
-                    className={`pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r ${cornerBottom}`}
-                  />
-
-                  {/* Stage marker */}
-                  <div className="mb-6 flex items-center gap-3">
-                    <span
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl border ${accentBorder} bg-white/[0.03] text-sm ${accentText}`}
-                    >
-                      {path.code}
-                    </span>
-                    <span className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
-                      Path / {path.id.toUpperCase()}
-                    </span>
-                    <span className="ml-auto h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
-                    <span
-                      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${accentChip}`}
-                    >
+                  <div className="mb-6 flex items-center justify-between">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                       {path.label}
                     </span>
+                    <span className="h-px flex-1 mx-4 bg-gradient-to-r from-white/10 to-transparent" />
                   </div>
 
                   <div className="flex items-start gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03]">
                       <Icon
-                        className={`h-5 w-5 ${accentText}`}
+                        className="h-5 w-5 text-slate-200"
                         aria-hidden="true"
                       />
                     </div>
