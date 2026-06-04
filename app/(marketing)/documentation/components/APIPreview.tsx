@@ -371,7 +371,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all bg-white/[0.06] border border-white/[0.1] hover:border-white/30 hover:bg-white/[0.1] text-gray-400 hover:text-slate-200"
+      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all bg-white/[0.06] border border-white/[0.1] hover:border-white/30 hover:bg-white/[0.1] text-slate-400 hover:text-slate-200"
       aria-label="Copy to clipboard"
     >
       {copied ? (
@@ -408,8 +408,8 @@ function CodeBlock({
             <div className="w-3 h-3 rounded-full bg-white/15" />
             <div className="w-3 h-3 rounded-full bg-white/15" />
           </div>
-          <span className="text-xs text-gray-500 font-mono">{filename}</span>
-          <span className="text-[10px] text-gray-600 font-mono uppercase tracking-wider ml-1">
+          <span className="text-xs text-slate-500 font-mono">{filename}</span>
+          <span className="text-[10px] text-slate-600 font-mono uppercase tracking-wider ml-1">
             {language}
           </span>
         </div>
@@ -418,7 +418,7 @@ function CodeBlock({
       {/* Code */}
       <div className="overflow-x-auto">
         <pre className="p-4 text-[13px] leading-relaxed font-mono">
-          <code className="text-gray-300 whitespace-pre">{code}</code>
+          <code className="text-slate-300 whitespace-pre">{code}</code>
         </pre>
       </div>
     </div>
@@ -442,7 +442,7 @@ function EndpointCard({
 
   return (
     <ScrollReveal variant="fadeUp" range={[index * 0.04, 0.3 + index * 0.04]}>
-      <div className="relative rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 overflow-hidden shadow-xl shadow-black/20">
+      <div className="relative rounded-2xl bg-white/[0.03] border border-white/5 overflow-hidden shadow-xl shadow-black/20">
         {/* Top accent line */}
         <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
@@ -460,7 +460,7 @@ function EndpointCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-1 flex-wrap">
               <MethodBadge method={endpoint.method} />
-              <code className="text-sm font-mono text-gray-300 truncate">
+              <code className="text-sm font-mono text-slate-300 truncate">
                 {endpoint.path}
               </code>
             </div>
@@ -468,7 +468,7 @@ function EndpointCard({
           </div>
 
           <div className="flex items-center gap-3 flex-shrink-0">
-            <span className="hidden md:inline-flex items-center gap-1.5 text-xs text-gray-500">
+            <span className="hidden md:inline-flex items-center gap-1.5 text-xs text-slate-500">
               <Clock className="w-3.5 h-3.5" />
               {endpoint.rateLimit}
             </span>
@@ -476,7 +476,7 @@ function EndpointCard({
               animate={{ rotate: isOpen ? 180 : 0 }}
               transition={{ duration: 0.2 }}
             >
-              <ChevronDown className="w-5 h-5 text-gray-500" />
+              <ChevronDown className="w-5 h-5 text-slate-500" />
             </motion.div>
           </div>
         </button>
@@ -494,7 +494,7 @@ function EndpointCard({
             >
               <div className="px-6 pb-6 space-y-6 border-t border-gray-800/50 pt-6">
                 {/* Description */}
-                <p className="text-gray-400 leading-relaxed">
+                <p className="text-slate-400 leading-relaxed">
                   {endpoint.description}
                 </p>
 
@@ -521,16 +521,16 @@ function EndpointCard({
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="bg-gray-900/60 border-b border-gray-800/50">
-                            <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
+                            <th className="text-left px-4 py-2.5 text-slate-400 font-medium text-xs uppercase tracking-wider">
                               Parameter
                             </th>
-                            <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
+                            <th className="text-left px-4 py-2.5 text-slate-400 font-medium text-xs uppercase tracking-wider">
                               Type
                             </th>
-                            <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider hidden md:table-cell">
+                            <th className="text-left px-4 py-2.5 text-slate-400 font-medium text-xs uppercase tracking-wider hidden md:table-cell">
                               Required
                             </th>
-                            <th className="text-left px-4 py-2.5 text-gray-400 font-medium text-xs uppercase tracking-wider">
+                            <th className="text-left px-4 py-2.5 text-slate-400 font-medium text-xs uppercase tracking-wider">
                               Description
                             </th>
                           </tr>
@@ -550,7 +550,7 @@ function EndpointCard({
                                   {param.name}
                                 </code>
                               </td>
-                              <td className="px-4 py-3 text-gray-500 text-xs font-mono">
+                              <td className="px-4 py-3 text-slate-500 text-xs font-mono">
                                 {param.type}
                               </td>
                               <td className="px-4 py-3 hidden md:table-cell">
@@ -559,15 +559,15 @@ function EndpointCard({
                                     Required
                                   </span>
                                 ) : (
-                                  <span className="text-gray-600 text-xs">
+                                  <span className="text-slate-600 text-xs">
                                     Optional
                                   </span>
                                 )}
                               </td>
-                              <td className="px-4 py-3 text-gray-400 text-xs">
+                              <td className="px-4 py-3 text-slate-400 text-xs">
                                 {param.description}
                                 {param.default && (
-                                  <span className="text-gray-600 ml-1">
+                                  <span className="text-slate-600 ml-1">
                                     (default: {param.default})
                                   </span>
                                 )}
@@ -640,7 +640,7 @@ export function APIPreview() {
                 Reference
               </span>
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
               Programmatic access to audit logs, compliance metrics, evidence, and
               tasks. All endpoints return JSON and require Bearer token
               authentication.
@@ -650,7 +650,7 @@ export function APIPreview() {
 
         {/* -------- Authentication card -------- */}
         <ScrollReveal variant="fadeUp" range={[0, 0.35]} className="mb-8">
-          <div className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20">
+          <div className="rounded-2xl bg-white/[0.03] border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20">
             <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
             <div className="flex items-start gap-4 mb-6">
               <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
@@ -660,7 +660,7 @@ export function APIPreview() {
                 <h3 className="text-xl font-bold text-white mb-1">
                   Authentication
                 </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
+                <p className="text-slate-400 text-sm leading-relaxed">
                   All API requests require a valid Bearer token in the{' '}
                   <code className="text-slate-200 bg-white/[0.06] px-1.5 py-0.5 rounded text-xs font-mono">
                     Authorization
@@ -685,34 +685,34 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
         {/* -------- Rate limiting + Base URL info -------- */}
         <div className="grid md:grid-cols-2 gap-4 mb-8">
           <ScrollReveal variant="fadeLeft" range={[0, 0.35]}>
-            <div className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 shadow-xl shadow-black/20">
+            <div className="rounded-2xl bg-white/[0.03] border border-white/5 p-6 shadow-xl shadow-black/20">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center">
                   <Zap className="w-4 h-4 text-slate-300" />
                 </div>
                 <h4 className="font-semibold text-white">Rate Limiting</h4>
               </div>
-              <p className="text-gray-400 text-sm leading-relaxed mb-3">
+              <p className="text-slate-400 text-sm leading-relaxed mb-3">
                 Requests are rate-limited per endpoint. Exceeding the limit
                 returns a{' '}
                 <code className="text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
                   429
                 </code>{' '}
                 status with a{' '}
-                <code className="text-gray-300 bg-gray-800/80 px-1.5 py-0.5 rounded text-xs font-mono">
+                <code className="text-slate-300 bg-gray-800/80 px-1.5 py-0.5 rounded text-xs font-mono">
                   retryAfter
                 </code>{' '}
                 timestamp.
               </p>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-500 font-mono">
+                  <span className="text-slate-500 font-mono">
                     /audit-logs, /compliance
                   </span>
                   <span className="text-slate-300 font-medium">60 req/min</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-500 font-mono">
+                  <span className="text-slate-500 font-mono">
                     /evidence, /tasks
                   </span>
                   <span className="text-slate-300 font-medium">
@@ -724,7 +724,7 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
           </ScrollReveal>
 
           <ScrollReveal variant="fadeRight" range={[0.04, 0.39]}>
-            <div className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 shadow-xl shadow-black/20">
+            <div className="rounded-2xl bg-white/[0.03] border border-white/5 p-6 shadow-xl shadow-black/20">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center">
                   <Lock className="w-4 h-4 text-slate-300" />
@@ -733,7 +733,7 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
                   Base URL &amp; Security
                 </h4>
               </div>
-              <p className="text-gray-400 text-sm leading-relaxed mb-3">
+              <p className="text-slate-400 text-sm leading-relaxed mb-3">
                 All endpoints are served over HTTPS at the base URL below.
                 Requests over plain HTTP are rejected.
               </p>
@@ -755,7 +755,7 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
 
         {/* -------- Error responses -------- */}
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
-          <div className="rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-950/50 backdrop-blur-xl border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20">
+          <div className="rounded-2xl bg-white/[0.03] border border-white/5 p-6 lg:p-8 shadow-xl shadow-black/20">
             <div className="flex items-start gap-4 mb-6">
               <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-red-500/15 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
@@ -764,7 +764,7 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
                 <h3 className="text-xl font-bold text-white mb-1">
                   Error Responses
                 </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
+                <p className="text-slate-400 text-sm leading-relaxed">
                   All errors return a JSON object with an{' '}
                   <code className="text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded text-xs font-mono">
                     error
@@ -793,11 +793,11 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
                     >
                       {err.status}
                     </span>
-                    <span className="text-sm text-gray-400 font-medium">
+                    <span className="text-sm text-slate-400 font-medium">
                       {err.label}
                     </span>
                   </div>
-                  <pre className="text-xs font-mono text-gray-500 whitespace-pre overflow-x-auto">
+                  <pre className="text-xs font-mono text-slate-500 whitespace-pre overflow-x-auto">
                     {err.body}
                   </pre>
                 </div>

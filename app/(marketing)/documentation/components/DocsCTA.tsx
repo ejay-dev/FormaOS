@@ -14,14 +14,14 @@ export function DocsCTA() {
     <section className="relative py-24 bg-gradient-to-b from-[#0a0f1c] to-[#0d1421]">
       <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="slideUp" range={[0, 0.35]}>
-          <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
+          <div className="relative p-10 rounded-3xl bg-white/[0.03] border border-white/5 shadow-2xl shadow-black/30">
             <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
             <div className="text-center">
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                 Can&apos;t find what you&apos;re looking for?
               </h2>
-              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+              <p className="text-slate-400 mb-8 max-w-xl mx-auto">
                 Our support team is here to help. Reach out for personalized
                 guidance or schedule a technical consultation.
               </p>

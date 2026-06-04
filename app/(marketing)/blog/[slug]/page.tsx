@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               <span>← Back to Blog</span>
             </Link>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3 text-xs text-gray-400">
+            <div className="mt-8 flex flex-wrap items-center gap-3 text-xs text-slate-400">
               <span className="px-3 py-1 rounded-full bg-white/[0.08] text-slate-200 border border-white/15">
                 {post.category}
               </span>
@@ -123,15 +123,15 @@ export default async function BlogPostPage({ params }: PageProps) {
               </span>
             </div>
 
-            <h1 className="mt-6 text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+            <h1 className="mt-6 font-display text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight">
               {post.title}
             </h1>
 
-            <p className="mt-4 text-lg text-gray-400 leading-relaxed">
+            <p className="mt-4 text-lg text-slate-400 leading-relaxed">
               {post.excerpt}
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-gray-500">
+            <div className="mt-6 flex flex-wrap items-center gap-6 text-sm text-slate-500">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
                 {(() => {
@@ -154,7 +154,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               </div>
               {post.dateModified && post.dateModified !== post.date ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-600">·</span>
+                  <span className="text-slate-600">·</span>
                   <span>Updated {post.dateModified}</span>
                 </div>
               ) : null}
@@ -178,7 +178,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   {section.heading}
                 </h2>
                 {section.paragraphs?.length ? (
-                  <div className="space-y-4 text-gray-300 leading-relaxed">
+                  <div className="space-y-4 text-slate-300 leading-relaxed">
                     {section.paragraphs.map((paragraph) => (
                       <p key={paragraph}>{paragraph}</p>
                     ))}
@@ -186,7 +186,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 ) : null}
 
                 {section.bullets?.length ? (
-                  <ul className="space-y-2 text-gray-300 list-disc list-inside">
+                  <ul className="space-y-2 text-slate-300 list-disc list-inside">
                     {section.bullets.map((bullet) => (
                       <li key={bullet}>{bullet}</li>
                     ))}
@@ -194,7 +194,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 ) : null}
 
                 {section.steps?.length ? (
-                  <ol className="space-y-3 text-gray-300 list-decimal list-inside">
+                  <ol className="space-y-3 text-slate-300 list-decimal list-inside">
                     {section.steps.map((step) => (
                       <li key={step}>{step}</li>
                     ))}
@@ -203,7 +203,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
                 {section.links?.length ? (
                   <div className="rounded-2xl border border-white/5 bg-gray-900/50 p-6 space-y-3">
-                    <p className="text-sm uppercase tracking-wide text-gray-400">
+                    <p className="text-sm uppercase tracking-wide text-slate-400">
                       Related links
                     </p>
                     <div className="flex flex-col gap-3">
@@ -215,7 +215,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                         >
                           <span className="font-medium">{link.label}</span>
                           {link.description ? (
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-slate-400">
                               {link.description}
                             </span>
                           ) : null}
@@ -283,7 +283,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               <h3 className="text-lg font-semibold text-white">
                 Ready to operationalize compliance?
               </h3>
-              <p className="text-sm text-gray-400 mt-2">
+              <p className="text-sm text-slate-400 mt-2">
                 See how FormaOS connects controls, evidence, and teams in one
                 platform.
               </p>
