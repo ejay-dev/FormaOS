@@ -22,7 +22,7 @@ const industries = [
     href: '/ndis-providers',
     title: 'Disability and Aged Care',
     description:
-      'Operationalize NDIS Practice Standards, Aged Care Quality Standards, safeguarding, reportable incident obligations, and NDIS Commission audit readiness - for providers where unannounced visits are real.',
+      'Operationalize NDIS Practice Standards, Aged Care Quality Standards, safeguarding, reportable incident obligations, and NDIS Commission audit readiness, for providers where unannounced visits are real.',
     features: [
       'NDIS Practice Standards (all 8 modules)',
       'NDIS Commission Reportable Incidents',
@@ -45,7 +45,7 @@ const industries = [
     href: '/mental-health-compliance',
     title: 'Mental Health Services',
     description:
-      'Operationalize the National Standards for Mental Health Services, restrictive-practice governance, reportable incidents, consumer rights, and worker screening - with continuous evidence, not pre-review scrambles.',
+      'Operationalize the National Standards for Mental Health Services, restrictive-practice governance, reportable incidents, consumer rights, and worker screening, with continuous evidence, not pre-review scrambles.',
     features: [
       'National Standards for Mental Health Services',
       'Restrictive Practices Register & Reviews',
@@ -68,7 +68,7 @@ const industries = [
     href: '/healthcare-compliance',
     title: 'Healthcare and Allied Health',
     description:
-      'Manage AHPRA practitioner registration, NSQHS Standards accreditation, clinical governance, credential expiry, Privacy Act compliance, and adverse event tracking - continuously, not just before audits.',
+      'Manage AHPRA practitioner registration, NSQHS Standards accreditation, clinical governance, credential expiry, Privacy Act compliance, and adverse event tracking, continuously, not just before audits.',
     features: [
       'AHPRA Registration & CPD Tracking',
       'NSQHS Standards (8/8 covered)',
@@ -91,7 +91,7 @@ const industries = [
     href: '/financial-services-compliance',
     title: 'Financial Services',
     description:
-      'Track ASIC, APRA, AUSTRAC, and AML/CTF regulatory obligations, risk controls, internal audit programs, and board-level compliance reporting - with named ownership at every level.',
+      'Track ASIC, APRA, AUSTRAC, and AML/CTF regulatory obligations, risk controls, internal audit programs, and board-level compliance reporting, with named ownership at every level.',
     features: [
       'ASIC, APRA & AUSTRAC Obligations',
       'AML/CTF Risk Control Mapping',
@@ -114,7 +114,7 @@ const industries = [
     href: '/construction-compliance',
     title: 'Construction and Infrastructure',
     description:
-      'Manage WHS Act safety systems, contractor compliance programs, incident reporting, SafeWork obligations, and multi-site regulatory audit readiness - with defensible evidence at every stage.',
+      'Manage WHS Act safety systems, contractor compliance programs, incident reporting, SafeWork obligations, and multi-site regulatory audit readiness, with defensible evidence at every stage.',
     features: [
       'WHS Act & SafeWork Obligations',
       'Contractor License Verification',
@@ -137,7 +137,7 @@ const industries = [
     href: '/childcare-compliance',
     title: 'Education and Childcare',
     description:
-      'Operationalize ACECQA National Quality Framework compliance, staff credential governance, child safety policy adherence, and inspection readiness - with continuous evidence, not pre-visit scrambles.',
+      'Operationalize ACECQA National Quality Framework compliance, staff credential governance, child safety policy adherence, and inspection readiness, with continuous evidence, not pre-visit scrambles.',
     features: [
       'ACECQA National Quality Framework (NQF)',
       'Child Safety Compliance Workflows',
@@ -174,7 +174,7 @@ function IndustryCard({
   if (reducedMotion) {
     return (
       <div
-        className={`group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-all duration-300`}
+        className={`group bg-white/[0.03] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-all duration-300`}
       >
         <CardFrontContent industry={industry} />
       </div>
@@ -196,13 +196,13 @@ function IndustryCard({
       >
         {/* ---------- FRONT FACE ---------- */}
         <div
-          className={`group backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-[border-color] duration-300 relative overflow-hidden`}
+          className={`group bg-white/[0.03] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-[border-color] duration-300 relative overflow-hidden`}
           style={{ backfaceVisibility: 'hidden' }}
         >
           <CardFrontContent industry={industry} />
 
           {/* Tap to flip indicator */}
-          <div className="mt-4 flex items-center gap-1.5 text-[11px] text-gray-500/70 select-none">
+          <div className="mt-4 flex items-center gap-1.5 text-[11px] text-slate-500/70 select-none">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60">
               <path d="M9 18l6-6-6-6" />
             </svg>
@@ -212,7 +212,7 @@ function IndustryCard({
 
         {/* ---------- BACK FACE ---------- */}
         <div
-          className={`absolute inset-0 backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-[border-color] duration-300 overflow-hidden flex flex-col justify-between`}
+          className={`absolute inset-0 bg-white/[0.03] rounded-2xl border border-white/[0.08] ${industry.hoverBorder} p-6 transition-[border-color] duration-300 overflow-hidden flex flex-col justify-between`}
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
           {/* Header */}
@@ -231,7 +231,7 @@ function IndustryCard({
               {industry.metrics.map((metric) => (
                 <div key={metric.label}>
                   <div className="flex items-baseline justify-between mb-1">
-                    <span className="text-xs text-gray-400">{metric.label}</span>
+                    <span className="text-xs text-slate-400">{metric.label}</span>
                     <span className={`text-lg font-bold ${industry.textColor}`}>
                       {metric.value}
                     </span>
@@ -252,7 +252,7 @@ function IndustryCard({
           </Link>
 
           {/* Tap to flip back indicator */}
-          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-gray-500/70 select-none">
+          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-500/70 select-none">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 rotate-180">
               <path d="M9 18l6-6-6-6" />
             </svg>
@@ -293,7 +293,7 @@ function CardFrontContent({
         </div>
       </div>
 
-      <p className="text-gray-400 text-sm leading-relaxed mb-4">
+      <p className="text-slate-400 text-sm leading-relaxed mb-4">
         {industry.description}
       </p>
 
@@ -301,7 +301,7 @@ function CardFrontContent({
         {industry.features.map((feature) => (
           <div
             key={feature}
-            className="flex items-center gap-2 text-xs text-gray-500"
+            className="flex items-center gap-2 text-xs text-slate-500"
           >
             <div
               className={`w-1.5 h-1.5 ${industry.dotColor} rounded-full`}
@@ -336,7 +336,7 @@ export function IndustryVerticals() {
               </p>
             </ScrollReveal>
 
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight mb-6 text-white">
               Compliance Infrastructure
               <span className="text-foreground">
                 {' '}
@@ -344,7 +344,7 @@ export function IndustryVerticals() {
               </span>
             </h2>
 
-            <p className="text-lg text-gray-400 max-w-3xl mx-auto">
+            <p className="text-lg text-slate-400 max-w-3xl mx-auto">
               Pre-built frameworks tailored to specific regulatory environments
             </p>
           </div>
