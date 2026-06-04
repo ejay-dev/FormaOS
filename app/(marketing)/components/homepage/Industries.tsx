@@ -41,7 +41,7 @@ const signatureEase: [number, number, number, number] = [
 ] as [number, number, number, number];
 
 /* ════════════════════════════════════════════════════════════
-   Accent system — monochrome. No per-industry colour identity:
+   Accent system, monochrome. No per-industry colour identity:
    surfaces stay white/slate so the copy and structure carry it.
    ════════════════════════════════════════════════════════════ */
 
@@ -64,7 +64,7 @@ const ACCENT_MAP: Record<Accent, typeof NEUTRAL_ACCENT> = {
 };
 
 /* ════════════════════════════════════════════════════════════
-   Data — visual-first: stats, frameworks, short tagline
+   Data, visual-first: stats, frameworks, short tagline
    ════════════════════════════════════════════════════════════ */
 
 interface StatItem {
@@ -98,7 +98,7 @@ const industrySolutions: IndustrySolution[] = [
     title: 'Healthcare',
     subtitle: 'HIPAA · RACGP · AHPRA · NSQHS',
     tagline:
-      'Patient safety evidence and clinical governance — audit-ready in minutes, not weeks.',
+      'Patient safety evidence and clinical governance, audit-ready in minutes, not weeks.',
     accent: 'rose',
     frameworks: ['RACGP', 'AHPRA', 'NSQHS', 'HIPAA'],
     stats: [
@@ -131,7 +131,7 @@ const industrySolutions: IndustrySolution[] = [
     title: 'NDIS Providers',
     subtitle: 'NDIS Practice Standards · Quality & Safeguards Commission',
     tagline:
-      'Safeguarding registers, worker screening, and incident timelines — built for Commission audits.',
+      'Safeguarding registers, worker screening, and incident timelines, built for Commission audits.',
     accent: 'violet',
     frameworks: ['NDIS Practice Standards', 'Q&S Commission'],
     stats: [
@@ -164,7 +164,7 @@ const industrySolutions: IndustrySolution[] = [
     title: 'Mental Health Services',
     subtitle: 'National Standards for Mental Health Services (NSMHS)',
     tagline:
-      'Consumer rights, restrictive-practice governance, and reportable incident timelines — evidenced continuously, not reconstructed for review.',
+      'Consumer rights, restrictive-practice governance, and reportable incident timelines, evidenced continuously, not reconstructed for review.',
     accent: 'violet',
     frameworks: ['NSMHS', 'Restrictive Practices', 'Reportable Incidents'],
     stats: [
@@ -200,7 +200,7 @@ const industrySolutions: IndustrySolution[] = [
     title: 'Financial Services',
     subtitle: 'SOC 2 · ISO 27001 · ASIC · APRA',
     tagline:
-      'Multi-framework compliance packs with cross-mapping — one evidence item, multiple frameworks.',
+      'Multi-framework compliance packs with cross-mapping, one evidence item, multiple frameworks.',
     accent: 'amber',
     frameworks: ['SOC 2', 'ISO 27001', 'PCI-DSS', 'APRA CPS 230'],
     stats: [
@@ -236,7 +236,7 @@ const industrySolutions: IndustrySolution[] = [
     title: 'Education & Accreditation',
     subtitle: 'TEQSA · ASQA · RTO Standards · VRQA',
     tagline:
-      'Academic governance and trainer credentials — evidence organized by standard for instant retrieval.',
+      'Academic governance and trainer credentials, evidence organized by standard for instant retrieval.',
     accent: 'cyan',
     frameworks: ['TEQSA', 'ASQA', 'RTO Standards', 'VRQA'],
     stats: [
@@ -269,7 +269,7 @@ const industrySolutions: IndustrySolution[] = [
     title: 'Government & Public Sector',
     subtitle: 'FOI · ISM · PSPF · Essential Eight',
     tagline:
-      'Decision registers, FOI tracking, and Essential Eight maturity — every action documented and defensible.',
+      'Decision registers, FOI tracking, and Essential Eight maturity, every action documented and defensible.',
     accent: 'indigo',
     frameworks: ['ISM', 'PSPF', 'Essential Eight', 'FOI Act'],
     stats: [
@@ -303,7 +303,7 @@ const industrySolutions: IndustrySolution[] = [
 ];
 
 /* ════════════════════════════════════════════════════════════
-   StatCard — big visual metric
+   StatCard, big visual metric
    ════════════════════════════════════════════════════════════ */
 
 const StatCard = memo(function StatCard({
@@ -343,7 +343,7 @@ const StatCard = memo(function StatCard({
 });
 
 /* ════════════════════════════════════════════════════════════
-   CapabilityCard — compact visual card
+   CapabilityCard, compact visual card
    ════════════════════════════════════════════════════════════ */
 
 const CapabilityCard = memo(function CapabilityCard({
@@ -490,7 +490,7 @@ const AccordionItem = memo(function AccordionItem({
         </div>
       </button>
 
-      {/* Expanded panel — visual-first layout */}
+      {/* Expanded panel, visual-first layout */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -519,7 +519,7 @@ const AccordionItem = memo(function AccordionItem({
                   </div>
                 </div>
 
-                {/* Row 2: Stats grid — the visual punch */}
+                {/* Row 2: Stats grid, the visual punch */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
                   {solution.stats.map((stat, i) => (
                     <StatCard
@@ -600,7 +600,7 @@ export const Industries = memo(function Industries() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
-        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+        {/* Editorial header, asymmetric, left-aligned. A labelled rule and a
             paired description column replace the centred eyebrow-pill template. */}
         <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
           <motion.div

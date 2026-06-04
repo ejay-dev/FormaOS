@@ -16,7 +16,7 @@ import {
   PUBLIC_CTA_LABELS,
 } from '@/lib/marketing/cta';
 
-// Illustrative use-case scenarios — not anonymised customer histories.
+// Illustrative use-case scenarios, not anonymised customer histories.
 // Each one describes how FormaOS would land in a buyer of this shape,
 // using product capabilities that are actually shipping. Framework
 // labels reflect what's in lib/compliance/evaluators/register.ts: only
@@ -172,7 +172,7 @@ export default function CustomerStoriesContent() {
                   </ul>
                 </div>
 
-                {/* Quote block removed 2026-05-28 — the previous
+                {/* Quote block removed 2026-05-28, the previous
                     quotes ("- Head of Quality & Compliance", etc.) read
                     as anonymised customer testimonials, but there are
                     no real customer deployments behind them. These

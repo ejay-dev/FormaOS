@@ -3,7 +3,7 @@
 /**
  * Cost-of-a-finding ROI calculator.
  *
- * Honest, transparent model — every per-unit assumption is shown, and the
+ * Honest, transparent model, every per-unit assumption is shown, and the
  * result is framed as a modelled estimate, not a guarantee. The figures are
  * anchored to MANUAL_COMPLIANCE_COST_ANCHORS (audit prep "2-6 weeks" → hours;
  * ongoing evidence + credential chasing) and the real PLAN_CATALOG prices.

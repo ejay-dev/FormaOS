@@ -5,9 +5,9 @@ interface DeferredSectionProps {
   className?: string;
   /** Reserve intrinsic size to keep CLS low while content paints lazily. */
   minHeight?: number;
-  /** Retained for backwards compatibility — no longer used. */
+  /** Retained for backwards compatibility, no longer used. */
   rootMargin?: string;
-  /** Retained for backwards compatibility — no longer used. */
+  /** Retained for backwards compatibility, no longer used. */
   fallback?: ReactNode;
 }
 

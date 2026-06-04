@@ -102,7 +102,7 @@ function CenteredHeader({
   );
 }
 
-// Left vertical-bar header — third variant so the centered template
+// Left vertical-bar header, third variant so the centered template
 // never repeats on adjacent sections.
 function BarHeader({
   label,
@@ -2171,7 +2171,7 @@ function FeatureSystemMap() {
           })}
         </div>
         <p className="mt-3 text-center text-[11px] uppercase tracking-[0.16em] text-slate-600">
-          ↻ the loop closes — AI &amp; Certification feeds back into Compliance Core
+          ↻ the loop closes, AI &amp; Certification feeds back into Compliance Core
         </p>
 
         {/* Detail panel */}
@@ -2272,7 +2272,7 @@ export default function FeaturesPageContent() {
       {/*
         Server-rendered feature catalog (audit #28). Lives outside
         DeferredSection so every feature title is in the initial SSR
-        HTML — crawlers index the names, sighted users get a quick
+        HTML, crawlers index the names, sighted users get a quick
         skimmable list before the heavy interactive grid mounts.
       */}
       <FeatureCatalogIndex />

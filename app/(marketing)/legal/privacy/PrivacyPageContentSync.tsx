@@ -402,15 +402,15 @@ function PrivacyContent() {
           </p>
           <ul className="list-disc list-inside space-y-2 ml-4">
             <li>
-              <strong className="text-white">Contractual necessity</strong> —
+              <strong className="text-white">Contractual necessity</strong> , 
               providing the service you signed up for
             </li>
             <li>
-              <strong className="text-white">Legal obligations</strong> —
+              <strong className="text-white">Legal obligations</strong> , 
               regulatory record-keeping and audit trails
             </li>
             <li>
-              <strong className="text-white">Legitimate interest</strong> —
+              <strong className="text-white">Legitimate interest</strong> , 
               securing the platform, preventing abuse, and improving the product
               without undue impact on your privacy
             </li>

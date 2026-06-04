@@ -102,7 +102,7 @@ export function PricingHero() {
           </Link>
         </motion.div>
 
-        {/* Clean supporting stats — three facts, plainly set, no terminal HUD.
+        {/* Clean supporting stats, three facts, plainly set, no terminal HUD.
             Plain div/grid (not a <dl>): the prior <dl> nested <dd> before <dt>
             plus a stray <p>, an invalid definition-list structure that tripped
             a serious axe `definition-list` (WCAG 1.3.1) violation on /pricing. */}

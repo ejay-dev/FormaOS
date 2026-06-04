@@ -41,7 +41,7 @@ export function CTASection() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
-      {/* Subtle background glow — monochrome, single neutral wash */}
+      {/* Subtle background glow, monochrome, single neutral wash */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(113,113,122,0.06)_0%,transparent_70%)]" />
 
       <div className="relative z-10 py-20 sm:py-28 lg:py-40 max-w-4xl mx-auto px-5 sm:px-6 lg:px-12 text-center">

@@ -46,7 +46,7 @@ export default function TrustPageContent({
       <AuditChainProof />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
       {/* SSR-rendered index of trust sub-pages. Sits outside DeferredSection
-          so it lands in the initial HTML response — crawlers and screen
+          so it lands in the initial HTML response, crawlers and screen
           readers reach every Trust Center document without needing to
           hydrate the dynamic TrustModules visual below. */}
       <TrustSubpagesIndex />

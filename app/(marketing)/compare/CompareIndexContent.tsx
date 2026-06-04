@@ -132,7 +132,7 @@ export default function CompareIndexContent() {
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       </div>
 
-      {/* What "compliance OS" means vs traditional GRC — SSR'd */}
+      {/* What "compliance OS" means vs traditional GRC, SSR'd */}
       <section
         aria-labelledby="compare-category-explainer"
         className="relative mx-auto max-w-5xl px-4 pb-14 sm:px-6 lg:px-8"

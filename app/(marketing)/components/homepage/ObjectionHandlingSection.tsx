@@ -90,7 +90,7 @@ export function ObjectionHandlingSection() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+        {/* Editorial header, asymmetric, left-aligned. A labelled rule and a
             paired description column replace the centred eyebrow-pill template. */}
         <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
           <ScrollReveal variant="slideUp" range={[0, 0.3]} className="lg:col-span-7">
@@ -101,7 +101,7 @@ export function ObjectionHandlingSection() {
               </span>
             </div>
             <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
-              From evaluation to procurement — no blockers
+              From evaluation to procurement, no blockers
             </h2>
           </ScrollReveal>
 

@@ -118,7 +118,7 @@ function LightSection({
 }) {
   return (
     <section className={`relative isolate overflow-hidden ${className}`}>
-      {/* Single subtle white radial + top hairline — matches the homepage hand */}
+      {/* Single subtle white radial + top hairline, matches the homepage hand */}
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       {/* Content */}
@@ -155,7 +155,7 @@ function LightCard({
   );
 }
 
-/* ─── Restrained section header — plain centered label, no pill / icon ─── */
+/* ─── Restrained section header, plain centered label, no pill / icon ─── */
 function SectionLabelHeader({
   label,
   title,
@@ -182,7 +182,7 @@ function SectionLabelHeader({
   );
 }
 
-/* ─── Editorial header variant — left-aligned hairline + label rule ─── */
+/* ─── Editorial header variant, left-aligned hairline + label rule ─── */
 function SectionRuleHeader({
   label,
   title,

@@ -138,7 +138,7 @@ export default function FrameworksContent() {
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
 
-      {/* Cross-mapping explainer — SSR'd, no DeferredSection gating */}
+      {/* Cross-mapping explainer, SSR'd, no DeferredSection gating */}
       <section
         aria-labelledby="frameworks-cross-mapping"
         className="relative mx-auto max-w-5xl px-4 pb-14 sm:px-6 lg:px-8"

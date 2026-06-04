@@ -173,7 +173,7 @@ const relatedLinksByIndustry: Record<
   ],
 };
 
-/* Plain editorial section header — replaces the rotating-icon glass pill.
+/* Plain editorial section header, replaces the rotating-icon glass pill.
    `variant="rule"` renders a centred hairline-flanked label; `variant="label"`
    renders a quiet uppercase eyebrow. Headers are varied across the page so the
    layout never reads as a repeated template. */

@@ -43,7 +43,7 @@ function GlassCard({
       className={className}
     >
       <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/[0.12]">
-        {/* Top accent — brightens on hover */}
+        {/* Top accent, brightens on hover */}
         <div
           className="absolute inset-x-0 top-0 h-px opacity-40 transition-opacity duration-300 group-hover:opacity-100"
           style={{
@@ -57,7 +57,7 @@ function GlassCard({
 }
 
 /* ════════════════════════════════════════════════════════════
-   Card 1: Compliance Posture (hero — col-span-2)
+   Card 1: Compliance Posture (hero, col-span-2)
    ════════════════════════════════════════════════════════════ */
 
 function PostureCard({
@@ -77,7 +77,7 @@ function PostureCard({
     { value: '8', label: 'Framework packs', color: 'text-white' },
   ] as const;
 
-  // Illustrative per-framework rows — what a posture screen renders.
+  // Illustrative per-framework rows, what a posture screen renders.
   const frameworks = [
     { name: 'SOC 2 Type II', score: 94 },
     { name: 'ISO 27001', score: 88 },
@@ -140,7 +140,7 @@ function PostureCard({
               </linearGradient>
             </defs>
           </svg>
-          {/* Center text — number only, no label crowding the ring */}
+          {/* Center text, number only, no label crowding the ring */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.span
               className="text-4xl sm:text-5xl font-black tabular-nums tracking-tight text-white"
@@ -165,7 +165,7 @@ function PostureCard({
             Example values, not a customer claim.
           </p>
 
-          {/* Illustrative posture screen — per-framework rows */}
+          {/* Illustrative posture screen, per-framework rows */}
           <div className="space-y-2.5 text-left">
             {frameworks.map((f, i) => (
               <motion.div
@@ -267,7 +267,7 @@ function EnforcementCard({
               Blocked
             </div>
             <div className="text-[10px] text-slate-500">
-              Missing approval — A.9.2 Access Control
+              Missing approval, A.9.2 Access Control
             </div>
           </div>
         </motion.div>
@@ -289,7 +289,7 @@ function EnforcementCard({
               Approved
             </div>
             <div className="text-[10px] text-slate-500">
-              Control satisfied — CC6.1 Logical Access
+              Control satisfied, CC6.1 Logical Access
             </div>
           </div>
         </motion.div>
@@ -311,7 +311,7 @@ function EnforcementCard({
               Approved
             </div>
             <div className="text-[10px] text-slate-500">
-              Evidence attached — HIPAA §164.312
+              Evidence attached, HIPAA §164.312
             </div>
           </div>
         </motion.div>
@@ -324,12 +324,12 @@ function EnforcementCard({
    Card 3: Evidence Chain
    ════════════════════════════════════════════════════════════ */
 
-// Illustrative timeline — generic role labels, no invented names.
+// Illustrative timeline, generic role labels, no invented names.
 const EVIDENCE_EVENTS = [
   { text: 'Control created', time: 'Day 0', color: 'bg-slate-500' },
-  { text: 'Evidence uploaded — by named owner', time: 'Day 3', color: 'bg-slate-400' },
-  { text: 'Review approved — by control reviewer', time: 'Day 4', color: 'bg-slate-400' },
-  { text: 'Hash anchored — Sigstore Rekor entry', time: 'Day 5', color: 'bg-slate-300' },
+  { text: 'Evidence uploaded, by named owner', time: 'Day 3', color: 'bg-slate-400' },
+  { text: 'Review approved, by control reviewer', time: 'Day 4', color: 'bg-slate-400' },
+  { text: 'Hash anchored, Sigstore Rekor entry', time: 'Day 5', color: 'bg-slate-300' },
 ] as const;
 
 function EvidenceCard({
@@ -406,7 +406,7 @@ function EvidenceCard({
    ════════════════════════════════════════════════════════════ */
 
 // Designer feedback 2026-05-27 specifically called out "Priya M." / "Sarah L."
-// as stock SaaS personas. Replaced with role-only labels — no invented
+// as stock SaaS personas. Replaced with role-only labels, no invented
 // names, no invented headshots-by-initials. Real customer assignments live
 // inside the product, never in marketing copy.
 const OWNERS = [
@@ -504,7 +504,7 @@ function AuditCard({
         <h3 className="text-base font-bold text-white">Audit-Ready</h3>
       </div>
       <p className="text-[13px] text-slate-500 leading-relaxed mb-6">
-        Export complete audit packets — evidence, ownership, control history —
+        Export complete audit packets, evidence, ownership, control history , 
         without scrambling.
       </p>
 
@@ -571,7 +571,7 @@ export function ValueProposition() {
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
-        {/* Editorial header — asymmetric, left-aligned. A labelled rule and a
+        {/* Editorial header, asymmetric, left-aligned. A labelled rule and a
             paired description column replace the centred eyebrow-pill template. */}
         <div className="mb-12 grid gap-x-10 gap-y-6 border-b border-white/[0.06] pb-10 lg:mb-14 lg:grid-cols-12 lg:items-end">
           <motion.div
@@ -600,7 +600,7 @@ export function ValueProposition() {
           >
             <p className="max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
               Other tools store documents. FormaOS enforces your compliance
-              program — controls are gated, ownership is structural, and evidence
+              program, controls are gated, ownership is structural, and evidence
               is generated as teams operate.
             </p>
           </motion.div>

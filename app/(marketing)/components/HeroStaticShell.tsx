@@ -20,7 +20,7 @@ const heroCopy = DEFAULT_RUNTIME_MARKETING.hero;
 // 2026-05-23 (SEO sprint): the primary CTA path used to be rewritten
 // onto `brand.seo.appUrl` (app.formaos.com.au), which sent every hero
 // click through a wasted 308 hop and exposed the app subdomain as the
-// CTA target. /contact is a marketing route — keep it relative so the
+// CTA target. /contact is a marketing route, keep it relative so the
 // click stays on the canonical www host.
 const primaryExternal = /^https?:\/\//i.test(heroCopy.primaryCtaHref);
 const secondaryExternal = /^https?:\/\//i.test(heroCopy.secondaryCtaHref);
@@ -52,7 +52,7 @@ export function HeroStaticShell() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_100%_at_100%_50%,rgba(3,7,18,0.40),transparent_70%)]" />
 
       <div className="relative z-10 mx-auto flex min-h-[inherit] max-w-7xl flex-col items-center justify-center px-6 pb-12 pt-16 text-center sm:px-8 sm:pt-24 lg:px-12 lg:pt-28">
-        {/* Eyebrow — restrained typographic label flanked by hairlines,
+        {/* Eyebrow, restrained typographic label flanked by hairlines,
             no pill / icon / colour. */}
         <div className="mb-7 flex items-center justify-center gap-4">
           <span className="hidden h-px w-10 bg-white/20 sm:block" />

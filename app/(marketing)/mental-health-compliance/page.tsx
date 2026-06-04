@@ -15,7 +15,7 @@ const mentalHealthFaqSchema = faqSchema([
     question:
       'Does FormaOS cover the National Standards for Mental Health Services?',
     answer:
-      'Yes. FormaOS ships the NSMHS as a pre-built framework so your obligations across the ten standards are mapped from day one — no manual setup required.',
+      'Yes. FormaOS ships the NSMHS as a pre-built framework so your obligations across the ten standards are mapped from day one, no manual setup required.',
   },
   {
     question: 'Can FormaOS track restrictive practices?',
@@ -25,7 +25,7 @@ const mentalHealthFaqSchema = faqSchema([
   {
     question: 'How does FormaOS handle reportable incidents?',
     answer:
-      'FormaOS tracks reportable incidents through a structured pipeline — report, investigation, notification, and closure — with notification timers and submission status so deadlines are not missed.',
+      'FormaOS tracks reportable incidents through a structured pipeline, report, investigation, notification, and closure, with notification timers and submission status so deadlines are not missed.',
   },
   {
     question: 'Does FormaOS track worker screening for clinical staff?',

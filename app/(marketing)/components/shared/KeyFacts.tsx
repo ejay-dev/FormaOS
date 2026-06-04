@@ -1,7 +1,7 @@
 import { CheckCircle2 } from 'lucide-react';
 
 /**
- * KeyFacts — a TLDR / "key facts" block placed near the top of long
+ * KeyFacts, a TLDR / "key facts" block placed near the top of long
  * marketing pages. SSR-rendered (no client component) so it always
  * lands in the initial HTML response.
  *
@@ -21,7 +21,7 @@ export interface KeyFactsProps {
   title?: string;
   /** Brief intro sentence under the heading. Keep ≤200 chars. */
   summary: string;
-  /** 4–8 atomic facts. Each label is bold, value is the citable claim. */
+  /** 4-8 atomic facts. Each label is bold, value is the citable claim. */
   facts: KeyFactsItem[];
 }
 

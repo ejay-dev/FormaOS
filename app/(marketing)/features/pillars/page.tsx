@@ -265,7 +265,7 @@ export default function FeaturesPillarsPage() {
                     isOdd ? 'lg:[&>*:first-child]:order-2' : ''
                   }`}
                 >
-                  {/* Left — title + lede */}
+                  {/* Left, title + lede */}
                   <div className="flex flex-col gap-5">
                     <div className="flex items-center gap-3">
                       <div
@@ -293,7 +293,7 @@ export default function FeaturesPillarsPage() {
                     )}
                   </div>
 
-                  {/* Right — feature grid */}
+                  {/* Right, feature grid */}
                   <ul className="grid gap-3 sm:grid-cols-2">
                     {pillar.features.map((f) => (
                       <li

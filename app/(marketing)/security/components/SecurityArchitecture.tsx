@@ -55,12 +55,12 @@ const securityLayers = [
   },
 ];
 
-// "certifications" was the old variable name — the list describes
+// "certifications" was the old variable name, the list describes
 // framework support and security practices, NOT a certification
 // claim. The first card was previously "SOC 2-aligned" which read
 // like a status claim; it now reads as a framework reference per
 // audit row #4 taxonomy ("Framework supported"). No code rename of
-// the variable here — that's churn for a future PR if the term is
+// the variable here, that's churn for a future PR if the term is
 // repurposed.
 const certifications = [
   {

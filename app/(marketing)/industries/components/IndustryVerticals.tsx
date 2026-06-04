@@ -158,7 +158,7 @@ const industries = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  IndustryCard – flip card revealing per-industry metrics           */
+/*  IndustryCard, flip card revealing per-industry metrics           */
 /* ------------------------------------------------------------------ */
 function IndustryCard({
   industry,
@@ -265,7 +265,7 @@ function IndustryCard({
 }
 
 /* ------------------------------------------------------------------ */
-/*  CardFrontContent – extracted so reduced-motion path can reuse it  */
+/*  CardFrontContent, extracted so reduced-motion path can reuse it  */
 /* ------------------------------------------------------------------ */
 function CardFrontContent({
   industry,
@@ -315,7 +315,7 @@ function CardFrontContent({
 }
 
 /* ------------------------------------------------------------------ */
-/*  IndustryVerticals – main section                                  */
+/*  IndustryVerticals, main section                                  */
 /* ------------------------------------------------------------------ */
 export function IndustryVerticals() {
   const prefersReducedMotion = useReducedMotion();

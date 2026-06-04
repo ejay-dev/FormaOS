@@ -1,6 +1,6 @@
 import { History, Lock, ShieldCheck } from 'lucide-react';
 
-// Server-rendered (not client) — the audit-chain proof MUST land in the
+// Server-rendered (not client), the audit-chain proof MUST land in the
 // initial HTML response so crawlers, AI answer engines, and procurement
 // reviewers can read it without executing JS. The homepage
 // AuditChainSection links here for the long-form explanation, so the

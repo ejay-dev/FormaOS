@@ -87,10 +87,10 @@ export function FullControlMapSection() {
         {/* Canvas container - cinematic 16:9-ish ratio */}
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
           <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-slate-950">
-            {/* Subtle graph substrate — masked dot grid */}
+            {/* Subtle graph substrate, masked dot grid */}
             <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_center,rgba(148,163,184,0.25)_0.8px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(circle_at_center,black_20%,transparent_80%)]" />
 
-            {/* Coverage summary cards (desktop) — static, no telemetry chrome */}
+            {/* Coverage summary cards (desktop), static, no telemetry chrome */}
             <div className="pointer-events-none absolute inset-x-5 top-5 z-20 hidden lg:flex items-start justify-between gap-4">
               <div className="max-w-[35%] rounded-xl border border-white/[0.08] bg-slate-950/70 px-5 py-3.5">
                 <p className="mb-1.5 text-[10px] uppercase tracking-[0.18em] text-slate-400">

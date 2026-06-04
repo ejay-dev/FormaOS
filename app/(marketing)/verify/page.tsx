@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { siteUrl } from '@/lib/seo';
 import VerifyClient from './VerifyClient';
 
-// Audit 2026-05-27 (Tier 2.B) — public audit-export verifier page.
+// Audit 2026-05-27 (Tier 2.B), public audit-export verifier page.
 //
 // Lets external auditors paste either:
 //   1. A FormaOS audit-export bundle (Merkle root + per-entry proofs).

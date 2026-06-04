@@ -11,7 +11,7 @@ const signatureEase: [number, number, number, number] = [
 ] as [number, number, number, number];
 
 /* ════════════════════════════════════════════════════════════
-   Data — three audiences, one evaluation. No per-card colour
+   Data, three audiences, one evaluation. No per-card colour
    identity: the palette stays monochrome so the copy carries it.
    ════════════════════════════════════════════════════════════ */
 
@@ -20,7 +20,7 @@ const PROOF_BLOCKS = [
     icon: FileCheck2,
     eyebrow: 'For operators',
     title: 'Controls run as workflows, not as documents',
-    body: 'Named tasks, approval gates, and evidence chains execute inside daily operations — not in a separate compliance layer.',
+    body: 'Named tasks, approval gates, and evidence chains execute inside daily operations, not in a separate compliance layer.',
     href: '/product',
     cta: 'See how it works',
     step: '01',
@@ -46,7 +46,7 @@ const PROOF_BLOCKS = [
 ] as const;
 
 /* ════════════════════════════════════════════════════════════
-   Card — restrained surface, hairline border, quiet hover lift.
+   Card, restrained surface, hairline border, quiet hover lift.
    ════════════════════════════════════════════════════════════ */
 
 function ConvictionCard({
@@ -71,7 +71,7 @@ function ConvictionCard({
       }}
       className="group relative flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 transition-colors duration-300 hover:border-white/20 sm:p-8"
     >
-      {/* Quiet step index — typographic, not a watermark gimmick */}
+      {/* Quiet step index, typographic, not a watermark gimmick */}
       <span className="absolute right-6 top-6 text-sm font-medium tabular-nums text-slate-600">
         {block.step}
       </span>
@@ -117,7 +117,7 @@ export function HomeProofStaticShell() {
       ref={sectionRef}
       className="relative z-10 overflow-hidden bg-slate-950 px-6 pt-20 pb-4 sm:px-8 sm:pt-24 sm:pb-6 lg:px-12 lg:pt-28 lg:pb-8"
     >
-      {/* Single hairline top seam — no rainbow edge glow */}
+      {/* Single hairline top seam, no rainbow edge glow */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl">

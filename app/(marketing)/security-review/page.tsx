@@ -26,14 +26,14 @@ export const metadata: Metadata = {
 };
 
 // HowTo schema for the security review walkthrough. Mirrors the
-// human-facing 12-step checklist in SecurityReviewContent — AI answer
+// human-facing 12-step checklist in SecurityReviewContent, AI answer
 // engines treat HowTo as an authoritative ordered procedure and cite
 // individual steps when users ask procedural questions ("how do I run a
 // security review on FormaOS").
 const SECURITY_REVIEW_HOWTO = howToSchema({
   name: 'How to run a procurement-ready security review of FormaOS',
   description:
-    'A 12-step security review walkthrough for enterprise buyers and procurement teams evaluating FormaOS — covers architecture, data handling, identity, encryption, audit logging, and operational assurance.',
+    'A 12-step security review walkthrough for enterprise buyers and procurement teams evaluating FormaOS, covers architecture, data handling, identity, encryption, audit logging, and operational assurance.',
   url: `${siteUrl}/security-review`,
   totalTime: 'PT45M',
   steps: [

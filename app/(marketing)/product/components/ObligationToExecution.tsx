@@ -34,7 +34,7 @@ export function ObligationToExecution() {
   return (
     <section className="product-section product-section--process relative overflow-hidden py-24 sm:py-32">
       <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-12">
-        {/* Header — left labelled rule + paired descriptor */}
+        {/* Header, left labelled rule + paired descriptor */}
         <ScrollReveal
           variant="slideUp"
           range={[0, 0.35]}
@@ -118,7 +118,7 @@ export function ObligationToExecution() {
           </div>
         </ScrollReveal>
 
-        {/* Truths — plain text, no chips */}
+        {/* Truths, plain text, no chips */}
         <ScrollReveal
           variant="fadeUp"
           range={[0.1, 0.45]}

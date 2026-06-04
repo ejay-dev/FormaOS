@@ -18,11 +18,11 @@ import { useDeviceTier } from '@/lib/device-tier';
  * Starts VISIBLE with glass shell + UI fragments inside.
  * On scroll: rotates → layers separate → morphs into full product UI.
  *
- * Scroll phases (driven by parent via scrollProgress 0–1):
- *   0–0.15: Core visible at 1x, slight zoom to 1.12x, glow intensifies
- *   0.15–0.45: UI fragments separate in 3D space
- *   0.45–0.7: Core dissolves, product interface scales up
- *   0.7–1.0: Product UI holds at full size
+ * Scroll phases (driven by parent via scrollProgress 0-1):
+ *   0-0.15: Core visible at 1x, slight zoom to 1.12x, glow intensifies
+ *   0.15-0.45: UI fragments separate in 3D space
+ *   0.45-0.7: Core dissolves, product interface scales up
+ *   0.7-1.0: Product UI holds at full size
  */
 
 interface ComplianceCoreObjectProps {
