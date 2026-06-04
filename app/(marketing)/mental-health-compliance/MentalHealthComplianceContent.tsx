@@ -118,7 +118,7 @@ function MentalHealthDashboardVisual() {
             expiry: '01 Feb 2026',
           },
           expandedContent: {
-            label: 'Worker Details - ACTION REQUIRED',
+            label: 'Worker Details, ACTION REQUIRED',
             items: [
               { key: 'State', value: 'NSW' },
               { key: 'Check Type', value: 'Worker Screening + Police Check' },
@@ -154,7 +154,7 @@ function MentalHealthDashboardVisual() {
           type: 'alert',
         },
         {
-          message: 'Marcus Tan screening expired - renewal pending',
+          message: 'Marcus Tan screening expired, renewal pending',
           time: '1 day ago',
           type: 'alert',
         },
@@ -237,7 +237,7 @@ export default function MentalHealthComplianceContent() {
               <span className="text-foreground">Mental Health Services</span>
             </>
           }
-          subheadline="Operationalise the National Standards for Mental Health Services — consumer rights, restrictive-practice governance and incidents, continuously evidenced."
+          subheadline="Operationalise the National Standards for Mental Health Services, consumer rights, restrictive-practice governance and incidents, continuously evidenced."
           primaryCta={{
             label: PUBLIC_CTA_LABELS.compliancePlan,
             href: compliancePlanHref('mental_health'),
@@ -279,14 +279,14 @@ export default function MentalHealthComplianceContent() {
         headline="The Mental Health Compliance Gap"
         subheadline="The difference between reconstructing evidence and being review-ready."
         without={[
-          'Reviewers request consumer-rights and complaints evidence - scattered across shared drives, email, and spreadsheets',
-          'Worker screening check expired weeks ago - discovered only when the register is requested',
-          'A reportable incident not escalated within required timeframes - exposure to enforcement and harm',
-          'Seclusion or restraint applied without current authorisation - no documented review on file',
+          'Reviewers request consumer-rights and complaints evidence, scattered across shared drives, email, and spreadsheets',
+          'Worker screening check expired weeks ago, discovered only when the register is requested',
+          'A reportable incident not escalated within required timeframes, exposure to enforcement and harm',
+          'Seclusion or restraint applied without current authorisation, no documented review on file',
         ]}
         withFormaOS={[
-          'Continuous evidence chain across every NSMHS standard - review-ready export in one click',
-          'Automatic screening expiry alerts at 90, 60, and 30 days - zero workers operating without clearance',
+          'Continuous evidence chain across every NSMHS standard, review-ready export in one click',
+          'Automatic screening expiry alerts at 90, 60, and 30 days, zero workers operating without clearance',
           'Reportable-incident workflow with notification timers and submission status tracking',
           'Restrictive practices register linked to authorisations and scheduled review cycles',
         ]}
@@ -366,7 +366,7 @@ export default function MentalHealthComplianceContent() {
 
       <FrameworkExplorer
         headline="Mental Health Frameworks. Pre-Built."
-        description="FormaOS ships with the National Standards for Mental Health Services pre-loaded, alongside the supporting registers mental health providers rely on. Your obligations are mapped from day one - no manual setup required."
+        description="FormaOS ships with the National Standards for Mental Health Services pre-loaded, alongside the supporting registers mental health providers rely on. Your obligations are mapped from day one, no manual setup required."
         frameworks={[
           {
             id: 'nsmhs',
@@ -502,7 +502,7 @@ export default function MentalHealthComplianceContent() {
             number: '02',
             title: 'Map Evidence to Every Standard',
             description:
-              'Upload policies, worker credentials, and incident records. FormaOS links each document to specific NSMHS standards - building continuous evidence chains.',
+              'Upload policies, worker credentials, and incident records. FormaOS links each document to specific NSMHS standards, building continuous evidence chains.',
             gradient:
               'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
@@ -569,7 +569,7 @@ export default function MentalHealthComplianceContent() {
 
       <IndustryFeatures
         headline="Purpose-Built for Mental Health Services"
-        subheadline="Every feature designed around real mental health compliance workflows - not generic task management."
+        subheadline="Every feature designed around real mental health compliance workflows, not generic task management."
         features={[
           {
             title: 'Worker Screening Dashboard',
@@ -586,21 +586,21 @@ export default function MentalHealthComplianceContent() {
                 label="Worker Screening Status"
                 rows={[
                   {
-                    k: 'Min Park - SA',
+                    k: 'Min Park, SA',
                     v: 'Valid to Mar 2027',
                     status: 'green',
                   },
                   {
-                    k: 'Aaron Hassan - VIC',
+                    k: 'Aaron Hassan, VIC',
                     v: 'Expiring Apr 2026',
                     status: 'amber',
                   },
                   {
-                    k: 'Maria Lopez - QLD',
+                    k: 'Maria Lopez, QLD',
                     v: 'Valid to Sep 2027',
                     status: 'green',
                   },
-                  { k: 'Marcus Tan - NSW', v: 'Expired Feb 2026', status: 'red' },
+                  { k: 'Marcus Tan, NSW', v: 'Expired Feb 2026', status: 'red' },
                 ]}
               />
             ),
@@ -630,7 +630,7 @@ export default function MentalHealthComplianceContent() {
           {
             title: 'Consumer Compliance View',
             description:
-              'Compliance posture per consumer - care plans, restrictive practices, incident history, and consent documentation all linked to the individual.',
+              'Compliance posture per consumer, care plans, restrictive practices, incident history, and consent documentation all linked to the individual.',
             details: [
               'Care plan documentation with version history',
               'Restrictive practices register per consumer',
@@ -641,7 +641,7 @@ export default function MentalHealthComplianceContent() {
               <FeatureVisual
                 label="Consumer: Alex Thompson"
                 rows={[
-                  { k: 'Care Plan', v: 'v3 - Current', status: 'green' },
+                  { k: 'Care Plan', v: 'v3, Current', status: 'green' },
                   {
                     k: 'Restrictive Practices',
                     v: '1 Active',
@@ -702,7 +702,7 @@ export default function MentalHealthComplianceContent() {
           {
             title: 'Review Preparation Export',
             description:
-              'One-click evidence pack generation structured to the National Standards for Mental Health Services. When a review opens, your evidence is ready - not being assembled.',
+              'One-click evidence pack generation structured to the National Standards for Mental Health Services. When a review opens, your evidence is ready, not being assembled.',
             details: [
               'One-click export organised by NSMHS standard',
               'Evidence completeness scoring before export',
@@ -755,12 +755,12 @@ export default function MentalHealthComplianceContent() {
                 title="Mental Health Compliance Overview"
                 rows={[
                   {
-                    label: 'NSMHS - Standard 1 (Rights)',
+                    label: 'NSMHS, Standard 1 (Rights)',
                     value: '98%',
                     status: 'green',
                   },
                   {
-                    label: 'NSMHS - Standard 2 (Safety)',
+                    label: 'NSMHS, Standard 2 (Safety)',
                     value: '94%',
                     status: 'green',
                   },
@@ -796,18 +796,18 @@ export default function MentalHealthComplianceContent() {
               <DemoAuditExport
                 sections={[
                   {
-                    name: 'Standard 1 - Rights & Responsibilities',
+                    name: 'Standard 1, Rights & Responsibilities',
                     score: '98%',
                     items: 32,
                   },
-                  { name: 'Standard 2 - Safety', score: '94%', items: 28 },
+                  { name: 'Standard 2, Safety', score: '94%', items: 28 },
                   {
-                    name: 'Standard 8 - Governance',
+                    name: 'Standard 8, Governance',
                     score: '87%',
                     items: 27,
                   },
                   {
-                    name: 'Standard 10 - Delivery of Care',
+                    name: 'Standard 10, Delivery of Care',
                     score: '100%',
                     items: 24,
                   },
@@ -835,13 +835,13 @@ export default function MentalHealthComplianceContent() {
                   {
                     time: 'T+1:00',
                     label:
-                      'Incident triaged and classified - notification clock starts',
+                      'Incident triaged and classified, notification clock starts',
                     status: 'complete',
                   },
                   {
                     time: 'T+4:00',
                     label:
-                      'Investigation commenced - witness statements collected',
+                      'Investigation commenced, witness statements collected',
                     status: 'complete',
                   },
                   {
@@ -856,7 +856,7 @@ export default function MentalHealthComplianceContent() {
                   },
                   {
                     time: 'T+5d',
-                    label: 'Investigation closed - corrective actions assigned',
+                    label: 'Investigation closed, corrective actions assigned',
                     status: 'pending',
                   },
                 ]}
@@ -871,12 +871,6 @@ export default function MentalHealthComplianceContent() {
       </div>
 
       <div className="relative isolate overflow-hidden">
-        <SectionMedia
-          src="/marketing-media/use-case-ndis-aged-care.jpg"
-          objectPosition="50% 40%"
-          opacity={0.6}
-          scrim="center"
-        />
         <IndustryCTA
           industry="Mental Health Services"
           urgencyCallout="Reviews and accreditation cycles arrive on their own schedule. Is your evidence chain current right now?"
@@ -894,7 +888,7 @@ export default function MentalHealthComplianceContent() {
             question:
               'Does FormaOS cover the National Standards for Mental Health Services?',
             answer:
-              'Yes. FormaOS ships the NSMHS as a pre-built framework so your obligations across the ten standards are mapped from day one - no manual setup required.',
+              'Yes. FormaOS ships the NSMHS as a pre-built framework so your obligations across the ten standards are mapped from day one, no manual setup required.',
           },
           {
             question: 'Can FormaOS track restrictive practices?',
@@ -904,13 +898,13 @@ export default function MentalHealthComplianceContent() {
           {
             question: 'How does FormaOS handle reportable incidents?',
             answer:
-              'FormaOS tracks reportable incidents through a structured pipeline - report, investigation, notification, and closure - with notification timers and submission status tracking so deadlines are not missed.',
+              'FormaOS tracks reportable incidents through a structured pipeline, report, investigation, notification, and closure, with notification timers and submission status tracking so deadlines are not missed.',
           },
           {
             question:
               'How does FormaOS handle state-specific worker screening?',
             answer:
-              'FormaOS tracks worker screening requirements by state and territory. Each jurisdiction has different screening units and processes - FormaOS maps these and alerts you to expiring clearances at 90, 60, and 30 days.',
+              'FormaOS tracks worker screening requirements by state and territory. Each jurisdiction has different screening units and processes, FormaOS maps these and alerts you to expiring clearances at 90, 60, and 30 days.',
           },
           {
             question: 'Can FormaOS support consumer and carer participation?',
