@@ -252,7 +252,40 @@ export function ComparePageTemplate({
                 </p>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Mobile: stacked per-capability cards (the 3-col matrix is
+                  cramped at phone width — capability names wrap to 3 lines) */}
+              <div className="space-y-2.5 p-4 sm:hidden">
+                {featureComparison.map((row) => (
+                  <div
+                    key={row.feature}
+                    className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5"
+                  >
+                    <span className="block text-[13px] font-medium text-white">
+                      {row.feature}
+                    </span>
+                    <div className="mt-2.5 grid grid-cols-2 gap-2">
+                      <div className="rounded-lg border border-white/20 bg-white/[0.05] px-3 py-2 text-center">
+                        <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300">
+                          FormaOS
+                        </span>
+                        <div className="flex min-h-[20px] items-center justify-center">
+                          <FeatureCell value={row.formaos} />
+                        </div>
+                      </div>
+                      <div className="rounded-lg border border-white/[0.06] px-3 py-2 text-center">
+                        <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                          {competitor}
+                        </span>
+                        <div className="flex min-h-[20px] items-center justify-center">
+                          <FeatureCell value={row.competitor} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="hidden overflow-x-auto sm:block">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/[0.06]">
