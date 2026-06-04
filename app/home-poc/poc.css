@@ -419,6 +419,148 @@
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
 }
 
+/* ---------- Kinetic ticker ---------- */
+.bru-ticker {
+  border-top: 1.5px solid var(--line-2);
+  border-bottom: 1.5px solid var(--line-2);
+  overflow: hidden;
+}
+.bru-ticker-row {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.bru-ticker-row--alt {
+  background: var(--red);
+  border-top: 1px solid var(--line-2);
+}
+.bru-ticker-track {
+  display: inline-flex;
+  width: max-content;
+  animation: bru-marquee 38s linear infinite;
+}
+.bru-ticker-track--rev {
+  animation-direction: reverse;
+  animation-duration: 30s;
+}
+.bru-ticker-group {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+.bru-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 30px;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-variation-settings: 'wght' 800, 'wdth' 110;
+  text-transform: uppercase;
+  font-size: clamp(1rem, 1.6vw, 1.5rem);
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+.bru-ticker-val {
+  font-family: var(--mono);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 0.7em;
+  color: var(--ok);
+}
+.bru-ticker-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--ok);
+}
+.bru-ticker-item--creed {
+  color: #fff;
+  font-size: clamp(0.85rem, 1.3vw, 1.2rem);
+  gap: 22px;
+}
+.bru-ticker-slash {
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 400;
+}
+@keyframes bru-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Ledger row interactivity ---------- */
+.bru-ledger tbody tr {
+  transition: background 0.15s ease;
+}
+.bru-ledger tbody tr:hover td {
+  background: var(--bg-raise);
+}
+.bru-ledger tbody tr:hover td:first-child {
+  box-shadow: inset 3px 0 0 var(--red);
+}
+
+/* ---------- Industries index ---------- */
+.bru-idx-row {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: clamp(1rem, 2.2vw, 1.6rem) 4px;
+  border-top: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--ink);
+  transition:
+    padding-left 0.2s ease,
+    color 0.2s ease;
+}
+.bru-idx-row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.bru-idx-row:hover {
+  padding-left: 18px;
+}
+.bru-idx-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+}
+.bru-idx-name {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-variation-settings: 'wght' 800, 'wdth' 112;
+  text-transform: uppercase;
+  font-size: clamp(1.4rem, 3.4vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.bru-idx-row:hover .bru-idx-name {
+  color: var(--red);
+}
+.bru-idx-meta {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--ink-dim);
+  text-align: right;
+  letter-spacing: 0.04em;
+}
+.bru-idx-arrow {
+  font-family: var(--mono);
+  color: var(--ink-faint);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.bru-idx-row:hover .bru-idx-arrow {
+  color: var(--red);
+  transform: translateX(5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bru-ticker-track {
+    animation: none !important;
+  }
+}
+
 /* Reveal: brutalist = hard clip wipe, not soft fade */
 @media (prefers-reduced-motion: reduce) {
   .bru-root *,

@@ -1,9 +1,18 @@
 import { Reveal } from './_components/Reveal';
 import { Ledger } from './_components/Ledger';
 import { Schematic } from './_components/Schematic';
+import { Ticker } from './_components/Ticker';
 import { StickyCTA } from './_components/StickyCTA';
 
 export const dynamic = 'force-static';
+
+const INDUSTRIES = [
+  ['NDIS & Disability', 'Practice Standards · audits', '01'],
+  ['Healthcare & Aged Care', 'Accreditation · clinical governance', '02'],
+  ['Financial Services', 'APRA CPS 234 · ASIC', '03'],
+  ['Childcare & Education', 'NQF · ratios · safeguarding', '04'],
+  ['Mental Health', 'Standards · incident chains', '05'],
+] as const;
 
 const MANIFEST = [
   {
@@ -200,42 +209,41 @@ export default function HomePocPage() {
         </div>
       </section>
 
+      {/* ========== KINETIC TICKER ========== */}
+      <Ticker />
+
       {/* ========== LEDGER ========== */}
       <section className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 7vw, 6rem)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
           <span className="bru-kicker">№02 — <b>THE READOUT</b></span>
           <span className="bru-kicker hidden sm:inline">/ LIVE POSTURE</span>
         </div>
-        <Reveal>
-          <Ledger />
-        </Reveal>
+        <Ledger />
       </section>
 
       <hr className="bru-rule-strong" />
 
-      {/* ========== SCHEMATIC ========== */}
+      {/* ========== SCHEMATIC (full-width figure) ========== */}
       <section className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 7vw, 6rem)' }}>
-        <div className="grid gap-x-10 gap-y-10 lg:grid-cols-12 lg:items-center">
-          <div className="lg:col-span-4">
-            <span className="bru-kicker">№03 — <b>THE MODEL</b></span>
-            <h2 className="bru-h2" style={{ fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', marginTop: 18 }}>
-              One graph.<br />Every<br />framework.
-            </h2>
-            <p className="bru-body" style={{ marginTop: 20, maxWidth: '34ch' }}>
-              Most tools store compliance as documents. FormaOS stores it as a wired
-              graph — obligations into controls, controls into owners and evidence.
-              Satisfy one control and every framework that depends on it updates at once.
-            </p>
-            <p className="bru-mono" style={{ fontSize: 11, color: 'var(--ink-faint)', marginTop: 22, letterSpacing: '0.06em' }}>
-              FIG.01 — THE COMPLIANCE GRAPH
-            </p>
-          </div>
+        <div className="grid gap-x-10 gap-y-6 lg:grid-cols-12" style={{ alignItems: 'end', marginBottom: 'clamp(1.75rem, 3vw, 2.75rem)' }}>
           <div className="lg:col-span-8">
-            <Reveal>
-              <Schematic />
-            </Reveal>
+            <span className="bru-kicker">№03 — <b>THE MODEL</b></span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2.2rem, 6vw, 4.6rem)', marginTop: 16 }}>
+              One graph. Every framework.
+            </h2>
+          </div>
+          <div className="lg:col-span-4">
+            <p className="bru-body" style={{ maxWidth: '40ch' }}>
+              Compliance stored as a wired graph, not documents. Satisfy one control and
+              every framework that depends on it updates at once.
+            </p>
           </div>
         </div>
+        <Reveal y={0}>
+          <div style={{ border: '1px solid var(--line-2)', background: 'var(--bg)', padding: 'clamp(0.5rem, 1.5vw, 1.25rem)' }}>
+            <Schematic />
+          </div>
+        </Reveal>
       </section>
 
       <hr className="bru-rule-strong" />
@@ -277,11 +285,32 @@ export default function HomePocPage() {
         })}
       </section>
 
+      {/* ========== INDUSTRIES INDEX ========== */}
+      <hr className="bru-rule-strong" />
+      <section className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 7vw, 6rem)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
+          <span className="bru-kicker">№04 — <b>THE SURFACE</b></span>
+          <span className="bru-kicker hidden sm:inline">/ REGULATED INDUSTRIES</span>
+        </div>
+        <div>
+          {INDUSTRIES.map(([name, meta, n]) => (
+            <a key={n} href="#" className="bru-idx-row">
+              <span className="bru-idx-num">№{n}</span>
+              <span className="bru-idx-name">{name}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+                <span className="bru-idx-meta hidden md:block">{meta}</span>
+                <span className="bru-idx-arrow">→</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* ========== RED STATEMENT BAND ========== */}
       <section className="bru-band">
         <div className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 8vw, 7rem)' }}>
           <span className="bru-mono" style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>
-            №04 — THE POINT
+            №05 — THE POINT
           </span>
           <h2 className="bru-display" style={{ fontSize: 'clamp(3rem, 11vw, 9rem)', marginTop: 18 }}>
             Proof,<br />not promises.
