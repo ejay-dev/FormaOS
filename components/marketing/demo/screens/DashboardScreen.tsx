@@ -70,8 +70,9 @@ export default function DashboardScreen() {
 
   return (
     <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
-      {/* Top row: Compliance Score + Metric Cards */}
-      <div className="flex gap-3">
+      {/* Top row: Compliance Score + Metric Cards (stacks on mobile so the
+          KPI cards aren't crushed beside the score ring) */}
+      <div className="flex flex-col gap-3 sm:flex-row">
         {/* Compliance Score Card */}
         <motion.div
           variants={fadeUp}

@@ -226,7 +226,7 @@ export default function InteractiveDemo() {
             </div>
 
             {/* Demo shell */}
-            <div className="h-[380px] sm:h-[440px] md:h-[480px] lg:h-[520px]">
+            <div className="h-[460px] sm:h-[440px] md:h-[480px] lg:h-[520px]">
               <DemoShell activeScreen={activeScreen} onNavigate={handleNavigate}>
                 <ActiveScreenComponent />
               </DemoShell>
