@@ -63,7 +63,7 @@ function ConstructionDashboardVisual() {
           id: 's1',
           status: 'green',
           cells: {
-            site: 'CBD Tower - Lvl 14',
+            site: 'CBD Tower, Lvl 14',
             swms: '12 active',
             status: 'Compliant',
             contractors: '34',
@@ -88,12 +88,12 @@ function ConstructionDashboardVisual() {
             contractors: '22',
           },
           expandedContent: {
-            label: 'Site Details - REVIEW NEEDED',
+            label: 'Site Details, REVIEW NEEDED',
             items: [
               { key: 'Project Manager', value: 'Sarah Kim' },
               { key: 'WHS Score', value: '84%' },
               { key: 'Open Incidents', value: '1 under investigation' },
-              { key: 'Issue', value: 'SWMS-019 expired - renewal pending' },
+              { key: 'Issue', value: 'SWMS-019 expired, renewal pending' },
             ],
           },
         },
@@ -126,11 +126,11 @@ function ConstructionDashboardVisual() {
             contractors: '48',
           },
           expandedContent: {
-            label: 'Site Details - ACTION REQUIRED',
+            label: 'Site Details, ACTION REQUIRED',
             items: [
               { key: 'Project Manager', value: "Mike O'Sullivan" },
               { key: 'WHS Score', value: '72%' },
-              { key: 'Open Incidents', value: '2 - 1 notifiable' },
+              { key: 'Open Incidents', value: '2, 1 notifiable' },
               {
                 key: 'Critical Issue',
                 value: 'SafeWork notification due in 18hrs',
@@ -160,17 +160,17 @@ function ConstructionDashboardVisual() {
       ]}
       notifications={[
         {
-          message: 'Olympic Park - SafeWork notification due in 18hrs',
+          message: 'Olympic Park, SafeWork notification due in 18hrs',
           time: '1 hour ago',
           type: 'alert',
         },
         {
-          message: 'Westfield - SWMS-019 expired, renewal pending',
+          message: 'Westfield, SWMS-019 expired, renewal pending',
           time: '6 hours ago',
           type: 'alert',
         },
         {
-          message: 'CBD Tower - site inspection passed',
+          message: 'CBD Tower, site inspection passed',
           time: '2 days ago',
           type: 'success',
         },
@@ -292,15 +292,15 @@ export default function ConstructionComplianceContent() {
         headline="The Construction WHS Compliance Gap"
         subheadline="The difference between scrambling and being inspection-ready."
         without={[
-          'SafeWork inspector arrives unannounced - scramble to find current SWMS across spreadsheets, emails, and filing cabinets',
-          'Subcontractors arrive on-site without valid inductions or licences - you carry the liability',
-          "Notifiable WHS incident happens - 48-hour SafeWork notification deadline tracked in someone's head",
-          'Managing compliance across 5+ active sites with spreadsheets - gaps emerge between projects unseen',
+          'SafeWork inspector arrives unannounced, scramble to find current SWMS across spreadsheets, emails, and filing cabinets',
+          'Subcontractors arrive on-site without valid inductions or licences, you carry the liability',
+          "Notifiable WHS incident happens, 48-hour SafeWork notification deadline tracked in someone's head",
+          'Managing compliance across 5+ active sites with spreadsheets, gaps emerge between projects unseen',
         ]}
         withFormaOS={[
-          'Every SWMS is version-controlled, signed off, and exportable by site - hand the inspector a structured evidence pack instantly',
-          'Contractor verification pipeline checks inductions, licences, and insurance before site access - automatic alerts on expiry',
-          'Incident pipeline with countdown timer, site preservation checklist, and structured SafeWork notification workflow - zero missed deadlines',
+          'Every SWMS is version-controlled, signed off, and exportable by site, hand the inspector a structured evidence pack instantly',
+          'Contractor verification pipeline checks inductions, licences, and insurance before site access, automatic alerts on expiry',
+          'Incident pipeline with countdown timer, site preservation checklist, and structured SafeWork notification workflow, zero missed deadlines',
           'Multi-site dashboard shows compliance score, incident count, SWMS currency, and contractor status per project in real time',
         ]}
       />
@@ -383,7 +383,7 @@ export default function ConstructionComplianceContent() {
 
       <FrameworkExplorer
         headline="Every Construction WHS Framework. Pre-Built."
-        description="FormaOS ships with Australian WHS frameworks pre-loaded. State-specific regulations, Codes of Practice, and high-risk work requirements - mapped and ready."
+        description="FormaOS ships with Australian WHS frameworks pre-loaded. State-specific regulations, Codes of Practice, and high-risk work requirements, mapped and ready."
         frameworks={[
           {
             id: 'model-whs',
@@ -415,7 +415,7 @@ export default function ConstructionComplianceContent() {
             updated: '2025-11-15',
             obligationCount: '300+',
             categories: [
-              { name: 'Construction work - managing risks', pct: 97 },
+              { name: 'Construction work, managing risks', pct: 97 },
               { name: 'Demolition work', pct: 94 },
               { name: 'Excavation work', pct: 96 },
               { name: 'Managing the risk of falls', pct: 98 },
@@ -423,7 +423,7 @@ export default function ConstructionComplianceContent() {
               { name: 'Managing risks of hazardous chemicals', pct: 91 },
             ],
             requirements: [
-              'Construction work - managing risks',
+              'Construction work, managing risks',
               'Demolition work',
               'Excavation work',
               'Managing the risk of falls at workplaces',
@@ -508,26 +508,26 @@ export default function ConstructionComplianceContent() {
             number: '01',
             title: 'Set up your sites and SWMS register',
             description:
-              'Add your active construction sites and upload existing SWMS documents. FormaOS creates a versioned SWMS register per site with worker sign-off tracking and review date alerts - ready for any SafeWork inspection.',
+              'Add your active construction sites and upload existing SWMS documents. FormaOS creates a versioned SWMS register per site with worker sign-off tracking and review date alerts, ready for any SafeWork inspection.',
             gradient:
               'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
               <FeatureVisual
                 label="Site Setup"
                 rows={[
-                  { k: 'CBD Tower - 12 SWMS', v: 'Active', status: 'green' },
+                  { k: 'CBD Tower, 12 SWMS', v: 'Active', status: 'green' },
                   {
-                    k: 'Westfield Extension - 8 SWMS',
+                    k: 'Westfield Extension, 8 SWMS',
                     v: 'Active',
                     status: 'green',
                   },
                   {
-                    k: 'Olympic Park Stage 3 - 15 SWMS',
+                    k: 'Olympic Park Stage 3, 15 SWMS',
                     v: 'Active',
                     status: 'green',
                   },
                   {
-                    k: 'Airport Terminal 2 - 10 SWMS',
+                    k: 'Airport Terminal 2, 10 SWMS',
                     v: 'Active',
                     status: 'green',
                   },
@@ -602,7 +602,7 @@ export default function ConstructionComplianceContent() {
 
       <IndustryFeatures
         headline="Purpose-Built for Construction"
-        subheadline="Every feature designed around real construction WHS workflows - not retrofitted office compliance tools."
+        subheadline="Every feature designed around real construction WHS workflows, not retrofitted office compliance tools."
         features={[
           {
             title: 'SWMS Register',
@@ -616,26 +616,26 @@ export default function ConstructionComplianceContent() {
             ],
             visual: (
               <FeatureVisual
-                label="SWMS Register - CBD Tower Lvl 14"
+                label="SWMS Register, CBD Tower Lvl 14"
                 rows={[
                   {
                     k: 'SWMS-042: Working at Heights',
-                    v: 'v3 - Current',
+                    v: 'v3, Current',
                     status: 'green',
                   },
                   {
                     k: 'SWMS-041: Concrete Pouring',
-                    v: 'v2 - Current',
+                    v: 'v2, Current',
                     status: 'green',
                   },
                   {
                     k: 'SWMS-039: Demolition Phase B',
-                    v: 'v1 - Review Due',
+                    v: 'v1, Review Due',
                     status: 'amber',
                   },
                   {
                     k: 'SWMS-038: Electrical Rough-in',
-                    v: 'v2 - Expired',
+                    v: 'v2, Expired',
                     status: 'red',
                   },
                 ]}
@@ -645,7 +645,7 @@ export default function ConstructionComplianceContent() {
           {
             title: 'Contractor Induction Tracker',
             description:
-              'Know who is qualified and who is not - before they step on site. Verify inductions, licences, and insurance for every subcontractor across every project.',
+              'Know who is qualified and who is not, before they step on site. Verify inductions, licences, and insurance for every subcontractor across every project.',
             details: [
               'Verified vs unverified contractors per site',
               'Licence and insurance expiry tracking',
@@ -654,7 +654,7 @@ export default function ConstructionComplianceContent() {
             ],
             visual: (
               <FeatureVisual
-                label="Contractor Verification - Westfield Extension"
+                label="Contractor Verification, Westfield Extension"
                 rows={[
                   {
                     k: 'Murray Electrical Pty Ltd',
@@ -679,7 +679,7 @@ export default function ConstructionComplianceContent() {
           {
             title: 'Multi-Site Compliance Dashboard',
             description:
-              'See compliance status across all active construction sites in a single view. Incident counts, SWMS currency, contractor verification rates - per project, at a glance.',
+              'See compliance status across all active construction sites in a single view. Incident counts, SWMS currency, contractor verification rates, per project, at a glance.',
             details: [
               'Compliance score per active site',
               'Incident count and severity tracking',
@@ -760,7 +760,7 @@ export default function ConstructionComplianceContent() {
           {
             title: 'High-Risk Work Licence Register',
             description:
-              'Track every high-risk work licence across your workforce. Crane operators, scaffolders, riggers, forklift operators - every licence type, expiry date, and work classification recorded.',
+              'Track every high-risk work licence across your workforce. Crane operators, scaffolders, riggers, forklift operators, every licence type, expiry date, and work classification recorded.',
             details: [
               'Licence type and class tracking',
               'Expiry date with countdown alerts',
@@ -772,22 +772,22 @@ export default function ConstructionComplianceContent() {
                 label="High-Risk Work Licences"
                 rows={[
                   {
-                    k: 'Tom Harris - Crane (C6)',
+                    k: 'Tom Harris, Crane (C6)',
                     v: 'Valid to Dec 2027',
                     status: 'green',
                   },
                   {
-                    k: 'Sam Lee - Scaffolding (SB)',
+                    k: 'Sam Lee, Scaffolding (SB)',
                     v: 'Expiring Jun 2026',
                     status: 'amber',
                   },
                   {
-                    k: 'Alex Dunn - Rigging (RB)',
+                    k: 'Alex Dunn, Rigging (RB)',
                     v: 'Valid to Mar 2028',
                     status: 'green',
                   },
                   {
-                    k: 'Chris Ward - Forklift (LF)',
+                    k: 'Chris Ward, Forklift (LF)',
                     v: 'Expired Jan 2026',
                     status: 'red',
                   },
@@ -814,7 +814,7 @@ export default function ConstructionComplianceContent() {
                 title="Multi-Site WHS Compliance"
                 rows={[
                   {
-                    label: 'CBD Tower - Lvl 14',
+                    label: 'CBD Tower, Lvl 14',
                     value: '98%',
                     status: 'green',
                   },
@@ -839,7 +839,7 @@ export default function ConstructionComplianceContent() {
                     status: 'green',
                   },
                   {
-                    label: 'SWMS Currency - All Sites',
+                    label: 'SWMS Currency, All Sites',
                     value: '91%',
                     status: 'green',
                   },
@@ -855,7 +855,7 @@ export default function ConstructionComplianceContent() {
               <DemoAuditExport
                 sections={[
                   {
-                    name: 'SWMS Register - All Sites',
+                    name: 'SWMS Register, All Sites',
                     score: '91%',
                     items: 51,
                   },
@@ -877,18 +877,18 @@ export default function ConstructionComplianceContent() {
                   {
                     time: 'T+0:00',
                     label:
-                      'Notifiable incident - fall from height at Olympic Park',
+                      'Notifiable incident, fall from height at Olympic Park',
                     status: 'complete',
                   },
                   {
                     time: 'T+0:15',
-                    label: 'Site preservation activated - area cordoned',
+                    label: 'Site preservation activated, area cordoned',
                     status: 'complete',
                   },
                   {
                     time: 'T+1:00',
                     label:
-                      'SafeWork notification prepared - 48hr countdown started',
+                      'SafeWork notification prepared, 48hr countdown started',
                     status: 'complete',
                   },
                   {
@@ -899,7 +899,7 @@ export default function ConstructionComplianceContent() {
                   {
                     time: 'T+48:00',
                     label:
-                      'Investigation commenced - witness statements collected',
+                      'Investigation commenced, witness statements collected',
                     status: 'pending',
                   },
                   {
@@ -921,8 +921,8 @@ export default function ConstructionComplianceContent() {
       <SocialProof
         metricsBanner={[
           '206+ tables with row-level security',
-          'AU-hosted by default - data never leaves Australia',
-          'Zero evidence gaps at inspection - immutable chain',
+          'AU-hosted by default, data never leaves Australia',
+          'Zero evidence gaps at inspection, immutable chain',
           'SOC 2 compliance in progress',
         ]}
         trustCards={[
@@ -957,12 +957,6 @@ export default function ConstructionComplianceContent() {
       </div>
 
       <div className="relative isolate overflow-hidden">
-        <SectionMedia
-          src="/marketing-media/enterprise.jpg"
-          objectPosition="50% 40%"
-          opacity={0.6}
-          scrim="center"
-        />
         <IndustryCTA
           industry="Construction"
           urgencyCallout="SafeWork inspections don't announce themselves. Is your SWMS register current right now?"
@@ -1015,7 +1009,7 @@ export default function ConstructionComplianceContent() {
           {
             question: 'How long does it take to get set up?',
             answer:
-              'Most builders are inspection-ready within a day. Add your active sites, upload existing SWMS, and enter your contractors. FormaOS creates versioned SWMS registers, contractor verification pipelines, and multi-site dashboards immediately - no multi-week implementation required.',
+              'Most builders are inspection-ready within a day. Add your active sites, upload existing SWMS, and enter your contractors. FormaOS creates versioned SWMS registers, contractor verification pipelines, and multi-site dashboards immediately, no multi-week implementation required.',
           },
         ]}
       />

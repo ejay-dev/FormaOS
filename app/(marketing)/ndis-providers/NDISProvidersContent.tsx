@@ -126,7 +126,7 @@ function NDISDashboardVisual() {
             expiry: '01 Feb 2026',
           },
           expandedContent: {
-            label: 'Worker Details - ACTION REQUIRED',
+            label: 'Worker Details, ACTION REQUIRED',
             items: [
               { key: 'State', value: 'SA' },
               { key: 'Check Type', value: 'NDIS Worker Screening' },
@@ -162,7 +162,7 @@ function NDISDashboardVisual() {
           type: 'alert',
         },
         {
-          message: 'Marcus Tan screening expired - renewal pending',
+          message: 'Marcus Tan screening expired, renewal pending',
           time: '1 day ago',
           type: 'alert',
         },
@@ -247,7 +247,7 @@ export default function NDISProvidersContent() {
             </span>
           </>
         }
-        subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously — defensible every day, not only during audits."
+        subheadline="The NDIS Commission can visit without notice. FormaOS maintains your evidence chain continuously, defensible every day, not only during audits."
         primaryCta={{
           label: PUBLIC_CTA_LABELS.compliancePlan,
           href: compliancePlanHref('ndis_providers'),
@@ -289,14 +289,14 @@ export default function NDISProvidersContent() {
         headline="The NDIS Compliance Gap"
         subheadline="The difference between scrambling and being audit-ready."
         without={[
-          'NDIS Commission arrives unannounced - evidence scattered across shared drives, email, and spreadsheets',
-          'Worker screening check expired 67 days ago - discovered only when Commission requests the register',
-          'Priority reportable incident not notified within 24 hours - enforcement action exposure',
-          'Restrictive practice without current behaviour support plan - no documented authorisation on file',
+          'NDIS Commission arrives unannounced, evidence scattered across shared drives, email, and spreadsheets',
+          'Worker screening check expired 67 days ago, discovered only when Commission requests the register',
+          'Priority reportable incident not notified within 24 hours, enforcement action exposure',
+          'Restrictive practice without current behaviour support plan, no documented authorisation on file',
         ]}
         withFormaOS={[
-          'Continuous evidence chain across all 8 Practice Standards - audit-ready export in one click',
-          'Automatic screening expiry alerts at 90, 60, and 30 days - zero workers operating without clearance',
+          'Continuous evidence chain across all 8 Practice Standards, audit-ready export in one click',
+          'Automatic screening expiry alerts at 90, 60, and 30 days, zero workers operating without clearance',
           'SIRS notification workflow with 24-hour countdown timer and Commission submission tracking',
           'Restrictive practices register linked to behaviour support plans with authorisation documentation',
         ]}
@@ -376,7 +376,7 @@ export default function NDISProvidersContent() {
 
       <FrameworkExplorer
         headline="Every NDIS Framework. Pre-Built."
-        description="FormaOS ships with every major NDIS regulatory framework pre-loaded. Your obligations are mapped from day one - no manual setup required."
+        description="FormaOS ships with every major NDIS regulatory framework pre-loaded. Your obligations are mapped from day one, no manual setup required."
         frameworks={[
           {
             id: 'practice-standards',
@@ -453,7 +453,7 @@ export default function NDISProvidersContent() {
           },
           {
             id: 'sirs',
-            name: 'SIRS - Serious Incident Response Scheme',
+            name: 'SIRS, Serious Incident Response Scheme',
             body: 'NDIS Quality and Safeguards Commission',
             updated: '2026-01-10',
             obligationCount: '80+',
@@ -515,7 +515,7 @@ export default function NDISProvidersContent() {
                     status: 'green',
                   },
                   {
-                    k: 'SIRS - Incident Response Scheme',
+                    k: 'SIRS, Incident Response Scheme',
                     v: 'Activated',
                     status: 'green',
                   },
@@ -537,7 +537,7 @@ export default function NDISProvidersContent() {
             number: '02',
             title: 'Map Evidence to Every Standard',
             description:
-              'Upload policies, worker credentials, incident records. FormaOS links each document to specific Practice Standards and SIRS requirements - building continuous evidence chains.',
+              'Upload policies, worker credentials, incident records. FormaOS links each document to specific Practice Standards and SIRS requirements, building continuous evidence chains.',
             gradient:
               'from-zinc-700/20 to-zinc-900/20 border-zinc-600/30 text-zinc-300',
             visual: (
@@ -604,7 +604,7 @@ export default function NDISProvidersContent() {
 
       <IndustryFeatures
         headline="Purpose-Built for NDIS Providers"
-        subheadline="Every feature designed around real NDIS compliance workflows - not generic task management."
+        subheadline="Every feature designed around real NDIS compliance workflows, not generic task management."
         features={[
           {
             title: 'Worker Screening Dashboard',
@@ -621,21 +621,21 @@ export default function NDISProvidersContent() {
                 label="Worker Screening Status"
                 rows={[
                   {
-                    k: 'Min Park - NSW',
+                    k: 'Min Park, NSW',
                     v: 'Valid to Mar 2027',
                     status: 'green',
                   },
                   {
-                    k: 'Aaron Hassan - VIC',
+                    k: 'Aaron Hassan, VIC',
                     v: 'Expiring Apr 2026',
                     status: 'amber',
                   },
                   {
-                    k: 'Maria Lopez - QLD',
+                    k: 'Maria Lopez, QLD',
                     v: 'Valid to Sep 2027',
                     status: 'green',
                   },
-                  { k: 'Marcus Tan - SA', v: 'Expired Feb 2026', status: 'red' },
+                  { k: 'Marcus Tan, SA', v: 'Expired Feb 2026', status: 'red' },
                 ]}
               />
             ),
@@ -673,7 +673,7 @@ export default function NDISProvidersContent() {
           {
             title: 'Participant Compliance View',
             description:
-              'Compliance posture per participant - support plans, restrictive practices register, incident history, and consent documentation all linked to the individual.',
+              'Compliance posture per participant, support plans, restrictive practices register, incident history, and consent documentation all linked to the individual.',
             details: [
               'Support plan documentation with version history',
               'Restrictive practices register per participant',
@@ -684,7 +684,7 @@ export default function NDISProvidersContent() {
               <FeatureVisual
                 label="Participant: Alex Thompson"
                 rows={[
-                  { k: 'Support Plan', v: 'v3 - Current', status: 'green' },
+                  { k: 'Support Plan', v: 'v3, Current', status: 'green' },
                   {
                     k: 'Restrictive Practices',
                     v: '1 Active',
@@ -745,7 +745,7 @@ export default function NDISProvidersContent() {
           {
             title: 'Audit Preparation Export',
             description:
-              'One-click evidence pack generation structured to NDIS Practice Standards. When the Commission arrives, your evidence is ready - not being assembled.',
+              'One-click evidence pack generation structured to NDIS Practice Standards. When the Commission arrives, your evidence is ready, not being assembled.',
             details: [
               'One-click export organised by Practice Standard module',
               'Evidence completeness scoring before export',
@@ -798,12 +798,12 @@ export default function NDISProvidersContent() {
                 title="NDIS Compliance Overview"
                 rows={[
                   {
-                    label: 'Practice Standards - Module 1',
+                    label: 'Practice Standards, Module 1',
                     value: '98%',
                     status: 'green',
                   },
                   {
-                    label: 'Practice Standards - Module 2',
+                    label: 'Practice Standards, Module 2',
                     value: '94%',
                     status: 'green',
                   },
@@ -813,7 +813,7 @@ export default function NDISProvidersContent() {
                     status: 'amber',
                   },
                   {
-                    label: 'SIRS - Open Incidents',
+                    label: 'SIRS, Open Incidents',
                     value: '1 priority',
                     status: 'amber',
                   },
@@ -839,18 +839,18 @@ export default function NDISProvidersContent() {
               <DemoAuditExport
                 sections={[
                   {
-                    name: 'Module 1 - Rights & Responsibilities',
+                    name: 'Module 1, Rights & Responsibilities',
                     score: '98%',
                     items: 38,
                   },
-                  { name: 'Module 2 - Governance', score: '94%', items: 25 },
+                  { name: 'Module 2, Governance', score: '94%', items: 25 },
                   {
-                    name: 'Module 3 - Provision of Supports',
+                    name: 'Module 3, Provision of Supports',
                     score: '87%',
                     items: 22,
                   },
                   {
-                    name: 'Module 4 - Support Environment',
+                    name: 'Module 4, Support Environment',
                     score: '100%',
                     items: 18,
                   },
@@ -878,18 +878,18 @@ export default function NDISProvidersContent() {
                   {
                     time: 'T+1:00',
                     label:
-                      'Incident classified as priority reportable - 24hr clock starts',
+                      'Incident classified as priority reportable, 24hr clock starts',
                     status: 'complete',
                   },
                   {
                     time: 'T+4:00',
                     label:
-                      'Investigation commenced - witness statements collected',
+                      'Investigation commenced, witness statements collected',
                     status: 'complete',
                   },
                   {
                     time: 'T+18:00',
-                    label: 'Commission notification drafted - 6hrs remaining',
+                    label: 'Commission notification drafted, 6hrs remaining',
                     status: 'active',
                   },
                   {
@@ -899,7 +899,7 @@ export default function NDISProvidersContent() {
                   },
                   {
                     time: 'T+5d',
-                    label: 'Investigation closed - corrective actions assigned',
+                    label: 'Investigation closed, corrective actions assigned',
                     status: 'pending',
                   },
                 ]}
@@ -916,8 +916,8 @@ export default function NDISProvidersContent() {
       <SocialProof
         metricsBanner={[
           '206+ tables with row-level security',
-          'AU-hosted by default - data never leaves Australia',
-          'Zero evidence gaps at audit - immutable chain',
+          'AU-hosted by default, data never leaves Australia',
+          'Zero evidence gaps at audit, immutable chain',
           'SOC 2 compliance in progress',
         ]}
         trustCards={[
@@ -955,12 +955,6 @@ export default function NDISProvidersContent() {
       </div>
 
       <div className="relative isolate overflow-hidden">
-        <SectionMedia
-          src="/marketing-media/use-case-ndis-aged-care.jpg"
-          objectPosition="50% 40%"
-          opacity={0.6}
-          scrim="center"
-        />
         <IndustryCTA
           industry="NDIS"
           urgencyCallout="The NDIS Commission can visit without notice. Is your evidence chain current right now?"
@@ -983,7 +977,7 @@ export default function NDISProvidersContent() {
           {
             question: 'Can FormaOS help with unannounced audits?',
             answer:
-              'FormaOS maintains continuous evidence chains so your compliance posture is audit-ready at all times - not just before scheduled visits. When the NDIS Commission arrives unannounced, your evidence pack is one click away.',
+              'FormaOS maintains continuous evidence chains so your compliance posture is audit-ready at all times, not just before scheduled visits. When the NDIS Commission arrives unannounced, your evidence pack is one click away.',
           },
           {
             question: 'Does FormaOS handle SIRS notifications?',
@@ -994,7 +988,7 @@ export default function NDISProvidersContent() {
             question:
               'How does FormaOS handle state-specific worker screening?',
             answer:
-              'FormaOS tracks NDIS Worker Screening Check requirements by state and territory. Each jurisdiction has different screening units and processes - FormaOS maps these automatically and alerts you to expiring clearances at 90, 60, and 30 days.',
+              'FormaOS tracks NDIS Worker Screening Check requirements by state and territory. Each jurisdiction has different screening units and processes, FormaOS maps these automatically and alerts you to expiring clearances at 90, 60, and 30 days.',
           },
           {
             question: 'Can I track restrictive practices in FormaOS?',

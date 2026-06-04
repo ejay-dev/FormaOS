@@ -128,7 +128,6 @@ export default function AuditEvidenceContent() {
       ctaTitle="End the evidence scramble"
       ctaDescription="FormaOS captures audit evidence automatically as work happens. No retroactive gathering, no missing context, no audit preparation panic. Just continuous, immutable proof that your controls work."
       mediaSrc="/marketing-media/audit-evidence-management.jpg"
-      mediaSrcSecondary="/marketing-media/enterprise.jpg"
     />
   );
 }
