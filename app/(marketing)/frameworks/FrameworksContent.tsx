@@ -119,7 +119,7 @@ export default function FrameworksContent() {
               <motion.article
                 key={p.title}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.05]"
               >
                 <div className="mb-4 inline-flex rounded-lg border border-white/10 bg-white/[0.05] p-2">
                   <p.icon className="h-5 w-5 text-slate-200" />
@@ -155,13 +155,13 @@ export default function FrameworksContent() {
           plus, in many cases, ISO 27001 for their tech stack. A fintech
           carries an AFS licence and an APRA prudential standard and a SOC 2
           for their banking partners. Each framework asks for the same kinds
-          of evidence — risk decisions, control execution, incident records,
-          training attestations — described in different language.
+          of evidence (risk decisions, control execution, incident records,
+          training attestations) described in different language.
         </p>
         <p className="mt-4 text-slate-300 leading-relaxed">
-          FormaOS maps frameworks once. A single piece of evidence — a signed
+          FormaOS maps frameworks once. A single piece of evidence (a signed
           policy acknowledgement, an access review export, a vendor
-          assessment — satisfies the relevant clauses across every framework
+          assessment) satisfies the relevant clauses across every framework
           your organisation is bound to. When a regulator updates a standard,
           the mapping updates centrally and the work items in flight inherit
           the change.
@@ -174,8 +174,8 @@ export default function FrameworksContent() {
           <li className="pl-5 relative">
             <span className="absolute left-0 top-2 h-1.5 w-1.5 rounded-full bg-slate-500" />
             <strong className="text-white">Obligation library.</strong>{' '}
-            Each framework is decomposed into atomic obligations — not the
-            top-level clause numbers, the specific operational requirements
+            Each framework is decomposed into atomic obligations, not the
+            top-level clause numbers but the specific operational requirements
             underneath them. ISO 27001 alone produces around 120 atomic
             obligations once Annex A is unpacked.
           </li>
@@ -218,8 +218,8 @@ export default function FrameworksContent() {
         </p>
         <p className="mt-4 text-slate-300 leading-relaxed">
           If you need a specific framework that is not listed in the pack
-          set above — APRA CPS 234, the AESCSF, the Essential Eight at
-          Maturity Level 2 — the obligation library is extensible.{' '}
+          set above (APRA CPS 234, the AESCSF, the Essential Eight at
+          Maturity Level 2), the obligation library is extensible.{' '}
           <Link
             href="/contact?type=compliance-plan"
             className="text-white underline-offset-4 hover:underline"
@@ -235,9 +235,8 @@ export default function FrameworksContent() {
       {/* Framework Packs */}
       <DeferredSection minHeight={400}>
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
           <ScrollReveal variant="depthScale" range={[0, 0.35]}>
-            <div className="rounded-2xl border border-white/[0.08] bg-slate-950/60 backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 lg:p-10">
               <div className="flex items-end justify-between gap-6">
                 <div>
                   <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">
