@@ -4,15 +4,17 @@
  * Pure CSS animation (robust, no JS), pauses on reduced-motion via CSS.
  */
 
+// Real framework packs shipping today (from FrameworkTrustStrip).
 const POSTURE = [
-  ['ISO 27001', '100%'],
-  ['SOC 2 TYPE II', '97%'],
-  ['NDIS PRACTICE', '96%'],
-  ['HIPAA', '94%'],
-  ['GDPR', '95%'],
-  ['PCI-DSS', '92%'],
-  ['CPS 234', '98%'],
-  ['ESSENTIAL 8', '93%'],
+  ['NDIS PRACTICE STANDARDS', 'PACK'],
+  ['AGED CARE QUALITY', 'PACK'],
+  ['NSQHS STANDARDS', 'PACK'],
+  ['AHPRA', 'PACK'],
+  ['APRA CPS 230', 'PACK'],
+  ['ISO 27001', 'PACK'],
+  ['SOC 2', 'PACK'],
+  ['HIPAA', 'PACK'],
+  ['ESSENTIAL EIGHT', 'PACK'],
 ];
 
 const CREED = [
@@ -20,7 +22,7 @@ const CREED = [
   'IMMUTABLE EVIDENCE',
   'CONTINUOUS POSTURE',
   'AU-HOSTED BY DEFAULT',
-  'AUDIT-READY, ALWAYS',
+  'BLOCKED FAILURE PATHS',
   'NO SPREADSHEETS',
 ];
 

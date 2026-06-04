@@ -17,12 +17,14 @@ type Row = {
   score: number; // %
 };
 
+// Real control counts from the framework registry; scores illustrative,
+// mirroring how /app/compliance/health renders live posture.
 const ROWS: Row[] = [
-  { framework: 'ISO 27001', controls: '114 / 114', coverage: 100, score: 100 },
-  { framework: 'SOC 2 Type II', controls: '61 / 64', coverage: 95, score: 97 },
-  { framework: 'NDIS Practice', controls: '88 / 92', coverage: 96, score: 96 },
-  { framework: 'HIPAA', controls: '54 / 58', coverage: 93, score: 94 },
-  { framework: 'GDPR', controls: '41 / 43', coverage: 95, score: 95 },
+  { framework: 'SOC 2 Type II', controls: '61 TSC controls', coverage: 94, score: 94 },
+  { framework: 'ISO 27001', controls: '93 controls', coverage: 88, score: 88 },
+  { framework: 'NDIS Practice', controls: '25 evaluators', coverage: 96, score: 96 },
+  { framework: 'HIPAA', controls: '10 safeguards', coverage: 96, score: 96 },
+  { framework: 'Essential Eight', controls: '8 mitigations', coverage: 93, score: 93 },
 ];
 
 function useCountUp(target: number, run: boolean) {
@@ -51,7 +53,7 @@ function useCountUp(target: number, run: boolean) {
 export function Ledger() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.4 });
-  const agg = useCountUp(96, inView);
+  const agg = useCountUp(94, inView);
 
   return (
     <div ref={ref}>
@@ -75,15 +77,20 @@ export function Ledger() {
             <span style={{ color: 'var(--red)' }}>%</span>
           </span>
           <span className="bru-mono" style={{ fontSize: 12, color: 'var(--ink-dim)' }}>
-            AGGREGATE
+            COMPOSITE
             <br />
             POSTURE
           </span>
         </div>
-        <span className="bru-tag bru-tag-live">
-          <span className="bru-live-dot" style={{ display: 'inline-block', marginRight: 6 }} />
-          LIVE · ALL FRAMEWORKS
-        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+          <span className="bru-tag">
+            <span className="bru-live-dot" style={{ display: 'inline-block', marginRight: 6 }} />
+            REFRESHED NIGHTLY · 06:00 UTC
+          </span>
+          <span className="bru-mono" style={{ fontSize: 10.5, color: 'var(--ink-faint)', letterSpacing: '0.06em' }}>
+            ILLUSTRATIVE — NOT A CUSTOMER CLAIM
+          </span>
+        </div>
       </div>
 
       <table className="bru-ledger">
@@ -108,9 +115,7 @@ export function Ledger() {
               </td>
               <td className="bru-score">{r.score}%</td>
               <td>
-                <span className={`bru-tag ${r.score === 100 ? 'bru-tag-live' : ''}`}>
-                  {r.score === 100 ? 'SEALED' : 'TRACKED'}
-                </span>
+                <span className="bru-tag">TRACKED</span>
               </td>
             </tr>
           ))}

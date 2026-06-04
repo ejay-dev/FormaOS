@@ -6,134 +6,112 @@ import { StickyCTA } from './_components/StickyCTA';
 
 export const dynamic = 'force-static';
 
-const INDUSTRIES = [
-  ['NDIS & Disability', 'Practice Standards · audits', '01'],
-  ['Healthcare & Aged Care', 'Accreditation · clinical governance', '02'],
-  ['Financial Services', 'APRA CPS 234 · ASIC', '03'],
-  ['Childcare & Education', 'NQF · ratios · safeguarding', '04'],
-  ['Mental Health', 'Standards · incident chains', '05'],
-] as const;
-
-const MANIFEST = [
+const CONVICTION = [
   {
-    n: '01',
-    tag: 'ENFORCE',
-    title: 'Obligations get a name on them.',
-    body: 'Every regulatory clause maps to a control, an owner and a due date. Nothing lives in a spreadsheet; nothing is “someone’s job, generally.”',
-    panel: 'control',
+    step: '01 / FOR OPERATORS',
+    title: 'Controls run as workflows, not documents',
+    body: 'Named tasks, approval gates, and evidence chains execute inside daily operations — not in a separate compliance layer.',
+    cta: 'See how it works',
+    href: '/product',
   },
   {
-    n: '02',
-    tag: 'PROVE',
-    title: 'Evidence you can’t quietly edit.',
-    body: 'Each action writes an immutable, timestamped record. When the auditor says “show me,” the chain is already assembled and sealed.',
-    panel: 'evidence',
+    step: '02 / FOR ENTERPRISE BUYERS',
+    title: 'One flow from security review to rollout',
+    body: 'Identity controls, audit exports, hosting posture, and procurement artifacts stay in a single narrative buyers can verify.',
+    cta: 'See enterprise path',
+    href: '/enterprise',
   },
   {
-    n: '03',
-    tag: 'HOLD',
-    title: 'Audit-ready is a state, not a sprint.',
-    body: 'Posture is scored continuously across every framework. Gaps surface the day they open — not the week before review.',
-    panel: 'audit',
+    step: '03 / FOR SECURITY REVIEWERS',
+    title: 'Trust evidence is visible before the first call',
+    body: 'Trust documentation, evidence defensibility, and review-ready context surface early so reviewers can verify substance upfront.',
+    cta: 'Visit trust center',
+    href: '/trust',
   },
 ];
 
-function ControlPanel() {
-  return (
-    <div className="bru-panel" aria-hidden>
-      <div className="bru-panel-bar">
-        <span>CONTROLS / ACCESS</span>
-        <span>03 ROWS</span>
-      </div>
-      {[
-        ['AC-2', 'Account review', 'J. OKAFOR', 'met'],
-        ['AC-6', 'Least privilege', 'UNASSIGNED', 'gap'],
-        ['AC-17', 'Remote access', 'M. TAN', 'met'],
-      ].map(([id, label, owner, st]) => (
-        <div className="bru-prow" key={id}>
-          <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <span style={{ color: 'var(--ink-faint)', width: 38 }}>{id}</span>
-            <span style={{ color: 'var(--ink)' }}>{label}</span>
-          </span>
-          <span style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            <span style={{ color: 'var(--ink-dim)', fontSize: 11 }}>{owner}</span>
-            <span className={`bru-chip ${st === 'met' ? 'bru-chip-met' : 'bru-chip-gap'}`}>
-              {st === 'met' ? 'MET' : 'GAP'}
-            </span>
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
+const ENGINE = [
+  ['01', 'OBLIGATION', 'Framework requirements mapped to controls'],
+  ['02', 'CONTROL', 'Ownership and review cadence assigned'],
+  ['03', 'TASK', 'Work routed to the accountable owner'],
+  ['04', 'EVIDENCE', 'Artifacts linked and sealed to the control'],
+  ['05', 'AUDIT', 'Complete, exportable compliance trail'],
+];
 
-function EvidencePanel() {
-  return (
-    <div className="bru-panel" aria-hidden>
-      <div className="bru-panel-bar">
-        <span>EVIDENCE CHAIN #4821</span>
-        <span style={{ color: 'var(--ok)' }}>SEALED</span>
-      </div>
-      {[
-        ['10:04:21', 'policy.ack', 'a3f9…21'],
-        ['10:05:02', 'control.eval', 'b7c1…04'],
-        ['10:05:40', 'evidence.attach', 'e2d8…9f'],
-        ['10:06:08', 'owner.sign', 'c019…7a'],
-      ].map(([t, ev, hash]) => (
-        <div className="bru-prow" key={hash}>
-          <span style={{ display: 'flex', gap: 12 }}>
-            <span style={{ color: 'var(--ink-faint)' }}>{t}</span>
-            <span style={{ color: 'var(--ink)' }}>{ev}</span>
-          </span>
-          <span style={{ color: 'var(--ink-dim)' }}>{hash}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
+const CAPS = [
+  ['Automation Engine', 'Triggers for evidence, tasks, policies, and certifications with auto-task generation and escalation.'],
+  ['Evidence Vault', 'Every upload, review, and approval tracked with full audit-trail context and chain of custody.'],
+  ['8 Framework Packs', 'SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS, NIST CSF, CIS, NDIS Practice Standards & Essential Eight — pre-built.'],
+  ['Compliance Gates', 'Block non-compliant actions before they happen with real-time validation and enforcement.'],
+  ['Executive Dashboard', 'C-level visibility into posture, framework health, risk trends, and control ownership.'],
+  ['Multi-Site Operations', 'Each entity keeps its own controls and evidence with cross-site rollup for executive governance.'],
+  ['REST API + Webhooks', 'API v1 for compliance data, evidence uploads, and task management. Webhooks for SIEM and tooling.'],
+  ['AI Compliance Assistant', 'Context-aware AI drafts policies, runs gap analysis, and gives steps — powered by your live org data.'],
+];
 
-function AuditPanel() {
-  const steps = [
-    ['GAP', 'gap'],
-    ['FIX', 'mid'],
-    ['REVIEW', 'mid'],
-    ['MET', 'met'],
-  ] as const;
-  return (
-    <div className="bru-panel" aria-hidden>
-      <div className="bru-panel-bar">
-        <span>CONTROL LIFECYCLE</span>
-        <span>AC-2</span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', padding: '26px 16px' }}>
-        {steps.map(([label, st], i) => (
-          <div key={label} style={{ display: 'flex', alignItems: 'center', flex: i < steps.length - 1 ? 1 : 'none' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 9 }}>
-              <span
-                style={{
-                  width: 14,
-                  height: 14,
-                  background: st === 'met' ? 'var(--ok)' : st === 'gap' ? 'var(--red)' : 'transparent',
-                  border: `1.5px solid ${st === 'met' ? 'var(--ok)' : st === 'gap' ? 'var(--red)' : 'var(--line-2)'}`,
-                }}
-              />
-              <span className="bru-mono" style={{ fontSize: 10, color: 'var(--ink-dim)' }}>{label}</span>
-            </div>
-            {i < steps.length - 1 && (
-              <span style={{ flex: 1, height: 1.5, background: 'var(--line-2)', marginBottom: 20 }} />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+const PILLARS = [
+  {
+    tag: 'Tamper-evident by construction',
+    h: 'HMAC-chained rows',
+    body: 'Each row carries a sequence number and an HMAC-SHA256 signature linking it to the previous row. A nightly cron re-walks the chain; any drift surfaces as a chain-integrity break before the next audit.',
+  },
+  {
+    tag: 'Verifiable without trusting us',
+    h: 'External anchor at 05:30 UTC',
+    body: 'Daily, each org’s chain top is submitted to Sigstore Rekor as an RFC 6962 Merkle entry. An auditor can verify the timestamp of any event through Linux Foundation infrastructure — not ours.',
+  },
+  {
+    tag: 'Immutable, even to platform admins',
+    h: 'Append-only at the database',
+    body: 'A BEFORE UPDATE OR DELETE trigger rejects any mutation of audit rows, backed by restrictive RLS deny policies. Even a service-role admin that bypasses RLS is stopped by the trigger. Enforced by Postgres, not app code.',
+  },
+];
 
-function Panel({ kind }: { kind: string }) {
-  if (kind === 'control') return <ControlPanel />;
-  if (kind === 'evidence') return <EvidencePanel />;
-  return <AuditPanel />;
-}
+const FACTS = [
+  ['HMAC-SHA256', 'Row signature'],
+  ['RFC 6962', 'Merkle proof'],
+  ['05:30 UTC', 'Daily anchor'],
+  ['Append-only', 'DB trigger + RLS'],
+  ['Sigstore Rekor', 'External log'],
+];
+
+const INDUSTRIES = [
+  ['Healthcare', 'HIPAA · RACGP · AHPRA · NSQHS', '/healthcare-compliance', '01'],
+  ['NDIS Providers', 'Practice Standards · Q&S Commission', '/ndis-providers', '02'],
+  ['Mental Health', 'NSMHS · Restrictive practices', '/mental-health-compliance', '03'],
+  ['Financial Services', 'SOC 2 · ISO 27001 · ASIC · APRA', '/financial-services-compliance', '04'],
+  ['Education', 'TEQSA · ASQA · RTO · VRQA', '/industries', '05'],
+  ['Government', 'ISM · PSPF · Essential Eight · FOI', '/use-cases/government-public-sector', '06'],
+];
+
+const BA = [
+  {
+    impact: 'Auditor bundle, on demand',
+    before: 'Evidence scattered across email threads, shared drives, and spreadsheets. Days lost reconstructing trails.',
+    after: 'On-demand ZIP export: framework summary, evidence references with SHA-256 hashes, automation log, score history, chain top anchored to Sigstore Rekor.',
+    tag: 'Hash-chained',
+  },
+  {
+    impact: 'Statutory clock, automated',
+    before: 'Email threads, ad-hoc severity tagging, statutory timelines tracked by memory.',
+    after: 'org_incidents writes carry severity, named owner, and the NDIS SIRS 24h-immediate / 5-business-day-detailed clock encoded in the predicate.',
+    tag: '24h / 5bd',
+  },
+  {
+    impact: 'Refreshed nightly',
+    before: 'Manual status reconciliation. The board gets a stale quarterly snapshot. Drift surfaces too late.',
+    after: 'Nightly cron at 06:00 UTC writes org_control_evaluations; /app/compliance/health renders live posture with a 4-week sparkline.',
+    tag: 'Cron-driven',
+  },
+];
+
+const STATS = [
+  ['8', 'Framework packs'],
+  ['252', 'Controls mapped'],
+  ['102', 'Auto-evaluated'],
+  ['150', 'Manual attestations'],
+  ['16', 'Production crons'],
+];
 
 export default function HomePocPage() {
   return (
@@ -149,7 +127,7 @@ export default function HomePocPage() {
             <div className="bru-mh-cell hidden lg:flex">ADELAIDE · 34.92°S</div>
             <div style={{ flex: 1 }} className="bru-mh-cell" />
             <nav className="bru-mh-cell hidden lg:flex" style={{ gap: 20 }}>
-              {['PLATFORM', 'FRAMEWORKS', 'PRICING'].map((l) => (
+              {['PLATFORM', 'FRAMEWORKS', 'INDUSTRIES', 'PRICING'].map((l) => (
                 <a key={l} href="#" style={{ color: 'var(--ink-dim)', textDecoration: 'none' }}>{l}</a>
               ))}
             </nav>
@@ -161,140 +139,198 @@ export default function HomePocPage() {
         </div>
       </header>
 
-      {/* ========== HERO / COVER ========== */}
+      {/* ========== HERO ========== */}
       <section style={{ position: 'relative', overflow: 'hidden', borderBottom: '1.5px solid var(--line-2)' }}>
         <div className="bru-cols" aria-hidden>
           {Array.from({ length: 12 }).map((_, i) => <span key={i} />)}
         </div>
-        <div className="bru-frame" style={{ position: 'relative', paddingTop: 'clamp(2.5rem, 5vw, 4.5rem)', paddingBottom: 'clamp(2rem, 4vw, 3.5rem)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 12, marginBottom: 'clamp(2rem, 5vw, 4rem)' }}>
-            <span className="bru-kicker">№01 — <b>THE THESIS</b></span>
-            <span className="bru-kicker hidden sm:inline">ISSUE 2026 / VOL.1</span>
-          </div>
+        <div className="bru-frame" style={{ position: 'relative', paddingTop: 'clamp(3rem, 6vw, 5rem)', paddingBottom: 'clamp(2.5rem, 5vw, 4rem)' }}>
+          <span className="bru-chip" style={{ display: 'inline-block', marginBottom: 'clamp(2rem, 5vw, 3.5rem)' }}>
+            COMPLIANCE OS FOR NDIS · AGED CARE · HEALTHCARE
+          </span>
 
-          <Reveal>
-            <h1 className="bru-display" style={{ fontSize: 'clamp(2.4rem, 11vw, 9rem)' }}>
-              Compliance
-            </h1>
-          </Reveal>
-          <Reveal delay={0.06}>
-            <h1 className="bru-display" style={{ fontSize: 'clamp(2.4rem, 11vw, 9rem)' }}>
-              you can
-            </h1>
-          </Reveal>
-          <Reveal delay={0.12}>
-            <h1 className="bru-display" style={{ fontSize: 'clamp(2.4rem, 11vw, 9rem)', color: 'var(--red)' }}>
-              prove<span style={{ color: 'var(--ink)' }}>.</span>
-            </h1>
-          </Reveal>
+          <h1 className="bru-display" style={{ fontSize: 'clamp(2.6rem, 11vw, 9rem)' }}>Audit-ready</h1>
+          <h1 className="bru-display" style={{ fontSize: 'clamp(2.6rem, 11vw, 9rem)' }}>every day<span style={{ color: 'var(--red)' }}>.</span></h1>
+          <p
+            className="bru-h2"
+            style={{ fontSize: 'clamp(1.25rem, 2.6vw, 2.1rem)', marginTop: 'clamp(1.25rem, 2vw, 1.75rem)', fontVariationSettings: "'wght' 600, 'wdth' 105", color: 'var(--ink-dim)', textTransform: 'none', lineHeight: 1.1 }}
+          >
+            Not the week before the <span style={{ color: 'var(--red)' }}>Commission</span> visits.
+          </p>
 
-          {/* asymmetric foot: deck pinned right, CTA left */}
-          <div className="grid gap-x-8 gap-y-8 lg:grid-cols-12" style={{ marginTop: 'clamp(2.5rem, 5vw, 4rem)', alignItems: 'end' }}>
-            <div className="lg:col-span-5">
+          <div className="grid gap-x-8 gap-y-8 lg:grid-cols-12" style={{ marginTop: 'clamp(2.5rem, 4vw, 3.5rem)', alignItems: 'end' }}>
+            <div className="lg:col-span-6">
               <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-                <a href="#" className="bru-btn bru-btn-red">Book a walkthrough <span className="bru-arrow">→</span></a>
-                <a href="#" className="bru-btn">Run the assessment</a>
+                <a href="/contact?type=compliance-plan" className="bru-btn bru-btn-red">Get Compliance Plan <span className="bru-arrow">→</span></a>
+                <a href="/contact?type=demo" className="bru-btn">Book Demo</a>
               </div>
               <p className="bru-mono" style={{ fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 18, letterSpacing: '0.04em' }}>
-                AU-HOSTED BY DEFAULT · NO CREDIT CARD · EVIDENCE-BACKED
+                GUIDED ASSESSMENT · AU-HOSTED BY DEFAULT · EVIDENCE-BACKED WORKFLOWS
               </p>
             </div>
-            <div className="lg:col-span-4 lg:col-start-9">
+            <div className="lg:col-span-5 lg:col-start-8">
               <p className="bru-deck">
-                FormaOS turns regulatory obligations into enforced workflows — named
-                owners, immutable evidence, and audit-ready assurance in one graph.
+                FormaOS turns NDIS Practice Standards, Aged Care Quality Standards, and the
+                rest of your obligations into enforced workflows — named owners, blocked
+                failure paths, and an immutable evidence trail that passes review the first time.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ========== KINETIC TICKER ========== */}
+      {/* ========== TICKER ========== */}
       <Ticker />
 
-      {/* ========== LEDGER ========== */}
-      <section className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 7vw, 6rem)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
-          <span className="bru-kicker">№02 — <b>THE READOUT</b></span>
-          <span className="bru-kicker hidden sm:inline">/ LIVE POSTURE</span>
+      {/* ========== WHY BUYERS STAY ========== */}
+      <section className="bru-frame bru-section">
+        <div className="bru-head">
+          <div>
+            <span className="bru-eyebrow">Why buyers stay</span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', marginTop: 16 }}>
+              Three paths to conviction,<br />visible before the first call.
+            </h2>
+          </div>
+        </div>
+        <div className="grid gap-5 lg:grid-cols-3">
+          {CONVICTION.map((c, i) => (
+            <Reveal key={c.step} delay={i * 0.08}>
+              <article className="bru-card-b">
+                <span className="bru-card-step">{c.step}</span>
+                <h3 className="bru-card-title">{c.title}</h3>
+                <p className="bru-body" style={{ marginTop: 14 }}>{c.body}</p>
+                <a href={c.href} className="bru-card-link">{c.cta} <span className="bru-arrow">→</span></a>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <hr className="bru-rule-strong" />
+
+      {/* ========== LIVE SYSTEM / LEDGER ========== */}
+      <section className="bru-frame bru-section">
+        <div className="bru-head">
+          <div>
+            <span className="bru-eyebrow">Operating system architecture</span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 5vw, 3.8rem)', marginTop: 16 }}>
+              Not a repository. A live system.
+            </h2>
+          </div>
+          <p className="bru-body hidden lg:block" style={{ maxWidth: '34ch' }}>
+            Other tools store documents. FormaOS enforces the program: controls are gated,
+            ownership is structural, evidence is generated as teams operate.
+          </p>
         </div>
         <Ledger />
       </section>
 
       <hr className="bru-rule-strong" />
 
-      {/* ========== SCHEMATIC (full-width figure) ========== */}
-      <section className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 7vw, 6rem)' }}>
-        <div className="grid gap-x-10 gap-y-6 lg:grid-cols-12" style={{ alignItems: 'end', marginBottom: 'clamp(1.75rem, 3vw, 2.75rem)' }}>
-          <div className="lg:col-span-8">
-            <span className="bru-kicker">№03 — <b>THE MODEL</b></span>
-            <h2 className="bru-h2" style={{ fontSize: 'clamp(2.2rem, 6vw, 4.6rem)', marginTop: 16 }}>
-              One graph. Every framework.
+      {/* ========== COMPLIANCE ENGINE / SCHEMATIC ========== */}
+      <section className="bru-frame bru-section">
+        <div className="bru-head" style={{ alignItems: 'end' }}>
+          <div className="lg:max-w-[60%]">
+            <span className="bru-eyebrow">Compliance engine</span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 5vw, 3.8rem)', marginTop: 16 }}>
+              One connected lifecycle.
             </h2>
           </div>
-          <div className="lg:col-span-4">
-            <p className="bru-body" style={{ maxWidth: '40ch' }}>
-              Compliance stored as a wired graph, not documents. Satisfy one control and
-              every framework that depends on it updates at once.
-            </p>
-          </div>
+          <p className="bru-body" style={{ maxWidth: '36ch' }}>
+            Obligations become controls, controls generate tasks, tasks produce evidence —
+            and every step stays audit-ready.
+          </p>
         </div>
         <Reveal y={0}>
           <div style={{ border: '1px solid var(--line-2)', background: 'var(--bg)', padding: 'clamp(0.5rem, 1.5vw, 1.25rem)' }}>
             <Schematic />
           </div>
         </Reveal>
+        <div className="grid gap-px sm:grid-cols-5" style={{ marginTop: 28, border: '1px solid var(--line-2)', background: 'var(--line)' }}>
+          {ENGINE.map(([n, t, d]) => (
+            <div key={n} style={{ background: 'var(--bg)', padding: '20px 18px' }}>
+              <span className="bru-mono" style={{ fontSize: 11, color: 'var(--red)' }}>{n}</span>
+              <div className="bru-card-title" style={{ fontSize: '1rem', marginTop: 12 }}>{t}</div>
+              <p className="bru-body" style={{ fontSize: '0.82rem', marginTop: 10 }}>{d}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <hr className="bru-rule-strong" />
 
-      {/* ========== MANIFESTO ========== */}
-      <section>
-        {MANIFEST.map((m, i) => {
-          const flip = i % 2 === 1;
-          return (
-            <div key={m.n}>
-              <div className="bru-frame" style={{ paddingBlock: 'clamp(3rem, 6vw, 5rem)' }}>
-                <div className="grid gap-x-10 gap-y-8 lg:grid-cols-12 lg:items-center">
-                  {/* text block */}
-                  <div className="lg:col-span-6" style={{ order: flip ? 2 : 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'clamp(1rem, 3vw, 2.5rem)' }}>
-                      <span className={`bru-index ${i === 1 ? 'bru-index-red' : ''}`}>{m.n}</span>
-                      <div style={{ paddingTop: 8 }}>
-                        <span className="bru-kicker"><b>{m.tag}</b></span>
-                        <Reveal>
-                          <h3 className="bru-h2" style={{ fontSize: 'clamp(1.8rem, 3.4vw, 3rem)', marginTop: 12 }}>
-                            {m.title}
-                          </h3>
-                        </Reveal>
-                        <p className="bru-body" style={{ marginTop: 16, maxWidth: '38ch' }}>{m.body}</p>
-                      </div>
-                    </div>
-                  </div>
-                  {/* panel */}
-                  <Reveal className="lg:col-span-5" style={{ order: flip ? 1 : 2, gridColumn: flip ? undefined : 'span 5' }}>
-                    <div className={flip ? 'lg:col-start-1' : 'lg:col-start-8'}>
-                      <Panel kind={m.panel} />
-                    </div>
-                  </Reveal>
-                </div>
-              </div>
-              {i < MANIFEST.length - 1 && <hr className="bru-rule" />}
+      {/* ========== CAPABILITIES ========== */}
+      <section className="bru-frame bru-section">
+        <div className="bru-head">
+          <div>
+            <span className="bru-eyebrow">Platform capabilities</span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', marginTop: 16 }}>
+              Everything you need.<br />Nothing you don’t.
+            </h2>
+          </div>
+        </div>
+        <div className="bru-cap-grid">
+          {CAPS.map(([t, d], i) => (
+            <div className="bru-cap" key={t}>
+              <span className="bru-cap-n">{String(i + 1).padStart(2, '0')}</span>
+              <div className="bru-cap-t">{t}</div>
+              <p className="bru-cap-d">{d}</p>
             </div>
-          );
-        })}
+          ))}
+        </div>
       </section>
+
+      <hr className="bru-rule-strong" />
+
+      {/* ========== CRYPTOGRAPHIC AUDIT CHAIN ========== */}
+      <section className="bru-frame bru-section">
+        <div className="bru-head" style={{ alignItems: 'end' }}>
+          <div className="lg:max-w-[58%]">
+            <span className="bru-eyebrow">Cryptographic audit chain</span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 5vw, 3.8rem)', marginTop: 16 }}>
+              Verifiable, not just<br />“we have logs.”
+            </h2>
+          </div>
+          <p className="bru-body" style={{ maxWidth: '38ch' }}>
+            Every org’s audit log is hash-chained, RLS-locked against mutation, and anchored
+            daily to Sigstore Rekor — the same transparency log the Linux Foundation runs for
+            signed open-source releases.
+          </p>
+        </div>
+        <div className="bru-pillars">
+          {PILLARS.map((p) => (
+            <div className="bru-pillar" key={p.h}>
+              <span className="bru-pillar-tag">{p.tag}</span>
+              <h3 className="bru-pillar-h">{p.h}</h3>
+              <p className="bru-body" style={{ fontSize: '0.88rem' }}>{p.body}</p>
+            </div>
+          ))}
+        </div>
+        <div className="bru-facts">
+          {FACTS.map(([k, v]) => (
+            <div className="bru-fact" key={k}>
+              <div className="bru-fact-k">{k}</div>
+              <div className="bru-fact-v">{v}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <hr className="bru-rule-strong" />
 
       {/* ========== INDUSTRIES INDEX ========== */}
-      <hr className="bru-rule-strong" />
-      <section className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 7vw, 6rem)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
-          <span className="bru-kicker">№04 — <b>THE SURFACE</b></span>
-          <span className="bru-kicker hidden sm:inline">/ REGULATED INDUSTRIES</span>
+      <section className="bru-frame bru-section">
+        <div className="bru-head">
+          <div>
+            <span className="bru-eyebrow">Regulated industries</span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', marginTop: 16 }}>
+              Built for high-accountability industries.
+            </h2>
+          </div>
         </div>
         <div>
-          {INDUSTRIES.map(([name, meta, n]) => (
-            <a key={n} href="#" className="bru-idx-row">
+          {INDUSTRIES.map(([name, meta, href, n]) => (
+            <a key={n} href={href} className="bru-idx-row">
               <span className="bru-idx-num">№{n}</span>
               <span className="bru-idx-name">{name}</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
@@ -306,28 +342,83 @@ export default function HomePocPage() {
         </div>
       </section>
 
+      <hr className="bru-rule-strong" />
+
+      {/* ========== OUTCOME PROOF ========== */}
+      <section className="bru-frame bru-section">
+        <div className="bru-head" style={{ alignItems: 'end' }}>
+          <div className="lg:max-w-[58%]">
+            <span className="bru-eyebrow">What ships, what runs</span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 5vw, 3.8rem)', marginTop: 16 }}>
+              Operational mechanics,<br />not customer claims.
+            </h2>
+          </div>
+          <p className="bru-body" style={{ maxWidth: '38ch' }}>
+            Every number below comes from the framework registry checked into the codebase
+            or the cron schedule running in production.
+          </p>
+        </div>
+
+        <div style={{ marginBottom: 'clamp(2.5rem, 4vw, 3.5rem)' }}>
+          {BA.map((b) => (
+            <div className="bru-ba" key={b.impact}>
+              <div className="bru-ba-impact">{b.impact}</div>
+              <div className="bru-ba-col">
+                <span className="bru-ba-label">Status quo</span>
+                <p className="bru-ba-before">{b.before}</p>
+              </div>
+              <div className="bru-ba-col">
+                <span className="bru-ba-label" style={{ color: 'var(--red)' }}>With FormaOS · {b.tag}</span>
+                <p className="bru-ba-after">{b.after}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="bru-stats">
+          {STATS.map(([n, l]) => (
+            <div className="bru-stat-cell" key={l}>
+              <div className="bru-stat-n">{n}</div>
+              <div className="bru-stat-l">{l}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ========== RED STATEMENT BAND ========== */}
       <section className="bru-band">
-        <div className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 8vw, 7rem)' }}>
-          <span className="bru-mono" style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>
-            №05 — THE POINT
-          </span>
-          <h2 className="bru-display" style={{ fontSize: 'clamp(3rem, 11vw, 9rem)', marginTop: 18 }}>
-            Proof,<br />not promises.
+        <div className="bru-frame" style={{ paddingBlock: 'clamp(4rem, 8vw, 7rem)' }}>
+          <h2 className="bru-display" style={{ fontSize: 'clamp(2.4rem, 8vw, 6.5rem)' }}>
+            Stop preparing<br />for audits.
+          </h2>
+          <h2 className="bru-display" style={{ fontSize: 'clamp(2.4rem, 8vw, 6.5rem)', color: 'rgba(255,255,255,0.55)' }}>
+            Start being audit-ready.
           </h2>
         </div>
       </section>
 
       {/* ========== CTA + COLOPHON ========== */}
-      <section className="bru-frame" style={{ paddingBlock: 'clamp(3.5rem, 7vw, 6rem)' }}>
+      <section className="bru-frame bru-section-sm">
         <div className="grid gap-x-10 gap-y-12 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)' }}>
-              See your own<br />frameworks mapped.
-            </h2>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 28 }}>
-              <a href="#" className="bru-btn bru-btn-red">Book a 30-min walkthrough <span className="bru-arrow">→</span></a>
-              <a href="#" className="bru-btn">Run the assessment</a>
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <a href="/contact?type=compliance-plan" className="bru-btn bru-btn-red">Get Compliance Plan <span className="bru-arrow">→</span></a>
+              <a href="/contact?type=demo" className="bru-btn">Book Demo</a>
+            </div>
+            <p className="bru-mono" style={{ fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 18, letterSpacing: '0.04em' }}>
+              GUIDED ASSESSMENT · SECURITY REVIEW PACKET · AU-HOSTED BY DEFAULT
+            </p>
+            <div className="grid gap-px sm:grid-cols-3" style={{ marginTop: 30, border: '1px solid var(--line-2)', background: 'var(--line)' }}>
+              {[
+                ['SOC 2-ALIGNED', 'Trust framework'],
+                ['AU-HOSTED', 'Data sovereignty'],
+                ['ENTERPRISE SSO', 'SAML 2.0 + MFA'],
+              ].map(([k, v]) => (
+                <div key={k} style={{ background: 'var(--bg)', padding: '16px 18px' }}>
+                  <div className="bru-fact-k">{k}</div>
+                  <div className="bru-fact-v">{v}</div>
+                </div>
+              ))}
             </div>
           </div>
           <div className="lg:col-span-4 lg:col-start-9">
@@ -335,10 +426,10 @@ export default function HomePocPage() {
               {[
                 ['HOSTING', 'Australia (Sydney region)'],
                 ['HQ', 'Adelaide, South Australia'],
-                ['FRAMEWORKS', 'ISO · SOC 2 · NDIS · HIPAA · GDPR'],
+                ['FRAMEWORKS', '8 packs shipping today'],
                 ['CONTACT', 'support@formaos.com.au'],
               ].map(([k, v]) => (
-                <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '11px 14px', borderBottom: '1px solid var(--line)' }}>
+                <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '13px 14px', borderBottom: '1px solid var(--line)' }}>
                   <span className="bru-mono" style={{ fontSize: 11, color: 'var(--ink-faint)', letterSpacing: '0.08em' }}>{k}</span>
                   <span className="bru-mono" style={{ fontSize: 11.5, color: 'var(--ink-dim)', textAlign: 'right' }}>{v}</span>
                 </div>

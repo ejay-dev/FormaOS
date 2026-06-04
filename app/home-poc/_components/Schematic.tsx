@@ -23,12 +23,12 @@ type Box = {
 };
 
 const BOX: Record<string, Box> = {
-  obl: { id: 'obl', x: 40, y: 232, w: 236, h: 92, n: '1.0', label: 'OBLIGATION', sub: 'NDIS Std 4.2' },
-  ctl: { id: 'ctl', x: 486, y: 196, w: 300, h: 164, n: '2.0', label: 'CONTROL', sub: 'Enforced · evaluated · scored', hub: true },
-  fwk: { id: 'fwk', x: 996, y: 150, w: 252, h: 80, n: '3.0', label: 'FRAMEWORK', sub: 'ISO · SOC 2 · maps' },
+  obl: { id: 'obl', x: 40, y: 232, w: 236, h: 92, n: '1.0', label: 'OBLIGATION', sub: 'Framework reqs mapped' },
+  ctl: { id: 'ctl', x: 486, y: 196, w: 300, h: 164, n: '2.0', label: 'CONTROL', sub: 'Owner + review cadence assigned', hub: true },
+  fwk: { id: 'fwk', x: 996, y: 150, w: 252, h: 80, n: '3.0', label: 'TASK', sub: 'Routed to the owner' },
   own: { id: 'own', x: 996, y: 248, w: 252, h: 80, n: '4.0', label: 'OWNER', sub: 'Named · accountable' },
-  evd: { id: 'evd', x: 996, y: 346, w: 252, h: 80, n: '5.0', label: 'EVIDENCE', sub: 'Immutable chain', accent: true },
-  aud: { id: 'aud', x: 486, y: 432, w: 300, h: 78, n: '6.0', label: 'AUDIT', sub: 'Continuous readout' },
+  evd: { id: 'evd', x: 996, y: 346, w: 252, h: 80, n: '5.0', label: 'EVIDENCE', sub: 'Linked & sealed to control', accent: true },
+  aud: { id: 'aud', x: 486, y: 432, w: 300, h: 78, n: '6.0', label: 'AUDIT', sub: 'Complete, exportable trail' },
 };
 
 const ORDER = ['obl', 'ctl', 'fwk', 'own', 'evd', 'aud'];

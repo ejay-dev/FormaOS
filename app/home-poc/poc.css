@@ -16,9 +16,10 @@
   --ink-faint: #5a5a54;
   --line: rgba(236, 234, 227, 0.15);
   --line-2: rgba(236, 234, 227, 0.32);
-  --red: #ff3a2d; /* the one loud signal */
+  --red: #ff3a2d; /* the one and only accent */
   --red-deep: #d62c20;
-  --ok: #c8ff4d; /* acid — used only for "MET"/live ticks, sparingly */
+  /* "confirmed/positive" reads as neutral off-white — strictly one accent */
+  --ok: #ece9e0;
 
   --sans: var(--bru-sans), 'Arial Narrow', system-ui, sans-serif;
   --mono: var(--bru-mono), ui-monospace, 'SF Mono', monospace;
@@ -188,7 +189,7 @@
 .bru-live-dot {
   width: 7px;
   height: 7px;
-  background: var(--ok);
+  background: var(--red);
   border-radius: 1px;
   animation: bru-blink 1.8s steps(1) infinite;
 }
@@ -469,7 +470,7 @@
 .bru-ticker-dot {
   width: 8px;
   height: 8px;
-  background: var(--ok);
+  background: var(--red);
 }
 .bru-ticker-item--creed {
   color: #fff;
@@ -553,6 +554,282 @@
 .bru-idx-row:hover .bru-idx-arrow {
   color: var(--red);
   transform: translateX(5px);
+}
+
+/* ---------- Section rhythm (generous, confident spacing) ---------- */
+.bru-section {
+  padding-block: clamp(4.5rem, 9vw, 8.5rem);
+}
+.bru-section-sm {
+  padding-block: clamp(3.5rem, 6vw, 5.5rem);
+}
+.bru-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+.bru-eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+/* ---------- Cards (conviction paths / generic) ---------- */
+.bru-card-b {
+  border: 1px solid var(--line-2);
+  background: var(--bg-raise);
+  padding: clamp(1.5rem, 2.4vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: border-color 0.2s ease;
+}
+.bru-card-b:hover {
+  border-color: var(--ink-dim);
+}
+.bru-card-step {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+.bru-card-title {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-variation-settings: 'wght' 760, 'wdth' 110;
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.005em;
+}
+.bru-card-link {
+  margin-top: auto;
+  padding-top: 22px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.bru-card-link:hover {
+  color: var(--red);
+}
+
+/* ---------- Capabilities grid ---------- */
+.bru-cap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line-2);
+  border-left: 1px solid var(--line-2);
+}
+.bru-cap {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: clamp(1.25rem, 2vw, 1.9rem);
+  min-height: 188px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.18s ease;
+}
+.bru-cap:hover {
+  background: var(--bg-raise);
+}
+.bru-cap-n {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--red);
+  letter-spacing: 0.08em;
+}
+.bru-cap-t {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-variation-settings: 'wght' 740, 'wdth' 108;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  line-height: 1.05;
+  margin-top: 14px;
+}
+.bru-cap-d {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--ink-dim);
+  margin-top: 12px;
+}
+@media (max-width: 900px) {
+  .bru-cap-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .bru-cap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Audit-chain pillars + facts bar ---------- */
+.bru-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--line-2);
+}
+.bru-pillar {
+  padding: clamp(1.5rem, 2.4vw, 2.25rem) clamp(1.25rem, 2vw, 2rem);
+  border-right: 1px solid var(--line);
+}
+.bru-pillar:last-child {
+  border-right: 0;
+}
+.bru-pillar-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.bru-pillar-h {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-variation-settings: 'wght' 760, 'wdth' 110;
+  text-transform: uppercase;
+  font-size: 1.15rem;
+  line-height: 1.05;
+  margin: 14px 0 14px;
+}
+.bru-facts {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border: 1px solid var(--line-2);
+  border-top: 0;
+}
+.bru-fact {
+  padding: 16px;
+  border-right: 1px solid var(--line);
+}
+.bru-fact:last-child {
+  border-right: 0;
+}
+.bru-fact-k {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--ink);
+}
+.bru-fact-v {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-dim);
+  margin-top: 4px;
+}
+@media (max-width: 900px) {
+  .bru-pillars {
+    grid-template-columns: 1fr;
+  }
+  .bru-pillar {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .bru-facts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bru-fact {
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+/* ---------- Before / after proof ---------- */
+.bru-ba {
+  border-top: 1px solid var(--line);
+  padding: clamp(1.5rem, 2.6vw, 2.25rem) 0;
+  display: grid;
+  grid-template-columns: 240px 1fr 1fr;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: start;
+}
+.bru-ba:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.bru-ba-impact {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-variation-settings: 'wght' 760, 'wdth' 112;
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+  line-height: 1.02;
+}
+.bru-ba-col .bru-ba-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: block;
+  margin-bottom: 10px;
+}
+.bru-ba-before {
+  color: var(--ink-faint);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.bru-ba-after {
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+@media (max-width: 760px) {
+  .bru-ba {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* ---------- Big stat ledger ---------- */
+.bru-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border: 1px solid var(--line-2);
+}
+.bru-stat-cell {
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  border-right: 1px solid var(--line);
+}
+.bru-stat-cell:last-child {
+  border-right: 0;
+}
+.bru-stat-n {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-variation-settings: 'wght' 900, 'wdth' 112;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+.bru-stat-l {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-top: 10px;
+}
+@media (max-width: 760px) {
+  .bru-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bru-stat-cell {
+    border-bottom: 1px solid var(--line);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
