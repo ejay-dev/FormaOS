@@ -44,13 +44,13 @@ export const brand = {
     country: 'Australia',
   },
   seo: {
-    defaultTitle: 'FormaOS — Compliance Operating System',
+    defaultTitle: 'FormaOS: Compliance Operating System',
     description:
-      'FormaOS is the Compliance Operating System for regulated organizations — unify governance, evidence, and audits in one platform.',
+      'FormaOS is the Compliance Operating System for regulated organizations: unify governance, evidence, and audits in one platform.',
     // Strip surrounding whitespace at the constant source. The deploy
     // env historically carried a trailing `\n` that propagated into
     // sitemap.xml, robots.txt, and JSON-LD `<loc>` / `url` / `logo`
-    // fields on every marketing page — Lighthouse SEO 83 universal,
+    // fields on every marketing page, Lighthouse SEO 83 universal,
     // search engines drop the entries. Trimming here is one fix for
     // all consumers; `lib/seo.ts` still strips the trailing slash on
     // top of this for path concatenation.

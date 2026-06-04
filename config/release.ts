@@ -5,7 +5,7 @@
 
 export const CURRENT_VERSION = '4.2.0';
 export const CURRENT_RELEASE_NAME = 'Foundation';
-export const CURRENT_RELEASE_DISPLAY = `FormaOS ${CURRENT_RELEASE_NAME} — v${CURRENT_VERSION}`;
+export const CURRENT_RELEASE_DISPLAY = `FormaOS ${CURRENT_RELEASE_NAME} · v${CURRENT_VERSION}`;
 export const CURRENT_RELEASE_TAG = 'Compliance Foundations · Security Audit Pass';
 
 /**

@@ -6,7 +6,7 @@ export interface MarketingRouteMedia {
 
 const DEFAULT_POSITION = 'center center';
 
-// Industry money pages intentionally opt OUT of this shared backdrop —
+// Industry money pages intentionally opt OUT of this shared backdrop , 
 // they render their own industry-themed hero (AnimatedHeroBg + the
 // InteractiveDashboard mock) which converts better than a uniform
 // photographic backdrop. Decision recorded in the 2026-05-13 marketing
@@ -229,12 +229,12 @@ const ROUTE_MEDIA: Record<
 // Routes whose PAGE already paints its own hero photo via <SectionMedia>
 // (the newer per-section backdrop pattern rolled out 2026-05-29). For these
 // the shared route-level MarketingRouteBackdrop would render the SAME photo a
-// second time at 24% opacity behind the hero — a doubled / ghosted image.
+// second time at 24% opacity behind the hero, a doubled / ghosted image.
 // Reported 2026-05-30 on /pricing and /trust; a DOM probe across every
 // ROUTE_MEDIA route confirmed all 20 routes below were doubled. They keep
 // their ROUTE_MEDIA entry (canonical per-route image, still used for the
 // hero's own SectionMedia and OG fallbacks) but opt OUT of the shared
-// backdrop here — mirroring the homepage skip in MarketingRouteBackdrop and
+// backdrop here, mirroring the homepage skip in MarketingRouteBackdrop and
 // the industry-page omissions documented above.
 //
 // If a page in this set ever DROPS its own <SectionMedia> hero, remove it

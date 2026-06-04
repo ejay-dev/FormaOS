@@ -5,7 +5,7 @@
  * Header grouping strategy (5 items max):
  *   Platform (dropdown) | Solutions (dropdown) | Trust & Security (dropdown) | Pricing (direct) | Resources (dropdown)
  *
- * "Home" removed — the logo handles that. "Enterprise" moved into Solutions
+ * "Home" removed, the logo handles that. "Enterprise" moved into Solutions
  * since it's a buyer path, not a product section. "Product" and "Features"
  * merged under Platform. "Security" and "Trust" merged under Trust & Security.
  */
@@ -47,7 +47,7 @@ export const resourceLinks = [
 ] as const;
 
 /**
- * Outcome journey links — used in mobile nav and footer.
+ * Outcome journey links, used in mobile nav and footer.
  * Kept as a separate group but not in the primary desktop nav bar.
  */
 export const outcomeLinks = [

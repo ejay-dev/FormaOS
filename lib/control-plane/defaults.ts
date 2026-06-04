@@ -26,7 +26,7 @@ export const DEFAULT_RUNTIME_MARKETING: RuntimeMarketingConfig = {
     headlinePrimary: 'Audit-ready every day,',
     headlineAccent: 'not the week before the Commission visits.',
     subheadline:
-      'FormaOS turns NDIS Practice Standards, Aged Care Quality Standards, and the rest of your obligations into enforced workflows — with named owners, blocked failure paths, and an immutable evidence trail that passes Commission and accreditation review the first time.',
+      'FormaOS turns NDIS Practice Standards, Aged Care Quality Standards, and the rest of your obligations into enforced workflows, with named owners, blocked failure paths, and an immutable evidence trail that passes Commission and accreditation review the first time.',
     primaryCtaLabel: 'Get Compliance Plan',
     // ?source= dropped 2026-05-23 to match the CTA builder cleanup
     // (lib/marketing/cta.ts). Source is now derived from document.referrer
