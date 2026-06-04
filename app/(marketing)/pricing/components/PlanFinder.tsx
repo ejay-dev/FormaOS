@@ -137,7 +137,7 @@ export function PlanFinder() {
                           return next;
                         })
                       }
-                      className={`rounded-xl border px-4 py-2.5 text-[13px] font-medium transition-colors duration-200 ${
+                      className={`rounded-xl border px-4 py-2.5 text-[13px] font-medium transition-colors duration-200 max-sm:flex max-sm:min-h-[44px] max-sm:items-center ${
                         isActive
                           ? 'border-white/30 bg-white/[0.08] text-white'
                           : 'border-white/[0.08] bg-white/[0.02] text-slate-400 hover:border-white/[0.16] hover:text-slate-200'
