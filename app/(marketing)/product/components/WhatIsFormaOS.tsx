@@ -1,30 +1,19 @@
 'use client';
 
-import {
-  Building2,
-  FileCheck,
-  Database,
-  AlertTriangle,
-  Shield,
-  CheckCircle,
-  Users,
-  Lock,
-} from 'lucide-react';
-import { motion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
 
 const UNIFIES = [
-  { icon: Building2, label: 'Governance structure and framework alignment' },
-  { icon: FileCheck, label: 'Policy, control, and obligation execution' },
-  { icon: Database, label: 'Automated evidence generation and vault' },
-  { icon: AlertTriangle, label: 'Real-time risk scoring and drift detection' },
-  { icon: Shield, label: 'Audit defense with exportable evidence packages' },
-  { icon: Users, label: 'Control ownership across teams and entities' },
-  { icon: Lock, label: 'Role-based accountability and access governance' },
+  'Governance structure and framework alignment',
+  'Policy, control, and obligation execution',
+  'Automated evidence generation and vault',
+  'Real-time risk scoring and drift detection',
+  'Audit defense with exportable evidence packages',
+  'Control ownership across teams and entities',
+  'Role-based accountability and access governance',
 ] as const;
 
-const PROOF_POINTS = [
+const REPLACES = [
   'No compliance silos',
   'No manual evidence reconciliation',
   'No last-minute audit reconstruction',
@@ -33,80 +22,66 @@ const PROOF_POINTS = [
 
 export function WhatIsFormaOS() {
   return (
-    <section className="relative py-24 sm:py-32 overflow-hidden">
-      {/* Section dividers */}
+    <section className="relative overflow-hidden py-24 sm:py-32">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-      {/* Subtle section background */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent" />
-
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+      <div className="relative z-10 mx-auto grid max-w-6xl gap-x-14 gap-y-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-12">
+        {/* Thesis — left vertical-bar accent */}
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
-          <div className="text-center mb-12">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              What Is FormaOS?
-            </p>
+          <div className="flex items-start gap-5">
+            <span className="mt-1.5 hidden h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent sm:block" />
+            <div>
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+                What is FormaOS?
+              </p>
+              <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl">
+                An end-to-end Compliance Operating System.
+              </h2>
+              <p className="mt-5 text-base leading-7 text-slate-400">
+                Not a GRC checklist tool. Not a document repository. FormaOS is
+                an operational layer that enforces compliance as your
+                organisation works, with evidence generated automatically.
+              </p>
 
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-5 text-white">
-              An end-to-end{' '}
-              <span className="text-foreground">
-                Compliance Operating System
-              </span>
-            </h2>
-
-            <p className="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
-              Not a GRC checklist tool. Not a document repository. FormaOS is an
-              operational layer that enforces compliance as your organization
-              works - continuously, with evidence generated automatically.
-            </p>
+              <ul className="mt-8 space-y-2.5">
+                {REPLACES.map((point) => (
+                  <li
+                    key={point}
+                    className="flex items-center gap-3 text-sm text-slate-400"
+                  >
+                    <span className="h-px w-4 flex-shrink-0 bg-slate-600" />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </ScrollReveal>
 
+        {/* What it unifies — clean ruled list, no icon tiles */}
         <ScrollReveal variant="slideUp" range={[0.05, 0.4]}>
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 sm:p-10 relative overflow-hidden">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-
-            <h3 className="text-lg font-semibold text-white text-center mb-8">
-              FormaOS unifies:
-            </h3>
-
-            <SectionChoreography
-              pattern="cascade"
-              stagger={0.04}
-              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5"
-            >
-              {UNIFIES.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <motion.div
-                    key={item.label}
-                    whileHover={{ y: -2 }}
-                    className="flex flex-col items-center text-center rounded-xl border border-white/[0.05] bg-white/[0.02] px-2 py-3 sm:px-3 sm:py-4 hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-200 last:col-span-2 sm:last:col-span-1"
-                  >
-                    <div className="inline-flex items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.05] p-3 mb-3">
-                      <Icon className="w-5 h-5 text-slate-300" />
-                    </div>
-                    <span className="text-xs text-slate-400 leading-snug">
-                      {item.label}
-                    </span>
-                  </motion.div>
-                );
-              })}
-            </SectionChoreography>
-
-            <p className="text-center text-slate-600 mt-8 text-sm">
-              Unified in a single, continuously operating compliance layer.
+          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02]">
+            <p className="border-b border-white/[0.06] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              One operating layer unifies
             </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-sm text-slate-400">
-              {PROOF_POINTS.map((point) => (
-                <span key={point} className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-slate-500" />
-                  {point}
-                </span>
+            <SectionChoreography pattern="cascade" stagger={0.04}>
+              {UNIFIES.map((label, i) => (
+                <div
+                  key={label}
+                  className={`flex items-baseline gap-4 px-6 py-3.5 ${
+                    i > 0 ? 'border-t border-white/[0.05]' : ''
+                  }`}
+                >
+                  <span className="text-[11px] font-medium tabular-nums text-slate-600">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-[15px] leading-snug text-slate-200">
+                    {label}
+                  </span>
+                </div>
               ))}
-            </div>
+            </SectionChoreography>
           </div>
         </ScrollReveal>
       </div>

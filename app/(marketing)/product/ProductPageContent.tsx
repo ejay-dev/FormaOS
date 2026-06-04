@@ -74,29 +74,17 @@ export default function ProductPageContent() {
           <WhatIsFormaOS />
         </DepthSection>
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
       <DeferredSection minHeight={440}>
         <DepthSection fade>
           <ObligationToExecution />
         </DepthSection>
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
       <DeferredSection minHeight={500}>
         <OperatingModel />
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
       <DeferredSection minHeight={560}>
         <FullControlMapSection />
       </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
-        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-      </div>
       <DeferredSection minHeight={380}>
         <FinalCTA />
       </DeferredSection>

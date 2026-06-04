@@ -53,19 +53,16 @@ export function FullControlMapSection() {
             <span className="h-px w-8 bg-white/25" />
           </div>
 
-          <h2 className="mb-5 text-2xl font-bold sm:text-3xl lg:text-5xl xl:text-6xl tracking-tight">
-            Every Control.{' '}
-            <span className="text-foreground">
-              Every Framework.
-            </span>
+          <h2 className="mb-5 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            Every control. Every framework.{' '}
             <br className="hidden sm:block" />
-            <span className="text-white/90"> One Living Map.</span>
+            <span className="text-white/80">One living map.</span>
           </h2>
 
-          <p className="mx-auto mb-10 max-w-3xl text-base leading-relaxed text-gray-400 sm:text-lg lg:text-xl">
-            70+ controls across 7 enterprise frameworks - all interconnected,
-            all continuously monitored, all audit-ready. Hover any node to trace
-            its cross-framework compliance chain.
+          <p className="mx-auto mb-10 max-w-2xl text-base leading-relaxed text-slate-400">
+            70+ controls across 7 enterprise frameworks, all interconnected,
+            continuously monitored, and audit-ready. Hover any node to trace its
+            cross-framework compliance chain.
           </p>
 
           {/* Framework chips with live counts */}
