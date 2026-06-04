@@ -88,14 +88,14 @@ export function RoiCalculator() {
             <legend className="p-0 text-[13px] font-semibold text-white">
               Sites / locations under compliance
             </legend>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2 max-sm:grid max-sm:grid-cols-3">
               {SITE_OPTIONS.map((opt, i) => (
                 <button
                   key={opt.label}
                   type="button"
                   aria-pressed={siteIdx === i}
                   onClick={() => setSiteIdx(i)}
-                  className={`rounded-xl border px-4 py-2.5 text-[13px] font-medium transition-colors duration-200 ${
+                  className={`rounded-xl border px-4 py-2.5 text-[13px] font-medium transition-colors duration-200 max-sm:flex max-sm:min-h-[44px] max-sm:items-center max-sm:justify-center ${
                     siteIdx === i
                       ? 'border-white/30 bg-white/[0.08] text-white'
                       : 'border-white/[0.08] bg-white/[0.02] text-slate-400 hover:border-white/[0.16] hover:text-slate-200'
@@ -111,14 +111,14 @@ export function RoiCalculator() {
             <legend className="p-0 text-[13px] font-semibold text-white">
               Audit / accreditation cycles per year
             </legend>
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-2 max-sm:grid max-sm:grid-cols-3">
               {CYCLE_OPTIONS.map((opt, i) => (
                 <button
                   key={opt.label}
                   type="button"
                   aria-pressed={cycleIdx === i}
                   onClick={() => setCycleIdx(i)}
-                  className={`rounded-xl border px-4 py-2.5 text-[13px] font-medium transition-colors duration-200 ${
+                  className={`rounded-xl border px-4 py-2.5 text-[13px] font-medium transition-colors duration-200 max-sm:flex max-sm:min-h-[44px] max-sm:items-center max-sm:justify-center ${
                     cycleIdx === i
                       ? 'border-white/30 bg-white/[0.08] text-white'
                       : 'border-white/[0.08] bg-white/[0.02] text-slate-400 hover:border-white/[0.16] hover:text-slate-200'

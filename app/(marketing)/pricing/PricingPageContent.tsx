@@ -1,13 +1,70 @@
 'use client';
 
-import { Check } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { ArrowRight, Check } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { TrustBar } from '@/components/TrustBar';
 import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
+import { compliancePlanHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { DepthSection } from '@/components/motion/DepthSection';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionMedia } from '@/components/marketing/SectionMedia';
+
+const stickyPlanHref = compliancePlanHref('pricing_sticky');
+
+/**
+ * Mobile-only thumb-reachable primary CTA. The desktop header keeps a
+ * persistent CTA from `md` up (see marketing layout), so this only shows
+ * below `md`, and only once the hero's own CTA has scrolled away.
+ */
+function MobileStickyPlanCta() {
+  const reduce = useReducedMotion();
+  const { trackCtaClick } = useMarketingTelemetry();
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShow(window.scrollY > 540);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {show ? (
+        <motion.div
+          initial={reduce ? false : { y: '110%' }}
+          animate={{ y: 0 }}
+          exit={reduce ? undefined : { y: '110%' }}
+          transition={{ duration: reduce ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0a0f1c]/95 px-4 pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3 backdrop-blur-md md:hidden"
+        >
+          <Link
+            href={stickyPlanHref}
+            onClick={() =>
+              trackCtaClick({
+                surface: 'pricing',
+                section: 'sticky_cta',
+                location: 'mobile_sticky',
+                ctaLabel: PUBLIC_CTA_LABELS.compliancePlan,
+                ctaHref: stickyPlanHref,
+                variant: 'primary',
+              })
+            }
+            className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 text-[15px] font-semibold text-slate-900 transition active:bg-slate-100"
+          >
+            {PUBLIC_CTA_LABELS.compliancePlan}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
+  );
+}
 import {
   FinalCTA,
   FAQSection,
@@ -178,6 +235,9 @@ export default function PricingPageContent() {
       <DeferredSection minHeight={380}>
         <FinalCTA />
       </DeferredSection>
+
+      {/* Mobile-only sticky primary CTA */}
+      <MobileStickyPlanCta />
     </MarketingPageShell>
   );
 }
