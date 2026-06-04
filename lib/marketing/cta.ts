@@ -10,7 +10,7 @@ export const PUBLIC_CTA_LABELS = {
 } as const;
 
 // 2026-05-23 (SEO sprint): the `source` parameter was dropped from these
-// builders. It was generating 50+ canonicalised URL variants of /contact —
+// builders. It was generating 50+ canonicalised URL variants of /contact , 
 // not an indexing problem (canonicals were correct) but real crawl-budget
 // and link-graph noise. Source attribution is now derived from
 // document.referrer on the contact page (see ContactPageContentNew).

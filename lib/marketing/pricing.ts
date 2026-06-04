@@ -1,7 +1,7 @@
 // Audit 2026-05-23: previously hardcoded $297 / $797 / $1,800 inline.
 // Now derived from PLAN_CATALOG so any price change there is reflected
 // on the marketing pricing page automatically. Marketing-only fields
-// (badge, audience copy, ctaHref) stay here — they churn separately
+// (badge, audience copy, ctaHref) stay here, they churn separately
 // from billing logic.
 import { PLAN_CATALOG, type PlanKey } from '@/lib/plans';
 
@@ -41,7 +41,7 @@ export function nameFor(tier: PublicPricingTier): string {
 // - Foundation: public self-serve. CTA → /auth/signup?plan=basic&intent=checkout
 // - Growth: self-serve. CTA → /auth/signup?plan=pro&intent=checkout
 // - Scale: self-serve. CTA → /auth/signup?plan=scale&intent=checkout
-//   (requires STRIPE_PRICE_SCALE env — placeholder until Stripe product is created)
+//   (requires STRIPE_PRICE_SCALE env, placeholder until Stripe product is created)
 // - Enterprise: invoice-only via Stripe Invoicing. No self-serve checkout.
 export const PUBLIC_PRICING_TIERS: PublicPricingTier[] = [
   {
