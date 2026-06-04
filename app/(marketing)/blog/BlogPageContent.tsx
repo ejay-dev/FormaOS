@@ -49,7 +49,7 @@ function BlogHeroExtras() {
   }, []);
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500">
+    <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
       <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1]">
         <Tag className="w-4 h-4 text-slate-300" />
         <span>{blogPosts.length} Articles</span>
@@ -108,7 +108,7 @@ function FeaturedPost() {
           aria-label={`Read ${featuredPost.title}`}
         >
           <ScrollReveal variant="fadeUp" range={[0, 0.3]} className="relative">
-            <div className="relative p-5 sm:p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
+            <div className="relative p-5 sm:p-8 lg:p-12 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-white/20 transition-all duration-500 shadow-2xl shadow-black/30 overflow-hidden">
               {/* Top accent */}
               <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
@@ -133,7 +133,7 @@ function FeaturedPost() {
                     <span className="px-3 py-1 rounded-full bg-white/[0.08] border border-white/10 text-slate-200 text-xs font-medium">
                       Featured
                     </span>
-                    <span className="px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-gray-400 text-xs">
+                    <span className="px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-slate-400 text-xs">
                       {featuredPost.category}
                     </span>
                   </div>
@@ -142,11 +142,11 @@ function FeaturedPost() {
                     {featuredPost.title}
                   </h2>
 
-                  <p className="text-gray-400 leading-relaxed">
+                  <p className="text-slate-400 leading-relaxed">
                     {featuredPost.excerpt}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4" />
                       <span>{featuredPost.author}</span>
@@ -208,7 +208,7 @@ function CategoryFilter({
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === category.id
                   ? 'bg-white/[0.1] text-white border border-white/20'
-                  : 'bg-white/[0.06] text-gray-400 border border-white/[0.1] hover:border-white/25 hover:text-slate-200'
+                  : 'bg-white/[0.06] text-slate-400 border border-white/[0.1] hover:border-white/25 hover:text-slate-200'
               }`}
             >
               <span>{category.name}</span>
@@ -222,20 +222,20 @@ function CategoryFilter({
           range={[0.04, 0.34]}
           className="max-w-xl mx-auto"
         >
-          <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-gray-300 focus-within:border-white/30 focus-within:ring-2 focus-within:ring-white/10 transition">
-            <Search className="w-4 h-4 text-gray-400" />
+          <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-gray-900/60 border border-white/10 text-slate-300 focus-within:border-white/30 focus-within:ring-2 focus-within:ring-white/10 transition">
+            <Search className="w-4 h-4 text-slate-400" />
             <input
               value={searchQuery}
               onChange={(event) => onSearchChange(event.target.value)}
               placeholder="Search articles"
-              className="flex-1 bg-transparent outline-none text-sm placeholder:text-gray-500"
+              className="flex-1 bg-transparent outline-none text-sm placeholder:text-slate-500"
               type="search"
             />
           </div>
           <div className="mt-3 flex justify-center">
             <a
               href="/blog/rss.xml"
-              className="inline-flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-slate-200 transition"
+              className="inline-flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-slate-200 transition"
             >
               <Rss className="w-3.5 h-3.5" aria-hidden="true" />
               Subscribe via RSS
@@ -260,7 +260,7 @@ function BlogCard({ post }: { post: (typeof blogPosts)[0] }) {
       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 rounded-2xl h-full"
       aria-label={`Read ${post.title}`}
     >
-      <div className="relative h-full p-6 rounded-2xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 hover:border-white/20 transition-all duration-500 shadow-xl shadow-black/20">
+      <div className="relative h-full p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/20 transition-all duration-500 shadow-xl shadow-black/20">
         {/* Top accent */}
         <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-white/25 transition-colors" />
 
@@ -278,7 +278,7 @@ function BlogCard({ post }: { post: (typeof blogPosts)[0] }) {
           <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center">
             <Icon className="w-5 h-5 text-slate-300" />
           </div>
-          <span className="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-gray-400 text-xs">
+          <span className="px-2.5 py-1 rounded-full bg-white/[0.06] border border-white/[0.08] text-slate-400 text-xs">
             {post.category}
           </span>
         </div>
@@ -289,12 +289,12 @@ function BlogCard({ post }: { post: (typeof blogPosts)[0] }) {
         </h3>
 
         {/* Excerpt */}
-        <p className="text-sm text-gray-400 mb-4 line-clamp-3">
+        <p className="text-sm text-slate-400 mb-4 line-clamp-3">
           {post.excerpt}
         </p>
 
         {/* Meta */}
-        <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/5">
+        <div className="flex items-center justify-between text-xs text-slate-500 pt-4 border-t border-white/5">
           <div className="flex items-center gap-2">
             <CalendarDays className="w-3.5 h-3.5" />
             <span>{post.date}</span>
@@ -349,7 +349,7 @@ function BlogGrid({
             ))}
           </SectionChoreography>
         ) : (
-          <div className="rounded-2xl border border-white/[0.08] backdrop-blur-xl bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-10 text-center text-gray-400">
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-10 text-center text-slate-400">
             No articles match your search. Try a different keyword or category.
           </div>
         )}
@@ -384,7 +384,7 @@ function NewsletterCTA() {
     <section className="mk-section relative">
       <div className="relative max-w-4xl mx-auto px-6 lg:px-12">
         <ScrollReveal variant="depthScale" range={[0, 0.3]}>
-          <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-900/60 to-gray-950/60 backdrop-blur-xl border border-white/5 shadow-2xl shadow-black/30">
+          <div className="relative p-10 rounded-3xl bg-white/[0.03] border border-white/5 shadow-2xl shadow-black/30">
             <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
             <div className="text-center">
@@ -395,7 +395,7 @@ function NewsletterCTA() {
               <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                 Subscribe to Our Newsletter
               </h2>
-              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+              <p className="text-slate-400 mb-8 max-w-xl mx-auto">
                 Get the latest insights on compliance management, regulatory
                 updates, and product news delivered to your inbox.
               </p>
@@ -420,7 +420,7 @@ function NewsletterCTA() {
                 </motion.button>
               </form>
 
-              <p className="text-xs text-gray-500 mt-4">
+              <p className="text-xs text-slate-500 mt-4">
                 No spam. Unsubscribe anytime.
               </p>
             </div>
