@@ -42,8 +42,6 @@ type JourneyPageProps = {
   journeyKey: 'evaluate' | 'prove' | 'operate' | 'govern';
   /** Optional grayscale photographic backdrop for the hero section. */
   mediaSrc?: string;
-  /** Optional grayscale photographic backdrop for a later section. */
-  mediaSrcSecondary?: string;
 };
 
 const TRUST_ARTIFACTS = [
@@ -69,7 +67,6 @@ export function OutcomeJourneyPage({
   trustArtifacts,
   journeyKey,
   mediaSrc,
-  mediaSrcSecondary,
 }: JourneyPageProps) {
   const resolvedTrustArtifacts = trustArtifacts ?? TRUST_ARTIFACTS;
 
@@ -186,18 +183,10 @@ export function OutcomeJourneyPage({
 
       {/* Outcomes Grid */}
       <DeferredSection minHeight={280}>
-        <section className="mk-section mk-section--compact relative isolate overflow-hidden mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {mediaSrcSecondary && (
-            <SectionMedia
-              src={mediaSrcSecondary}
-              objectPosition="50% 40%"
-              opacity={0.6}
-              scrim="center"
-            />
-          )}
+        <section className="mk-section mk-section--compact relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionChoreography pattern="cascade" className="grid gap-4 md:grid-cols-2">
             {outcomes.map((outcome) => (
-                <div key={outcome} className="rounded-2xl border border-white/[0.08] bg-slate-950/60 backdrop-blur-sm p-5 transition-colors hover:border-white/20">
+                <div key={outcome} className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 transition-colors hover:border-white/20">
                   <div className="flex items-start gap-3">
                     <Target className="mt-0.5 h-5 w-5 text-slate-300 flex-shrink-0" />
                     <p className="text-sm leading-relaxed text-slate-200">

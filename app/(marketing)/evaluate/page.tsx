@@ -81,7 +81,6 @@ export default function EvaluatePage() {
       ]}
       journeyKey="evaluate"
       mediaSrc="/marketing-media/evaluate.jpg"
-      mediaSrcSecondary="/marketing-media/enterprise.jpg"
     />
   );
 }

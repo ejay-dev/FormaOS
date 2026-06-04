@@ -81,7 +81,6 @@ export default function GovernPage() {
       ]}
       journeyKey="govern"
       mediaSrc="/marketing-media/govern.jpg"
-      mediaSrcSecondary="/marketing-media/enterprise.jpg"
     />
   );
 }
