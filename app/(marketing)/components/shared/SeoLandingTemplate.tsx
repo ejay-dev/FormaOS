@@ -189,7 +189,40 @@ export function SeoLandingTemplate({
             title={comparison.title}
             subtitle={comparison.subtitle}
           />
-          <div className="mt-8 overflow-x-auto">
+          {/* Mobile: stacked comparison cards (a 3-col table is unreadable
+              at phone width — the traditional column gets clipped) */}
+          <div className="mt-8 space-y-3 sm:hidden">
+            {comparison.rows.map((row) => (
+              <div
+                key={row.feature}
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4"
+              >
+                <span className="block text-sm font-semibold text-white">
+                  {row.feature}
+                </span>
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  <div>
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      FormaOS
+                    </span>
+                    <span className="mt-1 block text-[13px] leading-snug text-white">
+                      {row.formaos}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      {comparison.traditionalLabel}
+                    </span>
+                    <span className="mt-1 block text-[13px] leading-snug text-slate-400">
+                      {row.traditional}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 hidden overflow-x-auto sm:block">
             <GlassCard intensity="normal" className="p-0 overflow-hidden">
               <table className="w-full text-sm text-left">
                 <thead>
