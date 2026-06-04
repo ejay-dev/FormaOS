@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useMemo } from 'react';
+import { Fragment, useRef, useState, useMemo } from 'react';
 import {
   motion,
   useScroll,
@@ -2070,6 +2070,172 @@ function FeaturesHero() {
 
 /* ─── Main Component ────────────────────────────────────── */
 
+/* ─── Feature System Map ───────────────────────────────────
+   Reframes the 25 features as one connected operating loop rather than
+   25 isolated cards. Each subsystem node is selectable; the panel shows
+   that subsystem's real features + its place in the loop. */
+
+const SYSTEM_FLOW: Record<CategoryName, string> = {
+  'Compliance Core': 'The spine: frameworks, controls, evidence, and posture.',
+  'Workflow & Operations': 'Turns controls into owned, scheduled, audit-logged work.',
+  'Identity & Security': 'Gates every action and seals the record.',
+  'Collaboration & UX': 'Surfaces the work to the people who actually do it.',
+  'AI & Certification': 'Augments the loop and proves it to auditors.',
+};
+
+function FeatureSystemMap() {
+  const [active, setActive] = useState(0);
+  const subsystems = categories.map((name) => ({
+    name,
+    meta: categoryMeta[name],
+    items: features.filter((f) => f.category === name),
+    role: SYSTEM_FLOW[name],
+  }));
+  const sel = subsystems[active];
+  const SelIcon = sel.meta.icon;
+  const prevIdx = (active + subsystems.length - 1) % subsystems.length;
+  const nextIdx = (active + 1) % subsystems.length;
+
+  return (
+    <section className="relative isolate overflow-hidden py-24 sm:py-32">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-8">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <div className="mb-5 flex items-center justify-center gap-4">
+            <span className="h-px w-10 bg-white/20" />
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              One connected system
+            </span>
+            <span className="h-px w-10 bg-white/20" />
+          </div>
+          <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            {features.length} features, one operating loop.
+          </h2>
+          <p className="mt-4 text-base leading-7 text-slate-400">
+            Not {features.length} disconnected tools. Each subsystem feeds the
+            next: obligations become controlled work, gated by identity,
+            surfaced to your team, and proven to auditors. Select a node to
+            trace it.
+          </p>
+        </div>
+
+        {/* Subsystem loop */}
+        <div
+          role="tablist"
+          aria-label="Subsystems"
+          className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-stretch sm:justify-center sm:gap-0"
+        >
+          {subsystems.map((s, i) => {
+            const Icon = s.meta.icon;
+            const on = i === active;
+            return (
+              <Fragment key={s.name}>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => setActive(i)}
+                  className={`flex flex-1 items-center gap-2.5 rounded-xl border px-3.5 py-3 text-left transition-colors duration-200 sm:flex-col sm:items-center sm:gap-1.5 sm:text-center ${
+                    on
+                      ? 'border-white/30 bg-white/[0.06]'
+                      : 'border-white/[0.08] bg-white/[0.02] hover:border-white/[0.16]'
+                  }`}
+                >
+                  <span
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg border ${
+                      on ? 'border-white/25 bg-white/[0.08]' : 'border-white/[0.08] bg-white/[0.04]'
+                    }`}
+                  >
+                    <Icon className={`h-5 w-5 ${on ? 'text-white' : 'text-slate-400'}`} />
+                  </span>
+                  <span className="min-w-0">
+                    <span
+                      className={`block text-[13px] font-semibold leading-tight ${
+                        on ? 'text-white' : 'text-slate-300'
+                      }`}
+                    >
+                      {s.name}
+                    </span>
+                    <span className="text-[11px] text-slate-500">{s.items.length} features</span>
+                  </span>
+                </button>
+                {i < subsystems.length - 1 ? (
+                  <span aria-hidden="true" className="hidden shrink-0 items-center px-1.5 text-slate-600 sm:flex">
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                ) : null}
+              </Fragment>
+            );
+          })}
+        </div>
+        <p className="mt-3 text-center text-[11px] uppercase tracking-[0.16em] text-slate-600">
+          ↻ the loop closes — AI &amp; Certification feeds back into Compliance Core
+        </p>
+
+        {/* Detail panel */}
+        <motion.div
+          key={sel.name}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: EASE_OUT_EXPO }}
+          className="mt-8 grid gap-x-10 gap-y-6 rounded-2xl border border-white/[0.1] bg-white/[0.02] p-7 lg:grid-cols-[0.9fr_1.1fr] lg:p-9"
+        >
+          <div>
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/[0.05]">
+                <SelIcon className="h-5 w-5 text-slate-200" />
+              </span>
+              <div>
+                <h3 className="font-display text-xl font-bold tracking-tight text-white">
+                  {sel.name}
+                </h3>
+                <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">
+                  {sel.items.length} features
+                </p>
+              </div>
+            </div>
+            <p className="mt-4 text-[15px] leading-7 text-white/90">{sel.role}</p>
+            <p className="mt-3 text-sm leading-6 text-slate-400">{sel.meta.description}</p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setActive(prevIdx)}
+                className="rounded-full border border-white/[0.1] bg-white/[0.02] px-3 py-1.5 text-[11px] text-slate-400 transition hover:border-white/[0.2] hover:text-white"
+              >
+                ← receives from {subsystems[prevIdx].name}
+              </button>
+              <button
+                type="button"
+                onClick={() => setActive(nextIdx)}
+                className="rounded-full border border-white/[0.1] bg-white/[0.02] px-3 py-1.5 text-[11px] text-slate-400 transition hover:border-white/[0.2] hover:text-white"
+              >
+                feeds {subsystems[nextIdx].name} →
+              </button>
+            </div>
+          </div>
+
+          <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {sel.items.map((f) => {
+              const FIcon = f.icon;
+              return (
+                <li
+                  key={f.title}
+                  className="flex items-start gap-2.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3.5 py-2.5"
+                >
+                  <FIcon className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
+                  <span className="text-[13px] leading-snug text-slate-200">{f.title}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 export default function FeaturesPageContent() {
   const [activeCategory, setActiveCategory] = useState<CategoryName | null>(
     null,
@@ -2089,6 +2255,15 @@ export default function FeaturesPageContent() {
       </div>
 
       <StatsSection />
+
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+
+      {/* Interactive system map: the 25 features as one connected loop */}
+      <DeferredSection minHeight={520}>
+        <FeatureSystemMap />
+      </DeferredSection>
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
         <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
