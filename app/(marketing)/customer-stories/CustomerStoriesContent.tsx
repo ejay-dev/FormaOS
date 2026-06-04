@@ -28,12 +28,12 @@ const stories = [
   {
     title: 'NDIS provider scenario',
     context:
-      'Illustrative scope — multi-site NDIS Commission-registered provider',
+      'Illustrative scope: multi-site NDIS Commission-registered provider',
     framework: 'NDIS Practice Standards · 25 evaluators across 8 modules',
     situation:
       'Rapid growth fragments evidence across shared drives. Reportable incidents tracked manually. NDIS Commission audits require days of reconstruction. Statutory SIRS clock (24h immediate / 5 business-day detailed) is hard to evidence after the fact.',
     outcome: [
-      'NDIS Practice Standards mapped end-to-end (25 evaluators) — named owner per module',
+      'NDIS Practice Standards mapped end-to-end (25 evaluators), named owner per module',
       'org_incidents schema encodes the SIRS 24h / 5bd clock at the predicate layer',
       'Hash-chained audit log; chain top anchors daily to Sigstore Rekor at 05:30 UTC',
       'Audit export ZIP with framework summary, evidence references, score history',
@@ -42,7 +42,7 @@ const stories = [
   {
     title: 'Healthcare network scenario',
     context:
-      'Illustrative scope — multi-site healthcare operator with NSQHS accreditation cycle + AHPRA-registered practitioners',
+      'Illustrative scope: multi-site healthcare operator with NSQHS accreditation cycle + AHPRA-registered practitioners',
     framework:
       'AHPRA credential tracking · custom NSQHS / RACGP control mapping',
     situation:
@@ -57,7 +57,7 @@ const stories = [
   {
     title: 'Aged-care operator scenario',
     context:
-      'Illustrative scope — multi-site provider under the Aged Care Quality and Safety Commission',
+      'Illustrative scope: multi-site provider under the Aged Care Quality and Safety Commission',
     framework:
       'Aged Care Quality Standards via custom controls · ISO 27001 evaluator pack',
     situation:
@@ -72,7 +72,7 @@ const stories = [
   {
     title: 'Financial services scenario',
     context:
-      'Illustrative scope — ASIC + APRA-regulated firm with AML/CTF reporting obligations',
+      'Illustrative scope: ASIC + APRA-regulated firm with AML/CTF reporting obligations',
     framework:
       'ISO 27001 · SOC 2 TSC · APRA CPS 234 via custom controls · AML/CTF policy library',
     situation:
@@ -111,7 +111,7 @@ export default function CustomerStoriesContent() {
               <span className="text-foreground">Regulated Industries</span>
             </>
           }
-          subheadline="Illustrative scenarios showing how FormaOS lands in regulated industries — not anonymised customer histories. Real deployments discussed during evaluation."
+          subheadline="Illustrative scenarios showing how FormaOS lands in regulated industries, not anonymised customer histories. Real deployments discussed during evaluation."
           primaryCta={{
             href: demoHref('customer_stories_hero'),
             label: PUBLIC_CTA_LABELS.bookDemo,
@@ -138,7 +138,7 @@ export default function CustomerStoriesContent() {
               <motion.article
                 key={s.title}
                 whileHover={{ y: -6 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-6 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
               >
                 <h2 className="text-lg font-semibold text-white">{s.title}</h2>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -216,19 +216,13 @@ export default function CustomerStoriesContent() {
         </section>
       </DeferredSection>
 
-      {/* ROI Proof - Worked Example */}
+      {/* ROI Proof: Worked Example */}
       <DeferredSection minHeight={500}>
         <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-          <SectionMedia
-            src="/marketing-media/enterprise-proof.jpg"
-            objectPosition="50% 40%"
-            opacity={0.6}
-            scrim="center"
-          />
           <ScrollReveal variant="depthSlide" range={[0, 0.35]}>
-            <div className="rounded-2xl border border-white/[0.08] bg-slate-950/60 backdrop-blur-sm p-7 lg:p-10">
+            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 lg:p-10">
               <h3 className="text-lg font-semibold text-white">
-                ROI Proof - Worked Example
+                ROI proof: a worked example
               </h3>
               <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
                 Based on an NDIS provider with 400 staff, 3 FTE compliance team,
