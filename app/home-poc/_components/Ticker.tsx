@@ -6,15 +6,19 @@
 
 // Real framework packs shipping today (from FrameworkTrustStrip).
 const POSTURE = [
-  ['NDIS PRACTICE STANDARDS', 'PACK'],
-  ['AGED CARE QUALITY', 'PACK'],
-  ['NSQHS STANDARDS', 'PACK'],
-  ['AHPRA', 'PACK'],
-  ['APRA CPS 230', 'PACK'],
-  ['ISO 27001', 'PACK'],
-  ['SOC 2', 'PACK'],
-  ['HIPAA', 'PACK'],
-  ['ESSENTIAL EIGHT', 'PACK'],
+  'NDIS PRACTICE STANDARDS',
+  'AGED CARE QUALITY STANDARDS',
+  'NSQHS STANDARDS',
+  'AHPRA',
+  'ASIC s912A',
+  'APRA CPS 230',
+  'AUSTRAC AML/CTF',
+  'ISO 27001',
+  'SOC 2',
+  'HIPAA',
+  'GDPR',
+  'NIST CSF',
+  'ESSENTIAL EIGHT',
 ];
 
 const CREED = [
@@ -33,11 +37,10 @@ export function Ticker() {
         <div className="bru-ticker-track">
           {[0, 1].map((dup) => (
             <div className="bru-ticker-group" key={dup}>
-              {POSTURE.map(([f, v]) => (
+              {POSTURE.map((f) => (
                 <span className="bru-ticker-item" key={`${dup}-${f}`}>
                   <span className="bru-ticker-dot" />
                   {f}
-                  <em className="bru-ticker-val">{v}</em>
                 </span>
               ))}
             </div>

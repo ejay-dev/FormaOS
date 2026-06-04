@@ -2,27 +2,29 @@ import { Reveal } from './_components/Reveal';
 import { Ledger } from './_components/Ledger';
 import { Schematic } from './_components/Schematic';
 import { Ticker } from './_components/Ticker';
+import { CountUp } from './_components/CountUp';
+import { HeroIntro } from './_components/HeroIntro';
 import { StickyCTA } from './_components/StickyCTA';
 
 export const dynamic = 'force-static';
 
 const CONVICTION = [
   {
-    step: '01 / FOR OPERATORS',
+    step: 'For operators',
     title: 'Controls run as workflows, not documents',
     body: 'Named tasks, approval gates, and evidence chains execute inside daily operations — not in a separate compliance layer.',
     cta: 'See how it works',
     href: '/product',
   },
   {
-    step: '02 / FOR ENTERPRISE BUYERS',
+    step: 'For enterprise buyers',
     title: 'One flow from security review to rollout',
     body: 'Identity controls, audit exports, hosting posture, and procurement artifacts stay in a single narrative buyers can verify.',
     cta: 'See enterprise path',
     href: '/enterprise',
   },
   {
-    step: '03 / FOR SECURITY REVIEWERS',
+    step: 'For security reviewers',
     title: 'Trust evidence is visible before the first call',
     body: 'Trust documentation, evidence defensibility, and review-ready context surface early so reviewers can verify substance upfront.',
     cta: 'Visit trust center',
@@ -31,11 +33,11 @@ const CONVICTION = [
 ];
 
 const ENGINE = [
-  ['01', 'OBLIGATION', 'Framework requirements mapped to controls'],
-  ['02', 'CONTROL', 'Ownership and review cadence assigned'],
-  ['03', 'TASK', 'Work routed to the accountable owner'],
-  ['04', 'EVIDENCE', 'Artifacts linked and sealed to the control'],
-  ['05', 'AUDIT', 'Complete, exportable compliance trail'],
+  ['Obligation', 'Framework requirements mapped to controls'],
+  ['Control', 'Ownership and review cadence assigned'],
+  ['Task', 'Work routed to the accountable owner'],
+  ['Evidence', 'Artifacts linked and sealed to the control'],
+  ['Audit', 'Complete, exportable compliance trail'],
 ];
 
 const CAPS = [
@@ -75,13 +77,13 @@ const FACTS = [
   ['Sigstore Rekor', 'External log'],
 ];
 
-const INDUSTRIES = [
-  ['Healthcare', 'HIPAA · RACGP · AHPRA · NSQHS', '/healthcare-compliance', '01'],
-  ['NDIS Providers', 'Practice Standards · Q&S Commission', '/ndis-providers', '02'],
-  ['Mental Health', 'NSMHS · Restrictive practices', '/mental-health-compliance', '03'],
-  ['Financial Services', 'SOC 2 · ISO 27001 · ASIC · APRA', '/financial-services-compliance', '04'],
-  ['Education', 'TEQSA · ASQA · RTO · VRQA', '/industries', '05'],
-  ['Government', 'ISM · PSPF · Essential Eight · FOI', '/use-cases/government-public-sector', '06'],
+const INDUSTRIES: Array<{ name: string; tags: string[]; href: string }> = [
+  { name: 'Healthcare', tags: ['HIPAA', 'RACGP', 'AHPRA', 'NSQHS'], href: '/healthcare-compliance' },
+  { name: 'NDIS Providers', tags: ['Practice Standards', 'Q&S Commission'], href: '/ndis-providers' },
+  { name: 'Mental Health', tags: ['NSMHS', 'Restrictive Practices'], href: '/mental-health-compliance' },
+  { name: 'Financial Services', tags: ['SOC 2', 'ISO 27001', 'ASIC', 'APRA CPS 230'], href: '/financial-services-compliance' },
+  { name: 'Education', tags: ['TEQSA', 'ASQA', 'RTO', 'VRQA'], href: '/industries' },
+  { name: 'Government', tags: ['ISM', 'PSPF', 'Essential Eight', 'FOI'], href: '/use-cases/government-public-sector' },
 ];
 
 const BA = [
@@ -124,7 +126,7 @@ export default function HomePocPage() {
               <span className="bru-wordmark">FORMAOS</span>
             </div>
             <div className="bru-mh-cell hidden md:flex">COMPLIANCE OPERATING SYSTEM</div>
-            <div className="bru-mh-cell hidden lg:flex">ADELAIDE · 34.92°S</div>
+            <div className="bru-mh-cell hidden lg:flex">ADELAIDE · AU</div>
             <div style={{ flex: 1 }} className="bru-mh-cell" />
             <nav className="bru-mh-cell hidden lg:flex" style={{ gap: 20 }}>
               {['PLATFORM', 'FRAMEWORKS', 'INDUSTRIES', 'PRICING'].map((l) => (
@@ -140,44 +142,7 @@ export default function HomePocPage() {
       </header>
 
       {/* ========== HERO ========== */}
-      <section style={{ position: 'relative', overflow: 'hidden', borderBottom: '1.5px solid var(--line-2)' }}>
-        <div className="bru-cols" aria-hidden>
-          {Array.from({ length: 12 }).map((_, i) => <span key={i} />)}
-        </div>
-        <div className="bru-frame" style={{ position: 'relative', paddingTop: 'clamp(3rem, 6vw, 5rem)', paddingBottom: 'clamp(2.5rem, 5vw, 4rem)' }}>
-          <span className="bru-chip" style={{ display: 'inline-block', marginBottom: 'clamp(2rem, 5vw, 3.5rem)' }}>
-            COMPLIANCE OS FOR NDIS · AGED CARE · HEALTHCARE
-          </span>
-
-          <h1 className="bru-display" style={{ fontSize: 'clamp(2.6rem, 11vw, 9rem)' }}>Audit-ready</h1>
-          <h1 className="bru-display" style={{ fontSize: 'clamp(2.6rem, 11vw, 9rem)' }}>every day<span style={{ color: 'var(--red)' }}>.</span></h1>
-          <p
-            className="bru-h2"
-            style={{ fontSize: 'clamp(1.25rem, 2.6vw, 2.1rem)', marginTop: 'clamp(1.25rem, 2vw, 1.75rem)', fontVariationSettings: "'wght' 600, 'wdth' 105", color: 'var(--ink-dim)', textTransform: 'none', lineHeight: 1.1 }}
-          >
-            Not the week before the <span style={{ color: 'var(--red)' }}>Commission</span> visits.
-          </p>
-
-          <div className="grid gap-x-8 gap-y-8 lg:grid-cols-12" style={{ marginTop: 'clamp(2.5rem, 4vw, 3.5rem)', alignItems: 'end' }}>
-            <div className="lg:col-span-6">
-              <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-                <a href="/contact?type=compliance-plan" className="bru-btn bru-btn-red">Get Compliance Plan <span className="bru-arrow">→</span></a>
-                <a href="/contact?type=demo" className="bru-btn">Book Demo</a>
-              </div>
-              <p className="bru-mono" style={{ fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 18, letterSpacing: '0.04em' }}>
-                GUIDED ASSESSMENT · AU-HOSTED BY DEFAULT · EVIDENCE-BACKED WORKFLOWS
-              </p>
-            </div>
-            <div className="lg:col-span-5 lg:col-start-8">
-              <p className="bru-deck">
-                FormaOS turns NDIS Practice Standards, Aged Care Quality Standards, and the
-                rest of your obligations into enforced workflows — named owners, blocked
-                failure paths, and an immutable evidence trail that passes review the first time.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroIntro />
 
       {/* ========== TICKER ========== */}
       <Ticker />
@@ -247,11 +212,11 @@ export default function HomePocPage() {
           </div>
         </Reveal>
         <div className="grid gap-px sm:grid-cols-5" style={{ marginTop: 28, border: '1px solid var(--line-2)', background: 'var(--line)' }}>
-          {ENGINE.map(([n, t, d]) => (
-            <div key={n} style={{ background: 'var(--bg)', padding: '20px 18px' }}>
-              <span className="bru-mono" style={{ fontSize: 11, color: 'var(--red)' }}>{n}</span>
-              <div className="bru-card-title" style={{ fontSize: '1rem', marginTop: 12 }}>{t}</div>
-              <p className="bru-body" style={{ fontSize: '0.82rem', marginTop: 10 }}>{d}</p>
+          {ENGINE.map(([t, d], i) => (
+            <div key={t} style={{ background: 'var(--bg)', padding: '22px 18px', position: 'relative' }}>
+              <div className="bru-card-title" style={{ fontSize: '1.05rem' }}>{t}</div>
+              <p className="bru-body" style={{ fontSize: '0.82rem', marginTop: 12 }}>{d}</p>
+              {i < ENGINE.length - 1 && <span className="bru-flow-arrow" aria-hidden>→</span>}
             </div>
           ))}
         </div>
@@ -269,15 +234,17 @@ export default function HomePocPage() {
             </h2>
           </div>
         </div>
-        <div className="bru-cap-grid">
-          {CAPS.map(([t, d], i) => (
-            <div className="bru-cap" key={t}>
-              <span className="bru-cap-n">{String(i + 1).padStart(2, '0')}</span>
-              <div className="bru-cap-t">{t}</div>
-              <p className="bru-cap-d">{d}</p>
-            </div>
-          ))}
-        </div>
+        <Reveal>
+          <div className="bru-cap-grid">
+            {CAPS.map(([t, d]) => (
+              <div className="bru-cap" key={t}>
+                <span className="bru-cap-tick" aria-hidden />
+                <div className="bru-cap-t">{t}</div>
+                <p className="bru-cap-d">{d}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
       <hr className="bru-rule-strong" />
@@ -297,23 +264,27 @@ export default function HomePocPage() {
             signed open-source releases.
           </p>
         </div>
-        <div className="bru-pillars">
-          {PILLARS.map((p) => (
-            <div className="bru-pillar" key={p.h}>
-              <span className="bru-pillar-tag">{p.tag}</span>
-              <h3 className="bru-pillar-h">{p.h}</h3>
-              <p className="bru-body" style={{ fontSize: '0.88rem' }}>{p.body}</p>
-            </div>
-          ))}
-        </div>
-        <div className="bru-facts">
-          {FACTS.map(([k, v]) => (
-            <div className="bru-fact" key={k}>
-              <div className="bru-fact-k">{k}</div>
-              <div className="bru-fact-v">{v}</div>
-            </div>
-          ))}
-        </div>
+        <Reveal>
+          <div className="bru-pillars">
+            {PILLARS.map((p) => (
+              <div className="bru-pillar" key={p.h}>
+                <span className="bru-pillar-tag">{p.tag}</span>
+                <h3 className="bru-pillar-h">{p.h}</h3>
+                <p className="bru-body" style={{ fontSize: '0.88rem' }}>{p.body}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+        <Reveal delay={0.08}>
+          <div className="bru-facts">
+            {FACTS.map(([k, v]) => (
+              <div className="bru-fact" key={k}>
+                <div className="bru-fact-k">{k}</div>
+                <div className="bru-fact-v">{v}</div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
       <hr className="bru-rule-strong" />
@@ -328,18 +299,21 @@ export default function HomePocPage() {
             </h2>
           </div>
         </div>
-        <div>
-          {INDUSTRIES.map(([name, meta, href, n]) => (
-            <a key={n} href={href} className="bru-idx-row">
-              <span className="bru-idx-num">№{n}</span>
-              <span className="bru-idx-name">{name}</span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-                <span className="bru-idx-meta hidden md:block">{meta}</span>
+        <Reveal>
+          <div>
+            {INDUSTRIES.map((ind) => (
+              <a key={ind.name} href={ind.href} className="bru-idx-row">
+                <span className="bru-idx-name">{ind.name}</span>
+                <span className="bru-idx-tags hidden md:flex">
+                  {ind.tags.map((t) => (
+                    <span className="bru-idx-tag" key={t}>{t}</span>
+                  ))}
+                </span>
                 <span className="bru-idx-arrow">→</span>
-              </span>
-            </a>
-          ))}
-        </div>
+              </a>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
       <hr className="bru-rule-strong" />
@@ -359,30 +333,34 @@ export default function HomePocPage() {
           </p>
         </div>
 
-        <div style={{ marginBottom: 'clamp(2.5rem, 4vw, 3.5rem)' }}>
-          {BA.map((b) => (
-            <div className="bru-ba" key={b.impact}>
-              <div className="bru-ba-impact">{b.impact}</div>
-              <div className="bru-ba-col">
-                <span className="bru-ba-label">Status quo</span>
-                <p className="bru-ba-before">{b.before}</p>
+        <Reveal>
+          <div style={{ marginBottom: 'clamp(2.5rem, 4vw, 3.5rem)' }}>
+            {BA.map((b) => (
+              <div className="bru-ba" key={b.impact}>
+                <div className="bru-ba-impact">{b.impact}</div>
+                <div className="bru-ba-col">
+                  <span className="bru-ba-label">Status quo</span>
+                  <p className="bru-ba-before">{b.before}</p>
+                </div>
+                <div className="bru-ba-col">
+                  <span className="bru-ba-label" style={{ color: 'var(--red)' }}>With FormaOS · {b.tag}</span>
+                  <p className="bru-ba-after">{b.after}</p>
+                </div>
               </div>
-              <div className="bru-ba-col">
-                <span className="bru-ba-label" style={{ color: 'var(--red)' }}>With FormaOS · {b.tag}</span>
-                <p className="bru-ba-after">{b.after}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Reveal>
 
-        <div className="bru-stats">
-          {STATS.map(([n, l]) => (
-            <div className="bru-stat-cell" key={l}>
-              <div className="bru-stat-n">{n}</div>
-              <div className="bru-stat-l">{l}</div>
-            </div>
-          ))}
-        </div>
+        <Reveal>
+          <div className="bru-stats">
+            {STATS.map(([n, l]) => (
+              <div className="bru-stat-cell" key={l}>
+                <div className="bru-stat-n"><CountUp value={Number(n)} /></div>
+                <div className="bru-stat-l">{l}</div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
       {/* ========== RED STATEMENT BAND ========== */}
