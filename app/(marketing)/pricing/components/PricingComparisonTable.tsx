@@ -491,9 +491,9 @@ export function PricingComparisonTable() {
               Pick a plan. See exactly what it covers.
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-400">
-              {GROUPS.length} categories, {TOTAL_ROWS} capabilities, side by
-              side.{' '}
-              <span className="hidden lg:inline">
+              {GROUPS.length} categories, {TOTAL_ROWS} capabilities
+              <span className="hidden lg:inline">, side by side</span>.{' '}
+              <span>
                 Select a plan to focus its column and see what it adds over the
                 tier below.{' '}
               </span>
@@ -667,73 +667,150 @@ export function PricingComparisonTable() {
           </div>
         </ScrollReveal>
 
-        {/* Mobile: stacked per-group */}
-        <div className="mt-10 space-y-6 lg:hidden">
-          {GROUPS.map((group) => (
+        {/*
+          Mobile: one focused plan at a time. Reuses the same `focus`
+          state as the desktop matrix — a phone can't read a 4-column
+          table, so we show a sticky plan switcher and a single focused
+          column instead of repeating every cell four times per row.
+        */}
+        <div className="mt-8 lg:hidden">
+          {/* Sticky plan switcher — stays reachable while the list scrolls */}
+          <div className="sticky top-[calc(env(safe-area-inset-top)+60px)] z-20 -mx-6 border-b border-white/[0.06] bg-[#0a0f1c]/92 px-6 pb-3 pt-3 backdrop-blur-md">
             <div
-              key={group.title}
-              className="rounded-3xl border border-white/[0.08] bg-white/[0.025] p-5"
+              role="tablist"
+              aria-label="Focus a plan"
+              className="grid grid-cols-4 gap-1.5"
             >
-              <div
-                id={`capability-${slugifyGroupCode(group.code)}-mobile`}
-                className="mb-4 flex items-center gap-3 scroll-mt-24"
-              >
-                <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
-                  {group.code}
-                </span>
-                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">
-                  {group.title}
-                </span>
-              </div>
-              <div className="divide-y divide-white/[0.06]">
-                {group.rows.map((row) => (
-                  <div key={row.label} className="py-3">
-                    <p className="text-sm font-medium text-white">
-                      {row.label}
-                    </p>
-                    {row.hint ? (
-                      <p className="mt-0.5 text-xs text-slate-500">
-                        {row.hint}
-                      </p>
-                    ) : null}
-                    <dl className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                      {COLUMNS.map((col) => (
-                        <div
-                          key={col.key}
-                          className={`flex items-center justify-between rounded-xl border px-3 py-2 ${
-                            col.featured
-                              ? 'border-white/25 bg-white/[0.06]'
-                              : 'border-white/[0.05] bg-white/[0.02]'
-                          }`}
-                        >
-                          <dt className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
-                            {col.code}
-                          </dt>
-                          <dd className="ml-2">
-                            {row[col.key] === '✓' ? (
-                              <Check
-                                className={`h-3.5 w-3.5 ${col.featured ? 'text-slate-100' : 'text-slate-400'}`}
-                                aria-hidden="true"
-                              />
-                            ) : row[col.key] === '—' ? (
-                              <Minus
-                                className="h-3.5 w-3.5 text-slate-700"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <span className="text-[11px] text-slate-200">
-                                {row[col.key]}
-                              </span>
-                            )}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </div>
-                ))}
-              </div>
+              {COLUMNS.map((col) => {
+                const active = col.key === focus;
+                return (
+                  <button
+                    key={col.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setFocus(col.key)}
+                    className={`flex min-h-[52px] flex-col items-center justify-center gap-0.5 rounded-xl border px-1 py-2 transition-colors duration-200 ${
+                      active
+                        ? 'border-white/30 bg-white/[0.08] text-white'
+                        : 'border-white/[0.08] bg-white/[0.02] text-slate-400 active:bg-white/[0.06]'
+                    }`}
+                  >
+                    <span className="text-[13px] font-semibold leading-none">
+                      {col.label}
+                    </span>
+                    <span className="text-[10px] leading-none text-slate-500">
+                      {col.price}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-          ))}
+          </div>
+
+          {/* What the focused plan adds over the tier below it */}
+          <div className="mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3.5">
+            {prevLabel ? (
+              <>
+                <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  {focusedCol.label} adds over {prevLabel}
+                </span>
+                <div className="mt-2.5 flex flex-col gap-2">
+                  {upgrades.map((u) => (
+                    <span
+                      key={u.label}
+                      className="flex items-start gap-2.5 text-[13px] leading-snug text-slate-300"
+                    >
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
+                      <span>
+                        {u.label}
+                        {u.value ? (
+                          <span className="text-slate-500"> · {u.value}</span>
+                        ) : null}
+                      </span>
+                    </span>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <span className="block text-[13px] leading-relaxed text-slate-300">
+                <span className="font-semibold text-white">
+                  {focusedCol.label}
+                </span>{' '}
+                is the compliance core. The engine, evidence trail, and
+                immutable audit log ship in every plan.
+              </span>
+            )}
+          </div>
+
+          {/* Focused column — every capability, one plan's answer */}
+          <div className="mt-7 space-y-7">
+            {GROUPS.map((group) => (
+              <div
+                key={group.title}
+                id={`capability-${slugifyGroupCode(group.code)}-mobile`}
+                className="scroll-mt-[140px]"
+              >
+                <div className="mb-1 flex items-center gap-3">
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+                    {group.code}
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-white/85">
+                    {group.title}
+                  </span>
+                  <span className="h-px flex-1 bg-white/[0.06]" />
+                </div>
+                <ul className="divide-y divide-white/[0.06]">
+                  {group.rows.map((row) => {
+                    const value = row[focus];
+                    const excluded = value === '—';
+                    return (
+                      <li
+                        key={row.label}
+                        className="flex items-start justify-between gap-4 py-3"
+                      >
+                        <div className="min-w-0">
+                          <span
+                            className={`block text-sm font-medium leading-snug ${excluded ? 'text-slate-500' : 'text-white'}`}
+                          >
+                            {row.label}
+                          </span>
+                          {row.hint ? (
+                            <span className="mt-0.5 block text-xs leading-snug text-slate-500">
+                              {row.hint}
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="mt-0.5 shrink-0 text-right">
+                          {value === '✓' ? (
+                            <>
+                              <Check
+                                className="ml-auto h-[18px] w-[18px] text-white"
+                                aria-hidden="true"
+                              />
+                              <span className="sr-only">Included</span>
+                            </>
+                          ) : value === '—' ? (
+                            <>
+                              <Minus
+                                className="ml-auto h-[18px] w-[18px] text-slate-700"
+                                aria-hidden="true"
+                              />
+                              <span className="sr-only">Not included</span>
+                            </>
+                          ) : (
+                            <span className="text-[13px] font-semibold text-white">
+                              {value}
+                            </span>
+                          )}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

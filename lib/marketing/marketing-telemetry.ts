@@ -7,6 +7,7 @@ import { useAnalytics } from '@/lib/monitoring/analytics';
 interface MarketingCtaClickDetails {
   surface:
     | 'pricing'
+    | 'product'
     | 'features'
     | 'trust'
     | 'compare'

@@ -183,12 +183,12 @@ export function AuditChainVisualizer() {
             SHA-256 · {rows.length} blocks
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 max-sm:w-full">
           <button
             type="button"
             onClick={append}
             disabled={!ready}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-white transition hover:border-white/25 hover:bg-white/[0.08] disabled:opacity-40"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-white transition hover:border-white/25 hover:bg-white/[0.08] disabled:opacity-40 max-sm:min-h-[44px] max-sm:flex-1"
           >
             <Plus className="h-3.5 w-3.5" />
             Append event
@@ -196,7 +196,7 @@ export function AuditChainVisualizer() {
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:border-white/[0.16] hover:text-white"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:border-white/[0.16] hover:text-white max-sm:min-h-[44px] max-sm:flex-1"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             Reset
@@ -266,7 +266,7 @@ export function AuditChainVisualizer() {
                   onClick={() => toggleTamper(row.seq)}
                   aria-pressed={edited}
                   title={edited ? 'Restore original content' : 'Edit this sealed entry'}
-                  className={`flex h-7 w-7 items-center justify-center rounded-lg border transition ${
+                  className={`flex h-7 w-7 items-center justify-center rounded-lg border transition max-sm:h-11 max-sm:w-11 ${
                     edited
                       ? 'border-rose-400/40 bg-rose-400/10 text-rose-300'
                       : 'border-white/[0.1] text-slate-500 hover:border-white/25 hover:text-white'

@@ -3,6 +3,7 @@
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { brand } from '@/config/brand';
 import dynamic from 'next/dynamic';
+import { FullControlMapMobile } from './FullControlMapMobile';
 
 const FullControlMapViz = dynamic(
   () => import('@/components/motion/FullControlMapViz'),
@@ -86,7 +87,10 @@ export function FullControlMapSection() {
 
         {/* Canvas container - cinematic 16:9-ish ratio */}
         <ScrollReveal variant="fadeUp" range={[0, 0.35]}>
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-slate-950">
+          {/* Mobile: tap-to-trace list (the SVG galaxy is unreadable < sm) */}
+          <FullControlMapMobile />
+
+          <div className="relative hidden overflow-hidden rounded-3xl border border-white/[0.08] bg-slate-950 sm:block">
             {/* Subtle graph substrate, masked dot grid */}
             <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_center,rgba(148,163,184,0.25)_0.8px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(circle_at_center,black_20%,transparent_80%)]" />
 
@@ -129,18 +133,6 @@ export function FullControlMapSection() {
               </div>
             </div>
 
-            {/* Mobile info card */}
-            <div className="relative z-20 grid gap-2 p-4 sm:hidden">
-              <div className="rounded-xl border border-white/[0.08] bg-slate-950/70 px-4 py-3">
-                <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">
-                  70+ Controls Mapped
-                </p>
-                <p className="mt-1.5 text-xs text-slate-300">
-                  Full coverage across all 8 compliance framework packs.
-                </p>
-              </div>
-            </div>
-
             {/* Canvas - large aspect ratio */}
             <div className="relative aspect-[3/2] min-h-[280px] sm:aspect-[16/10] sm:min-h-[520px] lg:aspect-[16/9] lg:min-h-0 xl:aspect-[2/1]">
               <FullControlMapViz className="absolute inset-0 z-10" />
@@ -149,11 +141,16 @@ export function FullControlMapSection() {
 
           {/* Footer caption */}
           <div className="mt-6 text-center">
-            <p className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-slate-950/50 px-5 py-2.5 text-xs text-slate-400 backdrop-blur-sm sm:text-sm">
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-slate-950/50 px-5 py-2.5 text-xs text-slate-400 backdrop-blur-sm sm:text-sm">
               <span className="h-px w-6 bg-gradient-to-r from-transparent to-slate-600" />
-              Tap or hover any node to trace cross-framework compliance chains
+              <span className="hidden sm:inline">
+                Tap or hover any node to trace cross-framework compliance chains
+              </span>
+              <span className="sm:hidden">
+                Tap a shared control to trace its frameworks
+              </span>
               <span className="h-px w-6 bg-gradient-to-l from-transparent to-slate-600" />
-            </p>
+            </span>
           </div>
         </ScrollReveal>
       </div>
