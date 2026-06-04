@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
- HelpCircle,
- Shield,
- Database,
- Plug,
- CreditCard,
- Headphones,
- ChevronDown,
- ArrowRight,
- Sparkles,
- Building2,
+  HelpCircle,
+  Shield,
+  Database,
+  Plug,
+  CreditCard,
+  Headphones,
+  ChevronDown,
+  ArrowRight,
+  Sparkles,
+  Building2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { duration } from '@/config/motion';
@@ -23,7 +23,11 @@ import { DeferredSection } from '../components/shared';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { FAQHeroVisual } from './components/FAQHeroVisual';
 import { DotGrid } from '@/components/marketing/SectionBackgrounds';
-import { compliancePlanHref, demoHref, PUBLIC_CTA_LABELS } from '@/lib/marketing/cta';
+import {
+  compliancePlanHref,
+  demoHref,
+  PUBLIC_CTA_LABELS,
+} from '@/lib/marketing/cta';
 import { brand } from '@/config/brand';
 
 // ============================================================================
@@ -31,202 +35,202 @@ import { brand } from '@/config/brand';
 // ============================================================================
 
 const faqCategories = [
- {
- id: 'product',
- title: 'Product & Platform',
- icon: Sparkles,
- color: 'cyan',
- questions: [
- {
- q: 'What is FormaOS?',
- a: 'FormaOS is an enterprise compliance operating system designed for regulated industries. It connects governance frameworks, operational controls, evidence collection, and audit defense into a single, unified platform. Unlike document repositories or checklists, FormaOS enforces accountability through structured workflows, immutable audit trails, and compliance visibility.',
- },
- {
- q: 'How is FormaOS different from task or compliance software?',
- a: 'Traditional compliance tools store documents and rely on manual tracking. FormaOS is an operating system that runs your compliance program. It enforces control ownership, captures evidence as work is completed, maintains immutable audit trails, and provides continuous compliance visibility. This means you move from reactive compliance to proactive operational assurance.',
- },
- {
- q: 'What industries is FormaOS built for?',
- a: 'FormaOS is purpose-built for regulated industries including NDIS and disability services, healthcare, aged care, financial services, education, and government. Any organization that must demonstrate compliance to regulators, auditors, or accreditation bodies can benefit from our platform.',
- },
- {
- q: 'Can FormaOS handle multiple regulatory frameworks?',
- a: `Yes. FormaOS ships with ${brand.frameworks.count} pre-built framework packs (${brand.frameworks.packs.join(', ')}) and supports multiple frameworks simultaneously. The platform is designed to accommodate additional regulatory requirements beyond the included packs, so it adapts to your specific regulatory landscape.`,
- },
- {
- q: 'How does workflow modeling work?',
- a: 'FormaOS allows you to model operational workflows as structured processes with defined steps, control points, and evidence requirements. Workflow automation can be configured by request, creating a defensible chain of accountability.',
- },
- ],
- },
- {
- id: 'security',
- title: 'Security & Compliance',
- icon: Shield,
- color: 'purple',
- questions: [
- {
- q: 'Is FormaOS SOC 2 aligned?',
- a: 'FormaOS is built with SOC 2-aligned controls across the Common Criteria, Availability, and Confidentiality trust service categories. We implement AES-256 encryption, identity governance, tamper-evident audit logs, and structured incident response procedures aligned with the framework. Our security review packet, covering architecture, controls, and data handling, is available for enterprise procurement and security teams on request.',
- },
- {
- q: 'How is data encrypted?',
- a: 'Primary platform data is encrypted at rest using AES-256 and in transit using TLS 1.3. Encryption key management follows enterprise cloud-provider best practices, and encryption controls are documented in our security review packet.',
- },
- {
- q: 'Does FormaOS support SSO and MFA?',
- a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. MFA policy enforcement is supported across supported identity flows, and session duration controls plus access governance policies are configurable at the organizational level. Additional identity-lifecycle requirements are reviewed during enterprise deployment.',
- },
- {
- q: 'Where is data stored and what residency options exist?',
- a: 'FormaOS is AU-hosted by default, designed for Australian-regulated organizations. Additional residency and cross-border handling requirements are reviewed during procurement. A Data Processing Agreement (DPA) is available for enterprise review, covering privacy and transfer considerations relevant to your deployment.',
- },
- {
- q: 'How do you handle data privacy and the Australian Privacy Principles?',
- a: 'FormaOS is built with privacy-by-design principles aligned with the Australian Privacy Principles (APPs) under the Privacy Act 1988. We collect only the data necessary to operate the platform, provide full organizational data control, and never sell customer data to third parties. APP-aligned data handling documentation, breach response workflows, and our DPA are available for privacy and legal review.',
- },
- ],
- },
- {
- id: 'evidence',
- title: 'Data & Evidence',
- icon: Database,
- color: 'blue',
- questions: [
- {
- q: 'How does FormaOS generate audit trails?',
- a: 'Every action in FormaOS is automatically logged with full context, who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence that satisfies regulatory requirements. You can filter, search, and export audit logs at any time.',
- },
- {
- q: 'Is evidence immutable?',
- a: 'Yes. Evidence records in FormaOS are append-only and tamper-evident. Once uploaded, evidence cannot be modified or deleted, only superseded by a new version, with the original preserved in the audit trail. Every upload, update, approval, and version change is recorded with an immutable timestamp, the identity of the actor, and a correlation ID linking it to the originating control or workflow. This chain-of-custody model ensures that auditors and regulators see a complete, unaltered history of every compliance artifact from creation through current state.',
- },
- {
- q: 'Can we export regulatory reports?',
- a: 'Yes. FormaOS provides compliance status reports, evidence summaries, audit trail exports, and control verification reports. Exports are available in CSV/ZIP formats, with PDF/Excel options available by request.',
- },
- {
- q: 'How long is data retained?',
- a: 'Data retention policies are configurable based on your regulatory requirements. By default, we retain all compliance data, evidence, and audit trails for the duration of your subscription plus a configurable retention period. Enterprise customers can specify custom retention policies aligned with their compliance obligations.',
- },
- {
- q: 'Can we import existing compliance data?',
- a: 'Yes. FormaOS supports data import from existing systems including spreadsheets, legacy compliance tools, and document management systems. Our onboarding team provides migration assistance to ensure your historical compliance data is properly structured and accessible in the platform.',
- },
- ],
- },
- {
- id: 'integrations',
- title: 'Integrations & APIs',
- icon: Plug,
- color: 'green',
- questions: [
- {
- q: 'Does FormaOS integrate with existing systems?',
- a: 'FormaOS ships with 20+ integrations across productivity (Jira, Slack, Microsoft Teams), cloud (AWS, Azure, GCP), identity (Okta, Azure AD, Google Workspace), security (Qualys, Tenable), and HRIS tools (BambooHR, Workday). Browse and install connectors from the Integration Marketplace with one-click setup. Enterprise plans include SAML 2.0 SSO.',
- },
- {
- q: 'Are APIs available?',
- a: 'Yes. The REST API v1 includes 20+ endpoints covering organizations, tasks, evidence, compliance data, reports, frameworks, controls, notifications, integrations, and search. Bearer API keys with scoped permissions, cursor-based pagination, rate limiting, and an OpenAPI 3.1 specification are included. API documentation is available at /documentation/api.',
- },
- {
- q: 'Do you support webhooks?',
- a: 'Yes. FormaOS includes a webhook relay with HMAC-SHA256 signed payloads, 15+ event types, configurable retry policies, delivery logging, and a built-in webhook testing console. Inbound webhooks are also supported for integration data collection.',
- },
- {
- q: 'Can FormaOS connect to our existing systems?',
- a: 'FormaOS ships with native connectors for Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, Azure, GCP, Okta, Google Workspace, Qualys, Tenable, ServiceNow, BambooHR, and Workday. The Integration Marketplace lets you browse by category and install with a guided setup wizard. For systems without a native connector, use the REST API v1, webhooks, or Zapier to build custom integrations.',
- },
- ],
- },
- {
- id: 'pricing',
- title: 'Pricing & Evaluation',
- icon: CreditCard,
- color: 'amber',
- questions: [
- {
- q: 'How do we evaluate FormaOS?',
- a: 'FormaOS starts with a guided compliance plan. We scope frameworks, team structure, evidence volume, audit exposure, and procurement requirements before recommending Foundation, Growth, or Enterprise.',
- },
- {
- q: 'Can the commercial scope change over time?',
- a: 'Yes. The commercial scope can be reviewed as your frameworks, sites, teams, or governance requirements change. Growth and Enterprise are handled through guided commercial review rather than casual feature toggles.',
- },
- {
- q: 'What payment methods are accepted?',
- a: 'We accept all major credit cards and bank transfers for annual subscriptions. Enterprise customers can arrange invoiced billing with net-30 or net-60 payment terms. All payments are processed securely through our payment provider.',
- },
- {
- q: 'Are there discounts for annual billing?',
- a: 'Yes. Annual subscriptions receive a discount compared to monthly billing. Enterprise customers may also qualify for volume discounts and custom pricing based on deployment size and requirements. Contact our sales team for detailed pricing.',
- },
- {
- q: 'Is there a money-back guarantee?',
- a: 'If you have concerns during onboarding or early adoption, contact our team and we will work with you on a fair resolution based on your plan and terms.',
- },
- ],
- },
- {
- id: 'enterprise',
- title: 'Enterprise & Procurement',
- icon: Building2,
- color: 'blue',
- questions: [
- {
- q: 'What procurement documentation is available for enterprise sign-off?',
- a: 'FormaOS provides a core enterprise review pack that includes a Data Processing Agreement (DPA), vendor assurance materials, SLA review documentation, and a security review packet covering architecture, encryption, identity governance, and data handling. These materials are shared during evaluation and procurement review, with additional artifacts handled case by case.',
- },
- {
- q: 'What are the SLA commitments for Enterprise customers?',
- a: 'Enterprise agreements can include documented availability expectations, incident handling processes, maintenance communications, and escalation paths. Exact support and service terms depend on the plan and executed commercial agreement.',
- },
- {
- q: 'What are our options if we need to exit the platform?',
- a: 'Compliance data, evidence, audit trails, and control records can be exported in portable formats such as CSV, JSON, and ZIP. Export support and deletion timing are handled under your plan and commercial agreement so teams can complete an orderly transition.',
- },
- {
- q: 'Can FormaOS support multi-entity or multi-site deployments?',
- a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. Identity requirements are reviewed during deployment planning so governance can scale with your structure.',
- },
- {
- q: 'Does FormaOS conduct penetration testing?',
- a: 'FormaOS uses independent security review processes and documents its vulnerability disclosure and remediation approach. Current assessment artifacts may be shared with enterprise buyers during security review when available and appropriate.',
- },
- ],
- },
- {
- id: 'support',
- title: 'Support & Onboarding',
- icon: Headphones,
- color: 'rose',
- questions: [
- {
- q: 'What onboarding is provided?',
- a: 'All paid plans include structured onboarding covering platform configuration, first framework setup, workflow design, evidence structure, and control ownership. Enterprise onboarding can include additional implementation support for more complex deployments. Timing depends on scope, data readiness, and the number of teams involved.',
- },
- {
- q: 'Is enterprise support available?',
- a: 'Yes. Enterprise plans can include shared support channels, priority email handling, named contacts, and review cadences aligned to the deployment. Support coverage and response expectations are documented in the applicable agreement.',
- },
- {
- q: 'How do I get help if I have an issue?',
- a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at support@formaos.com.au. Growth and Enterprise plans include higher-touch support options, and critical platform issues are prioritized under the applicable support process.',
- },
- {
- q: 'Do you provide training for our team?',
- a: 'Yes. All paid plans include a live onboarding call with your team, recorded walkthrough videos for key workflows (control setup, evidence management, audit export), and access to the self-service knowledge base. Enterprise customers can request custom training sessions tailored to specific roles (compliance managers, control owners, executive dashboard users) and specific frameworks. We also provide quarterly check-in sessions for Enterprise customers to review new features and optimize workflows.',
- },
- {
- q: 'What is your support response time?',
- a: 'Support response expectations vary by plan and, for Enterprise, by executed agreement. If your team requires documented response commitments, we review those during procurement and include them in the relevant service terms.',
- },
- {
- q: 'What happens during an audit if we need urgent help?',
- a: 'Enterprise customers can scope audit-period support for evidence export, posture snapshots, and reviewer access configuration during active audits or regulator visits. Additional assistance for other plans can be discussed based on the engagement and timing.',
- },
- ],
- },
+  {
+    id: 'product',
+    title: 'Product & Platform',
+    icon: Sparkles,
+    color: 'cyan',
+    questions: [
+      {
+        q: 'What is FormaOS?',
+        a: 'FormaOS is an enterprise compliance operating system designed for regulated industries. It connects governance frameworks, operational controls, evidence collection, and audit defense into a single, unified platform. Unlike document repositories or checklists, FormaOS enforces accountability through structured workflows, immutable audit trails, and compliance visibility.',
+      },
+      {
+        q: 'How is FormaOS different from task or compliance software?',
+        a: 'Traditional compliance tools store documents and rely on manual tracking. FormaOS is an operating system that runs your compliance program. It enforces control ownership, captures evidence as work is completed, maintains immutable audit trails, and provides continuous compliance visibility. This means you move from reactive compliance to proactive operational assurance.',
+      },
+      {
+        q: 'What industries is FormaOS built for?',
+        a: 'FormaOS is purpose-built for regulated industries including NDIS and disability services, healthcare, aged care, financial services, education, and government. Any organization that must demonstrate compliance to regulators, auditors, or accreditation bodies can benefit from our platform.',
+      },
+      {
+        q: 'Can FormaOS handle multiple regulatory frameworks?',
+        a: `Yes. FormaOS ships with ${brand.frameworks.count} pre-built framework packs (${brand.frameworks.packs.join(', ')}) and supports multiple frameworks simultaneously. The platform is designed to accommodate additional regulatory requirements beyond the included packs, so it adapts to your specific regulatory landscape.`,
+      },
+      {
+        q: 'How does workflow modeling work?',
+        a: 'FormaOS allows you to model operational workflows as structured processes with defined steps, control points, and evidence requirements. Workflow automation can be configured by request, creating a defensible chain of accountability.',
+      },
+    ],
+  },
+  {
+    id: 'security',
+    title: 'Security & Compliance',
+    icon: Shield,
+    color: 'purple',
+    questions: [
+      {
+        q: 'Is FormaOS SOC 2 aligned?',
+        a: 'FormaOS is built with SOC 2-aligned controls across the Common Criteria, Availability, and Confidentiality trust service categories. We implement AES-256 encryption, identity governance, tamper-evident audit logs, and structured incident response procedures aligned with the framework. Our security review packet, covering architecture, controls, and data handling, is available for enterprise procurement and security teams on request.',
+      },
+      {
+        q: 'How is data encrypted?',
+        a: 'Primary platform data is encrypted at rest using AES-256 and in transit using TLS 1.3. Encryption key management follows enterprise cloud-provider best practices, and encryption controls are documented in our security review packet.',
+      },
+      {
+        q: 'Does FormaOS support SSO and MFA?',
+        a: 'FormaOS supports Google OAuth on all plans. Enterprise plans include SAML 2.0 SSO for Okta, Azure AD, and Google Workspace. MFA policy enforcement is supported across supported identity flows, and session duration controls plus access governance policies are configurable at the organizational level. Additional identity-lifecycle requirements are reviewed during enterprise deployment.',
+      },
+      {
+        q: 'Where is data stored and what residency options exist?',
+        a: 'FormaOS is AU-hosted by default, designed for Australian-regulated organizations. Additional residency and cross-border handling requirements are reviewed during procurement. A Data Processing Agreement (DPA) is available for enterprise review, covering privacy and transfer considerations relevant to your deployment.',
+      },
+      {
+        q: 'How do you handle data privacy and the Australian Privacy Principles?',
+        a: 'FormaOS is built with privacy-by-design principles aligned with the Australian Privacy Principles (APPs) under the Privacy Act 1988. We collect only the data necessary to operate the platform, provide full organizational data control, and never sell customer data to third parties. APP-aligned data handling documentation, breach response workflows, and our DPA are available for privacy and legal review.',
+      },
+    ],
+  },
+  {
+    id: 'evidence',
+    title: 'Data & Evidence',
+    icon: Database,
+    color: 'blue',
+    questions: [
+      {
+        q: 'How does FormaOS generate audit trails?',
+        a: 'Every action in FormaOS is automatically logged with full context, who did what, when, and in relation to which control or workflow. Audit trails are immutable and timestamped, providing a complete chain of evidence that satisfies regulatory requirements. You can filter, search, and export audit logs at any time.',
+      },
+      {
+        q: 'Is evidence immutable?',
+        a: 'Yes. Evidence records in FormaOS are append-only and tamper-evident. Once uploaded, evidence cannot be modified or deleted, only superseded by a new version, with the original preserved in the audit trail. Every upload, update, approval, and version change is recorded with an immutable timestamp, the identity of the actor, and a correlation ID linking it to the originating control or workflow. This chain-of-custody model ensures that auditors and regulators see a complete, unaltered history of every compliance artifact from creation through current state.',
+      },
+      {
+        q: 'Can we export regulatory reports?',
+        a: 'Yes. FormaOS provides compliance status reports, evidence summaries, audit trail exports, and control verification reports. Exports are available in CSV/ZIP formats, with PDF/Excel options available by request.',
+      },
+      {
+        q: 'How long is data retained?',
+        a: 'Data retention policies are configurable based on your regulatory requirements. By default, we retain all compliance data, evidence, and audit trails for the duration of your subscription plus a configurable retention period. Enterprise customers can specify custom retention policies aligned with their compliance obligations.',
+      },
+      {
+        q: 'Can we import existing compliance data?',
+        a: 'Yes. FormaOS supports data import from existing systems including spreadsheets, legacy compliance tools, and document management systems. Our onboarding team provides migration assistance to ensure your historical compliance data is properly structured and accessible in the platform.',
+      },
+    ],
+  },
+  {
+    id: 'integrations',
+    title: 'Integrations & APIs',
+    icon: Plug,
+    color: 'green',
+    questions: [
+      {
+        q: 'Does FormaOS integrate with existing systems?',
+        a: 'FormaOS ships with 20+ integrations across productivity (Jira, Slack, Microsoft Teams), cloud (AWS, Azure, GCP), identity (Okta, Azure AD, Google Workspace), security (Qualys, Tenable), and HRIS tools (BambooHR, Workday). Browse and install connectors from the Integration Marketplace with one-click setup. Enterprise plans include SAML 2.0 SSO.',
+      },
+      {
+        q: 'Are APIs available?',
+        a: 'Yes. The REST API v1 includes 20+ endpoints covering organizations, tasks, evidence, compliance data, reports, frameworks, controls, notifications, integrations, and search. Bearer API keys with scoped permissions, cursor-based pagination, rate limiting, and an OpenAPI 3.1 specification are included. API documentation is available at /documentation/api.',
+      },
+      {
+        q: 'Do you support webhooks?',
+        a: 'Yes. FormaOS includes a webhook relay with HMAC-SHA256 signed payloads, 15+ event types, configurable retry policies, delivery logging, and a built-in webhook testing console. Inbound webhooks are also supported for integration data collection.',
+      },
+      {
+        q: 'Can FormaOS connect to our existing systems?',
+        a: 'FormaOS ships with native connectors for Jira, Slack, Microsoft Teams, GitHub, Zapier, AWS, Azure, GCP, Okta, Google Workspace, Qualys, Tenable, ServiceNow, BambooHR, and Workday. The Integration Marketplace lets you browse by category and install with a guided setup wizard. For systems without a native connector, use the REST API v1, webhooks, or Zapier to build custom integrations.',
+      },
+    ],
+  },
+  {
+    id: 'pricing',
+    title: 'Pricing & Evaluation',
+    icon: CreditCard,
+    color: 'amber',
+    questions: [
+      {
+        q: 'How do we evaluate FormaOS?',
+        a: 'FormaOS starts with a guided compliance plan. We scope frameworks, team structure, evidence volume, audit exposure, and procurement requirements before recommending Foundation, Growth, or Enterprise.',
+      },
+      {
+        q: 'Can the commercial scope change over time?',
+        a: 'Yes. The commercial scope can be reviewed as your frameworks, sites, teams, or governance requirements change. Growth and Enterprise are handled through guided commercial review rather than casual feature toggles.',
+      },
+      {
+        q: 'What payment methods are accepted?',
+        a: 'We accept all major credit cards and bank transfers for annual subscriptions. Enterprise customers can arrange invoiced billing with net-30 or net-60 payment terms. All payments are processed securely through our payment provider.',
+      },
+      {
+        q: 'Are there discounts for annual billing?',
+        a: 'Yes. Annual subscriptions receive a discount compared to monthly billing. Enterprise customers may also qualify for volume discounts and custom pricing based on deployment size and requirements. Contact our sales team for detailed pricing.',
+      },
+      {
+        q: 'Is there a money-back guarantee?',
+        a: 'If you have concerns during onboarding or early adoption, contact our team and we will work with you on a fair resolution based on your plan and terms.',
+      },
+    ],
+  },
+  {
+    id: 'enterprise',
+    title: 'Enterprise & Procurement',
+    icon: Building2,
+    color: 'blue',
+    questions: [
+      {
+        q: 'What procurement documentation is available for enterprise sign-off?',
+        a: 'FormaOS provides a core enterprise review pack that includes a Data Processing Agreement (DPA), vendor assurance materials, SLA review documentation, and a security review packet covering architecture, encryption, identity governance, and data handling. These materials are shared during evaluation and procurement review, with additional artifacts handled case by case.',
+      },
+      {
+        q: 'What are the SLA commitments for Enterprise customers?',
+        a: 'Enterprise agreements can include documented availability expectations, incident handling processes, maintenance communications, and escalation paths. Exact support and service terms depend on the plan and executed commercial agreement.',
+      },
+      {
+        q: 'What are our options if we need to exit the platform?',
+        a: 'Compliance data, evidence, audit trails, and control records can be exported in portable formats such as CSV, JSON, and ZIP. Export support and deletion timing are handled under your plan and commercial agreement so teams can complete an orderly transition.',
+      },
+      {
+        q: 'Can FormaOS support multi-entity or multi-site deployments?',
+        a: 'Yes. Enterprise plans support multi-entity and multi-site deployments with separate organizational boundaries, role-based access governance per entity, and consolidated compliance posture reporting across the group. Identity requirements are reviewed during deployment planning so governance can scale with your structure.',
+      },
+      {
+        q: 'Does FormaOS conduct penetration testing?',
+        a: 'FormaOS uses independent security review processes and documents its vulnerability disclosure and remediation approach. Current assessment artifacts may be shared with enterprise buyers during security review when available and appropriate.',
+      },
+    ],
+  },
+  {
+    id: 'support',
+    title: 'Support & Onboarding',
+    icon: Headphones,
+    color: 'rose',
+    questions: [
+      {
+        q: 'What onboarding is provided?',
+        a: 'All paid plans include structured onboarding covering platform configuration, first framework setup, workflow design, evidence structure, and control ownership. Enterprise onboarding can include additional implementation support for more complex deployments. Timing depends on scope, data readiness, and the number of teams involved.',
+      },
+      {
+        q: 'Is enterprise support available?',
+        a: 'Yes. Enterprise plans can include shared support channels, priority email handling, named contacts, and review cadences aligned to the deployment. Support coverage and response expectations are documented in the applicable agreement.',
+      },
+      {
+        q: 'How do I get help if I have an issue?',
+        a: 'All customers have access to the in-app help center, the FormaOS knowledge base, and email support at support@formaos.com.au. Growth and Enterprise plans include higher-touch support options, and critical platform issues are prioritized under the applicable support process.',
+      },
+      {
+        q: 'Do you provide training for our team?',
+        a: 'Yes. All paid plans include a live onboarding call with your team, recorded walkthrough videos for key workflows (control setup, evidence management, audit export), and access to the self-service knowledge base. Enterprise customers can request custom training sessions tailored to specific roles (compliance managers, control owners, executive dashboard users) and specific frameworks. We also provide quarterly check-in sessions for Enterprise customers to review new features and optimize workflows.',
+      },
+      {
+        q: 'What is your support response time?',
+        a: 'Support response expectations vary by plan and, for Enterprise, by executed agreement. If your team requires documented response commitments, we review those during procurement and include them in the relevant service terms.',
+      },
+      {
+        q: 'What happens during an audit if we need urgent help?',
+        a: 'Enterprise customers can scope audit-period support for evidence export, posture snapshots, and reviewer access configuration during active audits or regulator visits. Additional assistance for other plans can be discussed based on the engagement and timing.',
+      },
+    ],
+  },
 ];
 
 // ============================================================================
@@ -234,41 +238,41 @@ const faqCategories = [
 // ============================================================================
 
 function FAQHero() {
- return (
- <ImmersiveHero
- theme="faq"
- visualContent={<FAQHeroVisual />}
- badge={{ icon: <HelpCircle className="w-4 h-4" />, text: 'Help Center' }}
- headline={
- <>
- Frequently Asked{' '}
- <span className="text-foreground">
- Questions
- </span>
- </>
- }
- subheadline="Straight answers on platform capabilities, enterprise security, procurement documentation, data residency, integrations, and support."
- extras={
- <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600">
- {faqCategories.map((cat) => (
- <a
- key={cat.id}
- href={`#${cat.id}`}
- className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] hover:border-white/25 hover:bg-white/[0.08] transition-all duration-300"
- >
- <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
- {cat.title}
- </a>
- ))}
- </div>
- }
- primaryCta={{ href: compliancePlanHref('faq_hero'), label: PUBLIC_CTA_LABELS.compliancePlan }}
- secondaryCta={{
- href: demoHref('faq_hero'),
- label: PUBLIC_CTA_LABELS.bookDemo,
- }}
- />
- );
+  return (
+    <ImmersiveHero
+      theme="faq"
+      visualContent={<FAQHeroVisual />}
+      badge={{ icon: <HelpCircle className="w-4 h-4" />, text: 'Help Center' }}
+      headline={
+        <>
+          Frequently Asked <span className="text-foreground">Questions</span>
+        </>
+      }
+      subheadline="Straight answers on platform capabilities, enterprise security, procurement documentation, data residency, integrations, and support."
+      extras={
+        <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600">
+          {faqCategories.map((cat) => (
+            <a
+              key={cat.id}
+              href={`#${cat.id}`}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/[0.1] hover:border-white/25 hover:bg-white/[0.08] transition-all duration-300"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+              {cat.title}
+            </a>
+          ))}
+        </div>
+      }
+      primaryCta={{
+        href: compliancePlanHref('faq_hero'),
+        label: PUBLIC_CTA_LABELS.compliancePlan,
+      }}
+      secondaryCta={{
+        href: demoHref('faq_hero'),
+        label: PUBLIC_CTA_LABELS.bookDemo,
+      }}
+    />
+  );
 }
 
 // ============================================================================
@@ -276,52 +280,52 @@ function FAQHero() {
 // ============================================================================
 
 function FAQItem({
- question,
- answer,
- isOpen,
- onClick,
- index,
+  question,
+  answer,
+  isOpen,
+  onClick,
+  index,
 }: {
- question: string;
- answer: string;
- isOpen: boolean;
- onClick: () => void;
- index: number;
+  question: string;
+  answer: string;
+  isOpen: boolean;
+  onClick: () => void;
+  index: number;
 }) {
- return (
- <ScrollReveal variant="blurIn" range={[index * 0.04, 0.3 + index * 0.04]}>
- <div className="border-b border-white/5 last:border-b-0">
- <button
- onClick={onClick}
- className="w-full flex items-center justify-between py-5 text-left group"
- >
- <span className="text-base sm:text-lg font-medium text-white group-hover:text-slate-200 transition-colors pr-8">
- {question}
- </span>
- <motion.div
- animate={{ rotate: isOpen ? 180 : 0 }}
- transition={{ duration: duration.fast }}
- className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 group-hover:bg-white/[0.12] flex items-center justify-center transition-colors"
- >
- <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-200 transition-colors" />
- </motion.div>
- </button>
- <AnimatePresence>
- {isOpen && (
- <motion.div
- initial={{ height: 0, opacity: 0 }}
- animate={{ height: 'auto', opacity: 1 }}
- exit={{ height: 0, opacity: 0 }}
- transition={{ duration: duration.fast }}
- className="overflow-hidden"
- >
- <p className="pb-5 text-slate-400 leading-relaxed">{answer}</p>
- </motion.div>
- )}
- </AnimatePresence>
- </div>
- </ScrollReveal>
- );
+  return (
+    <ScrollReveal variant="blurIn" range={[index * 0.04, 0.3 + index * 0.04]}>
+      <div className="border-b border-white/5 last:border-b-0">
+        <button
+          onClick={onClick}
+          className="w-full flex items-center justify-between py-5 text-left group"
+        >
+          <span className="text-base sm:text-lg font-medium text-white group-hover:text-slate-200 transition-colors pr-8">
+            {question}
+          </span>
+          <motion.div
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: duration.fast }}
+            className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 group-hover:bg-white/[0.12] flex items-center justify-center transition-colors"
+          >
+            <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-200 transition-colors" />
+          </motion.div>
+        </button>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: duration.fast }}
+              className="overflow-hidden"
+            >
+              <p className="pb-5 text-slate-400 leading-relaxed">{answer}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </ScrollReveal>
+  );
 }
 
 // ============================================================================
@@ -329,61 +333,61 @@ function FAQItem({
 // ============================================================================
 
 function FAQCategory({ category }: { category: (typeof faqCategories)[0] }) {
- const [openIndex, setOpenIndex] = useState<number | null>(0);
- const Icon = category.icon;
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const Icon = category.icon;
 
- // Monochrome treatment, category identity comes from the icon, not colour.
- const neutral = {
- bg: 'bg-white/[0.06]',
- text: 'text-slate-300',
- border: 'border-white/10',
- };
- const colorMap: Record<string, { bg: string; text: string; border: string }> =
- {
- cyan: neutral,
- purple: neutral,
- blue: neutral,
- green: neutral,
- amber: neutral,
- rose: neutral,
- };
+  // Monochrome treatment, category identity comes from the icon, not colour.
+  const neutral = {
+    bg: 'bg-white/[0.06]',
+    text: 'text-slate-300',
+    border: 'border-white/10',
+  };
+  const colorMap: Record<string, { bg: string; text: string; border: string }> =
+    {
+      cyan: neutral,
+      purple: neutral,
+      blue: neutral,
+      green: neutral,
+      amber: neutral,
+      rose: neutral,
+    };
 
- const colors = colorMap[category.color] || neutral;
+  const colors = colorMap[category.color] || neutral;
 
- return (
- <div id={category.id} className="scroll-mt-24">
- <div className="relative p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
- {/* Top accent line */}
- <div
- className={`absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent`}
- />
+  return (
+    <div id={category.id} className="scroll-mt-24">
+      <div className="relative p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 transition-all duration-500 shadow-2xl shadow-black/30">
+        {/* Top accent line */}
+        <div
+          className={`absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent`}
+        />
 
- {/* Category Header */}
- <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/5">
- <div
- className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}
- >
- <Icon className={`w-6 h-6 ${colors.text}`} />
- </div>
- <h2 className="text-2xl font-bold text-white">{category.title}</h2>
- </div>
+        {/* Category Header */}
+        <div className="flex items-center gap-4 mb-6 pb-6 border-b border-white/5">
+          <div
+            className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center`}
+          >
+            <Icon className={`w-6 h-6 ${colors.text}`} />
+          </div>
+          <h2 className="text-2xl font-bold text-white">{category.title}</h2>
+        </div>
 
- {/* Questions */}
- <div>
- {category.questions.map((faq, i) => (
- <FAQItem
- key={i}
- question={faq.q}
- answer={faq.a}
- isOpen={openIndex === i}
- onClick={() => setOpenIndex(openIndex === i ? null : i)}
- index={i}
- />
- ))}
- </div>
- </div>
- </div>
- );
+        {/* Questions */}
+        <div>
+          {category.questions.map((faq, i) => (
+            <FAQItem
+              key={i}
+              question={faq.q}
+              answer={faq.a}
+              isOpen={openIndex === i}
+              onClick={() => setOpenIndex(openIndex === i ? null : i)}
+              index={i}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ============================================================================
@@ -391,23 +395,23 @@ function FAQCategory({ category }: { category: (typeof faqCategories)[0] }) {
 // ============================================================================
 
 function FAQContent() {
- return (
- <section className="relative py-24 ">
- {/* Static dot-grid hairline texture */}
- <div className="absolute inset-0 overflow-hidden pointer-events-none">
- <DotGrid />
- </div>
+  return (
+    <section className="relative py-24 ">
+      {/* Static dot-grid hairline texture */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <DotGrid />
+      </div>
 
- <SectionChoreography
- pattern="cascade"
- className="relative max-w-4xl mx-auto px-6 lg:px-12 space-y-8"
- >
- {faqCategories.map((category) => (
- <FAQCategory key={category.id} category={category} />
- ))}
- </SectionChoreography>
- </section>
- );
+      <SectionChoreography
+        pattern="cascade"
+        className="relative max-w-4xl mx-auto px-6 lg:px-12 space-y-8"
+      >
+        {faqCategories.map((category) => (
+          <FAQCategory key={category.id} category={category} />
+        ))}
+      </SectionChoreography>
+    </section>
+  );
 }
 
 // ============================================================================
@@ -415,49 +419,49 @@ function FAQContent() {
 // ============================================================================
 
 function FAQCTA() {
- return (
- <section className="relative py-24 ">
- <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
- <ScrollReveal variant="slideUp" range={[0, 0.3]}>
- <div className="relative p-10 rounded-3xl bg-white/[0.03] border border-white/5 shadow-2xl shadow-black/30">
- <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+  return (
+    <section className="relative py-24 ">
+      <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
+        <ScrollReveal variant="slideUp" range={[0, 0.3]}>
+          <div className="relative p-10 rounded-3xl bg-white/[0.03] border border-white/5 shadow-2xl shadow-black/30">
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
 
- <div className="text-center">
- <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
- Still have questions?
- </h2>
- <p className="text-slate-400 mb-8 max-w-xl mx-auto">
- Our team is ready to help. Contact us for personalized answers
- or schedule a demo to see FormaOS in action.
- </p>
+            <div className="text-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
+                Still have questions?
+              </h2>
+              <p className="text-slate-400 mb-8 max-w-xl mx-auto">
+                Our team is ready to help. Contact us for personalized answers
+                or schedule a demo to see FormaOS in action.
+              </p>
 
- <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
- <motion.a
- href="/contact"
- whileHover={{
- scale: 1.05,
- }}
- whileTap={{ scale: 0.98 }}
- className="group px-8 py-4 rounded-full bg-foreground text-background hover:opacity-90 font-semibold text-lg flex items-center gap-3 shadow-lg transition-all"
- >
- <span>{PUBLIC_CTA_LABELS.talkToSales}</span>
- <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
- </motion.a>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <motion.a
+                  href="/contact"
+                  whileHover={{
+                    scale: 1.05,
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group px-8 py-4 rounded-full bg-foreground text-background hover:opacity-90 font-semibold text-lg flex items-center gap-3 shadow-lg transition-all"
+                >
+                  <span>{PUBLIC_CTA_LABELS.talkToSales}</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </motion.a>
 
- <Link
- href={compliancePlanHref('faq_final')}
- className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-white/40 hover:bg-white/[0.08] transition-all"
- >
- <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
- <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
- </Link>
- </div>
- </div>
- </div>
- </ScrollReveal>
- </div>
- </section>
- );
+                <Link
+                  href={compliancePlanHref('faq_final')}
+                  className="group px-8 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold text-lg flex items-center gap-3 hover:border-white/40 hover:bg-white/[0.08] transition-all"
+                >
+                  <span>{PUBLIC_CTA_LABELS.compliancePlan}</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
 }
 
 // ============================================================================
@@ -465,21 +469,21 @@ function FAQCTA() {
 // ============================================================================
 
 export default function FAQPageContent() {
- return (
- <MarketingPageShell className="bg-[#0a0f1c]">
- <FAQHero />
- <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
- <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
- </div>
- <DeferredSection minHeight={600}>
- <FAQContent />
- </DeferredSection>
- <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
- <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
- </div>
- <DeferredSection minHeight={200}>
- <FAQCTA />
- </DeferredSection>
- </MarketingPageShell>
- );
+  return (
+    <MarketingPageShell className="bg-[#0a0f1c]">
+      <FAQHero />
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={600}>
+        <FAQContent />
+      </DeferredSection>
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3">
+        <div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      </div>
+      <DeferredSection minHeight={200}>
+        <FAQCTA />
+      </DeferredSection>
+    </MarketingPageShell>
+  );
 }
