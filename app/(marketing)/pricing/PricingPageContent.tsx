@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { TrustBar } from '@/components/TrustBar';
 import { MANUAL_COMPLIANCE_COST_ANCHORS } from '@/lib/marketing/pricing';
 import { MarketingPageShell } from '../components/shared/MarketingPageShell';
@@ -12,6 +12,7 @@ import {
   FinalCTA,
   FAQSection,
   PlanFinder,
+  RoiCalculator,
   PricingComparisonTable,
   PricingHero,
   PricingTiers,
@@ -61,9 +62,9 @@ function PlanScopeSection() {
 }
 
 /**
- * Cost context. Asymmetric editorial layout: an argument on the left, a
- * "transformation ledger" on the right where each metric travels from a
- * dim manual state to a lit FormaOS state. Sits on the shared base bg.
+ * Cost context. Header argument + an interactive ROI calculator
+ * (the centerpiece), backed by a compact before/after fact strip drawn
+ * from the real manual-cost anchors. Sits on the shared base bg.
  */
 function CostOfNonCompliance() {
   return (
@@ -71,62 +72,46 @@ function CostOfNonCompliance() {
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(58%_45%_at_50%_0%,rgba(255,255,255,0.03),transparent_70%)]" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
 
-      <div className="relative z-10 mx-auto grid max-w-6xl gap-x-14 gap-y-10 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:px-12">
-        {/* Argument */}
-        <ScrollReveal variant="slideUp" range={[0, 0.35]}>
+      <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-12">
+        {/* Header — left labelled rule */}
+        <ScrollReveal variant="slideUp" range={[0, 0.3]} className="mb-12 max-w-2xl">
           <div className="mb-4 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
             <span className="h-px w-8 bg-white/25" />
             <span>The math</span>
           </div>
           <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl">
-            One failed audit costs more than a year of FormaOS.
+            Price it against the work it removes.
           </h2>
           <p className="mt-5 text-base leading-7 text-slate-400">
-            Pricing only makes sense against the manual work it removes. The
-            same four jobs, before and after the system runs them for you.
-          </p>
-          <p className="mt-6 border-l-2 border-white/15 pl-4 text-[15px] leading-7 text-slate-300">
-            Evidence is captured continuously as work happens. Nothing is
-            reconstructed in the weeks before an audit.
+            Compliance run on spreadsheets is mostly labour: audit prep,
+            evidence chasing, credential tracking. Set your scope and see what
+            the manual version actually costs.
           </p>
         </ScrollReveal>
 
-        {/* Transformation ledger */}
-        <ScrollReveal variant="depthSlide" range={[0.05, 0.45]}>
-          <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015]">
-            {/* Zone captions */}
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center border-b border-white/[0.08] text-[10px] font-semibold uppercase tracking-[0.18em]">
-              <span className="px-5 py-3 text-slate-500">Manual</span>
-              <span className="px-2 py-3 text-slate-700" aria-hidden="true" />
-              <span className="bg-white/[0.03] px-5 py-3 text-slate-200">
-                With FormaOS
-              </span>
-            </div>
+        {/* Interactive ROI calculator (centerpiece) */}
+        <ScrollReveal variant="fadeUp" range={[0.05, 0.45]}>
+          <RoiCalculator />
+        </ScrollReveal>
 
-            {MANUAL_COMPLIANCE_COST_ANCHORS.map((item, idx) => (
+        {/* Concrete before/after facts */}
+        <ScrollReveal variant="fadeUp" range={[0.1, 0.5]}>
+          <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {MANUAL_COMPLIANCE_COST_ANCHORS.map((item) => (
               <div
                 key={item.label}
-                className={idx > 0 ? 'border-t border-white/[0.06]' : ''}
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5"
               >
-                <p className="px-5 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                   {item.label}
                 </p>
-                <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-                  <span className="px-5 pb-4 pt-1 text-[15px] text-slate-500 line-through decoration-slate-700/70">
-                    {item.manual}
-                  </span>
-                  <ArrowRight
-                    className="h-4 w-4 shrink-0 text-slate-600"
-                    aria-hidden="true"
-                  />
-                  <span className="flex items-start gap-2 self-stretch bg-white/[0.03] px-5 pb-4 pt-1 text-[15px] font-medium text-white">
-                    <Check
-                      className="mt-1 h-3.5 w-3.5 shrink-0 text-emerald-400/80"
-                      aria-hidden="true"
-                    />
-                    <span>{item.formaos}</span>
-                  </span>
-                </div>
+                <p className="mt-2 text-sm text-slate-500 line-through decoration-slate-700/70">
+                  {item.manual}
+                </p>
+                <p className="mt-1.5 flex items-start gap-2 text-sm font-medium text-white">
+                  <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-400/80" aria-hidden="true" />
+                  <span>{item.formaos}</span>
+                </p>
               </div>
             ))}
           </div>
