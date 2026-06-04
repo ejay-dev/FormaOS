@@ -67,7 +67,7 @@ export default function LegalIndexPage() {
         bottomColor="blue"
         visualContent={
           <CompactHeroIcon
-            icon={<Scale className="w-8 h-8 text-violet-400" />}
+            icon={<Scale className="w-8 h-8 text-slate-400" />}
             color="139,92,246"
           />
         }

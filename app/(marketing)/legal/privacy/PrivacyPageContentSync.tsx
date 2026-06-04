@@ -3,22 +3,22 @@
 import { useRef, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
-  Shield,
-  FileText,
-  Database,
-  Lock,
-  Users,
-  Globe,
-  Cookie,
-  RefreshCw,
-  Mail,
-  ChevronDown,
-  Eye,
-  Server,
-  Share2,
-  Clock,
-  UserCheck,
-  ArrowRight,
+ Shield,
+ FileText,
+ Database,
+ Lock,
+ Users,
+ Globe,
+ Cookie,
+ RefreshCw,
+ Mail,
+ ChevronDown,
+ Eye,
+ Server,
+ Share2,
+ Clock,
+ UserCheck,
+ ArrowRight,
 } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
@@ -31,114 +31,114 @@ import { MarketingPageShell } from '../../components/shared/MarketingPageShell';
 // ============================================================================
 
 function PrivacyHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
+ const containerRef = useRef<HTMLDivElement>(null);
+ const { scrollYProgress } = useScroll({
+ target: containerRef,
+ offset: ['start start', 'end start'],
+ });
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
+ const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+ const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+ const y = useTransform(scrollYProgress, [0, 0.5], [0, 100]);
 
-  return (
-    <section
-      ref={containerRef}
-      className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c] pt-24"
-    >
-      {/* Premium Background Effects - Cinematic Gradient Layers (Home Page Pattern) */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Primary gradient orb - top left */}
-        <motion.div
-          className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-white/[0.04] rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.4, 0.3],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        {/* Secondary gradient orb - bottom right */}
-        <motion.div
-          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-purple-500/15 via-pink-500/10 to-transparent rounded-full blur-3xl"
-          animate={{
-            scale: [1, 1.15, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 2,
-          }}
-        />
-        {/* Tertiary accent - center glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-emerald-500/5 to-transparent rounded-full" />
-      </div>
+ return (
+ <section
+ ref={containerRef}
+ className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-24"
+ >
+ {/* Premium Background Effects - Cinematic Gradient Layers (Home Page Pattern) */}
+ <div className="absolute inset-0 overflow-hidden">
+ {/* Primary gradient orb - top left */}
+ <motion.div
+ className="absolute -top-40 -left-40 w-[800px] h-[800px] bg-white/[0.04] rounded-full blur-3xl"
+ animate={{
+ scale: [1, 1.1, 1],
+ opacity: [0.3, 0.4, 0.3],
+ }}
+ transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+ />
+ {/* Secondary gradient orb - bottom right */}
+ <motion.div
+ className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-purple-500/15 via-pink-500/10 to-transparent rounded-full blur-3xl"
+ animate={{
+ scale: [1, 1.15, 1],
+ opacity: [0.2, 0.3, 0.2],
+ }}
+ transition={{
+ duration: 10,
+ repeat: Infinity,
+ ease: 'easeInOut',
+ delay: 2,
+ }}
+ />
+ {/* Tertiary accent - center glow */}
+ <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-emerald-500/5 to-transparent rounded-full" />
+ </div>
 
-      {/* Main Hero Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
-        <div className="flex flex-col items-center text-center">
-          <motion.div style={{ opacity, scale, y }}>
-            {/* Badge - Home Page Style */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slow, delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
-            >
-              <Shield className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm text-cyan-400 font-medium tracking-wide">
-                Privacy
-              </span>
-            </motion.div>
+ {/* Main Hero Content */}
+ <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
+ <div className="flex flex-col items-center text-center">
+ <motion.div style={{ opacity, scale, y }}>
+ {/* Badge - Home Page Style */}
+ <motion.div
+ initial={{ opacity: 0, y: 20 }}
+ animate={{ opacity: 1, y: 0 }}
+ transition={{ duration: duration.slow, delay: 0.2 }}
+ className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/30 mb-8 backdrop-blur-sm"
+ >
+ <Shield className="w-4 h-4 text-slate-400" />
+ <span className="text-sm text-slate-400 font-medium tracking-wide">
+ Privacy
+ </span>
+ </motion.div>
 
-            {/* Headline - Enterprise Typography Scale */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.3 }}
-              className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
-            >
-              Privacy{' '}
-              <span className="text-foreground">
-                Policy
-              </span>
-            </motion.h1>
+ {/* Headline - Enterprise Typography Scale */}
+ <motion.h1
+ initial={{ opacity: 0, y: 30 }}
+ animate={{ opacity: 1, y: 0 }}
+ transition={{ duration: duration.slower, delay: 0.3 }}
+ className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-[1.1] text-white"
+ >
+ Privacy{' '}
+ <span className="text-foreground">
+ Policy
+ </span>
+ </motion.h1>
 
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.5 }}
-              className="text-lg sm:text-xl text-slate-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
-            >
-              FormaOS is designed for regulated industries where
-              confidentiality, accountability, and data integrity are essential.
-              We are committed to protecting your personal and organizational
-              information.
-            </motion.p>
+ {/* Subheadline */}
+ <motion.p
+ initial={{ opacity: 0, y: 20 }}
+ animate={{ opacity: 1, y: 0 }}
+ transition={{ duration: duration.slower, delay: 0.5 }}
+ className="text-lg sm:text-xl text-slate-400 mb-8 max-w-2xl mx-auto text-center leading-relaxed"
+ >
+ FormaOS is designed for regulated industries where
+ confidentiality, accountability, and data integrity are essential.
+ We are committed to protecting your personal and organizational
+ information.
+ </motion.p>
 
-            {/* Effective Date Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: duration.slower, delay: 0.6 }}
-              className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600"
-            >
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                Effective: January 16, 2026
-              </span>
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                Last Updated: January 16, 2026
-              </span>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
+ {/* Effective Date Badge */}
+ <motion.div
+ initial={{ opacity: 0, y: 20 }}
+ animate={{ opacity: 1, y: 0 }}
+ transition={{ duration: duration.slower, delay: 0.6 }}
+ className="flex flex-wrap items-center justify-center gap-3 text-xs text-slate-600"
+ >
+ <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+ <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+ Effective: January 16, 2026
+ </span>
+ <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700/50">
+ <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+ Last Updated: January 16, 2026
+ </span>
+ </motion.div>
+ </motion.div>
+ </div>
+ </div>
+ </section>
+ );
 }
 
 // ============================================================================
@@ -146,92 +146,92 @@ function PrivacyHero() {
 // ============================================================================
 
 const sections = [
-  { id: 'commitment', title: '1. Our Commitment to Privacy', icon: Shield },
-  { id: 'collection', title: '2. Information We Collect', icon: Database },
-  { id: 'usage', title: '3. How We Use Your Information', icon: Eye },
-  { id: 'legal-basis', title: '4. Legal Basis for Processing', icon: FileText },
-  { id: 'storage', title: '5. Data Storage & Security', icon: Lock },
-  { id: 'sharing', title: '6. Data Sharing', icon: Share2 },
-  { id: 'retention', title: '7. Data Retention', icon: Clock },
-  { id: 'rights', title: '8. Your Rights', icon: UserCheck },
-  { id: 'transfers', title: '9. International Data Transfers', icon: Globe },
-  { id: 'cookies', title: '10. Cookies & Tracking', icon: Cookie },
-  { id: 'updates', title: '11. Updates to This Policy', icon: RefreshCw },
-  { id: 'contact', title: '12. Contact', icon: Mail },
+ { id: 'commitment', title: '1. Our Commitment to Privacy', icon: Shield },
+ { id: 'collection', title: '2. Information We Collect', icon: Database },
+ { id: 'usage', title: '3. How We Use Your Information', icon: Eye },
+ { id: 'legal-basis', title: '4. Legal Basis for Processing', icon: FileText },
+ { id: 'storage', title: '5. Data Storage & Security', icon: Lock },
+ { id: 'sharing', title: '6. Data Sharing', icon: Share2 },
+ { id: 'retention', title: '7. Data Retention', icon: Clock },
+ { id: 'rights', title: '8. Your Rights', icon: UserCheck },
+ { id: 'transfers', title: '9. International Data Transfers', icon: Globe },
+ { id: 'cookies', title: '10. Cookies & Tracking', icon: Cookie },
+ { id: 'updates', title: '11. Updates to This Policy', icon: RefreshCw },
+ { id: 'contact', title: '12. Contact', icon: Mail },
 ];
 
 function TableOfContents() {
-  const [isOpen, setIsOpen] = useState(true);
+ const [isOpen, setIsOpen] = useState(true);
 
-  return (
-    <section className="relative py-16 bg-[#0a0f1c]">
-      {/* Ambient background glow */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-cyan-500/5 blur-3xl"
-          animate={{
-            x: [0, 30, 0],
-            y: [0, 20, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
+ return (
+ <section className="relative py-16 bg-[#0a0f1c]">
+ {/* Ambient background glow */}
+ <div className="absolute inset-0 overflow-hidden pointer-events-none">
+ <motion.div
+ className="absolute -top-32 left-1/4 w-96 h-96 rounded-full bg-slate-500/5 blur-3xl"
+ animate={{
+ x: [0, 30, 0],
+ y: [0, 20, 0],
+ scale: [1, 1.1, 1],
+ }}
+ transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+ />
+ </div>
 
-      <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="blurIn">
-          <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/20 transition-all shadow-2xl shadow-black/30">
-            {/* Top accent line */}
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+ <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
+ <ScrollReveal variant="blurIn">
+ <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-slate-500/20 transition-all shadow-2xl shadow-black/30">
+ {/* Top accent line */}
+ <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-slate-400/30 to-transparent" />
 
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="w-full flex items-center justify-between text-left group"
-            >
-              <h2 className="text-xl font-semibold text-white flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                Table of Contents
-              </h2>
-              <motion.div
-                animate={{ rotate: isOpen ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
-                className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors"
-              >
-                <ChevronDown className="w-5 h-5 text-slate-400" />
-              </motion.div>
-            </button>
+ <button
+ onClick={() => setIsOpen(!isOpen)}
+ className="w-full flex items-center justify-between text-left group"
+ >
+ <h2 className="text-xl font-semibold text-white flex items-center gap-3">
+ <span className="w-2 h-2 rounded-full bg-slate-400" />
+ Table of Contents
+ </h2>
+ <motion.div
+ animate={{ rotate: isOpen ? 180 : 0 }}
+ transition={{ duration: 0.3 }}
+ className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors"
+ >
+ <ChevronDown className="w-5 h-5 text-slate-400" />
+ </motion.div>
+ </button>
 
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                transition={{ duration: duration.normal }}
-                className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"
-              >
-                {sections.map((section, index) => (
-                  <motion.a
-                    key={section.id}
-                    href={`#${section.id}`}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.03 }}
-                    className="group flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center group-hover:bg-cyan-500/20 transition-colors">
-                      <section.icon className="w-4 h-4 text-cyan-400" />
-                    </div>
-                    <span className="text-sm group-hover:translate-x-1 transition-transform duration-300">
-                      {section.title}
-                    </span>
-                  </motion.a>
-                ))}
-              </motion.div>
-            )}
-          </div>
-        </ScrollReveal>
-      </div>
-    </section>
-  );
+ {isOpen && (
+ <motion.div
+ initial={{ opacity: 0, height: 0 }}
+ animate={{ opacity: 1, height: 'auto' }}
+ transition={{ duration: duration.normal }}
+ className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"
+ >
+ {sections.map((section, index) => (
+ <motion.a
+ key={section.id}
+ href={`#${section.id}`}
+ initial={{ opacity: 0, y: 10 }}
+ animate={{ opacity: 1, y: 0 }}
+ transition={{ delay: index * 0.03 }}
+ className="group flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300"
+ >
+ <div className="w-8 h-8 rounded-lg bg-slate-500/10 flex items-center justify-center group-hover:bg-slate-500/20 transition-colors">
+ <section.icon className="w-4 h-4 text-slate-400" />
+ </div>
+ <span className="text-sm group-hover:translate-x-1 transition-transform duration-300">
+ {section.title}
+ </span>
+ </motion.a>
+ ))}
+ </motion.div>
+ )}
+ </div>
+ </ScrollReveal>
+ </div>
+ </section>
+ );
 }
 
 // ============================================================================
@@ -239,372 +239,372 @@ function TableOfContents() {
 // ============================================================================
 
 type PrivacySectionProps = {
-  id: string;
-  number: string;
-  title: string;
-  icon: LucideIcon;
-  children: React.ReactNode;
-  delay?: number;
+ id: string;
+ number: string;
+ title: string;
+ icon: LucideIcon;
+ children: React.ReactNode;
+ delay?: number;
 };
 
 function PrivacySection({
-  id,
-  number,
-  title,
-  icon: Icon,
-  children,
+ id,
+ number,
+ title,
+ icon: Icon,
+ children,
 }: PrivacySectionProps) {
-  return (
-    <ScrollReveal variant="fadeUp" className="scroll-mt-24">
-      <div id={id}>
-        {/* Section Card - Glassmorphism */}
-        <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/20 transition-all duration-500 group">
-          {/* Hover glow effect */}
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-cyan-500/0 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+ return (
+ <ScrollReveal variant="fadeUp" className="scroll-mt-24">
+ <div id={id}>
+ {/* Section Card - Glassmorphism */}
+ <div className="relative p-5 sm:p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-slate-500/20 transition-all duration-500 group">
+ {/* Hover glow effect */}
+ <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-500/0 to-slate-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+ <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-slate-400/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-          <div className="relative">
-            {/* Section Header */}
-            <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                <Icon className="w-6 h-6 text-cyan-400" />
-              </div>
-              <div>
-                <span className="text-sm text-cyan-400 font-medium">
-                  Section {number}
-                </span>
-                <h3 className="text-xl font-semibold text-white">{title}</h3>
-              </div>
-            </div>
+ <div className="relative">
+ {/* Section Header */}
+ <div className="flex items-start gap-4 mb-6">
+ <div className="w-12 h-12 rounded-xl bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+ <Icon className="w-6 h-6 text-slate-400" />
+ </div>
+ <div>
+ <span className="text-sm text-slate-400 font-medium">
+ Section {number}
+ </span>
+ <h3 className="text-xl font-semibold text-white">{title}</h3>
+ </div>
+ </div>
 
-            {/* Section Content */}
-            <div className="text-slate-400 leading-relaxed space-y-4 pl-16">
-              {children}
-            </div>
-          </div>
-        </div>
-      </div>
-    </ScrollReveal>
-  );
+ {/* Section Content */}
+ <div className="text-slate-400 leading-relaxed space-y-4 pl-16">
+ {children}
+ </div>
+ </div>
+ </div>
+ </div>
+ </ScrollReveal>
+ );
 }
 
 function PrivacyContent() {
-  return (
-    <section className="relative py-16 bg-gradient-to-b from-[#0a0f1c] via-[#0d1421] to-[#0a0f1c]">
-      {/* Animated background gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-cyan-500/5 blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
+ return (
+ <section className="relative py-16 ">
+ {/* Animated background gradient orbs */}
+ <div className="absolute inset-0 overflow-hidden pointer-events-none">
+ <motion.div
+ className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-slate-500/5 blur-3xl"
+ animate={{
+ x: [0, 50, 0],
+ y: [0, 30, 0],
+ }}
+ transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+ />
+ <motion.div
+ className="absolute bottom-1/4 -right-32 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl"
+ animate={{
+ x: [0, -50, 0],
+ y: [0, -30, 0],
+ }}
+ transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
+ />
+ </div>
 
-      <div className="relative max-w-5xl mx-auto px-6 lg:px-12 space-y-8">
-        <PrivacySection
-          id="commitment"
-          number="1"
-          title="Our Commitment to Privacy"
-          icon={Shield}
-        >
-          <p>
-            FormaOS is designed for regulated industries where confidentiality,
-            accountability, and data integrity are essential. We are committed
-            to protecting your personal and organizational information.
-          </p>
-          <p className="mt-4">
-            <strong className="text-white">data controller:</strong> FormaOS
-            Pty Ltd is the data controller responsible for personal information
-            processed through the FormaOS platform. For privacy enquiries,
-            contact{' '}
-            <a
-              href="mailto:privacy@formaos.com.au"
-              className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2"
-            >
-              privacy@formaos.com.au
-            </a>
-            .
-          </p>
-        </PrivacySection>
+ <div className="relative max-w-5xl mx-auto px-6 lg:px-12 space-y-8">
+ <PrivacySection
+ id="commitment"
+ number="1"
+ title="Our Commitment to Privacy"
+ icon={Shield}
+ >
+ <p>
+ FormaOS is designed for regulated industries where confidentiality,
+ accountability, and data integrity are essential. We are committed
+ to protecting your personal and organizational information.
+ </p>
+ <p className="mt-4">
+ <strong className="text-white">data controller:</strong> FormaOS
+ Pty Ltd is the data controller responsible for personal information
+ processed through the FormaOS platform. For privacy enquiries,
+ contact{' '}
+ <a
+ href="mailto:privacy@formaos.com.au"
+ className="text-slate-400 hover:text-slate-300 underline underline-offset-2"
+ >
+ privacy@formaos.com.au
+ </a>
+ .
+ </p>
+ </PrivacySection>
 
-        <PrivacySection
-          id="collection"
-          number="2"
-          title="Information We Collect"
-          icon={Database}
-          delay={0.05}
-        >
-          <p className="font-medium text-white">a) Information You Provide</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Name, email, phone number</li>
-            <li>Organization and role</li>
-            <li>Account credentials</li>
-            <li>Communications and support requests</li>
-          </ul>
+ <PrivacySection
+ id="collection"
+ number="2"
+ title="Information We Collect"
+ icon={Database}
+ delay={0.05}
+ >
+ <p className="font-medium text-white">a) Information You Provide</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>Name, email, phone number</li>
+ <li>Organization and role</li>
+ <li>Account credentials</li>
+ <li>Communications and support requests</li>
+ </ul>
 
-          <p className="font-medium text-white mt-6">b) Usage Data</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Login timestamps</li>
-            <li>Activity logs</li>
-            <li>Feature usage patterns</li>
-            <li>IP address and device metadata</li>
-          </ul>
+ <p className="font-medium text-white mt-6">b) Usage Data</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>Login timestamps</li>
+ <li>Activity logs</li>
+ <li>Feature usage patterns</li>
+ <li>IP address and device metadata</li>
+ </ul>
 
-          <p className="font-medium text-white mt-6">c) Customer Data</p>
-          <p>Data uploaded into the platform, including:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Compliance records</li>
-            <li>Evidence files</li>
-            <li>Task logs</li>
-            <li>Organizational structures</li>
-          </ul>
-        </PrivacySection>
+ <p className="font-medium text-white mt-6">c) Customer Data</p>
+ <p>Data uploaded into the platform, including:</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>Compliance records</li>
+ <li>Evidence files</li>
+ <li>Task logs</li>
+ <li>Organizational structures</li>
+ </ul>
+ </PrivacySection>
 
-        <PrivacySection
-          id="usage"
-          number="3"
-          title="How We Use Your Information"
-          icon={Eye}
-          delay={0.1}
-        >
-          <p>We use information to:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Provide and operate the platform</li>
-            <li>Authenticate users and secure accounts</li>
-            <li>Generate audit logs and compliance records</li>
-            <li>Respond to inquiries and provide support</li>
-            <li>Improve system performance and features</li>
-          </ul>
-          <p className="font-medium text-white mt-4">
-            We do not sell or monetize your data.
-          </p>
-        </PrivacySection>
+ <PrivacySection
+ id="usage"
+ number="3"
+ title="How We Use Your Information"
+ icon={Eye}
+ delay={0.1}
+ >
+ <p>We use information to:</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>Provide and operate the platform</li>
+ <li>Authenticate users and secure accounts</li>
+ <li>Generate audit logs and compliance records</li>
+ <li>Respond to inquiries and provide support</li>
+ <li>Improve system performance and features</li>
+ </ul>
+ <p className="font-medium text-white mt-4">
+ We do not sell or monetize your data.
+ </p>
+ </PrivacySection>
 
-        <PrivacySection
-          id="legal-basis"
-          number="4"
-          title="Legal Basis for Processing"
-          icon={FileText}
-          delay={0.15}
-        >
-          <p>
-            Under the GDPR and equivalent regimes, the legal basis (also
-            referred to as lawful basis) for processing your personal data is
-            one of the following:
-          </p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>
-              <strong className="text-white">Contractual necessity</strong> —
-              providing the service you signed up for
-            </li>
-            <li>
-              <strong className="text-white">Legal obligations</strong> —
-              regulatory record-keeping and audit trails
-            </li>
-            <li>
-              <strong className="text-white">Legitimate interest</strong> —
-              securing the platform, preventing abuse, and improving the
-              product without undue impact on your privacy
-            </li>
-            <li>
-              <strong className="text-white">Explicit consent</strong>, where
-              required (e.g. analytics cookies, marketing communications)
-            </li>
-          </ul>
-        </PrivacySection>
+ <PrivacySection
+ id="legal-basis"
+ number="4"
+ title="Legal Basis for Processing"
+ icon={FileText}
+ delay={0.15}
+ >
+ <p>
+ Under the GDPR and equivalent regimes, the legal basis (also
+ referred to as lawful basis) for processing your personal data is
+ one of the following:
+ </p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>
+ <strong className="text-white">Contractual necessity</strong> —
+ providing the service you signed up for
+ </li>
+ <li>
+ <strong className="text-white">Legal obligations</strong> —
+ regulatory record-keeping and audit trails
+ </li>
+ <li>
+ <strong className="text-white">Legitimate interest</strong> —
+ securing the platform, preventing abuse, and improving the
+ product without undue impact on your privacy
+ </li>
+ <li>
+ <strong className="text-white">Explicit consent</strong>, where
+ required (e.g. analytics cookies, marketing communications)
+ </li>
+ </ul>
+ </PrivacySection>
 
-        <PrivacySection
-          id="storage"
-          number="5"
-          title="Data Storage & Security"
-          icon={Lock}
-          delay={0.2}
-        >
-          <p>We implement enterprise-grade protections including:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-            {[
-              { icon: Lock, label: 'Encryption at rest' },
-              { icon: Shield, label: 'Encrypted transmission (TLS)' },
-              { icon: Users, label: 'Role-based access control' },
-              { icon: Server, label: 'Immutable audit logs' },
-              { icon: Database, label: 'Secure infrastructure environments' },
-            ].map((item, i) => (
-              <ScrollReveal
-                key={i}
-                variant="fadeUp"
-                range={[0, 0.3 + i * 0.05]}
-              >
-                <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-cyan-500/30 transition-colors">
-                  <item.icon className="w-4 h-4 text-cyan-400" />
-                  <span className="text-sm text-slate-300">{item.label}</span>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-          <p className="mt-4">
-            Access to data is restricted to authorized personnel only.
-          </p>
-        </PrivacySection>
+ <PrivacySection
+ id="storage"
+ number="5"
+ title="Data Storage & Security"
+ icon={Lock}
+ delay={0.2}
+ >
+ <p>We implement enterprise-grade protections including:</p>
+ <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+ {[
+ { icon: Lock, label: 'Encryption at rest' },
+ { icon: Shield, label: 'Encrypted transmission (TLS)' },
+ { icon: Users, label: 'Role-based access control' },
+ { icon: Server, label: 'Immutable audit logs' },
+ { icon: Database, label: 'Secure infrastructure environments' },
+ ].map((item, i) => (
+ <ScrollReveal
+ key={i}
+ variant="fadeUp"
+ range={[0, 0.3 + i * 0.05]}
+ >
+ <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 hover:border-slate-500/30 transition-colors">
+ <item.icon className="w-4 h-4 text-slate-400" />
+ <span className="text-sm text-slate-300">{item.label}</span>
+ </div>
+ </ScrollReveal>
+ ))}
+ </div>
+ <p className="mt-4">
+ Access to data is restricted to authorized personnel only.
+ </p>
+ </PrivacySection>
 
-        <PrivacySection
-          id="sharing"
-          number="6"
-          title="Data Sharing"
-          icon={Share2}
-          delay={0.25}
-        >
-          <p>We may share information only with:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>
-              Trusted infrastructure providers (hosting, security, analytics)
-            </li>
-            <li>Legal authorities where required by law</li>
-          </ul>
-          <p className="font-medium text-white mt-4">
-            We never share data for advertising or resale.
-          </p>
-        </PrivacySection>
+ <PrivacySection
+ id="sharing"
+ number="6"
+ title="Data Sharing"
+ icon={Share2}
+ delay={0.25}
+ >
+ <p>We may share information only with:</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>
+ Trusted infrastructure providers (hosting, security, analytics)
+ </li>
+ <li>Legal authorities where required by law</li>
+ </ul>
+ <p className="font-medium text-white mt-4">
+ We never share data for advertising or resale.
+ </p>
+ </PrivacySection>
 
-        <PrivacySection
-          id="retention"
-          number="7"
-          title="Data Retention"
-          icon={Clock}
-          delay={0.3}
-        >
-          <p>We retain personal data only as long as:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Necessary to provide the Services</li>
-            <li>Required for legal or compliance obligations</li>
-            <li>Permitted by contractual agreements</li>
-          </ul>
-          <p className="mt-4">
-            Customer data may be deleted upon account termination in accordance
-            with retention policies.
-          </p>
-        </PrivacySection>
+ <PrivacySection
+ id="retention"
+ number="7"
+ title="Data Retention"
+ icon={Clock}
+ delay={0.3}
+ >
+ <p>We retain personal data only as long as:</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>Necessary to provide the Services</li>
+ <li>Required for legal or compliance obligations</li>
+ <li>Permitted by contractual agreements</li>
+ </ul>
+ <p className="mt-4">
+ Customer data may be deleted upon account termination in accordance
+ with retention policies.
+ </p>
+ </PrivacySection>
 
-        <PrivacySection
-          id="rights"
-          number="8"
-          title="Your Rights"
-          icon={UserCheck}
-          delay={0.35}
-        >
-          <p>You have the right to:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Access your data</li>
-            <li>Request corrections</li>
-            <li>Request deletion (where legally permissible)</li>
-            <li>Withdraw consent</li>
-          </ul>
-          <p className="mt-4">To exercise your rights, contact:</p>
-          <motion.a
-            href="mailto:support@formaos.com.au"
-            whileHover={{ scale: 1.02, x: 5 }}
-            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors mt-2 group"
-          >
-            <Mail className="w-4 h-4" />
-            <span className="group-hover:underline decoration-cyan-400/50 underline-offset-4">
-              support@formaos.com.au
-            </span>
-          </motion.a>
-        </PrivacySection>
+ <PrivacySection
+ id="rights"
+ number="8"
+ title="Your Rights"
+ icon={UserCheck}
+ delay={0.35}
+ >
+ <p>You have the right to:</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>Access your data</li>
+ <li>Request corrections</li>
+ <li>Request deletion (where legally permissible)</li>
+ <li>Withdraw consent</li>
+ </ul>
+ <p className="mt-4">To exercise your rights, contact:</p>
+ <motion.a
+ href="mailto:support@formaos.com.au"
+ whileHover={{ scale: 1.02, x: 5 }}
+ className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors mt-2 group"
+ >
+ <Mail className="w-4 h-4" />
+ <span className="group-hover:underline decoration-slate-400/50 underline-offset-4">
+ support@formaos.com.au
+ </span>
+ </motion.a>
+ </PrivacySection>
 
-        <PrivacySection
-          id="transfers"
-          number="9"
-          title="International Data Transfers"
-          icon={Globe}
-          delay={0.4}
-        >
-          <p>If data is transferred outside Australia, we ensure:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Contractual safeguards</li>
-            <li>Compliance with applicable data protection regulations</li>
-          </ul>
-        </PrivacySection>
+ <PrivacySection
+ id="transfers"
+ number="9"
+ title="International Data Transfers"
+ icon={Globe}
+ delay={0.4}
+ >
+ <p>If data is transferred outside Australia, we ensure:</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>Contractual safeguards</li>
+ <li>Compliance with applicable data protection regulations</li>
+ </ul>
+ </PrivacySection>
 
-        <PrivacySection
-          id="cookies"
-          number="10"
-          title="Cookies & Tracking"
-          icon={Cookie}
-          delay={0.45}
-        >
-          <p>We use minimal cookies for:</p>
-          <ul className="list-disc list-inside space-y-2 ml-4">
-            <li>Authentication</li>
-            <li>Session management</li>
-            <li>Performance monitoring</li>
-          </ul>
-          <div className="p-4 rounded-xl bg-white/[0.04] border border-cyan-500/20 mt-4">
-            <p className="text-cyan-400 font-medium flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-cyan-400" />
-              No third-party advertising trackers are used.
-            </p>
-          </div>
-        </PrivacySection>
+ <PrivacySection
+ id="cookies"
+ number="10"
+ title="Cookies & Tracking"
+ icon={Cookie}
+ delay={0.45}
+ >
+ <p>We use minimal cookies for:</p>
+ <ul className="list-disc list-inside space-y-2 ml-4">
+ <li>Authentication</li>
+ <li>Session management</li>
+ <li>Performance monitoring</li>
+ </ul>
+ <div className="p-4 rounded-xl bg-white/[0.04] border border-slate-500/20 mt-4">
+ <p className="text-slate-400 font-medium flex items-center gap-2">
+ <span className="w-2 h-2 rounded-full bg-slate-400" />
+ No third-party advertising trackers are used.
+ </p>
+ </div>
+ </PrivacySection>
 
-        <PrivacySection
-          id="updates"
-          number="11"
-          title="Updates to This Policy"
-          icon={RefreshCw}
-          delay={0.5}
-        >
-          <p>
-            We may update this Privacy Policy to reflect regulatory, technical,
-            or operational changes.
-          </p>
-          <p>Material changes will be communicated on our website.</p>
-        </PrivacySection>
+ <PrivacySection
+ id="updates"
+ number="11"
+ title="Updates to This Policy"
+ icon={RefreshCw}
+ delay={0.5}
+ >
+ <p>
+ We may update this Privacy Policy to reflect regulatory, technical,
+ or operational changes.
+ </p>
+ <p>Material changes will be communicated on our website.</p>
+ </PrivacySection>
 
-        <PrivacySection
-          id="contact"
-          number="12"
-          title="Contact"
-          icon={Mail}
-          delay={0.55}
-        >
-          <p>For privacy concerns:</p>
-          <div className="flex flex-col gap-3 mt-4">
-            <motion.a
-              href="mailto:support@formaos.com.au"
-              whileHover={{ scale: 1.02, x: 5 }}
-              className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors group"
-            >
-              <Mail className="w-4 h-4" />
-              <span className="group-hover:underline decoration-cyan-400/50 underline-offset-4">
-                support@formaos.com.au
-              </span>
-            </motion.a>
-            <motion.a
-              href="tel:+61469715062"
-              whileHover={{ scale: 1.02, x: 5 }}
-              className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors group"
-            >
-              📞{' '}
-              <span className="group-hover:underline decoration-cyan-400/50 underline-offset-4">
-                +61 469 715 062
-              </span>
-            </motion.a>
-          </div>
-        </PrivacySection>
-      </div>
-    </section>
-  );
+ <PrivacySection
+ id="contact"
+ number="12"
+ title="Contact"
+ icon={Mail}
+ delay={0.55}
+ >
+ <p>For privacy concerns:</p>
+ <div className="flex flex-col gap-3 mt-4">
+ <motion.a
+ href="mailto:support@formaos.com.au"
+ whileHover={{ scale: 1.02, x: 5 }}
+ className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors group"
+ >
+ <Mail className="w-4 h-4" />
+ <span className="group-hover:underline decoration-slate-400/50 underline-offset-4">
+ support@formaos.com.au
+ </span>
+ </motion.a>
+ <motion.a
+ href="tel:+61469715062"
+ whileHover={{ scale: 1.02, x: 5 }}
+ className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-300 transition-colors group"
+ >
+ 📞{' '}
+ <span className="group-hover:underline decoration-slate-400/50 underline-offset-4">
+ +61 469 715 062
+ </span>
+ </motion.a>
+ </div>
+ </PrivacySection>
+ </div>
+ </section>
+ );
 }
 
 // ============================================================================
@@ -612,57 +612,57 @@ function PrivacyContent() {
 // ============================================================================
 
 function PrivacyCTA() {
-  return (
-    <section className="relative py-24 bg-gradient-to-b from-[#0d1421] to-[#0a0f1c]">
-      {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-500/5 blur-3xl"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </div>
+ return (
+ <section className="relative py-24 ">
+ {/* Background effects */}
+ <div className="absolute inset-0 overflow-hidden pointer-events-none">
+ <motion.div
+ className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-slate-500/5 blur-3xl"
+ animate={{
+ scale: [1, 1.2, 1],
+ opacity: [0.3, 0.5, 0.3],
+ }}
+ transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+ />
+ </div>
 
-      <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
-        <ScrollReveal variant="scaleUp">
-          <div className="relative p-6 sm:p-8 md:p-10 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-cyan-500/20 transition-all duration-500 shadow-2xl shadow-black/30">
-            {/* Top accent line */}
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+ <div className="relative max-w-5xl mx-auto px-6 lg:px-12">
+ <ScrollReveal variant="scaleUp">
+ <div className="relative p-6 sm:p-8 md:p-10 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-slate-500/20 transition-all duration-500 shadow-2xl shadow-black/30">
+ {/* Top accent line */}
+ <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-slate-400/40 to-transparent" />
 
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium mb-4">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                  Privacy-first platform
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                  Questions about your data?
-                </h2>
-                <p className="text-slate-400 leading-relaxed">
-                  Contact our team for any questions regarding data handling,
-                  security practices, or to exercise your privacy rights.
-                </p>
-              </div>
-              <motion.a
-                href="/contact"
-                whileHover={{
-                  scale: 1.05,
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="group px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg flex items-center gap-3 shadow-lg hover:opacity-90 transition-all whitespace-nowrap"
-              >
-                <span>Contact Us</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
-            </div>
-          </div>
-        </ScrollReveal>
-      </div>
-    </section>
-  );
+ <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+ <div>
+ <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-500/10 border border-slate-500/20 text-slate-400 text-xs font-medium mb-4">
+ <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+ Privacy-first platform
+ </div>
+ <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+ Questions about your data?
+ </h2>
+ <p className="text-slate-400 leading-relaxed">
+ Contact our team for any questions regarding data handling,
+ security practices, or to exercise your privacy rights.
+ </p>
+ </div>
+ <motion.a
+ href="/contact"
+ whileHover={{
+ scale: 1.05,
+ }}
+ whileTap={{ scale: 0.98 }}
+ className="group px-8 py-4 rounded-full bg-foreground text-background font-semibold text-lg flex items-center gap-3 shadow-lg hover:opacity-90 transition-all whitespace-nowrap"
+ >
+ <span>Contact Us</span>
+ <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+ </motion.a>
+ </div>
+ </div>
+ </ScrollReveal>
+ </div>
+ </section>
+ );
 }
 
 // ============================================================================
@@ -670,21 +670,21 @@ function PrivacyCTA() {
 // ============================================================================
 
 export default function PrivacyPageContentSync() {
-  return (
-    <MarketingPageShell className="bg-[#0a0f1c]">
-      <PrivacyHero />
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
-      <DeferredSection minHeight={260}>
-        <TableOfContents />
-      </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
-      <DeferredSection minHeight={1600}>
-        <PrivacyContent />
-      </DeferredSection>
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
-      <DeferredSection minHeight={300}>
-        <PrivacyCTA />
-      </DeferredSection>
-    </MarketingPageShell>
-  );
+ return (
+ <MarketingPageShell className="bg-[#0a0f1c]">
+ <PrivacyHero />
+ <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+ <DeferredSection minHeight={260}>
+ <TableOfContents />
+ </DeferredSection>
+ <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+ <DeferredSection minHeight={1600}>
+ <PrivacyContent />
+ </DeferredSection>
+ <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-3"><div className="h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" /></div>
+ <DeferredSection minHeight={300}>
+ <PrivacyCTA />
+ </DeferredSection>
+ </MarketingPageShell>
+ );
 }

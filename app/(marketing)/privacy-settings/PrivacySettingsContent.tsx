@@ -83,14 +83,14 @@ export default function PrivacySettingsContent() {
       <div className="max-w-3xl mx-auto px-6 py-20">
         <Link
           href="/legal/privacy"
-          className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 mb-8"
+          className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-slate-300 mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Privacy Policy
         </Link>
 
         <header className="mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-400/30 bg-cyan-500/10 text-xs font-medium text-cyan-300 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-400/30 bg-slate-500/10 text-xs font-medium text-slate-300 mb-4">
             <ShieldCheck className="w-3.5 h-3.5" />
             Your data, your choice
           </div>
@@ -122,7 +122,7 @@ export default function PrivacySettingsContent() {
               type="button"
               onClick={accept}
               data-testid="consent-accept"
-              className="rounded-lg bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+              className="rounded-lg bg-slate-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               Accept analytics cookies
             </button>
@@ -130,7 +130,7 @@ export default function PrivacySettingsContent() {
               type="button"
               onClick={reject}
               data-testid="consent-reject"
-              className="rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-100 hover:border-slate-500 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+              className="rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-100 hover:border-slate-500 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               Reject non-essential
             </button>
@@ -166,7 +166,7 @@ export default function PrivacySettingsContent() {
             signing in, contact us at{' '}
             <a
               href="mailto:privacy@formaos.com.au"
-              className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2"
+              className="text-slate-400 hover:text-slate-300 underline underline-offset-2"
             >
               privacy@formaos.com.au
             </a>
@@ -184,9 +184,9 @@ export default function PrivacySettingsContent() {
               href="/app/privacy#export"
               data-testid="export-data"
               data-export
-              className="export inline-flex flex-col items-start gap-2 rounded-xl border border-slate-700 bg-slate-900/80 p-4 text-left hover:border-cyan-400/40 hover:bg-slate-900"
+              className="export inline-flex flex-col items-start gap-2 rounded-xl border border-slate-700 bg-slate-900/80 p-4 text-left hover:border-slate-400/40 hover:bg-slate-900"
             >
-              <Download className="h-4 w-4 text-cyan-300" />
+              <Download className="h-4 w-4 text-slate-300" />
               <div>
                 <div className="text-sm font-semibold text-white">
                   Export your data
@@ -195,7 +195,7 @@ export default function PrivacySettingsContent() {
                   Download a JSON copy of everything we hold about you.
                 </div>
               </div>
-              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-cyan-300">
+              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-slate-300">
                 Sign in to download
                 <ArrowRight className="h-3 w-3" />
               </span>
@@ -204,9 +204,9 @@ export default function PrivacySettingsContent() {
             <Link
               href="/app/privacy#portability"
               data-download
-              className="download inline-flex flex-col items-start gap-2 rounded-xl border border-slate-700 bg-slate-900/80 p-4 text-left hover:border-cyan-400/40 hover:bg-slate-900"
+              className="download inline-flex flex-col items-start gap-2 rounded-xl border border-slate-700 bg-slate-900/80 p-4 text-left hover:border-slate-400/40 hover:bg-slate-900"
             >
-              <ArrowRight className="h-4 w-4 text-cyan-300" />
+              <ArrowRight className="h-4 w-4 text-slate-300" />
               <div>
                 <div className="text-sm font-semibold text-white">
                   Move to another provider
@@ -215,7 +215,7 @@ export default function PrivacySettingsContent() {
                   Get a machine-readable bundle to import elsewhere.
                 </div>
               </div>
-              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-cyan-300">
+              <span className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-slate-300">
                 Sign in to port
                 <ArrowRight className="h-3 w-3" />
               </span>
