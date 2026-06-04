@@ -81,7 +81,6 @@ export default function ProvePage() {
       ]}
       journeyKey="prove"
       mediaSrc="/marketing-media/prove.jpg"
-      mediaSrcSecondary="/marketing-media/audit-evidence-management.jpg"
     />
   );
 }
