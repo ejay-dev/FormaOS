@@ -7,7 +7,6 @@ import { MarketingPageShell } from '../components/shared/MarketingPageShell';
 import { DeferredSection } from '../components/shared';
 import { SecurityHero } from './SecurityHero';
 import { FrameworkTrustStrip } from '@/components/marketing/FrameworkTrustStrip';
-import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 const LaserFlowSection = dynamic(
   () =>
@@ -42,8 +41,7 @@ const SecurityCTA = dynamic(
 function SecurityReviewBanner() {
   return (
     <section className="relative isolate overflow-hidden mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      <SectionMedia src="/marketing-media/enterprise.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
-      <div className="rounded-2xl border border-white/[0.08] bg-slate-950/60 p-5 sm:p-6">
+      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center mt-0.5">
@@ -55,7 +53,7 @@ function SecurityReviewBanner() {
               </h3>
               <p className="mt-1.5 text-sm text-slate-400 leading-relaxed max-w-xl">
                 Architecture overview, encryption protocols, identity
-                governance, data residency details, and DPA - bundled and ready.
+                governance, data residency details, and DPA, bundled and ready.
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-500">
                 <span className="inline-flex items-center gap-1.5">
