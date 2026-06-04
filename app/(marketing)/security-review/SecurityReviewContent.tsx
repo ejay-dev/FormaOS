@@ -28,7 +28,7 @@ const sections = [
     icon: ShieldCheck,
     title: 'Security architecture overview',
     points: [
-      'Multi-tenant architecture with Row-Level Security (RLS) - strict org boundary enforcement at the database layer',
+      'Multi-tenant architecture with Row-Level Security (RLS), strict org boundary enforcement at the database layer',
       'Application-layer authorization with RBAC model and segregation of duties across all compliance workflows',
       'Change management controls: code review, CI/CD pipeline gates, staging environments, and rollback procedures',
       'Infrastructure hosted on enterprise-grade cloud providers with automatic failover and disaster recovery',
@@ -56,7 +56,7 @@ const sections = [
       'Evidence chain-of-custody metadata: uploader identity, verifier, timestamps, and control linkage preserved',
       'Retention policies aligned to your regulatory requirements with configurable retention periods per data type',
       'Structured export and data portability workflows are available, with exact exit timelines handled contractually',
-      'Backup encryption with separate key management - backups are encrypted independently of primary storage',
+      'Backup encryption with separate key management, backups are encrypted independently of primary storage',
       'No data sharing with third parties beyond documented subprocessors; subprocessor list publicly available',
     ],
   },
@@ -64,7 +64,7 @@ const sections = [
     icon: FileLock2,
     title: 'Audit logging and evidence defensibility',
     points: [
-      'Tamper-evident, immutable audit logs for every compliance action - timestamped, uneditable, and append-only',
+      'Tamper-evident, immutable audit logs for every compliance action, timestamped, uneditable, and append-only',
       'Evidence verification workflow with approval, rejection, and segregation controls fully documented',
       'Framework-mapped audit bundles are exportable for regulator, auditor, or board review',
       'User activity logs: login history, permission changes, evidence access, and administrative actions recorded',
@@ -88,17 +88,17 @@ const sections = [
 
 const checklist = [
   'Data flow diagram (high level) + tenant isolation model (RLS posture)',
-  'Authentication methods - Google OAuth, SAML 2.0 SSO, MFA enforcement',
+  'Authentication methods, Google OAuth, SAML 2.0 SSO, MFA enforcement',
   'AES-256 at rest + TLS 1.3 in transit encryption confirmation',
   'Evidence storage approach, access controls, and chain-of-custody metadata',
   'Audit logging coverage, tamper-evident history, and export capabilities',
   'AU-hosted deployment posture and DPA documentation',
   'Current assessment and remediation materials, when available for buyer review',
   'Incident response posture and operational escalation contacts',
-  'Data portability confirmation - portable export and contract-defined deletion timelines',
+  'Data portability confirmation, portable export and contract-defined deletion timelines',
   'Subprocessor list with data categories, locations, and processing purposes',
   'Business continuity and disaster recovery posture (RPO/RTO targets)',
-  'Vendor risk management - third-party dependency governance and review cadence',
+  'Vendor risk management, third-party dependency governance and review cadence',
 ] as const;
 
 export default function SecurityReviewContent() {

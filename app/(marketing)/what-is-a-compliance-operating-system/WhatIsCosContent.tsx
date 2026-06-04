@@ -59,8 +59,8 @@ export default function WhatIsCosContent() {
               </strong>{' '}
               is a category of software that goes beyond traditional governance,
               risk, and compliance (GRC) tools. While GRC platforms manage
-              compliance documentation - policies, risk registers, and audit
-              checklists - a compliance operating system <em>runs</em> your
+              compliance documentation, policies, risk registers, and audit
+              checklists, a compliance operating system <em>runs</em> your
               compliance program as an integral part of daily operations.
             </p>
             <p>
@@ -106,7 +106,7 @@ export default function WhatIsCosContent() {
               {
                 title: 'Framework-to-workflow mapping',
                 description:
-                  'Regulatory requirements and compliance frameworks are mapped directly to operational workflows - not just documented. Each control has an owner, a process, and evidence requirements that connect to daily operations.',
+                  'Regulatory requirements and compliance frameworks are mapped directly to operational workflows, not just documented. Each control has an owner, a process, and evidence requirements that connect to daily operations.',
               },
               {
                 title: 'Continuous evidence capture',
@@ -116,12 +116,12 @@ export default function WhatIsCosContent() {
               {
                 title: 'Immutable audit trails',
                 description:
-                  'Every action is logged with full context - who, what, when, and why - in append-only records that cannot be modified after creation. This creates a tamper-evident chain that auditors trust.',
+                  'Every action is logged with full context, who, what, when, and why, in append-only records that cannot be modified after creation. This creates a tamper-evident chain that auditors trust.',
               },
               {
                 title: 'Control ownership and accountability',
                 description:
-                  "Every control has an explicit owner responsible for its execution. Ownership isn't assumed or implied - it's enforced through the system, creating clear lines of accountability.",
+                  "Every control has an explicit owner responsible for its execution. Ownership isn't assumed or implied, it's enforced through the system, creating clear lines of accountability.",
               },
               {
                 title: 'Real-time compliance visibility',
@@ -340,7 +340,7 @@ export default function WhatIsCosContent() {
                 <strong className="text-white">document management</strong> -
                 storing policies and procedures in shared drives and intranets.
                 The second generation was{' '}
-                <strong className="text-white">GRC platforms</strong> - tracking
+                <strong className="text-white">GRC platforms</strong>, tracking
                 risks, controls, and audit findings in structured databases with
                 workflow capabilities.
               </p>
@@ -350,7 +350,7 @@ export default function WhatIsCosContent() {
                   compliance operating system
                 </strong>
                 . It doesn&apos;t just store compliance information or track
-                compliance activities - it embeds compliance into the
+                compliance activities, it embeds compliance into the
                 operational fabric of the organization. The difference is like
                 the difference between a recipe book and a commercial kitchen:
                 one describes what should happen, the other makes it happen
@@ -361,7 +361,7 @@ export default function WhatIsCosContent() {
                 increasing, not decreasing. Organizations face more frameworks,
                 more oversight, and higher expectations for evidence quality.
                 The only sustainable approach is making compliance a natural
-                output of operations - not a separate workstream that competes
+                output of operations, not a separate workstream that competes
                 with operational delivery.
               </p>
             </div>
@@ -395,7 +395,7 @@ export default function WhatIsCosContent() {
                 question:
                   'How is a compliance operating system different from GRC software?',
                 answer:
-                  'GRC software focuses on governance documentation, risk registers, and compliance checklists. A compliance operating system goes further by embedding compliance into operational workflows - turning requirements into executable processes that capture evidence automatically as work happens.',
+                  'GRC software focuses on governance documentation, risk registers, and compliance checklists. A compliance operating system goes further by embedding compliance into operational workflows, turning requirements into executable processes that capture evidence automatically as work happens.',
               },
               {
                 question: 'Who needs a compliance operating system?',
@@ -501,12 +501,6 @@ export default function WhatIsCosContent() {
 
       {/* CTA */}
       <section className="relative isolate overflow-hidden mx-auto max-w-5xl px-4 pb-24 sm:px-6 lg:px-8">
-        <SectionMedia
-          src="/marketing-media/product.jpg"
-          objectPosition="50% 40%"
-          opacity={0.6}
-          scrim="center"
-        />
         <div className="rounded-2xl border border-white/[0.08] bg-slate-950/65 p-8 text-center backdrop-blur-sm sm:p-10">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             See the compliance operating system in action

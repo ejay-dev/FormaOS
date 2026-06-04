@@ -124,7 +124,7 @@ interface CategoryConfig {
   text: string;
 }
 
-// Categories are differentiated by icon, not colour — monochrome throughout.
+// Categories are differentiated by icon, not colour, monochrome throughout.
 const NEUTRAL_CATEGORY = {
   colorRgb: '148,163,184',
   bg: 'bg-white/[0.05]',
@@ -245,14 +245,14 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Scheduled API pulls from cloud providers and security scanners to automatically collect and update compliance evidence.',
     longDescription:
-      'Configure automatic evidence collection from cloud and scanner APIs on a recurring schedule — AWS / Azure / GCP configuration snapshots, Okta access-review exports, Qualys / Tenable scan reports. Each run produces versioned evidence with SHA-256 verification and links back to the source. The integration engine already supports custom webhooks and inbound HMAC-signed payloads; the cloud-specific connectors are exploratory and not yet shipping.',
+      'Configure automatic evidence collection from cloud and scanner APIs on a recurring schedule, AWS / Azure / GCP configuration snapshots, Okta access-review exports, Qualys / Tenable scan reports. Each run produces versioned evidence with SHA-256 verification and links back to the source. The integration engine already supports custom webhooks and inbound HMAC-signed payloads; the cloud-specific connectors are exploratory and not yet shipping.',
     status: 'exploring',
     category: 'Automation',
     quarter: 'Exploring',
     impact: 'high',
     capabilities: [
       'Scheduled API-based evidence pulls (exploring)',
-      'Cloud config snapshots (AWS / Azure / GCP — exploring)',
+      'Cloud config snapshots (AWS / Azure / GCP, exploring)',
       'Vulnerability scan report collection (exploring)',
       'Versioned with SHA-256 verification (already shipping for upload path)',
     ],
@@ -262,7 +262,7 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Stateless AI Q&A for compliance vocabulary and policy drafting. Org-grounded retrieval is on the roadmap, not in this release.',
     longDescription:
-      'A general-purpose Q&A surface for compliance questions and policy drafting. Useful for "how is GDPR Article 32 typically implemented?" or "draft a vendor risk policy starter." Surface-level org context (industry, team size) is passed in; live policies, evidence, and controls are NOT used as grounding today — see lib/ai-assistant.ts for the explicit framing. Real retrieval-augmented chat against your evidence vault is planned, not shipping.',
+      'A general-purpose Q&A surface for compliance questions and policy drafting. Useful for "how is GDPR Article 32 typically implemented?" or "draft a vendor risk policy starter." Surface-level org context (industry, team size) is passed in; live policies, evidence, and controls are NOT used as grounding today, see lib/ai-assistant.ts for the explicit framing. Real retrieval-augmented chat against your evidence vault is planned, not shipping.',
     status: 'shipped',
     category: 'Compliance',
     quarter: 'Q1 2026',
@@ -313,7 +313,7 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Connect BambooHR, Workday, and Rippling for automated personnel compliance tracking.',
     longDescription:
-      'Bi-directional integration with major HRIS platforms. Automatically sync employee lifecycle events - onboarding, role changes, departures - with compliance control ownership and access review requirements. Map HRIS organizational structures to FormaOS team hierarchies. Track personnel compliance obligations like background check status, training completion, and NDA execution.',
+      'Bi-directional integration with major HRIS platforms. Automatically sync employee lifecycle events, onboarding, role changes, departures, with compliance control ownership and access review requirements. Map HRIS organizational structures to FormaOS team hierarchies. Track personnel compliance obligations like background check status, training completion, and NDA execution.',
     status: 'in-progress',
     category: 'Integrations',
     quarter: 'Q2 2026',
@@ -330,7 +330,7 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Read-only portal for external auditors with time-limited access and scoped visibility.',
     longDescription:
-      'Provide external auditors with temporary, read-only access to compliance data through a dedicated portal. Configure visibility scope per auditor: specific frameworks, date ranges, and entity types. Auditors can review evidence, download audit packets, and leave comments - all tracked in the audit trail. Access automatically expires after the configured audit window.',
+      'Provide external auditors with temporary, read-only access to compliance data through a dedicated portal. Configure visibility scope per auditor: specific frameworks, date ranges, and entity types. Auditors can review evidence, download audit packets, and leave comments, all tracked in the audit trail. Access automatically expires after the configured audit window.',
     status: 'exploring',
     category: 'Platform',
     quarter: 'Q3 2026',
@@ -517,7 +517,7 @@ const roadmapItems: RoadmapItem[] = [
     description:
       'Conditional notification routing with escalation chains, digest batching, and quiet hours.',
     longDescription:
-      'Advanced notification rules engine that routes compliance alerts based on configurable conditions. Define escalation chains with time-based triggers - if an alert is not acknowledged within N hours, escalate to the next level. Digest batching groups non-urgent notifications into configurable summary windows. Quiet hours prevent non-critical notifications during off-hours.',
+      'Advanced notification rules engine that routes compliance alerts based on configurable conditions. Define escalation chains with time-based triggers, if an alert is not acknowledged within N hours, escalate to the next level. Digest batching groups non-urgent notifications into configurable summary windows. Quiet hours prevent non-critical notifications during off-hours.',
     status: 'shipped',
     category: 'Automation',
     quarter: 'Q1 2026',
@@ -901,7 +901,7 @@ function QuarterTimeline() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               Timeline
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
               Quarterly{' '}
               <span className="text-foreground">
                 delivery plan
@@ -1082,7 +1082,7 @@ function CategoryBreakdown() {
               </span>
             </h2>
             <p className="text-sm text-slate-400 max-w-lg mx-auto">
-              Development effort distributed across categories - reflecting
+              Development effort distributed across categories, reflecting
               customer demand, compliance landscape, and platform maturity.
             </p>
           </ScrollReveal>
@@ -1142,7 +1142,7 @@ function CategoryBreakdown() {
                           }}
                           initial={{ width: 0 }}
                           whileInView={{
-                            width: `${((item.total - item.shipped) / maxTotal) * 100}%`,
+                            width: `${((item.total, item.shipped) / maxTotal) * 100}%`,
                           }}
                           viewport={{ once: true }}
                           transition={{
@@ -1218,14 +1218,14 @@ function TransparencySection() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               Our Commitment
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
               Built with{' '}
               <span className="text-foreground">
                 transparency
               </span>
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
-              How we plan, build, and ship - openly, predictably, and with your
+              How we plan, build, and ship, openly, predictably, and with your
               compliance requirements driving every decision.
             </p>
           </ScrollReveal>
@@ -1322,7 +1322,7 @@ function FeatureRequestCTA() {
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Shape the Product
                 </p>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+                <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                   Have a feature{' '}
                   <span className="text-foreground">
                     request?
@@ -1539,7 +1539,7 @@ export default function RoadmapPageContent() {
               range={[0, 0.3]}
               className="text-center mb-6"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                 Everything on{' '}
                 <span className="text-foreground">
                   the roadmap

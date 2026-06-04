@@ -10,7 +10,7 @@ export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'FormaOS | Operational Runbooks',
   description:
-    'Backup, recovery, and incident-response runbooks for FormaOS — the operational continuity posture security reviewers and SOC 2 auditors expect to see documented.',
+    'Backup, recovery, and incident-response runbooks for FormaOS, the operational continuity posture security reviewers and SOC 2 auditors expect to see documented.',
   alternates: { canonical: `${siteUrl}/runbooks` },
   openGraph: {
     title: 'FormaOS | Operational Runbooks',
@@ -74,7 +74,7 @@ export default function RunbooksPage() {
                 <code className="mx-1 rounded bg-muted px-1.5 py-0.5 text-xs">
                   supabase/migrations/
                 </code>
-                and applied via Supabase MCP or the supabase CLI — every
+                and applied via Supabase MCP or the supabase CLI, every
                 schema change is reproducible from source.
               </li>
               <li>
@@ -137,7 +137,7 @@ export default function RunbooksPage() {
             <p className="text-sm text-muted-foreground mb-3">
               The full incident-response lifecycle, severity classification,
               and customer-notification expectations live on the dedicated
-              page below — this section is the operational pointer.
+              page below, this section is the operational pointer.
             </p>
             <a
               href="/trust/incident-response"
@@ -163,13 +163,13 @@ export default function RunbooksPage() {
                 <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   GET /api/health
                 </code>{' '}
-                — overall liveness probe used by uptime monitors.
+               , overall liveness probe used by uptime monitors.
               </li>
               <li>
                 <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   GET /api/health/integrity
                 </code>{' '}
-                — public data-integrity check summary (database + storage
+               , public data-integrity check summary (database + storage
                 reachable). Used by SOC 2 scanners and external trust
                 reviewers.
               </li>
@@ -177,7 +177,7 @@ export default function RunbooksPage() {
                 <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
                   GET /api/health/detailed
                 </code>{' '}
-                — operator-only detailed checks behind a founder token.
+               , operator-only detailed checks behind a founder token.
               </li>
             </ul>
           </section>

@@ -69,7 +69,7 @@ export default function VerifyClient() {
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
           Paste an export bundle to recompute its Merkle root, or paste a Sigstore Rekor entry
           to confirm the published top-of-chain hash was witnessed by the public transparency log.
-          Both verifications run entirely in your browser via SubtleCrypto — nothing leaves your machine
+          Both verifications run entirely in your browser via SubtleCrypto, nothing leaves your machine
           except the public Rekor lookup.
         </p>
       </header>
