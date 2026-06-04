@@ -9,7 +9,7 @@ const trustWorkflow = [
     detail:
       'Security and procurement teams review architecture, data handling, and governance posture before engaging further.',
     subpoints: [
-      'Multi-tenant architecture with Row-Level Security - strict org boundary enforcement reviewed upfront',
+      'Multi-tenant architecture with Row-Level Security: strict org boundary enforcement reviewed upfront',
       'AES-256 encryption at rest and TLS 1.3 in transit documented in review materials',
       'AU-hosted deployment by default, with additional residency requirements reviewed during procurement',
       'Security review approach, remediation process, and current assessment artifacts shared when available and appropriate',
