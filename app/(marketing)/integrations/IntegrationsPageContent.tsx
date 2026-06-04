@@ -928,7 +928,7 @@ function ArchitectureSection() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               How It Works
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
               Integration architecture
             </h2>
             <p className="text-base text-slate-400 max-w-xl mx-auto">
@@ -1142,8 +1142,7 @@ function CategoryBreakdown() {
 function IntegrationsCTA() {
   return (
     <DeferredSection minHeight={350}>
-      <section className="mk-section relative isolate overflow-hidden">
-        <SectionMedia src="/marketing-media/product.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
+      <section className="mk-section relative">
         <div className="mx-auto max-w-4xl px-6 lg:px-8">
           <div className="relative rounded-3xl border border-white/[0.06] bg-slate-950/60 overflow-hidden">
             <div className="relative p-8 sm:p-12 lg:p-16 text-center">
@@ -1151,7 +1150,7 @@ function IntegrationsCTA() {
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Get Connected
                 </p>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+                <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                   Don&apos;t see your tool?
                 </h2>
                 <p className="text-base sm:text-lg text-slate-400 max-w-xl mx-auto mb-10">
@@ -1445,7 +1444,7 @@ export default function IntegrationsPageContent() {
               range={[0, 0.3]}
               className="text-center mb-6"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                 Integration <span className="text-slate-400">catalog</span>
               </h2>
               <p className="text-base text-slate-400 max-w-xl mx-auto">

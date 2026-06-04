@@ -142,12 +142,6 @@ export default function EnterpriseProofPage() {
       </div>
 
       <div className="relative isolate overflow-hidden mx-auto max-w-5xl px-6 pb-24">
-        <SectionMedia
-          src="/marketing-media/enterprise.jpg"
-          objectPosition="50% 40%"
-          opacity={0.6}
-          scrim="center"
-        />
         <div className="rounded-2xl border border-border bg-slate-950/60 p-8">
           <h2 className="text-xl font-semibold text-foreground">
             Fast Buyer Validation Path

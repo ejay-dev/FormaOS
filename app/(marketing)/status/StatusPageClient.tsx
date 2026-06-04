@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-// Audit 2026-05-27 — client renderer for /status. Polls /api/health
+// Audit 2026-05-27, client renderer for /status. Polls /api/health
 // every 30s and renders the per-subsystem status cards. No auth.
 
 type HealthCheck = {
@@ -54,7 +54,7 @@ function formatRelative(iso: string | null | undefined): string {
   if (!iso) return '—';
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return iso;
-  const seconds = Math.floor((Date.now() - then) / 1000);
+  const seconds = Math.floor((Date.now(), then) / 1000);
   if (seconds < 60) return `${seconds}s ago`;
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
   if (seconds < 86_400) return `${Math.floor(seconds / 3600)}h ago`;

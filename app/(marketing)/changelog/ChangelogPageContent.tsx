@@ -108,14 +108,14 @@ const releases: ChangelogRelease[] = [
     codename: 'Two New Verticals & Operational Wiring',
     date: '2026-06-02',
     summary:
-      'Two compliance verticals — mental-health services and Australian financial services — join NDIS, so providers in those sectors start against a real control set instead of a blank framework. Several capabilities that existed in the data model but had no way in — structured incident investigations, regulatory-notification tracking, the medication chart’s add action, executive-digest scheduling — are now wired end to end. The automation engine that had been dormant since we removed the external task runner runs again, this time on the platform’s own scheduler.',
+      'Two compliance verticals, mental-health services and Australian financial services, join NDIS, so providers in those sectors start against a real control set instead of a blank framework. Several capabilities that existed in the data model but had no way in, structured incident investigations, regulatory-notification tracking, the medication chart’s add action, executive-digest scheduling, are now wired end to end. The automation engine that had been dormant since we removed the external task runner runs again, this time on the platform’s own scheduler.',
     isMajor: true,
     changes: [
       {
         text: 'Mental Health Services (NSMHS) compliance vertical',
         tag: 'feature',
         detail:
-          'A new pack built on the National Standards for Mental Health Services: 14 controls across the standard’s domains. Four are evaluated automatically against your own incidents, registers, policies and risk records; the remaining ten are manual attestations with evidence attachment. A mental-health provider can now open the platform and see exactly which of their obligations are met, which are outstanding, and what evidence is attached — without first building the framework themselves.',
+          'A new pack built on the National Standards for Mental Health Services: 14 controls across the standard’s domains. Four are evaluated automatically against your own incidents, registers, policies and risk records; the remaining ten are manual attestations with evidence attachment. A mental-health provider can now open the platform and see exactly which of their obligations are met, which are outstanding, and what evidence is attached, without first building the framework themselves.',
       },
       {
         text: 'Financial Services (AU) compliance vertical',
@@ -124,10 +124,10 @@ const releases: ChangelogRelease[] = [
           'A 20-control pack covering AFS-licence conduct and AML/CTF obligations, each control mapped to its source obligation. The pack ships with automated evaluators so the dashboard reflects your real posture rather than a static checklist. This sits alongside the existing SOC 2, ISO 27001, HIPAA, PCI-DSS, NIST CSF, CIS and GDPR packs.',
       },
       {
-        text: 'NDIS Practice Standards — automated coverage',
+        text: 'NDIS Practice Standards, automated coverage',
         tag: 'improvement',
         detail:
-          'The NDIS Practice Standards pack now carries 25 controls, 22 of them backed by automated predicates that read your live records — incidents, registers, restrictive-practice logs, worker screening — with the statutory citation attached to each. The remaining three stay as manual attestations. Where a control was previously a tick-box, it now reflects whether the underlying record actually exists.',
+          'The NDIS Practice Standards pack now carries 25 controls, 22 of them backed by automated predicates that read your live records, incidents, registers, restrictive-practice logs, worker screening, with the statutory citation attached to each. The remaining three stay as manual attestations. Where a control was previously a tick-box, it now reflects whether the underlying record actually exists.',
       },
       {
         text: 'Incident investigations, regulatory countdowns and a chain of record',
@@ -139,7 +139,7 @@ const releases: ChangelogRelease[] = [
         text: 'Automation workflows run again',
         tag: 'feature',
         detail:
-          'The workflow engine persists every run, pauses on approval steps and on long delays, and is continued by two scheduled sweeps — one that resumes delayed runs, one that fails out approvals that time out — instead of an external task runner. Approval steps are scoped to the organisation that owns them, so one tenant can never see or action another tenant’s approval.',
+          'The workflow engine persists every run, pauses on approval steps and on long delays, and is continued by two scheduled sweeps, one that resumes delayed runs, one that fails out approvals that time out, instead of an external task runner. Approval steps are scoped to the organisation that owns them, so one tenant can never see or action another tenant’s approval.',
       },
       {
         text: 'Compliance relationships are now a queryable graph',
@@ -163,16 +163,16 @@ const releases: ChangelogRelease[] = [
         text: 'Past-due accounts keep access through the grace window',
         tag: 'fix',
         detail:
-          'A failed payment no longer cuts off access the moment it fails. Entitlements stay active for a three-day grace period and are only disabled on day four if the balance is still unpaid — so a transient card decline does not lock a paying customer out of their own compliance records.',
+          'A failed payment no longer cuts off access the moment it fails. Entitlements stay active for a three-day grace period and are only disabled on day four if the balance is still unpaid, so a transient card decline does not lock a paying customer out of their own compliance records.',
       },
     ],
   },
   {
     version: 'v5.0.0',
-    codename: 'FORMAOS — New Identity',
+    codename: 'FORMAOS, New Identity',
     date: '2026-05-30',
     summary:
-      'A full visual rebrand. The product is now FORMAOS, with a charcoal wordmark and an “FO” monogram in place of the previous cyan shield, and a near-monochrome palette across the app, the marketing site, the sign-in screens, email and PDF exports. Alongside the new look, every marketing claim was re-checked against what the codebase actually does — invented personas, round-number metrics and any statement the product could not stand behind were removed.',
+      'A full visual rebrand. The product is now FORMAOS, with a charcoal wordmark and an “FO” monogram in place of the previous cyan shield, and a near-monochrome palette across the app, the marketing site, the sign-in screens, email and PDF exports. Alongside the new look, every marketing claim was re-checked against what the codebase actually does, invented personas, round-number metrics and any statement the product could not stand behind were removed.',
     isMajor: true,
     changes: [
       {
@@ -185,7 +185,7 @@ const releases: ChangelogRelease[] = [
         text: 'Near-monochrome charcoal palette',
         tag: 'improvement',
         detail:
-          'The cyan and teal accent is retired in favour of a charcoal-and-ink neutral scale, so the interface reads as an operations record rather than a marketing gradient. This is a colour change only — no layout, copy or behaviour changed with it.',
+          'The cyan and teal accent is retired in favour of a charcoal-and-ink neutral scale, so the interface reads as an operations record rather than a marketing gradient. This is a colour change only, no layout, copy or behaviour changed with it.',
       },
       {
         text: 'Marketing honesty pass across the site',
@@ -206,20 +206,20 @@ const releases: ChangelogRelease[] = [
     codename: 'Verifiable Audit Trail & Public Trust Surface',
     date: '2026-05-27',
     summary:
-      'The audit trail moves from a plain hash chain to a keyed, externally-anchored one — and customers can now verify it themselves without having to trust us. New public pages give procurement and security reviewers the evidence they ask for: a live status page and a self-serve audit-bundle verifier. Account security gains login lockout and tighter MFA handling, evidence files are hashed on upload and re-checked on download, and GDPR erasure now runs as a queued, auditable purge.',
+      'The audit trail moves from a plain hash chain to a keyed, externally-anchored one, and customers can now verify it themselves without having to trust us. New public pages give procurement and security reviewers the evidence they ask for: a live status page and a self-serve audit-bundle verifier. Account security gains login lockout and tighter MFA handling, evidence files are hashed on upload and re-checked on download, and GDPR erasure now runs as a queued, auditable purge.',
     isMajor: true,
     changes: [
       {
         text: 'Keyed audit chain with external anchoring',
         tag: 'security',
         detail:
-          'Each organisation’s audit chain is now sealed with a per-organisation HMAC key, encrypted at rest, so a chain cannot be silently recomputed without it. The top of each chain is periodically anchored to the public Sigstore Rekor transparency log — meaning the existence and order of your records can be proven against an independent third party, not just against our own database.',
+          'Each organisation’s audit chain is now sealed with a per-organisation HMAC key, encrypted at rest, so a chain cannot be silently recomputed without it. The top of each chain is periodically anchored to the public Sigstore Rekor transparency log, meaning the existence and order of your records can be proven against an independent third party, not just against our own database.',
       },
       {
         text: 'Verify an audit export yourself at /verify',
         tag: 'feature',
         detail:
-          'A public page where you paste an exported audit bundle or a Rekor entry and confirm it has not been altered. Verification runs entirely in your browser using a Merkle inclusion proof — nothing is sent back to us — so an external auditor can independently check that an export they were handed is genuine and complete.',
+          'A public page where you paste an exported audit bundle or a Rekor entry and confirm it has not been altered. Verification runs entirely in your browser using a Merkle inclusion proof, nothing is sent back to us, so an external auditor can independently check that an export they were handed is genuine and complete.',
       },
       {
         text: 'Live public status page at /status',
@@ -237,7 +237,7 @@ const releases: ChangelogRelease[] = [
         text: 'Evidence files are hashed and type-checked',
         tag: 'security',
         detail:
-          'Every evidence file is SHA-256 hashed when you upload it and re-verified when it is downloaded, so tampering is detectable. Uploads are restricted to a fixed allow-list — PDF, common image formats, Office documents, and plain text/CSV — and validated by inspecting the file’s actual bytes, not just trusting its extension.',
+          'Every evidence file is SHA-256 hashed when you upload it and re-verified when it is downloaded, so tampering is detectable. Uploads are restricted to a fixed allow-list, PDF, common image formats, Office documents, and plain text/CSV, and validated by inspecting the file’s actual bytes, not just trusting its extension.',
       },
       {
         text: 'Compliance gaps raise a corrective action automatically',
@@ -255,7 +255,7 @@ const releases: ChangelogRelease[] = [
         text: 'GDPR erasure runs as a queued, auditable purge',
         tag: 'security',
         detail:
-          'Account and subject erasure is processed by a scheduled purge that hard-deletes or anonymises across tables and revokes sessions. For records that must legally be retained for audit, the subject’s identifiers are redacted at export time rather than left in the exported file — satisfying the erasure request without breaking the audit trail.',
+          'Account and subject erasure is processed by a scheduled purge that hard-deletes or anonymises across tables and revokes sessions. For records that must legally be retained for audit, the subject’s identifiers are redacted at export time rather than left in the exported file, satisfying the erasure request without breaking the audit trail.',
       },
     ],
   },
@@ -277,7 +277,7 @@ const releases: ChangelogRelease[] = [
         text: 'Account deletion now cancels Stripe subscriptions for orphan organisations',
         tag: 'fix',
         detail:
-          'When a self-serve deletion would leave an organisation with zero members, the endpoint reads the stripe_subscription_id and stripe_customer_id, calls stripe.subscriptions.cancel with prorate:false and invoice_now:false, sets org_subscriptions.status to "cancelled" locally so the nightly reconciler does not retry, and logs the cancellation status (cancelled | failed | no_subscription | no_stripe_client) into the activity feed for downstream billing auditing. Multi-member organisations where the deleted user is not the sole member are left untouched — the subscription continues for the remaining members.',
+          'When a self-serve deletion would leave an organisation with zero members, the endpoint reads the stripe_subscription_id and stripe_customer_id, calls stripe.subscriptions.cancel with prorate:false and invoice_now:false, sets org_subscriptions.status to "cancelled" locally so the nightly reconciler does not retry, and logs the cancellation status (cancelled | failed | no_subscription | no_stripe_client) into the activity feed for downstream billing auditing. Multi-member organisations where the deleted user is not the sole member are left untouched, the subscription continues for the remaining members.',
       },
       {
         text: 'Public operational runbooks page at /runbooks',
@@ -295,19 +295,19 @@ const releases: ChangelogRelease[] = [
         text: 'Data-rights cross-links surfaced on /privacy-settings and in the app shell',
         tag: 'improvement',
         detail:
-          'The public /privacy-settings page now carries three cross-link cards — Export your data, Move to another provider, Delete your account — that route into the authenticated /app/privacy surface for sign-in-required follow-through. /app/settings gains a danger-zone “Account & data” card; the /app dashboard footer carries a quiet “Export your personal data” link. Each placement matches what GDPR scanners expect to find at the URL they probe and what real users expect to find while navigating around their account.',
+          'The public /privacy-settings page now carries three cross-link cards, Export your data, Move to another provider, Delete your account, that route into the authenticated /app/privacy surface for sign-in-required follow-through. /app/settings gains a danger-zone “Account & data” card; the /app dashboard footer carries a quiet “Export your personal data” link. Each placement matches what GDPR scanners expect to find at the URL they probe and what real users expect to find while navigating around their account.',
       },
       {
         text: 'Cookie banner no longer holds the Largest Contentful Paint',
         tag: 'improvement',
         detail:
-          'On marketing pages with relatively small above-the-fold content (changelog, blog posts, deeper trust pages), the cookie banner’s long sentence was repeatedly winning Lighthouse LCP and dragging /changelog perf to the low 60s. The banner DOM now mounts eagerly so the GDPR cookie-consent compliance probe still finds it, but the inline opacity stays at 0 until requestIdleCallback fires (with a 1.5 s setTimeout fallback). Per the LCP specification, elements with effective opacity below 1 are ineligible for LCP — so the real hero h1 wins. Verified result on /changelog: 60 → 77, LCP 8.0 s → 5.9 s, FCP 1.8 s, TBT 50 ms, CLS 0.',
+          'On marketing pages with relatively small above-the-fold content (changelog, blog posts, deeper trust pages), the cookie banner’s long sentence was repeatedly winning Lighthouse LCP and dragging /changelog perf to the low 60s. The banner DOM now mounts eagerly so the GDPR cookie-consent compliance probe still finds it, but the inline opacity stays at 0 until requestIdleCallback fires (with a 1.5 s setTimeout fallback). Per the LCP specification, elements with effective opacity below 1 are ineligible for LCP, so the real hero h1 wins. Verified result on /changelog: 60 → 77, LCP 8.0 s → 5.9 s, FCP 1.8 s, TBT 50 ms, CLS 0.',
       },
       {
         text: 'Operational continuity markers on /unauthorized',
         tag: 'improvement',
         detail:
-          'When an unauthenticated visitor lands on /admin or /app/team they are now routed to /unauthorized?from=… with a small banner pair that points at the operational runbooks and the role-based access controls overview. The behaviour change is that /admin and /app/team carry the “unauthorized” marker in the redirect target instead of falling through to a generic sign-in screen — closer to what enterprise reviewers expect, and the sign-in path remains intact for every other authenticated route.',
+          'When an unauthenticated visitor lands on /admin or /app/team they are now routed to /unauthorized?from=… with a small banner pair that points at the operational runbooks and the role-based access controls overview. The behaviour change is that /admin and /app/team carry the “unauthorized” marker in the redirect target instead of falling through to a generic sign-in screen, closer to what enterprise reviewers expect, and the sign-in path remains intact for every other authenticated route.',
       },
     ],
   },
@@ -316,14 +316,14 @@ const releases: ChangelogRelease[] = [
     codename: 'Tenant Integrity & Billing Honesty',
     date: '2026-05-23',
     summary:
-      'Audit re-pass on the v4.0 Foundation Audit work. Two independent passes — a fresh end-to-end audit and a verification of the resulting fix sweep — surfaced gaps that a single pass missed: a cross-org permission leak, a defence-in-depth IdP-init SAML gate, billing webhooks that could be steered by attacker-controlled metadata, three silent try/catch blocks in the compliance evaluator, and care-plan mutations on PHI that had no audit trail. Thirty PRs landed (v4-001 through v4-031). This release block is what changed in the final round plus the substantive themes from the sprint as a whole.',
+      'Audit re-pass on the v4.0 Foundation Audit work. Two independent passes, a fresh end-to-end audit and a verification of the resulting fix sweep, surfaced gaps that a single pass missed: a cross-org permission leak, a defence-in-depth IdP-init SAML gate, billing webhooks that could be steered by attacker-controlled metadata, three silent try/catch blocks in the compliance evaluator, and care-plan mutations on PHI that had no audit trail. Thirty PRs landed (v4-001 through v4-031). This release block is what changed in the final round plus the substantive themes from the sprint as a whole.',
     isMajor: true,
     changes: [
       {
         text: 'Cross-org permission leak in the team-roles engine closed',
         tag: 'security',
         detail:
-          'lib/authz/permission-engine.ts queried team_members filtered only by user_id, with no organization scope. For a user belonging to multiple workspaces, custom-role permissions from any org they had ever joined were merged into the active org context — a real cross-tenant privilege escalation in any deployment that uses custom roles. Fixed by scoping the lookup through team_groups.org_id (the canonical relational binding) and adding a defence-in-depth eq filter on custom_roles.org_id. The fix is one ten-line edit; the bug had been live since the custom-roles feature shipped.',
+          'lib/authz/permission-engine.ts queried team_members filtered only by user_id, with no organization scope. For a user belonging to multiple workspaces, custom-role permissions from any org they had ever joined were merged into the active org context, a real cross-tenant privilege escalation in any deployment that uses custom roles. Fixed by scoping the lookup through team_groups.org_id (the canonical relational binding) and adding a defence-in-depth eq filter on custom_roles.org_id. The fix is one ten-line edit; the bug had been live since the custom-roles feature shipped.',
       },
       {
         text: 'Stripe webhooks reject attacker-steered metadata on first-bind',
@@ -335,7 +335,7 @@ const releases: ChangelogRelease[] = [
         text: 'Pending-checkout grace window can no longer unlock paid AI / automation',
         tag: 'security',
         detail:
-          'The pending_checkout status sits between "user clicked Subscribe" and "Stripe webhook arrived" — usually under sixty seconds. The status was honoured for the full one-day grace window with every paid entitlement enabled, so a user could click Subscribe, abandon the Stripe checkout, and use AI / CAPA / custom reports / workflow automation / SSO for twenty-four hours with no payment. Read-tier features (audit export, reports, framework evaluations, certifications, team limit, form analytics) stay available during grace; write-tier and cost-bearing features now require a confirmed webhook landing.',
+          'The pending_checkout status sits between "user clicked Subscribe" and "Stripe webhook arrived", usually under sixty seconds. The status was honoured for the full one-day grace window with every paid entitlement enabled, so a user could click Subscribe, abandon the Stripe checkout, and use AI / CAPA / custom reports / workflow automation / SSO for twenty-four hours with no payment. Read-tier features (audit export, reports, framework evaluations, certifications, team limit, form analytics) stay available during grace; write-tier and cost-bearing features now require a confirmed webhook landing.',
       },
       {
         text: 'IdP-initiated SAML now requires explicit opt-in per organisation',
@@ -347,13 +347,13 @@ const releases: ChangelogRelease[] = [
         text: 'Care-plan mutations on PHI now write audit logs end-to-end',
         tag: 'security',
         detail:
-          'The v4-020 PHI audit work covered the create-paths for participants, visits, incidents, care plans, and goals — but the equivalent updateGoal, deleteGoal, updateSupport, deleteSupport, and syncCarePlanProgress functions in app/app/actions/care-operations.ts continued to mutate care content silently. NDIS Quality & Safeguards Commission expects an audit trail on every modification to a participant\'s care plan. Each path now emits a logAuditEvent call with the before-state, after-state, and reason; destructive ops record the cascaded children (deleted goals enumerate the supports that died with them).',
+          'The v4-020 PHI audit work covered the create-paths for participants, visits, incidents, care plans, and goals, but the equivalent updateGoal, deleteGoal, updateSupport, deleteSupport, and syncCarePlanProgress functions in app/app/actions/care-operations.ts continued to mutate care content silently. NDIS Quality & Safeguards Commission expects an audit trail on every modification to a participant\'s care plan. Each path now emits a logAuditEvent call with the before-state, after-state, and reason; destructive ops record the cascaded children (deleted goals enumerate the supports that died with them).',
       },
       {
         text: 'Silent try/catch in the compliance evaluator now surfaces to Sentry',
         tag: 'fix',
         detail:
-          'Three writes inside lib/compliance/evaluate-framework-controls.ts (the snapshot insert, the posture upsert, and the FRAMEWORK_EVALUATED audit log) were wrapped in bare try/catch blocks with no logging. A schema mismatch returned a "successful" evaluation with no snapshot, no posture row, and no audit trail — the score appeared in the dashboard but had no recorded evidence. Each catch now emits a structured Sentry capture with the framework code, org id, correlation id, and the underlying error so on-call can triage. Score computation still completes because the source-of-truth tables (org_control_evaluations for raw results) are not affected by these reporting writes.',
+          'Three writes inside lib/compliance/evaluate-framework-controls.ts (the snapshot insert, the posture upsert, and the FRAMEWORK_EVALUATED audit log) were wrapped in bare try/catch blocks with no logging. A schema mismatch returned a "successful" evaluation with no snapshot, no posture row, and no audit trail, the score appeared in the dashboard but had no recorded evidence. Each catch now emits a structured Sentry capture with the framework code, org id, correlation id, and the underlying error so on-call can triage. Score computation still completes because the source-of-truth tables (org_control_evaluations for raw results) are not affected by these reporting writes.',
       },
       {
         text: 'API key scopes split write paths from read scopes',
@@ -365,7 +365,7 @@ const releases: ChangelogRelease[] = [
         text: 'SAML IdP group mapping now matches exact group names',
         tag: 'security',
         detail:
-          'lib/sso/jit-provisioning.ts used String.includes for role mapping — an IdP group literally named "non-admin" or "read-owner-docs" would have auto-escalated the user to admin or owner during JIT provisioning. Replaced with an exact-match ROLE_GROUP_MAP keyed on normalised group names; substring lookups are gone.',
+          'lib/sso/jit-provisioning.ts used String.includes for role mapping, an IdP group literally named "non-admin" or "read-owner-docs" would have auto-escalated the user to admin or owner during JIT provisioning. Replaced with an exact-match ROLE_GROUP_MAP keyed on normalised group names; substring lookups are gone.',
       },
       {
         text: 'MFA disable now requires a current TOTP code, not just the password',
@@ -377,31 +377,31 @@ const releases: ChangelogRelease[] = [
         text: 'Open-redirect on sign-in and CSRF on signout closed',
         tag: 'security',
         detail:
-          'The signin page accepted any value in the next= parameter that started with "http", including external origins — an open-redirect vector for phishing pivot. Now only same-origin or absolute paths starting with "/" are honoured. /auth/signout used to mutate state on GET with no Origin check, so any cross-site image or link prefetch logged the user out. GET now returns 405 unless the request is same-origin via sec-fetch-site / origin / referer.',
+          'The signin page accepted any value in the next= parameter that started with "http", including external origins, an open-redirect vector for phishing pivot. Now only same-origin or absolute paths starting with "/" are honoured. /auth/signout used to mutate state on GET with no Origin check, so any cross-site image or link prefetch logged the user out. GET now returns 405 unless the request is same-origin via sec-fetch-site / origin / referer.',
       },
       {
         text: 'Audit chain serialised against concurrent writes',
         tag: 'security',
         detail:
-          'lib/audit/audit-engine.ts read the last hash-chain entry, computed seq+1 and prev_hash, then inserted — with no database-side serialisation. Concurrent writes from two requests could either break the hash chain or both succeed at the same sequence number. Added a UNIQUE(org_id, sequence_number) constraint with a five-attempt retry loop that detects PG 23505 and re-reads the chain head before retrying. The fast path is unchanged; contended writes lose a millisecond and the chain stays intact.',
+          'lib/audit/audit-engine.ts read the last hash-chain entry, computed seq+1 and prev_hash, then inserted, with no database-side serialisation. Concurrent writes from two requests could either break the hash chain or both succeed at the same sequence number. Added a UNIQUE(org_id, sequence_number) constraint with a five-attempt retry loop that detects PG 23505 and re-reads the chain head before retrying. The fast path is unchanged; contended writes lose a millisecond and the chain stays intact.',
       },
       {
         text: 'Vercel crons require both bearer secret and Vercel user-agent',
         tag: 'security',
         detail:
-          'Each of the six /api/cron/* routes had its own copy of the bearer check, leaving CRON_SECRET as the sole gate — leak the secret (env exfiltration, log scraping) and any actor could trigger crons from anywhere. New lib/security/cron-auth.ts is a shared verifier requiring both the bearer and user-agent: vercel-cron/1.0. Operators that genuinely need a manual replay can set ALLOW_NON_VERCEL_CRON=true. All six cron routes refactored to use the helper.',
+          'Each of the six /api/cron/* routes had its own copy of the bearer check, leaving CRON_SECRET as the sole gate, leak the secret (env exfiltration, log scraping) and any actor could trigger crons from anywhere. New lib/security/cron-auth.ts is a shared verifier requiring both the bearer and user-agent: vercel-cron/1.0. Operators that genuinely need a manual replay can set ALLOW_NON_VERCEL_CRON=true. All six cron routes refactored to use the helper.',
       },
       {
         text: 'CSP frame-ancestors directive added; OAuth state TTL trimmed',
         tag: 'security',
         detail:
-          'proxy.ts CSP now includes frame-ancestors \'none\' — the modern clickjacking gate that newer browsers respect when both it and X-Frame-Options are set. lib/auth/oauth-state.ts cookie TTL reduced from ten minutes to five (OWASP guidance for CSRF state tokens). Proxy reuse of x-forwarded-for is now opt-in via TRUST_PROXY=true; Vercel and Cloudflare\'s signed equivalents (x-vercel-forwarded-for, cf-connecting-ip) are preferred by default.',
+          'proxy.ts CSP now includes frame-ancestors \'none\', the modern clickjacking gate that newer browsers respect when both it and X-Frame-Options are set. lib/auth/oauth-state.ts cookie TTL reduced from ten minutes to five (OWASP guidance for CSRF state tokens). Proxy reuse of x-forwarded-for is now opt-in via TRUST_PROXY=true; Vercel and Cloudflare\'s signed equivalents (x-vercel-forwarded-for, cf-connecting-ip) are preferred by default.',
       },
       {
         text: 'HIBP password-breach check defaults fail-closed in production',
         tag: 'security',
         detail:
-          'lib/security/password-security.ts used to fail open on every HIBP outage by default — an attacker who could DoS the haveibeenpwned API could land breached passwords during signup. Default is now fail-closed when NODE_ENV=production; dev environments stay fail-open to keep offline work moving. Operators that need fail-open in production can set HIBP_FAIL_CLOSED=false explicitly.',
+          'lib/security/password-security.ts used to fail open on every HIBP outage by default, an attacker who could DoS the haveibeenpwned API could land breached passwords during signup. Default is now fail-closed when NODE_ENV=production; dev environments stay fail-open to keep offline work moving. Operators that need fail-open in production can set HIBP_FAIL_CLOSED=false explicitly.',
       },
       {
         text: 'Legacy ISO 27001 pack deprecated; redirects to the 2022 edition',
@@ -419,7 +419,7 @@ const releases: ChangelogRelease[] = [
         text: 'NDIS export rejects the missing-price-guide silent fallback',
         tag: 'fix',
         detail:
-          'lib/care/ndis-claiming.ts used to fall back to a hard-coded $60 AUD unit price when the support-item price guide was missing — NDIA reconciliation would mis-charge the participant. Now: missing price guide throws priceGuide_missing instead of silently substituting. Time-based support items also correctly emit duration into the Hours column rather than mirroring Quantity, which had been causing NDIA to reject group / per-event items.',
+          'lib/care/ndis-claiming.ts used to fall back to a hard-coded $60 AUD unit price when the support-item price guide was missing, NDIA reconciliation would mis-charge the participant. Now: missing price guide throws priceGuide_missing instead of silently substituting. Time-based support items also correctly emit duration into the Hours column rather than mirroring Quantity, which had been causing NDIA to reject group / per-event items.',
       },
       {
         text: 'AI kill switch covers every OpenAI call path',
@@ -443,7 +443,7 @@ const releases: ChangelogRelease[] = [
         text: 'Billing roles single source; AU tax_id collection in the UI flow',
         tag: 'fix',
         detail:
-          'BILLING_ROLES was declared inline in three different places (the server-action checkout, the API checkout route, the portal route) — all happened to converge on {owner} after v4-018 but the duplication had previously allowed the UI to succeed and the API to 403 mid-flow. Now exported as a single constant from lib/roles.ts with an isBillingRole helper. The server-action checkout now also passes tax_id_collection: { enabled: true } and customer_update: address/name auto, matching the API route — AU customers can finally enter ABN through the in-app upgrade flow.',
+          'BILLING_ROLES was declared inline in three different places (the server-action checkout, the API checkout route, the portal route), all happened to converge on {owner} after v4-018 but the duplication had previously allowed the UI to succeed and the API to 403 mid-flow. Now exported as a single constant from lib/roles.ts with an isBillingRole helper. The server-action checkout now also passes tax_id_collection: { enabled: true } and customer_update: address/name auto, matching the API route, AU customers can finally enter ABN through the in-app upgrade flow.',
       },
       {
         text: 'Subscription cancellation tears down entitlements and plan_key',
@@ -455,7 +455,7 @@ const releases: ChangelogRelease[] = [
         text: 'Stripe webhook signature failures captured to Sentry; reconciler batched',
         tag: 'improvement',
         detail:
-          'app/api/billing/webhook/route.ts signature-verification catch previously emitted only a structured log line — the billing-webhook-error-spike Sentry alert named in RUNBOOKS had nothing to consume. Capture is now wired. The nightly reconciliation job at lib/billing/nightly-reconciliation.ts used to iterate stripe.subscriptions.retrieve serially with no concurrency bound or back-off, guaranteeing Stripe 429 at 500+ orgs; now batched in groups of five concurrent retrieves. BILLING_AUTO_FIX defaults to off so a transient Stripe outage cannot auto-cancel a legitimate subscription mid-reconciliation.',
+          'app/api/billing/webhook/route.ts signature-verification catch previously emitted only a structured log line, the billing-webhook-error-spike Sentry alert named in RUNBOOKS had nothing to consume. Capture is now wired. The nightly reconciliation job at lib/billing/nightly-reconciliation.ts used to iterate stripe.subscriptions.retrieve serially with no concurrency bound or back-off, guaranteeing Stripe 429 at 500+ orgs; now batched in groups of five concurrent retrieves. BILLING_AUTO_FIX defaults to off so a transient Stripe outage cannot auto-cancel a legitimate subscription mid-reconciliation.',
       },
       {
         text: 'Notifications mark-all bypass and webhook-test admin gate closed',
@@ -467,25 +467,25 @@ const releases: ChangelogRelease[] = [
         text: 'Three identical audit-log routes consolidated; Breadcrumbs primitive applied',
         tag: 'improvement',
         detail:
-          '/app/audit and /app/history now redirect to /app/audit-trail (the canonical implementation that pulls from the tamper-evident chain). Patient and care-plan detail pages now use notFound() instead of silently redirecting to the list — users get a real "Not found" boundary rather than a confusing bounce. The Breadcrumbs primitive added in v4-029 is now applied to the patient and care-plan detail routes. EmptyState components from the existing registry are wired into /app/team, /app/people, and /app/audit-trail with proper "no data yet" vs "filtered to none" distinction.',
+          '/app/audit and /app/history now redirect to /app/audit-trail (the canonical implementation that pulls from the tamper-evident chain). Patient and care-plan detail pages now use notFound() instead of silently redirecting to the list, users get a real "Not found" boundary rather than a confusing bounce. The Breadcrumbs primitive added in v4-029 is now applied to the patient and care-plan detail routes. EmptyState components from the existing registry are wired into /app/team, /app/people, and /app/audit-trail with proper "no data yet" vs "filtered to none" distinction.',
       },
       {
         text: 'Orphan /app routes surfaced via parent sub-navigation',
         tag: 'improvement',
         detail:
-          'Fifteen real /app/* pages (dashboard/builder, care-plans/journey, controls/journey, incidents/analytics, reports/trends and reports/custom, executive/group, policies/versions, registers/training, participants/import, and five settings sub-pages) existed as proper routes with 100-300 lines of code but appeared in zero industry sidebars — only reachable by typing the URL. lib/navigation/industry-sidebar.ts now has an ORPHAN_ROUTE_CHILDREN map that surfaces each as a sub-nav child of its natural parent across all eight industry navs from one place.',
+          'Fifteen real /app/* pages (dashboard/builder, care-plans/journey, controls/journey, incidents/analytics, reports/trends and reports/custom, executive/group, policies/versions, registers/training, participants/import, and five settings sub-pages) existed as proper routes with 100-300 lines of code but appeared in zero industry sidebars, only reachable by typing the URL. lib/navigation/industry-sidebar.ts now has an ORPHAN_ROUTE_CHILDREN map that surfaces each as a sub-nav child of its natural parent across all eight industry navs from one place.',
       },
       {
         text: 'CI security scans actually block merges; weak status assertions tightened',
         tag: 'improvement',
         detail:
-          'npm audit / Snyk / CodeQL in .github/workflows/qa-pipeline.yml were continue-on-error: true — high-severity CVEs in production deps could land. Now blocking, with --omit=dev so dev-dep churn does not block PRs. Four e2e spec files (audit-reports, security-invariants, billing-handoff, admin-security-verification) used to assert expect([200, 401, 403]).toContain(status), so an auth or privilege-escalation regression returning 401 to a workspace-seeded test silently passed. Replaced with exact-status expectations matching the actual contract (admin endpoints assert 403 against the non-admin seed; billing portal asserts the new 409 no_stripe_customer contract).',
+          'npm audit / Snyk / CodeQL in .github/workflows/qa-pipeline.yml were continue-on-error: true, high-severity CVEs in production deps could land. Now blocking, with --omit=dev so dev-dep churn does not block PRs. Four e2e spec files (audit-reports, security-invariants, billing-handoff, admin-security-verification) used to assert expect([200, 401, 403]).toContain(status), so an auth or privilege-escalation regression returning 401 to a workspace-seeded test silently passed. Replaced with exact-status expectations matching the actual contract (admin endpoints assert 403 against the non-admin seed; billing portal asserts the new 409 no_stripe_customer contract).',
       },
       {
         text: 'Misleading load tests rewritten against real endpoints; dead code removed',
         tag: 'fix',
         detail:
-          'tests/load/k6-performance.js and artillery-config.yml were POSTing to /api/policies, /api/tasks, /api/team — none of which exist under that shape (mutating endpoints live under /api/v1/* with Bearer fos_… API keys). The suites passed visibly because the assertion accepted any non-5xx status. Both rewritten to hit real public endpoints (homepage, /pricing, /api/health) for genuine load coverage; authenticated load coverage stays in /load-tests where it has always lived. The standalone tests/accessibility/a11y-audit.js dropped its fake-JWT setupAuth and is now public-routes only (authenticated a11y coverage was already covered correctly by e2e/accessibility.spec.ts). Deleted: components/ProductShowcase.tsx (unused), e2e/industry-onboarding.spec.ts (six perma-skipped describes inflating spec counts), lighthouserc.js (footgun parallel to lighthouserc.json).',
+          'tests/load/k6-performance.js and artillery-config.yml were POSTing to /api/policies, /api/tasks, /api/team, none of which exist under that shape (mutating endpoints live under /api/v1/* with Bearer fos_… API keys). The suites passed visibly because the assertion accepted any non-5xx status. Both rewritten to hit real public endpoints (homepage, /pricing, /api/health) for genuine load coverage; authenticated load coverage stays in /load-tests where it has always lived. The standalone tests/accessibility/a11y-audit.js dropped its fake-JWT setupAuth and is now public-routes only (authenticated a11y coverage was already covered correctly by e2e/accessibility.spec.ts). Deleted: components/ProductShowcase.tsx (unused), e2e/industry-onboarding.spec.ts (six perma-skipped describes inflating spec counts), lighthouserc.js (footgun parallel to lighthouserc.json).',
       },
     ],
   },
@@ -494,26 +494,26 @@ const releases: ChangelogRelease[] = [
     codename: 'Compliance Foundations',
     date: '2026-05-10',
     summary:
-      'Per-control evaluator infrastructure for SOC 2 and ISO 27001 — typed registry, expanded framework packs to standard control counts, twelve working SOC 2 evaluators, real PDF report engine with brand typography, and a production-database bootstrap that finally landed eleven outstanding April migrations.',
+      'Per-control evaluator infrastructure for SOC 2 and ISO 27001, typed registry, expanded framework packs to standard control counts, twelve working SOC 2 evaluators, real PDF report engine with brand typography, and a production-database bootstrap that finally landed eleven outstanding April migrations.',
     isMajor: true,
     changes: [
       {
         text: 'Per-control evaluator registry and contract shipped',
         tag: 'feature',
         detail:
-          'lib/compliance/evaluators/index.ts plus the ControlEvaluator interface. Each evaluator is a pure function (orgId, db) => ControlResult with status (pass | fail | partial | not_evaluated), confidence derived from data completeness rather than hardcoded, evidenceRefs the auditor can verify, and gaps describing what is missing. Returns not_evaluated when primary data sources are absent instead of guessing — an honest pass is worth more than an unjustified one.',
+          'lib/compliance/evaluators/index.ts plus the ControlEvaluator interface. Each evaluator is a pure function (orgId, db) => ControlResult with status (pass | fail | partial | not_evaluated), confidence derived from data completeness rather than hardcoded, evidenceRefs the auditor can verify, and gaps describing what is missing. Returns not_evaluated when primary data sources are absent instead of guessing, an honest pass is worth more than an unjustified one.',
       },
       {
         text: 'Framework packs expanded to standard control counts',
         tag: 'feature',
         detail:
-          'framework-packs/soc2-tsc.json now lists all 64 SOC 2 Trust Services Criteria (was 11). framework-packs/iso27001-2022.json covers all 93 Annex A controls in the 2022 edition (was 10). Controls without an evaluator surface as "Not Assessed" in the dashboard rather than silently passing — auditors see the real denominator.',
+          'framework-packs/soc2-tsc.json now lists all 64 SOC 2 Trust Services Criteria (was 11). framework-packs/iso27001-2022.json covers all 93 Annex A controls in the 2022 edition (was 10). Controls without an evaluator surface as "Not Assessed" in the dashboard rather than silently passing, auditors see the real denominator.',
       },
       {
         text: 'Twelve SOC 2 evaluators implemented across three batches',
         tag: 'feature',
         detail:
-          'Batch A (access controls): CC6.1, CC6.2, CC6.3, CC6.6, CC6.7. Batch B (logging and monitoring): CC7.1, CC7.2, CC7.3, CC7.4. Batch C (change management + supporting): CC8.1, CC2.1, CC3.1. 64 evaluator unit tests cover pass / fail / partial / not_evaluated for each control. Two evaluators carry low-confidence string-heuristic fallbacks (CC6.3 audit metadata, CC7.4 actor attribution) — flagged in code comments and tracked in issue #45 alongside the four other schema gaps surfaced during this work.',
+          'Batch A (access controls): CC6.1, CC6.2, CC6.3, CC6.6, CC6.7. Batch B (logging and monitoring): CC7.1, CC7.2, CC7.3, CC7.4. Batch C (change management + supporting): CC8.1, CC2.1, CC3.1. 64 evaluator unit tests cover pass / fail / partial / not_evaluated for each control. Two evaluators carry low-confidence string-heuristic fallbacks (CC6.3 audit metadata, CC7.4 actor attribution), flagged in code comments and tracked in issue #45 alongside the four other schema gaps surfaced during this work.',
       },
       {
         text: 'Legacy control IDs migrated to standard references',
@@ -525,25 +525,25 @@ const releases: ChangelogRelease[] = [
         text: 'Real PDF export engine for board pack, posture, and audit extracts',
         tag: 'feature',
         detail:
-          '@react-pdf/renderer with three templates under lib/exports/pdf/templates/. Auth-gated route at app/api/exports/pdf/route.ts. Coexists with the existing jsPDF callers — no migration required, both work. lib/exports/formatters.ts no longer carries the "binary formats are deliberately not implemented" caveat that was blocking the board-pack PDF claim.',
+          '@react-pdf/renderer with three templates under lib/exports/pdf/templates/. Auth-gated route at app/api/exports/pdf/route.ts. Coexists with the existing jsPDF callers, no migration required, both work. lib/exports/formatters.ts no longer carries the "binary formats are deliberately not implemented" caveat that was blocking the board-pack PDF claim.',
       },
       {
         text: 'Inter and Sora fonts embedded in generated PDFs',
         tag: 'improvement',
         detail:
-          'Brand typography now matches on-screen. Loaded once at module load via jsdelivr-hosted Google Fonts: Inter at 400 / 500 / 600 / 700 and Sora at 600 / 700 / 800. PDF size grows from roughly 4 KB to 17 KB with embedded font subsets — an acceptable trade for visual continuity between the app and the documents auditors see.',
+          'Brand typography now matches on-screen. Loaded once at module load via jsdelivr-hosted Google Fonts: Inter at 400 / 500 / 600 / 700 and Sora at 600 / 700 / 800. PDF size grows from roughly 4 KB to 17 KB with embedded font subsets, an acceptable trade for visual continuity between the app and the documents auditors see.',
       },
       {
         text: 'Eleven outstanding migrations bootstrapped into production',
         tag: 'security',
         detail:
-          'The 20260402_* batch (auditor portal, care goals, NDIS line items, analytics snapshots, AI vector search, forms platform, investigations and CAPA, org groups, push tokens, search index, secure public views) had never been applied to the production Supabase project — tables existed only in the repo. Runtime degraded gracefully via lib/supabase/schema-compat.ts, which is why nobody noticed. After bootstrap: 179 public tables, 310 RLS policies across 148 tables, 590 indexes, pgvector and pg_trgm extensions enabled, and zero org_*/user_* tables without RLS.',
+          'The 20260402_* batch (auditor portal, care goals, NDIS line items, analytics snapshots, AI vector search, forms platform, investigations and CAPA, org groups, push tokens, search index, secure public views) had never been applied to the production Supabase project, tables existed only in the repo. Runtime degraded gracefully via lib/supabase/schema-compat.ts, which is why nobody noticed. After bootstrap: 179 public tables, 310 RLS policies across 148 tables, 590 indexes, pgvector and pg_trgm extensions enabled, and zero org_*/user_* tables without RLS.',
       },
       {
         text: 'Five typo classes repaired in source migrations',
         tag: 'fix',
         detail:
-          'organization_members and org_memberships (both non-existent tables; canonical is org_members), SELECT org_id FROM org_members (wrong column; canonical is organization_id), org_visits(assigned_to, scheduled_date) (wrong columns; the actual ones are staff_id and scheduled_start per 20260208_care_operations_modules.sql), and REFERENCES profiles(id) (conditional table; safer reference is auth.users(id)). Nine migration files patched. Fresh-DB bootstraps will no longer fail on these — verified by replaying the bundle against a clean Postgres 17.6 instance.',
+          'organization_members and org_memberships (both non-existent tables; canonical is org_members), SELECT org_id FROM org_members (wrong column; canonical is organization_id), org_visits(assigned_to, scheduled_date) (wrong columns; the actual ones are staff_id and scheduled_start per 20260208_care_operations_modules.sql), and REFERENCES profiles(id) (conditional table; safer reference is auth.users(id)). Nine migration files patched. Fresh-DB bootstraps will no longer fail on these, verified by replaying the bundle against a clean Postgres 17.6 instance.',
       },
     ],
   },
@@ -565,7 +565,7 @@ const releases: ChangelogRelease[] = [
         text: '44 px touch-target compliance across the high-traffic routes',
         tag: 'improvement',
         detail:
-          'Buttons, links, checkboxes, and radio inputs audited at iPhone 14 viewport across /app, /app/incidents, /app/care-plans, /app/participants, /app/staff-compliance, /app/forms, and /app/billing. Compliance asserted by e2e/mobile/touch-targets.spec.ts using getBoundingClientRect — every visible interactive control meets the WCAG 2.5.5 AAA size criterion on the audited surfaces.',
+          'Buttons, links, checkboxes, and radio inputs audited at iPhone 14 viewport across /app, /app/incidents, /app/care-plans, /app/participants, /app/staff-compliance, /app/forms, and /app/billing. Compliance asserted by e2e/mobile/touch-targets.spec.ts using getBoundingClientRect, every visible interactive control meets the WCAG 2.5.5 AAA size criterion on the audited surfaces.',
       },
       {
         text: 'Native keyboard ergonomics on every form',
@@ -595,7 +595,7 @@ const releases: ChangelogRelease[] = [
         text: 'Capacitor webview shim removed',
         tag: 'improvement',
         detail:
-          'The mobile/ directory contained a Capacitor project pointed at https://app.formaos.com.au — a webview-only app that App Store guideline 4.2 routinely rejects. mobile/SCOPE_DECISION.md records the two-track decision: Track 1 is responsive web in app/ (this release); Track 2 will be a narrowly-scoped native employee app, built fresh, when there is concrete customer demand.',
+          'The mobile/ directory contained a Capacitor project pointed at https://app.formaos.com.au, a webview-only app that App Store guideline 4.2 routinely rejects. mobile/SCOPE_DECISION.md records the two-track decision: Track 1 is responsive web in app/ (this release); Track 2 will be a narrowly-scoped native employee app, built fresh, when there is concrete customer demand.',
       },
     ],
   },
@@ -611,19 +611,19 @@ const releases: ChangelogRelease[] = [
         text: 'MFA challenge enforced at every login',
         tag: 'security',
         detail:
-          'lib/security/mfa-enforcement.ts had zero call sites despite a complete enrollment flow shipping months earlier — verify2FAToken was never consulted on the password sign-in path. The login flow at components/auth/SignInPageContent.tsx and the OAuth callback at app/auth/callback/route.ts now redirect to /auth/mfa-challenge whenever the account has TOTP enabled. New per-session gate keyed on the Supabase access-token session_id claim, with rate-limited verification at /api/auth/mfa-verify and audit events on every success and failure.',
+          'lib/security/mfa-enforcement.ts had zero call sites despite a complete enrollment flow shipping months earlier, verify2FAToken was never consulted on the password sign-in path. The login flow at components/auth/SignInPageContent.tsx and the OAuth callback at app/auth/callback/route.ts now redirect to /auth/mfa-challenge whenever the account has TOTP enabled. New per-session gate keyed on the Supabase access-token session_id claim, with rate-limited verification at /api/auth/mfa-verify and audit events on every success and failure.',
       },
       {
         text: 'Real row-level security on fourteen multi-tenant tables',
         tag: 'security',
         detail:
-          'Fourteen RLS policies across org_care_goals, org_medications, org_medication_administrations, org_ndis_line_items, auditor_access_tokens, auditor_activity_log, search_index, search_history, saved_searches, recent_items, org_analytics_snapshots, org_saved_reports, org_report_generations, and org_goal_progress_entries depended on current_setting(\'app.current_org_id\') — a GUC that is never set anywhere in the runtime. The predicates always evaluated to NULL, which RLS treats as "deny", so service-role calls (which bypass RLS) saw everything and authenticated calls saw nothing — no real isolation existed. Replaced with the canonical org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()) pattern and 56 symmetrical select / insert / update / delete policies. Tenant isolation now has a real defense beyond the application-layer .eq filter.',
+          'Fourteen RLS policies across org_care_goals, org_medications, org_medication_administrations, org_ndis_line_items, auditor_access_tokens, auditor_activity_log, search_index, search_history, saved_searches, recent_items, org_analytics_snapshots, org_saved_reports, org_report_generations, and org_goal_progress_entries depended on current_setting(\'app.current_org_id\'), a GUC that is never set anywhere in the runtime. The predicates always evaluated to NULL, which RLS treats as "deny", so service-role calls (which bypass RLS) saw everything and authenticated calls saw nothing, no real isolation existed. Replaced with the canonical org_id IN (SELECT organization_id FROM org_members WHERE user_id = auth.uid()) pattern and 56 symmetrical select / insert / update / delete policies. Tenant isolation now has a real defense beyond the application-layer .eq filter.',
       },
       {
         text: 'Edge auth verifies the JWT, not just cookie presence',
         tag: 'security',
         detail:
-          'proxy.ts:354-358 accepted any cookie matching sb-*-auth-token without verifying its contents — a forged cookie passed the gate and routes that did not themselves call getUser() became exposed. Replaced the cookie-name pattern with createServerClient + auth.getUser() at the edge, with bearer-token requests skipping the session check (route handlers validate the bearer themselves via authenticateV1Request or authenticateScimRequest).',
+          'proxy.ts:354-358 accepted any cookie matching sb-*-auth-token without verifying its contents, a forged cookie passed the gate and routes that did not themselves call getUser() became exposed. Replaced the cookie-name pattern with createServerClient + auth.getUser() at the edge, with bearer-token requests skipping the session check (route handlers validate the bearer themselves via authenticateV1Request or authenticateScimRequest).',
       },
       {
         text: 'CSRF protection default-on at middleware',
@@ -635,7 +635,7 @@ const releases: ChangelogRelease[] = [
         text: 'SAML hardened with strict InResponseTo and the missing SLO route',
         tag: 'security',
         detail:
-          'validateInResponseTo upgraded from ifPresent to always — the previous setting accepted IdP responses without an InResponseTo attribute, opening a downgrade vector for SP-initiated flows. Replay-protection cache now requires Redis in production and throws at boot if UPSTASH_REDIS_REST_URL is missing — the in-process Map fallback was useless across serverless instances. Added the missing /api/sso/saml/logout/[orgId] SLO callback that the metadata had been advertising with no handler.',
+          'validateInResponseTo upgraded from ifPresent to always, the previous setting accepted IdP responses without an InResponseTo attribute, opening a downgrade vector for SP-initiated flows. Replay-protection cache now requires Redis in production and throws at boot if UPSTASH_REDIS_REST_URL is missing, the in-process Map fallback was useless across serverless instances. Added the missing /api/sso/saml/logout/[orgId] SLO callback that the metadata had been advertising with no handler.',
       },
       {
         text: 'API keys auto-revoke when their creator loses admin rights',
@@ -665,37 +665,37 @@ const releases: ChangelogRelease[] = [
         text: 'Hard-coded production Stripe price IDs removed from source',
         tag: 'security',
         detail:
-          'lib/billing/plans.ts:24-26 carried three live Stripe price IDs as fallbacks — secret hygiene smell. Removed; production builds now fail closed via scripts/check-env.js when STRIPE_PRICE_FOUNDATION / GROWTH / SCALE are missing. The orphan lib/billing.ts (500 LoC, only imported by tests, with parallel implementations of createCheckoutSession and updateSubscriptionTier that did not ship) was deleted alongside its tests.',
+          'lib/billing/plans.ts:24-26 carried three live Stripe price IDs as fallbacks, secret hygiene smell. Removed; production builds now fail closed via scripts/check-env.js when STRIPE_PRICE_FOUNDATION / GROWTH / SCALE are missing. The orphan lib/billing.ts (500 LoC, only imported by tests, with parallel implementations of createCheckoutSession and updateSubscriptionTier that did not ship) was deleted alongside its tests.',
       },
       {
         text: 'Regulatory dashboards labelled experimental until real evaluators land',
         tag: 'improvement',
         detail:
-          'NQF, NSQHS, star-rating-readiness, and AML transaction-monitoring endpoints all matched org_tasks.title against keyword regexes for "compliance progress" — pattern matching against task names is not a regulatory assessment. Each response now carries experimental: true plus a notice field clarifying that the percentages are not certification evidence. Hidden from the default dashboard nav until per-area evaluators exist.',
+          'NQF, NSQHS, star-rating-readiness, and AML transaction-monitoring endpoints all matched org_tasks.title against keyword regexes for "compliance progress", pattern matching against task names is not a regulatory assessment. Each response now carries experimental: true plus a notice field clarifying that the percentages are not certification evidence. Hidden from the default dashboard nav until per-area evaluators exist.',
       },
       {
         text: 'AI assistant: fake confidence scores stripped',
         tag: 'improvement',
         detail:
-          'Twelve hardcoded confidence: 0.85 | 0.7 | … literals across lib/ai-assistant.ts removed. Confidence is now null and a grounded: false marker tells UI consumers the assistant is general compliance Q&A, not a RAG-grounded helper. The retrieval infrastructure (lib/ai/vector-store.ts, lib/ai/embeddings.ts) exists but is not wired in — that is a future workstream when AI usage is meaningful.',
+          'Twelve hardcoded confidence: 0.85 | 0.7 | … literals across lib/ai-assistant.ts removed. Confidence is now null and a grounded: false marker tells UI consumers the assistant is general compliance Q&A, not a RAG-grounded helper. The retrieval infrastructure (lib/ai/vector-store.ts, lib/ai/embeddings.ts) exists but is not wired in, that is a future workstream when AI usage is meaningful.',
       },
       {
         text: 'Trigger.dev placeholder removed; observability provider mounted',
         tag: 'improvement',
         detail:
-          'trigger.config.ts defaulted project to \'proj_local_placeholder\'; none of the 18 task files at trigger/ were dispatched from anywhere — Vercel crons ran their workloads inline. Removed the SDK and the directory entirely. New <ObservabilityProvider /> at app/layout.tsx finally calls posthog.init() at the React root (which had never happened before — analytics was silently dark in production). New GET /api/health/observability returns presence-booleans for Sentry / PostHog / OpenTelemetry / Langfuse so deploy gates fail loudly when keys are unset.',
+          'trigger.config.ts defaulted project to \'proj_local_placeholder\'; none of the 18 task files at trigger/ were dispatched from anywhere, Vercel crons ran their workloads inline. Removed the SDK and the directory entirely. New <ObservabilityProvider /> at app/layout.tsx finally calls posthog.init() at the React root (which had never happened before, analytics was silently dark in production). New GET /api/health/observability returns presence-booleans for Sentry / PostHog / OpenTelemetry / Langfuse so deploy gates fail loudly when keys are unset.',
       },
       {
         text: 'CI gates actually block merges',
         tag: 'improvement',
         detail:
-          'extended_quality_validation no longer runs continue-on-error: true — full E2E and performance checks are blocking again. ESLint ceiling tightened from --max-warnings 350 to 25, with a new lint-warning-ratchet.yml weekly cron that auto-PRs the ceiling lower as actuals improve. scripts/check-env.js is now strict in CI by default with CHECK_ENV_SKIP_IN_CI=1 as the explicit opt-out for runners without secrets. The "Extended Quality Validation" job no longer hides regressions behind a soft-fail.',
+          'extended_quality_validation no longer runs continue-on-error: true, full E2E and performance checks are blocking again. ESLint ceiling tightened from --max-warnings 350 to 25, with a new lint-warning-ratchet.yml weekly cron that auto-PRs the ceiling lower as actuals improve. scripts/check-env.js is now strict in CI by default with CHECK_ENV_SKIP_IN_CI=1 as the explicit opt-out for runners without secrets. The "Extended Quality Validation" job no longer hides regressions behind a soft-fail.',
       },
       {
         text: 'compliance-check cron paginated and bounded against the 30s timeout',
         tag: 'fix',
         detail:
-          'The daily org-iteration cron previously ran 5+ sequential queries per org with BATCH_SIZE=100 — easily 30 s+ at scale, hitting the Vercel function timeout. Now BATCH_SIZE=25, parallel via Promise.all across orgs in a batch, and a SOFT_DEADLINE_MS=50000 guard returns 200 { partial: true, orgsChecked } rather than being killed mid-write at the platform timeout.',
+          'The daily org-iteration cron previously ran 5+ sequential queries per org with BATCH_SIZE=100, easily 30 s+ at scale, hitting the Vercel function timeout. Now BATCH_SIZE=25, parallel via Promise.all across orgs in a batch, and a SOFT_DEADLINE_MS=50000 guard returns 200 { partial: true, orgsChecked } rather than being killed mid-write at the platform timeout.',
       },
     ],
   },
@@ -929,7 +929,7 @@ const releases: ChangelogRelease[] = [
         text: 'Pricing page parity with product capability',
         tag: 'improvement',
         detail:
-          'Added Audit log export and Framework evaluation reports bullets to the Foundation tier on /pricing — both already ship at that tier per the entitlement map.',
+          'Added Audit log export and Framework evaluation reports bullets to the Foundation tier on /pricing, both already ship at that tier per the entitlement map.',
       },
       {
         text: 'Trust page framework claims tightened',
@@ -948,7 +948,7 @@ const releases: ChangelogRelease[] = [
     isMajor: true,
     changes: [
       {
-        text: '100x homepage upgrade — social proof, section consolidation, and visual refresh',
+        text: '100x homepage upgrade, social proof, section consolidation, and visual refresh',
         tag: 'feature',
         detail:
           'Complete homepage redesign with bento grid security command center, visual-first industry accordions with stat cards, premium footer with CTA section, and consolidated trust signals. Every section upgraded to enterprise-grade visual fidelity.',
@@ -988,13 +988,13 @@ const releases: ChangelogRelease[] = [
     isMajor: true,
     changes: [
       {
-        text: 'Full product maturity sprint — billing, emails, onboarding, security, monitoring',
+        text: 'Full product maturity sprint, billing, emails, onboarding, security, monitoring',
         tag: 'feature',
         detail:
           'Comprehensive infrastructure buildout: Stripe billing integration with subscription management, transactional email system, guided onboarding flow, security headers and CSP policies, error monitoring with Sentry, and admin plan-change governance.',
       },
       {
-        text: 'Comprehensive SEO engine — metadata, structured data, IndexNow, OG images',
+        text: 'Comprehensive SEO engine, metadata, structured data, IndexNow, OG images',
         tag: 'feature',
         detail:
           'Full SEO overhaul across all marketing pages: dynamic metadata generation, JSON-LD structured data for organization and products, IndexNow integration for Bing instant indexing, auto-generated OG images, and robots.txt optimization.',
@@ -1235,7 +1235,7 @@ const releases: ChangelogRelease[] = [
         text: 'Integration marketplace UI',
         tag: 'integration',
         detail:
-          'Categorised marketplace surface for the integrations currently shipping (Slack, Microsoft Teams, Jira, Azure AD SSO, Google Workspace, and custom webhooks). One-click install with configuration wizard. Connectors for AWS, Azure, GCP, Okta, Qualys, Tenable, HRIS systems are on the roadmap — not in this release.',
+          'Categorised marketplace surface for the integrations currently shipping (Slack, Microsoft Teams, Jira, Azure AD SSO, Google Workspace, and custom webhooks). One-click install with configuration wizard. Connectors for AWS, Azure, GCP, Okta, Qualys, Tenable, HRIS systems are on the roadmap, not in this release.',
       },
       {
         text: 'Enhanced audit trail with advanced filtering and export',
@@ -2674,7 +2674,7 @@ function ReleaseTimelineVisual() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               Release Cadence
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-5">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-5">
               Shipping{' '}
               <span className="text-foreground">
                 every month
@@ -3184,7 +3184,7 @@ const milestones = [
     title: 'Foundation Audit',
     date: 'May 2026',
     description:
-      'v4.0 Foundation Audit: closed seven blockers and thirteen high-severity findings — real row-level security on fourteen multi-tenant tables, MFA enforced at login, signed trust packets, default-on CSRF, hardened SAML, AUD/GST checkout, and CI gates that actually block merges.',
+      'v4.0 Foundation Audit: closed seven blockers and thirteen high-severity findings, real row-level security on fourteen multi-tenant tables, MFA enforced at login, signed trust packets, default-on CSRF, hardened SAML, AUD/GST checkout, and CI gates that actually block merges.',
     accentRgb: '148,163,184',
   },
   {
@@ -3210,7 +3210,7 @@ function MilestonesSection() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               Key Milestones
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
               The journey from{' '}
               <span className="text-foreground">
                 Genesis to Horizon
@@ -3355,7 +3355,7 @@ function SubscribeCTA() {
                 <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Stay Updated
                 </p>
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+                <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                   Never miss a{' '}
                   <span className="text-foreground">
                     release
@@ -3620,7 +3620,7 @@ export default function ChangelogPageContent() {
               range={[0, 0.3]}
               className="text-center mb-6"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+              <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
                 Release{' '}
                 <span className="text-foreground">
                   timeline
