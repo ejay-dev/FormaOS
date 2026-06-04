@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionChoreography } from '@/components/motion/SectionChoreography';
-import { SectionMedia } from '@/components/marketing/SectionMedia';
 
 const questionnaireFastLane = [
   {
@@ -42,9 +41,8 @@ export function QuestionnaireAccelerator() {
     <>
       {/* Security Questionnaire Fast-Lane */}
       <section className="relative isolate overflow-hidden mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-        <SectionMedia src="/marketing-media/trust-packet.jpg" objectPosition="50% 40%" opacity={0.6} scrim="center" />
         <ScrollReveal variant="depthScale" range={[0, 0.35]}>
-          <div className="rounded-2xl border border-white/[0.08] bg-slate-950/60 p-7 backdrop-blur-sm lg:p-10">
+          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 lg:p-10">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div>
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300">
@@ -66,7 +64,7 @@ export function QuestionnaireAccelerator() {
 
             <SectionChoreography pattern="alternating" stagger={0.05} className="mt-6 grid gap-3 md:grid-cols-3">
               {questionnaireFastLane.map((item) => (
-                  <article key={item.title} className="rounded-xl border border-white/[0.08] backdrop-blur-xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-4">
+                  <article key={item.title} className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4">
                     <p className="text-sm font-semibold text-slate-100">
                       {item.title}
                     </p>

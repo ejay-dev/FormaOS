@@ -19,14 +19,14 @@ const PILLARS = [
     eyebrow: 'R4 · sigstore rekor',
     title: 'External anchor at 05:30 UTC',
     body:
-      "Daily, each org's chain top is submitted to Sigstore Rekor — the Linux Foundation transparency log used for signed open-source releases. The submission is an RFC 6962-style Merkle entry. An auditor can verify the timestamp of any event without trusting FormaOS, because the proof goes through Linux Foundation infrastructure.",
+      "Daily, each org's chain top is submitted to Sigstore Rekor, the Linux Foundation transparency log used for signed open-source releases. The submission is an RFC 6962-style Merkle entry. An auditor can verify the timestamp of any event without trusting FormaOS, because the proof goes through Linux Foundation infrastructure.",
   },
   {
     icon: ShieldCheck,
     eyebrow: 'postgres · rls',
     title: 'Append-only at the database',
     body:
-      'A BEFORE UPDATE OR DELETE trigger rejects any mutation of audit rows, backed by restrictive RLS deny policies. A platform admin with service-role credentials — which bypasses RLS — is still stopped by the trigger. The rule is enforced by Postgres, not by application code, so an app-level bypass is not a vector.',
+      'A BEFORE UPDATE OR DELETE trigger rejects any mutation of audit rows, backed by restrictive RLS deny policies. A platform admin with service-role credentials (which bypasses RLS) is still stopped by the trigger. The rule is enforced by Postgres, not by application code, so an app-level bypass is not a vector.',
   },
 ] as const;
 

@@ -19,7 +19,7 @@ const navCards = [
     icon: FileLock2,
     title: 'Framework Coverage',
     description:
-      'ISO 27001, SOC 2, HIPAA, GDPR, PCI DSS, NIST CSF, and more — mapped controls that become executable work with contextual evidence. NDIS and NSQHS framework packs in development.',
+      'ISO 27001, SOC 2, HIPAA, GDPR, PCI DSS, NIST CSF, and more, mapped controls that become executable work with contextual evidence. NDIS and NSQHS framework packs in development.',
     linkText: 'View coverage',
   },
   {
@@ -27,7 +27,7 @@ const navCards = [
     icon: CheckCircle2,
     title: 'Compare Platforms',
     description:
-      'Compare FormaOS against Ideagen Policy Logic, Riskware, 6clicks, and HealthMetrics — evaluate the operational execution difference for AU care, healthcare, and regulated industries.',
+      'Compare FormaOS against Ideagen Policy Logic, Riskware, 6clicks, and HealthMetrics. Evaluate the operational execution difference for AU care, healthcare, and regulated industries.',
     linkText: 'See comparisons',
   },
   {
@@ -52,12 +52,12 @@ const assuranceModules = [
   {
     title: 'Cryptographic audit chain',
     detail:
-      "Each org's audit log is HMAC-chained row-by-row and the chain top is submitted daily at 05:30 UTC to Sigstore Rekor — the Linux Foundation transparency log used for signed open-source releases. Append-only is enforced at the database layer by an immutability trigger and RLS deny policies, not application code. An auditor can verify the timestamp of any event without trusting us.",
+      "Each org's audit log is HMAC-chained row-by-row and the chain top is submitted daily at 05:30 UTC to Sigstore Rekor, the Linux Foundation transparency log used for signed open-source releases. Append-only is enforced at the database layer by an immutability trigger and RLS deny policies, not application code. An auditor can verify the timestamp of any event without trusting us.",
   },
   {
     title: 'Live compliance posture',
     detail:
-      'Share real-time framework-level posture snapshots - control coverage, drift alerts, and evidence readiness - with auditors and enterprise buyers.',
+      'Share real-time framework-level posture snapshots (control coverage, drift alerts, and evidence readiness) with auditors and enterprise buyers.',
   },
   {
     title: 'Security questionnaire acceleration',
@@ -67,7 +67,7 @@ const assuranceModules = [
   {
     title: 'Controlled document access',
     detail:
-      'Grant time-bound, auditable access to policies, controls, certification artifacts, and evidence bundles - with a traceable access log for every view.',
+      'Grant time-bound, auditable access to policies, controls, certification artifacts, and evidence bundles, with a traceable access log for every view.',
   },
 ];
 
