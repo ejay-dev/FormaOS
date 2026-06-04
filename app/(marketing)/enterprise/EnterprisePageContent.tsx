@@ -1,12 +1,13 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   motion,
   useScroll,
   useTransform,
   AnimatePresence,
   useInView,
+  useReducedMotion,
 } from 'framer-motion';
 import Link from 'next/link';
 import {
@@ -737,96 +738,192 @@ function SecurityArchitecture() {
             description="Every layer independently secured, monitored, and audited, because enterprise compliance demands defense in depth."
           />
 
-          <div className="relative space-y-3">
-            {/* Vertical line */}
-            <div className="absolute left-6 top-6 bottom-6 w-px bg-gradient-to-b from-white/20 via-white/10 to-white/20 hidden sm:block" />
-
-            {securityLayers.map((layer, i) => {
-              const Icon = layer.icon;
-              return (
-                <ScrollReveal
-                  key={layer.name}
-                  variant="fadeUp"
-                  range={[0, 0.3]}
-                >
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      delay: i * 0.08,
-                      duration: 0.5,
-                      ease: EASE_OUT_EXPO,
-                    }}
-                    className="group relative rounded-2xl border border-white/[0.06] bg-white/[0.02]
-                      hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
-                    style={{ marginLeft: `${i * 12}px` }}
-                  >
-                    <div
-                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                      style={{
-                        background: `radial-gradient(ellipse at 0% 50%, rgba(${layer.colorRgb}, 0.05), transparent 60%)`,
-                      }}
-                    />
-
-                    <div className="relative p-5 sm:p-6">
-                      <div className="flex items-start gap-4 mb-3">
-                        <div className="relative">
-                          <div
-                            className="w-10 h-10 rounded-xl border flex items-center justify-center shrink-0"
-                            style={{
-                              borderColor: `rgba(${layer.colorRgb}, 0.2)`,
-                              backgroundColor: `rgba(${layer.colorRgb}, 0.08)`,
-                            }}
-                          >
-                            <Icon
-                              className="w-5 h-5"
-                              style={{
-                                color: `rgba(${layer.colorRgb}, 0.85)`,
-                              }}
-                            />
-                          </div>
-                          <span className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-canvas-900 border border-white/[0.1] flex items-center justify-center text-[10px] font-bold text-slate-400">
-                            {i + 1}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-base font-semibold text-white mb-1">
-                            {layer.name}
-                          </h3>
-                          <p className="text-sm text-slate-400 leading-relaxed">
-                            {layer.description}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2 sm:ml-14">
-                        {layer.controls.map((control, ci) => (
-                          <div
-                            key={control}
-                            className="flex items-center gap-2"
-                          >
-                            <CheckCircle2
-                              className="w-3 h-3 shrink-0"
-                              style={{
-                                color: `rgba(${layer.colorRgb}, 0.6)`,
-                              }}
-                            />
-                            <span className="text-xs text-slate-300">
-                              {control}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                </ScrollReveal>
-              );
-            })}
-          </div>
+          <DefenseFlow />
         </div>
       </section>
     </DeferredSection>
+  );
+}
+
+/* ─── Interactive defense-in-depth flow ───────────────────────
+   Trace a request through all five gates, or attempt a bypass and watch
+   it get stopped at the first one — "no bypass path" demonstrated, not
+   asserted. Reuses the securityLayers data. */
+
+type FlowMode = 'idle' | 'trace' | 'bypass';
+
+function DefenseFlow() {
+  const reduce = useReducedMotion();
+  const [mode, setMode] = useState<FlowMode>('idle');
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    if (mode !== 'trace' || reduce) {
+      if (mode === 'trace' && reduce) setStep(securityLayers.length);
+      return;
+    }
+    if (step >= securityLayers.length) return;
+    const t = setTimeout(() => setStep((s) => s + 1), 620);
+    return () => clearTimeout(t);
+  }, [mode, step, reduce]);
+
+  const done = mode === 'trace' && step >= securityLayers.length;
+  const trace = () => {
+    setStep(0);
+    setMode('trace');
+  };
+  const bypass = () => {
+    setStep(0);
+    setMode('bypass');
+  };
+  const reset = () => {
+    setStep(0);
+    setMode('idle');
+  };
+
+  const gateState = (i: number): 'passed' | 'active' | 'blocked' | 'skipped' | 'pending' => {
+    if (mode === 'bypass') return i === 0 ? 'blocked' : 'skipped';
+    if (mode === 'trace') {
+      if (i < step) return 'passed';
+      if (i === step && !done) return 'active';
+      if (done) return 'passed';
+      return 'pending';
+    }
+    return 'pending';
+  };
+
+  const status =
+    mode === 'idle'
+      ? 'Every request must clear all five layers in order. Trace one, or try to skip the gates.'
+      : mode === 'bypass'
+        ? 'Blocked at Application Security. There is no path around the gates, so the request never reaches your data.'
+        : done
+          ? 'Request served and sealed to the immutable audit log. Every gate left a record.'
+          : `Checking layer ${step + 1} of ${securityLayers.length}: ${securityLayers[Math.min(step, securityLayers.length - 1)].name}…`;
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.02]">
+      {/* Controls + status */}
+      <div className="flex flex-col gap-3 border-b border-white/[0.08] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <p
+          className={`text-sm leading-relaxed ${
+            mode === 'bypass' ? 'text-rose-300' : done ? 'text-emerald-300/90' : 'text-slate-300'
+          }`}
+        >
+          {status}
+        </p>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={trace}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-white transition hover:border-white/25 hover:bg-white/[0.08]"
+          >
+            Trace a request
+          </button>
+          <button
+            type="button"
+            onClick={bypass}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:border-rose-400/30 hover:text-rose-300"
+          >
+            Attempt bypass
+          </button>
+          {mode !== 'idle' ? (
+            <button
+              type="button"
+              onClick={reset}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-medium text-slate-500 transition hover:text-white"
+            >
+              Reset
+            </button>
+          ) : null}
+        </div>
+      </div>
+
+      {/* Gates */}
+      <ol className="relative">
+        {/* connecting rail */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-8 left-[2.35rem] top-8 w-px bg-white/[0.08]"
+        />
+        {securityLayers.map((layer, i) => {
+          const Icon = layer.icon;
+          const state = gateState(i);
+          const tone =
+            state === 'passed'
+              ? 'border-emerald-400/30 bg-emerald-400/[0.06] text-emerald-400'
+              : state === 'active'
+                ? 'border-white/40 bg-white/[0.1] text-white'
+                : state === 'blocked'
+                  ? 'border-rose-400/40 bg-rose-400/[0.08] text-rose-300'
+                  : 'border-white/[0.1] bg-white/[0.03] text-slate-400';
+          return (
+            <li
+              key={layer.name}
+              className={`relative flex gap-4 px-5 py-4 transition-colors ${
+                i > 0 ? 'border-t border-white/[0.05]' : ''
+              } ${state === 'skipped' ? 'opacity-40' : ''} ${
+                state === 'blocked' ? 'bg-rose-500/[0.04]' : ''
+              }`}
+            >
+              {/* gate node */}
+              <div className="relative z-10">
+                <motion.span
+                  animate={
+                    state === 'active' && !reduce
+                      ? { scale: [1, 1.12, 1] }
+                      : { scale: 1 }
+                  }
+                  transition={{ duration: 0.7, repeat: state === 'active' ? Infinity : 0 }}
+                  className={`flex h-9 w-9 items-center justify-center rounded-xl border ${tone}`}
+                >
+                  {state === 'passed' ? (
+                    <CheckCircle2 className="h-5 w-5" />
+                  ) : state === 'blocked' ? (
+                    <Icon className="h-4 w-4" />
+                  ) : (
+                    <Icon className="h-4 w-4" />
+                  )}
+                </motion.span>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] text-slate-600">
+                    L{i + 1}
+                  </span>
+                  <h3 className="text-sm font-semibold text-white">{layer.name}</h3>
+                  {state === 'blocked' ? (
+                    <span className="rounded bg-rose-400/10 px-1.5 text-[10px] font-semibold uppercase tracking-wider text-rose-300">
+                      Blocked
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-0.5 text-[13px] leading-relaxed text-slate-400">
+                  {layer.description}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                  {layer.controls.map((c) => (
+                    <span
+                      key={c}
+                      className="inline-flex items-center gap-1.5 text-[11px] text-slate-500"
+                    >
+                      <span className="h-1 w-1 rounded-full bg-slate-600" />
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+
+      {/* Outcome footer */}
+      <div className="border-t border-white/[0.08] bg-white/[0.015] px-5 py-3 text-[11px] text-slate-500">
+        Five independent layers · no single point of failure · no bypass path.
+      </div>
+    </div>
   );
 }
 
