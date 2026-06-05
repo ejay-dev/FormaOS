@@ -1,11 +1,14 @@
 'use client';
 
+import { useRef } from 'react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { Magnetic } from './Magnetic';
 
 /**
- * Hero with a mechanical, staggered entrance that plays ON MOUNT (not on
- * scroll) so the LCP headline always resolves visible. Each line rises and
- * un-blurs in sequence; the red period punches in last.
+ * Hero with a mechanical staggered entrance (on mount, so the LCP headline
+ * always resolves visible) + a pointer-reactive technical HUD: a red crosshair
+ * with live coordinates tracks the cursor and the exposed grid parallaxes
+ * slightly. Engineered, not glowy.
  */
 
 const container: Variants = {
@@ -17,18 +20,63 @@ const item: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
 
+const pad = (n: number) => String(Math.round(n)).padStart(4, '0');
+
 export function HeroIntro() {
   const reduce = useReducedMotion();
   const mv = reduce ? undefined : item;
+  const secRef = useRef<HTMLElement>(null);
+  const vRef = useRef<HTMLSpanElement>(null);
+  const hRef = useRef<HTMLSpanElement>(null);
+  const rRef = useRef<HTMLSpanElement>(null);
+  const hudRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  const onMove = (e: React.MouseEvent) => {
+    if (reduce || !secRef.current) return;
+    const rect = secRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    if (vRef.current) vRef.current.style.left = `${x}px`;
+    if (hRef.current) hRef.current.style.top = `${y}px`;
+    if (rRef.current) {
+      rRef.current.style.left = `${x}px`;
+      rRef.current.style.top = `${y}px`;
+      rRef.current.textContent = `X ${pad(x)}  Y ${pad(y)}`;
+    }
+    if (gridRef.current) {
+      const dx = (x / rect.width - 0.5) * -14;
+      const dy = (y / rect.height - 0.5) * -10;
+      gridRef.current.style.transform = `translate(${dx}px, ${dy}px)`;
+    }
+  };
+  const setHud = (on: boolean) => hudRef.current?.classList.toggle('is-on', on);
 
   return (
-    <section style={{ position: 'relative', overflow: 'hidden', borderBottom: '1.5px solid var(--line-2)' }}>
-      <div className="bru-cols" aria-hidden>
+    <section
+      ref={secRef}
+      style={{ position: 'relative', overflow: 'hidden', borderBottom: '1.5px solid var(--line-2)' }}
+      onMouseMove={onMove}
+      onMouseEnter={() => setHud(true)}
+      onMouseLeave={() => {
+        setHud(false);
+        if (gridRef.current) gridRef.current.style.transform = '';
+      }}
+    >
+      <div ref={gridRef} className="bru-cols" aria-hidden style={{ transition: 'transform 0.25s ease-out' }}>
         {Array.from({ length: 12 }).map((_, i) => <span key={i} />)}
       </div>
+
+      {/* pointer HUD */}
+      <div ref={hudRef} className="bru-hud" aria-hidden>
+        <span ref={vRef} className="bru-hud-vline" />
+        <span ref={hRef} className="bru-hud-hline" />
+        <span ref={rRef} className="bru-hud-read">X 0000  Y 0000</span>
+      </div>
+
       <motion.div
         className="bru-frame"
-        style={{ position: 'relative', paddingTop: 'clamp(3rem, 6vw, 5rem)', paddingBottom: 'clamp(2.5rem, 5vw, 4rem)' }}
+        style={{ position: 'relative', zIndex: 1, paddingTop: 'clamp(3rem, 6vw, 5rem)', paddingBottom: 'clamp(2.5rem, 5vw, 4rem)' }}
         variants={reduce ? undefined : container}
         initial={reduce ? undefined : 'hidden'}
         animate={reduce ? undefined : 'show'}
@@ -54,8 +102,12 @@ export function HeroIntro() {
         <div className="grid gap-x-8 gap-y-8 lg:grid-cols-12" style={{ marginTop: 'clamp(2.5rem, 4vw, 3.5rem)', alignItems: 'end' }}>
           <motion.div variants={mv} className="lg:col-span-6">
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <a href="/contact?type=compliance-plan" className="bru-btn bru-btn-red">Get Compliance Plan <span className="bru-arrow">→</span></a>
-              <a href="/contact?type=demo" className="bru-btn">Book Demo</a>
+              <Magnetic>
+                <a href="/contact?type=compliance-plan" className="bru-btn bru-btn-red">Get Compliance Plan <span className="bru-arrow">→</span></a>
+              </Magnetic>
+              <Magnetic strength={0.25}>
+                <a href="/contact?type=demo" className="bru-btn">Book Demo</a>
+              </Magnetic>
             </div>
             <p className="bru-mono" style={{ fontSize: 11.5, color: 'var(--ink-faint)', marginTop: 18, letterSpacing: '0.04em' }}>
               GUIDED ASSESSMENT · AU-HOSTED BY DEFAULT · EVIDENCE-BACKED WORKFLOWS

@@ -1,5 +1,6 @@
 import { Reveal } from './_components/Reveal';
-import { Ledger } from './_components/Ledger';
+import { Atmosphere } from './_components/Atmosphere';
+import { PostureSimulator } from './_components/PostureSimulator';
 import { Schematic } from './_components/Schematic';
 import { DashboardPreview } from './_components/DashboardPreview';
 import { Ticker } from './_components/Ticker';
@@ -126,6 +127,8 @@ const STATS = [
 export default function HomePocPage() {
   return (
     <main id="main-content">
+      <Atmosphere />
+
       {/* ========== MASTHEAD ========== */}
       <header className="bru-masthead">
         <div className="bru-frame">
@@ -186,21 +189,23 @@ export default function HomePocPage() {
 
       <hr className="bru-rule-strong" />
 
-      {/* ========== LIVE SYSTEM / LEDGER ========== */}
+      {/* ========== LIVE SYSTEM / INTERACTIVE SIMULATOR ========== */}
       <section className="bru-frame bru-section">
         <div className="bru-head">
           <div>
-            <span className="bru-eyebrow">Operating system architecture</span>
-            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 5vw, 3.8rem)', marginTop: 16 }}>
-              Not a repository. A live system.
+            <span className="bru-eyebrow bru-eyebrow-line">Operating system architecture</span>
+            <h2 className="bru-h2" style={{ fontSize: 'clamp(2rem, 5vw, 3.8rem)', marginTop: 18 }}>
+              Not a repository.<br />A live system.
             </h2>
           </div>
-          <p className="bru-body hidden lg:block" style={{ maxWidth: '34ch' }}>
-            Other tools store documents. FormaOS enforces the program: controls are gated,
-            ownership is structural, evidence is generated as teams operate.
+          <p className="bru-body hidden lg:block" style={{ maxWidth: '32ch' }}>
+            Other tools store documents. FormaOS enforces the program — so posture moves
+            the moment a control does. Try it: toggle controls and watch it recompute.
           </p>
         </div>
-        <Ledger />
+        <Reveal>
+          <PostureSimulator />
+        </Reveal>
       </section>
 
       <hr className="bru-rule-strong" />

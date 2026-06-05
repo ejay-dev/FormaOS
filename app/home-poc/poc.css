@@ -1535,3 +1535,144 @@
   height: 2px;
   background: var(--red);
 }
+
+/* ============================================================
+   INTERACTION + TEXTURE LAYER — make it feel alive, not just informative
+   ============================================================ */
+
+/* ---------- Filmic grain + scanline depth (fixed, subtle) ---------- */
+.bru-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: bru-grain-shift 0.6s steps(2) infinite;
+}
+@keyframes bru-grain-shift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-3%, 2%); }
+  100% { transform: translate(2%, -2%); }
+}
+.bru-scan {
+  position: fixed;
+  inset: 0;
+  z-index: 79;
+  pointer-events: none;
+  opacity: 0.4;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.18) 3px,
+    transparent 4px
+  );
+}
+
+/* ---------- Scroll progress ---------- */
+.bru-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--red);
+  z-index: 100;
+  transform-origin: left;
+  will-change: transform;
+}
+
+/* ---------- Hero pointer HUD (crosshair + coordinates) ---------- */
+.bru-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.bru-hud.is-on { opacity: 1; }
+.bru-hud-vline,
+.bru-hud-hline {
+  position: absolute;
+  background: color-mix(in srgb, var(--red) 55%, transparent);
+}
+.bru-hud-vline { top: 0; bottom: 0; width: 1px; }
+.bru-hud-hline { left: 0; right: 0; height: 1px; }
+.bru-hud-read {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--red);
+  transform: translate(12px, 12px);
+  white-space: nowrap;
+}
+
+/* ---------- Posture simulator (the interactive toy) ---------- */
+.sim {
+  display: grid;
+  grid-template-columns: 1fr 0.85fr;
+  border: 1px solid var(--line-2);
+}
+.sim-controls { border-right: 1px solid var(--line); padding: clamp(1.25rem, 2.4vw, 2rem); }
+.sim-grouphead {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 18px 0 10px;
+}
+.sim-grouphead:first-child { margin-top: 0; }
+.sim-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.sim-chip {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  padding: 8px 12px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--ink-dim);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease, transform 0.08s ease;
+  user-select: none;
+}
+.sim-chip:active { transform: scale(0.96); }
+.sim-chip .sim-box {
+  width: 9px; height: 9px; border: 1px solid var(--line-2); flex-shrink: 0;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+.sim-chip.is-on { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 45%, transparent); background: var(--bg-raise); }
+.sim-chip.is-on .sim-box { background: var(--ok); border-color: var(--ok); }
+.sim-chip.is-off .sim-box { border-color: color-mix(in srgb, var(--red) 55%, transparent); }
+.sim-actions { display: flex; gap: 10px; margin-top: 22px; }
+.sim-act {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 8px 12px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-dim); cursor: pointer;
+  transition: color 0.16s ease, border-color 0.16s ease;
+}
+.sim-act:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+.sim-readout { padding: clamp(1.25rem, 2.4vw, 2rem); display: flex; flex-direction: column; }
+.sim-gaugewrap { display: flex; align-items: center; gap: 18px; }
+.sim-score {
+  font-family: var(--sans); font-weight: 900; font-variation-settings: 'wght' 900, 'wdth' 108;
+  font-size: clamp(2.6rem, 5vw, 4rem); line-height: 0.85; letter-spacing: -0.02em;
+}
+.sim-statline { display: flex; gap: 10px; margin-top: 20px; }
+.sim-stat { flex: 1; border: 1px solid var(--line); padding: 12px; }
+.sim-stat-v { font-family: var(--sans); font-weight: 800; font-size: 22px; }
+.sim-stat-l { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin-top: 6px; }
+.sim-fw { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line); font-size: 12.5px; }
+.sim-fwbar { width: 80px; height: 5px; background: var(--line); flex-shrink: 0; }
+.sim-fwbar span { display: block; height: 100%; background: var(--ok); transition: width 0.5s cubic-bezier(0.22,1,0.36,1); }
+.sim-hint { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.05em; color: var(--ink-faint); margin-top: auto; padding-top: 18px; }
+@media (max-width: 820px) {
+  .sim { grid-template-columns: 1fr; }
+  .sim-controls { border-right: 0; border-bottom: 1px solid var(--line); }
+}
