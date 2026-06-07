@@ -38,10 +38,10 @@ const colorMap: Record<string, { border: string; bg: string; text: string; glow:
     glow: 'from-cyan-500/20',
   },
   violet: {
-    border: 'border-violet-500/30',
-    bg: 'bg-violet-500/10',
-    text: 'text-violet-400',
-    glow: 'from-violet-500/20',
+    border: 'border-slate-500/30',
+    bg: 'bg-slate-500/10',
+    text: 'text-slate-300',
+    glow: 'from-slate-500/20',
   },
   emerald: {
     border: 'border-emerald-500/30',

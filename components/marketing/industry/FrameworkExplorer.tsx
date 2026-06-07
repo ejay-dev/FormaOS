@@ -38,7 +38,7 @@ export function FrameworkExplorer({ headline, description, frameworks }: Framewo
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-violet-400 mb-6">
+          <span className="inline-flex items-center gap-2 rounded-full border border-slate-500/20 bg-slate-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-6">
             <BookOpen className="h-3.5 w-3.5" />
             Framework Coverage
           </span>

@@ -70,7 +70,7 @@ function ComplianceTrendChart() {
           cy={p.y}
           r="2.5"
           fill="#0b1022"
-          stroke={i === data.length - 1 ? '#a1a1aa' : '#3b82f6'}
+          stroke={i === data.length - 1 ? '#a1a1aa' : '#64748b'}
           strokeWidth="1.5"
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -122,7 +122,7 @@ function ComplianceTrendChart() {
       </motion.text>
       <defs>
         <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#3b82f6" />
+          <stop offset="0%" stopColor="#64748b" />
           <stop offset="100%" stopColor="#a1a1aa" />
         </linearGradient>
         <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -140,7 +140,7 @@ export default function DefendScreen() {
       {/* Report Bundle Builder */}
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
-          <FileText className="h-3 w-3 text-pink-400" />
+          <FileText className="h-3 w-3 text-slate-400" />
           <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Generating Report Pack</span>
           <motion.span
             className="ml-auto text-[9px] text-muted-foreground/60"
@@ -169,8 +169,8 @@ export default function DefendScreen() {
                   animate={{
                     backgroundColor: [
                       'rgba(255,255,255,0.04)',
-                      'rgba(236,72,153,0.15)',
-                      'rgba(16,185,129,0.15)',
+                      'rgba(148,163,184,0.15)',
+                      'rgba(148,163,184,0.15)',
                     ],
                   }}
                   transition={{ delay: genDelay, duration: doneDelay - genDelay, times: [0, 0.3, 1] }}
@@ -180,7 +180,7 @@ export default function DefendScreen() {
                     animate={{ opacity: [0, 1, 0] }}
                     transition={{ delay: genDelay, duration: 1.0, times: [0, 0.2, 1] }}
                   >
-                    <Loader2 className="h-2.5 w-2.5 text-pink-400 animate-spin" />
+                    <Loader2 className="h-2.5 w-2.5 text-slate-400 animate-spin" />
                   </motion.div>
                   <motion.div
                     className="absolute"
@@ -224,7 +224,7 @@ export default function DefendScreen() {
         animate={{
           opacity: 1,
           y: 0,
-          borderColor: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.06)', 'rgba(16,185,129,0.25)'],
+          borderColor: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.06)', 'rgba(148,163,184,0.25)'],
         }}
         transition={{ delay: 5.0, duration: 0.8, ease: easing.signature }}
       >

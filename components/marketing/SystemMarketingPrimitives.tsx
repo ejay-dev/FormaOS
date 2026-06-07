@@ -8,7 +8,7 @@ const glowByVariant: Record<SystemSectionVariant, string> = {
   cyan:
     'bg-[radial-gradient(circle_at_16%_10%,rgba(161,161,170,0.13),transparent_30%),radial-gradient(circle_at_82%_74%,rgba(113,113,122,0.08),transparent_34%)]',
   emerald:
-    'bg-[radial-gradient(circle_at_18%_12%,rgba(52,211,153,0.12),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(113,113,122,0.08),transparent_34%)]',
+    'bg-[radial-gradient(circle_at_18%_12%,rgba(148,163,184,0.12),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(113,113,122,0.08),transparent_34%)]',
   amber:
     'bg-[radial-gradient(circle_at_18%_12%,rgba(245,158,11,0.1),transparent_30%),radial-gradient(circle_at_78%_74%,rgba(113,113,122,0.07),transparent_34%)]',
   red:
@@ -16,7 +16,7 @@ const glowByVariant: Record<SystemSectionVariant, string> = {
 };
 
 const statusTone: Record<StatusTone, string> = {
-  valid: 'border-emerald-300/25 bg-emerald-300/[0.09] text-emerald-100 shadow-[0_0_22px_rgba(52,211,153,0.12)]',
+  valid: 'border-emerald-300/25 bg-emerald-300/[0.09] text-emerald-100 shadow-[0_0_22px_rgba(148,163,184,0.12)]',
   warning: 'border-amber-300/25 bg-amber-300/[0.09] text-amber-100 shadow-[0_0_22px_rgba(245,158,11,0.11)]',
   blocked: 'border-red-300/30 bg-red-500/[0.1] text-red-100 shadow-[0_0_28px_rgba(248,113,113,0.16)]',
   live: 'border-cyan-300/25 bg-cyan-300/[0.09] text-cyan-100',

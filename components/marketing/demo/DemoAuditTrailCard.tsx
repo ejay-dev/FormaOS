@@ -21,9 +21,9 @@ interface AuditEntry {
 
 const typeConfig: Record<string, { color: string; icon: React.ComponentType<{ className?: string }> }> = {
   policy: { color: 'text-cyan-400 bg-cyan-500/15', icon: FileText },
-  evidence: { color: 'text-blue-400 bg-blue-500/15', icon: Upload },
+  evidence: { color: 'text-slate-400 bg-slate-500/15', icon: Upload },
   task: { color: 'text-emerald-400 bg-emerald-500/15', icon: CheckSquare },
-  user: { color: 'text-purple-400 bg-purple-500/15', icon: Users },
+  user: { color: 'text-slate-300 bg-slate-400/15', icon: Users },
   system: { color: 'text-muted-foreground bg-slate-500/15', icon: Settings },
   compliance: { color: 'text-amber-400 bg-amber-500/15', icon: Shield },
 };

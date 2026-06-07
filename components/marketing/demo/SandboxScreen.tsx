@@ -53,7 +53,7 @@ function AvatarBadge({ name }: { name: string }) {
 function TaskStatusIcon({ status }: { status: string }) {
   switch (status) {
     case 'completed': return <Check className="h-2.5 w-2.5 text-emerald-400" />;
-    case 'in-progress': return <Clock className="h-2.5 w-2.5 text-blue-400" />;
+    case 'in-progress': return <Clock className="h-2.5 w-2.5 text-slate-400" />;
     case 'overdue': return <AlertTriangle className="h-2.5 w-2.5 text-red-400" />;
     default: return <Circle className="h-2.5 w-2.5 text-muted-foreground/60" />;
   }
@@ -139,7 +139,7 @@ export default function SandboxScreen({ activePhase }: SandboxScreenProps) {
               trackDemoEvent({ type: 'demo_drawer_opened', drawer: 'workflow', itemId: '' });
               setDrawer({ type: 'workflow' });
             }}
-            className="flex items-center gap-1 rounded-md bg-blue-500/10 border border-blue-500/20 px-2 py-1 text-[9px] text-blue-300 font-medium hover:bg-blue-500/20 transition-colors"
+            className="flex items-center gap-1 rounded-md bg-slate-500/10 border border-slate-500/20 px-2 py-1 text-[9px] text-slate-300 font-medium hover:bg-slate-500/20 transition-colors"
           >
             <Zap className="h-2.5 w-2.5" /> Triggers
           </button>
@@ -252,7 +252,7 @@ function OverviewPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantT
               <defs>
                 <linearGradient id="sandboxScoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#a1a1aa" />
-                  <stop offset="100%" stopColor="#3b82f6" />
+                  <stop offset="100%" stopColor="#64748b" />
                 </linearGradient>
               </defs>
             </svg>
@@ -342,7 +342,7 @@ function TasksPanel({ onOpenTask, completedTasks }: { onOpenTask: (t: TenantTask
     <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
       <motion.div variants={fadeUp} className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <CheckSquare className="h-4 w-4 text-blue-400" />
+          <CheckSquare className="h-4 w-4 text-slate-400" />
           <h2 className="text-sm font-semibold text-white">Tasks</h2>
           <span className="text-[10px] text-muted-foreground/60">{tasks.length} total</span>
         </div>
@@ -405,13 +405,13 @@ function EvidencePanel({ onOpenEvidence }: { onOpenEvidence: (e: TenantEvidence)
     <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
       <motion.div variants={fadeUp} className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Lock className="h-4 w-4 text-purple-400" />
+          <Lock className="h-4 w-4 text-slate-400" />
           <h2 className="text-sm font-semibold text-white">Evidence Vault</h2>
           <span className="text-[10px] text-muted-foreground/60">{items.length} items</span>
         </div>
         <button
           type="button"
-          className="flex items-center gap-1 rounded-md bg-purple-500/20 px-2 py-1 text-[10px] text-purple-300 border border-purple-500/30"
+          className="flex items-center gap-1 rounded-md bg-slate-500/20 px-2 py-1 text-[10px] text-slate-300 border border-slate-500/30"
         >
           <Upload className="h-2.5 w-2.5" /> Upload
         </button>
@@ -472,7 +472,7 @@ function ControlsPanel() {
   return (
     <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
       <motion.div variants={fadeUp} className="flex items-center gap-2">
-        <Eye className="h-4 w-4 text-purple-400" />
+        <Eye className="h-4 w-4 text-slate-400" />
         <h2 className="text-sm font-semibold text-white">Control Register</h2>
         <span className="text-[10px] text-muted-foreground/60">{controls.length} controls</span>
       </motion.div>
@@ -516,13 +516,13 @@ function ReportsPanel() {
     ready: { color: 'text-emerald-400', icon: <Check className="h-2.5 w-2.5 text-emerald-400" /> },
     generating: { color: 'text-amber-400', icon: <Clock className="h-2.5 w-2.5 text-amber-400 animate-spin" /> },
     draft: { color: 'text-muted-foreground', icon: <FileText className="h-2.5 w-2.5 text-muted-foreground" /> },
-    exported: { color: 'text-blue-400', icon: <Check className="h-2.5 w-2.5 text-blue-400" /> },
+    exported: { color: 'text-slate-400', icon: <Check className="h-2.5 w-2.5 text-slate-400" /> },
   };
 
   return (
     <motion.div variants={stagger} initial="hidden" animate="show" className="space-y-3">
       <motion.div variants={fadeUp} className="flex items-center gap-2">
-        <BarChart3 className="h-4 w-4 text-pink-400" />
+        <BarChart3 className="h-4 w-4 text-slate-400" />
         <h2 className="text-sm font-semibold text-white">Reports</h2>
         <span className="text-[10px] text-muted-foreground/60">{reports.length} reports</span>
       </motion.div>

@@ -45,9 +45,9 @@ const defaultSteps: LifecycleStep[] = [
     title: 'Under Review',
     detail: 'Assigned to Compliance Team for review',
     meta: '2 reviewers • Comments: 3 • Due: 21 Jan 2026',
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/15',
-    border: 'border-blue-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-500/15',
+    border: 'border-slate-500/20',
   },
   {
     id: 'approved',
@@ -78,9 +78,9 @@ const defaultSteps: LifecycleStep[] = [
     title: 'Staff Acknowledgment',
     detail: '47/52 staff acknowledged',
     meta: '90% completion • 5 reminders pending',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/15',
-    border: 'border-purple-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-500/15',
+    border: 'border-slate-500/20',
   },
 ];
 
@@ -93,7 +93,7 @@ interface DemoPolicyLifecycleProps {
 export default function DemoPolicyLifecycle({
   steps = defaultSteps,
   stepDuration = 2800,
-  glowColor = 'from-blue-500/15 to-purple-500/15',
+  glowColor = 'from-slate-500/15 to-slate-500/15',
 }: DemoPolicyLifecycleProps) {
   const prefersReducedMotion = useReducedMotion();
   const [activeStep, setActiveStep] = useState(0);
@@ -116,10 +116,10 @@ export default function DemoPolicyLifecycle({
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-1.5">
-            <FileText className="h-3.5 w-3.5 text-blue-400" />
+            <FileText className="h-3.5 w-3.5 text-slate-300" />
             <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Policy Lifecycle</span>
           </div>
-          <span className="rounded-full bg-blue-500/15 px-2 py-0.5 text-[9px] text-blue-400 font-medium">
+          <span className="rounded-full bg-slate-500/15 px-2 py-0.5 text-[9px] text-slate-300 font-medium">
             Version Controlled
           </span>
         </div>

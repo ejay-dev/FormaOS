@@ -35,7 +35,7 @@ export default function Image() {
             width: 40,
             height: 40,
             borderRadius: 10,
-            background: '#34d399',
+            background: '#cbd5e1',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -60,7 +60,7 @@ export default function Image() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         <div
           style={{
-            color: '#34d399',
+            color: '#94a3b8',
             fontSize: 14,
             fontWeight: 600,
             letterSpacing: '0.15em',
@@ -119,7 +119,7 @@ export default function Image() {
           height: 320,
           borderRadius: '50%',
           background:
-            'radial-gradient(circle, rgba(52,211,153,0.12) 0%, transparent 70%)',
+            'radial-gradient(circle, rgba(148,163,184,0.12) 0%, transparent 70%)',
         }}
       />
     </div>,

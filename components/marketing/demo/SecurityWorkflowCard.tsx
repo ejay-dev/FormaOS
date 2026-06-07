@@ -20,12 +20,12 @@ const securityLifecycle = [
     task: 'Quarterly Access Review',
     detail: 'Auto-captured from system audit log',
     meta: 'Source: IAM Provider • SHA-256 hashed',
-    color: 'text-cyan-400',
-    bg: 'bg-cyan-500/15',
-    border: 'border-cyan-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-400/15',
+    border: 'border-slate-400/20',
     statusIcon: Clock,
     statusLabel: 'Ingested',
-    statusColor: 'text-cyan-400',
+    statusColor: 'text-slate-300',
   },
   {
     id: 'encrypt',
@@ -35,12 +35,12 @@ const securityLifecycle = [
     task: 'Quarterly Access Review',
     detail: 'AES-256 encryption applied automatically',
     meta: 'Key rotation: Active • Compliance: SOC 2 CC6.1',
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/15',
-    border: 'border-blue-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-400/15',
+    border: 'border-slate-400/20',
     statusIcon: Lock,
     statusLabel: 'Secured',
-    statusColor: 'text-blue-400',
+    statusColor: 'text-slate-300',
   },
   {
     id: 'verify',
@@ -50,12 +50,12 @@ const securityLifecycle = [
     task: 'Quarterly Access Review',
     detail: 'Tamper-evident seal applied to evidence',
     meta: 'Hash chain intact • Immutable timestamp recorded',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/15',
-    border: 'border-purple-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-400/15',
+    border: 'border-slate-400/20',
     statusIcon: FileCheck,
     statusLabel: 'Verified',
-    statusColor: 'text-purple-400',
+    statusColor: 'text-slate-300',
   },
   {
     id: 'audit',
@@ -171,7 +171,7 @@ export default function SecurityWorkflowCard() {
                     </div>
                     <div className="flex items-center gap-3 text-[9px] text-muted-foreground/60">
                       <span className="flex items-center gap-1">
-                        <Lock className="h-2.5 w-2.5 text-blue-400" />
+                        <Lock className="h-2.5 w-2.5 text-slate-300" />
                         SOC 2 CC6.1
                       </span>
                       <span>ISO 27001 • A.9.2</span>

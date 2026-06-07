@@ -80,19 +80,19 @@ export function AutomationShowcase() {
   const ActiveIcon = activeExampleData.icon;
 
   return (
-    <section className="py-24 bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 relative overflow-hidden">
+    <section className="py-24 bg-gradient-to-br from-gray-50 via-slate-100 to-slate-50 relative overflow-hidden">
       {/* Background Decoration */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-slate-300 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-slate-400 rounded-full blur-3xl opacity-20"></div>
       </div>
 
       <div className="container mx-auto px-4 relative">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-purple-600" />
-            <span className="text-sm font-semibold text-purple-700">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-200 rounded-full mb-6">
+            <Sparkles className="w-4 h-4 text-slate-600" />
+            <span className="text-sm font-semibold text-slate-700">
               Intelligent Automation
             </span>
           </div>
@@ -116,9 +116,9 @@ export function AutomationShowcase() {
               const Icon = example.icon;
               const isActive = example.id === activeExample;
               const colorClasses = {
-                blue: isActive ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white',
+                blue: isActive ? 'border-slate-500 bg-slate-100' : 'border-gray-200 bg-white',
                 red: isActive ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white',
-                purple: isActive ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-white',
+                purple: isActive ? 'border-slate-500 bg-slate-100' : 'border-gray-200 bg-white',
                 orange: isActive ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white',
               }[example.color];
 
@@ -131,22 +131,22 @@ export function AutomationShowcase() {
                   <div
                     className={`w-12 h-12 rounded-lg flex items-center justify-center ${
                       example.color === 'blue'
-                        ? 'bg-blue-100'
+                        ? 'bg-slate-200'
                         : example.color === 'red'
                           ? 'bg-red-100'
                           : example.color === 'purple'
-                            ? 'bg-purple-100'
+                            ? 'bg-slate-200'
                             : 'bg-orange-100'
                     }`}
                   >
                     <Icon
                       className={`w-6 h-6 ${
                         example.color === 'blue'
-                          ? 'text-blue-600'
+                          ? 'text-slate-600'
                           : example.color === 'red'
                             ? 'text-red-600'
                             : example.color === 'purple'
-                              ? 'text-purple-600'
+                              ? 'text-slate-600'
                               : 'text-orange-600'
                       }`}
                     />
@@ -156,7 +156,7 @@ export function AutomationShowcase() {
                     <p className="text-sm text-gray-600">{example.description}</p>
                   </div>
                   {isActive && (
-                    <Zap className="w-5 h-5 text-purple-600 animate-pulse" />
+                    <Zap className="w-5 h-5 text-slate-600 animate-pulse" />
                   )}
                 </button>
               );
@@ -171,11 +171,11 @@ export function AutomationShowcase() {
                 <div
                   className={`w-16 h-16 rounded-2xl flex items-center justify-center ${
                     activeExampleData.color === 'blue'
-                      ? 'bg-gradient-to-br from-blue-500 to-blue-600'
+                      ? 'bg-gradient-to-br from-slate-500 to-slate-600'
                       : activeExampleData.color === 'red'
                         ? 'bg-gradient-to-br from-red-500 to-red-600'
                         : activeExampleData.color === 'purple'
-                          ? 'bg-gradient-to-br from-purple-500 to-purple-600'
+                          ? 'bg-gradient-to-br from-slate-500 to-slate-600'
                           : 'bg-gradient-to-br from-orange-500 to-orange-600'
                   } shadow-lg`}
                 >
@@ -200,9 +200,9 @@ export function AutomationShowcase() {
                     return (
                       <div
                         key={idx}
-                        className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200"
+                        className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200"
                       >
-                        <ActionIcon className="w-5 h-5 text-green-600 flex-shrink-0" />
+                        <ActionIcon className="w-5 h-5 text-slate-600 flex-shrink-0" />
                         <span className="text-sm font-medium text-gray-900">{action.text}</span>
                       </div>
                     );
@@ -240,14 +240,14 @@ export function AutomationShowcase() {
           <div className="inline-flex flex-col sm:flex-row items-center gap-4">
             <a
               href="/contact?type=compliance-plan&source=automation_showcase"
-              className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all motion-safe:hover:scale-105"
+              className="px-8 py-4 bg-gradient-to-r from-slate-700 to-slate-900 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all motion-safe:hover:scale-105"
             >
               Get Compliance Plan
               <ArrowRight className="inline-block ml-2 w-5 h-5" />
             </a>
             <a
               href="/product"
-              className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-xl border-2 border-gray-300 hover:border-purple-600 hover:text-purple-600 transition-all"
+              className="px-8 py-4 bg-white text-gray-900 font-semibold rounded-xl border-2 border-gray-300 hover:border-slate-700 hover:text-slate-700 transition-all"
             >
               Learn More About Automation
             </a>

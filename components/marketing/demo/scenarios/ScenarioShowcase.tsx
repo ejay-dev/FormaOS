@@ -25,8 +25,8 @@ const TABS = [
     id: 'board',
     label: 'Board Report',
     icon: LineChart,
-    color: 'text-purple-400',
-    activeBg: 'bg-purple-500/15 border-purple-400/30',
+    color: 'text-slate-300',
+    activeBg: 'bg-slate-500/15 border-slate-400/30',
   },
 ] as const;
 

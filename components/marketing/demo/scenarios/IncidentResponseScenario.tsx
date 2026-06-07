@@ -99,7 +99,7 @@ function MockTriage() {
         </div>
       </div>
       <div className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.03] p-2 text-[10px]">
-        <Users className="h-3 w-3 text-purple-400" />
+        <Users className="h-3 w-3 text-slate-400" />
         <span className="text-muted-foreground">
           Assigned to: <strong className="text-white">Marcus Rivera</strong> (IT
           Security Lead)
@@ -140,7 +140,7 @@ function MockInvestigation() {
           key={f.label}
           className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-1.5"
         >
-          <FileSearch className="h-3 w-3 text-blue-400 flex-shrink-0" />
+          <FileSearch className="h-3 w-3 text-slate-400 flex-shrink-0" />
           <span className="w-28 text-muted-foreground/60">{f.label}</span>
           <span className="flex-1 text-foreground/70">{f.value}</span>
           <span
@@ -148,15 +148,15 @@ function MockInvestigation() {
               f.status === 'flagged'
                 ? 'bg-amber-500/20 text-amber-300'
                 : f.status === 'clear'
-                  ? 'bg-emerald-500/20 text-emerald-300'
-                  : 'bg-blue-500/20 text-blue-300'
+                  ? 'bg-slate-500/20 text-slate-300'
+                  : 'bg-slate-500/20 text-slate-300'
             }`}
           >
             {f.status}
           </span>
         </div>
       ))}
-      <div className="mt-2 rounded-lg bg-blue-500/10 border border-blue-400/20 p-2 text-[10px] text-blue-200">
+      <div className="mt-2 rounded-lg bg-slate-500/10 border border-slate-400/20 p-2 text-[10px] text-slate-200">
         Root cause: credentials phishing attempt. MFA prevented access.
       </div>
     </div>
@@ -199,7 +199,7 @@ function MockCAPA() {
           className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-2"
         >
           {a.done ? (
-            <CheckCircle className="h-3 w-3 text-emerald-400 flex-shrink-0" />
+            <CheckCircle className="h-3 w-3 text-slate-400 flex-shrink-0" />
           ) : (
             <Clock className="h-3 w-3 text-amber-400 flex-shrink-0" />
           )}
@@ -223,8 +223,8 @@ function MockCAPA() {
 function MockClosure() {
   return (
     <div className="space-y-3">
-      <div className="rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-xs">
-        <div className="flex items-center gap-2 text-emerald-300 font-medium">
+      <div className="rounded-xl border border-slate-400/20 bg-slate-500/10 p-3 text-xs">
+        <div className="flex items-center gap-2 text-slate-300 font-medium">
           <Shield className="h-3.5 w-3.5" />
           Incident Closed - No Data Breach
         </div>
@@ -238,11 +238,11 @@ function MockClosure() {
           <span className="text-muted-foreground/60">Response time</span>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
-          <p className="text-lg font-bold text-emerald-300">4</p>
+          <p className="text-lg font-bold text-slate-300">4</p>
           <span className="text-muted-foreground/60">CAPA items</span>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
-          <p className="text-lg font-bold text-purple-300">100%</p>
+          <p className="text-lg font-bold text-slate-300">100%</p>
           <span className="text-muted-foreground/60">Resolved</span>
         </div>
       </div>
@@ -286,9 +286,9 @@ const STEPS: ScenarioStep[] = [
     description:
       'Investigators log findings against the incident record. Evidence collection is control-linked for future audit readiness.',
     icon: FileSearch,
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/15',
-    border: 'border-blue-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-500/15',
+    border: 'border-slate-500/20',
     elapsed: '45 min',
     screenContent: <MockInvestigation />,
   },
@@ -299,9 +299,9 @@ const STEPS: ScenarioStep[] = [
     description:
       'Immediate and preventive actions are assigned as tracked tasks with owners and due dates.',
     icon: Wrench,
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/15',
-    border: 'border-purple-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-500/15',
+    border: 'border-slate-500/20',
     elapsed: '1.5 h',
     screenContent: <MockCAPA />,
   },
@@ -312,9 +312,9 @@ const STEPS: ScenarioStep[] = [
     description:
       'Once all actions are verified, the incident is closed. The full timeline is immutably recorded for regulator or auditor review.',
     icon: CheckCircle,
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-500/15',
-    border: 'border-emerald-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-500/15',
+    border: 'border-slate-500/20',
     elapsed: '2.4 h',
     screenContent: <MockClosure />,
   },
@@ -410,7 +410,7 @@ export default function IncidentResponseScenario() {
                 active
                   ? `${s.bg} border ${s.border} ${s.color}`
                   : completed
-                    ? 'bg-emerald-500/10 border border-emerald-400/20 text-emerald-300'
+                    ? 'bg-slate-500/10 border border-slate-400/20 text-slate-300'
                     : 'bg-white/[0.04] border border-white/[0.08] text-muted-foreground/60'
               }`}
             >

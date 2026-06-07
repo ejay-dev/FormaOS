@@ -146,9 +146,9 @@ export function LaserFlowSection() {
                 transition={sa ? { duration: 0.5, delay: 0.7, ease: signatureEase } : { duration: 0 }}
                 className="flex items-center justify-center"
               >
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500/8 border border-emerald-500/20 shadow-[0_0_16px_rgba(52,211,153,0.1)]">
-                  <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm font-medium text-emerald-400">Audit log appended</span>
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.06] border border-white/[0.15] shadow-[0_0_16px_rgba(148,163,184,0.1)]">
+                  <CheckCircle className="w-4 h-4 text-slate-300" />
+                  <span className="text-sm font-medium text-slate-300">Audit log appended</span>
                 </div>
               </motion.div>
             </div>

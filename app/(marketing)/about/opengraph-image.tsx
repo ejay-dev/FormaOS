@@ -24,7 +24,7 @@ export default function Image() {
       >
         {/* Logo row */}
         <div style={{ display: 'flex', width: '100%', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: '#a78bfa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ color: '#0a0f1c', fontSize: 24, fontWeight: 900 }}>F</div>
           </div>
           <span style={{ color: '#ffffff', fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>FormaOS</span>
@@ -32,7 +32,7 @@ export default function Image() {
 
         {/* Main content */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div style={{ color: '#a78bfa', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+          <div style={{ color: '#94a3b8', fontSize: 14, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase' }}>
             About
           </div>
           <div style={{ color: '#ffffff', fontSize: 58, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', maxWidth: 840 }}>
@@ -50,13 +50,13 @@ export default function Image() {
           <div style={{ color: '#475569', fontSize: 15 }}>Our Mission</div>
         </div>
 
-        {/* Violet accent gradient */}
+        {/* Slate accent gradient */}
         <div style={{
           position: 'absolute', right: 60, top: '50%',
           transform: 'translateY(-50%)',
           width: 340, height: 340,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(148,163,184,0.12) 0%, transparent 70%)',
         }} />
       </div>
     ),

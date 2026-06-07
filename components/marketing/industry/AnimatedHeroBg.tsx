@@ -11,7 +11,7 @@ const accentMap: Record<string, { primary: string; secondary: string }> = {
   'cyan-blue': { primary: 'rgba(113,113,122,0.08)', secondary: 'rgba(82,82,91,0.06)' },
   'cyan-violet': { primary: 'rgba(113,113,122,0.08)', secondary: 'rgba(82,82,91,0.06)' },
   'violet-cyan': { primary: 'rgba(113,113,122,0.08)', secondary: 'rgba(82,82,91,0.06)' },
-  'emerald-cyan': { primary: 'rgba(52,211,153,0.08)', secondary: 'rgba(113,113,122,0.06)' },
+  'emerald-cyan': { primary: 'rgba(148,163,184,0.08)', secondary: 'rgba(113,113,122,0.06)' },
   'amber-orange': { primary: 'rgba(251,191,36,0.08)', secondary: 'rgba(251,146,60,0.06)' },
 };
 

@@ -34,7 +34,7 @@ export function FrameworkCoverage({ headline, description, frameworks }: Framewo
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-violet-400 mb-6">
+            <span className="inline-flex items-center gap-2 rounded-full border border-slate-500/20 bg-slate-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-6">
               <BookOpen className="h-3.5 w-3.5" />
               Framework Coverage
             </span>
@@ -49,7 +49,7 @@ export function FrameworkCoverage({ headline, description, frameworks }: Framewo
                 Pre-built
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 rounded-full bg-violet-500" />
+                <div className="h-2 w-2 rounded-full bg-slate-500" />
                 Audit-mapped
               </div>
               <div className="flex items-center gap-1.5">

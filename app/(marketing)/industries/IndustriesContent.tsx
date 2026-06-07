@@ -43,14 +43,14 @@ const industries = [
     title: 'Healthcare providers',
     description:
       'Credential oversight, privacy obligations, clinical governance, and quality assurance across practitioners',
-    color: 'blue' as const,
+    color: 'cyan' as const,
   },
   {
     icon: Users,
     title: 'Aged care operators',
     description:
       'Continuous compliance with quality standards, documentation of care, and incident response proof',
-    color: 'purple' as const,
+    color: 'cyan' as const,
   },
   {
     icon: GraduationCap,
@@ -64,14 +64,14 @@ const industries = [
     title: 'Community services',
     description:
       'Multiple program obligations, shared evidence, and funding compliance documentation',
-    color: 'blue' as const,
+    color: 'cyan' as const,
   },
   {
     icon: Briefcase,
     title: 'Professional services',
     description:
       'Multi-site governance, professional accreditation, and audit requirements with limited staff',
-    color: 'purple' as const,
+    color: 'cyan' as const,
   },
 ];
 
@@ -116,10 +116,10 @@ function SystemDivider() {
         className="relative h-px w-full"
         style={{
           background:
-            'linear-gradient(90deg, transparent, rgba(0, 180, 220, 0.3), rgba(59, 130, 246, 0.4), rgba(139, 92, 246, 0.3), transparent)',
+            'linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.3), rgba(148, 163, 184, 0.4), rgba(148, 163, 184, 0.3), transparent)',
         }}
       >
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-[rgba(0,180,220,0.2)] blur-xl" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-8 bg-[rgba(148,163,184,0.2)] blur-xl" />
       </div>
     </ScrollReveal>
   );
@@ -165,19 +165,19 @@ export function IndustriesContent() {
                       <div
                         className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center mb-4 ${
                           industry.color === 'cyan'
-                            ? 'bg-[rgba(0,180,220,0.1)] border border-[rgba(0,180,220,0.2)]'
+                            ? 'bg-[rgba(148,163,184,0.1)] border border-[rgba(148,163,184,0.2)]'
                             : industry.color === 'blue'
-                              ? 'bg-[rgba(59,130,246,0.1)] border border-[rgba(59,130,246,0.2)]'
-                              : 'bg-[rgba(139,92,246,0.1)] border border-[rgba(139,92,246,0.2)]'
+                              ? 'bg-[rgba(148,163,184,0.1)] border border-[rgba(148,163,184,0.2)]'
+                              : 'bg-[rgba(148,163,184,0.1)] border border-[rgba(148,163,184,0.2)]'
                         }`}
                       >
                         <industry.icon
                           className={`h-6 w-6 sm:h-7 sm:w-7 ${
                             industry.color === 'cyan'
-                              ? 'text-[rgb(0,180,220)]'
+                              ? 'text-[rgb(148,163,184)]'
                               : industry.color === 'blue'
-                                ? 'text-[rgb(59,130,246)]'
-                                : 'text-[rgb(139,92,246)]'
+                                ? 'text-[rgb(148,163,184)]'
+                                : 'text-[rgb(148,163,184)]'
                           }`}
                         />
                       </div>
@@ -200,7 +200,7 @@ export function IndustriesContent() {
 
       {/* Problems & Solutions - Process variant */}
       <SystemBackground variant="process" className="py-12 sm:py-16 lg:py-20">
-        <SectionGlow color="blue" intensity="high" position="center" />
+        <SectionGlow color="cyan" intensity="high" position="center" />
 
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 relative">
           <SectionHeader
@@ -268,7 +268,7 @@ export function IndustriesContent() {
             <GlassCard
               variant="intense"
               glow
-              glowColor="purple"
+              glowColor="cyan"
               className="p-8 sm:p-12 lg:p-16 text-center relative overflow-hidden"
             >
               <div className="absolute inset-0 shimmer pointer-events-none" />

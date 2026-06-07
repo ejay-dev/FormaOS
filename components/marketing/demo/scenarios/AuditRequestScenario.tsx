@@ -169,7 +169,7 @@ function MockDelivery() {
           <span className="text-muted-foreground/60">Coverage</span>
         </div>
         <div className="rounded-lg bg-white/[0.04] px-2 py-2">
-          <p className="text-lg font-bold text-purple-300">0</p>
+          <p className="text-lg font-bold text-slate-300">0</p>
           <span className="text-muted-foreground/60">Follow-ups</span>
         </div>
       </div>
@@ -200,9 +200,9 @@ const STEPS: ScenarioStep[] = [
     description:
       'Previously uploaded evidence auto-links to requested controls. Gaps are flagged for immediate action.',
     icon: Link2,
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/15',
-    border: 'border-blue-500/20',
+    color: 'text-slate-400',
+    bg: 'bg-slate-500/15',
+    border: 'border-slate-500/20',
     screenContent: <MockEvidenceMap />,
   },
   {
@@ -224,9 +224,9 @@ const STEPS: ScenarioStep[] = [
     description:
       'The bundle is securely delivered to the auditor with view tracking. Typical prep time drops from days to hours.',
     icon: Send,
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/15',
-    border: 'border-purple-500/20',
+    color: 'text-slate-400',
+    bg: 'bg-slate-500/15',
+    border: 'border-slate-500/20',
     screenContent: <MockDelivery />,
   },
 ];

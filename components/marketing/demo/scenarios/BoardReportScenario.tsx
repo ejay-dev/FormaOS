@@ -302,9 +302,9 @@ const STEPS: ScenarioStep[] = [
     description:
       'One-click export to PDF or slide deck. Executive summary is auto-generated from live posture data.',
     icon: BarChart3,
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/15',
-    border: 'border-purple-500/20',
+    color: 'text-slate-300',
+    bg: 'bg-slate-500/15',
+    border: 'border-slate-500/20',
     screenContent: <MockBoardExport />,
   },
 ];
@@ -328,8 +328,8 @@ export default function BoardReportScenario() {
     <div className="rounded-2xl border border-glass-border bg-gradient-to-b from-white/[0.04] to-transparent p-5 sm:p-6">
       {/* Header */}
       <div className="mb-5 flex items-center gap-3">
-        <div className="rounded-lg border border-purple-400/20 bg-purple-500/10 p-2">
-          <LineChart className="h-5 w-5 text-purple-300" />
+        <div className="rounded-lg border border-slate-400/20 bg-slate-500/10 p-2">
+          <LineChart className="h-5 w-5 text-slate-300" />
         </div>
         <div>
           <h3 className="text-base font-semibold text-white">
@@ -354,7 +354,7 @@ export default function BoardReportScenario() {
             key={s.id}
             onClick={() => setCurrentStep(i)}
             className={`h-1.5 flex-1 rounded-full transition-colors ${
-              i <= currentStep ? 'bg-purple-400' : 'bg-glass-strong'
+              i <= currentStep ? 'bg-slate-400' : 'bg-glass-strong'
             }`}
             aria-label={`Go to ${s.phase}: ${s.title}`}
           />
@@ -410,7 +410,7 @@ export default function BoardReportScenario() {
         <button
           onClick={goNext}
           disabled={currentStep === STEPS.length - 1}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-purple-500/20 border border-purple-400/30 px-3 py-1.5 text-xs text-purple-200 transition-colors hover:bg-purple-500/30 disabled:opacity-30 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-500/20 border border-slate-400/30 px-3 py-1.5 text-xs text-slate-200 transition-colors hover:bg-slate-500/30 disabled:opacity-30 disabled:cursor-not-allowed"
           aria-label="Next step"
         >
           Next

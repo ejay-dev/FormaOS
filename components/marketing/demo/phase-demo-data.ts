@@ -37,7 +37,7 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
     verb: 'Execute',
     subtitle: 'Turn requirements into real execution',
     accent: 'from-zinc-700 to-zinc-900',
-    glowColor: 'rgba(52,211,153,0.15)',
+    glowColor: 'rgba(148,163,184,0.15)',
     color: 'emerald',
   },
   validate: {
@@ -68,7 +68,7 @@ export const PHASE_CONFIGS: Record<PhaseId, PhaseConfig> = {
 
 export const structureFrameworks = [
   { id: 'iso27001', name: 'ISO 27001', controls: 52, color: '#a1a1aa' },
-  { id: 'soc2', name: 'SOC 2 Type II', controls: 48, color: '#10b981' },
+  { id: 'soc2', name: 'SOC 2 Type II', controls: 48, color: '#94a3b8' },
   { id: 'hipaa', name: 'HIPAA', controls: 42, color: '#f59e0b' },
 ];
 

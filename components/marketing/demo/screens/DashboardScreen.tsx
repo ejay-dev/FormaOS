@@ -36,7 +36,7 @@ function ComplianceRing({ score }: { score: number }) {
         <defs>
           <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#a1a1aa" />
-            <stop offset="100%" stopColor="#a083ff" />
+            <stop offset="100%" stopColor="#cbd5e1" />
           </linearGradient>
         </defs>
       </svg>
@@ -157,9 +157,9 @@ export default function DashboardScreen() {
           {demoAuditLog.slice(0, 5).map((entry) => {
             const typeColor = {
               policy: 'text-cyan-400',
-              evidence: 'text-blue-400',
+              evidence: 'text-slate-400',
               task: 'text-emerald-400',
-              user: 'text-purple-400',
+              user: 'text-slate-400',
               system: 'text-white/30',
               compliance: 'text-amber-400',
             }[entry.type];

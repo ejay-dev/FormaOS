@@ -84,7 +84,7 @@ export default function ValidateScreen() {
       {/* Control Verification */}
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
-          <Eye className="h-3 w-3 text-purple-400" />
+          <Eye className="h-3 w-3 text-slate-400" />
           <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Control Verification</span>
         </div>
         <div className="space-y-1.5">
@@ -137,7 +137,7 @@ export default function ValidateScreen() {
           {validateAuditEntries.map((entry, i) => {
             const typeColor: Record<string, string> = {
               compliance: 'text-amber-400',
-              evidence: 'text-blue-400',
+              evidence: 'text-slate-400',
               task: 'text-emerald-400',
             };
             return (

@@ -59,7 +59,7 @@ const phaseActiveColors: Record<string, { tab: string; border: string; glow: str
   emerald: {
     tab: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
     border: 'border-emerald-500/25',
-    glow: 'shadow-[0_0_60px_rgba(52,211,153,0.12)]',
+    glow: 'shadow-[0_0_60px_rgba(148,163,184,0.12)]',
   },
   tealAlt: {
     tab: 'bg-teal-500/15 text-teal-300 border-teal-500/30',

@@ -576,7 +576,7 @@ export function ScanLine({
 /* Used on: Pricing Procurement section - abstract procurement artifacts */
 
 export function StampPattern({
-  color = 'rgba(52, 211, 153, 0.03)',
+  color = 'rgba(148, 163, 184, 0.03)',
   className = '',
 }: {
   color?: string;

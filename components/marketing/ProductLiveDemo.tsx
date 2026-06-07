@@ -60,8 +60,8 @@ const VIEWS: ViewMeta[] = [
     id: 'tasks',
     label: 'Tasks',
     icon: ListChecks,
-    accent: 'blue',
-    dotCls: 'bg-blue-400',
+    accent: 'slate',
+    dotCls: 'bg-slate-400',
   },
   {
     id: 'evidence',
@@ -81,8 +81,8 @@ const VIEWS: ViewMeta[] = [
     id: 'reports',
     label: 'Reports',
     icon: BarChart3,
-    accent: 'indigo',
-    dotCls: 'bg-indigo-400',
+    accent: 'slate',
+    dotCls: 'bg-slate-400',
   },
   {
     id: 'risk',
@@ -114,7 +114,7 @@ const B = {
   prog: 'bg-teal-400/15 text-teal-300',
   pend: 'bg-amber-400/15 text-amber-300',
   done: 'bg-emerald-400/15 text-emerald-300',
-  rev: 'bg-blue-400/15 text-blue-300',
+  rev: 'bg-slate-400/15 text-slate-300',
   over: 'bg-red-400/15 text-red-300',
   draft: 'bg-slate-400/15 text-foreground/70',
   crit: 'bg-red-400/15 text-red-300',
@@ -1957,7 +1957,7 @@ export function ProductLiveDemo() {
                 className={ROW_BASE + ' w-full text-left'}
                 onClick={() => openDetail('tasks', t)}
               >
-                <div className="w-2 h-2 rounded-full bg-blue-400/60 shrink-0" />
+                <div className="w-2 h-2 rounded-full bg-slate-400/60 shrink-0" />
                 <div className="flex-1 min-w-0 text-xs text-white/65 truncate">
                   {t.title}
                 </div>
@@ -2032,8 +2032,8 @@ export function ProductLiveDemo() {
                 className={ROW_BASE + ' w-full text-left'}
                 onClick={() => openDetail('reports', r)}
               >
-                <div className="w-6 h-6 rounded bg-indigo-400/10 flex items-center justify-center shrink-0">
-                  <BarChart3 className="w-3 h-3 text-indigo-300" />
+                <div className="w-6 h-6 rounded bg-slate-400/10 flex items-center justify-center shrink-0">
+                  <BarChart3 className="w-3 h-3 text-slate-300" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-xs text-white/60 truncate">{r.name}</div>

@@ -87,7 +87,7 @@ function _AvatarBadge({ name, size = 'sm' }: { name: string; size?: 'sm' | 'md' 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     completed: 'bg-emerald-500/15 text-emerald-400',
-    'in-progress': 'bg-blue-500/15 text-blue-400',
+    'in-progress': 'bg-slate-500/15 text-slate-300',
     overdue: 'bg-red-500/15 text-red-400',
     pending: 'bg-slate-500/15 text-muted-foreground',
     approved: 'bg-emerald-500/15 text-emerald-400',
@@ -141,7 +141,7 @@ export function TaskDetailDrawer({
   const TaskStatusIcon = ({ status }: { status: string }) => {
     switch (status) {
       case 'completed': return <Check className="h-3 w-3 text-emerald-400" />;
-      case 'in-progress': return <Clock className="h-3 w-3 text-blue-400" />;
+      case 'in-progress': return <Clock className="h-3 w-3 text-slate-300" />;
       case 'overdue': return <AlertTriangle className="h-3 w-3 text-red-400" />;
       default: return <Circle className="h-3 w-3 text-muted-foreground/60" />;
     }
@@ -152,7 +152,7 @@ export function TaskDetailDrawer({
       isOpen={isOpen}
       onClose={onClose}
       title="Task Detail"
-      icon={<CheckSquare className="h-4 w-4 text-blue-400" />}
+      icon={<CheckSquare className="h-4 w-4 text-slate-300" />}
     >
       {/* Task header */}
       <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
@@ -182,7 +182,7 @@ export function TaskDetailDrawer({
           <div className="space-y-1.5">
             {linkedEvidence.map((ev) => (
               <div key={ev.id} className="flex items-center gap-2 rounded-lg bg-white/[0.02] border border-white/[0.04] px-3 py-2 text-[11px]">
-                <FileText className="h-3 w-3 text-purple-400 flex-shrink-0" />
+                <FileText className="h-3 w-3 text-slate-400 flex-shrink-0" />
                 <span className="text-foreground/70 truncate flex-1">{ev.name}</span>
                 <StatusBadge status={ev.status} />
               </div>
@@ -197,7 +197,7 @@ export function TaskDetailDrawer({
           <button
             type="button"
             onClick={() => onAction('start')}
-            className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-blue-500/15 border border-blue-500/25 px-3 py-2 text-[11px] font-medium text-blue-300 hover:bg-blue-500/25 transition-colors"
+            className="flex-1 flex items-center justify-center gap-1.5 rounded-lg bg-slate-500/15 border border-slate-500/25 px-3 py-2 text-[11px] font-medium text-slate-200 hover:bg-slate-500/25 transition-colors"
           >
             <ArrowRight className="h-3 w-3" /> Start Task
           </button>
@@ -259,13 +259,13 @@ export function EvidenceDetailDrawer({
       isOpen={isOpen}
       onClose={onClose}
       title="Evidence Detail"
-      icon={<Lock className="h-4 w-4 text-purple-400" />}
+      icon={<Lock className="h-4 w-4 text-slate-300" />}
     >
       {/* Evidence header */}
       <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
         <div className="flex items-start gap-3 mb-3">
-          <div className="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
-            <FileText className="h-5 w-5 text-purple-400" />
+          <div className="h-10 w-10 rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center flex-shrink-0">
+            <FileText className="h-5 w-5 text-slate-300" />
           </div>
           <div className="flex-1">
             <h4 className="text-[13px] font-semibold text-white mb-1">{evidence.name}</h4>
@@ -370,13 +370,13 @@ export function AuditTimelineDrawer({
 
   const typeColors: Record<string, string> = {
     policy: 'text-cyan-400 bg-cyan-400/10',
-    evidence: 'text-blue-400 bg-blue-400/10',
+    evidence: 'text-slate-300 bg-slate-400/10',
     task: 'text-emerald-400 bg-emerald-400/10',
-    user: 'text-purple-400 bg-purple-400/10',
+    user: 'text-slate-300 bg-slate-400/10',
     framework: 'text-amber-400 bg-amber-400/10',
     system: 'text-muted-foreground bg-slate-400/10',
-    control: 'text-pink-400 bg-pink-400/10',
-    report: 'text-indigo-400 bg-indigo-400/10',
+    control: 'text-slate-300 bg-slate-400/10',
+    report: 'text-slate-300 bg-slate-400/10',
   };
 
   const typeIcons: Record<string, React.ReactNode> = {
@@ -482,8 +482,8 @@ export function WorkflowActionDrawer({
   const typeIcons: Record<string, React.ReactNode> = {
     'evidence-expiry': <Clock className="h-3.5 w-3.5 text-amber-400" />,
     'control-failure': <AlertTriangle className="h-3.5 w-3.5 text-red-400" />,
-    'task-overdue': <CheckSquare className="h-3.5 w-3.5 text-blue-400" />,
-    'policy-review-due': <FileText className="h-3.5 w-3.5 text-purple-400" />,
+    'task-overdue': <CheckSquare className="h-3.5 w-3.5 text-slate-300" />,
+    'policy-review-due': <FileText className="h-3.5 w-3.5 text-slate-300" />,
     'cert-expiring': <Shield className="h-3.5 w-3.5 text-cyan-400" />,
   };
 
@@ -492,7 +492,7 @@ export function WorkflowActionDrawer({
       isOpen={isOpen}
       onClose={onClose}
       title="Workflow Triggers"
-      icon={<Zap className="h-4 w-4 text-blue-400" />}
+      icon={<Zap className="h-4 w-4 text-slate-300" />}
     >
       <p className="text-[11px] text-muted-foreground">
         Manually fire workflow triggers to see how FormaOS automates compliance responses.
@@ -528,7 +528,7 @@ export function WorkflowActionDrawer({
                   trackDemoEvent({ type: 'demo_sandbox_action', action: 'fire_trigger', target: trigger.id, phase: 'operationalize' });
                   onFire(trigger.id);
                 }}
-                className="flex items-center gap-1 rounded-md bg-blue-500/15 border border-blue-500/25 px-2 py-1 text-[10px] font-medium text-blue-300 hover:bg-blue-500/25 transition-colors"
+                className="flex items-center gap-1 rounded-md bg-slate-500/15 border border-slate-500/25 px-2 py-1 text-[10px] font-medium text-slate-200 hover:bg-slate-500/25 transition-colors"
               >
                 <Zap className="h-2.5 w-2.5" /> Fire Trigger
               </button>

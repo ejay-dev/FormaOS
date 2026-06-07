@@ -213,7 +213,7 @@ function StatusRow({
   sublabel: string;
 }) {
   const dotColor = {
-    emerald: 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]',
+    emerald: 'bg-emerald-400 shadow-[0_0_6px_rgba(148,163,184,0.5)]',
     amber: 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.5)]',
     rose: 'bg-rose-400 shadow-[0_0_6px_rgba(251,113,133,0.5)]',
   }[color];

@@ -36,7 +36,7 @@ export default function OperationalizeScreen() {
       {/* Workflow Triggers */}
       <motion.div variants={fadeUp} className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3">
         <div className="flex items-center gap-1.5 mb-2.5">
-          <Zap className="h-3 w-3 text-blue-400" />
+          <Zap className="h-3 w-3 text-slate-400" />
           <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Workflow Triggers</span>
           <motion.span
             className="ml-auto text-[9px] text-emerald-400 font-medium"
@@ -50,7 +50,7 @@ export default function OperationalizeScreen() {
         <div className="space-y-2">
           {operationalizeWorkflowTriggers.map((trigger, i) => {
             const Icon = triggerIcons[trigger.iconName];
-            const colors = ['text-amber-400 bg-amber-400/10', 'text-red-400 bg-red-400/10', 'text-blue-400 bg-blue-400/10'];
+            const colors = ['text-amber-400 bg-amber-400/10', 'text-red-400 bg-red-400/10', 'text-slate-400 bg-slate-400/10'];
             return (
               <motion.div
                 key={trigger.trigger}
@@ -91,7 +91,7 @@ export default function OperationalizeScreen() {
         <div className="flex items-center gap-1.5 mb-2.5">
           <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Task Assignments</span>
           <motion.span
-            className="ml-auto text-[9px] text-blue-400"
+            className="ml-auto text-[9px] text-slate-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: [0, 1, 1] }}
             transition={{ delay: 3.0, duration: 0.5 }}
@@ -115,7 +115,7 @@ export default function OperationalizeScreen() {
               >
                 <motion.div
                   className="h-1.5 w-1.5 rounded-full bg-slate-600 flex-shrink-0"
-                  animate={{ backgroundColor: ['rgb(71,85,105)', 'rgb(71,85,105)', 'rgb(59,130,246)'] }}
+                  animate={{ backgroundColor: ['rgb(71,85,105)', 'rgb(71,85,105)', 'rgb(148,163,184)'] }}
                   transition={{ delay: 3.4 + i * 0.7, duration: 0.4 }}
                 />
                 <span className="text-foreground/90 truncate flex-1">{task.title}</span>
@@ -141,7 +141,7 @@ export default function OperationalizeScreen() {
         className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-3"
       >
         <div className="flex items-center gap-1.5 mb-2.5">
-          <Upload className="h-3 w-3 text-purple-400" />
+          <Upload className="h-3 w-3 text-slate-400" />
           <span className="text-[10px] font-semibold text-foreground/70 uppercase tracking-wider">Evidence Upload</span>
         </div>
         <div className="flex items-start gap-3">
@@ -151,7 +151,7 @@ export default function OperationalizeScreen() {
             {/* Progress bar */}
             <div className="mt-2 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                className="h-full rounded-full bg-gradient-to-r from-slate-500 to-slate-400"
                 initial={{ width: 0 }}
                 animate={{ width: '100%' }}
                 transition={{ delay: 5.5, duration: 1.5, ease: easing.smooth }}
@@ -169,8 +169,8 @@ export default function OperationalizeScreen() {
             </motion.div>
           </div>
           <motion.div
-            className="flex-shrink-0 h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center"
-            animate={{ borderColor: ['rgba(139,92,246,0.2)', 'rgba(139,92,246,0.2)', 'rgba(16,185,129,0.3)'] }}
+            className="flex-shrink-0 h-10 w-10 rounded-xl bg-slate-500/10 border border-slate-500/20 flex items-center justify-center"
+            animate={{ borderColor: ['rgba(148,163,184,0.2)', 'rgba(148,163,184,0.2)', 'rgba(148,163,184,0.3)'] }}
             transition={{ delay: 7.0, duration: 0.5 }}
           >
             <motion.div
@@ -178,7 +178,7 @@ export default function OperationalizeScreen() {
               animate={{ rotate: [0, 0, 360] }}
               transition={{ delay: 5.5, duration: 1.5, ease: 'linear' }}
             >
-              <Upload className="h-4 w-4 text-purple-400" />
+              <Upload className="h-4 w-4 text-slate-400" />
             </motion.div>
           </motion.div>
         </div>

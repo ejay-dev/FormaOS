@@ -40,11 +40,11 @@ export default function VaultScreen() {
       {/* Header */}
       <motion.div variants={fadeUp} className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Lock className="h-4 w-4 text-purple-400" />
+          <Lock className="h-4 w-4 text-slate-400" />
           <h2 className="text-sm font-semibold text-white">Evidence Vault</h2>
           <span className="text-[10px] text-muted-foreground/60">{demoEvidence.length} items</span>
         </div>
-        <button className="flex items-center gap-1 rounded-md bg-purple-500/20 px-2 py-1 text-[10px] text-purple-300 border border-purple-500/30">
+        <button className="flex items-center gap-1 rounded-md bg-slate-500/20 px-2 py-1 text-[10px] text-slate-300 border border-slate-500/30">
           <Upload className="h-2.5 w-2.5" />
           Upload Evidence
         </button>

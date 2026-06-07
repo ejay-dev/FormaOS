@@ -24,7 +24,7 @@ export function SeeItInAction({ tabs }: SeeItInActionProps) {
   return (
     <section className="relative py-24 lg:py-32">
       <div className="absolute inset-0 bg-gradient-to-b from-[#080b14] via-[#0d1117] to-[#0a0e1a]" />
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-500/20 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -35,7 +35,7 @@ export function SeeItInAction({ tabs }: SeeItInActionProps) {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-violet-400 mb-6">
+          <span className="inline-flex items-center gap-2 rounded-full border border-slate-500/20 bg-slate-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-6">
             <Monitor className="h-3.5 w-3.5" />
             See It In Action
           </span>
@@ -62,7 +62,7 @@ export function SeeItInAction({ tabs }: SeeItInActionProps) {
               onClick={() => setActiveId(tab.id)}
               className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all ${
                 activeId === tab.id
-                  ? 'bg-violet-500/15 border border-violet-500/25 text-white shadow-lg shadow-violet-500/10'
+                  ? 'bg-slate-500/15 border border-slate-500/25 text-white shadow-lg shadow-slate-500/10'
                   : 'border border-transparent text-slate-500 hover:text-slate-300 hover:bg-white/[0.04]'
               }`}
             >
@@ -190,7 +190,7 @@ export function DemoNotificationTimeline({
   return (
     <div className="p-6 lg:p-8">
       <div className="flex items-center gap-3 mb-6">
-        <Bell className="h-5 w-5 text-violet-400" />
+        <Bell className="h-5 w-5 text-slate-400" />
         <div>
           <div className="text-sm font-semibold text-white">
             Notification Timeline

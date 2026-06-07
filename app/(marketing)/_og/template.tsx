@@ -13,8 +13,8 @@ export interface OgTemplateProps {
 
 const ACCENTS = {
   cyan: { fg: '#3f3f46', orb: 'rgba(63,63,70,0.12)' },
-  violet: { fg: '#a78bfa', orb: 'rgba(167,139,250,0.12)' },
-  emerald: { fg: '#34d399', orb: 'rgba(52,211,153,0.12)' },
+  violet: { fg: '#94a3b8', orb: 'rgba(148,163,184,0.12)' },
+  emerald: { fg: '#94a3b8', orb: 'rgba(148,163,184,0.12)' },
   amber: { fg: '#fbbf24', orb: 'rgba(251,191,36,0.12)' },
 } as const;
 
