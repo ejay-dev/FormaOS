@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { duration } from '@/config/motion';
 import { HeroAtmosphere } from '@/components/motion/HeroAtmosphere';
@@ -34,7 +34,7 @@ export function ProductHero() {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24"
     >
-      <HeroAtmosphere topColor="cyan" bottomColor="violet" particleIntensity="normal" />
+      <HeroAtmosphere topColor="slate" bottomColor="slate" particleIntensity="normal" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-12">
         <CursorTilt intensity={3} glowFollow glowColor="113,113,122" className="w-full">
@@ -44,10 +44,9 @@ export function ProductHero() {
                 initial={shouldAnimateIntro ? { opacity: 0, y: 20 } : false}
                 animate={{ opacity: 1, y: 0 }}
                 transition={shouldAnimateIntro ? { duration: duration.slow, delay: 0.2 } : { duration: 0 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 mb-8 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-500/10 border border-slate-500/30 mb-8 backdrop-blur-sm"
               >
-                <Sparkles className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm text-cyan-400 font-medium tracking-wide">
+                <span className="text-sm text-slate-300 font-medium tracking-wide">
                   Compliance Operating System
                 </span>
               </motion.div>
@@ -97,15 +96,15 @@ export function ProductHero() {
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-600">
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                     Structured Controls
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                     Owned Actions
                   </span>
                   <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.06] border border-white/[0.1]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                     Live Evidence
                   </span>
                 </div>

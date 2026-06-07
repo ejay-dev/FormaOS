@@ -33,7 +33,7 @@ export default function Image() {
           height: 500,
           borderRadius: '50%',
           background:
-            'radial-gradient(circle, rgba(0,212,251,0.12) 0%, transparent 65%)',
+            'radial-gradient(circle, rgba(148,163,184,0.10) 0%, transparent 65%)',
         }}
       />
       <div
@@ -45,7 +45,7 @@ export default function Image() {
           height: 400,
           borderRadius: '50%',
           background:
-            'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 65%)',
+            'radial-gradient(circle, rgba(148,163,184,0.06) 0%, transparent 65%)',
         }}
       />
 
@@ -63,14 +63,21 @@ export default function Image() {
             width: 48,
             height: 48,
             borderRadius: 14,
-            background: '#00d4fb',
+            background: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <div style={{ color: '#0a0f1c', fontSize: 28, fontWeight: 900 }}>
-            F
+          <div
+            style={{
+              color: '#1c1e1f',
+              fontSize: 22,
+              fontWeight: 900,
+              letterSpacing: '-0.04em',
+            }}
+          >
+            FO
           </div>
         </div>
         <span
@@ -89,7 +96,7 @@ export default function Image() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
         <div
           style={{
-            color: '#00d4fb',
+            color: '#94a3b8',
             fontSize: 15,
             fontWeight: 700,
             letterSpacing: '0.18em',
@@ -141,9 +148,9 @@ export default function Image() {
             <div
               key={fw}
               style={{
-                background: 'rgba(0,212,251,0.08)',
-                border: '1px solid rgba(0,212,251,0.15)',
-                color: '#00d4fb',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                color: '#cbd5e1',
                 padding: '4px 12px',
                 borderRadius: 999,
                 fontSize: 13,

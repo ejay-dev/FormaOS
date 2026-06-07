@@ -15,11 +15,15 @@ import {
   PUBLIC_CTA_LABELS,
   salesHref,
 } from '@/lib/marketing/cta';
+import { siteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Features · 5 Pillars | FormaOS',
   description:
     'One OS for every obligation you owe. Compliance, evidence, tasks, care operations, and trust, governed end-to-end.',
+  alternates: {
+    canonical: `${siteUrl}/features/pillars`,
+  },
 };
 
 interface Pillar {

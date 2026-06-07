@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { ScrollReveal } from '@/components/motion/ScrollReveal';
 import { SectionMedia } from '@/components/marketing/SectionMedia';
-import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle } from 'lucide-react';
 import { useControlPlaneRuntime } from '@/lib/control-plane/runtime-client';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 import { useMarketingTelemetry } from '@/lib/marketing/marketing-telemetry';
@@ -47,7 +47,6 @@ export function CTASection() {
       <div className="relative z-10 py-20 sm:py-28 lg:py-40 max-w-4xl mx-auto px-5 sm:px-6 lg:px-12 text-center">
         <ScrollReveal variant="scaleUp" range={[0, 0.25]}>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-6 sm:mb-8">
-            <Sparkles className="w-4 h-4 text-slate-400" />
             <span className="text-sm text-slate-400 font-medium">
               {PUBLIC_CTA_LABELS.compliancePlan}
             </span>

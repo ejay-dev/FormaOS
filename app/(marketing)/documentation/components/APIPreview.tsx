@@ -416,7 +416,12 @@ function CodeBlock({
         <CopyButton text={code} />
       </div>
       {/* Code */}
-      <div className="overflow-x-auto">
+      <div
+        className="overflow-x-auto"
+        tabIndex={0}
+        role="region"
+        aria-label={`${filename} code sample`}
+      >
         <pre className="p-4 text-[13px] leading-relaxed font-mono">
           <code className="text-slate-300 whitespace-pre">{code}</code>
         </pre>
@@ -797,7 +802,10 @@ curl -X GET "https://api.formaos.com/v1/compliance" \\
                       {err.label}
                     </span>
                   </div>
-                  <pre className="text-xs font-mono text-slate-500 whitespace-pre overflow-x-auto">
+                  <pre
+                    className="text-xs font-mono text-slate-500 whitespace-pre overflow-x-auto"
+                    tabIndex={0}
+                  >
                     {err.body}
                   </pre>
                 </div>

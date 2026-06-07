@@ -59,7 +59,7 @@ function TermsHero() {
         />
         {/* Secondary gradient orb - bottom right */}
         <motion.div
-          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-purple-500/15 via-pink-500/10 to-transparent rounded-full blur-3xl"
+          className="absolute -bottom-40 -right-40 w-[700px] h-[700px] bg-gradient-to-tl from-slate-500/15 via-slate-400/10 to-transparent rounded-full blur-3xl"
           animate={{
             scale: [1, 1.15, 1],
             opacity: [0.2, 0.3, 0.2],

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import {
   ArrowRight,
-  Sparkles,
   Shield,
   Zap,
   CheckCircle,
@@ -43,7 +42,6 @@ export function StoryHero() {
       theme="our-story"
       visualContent={<OurStoryHeroVisual />}
       badge={{
-        icon: <Sparkles className="w-4 h-4" />,
         text: 'Our Story',
         colorClass: 'slate',
       }}
@@ -128,7 +126,7 @@ function FounderQuote() {
             />
 
             {/* Attribution with founder avatar.
-                Image file at /public/team/founder.jpg, page renders
+                Image file at /public/team/founder.jpeg, page renders
                 cleanly with initials fallback even if the binary isn't
                 uploaded yet. */}
             <motion.div
@@ -430,9 +428,9 @@ function WhyWeBuiltIt() {
         >
           <div className="space-y-6">
             <p className="text-lg text-slate-400 leading-relaxed">
-              FormaOS was built by engineers who understand that systems shape
-              outcomes. If accountability is not designed into a system, it
-              cannot be enforced at scale.
+              FormaOS was built on a simple conviction: systems shape outcomes.
+              If accountability is not designed into a system, it cannot be
+              enforced at scale.
             </p>
 
             <p className="text-xl text-white font-medium">
