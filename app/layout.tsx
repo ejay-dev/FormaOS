@@ -19,6 +19,8 @@ const sora = Sora({
   variable: '--font-display',
   preload: true,
   weight: ['600', '700', '800'],
+  // size-adjust fallback metrics so the H1 doesn't reflow on font swap (CLS/LCP)
+  fallback: ['system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
 });
 
 const jetbrainsMono = JetBrains_Mono({

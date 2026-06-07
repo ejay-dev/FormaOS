@@ -131,7 +131,7 @@ export function CTASection() {
                 key={stat.label}
                 className="flex items-center gap-2.5 px-3 sm:px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06]"
               >
-                <CheckCircle className="w-4 h-4 text-emerald-400/70 flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 text-slate-300 flex-shrink-0" />
                 <div className="text-left">
                   <div className="text-sm font-semibold text-white">
                     {stat.label}

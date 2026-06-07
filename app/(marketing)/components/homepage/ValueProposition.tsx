@@ -143,7 +143,7 @@ function PostureCard({
           {/* Center text, number only, no label crowding the ring */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.span
-              className="text-4xl sm:text-5xl font-black tabular-nums tracking-tight text-white"
+              className="text-4xl sm:text-5xl font-display font-extrabold tabular-nums tracking-tight text-white"
               initial={noMotion ? false : { opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : undefined}
               transition={{ delay: 1.2, duration: 0.4, ease: signatureEase }}
@@ -155,7 +155,7 @@ function PostureCard({
 
         {/* Copy + metrics */}
         <div className="flex-1 text-center sm:text-left">
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+          <h3 className="text-lg sm:text-xl font-display font-bold text-white mb-2">
             What the posture screen looks like
           </h3>
           <p className="text-sm text-slate-400 leading-relaxed mb-5 max-w-md">
@@ -207,11 +207,11 @@ function PostureCard({
             {stats.map((s) => (
               <div key={s.label}>
                 <div
-                  className={`text-lg sm:text-xl font-bold tabular-nums ${s.color}`}
+                  className={`text-lg sm:text-xl font-display font-bold tabular-nums ${s.color}`}
                 >
                   {s.value}
                 </div>
-                <div className="text-[10px] text-slate-500 font-medium mt-0.5">
+                <div className="text-[10px] text-slate-400 font-medium mt-0.5">
                   {s.label}
                 </div>
               </div>
@@ -241,10 +241,10 @@ function EnforcementCard({
       isInView={isInView}
       noMotion={noMotion}
     >
-      <h3 className="text-base font-bold text-white mb-1.5">
+      <h3 className="text-base font-display font-bold text-white mb-1.5">
         Workflow Enforcement
       </h3>
-      <p className="text-[13px] text-slate-500 leading-relaxed mb-5">
+      <p className="text-[13px] text-slate-400 leading-relaxed mb-5">
         Controls gate work in real time. Non-compliant actions are blocked
         before they happen.
       </p>
@@ -266,7 +266,7 @@ function EnforcementCard({
             <div className="text-[11px] font-semibold text-rose-400">
               Blocked
             </div>
-            <div className="text-[10px] text-slate-500">
+            <div className="text-[10px] text-slate-400">
               Missing approval, A.9.2 Access Control
             </div>
           </div>
@@ -281,14 +281,14 @@ function EnforcementCard({
             duration: duration.normal,
             ease: signatureEase,
           }}
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/[0.12]"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1]"
         >
-          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-slate-300 shrink-0" />
           <div>
-            <div className="text-[11px] font-semibold text-emerald-400">
+            <div className="text-[11px] font-semibold text-slate-200">
               Approved
             </div>
-            <div className="text-[10px] text-slate-500">
+            <div className="text-[10px] text-slate-400">
               Control satisfied, CC6.1 Logical Access
             </div>
           </div>
@@ -303,14 +303,14 @@ function EnforcementCard({
             duration: duration.normal,
             ease: signatureEase,
           }}
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/[0.12]"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1]"
         >
-          <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-slate-300 shrink-0" />
           <div>
-            <div className="text-[11px] font-semibold text-emerald-400">
+            <div className="text-[11px] font-semibold text-slate-200">
               Approved
             </div>
-            <div className="text-[10px] text-slate-500">
+            <div className="text-[10px] text-slate-400">
               Evidence attached, HIPAA §164.312
             </div>
           </div>
@@ -348,9 +348,9 @@ function EvidenceCard({
     >
       <div className="flex items-center gap-2 mb-4">
         <Link2 className="w-4 h-4 text-zinc-300" />
-        <h3 className="text-base font-bold text-white">Evidence Chain</h3>
+        <h3 className="text-base font-display font-bold text-white">Evidence Chain</h3>
       </div>
-      <p className="text-[13px] text-slate-500 leading-relaxed mb-5">
+      <p className="text-[13px] text-slate-400 leading-relaxed mb-5">
         Every action is timestamped, immutable, and traceable. No reconstruction
         needed.
       </p>
@@ -390,7 +390,7 @@ function EvidenceCard({
               <div className="text-[11px] text-slate-300 leading-snug">
                 {ev.text}
               </div>
-              <div className="text-[10px] text-slate-600 tabular-nums mt-0.5">
+              <div className="text-[10px] text-slate-400 tabular-nums mt-0.5">
                 {ev.time}
               </div>
             </div>
@@ -440,9 +440,9 @@ function OwnershipCard({
     >
       <div className="flex items-center gap-2 mb-4">
         <UserCheck className="w-4 h-4 text-slate-300" />
-        <h3 className="text-base font-bold text-white">Named Ownership</h3>
+        <h3 className="text-base font-display font-bold text-white">Named Ownership</h3>
       </div>
-      <p className="text-[13px] text-slate-500 leading-relaxed mb-5">
+      <p className="text-[13px] text-slate-400 leading-relaxed mb-5">
         Every control is assigned to a named person. No ambiguity when
         regulators ask &ldquo;who owns this?&rdquo;
       </p>
@@ -469,7 +469,7 @@ function OwnershipCard({
               <div className="text-[12px] font-semibold text-slate-300 truncate">
                 {o.role}
               </div>
-              <div className="text-[10px] text-slate-500 truncate">
+              <div className="text-[10px] text-slate-400 truncate">
                 Assigned in workspace
               </div>
             </div>
@@ -501,10 +501,10 @@ function AuditCard({
     >
       <div className="flex items-center gap-2 mb-4">
         <Clock className="w-4 h-4 text-slate-300" />
-        <h3 className="text-base font-bold text-white">Audit-Ready</h3>
+        <h3 className="text-base font-display font-bold text-white">Audit-Ready</h3>
       </div>
-      <p className="text-[13px] text-slate-500 leading-relaxed mb-6">
-        Export complete audit packets, evidence, ownership, control history , 
+      <p className="text-[13px] text-slate-400 leading-relaxed mb-6">
+        Export complete audit packets, evidence, ownership, control history ,
         without scrambling.
       </p>
 
@@ -515,10 +515,10 @@ function AuditCard({
           animate={isInView ? { opacity: 1, scale: 1 } : undefined}
           transition={{ delay: 0.6, duration: 0.5, ease: signatureEase }}
         >
-          <span className="text-5xl sm:text-6xl font-black text-white">
+          <span className="text-5xl sm:text-6xl font-display font-extrabold text-white">
             Minutes
           </span>
-          <div className="text-sm text-slate-500 mt-2 font-medium">
+          <div className="text-sm text-slate-400 mt-2 font-medium">
             not weeks
           </div>
         </motion.div>
@@ -537,7 +537,7 @@ function AuditCard({
             <div className="text-[11px] font-semibold text-slate-300">
               {s.value}
             </div>
-            <div className="text-[9px] text-slate-600 mt-0.5">{s.label}</div>
+            <div className="text-[9px] text-slate-400 mt-0.5">{s.label}</div>
           </div>
         ))}
       </div>
@@ -582,11 +582,11 @@ export function ValueProposition() {
           >
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-8 bg-white/25" />
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                 Operating System Architecture
               </span>
             </div>
-            <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+            <h2 className="text-3xl font-display font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
               Not a repository.{' '}
               <span className="text-slate-400">A live system.</span>
             </h2>

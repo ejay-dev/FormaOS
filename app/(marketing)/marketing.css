@@ -744,18 +744,14 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.65;
-  background:
-    radial-gradient(
-      circle at 12% 24%,
-      rgba(var(--mk-rgb-cyan), 0.08),
-      transparent 46%
-    ),
-    radial-gradient(
-      circle at 86% 76%,
-      rgba(var(--mk-rgb-violet-alt), 0.08),
-      transparent 52%
-    );
+  opacity: 1;
+  /* Neutral luminance lift at the top edge — gives each plane subtle depth
+     without the old cyan/amber corner wash. */
+  background: radial-gradient(
+    120% 60% at 50% -8%,
+    rgba(255, 255, 255, 0.025),
+    transparent 60%
+  );
 }
 
 .home-section--contrast {

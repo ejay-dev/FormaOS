@@ -72,7 +72,7 @@ function ConvictionCard({
       className="group relative flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 transition-colors duration-300 hover:border-white/20 sm:p-8"
     >
       {/* Quiet step index, typographic, not a watermark gimmick */}
-      <span className="absolute right-6 top-6 text-sm font-medium tabular-nums text-slate-600">
+      <span className="absolute right-6 top-6 text-sm font-medium tabular-nums text-slate-400">
         {block.step}
       </span>
 
@@ -81,7 +81,7 @@ function ConvictionCard({
         <block.icon className="h-5 w-5 text-slate-300" aria-hidden="true" />
       </div>
 
-      <p className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+      <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
         {block.eyebrow}
       </p>
       <h3 className="mt-2.5 text-lg font-semibold leading-snug text-white">
@@ -126,7 +126,7 @@ export function HomeProofStaticShell() {
             initial={noMotion ? false : { opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, ease: signatureEase }}
-            className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500"
+            className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400"
           >
             Why buyers stay
           </motion.p>
@@ -135,7 +135,7 @@ export function HomeProofStaticShell() {
             initial={noMotion ? false : { opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: duration.slow, delay: 0.08, ease: signatureEase }}
-            className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]"
+            className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]"
           >
             Three paths to conviction,
             <br className="hidden sm:block" />

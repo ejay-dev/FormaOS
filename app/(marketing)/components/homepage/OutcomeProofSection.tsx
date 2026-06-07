@@ -288,7 +288,14 @@ export function OutcomeProofSection() {
           </dl>
         </ScrollReveal>
 
-        <div className="mt-10 text-center">
+        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Link
+            href="/contact?type=compliance-plan"
+            className="mk-btn mk-btn-primary group min-h-[50px] justify-center px-7 py-3.5 text-base"
+          >
+            Get compliance plan
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
           <Link
             href="/customer-stories"
             className="group inline-flex items-center gap-1.5 text-sm font-semibold text-slate-300 transition-colors hover:text-white"

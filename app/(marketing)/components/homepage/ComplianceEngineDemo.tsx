@@ -73,11 +73,11 @@ export function ComplianceEngineDemo() {
             <div className="lg:col-span-7">
               <div className="mb-5 flex items-center gap-3">
                 <span className="h-px w-8 bg-white/25" />
-                <span className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                   Compliance engine
                 </span>
               </div>
-              <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+              <h2 className="font-display text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
                 How the compliance engine{' '}
                 <span className="text-slate-400">works</span>
               </h2>
@@ -118,7 +118,7 @@ export function ComplianceEngineDemo() {
                       <p className="mt-4 text-sm font-semibold text-white">
                         {step.label}
                       </p>
-                      <p className="mt-1 max-w-[190px] text-xs leading-relaxed text-slate-500">
+                      <p className="mt-1 max-w-[190px] text-xs leading-relaxed text-slate-400">
                         {step.detail}
                       </p>
                     </li>
@@ -135,12 +135,12 @@ export function ComplianceEngineDemo() {
                     <ArrowRight className="h-5 w-5" />
                   </span>
                   <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl border border-white/[0.12] bg-white/[0.03]">
-                    <span className="text-2xl font-bold tabular-nums text-white">
+                    <span className="font-display text-2xl font-bold tabular-nums text-white">
                       {OVERALL}
                     </span>
                   </div>
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                       Resulting posture
                     </p>
                     <p className="mt-0.5 text-sm text-slate-300">
@@ -148,7 +148,7 @@ export function ComplianceEngineDemo() {
                     </p>
                   </div>
                 </div>
-                <span className="rounded-full border border-white/[0.08] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-500">
+                <span className="rounded-full border border-white/[0.08] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-slate-400">
                   Illustrative
                 </span>
               </div>
@@ -164,7 +164,7 @@ export function ComplianceEngineDemo() {
                           <Icon className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" />
                           <span className="truncate">{cat.label}</span>
                         </span>
-                        <span className="text-xs font-semibold tabular-nums text-white">
+                        <span className="font-display text-xs font-semibold tabular-nums text-white">
                           {cat.score}%
                         </span>
                       </div>
@@ -174,7 +174,7 @@ export function ComplianceEngineDemo() {
                           style={{ width: `${cat.score}%` }}
                         />
                       </div>
-                      <p className="mt-1.5 text-[10px] text-slate-600">
+                      <p className="mt-1.5 text-[10px] text-slate-400">
                         {cat.items} items
                       </p>
                     </div>

@@ -224,7 +224,7 @@ export function AuditChainSection() {
         {/* Header, matches the "Operational mechanics" section */}
         <ScrollReveal variant="slideUp" range={[0, 0.3]}>
           <div className="mx-auto mb-12 max-w-2xl text-center lg:mb-14">
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
               Cryptographic audit chain
             </p>
             <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
@@ -260,7 +260,7 @@ export function AuditChainSection() {
                     <h3 className="mt-4 text-base font-semibold text-white">
                       {pillar.title}
                     </h3>
-                    <p className="mt-1 text-[13px] text-slate-500">
+                    <p className="mt-1 text-[13px] text-slate-400">
                       {pillar.tag}
                     </p>
                     <p className="mt-3 text-sm leading-relaxed text-slate-400">
@@ -281,8 +281,8 @@ export function AuditChainSection() {
                 key={fact.label}
                 className="flex flex-col gap-1 bg-[#070b14] px-5 py-5 transition-colors duration-300 hover:bg-[#0a0f1a]"
               >
-                <dt className="order-2 text-xs text-slate-500">{fact.label}</dt>
-                <dd className="order-1 text-[15px] font-semibold text-white">
+                <dt className="order-2 text-xs text-slate-400">{fact.label}</dt>
+                <dd className="order-1 font-display text-[15px] font-semibold tabular-nums text-white">
                   {fact.value}
                 </dd>
               </div>

@@ -30,7 +30,7 @@ export function TrustBar({ className = '' }: { className?: string }) {
       <div className="relative mx-auto max-w-7xl px-6 py-6 lg:px-12">
         <div className={`${systemPanelCompactClass} flex flex-col gap-5 px-5 py-4 lg:flex-row lg:items-center lg:justify-between`}>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.06] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.06] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
               <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
               Frameworks supported
             </span>

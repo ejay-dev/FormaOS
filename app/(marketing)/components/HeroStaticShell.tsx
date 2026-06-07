@@ -12,6 +12,7 @@
  */
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { DEFAULT_RUNTIME_MARKETING } from '@/lib/control-plane/defaults';
 
@@ -34,15 +35,17 @@ export function HeroStaticShell() {
       className="home-hero home-hero--dense relative isolate overflow-hidden"
       aria-label="Hero"
     >
-      {/* Server-rendered hero background image - discovered in initial HTML for fast LCP */}
-      <img
+      {/* Server-rendered hero background image via next/image: AVIF/WebP +
+          responsive srcset, priority auto-emits the preload on / only. */}
+      <Image
         src="/marketing-media/home.jpg"
         alt=""
-        aria-hidden="true"
-        fetchPriority="high"
-        decoding="async"
+        aria-hidden
+        priority
+        fill
         sizes="100vw"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.24]"
+        quality={55}
+        className="pointer-events-none object-cover opacity-[0.24]"
         style={{ objectPosition: '50% 30%' }}
       />
       {/* Static background - no animation, preserved for SEO and no-JS users */}

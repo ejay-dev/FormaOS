@@ -93,7 +93,7 @@ export function TestimonialsSection() {
       >
         <span className="mt-1.5 h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent" />
         <div className="max-w-2xl">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
             Use case scenarios
           </p>
           <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -130,7 +130,9 @@ export function TestimonialsSection() {
                 key={s.sector}
                 type="button"
                 role="tab"
+                id={`scenario-tab-${i}`}
                 aria-selected={isActive}
+                aria-controls="scenario-panel"
                 onClick={() => setActive(i)}
                 className={`group relative flex items-center gap-4 rounded-xl border px-5 py-4 text-left transition-colors duration-200 ${
                   isActive
@@ -158,7 +160,7 @@ export function TestimonialsSection() {
                   >
                     {s.sector}
                   </span>
-                  <span className="mt-0.5 block truncate text-xs text-slate-500">
+                  <span className="mt-0.5 block truncate text-xs text-slate-400">
                     {s.framework}
                   </span>
                 </span>
@@ -172,6 +174,8 @@ export function TestimonialsSection() {
           <div
             key={active}
             role="tabpanel"
+            id="scenario-panel"
+            aria-labelledby={`scenario-tab-${active}`}
             className="flex h-full animate-[fadeIn_0.3s_ease] flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 sm:p-9"
           >
             <div className="flex flex-wrap gap-1.5">
@@ -186,7 +190,7 @@ export function TestimonialsSection() {
             </div>
 
             <div className="mt-7">
-              <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                 The challenge
               </p>
               <p className="text-lg leading-relaxed text-slate-200">
@@ -195,7 +199,7 @@ export function TestimonialsSection() {
             </div>
 
             <div className="mt-auto border-t border-white/[0.07] pt-7">
-              <p className="mb-3.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <p className="mb-3.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                 What changed
               </p>
               <ul className="space-y-3 text-sm leading-relaxed text-slate-200">
@@ -222,14 +226,14 @@ export function TestimonialsSection() {
         transition={{ duration: 0.6, delay: 0.6 }}
         className="mx-auto mt-16 max-w-4xl"
       >
-        <p className="mb-5 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+        <p className="mb-5 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
           Built on
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {BUILT_ON_PARTNERS.map((partner) => (
             <span
               key={partner}
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-400"
+              className="text-sm font-medium text-slate-400 transition-colors hover:text-slate-200"
             >
               {partner}
             </span>

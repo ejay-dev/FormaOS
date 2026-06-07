@@ -71,16 +71,16 @@ export function ComplianceNetworkSection() {
               {/* Eyebrow as a relationship chain, previews the graph below and
                   differentiates this header from the labelled-rule used by the
                   sections above it. */}
-              <div className="mb-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">
+              <div className="mb-5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                 <span>Frameworks</span>
-                <span className="text-slate-600">&rarr;</span>
+                <span className="text-slate-500">&rarr;</span>
                 <span>Controls</span>
-                <span className="text-slate-600">&rarr;</span>
+                <span className="text-slate-500">&rarr;</span>
                 <span>Tasks</span>
-                <span className="text-slate-600">&rarr;</span>
+                <span className="text-slate-500">&rarr;</span>
                 <span className="text-slate-300">Evidence</span>
               </div>
-              <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+              <h2 className="font-display text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
                 See how everything connects
               </h2>
             </div>
@@ -106,9 +106,9 @@ export function ComplianceNetworkSection() {
                   <div className="text-xs font-semibold text-white sm:text-sm sm:font-medium">
                     {item.label}
                   </div>
-                  <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
+                  <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
                     <span>{item.count}</span>
-                    <span className="text-[8px] text-slate-600">•</span>
+                    <span className="text-[8px] text-slate-500">•</span>
                     <span className="text-slate-400">{item.status}</span>
                   </div>
                 </div>
@@ -136,7 +136,7 @@ export function ComplianceNetworkSection() {
                     <span className="text-sm font-semibold text-white">
                       {stage.label}
                     </span>
-                    <span className="text-[11px] tabular-nums text-slate-500">
+                    <span className="text-[11px] tabular-nums text-slate-400">
                       {stage.count}
                     </span>
                   </div>
@@ -157,7 +157,7 @@ export function ComplianceNetworkSection() {
               <div className="max-w-[48%] rounded-xl border border-white/[0.08] bg-slate-950/70 px-4 py-3 backdrop-blur-md">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">
                     Live Mapping
                   </p>
                 </div>
@@ -167,7 +167,7 @@ export function ComplianceNetworkSection() {
               </div>
               <div className="max-w-[48%] rounded-xl border border-white/[0.08] bg-slate-950/70 px-4 py-3 backdrop-blur-md text-right">
                 <div className="flex items-center justify-end gap-2 mb-1.5">
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-slate-400">
                     Audit Readiness
                   </p>
                   <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
@@ -181,23 +181,23 @@ export function ComplianceNetworkSection() {
             {/* Bottom status bar */}
             <div className="pointer-events-none absolute inset-x-4 bottom-4 z-20 hidden lg:flex items-center justify-between">
               <div className="flex items-center gap-3 rounded-lg bg-slate-950/60 px-3 py-1.5 backdrop-blur-md border border-white/[0.08]">
-                <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                <span className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
                   Nodes
                 </span>
                 <span className="text-xs font-mono text-slate-300">18</span>
                 <span className="h-3 w-px bg-slate-700" />
-                <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                <span className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
                   Edges
                 </span>
                 <span className="text-xs font-mono text-slate-300">22</span>
                 <span className="h-3 w-px bg-slate-700" />
-                <span className="text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                <span className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
                   Coverage
                 </span>
                 <span className="text-xs font-mono text-slate-300">100%</span>
               </div>
               <div className="flex items-center gap-2 rounded-lg bg-slate-950/60 px-3 py-1.5 backdrop-blur-md border border-white/[0.08]">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
                 <span className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
                   All Systems Nominal
                 </span>

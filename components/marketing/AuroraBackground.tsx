@@ -60,7 +60,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
           filter: 'blur(110px)',
         }}
       />
-      {/* Violet/indigo - bottom */}
+      {/* Neutral depth wash - bottom */}
       <div
         className={cn(
           'aurora-blob absolute -bottom-[15%] left-[15%] h-[70vmin] w-[90vmin] sm:h-[70vh] sm:w-[90vh] rounded-full opacity-[0.20]',
@@ -68,11 +68,11 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
         )}
         style={{
           background:
-            'radial-gradient(circle at center, rgba(129,140,248,0.42) 0%, rgba(167,139,250,0.12) 45%, transparent 70%)',
+            'radial-gradient(circle at center, rgba(100,116,139,0.38) 0%, rgba(63,63,70,0.12) 45%, transparent 70%)',
           filter: 'blur(120px)',
         }}
       />
-      {/* Emerald accent - subtle center */}
+      {/* Neutral accent - subtle center */}
       <div
         className={cn(
           'aurora-blob absolute left-[35%] top-[25%] h-[55vmin] w-[55vmin] sm:h-[55vh] sm:w-[55vh] rounded-full opacity-[0.12]',
@@ -80,7 +80,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
         )}
         style={{
           background:
-            'radial-gradient(circle at center, rgba(52,211,153,0.35) 0%, rgba(16,185,129,0.10) 50%, transparent 70%)',
+            'radial-gradient(circle at center, rgba(148,163,184,0.30) 0%, rgba(100,116,139,0.10) 50%, transparent 70%)',
           filter: 'blur(110px)',
         }}
       />
@@ -123,15 +123,15 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
       {/* ── Layer 3: Luminous horizon beam ─────────────── */}
       <div className="absolute left-1/2 top-[52%] -translate-x-1/2">
         <div className="relative h-48 w-[50rem] max-w-[90vw]">
-          {/* Primary teal beam - wide glow */}
-          <div className="absolute inset-x-0 top-0 h-[3px] w-full bg-gradient-to-r from-transparent via-teal-400/80 to-transparent blur-sm" />
-          <div className="absolute inset-x-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-teal-400/60 to-transparent" />
-          {/* Secondary cyan beam - concentrated center */}
-          <div className="absolute inset-x-[15%] top-0 h-[5px] w-[70%] bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent blur-sm" />
-          <div className="absolute inset-x-[15%] top-0 h-px w-[70%] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-          {/* Tertiary violet accent - inner highlight */}
-          <div className="absolute inset-x-[30%] top-0 h-[4px] w-[40%] bg-gradient-to-r from-transparent via-violet-400/50 to-transparent blur-[3px]" />
-          <div className="absolute inset-x-[30%] top-0 h-px w-[40%] bg-gradient-to-r from-transparent via-violet-400/35 to-transparent" />
+          {/* Primary beam - wide glow */}
+          <div className="absolute inset-x-0 top-0 h-[3px] w-full bg-gradient-to-r from-transparent via-white/70 to-transparent blur-sm" />
+          <div className="absolute inset-x-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+          {/* Secondary beam - concentrated center */}
+          <div className="absolute inset-x-[15%] top-0 h-[5px] w-[70%] bg-gradient-to-r from-transparent via-slate-200/55 to-transparent blur-sm" />
+          <div className="absolute inset-x-[15%] top-0 h-px w-[70%] bg-gradient-to-r from-transparent via-slate-200/45 to-transparent" />
+          {/* Tertiary accent - inner highlight */}
+          <div className="absolute inset-x-[30%] top-0 h-[4px] w-[40%] bg-gradient-to-r from-transparent via-slate-300/40 to-transparent blur-[3px]" />
+          <div className="absolute inset-x-[30%] top-0 h-px w-[40%] bg-gradient-to-r from-transparent via-slate-300/30 to-transparent" />
           {/* Downward radial mask - particles fade below beam */}
           <div
             className="absolute inset-0 h-full w-full bg-[#030712]"
@@ -147,7 +147,7 @@ export function AuroraBackground({ className }: AuroraBackgroundProps) {
 
       {/* ── Layer 4: Subtle atmospheric haze ────────────── */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(113,113,122,0.06)_0%,transparent_60%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_80%,rgba(129,140,248,0.04)_0%,transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_80%,rgba(148,163,184,0.04)_0%,transparent_50%)]" />
 
       {/* ── Layer 5: Film grain for analog depth ────────── */}
       <div

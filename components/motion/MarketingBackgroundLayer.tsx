@@ -85,7 +85,7 @@ function MarketingBackgroundLayerInner() {
       ? 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(251,146,60,0.08) 0%, transparent 70%)'
       : runtime.backgroundVariant === 'matrix'
         ? 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(34,197,94,0.08) 0%, transparent 70%)'
-        : 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(6,182,212,0.06) 0%, transparent 70%)';
+        : 'radial-gradient(ellipse 70% 50% at 50% 35%, rgba(148,163,184,0.05) 0%, transparent 70%)';
 
   // Tiered overlay rendering: grid + grain only on high-tier devices
   const showOverlays = enhancedReady && tierConfig.enableOverlays && expensiveEffectsEnabled;
@@ -105,7 +105,7 @@ function MarketingBackgroundLayerInner() {
           className="mk-bg-depth mk-bg-depth--near absolute inset-0 opacity-[0.07]"
           style={{
             backgroundImage:
-              'radial-gradient(circle at 1px 1px, rgba(6, 182, 212, 0.15) 1px, transparent 0)',
+              'radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.12) 1px, transparent 0)',
             backgroundSize: '40px 40px',
           }}
         />

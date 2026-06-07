@@ -35,14 +35,8 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {/* Preload hero background image so browser discovers it in initial HTML */}
-      <link
-        rel="preload"
-        href="/marketing-media/home.jpg"
-        as="image"
-        type="image/jpeg"
-        fetchPriority="high"
-      />
+      {/* Hero image preload is emitted by next/image priority on / only
+          (HeroStaticShell) — no manual cross-route preload needed. */}
       <div className="mk-shell mk-shell--layered-bg font-[var(--font-body)]">
         <a
           href="#main-content"

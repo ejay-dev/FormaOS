@@ -76,10 +76,10 @@ export function CapabilitiesGrid() {
         >
           <span className="mt-1.5 h-14 w-px flex-shrink-0 bg-gradient-to-b from-white/35 to-transparent" />
           <div className="max-w-2xl">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
               Platform capabilities
             </p>
-            <h2 className="text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
+            <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl lg:text-[2.6rem]">
               Everything you need.{' '}
               <span className="text-slate-400">Nothing you don&apos;t.</span>
             </h2>

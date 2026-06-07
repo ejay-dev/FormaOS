@@ -333,10 +333,10 @@ const StatCard = memo(function StatCard({
         >
           <Icon className={`w-3.5 h-3.5 ${a.icon}`} />
         </div>
-        <p className="text-xl sm:text-2xl font-bold mb-0.5 text-white">
+        <p className="font-display tabular-nums text-xl sm:text-2xl font-bold mb-0.5 text-white">
           {stat.value}
         </p>
-        <p className="text-[11px] text-slate-500 font-medium">{stat.label}</p>
+        <p className="text-[11px] text-slate-400 font-medium">{stat.label}</p>
       </div>
     </motion.div>
   );
@@ -405,7 +405,7 @@ const CapabilityCard = memo(function CapabilityCard({
           <h4 className="text-white text-sm font-semibold mb-1">
             {capability.title}
           </h4>
-          <p className="text-slate-500 text-xs leading-relaxed">
+          <p className="text-slate-400 text-xs leading-relaxed">
             {capability.description}
           </p>
         </div>
@@ -435,6 +435,7 @@ const AccordionItem = memo(function AccordionItem({
 }) {
   const Icon = solution.icon;
   const a = ACCENT_MAP[solution.accent];
+  const panelId = `industry-panel-${index}`;
 
   return (
     <motion.div
@@ -449,6 +450,8 @@ const AccordionItem = memo(function AccordionItem({
       {/* Trigger */}
       <button
         onClick={onToggle}
+        aria-expanded={isExpanded}
+        aria-controls={panelId}
         className={`group relative w-full text-left rounded-2xl border overflow-hidden transition-all duration-300 ${
           isExpanded
             ? `bg-slate-950/70 ${a.activeBorder}`
@@ -471,10 +474,10 @@ const AccordionItem = memo(function AccordionItem({
               </div>
             </div>
             <div>
-              <h3 className="text-base lg:text-xl font-bold text-white mb-0.5">
+              <h3 className="font-display text-base lg:text-xl font-bold text-white mb-0.5">
                 {solution.title}
               </h3>
-              <p className="text-xs lg:text-sm text-slate-500">
+              <p className="text-xs lg:text-sm text-slate-400">
                 {solution.subtitle}
               </p>
             </div>
@@ -484,6 +487,7 @@ const AccordionItem = memo(function AccordionItem({
             animate={{ rotate: isExpanded ? 180 : 0 }}
             transition={{ duration: 0.3, ease: signatureEase }}
             className={`ml-4 shrink-0 ${a.text}`}
+            aria-hidden="true"
           >
             <ChevronDown className="w-5 h-5" />
           </motion.div>
@@ -494,6 +498,8 @@ const AccordionItem = memo(function AccordionItem({
       <AnimatePresence>
         {isExpanded && (
           <motion.div
+            id={panelId}
+            role="region"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -611,11 +617,11 @@ export const Industries = memo(function Industries() {
           >
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-8 bg-white/25" />
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                 Industry Solutions
               </span>
             </div>
-            <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+            <h2 className="font-display text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
               Built for high-accountability industries
             </h2>
           </motion.div>
@@ -664,7 +670,7 @@ export const Industries = memo(function Industries() {
           }}
           className="mt-12 text-center"
         >
-          <p className="text-slate-500 mb-5">
+          <p className="text-slate-400 mb-5">
             Not sure which solution fits your organization?
           </p>
           <Link

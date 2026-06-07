@@ -126,11 +126,16 @@ function PostureRing({
   }, [isInView, noMotion, offset, dashMotion, circumference]);
 
   return (
-    <div className="relative w-[160px] h-[160px] mx-auto">
+    <div
+      className="relative w-[160px] h-[160px] mx-auto"
+      role="img"
+      aria-label={`Composite posture ${score} percent`}
+    >
       <svg
         viewBox="0 0 120 120"
         className="w-full h-full -rotate-90"
         fill="none"
+        aria-hidden="true"
       >
         {/* Track */}
         <circle
@@ -172,8 +177,8 @@ function PostureRing({
         </defs>
       </svg>
       {/* Center score, number only, nothing else inside the ring */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-4xl font-bold text-white leading-none tracking-tight">
+      <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+        <span className="font-display tabular-nums text-4xl font-bold text-white leading-none tracking-tight">
           <AnimatedCounter
             value={score}
             isInView={isInView}
@@ -284,13 +289,13 @@ const PostureCard = memo(function PostureCard({
             Security Posture
           </span>
         </div>
-        <p className="text-[11px] text-slate-600 mb-5">
+        <p className="text-[11px] text-slate-400 mb-5">
           Real-time compliance health across all active frameworks
         </p>
 
         {/* Illustrative score, caveat sits below the ring, never inside it. */}
         <PostureRing score={98} isInView={isInView} noMotion={noMotion} />
-        <p className="mt-3 text-center text-[10px] font-medium uppercase tracking-[0.18em] text-slate-600">
+        <p className="mt-3 text-center text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
           Composite posture · illustrative
         </p>
 
@@ -313,7 +318,7 @@ const PostureCard = memo(function PostureCard({
                   <span className="text-xs text-slate-400 font-medium">
                     {ctrl.label}
                   </span>
-                  <span className="text-[11px] text-slate-500">
+                  <span className="text-[11px] tabular-nums text-slate-400">
                     {ctrl.mapped}/{ctrl.total}
                   </span>
                 </div>
@@ -447,7 +452,7 @@ const AccessCard = memo(function AccessCard({
                 <p className="text-xs font-medium text-white/90 leading-snug">
                   {feat.label}
                 </p>
-                <p className="text-[10px] text-slate-600">{feat.detail}</p>
+                <p className="text-[10px] text-slate-400">{feat.detail}</p>
               </div>
             </motion.div>
           ))}
@@ -481,7 +486,7 @@ const AuditLogCard = memo(function AuditLogCard({
           <span className="text-xs font-semibold uppercase tracking-widest text-slate-300">
             What the audit trail captures
           </span>
-          <span className="text-[10px] text-slate-600 uppercase tracking-wider font-medium">
+          <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">
             Immutable &middot; Timestamped
           </span>
         </div>
@@ -508,13 +513,13 @@ const AuditLogCard = memo(function AuditLogCard({
                 style={{
                   background:
                     entry.status === 'verified'
-                      ? 'linear-gradient(90deg, rgba(52,211,153,0.5), transparent)'
+                      ? 'linear-gradient(90deg, rgba(255,255,255,0.32), transparent)'
                       : 'linear-gradient(90deg, rgba(251,191,36,0.5), transparent)',
                 }}
               />
               <div className="flex items-center gap-2">
                 {entry.status === 'verified' ? (
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400/70 shrink-0" />
+                  <CheckCircle className="w-3.5 h-3.5 text-slate-300 shrink-0" />
                 ) : (
                   <AlertTriangle className="w-3.5 h-3.5 text-amber-400/70 shrink-0" />
                 )}
@@ -522,10 +527,10 @@ const AuditLogCard = memo(function AuditLogCard({
                   {entry.action}
                 </p>
               </div>
-              <p className="text-[11px] text-slate-500 truncate">
+              <p className="text-[11px] text-slate-400 truncate">
                 {entry.control}
               </p>
-              <span className="mt-auto text-[10px] text-slate-600">
+              <span className="mt-auto text-[10px] text-slate-400">
                 {entry.actor}
               </span>
             </motion.div>
@@ -551,18 +556,18 @@ const AuditLogCard = memo(function AuditLogCard({
               }}
               className="text-center"
             >
-              <p className="text-sm font-bold text-white">
+              <p className="font-display tabular-nums text-sm font-bold text-white">
                 <AnimatedCounter
                   value={stat.value}
                   isInView={isInView}
                   noMotion={noMotion}
                   delay={0.8 + i * 0.06}
                 />
-                <span className="text-[10px] text-slate-500 ml-0.5 font-medium">
+                <span className="text-[10px] text-slate-400 ml-0.5 font-medium">
                   {stat.suffix}
                 </span>
               </p>
-              <p className="text-[9px] text-slate-600 mt-0.5">{stat.label}</p>
+              <p className="text-[9px] text-slate-400 mt-0.5">{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -595,7 +600,7 @@ const DataResidencyCard = memo(function DataResidencyCard({
           </div>
         </div>
         <p className="text-sm font-semibold text-white mb-1">AU-Hosted</p>
-        <p className="text-[11px] text-slate-500 leading-relaxed">
+        <p className="text-[11px] text-slate-400 leading-relaxed">
           Australian data residency by default. Sovereignty-first
           infrastructure.
         </p>
@@ -634,7 +639,7 @@ const AuditReadyCard = memo(function AuditReadyCard({
           </div>
         </div>
         <p className="text-sm font-semibold text-white mb-1">Tamper-Evident</p>
-        <p className="text-[11px] text-slate-500 leading-relaxed">
+        <p className="text-[11px] text-slate-400 leading-relaxed">
           Immutable audit trails. Every action logged, timestamped, and
           regulator-ready.
         </p>
@@ -679,11 +684,11 @@ export const SecuritySection = memo(function SecuritySection() {
           >
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-8 bg-white/25" />
-              <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
                 Security &amp; Trust
               </span>
             </div>
-            <h2 className="text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
+            <h2 className="font-display text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl md:text-[2.75rem]">
               Security built into{' '}
               <span className="text-slate-400">the platform layer</span>
             </h2>
@@ -729,7 +734,7 @@ export const SecuritySection = memo(function SecuritySection() {
           }}
           className="mt-10"
         >
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600 mb-4 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400 mb-4 text-center">
             Built for regulated industries across Australia
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
@@ -745,7 +750,7 @@ export const SecuritySection = memo(function SecuritySection() {
                 }}
                 className="group flex items-center justify-center p-3 rounded-xl border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 transition-all duration-300"
               >
-                <span className="text-slate-500 group-hover:text-slate-300 transition-colors duration-300 text-xs font-medium text-center">
+                <span className="text-slate-400 group-hover:text-slate-300 transition-colors duration-300 text-xs font-medium text-center">
                   {sector}
                 </span>
               </motion.div>

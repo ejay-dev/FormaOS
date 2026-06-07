@@ -195,7 +195,7 @@ export default function FormaOSHomepage({
           {renderSection(
             'framework_trust_strip',
             <FrameworkTrustStrip />,
-            200,
+            140,
           )}
           {/* Cryptographic audit-chain proof, pulled to position 3
               (after hero + framework strip) on 2026-05-28 to surface

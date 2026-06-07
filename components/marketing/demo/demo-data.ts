@@ -181,8 +181,8 @@ export type DemoScreenId = (typeof demoScreenSequence)[number];
 
 export const demoFrameworks = [
   { name: 'ISO 27001', score: 91, controls: 52, compliant: 47, color: '#a1a1aa' },
-  { name: 'SOC 2', score: 84, controls: 48, compliant: 40, color: '#3b82f6' },
-  { name: 'HIPAA', score: 88, controls: 42, compliant: 37, color: '#8b5cf6' },
+  { name: 'SOC 2', score: 84, controls: 48, compliant: 40, color: '#94a3b8' },
+  { name: 'HIPAA', score: 88, controls: 42, compliant: 37, color: '#71717a' },
 ];
 
 // -----------------------------------------------------------------------------
